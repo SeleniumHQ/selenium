@@ -1,6 +1,6 @@
 /*
-Copyright 2011 Selenium committers
-Portions copyright 2011 Software Freedom Conservancy
+Copyright 2011-2012 Selenium committers
+Portions copyright 2011-2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,15 +22,16 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-
-import java.util.List;
 
 public class OpacityTest extends JUnit4TestBase {
 
@@ -39,14 +40,14 @@ public class OpacityTest extends JUnit4TestBase {
    *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
    */
   @JavascriptEnabled
-  @Ignore({IE, SELENESE, OPERA})
+  @Ignore({IE, SELENESE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
 
     WebElement element = driver.findElement(By.id("clickJacker"));
     assertEquals("Precondition failed: clickJacker should be transparent",
-        "0", element.getCssValue("opacity"));
+                 "0", element.getCssValue("opacity"));
     element.click();
     assertEquals("1", element.getCssValue("opacity"));
   }
@@ -68,10 +69,11 @@ public class OpacityTest extends JUnit4TestBase {
     WebElement oranges = options.get(1);
 
     assertTrue("Apples should be selected", apples.isSelected());
-    assertFalse("Oranges shoudl be selected", oranges.isSelected());
+    assertFalse("Oranges should be selected", oranges.isSelected());
 
     oranges.click();
     assertFalse("Apples should not be selected", apples.isSelected());
     assertTrue("Oranges should be selected", oranges.isSelected());
   }
+
 }

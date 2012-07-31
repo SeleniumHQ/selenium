@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,12 +42,13 @@ public @interface Ignore {
     SAFARI,
     SELENESE,
   }
-  
+
   Driver[] value() default {Driver.ALL};
-  
+
   Platform[] platforms() default {Platform.ANY};
 
   String reason() default ("Not implemented in driver yet");
-  
+
   int[] issues() default {};
+
 }

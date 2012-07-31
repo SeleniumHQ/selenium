@@ -50,6 +50,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 
 public class ExecutingJavascriptTest extends JUnit4TestBase {
 
@@ -384,7 +385,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(OPERA)
+  @Ignore({OPERA, OPERA_MOBILE})
   @Test
   public void testShouldBeAbleToPassAnArrayAsAdditionalArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
@@ -453,6 +454,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(OPERA_MOBILE)
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
     driver.get(pages.richTextPage);
 
@@ -564,7 +566,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, HTMLUNIT, IE, OPERA},
+  @Ignore(value = {ANDROID, HTMLUNIT, IE, OPERA, OPERA_MOBILE},
           reason = "Opera and HtmlUnit obey the method contract. Android and IE not tested")
   @Test
   public void testCanPassAMapAsAParameter() {

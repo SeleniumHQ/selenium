@@ -1,5 +1,6 @@
 /*
-Copyright 2010 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2010-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -55,4 +56,5 @@ public class RotatableTest extends JUnit4TestBase {
     }
     assertNotNull(((Rotatable) driver).getOrientation());
   }
+
 }

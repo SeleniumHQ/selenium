@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -39,6 +40,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class FrameSwitchingTest extends JUnit4TestBase {
@@ -124,6 +126,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(OPERA_MOBILE)
   public void testShouldBeAbleToSwitchToFrameWithNameContainingDot() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("sixth.iframe1");
@@ -194,7 +197,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
   }
 
-  @Ignore({ANDROID})
+  @Ignore({ANDROID, OPERA_MOBILE})
   @Test
   public void testShouldSelectChildFramesByChainedCalls() {
     driver.get(pages.framesetPage);
@@ -264,7 +267,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     waitFor(WaitingConditions.elementTextToEqual(driver, By.xpath("//p"), "Success!"));
   }
 
-  @Ignore(value = {ANDROID, OPERA},
+  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE},
           reason = "Android does not detect that the select frame has disappeared")
   @Test
   public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage()
@@ -309,7 +312,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     return waitFor(elementToExist(driver, "greeting")).getText();
   }
 
-  @Ignore({OPERA, ANDROID})
+  @Ignore({OPERA, ANDROID, OPERA_MOBILE})
   @Test
   public void testShouldBeAbleToClickInAFrame() {
     driver.get(pages.framesetPage);
@@ -324,7 +327,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(getTextOfGreetingElement(), equalTo("Success!"));
   }
 
-  @Ignore({OPERA, ANDROID})
+  @Ignore({OPERA, ANDROID, OPERA_MOBILE})
   @Test
   public void testShouldBeAbleToClickInASubFrame() {
     driver.get(pages.framesetPage);
@@ -403,7 +406,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.getCurrentUrl(), equalTo(url));
   }
 
-  @Ignore(value = {ANDROID, OPERA})
+  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE})
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs() {
@@ -461,4 +464,5 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
     fail("Frame did not disappear");
   }
+
 }

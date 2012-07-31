@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,6 +34,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -47,7 +49,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-@Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, SAFARI, SELENESE})
+@Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE})
 public class AlertsTest extends JUnit4TestBase {
 
   @Before
@@ -93,7 +95,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Test
   public void testShouldGetTextOfAlertOpenedInSetTimeout() throws Exception {
     driver.findElement(By.id("slow-alert")).click();
-    
+
     // DO NOT WAIT OR SLEEP HERE.
     // This is a regression test for a bug where only the first switchTo call would throw,
     // and only if it happens before the alert actually loads.
@@ -267,7 +269,7 @@ public class AlertsTest extends JUnit4TestBase {
       } catch (NoSuchWindowException expected) {
         // Expected
       }
-  
+
     } finally {
       driver.switchTo().window(mainWindow);
       waitFor(elementTextToEqual(driver, By.id("open-new-window"), "open new window"));
@@ -353,7 +355,7 @@ public class AlertsTest extends JUnit4TestBase {
       allWindows.remove(mainWindow);
       assertEquals(1, allWindows.size());
       onloadWindow = allWindows.iterator().next();
-  
+
       try {
         waitFor(alertToBePresent(driver), 5, TimeUnit.SECONDS);
         fail("Expected exception");
@@ -405,7 +407,7 @@ public class AlertsTest extends JUnit4TestBase {
       Alert alert = waitFor(alertToBePresent(driver));
       String value = alert.getText();
       alert.accept();
-  
+
       assertEquals("onunload", value);
 
     } finally {

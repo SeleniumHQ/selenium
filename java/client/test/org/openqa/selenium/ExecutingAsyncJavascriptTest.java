@@ -15,9 +15,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package org.openqa.selenium;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -31,24 +43,11 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-@Ignore(value = {IE, IPHONE, OPERA, ANDROID},
-    reason = "IE: Every test appears to be failing. Opera: not implemented yet")
+@Ignore(value = {IE, IPHONE, OPERA, ANDROID, OPERA_MOBILE},
+        reason = "IE: Every test appears to be failing. Opera: not implemented yet")
 public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   private JavascriptExecutor executor;
@@ -114,7 +113,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(value = {ANDROID},
-      reason = "Android does not properly handle arrays")
+          reason = "Android does not properly handle arrays")
   public void shouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 
@@ -146,7 +145,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(value = {ANDROID},
-      reason = "Android does not properly handle arrays")
+          reason = "Android does not properly handle arrays")
   public void shouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 
@@ -194,7 +193,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.get(pages.ajaxyPage);
     executor.executeAsyncScript(
         "var callback = arguments[arguments.length - 1];" +
-            "window.setTimeout(function() { callback(123); }, 0)");
+        "window.setTimeout(function() { callback(123); }, 0)");
   }
 
   @JavascriptEnabled
@@ -205,7 +204,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     try {
       executor.executeAsyncScript(
           "var callback = arguments[arguments.length - 1];" +
-              "window.setTimeout(callback, 1500);");
+          "window.setTimeout(callback, 1500);");
       fail("Should have thrown a TimeOutException!");
     } catch (TimeoutException exception) {
       // Do nothing.
@@ -236,7 +235,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {ANDROID},
-      reason = "Android: Emulator is too slow and latency causes test to fall out of sync with app;")
+          reason = "Android: Emulator is too slow and latency causes test to fall out of sync with app;")
   @JavascriptEnabled
   @Test
   public void shouldBeAbleToExecuteAsynchronousScripts() {
@@ -250,17 +249,17 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.findElement(By.name("submit")).click();
 
     assertEquals("There should only be 1 DIV at this point, which is used for the butter message",
-        1, getNumDivElements());
+                 1, getNumDivElements());
 
     driver.manage().timeouts().setScriptTimeout(15, TimeUnit.SECONDS);
     String text = (String) executor.executeAsyncScript(
         "var callback = arguments[arguments.length - 1];"
-            + "window.registerListener(arguments[arguments.length - 1]);");
+        + "window.registerListener(arguments[arguments.length - 1]);");
     assertEquals("bob", text);
     assertEquals("", typer.getAttribute("value"));
 
     assertEquals("There should be 1 DIV (for the butter message) + 1 DIV (for the new label)",
-        2, getNumDivElements());
+                 2, getNumDivElements());
   }
 
   @JavascriptEnabled
@@ -304,9 +303,9 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     String response = (String) ((JavascriptExecutor) driver)
         .executeAsyncScript(script, pages.sleepingPage + "?time=2");
     assertThat(response.trim(),
-        equalTo("<html><head><title>Done</title></head><body>Slept for 2s</body></html>"));
+               equalTo("<html><head><title>Done</title></head><body>Slept for 2s</body></html>"));
   }
-  
+
   @JavascriptEnabled
   @Test
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
@@ -315,7 +314,8 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
     try {
-      ((JavascriptExecutor)driver).executeAsyncScript("setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An alert!'); }, 50);");
+      ((JavascriptExecutor) driver).executeAsyncScript(
+          "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An alert!'); }, 50);");
       fail("Expected UnhandledAlertException");
     } catch (UnhandledAlertException expected) {
       // Expected exception
@@ -332,7 +332,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("slowLoadingAlert.html"));
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
     try {
-      ((JavascriptExecutor)driver).executeAsyncScript("setTimeout(arguments[0], 1000);");
+      ((JavascriptExecutor) driver).executeAsyncScript("setTimeout(arguments[0], 1000);");
       fail("Expected UnhandledAlertException");
     } catch (UnhandledAlertException expected) {
       //Expected exception
@@ -348,7 +348,8 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
     try {
-      ((JavascriptExecutor)driver).executeAsyncScript("setTimeout(function() { window.alert('Look! An alert!'); }, 50);");
+      ((JavascriptExecutor) driver)
+          .executeAsyncScript("setTimeout(function() { window.alert('Look! An alert!'); }, 50);");
       fail("Expected UnhandledAlertException");
     } catch (UnhandledAlertException expected) {
       // Expected exception
@@ -365,7 +366,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("slowLoadingAlert.html"));
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
     try {
-      ((JavascriptExecutor)driver).executeAsyncScript("");
+      ((JavascriptExecutor) driver).executeAsyncScript("");
       fail("Expected UnhandledAlertException");
     } catch (UnhandledAlertException expected) {
       //Expected exception
@@ -382,7 +383,9 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
     String alertText = "Look! An alert!";
     try {
-      ((JavascriptExecutor)driver).executeAsyncScript("setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('" + alertText + "'); }, 50);");
+      ((JavascriptExecutor) driver).executeAsyncScript(
+          "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('" + alertText
+          + "'); }, 50);");
       fail("Expected UnhandledAlertException");
     } catch (UnhandledAlertException e) {
       Alert alert = e.getAlert();

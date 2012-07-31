@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package org.openqa.selenium;
 
 import org.junit.Test;
@@ -27,6 +26,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementSelectionToBe;
@@ -62,6 +62,7 @@ public class ElementSelectingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(OPERA_MOBILE)
   public void testShouldNotBeAbleToSelectADisabledRadioButton() {
     driver.get(pages.formPage);
     assertCannotSelect(disabledUnselectedRadioButton());

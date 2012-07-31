@@ -1,6 +1,6 @@
 /*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy.
+Copyright 2011-2012 Selenium committers
+Copyright 2011-2012 Software Freedom Conservancy.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -36,11 +36,11 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-
-@Ignore(value = {ANDROID, HTMLUNIT, IPHONE, OPERA, SELENESE},
+@Ignore(value = {ANDROID, HTMLUNIT, IPHONE, OPERA, SELENESE, OPERA_MOBILE},
         reason = "Not yet implemented.")
 public class WindowTest extends JUnit4TestBase {
 

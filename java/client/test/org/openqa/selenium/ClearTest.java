@@ -27,6 +27,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 @Ignore({CHROME, SELENESE, ANDROID})
@@ -54,7 +55,7 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(OPERA)
+  @Ignore({OPERA, OPERA_MOBILE})
   public void testTextInputShouldNotClearWhenReadOnly() {
     try {
       driver.get(pages.readOnlyPage);
@@ -87,7 +88,7 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(OPERA)
+  @Ignore({OPERA, OPERA_MOBILE})
   public void testTextAreaShouldNotClearWhenReadOnly() {
     try {
       driver.get(pages.readOnlyPage);
@@ -99,7 +100,7 @@ public class ClearTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({HTMLUNIT, IPHONE})
+  @Ignore({HTMLUNIT, IPHONE, OPERA_MOBILE})
   @Test
   public void testContentEditableAreaShouldClear() {
     driver.get(pages.readOnlyPage);

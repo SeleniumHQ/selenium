@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -39,6 +40,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class ElementAttributeTest extends JUnit4TestBase {
@@ -328,7 +330,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("hello@example.com", element.getAttribute("value"));
   }
 
-  @Ignore(ANDROID)
+  @Ignore({ANDROID, OPERA_MOBILE})
   @Test
   public void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
     driver.get(pages.formPage);

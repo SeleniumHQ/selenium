@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,16 +22,18 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.TestUtilities;
 
+import java.util.List;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-
-import static org.hamcrest.Matchers.equalTo;
-
-import java.util.List;
 
 public class XPathElementFindingTest extends JUnit4TestBase {
 
@@ -70,7 +73,6 @@ public class XPathElementFindingTest extends JUnit4TestBase {
   public void testShouldFindElementsByXPath() {
     driver.get(pages.xhtmlTestPage);
     List<WebElement> divs = driver.findElements(By.xpath("//div"));
-
     assertThat(divs.size(), equalTo(13));
   }
 
@@ -117,7 +119,7 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({ANDROID, IPHONE, SELENESE, OPERA})
+  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
     driver.get(pages.formPage);
@@ -125,13 +127,13 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     try {
       driver.findElement(By.xpath("this][isnot][valid"));
       fail("Should not have succeeded because the xpath expression is syntactically not correct");
-    } catch (InvalidSelectorException ignored) {
-      // We expect an InvalidSelectorException because the xpath expression is syntactically
-      // invalid
+    } catch (RuntimeException e) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically invalid
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
     }
   }
 
-  @Ignore({ANDROID, IPHONE, SELENESE, OPERA})
+  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     if (TestUtilities.isIe6(driver)) {
@@ -143,13 +145,14 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     try {
       driver.findElements(By.xpath("this][isnot][valid"));
       fail("Should not have succeeded because the xpath expression is syntactically not correct");
-    } catch (InvalidSelectorException ignored) {
+    } catch (RuntimeException e) {
       // We expect an InvalidSelectorException because the xpath expression is syntactically
       // invalid
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
     }
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
     driver.get(pages.formPage);
@@ -157,13 +160,13 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     try {
       body.findElement(By.xpath("this][isnot][valid"));
       fail("Should not have succeeded because the xpath expression is syntactically not correct");
-    } catch (InvalidSelectorException ignored) {
-      // We expect an InvalidSelectorException because the xpath expression is syntactically
-      // invalid
+    } catch (RuntimeException e) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically invalid
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
     }
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
     if (TestUtilities.isIe6(driver)) {
@@ -175,13 +178,13 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     try {
       body.findElements(By.xpath("this][isnot][valid"));
       fail("Should not have succeeded because the xpath expression is syntactically not correct");
-    } catch (InvalidSelectorException ignored) {
-      // We expect an InvalidSelectorException because the xpath expression is syntactically
-      // invalid
+    } catch (RuntimeException e) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically invalid
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
     }
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
     driver.get(pages.formPage);
@@ -189,13 +192,13 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     try {
       driver.findElement(By.xpath("count(//input)"));
       fail("Should not have succeeded because the xpath expression does not select an element");
-    } catch (InvalidSelectorException ignored) {
-      // We expect an exception because the XPath expression
-      // results in a number, not in an element.
+    } catch (RuntimeException e) {
+      // We expect an exception because the XPath expression results in a number, not in an element
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
     }
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
     if (TestUtilities.isIe6(driver)) {
@@ -207,13 +210,13 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     try {
       driver.findElements(By.xpath("count(//input)"));
       fail("Should not have succeeded because the xpath expression does not select an element");
-    } catch (InvalidSelectorException ignored) {
-      // We expect an exception because the XPath expression
-      // results in a number, not in an element.
+    } catch (RuntimeException e) {
+      // We expect an exception because the XPath expression results in a number, not in an element
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
     }
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement() {
     driver.get(pages.formPage);
@@ -223,13 +226,13 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     try {
       body.findElement(By.xpath("count(//input)"));
       fail("Should not have succeeded because the xpath expression does not select an element");
-    } catch (InvalidSelectorException ignored) {
-      // We expect an exception because the XPath expression
-      // results in a number, not in an element.
+    } catch (RuntimeException e) {
+      // We expect an exception because the XPath expression results in a number, not in an element
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
     }
   }
 
-  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
     if (TestUtilities.isIe6(driver)) {
@@ -243,9 +246,10 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     try {
       body.findElements(By.xpath("count(//input)"));
       fail("Should not have succeeded because the xpath expression does not select an element");
-    } catch (InvalidSelectorException ignored) {
-      // We expect an exception because the XPath expression
-      // results in a number, not in an element.
+    } catch (RuntimeException e) {
+      // We expect an exception because the XPath expression results in a number, not in an element
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
     }
   }
+
 }

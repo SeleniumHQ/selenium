@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,6 +22,8 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -28,11 +31,9 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 
 public class MiscTest extends JUnit4TestBase {
 
@@ -62,10 +63,10 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, IE, SELENESE, SAFARI, OPERA},
-      reason = "Chrome, Safari: returns XML content formatted for display as HTML document"
-          + "Opera: includes XML doctype"
-          + "Others: untested")
+  @Ignore(value = {ANDROID, CHROME, IE, SELENESE, SAFARI, OPERA, OPERA_MOBILE},
+          reason = "Chrome, Safari: returns XML content formatted for display as HTML document"
+                   + "Opera: includes XML doctype"
+                   + "Others: untested")
   @Test
   public void testShouldBeAbleToGetTheSourceOfAnXmlDocument() {
     driver.get(pages.simpleXmlDocument);
@@ -74,7 +75,7 @@ public class MiscTest extends JUnit4TestBase {
   }
 
 
-  @Ignore(issues = { 2282 })
+  @Ignore(issues = {2282})
   @Test
   public void testStimulatesStrangeOnloadInteractionInFirefox()
       throws Exception {
@@ -91,7 +92,7 @@ public class MiscTest extends JUnit4TestBase {
   @Test
   public void testClickingShouldNotTrampleWOrHInGlobalScope() throws Throwable {
     driver.get(appServer.whereIs("globalscope.html"));
-    String[] vars = new String[] {"w", "h"};
+    String[] vars = new String[]{"w", "h"};
     for (String var : vars) {
       assertEquals(var, getGlobalVar(driver, var));
     }
@@ -105,4 +106,5 @@ public class MiscTest extends JUnit4TestBase {
     Object val = ((JavascriptExecutor) driver).executeScript("return window." + var + ";");
     return val == null ? "null" : val.toString();
   }
+
 }

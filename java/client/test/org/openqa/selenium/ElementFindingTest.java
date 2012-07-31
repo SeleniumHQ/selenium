@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,6 +31,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -550,7 +552,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   // TODO(danielwh): Add extensive CSS selector tests
-  @Ignore(value = {ANDROID, OPERA, SELENESE}, reason = "Just not working")
+  @Ignore(value = {ANDROID, OPERA, SELENESE, OPERA_MOBILE}, reason = "Just not working")
   @Test
   public void testAnElementFoundInADifferentFrameIsStale() {
     driver.get(appServer.whereIs("missedJsReference.html"));
@@ -566,7 +568,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Ignore({ANDROID, IPHONE, OPERA, SELENESE, OPERA_MOBILE})
   @Test
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     String url = appServer.whereIs("missedJsReference.html");

@@ -45,6 +45,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
@@ -248,7 +249,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, IE, IPHONE, SELENESE, FIREFOX, OPERA, HTMLUNIT})
+  @Ignore({ANDROID, CHROME, IE, IPHONE, SELENESE, FIREFOX, OPERA, HTMLUNIT, OPERA_MOBILE})
   @Test
   public void testMousePositionIsNotPreservedInActionsChain() {
     driver.get(pages.javascriptPage);
@@ -348,7 +349,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     waitFor(elementTextToContain(resultArea, "parent matches"));
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, SELENESE, CHROME, OPERA},
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, SELENESE, CHROME, OPERA, OPERA_MOBILE},
           reason = "Not implemented yet.")
   @Test
   public void testMovingMouseBackAndForthPastViewPort() {

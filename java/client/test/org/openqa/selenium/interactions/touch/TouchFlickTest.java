@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2011 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NeedsFreshDriver;
@@ -27,11 +25,17 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.testing.Ignore;
 
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+
 /**
  * Tests the basic flick operations on touch enabled devices.
  */
+@Ignore({OPERA, OPERA_MOBILE})
 public class TouchFlickTest extends TouchTestBase {
-  
+
   private TouchActions getBuilder(WebDriver driver) {
     return new TouchActions(driver);
   }
@@ -51,7 +55,7 @@ public class TouchFlickTest extends TouchTestBase {
     Action flick = getBuilder(driver).flick(toFlick, -1000, 0, FlickAction.SPEED_NORMAL)
         .build();
     flick.perform();
-    
+
     x = link.getLocation().x;
     // After flicking, the element should now be visible on the screen.
     assertTrue("Expected x < 1500, but got x = " + x, x < 1500);
@@ -97,7 +101,7 @@ public class TouchFlickTest extends TouchTestBase {
   }
 
   @Ignore(value = {ANDROID},
-      reason = "Android flick's can result in different offsets")
+          reason = "Android flick's can result in different offsets")
   @NeedsFreshDriver
   @Test
   public void testCanFlickHorizontallyFast() {
@@ -170,7 +174,7 @@ public class TouchFlickTest extends TouchTestBase {
     Action flick = getBuilder(driver).flick(0, 750).build();
     flick.perform();
     y = link.getLocation().y;
-    
+
     // After flicking, the element should now be visible on the screen.
     assertTrue("Got: " + y, y < 4200);
   }
@@ -192,4 +196,5 @@ public class TouchFlickTest extends TouchTestBase {
     // After flicking, the element should now be visible on the screen.
     assertTrue("Got: " + y, y < 4000);
   }
+
 }

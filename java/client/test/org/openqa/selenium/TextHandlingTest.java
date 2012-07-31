@@ -27,6 +27,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -202,7 +203,7 @@ public class TextHandlingTest extends JUnit4TestBase {
         "after pre"));
   }
 
-  @Ignore(value = {SELENESE, IPHONE, CHROME, IE, OPERA}, reason =
+  @Ignore(value = {SELENESE, IPHONE, CHROME, IE, OPERA, OPERA_MOBILE}, reason =
       "iPhone: sendKeys is broken;"
       + " Chrome: not handling a space character properly."
       + " Opera,IE: inserts \r\n instead of \n.")

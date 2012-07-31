@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2007-2012 Selenium committers
+Copyright 2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,6 +31,8 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -41,6 +44,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
@@ -75,7 +79,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     driver.findElement(By.id("id1"));
   }
 
-  @Ignore(value = {SAFARI, SELENESE}, issues = { 4062 })
+  @Ignore(value = {SAFARI, SELENESE}, issues = {4062})
   @Test
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
     try {
@@ -88,7 +92,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {IPHONE, SAFARI, SELENESE}, issues = { 4062 })
+  @Ignore(value = {IPHONE, SAFARI, SELENESE}, issues = {4062})
   @Test
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be
@@ -109,7 +113,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(pageNumber.getText().trim(), equalTo("2"));
   }
 
-  @Ignore(value = {IPHONE, SAFARI, SELENESE}, issues = { 3771 })
+  @Ignore(value = {IPHONE, SAFARI, SELENESE}, issues = {3771})
   @NeedsFreshDriver
   @Test
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
@@ -129,7 +133,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
   }
 
-  @Ignore(value = {ANDROID, SAFARI, SELENESE}, issues = { 3771 })
+  @Ignore(value = {ANDROID, SAFARI, SELENESE}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
     driver.get(pages.formPage);
@@ -141,7 +145,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("We Leave From Here"));
   }
 
-  @Ignore(value = {SAFARI, SELENESE}, issues = { 3771 })
+  @Ignore(value = {SAFARI, SELENESE}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
     driver.get(pages.xhtmlTestPage);
@@ -156,7 +160,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
   }
 
-  @Ignore(value = {ANDROID, SAFARI, SELENESE}, issues = { 3771 })
+  @Ignore(value = {ANDROID, SAFARI, SELENESE}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
     driver.get(pages.formPage);
@@ -174,8 +178,8 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  @Ignore(value = {IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID, SAFARI},
-      reason = "Safari: does not support insecure SSL")
+  @Ignore(value = {IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE},
+          reason = "Safari: does not support insecure SSL")
   @Test
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
     // TODO(user): Set the SSL capability to true.
@@ -198,14 +202,14 @@ public class PageLoadingTest extends JUnit4TestBase {
   /**
    * @throws Exception If the test fails.
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=208"> Issue 208</a>
-   * 
-   * This test often causes the subsequent test to fail, in Firefox, on Linux, so we need
-   * a new driver after it.
+   *
+   *      This test often causes the subsequent test to fail, in Firefox, on Linux, so we need a new
+   *      driver after it.
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=2282">Issue 2282</a>
    */
-  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID, SAFARI},
-      reason = "Safari: issue 4062; Others: Untested user-agents",
-      issues = { 4062 })
+  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE},
+          reason = "Safari: issue 4062; Others: Untested user-agents",
+          issues = {4062})
   @NoDriverAfterTest
   @JavascriptEnabled
   @Test
@@ -241,12 +245,12 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     testDriver.quit(); // Clean up before making assertions
 
-    assertTrue("Took too long to load page: " + duration, duration < 5*1000);
+    assertTrue("Took too long to load page: " + duration, duration < 5 * 1000);
   }
 
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SAFARI, SELENESE},
-      reason = "Not implemented; Safari: see issue 687, comment 41",
-      issues = { 687 })
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE},
+          reason = "Not implemented; Safari: see issue 687, comment 41",
+          issues = {687})
   @NeedsLocalEnvironment
   @Test
   public void testShouldTimeoutIfAPageTakesTooLongToLoad() {
@@ -255,13 +259,15 @@ public class PageLoadingTest extends JUnit4TestBase {
     try {
       // Get the sleeping servlet with a pause of 5 seconds
       String slowPage = appServer.whereIs("sleep?time=5");
-      
+
       driver.get(slowPage);
-      
+
       fail("I should have timed out");
-    } catch (TimeoutException expected) {
+    } catch (RuntimeException e) {
+      assertThat(e, is(instanceOf(TimeoutException.class)));
     } finally {
       driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
     }
   }
+
 }

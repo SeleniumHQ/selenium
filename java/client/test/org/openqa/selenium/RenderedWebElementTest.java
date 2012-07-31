@@ -37,6 +37,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
@@ -80,7 +81,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   // should handle sub-pixel rendering, and every browser seems to be different anyhow:
   // http://ejohn.org/blog/sub-pixel-problems-in-css/
   @JavascriptEnabled
-  @Ignore({IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID, SAFARI})
+  @Ignore({IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE})
   // Reason for Chrome: WebKit bug 28804
   @Test
   public void testShouldHandleNonIntegerPositionAndSize() {

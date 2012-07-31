@@ -15,8 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package org.openqa.selenium;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,29 +26,25 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
-
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementToBeHidden;
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementToBeHidden;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+
 /**
  * Demonstrates how to use WebDriver with a file input element.
- * 
- * @author jmleyba@gmail.com (Jason Leyba)
  */
 @Ignore(value = {IPHONE, ANDROID, SAFARI}, reason = "File uploads not allowed on the iPhone",
-        issues = { 4220 })
+        issues = {4220})
 public class UploadTest extends JUnit4TestBase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";
@@ -60,8 +58,8 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, OPERA},
-      reason = "Opera: File input elements are not supported yet")
+  @Ignore(value = {SELENESE, OPERA, OPERA_MOBILE},
+          reason = "Opera/Opera Mobile: File input elements are not supported yet")
   @Test
   public void testFileUploading() throws Exception {
     driver.get(pages.uploadPage);
@@ -84,4 +82,5 @@ public class UploadTest extends JUnit4TestBase {
     Files.write(content, f, Charsets.UTF_8);
     return f;
   }
+
 }

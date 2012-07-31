@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package org.openqa.selenium;
 
 import org.junit.Test;
@@ -26,8 +25,10 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
+@Ignore(OPERA_MOBILE)
 public class SlowLoadingPageTest extends JUnit4TestBase {
 
   private static final long LOAD_TIME_IN_SECONDS = 3;
@@ -51,7 +52,9 @@ public class SlowLoadingPageTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {IE, IPHONE, SELENESE, OPERA},
-      reason = "Selenium: refresh is unsupported; IE: fails in IE 6,7,8, works in IE 9, Others: untested")
+      reason = "Selenium: refresh is unsupported;" +
+               "IE: fails in IE 6,7,8, works in IE 9;" +
+               "Others: untested")
   @Test
   public void testRefreshShouldBlockUntilPageLoads() {
     long start = System.currentTimeMillis();

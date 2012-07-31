@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2007-2012 Selenium committers
+Portions copyright 2011-2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.internal.FindsByCssSelector;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeTrue;
@@ -24,22 +33,13 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
-import org.openqa.selenium.internal.FindsByCssSelector;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.List;
-
-@Ignore(
-    value = {HTMLUNIT, IE, OPERA, SELENESE},
-    reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
+@Ignore(value = {HTMLUNIT, IE, OPERA, SELENESE, OPERA_MOBILE},
+        reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
 public class SvgElementTest extends JUnit4TestBase {
 
   @Before
@@ -54,7 +54,7 @@ public class SvgElementTest extends JUnit4TestBase {
 
     if (isFirefox30(driver) && isNativeEventsEnabled(driver)) {
       System.out.println("Not testing SVG elements with Firefox 3.0 and native events as" +
-          " this functionality is not working.");
+                         " this functionality is not working.");
       return;
     }
 
@@ -92,7 +92,7 @@ public class SvgElementTest extends JUnit4TestBase {
 
     if (isFirefox30(driver) && isNativeEventsEnabled(driver)) {
       System.out.println("Not testing SVG elements with Firefox 3.0 and native events as" +
-          " this functionality is not working.");
+                         " this functionality is not working.");
       return;
     }
 
@@ -104,4 +104,5 @@ public class SvgElementTest extends JUnit4TestBase {
     waitFor(elementTextToEqual(resultElement, "text_apple"));
     assertEquals("text_apple", resultElement.getText());
   }
+
 }

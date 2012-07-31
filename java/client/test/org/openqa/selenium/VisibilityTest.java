@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
-Portions copyright 2011 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
+Portions copyright 2011-2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import org.junit.Test;
@@ -167,7 +168,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SELENESE, OPERA_MOBILE})
   public void tooSmallAWindowWithOverflowHiddenIsNotAProblem() {
     WebDriver.Window window = driver.manage().window();
     Dimension originalSize = window.getSize();

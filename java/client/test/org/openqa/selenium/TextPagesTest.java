@@ -1,6 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
-Copyright 2007-2009 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
+Copyright 2007-2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
@@ -43,7 +44,7 @@ public class TextPagesTest extends JUnit4TestBase {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
-  @Ignore(value = {IE, FIREFOX, SELENESE, CHROME, IPHONE, OPERA, ANDROID, SAFARI},
+  @Ignore(value = {IE, FIREFOX, SELENESE, CHROME, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE},
       reason = "Android: WebView adds HTML tags to the page.")
   @Test
   public void testShouldBeAbleToLoadASimplePageOfText() {
@@ -65,7 +66,7 @@ public class TextPagesTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME, IE, IPHONE, SELENESE, OPERA, ANDROID, SAFARI}, reason =
+  @Ignore(value = {CHROME, IE, IPHONE, SELENESE, OPERA, ANDROID, SAFARI, OPERA_MOBILE}, reason =
       "Opera, Safari: creates DOM for displaying text pages")
   @Test
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {

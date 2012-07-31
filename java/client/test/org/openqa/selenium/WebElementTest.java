@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2010 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,18 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-
 import org.junit.Test;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+
 /**
  * Tests for generic WebElement.
  */
 public class WebElementTest extends JUnit4TestBase {
+
   @Ignore(SELENESE)
   @Test
   public void testElementImplementsWrapsDriver() {
