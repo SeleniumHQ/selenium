@@ -25,10 +25,10 @@ import java.util.Map;
 /**
  * RestishHandler used to fetch logs from the Remote WebDriver server.
  */
-public class LogHandler extends ResponseAwareWebDriverHandler implements JsonParametersAware {
+public class GetLogHandler extends ResponseAwareWebDriverHandler implements JsonParametersAware {
   private volatile String type;
 
-  public LogHandler(Session session) {
+  public GetLogHandler(Session session) {
     super(session);
   }
 

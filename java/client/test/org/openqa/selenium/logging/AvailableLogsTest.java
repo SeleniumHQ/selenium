@@ -19,7 +19,6 @@ package org.openqa.selenium.logging;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
 
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -32,7 +31,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import org.openqa.selenium.WebDriver;
@@ -46,12 +44,7 @@ import java.util.Set;
 public class AvailableLogsTest {
 
   private WebDriver localDriver;
-  
-  @Before
-  public void avoidRemote() {
-    assumeTrue(!Boolean.getBoolean("selenium.browser.remote"));
-  }
-  
+
   @After
   public void quitDriver() {
     if (localDriver != null) {

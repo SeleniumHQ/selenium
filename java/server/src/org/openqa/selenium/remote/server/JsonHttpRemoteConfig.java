@@ -45,6 +45,7 @@ import org.openqa.selenium.remote.server.handler.GetAlertText;
 import org.openqa.selenium.remote.server.handler.GetAllCookies;
 import org.openqa.selenium.remote.server.handler.GetAllSessions;
 import org.openqa.selenium.remote.server.handler.GetAllWindowHandles;
+import org.openqa.selenium.remote.server.handler.GetAvailableLogTypesHandler;
 import org.openqa.selenium.remote.server.handler.GetCssProperty;
 import org.openqa.selenium.remote.server.handler.GetCurrentUrl;
 import org.openqa.selenium.remote.server.handler.GetCurrentWindowHandle;
@@ -72,7 +73,7 @@ import org.openqa.selenium.remote.server.handler.ImeGetActiveEngine;
 import org.openqa.selenium.remote.server.handler.ImeGetAvailableEngines;
 import org.openqa.selenium.remote.server.handler.ImeIsActivated;
 import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
-import org.openqa.selenium.remote.server.handler.LogHandler;
+import org.openqa.selenium.remote.server.handler.GetLogHandler;
 import org.openqa.selenium.remote.server.handler.MaximizeWindow;
 import org.openqa.selenium.remote.server.handler.NewSession;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
@@ -475,8 +476,9 @@ public class JsonHttpRemoteConfig {
     postMapper.bind("/session/:sessionId/touch/flick", Flick.class)
         .on(ResultType.SUCCESS, emptyResponse);
 
-    postMapper.bind("/session/:sessionId/log", LogHandler.class)
+    getMapper.bind("/session/:sessionId/log/types", GetAvailableLogTypesHandler.class)
         .on(ResultType.SUCCESS, jsonResponse);
-
+    postMapper.bind("/session/:sessionId/log", GetLogHandler.class)
+        .on(ResultType.SUCCESS, jsonResponse);
   }
 }
