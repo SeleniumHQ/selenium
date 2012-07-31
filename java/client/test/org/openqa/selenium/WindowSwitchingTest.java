@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,8 +22,8 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.TestUtilities;
+import org.testng.internal.annotations.Sets;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -42,13 +43,14 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 @Ignore(value = {IPHONE}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends JUnit4TestBase {
 
-  @Ignore({SELENESE, OPERA})
+  @Ignore({SELENESE, OPERA_MOBILE})
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     driver.get(pages.xhtmlTestPage);
@@ -90,7 +92,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window(current);
   }
 
-  @Ignore({OPERA, CHROME, SELENESE})
+  @Ignore({OPERA, CHROME, SELENESE, OPERA_MOBILE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
     driver.get(pages.xhtmlTestPage);
@@ -114,7 +116,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA, CHROME, SELENESE, HTMLUNIT})
+  @Ignore({OPERA, CHROME, SELENESE, HTMLUNIT, OPERA_MOBILE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -135,7 +137,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
       } catch (NoSuchWindowException e) {
         // Expected.
       }
-  
+
       try {
         driver.findElement(By.tagName("body"));
         fail("NoSuchWindowException expected");
@@ -147,7 +149,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA, CHROME, SELENESE, HTMLUNIT})
+  @Ignore({OPERA, CHROME, SELENESE, HTMLUNIT, OPERA_MOBILE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -184,7 +186,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     Set<String> allWindowHandles = driver.getWindowHandles();
 
     // There should be three windows. We should also see each of the window titles at least once.
-    Set<String> seenHandles = new HashSet<String>();
+    Set<String> seenHandles = Sets.newHashSet();
     for (String handle : allWindowHandles) {
       assertFalse(seenHandles.contains(handle));
       driver.switchTo().window(handle);
@@ -194,7 +196,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     assertEquals(3, allWindowHandles.size());
   }
 
-  @Ignore(value = {SELENESE, OPERA})
+  @Ignore(value = {SELENESE})
   @JavascriptEnabled
   @Test
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
@@ -216,7 +218,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
       if (isIEDriver && !isIE6) {
         Alert alert = waitFor(alertToBePresent(driver));
-          alert.accept();
+        alert.accept();
       }
 
       // If we make it this far, we're all good.
@@ -226,7 +228,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({SELENESE, OPERA})
+  @Ignore({SELENESE})
   @JavascriptEnabled
   @Test
   public void testCanCallGetWindowHandlesAfterClosingAWindow() {
@@ -246,10 +248,10 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     try {
       waitFor(elementToExist(driver, "close")).click();
-      
+
       if (isIEDriver && !isIE6) {
         Alert alert = waitFor(alertToBePresent(driver));
-          alert.accept();
+        alert.accept();
       }
 
       Set<String> allHandles = waitFor(windowHandleCountToBe(driver, currentWindowHandles - 1));
@@ -290,7 +292,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(value = {SELENESE})
+  @Ignore(value = {SELENESE, OPERA_MOBILE})
   @Test
   public void testCanCloseWindowWhenMultipleWindowsAreOpen() {
     driver.get(pages.xhtmlTestPage);
@@ -313,7 +315,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(value = {SELENESE})
+  @Ignore(value = {SELENESE, OPERA_MOBILE})
   @Test
   public void testCanCloseWindowAndSwitchBackToMainWindow() {
     driver.get(pages.xhtmlTestPage);
@@ -375,4 +377,5 @@ public class WindowSwitchingTest extends JUnit4TestBase {
       fail("Interrupted");
     }
   }
+
 }
