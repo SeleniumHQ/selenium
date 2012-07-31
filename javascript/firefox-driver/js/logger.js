@@ -22,6 +22,7 @@ goog.provide('fxdriver.logging.LogType');
 
 goog.require('fxdriver.files.File');
 goog.require('goog.array');
+goog.require('goog.object');
 
 /**
  * A single log entry.
@@ -124,17 +125,35 @@ fxdriver.logging.Loggers.prototype.log = function(message, level, logType) {
 };
 
 /**
- * Get logs of type logType.
- * @param {string} logType
- * @return {!Array<!fxdriver.logging.LogEntry>>} All logged entries of type
- *     logType.
+ * Get log for a given log type.
+ *
+ * @param {string} logType The log type.
+ * @return {!Array<!fxdriver.logging.LogEntry>>} Log entries for the type.
  */
 fxdriver.logging.Loggers.prototype.getLog = function(logType) {
   if (logType in this.loggers_) {
-    return this.loggers_[logType].getLog()
+    return this.loggers_[logType].getLog();
   }
   return [];
 };
+
+/**
+ * Get available log types.
+ *
+ * @return {!Array.<String>} Available log types.
+ */
+fxdriver.logging.Loggers.prototype.getAvailableLogTypes = function() {
+  var result = [];
+  var index = 0;
+  var logTypesToIgnore = this.logTypesToIgnore_;
+  goog.object.forEach(fxdriver.logging.LogType, function(value, key) {
+    if (!goog.object.containsValue(logTypesToIgnore, value)) {
+      result[index++] = value;
+    }
+  });
+  return result;
+};
+
 
 /**
  * Logging levels.
@@ -155,6 +174,7 @@ fxdriver.logging.LogLevel = {
  * @enum {string}
  */
 fxdriver.logging.LogType = {
+  BROWSER: 'browser',
+  DRIVER: 'driver',
   PROFILER: 'profiler'
 };
-

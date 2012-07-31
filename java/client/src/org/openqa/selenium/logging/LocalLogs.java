@@ -35,7 +35,7 @@ public class LocalLogs implements Logs {
   public static final LocalLogs NULL_LOGGER = new LocalLogs() {
     @Override
     public void addEntry(String logType, LogEntry entry) {
-    };
+    }
   };
   
   private Map<String, List<LogEntry>> localLogs = new HashMap<String, List<LogEntry>>();
@@ -69,5 +69,9 @@ public class LocalLogs implements Logs {
     } else {
       localLogs.get(logType).add(entry);
     }
+  }
+
+  public Set<String> getAvailableLogTypes() {
+    return ImmutableSet.<String>of(LogType.CLIENT);
   }
 }

@@ -360,11 +360,20 @@ wdSession.prototype.setMouseViewportOffset = function(x, y) {
 /**
  * Get logs of a specific log type.
  *
- * @param {string} logType
- * @return {!fxdriver.logging.Logger}
+ * @param {string} logType The log type to find the log for.
+ * @return {!fxdriver.logging.Logger} The log of the given type.
  */
 wdSession.prototype.getLog = function(logType) {
   return this.log_.getLog(logType);
+};
+
+/**
+ * Get available log types.
+ *
+ * @return {!Array.<string>} The available log types.
+ */
+wdSession.prototype.getAvailableLogTypes = function() {
+  return this.log_.getAvailableLogTypes();
 };
 
 /**

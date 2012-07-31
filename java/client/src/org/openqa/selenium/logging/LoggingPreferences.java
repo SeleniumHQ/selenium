@@ -56,7 +56,7 @@ public class LoggingPreferences {
   }
 
   /**
-   * @param logType String the {@link LogType}.
+   * @param logType The log type.
    * @return the {@link Level} for the given {@link LogType} if enabled.
    *     Otherwise returns {@link Level.OFF}.
    */

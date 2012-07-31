@@ -254,7 +254,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         .put(TOUCH_LONG_PRESS, post("/session/:sessionId/touch/longclick"))
         .put(TOUCH_FLICK, post("/session/:sessionId/touch/flick"))
 
-        .put(GET_LOGS, post("/session/:sessionId/log"))
+        .put(GET_LOG, post("/session/:sessionId/log"))
+        .put(GET_AVAILABLE_LOG_TYPES, get("/session/:sessionId/log/types"))
 
         .put(STATUS, get("/status"))
 

@@ -26,6 +26,8 @@ import org.openqa.selenium.internal.Base64EncoderTest;
 import org.openqa.selenium.io.FileHandlerTest;
 import org.openqa.selenium.io.TemporaryFilesystemTest;
 import org.openqa.selenium.io.ZipTest;
+import org.openqa.selenium.logging.LoggingTest;
+import org.openqa.selenium.logging.PerformanceLoggingMockTest;
 import org.openqa.selenium.net.NetworkUtilsTest;
 import org.openqa.selenium.os.CommandLineTest;
 import org.openqa.selenium.os.WindowsUtilsUnitTest;
@@ -44,8 +46,10 @@ import org.openqa.selenium.testing.IgnoreComparitorUnitTest;
     IgnoreComparitorUnitTest.class,
     IndividualKeyboardActionsTest.class,
     IndividualMouseActionsTest.class,
+    LoggingTest.class,
     NetworkUtilsTest.class,
     OutputTypeTest.class,
+    PerformanceLoggingMockTest.class,
     PlatformTest.class,
     PointTest.class,
     ProxyTest.class,

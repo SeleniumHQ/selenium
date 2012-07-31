@@ -317,8 +317,11 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/session/:sessionId/keys').
       on(Request.Method.POST, Dispatcher.executeAs('sendKeysToActiveElement'));
 
+  // Logging
   this.bind_('/session/:sessionId/log').
-      on(Request.Method.POST, Dispatcher.executeAs('getLogs'));
+      on(Request.Method.POST, Dispatcher.executeAs('getLog'));
+  this.bind_('/session/:sessionId/log/types').
+      on(Request.Method.GET, Dispatcher.executeAs('getAvailableLogTypes'));
 
 
   // --------------------------------------------------------------------------

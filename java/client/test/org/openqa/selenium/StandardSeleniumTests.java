@@ -25,6 +25,8 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.html5.Html5Tests;
 import org.openqa.selenium.interactions.InteractionTests;
+import org.openqa.selenium.logging.AvailableLogsTest;
+import org.openqa.selenium.logging.PerformanceLoggingTest;
 import org.openqa.selenium.support.ui.SelectElementTest;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.ParallelSuite;
@@ -34,6 +36,7 @@ import org.openqa.selenium.testing.ParallelSuite;
     AlertsTest.class,
     AtomsInjectionTest.class,
     AuthenticatedPageLoadingTest.class,
+    AvailableLogsTest.class,
     ByTest.class,
     ChildrenFindingTest.class,
     ClearTest.class,
@@ -60,6 +63,7 @@ import org.openqa.selenium.testing.ParallelSuite;
     OpacityTest.class,
     PageLoadingTest.class,
     PartialLinkTextMatchTest.class,
+    PerformanceLoggingTest.class,
     RenderedWebElementTest.class,
     RotatableTest.class,
     SelectElementTest.class,

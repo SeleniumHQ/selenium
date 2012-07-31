@@ -14,26 +14,39 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium.logging;
 
 import org.openqa.selenium.Beta;
 
+import java.util.Set;
+
 /**
- * Interface which provides logs.
+ * Interface for providing logs.
  */
 @Beta
 public interface Logs {
 
   /**
-   * Fetches the logs for the given log type.
+   * Fetches available log entries for the given log type.
+   * 
+   * Note that log buffers are reset after each call, meaning that available log 
+   * entries correspond to those entries not yet returned for a given log type. 
+   * In practice, this means that this call will return the available log entries 
+   * since the last call, or from the start of the session.
    * 
    * For more info on enabling logging, look at {@link LoggingPreferences}.
    *
-   * @param logType String. Can be any of the values in {@link LogType}.
-   * @return all log entries for the specified logtype if enabled. Returns null
-   *     if the log type is unknown by the dtiver.
+   * @param logType The log type.
+   * @return Available log entries for the specified log type.
    */
   LogEntries get(String logType);
+
+  /**
+   * Queries for available log types.
+   * 
+   * @return A set of available log types.
+   */
+  Set<String> getAvailableLogTypes();
 }

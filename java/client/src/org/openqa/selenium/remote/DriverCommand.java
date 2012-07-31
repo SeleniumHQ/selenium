@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium.remote;
 
@@ -157,5 +157,7 @@ public interface DriverCommand {
   String GET_WINDOW_POSITION = "getWindowPosition";
   String MAXIMIZE_WINDOW = "maximizeWindow";
 
-  String GET_LOGS = "getLogs";
+  // Logging API
+  String GET_LOG = "getLog";
+  String GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes";
 }

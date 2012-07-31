@@ -22,14 +22,21 @@ import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.Logs;
 
+import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 public class AndroidLogs implements Logs {
 
   public LogEntries get(String logType) {
-    if (LogType.DRIVER.equals(logType)) {
+    if (LogType.CLIENT.equals(logType)) {
       return new LogEntries(LoggingHandler.getInstance().getRecords());
     }
     return new LogEntries(Lists.<LogEntry>newArrayList());
+  }
+  
+  public Set<String> getAvailableLogTypes() {
+    return ImmutableSet.<String>of(LogType.CLIENT);
   }
 }

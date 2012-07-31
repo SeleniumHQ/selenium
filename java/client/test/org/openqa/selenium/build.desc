@@ -60,6 +60,7 @@ java_library(name = "tests",
     "interactions/touch/*.java",
     "internal/**/*.java",
     "io/*.java",
+    "logging/*.java",
     "net/*.java",
     "os/*.java",
     "support/ui/SelectElementTest.java",
@@ -84,7 +85,6 @@ java_test(name = "SmallTests",
   ],
   deps = [
     ":tests",
-    "//java/client/test/org/openqa/selenium/logging:tests",
   ])
 
 java_test(name = "RcBrowserLauncherTests",

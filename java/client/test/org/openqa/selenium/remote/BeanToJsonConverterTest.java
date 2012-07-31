@@ -363,13 +363,12 @@ public class BeanToJsonConverterTest {
   @Test
   public void testConvertLoggingPreferencesToJson() throws JSONException {
     LoggingPreferences prefs = new LoggingPreferences();
-    prefs.enable(LogType.DRIVER, Level.FINE);
-    String logType = "SomeOtherType";
-    prefs.enable(logType, Level.ALL);
+    prefs.enable(LogType.CLIENT, Level.FINE);
+    prefs.enable(LogType.DRIVER, Level.ALL);
 
     JSONObject json = new JSONObject(new BeanToJsonConverter().convert(prefs));
-    assertEquals("FINE", json.getString(LogType.DRIVER));
-    assertEquals("ALL", json.getString(logType));
+    assertEquals("FINE", json.getString(LogType.CLIENT));
+    assertEquals("ALL", json.getString(LogType.DRIVER));
   }
 
   @Test

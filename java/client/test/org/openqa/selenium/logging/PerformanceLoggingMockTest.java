@@ -38,7 +38,7 @@ public class PerformanceLoggingMockTest extends MockTestBase {
 
     checking(new Expectations() {
       {
-        one(executeMethod).execute(DriverCommand.GET_LOGS,
+        one(executeMethod).execute(DriverCommand.GET_LOG,
           ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER));
         will(returnValue(ImmutableList.of(ImmutableMap.of(
           "level", Level.INFO.getName(),

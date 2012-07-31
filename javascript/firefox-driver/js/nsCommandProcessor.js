@@ -465,7 +465,8 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
   if (command.name == 'deleteSession' ||
       command.name == 'getSessionCapabilities' ||
       command.name == 'switchToWindow' ||
-      command.name == 'getLogs') {
+      command.name == 'getLog' ||
+      command.name == 'getAvailableLogTypes') {
     return this[command.name](response, command.parameters);
   }
 
@@ -622,18 +623,28 @@ nsCommandProcessor.prototype.getWindowHandles = function(response) {
 
 
 /**
- * Retreives the driver's logs. At the moment this retreives at most the first 10MB
- * contained in the log file.
+ * Retrieves the log for the given type.
  *
- * @private
- * @param {!Response} response The response object to send the command response
- *     in.
+ * @param {!Response} response The response object to send the response in.
  * @param {!Object.<string, *>} parameters The parameters for the call.
  */
-nsCommandProcessor.prototype.getLogs = function(response, parameters) {
+nsCommandProcessor.prototype.getLog = function(response, parameters) {
   response.value = response.session.getLog(parameters.type);
   response.send();
-}
+};
+
+
+/**
+ * Retrieves available log types.
+ *
+ * @param {!Response} response The response object to send the response in.
+ * @param {Object.<string, *>} parameters The parameters for the call.
+ */
+nsCommandProcessor.prototype.getAvailableLogTypes = function(response, 
+    parameters) {
+  response.value = response.session.getAvailableLogTypes();
+  response.send();
+};
 
 
 /**

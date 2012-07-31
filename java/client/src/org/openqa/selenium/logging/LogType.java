@@ -14,7 +14,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium.logging;
 
@@ -24,15 +24,27 @@ package org.openqa.selenium.logging;
 public class LogType {
 
   /**
-   * This log type pertains to logs from the driver. If the driver is a remote
-   * WebDriver, the logs from the remote driver will be included.
+   * This log type pertains to logs from the browser. 
    */
-  public static final String DRIVER = "driver";
+  public static final String BROWSER = "browser";
+
+  /**
+   * This log type pertains to logs from the client.
+   */
+  public static final String CLIENT = "client";
 
   /**
    * This log type pertains to logs relating to performance timings.
    */
   public static final String PROFILER = "profiler";
 
-  private LogType() {}
+  /**
+   * This log pertains to logs from the webdriver.
+   */
+  public static final String DRIVER = "driver";
+
+  /**
+   * This log type pertains to logs from the remote server.
+   */
+  public static final String SERVER = "server";
 }

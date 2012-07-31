@@ -13,12 +13,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium.remote;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 import org.openqa.selenium.Beta;
@@ -27,10 +28,12 @@ import org.openqa.selenium.logging.LogCombiner;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogLevelMapping;
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.Logs;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Beta
 public class RemoteLogs implements Logs {
@@ -48,13 +51,18 @@ public class RemoteLogs implements Logs {
     this.localLogs = localLogs;
   }
 
-  @Override
   public LogEntries get(String logType) {
-    return LogCombiner.combine(getRemoteEntries(logType), getLocalEntries(logType));
+    if (LogType.PROFILER.equals(logType)) {
+      return LogCombiner.combine(getRemoteEntries(logType), getLocalEntries(logType));
+    }
+    if (LogType.CLIENT.equals(logType)) {
+      return getLocalEntries(logType);
+    }
+    return getRemoteEntries(logType);
   }
 
   private LogEntries getRemoteEntries(String logType) {
-    Object raw = executeMethod.execute(DriverCommand.GET_LOGS, ImmutableMap.of(TYPE_KEY, logType));
+    Object raw = executeMethod.execute(DriverCommand.GET_LOG, ImmutableMap.of(TYPE_KEY, logType));
     @SuppressWarnings("unchecked")
     List<Map<String, Object>> rawList = (List<Map<String, Object>>) raw;
     List<LogEntry> remoteEntries = Lists.newArrayListWithCapacity(rawList.size());
@@ -69,5 +77,21 @@ public class RemoteLogs implements Logs {
 
   private LogEntries getLocalEntries(String logType) {
     return localLogs.get(logType);
+  }
+
+  private Set<String> getAvailableLocalLogs() {
+    return localLogs.getAvailableLogTypes();
+  }
+
+  public Set<String> getAvailableLogTypes() {
+    Object raw = executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES, null);
+    @SuppressWarnings("unchecked")
+    List<String> rawList = (List<String>) raw;
+    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<String>();
+    for (String logType : rawList) {
+      builder.add(logType);
+    }
+    builder.addAll(getAvailableLocalLogs());
+    return builder.build();
   }
 }
