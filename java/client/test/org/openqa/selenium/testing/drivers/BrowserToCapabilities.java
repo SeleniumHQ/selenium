@@ -68,6 +68,7 @@ public class BrowserToCapabilities {
       case opera_mobile:
         caps = DesiredCapabilities.opera();
         caps.setCapability(OperaSettings.Capability.PRODUCT.getCapability(), OperaProduct.MOBILE);
+        break;
 
       case safari:
         caps = DesiredCapabilities.safari();
