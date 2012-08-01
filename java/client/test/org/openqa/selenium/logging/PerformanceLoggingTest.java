@@ -18,7 +18,6 @@ package org.openqa.selenium.logging;
 
 import static org.hamcrest.Matchers.greaterThan;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -70,10 +69,36 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
   @Test
   public void testLogsSingleHttpCommand() {
     startLoggingDriver();
-    // Expect start of newSession, end of newSession, start of getLogs, end of getLogs
-    // Expect start of newSession, end of newSession, start of getLogs, end of getLogs
-    assertEquals(4, getProfilerEntriesOfType(getProfilerEntries(localDriver), 
-        EventType.HTTP_COMMAND).size());
+    ImmutableList<LogEntry> entries = getProfilerEntriesOfType(getProfilerEntries(localDriver), 
+        EventType.HTTP_COMMAND);
+    // Expect start of newSession, end of newSession, start of getLogs, end of getLogs    
+    String[] expected = {"\"command\": \"newSession\",\"startorend\": \"start\"", 
+        "\"command\": \"newSession\",\"startorend\": \"end\"", 
+        "\"command\": \"getLog\",\"startorend\": \"start\"", 
+        "\"command\": \"getLog\",\"startorend\": \"end\""};
+    assertTrue("Profiler entries should contain: " + expected, 
+         containsExpectedEntries(entries, expected));
+  }
+  
+  /**
+   * Checks if the given list of strings occur in the given order among the
+   * given log messages (one string per message).
+   * 
+   * @param entries The list of log entries.
+   * @param expected The array of expected strings.
+   * @return true if a match was found for all expected strings, otherwise false. 
+   */
+  private boolean containsExpectedEntries(ImmutableList<LogEntry> entries, String[] expected) {
+    int index = 0;
+    for (LogEntry entry : entries) {
+      if (index == expected.length) {
+        return true;
+      }
+      if (!entry.getMessage().contains(expected[index])) {
+        index++;
+      }
+    }
+    return (index == expected.length);
   }
 
   @Test
