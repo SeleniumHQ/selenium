@@ -33,40 +33,6 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         [Test]
-        public void TestEqualityOfFinder()
-        {
-            By findBy = By.Id("Test");
-            FindsByAttribute first = new FindsByAttribute() { Finder = findBy };
-
-            // Use different instance of By class.
-            FindsByAttribute second = new FindsByAttribute() { Finder = By.Id("Test") };
-            Assert.IsTrue(first == second);
-            Assert.IsTrue(second == first);
-            Assert.IsFalse(first != second);
-            Assert.IsFalse(second != first);
-            Assert.IsTrue(first.Equals(second));
-
-            // Use same instance of By class.
-            second.Finder = findBy;
-            Assert.IsTrue(first == second);
-            Assert.IsTrue(second == first);
-            Assert.IsFalse(first != second);
-            Assert.IsFalse(second != first);
-            Assert.IsTrue(first.Equals(second));
-        }
-
-        [Test]
-        public void TestInqualityOfFinder()
-        {
-            FindsByAttribute first = new FindsByAttribute() { Finder = By.Id("Test") };
-            FindsByAttribute second = new FindsByAttribute() { Finder = By.Name("Test") };
-            Assert.IsFalse(first == second);
-            Assert.IsFalse(second == first);
-            Assert.IsFalse(first.Equals(second));
-        }
-
-
-        [Test]
         public void TestInequalityOfUsing()
         {
             FindsByAttribute first = new FindsByAttribute() { How = How.Id, Using = "Hello" };

@@ -52,7 +52,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// Gets or sets an explicit <see cref="By"/> object to find by.
         /// Setting this property takes precedence over setting the How or Using properties.
         /// </summary>
-        public By Finder
+        internal By Finder
         {
             get
             {
@@ -66,7 +66,7 @@ namespace OpenQA.Selenium.Support.PageObjects
 
             set
             {
-                this.finder = value;
+                this.finder = (By)value;
             }
         }
 
