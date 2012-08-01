@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Safari.Internal
     public class WebSocketConnectionInfo : IWebSocketConnectionInfo
     {
         private const string CookiePattern = @"((;\s)*(?<cookie_name>[^=]+)=(?<cookie_value>[^\;]+))+";
-        private static readonly Regex cookieRegex = new Regex(CookiePattern, RegexOptions.Compiled);
+        private static readonly Regex CookieRegex = new Regex(CookiePattern, RegexOptions.Compiled);
 
         /// <summary>
         /// Prevents a default instance of the <see cref="WebSocketConnectionInfo"/> class from being created.
@@ -88,7 +88,7 @@ namespace OpenQA.Selenium.Safari.Internal
 
             if (cookieHeader != null)
             {
-                var match = cookieRegex.Match(cookieHeader);
+                var match = CookieRegex.Match(cookieHeader);
                 var fields = match.Groups["cookie_name"].Captures;
                 var values = match.Groups["cookie_value"].Captures;
                 for (var i = 0; i < fields.Count; i++)

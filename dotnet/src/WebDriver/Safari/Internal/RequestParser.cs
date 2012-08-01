@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.Safari.Internal
                                        @"\r\n" + // newline
                                        @"(?<body>.+)?";
 
-        private static readonly Regex regex = new Regex(Pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex ParserRegex = new Regex(Pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestParser"/> class.
@@ -59,7 +59,7 @@ namespace OpenQA.Selenium.Safari.Internal
         public WebSocketHttpRequest Parse(byte[] requestData, string scheme)
         {
             var body = Encoding.UTF8.GetString(requestData);
-            Match match = regex.Match(body);
+            Match match = ParserRegex.Match(body);
 
             if (!match.Success)
             {
