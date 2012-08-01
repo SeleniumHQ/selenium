@@ -32,14 +32,17 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.Set;
 
+@RunWith(SeleniumTestRunner.class)
 @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, REMOTE, SAFARI, SELENESE})
 public class AvailableLogsTest {
 
