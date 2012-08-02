@@ -308,8 +308,7 @@ public class FluentWaitTest extends MockTestBase {
 
     final TestException sentinelException = new TestException();
     FluentWait<WebDriver> wait = new FluentWait<WebDriver>(mockDriver, mockClock, mockSleeper) {
-      @Deprecated
-      protected RuntimeException timeoutException(String message, RuntimeException lastException) {
+      protected RuntimeException timeoutException(String message, Throwable lastException) {
         throw sentinelException;
       }
     };

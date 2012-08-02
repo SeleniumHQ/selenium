@@ -221,9 +221,6 @@ public class FluentWait<T> implements Wait<T> {
 
         String timeoutMessage = String.format("Timed out after %d seconds%s",
             timeout.in(SECONDS), toAppend);
-        if (lastException instanceof RuntimeException || lastException == null) {
-          throw timeoutException(timeoutMessage, (RuntimeException) lastException);
-        }
         throw timeoutException(timeoutMessage, lastException);
       }
 
@@ -256,20 +253,5 @@ public class FluentWait<T> implements Wait<T> {
    */
   protected RuntimeException timeoutException(String message, Throwable lastException) {
     throw new TimeoutException(message, lastException);
-  }
-
-  /**
-   * Kept for backwards compatibility. New code, in particular code using {@link #ignoring(Class)}
-   * with {@link Throwable}s should override {@link #timeoutException(String, Throwable)}.
-   * @param message The timeout message.
-   * @param lastException The last exception to be thrown and subsequently suppressed while waiting
-   *        on a function.
-   * @return Nothing will ever be returned; this return type is only specified as a convenience.
-   * @deprecated Use {@link #timeoutException(String, Throwable)}. This method is scheduled for
-   *             removal in the Selenium 2.26 release.
-   */
-  @Deprecated
-  protected RuntimeException timeoutException(String message, RuntimeException lastException) {
-    throw timeoutException(message, (Throwable) lastException);
   }
 }
