@@ -36,7 +36,6 @@ namespace OpenQA.Selenium
         private string driverServicePath;
         private int driverServicePort;
         private Process driverServiceProcess;
-        private Uri serviceUrl;
 
         /// <summary>
         /// Initializes a new instance of the DriverService class.
@@ -47,7 +46,6 @@ namespace OpenQA.Selenium
         {
             this.driverServicePath = executable;
             this.driverServicePort = port;
-            this.serviceUrl = new Uri(string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}", port));
         }
 
         /// <summary>
@@ -55,7 +53,16 @@ namespace OpenQA.Selenium
         /// </summary>
         public Uri ServiceUrl
         {
-            get { return this.serviceUrl; }
+            get { return new Uri(string.Format(CultureInfo.InvariantCulture, "http://localhost:{0}", this.driverServicePort)); }
+        }
+
+        /// <summary>
+        /// Gets or sets the port of the service.
+        /// </summary>
+        public int Port
+        {
+            get { return this.driverServicePort; }
+            set { this.driverServicePort = value; }
         }
 
         /// <summary>
@@ -106,7 +113,7 @@ namespace OpenQA.Selenium
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.Start();
             DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(20));
-            Uri serviceHealthUri = new Uri(this.serviceUrl, new Uri("status", UriKind.Relative));
+            Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri("status", UriKind.Relative));
             HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
             bool processStarted = false;
             while (!processStarted && DateTime.Now < timeout)
@@ -142,7 +149,7 @@ namespace OpenQA.Selenium
         {
             if (this.driverServiceProcess != null && !this.driverServiceProcess.HasExited)
             {
-                Uri shutdownUrl = new Uri(this.serviceUrl, "/shutdown");
+                Uri shutdownUrl = new Uri(this.ServiceUrl, "/shutdown");
                 DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(3));
                 HttpWebRequest request = HttpWebRequest.Create(shutdownUrl) as HttpWebRequest;
                 bool processStopped = false;
