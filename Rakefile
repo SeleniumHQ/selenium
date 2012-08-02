@@ -152,6 +152,7 @@ if (!mac?)
   task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test_native:run" ]
 end
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:test:run" ]
+task :test_opera_mobile => [ "//java/client/test/org/openqa/selenium/opera/mobile:test:run" ]
 task :test_remote_server => [ '//java/server/test/org/openqa/selenium/remote/server:test:run' ]
 task :test_remote => [
   '//java/client/test/org/openqa/selenium/remote:common-tests:run',
