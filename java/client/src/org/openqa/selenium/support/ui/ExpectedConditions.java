@@ -177,7 +177,8 @@ public class ExpectedConditions {
       final By locator) {
     return new ExpectedCondition<List<WebElement>>() {
       public List<WebElement> apply(WebDriver driver) {
-        return findElements(locator, driver);
+        List<WebElement> elements = findElements(locator, driver);
+        return elements.size() > 0 ? elements : null;
       }
 
       @Override
