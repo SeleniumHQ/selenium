@@ -169,6 +169,7 @@ public class FluentWait<T> implements Wait<T> {
    * or the predicate evaluates to true.
    *
    * @param isTrue The predicate to wait on.
+   * @throws TimeoutException If the timeout expires.
    */
   public void until(final Predicate<T> isTrue) {
     until(new Function<T, Boolean>() {
@@ -191,7 +192,9 @@ public class FluentWait<T> implements Wait<T> {
    *
    * @param isTrue the parameter to pass to the {@link ExpectedCondition}
    * @param <V> The function's expected return type.
-   * @return The functions' return value.
+   * @return The functions' return value if the function returned something different
+   *         from null or false before the timeout expired.
+   * @throws TimeoutException If the timeout expires.
    */
   public <V> V until(Function<? super T, V> isTrue) {
     long end = clock.laterBy(timeout.in(MILLISECONDS));
