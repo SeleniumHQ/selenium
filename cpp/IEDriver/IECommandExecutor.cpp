@@ -398,20 +398,26 @@ void IECommandExecutor::DispatchCommand() {
       } else {
         LOG(DEBUG) << "No alert handle is found";
       }
-      int command_type = this->current_command_.command_type();
-      if (alert_is_active &&
-          command_type != GetAlertText &&
-          command_type != SendKeysToAlert &&
-          command_type != AcceptAlert &&
-          command_type != DismissAlert) {
-        LOG(DEBUG) << "Unexpected alert is detected, and the sent command is invalid when an alert is present";
-        response.SetErrorResponse(EMODALDIALOGOPENED, "Modal dialog present");
-        ::SendMessage(alert_handle, WM_COMMAND, IDCANCEL, NULL);
-        this->serialized_response_ = response.Serialize();
-        return;
-      } else if (alert_is_active) {
-        LOG(DEBUG) << "Alert is detected, and the sent command is valid";
-      }
+	  if (alert_is_active) {
+        int command_type = this->current_command_.command_type();
+        if (command_type == GetAlertText ||
+            command_type == SendKeysToAlert ||
+            command_type == AcceptAlert ||
+            command_type == DismissAlert) {
+          LOG(DEBUG) << "Alert is detected, and the sent command is valid";
+        } else if (command_type == Quit) {
+          LOG(DEBUG) << "Unexpected alert is detected when quit is requested, automatically closing the alert";
+		  // TODO: SendMessage should be replaced with proper dialog handling code
+          ::SendMessage(alert_handle, WM_COMMAND, IDCANCEL, NULL);
+        } else {
+          LOG(DEBUG) << "Unexpected alert is detected, and the sent command is invalid when an alert is present";
+          response.SetErrorResponse(EMODALDIALOGOPENED, "Modal dialog present");
+		  // TODO: SendMessage should be replaced with proper dialog handling code
+          ::SendMessage(alert_handle, WM_COMMAND, IDCANCEL, NULL);
+          this->serialized_response_ = response.Serialize();
+          return;
+        }
+	  }
     } else {
       LOG(WARN) << "Unable to find current browser";
     }

@@ -432,6 +432,17 @@ public class AlertsTest extends JUnit4TestBase {
     }
   }
 
+  @NoDriverAfterTest
+  @Ignore(value = {SELENESE, OPERA, OPERA_MOBILE})
+  @Test
+  public void testCanQuitWhenAnAlersIsPresent() {
+    driver.get(pages.alertsPage);
+    driver.findElement(By.id("alert")).click();
+    waitFor(alertToBePresent(driver));
+
+    driver.quit();
+  }
+
   private Callable<Alert> alertToBePresent(final WebDriver driver) {
     return new Callable<Alert>() {
       public Alert call() throws Exception {
