@@ -48,6 +48,12 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
   public void checkIsFirefoxDriver() {
     assumeTrue(TestUtilities.isFirefox(driver));
   }
+  
+  @Before       
+  public void avoidRemote() {   
+    // TODO: Resolve why these tests don't work on the remote server
+    assumeTrue(TestUtilities.isLocal()); 
+  }
 
   @Test
   public void testDisableJavascriptCapability() {

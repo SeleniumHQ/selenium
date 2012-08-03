@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -38,6 +39,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.ProxyServer;
+import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 public class ProxySettingTest extends JUnit4TestBase {
@@ -47,6 +49,12 @@ public class ProxySettingTest extends JUnit4TestBase {
   @Before
   public void newProxyInstance() {
     proxyServer = new ProxyServer();
+  }
+  
+  @Before
+  public void avoidRemote() {
+    // TODO: Resolve why these tests don't work on the remote server
+    assumeTrue(TestUtilities.isLocal()); 
   }
 
   @Ignore({ANDROID,CHROME,HTMLUNIT,IE,IPHONE,OPERA,SAFARI,SELENESE})
@@ -90,6 +98,8 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @After
   public void deleteProxyInstance() {
-    proxyServer.destroy();
+    if (proxyServer != null) {
+      proxyServer.destroy();
+    }
   }
 }

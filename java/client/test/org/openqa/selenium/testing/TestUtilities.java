@@ -90,6 +90,10 @@ public class TestUtilities {
     return Platform.getCurrent();
   }
 
+  public static boolean isLocal() {
+    return !Boolean.getBoolean("selenium.browser.remote") && !SauceDriver.shouldUseSauce();
+  }
+
   public static void assumeFalse(boolean b) {
     assumeTrue(!b);
   }

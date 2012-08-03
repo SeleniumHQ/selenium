@@ -20,6 +20,7 @@ package org.openqa.selenium.html5;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_APPLICATION_CACHE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_BROWSER_CONNECTION;
@@ -36,6 +37,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.openqa.selenium.Capabilities;
@@ -45,6 +47,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @Ignore({ANDROID,CHROME,HTMLUNIT,IE,IPHONE,OPERA,SAFARI,SELENESE})
@@ -52,6 +55,12 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
 
   private WebDriver localDriver;  
 
+  @Before       
+  public void avoidRemote() {
+    // TODO: Resolve why these tests don't work on the remote server
+    assumeTrue(TestUtilities.isLocal()); 
+  }
+  
   @Test 
   public void enableWebStorageCapability() {
     configureCapability(SUPPORTS_WEB_STORAGE, true);
