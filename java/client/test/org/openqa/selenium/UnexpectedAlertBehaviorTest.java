@@ -17,15 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.After;
-import org.junit.Test;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
@@ -39,13 +33,24 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
+import org.junit.After;
+import org.junit.Test;
+
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+
+
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE},
         issues = {3862})
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   private WebDriver driver2;
-  private DesiredCapabilities caps = new DesiredCapabilities();
+  private DesiredCapabilities desiredCaps = new DesiredCapabilities();
 
   @After
   public void quitDriver() throws Exception {
@@ -82,31 +87,39 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   @Test
   public void canSpecifyUnhandledAlertBehaviourUsingCapabilities() {
-    caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
-    driver2 = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
+    driver2 = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).get();
 
-    driver2.get(pages.alertsPage);
-    driver2.findElement(By.id("prompt-with-default")).click();
-    try {
-      driver2.findElement(By.id("text")).getText();
-    } catch (UnhandledAlertException ex) {
-      // this is expected
-    }
-    waitFor(elementTextToEqual(driver2, By.id("text"), "This is a default value"));
+    runScenarioWithUnhandledAlert("This is a default value");
+  }
+  
+  @Test
+  public void requiredUnhandledAlertCapabilityHasPriorityOverDesired() {
+    desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.DISMISS);
+    DesiredCapabilities requiredCaps = new DesiredCapabilities();
+    requiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
+    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).
+        setRequiredCapabilities(requiredCaps);
+    driver2 = builder.get();        
+    
+    runScenarioWithUnhandledAlert("This is a default value");
   }
 
-  private void runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour behaviour, String text) {
-    caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
-    driver2 = new WebDriverBuilder().setDesiredCapabilities(caps).get();
-
+  private void runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour behaviour, 
+      String expectedAlertText) {
+    desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
+    driver2 = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).get();
+    runScenarioWithUnhandledAlert(expectedAlertText);
+  }
+  
+  private void runScenarioWithUnhandledAlert(String expectedAlertText) {
     driver2.get(pages.alertsPage);
     driver2.findElement(By.id("prompt-with-default")).click();
     try {
       driver2.findElement(By.id("text")).getText();
-    } catch (UnhandledAlertException ex) {
-      // this is expected
+    } catch (UnhandledAlertException expected) {
     }
-    waitFor(elementTextToEqual(driver2, By.id("text"), text));
+    waitFor(elementTextToEqual(driver2, By.id("text"), expectedAlertText));
   }
 
 }

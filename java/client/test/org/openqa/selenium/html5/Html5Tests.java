@@ -24,6 +24,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     AppCacheTest.class,
     BrowserConnectionTest.class,
+    Html5CapabilitiesTest.class,
     LocalStorageTest.class,
     LocationContextTest.class,
     SessionStorageTest.class,

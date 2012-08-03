@@ -64,6 +64,7 @@ import org.openqa.selenium.testing.ParallelSuite;
     PageLoadingTest.class,
     PartialLinkTextMatchTest.class,
     PerformanceLoggingTest.class,
+    ProxySettingTest.class,
     RenderedWebElementTest.class,
     RotatableTest.class,
     SelectElementTest.class,

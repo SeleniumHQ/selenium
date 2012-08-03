@@ -64,7 +64,8 @@ fxdriver.proxy.setProxyPreference_ = function(prefs, type, setting) {
  */
 fxdriver.proxy.directConfig_ = function(prefs, ignored) {
   fxdriver.Logger.dumpn('Using a direct connection to the network');
-  prefs.setIntPref('network.proxy.type', 0);
+  prefs.setIntPref('network.proxy.type',
+    fxdriver.proxy.TYPES_['DIRECT'].value);
 };
 
 
@@ -73,11 +74,11 @@ fxdriver.proxy.directConfig_ = function(prefs, ignored) {
  * @param {!fxdriver.proxy.ProxyConfig} proxy_config The proxy config.
  * @private
  */
-fxdriver.proxy.pacConfig_  = function(prefs, proxy_config) {
+fxdriver.proxy.pacConfig_ = function(prefs, proxy_config) {
   fxdriver.Logger.dumpn('Using a PAC file to connect to the network: ' +
       proxy_config['proxyAutoconfigUrl']);
 
-  prefs.setIntPref('network.proxy.type', 2);
+  prefs.setIntPref('network.proxy.type', fxdriver.proxy.TYPES_['PAC'].value);
 
   var fixup = fxdriver.moz.getService(
       '@mozilla.org/docshell/urifixup;1', 'nsIURIFixup');
@@ -96,7 +97,8 @@ fxdriver.proxy.pacConfig_  = function(prefs, proxy_config) {
 fxdriver.proxy.manualProxyConfig_ = function(prefs, proxy_config) {
   fxdriver.Logger.dumpn('Using manual network config');
 
-  prefs.setIntPref('network.proxy.type', 1);
+  prefs.setIntPref('network.proxy.type',
+    fxdriver.proxy.TYPES_['MANUAL'].value);
 
   fxdriver.proxy.setProxyPreference_(prefs, 'ftp', proxy_config['ftpProxy']);
   fxdriver.proxy.setProxyPreference_(prefs, 'http', proxy_config['httpProxy']);
@@ -118,7 +120,8 @@ fxdriver.proxy.manualProxyConfig_ = function(prefs, proxy_config) {
 fxdriver.proxy.autodetectConfig_ = function(prefs, ignored) {
   fxdriver.Logger.dumpn('Autodetecting proxy to use');
 
-  prefs.setIntPref('network.proxy.type', 4);
+  prefs.setIntPref('network.proxy.type',
+    fxdriver.proxy.TYPES_['AUTODETECT'].value);
 };
 
 
@@ -130,22 +133,23 @@ fxdriver.proxy.autodetectConfig_ = function(prefs, ignored) {
 fxdriver.proxy.systemConfig_ = function(prefs, ignored) {
   fxdriver.Logger.dumpn('Using system proxy to connect to the network');
 
-  prefs.setIntPref('network.proxy.type', 5);
+  prefs.setIntPref('network.proxy.type', 
+    fxdriver.proxy.TYPES_['SYSTEM'].value);
 };
 
 
 /**
- * @type {!Object,<string, function(!nsIPrefBranch, !ProxyConfig)>}
+ * @type {!Object.<string, Object.<number,
+ *   function(!nsIPrefBranch, !ProxyConfig)>>}
  * @private
  */
 fxdriver.proxy.TYPES_ = {
-  'DIRECT' :     fxdriver.proxy.directConfig_,
-  'MANUAL' :     fxdriver.proxy.manualProxyConfig_,
-  'PAC' :        fxdriver.proxy.pacConfig_,
-  'AUTODETECT' : fxdriver.proxy.autodetectConfig_,
-  'SYSTEM' :     fxdriver.proxy.systemConfig_
+  'DIRECT': { value: 0, config: fxdriver.proxy.directConfig_ },
+  'MANUAL': { value: 1, config: fxdriver.proxy.manualProxyConfig_ },
+  'PAC': { value: 2, config: fxdriver.proxy.pacConfig_ },
+  'AUTODETECT': { value: 4, config: fxdriver.proxy.autodetectConfig_ },
+  'SYSTEM': { value: 5, config: fxdriver.proxy.systemConfig_ }
 };
-
 
 /**
  * @param {string=|fxdriver.proxy.ProxyConfig} proxy_config The proxy
@@ -172,7 +176,7 @@ fxdriver.proxy.configure_ = function(proxy_config) {
   var prefs = /** @type {!nsIPrefBranch} */ fxdriver.moz.getService(
       '@mozilla.org/preferences-service;1', 'nsIPrefBranch');
 
-  type(prefs, proxy_config);
+  type.config(prefs, proxy_config);
 };
 
 

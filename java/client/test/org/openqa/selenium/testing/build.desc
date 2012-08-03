@@ -70,4 +70,16 @@ java_library(name = "junit_4",
     "//third_party/java/jmock",
     "//third_party/java/junit",
   ])
+  
+java_library(name = "proxy",
+  srcs = [
+    "ProxyServer.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium:webdriver-api",
+    "//java/client/src/org/openqa/selenium/net",
+    "//third_party/java/netty",
+    "//third_party/java/little_proxy",
+  ])
+  
 

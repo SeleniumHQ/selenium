@@ -105,50 +105,94 @@ wdSessionStoreService.prototype.createSession = function(response, desiredCaps,
   // Ah, xpconnect...
   var wrappedSession = session.wrappedJSObject;
   wrappedSession.setId(id);
-  if (!desiredCaps['webdriver.logging.profiler.enabled']) {
+
+  if (!this.extractCapabilitySetting_('webdriver.logging.profiler.enabled',
+      desiredCaps, requiredCaps)) {
     wrappedSession.getLoggers().ignoreLogType(
-        fxdriver.logging.LogType.PROFILER);
+      fxdriver.logging.LogType.PROFILER);
   }
 
-  fxdriver.proxy.configure(desiredCaps['proxy']);
-  fxdriver.modals.configure(desiredCaps['unexpectedAlertBehaviour']);
+  fxdriver.proxy.configure(this.extractCapabilitySetting_('proxy', desiredCaps,
+    requiredCaps));
 
-  this.configure_(response, requiredCaps, driver);
+  fxdriver.modals.configure(
+    this.extractCapabilitySetting_('unexpectedAlertBehaviour', desiredCaps,
+    requiredCaps));
+
+  this.configure_(response, desiredCaps, requiredCaps, driver);
   this.sessions_[id] = session;
   return session;
 };
 
-/** 
+/**
+ * Extract the setting for a capability. 
+ *
+ * If a capability is defined both among desired capabilities and among 
+ * required capabilities the required setting has priority.
+ *
+ * @private
+ * @param {!string} name The name of the capability.
+ * @param {!Object.<*>} desiredCaps The desired capabilities.
+ * @param {Object.<*>} requiredCaps The required capabilities.
+ * @return {*} The setting for the capability.
+ */
+wdSessionStoreService.prototype.extractCapabilitySetting_ = function(name, 
+  desiredCaps, requiredCaps) {
+  var setting = desiredCaps[name];
+  if (requiredCaps && requiredCaps[name] !== undefined) {
+    setting = requiredCaps[name];
+  }
+  return setting;
+};
+
+/**
  * Read-only capabilities for FirefoxDriver and their default values.
  * @type {!Object.<string, boolean>}
  * @const
  * @private
- */ 
-wdSessionStoreService.READ_ONLY_CAPABILITIES_ = { 
-  'javascriptEnabled':true, 
-  'takesScreenshot':true, 
-  'handlesAlerts':true, 
-  'cssSelectorsEnabled':true,
-  'rotatable':false
+ */
+wdSessionStoreService.READ_ONLY_CAPABILITIES_ = {
+  'javascriptEnabled': true,
+  'takesScreenshot': true,
+  'handlesAlerts': true,
+  'cssSelectorsEnabled': true,
+  'rotatable': false
 };
 
 /**
+ * Read-write capabilities for FirefoxDriver corresponding to (boolean) 
+ * profile preferences. NB! the native events capability is not mapped to a
+ * Firefox preferences.
+ * @type {!Object.<string, string>}
+ * @const
+ */
+wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING = {
+  'webStorageEnabled': 'dom.storage.enabled',
+  'applicationCacheEnabled': 'browser.cache.offline.enable',
+  'databaseEnabled': 'dom.indexedDB.enabled',
+  'locationContextEnabled': 'geo.enabled',
+  'browserConnectionEnabled': 'dom.network.enabled',
+  'acceptSslCerts': 'webdriver_accept_untrusted_certs',
+  'nativeEvents' : 'webdriver_enable_native_events'
+};
+// TODO: Don't save firefox specific capability acceptSslCerts as preferences.
+
+/**
  * @param {!Response} response The object to send the command response in.
+ * @param {!Object.<*>} desiredCaps A map describing desired capabilities.
  * @param {Object.<*>} requiredCaps A map describing required capabilities.
  * @param {!FirefoxDriver} driver The driver instance.
  * @private
  */
-wdSessionStoreService.prototype.configure_ = function(response, requiredCaps, 
-    driver) {
-  fxdriver.Logger.dumpn('Setting preferences based on required capabilities');
+wdSessionStoreService.prototype.configure_ = function(response, desiredCaps, 
+    requiredCaps, driver) {
+  fxdriver.Logger.dumpn('Setting preferences based on desired capabilities');
+  this.configureCapabilities_(desiredCaps, driver);
+
   if (!requiredCaps) {
     return;
   }
-
-  var prefStore = fxdriver.moz.getService("@mozilla.org/preferences-service;1", 
-    "nsIPrefBranch");
-
-  goog.object.forEach(requiredCaps, function(value, key) {
+  var checkSettingsForReadOnlyCapabilities = function(value, key) {
     if (!goog.isBoolean(value)) {
       return;
     }
@@ -156,11 +200,37 @@ wdSessionStoreService.prototype.configure_ = function(response, requiredCaps,
         value != wdSessionStoreService.READ_ONLY_CAPABILITIES_[key]) {
       var msg = 'Required capability ' + key + ' cannot be set to ' + value;
       fxdriver.Logger.dumpn(msg);
-
-      response.sendError(new WebDriverError(bot.ErrorCode.SESSION_NOT_CREATED, 
+      response.sendError(new WebDriverError(bot.ErrorCode.SESSION_NOT_CREATED,
         msg));
       wdSession.quitBrowser(0);
     }
+  };
+  goog.object.forEach(requiredCaps, checkSettingsForReadOnlyCapabilities);
+  this.configureCapabilities_(requiredCaps, driver);
+};
+
+/**
+ * @param {!Object.<*>} capabilities A map describing capabilities.
+ * @param {!FirefoxDriver} driver The driver instance.
+ * @private
+ */
+wdSessionStoreService.prototype.configureCapabilities_ = function(capabilities, 
+  driver) {
+  var prefStore = fxdriver.moz.getService('@mozilla.org/preferences-service;1',
+    'nsIPrefBranch');
+  goog.object.forEach(capabilities, function(value, key) {
+    if (!goog.isBoolean(value)) {
+      return;
+    }
+    if (key in wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING) {
+      var pref = wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING[key];
+      prefStore.setBoolPref(pref, value);
+      fxdriver.Logger.dumpn('Setting capability ' +
+        key + ' (' + pref + ') to ' + value);
+      if (key == 'nativeEvents') {
+        driver.enableNativeEvents = value; 
+      }
+    } 
   });
 };
 

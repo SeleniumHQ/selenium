@@ -37,6 +37,7 @@ goog.require('fxdriver.error');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.modals');
 goog.require('goog.dom');
+goog.require('goog.object');
 goog.require('wdSessionStoreService');
 
 
@@ -720,8 +721,8 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
 
     var desiredCapabilities = parameters['desiredCapabilities'];
     var requiredCapabilities = parameters['requiredCapabilities'];
-    var session = sessionStore.wrappedJSObject.createSession(response, desiredCapabilities, 
-        requiredCapabilities, driver);
+    var session = sessionStore.wrappedJSObject.createSession(response,
+        desiredCapabilities, requiredCapabilities, driver);
 
     session = session.wrappedJSObject;  // XPConnect...
     session.setChromeWindow(win);
@@ -729,6 +730,7 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
     response.session = session;
     response.value = session.getId();
   }
+
   response.send();
 };
 
@@ -750,9 +752,17 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
     'nativeEvents': Utils.useNativeEvents(),
     // See https://developer.mozilla.org/en/OS_TARGET
     'platform': xulRuntime.OS,
+    'rotatable': false,
     'takesScreenshot': true,
     'version': appInfo.version
   };
+
+  var prefStore = fxdriver.moz.getService('@mozilla.org/preferences-service;1',
+      'nsIPrefService');
+  for (var cap in wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING) {
+    var pref = wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING[cap];
+    response.value[cap] = prefStore.getBoolPref(pref);
+  }
 
   response.send();
 };

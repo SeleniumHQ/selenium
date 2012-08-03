@@ -18,6 +18,7 @@ package org.openqa.selenium.logging;
 
 import static org.hamcrest.Matchers.greaterThan;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -48,7 +49,7 @@ import com.google.common.collect.Iterables;
 
 @Ignore({ANDROID,CHROME,HTMLUNIT,IE,IPHONE,OPERA,SAFARI,SELENESE})
 public class PerformanceLoggingTest extends JUnit4TestBase {
-  
+
   private WebDriver localDriver;
 
   @After
@@ -62,8 +63,8 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
   @Test
   public void testDisabledProfilingDoesNotLog() {
     driver.get(pages.simpleTestPage);
-    assertTrue("Profiler should not log when disabled", 
-        getProfilerEntries(driver).getAll().size() == 0);
+    assertEquals("Profiler should not log when disabled", 
+        getProfilerEntries(driver).getAll().size(), 0);
   }
 
   @Test
@@ -134,5 +135,16 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
     DesiredCapabilities capabilities = DesiredCapabilities.firefox();
     capabilities.setCapability(ENABLE_PROFILING_CAPABILITY, enabled);
     return capabilities;
+  }
+
+  @Test
+  public void testPriorityForProfilerCapability() {
+    WebDriverBuilder builder = new WebDriverBuilder().
+        setDesiredCapabilities(getCapabilitiesWithProfilerOn(false)).
+        setRequiredCapabilities(getCapabilitiesWithProfilerOn(true));
+    localDriver = builder.get();        
+
+    assertEquals("Start up should render four profiling entries", 4, 
+        getProfilerEntriesOfType(getProfilerEntries(localDriver), EventType.HTTP_COMMAND).size());
   }
 }

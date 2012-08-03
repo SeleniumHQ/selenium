@@ -101,6 +101,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     boolean isProfilingEnabled = desiredCapabilities != null &&
         desiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
+    if (requiredCapabilities != null && requiredCapabilities.getCapability(
+        CapabilityType.ENABLE_PROFILING_CAPABILITY) != null) {
+      isProfilingEnabled = requiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
+    }
     init(isProfilingEnabled);
 
     if (executor instanceof NeedsLocalLogs) {

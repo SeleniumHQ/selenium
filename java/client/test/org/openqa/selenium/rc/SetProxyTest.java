@@ -15,27 +15,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package org.openqa.selenium.rc;
 
 import static org.junit.Assert.assertTrue;
+
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
-import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.littleshoot.proxy.DefaultHttpProxyServer;
-import org.littleshoot.proxy.HttpRequestFilter;
+
 import org.openqa.selenium.Pages;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
@@ -43,10 +40,9 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.ProxyServer;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
@@ -55,7 +51,6 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.List;
 
 @Ignore(value = {ANDROID, IE, IPHONE, SELENESE},
         reason = "Not tested on these browsers yet.")
@@ -63,7 +58,7 @@ import java.util.List;
 public class SetProxyTest {
 
   private static Pages pages;
-  private ProxyInstance instance;
+  private ProxyServer proxyServer;
 
   @BeforeClass
   public static void startProxy() {
@@ -73,17 +68,17 @@ public class SetProxyTest {
 
   @Before
   public void newProxyInstance() {
-    instance = new ProxyInstance();
+    proxyServer = new ProxyServer();
   }
 
   @After
   public void deleteProxyInstance() {
-    instance.destroy();
+    proxyServer.destroy();
   }
 
   @Test
   public void shouldAllowProxyToBeSetViaTheCapabilities() {
-    Proxy proxy = instance.asProxy();
+    Proxy proxy = proxyServer.asProxy();
 
     DesiredCapabilities caps = BrowserToCapabilities.of(Browser.detect());
     if (caps == null) {
@@ -96,7 +91,7 @@ public class SetProxyTest {
     driver.get(pages.simpleTestPage);
     driver.quit();
 
-    assertTrue(instance.hasBeenCalled());
+    assertTrue(proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
   @Test
@@ -104,7 +99,7 @@ public class SetProxyTest {
     String pac = String.format(
         "function FindProxyForURL(url, host) {\n" +
         "  return 'PROXY %s';\n" +
-        "}", instance.baseUrl);
+        "}", proxyServer.getBaseUrl());
     TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
     File base = tempFs.createTempDir("proxy", "test");
     File pacFile = new File(base, "proxy.pac");
@@ -128,47 +123,6 @@ public class SetProxyTest {
     driver.quit();
     tempFs.deleteTemporaryFiles();
 
-    assertTrue(instance.hasBeenCalled());
-  }
-
-  private static class ProxyInstance {
-    private DefaultHttpProxyServer proxyServer;
-    private final String baseUrl;
-    private final List<String> uris = Lists.newLinkedList();
-
-    public ProxyInstance() {
-      int port = PortProber.findFreePort();
-
-      String address = new NetworkUtils().getPrivateLocalAddress();
-      baseUrl = String.format("%s:%d", address, port);
-
-      proxyServer = new DefaultHttpProxyServer(port, new HttpRequestFilter() {
-        public void filter(HttpRequest httpRequest) {
-          String uri = httpRequest.getUri();
-          String[] parts = uri.split("/");
-          if (parts.length == 0) {
-            return;
-          }
-          String finalPart = parts[parts.length - 1];
-          uris.add(finalPart);
-        }
-      });
-
-      proxyServer.start();
-    }
-
-    public boolean hasBeenCalled() {
-      return uris.contains("simpleTest.html");
-    }
-
-    public void destroy() {
-      proxyServer.stop();
-    }
-
-    public Proxy asProxy() {
-      Proxy proxy = new Proxy();
-      proxy.setHttpProxy(baseUrl);
-      return proxy;
-    }
+    assertTrue(proxyServer.hasBeenCalled("simpleTest.html"));
   }
 }

@@ -13,31 +13,25 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.SauceDriver;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
+
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -48,8 +42,23 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
+import org.junit.After;
+import org.junit.Test;
+
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.SauceDriver;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+
 public class PageLoadingTest extends JUnit4TestBase {
 
+  private WebDriver localDriver; 
+  
   @Test
   public void testShouldWaitForDocumentToBeLoaded() {
     driver.get(pages.simpleTestPage);
@@ -188,6 +197,20 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
   }
+  
+  @Ignore({ANDROID,CHROME,HTMLUNIT,IE,IPHONE,OPERA,SAFARI,SELENESE})
+  @Test
+  public void shouldBeAbleToDisableAcceptOfInsecureSslCertsWithRequiredCapability() {
+    DesiredCapabilities requiredCaps = new DesiredCapabilities();
+    requiredCaps.setCapability(ACCEPT_SSL_CERTS, false);
+    WebDriverBuilder builder = new WebDriverBuilder().setRequiredCapabilities(requiredCaps);
+    localDriver = builder.get();        
+    
+    String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
+    localDriver.get(url);
+  
+    assertThat(localDriver.getTitle(), not("Hello WebDriver"));
+  }  
 
   @Ignore(SELENESE)
   @Test
@@ -269,5 +292,12 @@ public class PageLoadingTest extends JUnit4TestBase {
       driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
     }
   }
-
+  
+  @After
+  public void quitDriver() {
+    if (this.localDriver != null) {
+      this.localDriver.quit();
+      this.localDriver = null;
+    }
+  }
 }
