@@ -30,6 +30,7 @@ goog.require('bot.events.EventType');
 goog.require('goog.array');
 goog.require('goog.dom.selection');
 goog.require('goog.events.KeyCodes');
+goog.require('goog.structs.Map');
 goog.require('goog.structs.Set');
 goog.require('goog.userAgent');
 
@@ -58,7 +59,9 @@ bot.Keyboard = function(opt_state) {
   this.pressed_ = new goog.structs.Set();
 
   if (opt_state) {
-    this.pressed_.addAll(opt_state);
+    goog.array.forEach(opt_state, function(key) {
+      this.setKeyPressed_(key, true);
+    }, this);
   }
 };
 goog.inherits(bot.Keyboard, bot.Device);
@@ -73,7 +76,6 @@ goog.inherits(bot.Keyboard, bot.Device);
  * @private
  */
 bot.Keyboard.CHAR_TO_KEY_ = {};
-
 
 /**
  * Constructs a new key and, if it is a character key, adds a mapping from the
@@ -112,8 +114,6 @@ bot.Keyboard.newKey_ = function(code, opt_char, opt_shiftChar) {
 
   return key;
 };
-
-
 
 /**
  * A key on the keyboard.
@@ -323,6 +323,38 @@ bot.Keyboard.MODIFIERS = [
   bot.Keyboard.Keys.SHIFT
 ];
 
+/**
+ * Map of modifier to key.
+ * @type {!goog.structs.Map.<!bot.Device.Modifier, !bot.Keyboard.Key>}
+ * @private
+ */
+bot.Keyboard.MODIFIER_TO_KEY_MAP_ = (function() {
+  var modifiersMap = new goog.structs.Map();
+  modifiersMap.set(bot.Device.Modifier.SHIFT,
+    bot.Keyboard.Keys.SHIFT);
+  modifiersMap.set(bot.Device.Modifier.CONTROL,
+    bot.Keyboard.Keys.CONTROL);
+  modifiersMap.set(bot.Device.Modifier.ALT,
+    bot.Keyboard.Keys.ALT);
+  modifiersMap.set(bot.Device.Modifier.META,
+    bot.Keyboard.Keys.META);
+
+  return modifiersMap;
+})();
+
+/**
+ * The reverse map - key to modifier.
+ * @type {!goog.structs.Map.<number, !bot.Device.Modifier>}
+ * @private
+ */
+bot.Keyboard.KEY_TO_MODIFIER_ = (function(modifiersMap) {
+  var keyToModifierMap = new goog.structs.Map();
+  goog.array.forEach(modifiersMap.getKeys(), function(m) {
+    keyToModifierMap.set(modifiersMap.get(m).code, m);
+  });
+
+  return keyToModifierMap;
+})(bot.Keyboard.MODIFIER_TO_KEY_MAP_);
 
 /**
  * The value used for newlines in the current browser/OS combination. Although
@@ -346,6 +378,26 @@ bot.Keyboard.prototype.isPressed = function(key) {
   return this.pressed_.contains(key);
 };
 
+/**
+ * Set the modifier state if the provided key is one, otherwise just add
+ * to the list of pressed keys.
+ * @param {bot.Keyboard.Key} key
+ * @param {boolean} isPressed
+ * @private
+ */
+bot.Keyboard.prototype.setKeyPressed_ = function(key, isPressed) {
+  if (goog.array.contains(bot.Keyboard.MODIFIERS, key)) {
+    var modifier = /** @type {bot.Device.Modifier}*/
+      bot.Keyboard.KEY_TO_MODIFIER_.get(key.code);
+    this.modifiersState.setPressed(modifier, isPressed);
+  }
+
+  if (isPressed) {
+    this.pressed_.add(key);
+  } else {
+    this.pressed_.remove(key);
+  }
+};
 
 /**
  * Presses the given key on the keyboard. Keys that are pressed can be pressed
@@ -381,7 +433,7 @@ bot.Keyboard.prototype.pressKey = function(key) {
     }
   }
 
-  this.pressed_.add(key);
+  this.setKeyPressed_(key, true);
 };
 
 
@@ -486,12 +538,13 @@ bot.Keyboard.prototype.maybeEditText_ = function(key) {
 bot.Keyboard.prototype.releaseKey = function(key) {
   if (!this.isPressed(key)) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
-        'Cannot release a key that is not pressed.');
+        'Cannot release a key that is not pressed. (' + key.code + ')');
   }
   if (!goog.isNull(key.code)) {
     this.fireKeyEvent_(bot.events.EventType.KEYUP, key);
   }
-  this.pressed_.remove(key);
+
+  this.setKeyPressed_(key, false);
 };
 
 

@@ -30,10 +30,11 @@ goog.require('goog.userAgent.product');
 
 /**
  * A Device class that provides common functionality for input devices.
- *
+ * @param {bot.Device.ModifiersState=} opt_modifiersState state of modifier
+ * keys. The state is shared, not copied from this parameter.
  * @constructor
  */
-bot.Device = function() {
+bot.Device = function(opt_modifiersState) {
   /**
    * Element being interacted with.
    * @type {!Element}
@@ -53,6 +54,13 @@ bot.Device = function() {
   if (activeElement) {
     this.setElement(activeElement);
   }
+
+  /**
+   * State of modifier keys for this device.
+   * @type {bot.Device.ModifiersState}
+   * @protected
+   */
+  this.modifiersState = opt_modifiersState || new bot.Device.ModifiersState();
 };
 
 
@@ -84,7 +92,6 @@ bot.Device.prototype.setElement = function(element) {
     this.select_ = null;
   }
 };
-
 
 /**
  * Fires an HTML event given the state of the device.
@@ -143,10 +150,10 @@ bot.Device.prototype.fireMouseEvent = function(type, coord, button,
     clientX: coord.x,
     clientY: coord.y,
     button: button,
-    altKey: false,
-    ctrlKey: false,
-    shiftKey: false,
-    metaKey: false,
+    altKey: this.modifiersState.isAltPressed(),
+    ctrlKey: this.modifiersState.isControlPressed(),
+    shiftKey: this.modifiersState.isShiftPressed(),
+    metaKey: this.modifiersState.isMetaPressed(),
     wheelDelta: opt_wheelDelta || 0,
     relatedTarget: opt_related || null
   };
@@ -175,10 +182,10 @@ bot.Device.prototype.fireTouchEvent = function(type, id, coord, opt_id2,
     touches: [],
     targetTouches: [],
     changedTouches: [],
-    altKey: false,
-    ctrlKey: false,
-    shiftKey: false,
-    metaKey: false,
+    altKey: this.modifiersState.isAltPressed(),
+    ctrlKey: this.modifiersState.isControlPressed(),
+    shiftKey: this.modifiersState.isShiftPressed(),
+    metaKey: this.modifiersState.isMetaPressed(),
     relatedTarget: null,
     scale: 0,
     rotation: 0
@@ -618,7 +625,6 @@ bot.Device.prototype.submitForm = function(form) {
   }
 };
 
-
 /**
  * Regular expression for splitting up a URL into components.
  * @type {!RegExp}
@@ -674,4 +680,84 @@ bot.Device.resolveUrl_ = function(base, rel) {
 
   return target.protocol + '//' + target.host + target.pathname +
       target.search + target.hash;
+};
+
+/**
+ * Stores the state of modifier keys
+ *
+ * @constructor
+ */
+bot.Device.ModifiersState = function() {
+  /**
+   * State of the modifier keys.
+   * @type {number}
+   * @private
+   */
+  this.pressedModifiers_ = 0;
+};
+
+/**
+ * An enum for the various modifier keys (keycode-independent).
+ * @enum {number}
+ */
+bot.Device.Modifier = {
+  SHIFT: 0x1,
+  CONTROL: 0x2,
+  ALT: 0x4,
+  META: 0x8
+};
+
+/**
+ * Checks whether a specific modifier is pressed
+ * @param {!bot.Device.Modifier} modifier The modifier to check.
+ * @return {boolean} Whether the modifier is pressed.
+ */
+bot.Device.ModifiersState.prototype.isPressed = function(modifier) {
+  return (this.pressedModifiers_ & modifier) != 0;
+};
+
+/**
+ * Sets the state of a given modifier.
+ * @param {!bot.Device.Modifier} modifier The modifier to set.
+ * @param {boolean} isPressed whether the modifier is set or released.
+ */
+bot.Device.ModifiersState.prototype.setPressed = function(modifier,
+                                                          isPressed) {
+  if (isPressed) {
+    this.pressedModifiers_ = this.pressedModifiers_ | modifier;
+  } else {
+    this.pressedModifiers_ = this.pressedModifiers_ & (~modifier);
+  }
+};
+
+/**
+ *
+ * @return {boolean} State of the Shift key.
+ */
+bot.Device.ModifiersState.prototype.isShiftPressed = function() {
+  return this.isPressed(bot.Device.Modifier.SHIFT);
+};
+
+/**
+ *
+ * @return {boolean} State of the Control key.
+ */
+bot.Device.ModifiersState.prototype.isControlPressed = function() {
+  return this.isPressed(bot.Device.Modifier.CONTROL);
+};
+
+/**
+ *
+ * @return {boolean} State of the Alt key.
+ */
+bot.Device.ModifiersState.prototype.isAltPressed = function() {
+  return this.isPressed(bot.Device.Modifier.ALT);
+};
+
+/**
+ *
+ * @return {boolean} State of the Meta key.
+ */
+bot.Device.ModifiersState.prototype.isMetaPressed = function() {
+  return this.isPressed(bot.Device.Modifier.META);
 };

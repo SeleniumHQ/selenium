@@ -39,10 +39,11 @@ goog.require('goog.userAgent.product');
  * The touchscreen supports three actions: press, release, and move.
  *
  * @constructor
+ * @param {bot.Device.ModifiersState=} opt_modifiersState
  * @extends {bot.Device}
  */
-bot.Touchscreen = function() {
-  goog.base(this);
+bot.Touchscreen = function(opt_modifiersState) {
+  goog.base(this, opt_modifiersState);
 
   /**
    * @type {!goog.math.Coordinate}

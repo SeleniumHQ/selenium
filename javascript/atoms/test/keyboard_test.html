@@ -6,6 +6,7 @@
 <script type="text/javascript">
   goog.require('bot.Keyboard');
   goog.require('bot.Keyboard.Key');
+  goog.require('bot.Device');
   goog.require('bot.action');
   goog.require('goog.events');
   goog.require('goog.testing.AsyncTestCase');
@@ -204,6 +205,28 @@
     });
     goog.events.unlistenByKey(cancelKeydownId);
   }
+
+  function testModifierStatesStored() {
+    var modifiersState = new bot.Device.ModifiersState();
+
+    assertFalse(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
+    modifiersState.setPressed(bot.Device.Modifier.SHIFT, true);
+    assertTrue(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
+    assertTrue(modifiersState.isShiftPressed());
+    assertFalse(modifiersState.isPressed(bot.Device.Modifier.CONTROL));
+
+    modifiersState.setPressed(bot.Device.Modifier.SHIFT, false);
+    assertFalse(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
+  }
+
+  function testSettingModifierTwice() {
+    var modifiersState = new bot.Device.ModifiersState();
+    modifiersState.setPressed(bot.Device.Modifier.SHIFT, true);
+    assertTrue(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
+    modifiersState.setPressed(bot.Device.Modifier.SHIFT, true);
+    assertTrue(modifiersState.isPressed(bot.Device.Modifier.SHIFT));
+  }
+
 </script>
 </body>
 </html>

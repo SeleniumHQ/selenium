@@ -41,11 +41,12 @@ goog.require('goog.userAgent');
  * A mouse that provides atomic mouse actions. This mouse currently only
  * supports having one button pressed at a time.
  * @param {bot.Mouse.State=} opt_state The mouse's initial state.
+ * @param {bot.Device.ModifiersState=} opt_modifiersState State of the keyboard.
  * @constructor
  * @extends {bot.Device}
  */
-bot.Mouse = function(opt_state) {
-  goog.base(this);
+bot.Mouse = function(opt_state, opt_modifiersState) {
+  goog.base(this, opt_modifiersState);
 
   /**
    * @type {?bot.Mouse.Button}
