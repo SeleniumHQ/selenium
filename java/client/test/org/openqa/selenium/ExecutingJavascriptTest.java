@@ -232,7 +232,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({IE, HTMLUNIT})
+  @Ignore({IE, HTMLUNIT, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAComplexObject() {
     if (!(driver instanceof JavascriptExecutor)) {
