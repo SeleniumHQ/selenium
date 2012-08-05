@@ -230,6 +230,25 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals("Doe", person.get("last"));
   }
 
+  @SuppressWarnings("unchecked")
+  @JavascriptEnabled
+  @Ignore(IE)
+  @Test
+  public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAComplexObject() {
+    if (!(driver instanceof JavascriptExecutor)) {
+      return;
+    }
+
+    driver.get(pages.javascriptPage);
+
+    Object result = executeScript("return window.location;");
+
+    assertTrue("result was: " + result + " (" + result.getClass() + ")", result instanceof Map);
+    Map<String, Object> map = (Map<String, Object>) result;
+    assertEquals("http:", map.get("protocol"));
+    assertEquals(pages.javascriptPage, map.get("href"));
+  }
+
   private static boolean compareLists(List<?> first, List<?> second) {
     if (first.size() != second.size()) {
       return false;

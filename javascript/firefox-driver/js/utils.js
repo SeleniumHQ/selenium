@@ -949,9 +949,13 @@ Utils.wrapResult = function(result, doc) {
         fxdriver.Logger.dumpn(ignored);
       }
 
-      // There's got to be a better way, but 'result instanceof Error' returns false
-      if (Object.getPrototypeOf(result) != null && goog.string.endsWith(Object.getPrototypeOf(result).toString(), 'Error')) {
-        return result.toString();
+      try {
+        // There's got to be a better way, but 'result instanceof Error' returns false
+        if (Object.getPrototypeOf(result) != null && goog.string.endsWith(Object.getPrototypeOf(result).toString(), 'Error')) {
+          return result.toString();
+        }
+      } catch (ignored) {
+        fxdriver.Logger.dumpn(ignored);
       }
 
       var convertedObj = {};
