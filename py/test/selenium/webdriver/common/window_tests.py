@@ -13,15 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import re
-import tempfile
 import time
-import shutil
 import unittest
 import pytest
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.by import By
 
 
 class WindowTests(unittest.TestCase):

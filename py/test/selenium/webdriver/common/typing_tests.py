@@ -14,14 +14,7 @@
 # limitations under the License.
 
 
-import os
-import re
-import tempfile
-import time
-import shutil
 import unittest
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 

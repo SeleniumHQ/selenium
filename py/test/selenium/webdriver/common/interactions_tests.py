@@ -16,15 +16,11 @@
 # limitations under the License.
 
 """Tests for advanced user interactions."""
-import os
 import time
 import unittest
 import pytest
-from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 
 @pytest.mark.skipif('sys.platform == "darwin"')

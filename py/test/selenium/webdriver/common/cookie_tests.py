@@ -4,7 +4,6 @@ import unittest
 import random
 import pytest
 from selenium.test.selenium.webdriver.common import utils
-from selenium.test.selenium.webdriver.common.utils import require_online
 
 
 class CookieTest(unittest.TestCase):

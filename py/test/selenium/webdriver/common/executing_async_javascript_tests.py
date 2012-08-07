@@ -16,11 +16,6 @@
 # limitations under the License.
 
 
-import os
-import re
-import tempfile
-import time
-import shutil
 import unittest
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException

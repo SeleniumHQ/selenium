@@ -16,14 +16,8 @@
 # limitations under the License.
 
 
-import os
-import re
 import pytest
-import tempfile
-import time
-import shutil
 import unittest
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 class TextHandlingTests(unittest.TestCase):

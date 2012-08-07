@@ -15,10 +15,8 @@
 # limitations under the License.
 
 
-import pytest
 import unittest
 from selenium.webdriver.common.proxy import Proxy
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class ProxyTests(unittest.TestCase):

@@ -20,8 +20,6 @@ import unittest
 
 import pytest
 
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import InvalidElementStateException
 
 @pytest.mark.ignore_chrome

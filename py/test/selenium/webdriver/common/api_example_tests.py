@@ -16,13 +16,10 @@
 # limitations under the License.
 
 
-import os
 import pytest
-import re
-import tempfile
 import time
-import shutil
 import unittest
+
 from selenium.common.exceptions import NoSuchElementException
 
 
