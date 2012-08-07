@@ -1,3 +1,6 @@
+Selenium 2.26
+* Added location_when_scrolled_into_view - Bug 4357
+
 Selenium 2.25
 * Jython 2.7 Support - Bug 3988
 * EventFiringWebDriver added to Support module - Bug 2267
