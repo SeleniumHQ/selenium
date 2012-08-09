@@ -1,5 +1,6 @@
 /*
 Copyright 2012 Selenium committers
+Copyright 2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,28 +25,25 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-/**
- * @author simonstewart@google.com (Simon Stewart)
- */
 public class OperaDriverSupplier implements Supplier<WebDriver> {
 
-  private Capabilities caps;
+  private final Capabilities capabilities;
 
-  public OperaDriverSupplier(Capabilities caps) {
-    this.caps = caps;
+  public OperaDriverSupplier(Capabilities capabilities) {
+    this.capabilities = capabilities;
   }
 
   public WebDriver get() {
-    if (caps == null) {
+    if (capabilities == null) {
       return null;
     }
 
-    if (!DesiredCapabilities.opera().getBrowserName().equals(caps.getBrowserName())) {
+    if (!DesiredCapabilities.opera().getBrowserName().equals(capabilities.getBrowserName())) {
       return null;
     }
 
     // It's okay to avoid reflection here because the OperaDriver is a third party dependency
-    return new OperaDriver(caps);
+    return new OperaDriver(capabilities);
   }
 
 }
