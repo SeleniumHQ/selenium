@@ -31,6 +31,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 @Ignore({IPHONE, SELENESE})
@@ -74,7 +76,8 @@ public class ElementEqualityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, SELENESE})
+  @Ignore(value = {ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE},
+          reason = "Opera: Needs investigation")
   @Test
   public void testAnElementFoundInADifferentFrameViaJsShouldHaveSameId() {
     String url = appServer.whereIs("missedJsReference.html");
