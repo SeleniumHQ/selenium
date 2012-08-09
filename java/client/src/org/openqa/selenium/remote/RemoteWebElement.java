@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2007-2012 Selenium committers
+Copyright 2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -44,7 +45,8 @@ import java.util.List;
 import java.util.Map;
 
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
-    FindsByTagName, FindsByClassName, FindsByCssSelector, FindsByXPath, WrapsDriver, Locatable {
+                                         FindsByTagName, FindsByClassName, FindsByCssSelector,
+                                         FindsByXPath, WrapsDriver, Locatable {
 
   private String foundBy;
   protected String id;
@@ -87,9 +89,9 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       execute(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keysToSend));
       return;
     }
-    
+
     String remotePath = upload(localFile);
-    CharSequence[] keys = new CharSequence[] { remotePath };
+    CharSequence[] keys = new CharSequence[]{remotePath};
     execute(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keys));
   }
 
@@ -143,7 +145,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   public String getCssValue(String propertyName) {
     Response response = execute(DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-        ImmutableMap.of("id", id, "propertyName", propertyName));
+                                ImmutableMap.of("id", id, "propertyName", propertyName));
     return (String) response.getValue();
   }
 
@@ -157,7 +159,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   protected WebElement findElement(String using, String value) {
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
-        ImmutableMap.of("id", id, "using", using, "value", value));
+                                ImmutableMap.of("id", id, "using", using, "value", value));
 
     WebElement element = (WebElement) response.getValue();
     parent.setFoundBy(this, element, using, value);
@@ -167,7 +169,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   @SuppressWarnings("unchecked")
   protected List<WebElement> findElements(String using, String value) {
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
-        ImmutableMap.of("id", id, "using", using, "value", value));
+                                ImmutableMap.of("id", id, "using", using, "value", value));
     List<WebElement> allElements = (List<WebElement>) response.getValue();
     for (WebElement element : allElements) {
       parent.setFoundBy(this, element, using, value);
@@ -258,17 +260,21 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     if (!(other instanceof RemoteWebElement)) {
       return false;
     }
-    
+
     RemoteWebElement otherRemoteWebElement = (RemoteWebElement) other;
     if (id.equals(otherRemoteWebElement.id)) {
       return true;
     }
 
-    //TODO(dawagner): Remove this fallback (and wire protocol method)
-    Response response = execute(DriverCommand.ELEMENT_EQUALS,
-        ImmutableMap.of("id", id, "other", otherRemoteWebElement.id));
-    Object value = response.getValue();
-    return value != null && value instanceof Boolean && (Boolean) value;
+    if (parent != null) {
+      //TODO(dawagner): Remove this fallback (and wire protocol method)
+      Response response = execute(DriverCommand.ELEMENT_EQUALS,
+                                  ImmutableMap.of("id", id, "other", otherRemoteWebElement.id));
+      Object value = response.getValue();
+      return value != null && value instanceof Boolean && (Boolean) value;
+    }
+
+    return false;
   }
 
   /**
@@ -315,7 +321,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   public Point getLocationOnScreenOnceScrolledIntoView() {
     Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
-        ImmutableMap.of("id", getId()));
+                                ImmutableMap.of("id", getId()));
 
     @SuppressWarnings("unchecked")
     Map<String, Number> mapped = (Map<String, Number>) response.getValue();
