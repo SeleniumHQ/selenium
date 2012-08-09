@@ -45,9 +45,7 @@ public class OperaDriverSupplier implements Supplier<WebDriver> {
     }
 
     // It's okay to avoid reflection here because the OperaDriver is a third party dependency
-    OperaDriver driver = new OperaDriver(caps);
-    driver.preferences().set("User Prefs", "Ignore Unrequested Popups", false);
-    return driver;
+    return new OperaDriver(caps);
   }
 
 }
