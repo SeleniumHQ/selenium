@@ -11,9 +11,9 @@ dotnet_library(name = "common",
     "System.Drawing.dll",
     "System.Xml.dll",
     "//dotnet:dotnet",
-    "third_party/csharp/nunit-2.6.0/lib/nunit.core.dll",
-    "third_party/csharp/nunit-2.6.0/lib/nunit.core.interfaces.dll",
-    "third_party/csharp/nunit-2.6.0/framework/nunit.framework.dll",
+    "third_party/dotnet/nunit-2.6.0/lib/nunit.core.dll",
+    "third_party/dotnet/nunit-2.6.0/lib/nunit.core.interfaces.dll",
+    "third_party/dotnet/nunit-2.6.0/framework/nunit.framework.dll",
     "third_party/nmock/NMock2.dll"
   ],
   out = "WebDriver.Common.Tests.dll",
@@ -33,7 +33,7 @@ dotnet_test(name = "remote",
     "System.Xml.dll",
     "//dotnet:dotnet",
     ":common",
-    "third_party/csharp/nunit-2.6.0/framework/nunit.framework.dll"
+    "third_party/dotnet/nunit-2.6.0/framework/nunit.framework.dll"
   ],
   out = "WebDriver.Remote.Tests.dll",
   files = [
@@ -54,7 +54,7 @@ dotnet_test(name = "ie",
     "System.Xml.dll",
     "//dotnet:dotnet",
     ":common",
-    "third_party/csharp/nunit-2.6.0/framework/nunit.framework.dll"
+    "third_party/dotnet/nunit-2.6.0/framework/nunit.framework.dll"
   ],
   out = "WebDriver.IE.Tests.dll",
   files = [
@@ -75,7 +75,7 @@ dotnet_test(name = "firefox",
     "System.Xml.dll",
     "//dotnet:dotnet",
     ":common",
-    "third_party/csharp/nunit-2.6.0/framework/nunit.framework.dll"
+    "third_party/dotnet/nunit-2.6.0/framework/nunit.framework.dll"
   ],
   out = "WebDriver.Firefox.Tests.dll",
   files = [
@@ -96,7 +96,7 @@ dotnet_test(name = "chrome",
     "System.Xml.dll",
     "//dotnet:dotnet",
     ":common",
-    "third_party/csharp/nunit-2.6.0/framework/nunit.framework.dll"
+    "third_party/dotnet/nunit-2.6.0/framework/nunit.framework.dll"
   ],
   out = "WebDriver.Chrome.Tests.dll",
   files = [
@@ -116,7 +116,7 @@ dotnet_test(name = "android",
     "System.Xml.dll",
     "//dotnet:dotnet",
     ":common",
-    "third_party/csharp/nunit-2.6.0/framework/nunit.framework.dll"
+    "third_party/dotnet/nunit-2.6.0/framework/nunit.framework.dll"
   ],
   out = "WebDriver.Android.Tests.dll",
   files = [
@@ -136,7 +136,7 @@ dotnet_test(name = "safari",
     "System.Xml.dll",
     "//dotnet:dotnet",
     ":common",
-    "third_party/csharp/nunit-2.6.0/framework/nunit.framework.dll"
+    "third_party/dotnet/nunit-2.6.0/framework/nunit.framework.dll"
   ],
   out = "WebDriver.Safari.Tests.dll",
   files = [
@@ -158,7 +158,7 @@ dotnet_test(name = "support",
     "//dotnet:support",
     "//dotnet:dotnet",
     ":common",
-    "third_party/csharp/nunit-2.6.0/framework/nunit.framework.dll",
+    "third_party/dotnet/nunit-2.6.0/framework/nunit.framework.dll",
     "third_party/nmock/NMock2.dll"
   ],
   out = "WebDriver.Support.Tests.dll",
@@ -179,7 +179,7 @@ dotnet_test(name = "core",
     "System.Xml.dll",
     "System.Web.dll",
     "//dotnet:core",
-    "third_party/csharp/nunit-2.6.0/framework/nunit.framework.dll",
+    "third_party/dotnet/nunit-2.6.0/framework/nunit.framework.dll",
     "third_party/nmock/nmock.dll"
   ],
   out = "Selenium.Core.Tests.dll",
@@ -203,7 +203,7 @@ dotnet_test(name = "webdriverbackedselenium",
     "//dotnet:dotnet",
     "//dotnet:core",
     "//dotnet:webdriverbackedselenium",
-    "third_party/csharp/nunit-2.6.0/framework/nunit.framework.dll",
+    "third_party/dotnet/nunit-2.6.0/framework/nunit.framework.dll",
   ],
   out = "Selenium.WebDriverBackedSelenium.Tests.dll",
   files = [
