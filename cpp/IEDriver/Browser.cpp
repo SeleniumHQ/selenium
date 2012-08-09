@@ -277,26 +277,62 @@ int Browser::NavigateToUrl(const std::string& url) {
 
 int Browser::NavigateBack() {
   LOG(TRACE) << "Entering Browser::NavigateBack";
-
-  HRESULT hr = this->browser_->GoBack();
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Call to IWebBrowser2::GoBack failed";
+  LPSTREAM stream;
+  HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2, this->browser_, &stream);
+  unsigned int thread_id = 0;
+  HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
+                                                  0,
+                                                  &Browser::GoBackThreadProc,
+                                                  (void *)stream,
+                                                  0,
+                                                  &thread_id));
+  if (thread_handle != NULL) {
+    ::CloseHandle(thread_handle);
   }
 
   this->set_wait_required(true);
   return SUCCESS;
 }
 
+unsigned int WINAPI Browser::GoBackThreadProc(LPVOID param) {
+  HRESULT hr = ::CoInitialize(NULL);
+  IWebBrowser2* browser;
+  LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
+  hr = ::CoGetInterfaceAndReleaseStream(message_payload,
+                                        IID_IWebBrowser2,
+                                        reinterpret_cast<void**>(&browser));
+  hr = browser->GoBack();
+  return 0;
+}
+
 int Browser::NavigateForward() {
   LOG(TRACE) << "Entering Browser::NavigateForward";
-
-  HRESULT hr = this->browser_->GoForward();
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Call to IWebBrowser2::GoForward failed";
+  LPSTREAM stream;
+  HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2, this->browser_, &stream);
+  unsigned int thread_id = 0;
+  HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
+                                                  0,
+                                                  &Browser::GoForwardThreadProc,
+                                                  (void *)stream,
+                                                  0,
+                                                  &thread_id));
+  if (thread_handle != NULL) {
+    ::CloseHandle(thread_handle);
   }
 
   this->set_wait_required(true);
   return SUCCESS;
+}
+
+unsigned int WINAPI Browser::GoForwardThreadProc(LPVOID param) {
+  HRESULT hr = ::CoInitialize(NULL);
+  IWebBrowser2* browser;
+  LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
+  hr = ::CoGetInterfaceAndReleaseStream(message_payload,
+                                        IID_IWebBrowser2,
+                                        reinterpret_cast<void**>(&browser));
+  hr = browser->GoForward();
+  return 0;
 }
 
 int Browser::Refresh() {

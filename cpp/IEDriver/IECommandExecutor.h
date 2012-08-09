@@ -33,6 +33,9 @@
 
 #define WAIT_TIME_IN_MILLISECONDS 200
 #define FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS 250
+#define IGNORE_UNEXPECTED_ALERTS "ignore"
+#define ACCEPT_UNEXPECTED_ALERTS "accept"
+#define DISMISS_UNEXPECTED_ALERTS "dismiss"
 
 #define EVENT_NAME L"WD_START_EVENT"
 
@@ -179,6 +182,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->initial_browser_url_ = initial_browser_url;
   }
 
+  std::string unexpected_alert_behavior(void) const {
+    return this->unexpected_alert_behavior_;
+  }
+  void set_unexpected_alert_behavior(const std::string& unexpected_alert_behavior) {
+    this->unexpected_alert_behavior_ = unexpected_alert_behavior;
+  }
+
   ElementFinder element_finder(void) const { return this->element_finder_; }
 
   int browser_version(void) const { return this->factory_.browser_version(); }
@@ -231,6 +241,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   bool enable_native_events_;
   bool ignore_zoom_setting_;
   std::string initial_browser_url_;
+  std::string unexpected_alert_behavior_;
 
   Command current_command_;
   std::string serialized_response_;

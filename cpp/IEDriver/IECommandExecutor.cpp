@@ -121,6 +121,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->ignore_protected_mode_settings_ = false;
   this->ignore_zoom_setting_ = false;
   this->enable_native_events_ = true;
+  this->unexpected_alert_behavior_ = IGNORE_UNEXPECTED_ALERTS;
   this->speed_ = 0;
   this->implicit_wait_timeout_ = 0;
   this->async_script_timeout_ = -1;
@@ -398,26 +399,40 @@ void IECommandExecutor::DispatchCommand() {
       } else {
         LOG(DEBUG) << "No alert handle is found";
       }
-	  if (alert_is_active) {
+      if (alert_is_active) {
+        Alert dialog(alert_handle);
         int command_type = this->current_command_.command_type();
         if (command_type == GetAlertText ||
             command_type == SendKeysToAlert ||
             command_type == AcceptAlert ||
             command_type == DismissAlert) {
           LOG(DEBUG) << "Alert is detected, and the sent command is valid";
-        } else if (command_type == Quit) {
-          LOG(DEBUG) << "Unexpected alert is detected when quit is requested, automatically closing the alert";
-		  // TODO: SendMessage should be replaced with proper dialog handling code
-          ::SendMessage(alert_handle, WM_COMMAND, IDCANCEL, NULL);
         } else {
           LOG(DEBUG) << "Unexpected alert is detected, and the sent command is invalid when an alert is present";
-          response.SetErrorResponse(EMODALDIALOGOPENED, "Modal dialog present");
-		  // TODO: SendMessage should be replaced with proper dialog handling code
-          ::SendMessage(alert_handle, WM_COMMAND, IDCANCEL, NULL);
-          this->serialized_response_ = response.Serialize();
-          return;
+          std::string alert_text = dialog.GetText();
+          if (this->unexpected_alert_behavior_ == ACCEPT_UNEXPECTED_ALERTS) {
+            LOG(DEBUG) << "Automatically accepting the alert";
+            dialog.Accept();
+          } else if (this->unexpected_alert_behavior_ == DISMISS_UNEXPECTED_ALERTS || command_type == Quit) {
+            // If a quit command was issued, we should not ignore an unhandled
+            // alert, even if the alert behavior is set to "ignore".
+            LOG(DEBUG) << "Automatically dismissing the alert";
+            dialog.Dismiss();
+          }
+          if (command_type != Quit) {
+            // To keep pace with what Firefox does, we'll return the text of the
+            // alert in the error response.
+            Json::Value response_value;
+            response_value["message"] = "Modal dialog present";
+            response_value["alert"]["text"] = alert_text;
+            response.SetResponse(EMODALDIALOGOPENED, response_value);
+            this->serialized_response_ = response.Serialize();
+            return;
+          } else {
+            LOG(DEBUG) << "Quit command was issued. Continuing with command after automatically closing alert.";
+          }
         }
-	  }
+      }
     } else {
       LOG(WARN) << "Unable to find current browser";
     }

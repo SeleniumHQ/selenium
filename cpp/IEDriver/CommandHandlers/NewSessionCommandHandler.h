@@ -14,9 +14,17 @@
 #ifndef WEBDRIVER_IE_NEWSESSIONCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_NEWSESSIONCOMMANDHANDLER_H_
 
+#include "../Alert.h"
 #include "../Browser.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
+
+#define IGNORE_PROTECTED_MODE_CAPABILITY "ignoreProtectedModeSettings"
+#define IGNORE_ZOOM_SETTING_CAPABILITY "ignoreZoomSetting"
+#define NATIVE_EVENTS_CAPABILITY "nativeEvents"
+#define INITIAL_BROWSER_URL_CAPABILITY "initialBrowserUrl"
+#define ELEMENT_SCROLL_BEHAVIOR_CAPABILITY "elementScrollBehavior"
+#define UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY "unexpectedAlertBehavior"
 
 namespace webdriver {
 
@@ -36,16 +44,18 @@ class NewSessionCommandHandler : public IECommandHandler {
     IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
     ParametersMap::const_iterator it = command_parameters.find("desiredCapabilities");
     if (it != command_parameters.end()) {
-      Json::Value ignore_protected_mode_settings = it->second.get("ignoreProtectedModeSettings", false);
+      Json::Value ignore_protected_mode_settings = it->second.get(IGNORE_PROTECTED_MODE_CAPABILITY, false);
       mutable_executor.set_ignore_protected_mode_settings(ignore_protected_mode_settings.asBool());
-      Json::Value ignore_zoom_setting = it->second.get("ignoreZoomSetting", false);
+      Json::Value ignore_zoom_setting = it->second.get(IGNORE_ZOOM_SETTING_CAPABILITY, false);
       mutable_executor.set_ignore_zoom_setting(ignore_zoom_setting.asBool());
-      Json::Value enable_native_events = it->second.get("nativeEvents", true);
+      Json::Value enable_native_events = it->second.get(NATIVE_EVENTS_CAPABILITY, true);
       mutable_executor.set_enable_native_events(enable_native_events.asBool());
-      Json::Value initial_url = it->second.get("initialBrowserUrl", "");
+      Json::Value initial_url = it->second.get(INITIAL_BROWSER_URL_CAPABILITY, "");
       mutable_executor.set_initial_browser_url(initial_url.asString());
-      Json::Value scroll_behavior = it->second.get("elementScrollBehavior", 0);
+      Json::Value scroll_behavior = it->second.get(ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, 0);
       mutable_executor.set_scroll_behavior(static_cast<ELEMENT_SCROLL_BEHAVIOR>(scroll_behavior.asInt()));
+      Json::Value unexpected_alert_behavior = it->second.get(UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY, DISMISS_UNEXPECTED_ALERTS);
+      mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
     }
     std::string create_browser_error_message = "";
     int result_code = mutable_executor.CreateNewBrowser(&create_browser_error_message);

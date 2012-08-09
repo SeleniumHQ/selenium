@@ -14,6 +14,7 @@
 #ifndef WEBDRIVER_IE_SENDKEYSTOALERTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SENDKEYSTOALERTCOMMANDHANDLER_H_
 
+#include "../Alert.h"
 #include "../Browser.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
@@ -53,44 +54,15 @@ class SendKeysToAlertCommandHandler : public IECommandHandler {
     if (alert_handle == NULL) {
       response->SetErrorResponse(EMODALDIALOGOPEN, "No alert is active");
     } else {
-      HWND text_box_handle = NULL;
-      // Alert present, find the OK button.
-      // Retry up to 10 times to find the dialog.
-      int max_wait = 10;
-      while ((text_box_handle == NULL) && --max_wait) {
-        ::EnumChildWindows(alert_handle,
-                           &SendKeysToAlertCommandHandler::FindTextBox,
-                           reinterpret_cast<LPARAM>(&text_box_handle));
-        if (text_box_handle == NULL) {
-          ::Sleep(50);
-        }
-      }
-
-      if (text_box_handle == NULL) {
-        response->SetErrorResponse(EELEMENTNOTDISPLAYED,
+      Alert dialog(alert_handle);
+      status_code = dialog.SendKeys(text_parameter_iterator->second.asString());
+      if (status_code != SUCCESS) {
+        response->SetErrorResponse(status_code,
                                    "Modal dialog did not have a text box - maybe it was an alert");
-      } else {
-        std::wstring text = CA2W(text_parameter_iterator->second.asCString(), CP_UTF8);
-        ::SendMessage(text_box_handle,
-                      WM_SETTEXT,
-                      NULL,
-                      reinterpret_cast<LPARAM>(text.c_str()));
-        response->SetSuccessResponse(Json::Value::null);
+        return;
       }
+      response->SetSuccessResponse(Json::Value::null);
     }
-  }
-
- private:
-  static BOOL CALLBACK FindTextBox(HWND hwnd, LPARAM arg) {
-    HWND *dialog_handle = reinterpret_cast<HWND*>(arg);
-    TCHAR child_window_class[100];
-    ::GetClassName(hwnd, child_window_class, 100);
-
-    if (wcscmp(child_window_class, L"Edit") == 0) {
-      *dialog_handle = hwnd;
-      return FALSE;
-    }
-    return TRUE;
   }
 };
 

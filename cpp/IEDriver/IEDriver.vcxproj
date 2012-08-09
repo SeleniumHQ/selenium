@@ -103,6 +103,8 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -221,6 +223,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Alert.cpp" />
     <ClCompile Include="Browser.cpp" />
     <ClCompile Include="BrowserFactory.cpp" />
     <ClCompile Include="DocumentHost.cpp" />
@@ -241,6 +244,7 @@
     <ClCompile Include="WebDriver.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Alert.h" />
     <ClInclude Include="Browser.h" />
     <ClInclude Include="BrowserFactory.h" />
     <ClInclude Include="CommandHandlers\GetWindowPositionCommandHandler.h" />

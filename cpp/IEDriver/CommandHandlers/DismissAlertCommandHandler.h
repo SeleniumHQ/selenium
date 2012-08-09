@@ -45,19 +45,13 @@ class DismissAlertCommandHandler : public AcceptAlertCommandHandler {
     if (alert_handle == NULL) {
       response->SetErrorResponse(EMODALDIALOGOPEN, "No alert is active");
     } else {
-      DialogButtonInfo button_info = this->GetDialogButton(alert_handle,
-                                                           CANCEL);
-      if (!button_info.button_exists) {
-        response->SetErrorResponse(EUNHANDLEDERROR,
+      Alert dialog(alert_handle);
+      status_code = dialog.Dismiss();
+      if (status_code != SUCCESS) {
+        response->SetErrorResponse(status_code,
                                    "Could not find Cancel button");
-      } else {
-        // Now click on the Cancel button of the Alert
-        ::SendMessage(alert_handle,
-                      WM_COMMAND,
-                      button_info.button_control_id,
-                      NULL);
-        response->SetSuccessResponse(Json::Value::null);
       }
+      response->SetSuccessResponse(Json::Value::null);
     }
   }
 };

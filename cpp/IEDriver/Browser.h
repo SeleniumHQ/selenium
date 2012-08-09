@@ -116,6 +116,9 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   HWND GetTabWindowHandle(void);
   void CheckDialogType(HWND dialog_window_handle);
 
+  static unsigned int WINAPI GoBackThreadProc(LPVOID param);
+  static unsigned int WINAPI GoForwardThreadProc(LPVOID param);
+
   CComPtr<IWebBrowser2> browser_;
   bool is_navigation_started_;
 };
