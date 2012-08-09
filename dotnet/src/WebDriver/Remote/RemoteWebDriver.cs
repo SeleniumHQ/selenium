@@ -987,6 +987,22 @@ namespace OpenQA.Selenium.Remote
                         case WebDriverResult.AsyncScriptTimeout:
                             throw new TimeoutException(errorMessage);
 
+                        case WebDriverResult.UnexpectedAlertOpen:
+                            // TODO(JimEvans): Handle the case where the unexpected alert setting
+                            // has been set to "ignore", so there is still a valid alert to be
+                            // handled.
+                            string alertText = string.Empty;
+                            if (errorAsDictionary.ContainsKey("alert"))
+                            {
+                                Dictionary<string, object> alertDescription = errorAsDictionary["alert"] as Dictionary<string, object>;
+                                if (alertDescription != null && alertDescription.ContainsKey("text"))
+                                {
+                                    alertText = alertDescription["text"].ToString();
+                                }
+                            }
+
+                            throw new UnhandledAlertException(errorMessage, alertText);
+
                         case WebDriverResult.NoAlertPresent:
                             throw new NoAlertPresentException(errorMessage);
 

@@ -29,6 +29,8 @@ namespace OpenQA.Selenium
     [Serializable]
     public class UnhandledAlertException : WebDriverException
     {
+        private IAlert alert;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UnhandledAlertException"/> class.
         /// </summary>
@@ -45,6 +47,18 @@ namespace OpenQA.Selenium
         public UnhandledAlertException(string message)
             : base(message)
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnhandledAlertException"/> class with 
+        /// a specified error message and alert text.
+        /// </summary>
+        /// <param name="message">The message that describes the error.</param>
+        /// <param name="alertText">The text of the unhandled alert.</param>
+        public UnhandledAlertException(string message, string alertText)
+            : base(message)
+        {
+            this.alert = new UnhandledAlert(alertText);
         }
 
         /// <summary>
@@ -70,6 +84,61 @@ namespace OpenQA.Selenium
         protected UnhandledAlertException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+        }
+        
+        /// <summary>
+        /// Gets the <see cref="IAlert"/> that has not been handled.
+        /// </summary>
+        public IAlert Alert
+        {
+            get { return this.alert; }
+        }
+
+        /// <summary>
+        /// Populates a SerializationInfo with the data needed to serialize the target object.
+        /// </summary>
+        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized 
+        /// object data about the exception being thrown.</param>
+        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual 
+        /// information about the source or destination.</param>
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+        }
+
+        private class UnhandledAlert : IAlert
+        {
+            private string alertText;
+
+            public UnhandledAlert(string alertText)
+            {
+                this.alertText = alertText;
+            }
+
+            public string Text
+            {
+                get { return this.alertText; }
+            }
+
+            public void Dismiss()
+            {
+                ThrowAlreadyDismissed();
+            }
+
+            public void Accept()
+            {
+                ThrowAlreadyDismissed();
+            }
+
+            public void SendKeys(string keysToSend)
+            {
+                ThrowAlreadyDismissed();
+            }
+
+            private static void ThrowAlreadyDismissed()
+            {
+                throw new InvalidOperationException("Alert was already dismissed");
+            }
         }
     }
 }

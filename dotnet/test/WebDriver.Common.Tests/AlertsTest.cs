@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using OpenQA.Selenium.Environment;
+using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium
 {
@@ -60,6 +62,29 @@ namespace OpenQA.Selenium
 
             // If we can perform any action, we're good to go
             Assert.AreEqual("Testing Alerts", driver.Title);
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Chrome)]
+        public void ShouldGetTextOfAlertOpenedInSetTimeout()
+        {
+            driver.Url = alertsPage;
+
+            driver.FindElement(By.Id("slow-alert")).Click();
+
+            // DO NOT WAIT OR SLEEP HERE.
+            // This is a regression test for a bug where only the first switchTo call would throw,
+            // and only if it happens before the alert actually loads.
+            IAlert alert = driver.SwitchTo().Alert();
+            try
+            {
+                Assert.AreEqual("Slow", alert.Text);
+            }
+            finally
+            {
+                alert.Accept();
+            }
         }
 
         [Test]
@@ -211,6 +236,7 @@ namespace OpenQA.Selenium
             string text = alert.Text;
         }
 
+        [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
@@ -232,9 +258,25 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Ignore]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void ShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith()
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
+        public void ShouldAllowUsersToAcceptAnAlertInANestedFrame()
+        {
+            driver.Url = alertsPage;
+
+            driver.SwitchTo().Frame("iframeWithIframe").SwitchTo().Frame("iframeWithAlert");
+
+            driver.FindElement(By.Id("alertInFrame")).Click();
+
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            alert.Accept();
+
+            // If we can perform any action, we're good to go
+            Assert.AreEqual("Testing Alerts", driver.Title);
+        }
+
+        [Test]
+        public void ShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert()
         {
             driver.Url = alertsPage;
 
@@ -244,8 +286,9 @@ namespace OpenQA.Selenium
             try
             {
                 string title = driver.Title;
+                Assert.Fail("Expected exception");
             }
-            catch (InvalidOperationException)
+            catch (UnhandledAlertException)
             {
                 // this is an expected exception
             }
@@ -337,6 +380,164 @@ namespace OpenQA.Selenium
             Assert.AreEqual("cheddar", element2.Text);
         }
 
+        [Test]
+        [Category("JavaScript")]
+        public void ShouldHandleAlertOnPageLoad()
+        {
+            driver.Url = alertsPage;
+
+            driver.FindElement(By.Id("open-page-with-onload-alert")).Click();
+
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            string value = alert.Text;
+            alert.Accept();
+
+            Assert.AreEqual("onload", value);
+            IWebElement element = driver.FindElement(By.TagName("p"));
+            WaitFor(ElementTextToEqual(element, "Page with onload event handler"));
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        public void ShouldHandleAlertOnPageLoadUsingGet()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnLoad.html");
+
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            string value = alert.Text;
+            alert.Accept();
+
+            Assert.AreEqual("onload", value);
+            WaitFor(ElementTextToEqual(driver.FindElement(By.TagName("p")), "Page with onload event handler"));
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Firefox, "Firefox waits too long, may be hangs")]
+        [IgnoreBrowser(Browser.Chrome)]
+        //[IgnoreBrowser(Browser.IE, "Not confirmed working.")]
+        public void ShouldNotHandleAlertInAnotherWindow()
+        {
+            driver.Url = alertsPage;
+
+            string mainWindow = driver.CurrentWindowHandle;
+            string onloadWindow = null;
+            try
+            {
+                driver.FindElement(By.Id("open-window-with-onload-alert")).Click();
+                List<String> allWindows = new List<string>(driver.WindowHandles);
+                allWindows.Remove(mainWindow);
+                Assert.AreEqual(1, allWindows.Count);
+                onloadWindow = allWindows[0];
+
+                try
+                {
+                    WaitFor<IAlert>(AlertToBePresent, TimeSpan.FromSeconds(5));
+                    Assert.Fail("Expected exception");
+                }
+                catch (WebDriverException)
+                {
+                    // An operation timed out exception is expected,
+                    // since we're using WaitFor<T>.
+                }
+
+            }
+            finally
+            {
+                driver.SwitchTo().Window(onloadWindow);
+                WaitFor<IAlert>(AlertToBePresent).Dismiss();
+                driver.Close();
+                driver.SwitchTo().Window(mainWindow);
+                WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-window-with-onload-alert")), "open new window"));
+            }
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        //[IgnoreBrowser(Browser.IE, "IE Crashes")]
+        [IgnoreBrowser(Browser.Chrome)]
+        public void ShouldHandleAlertOnPageUnload()
+        {
+            driver.Url = alertsPage;
+
+            driver.FindElement(By.Id("open-page-with-onunload-alert")).Click();
+            driver.Navigate().Back();
+
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            string value = alert.Text;
+            alert.Accept();
+
+            Assert.AreEqual("onunload", value);
+            WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-page-with-onunload-alert")), "open new page"));
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android, "alerts do not pop up when a window is closed")]
+        [IgnoreBrowser(Browser.Chrome)]
+        public void ShouldHandleAlertOnWindowClose()
+        {
+            driver.Url = alertsPage;
+
+            string mainWindow = driver.CurrentWindowHandle;
+            try
+            {
+                driver.FindElement(By.Id("open-window-with-onclose-alert")).Click();
+                WaitFor(WindowHandleCountToBe(2));
+                WaitFor(WindowWithName("onclose"));
+                driver.Close();
+
+                IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+                string value = alert.Text;
+                alert.Accept();
+
+                Assert.AreEqual("onunload", value);
+
+            }
+            finally
+            {
+                driver.SwitchTo().Window(mainWindow);
+                WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-window-with-onclose-alert")), "open new window"));
+            }
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Opera)]
+        public void IncludesAlertInUnhandledAlertException()
+        {
+            driver.Url = alertsPage;
+
+            driver.FindElement(By.Id("alert")).Click();
+            WaitFor<IAlert>(AlertToBePresent);
+            try
+            {
+                string title = driver.Title;
+                Assert.Fail("Expected UnhandledAlertException");
+            }
+            catch (UnhandledAlertException e)
+            {
+                IAlert alert = e.Alert;
+                Assert.NotNull(alert);
+                Assert.AreEqual("cheese", alert.Text);
+            }
+        }
+
+        [Test]
+        [NeedsFreshDriver(AfterTest = true)]
+        [IgnoreBrowser(Browser.Opera)]
+        public void CanQuitWhenAnAlertIsPresent()
+        {
+            driver.Url = alertsPage;
+            driver.FindElement(By.Id("alert")).Click();
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            driver.Quit();
+        }
+
         private IAlert AlertToBePresent()
         {
             return driver.SwitchTo().Alert();
@@ -349,5 +550,31 @@ namespace OpenQA.Selenium
                     return element.Text == text;
                 };
         }
+
+        private Func<bool> WindowWithName(string name)
+        {
+            return () =>
+                {
+                    try
+                    {
+                        driver.SwitchTo().Window(name);
+                        return true;
+                    }
+                    catch(NoSuchWindowException)
+                    {
+                    }
+
+                    return false;
+                };
+        }
+
+        private Func<bool> WindowHandleCountToBe(int count)
+        {
+            return () =>
+                {
+                    return driver.WindowHandles.Count == count;
+                };
+        }
+
     }
 }
