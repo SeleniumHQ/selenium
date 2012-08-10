@@ -50,6 +50,7 @@ class VisualStudioMappings
 
     fun.add_mapping("dotnet_library", CrazyFunDotNet::DotNetLibrary.new)
     fun.add_mapping("dotnet_library", CrazyFunDotNet::CreateShortTaskName.new)
+    fun.add_mapping("dotnet_library", CrazyFunDotNet::MergeAssemblies.new)
 
     fun.add_mapping("dotnet_package", CrazyFunDotNet::CreateNuSpec.new)
     fun.add_mapping("dotnet_package", CrazyFunDotNet::PackNuGetPackage.new)
@@ -69,7 +70,7 @@ module CrazyFunVisualStudio
   class UploadFile < Tasks
     def handle(fun, dir, args)
       # Empty handle method as this will be a base class for tasks
-	  # requiring upload of their outputs.
+      # requiring upload of their outputs.
     end
 
     def upload_file(file_name, file_description, featured_file)
@@ -111,7 +112,11 @@ module CrazyFunDotNet
         framework_ver = args[:framework_ver]
       end
 
-      output_dir = File.join(base_dir, framework_ver)
+	  output_dir = base_dir
+      unless args[:merge_refs].nil?
+        output_dir = File.join(output_dir, "unmerged")
+      end
+      output_dir = File.join(output_dir, framework_ver)
       full_path = File.join(output_dir, args[:out])
       desc_path = full_path.gsub("/", Platform.dir_separator)
       desc "Build #{desc_path}"
@@ -137,6 +142,7 @@ module CrazyFunDotNet
 
         to_copy = []
         references = resolve_references(dir, args[:refs], framework_ver, to_copy)
+        references << args[:merge_refs] unless args[:merge_refs].nil?
 
         # For each resource key-value pair in the resources Hash, assume
         # the key to the hash represents the name of the file to embed
@@ -253,6 +259,71 @@ module CrazyFunDotNet
     end
   end
   
+  class MergeAssemblies < Tasks
+    def handle(fun, dir, args)
+      base_dir = "build/dotnet"
+      framework_ver = "net40"
+      unless args[:framework_ver].nil?
+        framework_ver = args[:framework_ver]
+      end
+
+      output_dir = File.join(base_dir, framework_ver)
+      unmerged_dir = File.join(base_dir, "unmerged")
+	  unmerged_dir = File.join(unmerged_dir, framework_ver)
+      unmerged_path = File.join(unmerged_dir, args[:out])
+      mkdir_p output_dir
+      full_path = File.join(output_dir, args[:out])
+      desc_path = full_path.gsub("/", Platform.dir_separator)
+
+      desc "Merge #{desc_path}"
+      task_name = task_name(dir, args[:name])
+      
+      unless args[:merge_refs].nil?
+        params = ["/t:library",
+                 "/xmldocs",
+                 "/align:512",
+				 "/internalize"]
+        if framework_ver == "net35"
+          params << "/v2"
+        else
+          params << "/v4"
+        end
+        params << "/keyfile:#{args[:keyfile]}" unless args[:keyfile].nil?
+        params << "/out:#{full_path.gsub('/', Platform.dir_separator)}"
+
+        params << unmerged_path.gsub("/", Platform.dir_separator)
+
+        args[:merge_refs].each do |assembly|
+          params << assembly.gsub("/", Platform.dir_separator)
+        end
+
+        target = exec task_name do |cmd|
+          puts "Merging: #{task_name} as #{desc_path}"
+          cmd.command = "third_party/dotnet/ilmerge/ILMerge.exe"
+          cmd.parameters = params.join " "
+        end
+        target.out = full_path
+      end
+    end
+
+    private
+    def resolve_merge_assemblies(dir, refs)
+      to_merge = []
+      unless refs.nil?
+        refs.each do |reference|
+          reference_task_name = task_name(dir, reference)
+
+          unless Rake::Task.task_defined? reference_task_name
+            if reference.include? "/"
+              to_merge << reference
+            end
+          end
+        end
+      end
+      return to_merge
+    end
+  end
+  
   class CreateShortTaskName < Tasks
     def handle(fun, dir, args)
       name = task_name(dir, args[:name])
@@ -275,7 +346,7 @@ module CrazyFunDotNet
       target = nunit "#{task_name}:run" do |nunit_task|
         mkdir_p test_log_dir
         puts "Testing: #{task_name}"
-        nunit_task.command = "third_party/csharp/nunit-2.6.0/nunit-console.exe"
+        nunit_task.command = "third_party/dotnet/nunit-2.6.0/nunit-console.exe"
         nunit_task.assemblies << [output_dir, args[:project]].join(File::SEPARATOR)
         nunit_task.options << "/nologo"
         nunit_task.options << "/nodots"
@@ -455,7 +526,7 @@ module CrazyFunDotNet
       task_name = task_name(dir, args[:name])
       target = nugetpack "#{task_name}" do |nugetpack_task|
         puts "Packaging: #{task_name}"
-        nugetpack_task.command = "third_party/csharp/nuget/NuGet.exe"
+        nugetpack_task.command = "third_party/dotnet/nuget/NuGet.exe"
         nugetpack_task.nuspec = spec_file
         nugetpack_task.base_folder = output_dir
         nugetpack_task.output = "#{output_dir}/nuget"
@@ -476,7 +547,7 @@ module CrazyFunDotNet
           # Create an "immediate execution" task so that the build won't
           # fail if the API key is not specified.
           nugetpush! "#{task_name}.publish" do |nugetpush_task|
-            nugetpush_task.command = "third_party/csharp/nuget/NuGet.exe"
+            nugetpush_task.command = "third_party/dotnet/nuget/NuGet.exe"
             puts "Publishing NuGet package for: #{task_name}"
             nugetpush_task.package = package_file
             nugetpush_task.apikey = ENV["apikey"]
@@ -503,7 +574,8 @@ module CrazyFunDotNet
         end
         tmp_dir = File.join(output_dir, "temp")
         mkdir_p tmp_dir
-        lst = FileList[output_dir + "/*"].exclude(/.*(nuget|temp).*/)
+        lst = FileList[output_dir + "/*"].exclude(/.*(nuget|temp|unmerged).*/)
+		puts lst
         cp_r lst, tmp_dir
         zip(tmp_dir, output_file)
         rm_rf tmp_dir
