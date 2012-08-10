@@ -10,6 +10,7 @@ interfaces components/nsIHttpServer.xpt
 interfaces components/nsINativeEvents.xpt
 interfaces components/nsIResponseHandler.xpt
 interfaces components/wdICoordinate.xpt
+interfaces components/wdIModifierKeys.xpt
 interfaces components/wdIMouse.xpt
 interfaces components/wdIStatus.xpt
 interfaces components/nsINativeMouse.xpt
@@ -41,6 +42,9 @@ component {b54195d3-841e-47df-b709-edf1bc4c7166} components/session_store.js
 contract @googlecode.com/webdriver/wdsessionstoreservice;1 {b54195d3-841e-47df-b709-edf1bc4c7166}
 
 component {E8F9FEFE-C513-4097-98BE-BE00A41D3645} components/synthetic_mouse.js
+component {2E4B69B9-21FE-48ad-A2F6-AB355D6D2FCE} components/modifier_keys.js
+contract @googlecode.com/webdriver/modifierkeys;1 {2E4B69B9-21FE-48ad-A2F6-AB355D6D2FCE}
+
 contract @googlecode.com/webdriver/syntheticmouse;1 {E8F9FEFE-C513-4097-98BE-BE00A41D3645}
 
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll ABI=WINNT_x86-msvc appversion>=13

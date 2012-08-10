@@ -13,6 +13,9 @@ mozilla_xpt(name = "status_xpt",
 mozilla_xpt(name = "coordinates_xpt",
   srcs = [ "extension/idl/wdICoordinate.idl" ])
 
+mozilla_xpt(name = "modifier_keys_xpt",
+  srcs = [ "extension/idl/wdIModifierKeys.idl" ])
+
 mozilla_xpt(name = "mouse_xpt",
   srcs = [ "extension/idl/wdIMouse.idl" ])
 
@@ -28,6 +31,8 @@ mozilla_extension(name = "webdriver",
     ":command_processor",
     ":command_processor_xpt",
     ":coordinates_xpt",
+    ":modifier_keys",
+    ":modifier_keys_xpt",
     ":driver_component",
     ":httpd_xpt",
     ":mouse_xpt",
@@ -126,6 +131,22 @@ js_binary(name = "driver_component",
     ":firefoxdriver",
     ":webdriverserver",
     ":webelement",
+    "//javascript/webdriver/atoms:deps",
+  ])
+
+js_binary(name = "modifier_keys",
+  srcs = [
+    "js/modifierKeys.js",
+  ],
+  defines = [
+    "goog.userAgent.ASSUME_GECKO=true",
+  ],
+  externs = [
+    "js/externs.js",
+  ],
+  deps = [
+    ":moz",
+    ":utils",
     "//javascript/webdriver/atoms:deps",
   ])
 

@@ -80,6 +80,11 @@ SyntheticMouse.prototype.getElement_ = function(coords) {
 
 // wdIMouse
 
+SyntheticMouse.prototype.initialize = function(modifierKeys) {
+  this.modifierKeys = modifierKeys;
+};
+
+
 SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   // TODO(simon): find the current "body" element iff element == null
   var element = target || this.lastElement;
@@ -151,8 +156,17 @@ SyntheticMouse.prototype.click = function(target) {
   }
 
   fxdriver.Logger.dumpn("About to do a bot.action.click on " + element);
-  bot.action.click(element);
+  var keyboardState = new bot.Device.ModifiersState();
+  if (this.modifierKeys !== undefined) {
+    keyboardState.setPressed(bot.Device.Modifier.SHIFT, this.modifierKeys.isShiftPressed());
+    keyboardState.setPressed(bot.Device.Modifier.CONTROL, this.modifierKeys.isControlPressed());
+    keyboardState.setPressed(bot.Device.Modifier.ALT, this.modifierKeys.isAltPressed());
+    keyboardState.setPressed(bot.Device.Modifier.META, this.modifierKeys.isMetaPressed());
+  }
 
+  var mouseWithKeyboardState = new bot.Mouse(null, keyboardState);
+
+  bot.action.click(element, undefined /* coords */, mouseWithKeyboardState);
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
 };
 
@@ -207,6 +221,7 @@ SyntheticMouse.prototype.down = function(coordinates) {
     'clientY': coordinates['y'] + pos.y,
     'button': bot.Mouse.Button.LEFT
   };
+  this.addEventModifierKeys(botCoords);
   bot.events.fire(element, bot.events.EventType.MOUSEDOWN, botCoords);
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
@@ -226,6 +241,7 @@ SyntheticMouse.prototype.up = function(coordinates) {
     'clientY': coordinates['y'] + pos.y,
     'button': button
   };
+  this.addEventModifierKeys(botCoords);
   bot.events.fire(element, bot.events.EventType.MOUSEMOVE, botCoords);
   bot.events.fire(element, bot.events.EventType.MOUSEUP, botCoords);
 
@@ -235,6 +251,16 @@ SyntheticMouse.prototype.up = function(coordinates) {
   this.viewPortOffset.y = 0;
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
+};
+
+
+SyntheticMouse.prototype.addEventModifierKeys = function (botCoords) {
+  if (this.modifierKeys !== undefined) {
+    botCoords.altKey = this.modifierKeys.isAltPressed();
+    botCoords.ctrlKey = this.modifierKeys.isControlPressed();
+    botCoords.metaKey = this.modifierKeys.isMetaPressed();
+    botCoords.shiftKey = this.modifierKeys.isShiftPressed();
+  }
 };
 
 

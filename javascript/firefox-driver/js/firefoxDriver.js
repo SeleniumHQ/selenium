@@ -67,7 +67,8 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
   this.jsTimer = new fxdriver.Timer();
   this.mouse = Utils.newInstance("@googlecode.com/webdriver/syntheticmouse;1", "wdIMouse");
   // Current state of modifier keys (for synthenized events).
-  this.modifierKeysState = undefined;
+  this.modifierKeysState = Utils.newInstance("@googlecode.com/webdriver/modifierkeys;1", "wdIModifierKeys");
+  this.mouse.initialize(this.modifierKeysState);
 
   if (!bot.userAgent.isProductVersion('3.5')) {
     fxdriver.Logger.dumpn("Replacing CSS lookup mechanism with Sizzle");
@@ -1377,12 +1378,13 @@ FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) 
     useElement = useElement.ownerDocument.getElementsByTagName("html")[0];
   }
 
-  // In case Utils.type performs non-native typing, it will return the state of the
-  // modifier keys to be used in subsequent typing. This is a stop-gap solution until
-  // a syntheticKeyboard class will be extracted.
-  var newState = Utils.type(respond.session.getDocument(), useElement, parameters.value.join(''),
-      this.enableNativeEvents, this.jsTimer, false /*release modifiers*/, this.modifierKeysState);
-  this.modifierKeysState = newState;
+  // In case Utils.type performs non-native typing, it will modify the state of the
+  // modifier keys to be used in subsequent typing. A proper syntheticKeyboard
+  // class should be extracted to use the keyboard.js atom, will properly export
+  // the state.
+
+  Utils.type(respond.session.getDocument(), useElement, parameters.value.join(''),
+    this.enableNativeEvents, this.jsTimer, false /*release modifiers*/, this.modifierKeysState);
 
   respond.send();
 };

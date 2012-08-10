@@ -28,7 +28,9 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -247,5 +249,18 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertEquals("Should have opened a new window.",
         nWindows + 1, driver.getWindowHandles().size());
     assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
+  }
+
+  @Ignore({SELENESE, HTMLUNIT, OPERA, OPERA_MOBILE, IPHONE})
+  @Test
+  public void testHoldingDownShiftKeyWhileClicking() {
+    driver.get(pages.clickEventPage);
+
+    WebElement toClick = driver.findElement(By.id("eventish"));
+
+    new Actions(driver).keyDown(Keys.SHIFT).click(toClick).keyUp(Keys.SHIFT).perform();
+
+    WebElement shiftInfo = waitFor(elementToExist(driver, "shiftKey"));
+    assertThat(shiftInfo.getText(), equalTo("true"));
   }
 }

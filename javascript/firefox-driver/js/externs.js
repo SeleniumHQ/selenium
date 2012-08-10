@@ -76,6 +76,7 @@ Components.interfaces.nsIWebNavigation;
 
 // WebDriver constants
 Components.interfaces.wdICoordinate;
+Components.interfaces.wdIModifierKeys;
 Components.interfaces.wdIMouse;
 Components.interfaces.wdIStatus;
 

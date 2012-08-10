@@ -278,10 +278,10 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
   var altKey = false;
   var metaKey = false;
   if (opt_keysState) {
-    controlKey = opt_keysState.control;
-    shiftKey = opt_keysState.shiftKey;
-    altKey = opt_keysState.alt;
-    metaKey = opt_keysState.meta;
+    controlKey = opt_keysState.isControlPressed();
+    shiftKey = opt_keysState.isShiftPressed();
+    altKey = opt_keysState.isAltPressed();
+    metaKey = opt_keysState.isMetaPressed();
   }
 
   Utils.shiftCount = 0;
@@ -583,12 +583,12 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
         controlKey, shiftKey, altKey, metaKey = false, false);
   }
 
-  return {
-    shiftKey: shiftKey,
-    alt: altKey,
-    meta: metaKey,
-    control: controlKey
-  };
+  if (opt_keysState) {
+    opt_keysState.setControlPressed(controlKey);
+    opt_keysState.setShiftPressed(shiftKey);
+    opt_keysState.setAltPressed(altKey);
+    opt_keysState.setMetaPressed(metaKey);
+  }
 };
 
 
