@@ -734,3 +734,14 @@ bot.Keyboard.prototype.moveCursor = function(element) {
 bot.Keyboard.prototype.getState = function() {
   return this.pressed_.getValues();
 };
+
+
+/**
+ * Returns the state of the modifier keys, to be shared with other input
+ * devices.
+ *
+ * @return {bot.Device.ModifiersState} Modifiers state.
+ */
+bot.Keyboard.prototype.getModifiersState = function() {
+  return this.modifiersState
+};
