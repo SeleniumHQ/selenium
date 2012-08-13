@@ -251,7 +251,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
   }
 
-  @Ignore({SELENESE, HTMLUNIT, OPERA, OPERA_MOBILE, IPHONE})
+  @Ignore({SELENESE, HTMLUNIT, OPERA, OPERA_MOBILE, IPHONE, IE})
   @Test
   public void testHoldingDownShiftKeyWhileClicking() {
     driver.get(pages.clickEventPage);
