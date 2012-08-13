@@ -24,7 +24,7 @@
 #define NATIVE_EVENTS_CAPABILITY "nativeEvents"
 #define INITIAL_BROWSER_URL_CAPABILITY "initialBrowserUrl"
 #define ELEMENT_SCROLL_BEHAVIOR_CAPABILITY "elementScrollBehavior"
-#define UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY "unexpectedAlertBehavior"
+#define UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY "unexpectedAlertBehaviour"
 
 namespace webdriver {
 
