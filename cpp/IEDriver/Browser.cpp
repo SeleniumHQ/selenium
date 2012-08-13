@@ -356,6 +356,12 @@ HWND Browser::GetTopLevelWindowHandle() {
   return top_level_window_handle;
 }
 
+bool Browser::IsBusy() {
+  VARIANT_BOOL is_busy(VARIANT_FALSE);
+  HRESULT hr = this->browser_->get_Busy(&is_busy);
+  return SUCCEEDED(hr) && is_busy == VARIANT_TRUE;
+}
+
 bool Browser::Wait() {
   LOG(TRACE) << "Entering Browser::Wait";
 
@@ -373,9 +379,7 @@ bool Browser::Wait() {
 
   // Navigate events completed. Waiting for browser.Busy != false...
   is_navigating = this->is_navigation_started_;
-  VARIANT_BOOL is_busy(VARIANT_FALSE);
-  HRESULT hr = this->browser_->get_Busy(&is_busy);
-  if (is_navigating || FAILED(hr) || is_busy) {
+  if (is_navigating || this->IsBusy()) {
     LOG(DEBUG) << "Browser busy property is true.";
     return false;
   }
@@ -383,7 +387,7 @@ bool Browser::Wait() {
   // Waiting for browser.ReadyState == READYSTATE_COMPLETE...;
   is_navigating = this->is_navigation_started_;
   READYSTATE ready_state;
-  hr = this->browser_->get_ReadyState(&ready_state);
+  HRESULT hr = this->browser_->get_ReadyState(&ready_state);
   if (is_navigating || FAILED(hr) || ready_state != READYSTATE_COMPLETE) {
     LOG(DEBUG) << "readyState is not 'Complete'.";
     return false;

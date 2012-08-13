@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.25.3.1
+=========
+ * Implemented checks to ensure alerts are completely dismissed by IE before
+   continuing to the next command.
+
 v2.25.3.0
 =========
  * Implemented automatic dismissal of alerts, settable by capability.

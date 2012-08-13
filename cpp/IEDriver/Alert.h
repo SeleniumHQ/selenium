@@ -16,6 +16,7 @@
 
 #include <string>
 #include <vector>
+#include "DocumentHost.h"
 #include "ErrorCodes.h"
 
 using namespace std;
@@ -24,7 +25,7 @@ namespace webdriver {
 
 class Alert {
  public:
-  Alert(HWND handle);
+  Alert(BrowserHandle browser, HWND handle);
   virtual ~Alert(void);
 
   int Accept(void);
@@ -53,6 +54,7 @@ class Alert {
   };
 
   DialogButtonInfo GetDialogButton(BUTTON_TYPE button_type);
+  int ClickAlertButton(int control_id);
 
   static bool IsOKButton(int control_id);
   static bool IsCancelButton(int control_id);
@@ -61,6 +63,7 @@ class Alert {
   static BOOL CALLBACK FindTextLabel(HWND hwnd, LPARAM arg);
 
   HWND alert_handle_;
+  BrowserHandle browser_;
 };
 
 

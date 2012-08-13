@@ -400,7 +400,7 @@ void IECommandExecutor::DispatchCommand() {
         LOG(DEBUG) << "No alert handle is found";
       }
       if (alert_is_active) {
-        Alert dialog(alert_handle);
+      Alert dialog(browser, alert_handle);
         int command_type = this->current_command_.command_type();
         if (command_type == GetAlertText ||
             command_type == SendKeysToAlert ||

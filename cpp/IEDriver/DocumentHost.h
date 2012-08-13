@@ -34,6 +34,7 @@ class DocumentHost {
   virtual void GetDocument(IHTMLDocument2** doc) = 0;
   virtual void Close(void) = 0;
   virtual bool Wait(void) = 0;
+  virtual bool IsBusy(void) = 0;
   virtual HWND GetWindowHandle(void) = 0;
   virtual std::string GetWindowName(void) = 0;
   virtual std::string GetTitle(void) = 0;

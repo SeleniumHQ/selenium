@@ -18,7 +18,6 @@
 #include <exdispid.h>
 #include <iepmapi.h>
 #include <shlguid.h>
-#include <mshtml.h>
 #include <oleacc.h>
 #include <sddl.h>
 #include <string>

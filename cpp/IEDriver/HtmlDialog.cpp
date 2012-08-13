@@ -73,6 +73,10 @@ void HtmlDialog::Close() {
   }
 }
 
+bool HtmlDialog::IsBusy() {
+  return false;
+}
+
 bool HtmlDialog::Wait() {
   // If the window handle is no longer valid, the window is closing,
   // the wait is completed, and we must post the quit message.

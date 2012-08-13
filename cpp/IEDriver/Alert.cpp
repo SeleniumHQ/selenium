@@ -16,8 +16,9 @@
 
 namespace webdriver {
 
-Alert::Alert(HWND handle) {
+Alert::Alert(BrowserHandle browser, HWND handle) {
   LOG(TRACE) << "Entering Alert::Alert";
+  this->browser_ = browser;
   this->alert_handle_ = handle;
 }
 
@@ -37,15 +38,11 @@ int Alert::Accept() {
   }
     
   if (!button_info.button_exists) {
-    LOG(WARN) << "OK and Cancel button do not exist on dialog";
+    LOG(WARN) << "OK and Cancel button do not exist on alert";
     return EUNHANDLEDERROR;
   } else {
-    LOG(DEBUG) << "Closing dialog using SendMessage";
-    // Now click on the appropriate button of the Alert
-    ::SendMessage(this->alert_handle_,
-                  WM_COMMAND,
-                  button_info.button_control_id,
-                  NULL);
+    LOG(DEBUG) << "Closing alert using SendMessage";
+    int status_code = this->ClickAlertButton(button_info.button_control_id);
   }
   return SUCCESS;
 }
@@ -54,15 +51,13 @@ int Alert::Dismiss() {
   LOG(TRACE) << "Entering Alert::Dismiss";
   DialogButtonInfo button_info = this->GetDialogButton(CANCEL);
   if (!button_info.button_exists) {
-    LOG(WARN) << "Cancel button does not exist on dialog";
+    LOG(WARN) << "Cancel button does not exist on alert";
     return EUNHANDLEDERROR;
   } else {
-    LOG(DEBUG) << "Closing dialog using SendMessage";
-    // Now click on the Cancel button of the Alert
-    ::SendMessage(this->alert_handle_,
-                  WM_COMMAND,
-                  button_info.button_control_id,
-                  NULL);
+    // TODO(JimEvans): Check return code and return an appropriate
+    // error if the alert didn't get closed properly.
+    LOG(DEBUG) << "Closing alert using SendMessage";
+    int status_code = this->ClickAlertButton(button_info.button_control_id);
   }
   return SUCCESS;
 }
@@ -86,7 +81,7 @@ int Alert::SendKeys(std::string keys) {
     LOG(WARN) << "Text box not found on alert";
     return EELEMENTNOTDISPLAYED;
   } else {
-    LOG(DEBUG) << "Sending keystrokes to dialog using SendMessage";
+    LOG(DEBUG) << "Sending keystrokes to alert using SendMessage";
     std::wstring text = CA2W(keys.c_str(), CP_UTF8);
     ::SendMessage(text_box_handle,
                   WM_SETTEXT,
@@ -97,6 +92,7 @@ int Alert::SendKeys(std::string keys) {
 }
 
 std::string Alert::GetText() {
+  LOG(TRACE) << "Entering Alert::GetText";
   HWND label_handle = NULL;
   // Alert present, find the OK button.
   // Retry up to 10 times to find the dialog.
@@ -121,6 +117,30 @@ std::string Alert::GetText() {
     alert_text_value = CW2A(alert_text.c_str(), CP_UTF8);
   }
   return alert_text_value;
+}
+
+int Alert::ClickAlertButton(int control_id) {
+  LOG(TRACE) << "Entering Alert::ClickAlertButton";
+  // Click on the appropriate button of the Alert
+  ::SendMessage(this->alert_handle_,
+                WM_COMMAND,
+                control_id,
+                NULL);
+  // Hack to make sure alert is really closed, and browser
+  // is ready for the next operation. This may be a flawed
+  // algorithim, since the busy property of the browser may
+  // not be the right thing to check here.
+  int retry_count = 20;
+  while (::IsWindow(this->alert_handle_) && this->browser_->IsBusy() && retry_count > 0) {
+    ::Sleep(50);
+    retry_count--;
+  }
+
+  // TODO(JimEvans): Check for the following error conditions:
+  // 1. Alert window still present (::IsWindow(this->alert_handle_) == TRUE)
+  // 2. Browser still busy (this->browser_->IsBusy() == true)
+  // and return an appropriate non-SUCCESS error code.
+  return SUCCESS;
 }
 
 Alert::DialogButtonInfo Alert::GetDialogButton(BUTTON_TYPE button_type) {

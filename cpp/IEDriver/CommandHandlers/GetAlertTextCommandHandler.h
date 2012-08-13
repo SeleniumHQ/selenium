@@ -46,7 +46,7 @@ class GetAlertTextCommandHandler : public IECommandHandler {
     if (alert_handle == NULL) {
       response->SetErrorResponse(EMODALDIALOGOPEN, "No alert is active");
     } else {
-      Alert dialog(alert_handle);
+      Alert dialog(browser_wrapper, alert_handle);
       std::string alert_text_value = dialog.GetText();
       response->SetSuccessResponse(alert_text_value);
     }

@@ -46,7 +46,7 @@ class AcceptAlertCommandHandler : public IECommandHandler {
     if (alert_handle == NULL) {
       response->SetErrorResponse(EMODALDIALOGOPEN, "No alert is active");
     } else {
-      Alert dialog(alert_handle);
+      Alert dialog(browser_wrapper, alert_handle);
       status_code = dialog.Accept();
       if (status_code != SUCCESS) {
         response->SetErrorResponse(status_code,

@@ -52,6 +52,7 @@ public:
   void GetDocument(IHTMLDocument2** doc);
   void Close(void);
   bool Wait(void);
+  bool IsBusy(void);
   HWND GetWindowHandle(void);
   std::string GetWindowName(void);
   std::string GetTitle(void);
