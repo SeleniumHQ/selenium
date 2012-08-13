@@ -88,7 +88,7 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(TimeoutException))]
+        [ExpectedException(typeof(WebDriverTimeoutException))]
         public void ShouldNotFindPopupWindowWhenNoneExists()
         {
             driver.Url = xhtmlTestPage;

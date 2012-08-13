@@ -52,7 +52,7 @@ namespace OpenQA.Selenium.Support.UI
                 new BasicSlowLoader(TimeSpan.FromSeconds(2), clock).Load();
                 Assert.Fail();
             }
-            catch (TimeoutException)
+            catch (WebDriverTimeoutException)
             {
                 // We expect to time out
             }

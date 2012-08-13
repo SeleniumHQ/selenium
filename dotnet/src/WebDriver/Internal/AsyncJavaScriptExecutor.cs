@@ -97,7 +97,7 @@ if (document.__$webdriverPageId != '{1}') {{
         /// <returns>The object which is the return value of the script.</returns>
         /// <exception cref="InvalidOperationException">if the object executing the function doesn't support JavaScript.</exception>
         /// <exception cref="WebDriverException">if the page reloads during the JavaScript execution.</exception>
-        /// <exception cref="TimeoutException">if the timeout expires during the JavaScript execution.</exception>
+        /// <exception cref="WebDriverTimeoutException">if the timeout expires during the JavaScript execution.</exception>
         public object ExecuteScript(string script, object[] args)
         {
             // Injected into the page along with the user's script. Used to detect when a new page is
@@ -139,7 +139,7 @@ if (document.__$webdriverPageId != '{1}') {{
                     TimeSpan elapsedTime = DateTime.Now - startTime;
                     if (timeoutFlag > 0)
                     {
-                        throw new TimeoutException("Timed out waiting for async script callback."
+                        throw new WebDriverTimeoutException("Timed out waiting for async script callback."
                             + "\nElapsed time: " + elapsedTime.Milliseconds + "ms"
                             + "\nScript: " + script);
                     }

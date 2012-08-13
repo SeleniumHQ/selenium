@@ -76,7 +76,7 @@ namespace OpenQA.Selenium.Support.UI
             var mockDriver = mocks.NewMock<IWebDriver>();
             var wait = new WebDriverWait(GetClock(), mockDriver, ONE_SECONDS, ZERO_SECONDS);
 
-            Assert.Throws(typeof(TimeoutException), () => wait.Until(driver => false));
+            Assert.Throws(typeof(WebDriverTimeoutException), () => wait.Until(driver => false));
         }
 
         [Test]
@@ -117,9 +117,9 @@ namespace OpenQA.Selenium.Support.UI
             try
             {
                 wait.Until(condition);
-                Assert.Fail("Expected TimeoutException to be thrown");
+                Assert.Fail("Expected WebDriverTimeoutException to be thrown");
             }
-            catch (TimeoutException e)
+            catch (WebDriverTimeoutException e)
             {
                 Assert.IsInstanceOf(typeof (NoSuchElementException), e.InnerException);
             }

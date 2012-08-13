@@ -145,6 +145,13 @@ namespace OpenQA.Selenium.Remote
                 {
                     this.Execute(DriverCommand.Get, parameters);
                 }
+                catch (WebDriverTimeoutException)
+                {
+                    // WebDriverTimeoutException is a subclass of WebDriverException,
+                    // and should be rethrown instead of caught by the catch block
+                    // for WebDriverExceptions.
+                    throw;
+                }
                 catch (WebDriverException)
                 {
                     // Catch the exeception, if any. This is consistent with other
@@ -970,12 +977,7 @@ namespace OpenQA.Selenium.Remote
                             throw new NoSuchElementException(errorMessage);
 
                         case WebDriverResult.Timeout:
-                            throw new TimeoutException("The driver reported that the command timed out. There may "
-                                                       + "be several reasons for this. Check that the destination "
-                                                       + "site is in IE's 'Trusted Sites' (accessed from Tools->"
-                                                       + "Internet Options in the 'Security' tab) If it is a "
-                                                       + "trusted site, then the request may have taken more than "
-                                                       + "a minute to finish.");
+                            throw new WebDriverTimeoutException(errorMessage);
 
                         case WebDriverResult.NoSuchWindow:
                             throw new NoSuchWindowException(errorMessage);
@@ -985,7 +987,7 @@ namespace OpenQA.Selenium.Remote
                             throw new WebDriverException(errorMessage);
 
                         case WebDriverResult.AsyncScriptTimeout:
-                            throw new TimeoutException(errorMessage);
+                            throw new WebDriverTimeoutException(errorMessage);
 
                         case WebDriverResult.UnexpectedAlertOpen:
                             // TODO(JimEvans): Handle the case where the unexpected alert setting

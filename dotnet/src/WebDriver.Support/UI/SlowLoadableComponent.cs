@@ -105,7 +105,7 @@ namespace OpenQA.Selenium.Support.UI
             else
             {
                 string timeoutMessage = string.Format(CultureInfo.InvariantCulture, "Timed out after {0} seconds.", this.timeout.TotalSeconds);
-                throw new TimeoutException(timeoutMessage);
+                throw new WebDriverTimeoutException(timeoutMessage);
             }
         }
 

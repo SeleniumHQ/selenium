@@ -198,7 +198,7 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         /// <summary>
-        /// Throws a <see cref="TimeoutException"/> with the given message.
+        /// Throws a <see cref="WebDriverTimeoutException"/> with the given message.
         /// </summary>
         /// <param name="exceptionMessage">The message of the exception.</param>
         /// <param name="lastException">The last exception thrown by the condition.</param>
@@ -206,7 +206,7 @@ namespace OpenQA.Selenium.Support.UI
         /// idiomatic for a particular test infrastructure.</remarks>
         protected virtual void ThrowTimeoutException(string exceptionMessage, Exception lastException)
         {
-            throw new TimeoutException(exceptionMessage, lastException);
+            throw new WebDriverTimeoutException(exceptionMessage, lastException);
         }
 
         private Exception PropagateExceptionIfNotIgnored(Exception e)

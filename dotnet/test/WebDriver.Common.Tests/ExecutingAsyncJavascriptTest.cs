@@ -115,7 +115,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(TimeoutException))]
+        [ExpectedException(typeof(WebDriverTimeoutException))]
         public void ShouldTimeoutIfScriptDoesNotInvokeCallback()
         {
             driver.Url = ajaxyPage;
@@ -123,7 +123,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(TimeoutException))]
+        [ExpectedException(typeof(WebDriverTimeoutException))]
         public void ShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout()
         {
             driver.Url = ajaxyPage;
@@ -140,7 +140,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(TimeoutException))]
+        [ExpectedException(typeof(WebDriverTimeoutException))]
         public void ShouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout()
         {
             driver.Manage().Timeouts().SetScriptTimeout(TimeSpan.FromMilliseconds(500));

@@ -203,7 +203,7 @@ namespace OpenQA.Selenium
 
                 Assert.Fail("I should have timed out");
             }
-            catch (TimeoutException)
+            catch (WebDriverTimeoutException)
             {
             }
             finally

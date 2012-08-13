@@ -104,7 +104,7 @@ namespace OpenQA.Selenium.Support.UI
         /// <param name="element">The <see cref="IWebElement"/> that, when clicked, invokes
         /// the popup browser window.</param>
         /// <returns>The window handle of the popup browser window.</returns>
-        /// <exception cref="TimeoutException">Thrown if no popup window appears within the specified timeout.</exception>
+        /// <exception cref="WebDriverTimeoutException">Thrown if no popup window appears within the specified timeout.</exception>
         /// <exception cref="ArgumentNullException">Thrown if the element to click is <see langword="null"/>.</exception>
         public string Click(IWebElement element)
         {
@@ -122,7 +122,7 @@ namespace OpenQA.Selenium.Support.UI
         /// <param name="popupMethod">An <see cref="Action"/> that, when run, invokes
         /// the popup browser window.</param>
         /// <returns>The window handle of the popup browser window.</returns>
-        /// <exception cref="TimeoutException">Thrown if no popup window appears within the specified timeout.</exception>
+        /// <exception cref="WebDriverTimeoutException">Thrown if no popup window appears within the specified timeout.</exception>
         /// <exception cref="ArgumentNullException">Thrown if the action to invoke is <see langword="null"/>.</exception>
         public string Invoke(Action popupMethod)
         {

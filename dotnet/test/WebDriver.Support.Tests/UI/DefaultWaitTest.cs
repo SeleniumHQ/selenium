@@ -59,7 +59,7 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(ExpectedException = typeof(TimeoutException), ExpectedMessage = "Timed out after 0 seconds")]
+        [ExpectedException(ExpectedException = typeof(WebDriverTimeoutException), ExpectedMessage = "Timed out after 0 seconds")]
         public void ChecksTimeoutAfterConditionSoZeroTimeoutWaitsCanSucceed() {
             var condition = GetCondition(() => null, 
                                          () => defaultReturnValue);
@@ -121,7 +121,7 @@ namespace OpenQA.Selenium.Support.UI
             {
                 wait.Until(condition);
             }
-            catch (TimeoutException e)
+            catch (WebDriverTimeoutException e)
             {
                 Assert.AreEqual(ex, e.InnerException);
             }
@@ -129,7 +129,7 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(ExpectedException = typeof(TimeoutException), ExpectedMessage = "Timed out after 0 seconds: Expected custom timeout message")]
+        [ExpectedException(ExpectedException = typeof(WebDriverTimeoutException), ExpectedMessage = "Timed out after 0 seconds: Expected custom timeout message")]
         public void TmeoutMessageIncludesCustomMessage()
         {
             var condition = GetCondition(() => false);

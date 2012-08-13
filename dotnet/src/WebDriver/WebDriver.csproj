@@ -85,6 +85,7 @@
   <ItemGroup>
     <Compile Include="Android\AndroidDriver.cs" />
     <Compile Include="By.cs" />
+    <Compile Include="WebDriverTimeoutException.cs" />
     <Compile Include="IE\InternetExplorerDriverLogLevel.cs" />
     <Compile Include="IE\InternetExplorerOptions.cs" />
     <Compile Include="Internal\NativeMethods.cs">
