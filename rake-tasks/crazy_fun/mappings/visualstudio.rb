@@ -271,7 +271,6 @@ module CrazyFunDotNet
       unmerged_dir = File.join(base_dir, "unmerged")
 	  unmerged_dir = File.join(unmerged_dir, framework_ver)
       unmerged_path = File.join(unmerged_dir, args[:out])
-      mkdir_p output_dir
       full_path = File.join(output_dir, args[:out])
       desc_path = full_path.gsub("/", Platform.dir_separator)
 
@@ -299,6 +298,7 @@ module CrazyFunDotNet
 
         target = exec task_name do |cmd|
           puts "Merging: #{task_name} as #{desc_path}"
+          FileUtils.mkdir_p output_dir
           cmd.command = "third_party/dotnet/ilmerge/ILMerge.exe"
           cmd.parameters = params.join " "
         end
