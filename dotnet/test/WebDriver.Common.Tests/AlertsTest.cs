@@ -535,7 +535,7 @@ namespace OpenQA.Selenium
             driver.Url = alertsPage;
             driver.FindElement(By.Id("alert")).Click();
             IAlert alert = WaitFor<IAlert>(AlertToBePresent);
-            driver.Quit();
+            EnvironmentManager.Instance.CloseCurrentDriver();
         }
 
         private IAlert AlertToBePresent()
