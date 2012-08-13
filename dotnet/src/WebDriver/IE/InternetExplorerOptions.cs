@@ -40,6 +40,32 @@ namespace OpenQA.Selenium.IE
     }
 
     /// <summary>
+    /// Specifies the behavior of handling unexpected alerts in the IE driver.
+    /// </summary>
+    public enum InternetExplorerUnexpectedAlertBehavior
+    {
+        /// <summary>
+        /// Indicates the behavior is not set.
+        /// </summary>
+        Default,
+
+        /// <summary>
+        /// Ignore unexpected alerts, such that the user must handle them.
+        /// </summary>
+        Ignore,
+
+        /// <summary>
+        /// Accept unexpected alerts.
+        /// </summary>
+        Accept,
+
+        /// <summary>
+        /// Dismiss unexpected alerts.
+        /// </summary>
+        Dismiss
+    }
+
+    /// <summary>
     /// Class to manage options specific to <see cref="InternetExplorerDriver"/>
     /// </summary>
     /// <example>
@@ -67,12 +93,14 @@ namespace OpenQA.Selenium.IE
         private const string InitialBrowserUrlCapability = "initialBrowserUrl";
         private const string EnableNativeEventsCapability = "nativeEvents";
         private const string ElementScrollBehaviorCapability = "elementScrollBehavior";
+        private const string UnexpectedAlertBehaviorCapability = "unexpectedAlertBehaviour";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
         private bool enableNativeEvents = true;
         private string initialBrowserUrl = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
+        private InternetExplorerUnexpectedAlertBehavior unexpectedAlertBehavior = InternetExplorerUnexpectedAlertBehavior.Default;
 
         /// <summary>
         /// Gets or sets a value indicating whether to ignore the settings of the Internet Explorer Protected Mode.
@@ -128,6 +156,16 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets the value for describing how unexpected alerts are to be handled in the IE driver.
+        /// Defaults to <see cref="InternetExplorerUnexpectedAlertBehavior.Default"/>.
+        /// </summary>
+        public InternetExplorerUnexpectedAlertBehavior UnexpectedAlertBehavior
+        {
+            get { return this.unexpectedAlertBehavior; }
+            set { this.unexpectedAlertBehavior = value; }
+        }
+
+        /// <summary>
         /// Returns DesiredCapabiliites for IE with these options included as
         /// capabilities. This copies the options. Further changes will not be
         /// reflected in the returned capabilities.
@@ -155,6 +193,23 @@ namespace OpenQA.Selenium.IE
             if (this.elementScrollBehavior == InternetExplorerElementScrollBehavior.Bottom)
             {
                 capabilities.SetCapability(ElementScrollBehaviorCapability, 1);
+            }
+
+            if (this.unexpectedAlertBehavior != InternetExplorerUnexpectedAlertBehavior.Default)
+            {
+                string unexpectedAlertBehaviorSetting = "dismiss";
+                switch (this.unexpectedAlertBehavior)
+                {
+                    case InternetExplorerUnexpectedAlertBehavior.Ignore:
+                        unexpectedAlertBehaviorSetting = "ignore";
+                        break;
+
+                    case InternetExplorerUnexpectedAlertBehavior.Accept:
+                        unexpectedAlertBehaviorSetting = "accept";
+                        break;
+                }
+
+                capabilities.SetCapability(UnexpectedAlertBehaviorCapability, unexpectedAlertBehaviorSetting);
             }
 
             return capabilities;
