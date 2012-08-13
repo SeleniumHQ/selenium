@@ -55,6 +55,119 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.Chrome)]
+        public void ShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle()
+        {
+            driver.Url = (xhtmlTestPage);
+            String current = driver.CurrentWindowHandle;
+            int currentWindowHandles = driver.WindowHandles.Count;
+
+            driver.FindElement(By.LinkText("Open new window")).Click();
+
+            WaitFor(WindowCountToBe(2));
+            Assert.AreEqual(2, driver.WindowHandles.Count);
+
+            WaitFor(WindowWithName("result"));
+            driver.SwitchTo().Window("result");
+            driver.Close();
+
+            try
+            {
+                string currentHandle = driver.CurrentWindowHandle;
+                Assert.Fail("NoSuchWindowException expected");
+            }
+            catch (NoSuchWindowException e)
+            {
+                // Expected.
+            }
+            finally
+            {
+                driver.SwitchTo().Window(current);
+            }
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.Chrome)]
+        public void ShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed()
+        {
+            driver.Url = (xhtmlTestPage);
+            String current = driver.CurrentWindowHandle;
+            int currentWindowHandles = driver.WindowHandles.Count;
+
+            driver.FindElement(By.LinkText("Open new window")).Click();
+
+            WaitFor(WindowCountToBe(2));
+            Assert.AreEqual(2, driver.WindowHandles.Count);
+
+            WaitFor(WindowWithName("result"));
+            driver.SwitchTo().Window("result");
+            driver.Close();
+
+            try
+            {
+                try
+                {
+                    string title = driver.Title;
+                    Assert.Fail("NoSuchWindowException expected");
+                }
+                catch (NoSuchWindowException)
+                {
+                    // Expected.
+                }
+
+                try
+                {
+                    driver.FindElement(By.TagName("body"));
+                    Assert.Fail("NoSuchWindowException expected");
+                }
+                catch (NoSuchWindowException)
+                {
+                    // Expected.
+                }
+            }
+            finally
+            {
+                driver.SwitchTo().Window(current);
+            }
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.Chrome)]
+        public void ShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed()
+        {
+            driver.Url = (xhtmlTestPage);
+            String current = driver.CurrentWindowHandle;
+            int currentWindowHandles = driver.WindowHandles.Count;
+
+            driver.FindElement(By.LinkText("Open new window")).Click();
+
+            WaitFor(WindowCountToBe(2));
+            Assert.AreEqual(2, driver.WindowHandles.Count);
+
+            WaitFor(WindowWithName("result"));
+            driver.SwitchTo().Window("result");
+            IWebElement body = driver.FindElement(By.TagName("body"));
+            driver.Close();
+
+            try
+            {
+                string bodyText = body.Text;
+                Assert.Fail("NoSuchWindowException expected");
+            }
+            catch (NoSuchWindowException e)
+            {
+                // Expected.
+            }
+            finally
+            {
+                driver.SwitchTo().Window(current);
+            }
+        }
+
+        [Test]
         [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
@@ -273,6 +386,23 @@ namespace OpenQA.Selenium
             return () =>
             {
                 return driver.WindowHandles.Count == desiredCount;
+            };
+        }
+
+        private Func<bool> WindowWithName(string name)
+        {
+            return () =>
+            {
+                try
+                {
+                    driver.SwitchTo().Window(name);
+                    return true;
+                }
+                catch (NoSuchWindowException)
+                {
+                }
+
+                return false;
             };
         }
     }
