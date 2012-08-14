@@ -19,8 +19,6 @@ package org.openqa.selenium;
 
 import org.junit.Test;
 
-import java.util.StringTokenizer;
-
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
