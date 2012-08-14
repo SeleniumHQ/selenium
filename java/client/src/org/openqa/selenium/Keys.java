@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2007-2012 Selenium committers
+Copyright 2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -12,14 +13,15 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package org.openqa.selenium;
 
 /**
- * Representations of pressable keys that aren't text. These are stored in the Unicode PUA (Private
- * Use Area) code points, 0xE000-0xF8FF. Refer to
- * http://www.google.com.au/search?&q=unicode+pua&btnG=Search
+ * Representations of pressable keys that aren't text.  These are stored in the Unicode PUA (Private
+ * Use Area) code points, 0xE000-0xF8FF.
+ *
+ * @see <a href="http://www.google.com.au/search?&q=unicode+pua&btnG=Search">http://www.google.com.au/search?&q=unicode+pua&btnG=Search</a>
  */
 public enum Keys implements CharSequence {
 
@@ -90,22 +92,48 @@ public enum Keys implements CharSequence {
   META         ('\uE03D'),
   COMMAND      ('\uE03D'),  // Alias
 
-  ZENKAKU_HANKAKU ('\uE040'),
-  ;
+  ZENKAKU_HANKAKU ('\uE040');
 
-  private Keys(char keyCode) {
+  private final char keyCode;
+
+  Keys(char keyCode) {
     this.keyCode = keyCode;
   }
 
+  public char charAt(int index) {
+    if (index == 0) {
+      return keyCode;
+    }
+
+    return 0;
+  }
+
+  public int length() {
+    return 1;
+  }
+
+  public CharSequence subSequence(int start, int end) {
+    if (start == 0 && end == 1) {
+      return String.valueOf(keyCode);
+    }
+
+    throw new IndexOutOfBoundsException();
+  }
+
+  @Override
+  public String toString() {
+    return String.valueOf(keyCode);
+  }
+
   /**
-   * Simulate pressing many keys at once in a "chord". Takes a sequence of Keys.XXXX or strings;
+   * Simulate pressing many keys at once in a "chord".  Takes a sequence of Keys.XXXX or strings;
    * appends each of the values to a string, and adds the chord termination key (Keys.NULL) and
    * returns the resultant string.
-   * 
-   * Note: when the low-level webdriver key handlers see Keys.NULL, active modifier keys
+   *
+   * Note: When the low-level webdriver key handlers see Keys.NULL, active modifier keys
    * (CTRL/ALT/SHIFT/etc) release via a keyup event.
-   * 
-   * issue: http://code.google.com/p/webdriver/issues/detail?id=79
+   *
+   * Issue: http://code.google.com/p/webdriver/issues/detail?id=79
    */
   public static String chord(CharSequence... value) {
     StringBuilder builder = new StringBuilder();
@@ -117,27 +145,4 @@ public enum Keys implements CharSequence {
     return builder.toString();
   }
 
-  public char charAt(int index) {
-    if (index == 0)
-      return keyCode;
-    return 0;
-  }
-
-  public int length() {
-    return 1;
-  }
-
-  public CharSequence subSequence(int start, int end) {
-    if (start == 0 && end == 1)
-      return String.valueOf(keyCode);
-
-    throw new IndexOutOfBoundsException();
-  }
-
-  @Override
-  public String toString() {
-    return String.valueOf(keyCode);
-  }
-
-  private char keyCode;
 }
