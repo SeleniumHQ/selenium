@@ -17,6 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
@@ -28,7 +32,8 @@ public class GetAvailableLogTypesHandler extends ResponseAwareWebDriverHandler {
 
   @Override
   public ResultType call() throws Exception {
-    response.setValue(getDriver().manage().logs().getAvailableLogTypes());
-	return ResultType.SUCCESS;
+    response.setValue(Sets.union(getDriver().manage().logs().getAvailableLogTypes(),
+    		 ImmutableSet.of(LogType.SERVER)));
+    return ResultType.SUCCESS;
   }
 }
