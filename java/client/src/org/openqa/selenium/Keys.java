@@ -138,11 +138,29 @@ public enum Keys implements CharSequence {
   public static String chord(CharSequence... value) {
     StringBuilder builder = new StringBuilder();
 
-    for (CharSequence seq : value)
+    for (CharSequence seq : value) {
       builder.append(seq);
+    }
 
     builder.append(Keys.NULL);
     return builder.toString();
+  }
+
+  /**
+   * Get the special key representation, {@link Keys}, of the supplied character if there is one. If
+   * there is no special key tied to this character, null will be returned.
+   *
+   * @param key unicode character code
+   * @return special key linked to the character code, or null if character is not a special key
+   */
+  public static Keys getKeyFromUnicode(char key) {
+    for (Keys unicodeKey : values()) {
+      if (unicodeKey.charAt(0) == key) {
+        return unicodeKey;
+      }
+    }
+
+    return null;
   }
 
 }
