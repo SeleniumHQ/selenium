@@ -23,6 +23,7 @@ limitations under the License.
     goog.require('bot.dom');
     goog.require('bot.locators');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.testing.ExpectedFailures');
   </script>
 
   <script type="text/javascript">
@@ -236,6 +237,18 @@ limitations under the License.
       assertEquals("before pre\n   This section has a preformatted\n    text block    \n  split in four lines\n         \nafter pre", text);
     }
 
+    function testGetVisibleTextShouldHandleCssContentReplacement() {
+      var expect = new goog.testing.ExpectedFailures();
+      expect.expectFailureFor(goog.userAgent.GECKO || goog.userAgent.IE ||
+        goog.userAgent.SAFARI || goog.userAgent.WEBKIT,
+        "Does not support CSS3 content: 'foo' replacement");      
+
+      expect.run(function() {
+        var text = getVisibleTextByElementId("css3-content");
+        assertEquals("PASS");
+      });
+    }
+
     function getVisibleTextByElementId(id) {
       var e = bot.locators.findElement({id: id});
       return bot.dom.getVisibleText(e);
@@ -308,6 +321,7 @@ limitations under the License.
   <p id="nbspandspaces">This line has a &nbsp; non-breaking space and spaces</p>
   <p id="trailingnbsp">This line has trailing non-breaking spaces&nbsp;&nbsp;&nbsp;</p>
   <p id="multilinetrailingnbsp">These lines &nbsp<br />&nbsp have leading and trailing NBSPs&nbsp;&nbsp;</p>
+  <p id="css3-content" style="content: 'PASS'">FAIL</p>
 
   <p id="inline">This <span id="inlinespan">    line has <em>text</em>  </span> within elements that are meant to be displayed
       <!-- not as a block but --> inline</p>
