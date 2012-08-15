@@ -18,6 +18,9 @@ package org.openqa.selenium.testing;
 
 import static org.junit.Assume.assumeTrue;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
@@ -80,6 +83,31 @@ public class TestUtilities {
 
   public static boolean isFirefox9(WebDriver driver) {
     return getUserAgent(driver).contains("Firefox/9.0");
+  }
+  
+  /**
+   * Finds the Firefox version of the given webdriver and returns it as an integer. 
+   * For instance, '14.0.1' will translate to 14.
+   * 
+   * @param driver The driver to find the version for.
+   * @return The found version, or 0 if no version could be found.
+   */
+  public static int getFirefoxVersion(WebDriver driver) {
+    // extract browser string
+    Pattern browserPattern = Pattern.compile("Firefox/\\d+.");
+    Matcher browserMatcher = browserPattern.matcher(getUserAgent(driver));
+    if (!browserMatcher.find()) {
+      return 0;
+    }
+    String browserStr = browserMatcher.group();
+
+    // extract version string
+    Pattern versionPattern = Pattern.compile("\\d+");
+    Matcher versionMatcher = versionPattern.matcher(browserStr);
+    if (!versionMatcher.find()) {
+      return 0;
+    }
+    return Integer.parseInt(versionMatcher.group());
   }
 
   public static Platform getEffectivePlatform() {

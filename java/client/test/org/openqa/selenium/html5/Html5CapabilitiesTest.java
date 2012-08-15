@@ -58,7 +58,8 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
   @Before       
   public void avoidRemote() {
     // TODO: Resolve why these tests don't work on the remote server
-    assumeTrue(TestUtilities.isLocal()); 
+    assumeTrue(TestUtilities.isLocal());
+    assumeTrue(TestUtilities.getFirefoxVersion(driver) >= 12);
   }
   
   @Test 
@@ -69,7 +70,7 @@ public class Html5CapabilitiesTest extends JUnit4TestBase {
   }
   
   @Test 
-  public void disableWebStorageCapability() {  
+  public void disableWebStorageCapability() {
     configureCapability(SUPPORTS_WEB_STORAGE, false);
     assertFalse("Required capability web storage should be disabled", 
         hasWebStorage(localDriver));

@@ -761,7 +761,13 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
       'nsIPrefService');
   for (var cap in wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING) {
     var pref = wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING[cap];
-    response.value[cap] = prefStore.getBoolPref(pref);
+    try {
+      response.value[cap] = prefStore.getBoolPref(pref);
+    } catch (e) {
+      // An exception is thrown if the saught preference is not available.
+      // For instance, a Firefox version not supporting HTML5 will not have
+      // a preference for webStorageEnabled.
+    }
   }
 
   response.send();
