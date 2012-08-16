@@ -1,5 +1,6 @@
 /*
-Copyright 2007-2011 Selenium committers
+Copyright 2007-2012 Selenium committers
+Copyright 2012 Software Freedom Conservancy
 
 Portions copyright 2011 Software Freedom Conservancy
 
@@ -18,25 +19,30 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
-import java.util.logging.Level;
+import com.google.common.collect.ImmutableMap;
 
 import org.json.JSONObject;
 
-import com.google.common.collect.ImmutableMap;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
 
 /**
  * Represents a single log statement.
  */
 public class LogEntry {
+
+  private static final SimpleDateFormat DATE_FORMAT =
+      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
   private final Level level;
   private final long timestamp;
   private final String message;
 
   /**
-   * @param level the level of the log, e.g. INFO.
-   * @param timestamp long value of the timestamp at which this log entry
-   *     was created.
-   * @param message String the log's message.
+   * @param level     the severity of the log entry
+   * @param timestamp UNIX Epoch timestamp at which this log entry was created
+   * @param message ew  the log entry's message
    */
   public LogEntry(Level level, long timestamp, String message) {
     this.level = level;
@@ -44,27 +50,45 @@ public class LogEntry {
     this.message = message;
   }
 
+  /**
+   * Gets the logging entry's severity.
+   *
+   * @return severity of log statement
+   */
   public Level getLevel() {
     return level;
   }
 
+  /**
+   * Gets the timestamp of the log statement in seconds since UNIX Epoch.
+   *
+   * @return timestamp as UNIX Epoch
+   */
   public long getTimestamp() {
     return timestamp;
   }
 
+  /**
+   * Gets the log entry's message.
+   *
+   * @return the log statement
+   */
   public String getMessage() {
     return message;
   }
 
   @Override
   public String toString() {
-    return String.format("%d %s %s", timestamp, level, message);
+    return String.format("[%s] [%s] %s",
+                         DATE_FORMAT.format(new Date(timestamp * 1000L)), level, message);
   }
 
+  @SuppressWarnings("unused")
   public JSONObject toJson() {
     return new JSONObject(ImmutableMap.of(
-      "timestamp", timestamp,
-      "message", message,
-      "level", level.getName()));
+        "timestamp", timestamp,
+        "message", message,
+        "level", level.getName()));
   }
+
 }
