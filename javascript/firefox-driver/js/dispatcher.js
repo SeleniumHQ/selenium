@@ -323,6 +323,9 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/session/:sessionId/log/types').
       on(Request.Method.GET, Dispatcher.executeAs('getAvailableLogTypes'));
 
+  // HTML 5
+  this.bind_('/session/:sessionId/browser_connection').
+      on(Request.Method.GET, Dispatcher.executeAs('isOnline'));
 
   // --------------------------------------------------------------------------
   // Firefox extensions to the wire protocol.

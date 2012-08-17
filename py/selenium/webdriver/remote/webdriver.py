@@ -793,3 +793,7 @@ class WebDriver(object):
             self.execute(Command.SET_SCREEN_ORIENTATION, {'orientation': value})['value']
         else:
             raise WebDriverException("You can only set the orientation to 'LANDSCAPE' and 'PORTRAIT'")
+
+    def is_online(self):
+        """ Returns a boolean if the browser is online or offline"""
+        return self.execute(Command.IS_BROWSER_ONLINE)['value']

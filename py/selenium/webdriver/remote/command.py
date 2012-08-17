@@ -105,3 +105,30 @@ class Command(object):
     # Screen Orientation
     SET_SCREEN_ORIENTATION = "setScreenOrientation"
     GET_SCREEN_ORIENTATION = "getScreenOrientation"
+
+    #HTML 5
+    EXECUTE_SQL = "executeSql"
+
+    GET_LOCATION = "getLocation"
+    SET_LOCATION = "setLocation"
+
+    GET_APP_CACHE = "getAppCache"
+    GET_APP_CACHE_STATUS = "getAppCacheStatus"
+    CLEAR_APP_CACHE = "clearAppCache"
+
+    IS_BROWSER_ONLINE = "isBrowserOnline"
+    SET_BROWSER_ONLINE = "setBrowserOnline"
+
+    GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem"
+    REMOVE_LOCAL_STORAGE_ITEM = "removeLocalStorageItem"
+    GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys"
+    SET_LOCAL_STORAGE_ITEM = "setLocalStorageItem"
+    CLEAR_LOCAL_STORAGE = "clearLocalStorage"
+    GET_LOCAL_STORAGE_SIZE = "getLocalStorageSize"
+
+    GET_SESSION_STORAGE_ITEM= "getSessionStorageItem"
+    REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem"
+    GET_SESSION_STORAGE_KEYS = "getSessionStorageKeys"
+    SET_SESSION_STORAGE_ITEM = "setSessionStorageItem"
+    CLEAR_SESSION_STORAGE = "clearSessionStorage"
+    GET_SESSION_STORAGE_SIZE = "getSessionStorageSize"

@@ -25,6 +25,7 @@ goog.require('bot.dom');
 goog.require('bot.locators');
 goog.require('bot.userAgent');
 goog.require('bot.window');
+goog.require('bot.connection');
 goog.require('fxdriver.events');
 goog.require('fxdriver.io');
 goog.require('fxdriver.modals');
@@ -1026,6 +1027,11 @@ FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
     throw new WebDriverError(bot.ErrorCode.IME_ENGINE_ACTIVATION_FAILED,
         "Activation of engine failed: " + engineToActivate);
   }
+  respond.send();
+};
+
+FirefoxDriver.prototype.isOnline = function(respond, parameters) {
+  respond.value = bot.connection.isOnline(respond.session.getBrowser().contentWindow);
   respond.send();
 };
 
