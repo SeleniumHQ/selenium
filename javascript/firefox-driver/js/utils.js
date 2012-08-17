@@ -785,29 +785,29 @@ Utils.getLocation = function(element, opt_onlyFirstRect) {
 /**
  * Gets location of element in window-handle space.
  */
-Utils.getLocationRelativeToWindowHandle = function(element) {
-  var loc = Utils.getLocation(element, element.tagName = 'A');
+Utils.getLocationRelativeToWindowHandle = function(element, opt_onlyFirstRect) {
+  var location = Utils.getLocation(element, opt_onlyFirstRect);
 
   // In Firefox 3.6 and above, there's a shared window handle.
   // We need to calculate an offset to add to the x and y locations.
 
   if (bot.userAgent.isProductVersion(3.6)) {
     // Get the ultimate parent frame
-    var current = element.ownerDocument.defaultView;
+    var currentParent = element.ownerDocument.defaultView;
     var ultimateParent = element.ownerDocument.defaultView.parent;
-    while (ultimateParent != current) {
-      current = ultimateParent;
-      ultimateParent = current.parent;
+    while (ultimateParent != currentParent) {
+      currentParent = ultimateParent;
+      ultimateParent = currentParent.parent;
     }
 
     var offX = element.ownerDocument.defaultView.mozInnerScreenX - ultimateParent.mozInnerScreenX;
     var offY = element.ownerDocument.defaultView.mozInnerScreenY - ultimateParent.mozInnerScreenY;
 
-    loc.x += offX;
-    loc.y += offY;
+    location.x += offX;
+    location.y += offY;
   }
 
-  return loc;
+  return location;
 };
 
 
@@ -826,17 +826,6 @@ Utils.getBrowserSpecificOffset = function(inBrowser) {
   }
 
   return {x: browserSpecificXOffset, y: browserSpecificYOffset};
-};
-
-
-/**
- * Translates a coordinate from the viewport coordinate space to the window
- * handle coordinate space in-place.
- */
-Utils.translateByBrowserSpecificOffset = function(browser, coordinate) {
-  var browserSpecificOffset = Utils.getBrowserSpecificOffset(browser);
-  coordinate.x += browserSpecificOffset.x;
-  coordinate.y += browserSpecificOffset.y;
 };
 
 

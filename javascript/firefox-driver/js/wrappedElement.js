@@ -75,9 +75,9 @@ WebElement.clickElement = function(respond, parameters) {
   // For now, we need to bypass native events for option elements
   var isOption = "option" == unwrapped.tagName.toLowerCase();
 
-  var loc = Utils.getLocation(unwrapped, unwrapped.tagName == "A");
-  var elementHalfWidth = (loc.width ? loc.width / 2 : 0);
-  var elementHalfHeight = (loc.height ? loc.height / 2 : 0);
+  var location = Utils.getLocation(unwrapped, unwrapped.tagName == "A");
+  var elementHalfWidth = (location.width ? location.width / 2 : 0);
+  var elementHalfHeight = (location.height ? location.height / 2 : 0);
 
   if (!isOption && this.enableNativeEvents && nativeMouse && node && useNativeClick && thmgr_cls) {
     fxdriver.Logger.dumpn("Using native events for click");
@@ -93,31 +93,25 @@ WebElement.clickElement = function(respond, parameters) {
         return;
     }
 
-    loc = Utils.getLocationRelativeToWindowHandle(unwrapped);
-    var x = loc.x + elementHalfWidth;
-    var y = loc.y + elementHalfHeight;
+    location = Utils.getLocationRelativeToWindowHandle(unwrapped, unwrapped.tagName == "A");
+    var x = location.x + elementHalfWidth;
+    var y = location.y + elementHalfHeight;
 
     try {
       var currentPosition = respond.session.getMousePosition();
-      Utils.translateByBrowserSpecificOffset(respond.session.getBrowser(), currentPosition);
-
-      var destinationCoordinates = new goog.math.Coordinate(x, y);
-      Utils.translateByBrowserSpecificOffset(respond.session.getBrowser(), destinationCoordinates);
-
-      var adjustedX = destinationCoordinates.x;
-      var adjustedY = destinationCoordinates.y;
+      var clickPosition = new goog.math.Coordinate(x, y);
+      var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
 
       nativeMouse.mouseMove(node,
-                             currentPosition.x,
-                             currentPosition.y,
-                             adjustedX,
-                             adjustedY);
+          currentPosition.x + browserOffset.x, currentPosition.y + browserOffset.y,
+          clickPosition.x + browserOffset.x, clickPosition.y + browserOffset.y);
 
       var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(unwrapped);
 
-      nativeMouse.click(node, adjustedX, adjustedY, 1);
+      nativeMouse.click(node,
+          clickPosition.x + browserOffset.x, clickPosition.y + browserOffset.y, 1);
 
-      respond.session.setMousePosition(x, y);
+      respond.session.setMousePosition(clickPosition.x, clickPosition.y);
 
       Utils.waitForNativeEventsProcessing(unwrapped, Utils.getNativeEvents(),
           pageUnloadedIndicator, this.jsTimer);

@@ -80,6 +80,20 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore({OPERA, OPERA_MOBILE})
+  @Test
+  public void testDragAndDropToElementInIframe() {
+    driver.get(pages.iframePage);
+    final WebElement iframe = driver.findElement(By.tagName("iframe"));
+    ((JavascriptExecutor) driver).executeScript("arguments[0].src = arguments[1]", iframe, pages.dragAndDropPage);
+    driver.switchTo().frame(0);
+    WebElement img1 = driver.findElement(By.id("test1"));
+    WebElement img2 = driver.findElement(By.id("test2"));
+    new Actions(driver).dragAndDrop(img2, img1).perform();
+    assertEquals(img1.getLocation(), img2.getLocation());
+  }
+
+  @JavascriptEnabled
   @Test
   public void testElementInDiv() {
     if (Platform.getCurrent().is(Platform.MAC)) {

@@ -1108,7 +1108,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
     if (coordinates.auxiliary) {
       elementForNode = fxdriver.moz.unwrap(coordinates.auxiliary);
-      clickPoint_ownerDocumentPreScroll = Utils.getLocation(elementForNode);
+      clickPoint_ownerDocumentPreScroll = Utils.getLocationRelativeToWindowHandle(elementForNode);
     } else {
       elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
       clickPoint_ownerDocumentPreScroll = respond.session.getMousePosition();
