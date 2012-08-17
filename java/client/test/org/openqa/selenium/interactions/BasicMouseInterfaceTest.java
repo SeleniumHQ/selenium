@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
@@ -91,7 +93,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
       moveToSpecificItem.perform();
       moveToOtherList.perform();
 
-      assertEquals("Nothing happened. DragOut", dragReporter.getText());
+      String text = dragReporter.getText();
+      assertTrue(text, text.matches("Nothing happened. (?:DragOut)+"));
     } finally {
       drop.perform();
     }
@@ -117,7 +120,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     performDragAndDropWithMouse();
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
     // This is failing under HtmlUnit. A bug was filed.
-    assertEquals("Nothing happened. DragOut DropIn RightItem 3", dragReporter.getText());
+    String text = dragReporter.getText();
+    assertTrue(text, text.matches("Nothing happened. (?:DragOut)+ DropIn RightItem 3"));
   }
 
 
