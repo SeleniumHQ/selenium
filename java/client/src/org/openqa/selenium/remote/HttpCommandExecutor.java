@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 
@@ -41,6 +42,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.logging.LocalLogs;
@@ -303,6 +305,13 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       final EntityWithEncoding entityWithEncoding = new EntityWithEncoding(response.getEntity());
 
       return createResponse(response, context, entityWithEncoding);
+    } catch (UnsupportedCommandException e) {
+      if (e.getMessage() == null || "".equals(e.getMessage())) {
+        throw new UnsupportedOperationException(
+            "No information from server. Command name was: " + command.getName(),
+            e.getCause());
+      }
+      throw e;
     } catch (NullPointerException e) {
       // swallow an NPE on quit. It indicates that the sessionID is null
       // which is what we expect to be the case.
