@@ -26,6 +26,7 @@ goog.require('bot.locators');
 goog.require('bot.userAgent');
 goog.require('bot.window');
 goog.require('bot.connection');
+goog.require('bot.appcache');
 goog.require('fxdriver.events');
 goog.require('fxdriver.io');
 goog.require('fxdriver.modals');
@@ -1030,8 +1031,14 @@ FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
   respond.send();
 };
 
+// HTML 5
 FirefoxDriver.prototype.isOnline = function(respond, parameters) {
   respond.value = bot.connection.isOnline(respond.session.getBrowser().contentWindow);
+  respond.send();
+};
+
+FirefoxDriver.prototype.getAppCacheStatus = function(respond, parameters) {
+  respond.value = bot.appcache.getStatus(respond.session.getBrowser().contentWindow);
   respond.send();
 };
 

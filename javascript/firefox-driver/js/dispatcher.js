@@ -327,6 +327,9 @@ Dispatcher.prototype.init_ = function() {
   this.bind_('/session/:sessionId/browser_connection').
       on(Request.Method.GET, Dispatcher.executeAs('isOnline'));
 
+  this.bind_('/session/:sessionId/application_cache/status').
+      on(Request.Method.GET, Dispatcher.executeAs('getAppCacheStatus'))
+
   // --------------------------------------------------------------------------
   // Firefox extensions to the wire protocol.
   // --------------------------------------------------------------------------
