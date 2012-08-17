@@ -785,17 +785,13 @@ Utils.getLocation = function(element, opt_onlyFirstRect) {
 /**
  * Gets location of element in window-handle space.
  */
-Utils.getLocationRelativeToWindowHandle = function(element, browser, opt_onlyFirstRect) {
-  var loc = Utils.getLocation(element, opt_onlyFirstRect);
+Utils.getLocationRelativeToWindowHandle = function(element) {
+  var loc = Utils.getLocation(element, element.tagName = 'A');
 
-  // In Firefox 3.6 and above, there's a shared window handle. We need to calculate an offset
-  // to add to the x and y locations.
+  // In Firefox 3.6 and above, there's a shared window handle.
+  // We need to calculate an offset to add to the x and y locations.
 
-  var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
-      getService(Components.interfaces.nsIXULAppInfo);
-  var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
-      getService(Components.interfaces.nsIVersionComparator);
-  if (versionChecker.compare(appInfo.version, '3.6') >= 0) {
+  if (bot.userAgent.isProductVersion(3.6)) {
     // Get the ultimate parent frame
     var current = element.ownerDocument.defaultView;
     var ultimateParent = element.ownerDocument.defaultView.parent;
@@ -810,11 +806,6 @@ Utils.getLocationRelativeToWindowHandle = function(element, browser, opt_onlyFir
     loc.x += offX;
     loc.y += offY;
   }
-
-  var browserOffset = Utils.getBrowserSpecificOffset(browser);
-
-  loc.x += browserOffset.x;
-  loc.y += browserOffset.y;
 
   return loc;
 };

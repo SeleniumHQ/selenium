@@ -93,28 +93,9 @@ WebElement.clickElement = function(respond, parameters) {
         return;
     }
 
-    loc = Utils.getLocation(unwrapped, unwrapped.tagName == "A");
+    loc = Utils.getLocationRelativeToWindowHandle(unwrapped);
     var x = loc.x + elementHalfWidth;
     var y = loc.y + elementHalfHeight;
-
-    // In Firefox 3.6 and above, there's a shared window handle. We need to calculate an offset
-    // to add to the x and y locations.
-
-    if (bot.userAgent.isProductVersion(3.6)) {
-      // Get the ultimate parent frame
-      var current = unwrapped.ownerDocument.defaultView;
-      var ultimateParent = unwrapped.ownerDocument.defaultView.parent;
-      while (ultimateParent != current) {
-        current = ultimateParent;
-        ultimateParent = current.parent;
-      }
-
-      var offX = unwrapped.ownerDocument.defaultView.mozInnerScreenX - ultimateParent.mozInnerScreenX;
-      var offY = unwrapped.ownerDocument.defaultView.mozInnerScreenY - ultimateParent.mozInnerScreenY;
-
-      x += offX;
-      y += offY;
-    }
 
     try {
       var currentPosition = respond.session.getMousePosition();
