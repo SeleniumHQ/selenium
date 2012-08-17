@@ -17,23 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
-
-import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
-
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
@@ -42,8 +28,22 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.Set;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+
 @RunWith(SeleniumTestRunner.class)
-@Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, SAFARI, SELENESE})
+@Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, SAFARI, SELENESE})
 public class AvailableLogsTest {
 
   private WebDriver localDriver;
@@ -60,32 +60,32 @@ public class AvailableLogsTest {
   public void browserLogShouldBeEnabledByDefault() {
     createLocalDriver();
     Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
-    assertTrue("Browser logs should be enabled by default", 
-        logTypes.contains(LogType.BROWSER));
+    assertTrue("Browser logs should be enabled by default",
+               logTypes.contains(LogType.BROWSER));
   }
-    
+
   @Test
   public void clientLogShouldBeEnabledByDefault() {
     createLocalDriver();
     Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
     assertTrue("Client logs should be enabled by default",
-        logTypes.contains(LogType.CLIENT));
+               logTypes.contains(LogType.CLIENT));
   }
-  
+
   @Test
   public void driverLogShouldBeEnabledByDefault() {
     createLocalDriver();
     Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
-    assertTrue("Remote driver logs should be enabled by default", 
-        logTypes.contains(LogType.DRIVER));
+    assertTrue("Remote driver logs should be enabled by default",
+               logTypes.contains(LogType.DRIVER));
   }
-  
+
   @Test
   public void profilerLogShouldBeDisabledByDefault() {
     createLocalDriver();
     Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
-    assertFalse("Profiler logs should not be enabled by default", 
-        logTypes.contains(LogType.PROFILER));
+    assertFalse("Profiler logs should not be enabled by default",
+                logTypes.contains(LogType.PROFILER));
   }
 
   private void createLocalDriver() {
@@ -108,7 +108,8 @@ public class AvailableLogsTest {
 
     createLocalDriver();
     Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
-    assertTrue("Server logs should be enabled by default", 
-        logTypes.contains(LogType.SERVER));
+    assertTrue("Server logs should be enabled by default",
+               logTypes.contains(LogType.SERVER));
   }
+
 }
