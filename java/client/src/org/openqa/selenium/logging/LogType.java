@@ -1,7 +1,6 @@
 /*
-Copyright 2007-2011 Selenium committers
-
-Portions copyright 2011 Software Freedom Conservancy
+Copyright 2007-2012 Selenium committers
+Portions copyright 2011-2012 Software Freedom Conservancy
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,7 +23,7 @@ package org.openqa.selenium.logging;
 public class LogType {
 
   /**
-   * This log type pertains to logs from the browser. 
+   * This log type pertains to logs from the browser.
    */
   public static final String BROWSER = "browser";
 
@@ -39,7 +38,7 @@ public class LogType {
   public static final String PROFILER = "profiler";
 
   /**
-   * This log pertains to logs from the webdriver.
+   * This log pertains to logs from the WebDriver implementation.
    */
   public static final String DRIVER = "driver";
 
@@ -47,4 +46,5 @@ public class LogType {
    * This log type pertains to logs from the remote server.
    */
   public static final String SERVER = "server";
+
 }
