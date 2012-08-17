@@ -16,7 +16,7 @@
 
 import unittest
 
-class LocalStorageTests(unittest.TestCase):
+class ConnectionTests(unittest.TestCase):
 
     def testWeCanSeeTheBrowserIsOnline(self):
         self._loadPage('html5Page')
