@@ -16,7 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 
