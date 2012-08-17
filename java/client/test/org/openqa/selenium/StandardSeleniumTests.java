@@ -69,6 +69,7 @@ import org.openqa.selenium.testing.ParallelSuite;
     RotatableTest.class,
     SelectElementTest.class,
     SelectElementHandlingTest.class,
+    SessionHandlingTest.class,
     SlowLoadingPageTest.class,
     StaleElementReferenceTest.class,
     SvgElementTest.class,
