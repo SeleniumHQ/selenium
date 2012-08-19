@@ -15,6 +15,7 @@ java_library(name = "beta",
 
 java_library(name = "base",
   srcs = [
+    "Architecture.java",
     "Capabilities.java",
     "Point.java",
     "Platform.java",
