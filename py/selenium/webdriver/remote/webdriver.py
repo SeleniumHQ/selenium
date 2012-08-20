@@ -24,7 +24,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
-from selenium.webdriver.common.application_cache import ApplicationCache
+from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
 
 class WebDriver(object):
