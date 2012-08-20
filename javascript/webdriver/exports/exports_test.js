@@ -27,10 +27,28 @@ checkCommand();
 checkCommandName();
 checkEventEmitter();
 checkKey();
+checkLocators();
 checkWebDriver();
 checkWebElement();
 checkSession();
 checkPromise();
+
+
+function checkLocators() {
+  console.log('Checking webdriver.By API...');
+  assertObject('webdriver', 'By');
+  assertFunction('webdriver.By', 'className');
+  assertFunction('webdriver.By', 'css');
+  assertFunction('webdriver.By', 'id');
+  assertFunction('webdriver.By', 'js');
+  assertFunction('webdriver.By', 'linkText');
+  assertFunction('webdriver.By', 'name');
+  assertFunction('webdriver.By', 'partialLinkText');
+  assertFunction('webdriver.By', 'tagName');
+  assertFunction('webdriver.By', 'xpath');
+  console.log('...OK');
+}
+
 
 function loadWebDriver() {
   console.log('Reading webdriverjs module path');
