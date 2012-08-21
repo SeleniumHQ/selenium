@@ -77,7 +77,7 @@ namespace OpenQA.Selenium
                 string currentHandle = driver.CurrentWindowHandle;
                 Assert.Fail("NoSuchWindowException expected");
             }
-            catch (NoSuchWindowException e)
+            catch (NoSuchWindowException)
             {
                 // Expected.
             }
@@ -157,7 +157,7 @@ namespace OpenQA.Selenium
                 string bodyText = body.Text;
                 Assert.Fail("NoSuchWindowException expected");
             }
-            catch (NoSuchWindowException e)
+            catch (NoSuchWindowException)
             {
                 // Expected.
             }
