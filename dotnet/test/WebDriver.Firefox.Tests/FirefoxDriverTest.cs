@@ -150,19 +150,6 @@ namespace OpenQA.Selenium.Firefox
         }
 
         [Test]
-        public void ShouldBeAbleToStartDriverMultipleTimes()
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                CreateFreshDriver();
-                driver.Url = simpleTestPage;
-                Assert.AreEqual(simpleTestTitle, driver.Title);
-                
-            }
-            CreateFreshDriver();
-        }
-
-        [Test]
         [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         public void ClosingWindowAndSwitchingToOriginalSwitchesFocus()
         {

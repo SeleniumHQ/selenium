@@ -132,15 +132,23 @@ namespace OpenQA.Selenium.Remote
                     // 4xx represents an unknown command or a bad request.
                     if (webResponse.StatusCode >= HttpStatusCode.BadRequest && webResponse.StatusCode < HttpStatusCode.InternalServerError)
                     {
-                        commandResponse.Status = WebDriverResult.UnknownCommand;
+                        commandResponse.Status = WebDriverResult.UnhandledError;
                     }
                     else if (webResponse.StatusCode >= HttpStatusCode.InternalServerError)
                     {
                         // 5xx represents an internal server error. The response status should already be set, but
-                        // if not, set it to a general error code.
-                        if (commandResponse.Status == WebDriverResult.Success)
+                        // if not, set it to a general error code. The exception is a 501 (NotImplemented) response,
+                        // which indicates that the command hasn't been implemented on the server.
+                        if (webResponse.StatusCode == HttpStatusCode.NotImplemented)
                         {
-                            commandResponse.Status = WebDriverResult.UnhandledError;
+                            commandResponse.Status = WebDriverResult.UnknownCommand;
+                        }
+                        else
+                        {
+                            if (commandResponse.Status == WebDriverResult.Success)
+                            {
+                                commandResponse.Status = WebDriverResult.UnhandledError;
+                            }
                         }
                     }
                     else

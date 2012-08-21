@@ -93,6 +93,7 @@
     <Compile Include="CookieTest.cs" />
     <Compile Include="AtomsInjectionTest.cs" />
     <Compile Include="DesiredCapabililtiesTest.cs" />
+    <Compile Include="DriverDisposalTest.cs" />
     <Compile Include="ElementSelectingTest.cs" />
     <Compile Include="ErrorsTest.cs" />
     <Compile Include="GetMultipleAttributeTest.cs" />

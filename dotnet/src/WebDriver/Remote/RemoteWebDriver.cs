@@ -334,24 +334,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public void Quit()
         {
-            try
-            {
-                this.Execute(DriverCommand.Quit, null);
-            }
-            catch (NotImplementedException)
-            {
-            }
-            catch (InvalidOperationException)
-            {
-            }
-            catch (WebDriverException)
-            {
-            }
-            finally
-            {
-                this.Dispose();
-                this.sessionId = null;
-            }
+            this.Dispose();
         }
 
         /// <summary>
@@ -770,7 +753,24 @@ namespace OpenQA.Selenium.Remote
         /// <param name="disposing">if its in the process of disposing</param>
         protected virtual void Dispose(bool disposing)
         {
-            this.StopClient();
+            try
+            {
+                this.Execute(DriverCommand.Quit, null);
+            }
+            catch (NotImplementedException)
+            {
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            catch (WebDriverException)
+            {
+            }
+            finally
+            {
+                this.StopClient();
+                this.sessionId = null;
+            }
         }
 
         /// <summary>

@@ -68,7 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyTeardown.cs" />
-    <Compile Include="DriverDisposalTests.cs" />
     <Compile Include="IeSpecificTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

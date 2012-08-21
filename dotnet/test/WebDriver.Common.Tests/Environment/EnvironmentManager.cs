@@ -107,7 +107,7 @@ namespace OpenQA.Selenium.Environment
             }
         }
 
-        public IWebDriver CreateSecondDriver()
+        public IWebDriver CreateDriverInstance()
         {
             return (IWebDriver)Activator.CreateInstance(driverType);
         }
@@ -115,7 +115,7 @@ namespace OpenQA.Selenium.Environment
         public IWebDriver CreateFreshDriver()
         {
             CloseCurrentDriver();
-            driver = (IWebDriver)Activator.CreateInstance(driverType);
+            driver = CreateDriverInstance();
             return driver;
         }
 

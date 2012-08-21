@@ -258,18 +258,22 @@ namespace OpenQA.Selenium.Firefox
             // Suicide watch: First,  a second to see if the process will die on 
             // it's own (we will likely have asked the process to kill itself just 
             // before calling this method).
-            if (!this.process.HasExited)
+            if (this.process != null)
             {
-                System.Threading.Thread.Sleep(1000);
-            }
+                if (!this.process.HasExited)
+                {
+                    System.Threading.Thread.Sleep(1000);
+                }
 
-            // Murder option: The process is still alive, so kill it.
-            if (!this.process.HasExited)
-            {
-                this.process.Kill();
-            }
+                // Murder option: The process is still alive, so kill it.
+                if (!this.process.HasExited)
+                {
+                    this.process.Kill();
+                }
 
-            this.process.Dispose();
+                this.process.Dispose();
+                this.process = null;
+            }
         }
 
         /// <summary>
