@@ -15,11 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package org.openqa.selenium;
-
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,8 +23,12 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
+
 @RunWith(SeleniumTestRunner.class)
 public class SessionHandlingTest {
+
   @Test
   @Ignore(IE)
   public void callingQuitMoreThanOnceOnASessionIsANoOp() {
@@ -39,7 +39,8 @@ public class SessionHandlingTest {
     try {
       driver.quit();
     } catch (RuntimeException e) {
-      fail("It should be possible to quit a session more than once.");
+      fail("It should be possible to quit a session more than once, got exception: " + e);
     }
   }
+
 }
