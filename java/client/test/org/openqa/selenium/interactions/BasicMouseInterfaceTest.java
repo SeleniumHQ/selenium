@@ -94,7 +94,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
       moveToOtherList.perform();
 
       String text = dragReporter.getText();
-      assertTrue(text, text.matches("Nothing happened. (?:DragOut)+"));
+      assertTrue(text, text.matches("Nothing happened. (?:DragOut *)+"));
     } finally {
       drop.perform();
     }
@@ -121,7 +121,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
     // This is failing under HtmlUnit. A bug was filed.
     String text = dragReporter.getText();
-    assertTrue(text, text.matches("Nothing happened. (?:DragOut)+ DropIn RightItem 3"));
+    assertTrue(text, text.matches("Nothing happened. (?:DragOut *)+DropIn RightItem 3"));
   }
 
 
