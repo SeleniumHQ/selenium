@@ -176,9 +176,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({IE, FIREFOX, OPERA, REMOTE, SELENESE})
+  @Ignore({IE, FIREFOX, REMOTE, SELENESE})
   @Test
-  public void testShouldBeAbleToIterateOverAllOpenWindows() throws Exception {
+  public void testShouldBeAbleToIterateOverAllOpenWindows() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
     driver.findElement(By.name("windowTwo")).click();
