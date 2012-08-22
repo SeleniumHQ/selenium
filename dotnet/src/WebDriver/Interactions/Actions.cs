@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -40,14 +41,28 @@ namespace OpenQA.Selenium.Interactions
             IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
             if (inputDevicesDriver == null)
             {
-                throw new ArgumentException("The IWebDriver object must implement IHasInputDevices.", "driver");
+                IWrapsDriver wrapper = driver as IWrapsDriver;
+                while (wrapper != null)
+                {
+                    inputDevicesDriver = wrapper.WrappedDriver as IHasInputDevices;
+                    if (inputDevicesDriver != null)
+                    {
+                        break;
+                    }
+
+                    wrapper = wrapper.WrappedDriver as IWrapsDriver;
+                }
+            }
+
+            if (inputDevicesDriver == null)
+            {
+                throw new ArgumentException("The IWebDriver object must implement or wrap a driver that implements IHasInputDevices.", "driver");
             }
 
             this.keyboard = inputDevicesDriver.Keyboard;
             this.mouse = inputDevicesDriver.Mouse;
         }
 
-        #region IActionSequenceGenerator Members
         /// <summary>
         /// Sends a modifier key down message to the browser.
         /// </summary>
@@ -70,7 +85,7 @@ namespace OpenQA.Selenium.Interactions
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyDown(IWebElement element, string theKey)
         {
-            ILocatable target = element as ILocatable;
+            ILocatable target = GetLocatableFromElement(element);
             this.action.AddAction(new KeyDownAction(this.keyboard, this.mouse, target, theKey));
             return this;
         }
@@ -97,7 +112,7 @@ namespace OpenQA.Selenium.Interactions
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyUp(IWebElement element, string theKey)
         {
-            ILocatable target = element as ILocatable;
+            ILocatable target = GetLocatableFromElement(element);
             this.action.AddAction(new KeyUpAction(this.keyboard, this.mouse, target, theKey));
             return this;
         }
@@ -120,7 +135,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions SendKeys(IWebElement element, string keysToSend)
         {
-            ILocatable target = element as ILocatable;
+            ILocatable target = GetLocatableFromElement(element);
             this.action.AddAction(new SendKeysAction(this.keyboard, this.mouse, target, keysToSend));
             return this;
         }
@@ -132,7 +147,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ClickAndHold(IWebElement onElement)
         {
-            ILocatable target = onElement as ILocatable;
+            ILocatable target = GetLocatableFromElement(onElement);
             this.action.AddAction(new ClickAndHoldAction(this.mouse, target));
             return this;
         }
@@ -153,7 +168,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Release(IWebElement onElement)
         {
-            ILocatable target = onElement as ILocatable;
+            ILocatable target = GetLocatableFromElement(onElement);
             this.action.AddAction(new ButtonReleaseAction(this.mouse, target));
             return this;
         }
@@ -174,7 +189,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Click(IWebElement onElement)
         {
-            ILocatable target = onElement as ILocatable;
+            ILocatable target = GetLocatableFromElement(onElement);
             this.action.AddAction(new ClickAction(this.mouse, target));
             return this;
         }
@@ -195,7 +210,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DoubleClick(IWebElement onElement)
         {
-            ILocatable target = onElement as ILocatable;
+            ILocatable target = GetLocatableFromElement(onElement);
             this.action.AddAction(new DoubleClickAction(this.mouse, target));
             return this;
         }
@@ -216,7 +231,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement)
         {
-            ILocatable target = toElement as ILocatable;
+            ILocatable target = GetLocatableFromElement(toElement);
             this.action.AddAction(new MoveMouseAction(this.mouse, target));
             return this;
         }
@@ -230,7 +245,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY)
         {
-            ILocatable target = toElement as ILocatable;
+            ILocatable target = GetLocatableFromElement(toElement);
             this.action.AddAction(new MoveToOffsetAction(this.mouse, target, offsetX, offsetY));
             return this;
         }
@@ -253,7 +268,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ContextClick(IWebElement onElement)
         {
-            ILocatable target = onElement as ILocatable;
+            ILocatable target = GetLocatableFromElement(onElement);
             this.action.AddAction(new ContextClickAction(this.mouse, target));
             return this;
         }
@@ -266,8 +281,8 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DragAndDrop(IWebElement source, IWebElement target)
         {
-            ILocatable startElement = source as ILocatable;
-            ILocatable endElement = target as ILocatable;
+            ILocatable startElement = GetLocatableFromElement(source);
+            ILocatable endElement = GetLocatableFromElement(target);
 
             this.action.AddAction(new ClickAndHoldAction(this.mouse, startElement));
             this.action.AddAction(new MoveMouseAction(this.mouse, endElement));
@@ -284,7 +299,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DragAndDropToOffset(IWebElement source, int offsetX, int offsetY)
         {
-            ILocatable startElement = source as ILocatable;
+            ILocatable startElement = GetLocatableFromElement(source);
 
             this.action.AddAction(new ClickAndHoldAction(this.mouse, startElement));
             this.action.AddAction(new MoveToOffsetAction(this.mouse, null, offsetX, offsetY));
@@ -319,6 +334,31 @@ namespace OpenQA.Selenium.Interactions
         {
             this.action.AddAction(actionToAdd);
         }
-        #endregion
+
+        private ILocatable GetLocatableFromElement(IWebElement element)
+        {
+            ILocatable target = element as ILocatable;
+            if (target == null)
+            {
+                IWrapsElement wrapper = element as IWrapsElement;
+                while (wrapper != null)
+                {
+                    target = wrapper.WrappedElement as ILocatable;
+                    if (target != null)
+                    {
+                        break;
+                    }
+
+                    wrapper = wrapper.WrappedElement as IWrapsElement;
+                }
+            }
+
+            if (target == null)
+            {
+                throw new ArgumentException("The IWebElement object must implement or wrap an element that implements ILocatable.", "element");
+            }
+
+            return target;
+        }
     }
 }
