@@ -151,6 +151,20 @@ FirefoxDriver.prototype.getCurrentWindowHandle = function(respond) {
 };
 
 
+FirefoxDriver.prototype.getCurrentUrl = function(respond) {
+  var window = respond.session.getWindow();
+  var url;
+  if (window) {
+    url = window.location;
+  }
+  if (!url) {
+    url = respond.session.getBrowser().contentWindow.location;
+  }
+  respond.value = '' + url;
+  respond.send();
+};
+
+
 FirefoxDriver.prototype.get = function(respond, parameters) {
   var url = parameters.url;
   // Check to see if the given url is the same as the current one, but

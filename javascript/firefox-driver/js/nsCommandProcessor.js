@@ -518,20 +518,6 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     }
   }
 
-  if (command.name == 'getCurrentUrl') {
-    var window = response.session.getWindow();
-    var url;
-    if (window) {
-      url = window.location;
-    }
-    if (!url) {
-      url = response.session.getBrowser().contentWindow.location;
-    }
-    response.value = "" + url;
-    response.send();
-    return;
-  }
-
   if (typeof driver[command.name] != 'function' && typeof WebElement[command.name] != 'function') {
     response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_COMMAND,
         'Unrecognised command: ' + command.name));
