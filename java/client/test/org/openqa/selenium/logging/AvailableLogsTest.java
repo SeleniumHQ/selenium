@@ -20,15 +20,18 @@ package org.openqa.selenium.logging;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.Pages;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.Set;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
@@ -42,9 +45,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-@RunWith(SeleniumTestRunner.class)
 @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, SAFARI, SELENESE})
-public class AvailableLogsTest {
+public class AvailableLogsTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
 
@@ -58,38 +60,41 @@ public class AvailableLogsTest {
 
   @Test
   public void browserLogShouldBeEnabledByDefault() {
-    createLocalDriver();
-    Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
+    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertTrue("Browser logs should be enabled by default",
                logTypes.contains(LogType.BROWSER));
   }
 
   @Test
   public void clientLogShouldBeEnabledByDefault() {
-    createLocalDriver();
-    Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
+    // Do one action to have *something* in the client logs.
+    driver.get(pages.formPage);
+    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertTrue("Client logs should be enabled by default",
                logTypes.contains(LogType.CLIENT));
+    boolean foundExecutingStatement = false;
+    boolean foundExecutedStatement = false;
+    for (LogEntry logEntry : driver.manage().logs().get(LogType.CLIENT)) {
+      foundExecutingStatement |= logEntry.toString().contains("Executing: ");
+      foundExecutedStatement |= logEntry.toString().contains("Executed: ");
+    }
+
+    assertTrue(foundExecutingStatement);
+    assertTrue(foundExecutedStatement);
   }
 
   @Test
   public void driverLogShouldBeEnabledByDefault() {
-    createLocalDriver();
-    Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
+    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertTrue("Remote driver logs should be enabled by default",
                logTypes.contains(LogType.DRIVER));
   }
 
   @Test
   public void profilerLogShouldBeDisabledByDefault() {
-    createLocalDriver();
-    Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
+    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertFalse("Profiler logs should not be enabled by default",
                 logTypes.contains(LogType.PROFILER));
-  }
-
-  private void createLocalDriver() {
-    localDriver = new WebDriverBuilder().get();
   }
 
   @Test
@@ -106,8 +111,7 @@ public class AvailableLogsTest {
   public void serverLogShouldBeEnabledByDefaultOnRemote() {
     assumeTrue(Boolean.getBoolean("selenium.browser.remote"));
 
-    createLocalDriver();
-    Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
+    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertTrue("Server logs should be enabled by default",
                logTypes.contains(LogType.SERVER));
   }

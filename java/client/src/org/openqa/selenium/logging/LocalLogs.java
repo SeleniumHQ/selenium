@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -27,60 +28,52 @@ import java.util.Set;
 /**
  * Stores and retrieves logs in-process (i.e. without any RPCs).
  */
-public class LocalLogs implements Logs {
+public abstract class LocalLogs implements Logs {
 
-  /**
-   * Logger which doesn't do anything.
-   */
-  public static final LocalLogs NULL_LOGGER = new LocalLogs() {
+  private static final LocalLogs NULL_LOGGER = new LocalLogs() {
+    public LogEntries get(String logType) {
+      return new LogEntries(ImmutableList.<LogEntry>of());
+    }
+
+    public Set<String> getAvailableLogTypes() {
+      return ImmutableSet.of();
+    }
+
     public void addEntry(String logType, LogEntry entry) {
     }
   };
 
-  private final Map<String, List<LogEntry>> localLogs = Maps.newHashMap();
-  private final Set<String> logTypesToIgnore;
-
-  public LocalLogs() {
-    logTypesToIgnore = ImmutableSet.of();
+  /**
+   * Logger which doesn't do anything.
+   */
+  public static LocalLogs getNullLogger() {
+    return NULL_LOGGER;
   }
 
-  public LocalLogs(Set<String> logTypesToIgnore) {
-    this.logTypesToIgnore = logTypesToIgnore;
+  public static LocalLogs getStoringLoggerInstance(Set<String> logTypesToIgnore) {
+    return new StoringLocalLogs(logTypesToIgnore);
   }
 
-  public LogEntries get(String logType) {
-    // TODO(andreastt): Should presumably clear the logs of that type to reduce memory consumption
-    return new LogEntries(getLocalLogs(logType));
-  }
-
-  private Iterable<LogEntry> getLocalLogs(String logType) {
-    if (localLogs.containsKey(logType)) {
-      return localLogs.get(logType);
-    }
-
-    return Lists.newArrayList();
+  public static LocalLogs getHandlerBasedLoggerInstance(LoggingHandler loggingHandler) {
+    return new HandlerBasedLocalLogs(loggingHandler);
   }
 
   /**
-   * Add a new log entry to the local storage.
-   *
-   * @param logType the log type to store
-   * @param entry   the entry to store
+   * See documentation of CompositeLocalLogs about the difference between the first
+   * LocalLogs instance and the second one.
+   * @param predefinedTypeLogger LocalLogs which pre-defines the log types it stores.
+   * @param allTypesLogger LocalLogs which can store log entries for all log types.
+   * @return
    */
-  public void addEntry(String logType, LogEntry entry) {
-    if (logTypesToIgnore.contains(logType)) {
-      return;
-    }
-
-    if (!localLogs.containsKey(logType)) {
-      localLogs.put(logType, Lists.newArrayList(entry));
-    } else {
-      localLogs.get(logType).add(entry);
-    }
+  public static LocalLogs getCombinedLogsHolder(LocalLogs predefinedTypeLogger,
+                                                LocalLogs allTypesLogger) {
+    return new CompositeLocalLogs(predefinedTypeLogger, allTypesLogger);
   }
 
-  public Set<String> getAvailableLogTypes() {
-    return localLogs.keySet();
+  protected LocalLogs() {
   }
 
+  public abstract LogEntries get(String logType);
+
+  public abstract void addEntry(String logType, LogEntry entry);
 }

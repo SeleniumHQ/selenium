@@ -48,6 +48,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.Logs;
@@ -98,6 +99,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities, 
       Capabilities requiredCapabilities) {
     this.executor = executor;
+    logger.addHandler(LoggingHandler.getInstance());
 
     boolean isProfilingEnabled = desiredCapabilities != null &&
         desiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
@@ -139,7 +141,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     mouse = new RemoteMouse(executeMethod);
     Set<String> logTypesToIgnore =
         isProfilingEnabled ? ImmutableSet.<String>of() : ImmutableSet.of(LogType.PROFILER);
-    localLogs = new LocalLogs(logTypesToIgnore);
+    LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToIgnore);
+    LocalLogs clientLogs = LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance());
+    localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
     remoteLogs = new RemoteLogs(executeMethod, localLogs);
   }
 
@@ -803,7 +807,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
     }
 
-    @Override
     public void authenticateUsing(Credentials credentials) {
       throw new UnsupportedCommandException("Not implemented yet");
     }

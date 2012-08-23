@@ -25,7 +25,6 @@ import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
-import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.HttpCommandExecutor;
@@ -56,7 +55,7 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
 
   private HttpCommandExecutor delegate;
 
-  private LocalLogs logs = LocalLogs.NULL_LOGGER;
+  private LocalLogs logs = LocalLogs.getNullLogger();
 
   public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile,
       String host) throws Exception {
@@ -80,9 +79,7 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
       process.clean(profile, profileDir);
 
       delegate = new HttpCommandExecutor(buildUrl(host, port));
-      if (logs != LocalLogs.NULL_LOGGER) {
-        delegate.setLocalLogs(logs);
-      }
+      delegate.setLocalLogs(logs);
       String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
 
       if (firefoxLogFile !=  null) {
@@ -201,7 +198,6 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
     }
   }
 
-  @Override
   public void setLocalLogs(LocalLogs logs) {
     if (delegate != null) {
       delegate.setLocalLogs(logs);

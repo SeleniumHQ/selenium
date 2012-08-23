@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.logging.Level;
 
+import com.google.common.collect.ImmutableSet;
 import org.jmock.Expectations;
 import org.junit.Test;
 import org.openqa.selenium.remote.DriverCommand;
@@ -47,7 +48,7 @@ public class PerformanceLoggingMockTest extends MockTestBase {
       }
     });
     
-    LocalLogs localLogs = new LocalLogs();
+    LocalLogs localLogs = LocalLogs.getStoringLoggerInstance(ImmutableSet.<String>of());
     RemoteLogs logs = new RemoteLogs(executeMethod, localLogs);
     localLogs.addEntry(LogType.PROFILER, new LogEntry(Level.INFO, 0, "first"));
     localLogs.addEntry(LogType.PROFILER, new LogEntry(Level.INFO, 2, "third"));

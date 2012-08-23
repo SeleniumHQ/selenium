@@ -315,7 +315,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
     private ExtensionConnection connection;
     private final FirefoxBinary binary;
     private final FirefoxProfile profile;
-    private LocalLogs logs = LocalLogs.NULL_LOGGER;
+    private LocalLogs logs = LocalLogs.getNullLogger();
 
     private LazyCommandExecutor(FirefoxBinary binary, FirefoxProfile profile) {
       this.binary = binary;
@@ -324,9 +324,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
 
     public void setConnection(ExtensionConnection connection) {
       this.connection = connection;
-      if (this.logs != LocalLogs.NULL_LOGGER) {
-        connection.setLocalLogs(logs);
-      }
+      connection.setLocalLogs(logs);
     }
 
     public void quit() {

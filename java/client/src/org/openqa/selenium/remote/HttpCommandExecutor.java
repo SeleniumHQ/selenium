@@ -74,7 +74,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private static HttpClientFactory httpClientFactory;
 
-  private LocalLogs logs = LocalLogs.NULL_LOGGER;
+  private LocalLogs logs = LocalLogs.getNullLogger();
 
   private enum HttpVerb {
     GET() {
