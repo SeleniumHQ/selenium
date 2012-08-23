@@ -126,7 +126,6 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
   private ImmutableList<LogEntry> getProfilerEntriesOfType(final LogEntries entries, 
       final EventType eventType) {
     return ImmutableList.copyOf(Iterables.filter(entries, new Predicate<LogEntry>() {
-      @Override
       public boolean apply(LogEntry entry) {
         return entry.getMessage().contains(eventType.toString());
       }
