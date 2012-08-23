@@ -33,6 +33,7 @@ namespace OpenQA.Selenium.Chrome
     {
         private const string ChromeDriverServiceFileName = "chromedriver.exe";
         private const string ChromeDriverDownloadUrl = "http://code.google.com/p/chromium/downloads/list";
+        private string logPath = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the ChromeDriverService class.
@@ -45,11 +46,42 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Gets or sets the location of the log file written to by the ChromeDriver executable.
+        /// </summary>
+        public string LogPath
+        {
+            get { return this.logPath; }
+            set { this.logPath = value; }
+        }
+
+        /// <summary>
         /// Gets the executable file name of the driver service.
         /// </summary>
         protected override string DriverServiceExecutableName
         {
             get { return ChromeDriverServiceFileName; }
+        }
+
+        /// <summary>
+        /// Gets the command-line arguments for the driver service.
+        /// </summary>
+        protected override string CommandLineArguments
+        {
+            get
+            {
+                StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
+                if (this.SuppressInitialDiagnosticInformation)
+                {
+                    argsBuilder.Append(" -silent");
+                }
+
+                if (!string.IsNullOrEmpty(this.logPath))
+                {
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -log-path={0}", this.logPath));
+                }
+
+                return argsBuilder.ToString();
+            }
         }
 
         /// <summary>

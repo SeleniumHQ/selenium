@@ -35,6 +35,7 @@ namespace OpenQA.Selenium
     {
         private string driverServicePath;
         private int driverServicePort;
+        private bool silent;
         private Process driverServiceProcess;
 
         /// <summary>
@@ -63,6 +64,17 @@ namespace OpenQA.Selenium
         {
             get { return this.driverServicePort; }
             set { this.driverServicePort = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the initial diagnostic information is suppressed
+        /// when starting the driver server executable. Defaults to <see langword="false"/>, meaning
+        /// diagnostic information should be shown by the driver server executable.
+        /// </summary>
+        public bool SuppressInitialDiagnosticInformation
+        {
+            get { return this.silent; }
+            set { this.silent = value; }
         }
 
         /// <summary>

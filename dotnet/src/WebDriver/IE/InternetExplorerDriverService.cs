@@ -106,6 +106,11 @@ namespace OpenQA.Selenium.IE
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -log-level={0}", this.loggingLevel.ToString().ToUpperInvariant()));
                 }
 
+                if (this.SuppressInitialDiagnosticInformation)
+                {
+                    argsBuilder.Append(" -silent");
+                }
+
                 return argsBuilder.ToString();
             }
         }
