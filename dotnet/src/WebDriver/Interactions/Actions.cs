@@ -335,7 +335,7 @@ namespace OpenQA.Selenium.Interactions
             this.action.AddAction(actionToAdd);
         }
 
-        private ILocatable GetLocatableFromElement(IWebElement element)
+        private static ILocatable GetLocatableFromElement(IWebElement element)
         {
             ILocatable target = element as ILocatable;
             if (target == null)
