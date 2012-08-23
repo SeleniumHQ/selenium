@@ -39,6 +39,8 @@ typedef void (__cdecl *STOPSERVERPROC)(void);
 #define HOST_COMMAND_LINE_ARG "host"
 #define LOGLEVEL_COMMAND_LINE_ARG "log-level"
 #define LOGFILE_COMMAND_LINE_ARG "log-file"
+#define SILENT_COMMAND_LINE_ARG "silent"
+#define BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE "value-not-specified"
 
 bool ExtractResource(unsigned short resource_id,
                      const std::wstring& output_file_name) {
@@ -188,6 +190,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
   std::string host_address = args.GetValue(HOST_COMMAND_LINE_ARG, "");
   std::string log_level = args.GetValue(LOGLEVEL_COMMAND_LINE_ARG, "");
   std::string log_file = args.GetValue(LOGFILE_COMMAND_LINE_ARG, "");
+  bool silent = args.GetValue(SILENT_COMMAND_LINE_ARG,
+      BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE).size() == 0;
   void* server_value = start_server_ex_proc(port,
                                             host_address,
                                             log_level,
@@ -201,26 +205,28 @@ int _tmain(int argc, _TCHAR* argv[]) {
     ;
     return ERR_SERVER_START;
   }
-  std::cout << "Started InternetExplorerDriver server"
-            << " (" << GetProcessArchitectureDescription() << ")"
-            << std::endl;
-  std::cout << GetExecutableVersion()
-            << std::endl;
-  std::cout << "Listening on port " << port << std::endl;
-  if (host_address.size() > 0) {
-    std::cout << "Bound to network adapter with IP address " 
-              << host_address
+  if (!silent) {
+    std::cout << "Started InternetExplorerDriver server"
+              << " (" << GetProcessArchitectureDescription() << ")"
               << std::endl;
-  }
-  if (log_level.size() > 0) {
-    std::cout << "Log level is set to "
-              << log_level
+    std::cout << GetExecutableVersion()
               << std::endl;
-  }
-  if (log_file.size() > 0) {
-    std::cout << "Log file is set to "
-              << log_file
-              << std::endl;
+    std::cout << "Listening on port " << port << std::endl;
+    if (host_address.size() > 0) {
+      std::cout << "Bound to network adapter with IP address " 
+                << host_address
+                << std::endl;
+    }
+    if (log_level.size() > 0) {
+      std::cout << "Log level is set to "
+                << log_level
+                << std::endl;
+    }
+    if (log_file.size() > 0) {
+      std::cout << "Log file is set to "
+                << log_file
+                << std::endl;
+    }
   }
 
   // Create the shutdown event and wait for it to be signaled.
