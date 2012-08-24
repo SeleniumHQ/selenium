@@ -24,13 +24,14 @@ import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 
 @RunWith(SeleniumTestRunner.class)
 public class SessionHandlingTest {
 
   @Test
-  @Ignore(IE)
+  @Ignore({CHROME, IE})
   public void callingQuitMoreThanOnceOnASessionIsANoOp() {
     WebDriver driver = new WebDriverBuilder().get();
 
