@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.25.3.4
+=========
+ * Corrected searching for alert windows from windows opened by 
+   showModalDialog().
+
 v2.25.3.3
 =========
  * Implemented "silent" command-line switch on IEDriverServer.exe to suppress

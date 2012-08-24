@@ -88,23 +88,30 @@ bool HtmlDialog::Wait() {
   }
 
   // If we're not navigating to a new location, we should check to see if
-  // a new modal dialog has been opened. If one has, the wait is complete,
+  // a new modal dialog or alert has been opened. If one has, the wait is complete,
   // so we must set the flag indicating to the message loop not to call wait
   // anymore.
   if (!this->is_navigating_) {
     HWND child_dialog_handle = this->GetActiveDialogWindowHandle();
     if (child_dialog_handle != NULL) {
-      HWND content_window_handle = this->FindContentWindowHandle(child_dialog_handle);
-      if (content_window_handle != NULL) {
-        // Must have a sleep here to give IE a chance to draw the window.
-        ::Sleep(250);
-        ::PostMessage(this->executor_handle(),
-                      WD_NEW_HTML_DIALOG,
-                      NULL,
-                      reinterpret_cast<LPARAM>(content_window_handle));
-        this->set_wait_required(false);
-        return true;
+      // Check to see if the dialog opened is another HTML dialog. If so,
+      // notify the IECommandExecutor that a new window exists.
+      vector<char> window_class_name(34);
+      if (::GetClassNameA(child_dialog_handle, &window_class_name[0], 34)) {
+        if (strcmp(HTML_DIALOG_WINDOW_CLASS, &window_class_name[0]) == 0) {
+          HWND content_window_handle = this->FindContentWindowHandle(child_dialog_handle);
+          if (content_window_handle != NULL) {
+            // Must have a sleep here to give IE a chance to draw the window.
+            ::Sleep(250);
+            ::PostMessage(this->executor_handle(),
+                          WD_NEW_HTML_DIALOG,
+                          NULL,
+                          reinterpret_cast<LPARAM>(content_window_handle));
+          }
+        }
       }
+      this->set_wait_required(false);
+      return true;
     }
   }
 
@@ -185,17 +192,28 @@ int HtmlDialog::Refresh() {
 
 BOOL CALLBACK HtmlDialog::FindChildDialogWindow(HWND hwnd, LPARAM arg) {
   DialogWindowInfo* window_info = reinterpret_cast<DialogWindowInfo*>(arg);
-  if (::GetWindow(hwnd, GW_OWNER) == window_info->hwndOwner) {
-    vector<char> window_class_name(34);
-    if (GetClassNameA(hwnd, &window_class_name[0], 34)) {
-      if (strcmp(HTML_DIALOG_WINDOW_CLASS,
-          &window_class_name[0]) == 0) {
-        window_info->hwndDialog = hwnd;
-        return FALSE;
-      }
+  if (::GetWindow(hwnd, GW_OWNER) != window_info->hwndOwner) {
+    return TRUE;
+  }
+  vector<char> window_class_name(34);
+  if (::GetClassNameA(hwnd, &window_class_name[0], 34) == 0) {
+    // No match found. Skip
+    return TRUE;
+  }
+  if (strcmp(ALERT_WINDOW_CLASS, &window_class_name[0]) != 0 && 
+      strcmp(HTML_DIALOG_WINDOW_CLASS, &window_class_name[0]) != 0) {
+    return TRUE;
+  } else {
+    // If the window style has the WS_DISABLED bit set or the 
+    // WS_VISIBLE bit unset, it can't  be handled via the UI, 
+    // and must not be a visible dialog.
+    if ((::GetWindowLong(hwnd, GWL_STYLE) & WS_DISABLED) != 0 ||
+        (::GetWindowLong(hwnd, GWL_STYLE) & WS_VISIBLE) == 0) {
+      return TRUE;
     }
   }
-  return TRUE;
+  window_info->hwndDialog = hwnd;
+  return FALSE;
 }
 
 } // namespace webdriver
