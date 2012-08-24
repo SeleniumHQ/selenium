@@ -259,7 +259,7 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
 
 int BrowserFactory::GetZoomLevel(IHTMLDocument2* document, IHTMLWindow2* window) {
   LOG(TRACE) << "Entering BrowserFactory::GetZoomLevel";
-  int zoom = 0;
+  int zoom = 100;  // Chances are the zoom level hasn't been modified....
   HRESULT hr = S_OK;
   if (this->ie_major_version_ == 7) {
     CComPtr<IHTMLElement> body;
