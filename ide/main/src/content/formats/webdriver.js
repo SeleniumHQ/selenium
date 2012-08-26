@@ -7,6 +7,8 @@ subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/formatComma
 
 /* @override
  * This function filters the command list and strips away the commands we no longer need
+ * or changes the command to another one.
+ * NOTE: do not change the existing command directly or it will also change in the test case.
  */
 this.postFilter = function(originalCommands) {
   var commands = [];
@@ -14,11 +16,15 @@ this.postFilter = function(originalCommands) {
     'waitForPageToLoad' : 1,
     'pause': 1
   };
+  var rc;
   for (var i = 0; i < originalCommands.length; i++) {
     var c = originalCommands[i];
     if (c.type == 'command') {
       if (commandsToSkip[c.command] && commandsToSkip[c.command] == 1) {
         //Skip
+      } else if (rc = SeleneseMapper.remap(c)) {  //Yes, this IS an assignment
+        //Remap
+        commands.push.apply(commands, rc);
       } else {
         commands.push(c);
       }
@@ -27,6 +33,59 @@ this.postFilter = function(originalCommands) {
     }
   }
   return commands;
+};
+
+/* SeleneseMapper changes one Selenese command to another that is more suitable for WebDriver export
+ */
+function SeleneseMapper() {
+}
+
+SeleneseMapper.remap = function(cmd) {
+/*
+  for (var mapper in SeleneseMapper) {
+    if (SeleneseMapper.hasOwnProperty(mapper) && typeof SeleneseMapper.mapper.isDefined === 'function'  && typeof SeleneseMapper.mapper.convert === 'function') {
+      if (SeleneseMapper.mapper.isDefined(cmd)) {
+        return SeleneseMapper.mapper.convert(cmd);
+      }
+    }
+  }
+*/
+  // NOTE The above code is useful if there are more than one mappers, since there is just one, it is more efficient to call it directly
+  if (SeleneseMapper.IsTextPresent.isDefined(cmd)) {
+    return SeleneseMapper.IsTextPresent.convert(cmd);
+  }
+  return null;
+};
+
+SeleneseMapper.IsTextPresent = {
+  isTextPresentRegex: /^(assert|verify|waitFor)Text(Not)?Present$/,
+  isPatternRegex: /^(regexp|regexpi|regex):/,
+  exactRegex: /^exact:/,
+
+  isDefined:function (cmd) {
+    return this.isTextPresentRegex.test(cmd.command);
+  },
+
+  convert:function (cmd) {
+    if (this.isTextPresentRegex.test(cmd.command)) {
+      var pattern = cmd.target;
+      if (!this.isPatternRegex.test(pattern)) {
+        if (this.exactRegex.test(pattern)) {
+          //TODO how to escape wildcards in an glob pattern?
+          pattern = pattern.replace(this.exactRegex, 'glob:*') + '*';
+        } else {
+          //glob
+          pattern = pattern.replace(/^(glob:)?\*?/, 'glob:*');
+          if (!/\*$/.test(pattern)) {
+            pattern += '*';
+          }
+        }
+      }
+      var remappedCmd = new Command(cmd.command.replace(this.isTextPresentRegex, "$1$2Text"), 'css=BODY', pattern);
+      remappedCmd.remapped = cmd;
+      return [new Comment('Warning: ' + cmd.command + ' may require manual changes'), remappedCmd];
+    }
+  }
 };
 
 function formatHeader(testCase) {
@@ -332,7 +391,7 @@ CallSelenium.prototype.toString = function() {
     result += codeBlock;
   } else {
     //unsupported
-    throw 'ERROR: Unsupported command [' + this.message + ']';
+    throw 'ERROR: Unsupported command [' + this.message + ' | ' + (this.rawArgs.length > 0 && this.rawArgs[0] ? this.rawArgs[0] : '') + ' | ' + (this.rawArgs.length > 1 && this.rawArgs[1] ? this.rawArgs[1] : '') + ']';
   }
   return result;
 };
@@ -454,7 +513,11 @@ function formatCommand(command) {
   }
   //TODO: convert array to newline separated string -> if(array) return array.join"\n"
   if (command.type == 'command' && options.showSelenese && options.showSelenese == 'true') {
-    line = formatComment(new Comment(command.command + ' | ' + command.target + ' | ' + command.value)) + "\n" + line;
+    if (command.remapped) {
+      line = formatComment(new Comment(command.remapped.command + ' | ' + command.remapped.target + ' | ' + command.remapped.value)) + "\n" + line;
+    } else {
+      line = formatComment(new Comment(command.command + ' | ' + command.target + ' | ' + command.value)) + "\n" + line;
+    }
   }
   return line;
 }
@@ -724,4 +787,3 @@ SeleniumWebDriverAdaptor.prototype.select = function(elementLocator, label) {
 
 function WDAPI() {
 }
-
