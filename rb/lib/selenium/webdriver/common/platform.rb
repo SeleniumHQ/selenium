@@ -161,7 +161,7 @@ module Selenium
         ensure
           Socket.do_not_reverse_lookup = orig
         end
-      rescue Errno::ENETUNREACH
+      rescue Errno::ENETUNREACH, Errno::EHOSTUNREACH
         # no external ip
       end
 
