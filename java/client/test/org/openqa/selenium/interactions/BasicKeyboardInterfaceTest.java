@@ -22,6 +22,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
@@ -68,7 +70,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, SELENESE, IE})
+  @Ignore({ANDROID, IPHONE, SELENESE, IE, OPERA, OPERA_MOBILE})
   @Test
   public void testSendingKeyDownOnly() {
     ignoreOnFfWindowsWithNativeEvents(); // Issue 3722
@@ -92,7 +94,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, SELENESE, IE})
+  @Ignore({ANDROID, IPHONE, SELENESE, IE, OPERA, OPERA_MOBILE})
   @Test
   public void testSendingKeyUp() {
     ignoreOnFfWindowsWithNativeEvents(); // Issue 3722
@@ -119,7 +121,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IPHONE, SELENESE, IE})
+  @Ignore({ANDROID, HTMLUNIT, IPHONE, SELENESE, IE, OPERA, OPERA_MOBILE})
   @Test
   public void testSendingKeysWithShiftPressed() {
     ignoreOnFfWindowsWithNativeEvents(); // Issue 3722
