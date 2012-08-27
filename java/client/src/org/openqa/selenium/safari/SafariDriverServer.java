@@ -20,23 +20,17 @@ package org.openqa.selenium.safari;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.base.Joiner;
-
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 
-import org.webbitserver.HttpControl;
-import org.webbitserver.HttpHandler;
-import org.webbitserver.HttpRequest;
-import org.webbitserver.HttpResponse;
-import org.webbitserver.WebServer;
-import org.webbitserver.WebServers;
+import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 /**
@@ -53,7 +47,9 @@ class SafariDriverServer {
   private final BlockingQueue<SafariDriverConnection> connections =
       new SynchronousQueue<SafariDriverConnection>();
 
-  private WebServer server;
+  private ServerBootstrap bootstrap;
+  private Channel serverChannel;
+  private int serverPort;
 
   /**
    * @param port The port the server should be started on, or 0 to use any
@@ -72,46 +68,41 @@ class SafariDriverServer {
   }
 
   private void start(int port) {
-    if (server != null) {
+    if (serverChannel != null) {
       return;
     }
 
-    if (port == 0) {
-      port = PortProber.findFreePort();
-    }
+    serverPort = port == 0 ? PortProber.findFreePort() : port;
 
-    server = WebServers.createWebServer(port)
-        .add("/favicon.ico", new FaviconHandler())
-        .add("/", new RootHttpHandler(port))
-        .add("/wd", new SafariDriverWebSocketHandler(connections));
+    bootstrap = new ServerBootstrap(
+        new NioServerSocketChannelFactory(
+            Executors.newCachedThreadPool(),
+            Executors.newCachedThreadPool()));
 
-    server.start();
-    LOG.info("Server started at " + server.getUri());
+    bootstrap.setPipelineFactory(new SafariDriverPipelineFactory(serverPort, connections));
+    serverChannel = bootstrap.bind(new InetSocketAddress(serverPort));
+
+    LOG.info("Server started on port " + serverPort);
   }
 
   /**
    * Stops the server if it is running.
    */
   public void stop() {
-    if (server != null) {
+    if (bootstrap != null) {
       LOG.info("Stopping server");
-      try {
-        server.stop().get(30, TimeUnit.SECONDS);
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-        throw new WebDriverException(e);
-      } catch (ExecutionException e) {
-        throw new WebDriverException(e);
-      } catch (TimeoutException e) {
-        throw new WebDriverException("timed out stopping server", e);
-      }
-      server = null;
+
+      serverChannel.close();
+      bootstrap.releaseExternalResources();
+
+      serverChannel = null;
+      bootstrap = null;
     }
   }
 
   public String getUri() {
-    checkState(server != null, "The server is not running; call #start()!");
-    return "http://localhost:" + server.getPort();
+    checkState(serverChannel != null, "The server is not running; call #start()!");
+    return "http://localhost:" + serverPort;
   }
 
   /**
@@ -125,56 +116,5 @@ class SafariDriverServer {
   public SafariDriverConnection getConnection(long timeout, TimeUnit unit)
       throws InterruptedException {
     return connections.poll(timeout, unit);
-  }
-  
-  private static class FaviconHandler implements HttpHandler {
-
-    public void handleHttpRequest(HttpRequest request, HttpResponse response,
-        HttpControl control) {
-      response.status(204).end();
-    }
-  }
-
-  /**
-   * A simple {@link HttpHandler} installed at the root of the server. Returns
-   * a static page that posts a message to the SafariDriver extension's
-   * injected script, requesting it to connect to this server.
-   *
-   * <p>This initial step must be handled by a HttpHandler on the server instead
-   * of a simple file because Safari extensions do not run for file:// URLs.
-   */
-  private static class RootHttpHandler implements HttpHandler {
-
-    // TODO: To ensure the message stays in sync, this script should be compiled
-    // using the //javascript/safari-driver source and saved as a resource in
-    // the JAR. This woud also allow this logic to be shared with the other
-    // language bindings.
-    private static final String CONNECT_TEMPLATE = Joiner.on("\n").join(
-        "<!DOCTYPE html>",
-        "<h2>SafariDriver requesting connection at ws://localhost:%d/wd</h2>",
-        "<script>",
-        "// Must wait for onload so the injected script is loaded by the",
-        "// SafariDriver extension.",
-        "window.onload = function() {",
-        "  window.postMessage({",
-        "    'type': 'connect',",
-        "    'origin': 'webdriver',",
-        "    'url': 'ws://localhost:%d/wd'",
-        "  }, '*');",
-        "};",
-        "</script>");
-
-    private final int port;
-
-    public RootHttpHandler(int port) {
-      this.port = port;
-    }
-
-    public void handleHttpRequest(HttpRequest request, HttpResponse response,
-        HttpControl control) {
-      response.header("Content-type", "text/html")
-          .content(String.format(CONNECT_TEMPLATE, port, port))
-          .end();
-    }
   }
 }

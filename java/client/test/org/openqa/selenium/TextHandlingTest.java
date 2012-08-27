@@ -302,7 +302,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, is("line has text"));
   }
 
-  @Ignore(value = {IPHONE, SAFARI, SELENESE}, issues = { 4203 })
+  @Ignore(value = {IPHONE, SELENESE})
   @Test
   public void testReadALargeAmountOfData() {
     driver.get(GlobalTestEnvironment.get().getAppServer().whereIs("macbeth.html"));

@@ -30,7 +30,6 @@ import org.openqa.selenium.remote.Response;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.webbitserver.WebSocketConnection;
 
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;

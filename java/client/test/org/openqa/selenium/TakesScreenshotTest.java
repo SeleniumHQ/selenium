@@ -27,7 +27,7 @@ import static org.openqa.selenium.OutputType.BASE64;
 
 import java.io.File;
 
-@Ignore(value = {IPHONE, SAFARI}, issues = { 4203 })
+@Ignore(value = {IPHONE})
 public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   public void testSaveScreenshotAsFile() throws Exception {

@@ -12,5 +12,5 @@ java_library(name = "safari",
     "//java/client/src/org/openqa/selenium/remote",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
-    "//third_party/java/webbit",
+    "//third_party/java/netty",
   ])
