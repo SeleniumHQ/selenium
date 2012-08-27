@@ -1,8 +1,19 @@
 # Used for https://github.com/operasoftware/operadriver/tree/master/src/com/opera/core/systems/OperaAtom.java
 
+js_deps(name = "deps",
+  srcs = [ "*.js" ],
+  deps = [ "//javascript/atoms:deps" ])
+
+js_fragment(name = "move_caret_to_end",
+  module = "webdriver.opera",
+  function = "webdriver.opera.moveCaretToEnd",
+  deps = [ ":deps" ])
+
 js_fragment_java(name = "atoms",
   package = "com.opera.core.systems",
+  srcs = [ "*.js" ],
   deps = [
+    "//javascript/opera-driver:move_caret_to_end",
     "//javascript/webdriver/atoms:clear",
     "//javascript/webdriver/atoms:click",
     "//javascript/webdriver/atoms:execute_script",
