@@ -35,9 +35,9 @@ public class PathAugmentingStaticFileHandler extends ImprovedStaticFileHandler {
   }
 
   @Override
-  protected IOWorker createIOWorker(HttpRequest request,
-                                    HttpResponse response,
-                                    HttpControl control) {
+  protected FileWorker createIOWorker(HttpRequest request,
+                                      HttpResponse response,
+                                      HttpControl control) {
     return new PathAugmentingFileWorker(request, response, control);
   }
 
