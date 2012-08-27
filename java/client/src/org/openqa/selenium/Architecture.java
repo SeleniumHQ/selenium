@@ -30,7 +30,7 @@ public enum Architecture {
 
   // Architecture families
 
-  X86("i386", "ia32", "i686", "i486", "i86", "pentium", "pentium_pro", "pentium_pro+mmx",
+  X86("x86", "i386", "ia32", "i686", "i486", "i86", "pentium", "pentium_pro", "pentium_pro+mmx",
       "pentium+mmx") {
     @Override
     public int getDataModel() {
