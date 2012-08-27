@@ -369,7 +369,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, ANDROID},
+  @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID},
           reason = "untested user agents")
   @Test
   public void testUppercaseAlphaKeys() {
@@ -518,7 +518,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA_MOBILE},
+  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA, OPERA_MOBILE},
           reason = "untested user agents")
   @Test
   public void testChordControlHomeShiftEndDelete() {
@@ -543,7 +543,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA_MOBILE}, reason = "untested user agents")
+  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA, OPERA_MOBILE},
+          reason = "untested user agents")
   @Test
   public void testChordReveseShiftHomeSelectionDeletes() {
     // FIXME: macs don't have HOME keys, would PGUP work?
@@ -578,7 +579,8 @@ public class TypingTest extends JUnit4TestBase {
   // and linux, but not on the MAC.
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA_MOBILE}, reason = "untested user agents")
+  @Ignore(value = {HTMLUNIT, SELENESE, ANDROID, OPERA, OPERA_MOBILE},
+          reason = "untested user agents")
   @Test
   public void testChordControlCutAndPaste() {
     // FIXME: macs don't have HOME keys, would PGUP work?
