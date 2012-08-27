@@ -21,7 +21,7 @@
 	<classpathentry kind="lib" path="/third-party/java/easymock/easymockclassextension-2.4.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jmock/jmock-2.5.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jmock/jmock-junit4-2.5.1.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/opera-driver/operadriver-0.17.jar" sourcepath="/third-party/java/opera-driver/operadriver-0.17-source.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/opera-driver/operadriver-0.18.jar" sourcepath="/third-party/java/opera-driver/operadriver-0.18-source.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/apache-httpclient/httpclient-4.1.3.jar" sourcepath="/third-party/java/apache-httpclient/httpclient-4.1.3-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/apache-httpclient/httpcore-4.1.3.jar" sourcepath="/third-party/java/apache-httpclient/httpcore-4.1.3-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/android/android-14.jar"/>
