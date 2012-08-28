@@ -40,6 +40,7 @@ typedef void (__cdecl *STOPSERVERPROC)(void);
 #define LOGLEVEL_COMMAND_LINE_ARG "log-level"
 #define LOGFILE_COMMAND_LINE_ARG "log-file"
 #define SILENT_COMMAND_LINE_ARG "silent"
+#define EXTRACTPATH_COMMAND_LINE_ARG "extract-path"
 #define BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE "value-not-specified"
 
 bool ExtractResource(unsigned short resource_id,
@@ -157,7 +158,14 @@ int _tmain(int argc, _TCHAR* argv[]) {
   unsigned long temp_path_length = ::GetTempPath(MAX_PATH,
                                                  &temp_path_buffer[0]);
 
-  unsigned int error_code = ::GetTempFileName(&temp_path_buffer[0],
+  std::wstring extraction_path(&temp_path_buffer[0]);
+
+  std::string extraction_path_arg = args.GetValue(EXTRACTPATH_COMMAND_LINE_ARG, "");
+  if (extraction_path_arg.size() != 0) {
+    extraction_path = CA2W(extraction_path_arg.c_str(), CP_UTF8);
+  }
+  
+  unsigned int error_code = ::GetTempFileName(extraction_path.c_str(),
                                               TEMP_FILE_PREFIX,
                                               0,
                                               &temp_file_name_buffer[0]);
@@ -225,6 +233,11 @@ int _tmain(int argc, _TCHAR* argv[]) {
     if (log_file.size() > 0) {
       std::cout << "Log file is set to "
                 << log_file
+                << std::endl;
+    }
+    if (extraction_path_arg.size() > 0) {
+      std::cout << "Library extracted to "
+                << extraction_path_arg
                 << std::endl;
     }
   }
