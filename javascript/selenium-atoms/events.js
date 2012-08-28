@@ -42,11 +42,9 @@ core.events.shiftKeyDown_ = false;
 var XPCNativeWrapper = XPCNativeWrapper || function(_) {};
 
 core.events.getEventFactory_ = function(eventName) {
-  for (var key in bot.events.EventType) {
-    var factory = bot.events.EventType[key];
-    if (factory.toString() == eventName) {
-      return factory;
-    }
+  var factory = bot.events.EventType[eventName];
+  if (factory) {
+    return factory;
   }
 
   return {
@@ -76,6 +74,11 @@ core.events.getEventFactory_ = function(eventName) {
 core.events.fire = function(locator, eventName) {
   var element = core.locators.findElement(locator);
   var type = core.events.getEventFactory_(eventName);
+
+  if (!type) {
+    throw new Error('Unable to find type for: ' + eventName);
+  }
+
   bot.events.fire(element, type);
 };
 
