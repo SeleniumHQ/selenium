@@ -101,6 +101,8 @@ public class Jetty7AppServer implements AppServer {
     addServlet(defaultContext, "Manifest", "/manifest/*", ManifestServlet.class);
     addServlet(defaultContext, "Manifest", "*.appcache", ManifestServlet.class);
     addServlet(jsContext, "Manifest", "*.appcache", ManifestServlet.class);
+    // Serves every file under DEFAULT_CONTEXT_PATH/utf8 as UTF-8 to the browser
+    addServlet(defaultContext, "UTF8", "/utf8/*", Utf8Servlet.class);
 
     addServlet("Uploader", "/upload", UploadServlet.class);
     addServlet("Unusual encoding", "/encoding", EncodingServlet.class);

@@ -18,6 +18,7 @@ package org.openqa.selenium;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -373,5 +374,20 @@ public class TextHandlingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("complexJsonText"));
     assertEquals("{a=\"\\\\b\\\\\\\"\'\\\'\"}", element.getText());
+  }
+
+  @Test
+  @Ignore(reason = "Hidden LTR Unicode marks are currently returned by WebDriver but shouldn't.",
+    issues = {4473})
+  public void testShouldNotReturnLtrMarks() {
+    driver.get(pages.unicodeLtrPage);
+    WebElement element = driver.findElement(By.id("EH")).findElement(By.tagName("nobr"));
+    String text = element.getText();
+    String expected = "Some notes";
+    assertNotSame("RTL mark should not be present", text.codePointAt(0), 8206);
+    // Note: If this assertion fails but the content of the strings *looks* the same
+    // it may be because of hidden unicode LTR character being included in the string.
+    // That's the reason for the previous assert.
+    assertEquals(expected, element.getText());
   }
 }

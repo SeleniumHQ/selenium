@@ -70,6 +70,7 @@ public class Pages {
   public String readOnlyPage;
   public String booleanAttributes;
   public String colorPage;
+  public String unicodeLtrPage;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -123,5 +124,6 @@ public class Pages {
     readOnlyPage = appServer.whereIs("readOnlyPage.html");
     booleanAttributes = appServer.whereIs("booleanAttributes.html");
     colorPage = appServer.whereIs("colorPage.html");
+    unicodeLtrPage = appServer.whereIs("utf8/unicode_ltr.html");
   }
 }

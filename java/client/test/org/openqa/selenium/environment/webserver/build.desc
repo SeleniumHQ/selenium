@@ -9,6 +9,7 @@ java_binary(
     "Jetty7AppServer.java",
     "KillSwitchServlet.java",
     "ManifestServlet.java",
+    "Utf8Servlet.java",
     "NullLogger.java",
     "PageServlet.java",
     "RedirectServlet.java",
