@@ -37,6 +37,7 @@ namespace OpenQA.Selenium.IE
         private InternetExplorerDriverLogLevel loggingLevel = InternetExplorerDriverLogLevel.Fatal;
         private string host = string.Empty;
         private string logFile = string.Empty;
+        private string libraryExtractionPath = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the InternetExplorerDriverService class.
@@ -76,6 +77,21 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets the path to which the supporting library of the IEDriverServer.exe is extracted.
+        /// Defaults to the temp directory if this property is not set.
+        /// </summary>
+        /// <remarks>
+        /// The IEDriverServer.exe requires extraction of a supporting library to perform some of its functions. Setting
+        /// This library is extracted to the temp directory if this property is not set. If the property is set, it must
+        /// be set to a valid directory.
+        /// </remarks>
+        public string LibraryExtractionPath
+        {
+            get { return this.libraryExtractionPath; }
+            set { this.libraryExtractionPath = value; }
+        }
+
+        /// <summary>
         /// Gets the executable file name of the driver service.
         /// </summary>
         protected override string DriverServiceExecutableName
@@ -99,6 +115,11 @@ namespace OpenQA.Selenium.IE
                 if (!string.IsNullOrEmpty(this.logFile))
                 {
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -log-file={0}", this.logFile));
+                }
+
+                if (!string.IsNullOrEmpty(this.libraryExtractionPath))
+                {
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -extraction-path={0}", this.libraryExtractionPath));
                 }
 
                 if (this.loggingLevel != InternetExplorerDriverLogLevel.Fatal)
