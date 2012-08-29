@@ -264,14 +264,25 @@ std::string Server::DispatchCommand(const std::string& uri,
 
     SessionHandle session_handle = NULL;
     if (!this->LookupSession(session_id, &session_handle)) {
-      // Hand-code the response for an invalid session id
-      serialized_response.append("{ \"status\" : 404, ");
-      serialized_response.append("\"sessionId\" : \"");
-      serialized_response.append(session_id);
-      serialized_response.append("\", ");
-      serialized_response.append("\"value\" : \"session ");
-      serialized_response.append(session_id);
-      serialized_response.append(" does not exist\" }");
+      if (command == Quit) {
+        // Calling quit on an invalid session should be a no-op.
+        // Hand-code the response for quit on an invalid (already
+        // quit) session.
+        serialized_response.append("{ \"status\" : 0, ");
+        serialized_response.append("\"sessionId\" : \"");
+        serialized_response.append(session_id);
+        serialized_response.append("\", ");
+        serialized_response.append("\"value\" : null }");
+      } else {
+        // Hand-code the response for an invalid session id
+        serialized_response.append("{ \"status\" : 404, ");
+        serialized_response.append("\"sessionId\" : \"");
+        serialized_response.append(session_id);
+        serialized_response.append("\", ");
+        serialized_response.append("\"value\" : \"session ");
+        serialized_response.append(session_id);
+        serialized_response.append(" does not exist\" }");
+      }
     } else {
       // Compile the serialized JSON representation of the command by hand.
       std::stringstream command_value_stream;

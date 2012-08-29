@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.25.3.6
+=========
+ * Modified behavior such that sending a Quit command on a non-existent
+   session is now a no-op, and does not return an error code.
+
 v2.25.3.5
 =========
  * Added command-line switch to control to where the IEDriver.dll is extracted.
