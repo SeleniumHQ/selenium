@@ -15,46 +15,71 @@
 
 class DesiredCapabilities(object):
 
-    FIREFOX = { "browserName": "firefox",
-                "version": "",
-                "platform": "ANY",
-                "javascriptEnabled": True }
+    FIREFOX = {
+        "browserName": "firefox",
+        "version": "",
+        "platform": "ANY",
+        "javascriptEnabled": True,
+    }
 
-    INTERNETEXPLORER = { "browserName": "internet explorer",
-                        "version": "",
-                        "platform": "WINDOWS",
-                        "javascriptEnabled": True }
+    INTERNETEXPLORER = {
+        "browserName": "internet explorer",
+        "version": "",
+        "platform": "WINDOWS",
+        "javascriptEnabled": True,
+    }
 
-    CHROME = {"browserName": "chrome",
-                        "version": "",
-                        "platform": "ANY",
-                        "javascriptEnabled": True }
-    OPERA = {"browserName": "opera",
-                        "version": "",
-                        "platform": "ANY"}
+    CHROME = {
+        "browserName": "chrome",
+        "version": "",
+        "platform": "ANY",
+        "javascriptEnabled": True,
+    }
 
-    HTMLUNIT = {"browserName": "htmlunit",
-                        "version": "",
-                        "platform": "ANY" }
-                        
-    HTMLUNITWITHJS = {"browserName": "htmlunit",
-                        "version": "firefox",
-                        "platform": "ANY",
-                        "javascriptEnabled": True }
+    OPERA = {
+        "browserName": "opera",
+        "version": "",
+        "platform": "ANY",
+        "javascriptEnabled": True,
+    }
 
-    IPHONE = {"browserName": "iPhone",
-                        "version": "",
-                        "platform": "MAC",
-                        "javascriptEnabled": True }
-    
-    IPAD = {"browserName": "iPad",
-                        "version": "",
-                        "platform": "MAC",
-                        "javascriptEnabled": True }
-    
-    ANDROID = {"browserName": "android",
-                        "version": "",
-                        "platform": "ANDROID",
-                        "javascriptEnabled": True }
+    SAFARI = {
+        "browserName": "safari",
+        "version": "5",
+        "platform": "MAC",
+        "javascriptEnabled": True,
+    }
 
+    HTMLUNIT = {
+        "browserName": "htmlunit",
+        "version": "",
+        "platform": "ANY",
+    }
 
+    HTMLUNITWITHJS = {
+        "browserName": "htmlunit",
+        "version": "firefox",
+        "platform": "ANY",
+        "javascriptEnabled": True,
+    }
+
+    IPHONE = {
+        "browserName": "iPhone",
+        "version": "",
+        "platform": "MAC",
+        "javascriptEnabled": True,
+    }
+
+    IPAD = {
+        "browserName": "iPad",
+        "version": "",
+        "platform": "MAC",
+        "javascriptEnabled": True,
+    }
+
+    ANDROID = {
+        "browserName": "android",
+        "version": "",
+        "platform": "ANDROID",
+        "javascriptEnabled": True,
+    }
