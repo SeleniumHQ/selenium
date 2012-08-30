@@ -206,7 +206,7 @@
             <dependency>
                 <groupId>org.webbitserver</groupId>
                 <artifactId>webbit</artifactId>
-                <version>0.4.6</version>
+                <version>0.4.14</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
