@@ -103,7 +103,7 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
         offset.x + region.left, offset.y + region.top,
         region.width, region.height);
 
-    scroll = webdriver.chrome.computeScrollOffsets_(size, region, center);
+    var scroll = webdriver.chrome.computeScrollOffsets_(size, region, center);
     scrollable.scrollLeft += scroll.x;
     scrollable.scrollTop += scroll.y;
   }
