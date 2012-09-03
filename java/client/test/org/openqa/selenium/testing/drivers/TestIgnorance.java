@@ -163,6 +163,9 @@ public class TestIgnorance {
     if (Boolean.getBoolean("selenium.browser.selenium")) {
       comparator.addDriver(SELENESE);
     }
+    if (Boolean.getBoolean("selenium.browser.remote")) {
+      comparator.addDriver(REMOTE);
+    }
 
     switch (browser) {
       case android:
@@ -173,12 +176,10 @@ public class TestIgnorance {
 
       case chrome:
         comparator.addDriver(CHROME);
-        comparator.addDriver(REMOTE);
         break;
 
       case ff:
         comparator.addDriver(FIREFOX);
-        comparator.addDriver(REMOTE);
         break;
 
       case htmlunit:
@@ -188,13 +189,11 @@ public class TestIgnorance {
 
       case ie:
         comparator.addDriver(IE);
-        comparator.addDriver(REMOTE);
         break;
 
       case ipad:
       case iphone:
         comparator.addDriver(IPHONE);
-        comparator.addDriver(REMOTE);
         break;
 
       case none:
@@ -203,7 +202,6 @@ public class TestIgnorance {
 
       case opera:
         comparator.addDriver(OPERA);
-        comparator.addDriver(REMOTE);
         break;
 
       case opera_mobile:

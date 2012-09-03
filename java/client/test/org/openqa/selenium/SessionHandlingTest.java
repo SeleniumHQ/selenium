@@ -23,17 +23,17 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 
 @RunWith(SeleniumTestRunner.class)
 public class SessionHandlingTest {
 
   @Test
-  @Ignore({CHROME, IE, OPERA, OPERA_MOBILE})
+  @Ignore({CHROME, IE, OPERA, OPERA_MOBILE, REMOTE})
   public void callingQuitMoreThanOnceOnASessionIsANoOp() {
     WebDriver driver = new WebDriverBuilder().get();
 
@@ -42,7 +42,8 @@ public class SessionHandlingTest {
     try {
       driver.quit();
     } catch (RuntimeException e) {
-      fail("It should be possible to quit a session more than once, got exception: " + e);
+      throw new RuntimeException(
+          "It should be possible to quit a session more than once, got exception:", e);
     }
   }
 
