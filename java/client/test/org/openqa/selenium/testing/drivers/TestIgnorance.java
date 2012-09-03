@@ -163,7 +163,7 @@ public class TestIgnorance {
     if (Boolean.getBoolean("selenium.browser.selenium")) {
       comparator.addDriver(SELENESE);
     }
-    if (Boolean.getBoolean("selenium.browser.remote")) {
+    if (Boolean.getBoolean("selenium.browser.remote") || SauceDriver.shouldUseSauce()) {
       comparator.addDriver(REMOTE);
     }
 

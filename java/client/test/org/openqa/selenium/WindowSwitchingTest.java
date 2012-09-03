@@ -185,6 +185,8 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     Set<String> allWindowHandles = driver.getWindowHandles();
 
+    assertTrue(waitUntilNewWindowIsOpened(driver, 3));
+
     // There should be three windows. We should also see each of the window titles at least once.
     Set<String> seenHandles = Sets.newHashSet();
     for (String handle : allWindowHandles) {
