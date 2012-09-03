@@ -591,7 +591,7 @@ module CrazyFunDotNet
       list = FileList.new(dir + "/**/AssemblyInfo.cs").to_a
       if list.length > 0
         regexp = /^.*AssemblyVersion\(\"(.*)\"\).*$/
-        assembly_info = File.open list[0]
+        assembly_info = File.open list[0], 'rb'
         assembly_info.each do |line|
           match = line.match regexp
           if (not match.nil?)
@@ -679,7 +679,7 @@ module CrazyFunVisualC
       list = FileList.new(dir + "/**/*.rc").to_a
       if list.length > 0
         regexp = /^.*\"FileVersion\",\s*\"(.*)\".*$/
-        rc = File.open list[0]
+        rc = File.open list[0], 'rb'
         rc.each do |data|
           line = data.gsub(/\x00/, "")
           match = line.match regexp
