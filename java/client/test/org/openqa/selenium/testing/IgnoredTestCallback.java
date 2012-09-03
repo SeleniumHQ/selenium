@@ -18,6 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.testing;
 
+import java.lang.reflect.Method;
+
 public interface IgnoredTestCallback {
-  void callback(Class className, String testName, Ignore ignore);
+  void callback(Class<?> clazz, Method method);
 }

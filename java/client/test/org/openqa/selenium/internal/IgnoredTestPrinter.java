@@ -18,24 +18,21 @@ limitations under the License.
 
 package org.openqa.selenium.internal;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Files;
-
 import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.TestIgnorance;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.io.Files;
 import org.junit.internal.runners.model.ReflectiveCallable;
 import org.junit.internal.runners.statements.Fail;
 import org.junit.runner.Description;
+import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.model.FrameworkMethod;
-
-import org.junit.runners.model.InitializationError;
-
 import org.junit.runners.Suite;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.InitializationError;
 
 import java.io.File;
 import java.util.HashSet;
@@ -105,11 +102,13 @@ public class IgnoredTestPrinter {
           }
         }.run();
       } catch (Throwable e) {
-        runLeaf(new Fail(e), description, notifier);
+        Failure failure = new Failure(description, e);
+        notifier.fireTestFailure(failure);
+        return;
       }
 
       if (ignorance.isIgnored(method, test)) {
-        ignoreCollector.callback(test.getClass(), method.getName(), test.getClass().getAnnotation(Ignore.class));
+        ignoreCollector.callback(test.getClass(), method.getMethod());
       }
     }
   }

@@ -98,6 +98,10 @@ java_test(name = "RcBrowserLauncherTests",
   ])
 
 java_binary(name = "dump-ignores",
-  deps = [ ":tests" ],
+  deps = [
+    ":tests",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/junit",
+  ],
   main_class = "org.openqa.selenium.internal.IgnoredTestPrinter"
 )

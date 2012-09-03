@@ -18,67 +18,102 @@ limitations under the License.
 
 package org.openqa.selenium.internal;
 
-import org.json.JSONArray;
-import org.json.JSONException;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.testing.IgnoredTestCallback;
 
+import com.google.common.base.Objects;
+import com.google.common.collect.Sets;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Set;
 
 public class IgnoreCollector implements IgnoredTestCallback {
-  private Set<Map> tests = new HashSet<Map>();
-  private BeanToJsonConverter converter = new BeanToJsonConverter();
 
-  public void callback(Class clazz, String testName, Ignore ignore) {
-    for (String name : getTestMethodsFor(clazz, testName)) {
-      if (ignore != null) {
-        tests.add(IgnoredTestCase.asMap(clazz.getName(), name, ignore));
-      }
+  private Set<IgnoredTest> tests = Sets.newHashSet();
+
+  @Override
+  public void callback(Class<?> clazz, Method method) {
+    checkNotNull(method);
+    checkNotNull(method);
+
+    if (wasIgnored(clazz, method)) {
+      IgnoredTest ignoredTest = new IgnoredTest(clazz, method);
+      tests.add(ignoredTest);
     }
   }
 
-  private List<String> getTestMethodsFor(Class clazz, String testName) {
-    if (!testName.isEmpty()) {
-      return Arrays.asList(testName);
-    }
-
-    List<String> testMethods = new ArrayList<String>();
-
-    Method[] methods = clazz.getDeclaredMethods();
-    for (Method method : methods) {
-      if (isTestMethod(method)) {
-        testMethods.add(method.getName());
-      }
-    }
-    return testMethods;
-  }
-
-  private boolean isTestMethod(Method method) {
-    return method.getAnnotation(org.junit.Test.class) != null || method.getName().startsWith("test");
+  /**
+   * @param clazz The test class (not necessarily the method's declaring class).
+   * @param method The test method.
+   * @return Whether the test was ignored from a {@link Ignore} annotation.
+   */
+  private static boolean wasIgnored(Class<?> clazz, Method method) {
+    return method.getAnnotation(Ignore.class) != null
+        || clazz.getAnnotation(Ignore.class) != null;
   }
 
   public String toJson() throws JSONException {
-    return new JSONArray(converter.convert(tests)).toString();
+    JSONArray array = new JSONArray();
+    for (IgnoredTest test : tests) {
+      array.put(test.toJson());
+    }
+    return array.toString();
   }
 
-  private static class IgnoredTestCase {
-    public static Map<String, Object> asMap(String className, String testName, Ignore ignore) {
-      final Map<String, Object> map = new HashMap<String, Object>();
-      map.put("className", className);
-      map.put("testName", testName);
-      map.put("reason", ignore.reason());
-      map.put("issues", ignore.issues());
+  private static class IgnoredTest {
 
-      final Set<String> drivers = new HashSet<String>();
-      for (Ignore.Driver driver : ignore.value()) {
-        drivers.add(driver.name());
+    private final Class<?> clazz;
+    private final Method method;
+
+    private IgnoredTest(Class<?> clazz, Method method) {
+      this.clazz = clazz;
+      this.method = method;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(clazz, method);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o instanceof IgnoredTest) {
+        IgnoredTest that = (IgnoredTest) o;
+        return Objects.equal(this.clazz, that.clazz)
+            && Objects.equal(this.method, that.method);
+      }
+      return false;
+    }
+    
+    public JSONObject toJson() throws JSONException {
+      JSONObject json = new JSONObject()
+          .put("className", clazz.getName())
+          .put("testName", method.getName());
+
+      Ignore methodIgnore = method.getAnnotation(Ignore.class);
+      if (methodIgnore != null) {
+        json.put("method", getIgnoreInfo(methodIgnore));
       }
 
-      map.put("drivers", drivers);
+      Ignore classIgnore = clazz.getAnnotation(Ignore.class);
+      if (classIgnore != null) {
+        json.put("class", getIgnoreInfo(classIgnore));
+      }
 
-      return map;
+      return json;
+    }
+    
+    private static JSONObject getIgnoreInfo(Ignore annotation) throws JSONException {
+      return new JSONObject()
+          .put("drivers", annotation.value())
+          .put("issues", annotation.issues())
+          .put("platforms", annotation.platforms())
+          .put("reason", annotation.reason());
     }
   }
 }
