@@ -42,7 +42,11 @@ core.events.shiftKeyDown_ = false;
 var XPCNativeWrapper = XPCNativeWrapper || function(_) {};
 
 core.events.getEventFactory_ = function(eventName) {
-  var factory = bot.events.EventType[eventName];
+  var eventNameForFactory = '';
+  if (eventName) {
+    eventNameForFactory = eventName.toUpperCase();
+  }
+  var factory = bot.events.EventType[eventNameForFactory];
   if (factory) {
     return factory;
   }
