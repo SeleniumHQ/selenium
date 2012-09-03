@@ -38,7 +38,7 @@ public class IgnoreCollector implements IgnoredTestCallback {
 
   @Override
   public void callback(Class<?> clazz, Method method) {
-    checkNotNull(method);
+    checkNotNull(clazz);
     checkNotNull(method);
 
     if (wasIgnored(clazz, method)) {
