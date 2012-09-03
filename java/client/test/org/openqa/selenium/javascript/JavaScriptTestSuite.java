@@ -130,7 +130,9 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
           if (testEnvironment != null) {
             testEnvironment.stop();
           }
-          webDriver.quit();
+          if (webDriver != null) {
+            webDriver.quit();
+          }
         }
       }
     };
