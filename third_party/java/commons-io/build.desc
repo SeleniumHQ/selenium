@@ -1,2 +1,2 @@
 java_library(name = "commons-io",
-  deps = [ "commons-io-2.0.1.jar" ])
+  deps = [ "commons-io-2.2.jar" ])
