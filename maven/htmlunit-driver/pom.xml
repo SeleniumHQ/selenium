@@ -20,26 +20,11 @@
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>2.9</version>
-            <exclusions>
-                <!-- Exclude httpclient here, because htmlunit 2.8 depends on httpclient 4.0.1 but Selenium uses httpclient 4.0.2 -->
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>2.10</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.1.2</version>
-            <exclusions>
-                <!-- Exclude commons-codec here, because httpclient 4.0.2 depends commons-codec 1.3 but HtmlUnit uses commons-codec 1.4 -->
-                <exclusion>
-                    <groupId>commons-codec</groupId>
-                    <artifactId>commons-codec</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
