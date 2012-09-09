@@ -14,7 +14,9 @@
 
 var url = require('url');
 
-var webdriver = require('../../../build/javascript/webdriver/webdriver'),
+var webdriver = require(process.env['SELENIUM_DEV_MODE'] === '1' ?
+    './webdriver' :
+    '../../build/javascript/node/webdriver'),
     optparse = require('./optparse');
 
 var app = webdriver.promise.Application.getInstance();
@@ -23,52 +25,36 @@ app.on(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION, function(e) {
 });
 
 
-const DEFAULT_SERVER_URL = 'http://localhost:4444/wd/hub';
-
-var parser = new optparse.OptionsParser([
-    '%prog [options]',
-    '',
-    'A WebDriver server should be run in a separate process for use with this ',
-    'script. If no --browser is specified, a REPL will be started.'
-].join('\n'));
-
-
-var browser, demoUrl;
-
-parser.addOption('browser',
-    'Which browser the demo should launch. If not specified, this demo will ' +
-        'spawn a REPL',
-    function(b) {
-      log('Creating demo for browser ' + JSON.stringify(b));
-      browser = b;
-    });
-parser.addOption('url',
-    'A URL to open with the launched session. The WebDriver session ID and ' +
-    'server URL will be appended to the opened URL.',
-    function(url) {
-      log('Opening demo page ' + url);
-      demoUrl = url;
-    });
-parser.addOption('wdUrl',
-    'URL of the WebDriver server to use; defaults to ' + DEFAULT_SERVER_URL,
-    function(url) {
-      webdriver.process.setEnv(webdriver.Builder.SERVER_URL_ENV, url);
+var parser = new optparse.OptionParser().
+    usage([
+        '%prog [options]',
+        '',
+        'A WebDriver server should be run in a separate process for use with ',
+        'this script. If no --browser is specified, a REPL will be started.'
+    ].join('\n')).
+    string('browser', {
+      help: 'Which browser the demo should launch. If not specified, this ' +
+          'demo will spawn a REPL'
+    }).
+    string('url', {
+      help: 'A URL to open with the launched session. The WebDriver session ' +
+          'ID and server URL will be appended to the opened URL'
     });
 
 parser.parse();
-if (!webdriver.process.getEnv(webdriver.Builder.SERVER_URL_ENV)) {
-  webdriver.process.setEnv(webdriver.Builder.SERVER_URL_ENV,
-      DEFAULT_SERVER_URL);
-}
+
+var browser = parser.options.browser;
+var demoUrl = parser.options.url;
 
 if (browser) {
-
   var driver = createDriver(browser, null, true);
   driver.getSession().then(function(session) {
+    var wdUrl = process.env[webdriver.Builder.SERVER_URL_ENV] ||
+        'http://localhost:4444/wd/hub';
+
     var queryString = [
       webdriver.Builder.SERVER_URL_ENV, '=',
-      encodeURIComponent(
-          webdriver.process.getEnv(webdriver.Builder.SERVER_URL_ENV)),
+      encodeURIComponent(wdUrl),
       '&', webdriver.Builder.SESSION_ID_ENV, '=',
       encodeURIComponent(session.id)
     ].join('');
@@ -102,12 +88,6 @@ if (browser) {
   log('Node is still in the works. As such, you will need to start a separate');
   log('Selenium server before playing with this script.');
   log('');
-  setDefaultUrl(webdriver.process.getEnv(webdriver.Builder.SERVER_URL_ENV) ||
-                DEFAULT_SERVER_URL);
-  log('');
-  log('You may change the default URL by calling setDefaultUrl(). Conversely,');
-  log('you may set the URL for individual clients on the webdriver.Builder');
-  log('');
   log('To create new WebDriver clients, you can use the Builder (available to');
   log('this REPL as "webdriver.Builder"), or you may simply call ');
   log('createDriver(browserName), where browserName is the name of the');
@@ -119,7 +99,6 @@ if (browser) {
   var repl = require('repl').start({});
 
   repl.context.webdriver = webdriver;
-  repl.context.setDefaultUrl = setDefaultUrl;
   repl.context.createDriver = createDriver;
 }
 
@@ -148,11 +127,6 @@ function createDriver(browserName, opt_server, opt_verbose) {
   return builder.build();
 }
 
-
-function setDefaultUrl(url) {
-  log('The WebDriver server URL has been set to ' + url);
-  webdriver.process.setEnv(webdriver.Builder.SERVER_URL_ENV, url);
-}
 
 function log(msg) {
   console.log(msg);

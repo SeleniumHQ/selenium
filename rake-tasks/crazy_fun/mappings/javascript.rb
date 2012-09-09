@@ -157,6 +157,10 @@ class JavascriptMappings
     fun.add_mapping("js_test", Javascript::AddDependencies.new)
     fun.add_mapping("js_test", Javascript::RunTests.new)
 
+    fun.add_mapping("node_module", Javascript::CheckPreconditions.new)
+    fun.add_mapping("node_module", Javascript::Node::CreateTask.new)
+    fun.add_mapping("node_module", Javascript::CreateTaskShortName.new)
+    fun.add_mapping("node_module", Javascript::Node::GenerateModule.new)
   end
 end
 
@@ -966,4 +970,65 @@ module Javascript
       task "#{task_name}:run" => (listed_browsers & available_browsers).map { |browser,_| "#{task_name}_#{browser}:run" }
     end
   end
+
+  module Node
+    class BaseNodeJsTask < BaseJs
+      def folder_name(dir, name)
+        path_for "build/#{dir}/#{name}"
+      end
+    end
+
+
+    class CreateTask < BaseNodeJsTask
+      def handle(fun, dir, args)
+        folder_name = folder_name(dir, args[:name])
+        task_name = task_name(dir, args[:name])
+
+        task task_name
+        task = Rake::Task[task_name]
+        task.out = folder_name
+        add_dependencies(task, dir, args[:srcs])
+        add_dependencies(task, dir, args[:deps]) unless args[:deps].nil?
+      end
+    end
+
+    class GenerateModule < BaseNodeJsTask
+      def handle(fun, dir, args)
+        folder_name = folder_name(dir, args[:name])
+        task_name = task_name(dir, args[:name])
+
+        task task_name do
+          puts "Preparing: #{task_name} as #{folder_name}"
+
+          srcs = args[:srcs].collect {|src| Dir[File.join(dir, src)]}
+          srcs = srcs.flatten.collect {|src| File.expand_path(src)}
+
+          deps = build_deps(folder_name, Rake::Task[task_name], []).uniq
+          deps = deps.flatten.collect {|dep| File.expand_path(dep)}
+          deps = deps.reject {|dep| srcs.include? dep }
+
+          roots = args[:content_roots].collect {|root| File.join(Dir.pwd, root)}
+
+          resources = []
+          (args[:resources] || []).each do |resource|
+            resource.each do |from, to|
+              resources.push(" --resource=#{from}:#{to}")
+            end
+          end
+
+          mkdir_p "#{folder_name}"
+
+          cmd = "node javascript/node/deploy.js" <<
+              " --output=#{folder_name}" <<
+              " --lib=" << deps.join(" --lib=") <<
+              " --lib=third_party/closure/goog" <<
+              " --root=" << roots.join(" --root=") <<
+              " --src=" << srcs.join(" --src=") <<
+              resources.join("")
+
+          sh cmd
+        end
+      end
+    end
+  end  # module Node
 end

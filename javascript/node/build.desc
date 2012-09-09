@@ -1,0 +1,12 @@
+node_module(
+  name = "webdriver",
+  srcs = [ "webdriver/*.js" ],
+  deps = [ "//javascript/webdriver:webdriver_lib" ],
+  content_roots = [
+    "javascript",
+    "third_party/closure"
+  ],
+  resources = [
+    { "COPYING" : "/COPYING" },
+    { "third_party/closure/LICENSE" : "goog/LICENSE" }
+  ])

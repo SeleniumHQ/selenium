@@ -1,0 +1,7 @@
+This directory should only contain user facing modules for Node.  Each module
+should do little more than export its API from the Closure library.
+
+Example:
+
+var base = require('./_base');
+exports.Foo = base.require('some.namespace.Foo');
