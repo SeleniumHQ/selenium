@@ -27,10 +27,10 @@ app.on(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION, function(e) {
 
 var parser = new optparse.OptionParser().
     usage([
-        '%prog [options]',
-        '',
-        'A WebDriver server should be run in a separate process for use with ',
-        'this script. If no --browser is specified, a REPL will be started.'
+      '%prog [options]',
+      '',
+      'A WebDriver server should be run in a separate process for use with ',
+      'this script. If no --browser is specified, a REPL will be started.'
     ].join('\n')).
     string('browser', {
       help: 'Which browser the demo should launch. If not specified, this ' +
@@ -98,7 +98,10 @@ if (browser) {
 
   var repl = require('repl').start({});
 
+  /** @type {!Object} */
   repl.context.webdriver = webdriver;
+
+  /** @type {function(string, string=, boolean=): !webdriver.WebDriver} */
   repl.context.createDriver = createDriver;
 }
 
@@ -120,7 +123,7 @@ function createDriver(browserName, opt_server, opt_verbose) {
     version: '',
     javascriptEnabled: true,
     'chrome.switches': [
-        '--disable-popup-blocking'
+      '--disable-popup-blocking'
     ],
     'opera.arguments': '-nowin'
   });

@@ -1,3 +1,17 @@
+// Copyright 2012 Selenium committers
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 /**
  * @fileoverview Script used to prepare WebDriverJS as a Node module.
  */
@@ -153,6 +167,7 @@ function processLibraryFiles(filePaths, contentRoots) {
 /**
  * @param {!Array.<string>} filePaths The src file paths.
  * @param {string} outputDirPath Path to the directory to copy src files to.
+ * @return {!Array.<string>} The list of all required symbols.
  */
 function processSrcs(filePaths, outputDirPath) {
   var symbols = {};
@@ -199,7 +214,7 @@ function copyLibraries(outputDirPath, symbols) {
   copy(base);
 
   var depsFileContents = [
-      '// This file has been auto-generated; do not edit by hand'
+    '// This file has been auto-generated; do not edit by hand'
   ];
 
   var seenSymbols = {};
@@ -223,11 +238,11 @@ function copyLibraries(outputDirPath, symbols) {
     var relativePath = path.relative(googDirPath, outputPath);
 
     depsFileContents.push([
-        'goog.addDependency(',
-        JSON.stringify(relativePath), ', ',
-        JSON.stringify(FILE_INFO[file].provides), ', ',
-        JSON.stringify(FILE_INFO[file].requires),
-        ');'
+      'goog.addDependency(',
+      JSON.stringify(relativePath), ', ',
+      JSON.stringify(FILE_INFO[file].provides), ', ',
+      JSON.stringify(FILE_INFO[file].requires),
+      ');'
     ].join(''));
 
     FILE_INFO[file].requires.forEach(resolveDeps);
@@ -308,15 +323,15 @@ function main() {
       }).
       string('resource', {
         help: 'A resource which should be copied into the final module, in ' +
-              'the form of a ":" colon separated pair, the first part ' +
-              'designating the source, and the second its destination. If ' +
-              'the destination path is absolute, it is relative to the ' +
-              'module root, otherwise it will be treated relative to the ' +
-              'lib/ directory.',
+            'the form of a ":" colon separated pair, the first part ' +
+            'designating the source, and the second its destination. If ' +
+            'the destination path is absolute, it is relative to the ' +
+            'module root, otherwise it will be treated relative to the ' +
+            'lib/ directory.',
         list: true
       });
   parser.parse();
-  
+
   var options = parser.options;
 
   processLibraryFiles(options.lib, options.root);

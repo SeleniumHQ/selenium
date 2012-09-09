@@ -118,7 +118,8 @@ var HELP_TEXT_POSITION = MAX_HELP_POSITION + IDENTATION.length;
  * @return {string} The formatted help message.
  */
 function formatHelpMsg(usage, options) {
-  var prog = path.basename(process.argv[0]) + ' ' + path.basename(process.argv[1]);
+  var prog = path.basename(
+      process.argv[0]) + ' ' + path.basename(process.argv[1]);
   var help = [
     usage.replace(/\$0\b/g, prog),
     '',
@@ -128,7 +129,7 @@ function formatHelpMsg(usage, options) {
 
   Object.keys(options).sort().forEach(function(key) {
     help.push(formatOption(key, options[key].help));
-  }, this);
+  });
 
   help.push('');
 
@@ -263,6 +264,7 @@ function OptionParser() {
    * current executable's name.
    * @param {string} usageStr The new usage string.
    * @return {!OptionParser} A self reference.
+   * @this {OptionParser}
    */
   this.usage = function(usageStr) {
     mustParse = true;
@@ -293,6 +295,7 @@ function OptionParser() {
    *     option spec.
    * @param {Object=} opt_spec The option spec.
    * @return {!OptionParser} A self reference.
+   * @this {OptionParser}
    */
   this.addOption = function(name, parseFn, opt_spec) {
     checkOptionName(name, options);
@@ -321,7 +324,8 @@ function OptionParser() {
    * @param {string} name The name of the option.
    * @param {Object=} opt_spec The option spec.
    * @return {!OptionParser} A self reference.
-   */
+   * @this {OptionParser}
+  */
   this.boolean = function(name, opt_spec) {
     return this.addOption(name, parseBoolean, opt_spec);
   };
@@ -331,6 +335,7 @@ function OptionParser() {
    * @param {string} name The name of the option.
    * @param {Object=} opt_spec The option spec.
    * @return {!OptionParser} A self reference.
+   * @this {OptionParser}
    */
   this.number = function(name, opt_spec) {
     return this.addOption(name, parseNumber, opt_spec);
@@ -342,6 +347,7 @@ function OptionParser() {
    * @param {string} name The name of the option.
    * @param {Object=} opt_spec The option spec.
    * @return {!OptionParser} A self reference.
+   * @this {OptionParser}
    */
   this.path = function(name, opt_spec) {
     return this.addOption(name, path.resolve, opt_spec);
@@ -352,6 +358,7 @@ function OptionParser() {
    * @param {string} name The name of the option.
    * @param {Object=} opt_spec The option spec.
    * @return {!OptionParser} A self reference.
+   * @this {OptionParser}
    */
   this.string = function(name, opt_spec) {
     return this.addOption(name, parseString, opt_spec);
@@ -363,7 +370,7 @@ function OptionParser() {
    * <p>The command line arguments will be re-parsed if this parser's
    * configuration has changed since the last access.
    *
-   * @return {!Object.<*>}
+   * @return {!Object.<*>} The parsed options.
    */
   this.__defineGetter__('options', function() {
     parse();
@@ -377,7 +384,7 @@ function OptionParser() {
    * <p>The command line arguments will be re-parsed if this parser's
    * configuration has changed since the last access.
    *
-   * @return {!Array.<string>}
+   * @return {!Array.<string>} The remaining command line arguments.
    */
   this.__defineGetter__('argv', function() {
     parse();
@@ -394,7 +401,7 @@ function OptionParser() {
 
   /**
    * Returns a formatted help message for this parser.
-   * @return {string}
+   * @return {string} The help message for this parser.
    */
   this.getHelpMsg = getHelpMsg;
 
@@ -496,6 +503,7 @@ Object.defineProperty(OptionParser, 'DEFAULT_USAGE', {
 });
 
 
+/** @type {!OptionParser} */
 exports.OptionParser = OptionParser;
 
 if (module === require.main) {
