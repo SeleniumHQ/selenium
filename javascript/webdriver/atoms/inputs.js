@@ -54,6 +54,7 @@ goog.exportSymbol('webdriver.atoms.inputs.sendKeys',
  * Click on an element.
  *
  * @param {!Element} element The element to click.
+ * @param {Object=} opt_state The serialized state of the mouse.
  * @return {!bot.Mouse.State} The mouse state.
  * @return {Object} The mouse state.
  */
@@ -67,6 +68,7 @@ webdriver.atoms.inputs.click = function(element, opt_state) {
 };
 goog.exportSymbol('webdriver.atoms.inputs.click',
                   webdriver.atoms.inputs.click);
+
 
 /**
  * Move the mouse to a specific element and/or coordinate location.
@@ -116,12 +118,13 @@ webdriver.atoms.inputs.mouseMove = function(element, x_offset, y_offset,
 goog.exportSymbol('webdriver.atoms.inputs.mouseMove',
                   webdriver.atoms.inputs.mouseMove);
 
+
 /**
-* Presses the primary mouse button at the current location.
-*
-* @param {Object} opt_state The serialized state of the mouse.
-* @return {Object} The mouse state.
-*/
+ * Presses the primary mouse button at the current location.
+ *
+ * @param {Object=} opt_state The serialized state of the mouse.
+ * @return {Object} The mouse state.
+ */
 webdriver.atoms.inputs.mouseButtonDown = function(opt_state) {
   var mouse = new bot.Mouse(opt_state);
   mouse.pressButton(bot.Mouse.Button.LEFT);
@@ -130,12 +133,13 @@ webdriver.atoms.inputs.mouseButtonDown = function(opt_state) {
 goog.exportSymbol('webdriver.atoms.inputs.mouseButtonDown',
                   webdriver.atoms.inputs.mouseButtonDown);
 
+
 /**
-* Releases the primary mouse button at the current location.
-*
-* @param {Object} opt_state The serialized state of the mouse.
-* @return {Object} The mouse state.
-*/
+ * Releases the primary mouse button at the current location.
+ *
+ * @param {Object=} opt_state The serialized state of the mouse.
+ * @return {Object} The mouse state.
+ */
 webdriver.atoms.inputs.mouseButtonUp = function(opt_state) {
   var mouse = new bot.Mouse(opt_state);
   mouse.releaseButton();
@@ -144,12 +148,13 @@ webdriver.atoms.inputs.mouseButtonUp = function(opt_state) {
 goog.exportSymbol('webdriver.atoms.inputs.mouseButtonUp',
                   webdriver.atoms.inputs.mouseButtonUp);
 
+
 /**
-* Double-clicks primary mouse button at the current location.
-*
-* @param {Object} opt_state The serialized state of the mouse.
-* @return {Object} The mouse state.
-*/
+ * Double-clicks primary mouse button at the current location.
+ *
+ * @param {Object=} opt_state The serialized state of the mouse.
+ * @return {Object} The mouse state.
+ */
 webdriver.atoms.inputs.doubleClick = function(opt_state) {
   var mouse = new bot.Mouse(opt_state);
   mouse.pressButton(bot.Mouse.Button.LEFT);
@@ -161,13 +166,14 @@ webdriver.atoms.inputs.doubleClick = function(opt_state) {
 goog.exportSymbol('webdriver.atoms.inputs.doubleClick',
                   webdriver.atoms.inputs.doubleClick);
 
+
 /**
-* Right-clicks mouse button at the current location.
-*
-* @param {Object)} opt_state The serialized state of the mouse.
-* @return {Object} The mouse state.
-*/
-webdriver.atoms.inputs.rightClick = function (opt_state) {
+ * Right-clicks mouse button at the current location.
+ *
+ * @param {Object=} opt_state The serialized state of the mouse.
+ * @return {Object} The mouse state.
+ */
+webdriver.atoms.inputs.rightClick = function(opt_state) {
   var mouse = new bot.Mouse(opt_state);
   mouse.pressButton(bot.Mouse.Button.RIGHT);
   mouse.releaseButton();

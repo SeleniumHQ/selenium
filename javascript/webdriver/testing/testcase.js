@@ -33,6 +33,7 @@ goog.require('webdriver.promise.Application');
 goog.require('webdriver.testing.asserts');
 
 
+
 /**
  * Constructs a test case that synchronizes each test case with the singleton
  * {@code webdriver.promise.Application}.

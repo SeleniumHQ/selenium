@@ -17,11 +17,11 @@
 goog.provide('safaridriver.extension.Session');
 
 goog.require('goog.asserts');
-goog.require('goog.debug.Logger');
 goog.require('goog.string');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product.isVersion');
 goog.require('webdriver.Session');
+
 
 
 /**
@@ -34,12 +34,6 @@ goog.require('webdriver.Session');
 safaridriver.extension.Session = function(tabManager) {
   goog.base(this, goog.string.getRandomString(),
       safaridriver.extension.Session.CAPABILITIES);
-
-  /**
-   * @type {!goog.debug.Logger}
-   * @private
-   */
-  this.log_ = goog.debug.Logger.getLogger('safaridriver.extension.Session');
 
   /**
    * @type {!safaridriver.extension.TabManager}
@@ -175,7 +169,7 @@ safaridriver.extension.Session.prototype.getTabIds = function() {
 };
 
 
-/** @return {number} */
+/** @return {number} The current implicit wait setting. */
 safaridriver.extension.Session.prototype.getImplicitWait = function() {
   return this.implicitWait_;
 };
@@ -187,7 +181,7 @@ safaridriver.extension.Session.prototype.setImplicitWait = function(wait) {
 };
 
 
-/** @return {number} */
+/** @return {number} The current script timeout setting. */
 safaridriver.extension.Session.prototype.getScriptTimeout = function() {
   return this.scriptTimeout_;
 };

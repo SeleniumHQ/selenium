@@ -26,6 +26,7 @@ goog.require('safaridriver.message');
 goog.require('safaridriver.message.Message');
 
 
+
 /**
  * Base class for messages that contain a {@link safaridriver.Command} in their
  * payload.
@@ -53,7 +54,6 @@ goog.inherits(safaridriver.message.BaseCommandMessage,
  * @private
  */
 safaridriver.message.BaseCommandMessage.COMMAND_FIELD_ = 'command';
-
 
 
 /** @return {!safaridriver.Command} The command for this message. */
@@ -127,6 +127,7 @@ safaridriver.message.BaseCommandMessage.defineCommandMessageType = function(
 };
 
 
+
 /**
  * Message used to pass {@link safaridriver.Command} objects between the various
  * components of the extension.
@@ -137,6 +138,7 @@ safaridriver.message.BaseCommandMessage.defineCommandMessageType = function(
 safaridriver.message.Command =
     safaridriver.message.BaseCommandMessage.defineCommandMessageType(
         'command');
+
 
 
 /**

@@ -21,6 +21,7 @@ goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 
 
+
 /**
  * Describes a command to execute.
  * @param {string} id The command identifier, used to synchronize between two

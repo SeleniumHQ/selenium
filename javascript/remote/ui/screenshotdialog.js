@@ -20,6 +20,7 @@ goog.require('goog.style');
 goog.require('goog.ui.Dialog');
 
 
+
 /**
  * Dialog displayed when requesting a screenshot from the server.
  * @constructor

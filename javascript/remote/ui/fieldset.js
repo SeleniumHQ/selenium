@@ -17,6 +17,7 @@ goog.provide('remote.ui.FieldSet');
 goog.require('goog.ui.Component');
 
 
+
 /**
  * A component rendered as a FIELDSET on the page.
  * @param {string} legend Text for the fieldset legend.

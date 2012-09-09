@@ -23,6 +23,7 @@ goog.require('safaridriver.message');
 goog.require('safaridriver.message.Message');
 
 
+
 /**
  * Message sent to the extension when an alert is intercepted by an injected
  * script.

@@ -93,7 +93,8 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
   }
 
   if (bot.dom.isBooleanAttribute(attribute.toLowerCase())) {
-    value = bot.dom.getAttribute(element, attribute) || bot.dom.getProperty(element, attribute);
+    value = bot.dom.getAttribute(element, attribute) ||
+        bot.dom.getProperty(element, attribute);
     return value ? 'true' : null;
   }
 
@@ -252,61 +253,61 @@ webdriver.atoms.element.type = function(element, keys, opt_keyboard) {
  */
 webdriver.atoms.element.type.JSON_TO_KEY_MAP_ = {};
 goog.scope(function() {
-  var map = webdriver.atoms.element.type.JSON_TO_KEY_MAP_;
-  var key = webdriver.Key;
-  var botKey = bot.Keyboard.Keys;
+var map = webdriver.atoms.element.type.JSON_TO_KEY_MAP_;
+var key = webdriver.Key;
+var botKey = bot.Keyboard.Keys;
 
-  map[key.NULL] = null;
-  map[key.BACK_SPACE] = botKey.BACKSPACE;
-  map[key.TAB] = botKey.TAB;
-  map[key.RETURN] = botKey.ENTER;
-  // This not correct, but most browsers will do the right thing.
-  map[key.ENTER] = botKey.ENTER;
-  map[key.SHIFT] = botKey.SHIFT;
-  map[key.CONTROL] = botKey.CONTROL;
-  map[key.ALT] = botKey.ALT;
-  map[key.PAUSE] = botKey.PAUSE;
-  map[key.ESCAPE] = botKey.ESC;
-  map[key.SPACE] = botKey.SPACE;
-  map[key.PAGE_UP] = botKey.PAGE_UP;
-  map[key.PAGE_DOWN] = botKey.PAGE_DOWN;
-  map[key.END] = botKey.END;
-  map[key.HOME] = botKey.HOME;
-  map[key.LEFT] = botKey.LEFT;
-  map[key.UP] = botKey.UP;
-  map[key.RIGHT] = botKey.RIGHT;
-  map[key.DOWN] = botKey.DOWN;
-  map[key.INSERT] = botKey.INSERT;
-  map[key.DELETE] = botKey.DELETE;
-  map[key.SEMICOLON] = botKey.SEMICOLON;
-  map[key.EQUALS] = botKey.EQUALS;
-  map[key.NUMPAD0] = botKey.NUM_ZERO;
-  map[key.NUMPAD1] = botKey.NUM_ONE;
-  map[key.NUMPAD2] = botKey.NUM_TWO;
-  map[key.NUMPAD3] = botKey.NUM_THREE;
-  map[key.NUMPAD4] = botKey.NUM_FOUR;
-  map[key.NUMPAD5] = botKey.NUM_FIVE;
-  map[key.NUMPAD6] = botKey.NUM_SIX;
-  map[key.NUMPAD7] = botKey.NUM_SEVEN;
-  map[key.NUMPAD8] = botKey.NUM_EIGHT;
-  map[key.NUMPAD9] = botKey.NUM_NINE;
-  map[key.MULTIPLY] = botKey.NUM_MULTIPLY;
-  map[key.ADD] = botKey.NUM_PLUS;
-  map[key.SUBTRACT] = botKey.NUM_MINUS;
-  map[key.DECIMAL] = botKey.NUM_PERIOD;
-  map[key.DIVIDE] = botKey.NUM_DIVISION;
-  map[key.SEPARATOR] = botKey.SEPARATOR;
-  map[key.F1] = botKey.F1;
-  map[key.F2] = botKey.F2;
-  map[key.F3] = botKey.F3;
-  map[key.F4] = botKey.F4;
-  map[key.F5] = botKey.F5;
-  map[key.F6] = botKey.F6;
-  map[key.F7] = botKey.F7;
-  map[key.F8] = botKey.F8;
-  map[key.F9] = botKey.F9;
-  map[key.F10] = botKey.F10;
-  map[key.F11] = botKey.F11;
-  map[key.F12] = botKey.F12;
-  map[key.META] = botKey.META;
-});
+map[key.NULL] = null;
+map[key.BACK_SPACE] = botKey.BACKSPACE;
+map[key.TAB] = botKey.TAB;
+map[key.RETURN] = botKey.ENTER;
+// This not correct, but most browsers will do the right thing.
+map[key.ENTER] = botKey.ENTER;
+map[key.SHIFT] = botKey.SHIFT;
+map[key.CONTROL] = botKey.CONTROL;
+map[key.ALT] = botKey.ALT;
+map[key.PAUSE] = botKey.PAUSE;
+map[key.ESCAPE] = botKey.ESC;
+map[key.SPACE] = botKey.SPACE;
+map[key.PAGE_UP] = botKey.PAGE_UP;
+map[key.PAGE_DOWN] = botKey.PAGE_DOWN;
+map[key.END] = botKey.END;
+map[key.HOME] = botKey.HOME;
+map[key.LEFT] = botKey.LEFT;
+map[key.UP] = botKey.UP;
+map[key.RIGHT] = botKey.RIGHT;
+map[key.DOWN] = botKey.DOWN;
+map[key.INSERT] = botKey.INSERT;
+map[key.DELETE] = botKey.DELETE;
+map[key.SEMICOLON] = botKey.SEMICOLON;
+map[key.EQUALS] = botKey.EQUALS;
+map[key.NUMPAD0] = botKey.NUM_ZERO;
+map[key.NUMPAD1] = botKey.NUM_ONE;
+map[key.NUMPAD2] = botKey.NUM_TWO;
+map[key.NUMPAD3] = botKey.NUM_THREE;
+map[key.NUMPAD4] = botKey.NUM_FOUR;
+map[key.NUMPAD5] = botKey.NUM_FIVE;
+map[key.NUMPAD6] = botKey.NUM_SIX;
+map[key.NUMPAD7] = botKey.NUM_SEVEN;
+map[key.NUMPAD8] = botKey.NUM_EIGHT;
+map[key.NUMPAD9] = botKey.NUM_NINE;
+map[key.MULTIPLY] = botKey.NUM_MULTIPLY;
+map[key.ADD] = botKey.NUM_PLUS;
+map[key.SUBTRACT] = botKey.NUM_MINUS;
+map[key.DECIMAL] = botKey.NUM_PERIOD;
+map[key.DIVIDE] = botKey.NUM_DIVISION;
+map[key.SEPARATOR] = botKey.SEPARATOR;
+map[key.F1] = botKey.F1;
+map[key.F2] = botKey.F2;
+map[key.F3] = botKey.F3;
+map[key.F4] = botKey.F4;
+map[key.F5] = botKey.F5;
+map[key.F6] = botKey.F6;
+map[key.F7] = botKey.F7;
+map[key.F8] = botKey.F8;
+map[key.F9] = botKey.F9;
+map[key.F10] = botKey.F10;
+map[key.F11] = botKey.F11;
+map[key.F12] = botKey.F12;
+map[key.META] = botKey.META;
+});  // goog.scope

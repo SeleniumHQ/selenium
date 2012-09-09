@@ -33,7 +33,8 @@ goog.require('bot.inject.cache');
  * @return {string} A frame element wrapped in a JSON string as defined by
  *     the wire protocol.
  */
-webdriver.atoms.inject.frame.findFrameByIdOrName = function(idOrName, opt_root) {
+webdriver.atoms.inject.frame.findFrameByIdOrName = function(idOrName,
+    opt_root) {
   return bot.inject.executeScript(bot.frame.findFrameByNameOrId,
       [idOrName, opt_root], true);
 };

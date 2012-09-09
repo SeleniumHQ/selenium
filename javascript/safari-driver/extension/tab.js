@@ -27,6 +27,7 @@ goog.require('safaridriver.message.Response');
 goog.require('safaridriver.message.Unload');
 
 
+
 /**
  * Tracks a single SafariBrowserTab.
  *
@@ -108,7 +109,7 @@ safaridriver.extension.Tab.prototype.onUnload_ = function(message) {
 
 /** @return {!SafariBrowserTab} The tab associated with this window. */
 safaridriver.extension.Tab.prototype.getBrowserTab = function() {
-  return this.browserTab_
+  return this.browserTab_;
 };
 
 
@@ -141,7 +142,7 @@ safaridriver.extension.Tab.prototype.loadsNewPage = function(url) {
  *     response before timing out. If not specified, or non-positive, no timeout
  *     will be applied.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
- *     the message
+ *     the message.
  */
 safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
   var response = new webdriver.promise.Deferred();

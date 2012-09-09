@@ -26,6 +26,7 @@ goog.provide('webdriver.stacktrace.Snapshot');
 goog.require('goog.array');
 
 
+
 /**
  * Stores a snapshot of the stack trace at the time this instance was created.
  * @param {number=} opt_slice The number of frames to remove from the top of
@@ -72,6 +73,7 @@ webdriver.stacktrace.Snapshot.prototype.getStacktrace = function() {
   }
   return this.parsedStack_;
 };
+
 
 
 /**
@@ -255,6 +257,7 @@ webdriver.stacktrace.OPERA_ANONYMOUS_FUNCTION_NAME_PATTERN_ =
     '(?:(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ +
     '(?:\\.' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + ')*)\\.)?' +
     '(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + '))?>';
+
 
 /**
  * RegExp pattern for a function call in an Opera stack frame.

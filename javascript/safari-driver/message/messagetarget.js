@@ -20,6 +20,7 @@ goog.require('safaridriver.message');
 goog.require('webdriver.EventEmitter');
 
 
+
 /**
  * Emits events whenever a {@link safaridriver.message.Message} is received.
  * The message type will be used as the emitted event type, and the message

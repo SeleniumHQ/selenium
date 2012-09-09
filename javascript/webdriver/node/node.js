@@ -80,6 +80,7 @@ webdriver.node.checkIsNative_ = function() {
 };
 
 
+
 /**
  * HTTP client for use with NodeJS.
  * @param {!string} url URL for the WebDriver server to send commands
@@ -137,7 +138,7 @@ webdriver.node.HttpClient.prototype.send = function(httpRequest, callback) {
  * @private
  */
 webdriver.node.HttpClient.sendRequest_ = function(options, callback, opt_data) {
-  var request =  require('http').request(options, function(response) {
+  var request = require('http').request(options, function(response) {
     if (response.statusCode == 302 || response.statusCode == 303) {
       var location = webdriver.node.parseUrl_(response.headers['location']);
 

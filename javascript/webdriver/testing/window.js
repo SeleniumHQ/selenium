@@ -19,6 +19,8 @@
 goog.provide('webdriver.testing.Window');
 
 goog.require('goog.string');
+goog.require('webdriver.promise.Promise');
+
 
 
 /**
@@ -105,10 +107,10 @@ webdriver.testing.Window.create = function(driver, opt_size, opt_timeout) {
     window.open('', name, features.join(','));
 
     driver.wait(function() {
-        return driver.switchTo().window(name).then(
-            function() { return true; },
-            function() { return false; });
-      }, opt_timeout || webdriver.testing.Window.DEFAULT_OPEN_TIMEOUT);
+      return driver.switchTo().window(name).then(
+          function() { return true; },
+          function() { return false; });
+    }, opt_timeout || webdriver.testing.Window.DEFAULT_OPEN_TIMEOUT);
     return driver.getWindowHandle();
   });
 

@@ -113,7 +113,7 @@ safaridriver.extension.onMessage_ = function(e) {
   switch (message.getType()) {
     case safaridriver.message.Connect.TYPE:
       var url = (/** @type {!safaridriver.message.Connect} */ message).getUrl();
-      var server =  safaridriver.extension.createSessionServer_();
+      var server = safaridriver.extension.createSessionServer_();
       server.connect(url).
           then(function() {
             safaridriver.extension.LOG_.info('Connected to client: ' + url);

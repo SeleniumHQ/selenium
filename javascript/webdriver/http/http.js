@@ -28,6 +28,7 @@ goog.require('webdriver.CommandName');
 goog.require('webdriver.promise.Deferred');
 
 
+
 /**
  * Interface used for sending individual HTTP requests to the server.
  * @interface
@@ -49,6 +50,7 @@ webdriver.http.Client = function() {
  */
 webdriver.http.Client.prototype.send = function(request, callback) {
 };
+
 
 
 /**
@@ -74,7 +76,7 @@ webdriver.http.Executor = function(client) {
 webdriver.http.Executor.prototype.execute = function(command, callback) {
   var resource = webdriver.http.Executor.COMMAND_MAP_[command.getName()];
   if (!resource) {
-    throw new Error('Unrecognized command: ' + command.getName())
+    throw new Error('Unrecognized command: ' + command.getName());
   }
 
   var parameters = command.getParameters();
@@ -292,7 +294,7 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
   function post(path) { return resource('POST', path); }
   function del(path)  { return resource('DELETE', path); }
   function get(path)  { return resource('GET', path); }
-  function resource(method, path) { return {method:method, path:path}; }
+  function resource(method, path) { return {method: method, path: path}; }
 })();
 
 
@@ -309,6 +311,7 @@ webdriver.http.headersToString_ = function(headers) {
   }
   return ret.join('\n');
 };
+
 
 
 /**
@@ -360,11 +363,12 @@ webdriver.http.Request.prototype.toString = function() {
 };
 
 
+
 /**
  * Represents a HTTP response.
  * @param {number} status The response code.
  * @param {!Object.<string>} headers The response headers. All header
- *     names will be converted to lowercase strings for consistent lookup.s
+ *     names will be converted to lowercase strings for consistent lookups.
  * @param {string} body The response body.
  * @constructor
  */
@@ -440,6 +444,3 @@ webdriver.http.Response.prototype.toString = function() {
 
   return ret.join('\n');
 };
-
-
-

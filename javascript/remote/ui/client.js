@@ -34,6 +34,7 @@ goog.require('webdriver.Session');
 goog.require('webdriver.promise');
 
 
+
 /**
  * Primary widget for the webdriver server UI.
  * @param {string} url URL of the server to communicate with.
@@ -280,7 +281,6 @@ remote.ui.Client.prototype.onCreate_ = function(e) {
         this.sessionContainer_.removePendingTab();
       }, this);
 };
-
 
 
 /**

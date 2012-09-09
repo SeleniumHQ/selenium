@@ -22,6 +22,7 @@ goog.require('webdriver.CommandName');
 goog.require('webdriver.Key');
 
 
+
 /**
  * Class for defining sequences of complex user interactions. Each sequence
  * will not be executed until {@link #perform} is called.
@@ -272,7 +273,7 @@ webdriver.ActionSequence.prototype.doubleClick = function(opt_elementOrButton,
  * Schedules a keyboard action.
  * @param {string} description A simple descriptive label for the scheduled
  *     action.
- * @param {!Array.<string>} keys The keys to send
+ * @param {!Array.<string>} keys The keys to send.
  * @return {!webdriver.ActionSequence} A self reference.
  * @private
  */
@@ -334,6 +335,7 @@ webdriver.ActionSequence.prototype.keyUp = function(key) {
  * sequence will not be released until it is encountered again. All key events
  * will be targetted at the currently focused element.
  * @param {...(string|!Array.<string>)} var_args The keys to type.
+ * @return {!webdriver.ActionSequence} A self reference.
  * @throws {Error} If the key is not a valid modifier key.
  */
 webdriver.ActionSequence.prototype.sendKeys = function(var_args) {

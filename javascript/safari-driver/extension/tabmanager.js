@@ -22,6 +22,7 @@ goog.require('goog.string');
 goog.require('safaridriver.extension.Tab');
 
 
+
 /**
  * Keeps track of all the tabs that are currently open in the Safari
  * application, as well as which tab all {@link webdriver.Command}s should be
@@ -165,8 +166,8 @@ safaridriver.extension.TabManager.prototype.onClose_ = function(e) {
  * Retrieves the entry matching the provided ID or SafariBrowserTab.
  * @param {!(string|SafariBrowserTab)} idOrTab Either the ID or SafariBrowserTab
  *     of the entry to look up.
- * @return {safaridriver.extension.Tab} The located entry, or {@code null} if none
- *     was found.
+ * @return {safaridriver.extension.Tab} The located entry, or {@code null} if
+ *     none was found.
  */
 safaridriver.extension.TabManager.prototype.getTab = function(idOrTab) {
   var isString = goog.isString(idOrTab);
@@ -176,7 +177,8 @@ safaridriver.extension.TabManager.prototype.getTab = function(idOrTab) {
 
   if (!tab && !isString) {
     this.log_.info('Registering new tab');
-    tab = new safaridriver.extension.Tab((/** @type {!SafariBrowserTab} */idOrTab));
+    tab = new safaridriver.extension.Tab(
+        (/** @type {!SafariBrowserTab} */idOrTab));
     this.tabs_.push(tab);
   }
 

@@ -20,6 +20,7 @@ goog.require('goog.ui.Component.EventType');
 goog.require('remote.ui.ActionDialog');
 
 
+
 /**
  * Dialog used to configure a new session request.
  * @param {!Array.<string>} browsers List of possible browsers to create

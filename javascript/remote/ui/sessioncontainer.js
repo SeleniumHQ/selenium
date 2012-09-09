@@ -32,6 +32,7 @@ goog.require('remote.ui.FieldSet');
 goog.require('remote.ui.SessionView');
 
 
+
 /**
  * A fieldset for displaying information about the active sessions on the
  * server.

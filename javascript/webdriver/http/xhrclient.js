@@ -21,6 +21,7 @@ goog.require('goog.net.XmlHttp');
 goog.require('webdriver.http.Response');
 
 
+
 /**
  * A HTTP client that sends requests using XMLHttpRequests.
  * @param {string} url URL for the WebDriver server to send commands to.

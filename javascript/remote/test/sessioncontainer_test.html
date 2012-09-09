@@ -101,7 +101,8 @@ limitations under the License.
   }
 
   function assertShowsEmptyView() {
-    assertFalse('View element is shown', bot.dom.isShown(container.view_.viewElement_));
+    assertFalse('View element is shown',
+        bot.dom.isShown(container.view_.viewElement_));
     assertTrue('Empty view element is not shown',
         bot.dom.isShown(container.view_.emptyViewElement_));
   }

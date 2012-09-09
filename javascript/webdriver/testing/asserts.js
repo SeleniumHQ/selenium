@@ -25,13 +25,15 @@ goog.require('goog.string');
 goog.require('webdriver.promise');
 
 
+
 /**
  * Describes a matcher used in various assertions.
  *
  * @param {string} description A description that describes this matcher. Should
- *     complete the following sentence: "Expected ...."
+ *     complete the following sentence: "Expected ....".
  * @param {function(*):boolean} predicate A predicate function that applies this
  *     matcher to any value. Should return whether the value is a match.
+ * @constructor
  */
 webdriver.testing.asserts.Matcher = function(description, predicate) {
 
@@ -109,6 +111,7 @@ webdriver.testing.asserts.applyMatcher = function(
 /**
  * @param {*} value The value to query.
  * @return {string} The type of the value.
+ * @private
  */
 webdriver.testing.asserts.typeOf_ = function(value) {
   return ' (' + goog.typeOf(value) + ')';
@@ -200,6 +203,7 @@ webdriver.testing.asserts.matchesRegex = function(regex) {
         return !!value.match(regex);
       });
 };
+
 
 /**
  * Creates a matcher that verifies a string starts with another string.

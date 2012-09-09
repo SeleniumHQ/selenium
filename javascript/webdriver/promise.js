@@ -43,7 +43,7 @@
 /**
  * @fileoverview A promise implementation based on the CommonJS promise/A and
  * promise/B proposals. For more information, see
- * http://wiki.commonjs.org/wiki/Promises
+ * http://wiki.commonjs.org/wiki/Promises.
  */
 
 goog.provide('webdriver.promise');
@@ -55,6 +55,7 @@ goog.require('goog.array');
 goog.require('goog.object');
 goog.require('webdriver.EventEmitter');
 goog.require('webdriver.stacktrace.Snapshot');
+
 
 
 /**
@@ -186,8 +187,9 @@ webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
 webdriver.promise.Promise.prototype.addCallbacks = function(callback, errback,
                                                             opt_self) {
   return this.then(goog.bind(callback, opt_self),
-      goog.bind(errback,  opt_self));
+      goog.bind(errback, opt_self));
 };
+
 
 
 /**
@@ -446,7 +448,6 @@ webdriver.promise.Deferred.Listener;
 /**
  * The three states a {@code webdriver.promise.Deferred} object may be in.
  * @enum {number}
- * @private
  */
 webdriver.promise.Deferred.State = {
   REJECTED: -1,
@@ -620,6 +621,7 @@ webdriver.promise.fullyResolved = function(value) {
  *     already be resolved.
  * @return {!webdriver.promise.Promise} A promise for a fully resolved version
  *     of the input value.
+ * @private
  */
 webdriver.promise.fullyResolveValue_ = function(value) {
   switch (goog.typeOf(value)) {
@@ -716,6 +718,7 @@ webdriver.promise.fullyResolveKeys_ = function(obj, numKeys, forEachKey) {
 //  webdriver.promise.Application
 //
 //////////////////////////////////////////////////////////////////////////////
+
 
 
 /**
@@ -891,7 +894,8 @@ webdriver.promise.Application.prototype.reset = function() {
  * includes the most recently completed task, as well as any parent tasks. In
  * the returned summary, the task at index N is considered a sub-task of the
  * task at index N+1.
- * @return {!Array.<string>}
+ * @return {!Array.<string>} A summary of this application's recent task
+ *     activity.
  */
 webdriver.promise.Application.prototype.getHistory = function() {
   var pendingTasks = [];
@@ -1248,6 +1252,7 @@ webdriver.promise.Application.prototype.abortFrame_ = function(error) {
  *     {@link webdriver.promise.Application.Task#execute execute} function.
  * @return {*} The function's return value, or a promise that will be resolved
  *     once all tasks scheduled by the function have completed.
+ * @private
  */
 webdriver.promise.Application.prototype.runInNewFrame_ = function(fn,
                                                                   opt_isTask) {
@@ -1369,6 +1374,7 @@ webdriver.promise.Application.prototype.abortNow_ = function(error) {
 };
 
 
+
 /**
  * A single node in an {@link webdriver.promise.Application}'s task tree.
  * @constructor
@@ -1413,6 +1419,7 @@ webdriver.promise.Application.Node.prototype.getRoot = function() {
   }
   return root;
 };
+
 
 
 /**
@@ -1580,6 +1587,7 @@ webdriver.promise.Application.Frame.prototype.toString = function() {
     return child.toString();
   }).join(',') + ']';
 };
+
 
 
 /**

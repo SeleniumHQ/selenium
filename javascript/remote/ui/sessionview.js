@@ -28,6 +28,7 @@ goog.require('remote.ui.JsonTooltip');
 goog.require('remote.ui.OpenScriptDialog');
 
 
+
 /**
  * View details for a single session.
  * @constructor
@@ -171,7 +172,7 @@ remote.ui.SessionView.prototype.createDom = function() {
   var capabilities;
   this.controlBlock_.addElement(
       capabilities = dom.createDom(goog.dom.TagName.SPAN,
-        'session-capabilities', 'Capabilities'));
+      'session-capabilities', 'Capabilities'));
   this.controlBlock_.addElement(
       (/** @type {!Element} */this.screenshotButton_.getElement()));
   this.controlBlock_.addElement(
@@ -241,6 +242,7 @@ remote.ui.SessionView.prototype.onConfirm_ = function(e) {
     this.dispatchEvent(remote.ui.Event.Type.DELETE);
   }
 };
+
 
 /**
  * Handler for when the user clicks the screenshot button. Dispatches a

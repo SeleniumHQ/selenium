@@ -29,8 +29,8 @@ goog.exportSymbol('init', function() {
   // relative to the DriverServlet's root.
   var loc = window.location;
   var href = [
-      loc.protocol, '//', loc.host,
-      loc.pathname.replace(/\/static\/resource(?:\/[^\/]*)?$/, '')
+    loc.protocol, '//', loc.host,
+    loc.pathname.replace(/\/static\/resource(?:\/[^\/]*)?$/, '')
   ].join('');
 
   var executor = new webdriver.http.Executor(

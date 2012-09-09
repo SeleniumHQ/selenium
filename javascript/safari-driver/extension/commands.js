@@ -89,11 +89,12 @@ safaridriver.extension.commands.takeScreenshot = function(session) {
 };
 
 
-
 /**
  * Loads a new page in the provided session.
  * @param {!safaridriver.extension.Session} session The session object.
  * @param {!safaridriver.Command} command The command object.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     the operation has completed.
  */
 safaridriver.extension.commands.loadUrl = function(session, command) {
   var url = command.getParameter('url');
@@ -154,6 +155,8 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
  * Reloads the session's current page.
  * @param {!safaridriver.extension.Session} session The session object.
  * @param {!safaridriver.Command} command The command object.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     the operation has completed.
  */
 safaridriver.extension.commands.refresh = function(session, command) {
   var response = new webdriver.promise.Deferred();
@@ -201,6 +204,19 @@ safaridriver.extension.commands.setScriptTimeout = function(session, command) {
 };
 
 
+/**
+ * Sends a command to locate an element on the current page. This operation is
+ * subject to the implicit wait setting on the given session. When searching
+ * for a single element, the driver should poll the page until the element has
+ * been found, or this timeout expires before returning a NoSuchElement error.
+ * When searching for multiple elements, the driver should poll the page until
+ * at least one element has been found or this timeout has expired.
+ *
+ * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when the
+ *     operation has completed.
+ */
 safaridriver.extension.commands.findElement = function(session, command) {
   var started;
   var result = new webdriver.promise.Deferred();
@@ -271,9 +287,9 @@ safaridriver.extension.commands.sendCommand = function(sessionOrTab, command,
     opt_additionalTimeout) {
   var timeout = (opt_additionalTimeout || 0) +
       safaridriver.extension.commands.DEFAULT_COMMAND_TIMEOUT_;
-  var tab = sessionOrTab instanceof safaridriver.extension.Tab
-      ? (/** @type {!safaridriver.extension.Tab} */sessionOrTab)
-      : (/** @type {!safaridriver.extension.Session} */sessionOrTab).
+  var tab = sessionOrTab instanceof safaridriver.extension.Tab ?
+      (/** @type {!safaridriver.extension.Tab} */sessionOrTab) :
+      (/** @type {!safaridriver.extension.Session} */sessionOrTab).
           getCommandTab();
   return tab.send(command, timeout);
 };
@@ -283,6 +299,8 @@ safaridriver.extension.commands.sendCommand = function(sessionOrTab, command,
  * Changes focus to another window.
  * @param {!safaridriver.extension.Session} session The session object.
  * @param {!safaridriver.Command} command The command object.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when the
+ *     operation has completed.
  */
 safaridriver.extension.commands.switchToWindow = function(session, command) {
   var result = new webdriver.promise.Deferred();

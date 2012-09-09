@@ -47,6 +47,7 @@ goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
 
 
+
 /**
  * Coordinates all actions in the injected script, including communication with
  * the extension and the injected scripts of other frames. There will be one
@@ -193,8 +194,7 @@ safaridriver.inject.Tab.prototype.init = function() {
     var message = new safaridriver.message.Load(
         !safaridriver.inject.Tab.IS_TOP);
 
-    var target = safaridriver.inject.Tab.IS_TOP
-        ? safari.self.tab : window.top;
+    var target = safaridriver.inject.Tab.IS_TOP ? safari.self.tab : window.top;
     message.send(target);
   }, true);
 
@@ -564,57 +564,57 @@ safaridriver.inject.Tab.COMMAND_MAP_ = {};
 
 
 goog.scope(function() {
-  var CommandName = webdriver.CommandName;
-  var topMap = safaridriver.inject.Tab.TOP_COMMAND_MAP_;
-  var map = safaridriver.inject.Tab.COMMAND_MAP_;
-  var commands = safaridriver.inject.commands;
+var CommandName = webdriver.CommandName;
+var topMap = safaridriver.inject.Tab.TOP_COMMAND_MAP_;
+var map = safaridriver.inject.Tab.COMMAND_MAP_;
+var commands = safaridriver.inject.commands;
 
-  topMap[CommandName.GET] = commands.loadUrl;
-  topMap[CommandName.REFRESH] = commands.reloadPage;
-  topMap[CommandName.GO_BACK] = commands.unsupportedHistoryNavigation;
-  topMap[CommandName.GO_FORWARD] = commands.unsupportedHistoryNavigation;
-  topMap[CommandName.GET_TITLE] = commands.getTitle;
-  // The extension handles window switches. It sends the command to this
-  // injected script only as a means of retrieving the window name.
-  topMap[CommandName.SWITCH_TO_WINDOW] = commands.getWindowName;
-  topMap[CommandName.GET_WINDOW_POSITION] = commands.getWindowPosition;
-  topMap[CommandName.GET_WINDOW_SIZE] = commands.getWindowSize;
-  topMap[CommandName.SET_WINDOW_POSITION] = commands.setWindowPosition;
-  topMap[CommandName.SET_WINDOW_SIZE] = commands.setWindowSize;
-  topMap[CommandName.MAXIMIZE_WINDOW] = commands.maximizeWindow;
+topMap[CommandName.GET] = commands.loadUrl;
+topMap[CommandName.REFRESH] = commands.reloadPage;
+topMap[CommandName.GO_BACK] = commands.unsupportedHistoryNavigation;
+topMap[CommandName.GO_FORWARD] = commands.unsupportedHistoryNavigation;
+topMap[CommandName.GET_TITLE] = commands.getTitle;
+// The extension handles window switches. It sends the command to this
+// injected script only as a means of retrieving the window name.
+topMap[CommandName.SWITCH_TO_WINDOW] = commands.getWindowName;
+topMap[CommandName.GET_WINDOW_POSITION] = commands.getWindowPosition;
+topMap[CommandName.GET_WINDOW_SIZE] = commands.getWindowSize;
+topMap[CommandName.SET_WINDOW_POSITION] = commands.setWindowPosition;
+topMap[CommandName.SET_WINDOW_SIZE] = commands.setWindowSize;
+topMap[CommandName.MAXIMIZE_WINDOW] = commands.maximizeWindow;
 
-  map[CommandName.GET_CURRENT_URL] = commands.getCurrentUrl;
-  map[CommandName.GET_PAGE_SOURCE] = commands.getPageSource;
+map[CommandName.GET_CURRENT_URL] = commands.getCurrentUrl;
+map[CommandName.GET_PAGE_SOURCE] = commands.getPageSource;
 
-  map[CommandName.ADD_COOKIE] = commands.addCookie;
-  map[CommandName.GET_ALL_COOKIES] = commands.getCookies;
-  map[CommandName.DELETE_ALL_COOKIES] = commands.deleteCookies;
-  map[CommandName.DELETE_COOKIE] = commands.deleteCookie;
+map[CommandName.ADD_COOKIE] = commands.addCookie;
+map[CommandName.GET_ALL_COOKIES] = commands.getCookies;
+map[CommandName.DELETE_ALL_COOKIES] = commands.deleteCookies;
+map[CommandName.DELETE_COOKIE] = commands.deleteCookie;
 
-  map[CommandName.FIND_ELEMENT] = commands.findElement;
-  map[CommandName.FIND_CHILD_ELEMENT] = commands.findElement;
-  map[CommandName.FIND_ELEMENTS] = commands.findElements;
-  map[CommandName.FIND_CHILD_ELEMENTS] = commands.findElements;
-  map[CommandName.GET_ACTIVE_ELEMENT] = commands.getActiveElement;
+map[CommandName.FIND_ELEMENT] = commands.findElement;
+map[CommandName.FIND_CHILD_ELEMENT] = commands.findElement;
+map[CommandName.FIND_ELEMENTS] = commands.findElements;
+map[CommandName.FIND_CHILD_ELEMENTS] = commands.findElements;
+map[CommandName.GET_ACTIVE_ELEMENT] = commands.getActiveElement;
 
-  map[CommandName.CLEAR_ELEMENT] = commands.clearElement;
-  map[CommandName.CLICK_ELEMENT] = commands.clickElement;
-  map[CommandName.SUBMIT_ELEMENT] = commands.submitElement;
-  map[CommandName.GET_ELEMENT_ATTRIBUTE] = commands.getElementAttribute;
-  map[CommandName.GET_ELEMENT_LOCATION] = commands.getElementLocation;
-  map[CommandName.GET_ELEMENT_LOCATION_IN_VIEW] = commands.getLocationInView;
-  map[CommandName.GET_ELEMENT_SIZE] = commands.getElementSize;
-  map[CommandName.GET_ELEMENT_TEXT] = commands.getElementText;
-  map[CommandName.GET_ELEMENT_TAG_NAME] = commands.getElementTagName;
-  map[CommandName.IS_ELEMENT_DISPLAYED] = commands.isElementDisplayed;
-  map[CommandName.IS_ELEMENT_ENABLED] = commands.isElementEnabled;
-  map[CommandName.IS_ELEMENT_SELECTED] = commands.isElementSelected;
-  map[CommandName.ELEMENT_EQUALS] = commands.elementEquals;
-  map[CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY] = commands.getCssValue;
-  map[CommandName.SEND_KEYS_TO_ELEMENT] = commands.executeInPage;
+map[CommandName.CLEAR_ELEMENT] = commands.clearElement;
+map[CommandName.CLICK_ELEMENT] = commands.clickElement;
+map[CommandName.SUBMIT_ELEMENT] = commands.submitElement;
+map[CommandName.GET_ELEMENT_ATTRIBUTE] = commands.getElementAttribute;
+map[CommandName.GET_ELEMENT_LOCATION] = commands.getElementLocation;
+map[CommandName.GET_ELEMENT_LOCATION_IN_VIEW] = commands.getLocationInView;
+map[CommandName.GET_ELEMENT_SIZE] = commands.getElementSize;
+map[CommandName.GET_ELEMENT_TEXT] = commands.getElementText;
+map[CommandName.GET_ELEMENT_TAG_NAME] = commands.getElementTagName;
+map[CommandName.IS_ELEMENT_DISPLAYED] = commands.isElementDisplayed;
+map[CommandName.IS_ELEMENT_ENABLED] = commands.isElementEnabled;
+map[CommandName.IS_ELEMENT_SELECTED] = commands.isElementSelected;
+map[CommandName.ELEMENT_EQUALS] = commands.elementEquals;
+map[CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY] = commands.getCssValue;
+map[CommandName.SEND_KEYS_TO_ELEMENT] = commands.executeInPage;
 
-  map[CommandName.EXECUTE_SCRIPT] = commands.executeInPage;
-  map[CommandName.EXECUTE_ASYNC_SCRIPT] = commands.executeInPage;
+map[CommandName.EXECUTE_SCRIPT] = commands.executeInPage;
+map[CommandName.EXECUTE_ASYNC_SCRIPT] = commands.executeInPage;
 
-  map[CommandName.SWITCH_TO_FRAME] = commands.switchToFrame;
-});
+map[CommandName.SWITCH_TO_FRAME] = commands.switchToFrame;
+});  // goog.scope

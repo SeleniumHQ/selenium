@@ -18,22 +18,23 @@ goog.provide('remote.ui.Event.Type');
 goog.require('goog.events.Event');
 
 
+
 /**
  * UI event with associated data.
  * @param {string} type The type of event.
  * @param {goog.events.EventTarget} target The event target.
- * @param {*=} data The data associated with this event.
+ * @param {*=} opt_data The data associated with this event.
  * @constructor
  * @extends {goog.events.Event}
  */
-remote.ui.Event = function(type, target, data) {
+remote.ui.Event = function(type, target, opt_data) {
   goog.base(this, type, target);
 
   /**
    * The data associated with this event.
    * @type {*}
    */
-  this.data = data;
+  this.data = opt_data;
 };
 goog.inherits(remote.ui.Event, goog.events.Event);
 

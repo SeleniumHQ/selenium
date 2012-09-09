@@ -17,6 +17,7 @@ goog.provide('safaridriver.alert');
 
 goog.require('bot.ErrorCode');
 
+
 /**
  * Creates an error {@link bot.response.ResponseObject} for an opened modal
  * dialog.

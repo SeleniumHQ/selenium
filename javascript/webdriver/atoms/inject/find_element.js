@@ -33,7 +33,8 @@ goog.require('bot.locators');
  * @return {string} The result wrapped
  *     in a JSON string as defined by the WebDriver wire protocol.
  */
-webdriver.atoms.inject.locators.findElement = function(strategy, using, opt_root) {
+webdriver.atoms.inject.locators.findElement = function(strategy, using,
+    opt_root) {
   var locator = {};
   locator[strategy] = using;
   return bot.inject.executeScript(bot.locators.findElement,
@@ -51,7 +52,8 @@ webdriver.atoms.inject.locators.findElement = function(strategy, using, opt_root
  * @return {string} The result wrapped
  *     in a JSON string as defined by the WebDriver wire protocol.
  */
-webdriver.atoms.inject.locators.findElements = function(strategy, using, opt_root) {
+webdriver.atoms.inject.locators.findElements = function(strategy, using,
+    opt_root) {
   var locator = {};
   locator[strategy] = using;
   return bot.inject.executeScript(bot.locators.findElements,

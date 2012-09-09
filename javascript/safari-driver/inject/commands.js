@@ -73,12 +73,14 @@ safaridriver.inject.commands.loadUrl = function(command) {
   // navigate event.
 };
 
+
 /** Reloads the current page. */
 safaridriver.inject.commands.reloadPage = function() {
   window.location.reload();
   // No need to send a response. The global page should be listening for the
   // navigate event.
 };
+
 
 /**
  * Stub that reports an error that navigating through the browser history does
@@ -90,15 +92,18 @@ safaridriver.inject.commands.unsupportedHistoryNavigation = function() {
       'communicate with the page...');
 };
 
+
 /** @return {string} The document title. */
 safaridriver.inject.commands.getTitle = function() {
   return document.title;
 };
 
+
 /** @return {string} A string representation of the current page source. */
 safaridriver.inject.commands.getPageSource = function() {
   return new XMLSerializer().serializeToString(document);
 };
+
 
 /**
  * Defines an element locating command.
@@ -123,6 +128,7 @@ safaridriver.inject.commands.findElementCommand_ = function(locatorFn) {
   };
 };
 
+
 /**
  * Locates an element on the page.
  * @param {!safaridriver.Command} command The command object.
@@ -131,6 +137,7 @@ safaridriver.inject.commands.findElementCommand_ = function(locatorFn) {
 safaridriver.inject.commands.findElement =
     safaridriver.inject.commands.findElementCommand_(bot.locators.findElement);
 
+
 /**
  * Locates multiple elements on the page.
  * @param {!safaridriver.Command} command The command object.
@@ -138,6 +145,7 @@ safaridriver.inject.commands.findElement =
  */
 safaridriver.inject.commands.findElements =
     safaridriver.inject.commands.findElementCommand_(bot.locators.findElements);
+
 
 /**
  * Retrieves the element that currently has focus.
@@ -148,6 +156,7 @@ safaridriver.inject.commands.getActiveElement = function() {
   return (/** @type {!bot.response.ResponseObject} */bot.inject.executeScript(
       getActiveElement, []));
 };
+
 
 /**
  * Adds a new cookie to the page.
@@ -169,6 +178,7 @@ safaridriver.inject.commands.addCookie = function(command) {
       cookie['path'], cookie['domain'], cookie['secure']);
 };
 
+
 /**
  * @return {!Array.<{name:string, value:string}>} A list of the cookies visible
  *     to the current page.
@@ -183,9 +193,12 @@ safaridriver.inject.commands.getCookies = function() {
   });
 };
 
+
+/** Deletes all cookies visible to the current page. */
 safaridriver.inject.commands.deleteCookies = function() {
   goog.net.cookies.clear();
 };
+
 
 /**
  * Deletes a specified cookie.
@@ -199,7 +212,7 @@ safaridriver.inject.commands.deleteCookie = function(command) {
 /**
  * Ensures the provided command's element is encoded as a WebElement JSON
  * object, as defined by the WebDriver wire protocol.
- * @param {!safaridriver.Command} command The command to modify;
+ * @param {!safaridriver.Command} command The command to modify.
  * @return {!safaridriver.Command} The modified command.
  * @private
  */
@@ -237,77 +250,168 @@ safaridriver.inject.commands.elementCommand_ = function(handlerFn, var_args) {
   };
 };
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see bot.action.clear
+ */
 safaridriver.inject.commands.clearElement =
     safaridriver.inject.commands.elementCommand_(bot.action.clear);
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see bot.action.click
+ */
 safaridriver.inject.commands.clickElement =
     safaridriver.inject.commands.elementCommand_(bot.action.click);
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see bot.action.submit
+ */
 safaridriver.inject.commands.submitElement =
     safaridriver.inject.commands.elementCommand_(bot.action.submit);
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see webdriver.atoms.element.getAttribute
+ */
 safaridriver.inject.commands.getElementAttribute =
     safaridriver.inject.commands.elementCommand_(
         webdriver.atoms.element.getAttribute, 'name');
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see goog.style.getPageOffset
+ */
 safaridriver.inject.commands.getElementLocation =
     safaridriver.inject.commands.elementCommand_(goog.style.getPageOffset);
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see bot.dom.getLocationInView
+ */
 safaridriver.inject.commands.getLocationInView =
     safaridriver.inject.commands.elementCommand_(bot.dom.getLocationInView);
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see goog.style.getSize
+ */
 safaridriver.inject.commands.getElementSize =
     safaridriver.inject.commands.elementCommand_(goog.style.getSize);
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see webdriver.atoms.element.getText
+ */
 safaridriver.inject.commands.getElementText =
     safaridriver.inject.commands.elementCommand_(
         webdriver.atoms.element.getText);
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ */
 safaridriver.inject.commands.getElementTagName =
     safaridriver.inject.commands.elementCommand_(function(el) {
-      return el.tagName;
-    });
+  return el.tagName;
+});
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see bot.dom.isShown
+ */
 safaridriver.inject.commands.isElementDisplayed =
     safaridriver.inject.commands.elementCommand_(bot.dom.isShown);
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see bot.dom.isEnabled
+ */
 safaridriver.inject.commands.isElementEnabled =
     safaridriver.inject.commands.elementCommand_(bot.dom.isEnabled);
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see webdriver.atoms.element.isSelected
+ */
 safaridriver.inject.commands.isElementSelected =
     safaridriver.inject.commands.elementCommand_(
         webdriver.atoms.element.isSelected);
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ */
 safaridriver.inject.commands.elementEquals =
     safaridriver.inject.commands.elementCommand_(function(a, b) {
-      return a === b;
-    }, 'other');
+  return a === b;
+}, 'other');
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see bot.dom.getEffectiveStyle
+ */
 safaridriver.inject.commands.getCssValue =
     safaridriver.inject.commands.elementCommand_(bot.dom.getEffectiveStyle,
         'propertyName');
 
+
+/**
+ * @return {!goog.math.Coordinate} The position of the window.
+ * @see bot.window.getPosition
+ */
 safaridriver.inject.commands.getWindowPosition = function() {
   return bot.window.getPosition();
 };
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see bot.window.setPosition
+ */
 safaridriver.inject.commands.setWindowPosition = function(command) {
   var position = new goog.math.Coordinate(
-      command.getParameter('x'), command.getParameter('y'));
+      (/** @type {number} */ command.getParameter('x')),
+      (/** @type {number} */ command.getParameter('y')));
   bot.window.setPosition(position);
 };
 
+
+/**
+ * @return {!goog.math.Size} The size of the window.
+ * @see bot.window.getSize
+ */
 safaridriver.inject.commands.getWindowSize = function() {
   return bot.window.getSize();
 };
 
+
+/**
+ * @param {!safaridriver.Command} command The command to execute.
+ * @see bot.window.setSize
+ */
 safaridriver.inject.commands.setWindowSize = function(command) {
   var size = new goog.math.Size(
-      command.getParameter('width'), command.getParameter('height'));
+      (/** @type {number} */command.getParameter('width')),
+      (/** @type {number} */command.getParameter('height')));
   bot.window.setSize(size);
 };
 
 
+/** Maximizes the window. */
 safaridriver.inject.commands.maximizeWindow = function() {
   window.moveTo(0, 0);
   window.resizeTo(window.screen.width, window.screen.height);

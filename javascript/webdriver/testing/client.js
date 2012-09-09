@@ -14,27 +14,28 @@
 
 goog.provide('webdriver.testing.Client');
 
-goog.require('goog.net.XmlHttp');
 goog.require('goog.json');
+goog.require('goog.net.XmlHttp');
+
 
 
 /**
-* The client responsible for publishing test events to the server. Each event
-* will be published using a POST {@link goog.net.XmlHttp} request. The body of
-* each request will be a JSON object with the following fields:
-* <ul>
-*   <li>id: An identifier for this client, derived from the window
-*       locations' pathname.
-*   <li>type: The type of event.
-*   <li>data: A JSONObject whose contents will be specific to each event type.
-* </ul>
-*
-* @param {Window=} opt_win The window to pull the path name from for this
-*     client. Defaults to the current window.
-* @param {string=} opt_url The URL to publish test events to. Defaults to
-*     {@link webdriver.testing.Client.DEFAULT_URL}.
-* @constructor
-*/
+ * The client responsible for publishing test events to the server. Each event
+ * will be published using a POST {@link goog.net.XmlHttp} request. The body of
+ * each request will be a JSON object with the following fields:
+ * <ul>
+ *   <li>id: An identifier for this client, derived from the window
+ *       locations' pathname.
+ *   <li>type: The type of event.
+ *   <li>data: A JSONObject whose contents will be specific to each event type.
+ * </ul>
+ *
+ * @param {Window=} opt_win The window to pull the path name from for this
+ *     client. Defaults to the current window.
+ * @param {string=} opt_url The URL to publish test events to. Defaults to
+ *     {@link webdriver.testing.Client.DEFAULT_URL}.
+ * @constructor
+ */
 webdriver.testing.Client = function(opt_win, opt_url) {
 
   /**
@@ -52,18 +53,18 @@ webdriver.testing.Client = function(opt_win, opt_url) {
 
 
 /**
-* Default URL to publish test events to.
-* @type {string}
-* @const
-*/
+ * Default URL to publish test events to.
+ * @type {string}
+ * @const
+ */
 webdriver.testing.Client.DEFAULT_URL = '/testevent';
 
 
 /**
-* The types of events that may be published by a TestClient to the server.
-* @enum {string}
-* @private
-*/
+ * The types of events that may be published by a TestClient to the server.
+ * @enum {string}
+ * @private
+ */
 webdriver.testing.Client.EventType_ = {
 
   /** Sent to signal that a test suite has been fully initialized. */
@@ -88,21 +89,21 @@ webdriver.testing.Client.EventType_ = {
 
 
 /**
-* Sends a simple message to the server, notifying it that the test runner has
-* been initialized.
-*/
+ * Sends a simple message to the server, notifying it that the test runner has
+ * been initialized.
+ */
 webdriver.testing.Client.prototype.sendInitEvent = function() {
   this.sendEvent_(webdriver.testing.Client.EventType_.INIT);
 };
 
 
 /**
-* Sends an event to the server indicating that tests have completed.
-* @param {boolean} isSuccess Whether the tests finished successfully.
-* @param {string} report The test log.
-*/
+ * Sends an event to the server indicating that tests have completed.
+ * @param {boolean} isSuccess Whether the tests finished successfully.
+ * @param {string} report The test log.
+ */
 webdriver.testing.Client.prototype.sendResultsEvent = function(isSuccess,
-                                                             report) {
+    report) {
   this.sendEvent_(webdriver.testing.Client.EventType_.RESULTS, {
     'isSuccess': isSuccess,
     'report': report

@@ -47,6 +47,8 @@ goog.require('webdriver.promise.Promise');
 //
 //////////////////////////////////////////////////////////////////////////////
 
+
+
 /**
  * Creates a new WebDriver client, which provides control over a browser.
  *
@@ -207,6 +209,7 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
  * @param {*} value The value to convert.
  * @return {*} The converted value.
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
+ * @private
  */
 webdriver.WebDriver.fromWireValue_ = function(driver, value) {
   if (goog.isArray(value)) {
@@ -254,11 +257,10 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
           return webdriver.promise.checkedNodeCall(
               goog.bind(self.executor_.execute, self.executor_, command));
         });
-      }).
-      then(function(response) {
-        bot.response.checkResponse(response);
-        return webdriver.WebDriver.fromWireValue_(self, response['value']);
-      });
+  }).then(function(response) {
+    bot.response.checkResponse(response);
+    return webdriver.WebDriver.fromWireValue_(self, response['value']);
+  });
 
   function checkHasNotQuit() {
     if (!self.session_) {
@@ -571,7 +573,7 @@ webdriver.WebDriver.prototype.getPageSource = function() {
  */
 webdriver.WebDriver.prototype.close = function() {
   return this.schedule(new webdriver.Command(webdriver.CommandName.CLOSE),
-                        'WebDriver.close()');
+                       'WebDriver.close()');
 };
 
 
@@ -605,7 +607,7 @@ webdriver.WebDriver.prototype.getCurrentUrl = function() {
  */
 webdriver.WebDriver.prototype.getTitle = function() {
   return this.schedule(new webdriver.Command(webdriver.CommandName.GET_TITLE),
-                        'WebDriver.getTitle()');
+                       'WebDriver.getTitle()');
 };
 
 
@@ -840,6 +842,7 @@ webdriver.WebDriver.prototype.switchTo = function() {
 };
 
 
+
 /**
  * Interface for navigating back and forth in the browser history.
  * @param {!webdriver.WebDriver} driver The parent driver.
@@ -904,6 +907,7 @@ webdriver.WebDriver.Navigation.prototype.refresh = function() {
       new webdriver.Command(webdriver.CommandName.REFRESH),
       'WebDriver.navigate().refresh()');
 };
+
 
 
 /**
@@ -1060,6 +1064,7 @@ webdriver.WebDriver.Options.prototype.window = function() {
 };
 
 
+
 /**
  * An interface for managing timeout behavior for WebDriver instances.
  * @param {!webdriver.WebDriver} driver The parent driver.
@@ -1120,6 +1125,7 @@ webdriver.WebDriver.Timeouts.prototype.setScriptTimeout = function(ms) {
           setParameter('ms', ms < 0 ? 0 : ms),
       'WebDriver.manage().timeouts().setScriptTimeout(' + ms + ')');
 };
+
 
 
 /**
@@ -1199,6 +1205,7 @@ webdriver.WebDriver.Window.prototype.setSize = function(width, height) {
           setParameter('height', height),
       'WebDriver.manage().window().setSize(' + width + ', ' + height + ')');
 };
+
 
 
 /**
@@ -1301,6 +1308,7 @@ webdriver.WebDriver.TargetLocator.prototype.window = function(nameOrHandle) {
  * modifier keys (CTRL/ALT/SHIFT/etc) release via a keyup event.
  *
  * @param {...string} var_args The key sequence to concatenate.
+ * @return {string} The null-terminated key sequence.
  * @see http://code.google.com/p/webdriver/issues/detail?id=79
  */
 webdriver.Key.chord = function(var_args) {
@@ -1319,6 +1327,7 @@ webdriver.Key.chord = function(var_args) {
 //  webdriver.WebElement
 //
 //////////////////////////////////////////////////////////////////////////////
+
 
 
 /**
@@ -1356,6 +1365,7 @@ webdriver.WebElement = function(driver, id) {
   /**
    * The parent WebDriver instance for this element.
    * @type {!webdriver.WebDriver}
+   * @private
    */
   this.driver_ = driver;
 
@@ -1736,7 +1746,6 @@ webdriver.WebElement.prototype.getLocation = function() {
       new webdriver.Command(webdriver.CommandName.GET_ELEMENT_LOCATION),
       'WebElement.getLocation()');
 };
-
 
 
 /**

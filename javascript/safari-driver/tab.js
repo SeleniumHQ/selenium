@@ -18,6 +18,8 @@ goog.provide('safaridriver.Tab');
 goog.require('goog.string');
 goog.require('safaridriver.message.MessageTarget');
 
+
+
 /**
  * @param {!(SafariEventTarget|EventTarget)} source The object that should be
  *     used as the source of messages for this tab.
@@ -79,7 +81,7 @@ safaridriver.Tab.prototype.isReady = function() {
 
 /**
  * Schedules a function to execute when this tab is no longer loading content.
- * @param {function()} callback The function to call
+ * @param {function()} callback The function to call.
  */
 safaridriver.Tab.prototype.whenReady = function(callback) {
   if (this.isReady_) {

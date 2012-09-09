@@ -21,6 +21,7 @@ goog.require('goog.ui.LabelInput');
 goog.require('remote.ui.ActionDialog');
 
 
+
 /**
  * Dialog used to specify a WebDriverJS script that should be loaded by a
  * session.

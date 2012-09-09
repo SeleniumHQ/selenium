@@ -111,6 +111,7 @@ safaridriver.message.fromEvent = function(event) {
 };
 
 
+
 /**
  * Base class for messages exchanged between components of the SafariDriver.
  * may either be exchanged between the extension's global page and injected
@@ -228,6 +229,9 @@ safaridriver.message.Message.prototype.isType = function(type) {
  * Sends this message to the given target.
  * @param {!(SafariContentBrowserTabProxy|SafariWebPageProxy|Window)} target
  *     The object to send this message to.
+ * @return {*} If {@link safaridriver.message.FORCE_SYNCHRONOUS_PROXY_SEND} was
+ *     set and the target of the message is a SafariContentBrowserTabProxy,
+ *     this function will return the extension's response to the message.
  */
 safaridriver.message.Message.prototype.send = function(target) {
   this.setOrigin(safaridriver.message.ORIGIN);

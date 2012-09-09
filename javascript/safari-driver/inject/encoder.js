@@ -36,6 +36,7 @@ goog.require('safaridriver.message.Response');
 goog.require('webdriver.promise');
 
 
+
 /**
  * @param {!safaridriver.message.MessageTarget} messageTarget The message
  *     target to use.

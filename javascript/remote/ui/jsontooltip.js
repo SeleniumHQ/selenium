@@ -22,6 +22,7 @@ goog.require('goog.format.JsonPrettyPrinter');
 goog.require('goog.ui.AdvancedTooltip');
 
 
+
 /**
  * Tooltip for displaying a JSON object.
  * @constructor

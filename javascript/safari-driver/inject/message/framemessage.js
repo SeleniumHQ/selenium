@@ -25,6 +25,7 @@ goog.require('safaridriver.message');
 goog.require('safaridriver.message.BaseCommandMessage');
 
 
+
 /**
  * Message used to signal when a new frame has, or should, activate itself as
  * the target for future commands.
@@ -38,6 +39,7 @@ safaridriver.inject.message.Activate =
         'activate');
 
 
+
 /**
  * Message used to inform the top frame that one of its descendants has been
  * activated.
@@ -49,6 +51,7 @@ safaridriver.inject.message.Activate =
 safaridriver.inject.message.ActivateFrame =
     safaridriver.message.BaseCommandMessage.defineCommandMessageType(
         'activate-frame');
+
 
 
 /**

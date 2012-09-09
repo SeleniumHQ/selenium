@@ -20,6 +20,7 @@ goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.Dialog');
 
 
+
 /**
  * Dialog opened to present the user with more options upon selecting a
  * particular action.

@@ -18,6 +18,7 @@ goog.require('goog.json');
 goog.require('webdriver.http.Response');
 
 
+
 /**
  * Communicates with a WebDriver server, which may be on a different domain,
  * using the <a href="http://www.w3.org/TR/cors/">cross-origin resource sharing

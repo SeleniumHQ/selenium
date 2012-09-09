@@ -22,6 +22,7 @@ goog.provide('safaridriver.inject.message.Encode');
 goog.require('safaridriver.message');
 
 
+
 /**
  * A {@link safaridriver.message.Type.ENCODE} message.
  * @param {string} id The ID from the command this is a response to.

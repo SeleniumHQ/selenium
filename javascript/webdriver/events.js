@@ -19,6 +19,7 @@
 goog.provide('webdriver.EventEmitter');
 
 
+
 /**
  * Object that can emit events for others to listen for. This is used instead
  * of Closure's event system because it is much more light weight. The API is

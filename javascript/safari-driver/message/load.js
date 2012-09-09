@@ -18,12 +18,13 @@
  */
 
 goog.provide('safaridriver.message.BaseLoadMessage');
-goog.provide('safaridriver.message.PendingFrame');
 goog.provide('safaridriver.message.Load');
+goog.provide('safaridriver.message.PendingFrame');
 goog.provide('safaridriver.message.Unload');
 
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Message');
+
 
 
 /**
@@ -97,6 +98,7 @@ safaridriver.message.BaseLoadMessage.defineLoadMessageType = function(type) {
 };
 
 
+
 /**
  * @param {boolean=} opt_isFrame Whether this message is related to a frame
  *     rather than the top window.
@@ -105,6 +107,7 @@ safaridriver.message.BaseLoadMessage.defineLoadMessageType = function(type) {
  */
 safaridriver.message.Load =
     safaridriver.message.BaseLoadMessage.defineLoadMessageType('load');
+
 
 
 /**
@@ -123,6 +126,7 @@ safaridriver.message.PendingFrame =
 safaridriver.message.PendingFrame.prototype.send = function() {
   throw Error('This message may only be sent synchronously.');
 };
+
 
 
 /**

@@ -23,6 +23,7 @@ goog.require('safaridriver.message');
 goog.require('safaridriver.message.Message');
 
 
+
 /**
  * Message sent from the web page to the injected script, which then forwards
  * it to the global page, to request that the SafariDriver open a WebSocket

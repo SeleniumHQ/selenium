@@ -21,6 +21,7 @@ goog.require('goog.style');
 goog.require('goog.ui.Component');
 
 
+
 /**
  * Displays a banner message at the top of the screen.
  * @constructor

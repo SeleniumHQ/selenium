@@ -15,6 +15,7 @@
 goog.provide('webdriver.Session');
 
 
+
 /**
  * Contains information about a WebDriver session.
  * @param {string} id The session ID.

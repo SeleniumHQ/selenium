@@ -26,6 +26,7 @@ goog.require('webdriver.testing.Client');
 goog.require('webdriver.testing.TestCase');
 
 
+
 /**
  * Constructs a test runner.
  * @constructor

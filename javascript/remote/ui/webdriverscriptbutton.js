@@ -21,6 +21,7 @@ goog.require('remote.ui.Event');
 goog.require('remote.ui.OpenScriptDialog');
 
 
+
 /**
  * Control for loading a WebDriverJS script in a particular session.
  * @constructor

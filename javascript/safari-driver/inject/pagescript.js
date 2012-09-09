@@ -20,11 +20,12 @@ goog.require('bot.response');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.inject.Encoder');
 goog.require('safaridriver.inject.message');
-goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.Command');
+goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.Response');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
+
 
 
 /**
