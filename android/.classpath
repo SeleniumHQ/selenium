@@ -6,7 +6,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/third-party/java/android/android-14.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/servlet-api/servlet-api-2.5-6.1.9.jar" sourcepath="/third-party/java/servlet-api/servlet-api-2.5-6.1.9-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.8-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-12.0.jar" sourcepath="/third-party/java/guava-libraries/guava-12.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.14.jar" sourcepath="/third-party/java/webbit/webbit-0.4.14-src.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-13.0.1.jar" sourcepath="/third-party/java/guava-libraries/guava-13.0.1-sources.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

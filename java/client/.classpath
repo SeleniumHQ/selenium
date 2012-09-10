@@ -34,7 +34,7 @@
 	<classpathentry kind="lib" path="/third-party/java/commons-collections/commons-collections-3.2.1.jar" sourcepath="/third-party/java/commons-collections/commons-collections-3.2.1-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/cssparser/cssparser-0.9.7.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/xml/xercesImpl-2.9.1.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/nekohtml/nekohtml-1.9.15.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/nekohtml/nekohtml-1.9.16.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/xml/xalan-2.7.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-fileupload/commons-fileupload-1.2.2.jar" sourcepath="/third-party/java/commons-fileupload/commons-fileupload-1.2.2-src.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/netty/netty-3.5.2.Final.jar" sourcepath="/third-party/java/netty/netty-3.5.2.Final-src.jar"/>
