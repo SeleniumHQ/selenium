@@ -45,6 +45,14 @@ goog.inherits(webdriver.testing.jsunit.TestRunner, goog.testing.TestRunner);
 
 
 /**
+ * Element created in the document to add test results to.
+ * @type {Element}
+ * @private
+ */
+webdriver.testing.jsunit.TestRunner.prototype.logEl_ = null;
+
+
+/**
  * DOM element used to stored screenshots. Screenshots are stored in the DOM to
  * avoid exhausting JS stack-space.
  * @type {Element}
@@ -208,6 +216,11 @@ webdriver.testing.jsunit.TestRunner.prototype.onComplete_ = function() {
   var log = this.testCase.getReport(true);
   if (this.errors.length > 0) {
     log += '\n' + this.errors.join('\n');
+  }
+
+  if (!this.logEl_) {
+    this.logEl_ = document.createElement('div');
+    document.body.appendChild(this.logEl_);
   }
 
   // Remove all children from the log element.
