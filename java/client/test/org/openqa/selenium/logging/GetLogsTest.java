@@ -109,7 +109,9 @@ public class GetLogsTest extends JUnit4TestBase {
     loggingPrefs.enable(logType, logLevel);
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(CapabilityType.LOGGING_PREFS, loggingPrefs);
-    WebDriverBuilder builder = new WebDriverBuilder().setRequiredCapabilities(caps);
+    //TODO: Set capabilities using required capabilities once these are supported
+    // by the remote server.
+    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(caps);
     localDriver = builder.get();
     localDriver.get(pages.simpleTestPage);
   }
