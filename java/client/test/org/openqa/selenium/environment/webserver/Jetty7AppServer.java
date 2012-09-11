@@ -36,6 +36,7 @@ import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
 import static org.openqa.selenium.net.PortProber.findFreePort;
+import static org.openqa.selenium.testing.InProject.locate;
 
 public class Jetty7AppServer implements AppServer {
 
@@ -48,7 +49,8 @@ public class Jetty7AppServer implements AppServer {
   private static final int DEFAULT_HTTPS_PORT = 2410;
   private static final String DEFAULT_CONTEXT_PATH = "/common";
   private static final String JS_SRC_CONTEXT_PATH = "/javascript";
-  private static final String THIRD_PARTY_JS_CONTEXT_PATH = "/third_party/closure/goog";
+  private static final String CLOSURE_CONTEXT_PATH = "/third_party/closure/goog";
+  private static final String THIRD_PARTY_JS_CONTEXT_PATH = "/third_party/js";
 
   private static final NetworkUtils networkUtils = new NetworkUtils();
 
@@ -56,11 +58,9 @@ public class Jetty7AppServer implements AppServer {
   private int securePort;
   private File path;
   private File jsSrcRoot;
-  private File thirdPartyJsRoot;
   private final Server server;
   private WebAppContext defaultContext;
   private WebAppContext jsContext;
-  private WebAppContext thirdPartyJsContext;
 
   private ContextHandlerCollection handlers;
   private final String hostName;
@@ -85,13 +85,14 @@ public class Jetty7AppServer implements AppServer {
 
     path = findRootOfWebApp();
     jsSrcRoot = findJsSrcWebAppRoot();
-    thirdPartyJsRoot = findThirdPartyJsWebAppRoot();
 
     handlers = new ContextHandlerCollection();
 
     defaultContext = addWebApplication(DEFAULT_CONTEXT_PATH, path);
     jsContext = addWebApplication(JS_SRC_CONTEXT_PATH, jsSrcRoot);
-    thirdPartyJsContext = addWebApplication(THIRD_PARTY_JS_CONTEXT_PATH, thirdPartyJsRoot);
+
+    addWebApplication(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
+    addWebApplication(THIRD_PARTY_JS_CONTEXT_PATH, locate("third_party/js"));
 
     server.setHandler(handlers);
 
@@ -131,10 +132,6 @@ public class Jetty7AppServer implements AppServer {
 
   private static File findJsSrcWebAppRoot() {
     return InProject.locate("javascript");
-  }
-
-  private static File findThirdPartyJsWebAppRoot() {
-    return InProject.locate("third_party/closure/goog");
   }
 
   public String getHostName() {

@@ -23,7 +23,6 @@ import static org.openqa.selenium.net.PortProber.findFreePort;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.openqa.selenium.TimeoutException;
@@ -56,7 +55,8 @@ public class WebbitAppServer implements AppServer {
   private static final int DEFAULT_HTTPS_PORT = 2410;
   private static final String DEFAULT_CONTEXT_PATH = "/common";
   private static final String JS_SRC_CONTEXT_PATH = "/javascript";
-  private static final String THIRD_PARTY_JS_CONTEXT_PATH = "/third_party/closure/goog";
+  private static final String CLOSURE_CONTEXT_PATH = "/third_party/closure/goog";
+  private static final String THIRD_PARTY_JS_CONTEXT_PATH = "/third_party/js";
 
   private final NetworkUtils networkUtils = new NetworkUtils();
   
@@ -165,8 +165,12 @@ public class WebbitAppServer implements AppServer {
     server.add(
       new PathAugmentingStaticFileHandler(
         InProject.locate("/third_party/closure/goog"),
-        THIRD_PARTY_JS_CONTEXT_PATH));
-    
+          CLOSURE_CONTEXT_PATH));
+    server.add(
+      new PathAugmentingStaticFileHandler(
+        InProject.locate("/third_party/js"),
+          THIRD_PARTY_JS_CONTEXT_PATH));
+
     return server;
   }
   
