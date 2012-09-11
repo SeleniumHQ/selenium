@@ -63,4 +63,21 @@ public class LoggingPreferences {
   public Level getLevel(String logType) {
     return prefs.get(logType) == null ? Level.OFF : prefs.get(logType);
   }
+  
+  /**
+   * Adds the given logging preferences giving them precedence over existing
+   * preferences. 
+   * 
+   * @param prefs The logging preferences to add.
+   * @return A references to this object.
+   */
+  public LoggingPreferences addPreferences(LoggingPreferences prefs) {
+    if (prefs == null) {
+      return this;
+    }
+    for (String logType : prefs.getEnabledLogTypes()) {
+      enable(logType, prefs.getLevel(logType));
+    }
+    return this;
+  }
 }

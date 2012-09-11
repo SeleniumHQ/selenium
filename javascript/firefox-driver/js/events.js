@@ -18,10 +18,10 @@
 
 goog.provide('fxdriver.events');
 
-goog.require('Utils');
-goog.require('fxdriver.Logger');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 goog.require('goog.style');
+goog.require('Utils');
 
 
 /**
@@ -31,7 +31,7 @@ goog.require('goog.style');
  * @param {object} parameters The parameters to extract the coordinates from.
  */
 fxdriver.events.buildCoordinates = function(parameters, doc) {
-  fxdriver.Logger.dump(parameters);
+  fxdriver.logging.info(parameters);
   var element = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
 
   var x = parameters['xoffset'] || null;

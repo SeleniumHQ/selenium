@@ -22,6 +22,7 @@ import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.logging.Logs;
 
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -31,7 +32,10 @@ public class AndroidLogs implements Logs {
 
   public LogEntries get(String logType) {
     if (LogType.CLIENT.equals(logType)) {
-      return new LogEntries(LoggingHandler.getInstance().getRecords());
+      LoggingHandler loggingHandler = LoggingHandler.getInstance();
+      List<LogEntry> entries = loggingHandler.getRecords();
+      loggingHandler.flush();
+      return new LogEntries(entries);
     }
     return new LogEntries(Lists.<LogEntry>newArrayList());
   }

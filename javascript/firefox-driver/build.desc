@@ -283,11 +283,12 @@ js_library(name = "files",
 js_library(name = "logging",
   srcs = [
     "js/logger.js",
-    "js/logging.js",
+    "js/profiler.js",
   ],
   deps = [
     ":files",
     ":moz",
+    ":prefs",
     "//javascript/atoms:deps",
   ])
 
@@ -313,6 +314,11 @@ js_library(name = "preconditions",
   deps = [
     ":utils",
     "//javascript/atoms:deps",
+  ])
+
+js_library(name = "prefs",
+  srcs = [
+    "js/prefs.js",
   ])
 
 js_library(name = "proxy",

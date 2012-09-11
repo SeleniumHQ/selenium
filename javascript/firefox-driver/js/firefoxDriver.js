@@ -29,6 +29,7 @@ goog.require('bot.connection');
 goog.require('bot.appcache');
 goog.require('fxdriver.events');
 goog.require('fxdriver.io');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.modals');
 goog.require('fxdriver.preconditions');
 goog.require('fxdriver.screenshot');
@@ -73,7 +74,7 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
   this.mouse.initialize(this.modifierKeysState);
 
   if (!bot.userAgent.isProductVersion('3.5')) {
-    fxdriver.Logger.dumpn("Replacing CSS lookup mechanism with Sizzle");
+    fxdriver.logging.info("Replacing CSS lookup mechanism with Sizzle");
     var cssSelectorFunction = (function() {
       var sizzle = [
         'var originalSizzle = window.Sizzle;',
@@ -189,7 +190,7 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   respond.session.getBrowser().loadURI(url);
 
   if (!loadEventExpected) {
-    fxdriver.Logger.dumpn("No load event expected");
+    fxdriver.logging.info("No load event expected");
     respond.send();
   }
 };
@@ -236,7 +237,7 @@ FirefoxDriver.prototype.close = function(respond) {
     notifyOfCloseWindow(browser.id);
     browser.contentWindow.close();
   } catch(e) {
-    fxdriver.Logger.dump(e);
+    fxdriver.logging.warning(e);
   }
 
   // Send the response so the client doesn't get a connection refused socket
@@ -263,7 +264,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
     }
 
     // See https://developer.mozilla.org/en/rich-text_editing_in_mozilla#Internet_Explorer_Differences
-    fxdriver.Logger.dumpn("Window in design mode, falling back to sandbox: " + doc.designMode);
+    fxdriver.logging.info("Window in design mode, falling back to sandbox: " + doc.designMode);
     var window = respond.session.getWindow();
     window = window.wrappedJSObject;
     var sandbox = new Components.utils.Sandbox(window);
@@ -421,7 +422,7 @@ FirefoxDriver.annotateInvalidSelectorError_ = function(selector, ex) {
 
   try {
     var converted = ex.QueryInterface(Components.interfaces['nsIException']);
-    fxdriver.Logger.dumpn("Converted the exception: " + converted.name);
+    fxdriver.logging.info("Converted the exception: " + converted.name);
     if ("NS_ERROR_DOM_SYNTAX_ERR" == converted.name) {
       return new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
           'The given selector ' + selector +
@@ -621,10 +622,10 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
 
   var newWindow = null;
   if (switchingToDefault) {
-    fxdriver.Logger.dumpn("Switching to default content (topmost frame)");
+    fxdriver.logging.info("Switching to default content (topmost frame)");
     newWindow = respond.session.getBrowser().contentWindow;
   } else if (goog.isString(parameters.id)) {
-    fxdriver.Logger.dumpn("Switching to frame with name or ID: " + parameters.id);
+    fxdriver.logging.info("Switching to frame with name or ID: " + parameters.id);
     var foundById;
     var numFrames = currentWindow.frames.length;
     for (var i = 0; i < numFrames; i++) {
@@ -642,10 +643,10 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
       newWindow = foundById;
     }
   } else if (goog.isNumber(parameters.id)) {
-    fxdriver.Logger.dumpn("Switching to frame by index: " + parameters.id);
+    fxdriver.logging.info("Switching to frame by index: " + parameters.id);
     newWindow = currentWindow.frames[parameters.id];
   } else if (goog.isObject(parameters.id) && 'ELEMENT' in parameters.id) {
-    fxdriver.Logger.dumpn("Switching to frame by element: " + parameters.id['ELEMENT']);
+    fxdriver.logging.info("Switching to frame by element: " + parameters.id['ELEMENT']);
 
     var element = Utils.getElementAt(parameters.id['ELEMENT'],
         currentWindow.document);
@@ -1064,9 +1065,9 @@ function getElementFromLocation(mouseLocation, doc) {
 
   if (mouseLocation.initialized) {
     elementForNode = doc.elementFromPoint(locationX, locationY);
-    fxdriver.Logger.dumpn("Element from (" + locationX + "," + locationY + ") :" + elementForNode);
+    fxdriver.logging.info("Element from (" + locationX + "," + locationY + ") :" + elementForNode);
   } else {
-    fxdriver.Logger.dumpn("Mouse coordinates were not set - using body");
+    fxdriver.logging.info("Mouse coordinates were not set - using body");
     elementForNode = doc.getElementsByTagName("body")[0];
   }
 
@@ -1116,7 +1117,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   // Fast path first
   if (!this.enableNativeEvents) {
     var target = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
-    fxdriver.Logger.dumpn("Calling move with: " + parameters['xoffset'] + ', ' + parameters['yoffset'] + ", " + target);
+    fxdriver.logging.info("Calling move with: " + parameters['xoffset'] + ', ' + parameters['yoffset'] + ", " + target);
     var result = this.mouse.move(target, parameters['xoffset'], parameters['yoffset']);
     this.sendResponseFromSyntheticMouse_(result, respond);
 
@@ -1168,7 +1169,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     if (nativeEventsEnabled && nativeMouse && node) {
       var currentPosition = respond.session.getMousePosition();
       var currentPosition_windowHandle = {x: currentPosition.x + browserOffset.x, y: currentPosition.y + browserOffset.y};
-      fxdriver.Logger.dumpn("Moving from (" + currentPosition.x + ", " + currentPosition.y + ") to (" +
+      fxdriver.logging.info("Moving from (" + currentPosition.x + ", " + currentPosition.y + ") to (" +
         clickPoint_ownerDocumentPostScroll.x + ", " + clickPoint_ownerDocumentPostScroll.y + ")");
       nativeMouse.mouseMove(node,
           currentPosition_windowHandle.x, currentPosition_windowHandle.y,
@@ -1255,7 +1256,7 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
     if (isMouseButtonPressed) {
       upX = currentPosition.viewPortXOffset;
       upY = currentPosition.viewPortYOffset;
-      fxdriver.Logger.dumpn("Button pressed. Using coordiantes with viewport offset: "
+      fxdriver.logging.info("Button pressed. Using coordiantes with viewport offset: "
           + upX + ", " + upY);
     }
     var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());

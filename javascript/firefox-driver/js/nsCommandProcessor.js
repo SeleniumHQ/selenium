@@ -29,13 +29,12 @@ goog.require('WebElement');
 goog.require('bot.ErrorCode');
 goog.require('bot.locators');
 goog.require('bot.userAgent');
-goog.require('fxdriver.Logger');
-goog.require('fxdriver.logging.Logger');
-goog.require('fxdriver.logging.LogLevel');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.Timer');
 goog.require('fxdriver.error');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.modals');
+goog.require('fxdriver.profiler');
 goog.require('goog.dom');
 goog.require('goog.object');
 goog.require('wdSessionStoreService');
@@ -180,12 +179,6 @@ var DelayedCommand = function(driver, command, response, opt_sleepDelay) {
  */
 DelayedCommand.DEFAULT_SLEEP_DELAY = 100;
 
-
-DelayedCommand.prototype.log = function(message, level, logType) {
-  this.response_.session.log(message, level, logType);
-};
-
-
 /**
  * Executes the command after the specified delay.
  * @param {Number} ms The delay in milliseconds.
@@ -193,10 +186,8 @@ DelayedCommand.prototype.log = function(message, level, logType) {
 DelayedCommand.prototype.execute = function(ms) {
   if ('unstable' != loadStrategy_ && !this.yieldedForBackgroundExecution_) {
     this.yieldedForBackgroundExecution_ = true;
-    this.log(
-	{'event': 'YIELD_TO_PAGE_LOAD', 'startorend': 'start'},
-	fxdriver.logging.LogLevel.INFO,
-	fxdriver.logging.LogType.PROFILER);
+    fxdriver.profiler.log(
+      {'event': 'YIELD_TO_PAGE_LOAD', 'startorend': 'start'});
   }
   var self = this;
   this.driver_.window.setTimeout(function() {
@@ -228,7 +219,7 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
         // This may happen for pages that use WebSockets.
         // See https://bugzilla.mozilla.org/show_bug.cgi?id=765618
 
-        fxdriver.Logger.dumpn('Ignoring non-nsIRequest: ' + rawRequest);
+        fxdriver.logging.info('Ignoring non-nsIRequest: ' + rawRequest);
         continue;
       }
 
@@ -252,7 +243,8 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
     }
 
     if (numPending && !hasOnLoadBlocker) {
-      fxdriver.Logger.dumpn('Ignoring pending about:document-onload-blocker request');
+      fxdriver.logging.info('Ignoring pending about:document-onload-blocker ' +
+        'request');
       // If we only have one pending request and it is not a
       // document-onload-blocker, we need to wait.  We do not wait for
       // document-onload-blocker requests since these are created when
@@ -262,10 +254,8 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
       return true;
     }
   }
-  this.log(
-      {'event': 'YIELD_TO_PAGE_LOAD', 'startorend': 'end'},
-      fxdriver.logging.LogLevel.INFO,
-      fxdriver.logging.LogType.PROFILER);
+  fxdriver.profiler.log(
+      {'event': 'YIELD_TO_PAGE_LOAD', 'startorend': 'end'});
   return false;
 };
 
@@ -319,8 +309,6 @@ DelayedCommand.prototype.executeInternal_ = function() {
       var driverFunction = this.driver_[name] || WebElement[name];
       var parameters = this.command_.parameters;
 
-      fxdriver.Logger.dumpn('Executing: ' + name);
-
       var func = goog.bind(driverFunction, this.driver_,
           this.response_, parameters);
       var guards = goog.bind(this.checkPreconditions_, this,
@@ -335,9 +323,9 @@ DelayedCommand.prototype.executeInternal_ = function() {
               DelayedCommand.execTimer.setTimeout(toExecute, 100);
           } else {
             if (!e.isWebDriverError) {
-              fxdriver.Logger.dumpn(
-                  'Exception caught by driver: ' + name +
-                      '(' + parameters + ')\n' + e);
+              fxdriver.logging.error('Exception caught by driver: ' + name +
+                '(' + parameters + ')');
+              fxdriver.logging.error(e);
             }
             response.sendError(e);
           }
@@ -346,9 +334,9 @@ DelayedCommand.prototype.executeInternal_ = function() {
       toExecute();
     } catch (e) {
       if (!e.isWebDriverError) {
-        fxdriver.Logger.dumpn(
-            'Exception caught by driver: ' + this.command_.name +
-            '(' + this.command_.parameters + ')\n' + e);
+        fxdriver.logging.error('Exception caught by driver: ' + 
+          this.command_.name + '(' + this.command_.parameters + ')');
+        fxdriver.logging.error(e);
       }
       this.response_.sendError(e);
     }
@@ -393,19 +381,6 @@ nsCommandProcessor.prototype.flags =
 nsCommandProcessor.prototype.implementationLanguage =
     Components.interfaces.nsIProgrammingLanguage.JAVASCRIPT;
 
-
-/**
- * Logs a message to the Console Service and then throws an error.
- * @param {String} message The message to log.
- * @throws {Components.results.NS_ERROR_FAILURE}
- */
-nsCommandProcessor.logError = function(message) {
-  // TODO(jleyba): This should log an error and not a generic message.
-  fxdriver.Logger.dumpn(message);
-  throw Components.results.NS_ERROR_FAILURE;
-};
-
-
 /**
  * Processes a command request for the {@code FirefoxDriver}.
  * @param {string} jsonCommandString The command to execute, specified in a
@@ -434,6 +409,9 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
       command.name == 'quit' ||
       command.name == 'getStatus' ||
       command.name == 'getWindowHandles') {
+
+    fxdriver.logging.info('Received command: ' + command.name);
+
     try {
       this[command.name](response, command.parameters);
     } catch (ex) {
@@ -462,6 +440,8 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
         'Session not found: ' + sessionId));
     return;
   }
+
+  fxdriver.logging.info('Received command: ' + command.name);
 
   if (command.name == 'deleteSession' ||
       command.name == 'getSessionCapabilities' ||
@@ -510,8 +490,8 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
             fxdriver.modals.dismissAlert(driver);
             break;
       }
-      fxdriver.Logger.dumpn(
-          'Sending error from command ' + command.name + ' with alertText: ' + modalText);
+      fxdriver.logging.error('Sending error from command ' +
+        command.name + ' with alertText: ' + modalText);
       response.sendError(new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
           'Modal dialog present', {alert: {text: modalText}}));
       return;
@@ -521,6 +501,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
   if (typeof driver[command.name] != 'function' && typeof WebElement[command.name] != 'function') {
     response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_COMMAND,
         'Unrecognised command: ' + command.name));
+    fxdriver.logging.error('Unknown command: ' + command.name);
     return;
   }
 
@@ -616,7 +597,14 @@ nsCommandProcessor.prototype.getWindowHandles = function(response) {
  * @param {!Object.<string, *>} parameters The parameters for the call.
  */
 nsCommandProcessor.prototype.getLog = function(response, parameters) {
-  response.value = response.session.getLog(parameters.type);
+  var res = fxdriver.logging.getLog(parameters.type);
+
+  // Convert log level object to string
+  goog.array.forEach(res, function(entry) {
+    entry.level = entry.level.name;
+  });
+
+  response.value = res;
   response.send();
 };
 
@@ -629,7 +617,7 @@ nsCommandProcessor.prototype.getLog = function(response, parameters) {
  */
 nsCommandProcessor.prototype.getAvailableLogTypes = function(response, 
     parameters) {
-  response.value = response.session.getAvailableLogTypes();
+  response.value = fxdriver.logging.getAvailableLogTypes();
   response.send();
 };
 
@@ -715,6 +703,8 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
 
     response.session = session;
     response.value = session.getId();
+
+    fxdriver.logging.info('Created a new session with id: ' + session.getId());
   }
 
   response.send();

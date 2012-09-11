@@ -19,19 +19,16 @@ package org.openqa.selenium.logging;
 
 import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.openqa.selenium.Pages;
+import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.Set;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
@@ -65,6 +62,7 @@ public class AvailableLogsTest extends JUnit4TestBase {
                logTypes.contains(LogType.BROWSER));
   }
 
+  @NeedsFreshDriver
   @Test
   public void clientLogShouldBeEnabledByDefault() {
     // Do one action to have *something* in the client logs.

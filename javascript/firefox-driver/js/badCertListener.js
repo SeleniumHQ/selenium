@@ -25,7 +25,7 @@
 
 goog.provide('WdCertOverrideService');
 
-goog.require('fxdriver.Logger');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 goog.require('bot.userAgent');
 
@@ -35,12 +35,12 @@ function getPreferenceFromProfile(prefName, prefDefaultValue) {
       CC["@mozilla.org/preferences-service;1"].getService(CI["nsIPrefBranch"]);
 
   if (!prefs.prefHasUserValue(prefName)) {
-    fxdriver.Logger.dumpn(prefName + ' not set; defaulting to ' + prefDefaultValue);
+    fxdriver.logging.info(prefName + ' not set; defaulting to ' + prefDefaultValue);
     return prefDefaultValue;
   }
 
   var prefValue = prefs.getBoolPref(prefName);
-  fxdriver.Logger.dumpn("Found preference for " + prefName + ": " + prefValue);
+  fxdriver.logging.info("Found preference for " + prefName + ": " + prefValue);
 
   return prefValue;
 }
@@ -69,7 +69,7 @@ WdCertOverrideService = function() {
     this.default_bits = 0;
   }
 
-  fxdriver.Logger.dumpn("Accept untrusted certificates: " + shouldAcceptUntrustedCerts());
+  fxdriver.logging.info("Accept untrusted certificates: " + shouldAcceptUntrustedCerts());
 
   // UUID of the original implementor of this service.
   var ORIGINAL_OVERRIDE_SERVICE_ID = "{67ba681d-5485-4fff-952c-2ee337ffdcd6}";
@@ -95,7 +95,7 @@ WdCertOverrideService.prototype = {
 WdCertOverrideService.prototype.certificateExpiredBit_ = function
   (theCert, verification_result) {
   if ((verification_result & theCert.CERT_EXPIRED) != 0) {
-    fxdriver.Logger.dumpn("Certificate expired.");
+    fxdriver.logging.info("Certificate expired.");
     return this.ERROR_TIME;
   }
 
@@ -110,11 +110,11 @@ WdCertOverrideService.prototype.certificateIssuerUntrusted_ = function
       ((verification_result & theCert.ISSUER_NOT_TRUSTED) != 0) ||
       ((verification_result & theCert.CERT_NOT_TRUSTED) != 0) ||
       ((verification_result & theCert.INVALID_CA) != 0)) {
-    fxdriver.Logger.dumpn("Certificate issuer unknown.");
-    fxdriver.Logger.dumpn("Unknown: " + (theCert.ISSUER_UNKNOWN & verification_result));
-    fxdriver.Logger.dumpn("Issuer not trusted: " + (theCert.ISSUER_NOT_TRUSTED & verification_result));
-    fxdriver.Logger.dumpn("Cert not trusted: " + (theCert.CERT_NOT_TRUSTED & verification_result));
-    fxdriver.Logger.dumpn("Invalid CA: " + (theCert.INVALID_CA & verification_result));
+    fxdriver.logging.info("Certificate issuer unknown.");
+    fxdriver.logging.info("Unknown: " + (theCert.ISSUER_UNKNOWN & verification_result));
+    fxdriver.logging.info("Issuer not trusted: " + (theCert.ISSUER_NOT_TRUSTED & verification_result));
+    fxdriver.logging.info("Cert not trusted: " + (theCert.CERT_NOT_TRUSTED & verification_result));
+    fxdriver.logging.info("Invalid CA: " + (theCert.INVALID_CA & verification_result));
 
     return this.ERROR_UNTRUSTED;
   }
@@ -128,7 +128,7 @@ WdCertOverrideService.prototype.certificateHostnameMismatch_ = function
   (theCert, aHost) {
   var commonNameRE = new RegExp("^" + theCert.commonName.replace('*', '[\\w|\-]+') + "$", "i");
   if (aHost.match(commonNameRE) === null) {
-    fxdriver.Logger.dumpn("Host name mismatch: cert: " + theCert.commonName + " get: " + aHost);
+    fxdriver.logging.info("Host name mismatch: cert: " + theCert.commonName + " get: " + aHost);
     return this.ERROR_MISMATCH;
   }
 
@@ -147,7 +147,7 @@ WdCertOverrideService.prototype.fillNeededBits = function(aCert, aHost) {
   var verification_bits = aCert.verifyForUsage(aCert.CERT_USAGE_SSLClient);
   var return_bits = this.default_bits;
 
-  fxdriver.Logger.dumpn("Certificate verification results: " + verification_bits);
+  fxdriver.logging.info("Certificate verification results: " + verification_bits);
 
   return_bits = return_bits | this.certificateExpiredBit_(
       aCert, verification_bits);
@@ -159,12 +159,12 @@ WdCertOverrideService.prototype.fillNeededBits = function(aCert, aHost) {
   // It has been observed that if there's a host name mismatch then it
   // may not be required to check the trust status of the certificate issuer.
   if (return_bits == 0) {
-    fxdriver.Logger.dumpn("Checking issuer since certificate has not expired or has a host name mismatch.");
+    fxdriver.logging.info("Checking issuer since certificate has not expired or has a host name mismatch.");
     return_bits = return_bits | this.certificateIssuerUntrusted_(
         aCert, verification_bits);
   }
 
-  fxdriver.Logger.dumpn("return_bits now: " + return_bits);
+  fxdriver.logging.info("return_bits now: " + return_bits);
   return return_bits;
 };
 
@@ -175,12 +175,12 @@ WdCertOverrideService.prototype.hasMatchingOverride = function(
 
   var acceptAll = shouldAcceptUntrustedCerts();
   if (acceptAll === true) {
-    fxdriver.Logger.dumpn("Allowing certificate from site: " + aHostName + ":" + aPort);
+    fxdriver.logging.info("Allowing certificate from site: " + aHostName + ":" + aPort);
     retval = true;
     aIsTemporary.value = false;
 
     aOverrideBits.value = this.fillNeededBits(aCert, aHostName);
-    fxdriver.Logger.dumpn("Override Bits: " + aOverrideBits.value);
+    fxdriver.logging.info("Override Bits: " + aOverrideBits.value);
   } else {
     retval = this.origListener_.hasMatchingOverride(aHostName, aPort,
               aCert, aOverrideBits, aIsTemporary);
@@ -260,7 +260,7 @@ WDBadCertListenerModule.prototype.registerSelf = function(
     throw CR['NS_ERROR_FACTORY_REGISTER_AGAIN'];
   }
 
-  fxdriver.Logger.dumpn("Registering Override Certificate service.");
+  fxdriver.logging.info("Registering Override Certificate service.");
   aCompMgr = aCompMgr.QueryInterface(
       CI['nsIComponentRegistrar']);
   aCompMgr.registerFactoryLocation(
@@ -270,7 +270,7 @@ WDBadCertListenerModule.prototype.registerSelf = function(
 
 WDBadCertListenerModule.prototype.unregisterSelf = function(
     aCompMgr, aLocation, aType) {
-  fxdriver.Logger.dumpn("Un-registering Override Certificate service.");
+  fxdriver.logging.info("Un-registering Override Certificate service.");
   aCompMgr =
   aCompMgr.QueryInterface(CI['nsIComponentRegistrar']);
   aCompMgr.unregisterFactoryLocation(DUMMY_CERTOVERRIDE_SERVICE_CLASS_ID, aLocation);

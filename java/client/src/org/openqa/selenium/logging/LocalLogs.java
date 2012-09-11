@@ -54,8 +54,9 @@ public abstract class LocalLogs implements Logs {
     return new StoringLocalLogs(logTypesToIgnore);
   }
 
-  public static LocalLogs getHandlerBasedLoggerInstance(LoggingHandler loggingHandler) {
-    return new HandlerBasedLocalLogs(loggingHandler);
+  public static LocalLogs getHandlerBasedLoggerInstance(LoggingHandler loggingHandler,
+      Set<String> logTypesToInclude) {
+    return new HandlerBasedLocalLogs(loggingHandler, logTypesToInclude);
   }
 
   /**

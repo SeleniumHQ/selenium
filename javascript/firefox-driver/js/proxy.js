@@ -18,7 +18,7 @@
 goog.provide('fxdriver.proxy');
 goog.provide('fxdriver.proxy.ProxyConfig');
 
-goog.require('fxdriver.Logger');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 
 
@@ -63,7 +63,7 @@ fxdriver.proxy.setProxyPreference_ = function(prefs, type, setting) {
  * @private
  */
 fxdriver.proxy.directConfig_ = function(prefs, ignored) {
-  fxdriver.Logger.dumpn('Using a direct connection to the network');
+  fxdriver.logging.info('Using a direct connection to the network');
   prefs.setIntPref('network.proxy.type',
     fxdriver.proxy.TYPES_['DIRECT'].value);
 };
@@ -75,8 +75,8 @@ fxdriver.proxy.directConfig_ = function(prefs, ignored) {
  * @private
  */
 fxdriver.proxy.pacConfig_ = function(prefs, proxy_config) {
-  fxdriver.Logger.dumpn('Using a PAC file to connect to the network: ' +
-      proxy_config['proxyAutoconfigUrl']);
+  fxdriver.logging.info('Using a PAC file to connect to the network: ' +
+    proxy_config['proxyAutoconfigUrl']);
 
   prefs.setIntPref('network.proxy.type', fxdriver.proxy.TYPES_['PAC'].value);
 
@@ -95,7 +95,7 @@ fxdriver.proxy.pacConfig_ = function(prefs, proxy_config) {
  * @private
  */
 fxdriver.proxy.manualProxyConfig_ = function(prefs, proxy_config) {
-  fxdriver.Logger.dumpn('Using manual network config');
+  fxdriver.logging.info('Using manual network config');
 
   prefs.setIntPref('network.proxy.type',
     fxdriver.proxy.TYPES_['MANUAL'].value);
@@ -118,7 +118,7 @@ fxdriver.proxy.manualProxyConfig_ = function(prefs, proxy_config) {
  * @private
  */
 fxdriver.proxy.autodetectConfig_ = function(prefs, ignored) {
-  fxdriver.Logger.dumpn('Autodetecting proxy to use');
+  fxdriver.logging.info('Autodetecting proxy to use');
 
   prefs.setIntPref('network.proxy.type',
     fxdriver.proxy.TYPES_['AUTODETECT'].value);
@@ -131,7 +131,7 @@ fxdriver.proxy.autodetectConfig_ = function(prefs, ignored) {
  * @private
  */
 fxdriver.proxy.systemConfig_ = function(prefs, ignored) {
-  fxdriver.Logger.dumpn('Using system proxy to connect to the network');
+  fxdriver.logging.info('Using system proxy to connect to the network');
 
   prefs.setIntPref('network.proxy.type', 
     fxdriver.proxy.TYPES_['SYSTEM'].value);
@@ -169,7 +169,7 @@ fxdriver.proxy.configure_ = function(proxy_config) {
   var type = fxdriver.proxy.TYPES_[proxy_config['proxyType']];
 
   if (!type) {
-    fxdriver.Logger.dumpn('Using Firefox default for network connection');
+    fxdriver.logging.info('Using Firefox default for network connection');
     return;
   }
 
@@ -181,7 +181,6 @@ fxdriver.proxy.configure_ = function(proxy_config) {
 
 
 /**
- *
  * @param {string=|fxdriver.proxy.ProxyConfig} proxy_config The proxy
  *     configuration to use.
  */
@@ -189,6 +188,6 @@ fxdriver.proxy.configure = function(proxy_config) {
   try {
     fxdriver.proxy.configure_(proxy_config);
   } catch (e) {
-    fxdriver.Logger.dumpn('Unable to configure logging. ' + e);
+    fxdriver.logging.info('Unable to configure logging. ' + e);
   }
 };

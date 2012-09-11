@@ -23,7 +23,7 @@ goog.require('WebLoadingListener');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.userAgent');
-goog.require('fxdriver.Logger');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 goog.require('goog.dom.TagName');
@@ -110,7 +110,7 @@ Utils.newInstance = function(className, interfaceName) {
   var clazz = Components.classes[className];
 
   if (!clazz) {
-    fxdriver.Logger.dumpn("Unable to find class: " + className);
+    fxdriver.logging.warning("Unable to find class: " + className);
     return undefined;
   }
   var iface = Components.interfaces[interfaceName];
@@ -118,8 +118,8 @@ Utils.newInstance = function(className, interfaceName) {
   try {
     return clazz.createInstance(iface);
   } catch (e) {
-    fxdriver.Logger.dumpn("Cannot create: " + className + " from " + interfaceName);
-    fxdriver.Logger.dumpn(e);
+    fxdriver.logging.warning("Cannot create: " + className + " from " + interfaceName);
+    fxdriver.logging.warning(e);
     throw e;
   }
 };
@@ -198,7 +198,8 @@ Utils.getNativeComponent = function(componentId, componentInterface) {
     var obj = Components.classes[componentId].createInstance();
     return obj.QueryInterface(componentInterface);
   } catch(e) {
-    fxdriver.Logger.dumpn(e);
+    fxdriver.logging.warning("Unable to find native component: " + componentId);
+    fxdriver.logging.warning(e);
     // Unable to retrieve native events. No biggie, because we fall back to
     // synthesis later
     return undefined;
@@ -272,7 +273,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     return;
   }
 
-  fxdriver.Logger.dumpn("Doing sendKeys in a non-native way...");
+  fxdriver.logging.info("Doing sendKeys in a non-native way...");
   var controlKey = false;
   var shiftKey = false;
   var altKey = false;
@@ -758,15 +759,15 @@ Utils.getLocation = function(element, opt_onlyFirstRect) {
     }
 
     // Firefox 3.0, but lacking client rect
-    fxdriver.Logger.dumpn("Falling back to firefox3 mechanism");
+    fxdriver.logging.info("Falling back to firefox3 mechanism");
     var accessibleLocation = Utils.getLocationViaAccessibilityInterface(element);
     accessibleLocation.x = clientRect.left;
     accessibleLocation.y = clientRect.top;
     return accessibleLocation;
   } catch(e) {
-    fxdriver.Logger.dumpn(e);
     // Element doesn't have an accessibility node
-    fxdriver.Logger.dumpn("Falling back to using closure to find the location of the element");
+    fxdriver.logging.warning("Falling back to using closure to find the location of the element");
+    fxdriver.logging.warning(e);
 
     var position = goog.style.getClientPosition(element);
     var size = goog.style.getBorderBoxSize(element);
@@ -821,7 +822,7 @@ Utils.getBrowserSpecificOffset = function(inBrowser) {
     var rect = inBrowser.getBoundingClientRect();
     browserSpecificYOffset += rect.top;
     browserSpecificXOffset += rect.left;
-    fxdriver.Logger.dumpn("Browser-specific offset (X,Y): " + browserSpecificXOffset
+    fxdriver.logging.info("Browser-specific offset (X,Y): " + browserSpecificXOffset
         + ", " + browserSpecificYOffset);
   }
 
@@ -926,7 +927,7 @@ Utils.wrapResult = function(result, doc) {
         }
         return array;
       } catch (ignored) {
-        fxdriver.Logger.dumpn(ignored);
+        fxdriver.logging.warning(ignored);
       }
 
       try {
@@ -935,7 +936,7 @@ Utils.wrapResult = function(result, doc) {
           return result.toString();
         }
       } catch (ignored) {
-        fxdriver.Logger.dumpn(ignored);
+        fxdriver.logging.info(ignored);
       }
 
       var convertedObj = {};
@@ -951,7 +952,7 @@ Utils.wrapResult = function(result, doc) {
     
 
 Utils.loadUrl = function(url) {
-  fxdriver.Logger.dumpn("Loading: " + url);
+  fxdriver.logging.info("Loading: " + url);
   var ioService = fxdriver.moz.getService("@mozilla.org/network/io-service;1", "nsIIOService");
   var channel = ioService.newChannel(url, null, null);
   var channelStream = channel.open();
@@ -974,7 +975,7 @@ Utils.loadUrl = function(url) {
   scriptableStream.close();
   channelStream.close();
 
-  fxdriver.Logger.dumpn("Done reading: " + url);
+  fxdriver.logging.info("Done reading: " + url);
   return text;
 };
 
@@ -1001,7 +1002,7 @@ Utils.installWindowCloseListener = function (respond) {
 
 
       if (target == source) {
-        fxdriver.Logger.dumpn("Window was closed.");
+        fxdriver.logging.info("Window was closed.");
         respond.send();
       }
     }
@@ -1016,7 +1017,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
   var currentWindow = respond.session.getWindow();
 
   var clickListener = new WebLoadingListener(browser, function(timedOut) {
-    fxdriver.Logger.dumpn('New page loading.');
+    fxdriver.logging.info('New page loading.');
     // currentWindow.closed is only reliable for top-level windows,
     // not frames/iframes
     // (see http://msdn.microsoft.com/en-us/library/ms533574(VS.85).aspx),
@@ -1024,7 +1025,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
     // objects is for a popup, for from a currently open window.
     // wdsession.getWindow has some fallback logic in case this doesn't work.
     if (currentWindow.closed) {
-     fxdriver.Logger.dumpn('Detected page load in top window; changing session focus from ' +
+     fxdriver.logging.info('Detected page load in top window; changing session focus from ' +
                            'frame to new top window.');
      respond.session.setWindow(browser.contentWindow);
     }
@@ -1047,7 +1048,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
     var docLoaderService = browser.webProgress;
     if (!docLoaderService.isLoadingDocument) {
       WebLoadingListener.removeListener(browser, clickListener);
-      fxdriver.Logger.dumpn("Not loading document anymore.");
+      fxdriver.logging.info("Not loading document anymore.");
       respond.send();
     }
   };
@@ -1056,7 +1057,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
   if (contentWindow.closed) {
     // Nulls out the session; client will have to switch to another
     // window on their own.
-    fxdriver.Logger.dumpn("Content window closed.");
+    fxdriver.logging.info("Content window closed.");
     respond.send();
     return;
   }
@@ -1081,7 +1082,7 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
     var doneNativeEventWait = false;
 
     var callback = function() {
-      fxdriver.Logger.dumpn("Done native event wait.");
+      fxdriver.logging.info("Done native event wait.");
       doneNativeEventWait = true;
     };
 
@@ -1089,7 +1090,7 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
 
     nativeEvents.hasUnhandledEvents(node, hasEvents);
 
-    fxdriver.Logger.dumpn("Pending native events: " + hasEvents.value);
+    fxdriver.logging.info("Pending native events: " + hasEvents.value);
     var numEventsProcessed = 0;
     // Do it as long as the timeout function has not been called and the
     // page has not been unloaded. If the page has been unloaded, there is no
@@ -1100,14 +1101,14 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
       thread.processNextEvent(true);
       numEventsProcessed += 1;
     }
-    fxdriver.Logger.dumpn("Extra events processed: " + numEventsProcessed +
+    fxdriver.logging.info("Extra events processed: " + numEventsProcessed +
                  " Page Unloaded: " + pageUnloadedData.wasUnloaded);
 
   } while ((hasEvents.value == true) && (!pageUnloadedData.wasUnloaded));
-  fxdriver.Logger.dumpn("Done main loop.");
+  fxdriver.logging.info("Done main loop.");
 
   if (pageUnloadedData.wasUnloaded) {
-      fxdriver.Logger.dumpn("Page has been reloaded while waiting for native events to "
+      fxdriver.logging.info("Page has been reloaded while waiting for native events to "
           + "be processed. Remaining events? " + hasEvents.value);
   } else {
     Utils.removePageUnloadEventListener(element, pageUnloadedData);
@@ -1134,7 +1135,7 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
     numExtraEventsProcessed += 1;
   }
 
-  fxdriver.Logger.dumpn("Done extra event loop, " + numExtraEventsProcessed);
+  fxdriver.logging.info("Done extra event loop, " + numExtraEventsProcessed);
 };
 
 Utils.getPageUnloadedIndicator = function(element) {

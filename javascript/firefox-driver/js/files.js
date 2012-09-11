@@ -33,7 +33,7 @@ fxdriver.files.createTempFile = function(opt_prefix, opt_suffix) {
 
   var tmpdir = Components.classes['@mozilla.org/file/directory_service;1'].
       getService(Components.interfaces.nsIProperties).
-      get('ProfD', Components.interfaces.nsIFile);
+      get('ProfD', Components.interfaces.nsILocalFile);
   var exists = true;
   var file;
   while (exists) {
@@ -48,9 +48,44 @@ fxdriver.files.createTempFile = function(opt_prefix, opt_suffix) {
 };
 
 /**
+ * Creates a file handler for a file in the active firefox profile directory
+ * with the given path.
+ *
+ * @param {string} path The path to use.
+ * @return {fxdriver.files.File} The file handler.
+ */
+fxdriver.files.getFile = function(path) {
+  if (!path) {
+   return;
+  }
+  return new fxdriver.files.File(fxdriver.files.getLocalFile_(path));
+};
+
+/**
+ * Gets a local file for the given path. If the file does not exist the file
+ * is created.
+ *
+ * The path should be a full path to a file in the profile directory in use.
+ *
+ * @private
+ * @param {string} path The path to use.
+ * @return {!nsILocalFile} The file.
+ */
+fxdriver.files.getLocalFile_ = function(path) {
+  var file = Components.classes['@mozilla.org/file/directory_service;1'].
+      getService(Components.interfaces.nsIProperties).
+      get('ProfD', Components.interfaces.nsILocalFile);
+  file.initWithPath(path);
+  if (!file.exists()) {
+    file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0666);
+  }
+  return file;
+};
+
+/**
  * An file abstraction.
  *
- * @param {!nsIFile} nsIFile the nsIFile to wrap
+ * @param {!nsIFile} nsIFile The nsIFile to wrap.
  * @constructor
  */
 fxdriver.files.File = function(nsIFile) {
@@ -116,8 +151,8 @@ fxdriver.files.File.prototype.read = function() {
   istream.init(this.nsIFile_, fxdriver.files.READ_MODE_, 0666, 0);
 
   var scriptableStream =
-      Components.classes['@mozilla.org/scriptableinputstream;1']
-	  .createInstance(Components.interfaces.nsIScriptableInputStream);
+      Components.classes['@mozilla.org/scriptableinputstream;1'].
+      createInstance(Components.interfaces.nsIScriptableInputStream);
   scriptableStream.init(istream);
 
   // TODO(dawagner): Chunk output if we need to read more than 10MB.
@@ -133,5 +168,23 @@ fxdriver.files.File.prototype.read = function() {
   istream.close();
 
   return toReturn;
+};
+
+/**
+ * Resets the file buffer.
+ */
+fxdriver.files.File.prototype.resetBuffer = function() {
+  var path = this.nsIFile_.path;
+  this.nsIFile_.remove(true);
+  this.nsIFile_ = fxdriver.files.getLocalFile_(path);
+};
+
+/**
+ * Gets the file path of this file.
+ *
+ * @return {!string} The file path.
+ */
+fxdriver.files.File.prototype.getFilePath = function() {
+  return this.nsIFile_.path;
 };
 

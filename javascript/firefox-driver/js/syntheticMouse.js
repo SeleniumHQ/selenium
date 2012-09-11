@@ -27,7 +27,7 @@ goog.require('bot.events');
 goog.require('bot.window');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
-goog.require('fxdriver.Logger');
+goog.require('fxdriver.logging');
 goog.require('goog.events.EventType');
 goog.require('goog.math.Coordinate');
 
@@ -155,7 +155,7 @@ SyntheticMouse.prototype.click = function(target) {
     }
   }
 
-  fxdriver.Logger.dumpn("About to do a bot.action.click on " + element);
+  fxdriver.logging.info("About to do a bot.action.click on " + element);
   var keyboardState = new bot.Device.ModifiersState();
   if (this.modifierKeys !== undefined) {
     keyboardState.setPressed(bot.Device.Modifier.SHIFT, this.modifierKeys.isShiftPressed());
@@ -181,7 +181,7 @@ SyntheticMouse.prototype.contextClick = function(target) {
     return error;
   }
 
-  fxdriver.Logger.dumpn("About to do a bot.action.rightClick on " + element);
+  fxdriver.logging.info("About to do a bot.action.rightClick on " + element);
   bot.action.rightClick(element);
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
@@ -195,7 +195,7 @@ SyntheticMouse.prototype.doubleClick = function(target) {
     return error;
   }
 
-  fxdriver.Logger.dumpn("About to do a bot.action.doubleClick on " + element);
+  fxdriver.logging.info("About to do a bot.action.doubleClick on " + element);
   bot.action.doubleClick(element);
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");

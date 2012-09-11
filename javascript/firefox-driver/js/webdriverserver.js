@@ -22,7 +22,7 @@ goog.require('Dispatcher');
 goog.require('FirefoxDriver');
 goog.require('Utils');
 goog.require('WebElement');
-goog.require('fxdriver.Logger');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 
 /**
@@ -46,7 +46,7 @@ WebDriverServer = function() {
   try {
     this.server_ = Utils.newInstance("@mozilla.org/server/jshttp;1", "nsIHttpServer");
   } catch (e) {
-      fxdriver.Logger.dumpn(e);
+    fxdriver.logging.warning(e);
   }
 
   this.server_.registerGlobHandler(".*/hub/.*", { handle: function(request, response) {
@@ -59,7 +59,7 @@ WebDriverServer = function() {
 WebDriverServer.prototype.newDriver = function(window) {
   if (!this.enableNativeEvents) {
     this.enableNativeEvents = Utils.useNativeEvents();
-    fxdriver.Logger.dumpn('Using native events: ' + this.enableNativeEvents);
+    fxdriver.logging.info('Using native events: ' + this.enableNativeEvents);
   }
   window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents, window);
   return window.fxdriver;

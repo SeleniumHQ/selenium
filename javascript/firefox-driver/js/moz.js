@@ -18,6 +18,7 @@
 goog.provide('fxdriver.moz');
 
 goog.require('bot.userAgent');
+goog.require('fxdriver.logging');
 
 
 /** @const */ var CC = Components.classes;
@@ -141,7 +142,7 @@ fxdriver.moz.unwrapXpcOnly = function(thing) {
     } catch(e) {
       //Unwrapping will fail for JS literals - numbers, for example. Catch
       // the exception and proceed, it will eventually be returend as-is.
-      fxdriver.Logger.dumpn("Unwrap From XPC only failed: " + e);
+      fxdriver.logging.warning("Unwrap From XPC only failed: " + e);
     }
 
   }
@@ -156,3 +157,4 @@ fxdriver.moz.unwrapFor4 = function(doc) {
   }
   return doc;
 };
+

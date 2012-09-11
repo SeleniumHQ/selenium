@@ -27,7 +27,6 @@ goog.provide('fxdriver.utils');
 goog.require('bot.userAgent');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
-goog.require('fxdriver.Logger');
 goog.require('fxdriver.moz');
 goog.require('goog.array');
 

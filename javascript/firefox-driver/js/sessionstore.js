@@ -14,24 +14,15 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
 
 goog.provide('wdSessionStoreService');
 
-goog.require('fxdriver.Logger');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.modals');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.proxy');
 goog.require('wdSession');
-
-/**
- * Logs a message to the console service.
- * @param {string} message The message to log.
- */
-function log(message) {
-  fxdriver.Logger.dumpn(message);
-}
-
 
 /**
  * Service that keeps track of all the active FirefoxDriver sessions.
@@ -106,11 +97,10 @@ wdSessionStoreService.prototype.createSession = function(response, desiredCaps,
   var wrappedSession = session.wrappedJSObject;
   wrappedSession.setId(id);
 
-  if (!this.extractCapabilitySetting_('webdriver.logging.profiler.enabled',
-      desiredCaps, requiredCaps)) {
-    wrappedSession.getLoggers().ignoreLogType(
-      fxdriver.logging.LogType.PROFILER);
-  }
+  fxdriver.logging.configure(
+    this.extractCapabilitySetting_('loggingPrefs', desiredCaps, requiredCaps),
+    this.extractCapabilitySetting_('webdriver.logging.profiler.enabled',
+      desiredCaps, requiredCaps));
 
   fxdriver.proxy.configure(this.extractCapabilitySetting_('proxy', desiredCaps,
     requiredCaps));
@@ -186,7 +176,7 @@ wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING = {
  */
 wdSessionStoreService.prototype.configure_ = function(response, desiredCaps, 
     requiredCaps, driver) {
-  fxdriver.Logger.dumpn('Setting preferences based on desired capabilities');
+  fxdriver.logging.info('Setting preferences based on required capabilities');
   this.configureCapabilities_(desiredCaps, driver);
 
   if (!requiredCaps) {
@@ -199,7 +189,7 @@ wdSessionStoreService.prototype.configure_ = function(response, desiredCaps,
     if (key in wdSessionStoreService.READ_ONLY_CAPABILITIES_ &&
         value != wdSessionStoreService.READ_ONLY_CAPABILITIES_[key]) {
       var msg = 'Required capability ' + key + ' cannot be set to ' + value;
-      fxdriver.Logger.dumpn(msg);
+      fxdriver.logging.info(msg);
       response.sendError(new WebDriverError(bot.ErrorCode.SESSION_NOT_CREATED,
         msg));
       wdSession.quitBrowser(0);
@@ -225,7 +215,7 @@ wdSessionStoreService.prototype.configureCapabilities_ = function(capabilities,
     if (key in wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING) {
       var pref = wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING[key];
       prefStore.setBoolPref(pref, value);
-      fxdriver.Logger.dumpn('Setting capability ' +
+      fxdriver.logging.info('Setting capability ' +
         key + ' (' + pref + ') to ' + value);
       if (key == 'nativeEvents') {
         driver.enableNativeEvents = value; 

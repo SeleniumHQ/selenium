@@ -1,7 +1,7 @@
 // Spoof the prompt service. Interesting thread on mozillazine:
 // http://www.mail-archive.com/dev-tech-xpcom@lists.mozilla.org/msg00193.html
 
-goog.require('fxdriver.Logger');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.modals');
 goog.require('fxdriver.moz');
 goog.require('goog.array');
@@ -100,7 +100,7 @@ ObservingAlert.prototype.select = function(dialogTitle, text, count, selectList,
 
 // Spoof implementation
 function DrivenPromptService() {
-  fxdriver.Logger.dumpn("Spoofing prompt service");
+  fxdriver.logging.info("Spoofing prompt service");
 
   // @mozilla.org/prompter;1
   var prompters = [
@@ -123,7 +123,7 @@ function DrivenPromptService() {
 
       try {
         var toReturn = service.QueryInterface(interfaceName);
-        fxdriver.Logger.dumpn("Found implementation at: " + cids[i]);
+        fxdriver.logging.info("Found implementation at: " + cids[i]);
         return toReturn;
       } catch (ignored) {}
     }
@@ -136,11 +136,11 @@ function DrivenPromptService() {
   var originalPrompter_ = findImplementation(CI.nsIPromptFactory, prompters);
 
   if (!originalPromptService_) {
-    fxdriver.Logger.dumpn("Unable to locate original prompt service");
+    fxdriver.logging.info("Unable to locate original prompt service");
   }
 
   if (!originalPrompter_) {
-    fxdriver.Logger.dumpn("Unable to locate original prompter");
+    fxdriver.logging.info("Unable to locate original prompter");
   }
 
   this.delegate_ = originalPrompter_ ? originalPrompter_ : originalPromptService_;
@@ -151,7 +151,7 @@ function DrivenPromptService() {
   this.QueryInterface = fxdriver.moz.queryInterface(this,
     [CI.nsIPromptFactory, CI.nsIPromptService, CI.nsIPromptService2]);
 
-  fxdriver.Logger.dumpn("Finished initializing spoofed prompt service");
+  fxdriver.logging.info("Finished initializing spoofed prompt service");
 }
 
 // Constants from nsIPromtService.idl
@@ -323,7 +323,7 @@ PromptServiceSpoofModule.prototype.registerSelf = function(aCompMgr, aFileSpec, 
 };
 
 PromptServiceSpoofModule.prototype.unregisterSelf = function(aCompMgr, aLocation, aType) {
-  fxdriver.Logger.dumpn("Unregistering\n");
+  fxdriver.logging.info("Unregistering\n");
   aCompMgr.QueryInterface(CI.nsIComponentRegistrar);
   aCompMgr.unregisterFactoryLocation(DRIVEN_PROMPT_SERVICE_CLASS_ID, aLocation);
 };

@@ -49,6 +49,7 @@ import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
+import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.Logs;
@@ -93,21 +94,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   // For cglib
   protected RemoteWebDriver() {
-    init(false);
+    init(new DesiredCapabilities(), null);
   }
   
   public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities, 
       Capabilities requiredCapabilities) {
     this.executor = executor;
-    logger.addHandler(LoggingHandler.getInstance());
 
-    boolean isProfilingEnabled = desiredCapabilities != null &&
-        desiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
-    if (requiredCapabilities != null && requiredCapabilities.getCapability(
-        CapabilityType.ENABLE_PROFILING_CAPABILITY) != null) {
-      isProfilingEnabled = requiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
-    }
-    init(isProfilingEnabled);
+    init(desiredCapabilities, requiredCapabilities);
 
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs)executor).setLocalLogs(localLogs);
@@ -134,15 +128,46 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities, null);
   }
 
-  private void init(boolean isProfilingEnabled) {
+  private void init(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    logger.addHandler(LoggingHandler.getInstance());
+
     converter = new JsonToWebElementConverter(this);
     executeMethod = new RemoteExecuteMethod(this);
     keyboard = new RemoteKeyboard(executeMethod);
     mouse = new RemoteMouse(executeMethod);
-    Set<String> logTypesToIgnore =
-        isProfilingEnabled ? ImmutableSet.<String>of() : ImmutableSet.of(LogType.PROFILER);
-    LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToIgnore);
-    LocalLogs clientLogs = LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance());
+    
+    ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<String>();
+    
+    boolean isProfilingEnabled = desiredCapabilities != null &&
+        desiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
+    if (requiredCapabilities != null && requiredCapabilities.getCapability(
+        CapabilityType.ENABLE_PROFILING_CAPABILITY) != null) {
+      isProfilingEnabled = requiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
+    }
+    if (isProfilingEnabled) {
+      builder.add(LogType.PROFILER);
+    }
+
+    LoggingPreferences mergedLoggingPrefs = new LoggingPreferences();    
+    if (desiredCapabilities != null) {
+      mergedLoggingPrefs.addPreferences((LoggingPreferences)desiredCapabilities.getCapability(
+          CapabilityType.LOGGING_PREFS));  
+    }
+    if (requiredCapabilities != null) {
+      mergedLoggingPrefs.addPreferences((LoggingPreferences)requiredCapabilities.getCapability(
+          CapabilityType.LOGGING_PREFS));
+    }
+    if ((mergedLoggingPrefs.getEnabledLogTypes().contains(LogType.CLIENT) &&
+        mergedLoggingPrefs.getLevel(LogType.CLIENT) != Level.OFF) ||
+        !mergedLoggingPrefs.getEnabledLogTypes().contains(LogType.CLIENT)) {
+      builder.add(LogType.CLIENT);
+    }
+
+    Set<String> logTypesToInclude = builder.build();
+        
+    LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToInclude);
+    LocalLogs clientLogs = LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(),
+        logTypesToInclude);
     localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
     remoteLogs = new RemoteLogs(executeMethod, localLogs);
   }

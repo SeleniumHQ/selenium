@@ -24,7 +24,7 @@ goog.require('WebLoadingListener');
 goog.require('bot.ErrorCode');
 goog.require('bot.action');
 goog.require('bot.dom');
-goog.require('fxdriver.Logger');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.io');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.preconditions');
@@ -80,7 +80,7 @@ WebElement.clickElement = function(respond, parameters) {
   var elementHalfHeight = (location.height ? location.height / 2 : 0);
 
   if (!isOption && this.enableNativeEvents && nativeMouse && node && useNativeClick && thmgr_cls) {
-    fxdriver.Logger.dumpn("Using native events for click");
+    fxdriver.logging.info("Using native events for click");
 
     var inViewAfterScroll = bot.action.scrollIntoView(
         unwrapped,
@@ -124,7 +124,7 @@ WebElement.clickElement = function(respond, parameters) {
       // the error returned from the native call indicates it's not
       // implemented.
 
-      fxdriver.Logger.dumpn("Detected error when clicking: " + e.name);
+      fxdriver.logging.info("Detected error when clicking: " + e.name);
 
       if (e.name != "NS_ERROR_NOT_IMPLEMENTED") {
         throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE, e);
@@ -134,7 +134,7 @@ WebElement.clickElement = function(respond, parameters) {
     }
   }
 
-  fxdriver.Logger.dumpn("Falling back to synthesized click");
+  fxdriver.logging.info("Falling back to synthesized click");
 
   // TODO(simon): Delete the above and sink most of it into a "nativeMouse"
   Utils.installWindowCloseListener(respond);
@@ -183,13 +183,13 @@ WebElement.sendKeysToElement = function(respond, parameters) {
   var newDocument = goog.dom.getOwnerDocument(currentlyActive);
 
   if (currentlyActive != element || currentDocument != new XPCNativeWrapper(newDocument)) {
-    fxdriver.Logger.dumpn("Need to switch focus");
+    fxdriver.logging.info("Need to switch focus");
     alreadyFocused = false;
     currentlyActive.blur();
     element.focus();
     element.ownerDocument.defaultView.focus();
   } else {
-    fxdriver.Logger.dumpn("No need to switch focus");
+    fxdriver.logging.info("No need to switch focus");
   }
 
   var use = element;

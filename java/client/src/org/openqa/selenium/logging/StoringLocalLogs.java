@@ -13,21 +13,21 @@ import java.util.Set;
  */
 class StoringLocalLogs extends LocalLogs {
   private final Map<String, List<LogEntry>> localLogs = Maps.newHashMap();
-  private final Set<String> logTypesToIgnore;
+  private final Set<String> logTypesToInclude;
 
-  public StoringLocalLogs(Set<String> logTypesToIgnore) {
-    this.logTypesToIgnore = logTypesToIgnore;
+  public StoringLocalLogs(Set<String> logTypesToInclude) {
+    this.logTypesToInclude = logTypesToInclude;
   }
 
   public LogEntries get(String logType) {
-    Iterable<LogEntry> toReturn = getLocalLogs(logType);
-    localLogs.remove(logType);
-    return new LogEntries(toReturn);
+    return new LogEntries(getLocalLogs(logType));
   }
 
   private Iterable<LogEntry> getLocalLogs(String logType) {
     if (localLogs.containsKey(logType)) {
-      return localLogs.get(logType);
+      List<LogEntry> entries = localLogs.get(logType);
+      localLogs.put(logType, Lists.<LogEntry>newArrayList());
+      return entries;
     }
 
     return Lists.newArrayList();
@@ -40,7 +40,7 @@ class StoringLocalLogs extends LocalLogs {
    * @param entry   the entry to store
    */
   public void addEntry(String logType, LogEntry entry) {
-    if (logTypesToIgnore.contains(logType)) {
+    if (!logTypesToInclude.contains(logType)) {
       return;
     }
 

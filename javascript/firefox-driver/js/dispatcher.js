@@ -19,11 +19,12 @@
 goog.provide('Dispatcher');
 goog.provide('Resource');
 
+goog.require('bot.ErrorCode');
+goog.require('fxdriver.error');
+goog.require('fxdriver.logging');
 goog.require('Response');
 goog.require('Request');
 goog.require('Utils');
-goog.require('bot.ErrorCode');
-goog.require('fxdriver.error');
 
 
 /**
@@ -384,7 +385,7 @@ Dispatcher.prototype.dispatch = function(request, response) {
       bestMatchResource.setRequestAttributes(request);
       bestMatchResource.handle(request, response);
     } catch (ex) {
-      fxdriver.Logger.dump(ex);
+      fxdriver.logging.error(ex);
       response.sendError(Response.INTERNAL_ERROR, JSON.stringify({
         status: bot.ErrorCode.UNKNOWN_ERROR,
         value: fxdriver.error.toJSON(ex)

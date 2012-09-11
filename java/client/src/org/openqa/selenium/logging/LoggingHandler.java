@@ -84,6 +84,7 @@ public class LoggingHandler extends Handler {
 
   @Override
   public void flush() {
+    records = Lists.newLinkedList();
   }
 
   @Override
