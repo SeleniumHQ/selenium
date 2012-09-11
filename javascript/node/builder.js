@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-goog.provide('webdriver.Builder');
+goog.provide('node.Builder');
 
+goog.require('node.http.HttpClient');
 goog.require('webdriver.AbstractBuilder');
-goog.require('webdriver.FirefoxDomExecutor');
 goog.require('webdriver.WebDriver');
-goog.require('webdriver.http.CorsClient');
 goog.require('webdriver.http.Executor');
 
 
@@ -26,29 +25,23 @@ goog.require('webdriver.http.Executor');
  * @constructor
  * @extends {webdriver.AbstractBuilder}
  */
-webdriver.Builder = function() {
+node.Builder = function() {
   goog.base(this);
 };
-goog.inherits(webdriver.Builder, webdriver.AbstractBuilder);
+goog.inherits(node.Builder, webdriver.AbstractBuilder);
+
 
 
 /**
  * @override
  */
-webdriver.Builder.prototype.build = function() {
-  var executor;
-  if (webdriver.FirefoxDomExecutor.isAvailable()) {
-    executor = new webdriver.FirefoxDomExecutor();
-    return webdriver.WebDriver.createSession(executor, this.getCapabilities());
-  } else {
-    var client = new webdriver.http.CorsClient(this.getServerUrl());
-    executor = new webdriver.http.Executor(client);
+node.Builder.prototype.build = function() {
+  var client = new node.http.HttpClient(this.getServerUrl());
+  var executor = new webdriver.http.Executor(client);
 
-    if (this.getSession()) {
-      return webdriver.WebDriver.attachToSession(executor, this.getSession());
-    } else {
-      throw new Error('Unable to create a new client for this browser. The ' +
-          'WebDriver session ID has not been defined.');
-    }
+  if (this.getSession()) {
+    return webdriver.WebDriver.attachToSession(executor, this.getSession());
+  } else {
+    return webdriver.WebDriver.createSession(executor, this.getCapabilities());
   }
 };

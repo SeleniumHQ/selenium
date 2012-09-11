@@ -79,13 +79,10 @@ function loadWebDriver() {
 function checkBuilder() {
   console.log('Checking webdriver.Builder API...');
   assertFunction('webdriver', 'Builder');
-  assertString('webdriver.Builder', 'SESSION_ID_ENV');
-  assertString('webdriver.Builder', 'SERVER_URL_ENV');
-  assertString('webdriver.Builder', 'DEFAULT_SERVER_URL');
-  assertFunction('webdriver.Builder.prototype', 'usingServer');
-  assertFunction('webdriver.Builder.prototype', 'usingSession');
-  assertFunction('webdriver.Builder.prototype', 'withCapabilities');
-  assertFunction('webdriver.Builder.prototype', 'build');
+  assertFunction('new webdriver.Builder()', 'usingServer');
+  assertFunction('new webdriver.Builder()', 'usingSession');
+  assertFunction('new webdriver.Builder()', 'withCapabilities');
+  assertFunction('new webdriver.Builder()', 'build');
   console.log('...OK');
 }
 

@@ -17,44 +17,10 @@
  * NodeJS.
  */
 
-goog.provide('webdriver.node');
-goog.provide('webdriver.node.HttpClient');
+goog.provide('node.http');
+goog.provide('node.http.HttpClient');
 
 goog.require('webdriver.http.Response');
-goog.require('webdriver.process');
-
-
-/**
- * Returns the source of the current module.
- * @param {function(*, string=)} callback The function to call with this
- *     module's source. If an error occurs while loading the source, it will be
- *     passed as the first argument to the callback. Otherwise, the source
- *     contents will be passed as the second argument (and null for the first).
- */
-webdriver.node.toSource = (function() {
-  /**
-   * The loaded source for this module.
-   * @type {string}
-   */
-  var source;
-
-  /**
-   * @param {function(*, string=)} callback The function to call with this
-   *     module's source code.
-   */
-  function loadSource(callback) {
-    webdriver.node.checkIsNative_();
-    if (webdriver.node.source_) {
-      callback(null, webdriver.node.source_);
-    } else {
-      require('fs').readFile(__filename, 'utf-8', function(err, data) {
-        callback(err, webdriver.node.source_ = data);
-      });
-    }
-  }
-
-  return loadSource;
-})();
 
 
 /**
@@ -63,20 +29,8 @@ webdriver.node.toSource = (function() {
  * @return {!Object} The parsed URL.
  * @private
  */
-webdriver.node.parseUrl_ = function(url) {
+node.http.parseUrl_ = function(url) {
   return require('url').parse(url);
-};
-
-
-/**
- * Checks that the current environment is a native Node environment.
- * @private
- */
-webdriver.node.checkIsNative_ = function() {
-  if (!webdriver.process.isNative()) {
-    throw new Error(
-        'This operation/object may not be used in a non-native environment');
-  }
 };
 
 
@@ -88,10 +42,8 @@ webdriver.node.checkIsNative_ = function() {
  * @constructor
  * @implements {webdriver.http.Client}
  */
-webdriver.node.HttpClient = function(url) {
-  webdriver.node.checkIsNative_();
-
-  var parsedUrl = webdriver.node.parseUrl_(url);
+node.http.HttpClient = function(url) {
+  var parsedUrl = node.http.parseUrl_(url);
   if (!parsedUrl.hostname) {
     throw new Error('Invalid server URL: ' + url);
   }
@@ -110,7 +62,7 @@ webdriver.node.HttpClient = function(url) {
 
 
 /** @override */
-webdriver.node.HttpClient.prototype.send = function(httpRequest, callback) {
+node.http.HttpClient.prototype.send = function(httpRequest, callback) {
   var data;
   httpRequest.headers['Content-Length'] = 0;
   if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
@@ -119,7 +71,7 @@ webdriver.node.HttpClient.prototype.send = function(httpRequest, callback) {
     httpRequest.headers['Content-Type'] = 'application/json;charset=UTF-8';
   }
 
-  webdriver.node.HttpClient.sendRequest_({
+  node.http.HttpClient.sendRequest_({
     method: httpRequest.method,
     host: this.options_.host,
     port: this.options_.port,
@@ -137,10 +89,10 @@ webdriver.node.HttpClient.prototype.send = function(httpRequest, callback) {
  * @param {string=} opt_data The data to send with the request.
  * @private
  */
-webdriver.node.HttpClient.sendRequest_ = function(options, callback, opt_data) {
+node.http.HttpClient.sendRequest_ = function(options, callback, opt_data) {
   var request = require('http').request(options, function(response) {
     if (response.statusCode == 302 || response.statusCode == 303) {
-      var location = webdriver.node.parseUrl_(response.headers['location']);
+      var location = node.http.parseUrl_(response.headers['location']);
 
       if (!location.hostname) {
         location.hostname = options.host;
@@ -148,7 +100,7 @@ webdriver.node.HttpClient.sendRequest_ = function(options, callback, opt_data) {
       }
 
       request.abort();
-      webdriver.node.HttpClient.sendRequest_({
+      node.http.HttpClient.sendRequest_({
         method: 'GET',
         host: location.hostname,
         path: location.pathname + (location.search || ''),

@@ -36,7 +36,6 @@ goog.require('webdriver.http.Executor');
 goog.require('webdriver.http.Request');
 goog.require('webdriver.http.Response');
 goog.require('webdriver.http.XhrClient');
-goog.require('webdriver.node');
 goog.require('webdriver.process');
 goog.require('webdriver.promise');
 goog.require('webdriver.stacktrace');
@@ -61,15 +60,8 @@ exports.http = {
   Response: webdriver.http.Response
 };
 
-if (webdriver.process.isNative()) {
-  exports.node = {
-    toSource: webdriver.node.toSource,
-    HttpClient: webdriver.node.HttpClient
-  };
-} else {
-  exports.http.CorsClient = webdriver.http.CorsClient;
-  exports.http.XhrClient = webdriver.http.XhrClient;
-}
+exports.http.CorsClient = webdriver.http.CorsClient;
+exports.http.XhrClient = webdriver.http.XhrClient;
 
 exports.response = bot.response;
 

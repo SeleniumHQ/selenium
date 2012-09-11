@@ -1,7 +1,21 @@
+js_library(
+  name = "node_lib",
+  srcs = [
+    "builder.js",
+    "http/http.js",
+  ],
+  deps = [
+    "//javascript/webdriver:webdriver_lib",
+  ])
+
+
 node_module(
   name = "webdriver",
   srcs = [ "webdriver/*.js" ],
-  deps = [ "//javascript/webdriver:webdriver_lib" ],
+  deps = [
+    ":node_lib",
+    "//javascript/webdriver:webdriver_lib",
+  ],
   content_roots = [
     "javascript",
     "third_party/closure"

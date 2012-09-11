@@ -18,4 +18,4 @@ var base = require('./_base');
 exports.Executor = base.require('webdriver.http.Executor');
 exports.Request = base.require('webdriver.http.Request');
 exports.Response = base.require('webdriver.http.Response');
-exports.HttpClient = base.require('webdriver.node.HttpClient');
+exports.HttpClient = base.require('node.http.HttpClient');

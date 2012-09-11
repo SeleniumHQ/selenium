@@ -228,6 +228,11 @@ function copyLibraries(outputDirPath, symbols) {
     if (seenSymbols[symbol]) return;
     seenSymbols[symbol] = true;
 
+    if (UNPROVIDED[symbol]) {
+      throw Error('Missing provider for ' + JSON.stringify(symbol) +
+          '; required in\n  ' + UNPROVIDED[symbol].join('\n  '));
+    }
+
     var file = PROVIDERS[symbol];
     if (seenFiles[file]) return;
     seenFiles[file] = true;

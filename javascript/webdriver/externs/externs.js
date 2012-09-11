@@ -29,27 +29,6 @@ var process = {};
 process.env = {};
 
 
-/** @type {string} */
-var __filename = '';
-
-
-/**
- * @typedef {{statusCode:number,
- *            headers:!Object.<string>}}
- */
-var NodeHttpResponse;
-
-
-/**
- * @param {string} str
- * @return {{
- *     readFile: function(string, string, Function),
- *     request: function(!Object, function(!NodeHttpResponse))
- *     }}
- */
-function require(str) {}
-
-
 /** @type {!Object} */
 var JSON = {};
 

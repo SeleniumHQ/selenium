@@ -16,7 +16,6 @@ js_library(name = "webdriver_lib",
   srcs = [
     "*.js",
     "http/*.js",
-    "node/node.js",
   ],
   deps = [
     "//javascript/atoms:error_lib",
@@ -43,7 +42,6 @@ js_binary(name = "webdriver",
   srcs = [
     "*.js",
     "http/*.js",
-    "node/node.js",
     "exports/exports.js",
   ],
   deps = [

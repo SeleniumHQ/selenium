@@ -21,7 +21,7 @@
 var base = require('./_base');
 
 exports.ActionSequence = base.require('webdriver.ActionSequence');
-exports.Builder = base.require('webdriver.Builder');
+exports.Builder = base.require('node.Builder');
 exports.Button = base.require('webdriver.Button');
 exports.By = base.require('webdriver.Locator.Strategy');
 exports.Session = base.require('webdriver.Session');
