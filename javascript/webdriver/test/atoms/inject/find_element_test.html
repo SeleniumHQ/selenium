@@ -108,7 +108,7 @@ limitations under the License.
 
     function testInjectFindElementsByTagName() {
       var e = webdriver.atoms.inject.locators.findElements("tagName", "div");
-      assertEquals(5, goog.json.parse(e)["value"].length);
+      assertEquals(4, goog.json.parse(e)["value"].length);
     }
 
     function testInjectFindElementsByXPath() {
