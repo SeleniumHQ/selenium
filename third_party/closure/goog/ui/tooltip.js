@@ -15,6 +15,7 @@
 /**
  * @fileoverview Tooltip widget implementation.
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/tooltip.html
  */
 
@@ -378,6 +379,7 @@ goog.ui.Tooltip.prototype.setHtml = function(str) {
  * Sets tooltip element.
  *
  * @param {Element} el HTML element to use as the tooltip.
+ * @override
  */
 goog.ui.Tooltip.prototype.setElement = function(el) {
   var oldElement = this.getElement();
@@ -455,6 +457,7 @@ goog.ui.Tooltip.prototype.isCoordinateInTooltip = function(coord) {
  *
  * @return {boolean} Whether tooltip should be shown.
  * @protected
+ * @override
  */
 goog.ui.Tooltip.prototype.onBeforeShow = function() {
   if (!goog.ui.PopupBase.prototype.onBeforeShow.call(this)) {
@@ -510,7 +513,7 @@ goog.ui.Tooltip.prototype.onHide_ = function() {
   // If this tooltip is inside another tooltip, start hide timer for that
   // tooltip in case this tooltip was the only reason it was still showing.
   if (this.parentTooltip_) {
-    this.parentTooltip_.startHideTimer_();
+    this.parentTooltip_.startHideTimer();
   }
 
   goog.events.unlisten(element, goog.events.EventType.MOUSEOVER,
@@ -793,7 +796,7 @@ goog.ui.Tooltip.prototype.handleMouseOutAndBlur = function(event) {
   this.seenInteraction_ = false;
   if (this.isVisible() && (!event.relatedTarget ||
       !goog.dom.contains(this.getElement(), event.relatedTarget))) {
-    this.startHideTimer_();
+    this.startHideTimer();
   } else {
     this.anchor = undefined;
   }
@@ -826,7 +829,7 @@ goog.ui.Tooltip.prototype.handleTooltipMouseOut = function(event) {
   if (this.activeEl_ == element && (!event.relatedTarget ||
       !goog.dom.contains(element, event.relatedTarget))) {
     this.activeEl_ = null;
-    this.startHideTimer_();
+    this.startHideTimer();
   }
 };
 
@@ -863,10 +866,9 @@ goog.ui.Tooltip.prototype.clearShowTimer = function() {
 
 /**
  * Helper method called to start the close timer.
- *
- * @private
+ * @protected
  */
-goog.ui.Tooltip.prototype.startHideTimer_ = function() {
+goog.ui.Tooltip.prototype.startHideTimer = function() {
   if (this.getState() == goog.ui.Tooltip.State.SHOWING) {
     this.hideTimer = goog.Timer.callOnce(
         goog.bind(this.maybeHide, this, this.anchor), this.getHideDelayMs());
@@ -928,6 +930,7 @@ goog.inherits(goog.ui.Tooltip.CursorTooltipPosition,
  * @param {goog.positioning.Corner} popupCorner The corner of the popup element
  *     that that should be positioned adjacent to the anchorElement.
  * @param {goog.math.Box=} opt_margin A margin specified in pixels.
+ * @override
  */
 goog.ui.Tooltip.CursorTooltipPosition.prototype.reposition = function(
     element, popupCorner, opt_margin) {
@@ -977,6 +980,7 @@ goog.inherits(goog.ui.Tooltip.ElementTooltipPosition,
  * @param {goog.positioning.Corner} popupCorner The corner of the popup element
  *     that should be positioned adjacent to the anchorElement.
  * @param {goog.math.Box=} opt_margin A margin specified in pixels.
+ * @override
  */
 goog.ui.Tooltip.ElementTooltipPosition.prototype.reposition = function(
     element, popupCorner, opt_margin) {

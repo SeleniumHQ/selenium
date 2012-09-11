@@ -202,6 +202,7 @@ goog.ui.DimensionPicker.prototype.handleWindowResize = function(e) {
  * manipulate the highlighted rows and columns.
  * @param {goog.events.KeyEvent} e The key event object.
  * @return {boolean} Whether the key event was handled.
+ * @override
  */
 goog.ui.DimensionPicker.prototype.handleKeyEvent = function(e) {
   var rows = this.highlightedRows_;

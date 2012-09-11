@@ -15,6 +15,7 @@
 
 /**
  * @fileoverview Graphics utility functions and factory methods.
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 
@@ -364,7 +365,7 @@ goog.graphics.AbstractGraphics.prototype.drawTextOnLine = goog.abstractMethod;
 /**
  * Draw a path.
  *
- * @param {goog.graphics.Path} path The path object to draw.
+ * @param {!goog.graphics.Path} path The path object to draw.
  * @param {goog.graphics.Stroke?} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill?} fill Fill object describing the fill.

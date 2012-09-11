@@ -88,6 +88,7 @@ goog.dom.pattern.ChildMatches.prototype.needsReset_ = false;
  * @param {goog.dom.TagWalkType} type The type of token.
  * @return {goog.dom.pattern.MatchType} {@code MATCHING} if the token is on the
  *     same level or deeper and {@code BACKTRACK_MATCH} if not.
+ * @override
  */
 goog.dom.pattern.ChildMatches.prototype.matchToken = function(token, type) {
   // Defer resets so we maintain our matches array until the last possible time.
@@ -143,6 +144,7 @@ goog.dom.pattern.ChildMatches.prototype.matchToken = function(token, type) {
 
 /**
  * Reset any internal state this pattern keeps.
+ * @override
  */
 goog.dom.pattern.ChildMatches.prototype.reset = function() {
   this.needsReset_ = false;

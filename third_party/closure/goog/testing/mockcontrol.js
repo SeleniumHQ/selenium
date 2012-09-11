@@ -156,7 +156,7 @@ goog.testing.MockControl.prototype.createLooseMock = function(
  * @param {string=} opt_functionName The optional name of the function to mock
  *     set to '[anonymous mocked function]' if not passed in.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
- *     goog.testing.mock.STRICT. The default is STRICT.
+ *     goog.testing.Mock.STRICT. The default is STRICT.
  * @return {goog.testing.MockInterface} The mocked function.
  */
 goog.testing.MockControl.prototype.createFunctionMock = function(
@@ -173,7 +173,7 @@ goog.testing.MockControl.prototype.createFunctionMock = function(
  * @param {Object} scope The scope of the method to be mocked out.
  * @param {string} functionName The name of the function we're going to mock.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
- *     goog.testing.mock.STRICT. The default is STRICT.
+ *     goog.testing.Mock.STRICT. The default is STRICT.
  * @return {goog.testing.MockInterface} The mocked method.
  */
 goog.testing.MockControl.prototype.createMethodMock = function(
@@ -191,7 +191,7 @@ goog.testing.MockControl.prototype.createMethodMock = function(
  * @param {Object} scope The scope of the constructor to be mocked out.
  * @param {string} constructorName The name of the function we're going to mock.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
- *     goog.testing.mock.STRICT. The default is STRICT.
+ *     goog.testing.Mock.STRICT. The default is STRICT.
  * @return {goog.testing.MockInterface} The mocked method.
  */
 goog.testing.MockControl.prototype.createConstructorMock = function(
@@ -208,7 +208,7 @@ goog.testing.MockControl.prototype.createConstructorMock = function(
  * GlobalFunctionMock constructor.
  * @param {string} functionName The name of the function we're going to mock.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
- *     goog.testing.mock.STRICT. The default is STRICT.
+ *     goog.testing.Mock.STRICT. The default is STRICT.
  * @return {goog.testing.MockInterface} The mocked function.
  */
 goog.testing.MockControl.prototype.createGlobalFunctionMock = function(

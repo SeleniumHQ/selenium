@@ -94,7 +94,7 @@ goog.userAgent.getUserAgentString = function() {
 goog.userAgent.getNavigator = function() {
   // Need a local navigator reference instead of using the global one,
   // to avoid the rare case where they reference different objects.
-  // (goog.gears.FakeWorkerPool, for example).
+  // (in a WorkerPool, for example).
   return goog.global['navigator'];
 };
 
@@ -495,5 +495,5 @@ goog.userAgent.isDocumentModeCache_ = {};
 goog.userAgent.isDocumentMode = function(documentMode) {
   return goog.userAgent.isDocumentModeCache_[documentMode] ||
       (goog.userAgent.isDocumentModeCache_[documentMode] = goog.userAgent.IE &&
-      document.documentMode && document.documentMode >= documentMode);
+      !!document.documentMode && document.documentMode >= documentMode);
 };

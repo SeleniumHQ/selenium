@@ -273,7 +273,7 @@ goog.testing.dom.assertHtmlContentsMatch = function(htmlPattern, actual,
     }
   };
 
-  // HACK(user): IE has unique ideas about whitespace handling when setting
+  // HACK(brenneman): IE has unique ideas about whitespace handling when setting
   // innerHTML. This results in elision of leading whitespace in the expected
   // nodes where doing so doesn't affect visible rendering. As a workaround, we
   // remove the leading whitespace in the actual nodes where necessary.

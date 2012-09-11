@@ -208,6 +208,46 @@ goog.testing.stacktrace.FIREFOX_STACK_FRAME_REGEXP_ = new RegExp('^' +
 
 
 /**
+ * RegExp pattern for an anonymous function call in an Opera stack frame.
+ * Creates 2 (optional) submatches: the context object and function name.
+ * @type {string}
+ * @const
+ * @private
+ */
+goog.testing.stacktrace.OPERA_ANONYMOUS_FUNCTION_NAME_PATTERN_ =
+    '<anonymous function(?:\\: ' +
+    '(?:(' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ +
+    '(?:\\.' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ + ')*)\\.)?' +
+    '(' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ + '))?>';
+
+
+/**
+ * RegExp pattern for a function call in an Opera stack frame.
+ * Creates 4 (optional) submatches: the function name (if not anonymous),
+ * the aliased context object and function name (if anonymous), and the
+ * function call arguments.
+ * @type {string}
+ * @const
+ * @private
+ */
+goog.testing.stacktrace.OPERA_FUNCTION_CALL_PATTERN_ =
+    '(?:(?:(' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ + ')|' +
+    goog.testing.stacktrace.OPERA_ANONYMOUS_FUNCTION_NAME_PATTERN_ +
+    ')(\\(.*\\)))?@';
+
+
+/**
+ * Regular expression for parsing on stack frame in Opera 11.68+
+ * @type {!RegExp}
+ * @const
+ * @private
+ */
+goog.testing.stacktrace.OPERA_STACK_FRAME_REGEXP_ = new RegExp('^' +
+    goog.testing.stacktrace.OPERA_FUNCTION_CALL_PATTERN_ +
+    goog.testing.stacktrace.URL_PATTERN_ + '?$');
+
+
+/**
  * Regular expression for finding the function name in its source.
  * @type {!RegExp}
  * @private
@@ -297,6 +337,12 @@ goog.testing.stacktrace.parseStackFrame_ = function(frameStr) {
   if (m) {
     return new goog.testing.stacktrace.Frame('', m[1] || '', '', m[2] || '',
         m[3] || '');
+  }
+
+  m = frameStr.match(goog.testing.stacktrace.OPERA_STACK_FRAME_REGEXP_);
+  if (m) {
+    return new goog.testing.stacktrace.Frame(m[2] || '', m[1] || m[3] || '',
+        '', m[4] || '', m[5] || '');
   }
 
   return null;

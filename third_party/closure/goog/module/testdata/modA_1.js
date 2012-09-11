@@ -19,4 +19,5 @@
 
 goog.provide('goog.module.testdata.modA_1');
 
-window.modA_1 = true;
+if (window.modA1Loaded) throw Error('modA_1 loaded twice');
+window.modA1Loaded = true;

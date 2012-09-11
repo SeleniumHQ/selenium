@@ -71,12 +71,16 @@ goog.inherits(goog.messaging.LoggerServer, goog.Disposable);
 
 /**
  * Handles logging messages from the client.
- * @param {!{level: number, message: string, name: string,
- *           exception: Object}} args
+ * @param {!Object|string} message
  *     The logging information from the client.
  * @private
  */
-goog.messaging.LoggerServer.prototype.log_ = function(args) {
+goog.messaging.LoggerServer.prototype.log_ = function(message) {
+  var args =
+      /**
+       * @type {!{level: number, message: string,
+       *           name: string, exception: Object}}
+       */ (message);
   var level = goog.debug.Logger.Level.getPredefinedLevelByValue(args['level']);
   if (level) {
     var msg = '[' + this.channelName_ + '] ' + args['message'];

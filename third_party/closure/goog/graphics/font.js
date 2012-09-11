@@ -15,6 +15,7 @@
 
 /**
  * @fileoverview Represents a font to be used with a Renderer.
+ * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/graphics/basicelements.html
  */
 
@@ -35,7 +36,7 @@ goog.graphics.Font = function(size, family) {
    * @type {number}
    */
   this.size = size;
-  // TODO(user): Is this in pixels or drawing units based on the coord size?
+  // TODO(arv): Is this in pixels or drawing units based on the coord size?
 
   /**
    * The name of the font family to use, can be a comma separated string.

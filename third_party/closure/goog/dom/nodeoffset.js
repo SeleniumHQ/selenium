@@ -70,6 +70,7 @@ goog.inherits(goog.dom.NodeOffset, goog.Disposable);
 
 /**
  * @return {string} A string representation of this object.
+ * @override
  */
 goog.dom.NodeOffset.prototype.toString = function() {
   var strs = [];

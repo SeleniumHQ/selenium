@@ -276,6 +276,7 @@ goog.ui.OfflineStatusComponent.prototype.getStatusCard = function() {
 
 /**
  * Creates the initial DOM representation for the component.
+ * @override
  */
 goog.ui.OfflineStatusComponent.prototype.createDom = function() {
   var anchorProps = {
@@ -486,14 +487,8 @@ goog.ui.OfflineStatusComponent.prototype.performStatusAction = function(opt_evt,
       var popup = this.getPopupInternal();
       var anchorEl = opt_element || this.getElement();
       var pos = new goog.positioning.AnchoredPosition(
-          anchorEl, goog.positioning.Corner.BOTTOM_START);
-
-      // Override to pass in overflow
-      pos.reposition = function(element, popupCorner, opt_margin) {
-        goog.positioning.positionAtAnchor(this.element, this.corner, element,
-            popupCorner, null, opt_margin, goog.positioning.Overflow.ADJUST_X);
-      };
-
+          anchorEl, goog.positioning.Corner.BOTTOM_START,
+          goog.positioning.Overflow.ADJUST_X);
       popup.setPosition(pos);
       popup.setElement(card.getElement());
     }

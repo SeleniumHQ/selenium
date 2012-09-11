@@ -19,6 +19,8 @@
 
 goog.provide('goog.math.Coordinate');
 
+goog.require('goog.math');
+
 
 
 /**
@@ -55,6 +57,7 @@ if (goog.DEBUG) {
   /**
    * Returns a nice string representing the coordinate.
    * @return {string} In the form (50, 73).
+   * @override
    */
   goog.math.Coordinate.prototype.toString = function() {
     return '(' + this.x + ', ' + this.y + ')';
@@ -89,6 +92,27 @@ goog.math.Coordinate.distance = function(a, b) {
   var dx = a.x - b.x;
   var dy = a.y - b.y;
   return Math.sqrt(dx * dx + dy * dy);
+};
+
+
+/**
+ * Returns the magnitude of a coordinate.
+ * @param {!goog.math.Coordinate} a A Coordinate.
+ * @return {number} The distance between the origin and {@code a}.
+ */
+goog.math.Coordinate.magnitude = function(a) {
+  return Math.sqrt(a.x * a.x + a.y * a.y);
+};
+
+
+/**
+ * Returns the angle from the origin to a coordinate.
+ * @param {!goog.math.Coordinate} a A Coordinate.
+ * @return {number} The angle, in degrees, clockwise from the positive X
+ *     axis to {@code a}.
+ */
+goog.math.Coordinate.azimuth = function(a) {
+  return goog.math.angle(0, 0, a.x, a.y);
 };
 
 

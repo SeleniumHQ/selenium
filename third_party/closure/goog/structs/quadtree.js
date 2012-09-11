@@ -211,7 +211,7 @@ goog.structs.QuadTree.prototype.clone = function() {
 
 /**
  * Traverses the tree and calls a function on each node.
- * @param {function(Object, goog.math.Coordinate, goog.structs.QuadTree)} fn
+ * @param {function(?, goog.math.Coordinate, goog.structs.QuadTree)} fn
  *     The function to call for every value. This function takes 3 arguments
  *     (the value, the coordinate, and the tree itself) and the return value is
  *     irrelevant.

@@ -117,6 +117,18 @@ goog.soy.Renderer.prototype.renderElement = function(element, template,
 
 
 /**
+ * Renders a Soy template and returns the output string.
+ *
+ * @param {Function} template The Soy template defining the element's content.
+ * @param {Object=} opt_templateData The data for the template.
+ * @return {string} The return value of rendering the template directly.
+ */
+goog.soy.Renderer.prototype.render = function(template, opt_templateData) {
+  return template(opt_templateData || {}, undefined, this.getInjectedData_());
+};
+
+
+/**
  * Creates the injectedParams map if necessary and calls the configuration
  * service to prepopulate it.
  * @return {Object} The injected params.

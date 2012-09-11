@@ -16,6 +16,8 @@
  * @fileoverview Generic factory functions for creating the building blocks for
  * an editor toolbar.
  *
+ * @author attila@google.com (Attila Bodis)
+ * @author jparent@google.com (Julie Parent)
  */
 
 goog.provide('goog.ui.editor.ToolbarFactory');
@@ -183,8 +185,8 @@ goog.ui.editor.ToolbarFactory.LEGACY_SIZE_TO_PX_MAP_ =
  *       'H4')
  * </ul>
  * @param {!goog.ui.Select} button "Format block" menu button.
- * @param {!Array.<{caption: string, command: string}>} formats Array of format
- *     option descriptors.
+ * @param {!Array.<{caption: string, command: goog.dom.TagName}>} formats Array
+ *     of format option descriptors.
  */
 goog.ui.editor.ToolbarFactory.addFormatOptions = function(button, formats) {
   goog.array.forEach(formats, function(format) {
@@ -202,7 +204,7 @@ goog.ui.editor.ToolbarFactory.addFormatOptions = function(button, formats) {
  */
 goog.ui.editor.ToolbarFactory.addFormatOption = function(button, caption, tag) {
   // Construct the option, and add it to the button.
-  // TODO(user): Create boring but functional menu item for now...
+  // TODO(attila): Create boring but functional menu item for now...
   var buttonDom = button.getDomHelper();
   var option = new goog.ui.Option(buttonDom.createDom(goog.dom.TagName.DIV,
       null, caption), tag, buttonDom);

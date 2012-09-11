@@ -15,6 +15,7 @@
 /**
  * @fileoverview A toolbar menu button renderer.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ToolbarMenuButtonRenderer');
@@ -49,6 +50,7 @@ goog.ui.ToolbarMenuButtonRenderer.CSS_CLASS =
  * Returns the CSS class to be applied to the root element of menu buttons
  * rendered using this renderer.
  * @return {string} Renderer-specific CSS class.
+ * @override
  */
 goog.ui.ToolbarMenuButtonRenderer.prototype.getCssClass = function() {
   return goog.ui.ToolbarMenuButtonRenderer.CSS_CLASS;

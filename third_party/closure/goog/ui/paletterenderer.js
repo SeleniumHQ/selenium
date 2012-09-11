@@ -15,6 +15,7 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.Palette}s.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.PaletteRenderer');
@@ -79,8 +80,9 @@ goog.ui.PaletteRenderer.CSS_CLASS = goog.getCssName('goog-palette');
  * Returns the palette items arranged in a table wrapped in a DIV, with the
  * renderer's own CSS class and additional state-specific classes applied to
  * it.
- * @param {goog.ui.Palette} palette Palette to render.
+ * @param {goog.ui.Control} palette goog.ui.Palette to render.
  * @return {Element} Root element for the palette.
+ * @override
  */
 goog.ui.PaletteRenderer.prototype.createDom = function(palette) {
   var classNames = this.getClassNames(palette);
@@ -170,6 +172,7 @@ goog.ui.PaletteRenderer.prototype.createCell = function(node, dom) {
  * @param {Element} element Ignored.
  * @return {boolean} False, since palettes don't support the decorate flow (for
  *     now).
+ * @override
  */
 goog.ui.PaletteRenderer.prototype.canDecorate = function(element) {
   return false;
@@ -179,9 +182,10 @@ goog.ui.PaletteRenderer.prototype.canDecorate = function(element) {
 /**
  * Overrides {@link goog.ui.ControlRenderer#decorate} to be a no-op, since
  * palettes don't support the decorate flow (for now).
- * @param {goog.ui.Palette} palette Ignored.
+ * @param {goog.ui.Control} palette Ignored.
  * @param {Element} element Ignored.
  * @return {null} Always null.
+ * @override
  */
 goog.ui.PaletteRenderer.prototype.decorate = function(palette, element) {
   return null;
@@ -196,9 +200,12 @@ goog.ui.PaletteRenderer.prototype.decorate = function(palette, element) {
  * rows added to fit, if there are less items than the table has cells, then the
  * left over cells will be empty.
  * @param {Element} element Root element of the palette control.
- * @param {Array.<Node>} items Array of items to replace existing palette items.
+ * @param {goog.ui.ControlContent} content Array of items to replace existing
+ *     palette items.
+ * @override
  */
-goog.ui.PaletteRenderer.prototype.setContent = function(element, items) {
+goog.ui.PaletteRenderer.prototype.setContent = function(element, content) {
+  var items = /** @type {Array.<Node>} */ (content);
   if (element) {
     var tbody = goog.dom.getElementsByTagNameAndClass(
         'tbody', goog.getCssName(this.getCssClass(), 'body'), element)[0];
@@ -312,6 +319,7 @@ goog.ui.PaletteRenderer.prototype.selectCell = function(palette, node, select) {
  * Returns the CSS class to be applied to the root element of components
  * rendered using this renderer.
  * @return {string} Renderer-specific CSS class.
+ * @override
  */
 goog.ui.PaletteRenderer.prototype.getCssClass = function() {
   return goog.ui.PaletteRenderer.CSS_CLASS;

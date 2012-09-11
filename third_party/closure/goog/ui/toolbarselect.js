@@ -15,6 +15,8 @@
 /**
  * @fileoverview A toolbar select control.
  *
+ * @author attila@google.com (Attila Bodis)
+ * @author ssaviano@google.com (Steven Saviano)
  */
 
 goog.provide('goog.ui.ToolbarSelect');

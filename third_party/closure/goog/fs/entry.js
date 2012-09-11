@@ -34,6 +34,7 @@ goog.require('goog.functions');
 goog.require('goog.string');
 
 
+
 /**
  * The abstract class for entries in the filesystem.
  *
@@ -107,12 +108,25 @@ goog.fs.Entry.prototype.getFileSystem = function() {
  *     occurs, the errback is called with a {@link goog.fs.Error}.
  */
 goog.fs.Entry.prototype.getLastModified = function() {
+  return this.getMetadata().addCallback(function(metadata) {
+    return metadata.modificationTime;
+  });
+};
+
+
+/**
+ * Retrieves the metadata for this entry.
+ *
+ * @return {!goog.async.Deferred} The deferred Metadata for this entry. If an
+ *     error occurs, the errback is called with a {@link goog.fs.Error}.
+ */
+goog.fs.Entry.prototype.getMetadata = function() {
   var d = new goog.async.Deferred();
 
   this.entry_.getMetadata(
-      function(metadata) { d.callback(metadata.modificationTime); },
+      function(metadata) { d.callback(metadata); },
       goog.bind(function(err) {
-        var msg = 'retrieving last modified date for ' + this.getFullPath();
+        var msg = 'retrieving metadata for ' + this.getFullPath();
         d.errback(new goog.fs.Error(err.code, msg));
       }, this));
   return d;
@@ -209,13 +223,13 @@ goog.fs.Entry.prototype.toUri = goog.fs.Entry.prototype.toUrl;
  * Remove this entry.
  *
  * @return {!goog.async.Deferred} A deferred object. If the removal succeeds,
- *     the callback is valled with no value. If an error occurs, the errback is
+ *     the callback is called with true. If an error occurs, the errback is
  *     called a {@link goog.fs.Error}.
  */
 goog.fs.Entry.prototype.remove = function() {
   var d = new goog.async.Deferred();
   this.entry_.remove(
-      goog.bind(d.callback, d),
+      goog.bind(d.callback, d, true /* result */),
       goog.bind(function(err) {
         var msg = 'removing ' + this.getFullPath();
         d.errback(new goog.fs.Error(err.code, msg));
@@ -422,13 +436,13 @@ goog.fs.DirectoryEntry.prototype.listDirectory = function() {
  * Removes this directory and all its contents.
  *
  * @return {!goog.async.Deferred} A deferred object. If the removal succeeds,
- *     the callback is valled with no value. If an error occurs, the errback is
+ *     the callback is called with true. If an error occurs, the errback is
  *     called a {@link goog.fs.Error}.
  */
 goog.fs.DirectoryEntry.prototype.removeRecursively = function() {
   var d = new goog.async.Deferred();
   this.dir_.removeRecursively(
-      goog.bind(d.callback, d),
+      goog.bind(d.callback, d, true /* result */),
       goog.bind(function(err) {
         var msg = 'removing ' + this.getFullPath() + ' recursively';
         d.errback(new goog.fs.Error(err.code, msg));

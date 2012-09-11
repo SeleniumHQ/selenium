@@ -65,6 +65,7 @@ goog.ui.MenuRenderer.prototype.getAriaRole = function() {
  * Returns whether the element is a UL or acceptable to our superclass.
  * @param {Element} element Element to decorate.
  * @return {boolean} Whether the renderer can decorate the element.
+ * @override
  */
 goog.ui.MenuRenderer.prototype.canDecorate = function(element) {
   return element.tagName == 'UL' ||
@@ -79,6 +80,7 @@ goog.ui.MenuRenderer.prototype.canDecorate = function(element) {
  * @param {Element} element Element to decorate.
  * @return {goog.ui.Control?} A new control suitable to decorate the element
  *     (null if none).
+ * @override
  */
 goog.ui.MenuRenderer.prototype.getDecoratorForChild = function(element) {
   return element.tagName == 'HR' ?
@@ -103,6 +105,7 @@ goog.ui.MenuRenderer.prototype.containsElement = function(menu, element) {
  * Returns the CSS class to be applied to the root element of containers
  * rendered using this renderer.
  * @return {string} Renderer-specific CSS class.
+ * @override
  */
 goog.ui.MenuRenderer.prototype.getCssClass = function() {
   return goog.ui.MenuRenderer.CSS_CLASS;

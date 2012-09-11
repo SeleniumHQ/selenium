@@ -69,6 +69,7 @@ goog.structs.TreeNode.prototype.children_ = null;
 /**
  * @return {!goog.structs.TreeNode} Clone of the tree node without its parent
  *     and child nodes. The key and the value are copied by reference.
+ * @override
  */
 goog.structs.TreeNode.prototype.clone = function() {
   return new goog.structs.TreeNode(this.getKey(), this.getValue());

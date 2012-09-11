@@ -44,6 +44,7 @@ goog.inherits(goog.graphics.ext.Rectangle,
 /**
  * Redraw the rectangle.  Called when the coordinate system is changed.
  * @protected
+ * @override
  */
 goog.graphics.ext.Rectangle.prototype.redraw = function() {
   goog.graphics.ext.Rectangle.superClass_.redraw.call(this);

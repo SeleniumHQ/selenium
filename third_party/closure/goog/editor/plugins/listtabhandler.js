@@ -48,13 +48,13 @@ goog.editor.plugins.ListTabHandler.prototype.getTrogClassId = function() {
 
 /** @override */
 goog.editor.plugins.ListTabHandler.prototype.handleTabKey = function(e) {
-  var range = this.fieldObject.getRange();
+  var range = this.getFieldObject().getRange();
   if (goog.dom.getAncestorByTagNameAndClass(range.getContainerElement(),
                                             goog.dom.TagName.LI) ||
       goog.iter.some(range, function(node) {
         return node.tagName == goog.dom.TagName.LI;
       })) {
-    this.fieldObject.execCommand(e.shiftKey ?
+    this.getFieldObject().execCommand(e.shiftKey ?
         goog.editor.Command.OUTDENT :
         goog.editor.Command.INDENT);
     e.preventDefault();

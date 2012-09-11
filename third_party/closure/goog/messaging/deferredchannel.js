@@ -20,6 +20,7 @@
 
 goog.provide('goog.messaging.DeferredChannel');
 
+goog.require('goog.Disposable');
 goog.require('goog.async.Deferred');
 goog.require('goog.messaging.MessageChannel'); // interface
 
@@ -32,11 +33,14 @@ goog.require('goog.messaging.MessageChannel'); // interface
  * @param {!goog.async.Deferred} deferredChannel The underlying deferred
  *     MessageChannel.
  * @constructor
+ * @extends {goog.Disposable}
  * @implements {goog.messaging.MessageChannel}
  */
 goog.messaging.DeferredChannel = function(deferredChannel) {
+  goog.base(this);
   this.deferred_ = deferredChannel;
 };
+goog.inherits(goog.messaging.DeferredChannel, goog.Disposable);
 
 
 /**
@@ -84,4 +88,11 @@ goog.messaging.DeferredChannel.prototype.send = function(serviceName, payload) {
   this.deferred_.addCallback(function(resolved) {
     resolved.send(serviceName, payload);
   });
+};
+
+
+/** @override */
+goog.messaging.DeferredChannel.prototype.disposeInternal = function() {
+  this.cancel();
+  goog.base(this, 'disposeInternal');
 };

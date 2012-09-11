@@ -15,6 +15,7 @@
 /**
  * @fileoverview A tab control, designed to be used in {@link goog.ui.TabBar}s.
  *
+ * @author attila@google.com (Attila Bodis)
  * @see ../demos/tabbar.html
  */
 

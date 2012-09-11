@@ -60,6 +60,7 @@ goog.inherits(goog.positioning.AbsolutePosition,
  * @param {goog.math.Box=} opt_margin A margin specified in pixels.
  * @param {goog.math.Size=} opt_preferredSize Prefered size of the
  *     movableElement.
+ * @override
  */
 goog.positioning.AbsolutePosition.prototype.reposition = function(
     movableElement, movableCorner, opt_margin, opt_preferredSize) {

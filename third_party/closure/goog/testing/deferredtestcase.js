@@ -146,11 +146,9 @@ goog.testing.DeferredTestCase.prototype.waitForDeferred = function(a, opt_b) {
     default: // Shouldn't be here in compiled mode
       throw Error('Invalid number of arguments');
   }
-
   deferred.addCallbacks(this.onSuccess, this.onError, this);
   if (!waitMsg) {
-    waitMsg =
-        'Waiting for deferred in ' + this.activeTest.name;
+    waitMsg = 'Waiting for deferred in ' + this.getCurrentStepName();
   }
   this.waitForAsync( /** @type {!string} */ (waitMsg));
   deferred.callback(true);

@@ -93,6 +93,7 @@ if (goog.DEBUG) {
   /**
    * Returns a nice string representing the box.
    * @return {string} In the form (50t, 73r, 24b, 13l).
+   * @override
    */
   goog.math.Box.prototype.toString = function() {
     return '(' + this.top + 't, ' + this.right + 'r, ' + this.bottom + 'b, ' +
@@ -196,6 +197,44 @@ goog.math.Box.contains = function(box, other) {
 
 
 /**
+ * Returns the relative x position of a coordinate compared to a box.  Returns
+ * zero if the coordinate is inside the box.
+ *
+ * @param {goog.math.Box} box A Box.
+ * @param {goog.math.Coordinate} coord A Coordinate.
+ * @return {number} The x position of {@code coord} relative to the nearest
+ *     side of {@code box}, or zero if {@code coord} is inside {@code box}.
+ */
+goog.math.Box.relativePositionX = function(box, coord) {
+  if (coord.x < box.left) {
+    return coord.x - box.left;
+  } else if (coord.x > box.right) {
+    return coord.x - box.right;
+  }
+  return 0;
+};
+
+
+/**
+ * Returns the relative y position of a coordinate compared to a box.  Returns
+ * zero if the coordinate is inside the box.
+ *
+ * @param {goog.math.Box} box A Box.
+ * @param {goog.math.Coordinate} coord A Coordinate.
+ * @return {number} The y position of {@code coord} relative to the nearest
+ *     side of {@code box}, or zero if {@code coord} is inside {@code box}.
+ */
+goog.math.Box.relativePositionY = function(box, coord) {
+  if (coord.y < box.top) {
+    return coord.y - box.top;
+  } else if (coord.y > box.bottom) {
+    return coord.y - box.bottom;
+  }
+  return 0;
+};
+
+
+/**
  * Returns the distance between a coordinate and the nearest corner/side of a
  * box. Returns zero if the coordinate is inside the box.
  *
@@ -206,20 +245,9 @@ goog.math.Box.contains = function(box, other) {
  *     {@code box}.
  */
 goog.math.Box.distance = function(box, coord) {
-  if (coord.x >= box.left && coord.x <= box.right) {
-    if (coord.y >= box.top && coord.y <= box.bottom) {
-      return 0;
-    }
-    return coord.y < box.top ? box.top - coord.y : coord.y - box.bottom;
-  }
-
-  if (coord.y >= box.top && coord.y <= box.bottom) {
-    return coord.x < box.left ? box.left - coord.x : coord.x - box.right;
-  }
-
-  return goog.math.Coordinate.distance(coord,
-      new goog.math.Coordinate(coord.x < box.left ? box.left : box.right,
-                               coord.y < box.top ? box.top : box.bottom));
+  var x = goog.math.Box.relativePositionX(box, coord);
+  var y = goog.math.Box.relativePositionY(box, coord);
+  return Math.sqrt(x * x + y * y);
 };
 
 

@@ -188,6 +188,16 @@ goog.editor.range.placeCursorNextTo = function(node, toLeft) {
       (toLeft ? 0 : 1);
   var point = goog.editor.range.Point.createDeepestPoint(
       parent, offset, toLeft);
+  // NOTE: It's for fixing bug that selecting HR tag breaks
+  // the cursor position In IE9. See http://b/6040468.
+  if (goog.userAgent.IE && goog.userAgent.isVersion('9') &&
+      point.node.nodeType == goog.dom.NodeType.ELEMENT &&
+      point.node.tagName == goog.dom.TagName.HR) {
+    var hr = point.node;
+    point.node = hr.parentNode;
+    point.offset = goog.array.indexOf(point.node.childNodes, hr) +
+        (toLeft ? 0 : 1);
+  }
   var range = goog.dom.Range.createCaret(point.node, point.offset);
   range.select();
   return range;

@@ -25,6 +25,8 @@ goog.provide('goog.testing.MockClock');
 
 goog.require('goog.Disposable');
 goog.require('goog.testing.PropertyReplacer');
+goog.require('goog.testing.events');
+goog.require('goog.testing.events.Event');
 
 
 
@@ -87,6 +89,15 @@ goog.inherits(goog.testing.MockClock, goog.Disposable);
 
 
 /**
+ * Default wait timeout for mocking requestAnimationFrame (in milliseconds).
+ *
+ * @type {number}
+ * @const
+ */
+goog.testing.MockClock.REQUEST_ANIMATION_FRAME_TIMEOUT = 20;
+
+
+/**
  * Count of the number of timeouts made.
  * @type {number}
  * @private
@@ -132,16 +143,19 @@ goog.testing.MockClock.prototype.timeoutDelay_ = 0;
 
 
 /**
- * Installs the MockClock by overriding the window object's implementation of
+ * Installs the MockClock by overriding the global object's implementation of
  * setTimeout, setInterval, clearTimeout and clearInterval.
  */
 goog.testing.MockClock.prototype.install = function() {
   if (!this.replacer_) {
     var r = this.replacer_ = new goog.testing.PropertyReplacer();
-    r.set(window, 'setTimeout', goog.bind(this.setTimeout_, this));
-    r.set(window, 'setInterval', goog.bind(this.setInterval_, this));
-    r.set(window, 'clearTimeout', goog.bind(this.clearTimeout_, this));
-    r.set(window, 'clearInterval', goog.bind(this.clearInterval_, this));
+    r.set(goog.global, 'setTimeout', goog.bind(this.setTimeout_, this));
+    r.set(goog.global, 'setInterval', goog.bind(this.setInterval_, this));
+    r.set(goog.global, 'clearTimeout', goog.bind(this.clearTimeout_, this));
+    r.set(goog.global, 'clearInterval', goog.bind(this.clearInterval_, this));
+
+    // Replace the requestAnimationFrame functions.
+    this.replaceRequestAnimationFrame_();
 
     // PropertyReplacer#set can't be called with renameable functions.
     this.oldGoogNow_ = goog.now;
@@ -151,8 +165,42 @@ goog.testing.MockClock.prototype.install = function() {
 
 
 /**
- * Removes the MockClock's hooks into the window functions and revert to their
- * original values.
+ * Installs the mocks for requestAnimationFrame and cancelRequestAnimationFrame.
+ * @private
+ */
+goog.testing.MockClock.prototype.replaceRequestAnimationFrame_ = function() {
+  var r = this.replacer_;
+  var requestFuncs = ['requestAnimationFrame',
+                      'webkitRequestAnimationFrame',
+                      'mozRequestAnimationFrame',
+                      'oRequestAnimationFrame',
+                      'msRequestAnimationFrame'];
+
+  var cancelFuncs = ['cancelRequestAnimationFrame',
+                     'webkitCancelRequestAnimationFrame',
+                     'mozCancelRequestAnimationFrame',
+                     'oCancelRequestAnimationFrame',
+                     'msCancelRequestAnimationFrame'];
+
+  for (var i = 0; i < requestFuncs.length; ++i) {
+    if (goog.global && goog.global[requestFuncs[i]]) {
+      r.set(goog.global, requestFuncs[i],
+          goog.bind(this.requestAnimationFrame_, this));
+    }
+  }
+
+  for (var i = 0; i < cancelFuncs.length; ++i) {
+    if (goog.global && goog.global[cancelFuncs[i]]) {
+      r.set(goog.global, cancelFuncs[i],
+          goog.bind(this.cancelRequestAnimationFrame_, this));
+    }
+  }
+};
+
+
+/**
+ * Removes the MockClock's hooks into the global object's functions and revert
+ * to their original values.
  */
 goog.testing.MockClock.prototype.uninstall = function() {
   if (this.replacer_) {
@@ -354,7 +402,7 @@ goog.testing.MockClock.MAX_INT_ = 2147483647;
 
 /**
  * Schedules a function to be called after {@code millis} milliseconds.
- * Mock implementation for window.setTimeout
+ * Mock implementation for setTimeout.
  * @param {Function} funcToCall The function to call.
  * @param {number} millis The number of milliseconds to call it after.
  * @return {number} The number of timeouts created.
@@ -375,7 +423,7 @@ goog.testing.MockClock.prototype.setTimeout_ = function(funcToCall, millis) {
 
 /**
  * Schedules a function to be called every {@code millis} milliseconds.
- * Mock implementation for window.setInterval
+ * Mock implementation for setInterval.
  * @param {Function} funcToCall The function to call.
  * @param {number} millis The number of milliseconds between calls.
  * @return {number} The number of timeouts created.
@@ -389,22 +437,70 @@ goog.testing.MockClock.prototype.setInterval_ = function(funcToCall, millis) {
 
 
 /**
+ * Schedules a function to be called when an animation frame is triggered.
+ * Mock implementation for requestAnimationFrame.
+ * @param {Function} funcToCall The function to call.
+ * @return {number} The number of timeouts created.
+ * @private
+ */
+goog.testing.MockClock.prototype.requestAnimationFrame_ = function(funcToCall) {
+  return this.setTimeout_(goog.bind(function() {
+    if (funcToCall) {
+      funcToCall(this.getCurrentTime());
+    } else if (goog.global.mozRequestAnimationFrame) {
+      var event = new goog.testing.events.Event('MozBeforePaint', goog.global);
+      event['timeStamp'] = this.getCurrentTime();
+      goog.testing.events.fireBrowserEvent(event);
+    }
+  }, this), goog.testing.MockClock.REQUEST_ANIMATION_FRAME_TIMEOUT);
+};
+
+
+/**
  * Clears a timeout.
- * Mock implementation for window.clearTimeout
+ * Mock implementation for clearTimeout.
  * @param {number} timeoutKey The timeout key to clear.
  * @private
  */
 goog.testing.MockClock.prototype.clearTimeout_ = function(timeoutKey) {
-  this.deletedKeys_[timeoutKey] = true;
+  // Some common libraries register static state with timers.
+  // This is bad. It leads to all sorts of crazy test problems where
+  // 1) Test A sets up a new mock clock and a static timer.
+  // 2) Test B sets up a new mock clock, but re-uses the static timer
+  //    from Test A.
+  // 3) A timeout key from test A gets cleared, breaking a timeout in
+  //    Test B.
+  //
+  // For now, we just hackily fail silently if someone tries to clear a timeout
+  // key before we've allocated it.
+  // Ideally, we should throw an exception if we see this happening.
+  //
+  // TODO(user): We might also try allocating timeout ids from a global
+  // pool rather than a local pool.
+  if (this.isTimeoutSet(timeoutKey)) {
+    this.deletedKeys_[timeoutKey] = true;
+  }
 };
 
 
 /**
  * Clears an interval.
- * Mock implementation for window.clearInterval
+ * Mock implementation for clearInterval.
  * @param {number} timeoutKey The interval key to clear.
  * @private
  */
 goog.testing.MockClock.prototype.clearInterval_ = function(timeoutKey) {
-  this.deletedKeys_[timeoutKey] = true;
+  this.clearTimeout_(timeoutKey);
+};
+
+
+/**
+ * Clears a requestAnimationFrame.
+ * Mock implementation for cancelRequestAnimationFrame.
+ * @param {number} timeoutKey The requestAnimationFrame key to clear.
+ * @private
+ */
+goog.testing.MockClock.prototype.cancelRequestAnimationFrame_ =
+    function(timeoutKey) {
+  this.clearTimeout_(timeoutKey);
 };

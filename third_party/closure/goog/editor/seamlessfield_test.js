@@ -23,9 +23,13 @@
 goog.provide('goog.editor.seamlessfield_test');
 
 goog.require('goog.dom');
+goog.require('goog.dom.DomHelper');
+goog.require('goog.dom.Range');
 goog.require('goog.editor.BrowserFeature');
+goog.require('goog.editor.Field');
 goog.require('goog.editor.SeamlessField');
 goog.require('goog.events');
+goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('goog.testing.MockClock');
 goog.require('goog.testing.MockRange');
@@ -42,6 +46,7 @@ function setUp() {
 }
 
 function tearDown() {
+  goog.events.removeAll();
   fieldElem.parentNode.replaceChild(fieldElemClone, fieldElem);
 }
 

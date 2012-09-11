@@ -15,6 +15,8 @@
 /**
  * @fileoverview Functions and objects for date representation and manipulation.
  *
+ * @author eae@google.com (Emil A Eklund)
+ * @author pallosp@google.com (Peter Pallos)
  */
 
 goog.provide('goog.date');
@@ -635,6 +637,19 @@ goog.date.Interval.SECONDS = 's';
 
 
 /**
+ * @return {boolean} Whether all fields of the interval are zero.
+ */
+goog.date.Interval.prototype.isZero = function() {
+  return this.years == 0 &&
+         this.months == 0 &&
+         this.days == 0 &&
+         this.hours == 0 &&
+         this.minutes == 0 &&
+         this.seconds == 0;
+};
+
+
+/**
  * @return {!goog.date.Interval} Negative of this interval.
  */
 goog.date.Interval.prototype.getInverse = function() {
@@ -1012,7 +1027,7 @@ goog.date.Date.prototype.setYear = function(year) {
 /**
  * Sets the month part of the date.
  *
- * TODO(user): Update type to goog.date.month.
+ * TODO(nnaze): Update type to goog.date.month.
  *
  * @param {number} month The month, where 0 = Jan, 11 = Dec.
  */
@@ -1199,6 +1214,7 @@ goog.date.Date.prototype.equals = function(other) {
 /**
  * Overloaded toString method for object.
  * @return {string} ISO 8601 string representation of date.
+ * @override
  */
 goog.date.Date.prototype.toString = function() {
   return this.toIsoString();
@@ -1221,6 +1237,7 @@ goog.date.Date.prototype.maybeFixDst_ = function(expected) {
 
 /**
  * @return {number} Value of wrapped date.
+ * @override
  */
 goog.date.Date.prototype.valueOf = function() {
   return this.date_.valueOf();
@@ -1329,6 +1346,7 @@ goog.date.DateTime.prototype.getMilliseconds = function() {
  * Returns the day of week according to universal time, US style.
  *
  * @return {goog.date.weekDay} Day of week, 0 = Sun, 1 = Mon, 6 = Sat.
+ * @override
  */
 goog.date.DateTime.prototype.getUTCDay = function() {
   return /** @type {goog.date.weekDay} */ (this.date_.getUTCDay());
@@ -1339,6 +1357,7 @@ goog.date.DateTime.prototype.getUTCDay = function() {
  * Returns the hours part of the datetime according to universal time.
  *
  * @return {number} An integer between 0 and 23, representing the hour.
+ * @override
  */
 goog.date.DateTime.prototype.getUTCHours = function() {
   return this.date_.getUTCHours();
@@ -1349,6 +1368,7 @@ goog.date.DateTime.prototype.getUTCHours = function() {
  * Returns the minutes part of the datetime according to universal time.
  *
  * @return {number} An integer between 0 and 59, representing the minutes.
+ * @override
  */
 goog.date.DateTime.prototype.getUTCMinutes = function() {
   return this.date_.getUTCMinutes();
@@ -1459,6 +1479,7 @@ goog.date.DateTime.prototype.setUTCMilliseconds = function(ms) {
  * Performs date calculation by adding the supplied interval to the date.
  *
  * @param {goog.date.Interval} interval Date interval to add.
+ * @override
  */
 goog.date.DateTime.prototype.add = function(interval) {
   goog.date.Date.prototype.add.call(this, interval);
@@ -1483,6 +1504,7 @@ goog.date.DateTime.prototype.add = function(interval) {
  * @param {boolean=} opt_tz Whether the timezone offset should be included
  *     in the string.
  * @return {string} ISO 8601 string representation of date/time.
+ * @override
  */
 goog.date.DateTime.prototype.toIsoString = function(opt_verbose, opt_tz) {
   var dateString = goog.date.Date.prototype.toIsoString.call(this, opt_verbose);
@@ -1530,6 +1552,7 @@ goog.date.DateTime.prototype.toXmlDateTime = function(opt_timezone) {
  *     in the string.
  * @return {string} ISO 8601 string representation of date/time according to
  *     universal time.
+ * @override
  */
 goog.date.DateTime.prototype.toUTCIsoString = function(opt_verbose, opt_tz) {
   var dateStr = goog.date.Date.prototype.toUTCIsoString.call(this, opt_verbose);
@@ -1553,8 +1576,9 @@ goog.date.DateTime.prototype.toUTCIsoString = function(opt_verbose, opt_tz) {
 /**
  * Tests whether given datetime is exactly equal to this DateTime.
  *
- * @param {goog.date.DateTime} other The datetime to compare.
+ * @param {goog.date.Date} other The datetime to compare.
  * @return {boolean} Whether the given datetime is exactly equal to this one.
+ * @override
  */
 goog.date.DateTime.prototype.equals = function(other) {
   return this.getTime() == other.getTime();
@@ -1564,6 +1588,7 @@ goog.date.DateTime.prototype.equals = function(other) {
 /**
  * Overloaded toString method for object.
  * @return {string} ISO 8601 string representation of date/time.
+ * @override
  */
 goog.date.DateTime.prototype.toString = function() {
   return this.toIsoString();
@@ -1650,6 +1675,7 @@ goog.date.DateTime.prototype.toIsoTimeString = function(opt_showSeconds) {
 
 /**
  * @return {!goog.date.DateTime} A clone of the datetime object.
+ * @override
  */
 goog.date.DateTime.prototype.clone = function() {
   var date = new goog.date.DateTime(this.date_);

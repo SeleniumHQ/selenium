@@ -74,6 +74,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.getNonCollapsingBlankHtml =
  * This plugin is active on uneditable fields so it can provide a value for
  * queryCommandValue calls asking for goog.editor.Command.BLOCKQUOTE.
  * @return {boolean} True.
+ * @override
  */
 goog.editor.plugins.TagOnEnterHandler.prototype.activeOnUneditableFields =
     goog.functions.TRUE;
@@ -118,10 +119,10 @@ goog.editor.plugins.TagOnEnterHandler.prototype.processParagraphTagsInternal =
 /** @override */
 goog.editor.plugins.TagOnEnterHandler.prototype.handleDeleteGecko = function(
     e) {
-  var range = this.fieldObject.getRange();
+  var range = this.getFieldObject().getRange();
   var container = goog.editor.style.getContainer(
       range && range.getContainerElement());
-  if (this.fieldObject.getElement().lastChild == container &&
+  if (this.getFieldObject().getElement().lastChild == container &&
       goog.editor.plugins.EnterHandler.isBrElem(container)) {
     // Don't delete if it's the last node in the field and just has a BR.
     e.preventDefault();
@@ -186,7 +187,7 @@ goog.editor.plugins.TagOnEnterHandler.emptyLiRegExp_ = new RegExp('^' +
  */
 goog.editor.plugins.TagOnEnterHandler.prototype.ensureNodeIsWrappedW3c_ =
     function(node, container) {
-  if (container == this.fieldObject.getElement()) {
+  if (container == this.getFieldObject().getElement()) {
     // If the first block-level ancestor of cursor is the field,
     // don't split the tree. Find all the text from the cursor
     // to both block-level elements surrounding it (if they exist)
@@ -222,7 +223,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.ensureNodeIsWrappedW3c_ =
 goog.editor.plugins.TagOnEnterHandler.prototype.handleEnterWebkitInternal =
     function(e) {
   if (this.tag == goog.dom.TagName.DIV) {
-    var range = this.fieldObject.getRange();
+    var range = this.getFieldObject().getRange();
     var container =
         goog.editor.style.getContainer(range.getContainerElement());
 
@@ -265,6 +266,10 @@ goog.editor.plugins.TagOnEnterHandler.prototype.
   if (goog.editor.plugins.EnterHandler.isBrElem(elementAfterCursor)) {
     // The first element in the new line is a line with just a BR and maybe some
     // whitespace.
+    // Calling normalize() is needed because there might be empty text nodes
+    // before BR and empty text nodes cause the cursor position bug in Firefox.
+    // See http://b/5220858
+    elementAfterCursor.normalize();
     var br = elementAfterCursor.getElementsByTagName(goog.dom.TagName.BR)[0];
     if (br.previousSibling &&
         br.previousSibling.nodeType == goog.dom.NodeType.TEXT) {
@@ -409,7 +414,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.markBrToNotBeRemoved_ =
  */
 goog.editor.plugins.TagOnEnterHandler.prototype.removeBrIfNecessary_ = function(
     isBackSpace) {
-  var range = this.fieldObject.getRange();
+  var range = this.getFieldObject().getRange();
   var focusNode = range.getFocusNode();
   var focusOffset = range.getFocusOffset();
 
@@ -422,7 +427,7 @@ goog.editor.plugins.TagOnEnterHandler.prototype.removeBrIfNecessary_ = function(
   } else if (isBackSpace && focusOffset == 0) {
     var node = focusNode;
     while (node && !node.previousSibling &&
-           node.parentNode != this.fieldObject.getElement()) {
+           node.parentNode != this.getFieldObject().getElement()) {
       node = node.parentNode;
     }
     sibling = node.previousSibling;
@@ -470,7 +475,7 @@ goog.editor.plugins.TagOnEnterHandler.trimTabsAndLineBreaks_ = function(
  */
 goog.editor.plugins.TagOnEnterHandler.prototype.handleRegularEnterGecko_ =
     function() {
-  var range = this.fieldObject.getRange();
+  var range = this.getFieldObject().getRange();
   var container =
       goog.editor.style.getContainer(range.getContainerElement());
   var newNode;
@@ -535,11 +540,11 @@ goog.editor.plugins.TagOnEnterHandler.prototype.handleRegularEnterGecko_ =
  */
 goog.editor.plugins.TagOnEnterHandler.prototype.scrollCursorIntoViewGecko_ =
     function(element) {
-  if (!this.fieldObject.isFixedHeight()) {
+  if (!this.getFieldObject().isFixedHeight()) {
     return; // Only need to scroll fixed height fields.
   }
 
-  var field = this.fieldObject.getElement();
+  var field = this.getFieldObject().getElement();
 
   // Get the y position of the element we want to scroll to
   var elementY = goog.style.getPageOffsetTop(element);
@@ -707,7 +712,7 @@ goog.editor.plugins.TagOnEnterHandler.joinTextNodes_ = function(node,
  */
 goog.editor.plugins.TagOnEnterHandler.replaceWhiteSpaceWithNbsp_ = function(
     textNode, fromStart, isLeaveEmpty) {
-  var regExp = fromStart ? / ^[\t\r\n]+/ : /[ \t\r\n]+$/;
+  var regExp = fromStart ? /^[ \t\r\n]+/ : /[ \t\r\n]+$/;
   textNode.nodeValue = textNode.nodeValue.replace(regExp,
                                                   goog.string.Unicode.NBSP);
 

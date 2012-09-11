@@ -225,6 +225,7 @@ goog.debug.Trace_.Stat_.prototype.type;
 
 /**
  * @return {string} A string describing the tracer stat.
+ * @override
  */
 goog.debug.Trace_.Stat_.prototype.toString = function() {
   var sb = [];
@@ -295,6 +296,7 @@ goog.debug.Trace_.Event_.prototype.toTraceString = function(startTime, prevTime,
 
 /**
  * @return {string} A string describing the tracer event.
+ * @override
  */
 goog.debug.Trace_.Event_.prototype.toString = function() {
   if (this.type == null) {
@@ -620,6 +622,7 @@ goog.debug.Trace_.prototype.getFormattedTrace = function() {
 /**
  * Returns a formatted string that describes the thread trace.
  * @return {string} A formatted string.
+ * @override
  */
 goog.debug.Trace_.prototype.toString = function() {
   var sb = [];

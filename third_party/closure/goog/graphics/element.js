@@ -17,6 +17,8 @@
  * @fileoverview A thin wrapper around the DOM element returned from
  * the different draw methods of the graphics implementation, and
  * all interfaces that the various element types support.
+ * @author arv@google.com (Erik Arvidsson)
+ * @author yoah@google.com (Yoah Bar-David)
  */
 
 
@@ -39,6 +41,7 @@ goog.require('goog.math');
  *     this element.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @suppress {visibility} Accessing private field of superclass (see TODO).
  */
 goog.graphics.Element = function(element, graphics) {
   goog.events.EventTarget.call(this);

@@ -29,6 +29,7 @@
  * var slider = new goog.ui.Slider;
  * slider.decorate(document.getElementById('slider'));
  *
+ * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/slider.html
  */
 
@@ -89,6 +90,7 @@ goog.ui.Slider.THUMB_CSS_CLASS =
  * @param {goog.ui.SliderBase.Orientation} orient Orientation of the slider.
  * @return {string} The CSS class applied to the slider element.
  * @protected
+ * @override
  */
 goog.ui.Slider.prototype.getCssClass = function(orient) {
   return orient == goog.ui.SliderBase.Orientation.VERTICAL ?

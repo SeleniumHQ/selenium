@@ -22,6 +22,7 @@ See the COPYING file for details.
     goog.require('goog.ui.MenuButton');
     goog.require('goog.ui.MenuItem');
     goog.require('goog.ui.Separator');
+    goog.require('goog.ui.SubMenu');
     goog.require('goog.ui.decorate');
   </script>
   <link rel="stylesheet" href="css/demo.css">
@@ -119,6 +120,7 @@ See the COPYING file for details.
             item.setMnemonic(goog.events.KeyCodes[label.charAt(0)]);
             item.setDispatchTransitionEvents(goog.ui.Component.State.ALL, true);
             if (label == 'Save as') {
+              item.setMnemonic(goog.events.KeyCodes.A);
               item.setEnabled(false);
             }
           } else {
@@ -126,6 +128,18 @@ See the COPYING file for details.
           }
           m1.addItem(item);
         });
+    // Add a submenu.
+    var s1 = new goog.ui.SubMenu('More');
+    s1.setId('PrintSubmenu');
+    s1.setMnemonic(goog.events.KeyCodes.M);
+    goog.array.forEach(['Print', 'Send'], function(label) {
+      var item = new goog.ui.MenuItem(label + '...');
+      item.setId(label);
+      item.setMnemonic(goog.events.KeyCodes[label.charAt(0)]);
+      item.setDispatchTransitionEvents(goog.ui.Component.State.ALL, true);
+      s1.addItem(item);
+    });
+    m1.addItem(s1);
 
     // Create the first button programmatically.
     var b1 = new goog.ui.MenuButton('File', m1);
@@ -134,12 +148,6 @@ See the COPYING file for details.
     b1.render(goog.dom.getElement('menuButtons'));
     b1.setTooltip('File menu demo');
     goog.events.listen(b1, EVENTS, logEvent);
-
-    goog.events.listen(goog.dom.getElement('b1_enable'),
-        goog.events.EventType.CLICK,
-        function(e) {
-          b1.setEnabled(e.target.checked);
-        });
 
     goog.events.listen(b1, goog.ui.Component.EventType.ACTION,
         function(e) {

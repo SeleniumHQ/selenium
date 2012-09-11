@@ -33,7 +33,7 @@ goog.require('goog.string');
  */
 goog.proto2.Message = function() {
   /**
-   * Stores the field values in this message.
+   * Stores the field values in this message. Keyed by the tag of the fields.
    * @type {*}
    * @private
    */
@@ -64,7 +64,8 @@ goog.proto2.Message = function() {
   this.lazyDeserializer_ = null;
 
   /**
-   * A map of those fields deserialized.
+   * A map of those fields deserialized, from tag number to their deserialized
+   * value.
    * @type {Object}
    * @private
    */
@@ -139,6 +140,9 @@ goog.proto2.Message.prototype.setUnknown = function(tag, value) {
   goog.proto2.Util.assert(value !== null, 'Value cannot be null');
 
   this.values_[tag] = value;
+  if (this.deserializedFields_) {
+    delete this.deserializedFields_[tag];
+  }
 };
 
 
@@ -335,9 +339,8 @@ goog.proto2.Message.prototype.equals = function(other) {
         return isComposite ? value1.equals(value2) : value1 == value2;
       }
 
-      var tag = field.getTag();
-      var thisValue = this.values_[tag];
-      var otherValue = other.values_[tag];
+      var thisValue = this.getValueForField_(field);
+      var otherValue = other.getValueForField_(field);
 
       if (field.isRepeated()) {
         // In this case thisValue and otherValue are arrays.
@@ -367,13 +370,34 @@ goog.proto2.Message.prototype.equals = function(other) {
 goog.proto2.Message.prototype.copyFrom = function(message) {
   goog.proto2.Util.assert(this.constructor == message.constructor,
       'The source message must have the same type.');
+
+  this.values_ = {};
+  if (this.deserializedFields_) {
+    this.deserializedFields_ = {};
+  }
+  this.mergeFrom(message);
+};
+
+
+/**
+ * Merges the given message into this message.
+ *
+ * Singular fields will be overwritten, except for embedded messages which will
+ * be merged. Repeated fields will be concatenated.
+ * @param {!goog.proto2.Message} message The source message.
+ */
+goog.proto2.Message.prototype.mergeFrom = function(message) {
+  goog.proto2.Util.assert(this.constructor == message.constructor,
+      'The source message must have the same type.');
   var fields = this.getDescriptor().getFields();
 
   for (var i = 0; i < fields.length; i++) {
     var field = fields[i];
-    delete this.values_[field.getTag()];
-
     if (message.has(field)) {
+      if (this.deserializedFields_) {
+        delete this.deserializedFields_[field.getTag()];
+      }
+
       var isComposite = field.isCompositeType();
       if (field.isRepeated()) {
         var values = message.arrayOf(field);
@@ -381,8 +405,17 @@ goog.proto2.Message.prototype.copyFrom = function(message) {
           this.add(field, isComposite ? values[j].clone() : values[j]);
         }
       } else {
-        var value = message.get(field);
-        this.set(field, isComposite ? value.clone() : value);
+        var value = message.getValueForField_(field);
+        if (isComposite) {
+          var child = this.getValueForField_(field);
+          if (child) {
+            child.mergeFrom(value);
+          } else {
+            this.set(field, value.clone());
+          }
+        } else {
+          this.set(field, value);
+        }
       }
     }
   }
@@ -473,25 +506,43 @@ goog.proto2.Message.prototype.has$Value = function(tag) {
 
 
 /**
- * If a lazy deserializer is instantiated, lazily deserializes the
- * field if required.
+ * Returns the value for the given field. If a lazy deserializer is
+ * instantiated, lazily deserializes the field if required before returning the
+ * value.
  *
  * @param {goog.proto2.FieldDescriptor} field The field.
+ * @return {*} The field value, if any.
  * @private
  */
-goog.proto2.Message.prototype.lazyDeserialize_ = function(field) {
+goog.proto2.Message.prototype.getValueForField_ = function(field) {
+  // Retrieve the current value, which may still be serialized.
+  var tag = field.getTag();
+  if (!tag in this.values_) {
+    return null;
+  }
+
+  var value = this.values_[tag];
+  if (value == null) {
+    return null;
+  }
+
   // If we have a lazy deserializer, then ensure that the field is
   // properly deserialized.
   if (this.lazyDeserializer_) {
-    var tag = field.getTag();
-
+    // If the tag is not deserialized, then we must do so now. Deserialize
+    // the field's value via the deserializer.
     if (!(tag in this.deserializedFields_)) {
-      this.values_[tag] = this.lazyDeserializer_.deserializeField(
-          this, field, this.values_[tag]);
-
-      this.deserializedFields_[tag] = true;
+      var deserializedValue = this.lazyDeserializer_.deserializeField(
+          this, field, value);
+      this.deserializedFields_[tag] = deserializedValue;
+      return deserializedValue;
     }
+
+    return this.deserializedFields_[tag];
   }
+
+  // Otherwise, just return the value.
+  return value;
 };
 
 
@@ -509,20 +560,20 @@ goog.proto2.Message.prototype.lazyDeserialize_ = function(field) {
  */
 goog.proto2.Message.prototype.get$Value = function(tag, opt_index) {
   var field = this.getFieldByTag_(tag);
-
-  // Ensure that the field is deserialized.
-  this.lazyDeserialize_(field);
+  var value = this.getValueForField_(field);
 
   if (field.isRepeated()) {
+    goog.proto2.Util.assert(goog.isArray(value));
+
     var index = opt_index || 0;
-    goog.proto2.Util.assert(index >= 0 && index < this.count$Values(tag),
+    goog.proto2.Util.assert(index >= 0 && index < value.length,
         'Given index is out of bounds');
 
-    return this.values_[tag][index];
-  } else {
-    goog.proto2.Util.assert(!goog.isArray(this.values_[tag]));
-    return tag in this.values_ ? this.values_[tag] : null;
+    return value[index];
   }
+
+  goog.proto2.Util.assert(!goog.isArray(value));
+  return value;
 };
 
 
@@ -563,14 +614,11 @@ goog.proto2.Message.prototype.get$ValueOrDefault = function(tag, opt_index) {
  */
 goog.proto2.Message.prototype.array$Values = function(tag) {
   goog.proto2.Util.assert(this.getFieldByTag_(tag).isRepeated(),
-                          'Cannot call fieldArray on a non-repeated field');
-
+      'Cannot call fieldArray on a non-repeated field');
   var field = this.getFieldByTag_(tag);
-
-  // Ensure that the field is deserialized.
-  this.lazyDeserialize_(field);
-
-  return this.values_[tag] || [];
+  var value = this.getValueForField_(field);
+  goog.proto2.Util.assert(value == null || goog.isArray(value));
+  return (/** @type {Array} */value) || [];
 };
 
 
@@ -620,7 +668,7 @@ goog.proto2.Message.prototype.set$Value = function(tag, value) {
 
   this.values_[tag] = value;
   if (this.deserializedFields_) {
-    this.deserializedFields_[tag] = true;
+    this.deserializedFields_[tag] = value;
   }
 };
 
@@ -649,6 +697,9 @@ goog.proto2.Message.prototype.add$Value = function(tag, value) {
   }
 
   this.values_[tag].push(value);
+  if (this.deserializedFields_) {
+    delete this.deserializedFields_[tag];
+  }
 };
 
 
@@ -695,19 +746,23 @@ goog.proto2.Message.prototype.checkFieldType_ = function(field, value) {
 goog.proto2.Message.prototype.clear$Field = function(tag) {
   goog.proto2.Util.assert(this.getFieldByTag_(tag), 'Unknown field');
   delete this.values_[tag];
+  if (this.deserializedFields_) {
+    delete this.deserializedFields_[tag];
+  }
 };
 
 
 /**
- * Sets the metadata that represents the definition of this message.
+ * Creates the metadata descriptor representing the definition of this message.
  *
  * GENERATED CODE USE ONLY. Called when constructing message classes.
  *
- * @param {Function} messageType Constructor for the message type to
- *     which this metadata applies.
+ * @param {function(new:goog.proto2.Message)} messageType Constructor for the
+ *     message type to which this metadata applies.
  * @param {Object} metadataObj The object containing the metadata.
+ * @return {!goog.proto2.Descriptor} The new descriptor.
  */
-goog.proto2.Message.set$Metadata = function(messageType, metadataObj) {
+goog.proto2.Message.create$Descriptor = function(messageType, metadataObj) {
   var fields = [];
   var descriptorInfo;
 
@@ -729,11 +784,26 @@ goog.proto2.Message.set$Metadata = function(messageType, metadataObj) {
   }
 
   goog.proto2.Util.assert(descriptorInfo);
+  return new goog.proto2.Descriptor(messageType, descriptorInfo, fields);
+};
 
-  // Create the descriptor.
-  messageType.descriptor_ =
-      new goog.proto2.Descriptor(messageType, descriptorInfo, fields);
 
+/**
+ * Sets the metadata that represents the definition of this message.
+ *
+ * GENERATED CODE USE ONLY. Called when constructing message classes.
+ *
+ * @param {!Function} messageType Constructor for the
+ *     message type to which this metadata applies.
+ * @param {Object} metadataObj The object containing the metadata.
+ */
+goog.proto2.Message.set$Metadata = function(messageType, metadataObj) {
+  // TODO(nicksantos): Change the code generator so that it doesn't
+  // alias the message constructor. Then it will be easier for the compiler
+  // to devirtualize these symbols.
+  messageType.descriptor_ = goog.proto2.Message.create$Descriptor(
+      /** @type {function(new:goog.proto2.Message)} */ (messageType),
+      metadataObj);
   messageType.getDescriptor = function() {
     return messageType.descriptor_;
   };

@@ -116,12 +116,13 @@ goog.messaging.PortOperator.prototype.addPort = function(name, port) {
  * the operator).
  *
  * @param {string} sourceName The name of the context requesting the connection.
- * @param {string} requestedName The name of the context to which the connection
- *     is requested.
+ * @param {!Object|string} message The name of the context to which
+ *     the connection is requested.
  * @private
  */
 goog.messaging.PortOperator.prototype.requestConnection_ = function(
-    sourceName, requestedName) {
+    sourceName, message) {
+  var requestedName = /** @type {string} */ (message);
   if (requestedName == this.name_) {
     this.connectSelfToPort_(sourceName);
     return;

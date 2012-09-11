@@ -126,7 +126,7 @@ goog.storage.RichStorage.prototype.set = function(key, value) {
  *
  * WARNING: This returns an Object, which once used to be
  * goog.storage.RichStorage.Wrapper. This is due to the fact
- * that deserialized objects loose type information and it
+ * that deserialized objects lose type information and it
  * is hard to do proper typecasting in JavaScript. Be sure
  * you know what you are doing when using the returned value.
  *

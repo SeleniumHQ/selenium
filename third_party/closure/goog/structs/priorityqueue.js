@@ -46,7 +46,8 @@ goog.inherits(goog.structs.PriorityQueue, goog.structs.Heap);
 
 /**
  * Puts the specified value in the queue.
- * @param {*} priority The priority of the value.
+ * @param {*} priority The priority of the value. A smaller value here means a
+ *     higher priority.
  * @param {*} value The value.
  */
 goog.structs.PriorityQueue.prototype.enqueue = function(priority, value) {

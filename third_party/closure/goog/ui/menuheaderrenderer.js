@@ -49,6 +49,7 @@ goog.ui.MenuHeaderRenderer.CSS_CLASS = goog.getCssName('goog-menuheader');
  * Returns the CSS class to be applied to the root element of components
  * rendered using this renderer.
  * @return {string} Renderer-specific CSS class.
+ * @override
  */
 goog.ui.MenuHeaderRenderer.prototype.getCssClass = function() {
   return goog.ui.MenuHeaderRenderer.CSS_CLASS;

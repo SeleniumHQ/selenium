@@ -22,7 +22,6 @@
   background-color: #8c2425;
   cursor: pointer;
   outline: none;
-  -moz-outline: none;
 }
 
 /* State: disabled. */

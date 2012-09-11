@@ -53,6 +53,7 @@ goog.ui.tree.TreeNode.prototype.tree_ = null;
 /**
  * Returns the tree
  * @return {goog.ui.tree.TreeControl?} The tree.
+ * @override
  */
 goog.ui.tree.TreeNode.prototype.getTree = function() {
   if (this.tree_) {
@@ -73,6 +74,7 @@ goog.ui.tree.TreeNode.prototype.getTree = function() {
 /**
  * Returns the source for the icon.
  * @return {string} Src for the icon.
+ * @override
  */
 goog.ui.tree.TreeNode.prototype.getCalculatedIconClass = function() {
   var expanded = this.getExpanded();

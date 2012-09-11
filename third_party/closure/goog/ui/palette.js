@@ -16,6 +16,7 @@
  * @fileoverview A palette control.  A palette is a grid that the user can
  * highlight or select via the keyboard or the mouse.
  *
+ * @author attila@google.com (Attila Bodis)
  * @see ../demos/palette.html
  */
 
@@ -104,11 +105,13 @@ goog.ui.Palette.prototype.disposeInternal = function() {
 /**
  * Overrides {@link goog.ui.Control#setContentInternal} by also updating the
  * grid size and the selection model.  Considered protected.
- * @param {Array.<Node>} items Array of DOM nodes to be displayed as items
- *     in the palette grid (one item per cell).
+ * @param {goog.ui.ControlContent} content Array of DOM nodes to be displayed
+ *     as items in the palette grid (one item per cell).
  * @protected
+ * @override
  */
-goog.ui.Palette.prototype.setContentInternal = function(items) {
+goog.ui.Palette.prototype.setContentInternal = function(content) {
+  var items = /** @type {Array.<Node>} */ (content);
   goog.ui.Palette.superClass_.setContentInternal.call(this, items);
 
   // Adjust the palette size.
@@ -134,12 +137,13 @@ goog.ui.Palette.prototype.setContentInternal = function(items) {
 
 
 /**
- * Overrides {@link goog.ui.Control#getCaption} to return null, since palettes
- * don't have text captions.
- * @return {null} Always null.
+ * Overrides {@link goog.ui.Control#getCaption} to return the empty string,
+ * since palettes don't have text captions.
+ * @return {string} The empty string.
+ * @override
  */
 goog.ui.Palette.prototype.getCaption = function() {
-  return null;
+  return '';
 };
 
 
@@ -147,6 +151,7 @@ goog.ui.Palette.prototype.getCaption = function() {
  * Overrides {@link goog.ui.Control#setCaption} to be a no-op, since palettes
  * don't have text captions.
  * @param {string} caption Ignored.
+ * @override
  */
 goog.ui.Palette.prototype.setCaption = function(caption) {
   // Do nothing.
@@ -161,6 +166,7 @@ goog.ui.Palette.prototype.setCaption = function(caption) {
  * by determining which palette item (if any) was moused over, highlighting it,
  * and un-highlighting any previously-highlighted item.
  * @param {goog.events.BrowserEvent} e Mouse event to handle.
+ * @override
  */
 goog.ui.Palette.prototype.handleMouseOver = function(e) {
   goog.ui.Palette.superClass_.handleMouseOver.call(this, e);
@@ -182,6 +188,7 @@ goog.ui.Palette.prototype.handleMouseOver = function(e) {
  * by determining the palette item that the mouse just left (if any), and
  * making sure it is un-highlighted.
  * @param {goog.events.BrowserEvent} e Mouse event to handle.
+ * @override
  */
 goog.ui.Palette.prototype.handleMouseOut = function(e) {
   goog.ui.Palette.superClass_.handleMouseOut.call(this, e);
@@ -202,6 +209,7 @@ goog.ui.Palette.prototype.handleMouseOut = function(e) {
  * Handles mousedown events.  Overrides {@link goog.ui.Control#handleMouseDown}
  * by ensuring that the item on which the user moused down is highlighted.
  * @param {goog.events.Event} e Mouse event to handle.
+ * @override
  */
 goog.ui.Palette.prototype.handleMouseDown = function(e) {
   goog.ui.Palette.superClass_.handleMouseDown.call(this, e);
@@ -223,6 +231,7 @@ goog.ui.Palette.prototype.handleMouseDown = function(e) {
  * by selecting the highlighted item and dispatching an ACTION event.
  * @param {goog.events.Event} e Mouse or key event that triggered the action.
  * @return {boolean} True if the action was allowed to proceed, false otherwise.
+ * @override
  */
 goog.ui.Palette.prototype.performActionInternal = function(e) {
   var item = this.getHighlightedItem();
@@ -244,6 +253,7 @@ goog.ui.Palette.prototype.performActionInternal = function(e) {
  * goog.ui.Control#handleKeyEvent}.
  * @param {goog.events.KeyEvent} e Key event to handle.
  * @return {boolean} True iff the key event was handled by the component.
+ * @override
  */
 goog.ui.Palette.prototype.handleKeyEvent = function(e) {
   var items = this.getContent();

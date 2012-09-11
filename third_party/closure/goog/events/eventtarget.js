@@ -15,6 +15,8 @@
 /**
  * @fileoverview Implementation of EventTarget as defined by W3C DOM 2/3.
  *
+ * @author arv@google.com (Erik Arvidsson) [Original implementation]
+ * @author pupius@google.com (Daniel Pupius) [Port to use goog.events]
  * @see ../demos/eventtarget.html
  */
 

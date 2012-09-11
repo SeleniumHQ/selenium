@@ -98,6 +98,7 @@ goog.net.IpAddress.prototype.toUriString = goog.abstractMethod;
 
 /**
  * @return {string} The IP Address, as a string.
+ * @override
  */
 goog.net.IpAddress.prototype.toString = goog.abstractMethod;
 

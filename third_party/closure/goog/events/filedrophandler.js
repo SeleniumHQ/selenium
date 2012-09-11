@@ -133,11 +133,7 @@ goog.events.FileDropHandler.prototype.dispatch_ = function(e) {
   this.logger_.fine('Firing DROP event...');
   var event = new goog.events.BrowserEvent(e.getBrowserEvent());
   event.type = goog.events.FileDropHandler.EventType.DROP;
-  try {
-    this.dispatchEvent(event);
-  } finally {
-    event.dispose();
-  }
+  this.dispatchEvent(event);
 };
 
 

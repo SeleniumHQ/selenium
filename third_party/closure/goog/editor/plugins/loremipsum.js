@@ -71,6 +71,7 @@ goog.editor.plugins.LoremIpsum.prototype.usingLorem_ = false;
  * Handles queryCommandValue.
  * @param {string} command The command to query.
  * @return {boolean} The result.
+ * @override
  */
 goog.editor.plugins.LoremIpsum.prototype.queryCommandValue = function(command) {
   return command == goog.editor.Command.USING_LOREM && this.usingLorem_;
@@ -81,13 +82,14 @@ goog.editor.plugins.LoremIpsum.prototype.queryCommandValue = function(command) {
  * Handles execCommand.
  * @param {string} command The command to execute.
  *     Should be CLEAR_LOREM or UPDATE_LOREM.
- * @param {boolean} placeCursor Whether to place the cursor in the field
- *     after clearing lorem.
+ * @param {*=} opt_placeCursor Whether to place the cursor in the field
+ *     after clearing lorem. Should be a boolean.
+ * @override
  */
 goog.editor.plugins.LoremIpsum.prototype.execCommand = function(command,
-    placeCursor) {
+    opt_placeCursor) {
   if (command == goog.editor.Command.CLEAR_LOREM) {
-    this.clearLorem_(placeCursor);
+    this.clearLorem_(!!opt_placeCursor);
   } else if (command == goog.editor.Command.UPDATE_LOREM) {
     this.updateLorem_();
   }
@@ -115,7 +117,7 @@ goog.editor.plugins.LoremIpsum.prototype.updateLorem_ = function() {
   //    on dialog close (since the DOM nodes would get clobbered in FF)
   // 3) We're not using lorem already
   // 4) The field is not currently active (doesn't have focus).
-  var fieldObj = this.fieldObject;
+  var fieldObj = this.getFieldObject();
   if (!this.usingLorem_ &&
       !fieldObj.inModalMode() &&
       goog.editor.Field.getActiveFieldId() != fieldObj.id) {
@@ -156,7 +158,7 @@ goog.editor.plugins.LoremIpsum.prototype.clearLorem_ = function(
   // Don't mess with lorem state when a dialog is open as that screws
   // with the dialog's ability to properly restore the selection
   // on dialog close (since the DOM nodes would get clobbered)
-  var fieldObj = this.fieldObject;
+  var fieldObj = this.getFieldObject();
   if (this.usingLorem_ && !fieldObj.inModalMode()) {
     var field = fieldObj.getElement();
     if (!field) {

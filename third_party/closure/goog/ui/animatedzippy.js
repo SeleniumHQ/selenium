@@ -15,6 +15,7 @@
 /**
  * @fileoverview Animated zippy widget implementation.
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/zippy.html
  */
 
@@ -105,6 +106,7 @@ goog.ui.AnimatedZippy.prototype.isBusy = function() {
  * Sets expanded state.
  *
  * @param {boolean} expanded Expanded/visibility state.
+ * @override
  */
 goog.ui.AnimatedZippy.prototype.setExpanded = function(expanded) {
   if (this.isExpanded() == expanded && !this.anim_) {

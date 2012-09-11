@@ -262,11 +262,7 @@ goog.events.PasteHandler.prototype.checkUpdatedText_ = function() {
 goog.events.PasteHandler.prototype.dispatch_ = function(e) {
   var event = new goog.events.BrowserEvent(e.getBrowserEvent());
   event.type = goog.events.PasteHandler.EventType.PASTE;
-  try {
-    this.dispatchEvent(event);
-  } finally {
-    event.dispose();
-  }
+  this.dispatchEvent(event);
 
   // Starts polling for updates in the element.value property so we can tell
   // when do dispatch the AFTER_PASTE event. (We do an initial check after an

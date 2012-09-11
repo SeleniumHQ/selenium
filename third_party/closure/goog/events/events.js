@@ -68,14 +68,6 @@ goog.require('goog.userAgent');
 
 
 /**
- * @define {boolean} Whether to always assume the garbage collector is good.
- * @deprecated This is no longer needed and will be removed once apps are
- * updated.
- */
-goog.events.ASSUME_GOOD_GC = false;
-
-
-/**
  * Container for storing event listeners and their proxies
  * @private
  * @type {Object.<goog.events.Listener>}
@@ -379,7 +371,7 @@ goog.events.unlistenByKey = function(key) {
   if (src.removeEventListener) {
     // EventTarget calls unlisten so we need to ensure that the source is not
     // an event target to prevent re-entry.
-    // TODO(user): What is this goog.global for? Why would anyone listen to
+    // TODO(arv): What is this goog.global for? Why would anyone listen to
     // events on the [[Global]] object? Is it supposed to be window? Why would
     // we not want to allow removing event listeners on the window?
     if (src == goog.global || !src.customEvent_) {
@@ -390,7 +382,6 @@ goog.events.unlistenByKey = function(key) {
   }
 
   var srcUid = goog.getUid(src);
-  var listenerArray = goog.events.listenerTree_[type][capture][srcUid];
 
   // In a perfect implementation we would decrement the remaining_ field here
   // but then we would need to know if the listener has already been fired or
@@ -407,8 +398,19 @@ goog.events.unlistenByKey = function(key) {
   }
 
   listener.removed = true;
-  listenerArray.needsCleanup_ = true;
-  goog.events.cleanUp_(type, capture, srcUid, listenerArray);
+
+  // There are some esoteric situations where the hash code of an object
+  // can change, and we won't be able to find the listenerArray anymore.
+  // For example, if you're listening on a window, and the user navigates to
+  // a different window, the UID will disappear.
+  //
+  // It should be impossible to ever find the original listenerArray, so it
+  // doesn't really matter if we can't clean it up in this case.
+  var listenerArray = goog.events.listenerTree_[type][capture][srcUid];
+  if (listenerArray) {
+    listenerArray.needsCleanup_ = true;
+    goog.events.cleanUp_(type, capture, srcUid, listenerArray);
+  }
 
   delete goog.events.listeners_[key];
 
@@ -774,11 +776,10 @@ goog.events.fireListeners_ = function(map, obj, type, capture, eventObject) {
  * @return {boolean} Result of listener.
  */
 goog.events.fireListener = function(listener, eventObject) {
-  var rv = listener.handleEvent(eventObject);
   if (listener.callOnce) {
     goog.events.unlistenByKey(listener.key);
   }
-  return rv;
+  return listener.handleEvent(eventObject);
 };
 
 
@@ -905,7 +906,7 @@ goog.events.protectBrowserEventEntryPoint = function(errorHandler) {
  * Handles an event and dispatches it to the correct listeners. This
  * function is a proxy for the real listener the user specified.
  *
- * @param {string} key Unique key for the listener.
+ * @param {number} key Unique key for the listener.
  * @param {Event=} opt_evt Optional event object that gets passed in via the
  *     native event handlers.
  * @return {boolean} Result of the event handler.
@@ -998,18 +999,13 @@ goog.events.handleBrowserEvent_ = function(key, opt_evt) {
       if (ancestors) {
         ancestors.length = 0;
       }
-      evt.dispose();
     }
     return retval;
   } // IE
 
   // Caught a non-IE DOM event. 1 additional argument which is the event object
   var be = new goog.events.BrowserEvent(opt_evt, this);
-  try {
-    retval = goog.events.fireListener(listener, be);
-  } finally {
-    be.dispose();
-  }
+  retval = goog.events.fireListener(listener, be);
   return retval;
 };
 

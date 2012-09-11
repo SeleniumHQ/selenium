@@ -24,6 +24,7 @@ goog.provide('goog.debug.ErrorReporter.ExceptionEvent');
 goog.require('goog.debug');
 goog.require('goog.debug.ErrorHandler');
 goog.require('goog.debug.Logger');
+goog.require('goog.debug.entryPointRegistry');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
@@ -31,6 +32,7 @@ goog.require('goog.net.XhrIo');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
+goog.require('goog.userAgent');
 
 
 
@@ -249,7 +251,7 @@ goog.debug.ErrorReporter.prototype.setup_ = function() {
  * Handler for caught exceptions. Sends report to the LoggingServlet and
  * notifies any listeners.
  *
- * @param {Error} e The exception.
+ * @param {Object} e The exception.
  * @param {!Object.<string, string>=} opt_context Context values to optionally
  *     include in the error report.
  */
@@ -321,4 +323,11 @@ goog.debug.ErrorReporter.prototype.sendErrorReport =
         'trace:', opt_trace);
     goog.debug.ErrorReporter.logger_.info(logMessage);
   }
+};
+
+
+/** @override */
+goog.debug.ErrorReporter.prototype.disposeInternal = function() {
+  goog.dispose(this.errorHandler_);
+  goog.base(this, 'disposeInternal');
 };

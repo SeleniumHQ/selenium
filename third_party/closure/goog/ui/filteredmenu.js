@@ -16,6 +16,7 @@
  * @fileoverview Menu where items can be filtered based on user keyboard input.
  * If a filter is specified only the items matching it will be displayed.
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/filteredmenu.html
  */
 
@@ -470,6 +471,7 @@ goog.ui.FilteredMenu.prototype.filterItems_ = function(str) {
  * be given the opportunity to handle the key behavior.
  * @param {goog.events.KeyEvent} e A browser event.
  * @return {boolean} Whether the event was handled.
+ * @override
  */
 goog.ui.FilteredMenu.prototype.handleKeyEvent = function(e) {
   // Home, end and the arrow keys are normally used to change the selected menu
@@ -494,6 +496,7 @@ goog.ui.FilteredMenu.prototype.handleKeyEvent = function(e) {
  * Sets the highlighted index, unless the HIGHLIGHT event is intercepted and
  * cancelled.  -1 = no highlight. Also scrolls the menu item into view.
  * @param {number} index Index of menu item to highlight.
+ * @override
  */
 goog.ui.FilteredMenu.prototype.setHighlightedIndex = function(index) {
   goog.ui.FilteredMenu.superClass_.setHighlightedIndex.call(this, index);

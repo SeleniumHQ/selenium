@@ -51,6 +51,13 @@ goog.dom.BrowserFeature = {
   CAN_USE_INNER_TEXT: goog.userAgent.IE && !goog.userAgent.isVersion('9'),
 
   /**
+   * MSIE, Opera, and Safari>=4 support element.parentElement to access an
+   * element's parent if it is an Element.
+   */
+  CAN_USE_PARENT_ELEMENT_PROPERTY: goog.userAgent.IE || goog.userAgent.OPERA ||
+      goog.userAgent.WEBKIT,
+
+  /**
    * Whether NoScope elements need a scoped element written before them in
    * innerHTML.
    * MSDN: http://msdn.microsoft.com/en-us/library/ms533897(VS.85).aspx#1

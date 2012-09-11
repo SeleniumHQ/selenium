@@ -40,6 +40,7 @@ goog.require('goog.events');
 goog.require('goog.fx.Animation');
 goog.require('goog.fx.Transition.EventType');
 goog.require('goog.style');
+goog.require('goog.style.bidi');
 
 
 
@@ -63,6 +64,14 @@ goog.fx.dom.PredefinedEffect = function(element, start, end, time, opt_acc) {
    * @type {Element}
    */
   this.element = element;
+
+  /**
+   * Whether the element is rendered right-to-left. We cache this here for
+   * efficiency.
+   * @type {boolean|undefined}
+   * @private
+   */
+  this.rightToLeft_;
 };
 goog.inherits(goog.fx.dom.PredefinedEffect, goog.fx.Animation);
 
@@ -72,6 +81,27 @@ goog.inherits(goog.fx.dom.PredefinedEffect, goog.fx.Animation);
  * @protected
  */
 goog.fx.dom.PredefinedEffect.prototype.updateStyle = goog.nullFunction;
+
+
+/**
+ * Whether the element is rendered right-to-left. We initialize this lazily.
+ * @type {boolean|undefined}
+ * @private
+ */
+goog.fx.dom.PredefinedEffect.prototype.rightToLeft_;
+
+
+/**
+ * Whether the DOM element being manipulated is rendered right-to-left.
+ * @return {boolean} True if the DOM element is rendered right-to-left, false
+ *     otherwise.
+ */
+goog.fx.dom.PredefinedEffect.prototype.isRightToLeft = function() {
+  if (!goog.isDef(this.rightToLeft_)) {
+    this.rightToLeft_ = goog.style.isRightToLeft(this.element);
+  }
+  return this.rightToLeft_;
+};
 
 
 /** @override */
@@ -121,7 +151,9 @@ goog.inherits(goog.fx.dom.Slide, goog.fx.dom.PredefinedEffect);
 
 /** @override */
 goog.fx.dom.Slide.prototype.updateStyle = function() {
-  this.element.style.left = Math.round(this.coords[0]) + 'px';
+  var pos = (this.isRightPositioningForRtlEnabled() && this.isRightToLeft()) ?
+      'right' : 'left';
+  this.element.style[pos] = Math.round(this.coords[0]) + 'px';
   this.element.style.top = Math.round(this.coords[1]) + 'px';
 };
 
@@ -138,7 +170,9 @@ goog.fx.dom.Slide.prototype.updateStyle = function() {
  * @constructor
  */
 goog.fx.dom.SlideFrom = function(element, end, time, opt_acc) {
-  var start = [element.offsetLeft, element.offsetTop];
+  var offsetLeft = this.isRightPositioningForRtlEnabled() ?
+      goog.style.bidi.getOffsetStart(element) : element.offsetLeft;
+  var start = [offsetLeft, element.offsetTop];
   goog.fx.dom.Slide.call(this, element, start, end, time, opt_acc);
 };
 goog.inherits(goog.fx.dom.SlideFrom, goog.fx.dom.Slide);
@@ -146,7 +180,9 @@ goog.inherits(goog.fx.dom.SlideFrom, goog.fx.dom.Slide);
 
 /** @override */
 goog.fx.dom.SlideFrom.prototype.onBegin = function() {
-  this.startPoint = [this.element.offsetLeft, this.element.offsetTop];
+  var offsetLeft = this.isRightPositioningForRtlEnabled() ?
+      goog.style.bidi.getOffsetStart(this.element) : this.element.offsetLeft;
+  this.startPoint = [offsetLeft, this.element.offsetTop];
   goog.fx.dom.SlideFrom.superClass_.onBegin.call(this);
 };
 
@@ -198,7 +234,10 @@ goog.fx.dom.Swipe.prototype.updateStyle = function() {
   var y = this.coords[1];
   this.clip_(Math.round(x), Math.round(y), this.maxWidth_, this.maxHeight_);
   this.element.style.width = Math.round(x) + 'px';
-  this.element.style.marginLeft = Math.round(x) - this.maxWidth_ + 'px';
+  var marginX = (this.isRightPositioningForRtlEnabled() &&
+      this.isRightToLeft()) ? 'marginRight' : 'marginLeft';
+
+  this.element.style[marginX] = Math.round(x) - this.maxWidth_ + 'px';
   this.element.style.marginTop = Math.round(y) - this.maxHeight_ + 'px';
 };
 
@@ -246,7 +285,11 @@ goog.inherits(goog.fx.dom.Scroll, goog.fx.dom.PredefinedEffect);
  * @override
  */
 goog.fx.dom.Scroll.prototype.updateStyle = function() {
-  this.element.scrollLeft = Math.round(this.coords[0]);
+  if (this.isRightPositioningForRtlEnabled()) {
+    goog.style.bidi.setScrollOffset(this.element, Math.round(this.coords[0]));
+  } else {
+    this.element.scrollLeft = Math.round(this.coords[0]);
+  }
   this.element.scrollTop = Math.round(this.coords[1]);
 };
 

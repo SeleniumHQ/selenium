@@ -14,6 +14,7 @@
 
 /**
  * @fileoverview Global renderer and decorator registry.
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.registry');

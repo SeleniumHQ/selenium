@@ -15,6 +15,9 @@
 /**
  * @fileoverview Definition of the goog.ui.tree.BaseNode class.
  *
+ * @author arv@google.com (Erik Arvidsson)
+ * @author eae@google.com (Emil A Eklund)
+ * @author jonp@google.com (Jon Perlow)
  *
  * This is a based on the webfx tree control. It since been updated to add
  * typeahead support, as well as accessibility support using ARIA framework.
@@ -885,16 +888,8 @@ goog.ui.tree.BaseNode.prototype.setAfterLabelHtml = function(html) {
  * @protected
  */
 goog.ui.tree.BaseNode.prototype.getIconHtml = function() {
-  // here we are not using textToHtml since the file names rarerly contains
-  // HTML...
-  var iconClass = this.getCalculatedIconClass();
-  if (iconClass) {
-    return goog.string.buildString('<img class="', iconClass,
-           '" src="', this.config_.cleardotPath, '">');
-  } else {
-    return goog.string.buildString('<img style="display:none"',
-           '" src="', this.config_.cleardotPath, '">');
-  }
+  return '<span style="display:inline-block" class="' +
+      this.getCalculatedIconClass() + '"></span>';
 };
 
 
@@ -910,10 +905,8 @@ goog.ui.tree.BaseNode.prototype.getCalculatedIconClass = goog.abstractMethod;
  * @protected
  */
 goog.ui.tree.BaseNode.prototype.getExpandIconHtml = function() {
-  // here we are not using textToHtml since the file names rarerly contains
-  // HTML...
-  return goog.string.buildString('<img type="expand" class="',
-      this.getExpandIconClass(), '" src="', this.config_.cleardotPath + '">');
+  return '<span type="expand" style="display:inline-block" class="' +
+      this.getExpandIconClass() + '"></span>';
 };
 
 
@@ -1001,8 +994,7 @@ goog.ui.tree.BaseNode.prototype.getExpandIconClass = function() {
  * @return {string} The line style.
  */
 goog.ui.tree.BaseNode.prototype.getLineStyle = function() {
-  return goog.string.buildString(
-      'background-position:', this.getLineStyle2(), ';');
+  return 'background-position:' + this.getLineStyle2() + ';';
 };
 
 
@@ -1017,6 +1009,7 @@ goog.ui.tree.BaseNode.prototype.getLineStyle2 = function() {
 
 /**
  * @return {Element} The element for the tree node.
+ * @override
  */
 goog.ui.tree.BaseNode.prototype.getElement = function() {
   var el = goog.ui.tree.BaseNode.superClass_.getElement.call(this);

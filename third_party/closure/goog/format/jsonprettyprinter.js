@@ -374,14 +374,18 @@ goog.inherits(goog.format.JsonPrettyPrinter.HtmlDelimiters,
  * A <code>span</code> tag thats placed before a property name.  Used to style
  * property names with CSS.
  * @type {string}
+ * @override
  */
 goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.preName =
-    '<span class="goog-jsonprettyprinter-propertyname">';
+    '<span class="' +
+    goog.getCssName('goog-jsonprettyprinter-propertyname') +
+    '">';
 
 
 /**
  * A closing <code>span</code> tag that's placed after a property name.
  * @type {string}
+ * @override
  */
 goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.postName = '</span>';
 
@@ -393,13 +397,17 @@ goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.postName = '</span>';
  * type of the object (the {TYPE} parameter is obtained from goog.typeOf).  This
  * can be used to style different value types.
  * @type {string}
+ * @override
  */
 goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.preValue =
-    '<span class="goog-jsonprettyprinter-propertyvalue-%s">';
+    '<span class="' +
+    goog.getCssName('goog-jsonprettyprinter-propertyvalue') +
+    '-%s">';
 
 
 /**
  * A closing <code>span</code> tag that's placed after a property value.
  * @type {string}
+ * @override
  */
 goog.format.JsonPrettyPrinter.HtmlDelimiters.prototype.postValue = '</span>';

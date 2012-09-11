@@ -113,9 +113,7 @@ goog.dom.ControlRange.prototype.clearCachedValues_ = function() {
 };
 
 
-/**
- * @return {goog.dom.ControlRange} A clone of this range.
- */
+/** @override */
 goog.dom.ControlRange.prototype.clone = function() {
   return goog.dom.ControlRange.createFromElements.apply(this,
                                                         this.getElements());
@@ -232,7 +230,7 @@ goog.dom.ControlRange.prototype.isRangeInDocument = function() {
     returnValue = goog.array.every(this.getElements(), function(element) {
       // On IE, this throws an exception when the range is detached.
       return goog.userAgent.IE ?
-          element.parentNode :
+          !!element.parentNode :
           goog.dom.contains(element.ownerDocument.body, element);
     });
   } catch (e) {
@@ -365,9 +363,7 @@ goog.dom.DomSavedControlRange_ = function(range) {
 goog.inherits(goog.dom.DomSavedControlRange_, goog.dom.SavedRange);
 
 
-/**
- * @return {goog.dom.ControlRange} The restored range.
- */
+/** @override */
 goog.dom.DomSavedControlRange_.prototype.restoreInternal = function() {
   var doc = this.elements_.length ?
       goog.dom.getOwnerDocument(this.elements_[0]) : document;
@@ -469,6 +465,7 @@ goog.dom.ControlRangeIterator.prototype.isLast = function() {
  * Move to the next position in the selection.
  * Throws {@code goog.iter.StopIteration} when it passes the end of the range.
  * @return {Node} The node at the next position.
+ * @override
  */
 goog.dom.ControlRangeIterator.prototype.next = function() {
   // Iterate over each element in the range, and all of its children.
@@ -487,11 +484,7 @@ goog.dom.ControlRangeIterator.prototype.next = function() {
 };
 
 
-/**
- * Replace this iterator's values with values from another.
- * @param {goog.dom.ControlRangeIterator} other The iterator to copy.
- * @protected
- */
+/** @override */
 goog.dom.ControlRangeIterator.prototype.copyFrom = function(other) {
   this.elements_ = other.elements_;
   this.startNode_ = other.startNode_;
@@ -503,6 +496,7 @@ goog.dom.ControlRangeIterator.prototype.copyFrom = function(other) {
 
 /**
  * @return {goog.dom.ControlRangeIterator} An identical iterator.
+ * @override
  */
 goog.dom.ControlRangeIterator.prototype.clone = function() {
   var copy = new goog.dom.ControlRangeIterator(null);

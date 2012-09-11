@@ -131,13 +131,13 @@ goog.editor.plugins.equation.EquationBubble.prototype.getBubbleTitle =
  */
 goog.editor.plugins.equation.EquationBubble.prototype.removeEquation_ =
     function() {
-  this.fieldObject.dispatchBeforeChange();
+  this.getFieldObject().dispatchBeforeChange();
 
   goog.dom.removeNode(this.getTargetElement());
 
   this.closeBubble();
 
-  this.fieldObject.dispatchChange();
+  this.getFieldObject().dispatchChange();
 };
 
 
@@ -149,5 +149,5 @@ goog.editor.plugins.equation.EquationBubble.prototype.editEquation_ =
     function() {
   var equationNode = this.getTargetElement();
   this.closeBubble();
-  this.fieldObject.execCommand(goog.editor.Command.EQUATION, equationNode);
+  this.getFieldObject().execCommand(goog.editor.Command.EQUATION, equationNode);
 };

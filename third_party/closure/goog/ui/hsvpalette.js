@@ -20,6 +20,9 @@
  * palette. Without the styles from the demo css file, only a hex color label
  * and input field show up.
  *
+ * @author arv@google.com (Erik Arvidsson)
+ * @author smcbride@google.com (Sean McBride)
+ * @author manucornet@google.com (Manu Cornet)
  * @see ../demos/hsvpalette.html
  */
 
@@ -33,6 +36,7 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.events.InputHandler');
 goog.require('goog.style');
+goog.require('goog.style.bidi');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Component.EventType');
 goog.require('goog.userAgent');
@@ -189,7 +193,7 @@ goog.ui.HsvPalette.prototype.updateInput = function() {
 goog.ui.HsvPalette.prototype.setColor = function(color) {
   if (color != this.color_) {
     this.setColor_(color);
-    this.updateUi_();
+    this.updateUi();
     this.dispatchEvent(goog.ui.Component.EventType.ACTION);
   }
 };
@@ -224,7 +228,7 @@ goog.ui.HsvPalette.prototype.setHsv = function(opt_hue,
                                                opt_value) {
   if (opt_hue != null || opt_saturation != null || opt_value != null) {
     this.setHsv_(opt_hue, opt_saturation, opt_value);
-    this.updateUi_();
+    this.updateUi();
     this.dispatchEvent(goog.ui.Component.EventType.ACTION);
   }
 };
@@ -259,6 +263,7 @@ goog.ui.HsvPalette.prototype.setHsv_ = function(opt_hue,
  * structure they build is fairly complicated.
  * @param {Element} element Element to decorate.
  * @return {boolean} Returns always false.
+ * @override
  */
 goog.ui.HsvPalette.prototype.canDecorate = function(element) {
   return false;
@@ -273,43 +278,43 @@ goog.ui.HsvPalette.prototype.createDom = function() {
   var element = dom.createDom(goog.dom.TagName.DIV,
       this.class_ + noalpha,
       dom.createDom(goog.dom.TagName.DIV,
-            goog.getCssName(this.class_, 'hs-backdrop')),
+          goog.getCssName(this.class_, 'hs-backdrop')),
       this.hsImageEl_ = dom.createDom(goog.dom.TagName.DIV,
-            goog.getCssName(this.class_, 'hs-image')),
-      this.hsHandleEl_ = dom.createDom(goog.dom.TagName.DIV,
-            goog.getCssName(this.class_, 'hs-handle')),
+          goog.getCssName(this.class_, 'hs-image'),
+          this.hsHandleEl_ = dom.createDom(goog.dom.TagName.DIV,
+              goog.getCssName(this.class_, 'hs-handle'))),
       this.vImageEl_ = dom.createDom(goog.dom.TagName.DIV,
-            goog.getCssName(this.class_, 'v-image')),
+          goog.getCssName(this.class_, 'v-image')),
       this.vHandleEl_ = dom.createDom(goog.dom.TagName.DIV,
-            goog.getCssName(this.class_, 'v-handle')),
+          goog.getCssName(this.class_, 'v-handle')),
       this.swatchEl_ = dom.createDom(goog.dom.TagName.DIV,
-            goog.getCssName(this.class_, 'swatch')),
+          goog.getCssName(this.class_, 'swatch')),
       dom.createDom('label', null,
           //dom.createDom('span', null, 'Hex color '),
           this.inputEl_ = dom.createDom('input',
-              {'class': goog.getCssName(this.class_, 'input'), 'type': 'text'})
-      )
-  );
+              {'class': goog.getCssName(this.class_, 'input'),
+               'type': 'text', 'dir': 'ltr'})));
   this.setElementInternal(element);
 
-  // TODO(user): Set tabIndex
+  // TODO(arv): Set tabIndex
 };
 
 
 /**
  * Renders the color picker inside the provided element. This will override the
  * current content of the element.
+ * @override
  */
 goog.ui.HsvPalette.prototype.enterDocument = function() {
   goog.ui.HsvPalette.superClass_.enterDocument.call(this);
 
   // TODO(user): Accessibility.
 
-  this.updateUi_();
+  this.updateUi();
 
   var handler = this.getHandler();
   handler.listen(this.getElement(), goog.events.EventType.MOUSEDOWN,
-      this.handleMouseDown_, false, this);
+      this.handleMouseDown, false, this);
 
   // Cannot create InputHandler in createDom because IE throws an exception
   // on document.activeElement
@@ -318,7 +323,7 @@ goog.ui.HsvPalette.prototype.enterDocument = function() {
   }
 
   handler.listen(this.inputHandler_,
-      goog.events.InputHandler.EventType.INPUT, this.handleInput_, false, this);
+      goog.events.InputHandler.EventType.INPUT, this.handleInput, false, this);
 };
 
 
@@ -344,22 +349,33 @@ goog.ui.HsvPalette.prototype.disposeInternal = function() {
 /**
  * Updates the position, opacity, and styles for the UI representation of the
  * palette.
- * @private
+ * @protected
  */
-goog.ui.HsvPalette.prototype.updateUi_ = function() {
+goog.ui.HsvPalette.prototype.updateUi = function() {
   if (this.isInDocument()) {
     var h = this.hsv_[0];
     var s = this.hsv_[1];
     var v = this.hsv_[2];
 
-    var left = this.hsImageEl_.offsetLeft -
-        Math.floor(this.hsHandleEl_.offsetWidth / 2) +
-        this.hsImageEl_.offsetWidth * h;
-    this.hsHandleEl_.style.left = left + 'px';
-    var top = this.hsImageEl_.offsetTop -
-        Math.floor(this.hsHandleEl_.offsetHeight / 2) +
-        this.hsImageEl_.offsetHeight * (1 - s);
-    this.hsHandleEl_.style.top = top + 'px';
+    var left = this.hsImageEl_.offsetWidth * h;
+
+    // We don't use a flipped gradient image in RTL, so we need to flip the
+    // offset in RTL so that it still hovers over the correct color on the
+    // gradiant.
+    if (this.isRightToLeft()) {
+      left = this.hsImageEl_.offsetWidth - left;
+    }
+
+    // We also need to account for the handle size.
+    var handleOffset = Math.ceil(this.hsHandleEl_.offsetWidth / 2);
+    left -= handleOffset;
+
+    var top = this.hsImageEl_.offsetHeight * (1 - s);
+    // Account for the handle size.
+    top -= Math.ceil(this.hsHandleEl_.offsetHeight / 2);
+
+    goog.style.bidi.setPosition(this.hsHandleEl_, left, top,
+        this.isRightToLeft());
 
     top = this.vImageEl_.offsetTop -
         Math.floor(this.vHandleEl_.offsetHeight / 2) +
@@ -381,9 +397,9 @@ goog.ui.HsvPalette.prototype.updateUi_ = function() {
 /**
  * Handles mousedown events on palette UI elements.
  * @param {goog.events.BrowserEvent} e Event object.
- * @private
+ * @protected
  */
-goog.ui.HsvPalette.prototype.handleMouseDown_ = function(e) {
+goog.ui.HsvPalette.prototype.handleMouseDown = function(e) {
   if (e.target == this.vImageEl_ || e.target == this.vHandleEl_) {
     // Setup value change listeners
     var b = goog.style.getBounds(this.vImageEl_);
@@ -460,9 +476,9 @@ goog.ui.HsvPalette.prototype.handleMouseUp_ = function(e) {
 /**
  * Handles input events on the hex value input field.
  * @param {goog.events.Event} e Event object.
- * @private
+ * @protected
  */
-goog.ui.HsvPalette.prototype.handleInput_ = function(e) {
+goog.ui.HsvPalette.prototype.handleInput = function(e) {
   if (/^#[0-9a-f]{6}$/i.test(this.inputEl_.value)) {
     this.setColor(this.inputEl_.value);
   }

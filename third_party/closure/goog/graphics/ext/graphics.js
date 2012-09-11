@@ -145,6 +145,7 @@ goog.graphics.ext.Graphics.prototype.getPixelSize = function() {
 
 /**
  * @return {number} The coordinate width of the canvas.
+ * @override
  */
 goog.graphics.ext.Graphics.prototype.getWidth = function() {
   return this.implementation_.getCoordSize().width;
@@ -153,6 +154,7 @@ goog.graphics.ext.Graphics.prototype.getWidth = function() {
 
 /**
  * @return {number} The coordinate width of the canvas.
+ * @override
  */
 goog.graphics.ext.Graphics.prototype.getHeight = function() {
   return this.implementation_.getCoordSize().height;
@@ -161,6 +163,7 @@ goog.graphics.ext.Graphics.prototype.getHeight = function() {
 
 /**
  * @return {number} Returns the number of pixels per unit in the x direction.
+ * @override
  */
 goog.graphics.ext.Graphics.prototype.getPixelScaleX = function() {
   return this.implementation_.getPixelScaleX();
@@ -169,6 +172,7 @@ goog.graphics.ext.Graphics.prototype.getPixelScaleX = function() {
 
 /**
  * @return {number} Returns the number of pixels per unit in the y direction.
+ * @override
  */
 goog.graphics.ext.Graphics.prototype.getPixelScaleY = function() {
   return this.implementation_.getPixelScaleY();
@@ -195,6 +199,7 @@ goog.graphics.ext.Graphics.prototype.render = function(parentElement) {
 
 /**
  * Never transform a surface.
+ * @override
  */
 goog.graphics.ext.Graphics.prototype.transform = goog.nullFunction;
 
@@ -203,6 +208,7 @@ goog.graphics.ext.Graphics.prototype.transform = goog.nullFunction;
  * Called from the parent class, this method resets any pre-computed positions
  * and sizes.
  * @protected
+ * @override
  */
 goog.graphics.ext.Graphics.prototype.redraw = function() {
   this.transformChildren();

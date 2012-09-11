@@ -54,6 +54,7 @@ goog.testing.messaging.MockPortNetwork = function(mockControl) {
  * Get the mock port with the given name.
  * @param {string} name The name of the port to get.
  * @return {!goog.testing.messaging.MockMessageChannel} The mock port.
+ * @override
  */
 goog.testing.messaging.MockPortNetwork.prototype.dial = function(name) {
   if (!(name in this.ports_)) {

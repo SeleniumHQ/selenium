@@ -14,8 +14,9 @@
 
 /**
  * @fileoverview Base class for control renderers.
- * TODO(user):  If the renderer framework works well, pull it into Component.
+ * TODO(attila):  If the renderer framework works well, pull it into Component.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ControlRenderer');
@@ -356,7 +357,7 @@ goog.ui.ControlRenderer.prototype.initializeDom = function(control) {
 
   // Initialize keyboard focusability (tab index).  We assume that components
   // aren't focusable by default (i.e have no tab index), and only touch the
-  // DOM if the component is focusable, enabled, and visible, and therfore
+  // DOM if the component is focusable, enabled, and visible, and therefore
   // needs a tab index.
   if (control.isEnabled()) {
     this.setFocusable(control, control.isVisible());
@@ -622,7 +623,7 @@ goog.ui.ControlRenderer.prototype.getCssClass = function() {
  * in IE6 and below. See {@link IE6_CLASS_COMBINATIONS} for more detail. This
  * method doesn't reference {@link IE6_CLASS_COMBINATIONS} so that it can be
  * compiled out, but subclasses should return their IE6_CLASS_COMBINATIONS
- * static contasnt instead.
+ * static constant instead.
  * @return {Array.<Array.<string>>} Array of class name combinations.
  */
 goog.ui.ControlRenderer.prototype.getIe6ClassCombinations = function() {

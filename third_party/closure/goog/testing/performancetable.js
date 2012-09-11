@@ -17,6 +17,8 @@
  *
  * {@see goog.testing.benchmark} for an easy way to use this functionality.
  *
+ * @author attila@google.com (Attila Bodis)
+ * @author nicksantos@google.com (Nick Santos)
  */
 
 goog.provide('goog.testing.PerformanceTable');
@@ -130,7 +132,33 @@ goog.testing.PerformanceTable.prototype.round_ = function(num) {
  * @param {string=} opt_desc A description to associate with this run.
  */
 goog.testing.PerformanceTable.prototype.run = function(fn, opt_desc) {
-  var results = this.timer_.run(fn);
+  this.runTask(
+      new goog.testing.PerformanceTimer.Task((/** @type {function()} */ fn)),
+      opt_desc);
+};
+
+
+/**
+ * Run the given task with the performance timer, and show the results.
+ * @param {goog.testing.PerformanceTimer.Task} task The performance timer task
+ *     to run.
+ * @param {string=} opt_desc A description to associate with this run.
+ */
+goog.testing.PerformanceTable.prototype.runTask = function(task, opt_desc) {
+  var results = this.timer_.runTask(task);
+  this.recordResults(results, opt_desc);
+};
+
+
+/**
+ * Record a performance timer results object to the performance table. See
+ * {@code goog.testing.PerformanceTimer} for details of the format of this
+ * object.
+ * @param {Object} results The performance timer results object.
+ * @param {string=} opt_desc A description to associate with these results.
+ */
+goog.testing.PerformanceTable.prototype.recordResults = function(
+    results, opt_desc) {
   var average = results['average'];
   var standardDeviation = results['standardDeviation'];
   var isSuspicious = average < 0 || standardDeviation > average * .5;

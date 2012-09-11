@@ -18,8 +18,7 @@
 .goog-char-picker-hovercard {
   border: solid 5px #ffcc33;
   min-width: 64px;
-  max-width: 200px;
-  height: 64px;
+  max-width: 160px;
   padding: 16px;
   background-color: white;
   text-align: center;
@@ -27,7 +26,13 @@
   visibility: hidden;
 }
 
+.goog-char-picker-name {
+  font-size: x-small;
+}
+
 .goog-char-picker-unicode {
+  font-size: x-small;
+  color: GrayText;
 }
 
 .goog-char-picker-char-zoom {
@@ -108,7 +113,6 @@
   text-align: center;
   cursor: pointer;
   outline: none;
-  -moz-outline: none;
 }
 
 .goog-char-picker-grid .goog-flat-button-hover {

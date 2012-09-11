@@ -15,6 +15,8 @@
 
 /**
  * @fileoverview Represents a path used with a Graphics implementation.
+ * @author arv@google.com (Erik Arvidsson)
+ * @author glenning@google.com (Anthony Glenning)
  */
 
 goog.provide('goog.graphics.Path');
@@ -160,7 +162,7 @@ goog.graphics.Path.prototype.clear = function() {
 
 
 /**
- * Adds a point to the path by moving to the specified point. Repaeated moveTo
+ * Adds a point to the path by moving to the specified point. Repeated moveTo
  * commands are collapsed into a single moveTo.
  *
  * @param {number} x X coordinate of destination point.

@@ -15,6 +15,7 @@
 /**
  * @fileoverview A toolbar-style renderer for {@link goog.ui.ColorMenuButton}.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ToolbarColorMenuButtonRenderer');
@@ -52,6 +53,7 @@ goog.addSingletonGetter(goog.ui.ToolbarColorMenuButtonRenderer);
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
  * @return {Element} Caption element.
  * @see goog.ui.ToolbarColorMenuButtonRenderer#createColorIndicator
+ * @override
  */
 goog.ui.ToolbarColorMenuButtonRenderer.prototype.createCaption = function(
     content, dom) {
@@ -68,6 +70,7 @@ goog.ui.ToolbarColorMenuButtonRenderer.prototype.createCaption = function(
  * the new color.  Overrides {@link goog.ui.ButtonRenderer#setValue}.
  * @param {Element} element The button control's root element (if rendered).
  * @param {*} value New value; assumed to be a color spec string.
+ * @override
  */
 goog.ui.ToolbarColorMenuButtonRenderer.prototype.setValue = function(element,
     value) {
@@ -82,8 +85,9 @@ goog.ui.ToolbarColorMenuButtonRenderer.prototype.setValue = function(element,
  * Initializes the button's DOM when it enters the document.  Overrides the
  * superclass implementation by making sure the button's color indicator is
  * initialized.
- * @param {goog.ui.ColorMenuButton} button Button whose DOM is to be
+ * @param {goog.ui.Control} button goog.ui.ColorMenuButton whose DOM is to be
  *     initialized as it enters the document.
+ * @override
  */
 goog.ui.ToolbarColorMenuButtonRenderer.prototype.initializeDom = function(
     button) {

@@ -15,6 +15,7 @@
 /**
  * @fileoverview This represents a Gears worker (background process).
  *
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 goog.provide('goog.gears.Worker');

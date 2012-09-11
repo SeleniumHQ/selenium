@@ -14,6 +14,7 @@
 
 /**
  * @fileoverview JSON utility functions.
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 
@@ -116,6 +117,14 @@ goog.json.Replacer;
 
 
 /**
+ * JSON reviver, as defined in Section 15.12.2 of the ES5 spec.
+ *
+ * @typedef {function(this:Object, string, *): *}
+ */
+goog.json.Reviver;
+
+
+/**
  * Serializes an object or a value to a JSON string.
  *
  * @param {*} object The object to serialize.
@@ -127,8 +136,15 @@ goog.json.Replacer;
  * @return {string} A JSON string representation of the input.
  */
 goog.json.serialize = function(object, opt_replacer) {
-  // TODO(nicksantos): Change this to default to JSON.stringify when available.
-  // I need to fiddle with the default externs a bit to make this happen.
+  // NOTE(nicksantos): Currently, we never use JSON.stringify.
+  //
+  // The last time I evaluated this, JSON.stringify had subtle bugs and behavior
+  // differences on all browsers, and the performance win was not large enough
+  // to justify all the issues. This may change in the future as browser
+  // implementations get better.
+  //
+  // assertSerialize in json_test contains if branches for the cases
+  // that fail.
   return new goog.json.Serializer(opt_replacer).serialize(object);
 };
 
@@ -189,7 +205,7 @@ goog.json.Serializer.prototype.serialize_ = function(object, sb) {
         break;
       }
       if (goog.isArray(object)) {
-        this.serializeArray_((/** @type {!Array} */ object), sb);
+        this.serializeArray((/** @type {!Array} */ object), sb);
         break;
       }
       // should we allow new String, new Number and new Boolean to be treated
@@ -280,11 +296,11 @@ goog.json.Serializer.prototype.serializeNumber_ = function(n, sb) {
 
 /**
  * Serializes an array to a JSON string
- * @private
  * @param {Array} arr The array to serialize.
  * @param {Array} sb Array used as a string builder.
+ * @protected
  */
-goog.json.Serializer.prototype.serializeArray_ = function(arr, sb) {
+goog.json.Serializer.prototype.serializeArray = function(arr, sb) {
   var l = arr.length;
   sb.push('[');
   var sep = '';

@@ -19,11 +19,13 @@
 
 goog.provide('goog.positioning.ClientPosition');
 
+goog.require('goog.asserts');
 goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.positioning');
 goog.require('goog.positioning.AbstractPosition');
+goog.require('goog.style');
 
 
 
@@ -55,21 +57,32 @@ goog.inherits(goog.positioning.ClientPosition,
 /**
  * Repositions the popup according to the current state
  *
- * @param {Element} element The DOM element of the popup.
- * @param {goog.positioning.Corner} popupCorner The corner of the popup
- *     element that that should be positioned adjacent to the anchorElement.
- *     One of the goog.positioning.Corner constants.
+ * @param {Element} movableElement The DOM element of the popup.
+ * @param {goog.positioning.Corner} movableElementCorner The corner of
+ *     the popup element that that should be positioned adjacent to
+ *     the anchorElement.  One of the goog.positioning.Corner
+ *     constants.
  * @param {goog.math.Box=} opt_margin A margin specified in pixels.
  * @param {goog.math.Size=} opt_preferredSize Preferred size of the element.
+ * @override
  */
 goog.positioning.ClientPosition.prototype.reposition = function(
-    element, popupCorner, opt_margin, opt_preferredSize) {
+    movableElement, movableElementCorner, opt_margin, opt_preferredSize) {
+  goog.asserts.assert(movableElement);
 
-  var viewportElt = goog.style.getClientViewportElement(element);
-  var clientPos = new goog.math.Coordinate(
-      this.coordinate.x + viewportElt.scrollLeft,
-      this.coordinate.y + viewportElt.scrollTop);
-  goog.positioning.positionAtAnchor(
-      viewportElt, goog.positioning.Corner.TOP_LEFT, element, popupCorner,
-      clientPos, opt_margin, null, opt_preferredSize);
+  // Translates the coordinate to be relative to the page.
+  var viewportOffset = goog.style.getViewportPageOffset(
+      goog.dom.getOwnerDocument(movableElement));
+  var x = this.coordinate.x + viewportOffset.x;
+  var y = this.coordinate.y + viewportOffset.y;
+
+  // Translates the coordinate to be relative to the offset parent.
+  var movableParentTopLeft =
+      goog.positioning.getOffsetParentPageOffset(movableElement);
+  x -= movableParentTopLeft.x;
+  y -= movableParentTopLeft.y;
+
+  goog.positioning.positionAtCoordinate(
+      new goog.math.Coordinate(x, y), movableElement, movableElementCorner,
+      opt_margin, null, null, opt_preferredSize);
 };

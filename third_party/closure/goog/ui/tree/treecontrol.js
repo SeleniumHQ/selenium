@@ -16,6 +16,10 @@
  * @fileoverview Definition of the goog.ui.tree.TreeControl class, which
  * provides a way to view a hierarchical set of data.
  *
+ * @author arv@google.com (Erik Arvidsson)
+ * @author eae@google.com (Emil A Eklund)
+ * @author jonp@google.com (Jon Perlow)
+ * @author annams@google.com (Srinivas Annam)
  *
  * This is a based on the webfx tree control. It since been updated to add
  * typeahead support, as well as accessibility support using ARIA framework.
@@ -166,6 +170,7 @@ goog.ui.tree.TreeControl.prototype.getDepth = function() {
 
 /**
  * Expands the parent chain of this node so that it is visible.
+ * @override
  */
 goog.ui.tree.TreeControl.prototype.reveal = function() {
   // always expanded by default
@@ -262,6 +267,7 @@ goog.ui.tree.TreeControl.prototype.getRowClassName = function() {
 /**
  * Returns the source for the icon.
  * @return {string} Src for the icon.
+ * @override
  */
 goog.ui.tree.TreeControl.prototype.getCalculatedIconClass = function() {
   var expanded = this.getExpanded();
@@ -447,6 +453,7 @@ goog.ui.tree.TreeControl.prototype.getShowRootNode = function() {
 /**
  * Add roles and states.
  * @protected
+ * @override
  */
 goog.ui.tree.TreeControl.prototype.initAccessibility = function() {
   goog.ui.tree.TreeControl.superClass_.initAccessibility.call(this);
@@ -626,7 +633,6 @@ goog.ui.tree.TreeControl.prototype.clearTypeAhead = function() {
  * A default configuration for the tree.
  */
 goog.ui.tree.TreeControl.defaultConfig = {
-  cleardotPath: 'images/cleardot.gif',
   indentWidth: 19,
   cssRoot: goog.getCssName('goog-tree-root') + ' ' +
       goog.getCssName('goog-tree-item'),

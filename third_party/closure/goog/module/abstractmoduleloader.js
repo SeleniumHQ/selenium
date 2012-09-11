@@ -35,7 +35,7 @@ goog.module.AbstractModuleLoader = function() {};
  * @param {Object} moduleInfoMap A mapping from module id to ModuleInfo object.
  * @param {function()?=} opt_successFn The callback if module loading is a
  *     success.
- * @param {function(number)?=} opt_errorFn The callback if module loading is an
+ * @param {function(?number)?=} opt_errorFn The callback if module loading is an
  *     error.
  * @param {function()?=} opt_timeoutFn The callback if module loading times out.
  * @param {boolean=} opt_forceReload Whether to bypass cache while loading the
@@ -44,3 +44,13 @@ goog.module.AbstractModuleLoader = function() {};
 goog.module.AbstractModuleLoader.prototype.loadModules = function(
     ids, moduleInfoMap, opt_successFn, opt_errorFn, opt_timeoutFn,
     opt_forceReload) {};
+
+
+/**
+ * Pre-fetches a JavaScript module.
+ *
+ * @param {string} id The module id.
+ * @param {!goog.module.ModuleInfo} moduleInfo The module info.
+ */
+goog.module.AbstractModuleLoader.prototype.prefetchModule = function(
+    id, moduleInfo) {};

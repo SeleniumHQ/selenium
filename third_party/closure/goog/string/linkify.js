@@ -93,6 +93,28 @@ goog.string.linkify.linkifyPlainText = function(text, opt_attributes) {
 
 
 /**
+ * Gets the first URI in text.
+ * @param {string} text Plain text.
+ * @return {string} The first URL, or an empty string if not found.
+ */
+goog.string.linkify.findFirstUrl = function(text) {
+  var link = text.match(goog.string.linkify.URL_);
+  return link != null ? link[0] : '';
+};
+
+
+/**
+ * Gets the first email address in text.
+ * @param {string} text Plain text.
+ * @return {string} The first email address, or an empty string if not found.
+ */
+goog.string.linkify.findFirstEmail = function(text) {
+  var email = text.match(goog.string.linkify.EMAIL_);
+  return email != null ? email[0] : '';
+};
+
+
+/**
  * @type {string}
  * @const
  * @private
@@ -116,7 +138,7 @@ goog.string.linkify.ENDS_WITH_PUNCTUATION_RE_ =
  * @private
  */
 goog.string.linkify.ACCEPTABLE_URL_CHARS_ =
-    goog.string.linkify.ENDING_PUNCTUATION_CHARS_ + '\\w/~%&=+#-@';
+    goog.string.linkify.ENDING_PUNCTUATION_CHARS_ + '\\w/~%&=+#-@!';
 
 
 /**

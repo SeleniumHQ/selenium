@@ -97,15 +97,6 @@ goog.testing.TestRunner.prototype.strict_ = true;
  * @param {goog.testing.TestCase} testCase The test case to initialize with.
  */
 goog.testing.TestRunner.prototype.initialize = function(testCase) {
-  if (!this.logEl_) {
-    var el = document.getElementById('closureTestRunnerLog');
-    if (el == null) {
-      el = document.createElement('div');
-      document.body.appendChild(el);
-    }
-    this.logEl_ = el;
-  }
-
   if (this.testCase && this.testCase.running) {
     throw Error('The test runner is already waiting for a test to complete');
   }
@@ -277,12 +268,22 @@ goog.testing.TestRunner.prototype.onComplete_ = function() {
     log += '\n' + this.errors.join('\n');
   }
 
+  if (!this.logEl_) {
+    var el = document.getElementById('closureTestRunnerLog');
+    if (el == null) {
+      el = document.createElement('div');
+      document.body.appendChild(el);
+    }
+    this.logEl_ = el;
+  }
+
   // Remove all children from the log element.
   var logEl = this.logEl_;
   while (logEl.firstChild) {
     logEl.removeChild(logEl.firstChild);
   }
 
+  // Highlight the page to indicate the overall outcome.
   this.writeLog(log);
 
   var runAgainLink = document.createElement('a');
@@ -363,11 +364,23 @@ goog.testing.TestRunner.prototype.writeLog = function(log) {
 
     div.style.color = color;
     div.style.font = 'normal 100% monospace';
+    if (i == 0) {
+      // Highlight the first line as a header that indicates the test outcome.
+      div.style.padding = '20px';
+      div.style.marginBottom = '10px';
+      if (isFailOrError) {
+        div.style.border = '5px solid ' + color;
+        div.style.backgroundColor = '#ffeeee';
+      } else {
+        div.style.border = '1px solid black';
+        div.style.backgroundColor = '#eeffee';
+      }
+    }
 
     try {
       div.style.whiteSpace = 'pre-wrap';
     } catch (e) {
-      // NOTE(user): IE raises an exception when assigning to pre-wrap.
+      // NOTE(brenneman): IE raises an exception when assigning to pre-wrap.
       // Thankfully, it doesn't collapse whitespace when using monospace fonts,
       // so it will display correctly if we ignore the exception.
     }

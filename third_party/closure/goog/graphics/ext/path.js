@@ -51,7 +51,8 @@ goog.graphics.ext.Path.prototype.bounds_ = null;
 
 /**
  * Clones the path.
- * @return {goog.graphics.ext.Path} A clone of this path.
+ * @return {!goog.graphics.ext.Path} A clone of this path.
+ * @override
  */
 goog.graphics.ext.Path.prototype.clone = function() {
   var output = /** @type {goog.graphics.ext.Path} */
@@ -65,7 +66,8 @@ goog.graphics.ext.Path.prototype.clone = function() {
  * Transforms the path. Only simple paths are transformable. Attempting
  * to transform a non-simple path will throw an error.
  * @param {!goog.graphics.AffineTransform} tx The transformation to perform.
- * @return {goog.graphics.ext.Path} The path itself.
+ * @return {!goog.graphics.ext.Path} The path itself.
+ * @override
  */
 goog.graphics.ext.Path.prototype.transform = function(tx) {
   goog.graphics.ext.Path.superClass_.transform.call(this, tx);

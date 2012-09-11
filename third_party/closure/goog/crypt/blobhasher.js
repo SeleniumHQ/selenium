@@ -42,7 +42,7 @@ goog.require('goog.fs');
 /**
  * Construct the hash computer.
  *
- * @param {goog.crypt.Hash} hashFn The hash function to use.
+ * @param {!goog.crypt.Hash} hashFn The hash function to use.
  * @param {number=} opt_blockSize Processing block size.
  * @constructor
  * @extends {goog.events.EventTarget}
@@ -52,7 +52,7 @@ goog.crypt.BlobHasher = function(hashFn, opt_blockSize) {
 
   /**
    * The actual hash function.
-   * @type {goog.crypt.Hash}
+   * @type {!goog.crypt.Hash}
    * @private
    */
   this.hashFn_ = hashFn;
@@ -94,7 +94,7 @@ goog.crypt.BlobHasher = function(hashFn, opt_blockSize) {
 
   /**
    * The logger used by this object.
-   * @type {goog.debug.Logger}
+   * @type {!goog.debug.Logger}
    * @private
    */
   this.logger_ = goog.debug.Logger.getLogger('goog.crypt.BlobHasher');
@@ -117,7 +117,7 @@ goog.crypt.BlobHasher.EventType = {
 
 /**
  * Start the hash computation.
- * @param {Blob} blob The blob of data to compute the hash for.
+ * @param {!Blob} blob The blob of data to compute the hash for.
  */
 goog.crypt.BlobHasher.prototype.hash = function(blob) {
   this.abort();

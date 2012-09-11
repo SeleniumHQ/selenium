@@ -14,6 +14,7 @@
 
 /**
  * @fileoverview Action event wrapper implementation.
+ * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.events.actionEventWrapper');
@@ -73,6 +74,7 @@ goog.events.ActionEventWrapper_.EVENT_TYPES_ = [
  * @param {Object=} opt_scope Element in whose scope to call the listener.
  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
  *     listener to.
+ * @override
  */
 goog.events.ActionEventWrapper_.prototype.listen = function(target, listener,
     opt_capt, opt_scope, opt_eventHandler) {
@@ -113,6 +115,7 @@ goog.events.ActionEventWrapper_.prototype.listen = function(target, listener,
  * @param {Object=} opt_scope Element in whose scope to call the listener.
  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
  *     listener from.
+ * @override
  */
 goog.events.ActionEventWrapper_.prototype.unlisten = function(target, listener,
     opt_capt, opt_scope, opt_eventHandler) {

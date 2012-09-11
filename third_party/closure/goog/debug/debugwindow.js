@@ -23,6 +23,7 @@ goog.provide('goog.debug.DebugWindow');
 
 goog.require('goog.debug.HtmlFormatter');
 goog.require('goog.debug.LogManager');
+goog.require('goog.debug.Logger');
 goog.require('goog.structs.CircularBuffer');
 goog.require('goog.userAgent');
 
@@ -237,10 +238,6 @@ goog.debug.DebugWindow.prototype.setEnabled = function(enable) {
 
   if (this.enabled_) {
     this.openWindow_();
-
-    if (this.win_) {
-      this.writeInitialDocument_();
-    }
   }
 
   this.setCookie_('enabled', enable ? '1' : '0');
@@ -330,7 +327,7 @@ goog.debug.DebugWindow.prototype.hasActiveWindow = function() {
 goog.debug.DebugWindow.prototype.clear_ = function() {
   this.savedMessages_.clear();
   if (this.hasActiveWindow()) {
-    this.writeInitialDocument_();
+    this.writeInitialDocument();
   }
 };
 
@@ -382,20 +379,19 @@ goog.debug.DebugWindow.prototype.writeToLog_ = function(html) {
   goog.global.clearTimeout(this.bufferTimeout_);
 
   if (goog.now() - this.lastCall_ > 750) {
-    this.writeBufferToLog_();
+    this.writeBufferToLog();
   } else {
     this.bufferTimeout_ =
-        goog.global.setTimeout(goog.bind(this.writeBufferToLog_, this), 250);
+        goog.global.setTimeout(goog.bind(this.writeBufferToLog, this), 250);
   }
 };
 
 
 /**
- * Write to the log and maybe scroll into view
+ * Write to the log and maybe scroll into view.
  * @protected
- * @suppress {underscore}
  */
-goog.debug.DebugWindow.prototype.writeBufferToLog_ = function() {
+goog.debug.DebugWindow.prototype.writeBufferToLog = function() {
   this.lastCall_ = goog.now();
   if (this.hasActiveWindow()) {
     var body = this.win_.document.body;
@@ -457,7 +453,7 @@ goog.debug.DebugWindow.prototype.openWindow_ = function() {
   this.winOpening_ = false;
 
   if (this.win_) {
-    this.writeInitialDocument_();
+    this.writeInitialDocument();
   }
 };
 
@@ -490,12 +486,11 @@ goog.debug.DebugWindow.prototype.getStyleRules = function() {
 
 
 /**
- * Writes the initial HTML of the debug window
+ * Writes the initial HTML of the debug window.
  * @protected
- * @suppress {underscore}
  */
-goog.debug.DebugWindow.prototype.writeInitialDocument_ = function() {
-  if (this.hasActiveWindow()) {
+goog.debug.DebugWindow.prototype.writeInitialDocument = function() {
+  if (!this.hasActiveWindow()) {
     return;
   }
 
@@ -513,14 +508,14 @@ goog.debug.DebugWindow.prototype.writeInitialDocument_ = function() {
 
 /**
  * Save persistent data (using cookies) for 1 month (cookie specific to this
- * logger object)
+ * logger object).
  * @param {string} key Data name.
  * @param {string} value Data value.
  * @private
  */
 goog.debug.DebugWindow.prototype.setCookie_ = function(key, value) {
-  key += this.identifier_;
-  document.cookie = key + '=' + encodeURIComponent(value) +
+  var fullKey = goog.debug.DebugWindow.getCookieKey_(this.identifier_, key);
+  document.cookie = fullKey + '=' + encodeURIComponent(value) +
       ';path=/;expires=' +
       (new Date(goog.now() + goog.debug.DebugWindow.COOKIE_TIME)).toUTCString();
 };
@@ -540,6 +535,23 @@ goog.debug.DebugWindow.prototype.getCookie_ = function(key, opt_default) {
 
 
 /**
+ * Creates a valid cookie key name which is scoped to the given identifier.
+ * Substitutes all occurences of invalid cookie name characters (whitespace,
+ * ';', and '=') with '_', which is a valid and readable alternative.
+ * @see goog.net.Cookies#isValidName
+ * @see <a href="http://tools.ietf.org/html/rfc2109">RFC 2109</a>
+ * @param {string} identifier Identifier for logging class.
+ * @param {string} key Data name.
+ * @return {string} Cookie key name.
+ * @private
+ */
+goog.debug.DebugWindow.getCookieKey_ = function(identifier, key) {
+  var fullKey = key + identifier;
+  return fullKey.replace(/[;=\s]/g, '_');
+};
+
+
+/**
  * Retrieve data (using cookies).
  * @param {string} identifier Identifier for logging class.
  * @param {string} key Data name.
@@ -549,7 +561,7 @@ goog.debug.DebugWindow.prototype.getCookie_ = function(key, opt_default) {
  */
 goog.debug.DebugWindow.getCookieValue_ = function(
     identifier, key, opt_default) {
-  var fullKey = key + identifier;
+  var fullKey = goog.debug.DebugWindow.getCookieKey_(identifier, key);
   var cookie = String(document.cookie);
   var start = cookie.indexOf(fullKey + '=');
   if (start != -1) {
@@ -602,4 +614,17 @@ goog.debug.DebugWindow.prototype.addFilter = function(loggerName) {
  */
 goog.debug.DebugWindow.prototype.removeFilter = function(loggerName) {
   delete this.filteredLoggers_[loggerName];
+};
+
+
+/**
+ * Modify the size of the circular buffer. Allows the log to retain more
+ * information while the window is closed.
+ * @param {number} size New size of the circular buffer.
+ */
+goog.debug.DebugWindow.prototype.resetBufferWithNewSize = function(size) {
+  if (size > 0 && size < 50000) {
+    this.clear_();
+    this.savedMessages_ = new goog.structs.CircularBuffer(size);
+  }
 };

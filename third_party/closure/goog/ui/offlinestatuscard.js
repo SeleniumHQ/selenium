@@ -262,6 +262,7 @@ goog.ui.OfflineStatusCard.prototype.setStatus = function(status) {
 
 /**
  * Creates the initial DOM representation for the component.
+ * @override
  */
 goog.ui.OfflineStatusCard.prototype.createDom = function() {
   var dom = this.getDomHelper();

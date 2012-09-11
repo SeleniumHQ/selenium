@@ -95,6 +95,7 @@ goog.fx.AnimationQueue.prototype.onAnimationFinish = goog.abstractMethod;
 
 /**
  * Disposes of the animations.
+ * @override
  */
 goog.fx.AnimationQueue.prototype.disposeInternal = function() {
   goog.array.forEach(this.queue, function(animation) {

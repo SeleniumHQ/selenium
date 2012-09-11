@@ -140,6 +140,7 @@ goog.structs.AvlTree.prototype.count_ = 0;
  *
  * @param {*} value Value to insert into the tree.
  * @return {boolean} Whether value was inserted into the tree.
+ * @override
  */
 goog.structs.AvlTree.prototype.add = function(value) {
   // If the tree is empty, create a root node with the specified value
@@ -201,6 +202,7 @@ goog.structs.AvlTree.prototype.add = function(value) {
  * @param {*} value Value to find and remove from the tree.
  * @return {*} The value of the removed node or null if the value was not in
  *     the tree.
+ * @override
  */
 goog.structs.AvlTree.prototype.remove = function(value) {
   // Assume the value is not removed and set the value when it is removed
@@ -248,6 +250,7 @@ goog.structs.AvlTree.prototype.clear = function() {
  *
  * @param {*} value Value to find in the tree.
  * @return {boolean} Whether the tree contains a node with the specified value.
+ * @override
  */
 goog.structs.AvlTree.prototype.contains = function(value) {
   // Assume the value is not in the tree and set this value if it is found
@@ -275,6 +278,7 @@ goog.structs.AvlTree.prototype.contains = function(value) {
  * Returns the number of values stored in the tree.
  *
  * @return {number} The number of values stored in the tree.
+ * @override
  */
 goog.structs.AvlTree.prototype.getCount = function() {
   return this.count_;

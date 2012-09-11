@@ -49,42 +49,42 @@ goog.debug.Formatter = function(opt_prefix) {
 
 
 /**
- * Whether to show absolute time in the DebugWindow
+ * Whether to show absolute time in the DebugWindow.
  * @type {boolean}
  */
 goog.debug.Formatter.prototype.showAbsoluteTime = true;
 
 
 /**
- * Whether to show relative time in the DebugWindow
+ * Whether to show relative time in the DebugWindow.
  * @type {boolean}
  */
 goog.debug.Formatter.prototype.showRelativeTime = true;
 
 
 /**
- * Whether to show the logger name in the DebugWindow
+ * Whether to show the logger name in the DebugWindow.
  * @type {boolean}
  */
 goog.debug.Formatter.prototype.showLoggerName = true;
 
 
 /**
- * Whether to show the logger exception text
+ * Whether to show the logger exception text.
  * @type {boolean}
  */
 goog.debug.Formatter.prototype.showExceptionText = false;
 
 
 /**
- * Whether to show the severity level
+ * Whether to show the severity level.
  * @type {boolean}
  */
 goog.debug.Formatter.prototype.showSeverityLevel = false;
 
 
 /**
- * Formats a record
+ * Formats a record.
  * @param {goog.debug.LogRecord} logRecord the logRecord to format.
  * @return {string} The formatted string.
  */
@@ -203,6 +203,7 @@ goog.inherits(goog.debug.HtmlFormatter, goog.debug.Formatter);
 /**
  * Whether to show the logger exception text
  * @type {boolean}
+ * @override
  */
 goog.debug.HtmlFormatter.prototype.showExceptionText = true;
 
@@ -211,6 +212,7 @@ goog.debug.HtmlFormatter.prototype.showExceptionText = true;
  * Formats a record
  * @param {goog.debug.LogRecord} logRecord the logRecord to format.
  * @return {string} The formatted string as html.
+ * @override
  */
 goog.debug.HtmlFormatter.prototype.formatRecord = function(logRecord) {
   var className;
@@ -285,6 +287,7 @@ goog.inherits(goog.debug.TextFormatter, goog.debug.Formatter);
  * Formats a record as text
  * @param {goog.debug.LogRecord} logRecord the logRecord to format.
  * @return {string} The formatted string.
+ * @override
  */
 goog.debug.TextFormatter.prototype.formatRecord = function(logRecord) {
   // Build message html

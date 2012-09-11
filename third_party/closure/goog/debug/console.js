@@ -99,26 +99,21 @@ goog.debug.Console.prototype.addLogRecord = function(logRecord) {
 
   var record = this.formatter_.formatRecord(logRecord);
   var console = goog.debug.Console.console_;
-  if (console && console['firebug']) {
-    // NOTE(user): info, error, warn and debug aren't in the externs and are
-    // only available to FireBug, so we need to reference them by array
-    // notation to stop the compiler complaining.
+  if (console) {
     switch (logRecord.getLevel()) {
       case goog.debug.Logger.Level.SHOUT:
-        console['info'](record);
+        goog.debug.Console.logToConsole_(console, 'info', record);
         break;
       case goog.debug.Logger.Level.SEVERE:
-        console['error'](record);
+        goog.debug.Console.logToConsole_(console, 'error', record);
         break;
       case goog.debug.Logger.Level.WARNING:
-        console['warn'](record);
+        goog.debug.Console.logToConsole_(console, 'warn', record);
         break;
       default:
-        console['debug'](record);
+        goog.debug.Console.logToConsole_(console, 'debug', record);
         break;
     }
-  } else if (console) {
-    console.log(record);
   } else if (window.opera) {
     // window.opera.postError is considered an undefined property reference
     // by JSCompiler, so it has to be referenced using array notation instead.
@@ -157,7 +152,7 @@ goog.debug.Console.instance = null;
 /**
  * The console to which to log.  This is a property so it can be mocked out in
  * unit testing.
- * @type {!Object}
+ * @type {Object}
  * @private
  */
 goog.debug.Console.console_ = window.console;
@@ -183,4 +178,21 @@ goog.debug.Console.autoInstall = function() {
  */
 goog.debug.Console.show = function() {
   alert(goog.debug.Console.instance.logBuffer_);
+};
+
+
+/**
+ * Logs the record to the console using the given function.  If the function is
+ * not available on the console object, the log function is used instead.
+ * @param {!Object} console The console object.
+ * @param {string} fnName The name of the function to use.
+ * @param {string} record The record to log.
+ * @private
+ */
+goog.debug.Console.logToConsole_ = function(console, fnName, record) {
+  if (console[fnName]) {
+    console[fnName](record);
+  } else {
+    console.log(record);
+  }
 };

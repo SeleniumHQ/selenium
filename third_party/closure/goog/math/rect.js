@@ -100,6 +100,7 @@ if (goog.DEBUG) {
   /**
    * Returns a nice string representing size and dimensions of rectangle.
    * @return {string} In the form (50, 73 - 75w x 25h).
+   * @override
    */
   goog.math.Rect.prototype.toString = function() {
     return '(' + this.left + ', ' + this.top + ' - ' + this.width + 'w x ' +

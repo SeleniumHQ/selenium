@@ -66,11 +66,20 @@ goog.net.BulkLoader.prototype.logger_ =
 
 
 /**
- * Gets the response texts.
+ * Gets the response texts, in order.
  * @return {Array.<string>} The response texts.
  */
 goog.net.BulkLoader.prototype.getResponseTexts = function() {
   return this.helper_.getResponseTexts();
+};
+
+
+/**
+ * Gets the request Uris.
+ * @return {Array.<string>} The request URIs, in order.
+ */
+goog.net.BulkLoader.prototype.getRequestUris = function() {
+  return this.helper_.getUris();
 };
 
 

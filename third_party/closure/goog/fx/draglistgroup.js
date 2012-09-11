@@ -690,12 +690,12 @@ goog.fx.DragListGroup.prototype.handleDragMove_ = function(dragEvent) {
 goog.fx.DragListGroup.prototype.cleanup_ = function(opt_e) {
   this.cleanupDragDom_();
 
-  delete this.currDragItem_;
-  delete this.currHoverList_;
-  delete this.origList_;
-  delete this.origNextItem_;
-  delete this.draggerEl_;
-  delete this.dragger_;
+  this.currDragItem_ = null;
+  this.currHoverList_ = null;
+  this.origList_ = null;
+  this.origNextItem_ = null;
+  this.draggerEl_ = null;
+  this.dragger_ = null;
 
   // Note: IE doesn't allow 'delete' for fields on HTML elements (because
   // they're not real JS objects in IE), so we just set them to null.
@@ -918,7 +918,7 @@ goog.fx.DragListGroup.prototype.isInRect_ = function(pos, rect) {
  */
 goog.fx.DragListGroup.prototype.updateCurrHoverItem = function(
     hoverNextItem, opt_draggerElCenter) {
-  if (goog.isDefAndNotNull(hoverNextItem)) {
+  if (hoverNextItem) {
     this.currHoverItem_ = hoverNextItem;
   }
 };

@@ -15,6 +15,7 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.MenuSeparator}s.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.MenuSeparatorRenderer');
@@ -49,8 +50,9 @@ goog.ui.MenuSeparatorRenderer.CSS_CLASS = goog.getCssName('goog-menuseparator');
 /**
  * Returns an empty, styled menu separator DIV.  Overrides {@link
  * goog.ui.ControlRenderer#createDom}.
- * @param {goog.ui.Separator} separator Separator to render.
+ * @param {goog.ui.Control} separator goog.ui.Separator to render.
  * @return {Element} Root element for the separator.
+ * @override
  */
 goog.ui.MenuSeparatorRenderer.prototype.createDom = function(separator) {
   return separator.getDomHelper().createDom('div', this.getCssClass());
@@ -60,9 +62,11 @@ goog.ui.MenuSeparatorRenderer.prototype.createDom = function(separator) {
 /**
  * Takes an existing element, and decorates it with the separator.  Overrides
  * {@link goog.ui.ControlRenderer#decorate}.
- * @param {goog.ui.Separator} separator Separator to decorate the element.
+ * @param {goog.ui.Control} separator goog.ui.MenuSeparator to decorate the
+ *     element.
  * @param {Element} element Element to decorate.
  * @return {Element} Decorated element.
+ * @override
  */
 goog.ui.MenuSeparatorRenderer.prototype.decorate = function(separator,
                                                             element) {
@@ -90,6 +94,7 @@ goog.ui.MenuSeparatorRenderer.prototype.decorate = function(separator,
  * @param {Element} separator The separator's root element.
  * @param {goog.ui.ControlContent} content Text caption or DOM structure to be
  *    set as the separators's content (ignored).
+ * @override
  */
 goog.ui.MenuSeparatorRenderer.prototype.setContent = function(separator,
                                                               content) {
@@ -101,6 +106,7 @@ goog.ui.MenuSeparatorRenderer.prototype.setContent = function(separator,
  * Returns the CSS class to be applied to the root element of components
  * rendered using this renderer.
  * @return {string} Renderer-specific CSS class.
+ * @override
  */
 goog.ui.MenuSeparatorRenderer.prototype.getCssClass = function() {
   return goog.ui.MenuSeparatorRenderer.CSS_CLASS;

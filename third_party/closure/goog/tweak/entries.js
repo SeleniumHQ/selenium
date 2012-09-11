@@ -214,6 +214,7 @@ goog.tweak.BaseSetting.InitializeState_ = {
  * The logger for this class.
  * @type {!goog.debug.Logger}
  * @protected
+ * @override
  */
 goog.tweak.BaseSetting.prototype.logger =
     goog.debug.Logger.getLogger('goog.tweak.BaseSetting');
@@ -364,6 +365,7 @@ goog.inherits(goog.tweak.BasePrimitiveSetting, goog.tweak.BaseSetting);
  * The logger for this class.
  * @type {!goog.debug.Logger}
  * @protected
+ * @override
  */
 goog.tweak.BasePrimitiveSetting.prototype.logger =
     goog.debug.Logger.getLogger('goog.tweak.BasePrimitiveSetting');
@@ -478,6 +480,7 @@ goog.inherits(goog.tweak.StringSetting, goog.tweak.BasePrimitiveSetting);
  * The logger for this class.
  * @type {!goog.debug.Logger}
  * @protected
+ * @override
  */
 goog.tweak.StringSetting.prototype.logger =
     goog.debug.Logger.getLogger('goog.tweak.StringSetting');
@@ -521,7 +524,7 @@ goog.tweak.StringSetting.prototype.getDefaultValue;
 /**
  * @override
  */
-goog.tweak.StringSetting.prototype.encodeNewValue = function(value) {
+goog.tweak.StringSetting.prototype.encodeNewValue = function() {
   return this.getNewValue();
 };
 
@@ -601,6 +604,7 @@ goog.inherits(goog.tweak.NumericSetting, goog.tweak.BasePrimitiveSetting);
  * The logger for this class.
  * @type {!goog.debug.Logger}
  * @protected
+ * @override
  */
 goog.tweak.NumericSetting.prototype.logger =
     goog.debug.Logger.getLogger('goog.tweak.NumericSetting');
@@ -718,6 +722,7 @@ goog.inherits(goog.tweak.BooleanSetting, goog.tweak.BasePrimitiveSetting);
  * The logger for this class.
  * @type {!goog.debug.Logger}
  * @protected
+ * @override
  */
 goog.tweak.BooleanSetting.prototype.logger =
     goog.debug.Logger.getLogger('goog.tweak.BooleanSetting');
@@ -817,6 +822,7 @@ goog.inherits(goog.tweak.BooleanInGroupSetting, goog.tweak.BooleanSetting);
  * The logger for this class.
  * @type {!goog.debug.Logger}
  * @protected
+ * @override
  */
 goog.tweak.BooleanInGroupSetting.prototype.logger =
     goog.debug.Logger.getLogger('goog.tweak.BooleanInGroupSetting');
@@ -895,6 +901,7 @@ goog.inherits(goog.tweak.BooleanGroup, goog.tweak.BaseSetting);
  * The logger for this class.
  * @type {!goog.debug.Logger}
  * @protected
+ * @override
  */
 goog.tweak.BooleanGroup.prototype.logger =
     goog.debug.Logger.getLogger('goog.tweak.BooleanGroup');

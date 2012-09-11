@@ -105,7 +105,10 @@ goog.inherits(goog.messaging.PortChannel, goog.messaging.AbstractChannel);
 goog.messaging.PortChannel.forEmbeddedWindow = function(
     window, peerOrigin, opt_timer) {
   var timer = opt_timer || new goog.Timer(50);
-  var deferred = new goog.async.Deferred(goog.partial(goog.dispose, timer));
+
+  var disposeTimer = goog.partial(goog.dispose, timer);
+  var deferred = new goog.async.Deferred(disposeTimer);
+  deferred.addBoth(disposeTimer);
 
   timer.start();
   // Every tick, attempt to set up a connection by sending in one end of an
@@ -213,6 +216,7 @@ goog.messaging.PortChannel.REQUIRES_SERIALIZATION_ = goog.userAgent.WEBKIT &&
  * Logger for this class.
  * @type {goog.debug.Logger}
  * @protected
+ * @override
  */
 goog.messaging.PortChannel.prototype.logger =
     goog.debug.Logger.getLogger('goog.messaging.PortChannel');

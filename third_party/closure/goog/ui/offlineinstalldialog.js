@@ -628,6 +628,7 @@ goog.ui.OfflineInstallDialog.EnableScreen.prototype.enableOnEnter = true;
 
 /**
  * @return {goog.ui.Dialog.ButtonSet} The button set for the enable screen.
+ * @override
  */
 goog.ui.OfflineInstallDialog.EnableScreen.prototype.getButtonSet = function() {
   if (!this.buttonSet_) {
@@ -780,6 +781,7 @@ goog.ui.OfflineInstallDialog.InstallScreen.prototype.isInstallButtonDefault =
 
 /**
  * @return {goog.ui.Dialog.ButtonSet} The button set for the install screen.
+ * @override
  */
 goog.ui.OfflineInstallDialog.InstallScreen.prototype.getButtonSet = function() {
   if (!this.buttonSet_) {
@@ -955,6 +957,7 @@ goog.ui.OfflineInstallDialog.UpgradeScreen.prototype.isUpgradeButtonDefault =
 
 /**
  * @return {goog.ui.Dialog.ButtonSet} The button set for the upgrade screen.
+ * @override
  */
 goog.ui.OfflineInstallDialog.UpgradeScreen.prototype.getButtonSet = function() {
   if (!this.buttonSet_) {
@@ -1023,6 +1026,7 @@ goog.ui.OfflineInstallDialog.InstallingGearsScreen.prototype.boldClassName_ =
  * Gets the button set for the dialog when the user is suposed to be installing
  * Gears.
  * @return {goog.ui.Dialog.ButtonSet} The button set.
+ * @override
  */
 goog.ui.OfflineInstallDialog.InstallingGearsScreen.prototype.getButtonSet =
     function() {
@@ -1046,6 +1050,7 @@ goog.ui.OfflineInstallDialog.InstallingGearsScreen.prototype.getButtonSet =
  * Gets the content for the dialog when the user is suposed to be installing
  * Gears.
  * @return {string} The content of the dialog as html.
+ * @override
  */
 goog.ui.OfflineInstallDialog.InstallingGearsScreen.prototype.getContent =
     function() {

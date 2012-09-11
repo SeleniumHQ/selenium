@@ -15,6 +15,7 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.Toolbar}s.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ToolbarRenderer');
@@ -65,6 +66,7 @@ goog.ui.ToolbarRenderer.prototype.getAriaRole = function() {
  * @param {Element} element Element to decorate.
  * @return {goog.ui.Control?} A new control suitable to decorate the element
  *     (null if none).
+ * @override
  */
 goog.ui.ToolbarRenderer.prototype.getDecoratorForChild = function(element) {
   return element.tagName == 'HR' ?
@@ -78,6 +80,7 @@ goog.ui.ToolbarRenderer.prototype.getDecoratorForChild = function(element) {
  * Returns the CSS class to be applied to the root element of containers
  * rendered using this renderer.
  * @return {string} Renderer-specific CSS class.
+ * @override
  */
 goog.ui.ToolbarRenderer.prototype.getCssClass = function() {
   return goog.ui.ToolbarRenderer.CSS_CLASS;
@@ -89,6 +92,7 @@ goog.ui.ToolbarRenderer.prototype.getCssClass = function() {
  * renderer.  This implementation returns {@code HORIZONTAL}.
  * @return {goog.ui.Container.Orientation} Default orientation for containers
  *     created or decorated by this renderer.
+ * @override
  */
 goog.ui.ToolbarRenderer.prototype.getDefaultOrientation = function() {
   return goog.ui.Container.Orientation.HORIZONTAL;

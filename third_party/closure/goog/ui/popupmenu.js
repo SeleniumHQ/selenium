@@ -109,6 +109,7 @@ goog.ui.PopupMenu.prototype.currentAnchor_ = null;
  * constructed from elements with classname 'goog-menuitem', separators will be
  * made from HR elements.
  * @param {Element} element Element to decorate.
+ * @override
  */
 goog.ui.PopupMenu.prototype.decorateInternal = function(element) {
   goog.ui.PopupMenu.superClass_.decorateInternal.call(this, element);
@@ -122,9 +123,7 @@ goog.ui.PopupMenu.prototype.decorateInternal = function(element) {
 };
 
 
-/**
- * The menu has been added to the document.
- */
+/** @override */
 goog.ui.PopupMenu.prototype.enterDocument = function() {
   goog.ui.PopupMenu.superClass_.enterDocument.call(this);
 
@@ -353,7 +352,7 @@ goog.ui.PopupMenu.prototype.getToggleMode = function() {
 goog.ui.PopupMenu.prototype.showWithPosition = function(position,
     opt_menuCorner, opt_margin, opt_anchor) {
   var isVisible = this.isVisible();
-  if ((isVisible || this.wasRecentlyHidden()) && this.toggleMode_) {
+  if (this.isOrWasRecentlyVisible() && this.toggleMode_) {
     this.hide();
     return;
   }
@@ -469,6 +468,17 @@ goog.ui.PopupMenu.prototype.hide = function() {
 
 
 /**
+ * Returns whether the menu is currently visible or was visible within about
+ * 150 ms ago.  This stops the menu toggling back on if the toggleMode == false.
+ * @return {boolean} Whether the popup is currently visible or was visible
+ *     within about 150 ms ago.
+ */
+goog.ui.PopupMenu.prototype.isOrWasRecentlyVisible = function() {
+  return this.isVisible() || this.wasRecentlyHidden();
+};
+
+
+/**
  * Used to stop the menu toggling back on if the toggleMode == false.
  * @return {boolean} Whether the menu was recently hidden.
  * @protected
@@ -526,6 +536,7 @@ goog.ui.PopupMenu.prototype.onDocClick = function(e) {
  * Handles the key event target loosing focus.
  * @param {goog.events.BrowserEvent} e The browser event.
  * @protected
+ * @override
  */
 goog.ui.PopupMenu.prototype.handleBlur = function(e) {
   goog.ui.PopupMenu.superClass_.handleBlur.call(this, e);

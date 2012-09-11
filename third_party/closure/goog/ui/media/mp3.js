@@ -195,10 +195,12 @@ goog.ui.media.Mp3.buildFlashUrl = function(mp3Url) {
  * Creates the initial DOM structure of a mp3 video, which is basically a
  * the flash object pointing to a flash mp3 player.
  *
- * @param {goog.ui.media.Media} control The media control.
+ * @param {goog.ui.Control} c The media control.
  * @return {Element} A DOM structure that represents the control.
+ * @override
  */
-goog.ui.media.Mp3.prototype.createDom = function(control) {
+goog.ui.media.Mp3.prototype.createDom = function(c) {
+  var control = /** @type {goog.ui.media.Media} */ (c);
   var div = goog.ui.media.Mp3.superClass_.createDom.call(this, control);
 
   var dataModel =
@@ -219,6 +221,7 @@ goog.ui.media.Mp3.prototype.createDom = function(control) {
  * Returns the CSS class to be applied to the root element of components
  * rendered using this renderer.
  * @return {string} Renderer-specific CSS class.
+ * @override
  */
 goog.ui.media.Mp3.prototype.getCssClass = function() {
   return goog.ui.media.Mp3.CSS_CLASS;

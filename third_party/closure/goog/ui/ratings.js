@@ -125,6 +125,7 @@ goog.ui.Ratings.EventType = {
  * hidden when the decoration occurs.
  *
  * @param {Element} el Div element to decorate.
+ * @override
  */
 goog.ui.Ratings.prototype.decorateInternal = function(el) {
   var select = el.getElementsByTagName('select')[0];
@@ -148,6 +149,7 @@ goog.ui.Ratings.prototype.decorateInternal = function(el) {
 /**
  * Render the rating widget inside the provided element. This will override the
  * current content of the element.
+ * @override
  */
 goog.ui.Ratings.prototype.enterDocument = function() {
   var el = this.getElement();
@@ -182,6 +184,7 @@ goog.ui.Ratings.prototype.enterDocument = function() {
  * Should be called when the widget is removed from the document but may be
  * reused.  This removes all the listeners the widget has attached and destroys
  * the DOM nodes it uses.
+ * @override
  */
 goog.ui.Ratings.prototype.exitDocument = function() {
   goog.ui.Ratings.superClass_.exitDocument.call(this);

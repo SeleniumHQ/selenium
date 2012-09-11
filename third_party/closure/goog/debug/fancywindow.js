@@ -73,13 +73,8 @@ goog.debug.FancyWindow.HAS_LOCAL_STORE = (function() {
 goog.debug.FancyWindow.LOCAL_STORE_PREFIX = 'fancywindow.sel.';
 
 
-/**
- * Write to the log and maybe scroll into view
- * @param {string} html HTML to post to the log.
- * @protected
- * @suppress {underscore}
- */
-goog.debug.FancyWindow.prototype.writeBufferToLog_ = function(html) {
+/** @override */
+goog.debug.FancyWindow.prototype.writeBufferToLog = function() {
   this.lastCall_ = goog.now();
   if (this.hasActiveWindow()) {
     var logel = this.dh_.getElement('log');
@@ -103,12 +98,8 @@ goog.debug.FancyWindow.prototype.writeBufferToLog_ = function(html) {
 };
 
 
-/**
- * Writes the initial HTML of the debug window
- * @protected
- * @suppress {underscore}
- */
-goog.debug.FancyWindow.prototype.writeInitialDocument_ = function() {
+/** @override */
+goog.debug.FancyWindow.prototype.writeInitialDocument = function() {
   if (!this.hasActiveWindow()) {
     return;
   }
@@ -240,9 +231,7 @@ goog.debug.FancyWindow.prototype.exit_ = function(e) {
 };
 
 
-/**
- * @return {string} The style rule text, for inclusion in the initial HTML.
- */
+/** @override */
 goog.debug.FancyWindow.prototype.getStyleRules = function() {
   return goog.base(this, 'getStyleRules') +
       'html,body{height:100%;width:100%;margin:0px;padding:0px;' +

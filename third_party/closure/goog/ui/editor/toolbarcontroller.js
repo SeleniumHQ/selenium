@@ -15,6 +15,8 @@
 /**
  * @fileoverview A class for managing the editor toolbar.
  *
+ * @author attila@google.com (Attila Bodis)
+ * @author jparent@google.com (Julie Parent)
  * @see ../../demos/editor/editor.html
  */
 
@@ -253,7 +255,7 @@ goog.ui.editor.ToolbarController.prototype.updateToolbar = function(e) {
     state = /** @type {Object} */ (
         this.field_.queryCommandValue(e.commands || this.queryCommands_));
   } catch (ex) {
-    // TODO(user): Find out when/why this happens.
+    // TODO(attila): Find out when/why this happens.
     state = {};
   }
 

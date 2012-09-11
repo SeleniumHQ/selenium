@@ -247,9 +247,48 @@ goog.format.FIRST_GRAPHEME_EXTEND_ = 0x300;
 
 
 /**
+ * Returns true if and only if given character should be treated as a breaking
+ * space. All ASCII control characters, the main Unicode range of spacing
+ * characters (U+2000 to U+200B inclusive except for U+2007), and several other
+ * Unicode space characters are treated as breaking spaces.
+ * @param {number} charCode The character code under consideration.
+ * @return {boolean} True if the character is a breaking space.
+ * @private
+ */
+goog.format.isTreatedAsBreakingSpace_ = function(charCode) {
+  return (charCode <= goog.format.WbrToken_.SPACE) ||
+         (charCode >= 0x1000 &&
+          ((charCode >= 0x2000 && charCode <= 0x2006) ||
+           (charCode >= 0x2008 && charCode <= 0x200B) ||
+           charCode == 0x1680 ||
+           charCode == 0x180E ||
+           charCode == 0x2028 ||
+           charCode == 0x2029 ||
+           charCode == 0x205f ||
+           charCode == 0x3000));
+};
+
+
+/**
+ * Returns true if and only if given character is an invisible formatting
+ * character.
+ * @param {number} charCode The character code under consideration.
+ * @return {boolean} True if the character is an invisible formatting character.
+ * @private
+ */
+goog.format.isInvisibleFormattingCharacter_ = function(charCode) {
+  // See: http://unicode.org/charts/PDF/U2000.pdf
+  return (charCode >= 0x200C && charCode <= 0x200F) ||
+         (charCode >= 0x202A && charCode <= 0x202E);
+};
+
+
+/**
  * Inserts word breaks into an HTML string at a given interval.  The counter is
- * reset if a space is encountered.  WBRs aren't inserted into HTML tags or
- * entities.  Entites count towards the character count, HTML tags do not.
+ * reset if a space or a character which behaves like a space is encountered,
+ * but it isn't incremented if an invisible formatting character is encountered.
+ * WBRs aren't inserted into HTML tags or entities.  Entities count towards the
+ * character count, HTML tags do not.
  *
  * With common strings aliased, objects allocations are constant based on the
  * length of the string: N + 3. This guarantee does not hold if the string
@@ -290,10 +329,11 @@ goog.format.insertWordBreaksGeneric_ = function(str, hasGraphemeBreak,
         charCode >= goog.format.FIRST_GRAPHEME_EXTEND_ &&
         !hasGraphemeBreak(lastCharCode, charCode, true);
 
-    // Don't add a WBR at the end of a word.  For simplicity, all control
-    // characters are treated as whitespace.
+    // Don't add a WBR at the end of a word. For the purposes of determining
+    // work breaks, all ASCII control characters and some commonly encountered
+    // Unicode spacing characters are treated as breaking spaces.
     if (n >= maxlen &&
-        charCode > goog.format.WbrToken_.SPACE &&
+        !goog.format.isTreatedAsBreakingSpace_(charCode) &&
         !isPotentiallyGraphemeExtending) {
       // Flush everything seen so far, and append a word break.
       rv.push(str.substring(lastDumpPosition, i), goog.format.WORD_BREAK_HTML);
@@ -309,11 +349,11 @@ goog.format.insertWordBreaksGeneric_ = function(str, hasGraphemeBreak,
 
         // Entering an HTML Entity '&' or open tag '<'
         nestingCharCode = charCode;
-      } else if (charCode <= goog.format.WbrToken_.SPACE) {
+      } else if (goog.format.isTreatedAsBreakingSpace_(charCode)) {
 
         // A space or control character -- reset the token length
         n = 0;
-      } else {
+      } else if (!goog.format.isInvisibleFormattingCharacter_(charCode)) {
 
         // A normal flow character - increment.  For grapheme extending
         // characters, this is not *technically* a new character.  However,
@@ -385,13 +425,13 @@ goog.format.conservativelyHasGraphemeBreak_ = function(
   // Return false for everything except the most common Cyrillic characters.
   // Don't worry about Latin characters, because insertWordBreaksGeneric_
   // itself already handles those.
-  // TODO(user): Also account for Greek, Armenian, and Georgian if it is
+  // TODO(gboyer): Also account for Greek, Armenian, and Georgian if it is
   // simple to do so.
   return charCode >= 0x400 && charCode < 0x523;
 };
 
 
-// TODO(user): Consider using a compile-time flag to switch implementations
+// TODO(gboyer): Consider using a compile-time flag to switch implementations
 // rather than relying on the developers to toggle implementations.
 /**
  * Inserts word breaks into an HTML string at a given interval.

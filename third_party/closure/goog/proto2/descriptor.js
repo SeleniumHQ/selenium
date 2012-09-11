@@ -36,8 +36,8 @@ goog.proto2.Metadata;
 /**
  * A class which describes a Protocol Buffer 2 Message.
  *
- * @param {Function} messageType Constructor for the message class that
- *      this descriptor describes.
+ * @param {function(new:goog.proto2.Message)} messageType Constructor for
+ *      the message class that this descriptor describes.
  * @param {!goog.proto2.Metadata} metadata The metadata about the message that
  *      will be used to construct this descriptor.
  * @param {Array.<!goog.proto2.FieldDescriptor>} fields The fields of the
@@ -48,7 +48,7 @@ goog.proto2.Metadata;
 goog.proto2.Descriptor = function(messageType, metadata, fields) {
 
   /**
-   * @type {Function}
+   * @type {function(new:goog.proto2.Message)}
    * @private
    */
   this.messageType_ = messageType;
@@ -146,12 +146,14 @@ goog.proto2.Descriptor.prototype.getFields = function() {
 
 /**
  * Returns the fields in the message as a key/value map, where the key is
- * the tag number of the field.
+ * the tag number of the field. DO NOT MODIFY THE RETURNED OBJECT. We return
+ * the actual, internal, fields map for performance reasons, and changing the
+ * map can result in undefined behavior of this library.
  *
  * @return {!Object.<number, !goog.proto2.FieldDescriptor>} The field map.
  */
 goog.proto2.Descriptor.prototype.getFieldsMap = function() {
-  return goog.object.clone(this.fields_);
+  return this.fields_;
 };
 
 
@@ -191,7 +193,7 @@ goog.proto2.Descriptor.prototype.findFieldByTag = function(tag) {
  * Creates an instance of the message type that this descriptor
  * describes.
  *
- * @return {goog.proto2.Message} The instance of the message.
+ * @return {!goog.proto2.Message} The instance of the message.
  */
 goog.proto2.Descriptor.prototype.createMessageInstance = function() {
   return new this.messageType_;

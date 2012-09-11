@@ -15,6 +15,7 @@
 /**
  * @fileoverview Implementation of a progress bar.
  *
+ * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/progressbar.html
  */
 
@@ -82,6 +83,7 @@ goog.ui.ProgressBar.ORIENTATION_TO_CSS_NAME_[
 
 /**
  * Creates the DOM nodes needed for the progress bar
+ * @override
  */
 goog.ui.ProgressBar.prototype.createDom = function() {
   this.thumbElement_ = this.createThumb_();
@@ -94,9 +96,7 @@ goog.ui.ProgressBar.prototype.createDom = function() {
 };
 
 
-/**
- * Called when the DOM for the component is for sure in the document.
- */
+/** @override */
 goog.ui.ProgressBar.prototype.enterDocument = function() {
   goog.ui.ProgressBar.superClass_.enterDocument.call(this);
   this.attachEvents_();
@@ -109,9 +109,7 @@ goog.ui.ProgressBar.prototype.enterDocument = function() {
 };
 
 
-/**
- * Called when the DOM for the component is for sure in the document.
- */
+/** @override */
 goog.ui.ProgressBar.prototype.exitDocument = function() {
   goog.ui.ProgressBar.superClass_.exitDocument.call(this);
   this.detachEvents_();
@@ -142,7 +140,7 @@ goog.ui.ProgressBar.prototype.attachEvents_ = function() {
 
 
 /**
- * Adds the initial event listeners to the element.
+ * Removes the event listeners added by attachEvents_.
  * @private
  */
 goog.ui.ProgressBar.prototype.detachEvents_ = function() {
@@ -157,7 +155,8 @@ goog.ui.ProgressBar.prototype.detachEvents_ = function() {
  * Decorates an existing HTML DIV element as a progress bar input. If the
  * element contains a child with a class name of 'progress-bar-thumb' that will
  * be used as the thumb.
- * @param {HTMLElement} element  The HTML element to decorate.
+ * @param {Element} element  The HTML element to decorate.
+ * @override
  */
 goog.ui.ProgressBar.prototype.decorateInternal = function(element) {
   goog.ui.ProgressBar.superClass_.decorateInternal.call(this, element);
@@ -295,7 +294,7 @@ goog.ui.ProgressBar.prototype.updateUi_ = function() {
     var ratio = (val - min) / (max - min);
     var size = Math.round(ratio * 100);
     if (this.orientation_ == goog.ui.ProgressBar.Orientation.VERTICAL) {
-      // Note(user): IE up to version 6 has some serious computation bugs when
+      // Note(arv): IE up to version 6 has some serious computation bugs when
       // using percentages or bottom. We therefore first set the height to
       // 100% and measure that and base the top and height on that size instead.
       if (goog.userAgent.IE && goog.userAgent.VERSION < 7) {

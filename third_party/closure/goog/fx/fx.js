@@ -18,6 +18,7 @@
  * easing.js.  Users of this stub should move off so we may remove it in the
  * future.
  *
+ * @author nnaze@google.com (Nathan Naze)
  */
 
 goog.provide('goog.fx');

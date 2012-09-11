@@ -61,7 +61,8 @@ goog.functions.NULL = goog.functions.constant(null);
  * into it.
  * @param {*=} opt_returnValue The single value that will be returned.
  * @param {...*} var_args Optional trailing arguments. These are ignored.
- * @return {*} The first argument passed in, or undefined if nothing was passed.
+ * @return {?} The first argument passed in, or undefined if nothing was passed.
+ *     We can't know the type -- just pass it along without type.
  */
 goog.functions.identity = function(opt_returnValue, var_args) {
   return opt_returnValue;
@@ -81,14 +82,17 @@ goog.functions.error = function(message) {
 
 
 /**
- * Given a function, create a function that silently discards all additional
- * arguments.
+ * Given a function, create a function that keeps opt_numArgs arguments and
+ * silently discards all additional arguments.
  * @param {Function} f The original function.
- * @return {!Function} A version of f that discards its arguments.
+ * @param {number=} opt_numArgs The number of arguments to keep. Defaults to 0.
+ * @return {!Function} A version of f that only keeps the first opt_numArgs
+ *     arguments.
  */
-goog.functions.lock = function(f) {
+goog.functions.lock = function(f, opt_numArgs) {
+  opt_numArgs = opt_numArgs || 0;
   return function() {
-    return f.call(this);
+    return f.apply(this, Array.prototype.slice.call(arguments, 0, opt_numArgs));
   };
 };
 

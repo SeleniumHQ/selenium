@@ -45,7 +45,7 @@ goog.require('goog.ui.HsvPalette');
  * @constructor
  */
 goog.ui.HsvaPalette = function(opt_domHelper, opt_color, opt_alpha, opt_class) {
-  goog.ui.HsvPalette.call(this, opt_domHelper, opt_color, opt_class);
+  goog.base(this, opt_domHelper, opt_color, opt_class);
 
   /**
    * Alpha transparency of the currently selected color, in [0, 1]. When
@@ -118,6 +118,7 @@ goog.ui.HsvaPalette.prototype.setAlpha = function(alpha) {
  * Sets which color is selected and update the UI. The passed color should be
  * in #rrggbb format. The alpha value will be set to 1.
  * @param {string} color The selected color.
+ * @override
  */
 goog.ui.HsvaPalette.prototype.setColor = function(color) {
   this.setColorAlphaHelper_(color, 1);
@@ -163,7 +164,7 @@ goog.ui.HsvaPalette.prototype.setColorAlphaHelper_ = function(color, alpha) {
     goog.ui.HsvaPalette.superClass_.setColor_.call(this, color);
   }
   if (colorChange || alphaChange) {
-    this.updateUi_();
+    this.updateUi();
     this.dispatchEvent(goog.ui.Component.EventType.ACTION);
   }
 };
@@ -196,13 +197,9 @@ goog.ui.HsvaPalette.prototype.disposeInternal = function() {
 };
 
 
-/**
- * Updates the position, opacity, and styles for the UI representation of the
- * palette.
- * @private
- */
-goog.ui.HsvaPalette.prototype.updateUi_ = function() {
-  goog.ui.HsvaPalette.superClass_.updateUi_.call(this);
+/** @override */
+goog.ui.HsvaPalette.prototype.updateUi = function() {
+  goog.base(this, 'updateUi');
   if (this.isInDocument()) {
     var a = this.alpha_ * 255;
     var top = this.aImageEl_.offsetTop -
@@ -224,13 +221,9 @@ goog.ui.HsvaPalette.prototype.updateInput = function() {
 };
 
 
-/**
- * Handles mousedown events on palette UI elements.
- * @param {goog.events.BrowserEvent} e Event object.
- * @private
- */
-goog.ui.HsvaPalette.prototype.handleMouseDown_ = function(e) {
-  goog.ui.HsvaPalette.superClass_.handleMouseDown_.call(this, e);
+/** @override */
+goog.ui.HsvaPalette.prototype.handleMouseDown = function(e) {
+  goog.base(this, 'handleMouseDown', e);
   if (e.target == this.aImageEl_ || e.target == this.aHandleEl_) {
     // Setup value change listeners
     var b = goog.style.getBounds(this.vImageEl_);
@@ -262,12 +255,8 @@ goog.ui.HsvaPalette.prototype.handleMouseMoveA_ = function(b, e) {
 };
 
 
-/**
- * Handles input events on the hex value input field.
- * @param {goog.events.Event} e Event object.
- * @private
- */
-goog.ui.HsvaPalette.prototype.handleInput_ = function(e) {
+/** @override */
+goog.ui.HsvaPalette.prototype.handleInput = function(e) {
   var parsed = goog.ui.HsvaPalette.parseUserInput_(this.inputEl_.value);
   if (parsed) {
     this.setColorAlphaHelper_(parsed[0], parsed[1]);

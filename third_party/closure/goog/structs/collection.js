@@ -15,6 +15,7 @@
 /**
  * @fileoverview Defines the collection interface.
  *
+ * @author nnaze@google.com (Nathan Naze)
  */
 
 goog.provide('goog.structs.Collection');

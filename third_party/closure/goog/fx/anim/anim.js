@@ -19,10 +19,9 @@
 goog.provide('goog.fx.anim');
 goog.provide('goog.fx.anim.Animated');
 
-goog.require('goog.Timer');
-goog.require('goog.events');
+goog.require('goog.async.AnimationDelay');
+goog.require('goog.async.Delay');
 goog.require('goog.object');
-
 
 
 /**
@@ -49,17 +48,7 @@ goog.fx.anim.Animated.prototype.onAnimationFrame;
  * @type {number}
  * @const
  */
-goog.fx.anim.TIMEOUT = 20;
-
-
-/**
- * Name of event received from the requestAnimationFrame in Firefox.
- *
- * @type {string}
- * @const
- * @private
- */
-goog.fx.anim.MOZ_BEFORE_PAINT_EVENT_ = 'MozBeforePaint';
+goog.fx.anim.TIMEOUT = goog.async.AnimationDelay.TIMEOUT;
 
 
 /**
@@ -80,27 +69,11 @@ goog.fx.anim.animationWindow_ = null;
 
 
 /**
- * A timing control function.
- * @type {?function(?function(number))}
- * @private
- */
-goog.fx.anim.requestAnimationFrameFn_ = null;
-
-
-/**
- * Cancel function for timing control.
- * @type {?function(number)}
- * @private
- */
-goog.fx.anim.cancelRequestAnimationFrameFn_ = null;
-
-
-/**
  * An interval ID for the global timer or event handler uid.
- * @type {?number}
+ * @type {goog.async.Delay|goog.async.AnimationDelay}
  * @private
  */
-goog.fx.anim.animationTimer_ = null;
+goog.fx.anim.animationDelay_ = null;
 
 
 /**
@@ -114,7 +87,7 @@ goog.fx.anim.registerAnimation = function(animation) {
   }
 
   // If the timer is not already started, start it now.
-  goog.fx.anim.requestAnimationTimer_();
+  goog.fx.anim.requestAnimationFrame_();
 };
 
 
@@ -130,8 +103,20 @@ goog.fx.anim.unregisterAnimation = function(animation) {
   // If a timer is running and we no longer have any active timers we stop the
   // timers.
   if (goog.object.isEmpty(goog.fx.anim.activeAnimations_)) {
-    goog.fx.anim.cancelAnimationTimer_();
+    goog.fx.anim.cancelAnimationFrame_();
   }
+};
+
+
+/**
+ * Tears down this module. Useful for testing.
+ */
+// TODO(nicksantos): Wow, this api is pretty broken. This should be fixed.
+goog.fx.anim.tearDown = function() {
+  goog.fx.anim.animationWindow_ = null;
+  goog.dispose(goog.fx.anim.animationDelay_);
+  goog.fx.anim.animationDelay_ = null;
+  goog.fx.anim.activeAnimations_ = {};
 };
 
 
@@ -145,98 +130,22 @@ goog.fx.anim.unregisterAnimation = function(animation) {
  * @param {Window} animationWindow The window in which to animate elements.
  */
 goog.fx.anim.setAnimationWindow = function(animationWindow) {
-  goog.fx.anim.animationWindow_ = animationWindow;
-
-  var hasTimer = !!goog.fx.anim.animationTimer_;
   // If a timer is currently running, reset it and restart with new functions
   // after a timeout. This is to avoid mismatching timer UIDs if we change the
   // animation window during a running animation.
   //
   // In practice this cannot happen before some animation window and timer
   // control functions has already been set.
-  if (hasTimer) {
-    goog.fx.anim.cancelAnimationTimer_();
-  }
+  var hasTimer =
+      goog.fx.anim.animationDelay_ && goog.fx.anim.animationDelay_.isActive();
 
-  if (!animationWindow) {
-    goog.fx.anim.requestAnimationFrameFn_ = null;
-    goog.fx.anim.cancelRequestAnimationFrameFn_ = null;
-  } else {
-    goog.fx.anim.requestAnimationFrameFn_ =
-        animationWindow['requestAnimationFrame'] ||
-        animationWindow['webkitRequestAnimationFrame'] ||
-        animationWindow['mozRequestAnimationFrame'] ||
-        animationWindow['oRequestAnimationFrame'] ||
-        animationWindow['msRequestAnimationFrame'] ||
-        null;
-
-    goog.fx.anim.cancelRequestAnimationFrameFn_ =
-        animationWindow['cancelRequestAnimationFrame'] ||
-        animationWindow['webkitCancelRequestAnimationFrame'] ||
-        animationWindow['mozCancelRequestAnimationFrame'] ||
-        animationWindow['oCancelRequestAnimationFrame'] ||
-        animationWindow['msCancelRequestAnimationFrame'] ||
-        null;
-  }
-
-  // Set up matching render timing functions, the requestAnimationTimer_ and
-  // cancelAnimationTimer_ functions.
-  if (goog.fx.anim.requestAnimationFrameFn_ &&
-      animationWindow['mozRequestAnimationFrame'] &&
-      !goog.fx.anim.cancelRequestAnimationFrameFn_) {
-    // Because Firefox (Gecko) runs animation in separate threads, it also saves
-    // time by running the requestAnimationFrame callbacks in that same thread.
-    // Sadly this breaks the assumption of implicit thread-safety in JS, and can
-    // thus create thread-based inconsistencies on counters etc.
-    //
-    // Calling cycleAnimations_ using the MozBeforePaint event instead of as
-    // callback fixes this.
-    //
-    // Trigger this condition only if the mozRequestAnimationFrame is available,
-    // but not the W3C requestAnimationFrame function (as in draft) or the
-    // equivalent cancel functions.
-    goog.fx.anim.requestAnimationTimer_ =
-        goog.fx.anim.requestMozAnimationFrame_;
-    goog.fx.anim.cancelAnimationTimer_ = goog.fx.anim.cancelMozAnimationFrame_;
-  } else if (goog.fx.anim.requestAnimationFrameFn_ &&
-             goog.fx.anim.cancelRequestAnimationFrameFn_) {
-    goog.fx.anim.requestAnimationTimer_ = goog.fx.anim.requestAnimationFrame_;
-    goog.fx.anim.cancelAnimationTimer_ = goog.fx.anim.cancelAnimationFrame_;
-  } else {
-    goog.fx.anim.requestAnimationTimer_ = goog.fx.anim.requestTimer_;
-    goog.fx.anim.cancelAnimationTimer_ = goog.fx.anim.cancelTimer_;
-  }
+  goog.dispose(goog.fx.anim.animationDelay_);
+  goog.fx.anim.animationDelay_ = null;
+  goog.fx.anim.animationWindow_ = animationWindow;
 
   // If the timer was running, start it again.
   if (hasTimer) {
-    goog.fx.anim.requestAnimationTimer_();
-  }
-};
-
-
-/**
- * Requests a scheduled timer call.
- * @private
- */
-goog.fx.anim.requestTimer_ = function() {
-  if (!goog.fx.anim.animationTimer_) {
-    goog.fx.anim.animationTimer_ = goog.Timer.callOnce(function() {
-      goog.fx.anim.animationTimer_ = null;
-      // Cycle all animations at 'the same time'.
-      goog.fx.anim.cycleAnimations_(goog.now());
-    }, goog.fx.anim.TIMEOUT);
-  }
-};
-
-
-/**
- * Cancels a timer created by requestTimer_().
- * @private
- */
-goog.fx.anim.cancelTimer_ = function() {
-  if (goog.fx.anim.animationTimer_) {
-    goog.Timer.clear(goog.fx.anim.animationTimer_);
-    goog.fx.anim.animationTimer_ = null;
+    goog.fx.anim.requestAnimationFrame_();
   }
 };
 
@@ -247,15 +156,28 @@ goog.fx.anim.cancelTimer_ = function() {
  * @private
  */
 goog.fx.anim.requestAnimationFrame_ = function() {
-  if (!goog.fx.anim.animationTimer_) {
-    // requestAnimationFrame will call cycleAnimations_ with the current
-    // time in ms, as returned from goog.now().
-    goog.fx.anim.animationTimer_ =
-        goog.fx.anim.requestAnimationFrameFn_.call(
-            goog.fx.anim.animationWindow_, function(now) {
-              goog.fx.anim.animationTimer_ = null;
-              goog.fx.anim.cycleAnimations_(now);
-            });
+  if (!goog.fx.anim.animationDelay_) {
+    // We cannot guarantee that the global window will be one that fires
+    // requestAnimationFrame events (consider off-screen chrome extension
+    // windows). Default to use goog.async.Delay, unless
+    // the client has explicitly set an animation window.
+    if (goog.fx.anim.animationWindow_) {
+      // requestAnimationFrame will call cycleAnimations_ with the current
+      // time in ms, as returned from goog.now().
+      goog.fx.anim.animationDelay_ = new goog.async.AnimationDelay(
+          function(now) {
+        goog.fx.anim.cycleAnimations_(now);
+      }, goog.fx.anim.animationWindow_);
+    } else {
+      goog.fx.anim.animationDelay_ = new goog.async.Delay(function() {
+        goog.fx.anim.cycleAnimations_(goog.now());
+      }, goog.fx.anim.TIMEOUT);
+    }
+  }
+
+  var delay = goog.fx.anim.animationDelay_;
+  if (!delay.isActive()) {
+    delay.start();
   }
 };
 
@@ -265,59 +187,10 @@ goog.fx.anim.requestAnimationFrame_ = function() {
  * @private
  */
 goog.fx.anim.cancelAnimationFrame_ = function() {
-  if (goog.fx.anim.animationTimer_) {
-    goog.fx.anim.cancelRequestAnimationFrameFn_.call(
-        goog.fx.anim.animationWindow_,
-        goog.fx.anim.animationTimer_);
-    goog.fx.anim.animationTimer_ = null;
+  if (goog.fx.anim.animationDelay_) {
+    goog.fx.anim.animationDelay_.stop();
   }
 };
-
-
-/**
- * Requests an animation frame based on the requestAnimationFrame and
- * cancelRequestAnimationFrame function pair.
- * @private
- */
-goog.fx.anim.requestMozAnimationFrame_ = function() {
-  if (!goog.fx.anim.animationTimer_) {
-    goog.fx.anim.animationTimer_ = goog.events.listen(
-        goog.fx.anim.animationWindow_, goog.fx.anim.MOZ_BEFORE_PAINT_EVENT_,
-        function(event) {
-          goog.fx.anim.cycleAnimations_(event['timeStamp'] || goog.now());
-        }, false);
-  }
-  goog.fx.anim.requestAnimationFrameFn_.call(
-      goog.fx.anim.animationWindow_, null);
-};
-
-
-/**
- * Cancels an animation frame created by requestAnimationFrame_().
- * @private
- */
-goog.fx.anim.cancelMozAnimationFrame_ = function() {
-  if (goog.fx.anim.animationTimer_) {
-    goog.events.unlistenByKey(goog.fx.anim.animationTimer_);
-    goog.fx.anim.animationTimer_ = null;
-  }
-};
-
-
-/**
- * Starts the animation timer.  This is the currently active function selected
- * based on the animation window.
- * @private
- */
-goog.fx.anim.requestAnimationTimer_ = goog.fx.anim.requestTimer_;
-
-
-/**
- * Cancels the animation timer.  This is the currently active function selected
- * based on the animation window.
- * @private
- */
-goog.fx.anim.cancelAnimationTimer_ = goog.fx.anim.cancelTimer_;
 
 
 /**
@@ -331,6 +204,6 @@ goog.fx.anim.cycleAnimations_ = function(now) {
   });
 
   if (!goog.object.isEmpty(goog.fx.anim.activeAnimations_)) {
-    goog.fx.anim.requestAnimationTimer_();
+    goog.fx.anim.requestAnimationFrame_();
   }
 };

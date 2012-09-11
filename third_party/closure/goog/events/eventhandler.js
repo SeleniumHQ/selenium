@@ -181,7 +181,8 @@ goog.events.EventHandler.prototype.listenOnce = function(src, type, opt_fn,
  */
 goog.events.EventHandler.prototype.listenWithWrapper = function(src, wrapper,
     listener, opt_capt, opt_handler) {
-  wrapper.listen(src, listener, opt_capt, opt_handler || this.handler_, this);
+  wrapper.listen(src, listener, opt_capt, opt_handler || this.handler_ || this,
+                 this);
   return this;
 };
 
@@ -243,7 +244,8 @@ goog.events.EventHandler.prototype.unlisten = function(src, type, opt_fn,
  */
 goog.events.EventHandler.prototype.unlistenWithWrapper = function(src, wrapper,
     listener, opt_capt, opt_handler) {
-  wrapper.unlisten(src, listener, opt_capt, opt_handler || this.handler_, this);
+  wrapper.unlisten(src, listener, opt_capt,
+                   opt_handler || this.handler_ || this, this);
   return this;
 };
 

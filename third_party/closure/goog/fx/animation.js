@@ -91,8 +91,45 @@ goog.fx.Animation = function(start, end, duration, opt_acc) {
    * @protected
    */
   this.coords = [];
+
+  /**
+   * Whether the animation should use "right" rather than "left" to position
+   * elements in RTL.  This is a temporary flag to allow clients to transition
+   * to the new behavior at their convenience.  At some point it will be the
+   * default.
+   * @type {boolean}
+   * @private
+   */
+  this.useRightPositioningForRtl_ = false;
 };
 goog.inherits(goog.fx.Animation, goog.fx.TransitionBase);
+
+
+/**
+ * Sets whether the animation should use "right" rather than "left" to position
+ * elements.  This is a temporary flag to allow clients to transition
+ * to the new component at their convenience.  At some point "right" will be
+ * used for RTL elements by default.
+ * @param {boolean} useRightPositioningForRtl True if "right" should be used for
+ *     positioning, false if "left" should be used for positioning.
+ */
+goog.fx.Animation.prototype.enableRightPositioningForRtl =
+    function(useRightPositioningForRtl) {
+  this.useRightPositioningForRtl_ = useRightPositioningForRtl;
+};
+
+
+/**
+ * Whether the animation should use "right" rather than "left" to position
+ * elements.  This is a temporary flag to allow clients to transition
+ * to the new component at their convenience.  At some point "right" will be
+ * used for RTL elements by default.
+ * @return {boolean} True if "right" should be used for positioning, false if
+ *     "left" should be used for positioning.
+ */
+goog.fx.Animation.prototype.isRightPositioningForRtlEnabled = function() {
+  return this.useRightPositioningForRtl_;
+};
 
 
 /**
@@ -208,6 +245,7 @@ goog.fx.Animation.prototype.lastFrame = null;
  * @param {boolean=} opt_restart Whether to restart the
  *     animation from the beginning if it has been paused.
  * @return {boolean} Whether animation was started.
+ * @override
  */
 goog.fx.Animation.prototype.play = function(opt_restart) {
   if (opt_restart || this.isStopped()) {
@@ -250,13 +288,15 @@ goog.fx.Animation.prototype.play = function(opt_restart) {
 
 /**
  * Stops the animation.
- * @param {boolean} gotoEnd If true the animation will move to the end coords.
+ * @param {boolean=} opt_gotoEnd If true the animation will move to the
+ *     end coords.
+ * @override
  */
-goog.fx.Animation.prototype.stop = function(gotoEnd) {
+goog.fx.Animation.prototype.stop = function(opt_gotoEnd) {
   goog.fx.anim.unregisterAnimation(this);
   this.setStateStopped();
 
-  if (gotoEnd) {
+  if (!!opt_gotoEnd) {
     this.progress = 1;
   }
 
@@ -269,6 +309,7 @@ goog.fx.Animation.prototype.stop = function(gotoEnd) {
 
 /**
  * Pauses the animation (iff it's playing).
+ * @override
  */
 goog.fx.Animation.prototype.pause = function() {
   if (this.isPlaying()) {
@@ -276,6 +317,15 @@ goog.fx.Animation.prototype.pause = function() {
     this.setStatePaused();
     this.onPause();
   }
+};
+
+
+/**
+ * @return {number} The current progress of the animation, the number
+ *     is between 0 and 1 inclusive.
+ */
+goog.fx.Animation.prototype.getProgress = function() {
+  return this.progress;
 };
 
 
@@ -447,7 +497,7 @@ goog.fx.AnimationEvent = function(type, anim) {
    * The current progress.
    * @type {number}
    */
-  this.progress = anim.progress;
+  this.progress = anim.getProgress();
 
   /**
    * Frames per second so far.
@@ -464,7 +514,7 @@ goog.fx.AnimationEvent = function(type, anim) {
    * The animation object.
    * @type {goog.fx.Animation}
    */
-  // TODO(user): This can be removed as this is the same as the target
+  // TODO(arv): This can be removed as this is the same as the target
   this.anim = anim;
 };
 goog.inherits(goog.fx.AnimationEvent, goog.events.Event);

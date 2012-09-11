@@ -129,6 +129,7 @@ goog.ui.PopupDatePicker.prototype.disposeInternal = function() {
  * not based on Components.
  * @param {Element} element Element to decorate.
  * @return {boolean} Returns always false.
+ * @override
  */
 goog.ui.PopupDatePicker.prototype.canDecorate = function(element) {
   return false;

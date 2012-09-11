@@ -7,10 +7,10 @@ Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <head>
-  <title>goog.ui.AutoComplete</title>
+  <title>goog.ui.ac</title>
   <script src="../base.js"></script>
   <script>
-    goog.require('goog.ui.AutoComplete.Basic');
+    goog.require('goog.ui.ac');
   </script>
   <link rel="stylesheet" href="css/demo.css">
   <link rel="stylesheet" href="../css/autocomplete.css">
@@ -22,7 +22,7 @@ See the COPYING file for details.
   </style>
 </head>
 <body>
-  <h1>goog.ui.AutoComplete</h1>
+  <h1>goog.ui.ac</h1>
   <p>
     Tom Cruise Film Finder:<br>
     <input id="txtInput1" style="width:500px" /> <button>Go</button>
@@ -47,9 +47,9 @@ See the COPYING file for details.
         "Mission Impossible DVD","Fallen Angels Vol 1","Don't Look at Me",
         "Young Guns uncredited"];
 
-    var ac1 = new goog.ui.AutoComplete.Basic(
+    var ac1 = goog.ui.ac.createSimpleAutoComplete(
         tcMovies, document.getElementById('txtInput1'), false);
-    var ac2 = new goog.ui.AutoComplete.Basic(
+    var ac2 = goog.ui.ac.createSimpleAutoComplete(
         tcMovies, document.getElementById('txtInput2'), true);
   </script>
 </body>

@@ -39,7 +39,6 @@ goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.BrowserEvent.MouseButton');
 goog.require('goog.events.BrowserFeature');
-goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.object');
@@ -51,6 +50,9 @@ goog.require('goog.userAgent');
 /**
  * goog.events.BrowserEvent expects an Event so we provide one for JSCompiler.
  *
+ * This clones a lot of the functionality of goog.events.Event. This used to
+ * use a mixin, but the mixin results in confusing the two types when compiled.
+ *
  * @param {string} type Event Type.
  * @param {Object=} opt_target Reference to the object that is the target of
  *     this event.
@@ -58,26 +60,47 @@ goog.require('goog.userAgent');
  * @extends {Event}
  */
 goog.testing.events.Event = function(type, opt_target) {
-  /**
-   * Event type.
-   * @type {string}
-   */
   this.type = type;
 
-  /**
-   * Target of the event.
-   * @type {Object|undefined}
-   */
-  this.target = opt_target;
+  this.target = /** @type {EventTarget} */ (opt_target || null);
 
-  /**
-   * Object that had the listener attached.
-   * @type {Object|undefined}
-   */
   this.currentTarget = this.target;
 };
-goog.object.extend(
-    goog.testing.events.Event.prototype, goog.events.Event.prototype);
+
+
+/**
+ * Whether to cancel the event in internal capture/bubble processing for IE.
+ * @type {boolean}
+ * @suppress {underscore} Technically public, but referencing this outside
+ *     this package is strongly discouraged.
+ */
+goog.testing.events.Event.prototype.propagationStopped_ = false;
+
+
+/** @override */
+goog.testing.events.Event.prototype.defaultPrevented = false;
+
+
+/**
+ * Return value for in internal capture/bubble processing for IE.
+ * @type {boolean}
+ * @suppress {underscore} Technically public, but referencing this outside
+ *     this package is strongly discouraged.
+ */
+goog.testing.events.Event.prototype.returnValue_ = true;
+
+
+/** @override */
+goog.testing.events.Event.prototype.stopPropagation = function() {
+  this.propagationStopped_ = true;
+};
+
+
+/** @override */
+goog.testing.events.Event.prototype.preventDefault = function() {
+  this.defaultPrevented = true;
+  this.returnValue_ = false;
+};
 
 
 /**

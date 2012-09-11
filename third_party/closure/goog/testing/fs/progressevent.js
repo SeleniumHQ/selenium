@@ -1,5 +1,3 @@
-// Copyright 2011 Google Inc. All Rights Reserved.
-
 // Copyright 2011 The Closure Library Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");

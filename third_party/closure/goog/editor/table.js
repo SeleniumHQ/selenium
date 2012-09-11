@@ -29,6 +29,7 @@ goog.provide('goog.editor.TableRow');
 
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
+goog.require('goog.dom.DomHelper');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.string.Unicode');

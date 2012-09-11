@@ -18,10 +18,11 @@
  * handling and child management, based on a generalized version of
  * {@link goog.ui.Menu}.
  *
+ * @author attila@google.com (Attila Bodis)
  * @see ../demos/container.html
  */
-// TODO(user):  Fix code/logic duplication between this and goog.ui.Control.
-// TODO(user):  Maybe pull common stuff all the way up into Component...?
+// TODO(attila):  Fix code/logic duplication between this and goog.ui.Control.
+// TODO(attila):  Maybe pull common stuff all the way up into Component...?
 
 goog.provide('goog.ui.Container');
 goog.provide('goog.ui.Container.EventType');
@@ -304,7 +305,8 @@ goog.ui.Container.prototype.setRenderer = function(renderer) {
 
 
 /**
- * Creates the container's DOM.  Overrides {@link goog.ui.Component#createDom}.
+ * Creates the container's DOM.
+ * @override
  */
 goog.ui.Container.prototype.createDom = function() {
   // Delegate to renderer.
@@ -317,6 +319,7 @@ goog.ui.Container.prototype.createDom = function() {
  * or null if the container itself hasn't been rendered yet.  Overrides
  * {@link goog.ui.Component#getContentElement} by delegating to the renderer.
  * @return {Element} Element to contain child elements (null if none).
+ * @override
  */
 goog.ui.Container.prototype.getContentElement = function() {
   // Delegate to renderer.
@@ -329,6 +332,7 @@ goog.ui.Container.prototype.getContentElement = function() {
  * Overrides {@link goog.ui.Component#canDecorate}.
  * @param {Element} element Element to decorate.
  * @return {boolean} True iff the element can be decorated.
+ * @override
  */
 goog.ui.Container.prototype.canDecorate = function(element) {
   // Delegate to renderer.
@@ -340,6 +344,7 @@ goog.ui.Container.prototype.canDecorate = function(element) {
  * Decorates the given element with this container. Overrides {@link
  * goog.ui.Component#decorateInternal}.  Considered protected.
  * @param {Element} element Element to decorate.
+ * @override
  */
 goog.ui.Container.prototype.decorateInternal = function(element) {
   // Delegate to renderer.
@@ -354,6 +359,7 @@ goog.ui.Container.prototype.decorateInternal = function(element) {
 /**
  * Configures the container after its DOM has been rendered, and sets up event
  * handling.  Overrides {@link goog.ui.Component#enterDocument}.
+ * @override
  */
 goog.ui.Container.prototype.enterDocument = function() {
   goog.ui.Container.superClass_.enterDocument.call(this);
@@ -393,7 +399,8 @@ goog.ui.Container.prototype.enterDocument = function() {
         goog.events.EventType.MOUSEDOWN,
         goog.events.EventType.MOUSEUP,
         goog.events.EventType.MOUSEOVER,
-        goog.events.EventType.MOUSEOUT
+        goog.events.EventType.MOUSEOUT,
+        goog.events.EventType.CONTEXTMENU
       ], this.handleChildMouseEvents);
 
   // If the container is focusable, set up keyboard event handling.
@@ -430,6 +437,7 @@ goog.ui.Container.prototype.enableFocusHandling_ = function(enable) {
 /**
  * Cleans up the container before its DOM is removed from the document, and
  * removes event handlers.  Overrides {@link goog.ui.Component#exitDocument}.
+ * @override
  */
 goog.ui.Container.prototype.exitDocument = function() {
   // {@link #setHighlightedIndex} has to be called before
@@ -615,6 +623,9 @@ goog.ui.Container.prototype.handleChildMouseEvents = function(e) {
       case goog.events.EventType.MOUSEOUT:
         control.handleMouseOut(e);
         break;
+      case goog.events.EventType.CONTEXTMENU:
+        control.handleContextMenu(e);
+        break;
     }
   }
 };
@@ -794,7 +805,7 @@ goog.ui.Container.prototype.handleKeyEventInternal = function(e) {
 /**
  * Creates a DOM ID for the child control and registers it to an internal
  * hash table to be able to find it fast by id.
- * @param {goog.ui.Control} child The child control. Its root element has
+ * @param {goog.ui.Component} child The child control. Its root element has
  *     to be created yet.
  * @private
  */
@@ -816,9 +827,10 @@ goog.ui.Container.prototype.registerChildId_ = function(child) {
 /**
  * Adds the specified control as the last child of this container.  See
  * {@link goog.ui.Container#addChildAt} for detailed semantics.
- * @param {goog.ui.Control} child The new child control.
+ * @param {goog.ui.Component} child The new child control.
  * @param {boolean=} opt_render Whether the new child should be rendered
  *     immediately after being added (defaults to false).
+ * @override
  */
 goog.ui.Container.prototype.addChild = function(child, opt_render) {
   goog.ui.Container.superClass_.addChild.call(this, child, opt_render);
@@ -850,10 +862,11 @@ goog.ui.Container.prototype.getChildAt;
  * Overrides {@link goog.ui.Component#addChildAt} by also updating the
  * container's highlight index.  Since {@link goog.ui.Component#addChild} uses
  * {@link #addChildAt} internally, we only need to override this method.
- * @param {goog.ui.Control} control New child.
+ * @param {goog.ui.Component} control New child.
  * @param {number} index Index at which the new child is to be added.
  * @param {boolean=} opt_render Whether the new child should be rendered
  *     immediately after being added (defaults to false).
+ * @override
  */
 goog.ui.Container.prototype.addChildAt = function(control, index, opt_render) {
   // Make sure the child control dispatches HIGHLIGHT, UNHIGHLIGHT, OPEN, and
@@ -886,12 +899,13 @@ goog.ui.Container.prototype.addChildAt = function(control, index, opt_render) {
  * Removes a child control.  Overrides {@link goog.ui.Component#removeChild} by
  * updating the highlight index.  Since {@link goog.ui.Component#removeChildAt}
  * uses {@link #removeChild} internally, we only need to override this method.
- * @param {string|goog.ui.Control} control The ID of the child to remove, or
+ * @param {string|goog.ui.Component} control The ID of the child to remove, or
  *     the control itself.
  * @param {boolean=} opt_unrender Whether to call {@code exitDocument} on the
  *     removed control, and detach its DOM from the document (defaults to
  *     false).
  * @return {goog.ui.Control} The removed control, if any.
+ * @override
  */
 goog.ui.Container.prototype.removeChild = function(control, opt_unrender) {
   control = goog.isString(control) ? this.getChild(control) : control;
@@ -940,7 +954,7 @@ goog.ui.Container.prototype.getOrientation = function() {
  * Sets the container's orientation.
  * @param {goog.ui.Container.Orientation} orientation Container orientation.
  */
-// TODO(user): Do we need to support containers with dynamic orientation?
+// TODO(attila): Do we need to support containers with dynamic orientation?
 goog.ui.Container.prototype.setOrientation = function(orientation) {
   if (this.getElement()) {
     // Too late.

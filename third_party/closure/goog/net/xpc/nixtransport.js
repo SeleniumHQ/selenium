@@ -263,6 +263,7 @@ goog.net.xpc.NixTransport.conductGlobalSetup_ = function(listenWindow) {
  * The transport type.
  * @type {number}
  * @protected
+ * @override
  */
 goog.net.xpc.NixTransport.prototype.transportType =
    goog.net.xpc.TransportTypes.NIX;
@@ -292,6 +293,7 @@ goog.net.xpc.NixTransport.prototype.nixChannel_ = null;
 
 /**
  * Connect this transport.
+ * @override
  */
 goog.net.xpc.NixTransport.prototype.connect = function() {
   if (this.channel_.getRole() == goog.net.xpc.CrossPageChannelRole.OUTER) {
@@ -383,7 +385,7 @@ goog.net.xpc.NixTransport.prototype.attemptInnerSetup_ = function() {
       this.localSetupCompleted_ = true;
 
       // Notify channel that the transport is ready.
-      this.channel_.notifyConnected_();
+      this.channel_.notifyConnected();
     }
   }
   catch (e) {
@@ -426,7 +428,7 @@ goog.net.xpc.NixTransport.prototype.createChannel_ = function(channel) {
 
    // Indicate to the CrossPageChannel that the channel is setup
    // and ready to use.
-   this.channel_.notifyConnected_();
+   this.channel_.notifyConnected();
 };
 
 
@@ -440,11 +442,10 @@ goog.net.xpc.NixTransport.prototype.createChannel_ = function(channel) {
  */
 goog.net.xpc.NixTransport.prototype.handleMessage_ =
     function(serviceName, payload) {
-
-  function deliveryHandler() {
-    this.channel_.deliver_(serviceName, payload);
-  }
-
+  /** @this {goog.net.xpc.NixTransport} */
+  var deliveryHandler = function() {
+    this.channel_.safeDeliver(serviceName, payload);
+  };
   this.getWindow().setTimeout(goog.bind(deliveryHandler, this), 1);
 };
 
@@ -454,6 +455,7 @@ goog.net.xpc.NixTransport.prototype.handleMessage_ =
  * @param {string} service The name of the service the message is to be
  *   delivered to.
  * @param {string} payload The message content.
+ * @override
  */
 goog.net.xpc.NixTransport.prototype.send = function(service, payload) {
   // Verify that the NIX channel we have is valid.

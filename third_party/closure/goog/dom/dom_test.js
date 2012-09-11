@@ -22,6 +22,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.DomHelper');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
+goog.require('goog.object');
 goog.require('goog.testing.asserts');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
@@ -140,7 +141,7 @@ function testGetElementByClass() {
 }
 
 function testSetProperties() {
-  var attrs = { 'name': 'test3', 'title': 'A title', 'random': 'woop' };
+  var attrs = {'name': 'test3', 'title': 'A title', 'random': 'woop'};
   var el = $('testEl');
 
   var res = goog.dom.setProperties(el, attrs);
@@ -160,7 +161,8 @@ function testSetPropertiesDirectAttributeMap() {
 function testSetPropertiesAria() {
   var attrs = {
     'aria-hidden': 'true',
-    'aria-label': 'This is a label'
+    'aria-label': 'This is a label',
+    'role': 'presentation'
   };
   var el = goog.dom.createDom('div');
 
@@ -168,6 +170,21 @@ function testSetPropertiesAria() {
   assertEquals('Should be equal', 'true', el.getAttribute('aria-hidden'));
   assertEquals('Should be equal',
       'This is a label', el.getAttribute('aria-label'));
+  assertEquals('Should be equal', 'presentation', el.getAttribute('role'));
+}
+
+function testSetPropertiesData() {
+  var attrs = {
+    'data-tooltip': 'This is a tooltip',
+    'data-tooltip-delay': '100'
+  };
+  var el = goog.dom.createDom('div');
+
+  goog.dom.setProperties(el, attrs);
+  assertEquals('Should be equal', 'This is a tooltip',
+      el.getAttribute('data-tooltip'));
+  assertEquals('Should be equal', '100',
+      el.getAttribute('data-tooltip-delay'));
 }
 
 function testSetTableProperties() {
@@ -443,6 +460,11 @@ function testCompareNodeOrder() {
       goog.dom.compareNodeOrder(text2, text1) > 0);
   assertTrue('Late text node is after b1',
       goog.dom.compareNodeOrder(text1, $('b1')) > 0);
+
+  assertTrue('Document node is before non-document node',
+      goog.dom.compareNodeOrder(document, b1) < 0);
+  assertTrue('Non-document node is after document node',
+      goog.dom.compareNodeOrder(b1, document) > 0);
 }
 
 function testFindCommonAncestor() {
@@ -1094,32 +1116,43 @@ function testGetFrameContentWindow() {
 }
 
 function testCanHaveChildren() {
+  var EMPTY_ELEMENTS = goog.object.createSet(
+      goog.dom.TagName.APPLET,
+      goog.dom.TagName.AREA,
+      goog.dom.TagName.BASE,
+      goog.dom.TagName.BR,
+      goog.dom.TagName.COL,
+      goog.dom.TagName.COMMAND,
+      goog.dom.TagName.EMBED,
+      goog.dom.TagName.FRAME,
+      goog.dom.TagName.HR,
+      goog.dom.TagName.IMG,
+      goog.dom.TagName.INPUT,
+      goog.dom.TagName.IFRAME,
+      goog.dom.TagName.ISINDEX,
+      goog.dom.TagName.KEYGEN,
+      goog.dom.TagName.LINK,
+      goog.dom.TagName.NOFRAMES,
+      goog.dom.TagName.NOSCRIPT,
+      goog.dom.TagName.META,
+      goog.dom.TagName.OBJECT,
+      goog.dom.TagName.PARAM,
+      goog.dom.TagName.SCRIPT,
+      goog.dom.TagName.SOURCE,
+      goog.dom.TagName.STYLE,
+      goog.dom.TagName.TRACK,
+      goog.dom.TagName.WBR);
+
+  // IE opens a dialog warning about using Java content if an EMBED is created.
+  var IE_ILLEGAL_ELEMENTS = goog.object.createSet(goog.dom.TagName.EMBED);
+
   for (var tag in goog.dom.TagName) {
-    var expected = true;
-    switch (tag) {
-      case goog.dom.TagName.BASE:
-      case goog.dom.TagName.APPLET:
-      case goog.dom.TagName.AREA:
-      case goog.dom.TagName.BR:
-      case goog.dom.TagName.COL:
-      case goog.dom.TagName.FRAME:
-      case goog.dom.TagName.HR:
-      case goog.dom.TagName.IMG:
-      case goog.dom.TagName.INPUT:
-      case goog.dom.TagName.IFRAME:
-      case goog.dom.TagName.ISINDEX:
-      case goog.dom.TagName.LINK:
-      case goog.dom.TagName.NOFRAMES:
-      case goog.dom.TagName.NOSCRIPT:
-      case goog.dom.TagName.META:
-      case goog.dom.TagName.OBJECT:
-      case goog.dom.TagName.PARAM:
-      case goog.dom.TagName.SCRIPT:
-      case goog.dom.TagName.STYLE:
-        expected = false;
-        break;
+    if (goog.userAgent.IE && tag in IE_ILLEGAL_ELEMENTS) {
+      continue;
     }
-    var node = goog.dom.createDom(tag);
+
+    var expected = !(tag in EMPTY_ELEMENTS);
+    var node = goog.dom.createElement(tag);
     assertEquals(tag + ' should ' + (expected ? '' : 'not ') +
         'have children', expected, goog.dom.canHaveChildren(node));
 
@@ -1205,6 +1238,9 @@ function testGetAncestorByTagNameAndClass() {
   assertEquals(expected,
       goog.dom.getAncestorByTagNameAndClass(elem, goog.dom.TagName.DIV,
           'testAncestor'));
+  assertNull(
+      'Should return null if no search criteria are given',
+      goog.dom.getAncestorByTagNameAndClass(elem));
 }
 
 function testCreateTable() {
@@ -1314,6 +1350,31 @@ function testActiveElementIE() {
 
   assertEquals(link.tagName, goog.dom.getActiveElement(document).tagName);
   assertEquals(link, goog.dom.getActiveElement(document));
+}
+
+function testParentElement() {
+  var testEl = $('testEl');
+  var bodyEl = goog.dom.getParentElement(testEl);
+  assertNotNull(bodyEl);
+  var htmlEl = goog.dom.getParentElement(bodyEl);
+  assertNotNull(htmlEl);
+  var documentNotAnElement = goog.dom.getParentElement(htmlEl);
+  assertNull(documentNotAnElement);
+
+  var tree = goog.dom.htmlToDocumentFragment(
+      '<div>' +
+      '<p>Some text</p>' +
+      '<blockquote>Some <i>special</i> <b>text</b></blockquote>' +
+      '<address><!-- comment -->Foo</address>' +
+      '</div>');
+  assertNull(goog.dom.getParentElement(tree));
+  pEl = goog.dom.getNextNode(tree);
+  var fragmentRootEl = goog.dom.getParentElement(pEl);
+  assertEquals(tree, fragmentRootEl);
+
+  var detachedEl = goog.dom.createDom('div');
+  var detachedHasNoParent = goog.dom.getParentElement(detachedEl);
+  assertNull(detachedHasNoParent);
 }
 
 /**

@@ -134,10 +134,12 @@ goog.ui.media.GoogleVideo.CSS_CLASS =
  * Creates the initial DOM structure of the GoogleVideo video, which is
  * basically a the flash object pointing to a GoogleVideo video player.
  *
- * @param {goog.ui.media.Media} control The media control.
+ * @param {goog.ui.Control} c The media control.
  * @return {Element} The DOM structure that represents this control.
+ * @override
  */
-goog.ui.media.GoogleVideo.prototype.createDom = function(control) {
+goog.ui.media.GoogleVideo.prototype.createDom = function(c) {
+  var control = /** @type {goog.ui.media.Media} */ (c);
   var div = goog.base(this, 'createDom', control);
 
   var dataModel =
@@ -157,6 +159,7 @@ goog.ui.media.GoogleVideo.prototype.createDom = function(control) {
  * rendered using this renderer.
  *
  * @return {string} Renderer-specific CSS class.
+ * @override
  */
 goog.ui.media.GoogleVideo.prototype.getCssClass = function() {
   return goog.ui.media.GoogleVideo.CSS_CLASS;

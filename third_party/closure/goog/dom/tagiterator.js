@@ -191,7 +191,8 @@ goog.dom.TagIterator.prototype.setPosition = function(node,
 
 
 /**
- * Replace this iterator's values with values from another.
+ * Replace this iterator's values with values from another. The two iterators
+ * must be of the same type.
  * @param {goog.dom.TagIterator} other The iterator to copy.
  * @protected
  */
@@ -243,6 +244,7 @@ goog.dom.TagIterator.prototype.restartTag = function() {
  * Move to the next position in the DOM tree.
  * @return {Node} Returns the next node, or throws a goog.iter.StopIteration
  *     exception if the end of the iterator's range has been reached.
+ * @override
  */
 goog.dom.TagIterator.prototype.next = function() {
   var node;

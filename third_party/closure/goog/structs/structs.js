@@ -15,6 +15,7 @@
 /**
  * @fileoverview Generics method for collection-like classes and objects.
  *
+ * @author arv@google.com (Erik Arvidsson)
  *
  * This file contains functions to work with collections. It supports using
  * Map, Set, Array and Object and other classes that implement collection-like
@@ -145,7 +146,7 @@ goog.structs.isEmpty = function(col) {
  * @param {Object} col The collection-like object.
  */
 goog.structs.clear = function(col) {
-  // NOTE(user): This should not contain strings because strings are immutable
+  // NOTE(arv): This should not contain strings because strings are immutable
   if (typeof col.clear == 'function') {
     col.clear();
   } else if (goog.isArrayLike(col)) {

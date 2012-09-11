@@ -64,6 +64,7 @@ goog.ui.ColorMenuButtonRenderer.CSS_CLASS =
  * @param {goog.ui.ControlContent} content Text caption or DOM structure.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
  * @return {Element} Caption element.
+ * @override
  */
 goog.ui.ColorMenuButtonRenderer.prototype.createCaption = function(content,
     dom) {
@@ -91,6 +92,7 @@ goog.ui.ColorMenuButtonRenderer.wrapCaption = function(content, dom) {
  * the new color.  Overrides {@link goog.ui.ButtonRenderer#setValue}.
  * @param {Element} element The button control's root element (if rendered).
  * @param {*} value New value; assumed to be a color spec string.
+ * @override
  */
 goog.ui.ColorMenuButtonRenderer.prototype.setValue = function(element, value) {
   if (element) {
@@ -113,15 +115,13 @@ goog.ui.ColorMenuButtonRenderer.setCaptionValue = function(caption, value) {
     // borderBottomColor will cause a JS error on IE).
     var hexColor;
 
-    /** @preserveTry */
-    try {
-      hexColor = goog.color.parse(/** @type {string} */ (value)).hex;
-    } catch (ex) {
-      hexColor = null;
-    }
+    var strValue = /** @type {string} */ (value);
+    hexColor = strValue && goog.color.isValidColor(strValue) ?
+        goog.color.parse(strValue).hex :
+        null;
 
     // Stupid IE6/7 doesn't do transparent borders.
-    // TODO(user): Add user-agent version check when IE8 comes out...
+    // TODO(attila): Add user-agent version check when IE8 comes out...
     caption.firstChild.style.borderBottomColor = hexColor ||
         (goog.userAgent.IE ? '' : 'transparent');
   }
@@ -132,8 +132,9 @@ goog.ui.ColorMenuButtonRenderer.setCaptionValue = function(caption, value) {
  * Initializes the button's DOM when it enters the document.  Overrides the
  * superclass implementation by making sure the button's color indicator is
  * initialized.
- * @param {goog.ui.ColorMenuButton} button Button whose DOM is to be
+ * @param {goog.ui.Control} button goog.ui.ColorMenuButton whose DOM is to be
  *     initialized as it enters the document.
+ * @override
  */
 goog.ui.ColorMenuButtonRenderer.prototype.initializeDom = function(button) {
   this.setValue(button.getElement(), button.getValue());

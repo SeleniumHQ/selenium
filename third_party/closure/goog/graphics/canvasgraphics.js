@@ -70,6 +70,7 @@ goog.inherits(goog.graphics.CanvasGraphics, goog.graphics.AbstractGraphics);
  * @param {goog.graphics.StrokeAndFillElement} element The element
  *     wrapper.
  * @param {goog.graphics.Fill} fill The fill object.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.setElementFill = function(element,
     fill) {
@@ -82,6 +83,7 @@ goog.graphics.CanvasGraphics.prototype.setElementFill = function(element,
  * @param {goog.graphics.StrokeAndFillElement} element The element
  *     wrapper.
  * @param {goog.graphics.Stroke} stroke The stroke object.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.setElementStroke = function(
     element, stroke) {
@@ -97,6 +99,7 @@ goog.graphics.CanvasGraphics.prototype.setElementStroke = function(
  * @param {number} angle The angle of the rotation transform.
  * @param {number} centerX The horizontal center of the rotation transform.
  * @param {number} centerY The vertical center of the rotation transform.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.setElementTransform = function(element,
     x, y, angle, centerX, centerY) {
@@ -139,6 +142,7 @@ goog.graphics.CanvasGraphics.prototype.popElementTransform = function() {
 
 /**
  * Creates the DOM representation of the graphics area.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.createDom = function() {
   var element = this.dom_.createDom('div',
@@ -191,6 +195,7 @@ goog.graphics.CanvasGraphics.prototype.getContext = function() {
  * Changes the coordinate system position.
  * @param {number} left The coordinate system left bound.
  * @param {number} top The coordinate system top bound.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.setCoordOrigin = function(left, top) {
   this.coordLeft = left;
@@ -203,6 +208,7 @@ goog.graphics.CanvasGraphics.prototype.setCoordOrigin = function(left, top) {
  * Changes the coordinate size.
  * @param {number} coordWidth The coordinate width.
  * @param {number} coordHeight The coordinate height.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.setCoordSize = function(coordWidth,
                                                                coordHeight) {
@@ -215,6 +221,7 @@ goog.graphics.CanvasGraphics.prototype.setCoordSize = function(coordWidth,
  * Change the size of the canvas.
  * @param {number} pixelWidth The width in pixels.
  * @param {number} pixelHeight The height in pixels.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.setSize = function(pixelWidth,
     pixelHeight) {
@@ -294,6 +301,7 @@ goog.graphics.CanvasGraphics.prototype.reset = function() {
 
 /**
  * Remove all drawing elements from the graphics.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.clear = function() {
   this.reset();
@@ -412,7 +420,7 @@ goog.graphics.CanvasGraphics.prototype.append_ = function(element, group) {
  * Append an element.
  *
  * @param {goog.graphics.Element} element The element to draw.
- * @param {goog.graphics.CanvasGroupElement|undefined} group The group to draw
+ * @param {goog.graphics.GroupElement|undefined} group The group to draw
  *     it in. If null or undefined, defaults to the root group.
  * @protected
  */
@@ -436,10 +444,11 @@ goog.graphics.CanvasGraphics.prototype.append = function(element, group) {
  * @param {goog.graphics.Stroke} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill} fill Fill object describing the fill.
- * @param {goog.graphics.CanvasGroupElement=} opt_group The group wrapper
- *     element to append to. If not specified, appends to the main canvas.
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper
+ *     element to append to.  If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.EllipseElement} The newly created element.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.drawEllipse = function(cx, cy, rx, ry,
     stroke, fill, opt_group) {
@@ -460,10 +469,11 @@ goog.graphics.CanvasGraphics.prototype.drawEllipse = function(cx, cy, rx, ry,
  * @param {goog.graphics.Stroke} stroke Stroke object describing the
  *    stroke.
  * @param {goog.graphics.Fill} fill Fill object describing the fill.
- * @param {goog.graphics.CanvasGroupElement=} opt_group The group wrapper
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper
  *     element to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.RectElement} The newly created element.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.drawRect = function(x, y, width, height,
     stroke, fill, opt_group) {
@@ -482,7 +492,7 @@ goog.graphics.CanvasGraphics.prototype.drawRect = function(x, y, width, height,
  * @param {number} width Width of image.
  * @param {number} height Height of image.
  * @param {string} src Source of the image.
- * @param {goog.graphics.CanvasGroupElement=} opt_group The group wrapper
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper
  *     element to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.ImageElement} The newly created element.
@@ -505,18 +515,20 @@ goog.graphics.CanvasGraphics.prototype.drawImage = function(x, y, width, height,
  * @param {number} x2 X coordinate of end of line.
  * @param {number} y2 Y coordinate of end of line.
  * @param {?string} align Horizontal alignment: left (default), center, right.
- * @param {!goog.graphics.Font} font Font describing the font properties.
+ * @param {goog.graphics.Font} font Font describing the font properties.
  * @param {goog.graphics.Stroke} stroke Stroke object describing the stroke.
  * @param {goog.graphics.Fill} fill Fill object describing the fill.
- * @param {goog.graphics.CanvasGroupElement=} opt_group The group wrapper
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper
  *     element to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.TextElement} The newly created element.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.drawTextOnLine = function(
     text, x1, y1, x2, y2, align, font, stroke, fill, opt_group) {
   var element = new goog.graphics.CanvasTextElement(this,
-      text, x1, y1, x2, y2, align, font, stroke, fill);
+      text, x1, y1, x2, y2, align, /** @type {!goog.graphics.Font} */ (font),
+      stroke, fill);
   this.append(element, opt_group);
   return element;
 };
@@ -527,22 +539,23 @@ goog.graphics.CanvasGraphics.prototype.drawTextOnLine = function(
  * @param {!goog.graphics.Path} path The path object to draw.
  * @param {goog.graphics.Stroke} stroke Stroke object describing the stroke.
  * @param {goog.graphics.Fill} fill Fill object describing the fill.
- * @param {goog.graphics.CanvasGroupElement=} opt_group The group wrapper
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper
  *     element to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.PathElement} The newly created element.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.drawPath = function(path, stroke, fill,
     opt_group) {
-  var element = new goog.graphics.CanvasPathElement(null, this, path, stroke,
-      fill);
+  var element = new goog.graphics.CanvasPathElement(null, this,
+      path, stroke, fill);
   this.append(element, opt_group);
   return element;
 };
 
 
 /**
- * @param {goog.graphics.CanvasGroupElement} group The group to possibly
+ * @param {goog.graphics.GroupElement} group The group to possibly
  *     draw to.
  * @return {boolean} Whether drawing can occur now.
  */
@@ -554,7 +567,7 @@ goog.graphics.CanvasGraphics.prototype.isDrawable = function(group) {
 
 /**
  * Returns true if drawing to the given group means a redraw is required.
- * @param {goog.graphics.CanvasGroupElement} group The group to draw to.
+ * @param {goog.graphics.GroupElement} group The group to draw to.
  * @return {boolean} Whether drawing to this group should force a redraw.
  */
 goog.graphics.CanvasGraphics.prototype.isRedrawRequired = function(group) {
@@ -566,10 +579,11 @@ goog.graphics.CanvasGraphics.prototype.isRedrawRequired = function(group) {
 /**
  * Create an empty group of drawing elements.
  *
- * @param {goog.graphics.CanvasGroupElement=} opt_group The group wrapper
+ * @param {goog.graphics.GroupElement=} opt_group The group wrapper
  *     element to append to. If not specified, appends to the main canvas.
  *
  * @return {goog.graphics.CanvasGroupElement} The newly created group.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.createGroup = function(opt_group) {
   var group = new goog.graphics.CanvasGroupElement(this);
@@ -596,6 +610,7 @@ goog.graphics.CanvasGraphics.prototype.createGroup = function(opt_group) {
  *
  * @param {string} text The text string to measure.
  * @param {goog.graphics.Font} font The font object describing the font style.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.getTextWidth = goog.abstractMethod;
 
@@ -628,6 +643,7 @@ goog.graphics.CanvasGraphics.prototype.enterDocument = function() {
  * Start preventing redraws - useful for chaining large numbers of changes
  * together.  Not guaranteed to do anything - i.e. only use this for
  * optimization of a single code path.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.suspend = function() {
   this.preventRedraw_ = true;
@@ -637,6 +653,7 @@ goog.graphics.CanvasGraphics.prototype.suspend = function() {
 /**
  * Stop preventing redraws.  If any redraws had been prevented, a redraw will
  * be done now.
+ * @override
  */
 goog.graphics.CanvasGraphics.prototype.resume = function() {
   this.preventRedraw_ = false;

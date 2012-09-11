@@ -16,7 +16,7 @@
  * @fileoverview This file contains functions for using Gears.
  */
 
-// TODO(user): The Gears team is planning to inject the Gears factory as
+// TODO(arv): The Gears team is planning to inject the Gears factory as
 // google.gears.factory in the main thread as well. Currently it is only
 // injected in the worker threads.
 
@@ -76,7 +76,7 @@ goog.gears.getFactory = function() {
  * @private
  */
 goog.gears.tryGearsObject_ = function() {
-  // HACK(user): Use square bracket notation so this can compile in an
+  // HACK(arv): Use square bracket notation so this can compile in an
   // environment without a DOM.
   var win = goog.getObjectByName('window');
   // Safari
@@ -149,7 +149,7 @@ goog.gears.hasFactory = function() {
   // FF 3.5.3 where the Gears add-on is disabled because it's incompatible
   // with FF but application/x-googlegears is still in the mimeTypes object.
   //
-  // HACK(user): Use object by name so this can compile in an environment without
+  // HACK(arv): Use object by name so this can compile in an environment without
   // a DOM.
   var mimeTypes = goog.getObjectByName('navigator.mimeTypes');
   if (mimeTypes && mimeTypes['application/x-googlegears']) {

@@ -71,6 +71,7 @@ goog.dom.pattern.FullTag.prototype.depth_ = 0;
  * @return {goog.dom.pattern.MatchType} <code>MATCH</code> at the end of our
  *    tag, <code>MATCHING</code> if we are within the tag, and
  *    <code>NO_MATCH</code> if the starting tag does not match.
+ * @override
  */
 goog.dom.pattern.FullTag.prototype.matchToken = function(token, type) {
   if (!this.depth_) {

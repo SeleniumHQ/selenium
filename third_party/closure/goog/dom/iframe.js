@@ -15,6 +15,7 @@
 /**
  * @fileoverview Utilities for creating and working with iframes
  * cross-browser.
+ * @author gboyer@google.com (Garry Boyer)
  */
 
 
@@ -85,7 +86,7 @@ goog.dom.iframe.writeContent = function(iframe, content) {
 };
 
 
-// TODO(user): Provide a higher-level API for the most common use case, so
+// TODO(gboyer): Provide a higher-level API for the most common use case, so
 // that you can just provide a list of stylesheets and some content HTML.
 /**
  * Creates a same-domain iframe containing preloaded content.

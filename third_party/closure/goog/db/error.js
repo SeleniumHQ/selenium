@@ -69,6 +69,33 @@ goog.inherits(goog.db.Error.VersionChangeBlockedError, goog.debug.Error);
 
 
 /**
+ * Synthetic error codes for database errors, for use when IndexedDB
+ * support is not available. This numbering differs in practice
+ * from the browser implementations, but it is not meant to be reliable:
+ * this object merely ensures that goog.db.Error is loadable on platforms
+ * that do not support IndexedDB.
+ *
+ * @enum {number}
+ * @private
+ */
+goog.db.Error.DatabaseErrorCode_ = {
+  UNKNOWN_ERR: 1,
+  NON_TRANSIENT_ERR: 2,
+  NOT_FOUND_ERR: 3,
+  CONSTRAINT_ERR: 4,
+  DATA_ERR: 5,
+  NOT_ALLOWED_ERR: 6,
+  TRANSACTION_INACTIVE_ERR: 7,
+  ABORT_ERR: 8,
+  READ_ONLY_ERR: 9,
+  TRANSIENT_ERR: 11,
+  TIMEOUT_ERR: 10,
+  QUOTA_ERR: 11,
+  INVALID_ACCESS_ERR: 12
+};
+
+
+/**
  * Error codes for database errors.
  * @see http://www.w3.org/TR/IndexedDB/#idl-def-IDBDatabaseException
  *
@@ -76,27 +103,40 @@ goog.inherits(goog.db.Error.VersionChangeBlockedError, goog.debug.Error);
  */
 goog.db.Error.ErrorCode = {
   UNKNOWN_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException).UNKNOWN_ERR,
+      goog.global.webkitIDBDatabaseException ||
+      goog.db.Error.DatabaseErrorCode_).UNKNOWN_ERR,
   NON_TRANSIENT_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException).NON_TRANSIENT_ERR,
+      goog.global.webkitIDBDatabaseException ||
+      goog.db.Error.DatabaseErrorCode_).NON_TRANSIENT_ERR,
   NOT_FOUND_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException).NOT_FOUND_ERR,
+      goog.global.webkitIDBDatabaseException ||
+      goog.db.Error.DatabaseErrorCode_).NOT_FOUND_ERR,
   CONSTRAINT_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException).CONSTRAINT_ERR,
+      goog.global.webkitIDBDatabaseException ||
+      goog.db.Error.DatabaseErrorCode_).CONSTRAINT_ERR,
   DATA_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException).DATA_ERR,
+      goog.global.webkitIDBDatabaseException ||
+      goog.db.Error.DatabaseErrorCode_).DATA_ERR,
   NOT_ALLOWED_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException).NOT_ALLOWED_ERR,
+      goog.global.webkitIDBDatabaseException ||
+      goog.db.Error.DatabaseErrorCode_).NOT_ALLOWED_ERR,
   TRANSACTION_INACTIVE_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException).TRANSACTION_INACTIVE_ERR,
+      goog.global.webkitIDBDatabaseException ||
+      goog.db.Error.DatabaseErrorCode_).TRANSACTION_INACTIVE_ERR,
   ABORT_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException).ABORT_ERR,
+      goog.global.webkitIDBDatabaseException ||
+      goog.db.Error.DatabaseErrorCode_).ABORT_ERR,
   READ_ONLY_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException).READ_ONLY_ERR,
+      goog.global.webkitIDBDatabaseException ||
+      goog.db.Error.DatabaseErrorCode_).READ_ONLY_ERR,
   TIMEOUT_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException).TIMEOUT_ERR,
+      goog.global.webkitIDBDatabaseException ||
+      goog.db.Error.DatabaseErrorCode_).TIMEOUT_ERR,
   QUOTA_ERR: (goog.global.IDBDatabaseException ||
-      goog.global.webkitIDBDatabaseException).QUOTA_ERR
+      goog.global.webkitIDBDatabaseException ||
+      goog.db.Error.DatabaseErrorCode_).QUOTA_ERR,
+  INVALID_ACCESS_ERR: (goog.global.DOMException ||
+      goog.db.Error.DatabaseErrorCode_).INVALID_ACCESS_ERR
 };
 
 
@@ -130,6 +170,8 @@ goog.db.Error.getMessage = function(code) {
       return 'Transaction timed out';
     case goog.db.Error.ErrorCode.QUOTA_ERR:
       return 'Database storage space quota exceeded';
+    case goog.db.Error.ErrorCode.INVALID_ACCESS_ERR:
+      return 'Invalid operation';
     default:
       return 'Unrecognized exception with code ' + code;
   }

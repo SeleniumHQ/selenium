@@ -15,6 +15,7 @@
 /**
  * @fileoverview Functions for setting, getting and deleting cookies.
  *
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 
@@ -59,35 +60,11 @@ goog.net.Cookies.SPLIT_RE_ = /\s*;\s*/;
 
 
 /**
- * Test cookie name.  Used for a temp cookie when testing if cookies are
- * enabled.
- * @type {string}
- * @private
- */
-goog.net.Cookies.TEST_COOKIE_NAME_ = 'COOKIES_TEST_';
-
-
-/**
  * Returns true if cookies are enabled.
  * @return {boolean} True if cookies are enabled.
  */
 goog.net.Cookies.prototype.isEnabled = function() {
-  var isEnabled = this.isNavigatorCookieEnabled_();
-
-  if (isEnabled && goog.userAgent.WEBKIT) {
-    // Chrome has a bug where it will report cookies as enabled even if they
-    // are not, see http://code.google.com/p/chromium/issues/detail?id=1850 .
-    // To work around, we set a unique cookie, then check for it.
-    var cookieName = goog.net.Cookies.TEST_COOKIE_NAME_ + goog.now();
-    goog.net.cookies.set(cookieName, '1');
-    if (!this.get(cookieName)) {
-      return false;
-    }
-    // Remove temp cookie.
-    this.remove(cookieName);
-  }
-
-  return isEnabled;
+  return navigator.cookieEnabled;
 };
 
 
@@ -215,6 +192,9 @@ goog.net.Cookies.prototype.get = function(name, opt_default) {
   for (var i = 0, part; part = parts[i]; i++) {
     if (part.indexOf(nameEq) == 0) {
       return part.substr(nameEq.length);
+    }
+    if (part == name) {
+      return '';
     }
   }
   return opt_default;
@@ -349,16 +329,6 @@ goog.net.Cookies.prototype.getCookie_ = function() {
 goog.net.Cookies.prototype.getParts_ = function() {
   return (this.getCookie_() || '').
       split(goog.net.Cookies.SPLIT_RE_);
-};
-
-
-/**
- * Returns navigator.cookieEnabled.  Overridden in unit tests.
- * @return {boolean} The value of navigator.cookieEnabled.
- * @private
- */
-goog.net.Cookies.prototype.isNavigatorCookieEnabled_ = function() {
-  return navigator.cookieEnabled;
 };
 
 

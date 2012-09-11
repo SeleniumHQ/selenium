@@ -67,6 +67,29 @@ goog.inherits(goog.ui.MenuItem, goog.ui.Control);
  */
 goog.ui.MenuItem.mnemonicKey_;
 
+
+/**
+ * The class set on an element that contains a parenthetical mnemonic key hint.
+ * Parenthetical hints are added to items in which the mnemonic key is not found
+ * within the menu item's caption itself. For example, if you have a menu item
+ * with the caption "Record," but its mnemonic key is "I", the caption displayed
+ * in the menu will appear as "Record (I)".
+ *
+ * @type {string}
+ * @private
+ */
+goog.ui.MenuItem.MNEMONIC_WRAPPER_CLASS_ =
+    goog.getCssName('goog-menuitem-mnemonic-separator');
+
+
+/**
+ * The class set on an element that contains a keyboard accelerator hint.
+ * @type {string}
+ * @private
+ */
+goog.ui.MenuItem.ACCELERATOR_CLASS_ = goog.getCssName('goog-menuitem-accel');
+
+
 // goog.ui.Component and goog.ui.Control implementation.
 
 
@@ -131,10 +154,16 @@ goog.ui.MenuItem.prototype.setCheckable = function(checkable) {
 goog.ui.MenuItem.prototype.getCaption = function() {
   var content = this.getContent();
   if (goog.isArray(content)) {
-    var acceleratorClass = goog.getCssName('goog-menuitem-accel');
+    var acceleratorClass = goog.ui.MenuItem.ACCELERATOR_CLASS_;
+    var mnemonicWrapClass = goog.ui.MenuItem.MNEMONIC_WRAPPER_CLASS_;
     var caption = goog.array.map(content, function(node) {
-      return goog.dom.classes.has(node, acceleratorClass) ?
-          '' : goog.dom.getRawTextContent(node);
+      var classes = goog.dom.classes.get(node);
+      if (goog.array.contains(classes, acceleratorClass) ||
+          goog.array.contains(classes, mnemonicWrapClass)) {
+        return '';
+      } else {
+        return goog.dom.getRawTextContent(node);
+      }
     }).join('');
     return goog.string.collapseBreakingSpaces(caption);
   }

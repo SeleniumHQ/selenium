@@ -15,6 +15,9 @@
 /**
  * @fileoverview Utilities for manipulating a form and elements.
  *
+ * @author arv@google.com (Erik Arvidsson)
+ * @author jonp@google.com (Jon Perlow)
+ * @author elsigh@google.com (Lindsey Simon)
  */
 
 goog.provide('goog.dom.forms');
@@ -64,12 +67,20 @@ goog.dom.forms.getFormDataString = function(form) {
 goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
   var els = form.elements;
   for (var el, i = 0; el = els[i]; i++) {
-    if (el.disabled || el.tagName.toLowerCase() == 'fieldset') {
+    if (// Make sure we don't include elements that are not part of the form.
+        // Some browsers include non-form elements. Check for 'form' property.
+        // See http://code.google.com/p/closure-library/issues/detail?id=227
+        // and
+        // http://www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#the-input-element
+        (el.form != form) ||
+        el.disabled ||
+        // HTMLFieldSetElement has a form property but no value.
+        el.tagName.toLowerCase() == 'fieldset') {
       continue;
     }
+
     var name = el.name;
-    var type = el.type.toLowerCase();
-    switch (type) {
+    switch (el.type.toLowerCase()) {
       case 'file':
         // file inputs are not supported
       case 'submit':
@@ -400,4 +411,3 @@ goog.dom.forms.setSelectMultiple_ = function(el, opt_value) {
     }
   }
 };
-

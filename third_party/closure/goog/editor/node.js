@@ -37,11 +37,55 @@ goog.require('goog.string.Unicode');
  * @private
  */
 goog.editor.node.BLOCK_TAG_NAMES_ = goog.object.createSet(
-    'ADDRESS', 'BLOCKQUOTE', 'BODY', 'CAPTION', 'CENTER', 'COL', 'COLGROUP',
-    'DIR', 'DIV', 'DL', 'DD', 'DT', 'FIELDSET', 'FORM', 'H1', 'H2', 'H3', 'H4',
-    'H5', 'H6', 'HR', 'ISINDEX', 'OL', 'LI', 'MAP', 'MENU', 'OPTGROUP',
-    'OPTION', 'P', 'PRE', 'TABLE', 'TBODY', 'TD', 'TFOOT', 'TH', 'THEAD', 'TR',
-    'TL', 'UL');
+    goog.dom.TagName.ADDRESS,
+    goog.dom.TagName.ARTICLE,
+    goog.dom.TagName.ASIDE,
+    goog.dom.TagName.BLOCKQUOTE,
+    goog.dom.TagName.BODY,
+    goog.dom.TagName.CAPTION,
+    goog.dom.TagName.CENTER,
+    goog.dom.TagName.COL,
+    goog.dom.TagName.COLGROUP,
+    goog.dom.TagName.DETAILS,
+    goog.dom.TagName.DIR,
+    goog.dom.TagName.DIV,
+    goog.dom.TagName.DL,
+    goog.dom.TagName.DD,
+    goog.dom.TagName.DT,
+    goog.dom.TagName.FIELDSET,
+    goog.dom.TagName.FIGCAPTION,
+    goog.dom.TagName.FIGURE,
+    goog.dom.TagName.FOOTER,
+    goog.dom.TagName.FORM,
+    goog.dom.TagName.H1,
+    goog.dom.TagName.H2,
+    goog.dom.TagName.H3,
+    goog.dom.TagName.H4,
+    goog.dom.TagName.H5,
+    goog.dom.TagName.H6,
+    goog.dom.TagName.HEADER,
+    goog.dom.TagName.HGROUP,
+    goog.dom.TagName.HR,
+    goog.dom.TagName.ISINDEX,
+    goog.dom.TagName.OL,
+    goog.dom.TagName.LI,
+    goog.dom.TagName.MAP,
+    goog.dom.TagName.MENU,
+    goog.dom.TagName.NAV,
+    goog.dom.TagName.OPTGROUP,
+    goog.dom.TagName.OPTION,
+    goog.dom.TagName.P,
+    goog.dom.TagName.PRE,
+    goog.dom.TagName.SECTION,
+    goog.dom.TagName.SUMMARY,
+    goog.dom.TagName.TABLE,
+    goog.dom.TagName.TBODY,
+    goog.dom.TagName.TD,
+    goog.dom.TagName.TFOOT,
+    goog.dom.TagName.TH,
+    goog.dom.TagName.THEAD,
+    goog.dom.TagName.TR,
+    goog.dom.TagName.UL);
 
 
 /**
@@ -52,7 +96,7 @@ goog.editor.node.BLOCK_TAG_NAMES_ = goog.object.createSet(
  * @private
  */
 goog.editor.node.NON_EMPTY_TAGS_ = goog.object.createSet(
-    goog.dom.TagName.IMG, goog.dom.TagName.IFRAME, 'EMBED');
+    goog.dom.TagName.IMG, goog.dom.TagName.IFRAME, goog.dom.TagName.EMBED);
 
 
 /**

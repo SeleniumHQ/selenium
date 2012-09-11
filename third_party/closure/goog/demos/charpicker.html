@@ -21,6 +21,7 @@ See the COPYING file for details.
   <script src="../base.js"></script>
   <script>
     goog.require('goog.i18n.CharPickerData');
+    goog.require('goog.i18n.uChar.LocalNameFetcher');
     goog.require('goog.ui.CharPicker');
   </script>
 
@@ -44,6 +45,7 @@ See the COPYING file for details.
 
   <script>
     var picker = new goog.ui.CharPicker(new goog.i18n.CharPickerData(),
+        new goog.i18n.uChar.LocalNameFetcher(),
         ["\uD869\uDED6", "a", "b", "c"], 10, 1);
     var el = goog.dom.getElement('char-picker');
     picker.decorate(el);

@@ -15,6 +15,7 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.MenuButton}s and subclasses.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.MenuButtonRenderer');
@@ -92,6 +93,7 @@ if (goog.userAgent.GECKO) {
  * @param {Element} element Root element of the button whose content element
  *     is to be returned.
  * @return {Element} The button's content element.
+ * @override
  */
 goog.ui.MenuButtonRenderer.prototype.getContentElement = function(element) {
   var content =
@@ -110,12 +112,14 @@ goog.ui.MenuButtonRenderer.prototype.getContentElement = function(element) {
  * the element.  Overrides {@link goog.ui.CustomButtonRenderer#decorate} by
  * looking for a child element that can be decorated by a menu, and if it
  * finds one, decorates it and attaches it to the menu button.
- * @param {goog.ui.MenuButton} button Menu button to decorate the element.
+ * @param {goog.ui.Control} control goog.ui.MenuButton to decorate the element.
  * @param {Element} element Element to decorate.
  * @return {Element} Decorated element.
+ * @override
  */
-goog.ui.MenuButtonRenderer.prototype.decorate = function(button, element) {
-  // TODO(user):  Add more robust support for subclasses of goog.ui.Menu.
+goog.ui.MenuButtonRenderer.prototype.decorate = function(control, element) {
+  var button = /** @type {goog.ui.MenuButton} */ (control);
+  // TODO(attila):  Add more robust support for subclasses of goog.ui.Menu.
   var menuElem = goog.dom.getElementsByTagNameAndClass(
       '*', goog.ui.MenuRenderer.CSS_CLASS, element)[0];
   if (menuElem) {
@@ -154,6 +158,7 @@ goog.ui.MenuButtonRenderer.prototype.decorate = function(button, element) {
  *     to wrap in a box.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
  * @return {Element} Pseudo-rounded-corner box containing the content.
+ * @override
  */
 goog.ui.MenuButtonRenderer.prototype.createButton = function(content, dom) {
   return goog.ui.MenuButtonRenderer.superClass_.createButton.call(this,
@@ -220,6 +225,7 @@ goog.ui.MenuButtonRenderer.prototype.createDropdown = function(dom) {
  * Returns the CSS class to be applied to the root element of components
  * rendered using this renderer.
  * @return {string} Renderer-specific CSS class.
+ * @override
  */
 goog.ui.MenuButtonRenderer.prototype.getCssClass = function() {
   return goog.ui.MenuButtonRenderer.CSS_CLASS;

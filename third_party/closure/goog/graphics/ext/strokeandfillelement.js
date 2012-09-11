@@ -63,6 +63,7 @@ goog.graphics.ext.StrokeAndFillElement.prototype.setStroke = function(stroke) {
 /**
  * Redraw the rectangle.  Called when the coordinate system is changed.
  * @protected
+ * @override
  */
 goog.graphics.ext.StrokeAndFillElement.prototype.redraw = function() {
   this.getWrapper().reapplyStroke();

@@ -20,6 +20,7 @@
 
 goog.provide('goog.testing.style');
 
+goog.require('goog.dom');
 goog.require('goog.math.Rect');
 goog.require('goog.style');
 
@@ -66,6 +67,19 @@ goog.testing.style.isVisible = function(element) {
       goog.testing.style.getAvailableStyle_(element, 'display');
 
   return (visibilityStyle != 'hidden' && displayStyle != 'none');
+};
+
+/**
+ * Test whether the given element is on screen.
+ * @param {!Element} el The element to test.
+ * @return {boolean} Whether the element is on the screen.
+ */
+goog.testing.style.isOnScreen = function(el) {
+  var doc = goog.dom.getDomHelper(el).getDocument();
+  var viewport = goog.style.getVisibleRectForElement(doc.body);
+  var viewportRect = goog.math.Rect.createFromBox(viewport);
+  return goog.dom.contains(doc, el) &&
+      goog.style.getBounds(el).intersects(viewportRect);
 };
 
 

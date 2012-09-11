@@ -30,6 +30,9 @@ goog.provide('goog.events.Listener');
  * @constructor
  */
 goog.events.Listener = function() {
+  if (goog.events.Listener.ENABLE_MONITORING) {
+    this.creationStack = new Error().stack;
+  }
 };
 
 
@@ -39,6 +42,16 @@ goog.events.Listener = function() {
  * @private
  */
 goog.events.Listener.counter_ = 0;
+
+
+/**
+ * @define {boolean} Whether to enable the monitoring of the
+ *     goog.events.Listener instances. Switching on the monitoring is only
+ *     recommended for debugging because it has a significant impact on
+ *     performance and memory usage. If switched off, the monitoring code
+ *     compiles down to 0 bytes.
+ */
+goog.events.Listener.ENABLE_MONITORING = false;
 
 
 /**
@@ -110,6 +123,14 @@ goog.events.Listener.prototype.removed = false;
  * @type {boolean}
  */
 goog.events.Listener.prototype.callOnce = false;
+
+
+/**
+ * If monitoring the goog.events.Listener instances is enabled, stores the
+ * creation stack trace of the Disposable instance.
+ * @type {string}
+ */
+goog.events.Listener.prototype.creationStack;
 
 
 /**

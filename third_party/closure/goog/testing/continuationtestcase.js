@@ -74,6 +74,7 @@
  * }
  * </pre>
  *
+ * @author brenneman@google.com (Shawn Brenneman)
  */
 
 
@@ -288,7 +289,13 @@ goog.testing.ContinuationTestCase.prototype.runNextStep_ = function() {
 
 
 /**
- * Creates a new test step that will run after a user-specified timeout.
+ * Creates a new test step that will run after a user-specified
+ * timeout.  No guarantee is made on the execution order of the
+ * continuation, except for those provided by each browser's
+ * window.setTimeout. In particular, if two continuations are
+ * registered at the same time with very small delta for their
+ * durations, this class can not guarantee that the continuation with
+ * the smaller duration will be executed first.
  * @param {Function} continuation The test function to invoke after the timeout.
  * @param {number=} opt_duration The length of the timeout in milliseconds.
  */

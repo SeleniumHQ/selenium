@@ -78,6 +78,7 @@ goog.dom.pattern.Sequence.prototype.ignoreWhitespace_ = false;
  * @return {goog.dom.pattern.MatchType} <code>MATCH</code> if the pattern
  *     matches, <code>MATCHING</code> if the pattern starts a match, and
  *     <code>NO_MATCH</code> if the pattern does not match.
+ * @override
  */
 goog.dom.pattern.Sequence.prototype.matchToken = function(token, type) {
   // If the option is set, ignore any whitespace only text nodes
@@ -130,6 +131,7 @@ goog.dom.pattern.Sequence.prototype.matchToken = function(token, type) {
 
 /**
  * Reset any internal state this pattern keeps.
+ * @override
  */
 goog.dom.pattern.Sequence.prototype.reset = function() {
   if (this.patterns[this.currentPosition_]) {

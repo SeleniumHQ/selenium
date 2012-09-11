@@ -41,6 +41,8 @@
  * Uses features of RFC 3986 for parsing/formatting URIs:
  *   http://gbiv.com/protocols/uri/rfc/rfc3986.html
  *
+ * @author gboyer@google.com (Garrett Boyer) - The "lightened" design.
+ * @author msamuel@google.com (Mike Samuel) - Domain knowledge and regexes.
  */
 
 goog.provide('goog.uri.utils');
@@ -51,6 +53,7 @@ goog.provide('goog.uri.utils.StandardQueryParam');
 
 goog.require('goog.asserts');
 goog.require('goog.string');
+goog.require('goog.userAgent');
 
 
 /**
@@ -85,39 +88,39 @@ goog.uri.utils.CharCode_ = {
  */
 goog.uri.utils.buildFromEncodedParts = function(opt_scheme, opt_userInfo,
     opt_domain, opt_port, opt_path, opt_queryData, opt_fragment) {
-  var out = [];
+  var out = '';
 
   if (opt_scheme) {
-    out.push(opt_scheme, ':');
+    out += opt_scheme + ':';
   }
 
   if (opt_domain) {
-    out.push('//');
+    out += '//';
 
     if (opt_userInfo) {
-      out.push(opt_userInfo, '@');
+      out += opt_userInfo + '@';
     }
 
-    out.push(opt_domain);
+    out += opt_domain;
 
     if (opt_port) {
-      out.push(':', opt_port);
+      out += ':' + opt_port;
     }
   }
 
   if (opt_path) {
-    out.push(opt_path);
+    out += opt_path;
   }
 
   if (opt_queryData) {
-    out.push('?', opt_queryData);
+    out += '?' + opt_queryData;
   }
 
   if (opt_fragment) {
-    out.push('#', opt_fragment);
+    out += '#' + opt_fragment;
   }
 
-  return out.join('');
+  return out;
 };
 
 
@@ -234,10 +237,13 @@ goog.uri.utils.ComponentIndex = {
  *     arbitrary strings may still look like path names.
  */
 goog.uri.utils.split = function(uri) {
+
   // See @return comment -- never null.
   return /** @type {!Array.<string|undefined>} */ (
       uri.match(goog.uri.utils.splitRe_));
 };
+
+
 
 
 /**
@@ -276,6 +282,24 @@ goog.uri.utils.getComponentByIndex_ = function(componentIndex, uri) {
 goog.uri.utils.getScheme = function(uri) {
   return goog.uri.utils.getComponentByIndex_(
       goog.uri.utils.ComponentIndex.SCHEME, uri);
+};
+
+
+/**
+ * Gets the effective scheme for the URL.  If the URL is relative then the
+ * scheme is derived from the page's location.
+ * @param {string} uri The URI to examine.
+ * @return {string} The protocol or scheme, always lower case.
+ */
+goog.uri.utils.getEffectiveScheme = function(uri) {
+  var scheme = goog.uri.utils.getScheme(uri);
+  if (!scheme && self.location) {
+    var protocol = self.location.protocol;
+    scheme = protocol.substr(0, protocol.length - 1);
+  }
+  // NOTE: When called from a web worker in Firefox 3.5, location maybe null.
+  // All other browsers with web workers support self.location from the worker.
+  return scheme ? scheme.toLowerCase() : '';
 };
 
 
@@ -565,25 +589,23 @@ goog.uri.utils.appendQueryData_ = function(buffer) {
  */
 goog.uri.utils.appendKeyValuePairs_ = function(key, value, pairs) {
   if (goog.isArray(value)) {
-    // It's an array, so append all elements.  Here, we must convince
-    // jscompiler that it is, indeed, an array.
-    value = /** @type {Array} */ (value);
+    // Convince the compiler it's an array.
+    goog.asserts.assertArray(value);
     for (var j = 0; j < value.length; j++) {
-      pairs.push('&', key);
-      // Check for empty string, null and undefined get encoded
-      // into the url as literal strings
-      if (value[j] !== '') {
-        pairs.push('=', goog.string.urlEncode(value[j]));
-      }
+      // Convert to string explicitly, to short circuit the null and array
+      // logic in this function -- this ensures that null and undefined get
+      // written as literal 'null' and 'undefined', and arrays don't get
+      // expanded out but instead encoded in the default way.
+      goog.uri.utils.appendKeyValuePairs_(key, String(value[j]), pairs);
     }
   } else if (value != null) {
-    // Not null or undefined, so safe to append.
-    pairs.push('&', key);
-    // Check for empty string, null and undefined get encoded
-    // into the url as literal strings
-    if (value !== '') {
-      pairs.push('=', goog.string.urlEncode(value));
-    }
+    // Skip a top-level null or undefined entirely.
+    pairs.push('&', key,
+        // Check for empty string. Zero gets encoded into the url as literal
+        // strings.  For empty string, skip the equal sign, to be consistent
+        // with UriBuilder.java.
+        value === '' ? '' : '=',
+        goog.string.urlEncode(value));
   }
 };
 
@@ -912,8 +934,10 @@ goog.uri.utils.removeParam = function(uri, keyEncoded) {
 /**
  * Replaces all existing definitions of a parameter with a single definition.
  *
- * Repeated calls to this can exhibit quadratic behavior in IE6 due to the
- * way string append works, though it should be limited given the 2kb limit.
+ * Repeated calls to this can exhibit quadratic behavior due to the need to
+ * find existing instances and reconstruct the string, though it should be
+ * limited given the 2kb limit.  Consider using appendParams to append multiple
+ * parameters in bulk.
  *
  * @param {string} uri The original URI, which may already have query data.
  * @param {string} keyEncoded The key, which must already be URI encoded.

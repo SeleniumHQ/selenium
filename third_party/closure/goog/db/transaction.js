@@ -21,6 +21,7 @@
 goog.provide('goog.db.Transaction');
 goog.provide('goog.db.Transaction.TransactionMode');
 
+goog.require('goog.db.Error');
 goog.require('goog.db.ObjectStore');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
@@ -163,14 +164,12 @@ goog.db.Transaction.prototype.disposeInternal = function() {
 
 /**
  * The three possible transaction modes.
+ * @see http://www.w3.org/TR/IndexedDB/#idl-def-IDBTransaction
  *
  * @enum {number}
  */
 goog.db.Transaction.TransactionMode = {
-  READ_ONLY: (goog.global.IDBTransaction ||
-      goog.global.webkitIDBTransaction).READ_ONLY,
-  READ_WRITE: (goog.global.IDBTransaction ||
-      goog.global.webkitIDBTransaction).READ_WRITE,
-  VERSION_CHANGE: (goog.global.IDBTransaction ||
-      goog.global.webkitIDBTransaction).VERSION_CHANGE
+  READ_ONLY: 0,
+  READ_WRITE: 1,
+  VERSION_CHANGE: 2
 };

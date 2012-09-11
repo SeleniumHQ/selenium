@@ -159,6 +159,7 @@ goog.ui.PopupColorPicker.prototype.disposeInternal = function() {
  * structure they build is fairly complicated.
  * @param {Element} element Element to decorate.
  * @return {boolean} Returns always false.
+ * @override
  */
 goog.ui.PopupColorPicker.prototype.canDecorate = function(element) {
   return false;

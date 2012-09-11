@@ -812,7 +812,7 @@ goog.cssom.iframe.style.getElementContext = function(
   };
   // Text formatting property values, to keep text nodes directly under BODY
   // looking right.
-  for (i = 0, prop; prop = goog.cssom.iframe.style.textProperties_[i]; i++) {
+  for (i = 0; prop = goog.cssom.iframe.style.textProperties_[i]; i++) {
     bodyProperties[prop] = computedStyle[goog.string.toCamelCase(prop)];
   }
   if (opt_copyBackgroundContext &&

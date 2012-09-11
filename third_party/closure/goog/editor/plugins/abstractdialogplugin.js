@@ -157,7 +157,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.execCommandInternal =
     this.dialog_ = this.createDialog(
         // TODO(user): Add Field.getAppDomHelper. (Note dom helper will
         // need to be updated if setAppWindow is called by clients.)
-        goog.dom.getDomHelper(this.fieldObject.getAppWindow()),
+        goog.dom.getDomHelper(this.getFieldObject().getAppWindow()),
         opt_arg);
   }
 
@@ -167,13 +167,13 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.execCommandInternal =
   // typing, some browsers will screw up the original selection. But first we
   // save it so we can restore it when the dialog closes.
   // getRange may return null if there is no selection in the field.
-  var tempRange = this.fieldObject.getRange();
+  var tempRange = this.getFieldObject().getRange();
   // saveUsingDom() did not work as well as saveUsingNormalizedCarets(),
   // not sure why.
   this.savedRange_ = tempRange && goog.editor.range.saveUsingNormalizedCarets(
       tempRange);
   goog.dom.Range.clearSelection(
-      this.fieldObject.getEditableDomHelper().getWindow());
+      this.getFieldObject().getEditableDomHelper().getWindow());
 
   // Listen for the dialog closing so we can clean up.
   goog.events.listenOnce(this.dialog_,
@@ -182,13 +182,13 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.execCommandInternal =
       false,
       this);
 
-  this.fieldObject.setModalMode(true);
+  this.getFieldObject().setModalMode(true);
   this.dialog_.show();
   this.dispatchEvent(goog.editor.plugins.AbstractDialogPlugin.EventType.OPENED);
 
   // Since the selection has left the document, dispatch a selection
   // change event.
-  this.fieldObject.dispatchSelectionChangeEvent();
+  this.getFieldObject().dispatchSelectionChangeEvent();
 
   return true;
 };
@@ -207,7 +207,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.execCommandInternal =
  */
 goog.editor.plugins.AbstractDialogPlugin.prototype.handleAfterHide = function(
     e) {
-  this.fieldObject.setModalMode(false);
+  this.getFieldObject().setModalMode(false);
   this.restoreOriginalSelection();
 
   if (!this.reuseDialog_) {
@@ -218,7 +218,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.handleAfterHide = function(
 
   // Since the selection has returned to the document, dispatch a selection
   // change event.
-  this.fieldObject.dispatchSelectionChangeEvent();
+  this.getFieldObject().dispatchSelectionChangeEvent();
 
   // When the dialog closes due to pressing enter or escape, that happens on the
   // keydown event. But the browser will still fire a keyup event after that,
@@ -227,7 +227,8 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.handleAfterHide = function(
   // event, meaning the editable field will not fire that event if the keyup
   // that caused it immediately after this dialog was hidden ("immediately"
   // means a small number of milliseconds defined by the editable field).
-  this.fieldObject.debounceEvent(goog.editor.Field.EventType.SELECTIONCHANGE);
+  this.getFieldObject().debounceEvent(
+      goog.editor.Field.EventType.SELECTIONCHANGE);
 };
 
 
@@ -239,7 +240,7 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.handleAfterHide = function(
  */
 goog.editor.plugins.AbstractDialogPlugin.prototype.restoreOriginalSelection =
     function() {
-  this.fieldObject.focus();
+  this.getFieldObject().focus();
   if (this.savedRange_) {
     this.savedRange_.restore();
     this.savedRange_ = null;

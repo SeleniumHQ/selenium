@@ -87,7 +87,7 @@ goog.ui.ColorPalette.prototype.getColors = function() {
 goog.ui.ColorPalette.prototype.setColors = function(colors) {
   this.colors_ = colors;
   this.normalizedColors_ = null;
-  this.setContent(this.createColorNodes_());
+  this.setContent(this.createColorNodes());
 };
 
 
@@ -125,9 +125,9 @@ goog.ui.ColorPalette.prototype.setSelectedColor = function(color) {
 
 /**
  * @return {Array.<Node>} An array of DOM nodes for each color.
- * @private
+ * @protected
  */
-goog.ui.ColorPalette.prototype.createColorNodes_ = function() {
+goog.ui.ColorPalette.prototype.createColorNodes = function() {
   return goog.array.map(this.colors_, function(color) {
     var swatch = this.getDomHelper().createDom('div', {
         'class': goog.getCssName(this.getRenderer().getCssClass(),

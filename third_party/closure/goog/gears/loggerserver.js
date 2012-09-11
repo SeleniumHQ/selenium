@@ -16,6 +16,7 @@
  * @fileoverview This class lives on the main thread and takes care of incoming
  * logger commands from a worker thread.
  *
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 goog.provide('goog.gears.LoggerServer');

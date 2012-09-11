@@ -114,6 +114,7 @@ goog.dom.pattern.Tag.prototype.test_ = null;
  * @param {goog.dom.TagWalkType} type The type of token.
  * @return {goog.dom.pattern.MatchType} <code>MATCH</code> if the pattern
  *     matches, <code>NO_MATCH</code> otherwise.
+ * @override
  */
 goog.dom.pattern.Tag.prototype.matchToken = function(token, type) {
   // Check the direction and tag name.

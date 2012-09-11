@@ -308,6 +308,7 @@ goog.dom.browserrange.IeRange.prototype.endOffset_ = -1;
 
 /**
  * @return {goog.dom.browserrange.IeRange} A clone of this range.
+ * @override
  */
 goog.dom.browserrange.IeRange.prototype.clone = function() {
   var range = new goog.dom.browserrange.IeRange(
@@ -749,7 +750,7 @@ goog.dom.browserrange.IeRange.prototype.select = function(opt_reverse) {
 /** @override */
 goog.dom.browserrange.IeRange.prototype.removeContents = function() {
   // NOTE: Sometimes htmlText is non-empty, but the range is actually empty.
-  // TODO(user): The htmlText check is probably unnecessary, but I left it in
+  // TODO(gboyer): The htmlText check is probably unnecessary, but I left it in
   // for paranoia.
   if (!this.isCollapsed() && this.range_.htmlText) {
     // Store some before-removal state.
@@ -767,7 +768,7 @@ goog.dom.browserrange.IeRange.prototype.removeContents = function() {
 
     // However, sometimes moving the start back and forth ends up changing the
     // range.
-    // TODO(user): This condition used to happen for empty ranges, but (1)
+    // TODO(gboyer): This condition used to happen for empty ranges, but (1)
     // never worked, and (2) the isCollapsed call should protect against empty
     // ranges better than before.  However, this is left for paranoia.
     if (clone.text == oldText) {

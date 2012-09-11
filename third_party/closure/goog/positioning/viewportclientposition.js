@@ -72,6 +72,7 @@ goog.positioning.ViewportClientPosition.prototype.setLastResortOverflow =
  *     One of the goog.positioning.Corner constants.
  * @param {goog.math.Box=} opt_margin A margin specified in pixels.
  * @param {goog.math.Size=} opt_preferredSize Preferred size fo the element.
+ * @override
  */
 goog.positioning.ViewportClientPosition.prototype.reposition = function(
     element, popupCorner, opt_margin, opt_preferredSize) {

@@ -106,6 +106,7 @@ goog.math.Vec3.fromCoordinate3 = function(a) {
  * Creates a new copy of this Vec3.
  *
  * @return {!goog.math.Vec3} A new vector with the same coordinates as this one.
+ * @override
  */
 goog.math.Vec3.prototype.clone = function() {
   return new goog.math.Vec3(this.x, this.y, this.z);
@@ -124,7 +125,7 @@ goog.math.Vec3.prototype.magnitude = function() {
 
 /**
  * Returns the squared magnitude of the vector measured from the origin.
- * NOTE(user): Leaving out the square root is not a significant
+ * NOTE(brenneman): Leaving out the square root is not a significant
  * optimization in JavaScript.
  *
  * @return {number} The length of the vector, squared.

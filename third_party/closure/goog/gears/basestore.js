@@ -504,7 +504,7 @@ goog.gears.BaseStore.prototype.disposeInternal = function() {
 
 
 /**
- * HACK(user): The JSCompiler check for undefined properties sees that these
+ * HACK(arv): The JSCompiler check for undefined properties sees that these
  * fields are never set and raises warnings.
  * @type {Array.<Object>}
  * @private

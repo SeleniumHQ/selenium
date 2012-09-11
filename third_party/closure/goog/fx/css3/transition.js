@@ -125,7 +125,7 @@ goog.fx.css3.Transition.prototype.play = function() {
     goog.style.setStyle(this.element_, this.initialStyle_);
     // Allow element to get updated to its initial state before installing
     // CSS3 transition.
-    goog.Timer.callOnce(this.play_, undefined, this);
+    this.timerId_ = goog.Timer.callOnce(this.play_, undefined, this);
     return true;
   } else {
     this.stop_(false);
@@ -150,10 +150,6 @@ goog.fx.css3.Transition.prototype.play_ = function() {
 goog.fx.css3.Transition.prototype.stop = function() {
   if (!this.isPlaying()) return;
 
-  if (this.timerId_) {
-    goog.Timer.clear(this.timerId_);
-    this.timerId_ = 0;
-  }
   this.stop_(true);
 };
 
@@ -165,6 +161,9 @@ goog.fx.css3.Transition.prototype.stop = function() {
  */
 goog.fx.css3.Transition.prototype.stop_ = function(stopped) {
   goog.style.transition.removeAll(this.element_);
+
+  // Clear the timer.
+  goog.Timer.clear(this.timerId_);
 
   // Make sure that we have reached the final style.
   goog.style.setStyle(this.element_, this.finalStyle_);
@@ -190,6 +189,7 @@ goog.fx.css3.Transition.prototype.disposeInternal = function() {
 
 /**
  * Pausing CSS3 Transitions in not supported.
+ * @override
  */
 goog.fx.css3.Transition.prototype.pause = function() {
   goog.asserts.assert(false, 'Css3 transitions does not support pause action.');

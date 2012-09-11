@@ -50,7 +50,7 @@ goog.editor.plugins.AbstractTabHandler.prototype.handleKeyboardShortcut =
   // If a dialog doesn't have selectable field, Moz grabs the event and
   // performs actions in editor window. This solves that problem and allows
   // the event to be passed on to proper handlers.
-  if (goog.userAgent.GECKO && this.fieldObject.inModalMode()) {
+  if (goog.userAgent.GECKO && this.getFieldObject().inModalMode()) {
     return false;
   }
 

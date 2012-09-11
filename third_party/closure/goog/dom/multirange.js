@@ -142,6 +142,7 @@ goog.dom.MultiRange.prototype.clearCachedValues_ = function() {
 
 /**
  * @return {goog.dom.MultiRange} A clone of this range.
+ * @override
  */
 goog.dom.MultiRange.prototype.clone = function() {
   return goog.dom.MultiRange.createFromBrowserRanges(this.browserRanges_);
@@ -343,6 +344,7 @@ goog.dom.MultiRange.prototype.saveUsingDom = function() {
  * depending on the parameter.  This will result in the number of ranges in this
  * multi range becoming 1.
  * @param {boolean} toAnchor Whether to collapse to the anchor.
+ * @override
  */
 goog.dom.MultiRange.prototype.collapse = function(toAnchor) {
   if (!this.isCollapsed()) {
@@ -384,6 +386,7 @@ goog.inherits(goog.dom.DomSavedMultiRange_, goog.dom.SavedRange);
 
 /**
  * @return {goog.dom.MultiRange} The restored range.
+ * @override
  */
 goog.dom.DomSavedMultiRange_.prototype.restoreInternal = function() {
   var ranges = goog.array.map(this.savedRanges_, function(savedRange) {
@@ -498,11 +501,7 @@ goog.dom.MultiRangeIterator.prototype.next = function() {
 };
 
 
-/**
- * Replaces this iterator's values with values from another.
- * @param {goog.dom.MultiRangeIterator} other The iterator to copy.
- * @protected
- */
+/** @override */
 goog.dom.MultiRangeIterator.prototype.copyFrom = function(other) {
   this.iterators_ = goog.array.clone(other.iterators_);
   goog.dom.MultiRangeIterator.superClass_.copyFrom.call(this, other);
@@ -511,6 +510,7 @@ goog.dom.MultiRangeIterator.prototype.copyFrom = function(other) {
 
 /**
  * @return {goog.dom.MultiRangeIterator} An identical iterator.
+ * @override
  */
 goog.dom.MultiRangeIterator.prototype.clone = function() {
   var copy = new goog.dom.MultiRangeIterator(null);

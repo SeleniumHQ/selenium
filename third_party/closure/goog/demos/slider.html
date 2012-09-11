@@ -23,7 +23,6 @@ See the COPYING file for details.
       position: relative;
       overflow: hidden;
     }
-
     .goog-slider-thumb {
       position: absolute;
       background-color: ThreeDShadow;
@@ -41,16 +40,15 @@ See the COPYING file for details.
       width: 20px;
       height: 100%;
     }
+    .goog-slider-disabled {
+      background-color: lightgray
+    }
     #s-h {
       margin-bottom: 2em;
     }
     strong {
       display: block;
       margin-bottom: 3px;
-    }
-    #out1, #out2 {
-      color: #999;
-      margin-left: 1em;
     }
   </style>
 </head>
@@ -65,11 +63,13 @@ See the COPYING file for details.
                   overflow:hidden;height:0"></div>
       <div class="goog-slider-thumb"></div>
     </div>
-    <label>
-      <input type="checkbox" onclick="s.setMoveToPointEnabled(this.checked)">
-      MoveToPointEnabled
-      <span id="out1"></span>
-    </label>
+    <input type="checkbox" onclick="s.setMoveToPointEnabled(this.checked)">
+    MoveToPointEnabled
+    <input type="checkbox" onclick="s.setEnabled(this.checked)" checked>
+    Enable
+    <br>
+    <input type="text" value="0" id="out1" style="margin-left: 0px">
+    <input type="button" value="Set Value" onclick="setSliderValue(s, 'out1')">
   </div>
 
   <div id="s-v">
@@ -77,8 +77,12 @@ See the COPYING file for details.
     <label id="s2-label">
       <input type="checkbox" onclick="s2.setMoveToPointEnabled(this.checked)">
       MoveToPointEnabled
-      <span id="out2"></span>
     </label>
+    <input type="checkbox" onclick="s2.setEnabled(this.checked)" checked>
+    Enable
+    <br>
+    <input type="text" value="0" id="out2" style="margin-left: 0px">
+    <input type="button" value="Set Value" onclick="setSliderValue(s2, 'out2')">
   </div>
   <script>
 
@@ -86,7 +90,7 @@ See the COPYING file for details.
   var s = new goog.ui.Slider;
   s.decorate(el);
   s.addEventListener(goog.ui.Component.EventType.CHANGE, function() {
-    document.getElementById('out1').innerHTML = s.getValue();
+    document.getElementById('out1').value = s.getValue();
   });
 
 
@@ -99,11 +103,25 @@ See the COPYING file for details.
   s2.render(document.body);
   s2.setStep(null);
   s2.addEventListener(goog.ui.Component.EventType.CHANGE, function() {
-    document.getElementById('out2').innerHTML = s2.getValue();
+    document.getElementById('out2').value = s2.getValue();
   });
 
   var label = document.getElementById('s2-label');
   label.parentNode.insertBefore(el, label);
+
+  function toggleSliderEnable(button, slider) {
+    var buttonValue = slider.isEnabled() ? 'Enable Slider' : 'Disable Slider';
+    button.value = buttonValue;
+    slider.setEnabled(!slider.isEnabled());
+  }
+
+  function setSliderValue(slider, textId) {
+    if (document.getElementById(textId)) {
+      var value = document.getElementById(textId).value;
+      window.console.log(value);
+      slider.setValue(new Number(value));
+    }
+  }
 
   </script>
 </body>

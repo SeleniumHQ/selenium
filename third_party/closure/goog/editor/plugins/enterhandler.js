@@ -88,6 +88,7 @@ goog.editor.plugins.EnterHandler.prototype.enable = function(fieldObject) {
  * @param {string} html The html to prepare.
  * @return {string} The original HTML, or default contents if that
  *    html is empty.
+ * @override
  */
 goog.editor.plugins.EnterHandler.prototype.prepareContentsHtml = function(
     html) {
@@ -117,7 +118,7 @@ goog.editor.plugins.EnterHandler.prototype.getNonCollapsingBlankHtml =
  */
 goog.editor.plugins.EnterHandler.prototype.handleBackspaceInternal = function(e,
     range) {
-  var field = this.fieldObject.getElement();
+  var field = this.getFieldObject().getElement();
   var container = range && range.getStartNode();
 
   if (field.firstChild == container && goog.editor.node.isEmpty(container)) {
@@ -147,7 +148,7 @@ goog.editor.plugins.EnterHandler.prototype.processParagraphTagsInternal =
     // WebKit duplicates a blockquote when the user hits enter. Let's cancel
     // this and insert a BR instead, to make it more consistent with the other
     // browsers.
-    var range = this.fieldObject.getRange();
+    var range = this.getFieldObject().getRange();
     if (!range || !goog.editor.plugins.EnterHandler.isDirectlyInBlockquote(
         range.getContainerElement())) {
       return;
@@ -209,7 +210,7 @@ goog.editor.plugins.EnterHandler.prototype.handleDeleteGecko = function(e) {
  * @protected
  */
 goog.editor.plugins.EnterHandler.prototype.deleteBrGecko = function(e) {
-  var range = this.fieldObject.getRange();
+  var range = this.getFieldObject().getRange();
   if (range.isCollapsed()) {
     var container = range.getEndNode();
     if (container.nodeType == goog.dom.NodeType.ELEMENT) {
@@ -265,14 +266,14 @@ goog.editor.plugins.EnterHandler.prototype.handleKeyPress = function(e) {
   // If a dialog doesn't have selectable field, Gecko grabs the event and
   // performs actions in editor window. This solves that problem and allows
   // the event to be passed on to proper handlers.
-  if (goog.userAgent.GECKO && this.fieldObject.inModalMode()) {
+  if (goog.userAgent.GECKO && this.getFieldObject().inModalMode()) {
     return false;
   }
 
   // Firefox will allow the first node in an iframe to be deleted
   // on a backspace.  Disallow it if the node is empty.
   if (e.keyCode == goog.events.KeyCodes.BACKSPACE) {
-    this.handleBackspaceInternal(e, this.fieldObject.getRange());
+    this.handleBackspaceInternal(e, this.getFieldObject().getRange());
 
   } else if (e.keyCode == goog.events.KeyCodes.ENTER) {
     if (goog.userAgent.GECKO) {
@@ -285,10 +286,10 @@ goog.editor.plugins.EnterHandler.prototype.handleKeyPress = function(e) {
     } else {
       // In Gecko-based browsers, this is handled in the handleEnterGecko_
       // method.
-      this.fieldObject.dispatchBeforeChange();
+      this.getFieldObject().dispatchBeforeChange();
       var cursorPosition = this.deleteCursorSelection_();
 
-      var split = !!this.fieldObject.execCommand(
+      var split = !!this.getFieldObject().execCommand(
           goog.editor.plugins.Blockquote.SPLIT_COMMAND, cursorPosition);
       if (split) {
         // TODO(user): I think we probably don't need to stopPropagation here
@@ -303,7 +304,7 @@ goog.editor.plugins.EnterHandler.prototype.handleKeyPress = function(e) {
       }
 
       this.processParagraphTagsInternal(e, split);
-      this.fieldObject.dispatchChange();
+      this.getFieldObject().dispatchChange();
     }
 
   } else if (goog.userAgent.GECKO && e.keyCode == goog.events.KeyCodes.DELETE) {
@@ -319,7 +320,7 @@ goog.editor.plugins.EnterHandler.prototype.handleKeyUp = function(e) {
   // If a dialog doesn't have selectable field, Gecko grabs the event and
   // performs actions in editor window. This solves that problem and allows
   // the event to be passed on to proper handlers.
-  if (goog.userAgent.GECKO && this.fieldObject.inModalMode()) {
+  if (goog.userAgent.GECKO && this.getFieldObject().inModalMode()) {
     return false;
   }
   this.handleKeyUpInternal(e);
@@ -347,11 +348,11 @@ goog.editor.plugins.EnterHandler.prototype.handleKeyUpInternal = function(e) {
  */
 goog.editor.plugins.EnterHandler.prototype.handleEnterGecko_ = function(e) {
   // Retrieve whether the selection is collapsed before we delete it.
-  var range = this.fieldObject.getRange();
+  var range = this.getFieldObject().getRange();
   var wasCollapsed = !range || range.isCollapsed();
   var cursorPosition = this.deleteCursorSelection_();
 
-  var handled = this.fieldObject.execCommand(
+  var handled = this.getFieldObject().execCommand(
       goog.editor.plugins.Blockquote.SPLIT_COMMAND, cursorPosition);
   if (handled) {
     // TODO(user): I think we probably don't need to stopPropagation here
@@ -437,9 +438,9 @@ goog.editor.plugins.EnterHandler.isBrElem = function(node) {
  */
 goog.editor.plugins.EnterHandler.prototype.ensureBlockIeOpera = function(tag,
     opt_keyUp) {
-  var range = this.fieldObject.getRange();
+  var range = this.getFieldObject().getRange();
   var container = range.getContainer();
-  var field = this.fieldObject.getElement();
+  var field = this.getFieldObject().getElement();
 
   var paragraph;
   while (container && container != field) {
@@ -511,7 +512,7 @@ goog.editor.plugins.EnterHandler.prototype.ensureBlockIeOpera = function(tag,
     }
   }
 
-  this.fieldObject.getEditableDomHelper().getDocument().execCommand(
+  this.getFieldObject().getEditableDomHelper().getDocument().execCommand(
       'FormatBlock', false, '<' + tag + '>');
 
   if (needsHelp) {
@@ -576,7 +577,7 @@ goog.editor.plugins.EnterHandler.prototype.deleteCursorSelectionIE_ =
  */
 goog.editor.plugins.EnterHandler.prototype.deleteCursorSelectionW3C_ =
     function() {
-  var range = this.fieldObject.getRange();
+  var range = this.getFieldObject().getRange();
 
   // Delete the current selection if it's is non-collapsed.
   // Although this is redundant in FF, it's necessary for Safari
@@ -615,6 +616,7 @@ goog.editor.plugins.EnterHandler.prototype.deleteCursorSelectionW3C_ =
 /**
  * Deletes the contents of the selection from the DOM.
  * @param {goog.dom.AbstractRange} range The range to remove contents from.
+ * @return {goog.dom.AbstractRange} The resulting range. Used for testing.
  * @private
  */
 goog.editor.plugins.EnterHandler.deleteW3cRange_ = function(range) {
@@ -634,8 +636,17 @@ goog.editor.plugins.EnterHandler.deleteW3cRange_ = function(range) {
 
     // Remove The range contents, and ensure the correct content stays selected.
     range.removeContents();
-    range = goog.dom.Range.createCaret(nodeOffset.findTargetNode(baseNode),
-        rangeOffset);
+    var node = nodeOffset.findTargetNode(baseNode);
+    if (node) {
+      range = goog.dom.Range.createCaret(node, rangeOffset);
+    } else {
+      // This occurs when the node that would have been referenced has now been
+      // deleted and there are no other nodes in the baseNode. Thus need to
+      // set the caret to the end of the base node.
+      range =
+          goog.dom.Range.createCaret(baseNode, baseNode.childNodes.length);
+      reselect = false;
+    }
     range.select();
 
     // If we just deleted everything from the container, add an nbsp
@@ -685,6 +696,8 @@ goog.editor.plugins.EnterHandler.deleteW3cRange_ = function(range) {
       range.select();
     }
   }
+
+  return range;
 };
 
 

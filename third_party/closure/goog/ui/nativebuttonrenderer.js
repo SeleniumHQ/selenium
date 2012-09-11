@@ -15,6 +15,7 @@
 /**
  * @fileoverview Native browser button renderer for {@link goog.ui.Button}s.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.NativeButtonRenderer');
@@ -95,9 +96,9 @@ goog.ui.NativeButtonRenderer.prototype.decorate = function(button, element) {
 
 
 /**
- * @override
  * Native buttons natively support BiDi and keyboard focus.
  * @suppress {visibility} getHandler and performActionInternal
+ * @override
  */
 goog.ui.NativeButtonRenderer.prototype.initializeDom = function(button) {
   // WARNING:  This is a hack, and it is only applicable to native buttons,
@@ -162,7 +163,7 @@ goog.ui.NativeButtonRenderer.prototype.setState = function(button, state,
  * attribute.
  */
 goog.ui.NativeButtonRenderer.prototype.getValue = function(element) {
-  // TODO(user): Make this work on IE!  This never worked...
+  // TODO(attila): Make this work on IE!  This never worked...
   // See http://www.fourmilab.ch/fourmilog/archives/2007-03/000824.html
   // for a description of the problem.
   return element.value;
@@ -176,7 +177,7 @@ goog.ui.NativeButtonRenderer.prototype.getValue = function(element) {
  */
 goog.ui.NativeButtonRenderer.prototype.setValue = function(element, value) {
   if (element) {
-    // TODO(user): Make this work on IE!  This never worked...
+    // TODO(attila): Make this work on IE!  This never worked...
     // See http://www.fourmilab.ch/fourmilog/archives/2007-03/000824.html
     // for a description of the problem.
     element.value = value;

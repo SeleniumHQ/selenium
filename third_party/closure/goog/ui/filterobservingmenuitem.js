@@ -18,6 +18,7 @@
  * text changes and allows the menu item to update its content and state based
  * on the filter.
  *
+ * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.ui.FilterObservingMenuItem');

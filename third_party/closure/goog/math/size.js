@@ -73,6 +73,7 @@ if (goog.DEBUG) {
   /**
    * Returns a nice string representing size.
    * @return {string} In the form (50 x 73).
+   * @override
    */
   goog.math.Size.prototype.toString = function() {
     return '(' + this.width + ' x ' + this.height + ')';

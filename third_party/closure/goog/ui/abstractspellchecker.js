@@ -31,6 +31,8 @@
  * so often so that the calling function could reschedule its execution on a
  * different stack (for example by calling setInterval(0)).
  *
+ * @author eae@google.com (Emil A Eklund)
+ * @author sergeys@google.com (Sergey Solyanik)
  */
 
 goog.provide('goog.ui.AbstractSpellChecker');
@@ -127,7 +129,7 @@ goog.ui.AbstractSpellChecker.ID_SUFFIX_ = 'sc';
  * @type {string}
  * @private
  */
-goog.ui.AbstractSpellChecker.ORIGINAL_ = 'goog-spell-original';
+goog.ui.AbstractSpellChecker.ORIGINAL_ = 'g-spell-original';
 
 
 /**
@@ -276,14 +278,18 @@ goog.ui.AbstractSpellChecker.prototype.processedElementsCount_ = 0;
 
 
 /**
- * Marker for the text that does not need to be included in the processing.
+ * Markers for the text that does not need to be included in the processing.
  *
- * For rich text editor this is the class name for the element.
+ * For rich text editor this is a list of strings formatted as
+ * tagName.className or className. If both are specified, the element will be
+ * excluded if BOTH are matched. If only a className is specified, then we will
+ * exclude regions with the className. If only one marker is needed, it may be
+ * passed as a string.
  * For plain text editor this is a RegExp that matches the excluded text.
  *
  * Used exclusively by the derived classes
  *
- * @type {RegExp|string|undefined}
+ * @type {Array.<string>|string|RegExp|undefined}
  * @protected
  */
 goog.ui.AbstractSpellChecker.prototype.excludeMarker;
@@ -299,6 +305,9 @@ goog.ui.AbstractSpellChecker.nextId_ = 1;
 
 /**
  * @return {goog.spell.SpellCheck} The handler used for caching and lookups.
+ * @override
+ * @suppress {checkTypes} This method makes no sense. It overrides
+ *     Component's getHandler with something different.
  */
 goog.ui.AbstractSpellChecker.prototype.getHandler = function() {
   return this.handler_;
@@ -317,13 +326,40 @@ goog.ui.AbstractSpellChecker.prototype.setHandler = function(handler) {
 
 
 /**
+ * @return {goog.ui.PopupMenu|undefined} The suggestions menu.
+ * @protected
+ */
+goog.ui.AbstractSpellChecker.prototype.getMenu = function() {
+  return this.menu_;
+};
+
+
+/**
+ * @return {goog.ui.MenuItem|undefined} The menu item for edit word option.
+ * @protected
+ */
+goog.ui.AbstractSpellChecker.prototype.getMenuEdit = function() {
+  return this.menuEdit_;
+};
+
+
+/**
+ * @return {number} The next unique instance ID for a misspelled word.
+ * @protected
+ */
+goog.ui.AbstractSpellChecker.getNextId = function() {
+  return goog.ui.AbstractSpellChecker.nextId_;
+};
+
+
+/**
  * Sets the marker for the excluded text.
  *
- * {@see goog.ui.AbstractSpellChecker.prototype.excludeMarker_}
+ * {@see goog.ui.AbstractSpellChecker.prototype.excludeMarker}
  *
- * @param {RegExp|string|null} marker RegExp for plain text or class name for
- *        the rich text spell checker for the elements to exclude from
- *        checking.
+ * @param {Array.<string>|string|RegExp|null} marker A RegExp for plain text
+ *        or class names for the rich text spell checker for the elements to
+ *        exclude from checking.
  */
 goog.ui.AbstractSpellChecker.prototype.setExcludeMarker = function(marker) {
   this.excludeMarker = marker || undefined;
@@ -348,7 +384,7 @@ goog.ui.AbstractSpellChecker.prototype.check = function() {
  */
 goog.ui.AbstractSpellChecker.prototype.resume = function() {
   this.isVisible_ = false;
-  this.wordElements_ = {};
+  this.clearWordElements();
 
   var input;
   while (input = this.inputElements_.pop()) {
@@ -367,6 +403,15 @@ goog.ui.AbstractSpellChecker.prototype.resume = function() {
  */
 goog.ui.AbstractSpellChecker.prototype.isVisible = function() {
   return this.isVisible_;
+};
+
+
+/**
+ * Clears the word to element references map used by replace/ignore.
+ * @protected
+ */
+goog.ui.AbstractSpellChecker.prototype.clearWordElements = function() {
+  this.wordElements_ = {};
 };
 
 
@@ -690,7 +735,8 @@ goog.ui.AbstractSpellChecker.prototype.getElementById = function(id) {
  * @param {string} word Word to create element for.
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
  * @return {HTMLSpanElement} The created element.
- * @private
+ * @protected
+ * @suppress {underscore}
  */
 goog.ui.AbstractSpellChecker.prototype.createWordElement_ = function(word,
                                                                      status) {
@@ -719,7 +765,8 @@ goog.ui.AbstractSpellChecker.prototype.createWordElement_ = function(word,
  *
  * @param {string} word The word to store.
  * @param {HTMLSpanElement} el The element associated with it.
- * @private
+ * @protected
+ * @suppress {underscore}
  */
 goog.ui.AbstractSpellChecker.prototype.registerWordElement_ = function(word,
                                                                        el) {

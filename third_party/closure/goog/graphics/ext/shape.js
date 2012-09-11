@@ -30,7 +30,7 @@ goog.require('goog.math.Rect');
 /**
  * Wrapper for a graphics shape element.
  * @param {goog.graphics.ext.Group} group Parent for this element.
- * @param {goog.graphics.ext.Path} path  The path to draw.
+ * @param {!goog.graphics.ext.Path} path  The path to draw.
  * @param {boolean=} opt_autoSize Optional flag to specify the path should
  *     automatically resize to fit the element.  Defaults to false.
  * @constructor
@@ -125,6 +125,7 @@ goog.graphics.ext.Shape.prototype.scaleAndSetPath_ = function() {
 /**
  * Redraw the ellipse.  Called when the coordinate system is changed.
  * @protected
+ * @override
  */
 goog.graphics.ext.Shape.prototype.redraw = function() {
   goog.graphics.ext.Shape.superClass_.redraw.call(this);
@@ -137,6 +138,7 @@ goog.graphics.ext.Shape.prototype.redraw = function() {
 /**
  * @return {boolean} Whether the shape is parent dependent.
  * @protected
+ * @override
  */
 goog.graphics.ext.Shape.prototype.checkParentDependent = function() {
   return this.autoSize_ ||

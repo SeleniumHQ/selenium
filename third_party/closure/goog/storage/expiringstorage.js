@@ -101,6 +101,7 @@ goog.storage.ExpiringStorage.isExpired = function(wrapper) {
  * @param {number=} opt_expiration The number of miliseconds since epoch
  *     (as in goog.now()) when the value is to expire. If the expiration
  *     time is not provided, the value will persist as long as possible.
+ * @override
  */
 goog.storage.ExpiringStorage.prototype.set = function(
     key, value, opt_expiration) {
@@ -126,6 +127,7 @@ goog.storage.ExpiringStorage.prototype.set = function(
  * @param {string} key The key to get.
  * @param {boolean=} opt_expired If true, return expired wrappers as well.
  * @return {(!Object|undefined)} The wrapper, or undefined if not found.
+ * @override
  */
 goog.storage.ExpiringStorage.prototype.getWrapper = function(key, opt_expired) {
   var wrapper = goog.base(this, 'getWrapper', key);

@@ -20,12 +20,18 @@
  * messageFormatPattern := string ( "{" messageFormatElement "}" string )*
  * messageFormatElement := argumentIndex [ "," elementFormat ]
  * elementFormat := "plural" "," pluralStyle
+ *                  | "selectordinal" "," ordinalStyle
  *                  | "select" "," selectStyle
  * pluralStyle :=  pluralFormatPattern
+ * ordinalStyle :=  selectFormatPattern
  * selectStyle :=  selectFormatPattern
  * pluralFormatPattern := [ "offset" ":" offsetIndex ] pluralForms*
  * selectFormatPattern := pluralForms*
  * pluralForms := stringKey "{" ( "{" messageFormatElement "}"|string )* "}"
+ *
+ * This is a subset of the ICU MessageFormatSyntax:
+ *   http://userguide.icu-project.org/formatparse/messages
+ * See also http://go/plurals and http://go/ordinals for internal details.
  *
  *
  * Message example:
@@ -40,6 +46,17 @@
  * Calling format({'NUM_PEOPLE': 2, 'WHO': 'Mark', 'PLACE': 'Athens'}) would
  * produce "I see Mark and one other person in Athens." as output.
  *
+ * OR:
+ *
+ * {NUM_FLOOR, selectordinal,
+ *   one {Take the elevator to the #st floor.}
+ *   two {Take the elevator to the #nd floor.}
+ *   few {Take the elevator to the #rd floor.}
+ *   other {Take the elevator to the #th floor.}}
+ *
+ * Calling format({'NUM_FLOOR': 22}) would produce
+ * "Take the elevator to the 22nd floor".
+ *
  * See messageformat_test.html for more examples.
  */
 
@@ -47,6 +64,7 @@ goog.provide('goog.i18n.MessageFormat');
 
 goog.require('goog.asserts');
 goog.require('goog.i18n.NumberFormat');
+goog.require('goog.i18n.ordinalRules');
 goog.require('goog.i18n.pluralRules');
 
 
@@ -114,10 +132,11 @@ goog.i18n.MessageFormat.Element_ = {
  */
 goog.i18n.MessageFormat.BlockType_ = {
   PLURAL: 0,
-  SELECT: 1,
-  SIMPLE: 2,
-  STRING: 3,
-  UNKNOWN: 4
+  ORDINAL: 1,
+  SELECT: 2,
+  SIMPLE: 3,
+  STRING: 4,
+  UNKNOWN: 5
 };
 
 
@@ -243,7 +262,19 @@ goog.i18n.MessageFormat.prototype.formatBlock_ = function(
         break;
       case goog.i18n.MessageFormat.BlockType_.PLURAL:
         var pattern = parsedPattern[i].value;
-        this.formatPluralBlock_(pattern, namedParameters, ignorePound, result);
+        this.formatPluralOrdinalBlock_(pattern,
+                                       namedParameters,
+                                       goog.i18n.pluralRules.select,
+                                       ignorePound,
+                                       result);
+        break;
+      case goog.i18n.MessageFormat.BlockType_.ORDINAL:
+        var pattern = parsedPattern[i].value;
+        this.formatPluralOrdinalBlock_(pattern,
+                                       namedParameters,
+                                       goog.i18n.ordinalRules.select,
+                                       ignorePound,
+                                       result);
         break;
       default:
         goog.asserts.fail('Unrecognized block type.');
@@ -307,10 +338,14 @@ goog.i18n.MessageFormat.prototype.formatSelectBlock_ = function(
 
 
 /**
- * Formats plural block. Only one option is selected and all # are replaced.
+ * Formats plural or selectordinal block. Only one option is selected and all #
+ * are replaced.
  * @param {!Object} parsedPattern JSON object containing plural block info.
  * @param {!Object} namedParameters Parameters that either influence
  *     the formatting or are used as actual data.
+ * @param {!function(number):string} pluralSelector  A select function from
+ *     goog.i18n.pluralRules or goog.i18n.ordinalRules which determines which
+ *     plural/ordinal form to use based on the input number's cardinality.
  * @param {boolean} ignorePound If true, treat '#' in plural messages as a
  *     literary character, else treat it as an ICU syntax character, resolving
  *     to the number (plural_variable - offset).
@@ -318,12 +353,13 @@ goog.i18n.MessageFormat.prototype.formatSelectBlock_ = function(
  *     to the result.
  * @private
  */
-goog.i18n.MessageFormat.prototype.formatPluralBlock_ = function(
-    parsedPattern, namedParameters, ignorePound, result) {
+goog.i18n.MessageFormat.prototype.formatPluralOrdinalBlock_ = function(
+    parsedPattern, namedParameters, pluralSelector, ignorePound, result) {
   var argumentIndex = parsedPattern.argumentIndex;
   var argumentOffset = parsedPattern.argumentOffset;
   var pluralValue = +namedParameters[argumentIndex];
   if (isNaN(pluralValue)) {
+    // TODO(user): Distinguish between undefined and invalid parameters.
     result.push('Undefined or invalid parameter - ' + argumentIndex);
     return;
   }
@@ -334,7 +370,7 @@ goog.i18n.MessageFormat.prototype.formatPluralBlock_ = function(
   if (!goog.isDef(option)) {
     goog.asserts.assert(diff >= 0, 'Argument index smaller than offset.');
 
-    var item = goog.i18n.pluralRules.select(diff);
+    var item = pluralSelector(diff);
     goog.asserts.assertString(item, 'Invalid plural key.');
 
     option = parsedPattern[item];
@@ -356,7 +392,7 @@ goog.i18n.MessageFormat.prototype.formatPluralBlock_ = function(
     result.push(plural);
   } else {
     var localeAwareDiff = this.numberFormatter_.format(diff);
-    result.push(plural.replace(/#/g, function() { return localeAwareDiff; }));
+    result.push(plural.replace(/#/g, localeAwareDiff));
   }
 };
 
@@ -475,17 +511,49 @@ goog.i18n.MessageFormat.prototype.extractParts_ = function(pattern) {
 
 
 /**
+ * A regular expression to parse the plural block, extracting the argument
+ * index and offset (if any).
+ * @type {RegExp}
+ * @private
+ */
+goog.i18n.MessageFormat.PLURAL_BLOCK_RE_ =
+    /^\s*(\w+)\s*,\s*plural\s*,(?:\s*offset:(\d+))?/;
+
+
+/**
+ * A regular expression to parse the ordinal block, extracting the argument
+ * index.
+ * @type {RegExp}
+ * @private
+ */
+goog.i18n.MessageFormat.ORDINAL_BLOCK_RE_ = /^\s*(\w+)\s*,\s*selectordinal\s*,/;
+
+
+/**
+ * A regular expression to parse the select block, extracting the argument
+ * index.
+ * @type {RegExp}
+ * @private
+ */
+goog.i18n.MessageFormat.SELECT_BLOCK_RE_ = /^\s*(\w+)\s*,\s*select\s*,/;
+
+
+/**
  * Detects which type of a block is the pattern.
  * @param {string} pattern Content of the block.
  * @return {goog.i18n.MessageFormat.BlockType_} One of the block types.
  * @private
  */
 goog.i18n.MessageFormat.prototype.parseBlockType_ = function(pattern) {
-  if (/^\s*\w+\s*,\s*plural.*/.test(pattern)) {
+  if (goog.i18n.MessageFormat.PLURAL_BLOCK_RE_.test(pattern)) {
     return goog.i18n.MessageFormat.BlockType_.PLURAL;
   }
 
-  if (/^\s*\w+\s*,\s*select.*/.test(pattern)) {
+  if (goog.i18n.MessageFormat.ORDINAL_BLOCK_RE_.test(pattern)) {
+    return goog.i18n.MessageFormat.BlockType_.ORDINAL;
+  }
+
+  if (goog.i18n.MessageFormat.SELECT_BLOCK_RE_.test(pattern)) {
     return goog.i18n.MessageFormat.BlockType_.SELECT;
   }
 
@@ -523,6 +591,10 @@ goog.i18n.MessageFormat.prototype.parseBlock_ = function(pattern) {
           block.type = goog.i18n.MessageFormat.BlockType_.PLURAL;
           block.value = this.parsePluralBlock_(parts[i].value);
           break;
+        case goog.i18n.MessageFormat.BlockType_.ORDINAL:
+          block.type = goog.i18n.MessageFormat.BlockType_.ORDINAL;
+          block.value = this.parseOrdinalBlock_(parts[i].value);
+          break;
         case goog.i18n.MessageFormat.BlockType_.SIMPLE:
           block.type = goog.i18n.MessageFormat.BlockType_.SIMPLE;
           block.value = parts[i].value;
@@ -548,7 +620,7 @@ goog.i18n.MessageFormat.prototype.parseBlock_ = function(pattern) {
  */
 goog.i18n.MessageFormat.prototype.parseSelectBlock_ = function(pattern) {
   var argumentIndex = '';
-  var replaceRegex = /\s*(\w+)\s*,\s*select\s*,/;
+  var replaceRegex = goog.i18n.MessageFormat.SELECT_BLOCK_RE_;
   pattern = pattern.replace(replaceRegex, function(string, name) {
     argumentIndex = name;
     return '';
@@ -591,7 +663,7 @@ goog.i18n.MessageFormat.prototype.parseSelectBlock_ = function(pattern) {
 goog.i18n.MessageFormat.prototype.parsePluralBlock_ = function(pattern) {
   var argumentIndex = '';
   var argumentOffset = 0;
-  var replaceRegex = /\s*(\w+)\s*,\s*plural\s*,(?:\s*offset:(\d+))?/;
+  var replaceRegex = goog.i18n.MessageFormat.PLURAL_BLOCK_RE_;
   pattern = pattern.replace(replaceRegex, function(string, name, offset) {
     argumentIndex = name;
     if (offset) {
@@ -626,6 +698,60 @@ goog.i18n.MessageFormat.prototype.parsePluralBlock_ = function(pattern) {
 
   goog.asserts.assertArray(result[goog.i18n.MessageFormat.OTHER_],
                            'Missing other key in plural statement.');
+
+  return result;
+};
+
+
+/**
+ * Parses an ordinal type of a block and produces JSON object for it.
+ * For example the input string:
+ *  '{FOO, selectordinal, one {Message A}other {Message B}}'
+ * Should result in the output object:
+ * {
+ *   argumentIndex: 'FOO',
+ *   argumentOffest: 0,
+ *   one: [ { type: 4, value: 'Message A' } ],
+ *   other: [ { type: 4, value: 'Message B' } ]
+ * }
+ * @param {string} pattern Subpattern that needs to be parsed as plural pattern.
+ * @return {Object} Object with select block info.
+ * @private
+ */
+goog.i18n.MessageFormat.prototype.parseOrdinalBlock_ = function(pattern) {
+  var argumentIndex = '';
+  var replaceRegex = goog.i18n.MessageFormat.ORDINAL_BLOCK_RE_;
+  pattern = pattern.replace(replaceRegex, function(string, name) {
+    argumentIndex = name;
+    return '';
+  });
+
+  var result = {};
+  result.argumentIndex = argumentIndex;
+  result.argumentOffset = 0;
+
+  var parts = this.extractParts_(pattern);
+  // Looking for (key block)+ sequence.
+  var pos = 0;
+  while (pos < parts.length) {
+    var key = parts[pos].value;
+    goog.asserts.assertString(key, 'Missing ordinal key element.');
+
+    pos++;
+    goog.asserts.assert(pos < parts.length,
+                        'Missing or invalid ordinal value element.');
+
+    if (goog.i18n.MessageFormat.Element_.BLOCK == parts[pos].type) {
+      var value = this.parseBlock_(parts[pos].value);
+    } else {
+      goog.asserts.fail('Expected block type.');
+    }
+    result[key.replace(/\s*(?:=)?(\w+)\s*/, '$1')] = value;
+    pos++;
+  }
+
+  goog.asserts.assertArray(result[goog.i18n.MessageFormat.OTHER_],
+                           'Missing other key in selectordinal statement.');
 
   return result;
 };

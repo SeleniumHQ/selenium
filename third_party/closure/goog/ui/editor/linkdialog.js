@@ -87,11 +87,13 @@ goog.ui.editor.LinkDialog.EventType = {
  * @param {string} linkUrl Url the user chose for the link to point to.
  * @param {boolean} openInNewWindow Whether the link should open in a new window
  *     when clicked.
+ * @param {boolean} noFollow Whether the link should have 'rel=nofollow'
+ *     attribute.
  * @constructor
  * @extends {goog.events.Event}
  */
 goog.ui.editor.LinkDialog.OkEvent = function(
-    linkText, linkUrl, openInNewWindow) {
+    linkText, linkUrl, openInNewWindow, noFollow) {
   goog.base(this, goog.ui.editor.AbstractDialog.EventType.OK);
 
   /**
@@ -111,6 +113,12 @@ goog.ui.editor.LinkDialog.OkEvent = function(
    * @type {boolean}
    */
   this.openInNewWindow = openInNewWindow;
+
+  /**
+   * Whether the link should have 'rel=nofollow' attribute.
+   * @type {boolean}
+   */
+  this.noFollow = noFollow;
 };
 goog.inherits(goog.ui.editor.LinkDialog.OkEvent, goog.events.Event);
 
@@ -163,6 +171,15 @@ goog.ui.editor.LinkDialog.prototype.isOpenLinkInNewWindowChecked_ = false;
 
 
 /**
+ * Whether to show a checkbox where the user can choose to have 'rel=nofollow'
+ * attribute added to the link.
+ * @type {boolean}
+ * @private
+ */
+goog.ui.editor.LinkDialog.prototype.showRelNoFollow_ = false;
+
+
+/**
  * Sets the warning message to show to users about including email addresses on
  * public web pages.
  * @param {string} emailWarning Warning message to show users about including
@@ -188,6 +205,15 @@ goog.ui.editor.LinkDialog.prototype.showOpenLinkInNewWindow = function(
 };
 
 
+/**
+ * Tells the dialog to show a checkbox where the user can choose to add
+ * 'rel=nofollow' attribute to the link.
+ */
+goog.ui.editor.LinkDialog.prototype.showRelNoFollow = function() {
+  this.showRelNoFollow_ = true;
+};
+
+
 /** @override */
 goog.ui.editor.LinkDialog.prototype.show = function() {
   goog.base(this, 'show');
@@ -204,6 +230,11 @@ goog.ui.editor.LinkDialog.prototype.show = function() {
           this.targetLink_.getAnchor().target == '_blank';
     }
     this.openInNewWindowCheckbox_.checked = this.isOpenLinkInNewWindowChecked_;
+  }
+
+  if (this.showRelNoFollow_) {
+    this.relNoFollowCheckbox_.checked =
+        goog.ui.editor.LinkDialog.hasNoFollow(this.targetLink_.getAnchor().rel);
   }
 };
 
@@ -251,39 +282,37 @@ goog.ui.editor.LinkDialog.prototype.setAutogenFeatureEnabled = function(
 };
 
 
+/**
+ * Checks if {@code str} contains {@code "nofollow"} as a separate word.
+ * @param {string} str String to be tested.  This is usually {@code rel}
+ *     attribute of an {@code HTMLAnchorElement} object.
+ * @return {boolean} {@code true} if {@code str} contains {@code nofollow}.
+ */
+goog.ui.editor.LinkDialog.hasNoFollow = function(str) {
+  return goog.ui.editor.LinkDialog.NO_FOLLOW_REGEX_.test(str);
+};
+
+
+/**
+ * Removes {@code "nofollow"} from {@code rel} if it's present as a separate
+ * word.
+ * @param {string} rel Input string.  This is usually {@code rel} attribute of
+ *     an {@code HTMLAnchorElement} object.
+ * @return {string} {@code rel} with any {@code "nofollow"} removed.
+ */
+goog.ui.editor.LinkDialog.removeNoFollow = function(rel) {
+  return rel.replace(goog.ui.editor.LinkDialog.NO_FOLLOW_REGEX_, '');
+};
+
+
 // *** Protected interface ************************************************** //
 
 
 /** @override */
 goog.ui.editor.LinkDialog.prototype.createDialogControl = function() {
-  this.textToDisplayDiv_ = /** @type {HTMLDivElement} */(
-      this.buildTextToDisplayDiv_());
-  var content = this.dom.createDom(goog.dom.TagName.DIV, null,
-      this.textToDisplayDiv_);
-
   var builder = new goog.ui.editor.AbstractDialog.Builder(this);
   builder.setTitle(goog.ui.editor.messages.MSG_EDIT_LINK)
-      .setContent(content);
-
-  this.tabPane_ = new goog.ui.editor.TabPane(this.dom,
-      goog.ui.editor.messages.MSG_LINK_TO);
-  this.tabPane_.addTab(goog.ui.editor.LinkDialog.Id_.ON_WEB_TAB,
-      goog.ui.editor.messages.MSG_ON_THE_WEB,
-      goog.ui.editor.messages.MSG_ON_THE_WEB_TIP,
-      this.buildTabOnTheWeb_());
-  this.tabPane_.addTab(goog.ui.editor.LinkDialog.Id_.EMAIL_ADDRESS_TAB,
-      goog.ui.editor.messages.MSG_EMAIL_ADDRESS,
-      goog.ui.editor.messages.MSG_EMAIL_ADDRESS_TIP,
-      this.buildTabEmailAddress_());
-  this.tabPane_.render(content);
-
-  this.eventHandler_.listen(this.tabPane_, goog.ui.Component.EventType.SELECT,
-      this.onChangeTab_);
-
-  if (this.showOpenLinkInNewWindow_) {
-    content.appendChild(this.buildOpenInNewWindowDiv_());
-  }
-
+      .setContent(this.createDialogContent_());
   return builder.build();
 };
 
@@ -312,6 +341,9 @@ goog.ui.editor.LinkDialog.prototype.disposeInternal = function() {
   this.eventHandler_.dispose();
   this.eventHandler_ = null;
 
+  this.tabPane_.dispose();
+  this.tabPane_ = null;
+
   this.urlInputHandler_.dispose();
   this.urlInputHandler_ = null;
   this.emailInputHandler_.dispose();
@@ -322,6 +354,15 @@ goog.ui.editor.LinkDialog.prototype.disposeInternal = function() {
 
 
 // *** Private implementation *********************************************** //
+
+
+/**
+ * Regular expression that matches {@code nofollow} value in an
+ * {@code * HTMLAnchorElement}'s {@code rel} element.
+ * @type {RegExp}
+ * @private
+ */
+goog.ui.editor.LinkDialog.NO_FOLLOW_REGEX_ = /\bnofollow\b/i;
 
 
 /**
@@ -415,12 +456,58 @@ goog.ui.editor.LinkDialog.prototype.openInNewWindowCheckbox_;
 
 
 /**
+ * The input element (checkbox) to indicate that the link should have
+ * 'rel=nofollow' attribute.
+ * @type {HTMLInputElement}
+ * @private
+ */
+goog.ui.editor.LinkDialog.prototype.relNoFollowCheckbox_;
+
+
+/**
  * Whether to stop leaking the page's url via the referrer header when the
  * "test this link" link is clicked.
  * @type {boolean}
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.stopReferrerLeaks_ = false;
+
+
+/**
+ * Creates contents of this dialog.
+ * @return {Element} Contents of the dialog as a DOM element.
+ * @private
+ */
+goog.ui.editor.LinkDialog.prototype.createDialogContent_ = function() {
+  this.textToDisplayDiv_ = /** @type {HTMLDivElement} */(
+      this.buildTextToDisplayDiv_());
+  var content = this.dom.createDom(goog.dom.TagName.DIV, null,
+      this.textToDisplayDiv_);
+
+  this.tabPane_ = new goog.ui.editor.TabPane(this.dom,
+      goog.ui.editor.messages.MSG_LINK_TO);
+  this.tabPane_.addTab(goog.ui.editor.LinkDialog.Id_.ON_WEB_TAB,
+      goog.ui.editor.messages.MSG_ON_THE_WEB,
+      goog.ui.editor.messages.MSG_ON_THE_WEB_TIP,
+      this.buildTabOnTheWeb_());
+  this.tabPane_.addTab(goog.ui.editor.LinkDialog.Id_.EMAIL_ADDRESS_TAB,
+      goog.ui.editor.messages.MSG_EMAIL_ADDRESS,
+      goog.ui.editor.messages.MSG_EMAIL_ADDRESS_TIP,
+      this.buildTabEmailAddress_());
+  this.tabPane_.render(content);
+
+  this.eventHandler_.listen(this.tabPane_, goog.ui.Component.EventType.SELECT,
+      this.onChangeTab_);
+
+  if (this.showOpenLinkInNewWindow_) {
+    content.appendChild(this.buildOpenInNewWindowDiv_());
+  }
+  if (this.showRelNoFollow_) {
+    content.appendChild(this.buildRelNoFollowDiv_());
+  }
+
+  return content;
+};
 
 
 /**
@@ -471,6 +558,30 @@ goog.ui.editor.LinkDialog.prototype.buildOpenInNewWindowDiv_ = function() {
       this.dom.createDom(goog.dom.TagName.LABEL, null,
                          this.openInNewWindowCheckbox_,
                          goog.ui.editor.messages.MSG_OPEN_IN_NEW_WINDOW));
+};
+
+
+/**
+ * Creates a DIV with a checkbox for {@code rel=nofollow} option.
+ * @return {Element} Newly created DIV element.
+ * @private
+ */
+goog.ui.editor.LinkDialog.prototype.buildRelNoFollowDiv_ = function() {
+  /** @desc Checkbox text for adding 'rel=nofollow' attribute to a link. */
+  var MSG_ADD_REL_NOFOLLOW_ATTR = goog.getMsg(
+      "Add '{$relNoFollow}' attribute ({$linkStart}Learn more{$linkEnd})", {
+        'relNoFollow': 'rel=nofollow',
+        'linkStart': '<a href="http://support.google.com/webmasters/bin/' +
+            'answer.py?hl=en&answer=96569" target="_blank">',
+        'linkEnd': '</a>'
+      });
+
+  this.relNoFollowCheckbox_ = /** @type {HTMLInputElement} */(
+      this.dom.createDom(goog.dom.TagName.INPUT, {'type': 'checkbox'}));
+  return this.dom.createDom(goog.dom.TagName.DIV, null,
+      this.dom.createDom(goog.dom.TagName.LABEL, null,
+          this.relNoFollowCheckbox_,
+          goog.dom.htmlToDocumentFragment(MSG_ADD_REL_NOFOLLOW_ATTR)));
 };
 
 
@@ -865,7 +976,8 @@ goog.ui.editor.LinkDialog.prototype.createOkEventFromUrl_ = function(url) {
     this.isOpenLinkInNewWindowChecked_ = this.openInNewWindowCheckbox_.checked;
   }
   return new goog.ui.editor.LinkDialog.OkEvent(this.textToDisplayInput_.value,
-      url, this.showOpenLinkInNewWindow_ && this.isOpenLinkInNewWindowChecked_);
+      url, this.showOpenLinkInNewWindow_ && this.isOpenLinkInNewWindowChecked_,
+      this.showRelNoFollow_ && this.relNoFollowCheckbox_.checked);
 };
 
 

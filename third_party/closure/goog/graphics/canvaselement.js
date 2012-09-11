@@ -65,6 +65,7 @@ goog.inherits(goog.graphics.CanvasGroupElement, goog.graphics.GroupElement);
 
 /**
  * Remove all drawing elements from the group.
+ * @override
  */
 goog.graphics.CanvasGroupElement.prototype.clear = function() {
   if (this.children_.length) {
@@ -78,6 +79,7 @@ goog.graphics.CanvasGroupElement.prototype.clear = function() {
  * Set the size of the group element.
  * @param {number|string} width The width of the group element.
  * @param {number|string} height The height of the group element.
+ * @override
  */
 goog.graphics.CanvasGroupElement.prototype.setSize = function(width, height) {
   // Do nothing.
@@ -194,6 +196,7 @@ goog.graphics.CanvasEllipseElement.prototype.setUpPath_ = function() {
  * Update the center point of the ellipse.
  * @param {number} cx Center X coordinate.
  * @param {number} cy Center Y coordinate.
+ * @override
  */
 goog.graphics.CanvasEllipseElement.prototype.setCenter = function(cx, cy) {
   this.cx_ = cx;
@@ -207,6 +210,7 @@ goog.graphics.CanvasEllipseElement.prototype.setCenter = function(cx, cy) {
  * Update the radius of the ellipse.
  * @param {number} rx Center X coordinate.
  * @param {number} ry Center Y coordinate.
+ * @override
  */
 goog.graphics.CanvasEllipseElement.prototype.setRadius = function(rx, ry) {
   this.rx_ = rx;
@@ -285,6 +289,7 @@ goog.inherits(goog.graphics.CanvasRectElement, goog.graphics.RectElement);
  * Update the position of the rectangle.
  * @param {number} x X coordinate (left).
  * @param {number} y Y coordinate (top).
+ * @override
  */
 goog.graphics.CanvasRectElement.prototype.setPosition = function(x, y) {
   this.x_ = x;
@@ -307,6 +312,7 @@ goog.graphics.CanvasRectElement.prototype.drawn_ = false;
  * Update the size of the rectangle.
  * @param {number} width Width of rectangle.
  * @param {number} height Height of rectangle.
+ * @override
  */
 goog.graphics.CanvasRectElement.prototype.setSize = function(width, height) {
   this.w_ = width;
@@ -375,6 +381,7 @@ goog.graphics.CanvasPathElement.prototype.path_;
 /**
  * Update the underlying path.
  * @param {!goog.graphics.Path} path The path object to draw.
+ * @override
  */
 goog.graphics.CanvasPathElement.prototype.setPath = function(path) {
   this.path_ = path.isSimple() ? path :
@@ -517,6 +524,7 @@ goog.inherits(goog.graphics.CanvasTextElement, goog.graphics.TextElement);
 /**
  * Update the displayed text of the element.
  * @param {string} text The text to draw.
+ * @override
  */
 goog.graphics.CanvasTextElement.prototype.setText = function(text) {
   this.text_ = text;
@@ -527,6 +535,7 @@ goog.graphics.CanvasTextElement.prototype.setText = function(text) {
 /**
  * Sets the fill for this element.
  * @param {goog.graphics.Fill} fill The fill object.
+ * @override
  */
 goog.graphics.CanvasTextElement.prototype.setFill = function(fill) {
   this.fill = fill;
@@ -540,6 +549,7 @@ goog.graphics.CanvasTextElement.prototype.setFill = function(fill) {
 /**
  * Sets the stroke for this element.
  * @param {goog.graphics.Stroke} stroke The stroke object.
+ * @override
  */
 goog.graphics.CanvasTextElement.prototype.setStroke = function(stroke) {
   // Ignore stroke
@@ -616,7 +626,8 @@ goog.graphics.CanvasTextElement.prototype.updateText_ = function() {
   if (this.x1_ == this.x2_) {
     // Special case vertical text
     this.innerElement_.innerHTML =
-        goog.array.map(this.text_.split(''), goog.string.htmlEscape).
+        goog.array.map(this.text_.split(''),
+            function(entry) { return goog.string.htmlEscape(entry); }).
             join('<br>');
   } else {
     this.innerElement_.innerHTML = goog.string.htmlEscape(this.text_);
@@ -699,6 +710,7 @@ goog.graphics.CanvasImageElement.prototype.drawn_ = false;
  * Update the position of the image.
  * @param {number} x X coordinate (left).
  * @param {number} y Y coordinate (top).
+ * @override
  */
 goog.graphics.CanvasImageElement.prototype.setPosition = function(x, y) {
   this.x_ = x;
@@ -713,6 +725,7 @@ goog.graphics.CanvasImageElement.prototype.setPosition = function(x, y) {
  * Update the size of the image.
  * @param {number} width Width of rectangle.
  * @param {number} height Height of rectangle.
+ * @override
  */
 goog.graphics.CanvasImageElement.prototype.setSize = function(width, height) {
   this.w_ = width;
@@ -726,6 +739,7 @@ goog.graphics.CanvasImageElement.prototype.setSize = function(width, height) {
 /**
  * Update the source of the image.
  * @param {string} src Source of the image.
+ * @override
  */
 goog.graphics.CanvasImageElement.prototype.setSource = function(src) {
   this.src_ = src;

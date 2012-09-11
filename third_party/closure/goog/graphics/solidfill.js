@@ -15,6 +15,7 @@
 
 /**
  * @fileoverview Represents a solid color fill goog.graphics.
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 
@@ -30,8 +31,8 @@ goog.require('goog.graphics.Fill');
  *
  * @param {string} color The color of the background.
  * @param {number=} opt_opacity The opacity of the background fill. The value
- *    must be greater than zero (transparent) and less than or equal to 1
- *    (opaque).
+ *    must be greater than or equal to zero (transparent) and less than or
+ *    equal to 1 (opaque).
  * @constructor
  * @extends {goog.graphics.Fill}
  */
@@ -49,7 +50,7 @@ goog.graphics.SolidFill = function(color, opt_opacity) {
    * @type {number}
    * @private
    */
-  this.opacity_ = opt_opacity || 1.0;
+  this.opacity_ = opt_opacity == null ? 1.0 : opt_opacity;
 };
 goog.inherits(goog.graphics.SolidFill, goog.graphics.Fill);
 

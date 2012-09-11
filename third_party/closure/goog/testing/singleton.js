@@ -13,55 +13,18 @@
 // limitations under the License.
 
 /**
- * @fileoverview This module simplifies testing code which uses many stateful
- * singletons. The {@link goog.testing.singleton.addSingletonGetter} function
- * adds a static {@code getInstance} method to the class, which in addition to
- * creating and returning a singleton instance, registers it in a global
- * repository. This way the effect of all {@code getInstance} calls can be
- * simply reset in {@code tearDown} without knowing what singletons were
- * instantiated in the tests.
+ * @fileoverview This module simplifies testing code which uses stateful
+ * singletons. {@code goog.testing.singleton.reset} resets all instances, so
+ * next time when {@code getInstance} is called, a new instance is created.
+ * It's recommended to reset the singletons in {@code tearDown} to prevent
+ * interference between subsequent tests.
  *
- * Usage:
- * <ol>
- *   <li>Load {@code base.js}.
- *   <li>Load {@code goog.testing.singleton}. It overrides
- *       {@link goog.addSingletonGetter} by
- *       {@link goog.testing.addSingletonGetter}.
- *   <li>Load the code to test.
- *   <li>Call {@link goog.testing.singleton.reset} in the {@code tearDown}.
- * </ol>
+ * The {@code goog.testing.singleton} functions expect that the goog.DEBUG flag
+ * is enabled, and the tests are either uncompiled or compiled without renaming.
  *
  */
 
 goog.provide('goog.testing.singleton');
-
-goog.require('goog.array');
-
-
-/**
- * List of all singleton classes for which the instance has been created.
- * @type {Array.<!Function>}
- * @private
- */
-goog.testing.singletons_ = [];
-
-
-/**
- * Adds a {@code getInstance} static method to the given class which in addition
- * to always returning the same instance object, registers the constructor in a
- * global array.
- * @param {!Function} ctor The constructor for the class to add the static
- *     method to.
- */
-goog.testing.singleton.addSingletonGetter = function(ctor) {
-  ctor.getInstance = function() {
-    if (!ctor.instance_) {
-      ctor.instance_ = new ctor();
-      goog.testing.singletons_.push(ctor);
-    }
-    return ctor.instance_;
-  };
-};
 
 
 /**
@@ -69,14 +32,15 @@ goog.testing.singleton.addSingletonGetter = function(ctor) {
  * instance on next call.
  */
 goog.testing.singleton.reset = function() {
-  goog.array.forEach(goog.testing.singletons_, function(ctor) {
+  var singletons = goog.getObjectByName('goog.instantiatedSingletons_');
+  var ctor;
+  while (ctor = singletons.pop()) {
     delete ctor.instance_;
-  });
-  goog.array.clear(goog.testing.singletons_);
+  }
 };
 
 
 /**
- * Overrides {@code goog.addSingletonGetter} in {@code base.js}.
+ * @deprecated Please use {@code goog.addSingletonGetter}.
  */
-goog.addSingletonGetter = goog.testing.singleton.addSingletonGetter;
+goog.testing.singleton.addSingletonGetter = goog.addSingletonGetter;

@@ -207,6 +207,7 @@ goog.dom.TextRange.prototype.isReversed_ = false;
 
 /**
  * @return {goog.dom.TextRange} A clone of this range.
+ * @override
  */
 goog.dom.TextRange.prototype.clone = function() {
   var range = new goog.dom.TextRange();
@@ -462,6 +463,7 @@ goog.dom.TextRange.prototype.getPastableHtml = function() {
  * the direction of the range, the iterator will move in document order.
  * @param {boolean=} opt_keys Unused for this iterator.
  * @return {goog.dom.TextRangeIterator} An iterator over tags in the range.
+ * @override
  */
 goog.dom.TextRange.prototype.__iterator__ = function(opt_keys) {
   return new goog.dom.TextRangeIterator(this.getStartNode(),
@@ -595,6 +597,7 @@ goog.inherits(goog.dom.DomSavedTextRange_, goog.dom.SavedRange);
 
 /**
  * @return {goog.dom.AbstractRange} The restored range.
+ * @override
  */
 goog.dom.DomSavedTextRange_.prototype.restoreInternal = function() {
   return goog.dom.Range.createFromNodes(this.anchorNode_, this.anchorOffset_,

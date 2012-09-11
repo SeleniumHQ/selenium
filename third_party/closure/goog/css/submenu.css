@@ -13,6 +13,7 @@
 
 
 /* State: resting. */
+/* @noflip */
 .goog-submenu-arrow {
   color: #000;
   left: auto;
@@ -20,6 +21,15 @@
   position: absolute;
   right: 0;
   text-align: right;
+}
+
+/* BiDi override. */
+/* @noflip */
+.goog-menuitem-rtl .goog-submenu-arrow {
+  text-align: left;
+  left: 0;
+  right: auto;
+  padding-left: 6px;
 }
 
 /* State: disabled. */

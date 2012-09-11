@@ -16,7 +16,7 @@
  * @fileoverview Wrappers for the HTML5 IndexedDB. The wrappers export nearly
  * the same interface as the standard API, but return goog.async.Deferred
  * objects instead of request objects and use Closure events. The wrapper works
- * and has been tested on Chrome version 14+. Though they should work in theory,
+ * and has been tested on Chrome version 18+. Though they should work in theory,
  * the wrapper tests fail in strange, non-deterministic ways on Firefox 6,
  * unfortunately.
  *
@@ -50,6 +50,7 @@
 goog.provide('goog.db');
 
 goog.require('goog.async.Deferred');
+goog.require('goog.db.Error');
 goog.require('goog.db.IndexedDb');
 
 

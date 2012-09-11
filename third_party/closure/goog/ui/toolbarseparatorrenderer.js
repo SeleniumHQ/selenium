@@ -15,6 +15,7 @@
 /**
  * @fileoverview Renderer for toolbar separators.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.ToolbarSeparatorRenderer');
@@ -50,8 +51,9 @@ goog.ui.ToolbarSeparatorRenderer.CSS_CLASS =
  * Returns a styled toolbar separator implemented by the following DOM:
  * <div class="goog-toolbar-separator goog-inline-block">&nbsp;</div>
  * Overrides {@link goog.ui.MenuSeparatorRenderer#createDom}.
- * @param {goog.ui.Separator} separator Separator to render.
+ * @param {goog.ui.Control} separator goog.ui.Separator to render.
  * @return {Element} Root element for the separator.
+ * @override
  */
 goog.ui.ToolbarSeparatorRenderer.prototype.createDom = function(separator) {
   // 00A0 is &nbsp;
@@ -64,9 +66,10 @@ goog.ui.ToolbarSeparatorRenderer.prototype.createDom = function(separator) {
 /**
  * Takes an existing element, and decorates it with the separator.  Overrides
  * {@link goog.ui.MenuSeparatorRenderer#decorate}.
- * @param {goog.ui.Separator} separator Separator to decorate the element.
+ * @param {goog.ui.Control} separator goog.ui.Separator to decorate the element.
  * @param {Element} element Element to decorate.
  * @return {Element} Decorated element.
+ * @override
  */
 goog.ui.ToolbarSeparatorRenderer.prototype.decorate = function(separator,
                                                                element) {
@@ -81,6 +84,7 @@ goog.ui.ToolbarSeparatorRenderer.prototype.decorate = function(separator,
  * Returns the CSS class to be applied to the root element of components
  * rendered using this renderer.
  * @return {string} Renderer-specific CSS class.
+ * @override
  */
 goog.ui.ToolbarSeparatorRenderer.prototype.getCssClass = function() {
   return goog.ui.ToolbarSeparatorRenderer.CSS_CLASS;

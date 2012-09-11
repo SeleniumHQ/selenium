@@ -493,6 +493,7 @@ if (goog.DEBUG) {
    * </pre>
    *
    * @return {string} A string representation of this matrix.
+   * @override
    */
   goog.math.Matrix.prototype.toString = function() {
     // Calculate correct padding for optimum display of matrix
@@ -509,8 +510,8 @@ if (goog.DEBUG) {
     goog.array.forEach(this.array_, function(row, x) {
       sb.push('[ ');
       goog.array.forEach(row, function(val, y) {
-        val = String(val);
-        sb.push(goog.string.repeat(' ', maxLen - val.length) + val + ' ');
+        var strval = String(val);
+        sb.push(goog.string.repeat(' ', maxLen - strval.length) + strval + ' ');
       });
       sb.push(']\n');
     });

@@ -70,10 +70,12 @@ goog.ui.SubMenuRenderer.CSS_CLASS_SUBMENU_ =
  * the additional class 'goog-submenu' to the created element,
  * and passes the element to {@link goog.ui.SubMenuItemRenderer#addArrow_}
  * to add an child element that can be styled to show an arrow.
- * @param {goog.ui.SubMenu} subMenu SubMenu to render.
+ * @param {goog.ui.Control} control goog.ui.SubMenu to render.
  * @return {Element} Root element for the item.
+ * @override
  */
-goog.ui.SubMenuRenderer.prototype.createDom = function(subMenu) {
+goog.ui.SubMenuRenderer.prototype.createDom = function(control) {
+  var subMenu = /** @type {goog.ui.SubMenu} */ (control);
   var element = goog.ui.SubMenuRenderer.superClass_.createDom.call(this,
                                                                    subMenu);
   goog.dom.classes.add(element, goog.ui.SubMenuRenderer.CSS_CLASS);
@@ -90,11 +92,13 @@ goog.ui.SubMenuRenderer.prototype.createDom = function(subMenu) {
  * Also searches the element for a child with the class goog-menu. If a
  * matching child element is found, creates a goog.ui.Menu, uses it to
  * decorate the child element, and passes that menu to subMenu.setMenu.
- * @param {goog.ui.SubMenu} subMenu SubMenu to render.
+ * @param {goog.ui.Control} control goog.ui.SubMenu to render.
  * @param {Element} element Element to decorate.
  * @return {Element} Root element for the item.
+ * @override
  */
-goog.ui.SubMenuRenderer.prototype.decorate = function(subMenu, element) {
+goog.ui.SubMenuRenderer.prototype.decorate = function(control, element) {
+  var subMenu = /** @type {goog.ui.SubMenu} */ (control);
   element = goog.ui.SubMenuRenderer.superClass_.decorate.call(
       this, subMenu, element);
   goog.dom.classes.add(element, goog.ui.SubMenuRenderer.CSS_CLASS);
@@ -150,10 +154,12 @@ goog.ui.SubMenuRenderer.prototype.setContent = function(element, content) {
  * and the arrow will be moved up to be the first child in the SubMenu's
  * element. Otherwise the arrow will have the class goog-submenu-arrow-ltr,
  * and be kept as the last child of the SubMenu's element.
- * @param {goog.ui.SubMenu} subMenu SubMenu whose DOM is to be initialized
- *     as it enters the document.
+ * @param {goog.ui.Control} control goog.ui.SubMenu whose DOM is to be
+ *     initialized as it enters the document.
+ * @override
  */
-goog.ui.SubMenuRenderer.prototype.initializeDom = function(subMenu) {
+goog.ui.SubMenuRenderer.prototype.initializeDom = function(control) {
+  var subMenu = /** @type {goog.ui.SubMenu} */ (control);
   goog.ui.SubMenuRenderer.superClass_.initializeDom.call(this, subMenu);
   var element = subMenu.getContentElement();
   var arrow = subMenu.getDomHelper().getElementsByTagNameAndClass(

@@ -80,6 +80,7 @@ goog.testing.ShardingTestCase.prototype.sharded_ = false;
 /**
  * Installs a runTests global function that goog.testing.JsUnit will use to
  * run tests, which will run a single shard of the tests present on the page.
+ * @override
  */
 goog.testing.ShardingTestCase.prototype.runTests = function() {
   if (!this.sharded_) {

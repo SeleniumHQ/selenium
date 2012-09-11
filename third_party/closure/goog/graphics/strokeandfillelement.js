@@ -16,6 +16,8 @@
 /**
  * @fileoverview A thin wrapper around the DOM element for elements with a
  * stroke and fill.
+ * @author arv@google.com (Erik Arvidsson)
+ * @author yoah@google.com (Yoah Bar-David)
  */
 
 

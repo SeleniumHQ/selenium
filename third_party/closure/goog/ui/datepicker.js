@@ -15,6 +15,7 @@
 /**
  * @fileoverview Date picker implementation.
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/datepicker.html
  */
 
@@ -37,6 +38,7 @@ goog.require('goog.i18n.DateTimeFormat');
 goog.require('goog.i18n.DateTimeSymbols');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
+goog.require('goog.ui.IdGenerator');
 
 
 
@@ -198,11 +200,12 @@ goog.ui.DatePicker.prototype.elFootRow_ = null;
 
 
 /**
- * Next unique instance ID of a datepicker cell.
- * @type {number}
+ * Generator for unique table cell IDs.
+ * @type {goog.ui.IdGenerator}
  * @private
  */
-goog.ui.DatePicker.nextId_ = 0;
+goog.ui.DatePicker.prototype.cellIdGenerator_ =
+    goog.ui.IdGenerator.getInstance();
 
 
 /**
@@ -540,6 +543,14 @@ goog.ui.DatePicker.prototype.selectNone = function() {
 
 
 /**
+ * @return {goog.date.Date} The active month displayed.
+ */
+goog.ui.DatePicker.prototype.getActiveMonth = function() {
+  return this.activeMonth_.clone();
+};
+
+
+/**
  * @return {goog.date.Date} The selected date or null if nothing is selected.
  */
 goog.ui.DatePicker.prototype.getDate = function() {
@@ -573,7 +584,7 @@ goog.ui.DatePicker.prototype.setDate = function(date) {
   // selected another month can be displayed.
   this.updateCalendarGrid_();
 
-  // TODO(user): Standardize selection and change events with other components.
+  // TODO(eae): Standardize selection and change events with other components.
   // Fire select event.
   var selectEvent = new goog.ui.DatePickerEvent(
       goog.ui.DatePicker.Events.SELECT, this, this.date_);
@@ -898,10 +909,10 @@ goog.ui.DatePicker.prototype.showMonthMenu_ = function(event) {
 
   var list = [];
   for (var i = 0; i < 12; i++) {
-    list.push(this.symbols_.MONTHS[i]);
+    list.push(this.symbols_.STANDALONEMONTHS[i]);
   }
   this.createMenu_(this.elMonth_, list, this.handleMonthMenuClick_,
-      this.symbols_.MONTHS[this.activeMonth_.getMonth()]);
+      this.symbols_.STANDALONEMONTHS[this.activeMonth_.getMonth()]);
 };
 
 
@@ -1139,12 +1150,12 @@ goog.ui.DatePicker.prototype.updateCalendarGrid_ = function() {
   if (this.elMonthYear_) {
     goog.dom.setTextContent(this.elMonthYear_,
         goog.date.formatMonthAndYear(
-            this.symbols_.MONTHS[date.getMonth()],
+            this.symbols_.STANDALONEMONTHS[date.getMonth()],
             date.getFullYear()));
   }
   if (this.elMonth_) {
     goog.dom.setTextContent(this.elMonth_,
-        this.symbols_.MONTHS[date.getMonth()]);
+        this.symbols_.STANDALONEMONTHS[date.getMonth()]);
   }
   if (this.elYear_) {
     goog.dom.setTextContent(this.elYear_, String(date.getFullYear()));
@@ -1214,7 +1225,7 @@ goog.ui.DatePicker.prototype.redrawCalendarGrid_ = function() {
       // Assign a unique element id (required for setting the active descendant
       // ARIA role) unless already set.
       if (!el.id) {
-        el.id = 'goog-dp-' + goog.ui.DatePicker.nextId_++;
+        el.id = this.cellIdGenerator_.getNextUniqueId();
       }
       goog.dom.a11y.setRole(el, 'gridcell');
       var classes = [goog.getCssName(this.getBaseCssClass(), 'date')];

@@ -21,9 +21,11 @@
 goog.provide('goog.db.ObjectStore');
 
 goog.require('goog.async.Deferred');
+goog.require('goog.db.Cursor');
 goog.require('goog.db.Error');
 goog.require('goog.db.Index');
 goog.require('goog.debug');
+goog.require('goog.events');
 
 
 
@@ -215,34 +217,101 @@ goog.db.ObjectStore.prototype.get = function(key) {
 /**
  * Gets all objects from the store and returns them as an array.
  *
+ * @param {!goog.db.KeyRange=} opt_range The key range. If undefined iterates
+ *     over the whole object store.
+ * @param {!goog.db.Cursor.Direction=} opt_direction The direction. If undefined
+ *     moves in a forward direction with duplicates.
  * @return {!goog.async.Deferred} The deferred getAll request.
  */
-goog.db.ObjectStore.prototype.getAll = function() {
+goog.db.ObjectStore.prototype.getAll = function(opt_range, opt_direction) {
   var d = new goog.async.Deferred();
-  var msg = 'getting all from ' + this.getName();
-  var request;
+  var cursor;
   try {
-    request = this.store_.openCursor();
+    cursor = this.openCursor(opt_range, opt_direction);
   } catch (err) {
-    d.errback(new goog.db.Error(err.code, msg));
+    d.errback(err);
     return d;
   }
+
   var result = [];
-  request.onsuccess = function(ev) {
-    var cursor = ev.target.result;
-    if (cursor) {
-      result.push(cursor.value);
-      cursor['continue']();
-    } else {
+  var key = goog.events.listen(
+      cursor, goog.db.Cursor.EventType.NEW_DATA, function() {
+        result.push(cursor.getValue());
+        cursor.next();
+      });
+
+  goog.events.listenOnce(cursor, [
+    goog.db.Cursor.EventType.ERROR,
+    goog.db.Cursor.EventType.COMPLETE
+  ], function(evt) {
+    goog.events.unlistenByKey(key);
+    if (evt.type == goog.db.Cursor.EventType.COMPLETE) {
       d.callback(result);
+    } else {
+      d.errback();
+    }
+  });
+  return d;
+};
+
+
+/**
+ * Opens a cursor over the specified key range. Returns a cursor object which is
+ * able to iterate over the given range.
+ *
+ * Example usage:
+ *
+ * <code>
+ *  var cursor = objectStore.openCursor(goog.db.Range.bound('a', 'c'));
+ *
+ *  var key = goog.events.listen(
+ *      cursor, goog.db.Cursor.EventType.NEW_DATA, function() {
+ *    // Do something with data.
+ *    cursor.next();
+ *  });
+ *
+ *  goog.events.listenOnce(
+ *      cursor, goog.db.Cursor.EventType.COMPLETE, function() {
+ *    // Clean up listener, and perform a finishing operation on the data.
+ *    goog.events.unlistenByKey(key);
+ *  });
+ * </code>
+ *
+ * @param {!goog.db.KeyRange=} opt_range The key range. If undefined iterates
+ *     over the whole object store.
+ * @param {!goog.db.Cursor.Direction=} opt_direction The direction. If undefined
+ *     moves in a forward direction with duplicates.
+ * @return {!goog.db.Cursor} The cursor.
+ * @throws {goog.db.Error} If there was a problem opening the cursor.
+ * @suppress {accessControls}
+ */
+goog.db.ObjectStore.prototype.openCursor = function(opt_range, opt_direction) {
+  var msg = 'opening cursor ' + this.getName();
+  var cursor = new goog.db.Cursor();
+  var request;
+
+  try {
+    var range = opt_range ? opt_range.range_ : null;
+    if (opt_direction) {
+      request = this.store_.openCursor(range, opt_direction);
+    } else {
+      request = this.store_.openCursor(range);
+    }
+  } catch (err) {
+    throw new goog.db.Error(err.code, msg);
+  }
+  request.onsuccess = function(ev) {
+    cursor.cursor_ = ev.target.result || null;
+    if (cursor.cursor_) {
+      cursor.dispatchEvent(goog.db.Cursor.EventType.NEW_DATA);
+    } else {
+      cursor.dispatchEvent(goog.db.Cursor.EventType.COMPLETE);
     }
   };
   request.onerror = function(ev) {
-    d.errback(new goog.db.Error(
-        (/** @type {IDBRequest} */ (ev.target)).errorCode,
-        msg));
+    cursor.dispatchEvent(goog.db.Cursor.EventType.ERROR);
   };
-  return d;
+  return cursor;
 };
 
 

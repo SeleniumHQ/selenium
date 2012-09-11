@@ -39,7 +39,7 @@ goog.require('goog.positioning.AbstractPosition');
  */
 goog.positioning.ViewportPosition = function(arg1, opt_arg2) {
   this.coordinate = arg1 instanceof goog.math.Coordinate ? arg1 :
-        new goog.math.Coordinate(/** @type {number} */ (arg1), opt_arg2);
+      new goog.math.Coordinate(/** @type {number} */ (arg1), opt_arg2);
 };
 goog.inherits(goog.positioning.ViewportPosition,
               goog.positioning.AbstractPosition);
@@ -53,6 +53,7 @@ goog.inherits(goog.positioning.ViewportPosition,
  *     element that that should be positioned adjacent to the anchorElement.
  * @param {goog.math.Box=} opt_margin A margin specified in pixels.
  * @param {goog.math.Size=} opt_preferredSize Preferred size of the element.
+ * @override
  */
 goog.positioning.ViewportPosition.prototype.reposition = function(
     element, popupCorner, opt_margin, opt_preferredSize) {

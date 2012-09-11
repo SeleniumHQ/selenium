@@ -39,6 +39,7 @@ goog.provide('goog.testing.Mock');
 goog.provide('goog.testing.MockExpectation');
 
 goog.require('goog.array');
+goog.require('goog.object');
 goog.require('goog.testing.JsUnitException');
 goog.require('goog.testing.MockInterface');
 goog.require('goog.testing.mockmatchers');
@@ -210,6 +211,25 @@ goog.testing.Mock.STRICT = 0;
 
 
 /**
+ * This array contains the name of the functions that are part of the base
+ * Object prototype.
+ * Basically a copy of goog.object.PROTOTYPE_FIELDS_.
+ * @const
+ * @type {!Array.<string>}
+ * @private
+ */
+goog.testing.Mock.PROTOTYPE_FIELDS_ = [
+  'constructor',
+  'hasOwnProperty',
+  'isPrototypeOf',
+  'propertyIsEnumerable',
+  'toLocaleString',
+  'toString',
+  'valueOf'
+];
+
+
+/**
  * A proxy for the mock.  This can be used for dependency injection in lieu of
  * the mock if the test requires a strict instanceof check.
  * @type {Object}
@@ -256,8 +276,25 @@ goog.testing.Mock.prototype.$threwException_ = null;
  * @private
  */
 goog.testing.Mock.prototype.$initializeFunctions_ = function(objectToMock) {
-  // TODO (arv): Implement goog.object.getIterator and replace this loop.
-  for (var prop in objectToMock) {
+  // Gets the object properties.
+  var enumerableProperties = goog.object.getKeys(objectToMock);
+
+  // The non enumerable properties are added if they override the ones in the
+  // Object prototype. This is due to the fact that IE8 does not enumerate any
+  // of the prototype Object functions even when overriden and mocking these is
+  // sometimes needed.
+  for (var i = 0; i < goog.testing.Mock.PROTOTYPE_FIELDS_.length; i++) {
+    var prop = goog.testing.Mock.PROTOTYPE_FIELDS_[i];
+    // Look at b/6758711 if you're considering adding ALL properties to ALL
+    // mocks.
+    if (objectToMock[prop] !== Object.prototype[prop]) {
+      enumerableProperties.push(prop);
+    }
+  }
+
+  // Adds the properties to the mock.
+  for (var i = 0; i < enumerableProperties.length; i++) {
+    var prop = enumerableProperties[i];
     if (typeof objectToMock[prop] == 'function') {
       this[prop] = goog.bind(this.$mockMethod, this, prop);
       if (this.$proxy) {
@@ -442,6 +479,7 @@ goog.testing.Mock.prototype.$times = function(times) {
 
 /**
  * Switches from recording to replay mode.
+ * @override
  */
 goog.testing.Mock.prototype.$replay = function() {
   this.$recording_ = false;
@@ -451,6 +489,7 @@ goog.testing.Mock.prototype.$replay = function() {
 /**
  * Resets the state of this mock object. This clears all pending expectations
  * without verifying, and puts the mock in recording mode.
+ * @override
  */
 goog.testing.Mock.prototype.$reset = function() {
   this.$recording_ = true;
@@ -500,6 +539,7 @@ goog.testing.Mock.prototype.$recordAndThrow = function(ex) {
 /**
  * Verify that all of the expectations were met. Should be overridden by
  * subclasses.
+ * @override
  */
 goog.testing.Mock.prototype.$verify = function() {
   if (this.$threwException_) {

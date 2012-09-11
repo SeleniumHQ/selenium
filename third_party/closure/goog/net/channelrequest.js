@@ -50,8 +50,8 @@ goog.require('goog.userAgent');
  * @param {number=} opt_retryId  The retry id for this request.
  * @constructor
  */
-goog.net.ChannelRequest = function(
-    channel, channelDebug, opt_sessionId, opt_requestId, opt_retryId) {
+goog.net.ChannelRequest = function(channel, channelDebug, opt_sessionId,
+    opt_requestId, opt_retryId) {
   /**
    * The BrowserChannel object that owns the request.
    * @type {goog.net.BrowserChannel|goog.net.BrowserTestChannel}
@@ -335,7 +335,17 @@ goog.net.ChannelRequest.Error = {
   /**
    * Errors due to the handler throwing an exception.
    */
-  HANDLER_EXCEPTION: 5
+  HANDLER_EXCEPTION: 5,
+
+  /**
+   * The browser declared itself offline during the request.
+   */
+  BROWSER_OFFLINE: 6,
+
+  /**
+   * IE is blocking ActiveX streaming.
+   */
+  ACTIVE_X_BLOCKED: 7
 };
 
 
@@ -387,7 +397,7 @@ goog.net.ChannelRequest.INCOMPLETE_CHUNK_ = {};
  * @see http://code.google.com/p/closure-library/issues/detail?id=346
  */
 goog.net.ChannelRequest.supportsXhrStreaming = function() {
-  return !goog.userAgent.IE;
+  return !goog.userAgent.IE || goog.userAgent.isDocumentMode(10);
 };
 
 
@@ -476,7 +486,8 @@ goog.net.ChannelRequest.prototype.sendXmlHttp_ = function(hostPrefix) {
   var useSecondaryDomains = this.channel_.shouldUseSecondaryDomains();
   this.xmlHttp_ = this.channel_.createXhrIo(useSecondaryDomains ?
       hostPrefix : null);
-  goog.events.listen(this.xmlHttp_, goog.net.EventType.READY_STATE_CHANGE,
+  this.eventHandler_.listen(this.xmlHttp_,
+      goog.net.EventType.READY_STATE_CHANGE,
       this.xmlHttpHandler_, false, this);
 
   var headers = this.extraHeaders_ ? goog.object.clone(this.extraHeaders_) : {};
@@ -497,6 +508,8 @@ goog.net.ChannelRequest.prototype.sendXmlHttp_ = function(hostPrefix) {
     }
     this.xmlHttp_.send(this.requestUri_, this.verb_, null, headers);
   }
+  this.channel_.notifyServerReachabilityEvent(
+      goog.net.BrowserChannel.ServerReachability.REQUEST_MADE);
   this.channelDebug_.xmlHttpChannelRequest(this.verb_,
       this.requestUri_, this.rid_, this.retryId_,
       this.postData_);
@@ -540,6 +553,8 @@ goog.net.ChannelRequest.prototype.xmlHttpHandler_ = function(e) {
  */
 goog.net.ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
   var readyState = this.xmlHttp_.getReadyState();
+  var errorCode = this.xmlHttp_.getLastErrorCode();
+  var statusCode = this.xmlHttp_.getStatus();
   // If it is Safari less than 420+, there is a bug that causes null to be
   // in the responseText on ready state interactive so we must wait for
   // ready state complete.
@@ -561,6 +576,22 @@ goog.net.ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
         !goog.userAgent.OPERA && !this.xmlHttp_.getResponseText()) {
       // not yet ready
       return;
+    }
+  }
+
+  // Dispatch any appropriate network events.
+  if (!this.cancelled_ && readyState == goog.net.XmlHttp.ReadyState.COMPLETE &&
+      errorCode != goog.net.ErrorCode.ABORT) {
+
+    // Pretty conservative, these are the only known scenarios which we'd
+    // consider indicative of a truly non-functional network connection.
+    if (errorCode == goog.net.ErrorCode.TIMEOUT ||
+        statusCode <= 0) {
+      this.channel_.notifyServerReachabilityEvent(
+          goog.net.BrowserChannel.ServerReachability.REQUEST_FAILED);
+    } else {
+      this.channel_.notifyServerReachabilityEvent(
+          goog.net.BrowserChannel.ServerReachability.REQUEST_SUCCEEDED);
     }
   }
 
@@ -713,7 +744,8 @@ goog.net.ChannelRequest.prototype.pollResponse_ = function() {
 /**
  * Starts a polling interval for changes to responseText of the
  * XMLHttpRequest, for browsers that don't fire onreadystatechange
- * as data comes in incrementally.
+ * as data comes in incrementally.  This timer is disabled in
+ * cleanup_().
  * @private
  */
 goog.net.ChannelRequest.prototype.startPolling_ = function() {
@@ -724,12 +756,27 @@ goog.net.ChannelRequest.prototype.startPolling_ = function() {
 
 
 /**
- * Stops the polling interval for changes to responseText.
+ * Called when the browser declares itself offline at the start of a request or
+ * during its lifetime.  Abandons that request.
  * @private
  */
-goog.net.ChannelRequest.prototype.stopPolling_ = function() {
-  this.pollingTimer_.stop();
-  this.eventHandler_.removeAll();
+goog.net.ChannelRequest.prototype.cancelRequestAsBrowserIsOffline_ =
+    function() {
+  if (this.successful_) {
+    // Should never happen.
+    this.channelDebug_.severe(
+        'Received browser offline event even though request completed ' +
+        'successfully');
+  }
+
+  this.channelDebug_.browserOfflineResponse(this.requestUri_);
+  this.cleanup_();
+
+  // set error and dispatch failure
+  this.lastError_ = goog.net.ChannelRequest.Error.BROWSER_OFFLINE;
+  goog.net.BrowserChannel.notifyStatEvent(
+      goog.net.BrowserChannel.Stat.BROWSER_OFFLINE);
+  this.dispatchFailure_();
 };
 
 
@@ -796,12 +843,26 @@ goog.net.ChannelRequest.prototype.tridentGet_ = function(usingSecondaryDomain) {
   this.requestStartTime_ = goog.now();
   this.ensureWatchDogTimer_();
 
-  this.trident_ = new ActiveXObject('htmlfile');
+  var hostname = usingSecondaryDomain ? window.location.hostname : '';
+  this.requestUri_ = this.baseUri_.clone();
+  this.requestUri_.setParameterValue('DOMAIN', hostname);
+  this.requestUri_.setParameterValue('t', this.retryId_);
 
-  var hostname = '';
+  try {
+    this.trident_ = new ActiveXObject('htmlfile');
+  } catch (e) {
+    this.channelDebug_.severe('ActiveX blocked');
+    this.cleanup_();
+
+    this.lastError_ = goog.net.ChannelRequest.Error.ACTIVE_X_BLOCKED;
+    goog.net.BrowserChannel.notifyStatEvent(
+        goog.net.BrowserChannel.Stat.ACTIVE_X_BLOCKED);
+    this.dispatchFailure_();
+    return;
+  }
+
   var body = '<html><body>';
   if (usingSecondaryDomain) {
-    hostname = window.location.hostname;
     body += '<script>document.domain="' + hostname + '"</scr' + 'ipt>';
   }
   body += '</body></html>';
@@ -817,12 +878,11 @@ goog.net.ChannelRequest.prototype.tridentGet_ = function(usingSecondaryDomain) {
 
   var div = this.trident_.createElement('div');
   this.trident_.parentWindow.document.body.appendChild(div);
-  this.requestUri_ = this.baseUri_.clone();
-  this.requestUri_.setParameterValue('DOMAIN', hostname);
-  this.requestUri_.setParameterValue('t', this.retryId_);
   div.innerHTML = '<iframe src="' + this.requestUri_ + '"></iframe>';
   this.channelDebug_.tridentChannelRequest('GET',
       this.requestUri_, this.rid_, this.retryId_);
+  this.channel_.notifyServerReachabilityEvent(
+      goog.net.BrowserChannel.ServerReachability.REQUEST_MADE);
 };
 
 
@@ -885,10 +945,11 @@ goog.net.ChannelRequest.prototype.onTridentDoneAsync_ = function(successful) {
   }
   this.channelDebug_.tridentChannelResponseDone(
       this.rid_, successful);
-  this.cancelWatchDogTimer_();
   this.cleanup_();
   this.successful_ = successful;
   this.channel_.onRequestComplete(this);
+  this.channel_.notifyServerReachabilityEvent(
+      goog.net.BrowserChannel.ServerReachability.BACK_CHANNEL_ACTIVITY);
 };
 
 
@@ -923,7 +984,6 @@ goog.net.ChannelRequest.prototype.imgTagGet_ = function() {
  */
 goog.net.ChannelRequest.prototype.cancel = function() {
   this.cancelled_ = true;
-  this.cancelWatchDogTimer_();
   this.cleanup_();
 };
 
@@ -1003,6 +1063,12 @@ goog.net.ChannelRequest.prototype.handleTimeout_ = function() {
   }
 
   this.channelDebug_.timeoutResponse(this.requestUri_);
+  // IMG requests never notice if they were successful, and always 'time out'.
+  // This fact says nothing about reachability.
+  if (this.type_ != goog.net.ChannelRequest.Type_.IMG) {
+    this.channel_.notifyServerReachabilityEvent(
+        goog.net.BrowserChannel.ServerReachability.REQUEST_FAILED);
+  }
   this.cleanup_();
 
   // set error and dispatch failure
@@ -1033,15 +1099,21 @@ goog.net.ChannelRequest.prototype.dispatchFailure_ = function() {
  * @private
  */
 goog.net.ChannelRequest.prototype.cleanup_ = function() {
-  this.stopPolling_();
+  this.cancelWatchDogTimer_();
+
+  // Stop the polling timer, if necessary.
+  this.pollingTimer_.stop();
+
+  // Unhook all event handlers.
+  this.eventHandler_.removeAll();
+
   if (this.xmlHttp_) {
     // clear out this.xmlHttp_ before aborting so we handle getting reentered
     // inside abort
     var xmlhttp = this.xmlHttp_;
     this.xmlHttp_ = null;
-    goog.events.unlisten(xmlhttp, goog.net.EventType.READY_STATE_CHANGE,
-        this.xmlHttpHandler_, false, this);
     xmlhttp.abort();
+    xmlhttp.dispose();
   }
 
   if (this.trident_) {
@@ -1131,6 +1203,8 @@ goog.net.ChannelRequest.prototype.safeOnRequestData_ = function(data) {
   /** @preserveTry */
   try {
     this.channel_.onRequestData(this, data);
+    this.channel_.notifyServerReachabilityEvent(
+        goog.net.BrowserChannel.ServerReachability.BACK_CHANNEL_ACTIVITY);
   } catch (e) {
     // Dump debug info, but keep going without closing the channel.
     this.channelDebug_.dumpException(

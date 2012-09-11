@@ -44,6 +44,7 @@ goog.inherits(goog.graphics.ext.Ellipse,
 /**
  * Redraw the ellipse.  Called when the coordinate system is changed.
  * @protected
+ * @override
  */
 goog.graphics.ext.Ellipse.prototype.redraw = function() {
   goog.graphics.ext.Ellipse.superClass_.redraw.call(this);

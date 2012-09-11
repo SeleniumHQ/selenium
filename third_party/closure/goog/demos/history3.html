@@ -1,6 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-    "http://www.w3.org/TR/html4/strict.dtd">
-
+<!DOCTYPE html>
 <html>
 <!--
 Copyright 2010 The Closure Library Authors. All Rights Reserved.
@@ -10,9 +8,8 @@ See the COPYING file for details.
 -->
 <head>
 <title>History Demo 3</title>
-</head>
-
-<style type="text/css">
+<link rel="stylesheet" href="css/demo.css">
+<style>
 body {
   font-family: sans-serif;
   font-size: 83%
@@ -28,11 +25,16 @@ td {
   text-align: center;
   padding: 0 0.5em 0.5em 0.5em;
 }
-</style>
 
-<input type="text" name="hist_state" id="hist_state" style="display:none" />
-<iframe name="js" frameborder="0" src="history3js.html"
-  style="position:absolute;left:0;top:0;z-index:0;width:0;height:0"></iframe>
+.hidden-frame {
+  height: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 0;
+}
+</style>
+</head>
 
 <body>
 
@@ -71,7 +73,7 @@ new history entry.</p>
 </p>
 
 <p>
-<input type="text" id="token_input" />
+<input type="text" id="token_input">
 <button onclick="setToken()">Set Token</button>
 <button onclick="replaceToken()">Replace Current Token</button>
 </p>
@@ -84,7 +86,15 @@ new history entry.</p>
 <p>The state should be correctly restored after you
 <a href="http://www.google.com/">leave the page</a> and hit the back button.</p>
 
-<script type="text/javascript">
+<fieldset class="goog-debug-panel">
+  <legend>Event Log</legend>
+  <div id="log"></div>
+</fieldset>
+
+<input type="text" id="hist_state" style="display:none">
+<iframe name="js" class="hidden-frame" src="history3js.html"></iframe>
+
+<script>
 function setToken(opt_val) {
   if (js && js.googHist) {
     var input = document.getElementById('token_input');

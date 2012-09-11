@@ -16,7 +16,6 @@
 */
 
 .goog-tree-root:focus {
-  -moz-outline: none;
   outline: none;
 }
 

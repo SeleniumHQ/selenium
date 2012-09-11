@@ -165,6 +165,7 @@ goog.ui.equation.Palette.prototype.getAction = function(index) {
  * Handles mouseup events. Overrides {@link goog.ui.Palette#handleMouseUp}
  * by dispatching a {@link goog.ui.equation.PaletteEvent}.
  * @param {goog.events.Event} e Mouse event to handle.
+ * @override
  */
 goog.ui.equation.Palette.prototype.handleMouseUp = function(e) {
   goog.base(this, 'handleMouseUp', e);
@@ -179,6 +180,7 @@ goog.ui.equation.Palette.prototype.handleMouseUp = function(e) {
  * Handles mouse out events. Overrides {@link goog.ui.Palette#handleMouseOut}
  * by deactivate the palette.
  * @param {goog.events.BrowserEvent} e Mouse event to handle.
+ * @override
  */
 goog.ui.equation.Palette.prototype.handleMouseOut = function(e) {
   goog.base(this, 'handleMouseOut', e);
@@ -197,6 +199,7 @@ goog.ui.equation.Palette.prototype.handleMouseOut = function(e) {
  * palettes will be deactivated after a centain period of time. Reentering the
  * palettes inside this time will stop the timer and cancel the deactivation.
  * @param {goog.events.BrowserEvent} e Mouse event to handle.
+ * @override
  */
 goog.ui.equation.Palette.prototype.handleMouseOver = function(e) {
   goog.base(this, 'handleMouseOver', e);

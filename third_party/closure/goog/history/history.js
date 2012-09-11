@@ -41,6 +41,7 @@
  *   <li>Safari 4+
  * </ul>
  *
+ * @author brenneman@google.com (Shawn Brenneman)
  * @see ../demos/history1.html
  * @see ../demos/history2.html
  */
@@ -79,7 +80,7 @@
  * "esp&eacute;re" would show "esp%E8re".  (IE allows unicode characters in the
  * fragment)
  *
- * TODO(user): Should we encapsualte this escaping into the API for visible
+ * TODO(user): Should we encapsulate this escaping into the API for visible
  * history and encode all characters that aren't supported by Firefox?  It also
  * needs to be optional so apps can elect to handle the escaping themselves.
  *
@@ -99,6 +100,12 @@
  * Manually editing the hash in the address bar in IE6 and then hitting the back
  * button can replace the page with a blank page. This is a Bad User Experience,
  * but probably not preventable.
+ *
+ * IE also has a bug when the page is loaded via a server redirect, setting
+ * a new hash value on the window location will force a page reload. This will
+ * happen the first time setToken is called with a new token. The only known
+ * workaround is to force a client reload early, for example by setting
+ * window.location.hash = window.location.hash, which will otherwise be a no-op.
  *
  * Internet Explorer 8.0, Webkit 532.1 and Gecko 1.9.2:
  *
@@ -295,7 +302,7 @@ goog.History = function(opt_invisible, opt_blankPageUrl, opt_input,
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
 
-  if (opt_invisible || goog.userAgent.IE && !goog.History.HAS_ONHASHCHANGE) {
+  if (opt_invisible || goog.History.LEGACY_IE) {
     var iframe;
     if (opt_iframe) {
       iframe = opt_iframe;
@@ -327,7 +334,7 @@ goog.History = function(opt_invisible, opt_blankPageUrl, opt_input,
     this.unsetIframe_ = true;
   }
 
-  if (goog.userAgent.IE && !goog.History.HAS_ONHASHCHANGE) {
+  if (goog.History.LEGACY_IE) {
     // IE relies on the hidden input to restore the history state from previous
     // sessions, but input values are only restored after window.onload. Set up
     // a callback to poll the value after the onload event.
@@ -400,17 +407,26 @@ goog.History.prototype.lastToken_ = null;
  * @type {boolean}
  */
 goog.History.HAS_ONHASHCHANGE =
-    goog.userAgent.IE && document.documentMode >= 8 ||
+    goog.userAgent.IE && goog.userAgent.isDocumentMode(8) ||
     goog.userAgent.GECKO && goog.userAgent.isVersion('1.9.2') ||
     goog.userAgent.WEBKIT && goog.userAgent.isVersion('532.1');
 
 
 /**
- * Whether the browser always requires the hash to be present. Some browsers
- * will reload the HTML page if the hash is omitted.
+ * Whether the current browser is Internet Explorer prior to version 8. Many IE
+ * specific workarounds developed before version 8 are unnecessary in more
+ * current versions.
  * @type {boolean}
  */
-goog.History.HASH_ALWAYS_REQUIRED = goog.userAgent.IE;
+goog.History.LEGACY_IE = goog.userAgent.IE && !goog.userAgent.isDocumentMode(8);
+
+
+/**
+ * Whether the browser always requires the hash to be present. Internet Explorer
+ * before version 8 will reload the HTML page if the hash is omitted.
+ * @type {boolean}
+ */
+goog.History.HASH_ALWAYS_REQUIRED = goog.History.LEGACY_IE;
 
 
 /**
@@ -449,8 +465,7 @@ goog.History.prototype.setEnabled = function(enable) {
     return;
   }
 
-  if (goog.userAgent.IE && !goog.History.HAS_ONHASHCHANGE &&
-      !this.documentLoaded) {
+  if (goog.History.LEGACY_IE && !this.documentLoaded) {
     // Wait until the document has actually loaded before enabling the
     // object or any saved state from a previous session will be lost.
     this.shouldEnable_ = enable;
@@ -486,14 +501,15 @@ goog.History.prototype.setEnabled = function(enable) {
 
       this.enabled_ = true;
 
-      // Prevent the timer from dispatching an extraneous navigate event.
-      // However this causes the hash to get replaced with a null token in IE.
-      if (!goog.userAgent.IE) {
+      // Initialize last token at startup except on IE < 8, where the last token
+      // must only be set in conjunction with IFRAME updates, or the IFRAME will
+      // start out of sync and remove any pre-existing URI fragment.
+      if (!goog.History.LEGACY_IE) {
         this.lastToken_ = this.getToken();
+        this.dispatchEvent(new goog.history.Event(this.getToken(), false));
       }
 
       this.timer_.start();
-      this.dispatchEvent(new goog.history.Event(this.getToken(), false));
     }
 
   } else {
@@ -831,9 +847,8 @@ goog.History.prototype.check_ = function(isNavigation) {
     }
   }
 
-  // IE uses the iframe for state for both the visible and non-visible version.
-  if (!this.userVisible_ || goog.userAgent.IE &&
-      !goog.History.HAS_ONHASHCHANGE) {
+  // Old IE uses the iframe for both visible and non-visible versions.
+  if (!this.userVisible_ || goog.History.LEGACY_IE) {
     var token = this.getIframeToken_() || '';
     if (this.lockedToken_ == null || token == this.lockedToken_) {
       this.lockedToken_ = null;
@@ -859,7 +874,7 @@ goog.History.prototype.update_ = function(token, isNavigation) {
   this.lastToken_ = this.hiddenInput_.value = token;
 
   if (this.userVisible_) {
-    if (goog.userAgent.IE && !goog.History.HAS_ONHASHCHANGE) {
+    if (goog.History.LEGACY_IE) {
       this.setIframeToken_(token);
     }
 

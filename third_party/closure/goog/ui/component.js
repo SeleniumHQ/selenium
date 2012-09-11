@@ -345,7 +345,7 @@ goog.ui.Component.prototype.dom_;
 goog.ui.Component.prototype.inDocument_ = false;
 
 
-// TODO(user): Stop referring to this private field in subclasses.
+// TODO(attila): Stop referring to this private field in subclasses.
 /**
  * The DOM element for the component.
  * @type {Element}
@@ -819,7 +819,7 @@ goog.ui.Component.prototype.disposeInternal = function() {
   this.element_ = null;
   this.model_ = null;
   this.parent_ = null;
-  // TODO(user): delete this.dom_ breaks many unit tests.
+  // TODO(gboyer): delete this.dom_ breaks many unit tests.
 };
 
 
@@ -905,6 +905,11 @@ goog.ui.Component.prototype.getElementByFragment = function(idFragment) {
  *    into the parent.
  */
 goog.ui.Component.prototype.addChild = function(child, opt_render) {
+  // TODO(gboyer): addChildAt(child, this.getChildCount(), false) will
+  // reposition any already-rendered child to the end.  Instead, perhaps
+  // addChild(child, false) should never reposition the child; instead, clients
+  // that need the repositioning will use addChildAt explicitly.  Right now,
+  // clients can get around this by calling addChild first.
   this.addChildAt(child, this.getChildCount(), opt_render);
 };
 
@@ -919,7 +924,9 @@ goog.ui.Component.prototype.addChild = function(child, opt_render) {
  *    <li>the child component's element must be a descendant of the parent
  *        component's element, and
  *    <li>the DOM state of the child component must be consistent with the DOM
- *        state of the parent component (see {@code isInDocument}).
+ *        state of the parent component (see {@code isInDocument}) in the
+ *        steady state -- the exception is to addChildAt(child, i, false) and
+ *        then immediately decorate/render the child.
  *  </ul>
  *
  * In particular, {@code parent.addChild(child)} will throw an error if the
@@ -1003,16 +1010,19 @@ goog.ui.Component.prototype.addChildAt = function(child, index, opt_render) {
     }
     // Render the child into the parent at the appropriate location.  Note that
     // getChildAt(index + 1) returns undefined if inserting at the end.
-    // TODO(user): We should have a renderer with a renderChildAt API.
+    // TODO(attila): We should have a renderer with a renderChildAt API.
     var sibling = this.getChildAt(index + 1);
     // render_() calls enterDocument() if the parent is already in the document.
     child.render_(this.getContentElement(), sibling ? sibling.element_ : null);
-  } else {
-    // We don't touch the DOM, but if the parent is in the document, the child
-    // isn't, and the child has a DOM, then we call enterDocument on the child.
-    if (this.inDocument_ && !child.inDocument_ && child.element_) {
-      child.enterDocument();
-    }
+  } else if (this.inDocument_ && !child.inDocument_ && child.element_ &&
+      child.element_.parentNode) {
+    // We don't touch the DOM, but if the parent is in the document, and the
+    // child element is in the document but not marked as such, then we call
+    // enterDocument on the child.
+    // TODO(gboyer): It would be nice to move this condition entirely, but
+    // there's a large risk of breaking existing applications that manually
+    // append the child to the DOM and then call addChild.
+    child.enterDocument();
   }
 };
 
@@ -1218,14 +1228,17 @@ goog.ui.Component.prototype.removeChildAt = function(index, opt_unrender) {
 
 
 /**
- * Removes every child component attached to this one.
+ * Removes every child component attached to this one and returns them.
  *
  * @see goog.ui.Component#removeChild
  * @param {boolean=} opt_unrender If true, calls {@link #exitDocument} on the
  *    removed child components, and detaches their DOM from the document.
+ * @return {!Array.<goog.ui.Component>|undefined} The removed components if any.
  */
 goog.ui.Component.prototype.removeChildren = function(opt_unrender) {
+  var removedChildren = [];
   while (this.hasChildren()) {
-    this.removeChildAt(0, opt_unrender);
+    removedChildren.push(this.removeChildAt(0, opt_unrender));
   }
+  return removedChildren;
 };

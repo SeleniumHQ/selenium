@@ -76,6 +76,7 @@ goog.fx.TransitionBase.State = {
  *
  * @param {boolean=} opt_restart Optional parameter to restart the animation.
  * @return {boolean} True iff the animation was started.
+ * @override
  */
 goog.fx.TransitionBase.prototype.play = goog.abstractMethod;
 
@@ -85,6 +86,7 @@ goog.fx.TransitionBase.prototype.play = goog.abstractMethod;
  *
  * @param {boolean=} opt_gotoEnd Optional boolean parameter to go the the end of
  *     the animation.
+ * @override
  */
 goog.fx.TransitionBase.prototype.stop = goog.abstractMethod;
 

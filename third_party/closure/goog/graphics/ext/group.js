@@ -116,6 +116,7 @@ goog.graphics.ext.Group.prototype.getWrapper;
 
 /**
  * Reset the element.
+ * @override
  */
 goog.graphics.ext.Group.prototype.reset = function() {
   goog.graphics.ext.Group.superClass_.reset.call(this);
@@ -128,6 +129,7 @@ goog.graphics.ext.Group.prototype.reset = function() {
  * Called from the parent class, this method resets any pre-computed positions
  * and sizes.
  * @protected
+ * @override
  */
 goog.graphics.ext.Group.prototype.redraw = function() {
   this.getWrapper().setSize(this.getWidth(), this.getHeight());

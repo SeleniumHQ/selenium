@@ -15,6 +15,9 @@
 /**
  * @fileoverview Unit tests for the abstract storage mechanism interface.
  *
+ * These tests should be included in tests of any class extending
+ * goog.storage.mechanism.Mechanism.
+ *
  */
 
 goog.provide('goog.storage.mechanism.mechanism_test');
@@ -28,36 +31,91 @@ goog.require('goog.userAgent.product.isVersion');
 goog.setTestOnly('mechanism_test');
 
 
-goog.storage.mechanism.mechanism_test.runBasicTests = function(mechanism) {
-  // Clean up.
-  mechanism.remove('first');
-  mechanism.remove('first');
-  assertNull(mechanism.get('first'));
+var mechanism = null;
+var minimumQuota = 0;
 
-  // Set-get.
+
+function testSetGet() {
+  if (!mechanism) {
+    return;
+  }
   mechanism.set('first', 'one');
   assertEquals('one', mechanism.get('first'));
+}
 
-  // Change.
+
+function testChange() {
+  if (!mechanism) {
+    return;
+  }
+  mechanism.set('first', 'one');
   mechanism.set('first', 'two');
   assertEquals('two', mechanism.get('first'));
+}
 
-  // Removal.
+
+function testRemove() {
+  if (!mechanism) {
+    return;
+  }
+  mechanism.set('first', 'one');
   mechanism.remove('first');
   assertNull(mechanism.get('first'));
+}
 
-  // Re-set.
+
+function testSetRemoveSet() {
+  if (!mechanism) {
+    return;
+  }
+  mechanism.set('first', 'one');
+  mechanism.remove('first');
   mechanism.set('first', 'one');
   assertEquals('one', mechanism.get('first'));
+}
 
-  // More elements.
+
+function testRemoveRemove() {
+  if (!mechanism) {
+    return;
+  }
+  mechanism.remove('first');
+  mechanism.remove('first');
+  assertNull(mechanism.get('first'));
+}
+
+
+function testSetTwo() {
+  if (!mechanism) {
+    return;
+  }
+  mechanism.set('first', 'one');
   mechanism.set('second', 'two');
-  mechanism.set('third', 'three');
   assertEquals('one', mechanism.get('first'));
   assertEquals('two', mechanism.get('second'));
-  assertEquals('three', mechanism.get('third'));
+}
 
-  // Remove and check.
+
+function testChangeTwo() {
+  if (!mechanism) {
+    return;
+  }
+  mechanism.set('first', 'one');
+  mechanism.set('second', 'two');
+  mechanism.set('second', 'three');
+  mechanism.set('first', 'four');
+  assertEquals('four', mechanism.get('first'));
+  assertEquals('three', mechanism.get('second'));
+}
+
+
+function testSetRemoveThree() {
+  if (!mechanism) {
+    return;
+  }
+  mechanism.set('first', 'one');
+  mechanism.set('second', 'two');
+  mechanism.set('third', 'three');
   mechanism.remove('second');
   assertNull(mechanism.get('second'));
   assertEquals('one', mechanism.get('first'));
@@ -65,11 +123,24 @@ goog.storage.mechanism.mechanism_test.runBasicTests = function(mechanism) {
   mechanism.remove('first');
   assertNull(mechanism.get('first'));
   assertEquals('three', mechanism.get('third'));
+  mechanism.remove('third');
+  assertNull(mechanism.get('third'));
+}
 
-  // Empty string as a value.
+
+function testEmptyValue() {
+  if (!mechanism) {
+    return;
+  }
   mechanism.set('third', '');
   assertEquals('', mechanism.get('third'));
+}
 
+
+function testWeirdKeys() {
+  if (!mechanism) {
+    return;
+  }
   // Some weird keys. We leave out some tests for some browsers where they
   // trigger browser bugs, and where the keys are too obscure to prepare a
   // workaround.
@@ -98,50 +169,27 @@ goog.storage.mechanism.mechanism_test.runBasicTests = function(mechanism) {
     // https://bugzilla.mozilla.org/show_bug.cgi?id=510849
     assertEquals('zero', mechanism.get(''));
   }
-  mechanism.remove(' ');
-  mechanism.remove('=+!@#$%^&*()-_\\|;:\'",./<>?[]{}~`');
-  mechanism.remove(
-      '\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341');
-  mechanism.remove('\0');
-  mechanism.remove('\0\0');
-  mechanism.remove('\0A');
-  mechanism.remove('');
-
-  // Clean up.
-  mechanism.remove('third');
-  assertNull(mechanism.get('third'));
-};
+}
 
 
-// This is only suitable for manual testing.
-goog.storage.mechanism.mechanism_test.runPersistenceTests = function(
-    mechanism) {
-  try {
-    assertEquals('hello', mechanism.get('persist'));
-  } catch (ex) {
-    mechanism.set('persist', 'hello');
-    throw ex;
+function testQuota() {
+  if (!mechanism) {
+    return;
   }
-};
-
-
-goog.storage.mechanism.mechanism_test.runQuotaTests = function(
-    mechanism, atLeastBytes) {
   // This test might crash Safari 4, so it is disabled for this version.
   // It works fine on Safari 3 and Safari 5.
   if (goog.userAgent.product.SAFARI &&
       goog.userAgent.product.isVersion(4) &&
       !goog.userAgent.product.isVersion(5)) {
-    return
+    return;
   }
-
   var buffer = '\u03ff'; // 2 bytes
   var savedBytes = 0;
-  try {
-    while (true) {
-      mechanism.set('foo', buffer);
-      savedBytes = 2 * buffer.length;
+   try {
+    while (buffer.length < minimumQuota) {
       buffer = buffer + buffer;
+      mechanism.set('foo', buffer);
+      savedBytes = buffer.length;
     }
   } catch (ex) {
     if (ex != goog.storage.mechanism.ErrorCode.QUOTA_EXCEEDED) {
@@ -149,5 +197,5 @@ goog.storage.mechanism.mechanism_test.runQuotaTests = function(
     }
   }
   mechanism.remove('foo');
-  assertTrue(savedBytes >= atLeastBytes);
-};
+  assertTrue(savedBytes >= minimumQuota);
+}

@@ -39,6 +39,13 @@ goog.i18n.bidi.FORCE_RTL = false;
  * If {@link goog.i18n.bidi.FORCE_RTL} is not true, this constant will default
  * to check that {@link goog.LOCALE} is one of a few major RTL locales.
  *
+ * <p>This is designed to be a maximally efficient compile-time constant. For
+ * example, for the default goog.LOCALE, compiling
+ * "if (goog.i18n.bidi.IS_RTL) alert('rtl') else {}" should produce no code. It
+ * is this design consideration that limits the implementation to only
+ * supporting a few major RTL locales, as opposed to the broader repertoire of
+ * something like goog.i18n.bidi.isRtlLanguage.
+ *
  * <p>Since this constant refers to the directionality of the locale, it is up
  * to the caller to determine if this constant should also be used for the
  * direction of the UI.
@@ -48,8 +55,6 @@ goog.i18n.bidi.FORCE_RTL = false;
  * @type {boolean}
  *
  * TODO(user): write a test that checks that this is a compile-time constant.
- * For example, for the default goog.LOCALE, compiling
- * "if (goog.i18n.bidi.IS_RTL) alert('rtl') else {}" should produce no code.
  */
 goog.i18n.bidi.IS_RTL = goog.i18n.bidi.FORCE_RTL ||
     (goog.LOCALE.substring(0, 2).toLowerCase() == 'ar' ||
@@ -296,7 +301,7 @@ goog.i18n.bidi.isNeutralChar = function(str) {
 
 
 /**
- * Regular expressions to check if a piece of text if of LTR directionality
+ * Regular expressions to check if a piece of text is of LTR directionality
  * on first character with strong directionality.
  * @type {RegExp}
  * @private
@@ -306,7 +311,7 @@ goog.i18n.bidi.ltrDirCheckRe_ = new RegExp(
 
 
 /**
- * Regular expressions to check if a piece of text if of RTL directionality
+ * Regular expressions to check if a piece of text is of RTL directionality
  * on first character with strong directionality.
  * @type {RegExp}
  * @private
@@ -473,7 +478,8 @@ goog.i18n.bidi.isRtlExitText = goog.i18n.bidi.endsWithRtl;
  */
 goog.i18n.bidi.rtlLocalesRe_ = new RegExp(
     '^(ar|dv|he|iw|fa|nqo|ps|sd|ug|ur|yi|.*[-_](Arab|Hebr|Thaa|Nkoo|Tfng))' +
-    '(?!.*[-_](Latn|Cyrl)($|-|_))($|-|_)');
+    '(?!.*[-_](Latn|Cyrl)($|-|_))($|-|_)',
+    'i');
 
 
 /**
@@ -625,7 +631,7 @@ goog.i18n.bidi.enforceLtrInText = function(text) {
  * @private
  */
 goog.i18n.bidi.dimensionsRe_ =
-     /:\s*([.\d][.\w]*)\s+([.\d][.\w]*)\s+([.\d][.\w]*)\s+([.\d][.\w]*)/g;
+    /:\s*([.\d][.\w]*)\s+([.\d][.\w]*)\s+([.\d][.\w]*)\s+([.\d][.\w]*)/g;
 
 
 /**
@@ -662,11 +668,11 @@ goog.i18n.bidi.tempRe_ = /%%%%/g;
  */
 goog.i18n.bidi.mirrorCSS = function(cssStr) {
   return cssStr.
-    // reverse dimensions
-    replace(goog.i18n.bidi.dimensionsRe_, ':$1 $4 $3 $2').
-    replace(goog.i18n.bidi.leftRe_, '%%%%').          // swap left and right
-    replace(goog.i18n.bidi.rightRe_, goog.i18n.bidi.LEFT).
-    replace(goog.i18n.bidi.tempRe_, goog.i18n.bidi.RIGHT);
+      // reverse dimensions
+      replace(goog.i18n.bidi.dimensionsRe_, ':$1 $4 $3 $2').
+      replace(goog.i18n.bidi.leftRe_, '%%%%').          // swap left and right
+      replace(goog.i18n.bidi.rightRe_, goog.i18n.bidi.LEFT).
+      replace(goog.i18n.bidi.tempRe_, goog.i18n.bidi.RIGHT);
 };
 
 
@@ -696,8 +702,8 @@ goog.i18n.bidi.singleQuoteSubstituteRe_ = /([\u0591-\u05f2])'/g;
  */
 goog.i18n.bidi.normalizeHebrewQuote = function(str) {
   return str.
-    replace(goog.i18n.bidi.doubleQuoteSubstituteRe_, '$1\u05f4').
-    replace(goog.i18n.bidi.singleQuoteSubstituteRe_, '$1\u05f3');
+      replace(goog.i18n.bidi.doubleQuoteSubstituteRe_, '$1\u05f4').
+      replace(goog.i18n.bidi.singleQuoteSubstituteRe_, '$1\u05f3');
 };
 
 

@@ -129,6 +129,13 @@ goog.testing.fs.Entry.prototype.getLastModified = goog.abstractMethod;
 
 
 /**
+ * @see {goog.fs.Entry#getMetadata}
+ * @return {!goog.async.Deferred}
+ */
+goog.testing.fs.Entry.prototype.getMetadata = goog.abstractMethod;
+
+
+/**
  * @see {goog.fs.Entry#moveTo}
  * @param {!goog.testing.fs.DirectoryEntry} parent
  * @param {string=} opt_newName
@@ -267,6 +274,18 @@ goog.testing.fs.DirectoryEntry = function(fs, parent, name, children) {
 goog.inherits(goog.testing.fs.DirectoryEntry, goog.testing.fs.Entry);
 
 
+/**
+ * Constructs and returns the metadata object for this entry.
+ * @return {{modificationTime: Date}} The metadata object.
+ * @private
+ */
+goog.testing.fs.DirectoryEntry.prototype.getMetadata_ = function() {
+  return {
+    'modificationTime': new Date(this.lastModifiedTimestamp_)
+  };
+};
+
+
 /** @override */
 goog.testing.fs.DirectoryEntry.prototype.isFile = function() {
   return false;
@@ -284,6 +303,14 @@ goog.testing.fs.DirectoryEntry.prototype.getLastModified = function() {
   var msg = 'reading last modified date for ' + this.getFullPath();
   return this.checkNotDeleted(msg).
       addCallback(function() {return new Date(this.lastModifiedTimestamp_)});
+};
+
+
+/** @override */
+goog.testing.fs.DirectoryEntry.prototype.getMetadata = function() {
+  var msg = 'reading metadata for ' + this.getFullPath();
+  return this.checkNotDeleted(msg).
+      addCallback(function() {return this.getMetadata_()});
 };
 
 
@@ -530,7 +557,8 @@ goog.testing.fs.DirectoryEntry.prototype.listDirectory = function() {
  * @return {!goog.async.Deferred}
  */
 goog.testing.fs.DirectoryEntry.prototype.createPath =
-    goog.fs.DirectoryEntry.prototype.createPath;
+    // This isn't really type-safe.
+    /** @type {!Function} */ (goog.fs.DirectoryEntry.prototype.createPath);
 
 
 
@@ -554,6 +582,15 @@ goog.testing.fs.FileEntry = function(fs, parent, name, data) {
    * @private
    */
   this.file_ = new goog.testing.fs.File(name, new Date(goog.now()), data);
+
+  /**
+   * The metadata for file.
+   * @type {{modificationTime: Date}}
+   * @private
+   */
+  this.metadata_ = {
+    'modificationTime': this.file_.lastModifiedDate
+  };
 };
 goog.inherits(goog.testing.fs.FileEntry, goog.testing.fs.Entry);
 
@@ -582,6 +619,15 @@ goog.testing.fs.FileEntry.prototype.clone = function() {
 goog.testing.fs.FileEntry.prototype.getLastModified = function() {
   return this.file().addCallback(function(file) {
     return file.lastModifiedDate;
+  });
+};
+
+
+/** @override */
+goog.testing.fs.FileEntry.prototype.getMetadata = function() {
+  var msg = 'getting metadata for ' + this.getFullPath();
+  return this.checkNotDeleted(msg).addCallback(function() {
+    return this.metadata_;
   });
 };
 

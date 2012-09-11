@@ -18,6 +18,7 @@
  * propagate consistently, and therefore must be added to the element that is
  * focused, this allows you to attach one listener to an ancester and you will
  * be notified when the focus state changes of ony of its descendants.
+ * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/focushandler.html
  */
 
@@ -92,11 +93,7 @@ goog.events.FocusHandler.prototype.handleEvent = function(e) {
   event.type = e.type == 'focusin' || e.type == 'focus' ?
       goog.events.FocusHandler.EventType.FOCUSIN :
       goog.events.FocusHandler.EventType.FOCUSOUT;
-  try {
-    this.dispatchEvent(event);
-  } finally {
-    event.dispose();
-  }
+  this.dispatchEvent(event);
 };
 
 

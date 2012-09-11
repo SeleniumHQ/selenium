@@ -23,10 +23,11 @@
  * Note that this class only reflects what the browser tells us and this usually
  * only reflects changes to the File -> Work Offline menu item.
  *
+ * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/onlinehandler.html
  */
 
-// TODO(user): We should probably implement some kind of polling service and/or
+// TODO(arv): We should probably implement some kind of polling service and/or
 // a poll for changes event handler that can be used to fire events when a state
 // changes.
 
@@ -59,8 +60,8 @@ goog.events.OnlineHandler = function() {
 
   if (goog.events.BrowserFeature.HAS_HTML5_NETWORK_EVENT_SUPPORT) {
     var target =
-        goog.events.BrowserFeature.HTML5_NETWORK_EVENTS_FIRE_ON_WINDOW ?
-        window : document.body;
+        goog.events.BrowserFeature.HTML5_NETWORK_EVENTS_FIRE_ON_BODY ?
+        document.body : window;
     this.eventHandler_.listen(target, ['online', 'offline'],
                               this.handleChange_);
   } else {

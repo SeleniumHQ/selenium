@@ -14,6 +14,7 @@
 
 /**
  * @fileoverview Python style iteration utilities.
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 
@@ -25,7 +26,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 
 
-// TODO(user): Add more functions from Python's itertools.
+// TODO(nnaze): Add more functions from Python's itertools.
 // http://docs.python.org/library/itertools.html
 
 
@@ -125,7 +126,7 @@ goog.iter.toIterator = function(iterable) {
   }
 
 
-  // TODO(user): Should we fall back on goog.structs.getValues()?
+  // TODO(arv): Should we fall back on goog.structs.getValues()?
   throw Error('Not implemented');
 };
 
@@ -188,12 +189,12 @@ goog.iter.forEach = function(iterable, f, opt_obj) {
  *     passed the test are present.
  */
 goog.iter.filter = function(iterable, f, opt_obj) {
-  iterable = goog.iter.toIterator(iterable);
+  var iterator = goog.iter.toIterator(iterable);
   var newIter = new goog.iter.Iterator;
   newIter.next = function() {
     while (true) {
-      var val = iterable.next();
-      if (f.call(opt_obj, val, undefined, iterable)) {
+      var val = iterator.next();
+      if (f.call(opt_obj, val, undefined, iterator)) {
         return val;
       }
     }
@@ -270,12 +271,12 @@ goog.iter.join = function(iterable, deliminator) {
  *     applying the function to each element in the original iterator.
  */
 goog.iter.map = function(iterable, f, opt_obj) {
-  iterable = goog.iter.toIterator(iterable);
+  var iterator = goog.iter.toIterator(iterable);
   var newIter = new goog.iter.Iterator;
   newIter.next = function() {
     while (true) {
-      var val = iterable.next();
-      return f.call(opt_obj, val, undefined, iterable);
+      var val = iterator.next();
+      return f.call(opt_obj, val, undefined, iterator);
     }
   };
   return newIter;
@@ -421,13 +422,13 @@ goog.iter.chain = function(var_args) {
  *     original iterator as long as {@code f} is true.
  */
 goog.iter.dropWhile = function(iterable, f, opt_obj) {
-  iterable = goog.iter.toIterator(iterable);
+  var iterator = goog.iter.toIterator(iterable);
   var newIter = new goog.iter.Iterator;
   var dropping = true;
   newIter.next = function() {
     while (true) {
-      var val = iterable.next();
-      if (dropping && f.call(opt_obj, val, undefined, iterable)) {
+      var val = iterator.next();
+      if (dropping && f.call(opt_obj, val, undefined, iterator)) {
         continue;
       } else {
         dropping = false;
@@ -451,14 +452,14 @@ goog.iter.dropWhile = function(iterable, f, opt_obj) {
  *     original iterator as long as the function is true.
  */
 goog.iter.takeWhile = function(iterable, f, opt_obj) {
-  iterable = goog.iter.toIterator(iterable);
+  var iterator = goog.iter.toIterator(iterable);
   var newIter = new goog.iter.Iterator;
   var taking = true;
   newIter.next = function() {
     while (true) {
       if (taking) {
-        var val = iterable.next();
-        if (f.call(opt_obj, val, undefined, iterable)) {
+        var val = iterator.next();
+        if (f.call(opt_obj, val, undefined, iterator)) {
           return val;
         } else {
           taking = false;

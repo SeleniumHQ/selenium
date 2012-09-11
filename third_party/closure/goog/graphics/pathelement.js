@@ -15,6 +15,8 @@
 
 /**
  * @fileoverview A thin wrapper around the DOM element for paths.
+ * @author arv@google.com (Erik Arvidsson)
+ * @author yoah@google.com (Yoah Bar-David)
  */
 
 
@@ -45,6 +47,6 @@ goog.inherits(goog.graphics.PathElement, goog.graphics.StrokeAndFillElement);
 
 /**
  * Update the underlying path.
- * @param {goog.graphics.Path} path The path object to draw.
+ * @param {!goog.graphics.Path} path The path object to draw.
  */
 goog.graphics.PathElement.prototype.setPath = goog.abstractMethod;

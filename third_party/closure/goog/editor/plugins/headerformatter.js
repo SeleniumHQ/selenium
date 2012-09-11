@@ -83,7 +83,7 @@ goog.editor.plugins.HeaderFormatter.prototype.handleKeyboardShortcut = function(
       break;
   }
   if (command) {
-    this.fieldObject.execCommand(
+    this.getFieldObject().execCommand(
         goog.editor.Command.FORMAT_BLOCK, command);
     // Prevent default isn't enough to cancel tab navigation in FF.
     if (goog.userAgent.GECKO) {

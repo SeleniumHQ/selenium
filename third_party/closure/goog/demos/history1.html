@@ -27,6 +27,7 @@ See the COPYING file for details.
     goog.require('goog.debug.Logger');
     goog.require('goog.dom');
     goog.require('goog.events');
+    goog.require('goog.history.EventType');
     goog.require('goog.object');
     goog.require('goog.string');
   </script>
@@ -92,7 +93,6 @@ See the COPYING file for details.
   </fieldset>
 
   <script>
-  // Set up a logger.
   var logger = goog.debug.Logger.getLogger('demo');
   var logconsole = new goog.debug.DivConsole(goog.dom.getElement('log'));
   logconsole.setCapturing(true);

@@ -34,7 +34,7 @@ goog.require('goog.module.Loader');
  *
  * @param {string} module The name of the module. Usually, the value
  *     is defined as a constant whose name starts with MOD_.
- * @param {number} symbol The ID of the symbol. Usually, the value is
+ * @param {number|string} symbol The ID of the symbol. Usually, the value is
  *     defined as a constant whose name starts with SYM_.
  * @param {Function} callback This function will be called with the
  *     resolved symbol as the argument once the module is loaded.
@@ -50,9 +50,9 @@ goog.module.require = function(module, symbol, callback) {
  *
  * @param {string} module The name of the module. Cf. parameter module
  *     of method require().
- * @param {number=} opt_symbol The symbol being defined, or nothing when all
- *     symbols of the module are defined. Cf. parameter symbol of method
- *     require().
+ * @param {number|string=} opt_symbol The symbol being defined, or nothing
+ *     when all symbols of the module are defined. Cf. parameter symbol of
+ *     method require().
  * @param {Object=} opt_object The object bound to the symbol, or nothing when
  *     all symbols of the module are defined.
  */
@@ -84,8 +84,8 @@ goog.module.initLoader = function(urlBase, opt_urlFunction) {
  * loaded functions.
  *
  * @param {string} module The module to load from.
- * @param {number} symbol The symbol to load from the module. This
- *     symbol must resolve to a function.
+ * @param {number|string} symbol The ID of the symbol to load from the module.
+ *     This symbol must resolve to a function.
  * @return {!Function} A function that forwards all its arguments to
  *     the dynamically loaded function specified by module and symbol.
  */

@@ -26,7 +26,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.userAgent');
 
 
-// TODO(user): Move this to goog.events instead.
+// TODO(arv): Move this to goog.events instead.
 
 
 
@@ -109,7 +109,7 @@ goog.inherits(goog.dom.FontSizeMonitor, goog.events.EventTarget);
  * @enum {string}
  */
 goog.dom.FontSizeMonitor.EventType = {
-  // TODO(user): Change value to 'change' after updating the callers.
+  // TODO(arv): Change value to 'change' after updating the callers.
   CHANGE: 'fontsizechange'
 };
 

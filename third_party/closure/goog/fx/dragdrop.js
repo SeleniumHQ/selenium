@@ -18,6 +18,7 @@
  * Drag and drop implementation for sources/targets consisting of a single
  * element.
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/dragdrop.html
  */
 

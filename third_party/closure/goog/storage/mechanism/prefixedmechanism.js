@@ -83,12 +83,12 @@ goog.storage.mechanism.PrefixedMechanism.prototype.remove = function(key) {
 goog.storage.mechanism.PrefixedMechanism.prototype.__iterator__ = function(
     opt_keys) {
   var subIter = this.mechanism_.__iterator__(true);
-  var newIter = new goog.iter.Iterator;
   var selfObj = this;
+  var newIter = new goog.iter.Iterator();
   newIter.next = function() {
-    var key = subIter.next();
+    var key = /** @type {string} */ (subIter.next());
     while (key.substr(0, selfObj.prefix_.length) != selfObj.prefix_) {
-      key = subIter.next();
+      key = /** @type {string} */ (subIter.next());
     }
     return opt_keys ? key.substr(selfObj.prefix_.length) :
                       selfObj.mechanism_.get(key);

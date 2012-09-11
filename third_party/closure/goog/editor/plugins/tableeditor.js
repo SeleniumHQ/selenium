@@ -101,6 +101,7 @@ goog.editor.plugins.TableEditor.SUPPORTED_COMMANDS_ =
  * @param {string} command Command string to check.
  * @return {boolean} Whether the string corresponds to a command
  *     this plugin handles.
+ * @override
  */
 goog.editor.plugins.TableEditor.prototype.isSupportedCommand =
     function(command) {
@@ -129,7 +130,7 @@ goog.editor.plugins.TableEditor.prototype.enable = function(fieldObject) {
  * @private
  */
 goog.editor.plugins.TableEditor.prototype.getCurrentTable_ = function() {
-  var selectedElement = this.fieldObject.getRange().getContainer();
+  var selectedElement = this.getFieldObject().getRange().getContainer();
   return this.getAncestorTable_(selectedElement);
 };
 
@@ -171,7 +172,7 @@ goog.editor.plugins.TableEditor.prototype.execCommandInternal = function(
   // TD/TH in which to place the cursor, if the command destroys the current
   // cursor position.
   var cursorCell = null;
-  var range = this.fieldObject.getRange();
+  var range = this.getFieldObject().getRange();
   if (command == goog.editor.plugins.TableEditor.COMMAND.TABLE) {
     // Don't create a table if the cursor isn't in an editable region.
     if (!goog.editor.range.isEditable(range)) {
@@ -293,7 +294,7 @@ goog.editor.plugins.TableEditor.prototype.isUserEditableTable_ =
 
   // Check for extra user-editable filters.
   return goog.array.every(this.isTableEditableFunctions_, function(func) {
-    return func(element);
+    return func(/** @type {Element} */ (element));
   });
 };
 

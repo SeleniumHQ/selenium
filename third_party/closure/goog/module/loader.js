@@ -166,7 +166,7 @@ goog.module.Loader.prototype.init = function(baseUrl, opt_urlFunction) {
  *
  * @param {string} module The name of the module. Usually, the value
  *     is defined as a constant whose name starts with MOD_.
- * @param {number} symbol The ID of the symbol. Usually, the value is
+ * @param {number|string} symbol The ID of the symbol. Usually, the value is
  *     defined as a constant whose name starts with SYM_.
  * @param {Function} callback This function will be called with the
  *     resolved symbol as the argument once the module is loaded.
@@ -201,8 +201,8 @@ goog.module.Loader.prototype.require = function(module, symbol, callback) {
  *
  * @param {string} module The name of the module. Cf. parameter module
  *     of method require().
- * @param {number=} opt_symbol The symbol being defined, or nothing when all
- *     symbols of the module are defined. Cf. parameter symbol of method
+ * @param {number|string=} opt_symbol The symbol being defined, or nothing when
+ *     all symbols of the module are defined. Cf. parameter symbol of method
  *     require().
  * @param {Object=} opt_object The object bound to the symbol, or nothing when
  *     all symbols of the module are defined.

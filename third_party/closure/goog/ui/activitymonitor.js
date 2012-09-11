@@ -41,11 +41,16 @@ goog.require('goog.events.EventType');
  * @param {goog.dom.DomHelper|Array.<goog.dom.DomHelper>=} opt_domHelper
  *     DomHelper which contains the document(s) to listen to.  If null, the
  *     default document is usedinstead.
+ * @param {boolean=} opt_useBubble Whether to use the bubble phase to listen for
+ *     events. By default listens on the capture phase so that it won't miss
+ *     events that get stopPropagation/cancelBubble'd. However, this can cause
+ *     problems in IE8 if the page loads multiple scripts that include the
+ *     closure event handling code.
  *
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-goog.ui.ActivityMonitor = function(opt_domHelper) {
+goog.ui.ActivityMonitor = function(opt_domHelper, opt_useBubble) {
   goog.events.EventTarget.call(this);
 
   /**
@@ -54,6 +59,13 @@ goog.ui.ActivityMonitor = function(opt_domHelper) {
    * @private
    */
   this.documents_ = [];
+
+  /**
+   * Whether to use the bubble phase to listen for events.
+   * @type {boolean}
+   * @private
+   */
+  this.useBubble_ = !!opt_useBubble;
 
   /**
    * The event handler.
@@ -168,12 +180,13 @@ goog.ui.ActivityMonitor.prototype.disposeInternal = function() {
  */
 goog.ui.ActivityMonitor.prototype.addDocument = function(doc) {
   this.documents_.push(doc);
+  var useCapture = !this.useBubble_;
   this.eventHandler_.listen(
       doc, goog.ui.ActivityMonitor.userEventTypesDocuments_,
-      this.handleEvent_, true);
+      this.handleEvent_, useCapture);
   this.eventHandler_.listen(
       doc, goog.ui.ActivityMonitor.userEventTypesBody_,
-      this.handleEvent_, true);
+      this.handleEvent_, useCapture);
 };
 
 
@@ -187,12 +200,13 @@ goog.ui.ActivityMonitor.prototype.removeDocument = function(doc) {
     return;
   }
   goog.array.remove(this.documents_, doc);
+  var useCapture = !this.useBubble_;
   this.eventHandler_.unlisten(
       doc, goog.ui.ActivityMonitor.userEventTypesDocuments_,
-      this.handleEvent_, true);
+      this.handleEvent_, useCapture);
   this.eventHandler_.unlisten(
       doc, goog.ui.ActivityMonitor.userEventTypesBody_,
-      this.handleEvent_, true);
+      this.handleEvent_, useCapture);
 };
 
 

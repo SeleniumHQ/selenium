@@ -90,7 +90,7 @@ goog.net.xpc.Transport.prototype.transportServiceHandler = goog.abstractMethod;
 /**
  * Connects this transport.
  * The transport implementation is expected to call
- * CrossPageChannel.prototype.notifyConnected_ when the channel is ready
+ * CrossPageChannel.prototype.notifyConnected when the channel is ready
  * to be used.
  */
 goog.net.xpc.Transport.prototype.connect = goog.abstractMethod;
@@ -100,6 +100,6 @@ goog.net.xpc.Transport.prototype.connect = goog.abstractMethod;
  * Sends a message.
  * @param {string} service The name off the service the message is to be
  * delivered to.
- * @param {string|Object} payload The message content.
+ * @param {string} payload The message content.
  */
 goog.net.xpc.Transport.prototype.send = goog.abstractMethod;

@@ -30,23 +30,23 @@ goog.require('goog.vec.Vec3');
 /**
  * Constructs a new ray with an optional origin and direction. If not specified,
  * the default is [0, 0, 0].
- * @param {goog.vec.ArrayType=} opt_origin The optional origin.
- * @param {goog.vec.ArrayType=} opt_dir The optional direction.
+ * @param {goog.vec.Vec3.AnyType=} opt_origin The optional origin.
+ * @param {goog.vec.Vec3.AnyType=} opt_dir The optional direction.
  * @constructor
  */
 goog.vec.Ray = function(opt_origin, opt_dir) {
   /**
-   * @type {Array.<number>}
+   * @type {goog.vec.Vec3.Number}
    */
-  this.origin = [0, 0, 0];
+  this.origin = goog.vec.Vec3.createNumber();
   if (opt_origin) {
     goog.vec.Vec3.setFromArray(this.origin, opt_origin);
   }
 
   /**
-   * @type {Array.<number>}
+   * @type {goog.vec.Vec3.Number}
    */
-  this.dir = [0, 0, 0];
+  this.dir = goog.vec.Vec3.createNumber();
   if (opt_dir) {
     goog.vec.Vec3.setFromArray(this.dir, opt_dir);
   }
@@ -55,8 +55,8 @@ goog.vec.Ray = function(opt_origin, opt_dir) {
 
 /**
  * Sets the origin and direction of the ray.
- * @param {goog.vec.ArrayType} origin The new origin.
- * @param {goog.vec.ArrayType} dir The new direction.
+ * @param {goog.vec.AnyType} origin The new origin.
+ * @param {goog.vec.AnyType} dir The new direction.
  */
 goog.vec.Ray.prototype.set = function(origin, dir) {
   goog.vec.Vec3.setFromArray(this.origin, origin);
@@ -66,7 +66,7 @@ goog.vec.Ray.prototype.set = function(origin, dir) {
 
 /**
  * Sets the origin of the ray.
- * @param {goog.vec.ArrayType} origin the new origin.
+ * @param {goog.vec.AnyType} origin the new origin.
  */
 goog.vec.Ray.prototype.setOrigin = function(origin) {
   goog.vec.Vec3.setFromArray(this.origin, origin);
@@ -75,7 +75,7 @@ goog.vec.Ray.prototype.setOrigin = function(origin) {
 
 /**
  * Sets the direction of the ray.
- * @param {goog.vec.ArrayType} dir The new direction.
+ * @param {goog.vec.AnyType} dir The new direction.
  */
 goog.vec.Ray.prototype.setDir = function(dir) {
   goog.vec.Vec3.setFromArray(this.dir, dir);

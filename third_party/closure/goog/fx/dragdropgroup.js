@@ -18,6 +18,7 @@
  * Drag and drop implementation for sources/targets consisting of multiple
  * elements.
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/dragdrop.html
  */
 
@@ -51,6 +52,7 @@ goog.inherits(goog.fx.DragDropGroup, goog.fx.AbstractDragDrop);
  * @param {Object=} opt_data Data associated with the source/target.
  * @throws Error If no element argument is provided or if the type is
  *     invalid
+ * @override
  */
 goog.fx.DragDropGroup.prototype.addItem = function(element, opt_data) {
   var item = new goog.fx.DragDropItem(element, opt_data);
@@ -100,7 +102,7 @@ goog.fx.DragDropGroup.prototype.removeItem = function(element) {
  * @param {Array.<goog.fx.DragDropItem>} list List of items to select or null to
  *     clear selection.
  *
- * TODO(user): Not yet implemented.
+ * TODO(eae): Not yet implemented.
  */
 goog.fx.DragDropGroup.prototype.setSelection = function(list) {
 

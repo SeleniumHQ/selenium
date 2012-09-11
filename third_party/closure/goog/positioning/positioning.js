@@ -23,12 +23,14 @@ goog.provide('goog.positioning.CornerBit');
 goog.provide('goog.positioning.Overflow');
 goog.provide('goog.positioning.OverflowStatus');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.style');
+goog.require('goog.style.bidi');
 
 
 /**
@@ -182,6 +184,9 @@ goog.positioning.OverflowStatus.FAILED_VERTICAL =
  *     not specified. Bitmap, {@see goog.positioning.Overflow}.
  * @param {goog.math.Size=} opt_preferredSize The preferred size of the
  *     movableElement.
+ * @param {goog.math.Box=} opt_viewport Box object describing the dimensions of
+ *     the viewport. If not provided, a default one will be calculated by the
+ *     position of the anchorElement and its moveable parent element.
  * @return {goog.positioning.OverflowStatus} Status bitmap,
  *     {@see goog.positioning.OverflowStatus}.
  */
@@ -192,28 +197,12 @@ goog.positioning.positionAtAnchor = function(anchorElement,
                                              opt_offset,
                                              opt_margin,
                                              opt_overflow,
-                                             opt_preferredSize) {
-  // Ignore offset for the BODY element unless its position is non-static.
-  // For cases where the offset parent is HTML rather than the BODY (such as in
-  // IE strict mode) there's no need to get the position of the BODY as it
-  // doesn't affect the page offset.
-  var moveableParentTopLeft;
-  var parent = movableElement.offsetParent;
-  if (parent) {
-    var isBody = parent.tagName == goog.dom.TagName.HTML ||
-        parent.tagName == goog.dom.TagName.BODY;
-    if (!isBody ||
-        goog.style.getComputedPosition(parent) != 'static') {
-      // Get the top-left corner of the parent, in page coordinates.
-      moveableParentTopLeft = goog.style.getPageOffset(parent);
+                                             opt_preferredSize,
+                                             opt_viewport) {
 
-      if (!isBody) {
-        moveableParentTopLeft = goog.math.Coordinate.difference(
-            moveableParentTopLeft,
-            new goog.math.Coordinate(parent.scrollLeft, parent.scrollTop));
-      }
-    }
-  }
+  goog.asserts.assert(movableElement);
+  var movableParentTopLeft =
+      goog.positioning.getOffsetParentPageOffset(movableElement);
 
   // Get the visible part of the anchor element.  anchorRect is
   // relative to anchorElement's page.
@@ -237,10 +226,8 @@ goog.positioning.positionAtAnchor = function(anchorElement,
           anchorRect.top + anchorRect.height : anchorRect.top);
 
   // Translate absolutePos to be relative to the offsetParent.
-  if (moveableParentTopLeft) {
-    absolutePos =
-        goog.math.Coordinate.difference(absolutePos, moveableParentTopLeft);
-  }
+  absolutePos =
+      goog.math.Coordinate.difference(absolutePos, movableParentTopLeft);
 
   // Apply offset, if specified
   if (opt_offset) {
@@ -253,12 +240,16 @@ goog.positioning.positionAtAnchor = function(anchorElement,
   // Determine dimension of viewport.
   var viewport;
   if (opt_overflow) {
-    viewport = goog.style.getVisibleRectForElement(movableElement);
-    if (viewport && moveableParentTopLeft) {
-      viewport.top = viewport.top - moveableParentTopLeft.y;
-      viewport.right -= moveableParentTopLeft.x;
-      viewport.bottom -= moveableParentTopLeft.y;
-      viewport.left = viewport.left - moveableParentTopLeft.x;
+    if (opt_viewport) {
+      viewport = opt_viewport;
+    } else {
+      viewport = goog.style.getVisibleRectForElement(movableElement);
+      if (viewport) {
+        viewport.top -= movableParentTopLeft.y;
+        viewport.right -= movableParentTopLeft.x;
+        viewport.bottom -= movableParentTopLeft.y;
+        viewport.left -= movableParentTopLeft.x;
+      }
     }
   }
 
@@ -269,6 +260,43 @@ goog.positioning.positionAtAnchor = function(anchorElement,
                                                viewport,
                                                opt_overflow,
                                                opt_preferredSize);
+};
+
+
+/**
+ * Calculates the page offset of the given element's
+ * offsetParent. This value can be used to translate any x- and
+ * y-offset relative to the page to an offset relative to the
+ * offsetParent, which can then be used directly with as position
+ * coordinate for {@code positionWithCoordinate}.
+ * @param {!Element} movableElement The element to calculate.
+ * @return {!goog.math.Coordinate} The page offset, may be (0, 0).
+ */
+goog.positioning.getOffsetParentPageOffset = function(movableElement) {
+  // Ignore offset for the BODY element unless its position is non-static.
+  // For cases where the offset parent is HTML rather than the BODY (such as in
+  // IE strict mode) there's no need to get the position of the BODY as it
+  // doesn't affect the page offset.
+  var movableParentTopLeft;
+  var parent = movableElement.offsetParent;
+  if (parent) {
+    var isBody = parent.tagName == goog.dom.TagName.HTML ||
+        parent.tagName == goog.dom.TagName.BODY;
+    if (!isBody ||
+        goog.style.getComputedPosition(parent) != 'static') {
+      // Get the top-left corner of the parent, in page coordinates.
+      movableParentTopLeft = goog.style.getPageOffset(parent);
+
+      if (!isBody) {
+        movableParentTopLeft = goog.math.Coordinate.difference(
+            movableParentTopLeft,
+            new goog.math.Coordinate(goog.style.bidi.getScrollLeft(parent),
+                parent.scrollTop));
+      }
+    }
+  }
+
+  return movableParentTopLeft || new goog.math.Coordinate();
 };
 
 
@@ -406,7 +434,8 @@ goog.positioning.adjustForViewport_ = function(pos, size, viewport, overflow) {
   if (pos.x < viewport.left &&
       pos.x + size.width > viewport.right &&
       overflow & goog.positioning.Overflow.RESIZE_WIDTH) {
-    size.width -= (pos.x + size.width) - viewport.right;
+    size.width = Math.max(
+        size.width - ((pos.x + size.width) - viewport.right), 0);
     status |= goog.positioning.OverflowStatus.WIDTH_ADJUSTED;
   }
 
@@ -436,7 +465,8 @@ goog.positioning.adjustForViewport_ = function(pos, size, viewport, overflow) {
   if (pos.y >= viewport.top &&
       pos.y + size.height > viewport.bottom &&
       overflow & goog.positioning.Overflow.RESIZE_HEIGHT) {
-    size.height -= (pos.y + size.height) - viewport.bottom;
+    size.height = Math.max(
+        size.height - ((pos.y + size.height) - viewport.bottom), 0);
     status |= goog.positioning.OverflowStatus.HEIGHT_ADJUSTED;
   }
 
@@ -512,3 +542,4 @@ goog.positioning.flipCorner = function(corner) {
       goog.positioning.CornerBit.BOTTOM ^
       goog.positioning.CornerBit.RIGHT);
 };
+

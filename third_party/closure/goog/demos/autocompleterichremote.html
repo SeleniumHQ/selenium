@@ -9,12 +9,12 @@ See the COPYING file for details.
 <!--
 -->
 <head>
-  <title>goog.ui.AutoComplete.RichRemote</title>
+  <title>goog.ui.ac.RichRemote</title>
   <script src="../base.js"></script>
   <script>
     goog.require("goog.array");
     goog.require("goog.dom");
-    goog.require("goog.ui.AutoComplete.RichRemote");
+    goog.require("goog.ui.ac.RichRemote");
   </script>
   <link rel="stylesheet" href="css/demo.css">
   <link rel="stylesheet" href="../css/autocomplete.css">
@@ -42,7 +42,7 @@ See the COPYING file for details.
   </style>
 </head>
 <body>
-  <h1>goog.ui.AutoComplete.RichRemote</h1>
+  <h1>goog.ui.ac.RichRemote</h1>
   <p>
     Fruit Selector:<br>
     <input type="text" id="txtInput" style="width:500px"/>
@@ -101,7 +101,7 @@ See the COPYING file for details.
 
     var input = document.getElementById("txtInput");
     var wikipedia = document.getElementById("wikipedia");
-    var ac = new goog.ui.AutoComplete.RichRemote("autocompleterichremotedata.js",
+    var ac = new goog.ui.ac.RichRemote("autocompleterichremotedata.js",
         input);
 
     // Set the autocomplete"s rowFilter appropriately

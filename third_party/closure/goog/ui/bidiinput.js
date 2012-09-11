@@ -58,6 +58,7 @@ goog.ui.BidiInput.prototype.inputHandler_ = null;
  * Overrides {@link goog.ui.Component#decorateInternal}.  Considered protected.
  * @param {Element} element  Element (HTML Input element) to decorate.
  * @protected
+ * @override
  */
 goog.ui.BidiInput.prototype.decorateInternal = function(element) {
   goog.ui.BidiInput.superClass_.decorateInternal.call(this, element);
@@ -68,6 +69,7 @@ goog.ui.BidiInput.prototype.decorateInternal = function(element) {
 /**
  * Creates the element for the text input.
  * @protected
+ * @override
  */
 goog.ui.BidiInput.prototype.createDom = function() {
   this.setElementInternal(
@@ -95,7 +97,9 @@ goog.ui.BidiInput.prototype.init_ = function() {
 
 
 /**
- * Set the direction of the input element based on the current value.
+ * Set the direction of the input element based on the current value. If the
+ * value does not have any strongly directional characters, remove the dir
+ * attribute so that the direction is inherited instead.
  * This method is called when the user changes the input element value, or
  * when a program changes the value using
  * {@link goog.ui.BidiInput#setValue}
@@ -104,16 +108,17 @@ goog.ui.BidiInput.prototype.init_ = function() {
 goog.ui.BidiInput.prototype.setDirection_ = function() {
   var element = this.getElement();
   var text = element.value;
-  var dir = ''; // Default for no direction, inherit from document
-  if (goog.i18n.bidi.startsWithRtl(text) ||
-      goog.i18n.bidi.startsWithLtr(text)) {
-    if (goog.i18n.bidi.detectRtlDirectionality(text)) {
-      dir = 'rtl';
-    } else {
-      dir = 'ltr';
-    }
+  switch (goog.i18n.bidi.estimateDirection(text)) {
+    case (goog.i18n.bidi.Dir.LTR):
+      element.dir = 'ltr';
+      break;
+    case (goog.i18n.bidi.Dir.RTL):
+      element.dir = 'rtl';
+      break;
+    default:
+      // Default for no direction, inherit from document.
+      element.removeAttribute('dir');
   }
-  element.dir = dir;
 };
 
 

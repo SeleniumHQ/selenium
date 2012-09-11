@@ -40,7 +40,7 @@ goog.proto2.Serializer = function() {};
  *
  * @param {goog.proto2.Message} message The message to be serialized.
  *
- * @return {Object} The serialized form of the message.
+ * @return {*} The serialized form of the message.
  */
 goog.proto2.Serializer.prototype.serialize = goog.abstractMethod;
 
@@ -111,6 +111,10 @@ goog.proto2.Serializer.prototype.deserializeTo = goog.abstractMethod;
 goog.proto2.Serializer.prototype.getDeserializedValue = function(field, value) {
   // Composite types are deserialized recursively.
   if (field.isCompositeType()) {
+    if (value instanceof goog.proto2.Message) {
+      return value;
+    }
+
     return this.deserialize(field.getFieldMessageType(), value);
   }
 
@@ -126,7 +130,6 @@ goog.proto2.Serializer.prototype.getDeserializedValue = function(field, value) {
   // could be either Number or String (depending on field options in the .proto
   // file).  All four combinations should work correctly.
   var nativeType = field.getNativeType();
-
   if (nativeType === String) {
     // JSON numbers can be converted to strings.
     if (typeof value === 'number') {

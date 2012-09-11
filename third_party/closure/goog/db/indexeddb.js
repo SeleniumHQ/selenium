@@ -177,20 +177,16 @@ goog.db.IndexedDb.prototype.setVersion = function(version) {
 /**
  * Creates a new transaction.
  *
- * @param {!Array.<string>=} opt_storeNames An array, DOMStringList or string
- *     that contains the transaction's scope, the object stores that this
- *     transaction can operate on. This parameter can be omitted or an empty
- *     list can be passed to allow the transaction scope to be all object
- *     stores.
+ * @param {!Array.<string>} storeNames A list of strings that contains the
+ *     transaction's scope, the object stores that this transaction can operate
+ *     on.
  * @param {goog.db.Transaction.TransactionMode=} opt_mode The mode of the
  *     transaction. If not present, the default is READ_ONLY. For VERSION_CHANGE
  *     transactions call {@link goog.db.IndexedDB#setVersion} instead.
  * @return {!goog.db.Transaction} The wrapper for the newly created transaction.
  * @throws {goog.db.Error} If there's a problem creating the transaction.
  */
-goog.db.IndexedDb.prototype.createTransaction = function(opt_storeNames,
-    opt_mode) {
-  var storeNames = opt_storeNames || [];
+goog.db.IndexedDb.prototype.createTransaction = function(storeNames, opt_mode) {
   try {
     return new goog.db.Transaction(this.db_.transaction(storeNames, opt_mode));
   } catch (err) {

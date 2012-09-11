@@ -88,7 +88,8 @@ goog.net.HttpStatus = {
  * Returns whether the given status should be considered successful.
  *
  * Successful codes are OK (200), CREATED (201), ACCEPTED (202),
- * NO CONTENT (204), NOT MODIFIED (304), and IE's no content code (1223).
+ * NO CONTENT (204), PARTIAL CONTENT (206), NOT MODIFIED (304),
+ * and IE's no content code (1223).
  *
  * @param {number} status The status code to test.
  * @return {boolean} Whether the status code should be considered successful.
@@ -99,6 +100,7 @@ goog.net.HttpStatus.isSuccess = function(status) {
     case goog.net.HttpStatus.CREATED:
     case goog.net.HttpStatus.ACCEPTED:
     case goog.net.HttpStatus.NO_CONTENT:
+    case goog.net.HttpStatus.PARTIAL_CONTENT:
     case goog.net.HttpStatus.NOT_MODIFIED:
     case goog.net.HttpStatus.QUIRK_IE_NO_CONTENT:
       return true;

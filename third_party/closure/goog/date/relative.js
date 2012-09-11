@@ -92,7 +92,7 @@ goog.date.relative.formatMonth_ = function(date) {
 
 /**
  * Returns a date in short-time format, e.g. 2:50 PM.
- * @param {Date} date The date object.
+ * @param {Date|goog.date.DateTime} date The date object.
  * @return {string} The formatted string.
  * @private
  */
@@ -107,7 +107,7 @@ goog.date.relative.formatShortTime_ = function(date) {
 
 /**
  * Returns a date in full date format, e.g. Tuesday, March 24, 2009.
- * @param {Date} date The date object.
+ * @param {Date|goog.date.DateTime} date The date object.
  * @return {string} The formatted string.
  * @private
  */
@@ -150,14 +150,18 @@ goog.date.relative.format = function(dateMs) {
           delta, future, goog.date.relative.Unit_.HOURS);
 
     } else {
-      // Timezone offset is in minutes.  We pass goog.now so that we can easily
-      // unit test this, the JSCompiler will optimize it away for us.
-      var offset = new Date(goog.now()).getTimezoneOffset() *
-          goog.date.relative.MINUTE_MS_;
+      // We can be more than 24 hours apart but still only 1 day apart, so we
+      // compare the closest time from today against the target time to find
+      // the number of days in the delta.
+      var midnight = new Date(goog.now());
+      midnight.setHours(0);
+      midnight.setMinutes(0);
+      midnight.setSeconds(0);
+      midnight.setMilliseconds(0);
 
       // Convert to days ago.
-      delta = Math.floor((now + offset) / goog.date.relative.DAY_MS_) -
-              Math.floor((dateMs + offset) / goog.date.relative.DAY_MS_);
+      delta = Math.ceil(
+          (midnight.getTime() - dateMs) / goog.date.relative.DAY_MS_);
 
       if (future) {
         delta *= -1;
@@ -239,7 +243,7 @@ goog.date.relative.formatDay = function(dateMs) {
  *   Monday, February 27, 2009 (4 days ago)
  *   Tuesday, March 20, 2005    // Too long ago for a relative date.
  *
- * @param {Date} date A date object.
+ * @param {Date|goog.date.DateTime} date A date object.
  * @param {string=} opt_shortTimeMsg An optional short time message can be
  *     provided if available, so that it's not recalculated in this function.
  * @param {string=} opt_fullDateMsg An optional date message can be
@@ -262,7 +266,7 @@ goog.date.relative.getDateString = function(
  * the above {@see #getDateString} method who relied on it protecting against
  * future dates.
  *
- * @param {Date} date A timestamp or date object.
+ * @param {Date|goog.date.DateTime} date A date object.
  * @param {string=} opt_shortTimeMsg An optional short time message can be
  *     provided if available, so that it's not recalculated in this function.
  * @param {string=} opt_fullDateMsg An optional date message can be
@@ -284,7 +288,7 @@ goog.date.relative.getPastDateString = function(
  *   Monday, February 27, 2009 (4 days ago)
  *   Tuesday, March 20, 2005    // Too long ago for a relative date.
  *
- * @param {Date} date A timestamp or date object.
+ * @param {Date|goog.date.DateTime} date A date object.
  * @param {function(number) : string} relativeFormatter Function to use when
  *     formatting the relative date.
  * @param {string=} opt_shortTimeMsg An optional short time message can be
@@ -306,6 +310,7 @@ goog.date.relative.getDateString_ = function(
 
   var delta = Math.floor((goog.now() - dateMs) / goog.date.relative.MINUTE_MS_);
   if (delta < 60 * 24) {
+    // TODO(user): this call raises an exception if date is a goog.date.Date.
     return (opt_shortTimeMsg || goog.date.relative.formatShortTime_(date)) +
         relativeDate;
   } else {

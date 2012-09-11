@@ -16,6 +16,7 @@
  * @fileoverview Enum for button side constants. In its own file so as to not
  * cause a circular dependency with {@link goog.ui.ButtonRenderer}.
  *
+ * @author doughtie@google.com (Gavin Doughtie)
  */
 
 goog.provide('goog.ui.ButtonSide');

@@ -21,7 +21,7 @@
  * Namespace for locale number format functions
  */
 goog.provide('goog.i18n.currencyCodeMap');
-
+goog.provide('goog.i18n.currencyCodeMapTier2');
 
 /**
  * The mapping of currency symbol through intl currency code.
@@ -207,4 +207,3 @@ goog.i18n.currencyCodeMapTier2 = {
   'ZMK': 'ZK',
   'ZWD': '$'
 };
-

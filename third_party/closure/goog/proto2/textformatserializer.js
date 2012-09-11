@@ -24,6 +24,8 @@
 goog.provide('goog.proto2.TextFormatSerializer');
 goog.provide('goog.proto2.TextFormatSerializer.Parser');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.json');
 goog.require('goog.proto2.Serializer');
 goog.require('goog.proto2.Util');
@@ -55,8 +57,9 @@ goog.inherits(goog.proto2.TextFormatSerializer, goog.proto2.Serializer);
  * Deserializes a message from text format and places the data in the message.
  * @param {goog.proto2.Message} message The message in which to
  *     place the information.
- * @param {string} data The text format data.
+ * @param {*} data The text format data.
  * @return {?string} The parse error or null on success.
+ * @override
  */
 goog.proto2.TextFormatSerializer.prototype.deserializeTo =
     function(message, data) {
@@ -75,6 +78,7 @@ goog.proto2.TextFormatSerializer.prototype.deserializeTo =
  * Serializes a message to a string.
  * @param {goog.proto2.Message} message The message to be serialized.
  * @return {string} The serialized form of the message.
+ * @override
  */
 goog.proto2.TextFormatSerializer.prototype.serialize = function(message) {
   var printer = new goog.proto2.TextFormatSerializer.Printer_();
@@ -115,7 +119,7 @@ goog.proto2.TextFormatSerializer.prototype.serializeMessage_ =
 
     switch (goog.typeOf(value)) {
       case 'string':
-        value = goog.string.quote(value);
+        value = goog.string.quote(/** @type {string} */ (value));
         printer.append(value);
         break;
 
@@ -278,6 +282,7 @@ goog.proto2.TextFormatSerializer.Printer_ = function() {
 
 /**
  * @return {string} The contents of the printer.
+ * @override
  */
 goog.proto2.TextFormatSerializer.Printer_.prototype.toString = function() {
   return this.buffer_.join('');
@@ -403,7 +408,8 @@ goog.proto2.TextFormatSerializer.Tokenizer_.prototype.getCurrent = function() {
  */
 goog.proto2.TextFormatSerializer.Tokenizer_.TokenTypes = {
   END: /---end---/,
-  IDENTIFIER: /^[a-zA-Z][a-zA-Z0-9_]*/,
+  // Leading "-" to identify "-infinity"."
+  IDENTIFIER: /^-?[a-zA-Z][a-zA-Z0-9_]*/,
   NUMBER: /^(0x[0-9a-f]+)|(([-])?[0-9][0-9]*(\.?[0-9]+)?([f])?)/,
   COMMENT: /^#.*/,
   OPEN_BRACE: /^{/,
@@ -616,26 +622,38 @@ goog.proto2.TextFormatSerializer.Parser.prototype.consumeFieldValue_ =
  * @return {?number} The converted number or null on error.
  * @private
  */
-goog.proto2.TextFormatSerializer.Parser.prototype.getNumberFromString_ =
+goog.proto2.TextFormatSerializer.Parser.getNumberFromString_ =
     function(num) {
-  var numberString = num;
-  var numberBase = 10;
-  if (num.substr(0, 2) == '0x') {
-    // ASCII output can be printed in unsigned hexadecimal format
-    // occasionally. e.g. 0xaed9b43
-    numberString = num.substr(2);
-    numberBase = 16;
-  } else if (goog.string.endsWith(num, 'f')) {
-    numberString = num.substring(0, num.length - 1);
+
+  var returnValue = goog.string.contains(num, '.') ?
+      parseFloat(num) : // num is a float.
+      goog.string.parseInt(num); // num is an int.
+
+  goog.asserts.assert(!isNaN(returnValue));
+  goog.asserts.assert(isFinite(returnValue));
+
+  return returnValue;
+};
+
+
+/**
+ * Parse NaN, positive infinity, or negative infinity from a string.
+ * @param {string} identifier An identifier string to check.
+ * @return {?number} Infinity, negative infinity, NaN, or null if none
+ *     of the constants could be parsed.
+ * @private.
+ */
+goog.proto2.TextFormatSerializer.Parser.parseNumericalConstant_ =
+    function(identifier) {
+  if (/^-?inf(?:inity)?f?$/i.test(identifier)) {
+    return Infinity * (goog.string.startsWith(identifier, '-') ? -1 : 1);
   }
 
-  var actualNumber = numberBase == 10 ?
-      parseFloat(numberString) : parseInt(numberString, numberBase);
-  if (actualNumber.toString(numberBase) != numberString) {
-    this.reportError_('Unknown number: ' + num);
-    return null;
+  if (/^nanf?$/i.test(identifier)) {
+    return NaN;
   }
-  return actualNumber;
+
+  return null;
 };
 
 
@@ -651,6 +669,18 @@ goog.proto2.TextFormatSerializer.Parser.prototype.getFieldValue_ =
   switch (field.getFieldType()) {
     case goog.proto2.FieldDescriptor.FieldType.DOUBLE:
     case goog.proto2.FieldDescriptor.FieldType.FLOAT:
+
+      var identifier = this.consumeIdentifier_();
+      if (identifier) {
+        var numericalIdentifier =
+            goog.proto2.TextFormatSerializer.Parser.parseNumericalConstant_(
+                identifier);
+        // Use isDefAndNotNull since !!NaN is false.
+        if (goog.isDefAndNotNull(numericalIdentifier)) {
+          return numericalIdentifier;
+        }
+      }
+
     case goog.proto2.FieldDescriptor.FieldType.INT32:
     case goog.proto2.FieldDescriptor.FieldType.UINT32:
     case goog.proto2.FieldDescriptor.FieldType.FIXED32:
@@ -659,7 +689,7 @@ goog.proto2.TextFormatSerializer.Parser.prototype.getFieldValue_ =
       var num = this.consumeNumber_();
       if (!num) { return null; }
 
-      return this.getNumberFromString_(num);
+      return goog.proto2.TextFormatSerializer.Parser.getNumberFromString_(num);
 
     case goog.proto2.FieldDescriptor.FieldType.INT64:
     case goog.proto2.FieldDescriptor.FieldType.UINT64:
@@ -671,7 +701,8 @@ goog.proto2.TextFormatSerializer.Parser.prototype.getFieldValue_ =
 
       if (field.getNativeType() == Number) {
         // 64-bit number stored as a number.
-        return this.getNumberFromString_(num);
+        return goog.proto2.TextFormatSerializer.Parser.getNumberFromString_(
+            num);
       }
 
       return num; // 64-bit numbers are by default stored as strings.
@@ -873,7 +904,6 @@ goog.proto2.TextFormatSerializer.Parser.prototype.tryConsume_ =
  */
 goog.proto2.TextFormatSerializer.Parser.prototype.consumeToken_ =
     function(type) {
-  var types = goog.proto2.TextFormatSerializer.Tokenizer_.TokenTypes;
   if (!this.lookingAtType_(type)) {
     this.reportError_('Expected token type: ' + type);
     return null;

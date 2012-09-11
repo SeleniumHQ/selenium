@@ -49,6 +49,7 @@ goog.inherits(goog.dom.pattern.NodeType, goog.dom.pattern.AbstractPattern);
  * @param {goog.dom.TagWalkType} type The type of token.
  * @return {goog.dom.pattern.MatchType} <code>MATCH</code> if the pattern
  *     matches, <code>NO_MATCH</code> otherwise.
+ * @override
  */
 goog.dom.pattern.NodeType.prototype.matchToken = function(token, type) {
   return token.nodeType == this.nodeType_ ?

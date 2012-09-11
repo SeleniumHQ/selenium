@@ -15,6 +15,7 @@
 /**
  * @fileoverview Renderer for {@link goog.ui.TriStateMenuItem}s.
  *
+ * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.ui.TriStateMenuItemRenderer');
@@ -53,9 +54,10 @@ goog.ui.TriStateMenuItemRenderer.CSS_CLASS =
  * Overrides {@link goog.ui.ControlRenderer#decorate} by initializing the
  * menu item to checkable based on whether the element to be decorated has
  * extra styling indicating that it should be.
- * @param {goog.ui.MenuItem} item Menu item instance to decorate the element.
+ * @param {goog.ui.Control} item goog.ui.MenuItem to decorate the element.
  * @param {Element} element Element to decorate.
  * @return {Element} Decorated element.
+ * @override
  */
 goog.ui.TriStateMenuItemRenderer.prototype.decorate = function(item, element) {
   element = goog.ui.TriStateMenuItemRenderer.superClass_.decorate.call(this,
@@ -76,11 +78,7 @@ goog.ui.TriStateMenuItemRenderer.prototype.decorate = function(item, element) {
 };
 
 
-/**
- * Returns the CSS class to be applied to menu items rendered using this
- * renderer.
- * @return {string} Renderer-specific CSS class.
- */
+/** @override */
 goog.ui.TriStateMenuItemRenderer.prototype.getCssClass = function() {
   return goog.ui.TriStateMenuItemRenderer.CSS_CLASS;
 };

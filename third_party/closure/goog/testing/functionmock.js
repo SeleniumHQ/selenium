@@ -39,7 +39,7 @@ goog.require('goog.testing.StrictMock');
  * @param {string=} opt_functionName The optional name of the function to mock.
  *     Set to '[anonymous mocked function]' if not passed in.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
- *     goog.testing.mock.STRICT. The default is STRICT.
+ *     goog.testing.Mock.STRICT. The default is STRICT.
  * @return {goog.testing.MockInterface} The mocked function.
  * @suppress {missingProperties} Mocks do not fit in the type system well.
  */
@@ -63,7 +63,7 @@ goog.testing.FunctionMock = function(opt_functionName, opt_strictness) {
  * @param {Object} scope The scope of the method to be mocked out.
  * @param {string} functionName The name of the function we're going to mock.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
- *     goog.testing.mock.STRICT. The default is STRICT.
+ *     goog.testing.Mock.STRICT. The default is STRICT.
  * @return {goog.testing.MockInterface} The mocked method.
  */
 goog.testing.MethodMock = function(scope, functionName, opt_strictness) {
@@ -95,7 +95,7 @@ goog.testing.MethodMock.$tearDown = function() {
  * in the global scope with the name specified by functionName.
  * @param {string} functionName The name of the function we're going to mock.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
- *     goog.testing.mock.STRICT. The default is STRICT.
+ *     goog.testing.Mock.STRICT. The default is STRICT.
  * @return {goog.testing.MockInterface} The mocked global function.
  */
 goog.testing.GlobalFunctionMock = function(functionName, opt_strictness) {
@@ -108,7 +108,7 @@ goog.testing.GlobalFunctionMock = function(functionName, opt_strictness) {
  * @param {string=} opt_functionName The optional name of the function to mock
  *     set to '[anonymous mocked function]' if not passed in.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
- *     goog.testing.mock.STRICT. The default is STRICT.
+ *     goog.testing.Mock.STRICT. The default is STRICT.
  * @return {goog.testing.MockInterface} The mocked function.
  */
 goog.testing.createFunctionMock = function(opt_functionName, opt_strictness) {
@@ -121,7 +121,7 @@ goog.testing.createFunctionMock = function(opt_functionName, opt_strictness) {
  * @param {Object} scope The scope of the method to be mocked out.
  * @param {string} functionName The name of the function we're going to mock.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
- *     goog.testing.mock.STRICT. The default is STRICT.
+ *     goog.testing.Mock.STRICT. The default is STRICT.
  * @return {goog.testing.MockInterface} The mocked global function.
  */
 goog.testing.createMethodMock = function(scope, functionName, opt_strictness) {
@@ -141,7 +141,7 @@ goog.testing.createMethodMock = function(scope, functionName, opt_strictness) {
  * @param {string} constructorName The name of the constructor we're going to
  *     mock.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
- *     goog.testing.mock.STRICT. The default is STRICT.
+ *     goog.testing.Mock.STRICT. The default is STRICT.
  * @return {goog.testing.MockInterface} The mocked constructor.
  */
 goog.testing.createConstructorMock = function(scope, constructorName,
@@ -169,7 +169,7 @@ goog.testing.createConstructorMock = function(scope, constructorName,
  * Convenience method for creating a mocks for a global / top-level function.
  * @param {string} functionName The name of the function we're going to mock.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
- *     goog.testing.mock.STRICT. The default is STRICT.
+ *     goog.testing.Mock.STRICT. The default is STRICT.
  * @return {goog.testing.MockInterface} The mocked global function.
  */
 goog.testing.createGlobalFunctionMock = function(functionName, opt_strictness) {

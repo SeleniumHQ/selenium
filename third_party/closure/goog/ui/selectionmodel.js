@@ -15,9 +15,10 @@
 /**
  * @fileoverview Single-selection model implemenation.
  *
- * TODO(user): Add keyboard & mouse event hooks?
- * TODO(user): Add multiple selection?
+ * TODO(attila): Add keyboard & mouse event hooks?
+ * TODO(attila): Add multiple selection?
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 

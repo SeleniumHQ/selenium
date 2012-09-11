@@ -23,6 +23,7 @@
 goog.provide('goog.editor.plugins.LinkDialogPlugin');
 
 goog.require('goog.array');
+goog.require('goog.dom');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.plugins.AbstractDialogPlugin');
 goog.require('goog.events.EventHandler');
@@ -99,6 +100,15 @@ goog.editor.plugins.LinkDialogPlugin.prototype.isOpenLinkInNewWindowChecked_ =
 
 
 /**
+ * Weather to show a checkbox where the user can choose to add 'rel=nofollow'
+ * attribute added to the link.
+ * @type {boolean}
+ * @private
+ */
+goog.editor.plugins.LinkDialogPlugin.prototype.showRelNoFollow_ = false;
+
+
+/**
  * Whether to stop referrer leaks.  Defaults to false.
  * @type {boolean}
  * @private
@@ -160,6 +170,15 @@ goog.editor.plugins.LinkDialogPlugin.prototype.showOpenLinkInNewWindow =
     function(startChecked) {
   this.showOpenLinkInNewWindow_ = true;
   this.isOpenLinkInNewWindowChecked_ = startChecked;
+};
+
+
+/**
+ * Tells the dialog to show a checkbox where the user can choose to have
+ * 'rel=nofollow' attribute added to the link.
+ */
+goog.editor.plugins.LinkDialogPlugin.prototype.showRelNoFollow = function() {
+  this.showRelNoFollow_ = true;
 };
 
 
@@ -252,20 +271,23 @@ goog.editor.plugins.LinkDialogPlugin.prototype.getCurrentLink = function() {
  * Creates a new instance of the dialog and registers for the relevant events.
  * @param {goog.dom.DomHelper} dialogDomHelper The dom helper to be used to
  *     create the dialog.
- * @param {*} link The target link (should be a goog.editor.Link).
+ * @param {*=} opt_link The target link (should be a goog.editor.Link).
  * @return {goog.ui.editor.LinkDialog} The dialog.
  * @override
  * @protected
  */
 goog.editor.plugins.LinkDialogPlugin.prototype.createDialog = function(
-    dialogDomHelper, link) {
+    dialogDomHelper, opt_link) {
   var dialog = new goog.ui.editor.LinkDialog(dialogDomHelper,
-      /** @type {goog.editor.Link} */ (link));
+      /** @type {goog.editor.Link} */ (opt_link));
   if (this.emailWarning_) {
     dialog.setEmailWarning(this.emailWarning_);
   }
   if (this.showOpenLinkInNewWindow_) {
     dialog.showOpenLinkInNewWindow(this.isOpenLinkInNewWindowChecked_);
+  }
+  if (this.showRelNoFollow_) {
+    dialog.showRelNoFollow();
   }
   dialog.setStopReferrerLeaks(this.stopReferrerLeaks_);
   this.eventHandler_.
@@ -296,9 +318,40 @@ goog.editor.plugins.LinkDialogPlugin.prototype.handleOk_ = function(e) {
   this.disposeOriginalSelection();
 
   this.currentLink_.setTextAndUrl(e.linkText, e.linkUrl);
-
   if (this.showOpenLinkInNewWindow_) {
-    var anchor = this.currentLink_.getAnchor();
+    // Save checkbox state for next time.
+    this.isOpenLinkInNewWindowChecked_ = e.openInNewWindow;
+  }
+
+  var anchor = this.currentLink_.getAnchor();
+  this.touchUpAnchorOnOk_(anchor, e);
+  var extraAnchors = this.currentLink_.getExtraAnchors();
+  for (var i = 0; i < extraAnchors.length; ++i) {
+    extraAnchors[i].href = anchor.href;
+    this.touchUpAnchorOnOk_(extraAnchors[i], e);
+  }
+
+  this.getFieldObject().focus();
+
+  // Place cursor to the right of the modified link.
+  this.currentLink_.placeCursorRightOf();
+
+  this.getFieldObject().dispatchSelectionChangeEvent();
+  this.getFieldObject().dispatchChange();
+
+  this.eventHandler_.removeAll();
+};
+
+
+/**
+ * Apply the necessary properties to a link upon Ok being clicked in the dialog.
+ * @param {HTMLAnchorElement} anchor The anchor to set properties on.
+ * @param {goog.events.Event} e Event object.
+ * @private
+ */
+goog.editor.plugins.LinkDialogPlugin.prototype.touchUpAnchorOnOk_ =
+    function(anchor, e) {
+  if (this.showOpenLinkInNewWindow_) {
     if (e.openInNewWindow) {
       anchor.target = '_blank';
     } else {
@@ -308,17 +361,16 @@ goog.editor.plugins.LinkDialogPlugin.prototype.handleOk_ = function(e) {
       // If user didn't indicate to open in a new window but the link already
       // had a target other than '_blank', let's leave what they had before.
     }
-    // Save checkbox state for next time.
-    this.isOpenLinkInNewWindowChecked_ = e.openInNewWindow;
   }
 
-  // Place cursor to the right of the modified link.
-  this.currentLink_.placeCursorRightOf();
-
-  this.fieldObject.dispatchSelectionChangeEvent();
-  this.fieldObject.dispatchChange();
-
-  this.eventHandler_.removeAll();
+  if (this.showRelNoFollow_) {
+    var alreadyPresent = goog.ui.editor.LinkDialog.hasNoFollow(anchor.rel);
+    if (alreadyPresent && !e.noFollow) {
+      anchor.rel = goog.ui.editor.LinkDialog.removeNoFollow(anchor.rel);
+    } else if (!alreadyPresent && e.noFollow) {
+      anchor.rel = anchor.rel ? anchor.rel + ' nofollow' : 'nofollow';
+    }
+  }
 };
 
 
@@ -330,8 +382,12 @@ goog.editor.plugins.LinkDialogPlugin.prototype.handleOk_ = function(e) {
 goog.editor.plugins.LinkDialogPlugin.prototype.handleCancel_ = function(e) {
   if (this.currentLink_.isNew()) {
     goog.dom.flattenElement(this.currentLink_.getAnchor());
+    var extraAnchors = this.currentLink_.getExtraAnchors();
+    for (var i = 0; i < extraAnchors.length; ++i) {
+      goog.dom.flattenElement(extraAnchors[i]);
+    }
     // Make sure listeners know the anchor was flattened out.
-    this.fieldObject.dispatchChange();
+    this.getFieldObject().dispatchChange();
   }
 
   this.eventHandler_.removeAll();

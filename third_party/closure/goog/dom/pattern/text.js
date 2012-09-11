@@ -57,6 +57,7 @@ goog.dom.pattern.Text.prototype.match_;
  * @param {goog.dom.TagWalkType} type The type of token.
  * @return {goog.dom.pattern.MatchType} <code>MATCH</code> if the pattern
  *     matches, <code>NO_MATCH</code> otherwise.
+ * @override
  */
 goog.dom.pattern.Text.prototype.matchToken = function(token, type) {
   if (token.nodeType == goog.dom.NodeType.TEXT &&

@@ -161,6 +161,7 @@ goog.debug.Logger.Level = function(name, value) {
 
 /**
  * @return {string} String representation of the logger level.
+ * @override
  */
 goog.debug.Logger.Level.prototype.toString = function() {
   return this.name;

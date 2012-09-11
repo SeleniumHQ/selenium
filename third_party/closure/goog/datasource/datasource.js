@@ -50,16 +50,18 @@ goog.ds.DataNode = function() {};
 
 /**
  * Get the value of the node
- * @return {Object} The value of the node, or null if no value.
+ * @param {...?} var_args Do not check arity of arguments, because
+ *     some subclasses require args.
+ * @return {*} The value of the node, or null if no value.
  */
-goog.ds.DataNode.prototype.get = goog.nullFunction;
+goog.ds.DataNode.prototype.get = goog.abstractMethod;
 
 
 /**
  * Set the value of the node
- * @param {Object} value The new value of the node.
+ * @param {*} value The new value of the node.
  */
-goog.ds.DataNode.prototype.set = goog.nullFunction;
+goog.ds.DataNode.prototype.set = goog.abstractMethod;
 
 
 /**
@@ -68,7 +70,7 @@ goog.ds.DataNode.prototype.set = goog.nullFunction;
  * @param {string=} opt_selector String selector to choose child nodes.
  * @return {goog.ds.DataNodeList} The child nodes.
  */
-goog.ds.DataNode.prototype.getChildNodes = goog.nullFunction;
+goog.ds.DataNode.prototype.getChildNodes = goog.abstractMethod;
 
 
 /**
@@ -79,16 +81,16 @@ goog.ds.DataNode.prototype.getChildNodes = goog.nullFunction;
  * @return {goog.ds.DataNode} The child node, or null
  * if no node of this name exists.
  */
-goog.ds.DataNode.prototype.getChildNode = goog.nullFunction;
+goog.ds.DataNode.prototype.getChildNode = goog.abstractMethod;
 
 
 /**
  * Gets the value of a child node
  * @param {string} name The node name.
- * @return {Object} The value of the node, or null if no value or the child node
+ * @return {*} The value of the node, or null if no value or the child node
  *     doesn't exist.
  */
-goog.ds.DataNode.prototype.getChildNodeValue = goog.nullFunction;
+goog.ds.DataNode.prototype.getChildNodeValue = goog.abstractMethod;
 
 
 /**
@@ -99,48 +101,48 @@ goog.ds.DataNode.prototype.getChildNodeValue = goog.nullFunction;
  *     or null. If value is null, removes the child node.
  * @return {Object} The child node, if the node was set.
  */
-goog.ds.DataNode.prototype.setChildNode = goog.nullFunction;
+goog.ds.DataNode.prototype.setChildNode = goog.abstractMethod;
 
 
 /**
  * Get the name of the node relative to the parent node
  * @return {string} The name of the node.
  */
-goog.ds.DataNode.prototype.getDataName = goog.nullFunction;
+goog.ds.DataNode.prototype.getDataName = goog.abstractMethod;
 
 
 /**
  * Set the name of the node relative to the parent node
  * @param {string} name The name of the node.
  */
-goog.ds.DataNode.prototype.setDataName = goog.nullFunction;
+goog.ds.DataNode.prototype.setDataName = goog.abstractMethod;
 
 
 /**
  * Gets the a qualified data path to this node
  * @return {string} The data path.
  */
-goog.ds.DataNode.prototype.getDataPath = goog.nullFunction;
+goog.ds.DataNode.prototype.getDataPath = goog.abstractMethod;
 
 
 /**
  * Load or reload the backing data for this node
  */
-goog.ds.DataNode.prototype.load = goog.nullFunction;
+goog.ds.DataNode.prototype.load = goog.abstractMethod;
 
 
 /**
  * Gets the state of the backing data for this node
  * @return {goog.ds.LoadState} The state.
  */
-goog.ds.DataNode.prototype.getLoadState = null;
+goog.ds.DataNode.prototype.getLoadState = goog.abstractMethod;
 
 
 /**
  * Whether the value of this node is a homogeneous list of data
  * @return {boolean} True if a list.
  */
-goog.ds.DataNode.prototype.isList = goog.nullFunction;
+goog.ds.DataNode.prototype.isList = goog.abstractMethod;
 
 
 /**
@@ -160,7 +162,7 @@ goog.ds.LoadState = {
  * Base class for data node functionality, has default implementations for
  * many of the functions.
  *
- * implements goog.ds.DataNode
+ * implements {goog.ds.DataNode}
  * @constructor
  */
 goog.ds.BaseDataNode = function() {};
@@ -170,7 +172,7 @@ goog.ds.BaseDataNode = function() {};
  * Set the value of the node
  * @param {Object} value The new value of the node.
  */
-goog.ds.BaseDataNode.prototype.set = goog.nullFunction;
+goog.ds.BaseDataNode.prototype.set = goog.abstractMethod;
 
 
 /**
@@ -212,7 +214,7 @@ goog.ds.BaseDataNode.prototype.getChildNodeValue = function(name) {
  * Get the name of the node relative to the parent node
  * @return {string} The name of the node.
  */
-goog.ds.BaseDataNode.prototype.getDataName = goog.nullFunction;
+goog.ds.BaseDataNode.prototype.getDataName = goog.abstractMethod;
 
 
 /**
@@ -222,8 +224,8 @@ goog.ds.BaseDataNode.prototype.getDataName = goog.nullFunction;
 goog.ds.BaseDataNode.prototype.getDataPath = function() {
   var parentPath = '';
   var myName = this.getDataName();
-  if (this.getParent_ && this.getParent_()) {
-    parentPath = this.getParent_().getDataPath() +
+  if (this.getParent && this.getParent()) {
+    parentPath = this.getParent().getDataPath() +
         (myName.indexOf(goog.ds.STR_ARRAY_START) != -1 ? '' :
         goog.ds.STR_PATH_SEPARATOR);
   }
@@ -251,9 +253,8 @@ goog.ds.BaseDataNode.prototype.getLoadState = function() {
  * Gets the parent node. Subclasses implement this function
  * @type {Function}
  * @protected
- * @suppress {underscore}
  */
-goog.ds.BaseDataNode.prototype.getParent_ = null;
+goog.ds.BaseDataNode.prototype.getParent = null;
 
 
 /**
@@ -264,7 +265,7 @@ goog.ds.BaseDataNode.prototype.getParent_ = null;
  * @constructor
  * @extends {goog.ds.DataNode}
  */
-// TODO(user): Use interfaces when available.
+// TODO(arv): Use interfaces when available.
 goog.ds.DataNodeList = function() {};
 
 
@@ -274,7 +275,7 @@ goog.ds.DataNodeList = function() {};
  *
  * @param {goog.ds.DataNode} node The node to add.
  */
-goog.ds.DataNodeList.prototype.add = goog.nullFunction;
+goog.ds.DataNodeList.prototype.add = goog.abstractMethod;
 
 
 /**
@@ -282,9 +283,10 @@ goog.ds.DataNodeList.prototype.add = goog.nullFunction;
  * Returns null if node doesn't exist.
  *
  * @param {string} key String lookup key.
- * @return {goog.ds.DataNode} The node, or null if doesn't exist.
+ * @return {*} The node, or null if doesn't exist.
+ * @override
  */
-goog.ds.DataNodeList.prototype.get = goog.nullFunction;
+goog.ds.DataNodeList.prototype.get = goog.abstractMethod;
 
 
 /**
@@ -294,7 +296,7 @@ goog.ds.DataNodeList.prototype.get = goog.nullFunction;
  * @param {number} index The index of the node.
  * @return {goog.ds.DataNode} The node, or null if doesn't exist.
  */
-goog.ds.DataNodeList.prototype.getByIndex = goog.nullFunction;
+goog.ds.DataNodeList.prototype.getByIndex = goog.abstractMethod;
 
 
 /**
@@ -302,7 +304,7 @@ goog.ds.DataNodeList.prototype.getByIndex = goog.nullFunction;
  *
  * @return {number} The size of the list.
  */
-goog.ds.DataNodeList.prototype.getCount = goog.nullFunction;
+goog.ds.DataNodeList.prototype.getCount = goog.abstractMethod;
 
 
 /**
@@ -310,7 +312,7 @@ goog.ds.DataNodeList.prototype.getCount = goog.nullFunction;
  * @param {string} name Name of the node.
  * @param {goog.ds.DataNode} node The node.
  */
-goog.ds.DataNodeList.prototype.setNode = goog.nullFunction;
+goog.ds.DataNodeList.prototype.setNode = goog.abstractMethod;
 
 
 /**
@@ -318,7 +320,7 @@ goog.ds.DataNodeList.prototype.setNode = goog.nullFunction;
  * @param {string} name Name of the node.
  * @return {boolean} True if node existed and was deleted.
  */
-goog.ds.DataNodeList.prototype.removeNode = goog.nullFunction;
+goog.ds.DataNodeList.prototype.removeNode = goog.abstractMethod;
 
 
 /**
@@ -333,7 +335,7 @@ goog.ds.DataNodeList.prototype.removeNode = goog.nullFunction;
  * @constructor
  * @extends {goog.ds.DataNodeList}
  */
-// TODO(user): Use interfaces when available.
+// TODO(arv): Use interfaces when available.
 goog.ds.BasicNodeList = function(opt_nodes) {
   this.map_ = {};
   this.list_ = [];
@@ -352,6 +354,7 @@ goog.ds.BasicNodeList = function(opt_nodes) {
  * TODO(user) Remove function as well
  *
  * @param {goog.ds.DataNode} node The node to add.
+ * @override
  */
 goog.ds.BasicNodeList.prototype.add = function(node) {
   this.list_.push(node);
@@ -369,6 +372,7 @@ goog.ds.BasicNodeList.prototype.add = function(node) {
  *
  * @param {string} key String lookup key.
  * @return {goog.ds.DataNode} The node, or null if doesn't exist.
+ * @override
  */
 goog.ds.BasicNodeList.prototype.get = function(key) {
   return this.map_[key] || null;
@@ -381,6 +385,7 @@ goog.ds.BasicNodeList.prototype.get = function(key) {
  *
  * @param {number} index The index of the node.
  * @return {goog.ds.DataNode} The node, or null if doesn't exist.
+ * @override
  */
 goog.ds.BasicNodeList.prototype.getByIndex = function(index) {
   return this.list_[index] || null;
@@ -391,6 +396,7 @@ goog.ds.BasicNodeList.prototype.getByIndex = function(index) {
  * Gets the size of the node list
  *
  * @return {number} The size of the list.
+ * @override
  */
 goog.ds.BasicNodeList.prototype.getCount = function() {
   return this.list_.length;
@@ -401,6 +407,7 @@ goog.ds.BasicNodeList.prototype.getCount = function() {
  * Sets a node in the list of a given name
  * @param {string} name Name of the node.
  * @param {goog.ds.DataNode} node The node.
+ * @override
  */
 goog.ds.BasicNodeList.prototype.setNode = function(name, node) {
   if (node == null) {
@@ -421,6 +428,7 @@ goog.ds.BasicNodeList.prototype.setNode = function(name, node) {
  * Removes a node in the list of a given name
  * @param {string} name Name of the node.
  * @return {boolean} True if node existed and was deleted.
+ * @override
  */
 goog.ds.BasicNodeList.prototype.removeNode = function(name) {
   var existingNode = this.indexMap_[name];
@@ -465,6 +473,7 @@ goog.inherits(goog.ds.EmptyNodeList, goog.ds.BasicNodeList);
  * If the node has a dataName, uses this for the key in the map.
  *
  * @param {goog.ds.DataNode} node The node to add.
+ * @override
  */
 goog.ds.EmptyNodeList.prototype.add = function(node) {
   throw Error('Can\'t add to EmptyNodeList');
@@ -504,6 +513,7 @@ goog.inherits(goog.ds.SortedNodeList, goog.ds.BasicNodeList);
  * If the node has a dataName, uses this for the key in the map.
  *
  * @param {goog.ds.DataNode} node The node to add.
+ * @override
  */
 goog.ds.SortedNodeList.prototype.add = function(node) {
   if (!this.compareFn_) {
@@ -553,6 +563,7 @@ goog.ds.SortedNodeList.prototype.append = function(node) {
  * Sets a node in the list of a given name, maintaining sort order.
  * @param {string} name Name of the node.
  * @param {goog.ds.DataNode} node The node.
+ * @override
  */
 goog.ds.SortedNodeList.prototype.setNode = function(name, node) {
   if (node == null) {
@@ -582,9 +593,8 @@ goog.ds.SortedNodeList.prototype.setNode = function(name, node) {
 /**
  * The character denoting an attribute.
  * @type {string}
- * @private
  */
-goog.ds.STR_ATTRIBUTE_START_ = '@';
+goog.ds.STR_ATTRIBUTE_START = '@';
 
 
 /**

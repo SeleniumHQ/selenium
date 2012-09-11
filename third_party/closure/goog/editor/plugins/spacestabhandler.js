@@ -49,7 +49,7 @@ goog.editor.plugins.SpacesTabHandler.prototype.getTrogClassId = function() {
 /** @override */
 goog.editor.plugins.SpacesTabHandler.prototype.handleTabKey = function(e) {
   var dh = this.getFieldDomHelper();
-  var range = this.fieldObject.getRange();
+  var range = this.getFieldObject().getRange();
   if (!goog.editor.range.intersectsTag(range, goog.dom.TagName.LI)) {
     // In the shift + tab case we don't want to insert spaces, but we don't
     // want focus to move either so skip the spacing logic and just prevent
@@ -58,7 +58,7 @@ goog.editor.plugins.SpacesTabHandler.prototype.handleTabKey = function(e) {
       // Not in a list but we want to insert 4 spaces.
 
       // Stop change events while we make multiple field changes.
-      this.fieldObject.stopChangeEvents(true, true);
+      this.getFieldObject().stopChangeEvents(true, true);
 
       // Inserting nodes below completely messes up the selection, doing the
       // deletion here before it's messed up. Only delete if text is selected,
@@ -67,7 +67,7 @@ goog.editor.plugins.SpacesTabHandler.prototype.handleTabKey = function(e) {
         dh.getDocument().execCommand('delete', false, null);
         // Safari 3 has some DOM exceptions if we don't reget the range here,
         // doing it all the time just to be safe.
-        range = this.fieldObject.getRange();
+        range = this.getFieldObject().getRange();
       }
 
       // Emulate tab by removing selection and inserting 4 spaces
@@ -79,9 +79,9 @@ goog.editor.plugins.SpacesTabHandler.prototype.handleTabKey = function(e) {
       var elem = dh.createDom('span', null, '\u00a0\u00a0 \u00a0');
       elem = range.insertNode(elem, false);
 
-      this.fieldObject.dispatchChange();
+      this.getFieldObject().dispatchChange();
       goog.editor.range.placeCursorNextTo(elem, false);
-      this.fieldObject.dispatchSelectionChangeEvent();
+      this.getFieldObject().dispatchSelectionChangeEvent();
     }
 
     e.preventDefault();

@@ -124,7 +124,7 @@ goog.editor.plugins.EquationEditorPlugin.prototype.populateContext_ =
  */
 goog.editor.plugins.EquationEditorPlugin.prototype.getEquationFromSelection_ =
     function() {
-  var range = this.fieldObject.getRange();
+  var range = this.getFieldObject().getRange();
   if (range) {
     return range.getText();
   }
@@ -180,7 +180,7 @@ goog.editor.plugins.EquationEditorPlugin.prototype.handleOk_ =
   this.restoreOriginalSelection();
 
   // Notify listeners that the editable field's contents are about to change.
-  this.fieldObject.dispatchBeforeChange();
+  this.getFieldObject().dispatchBeforeChange();
 
   var dh = this.getFieldDomHelper();
   var node = dh.htmlToDocumentFragment(e.equationHtml);
@@ -196,7 +196,7 @@ goog.editor.plugins.EquationEditorPlugin.prototype.handleOk_ =
     // <br> right before and/or after the selection. Currently this is fixed
     // only for case of collapsed selection where we simply avoid calling
     // removeContants().
-    var range = this.fieldObject.getRange();
+    var range = this.getFieldObject().getRange();
     if (!range.isCollapsed()) {
       range.removeContents();
     }
@@ -207,5 +207,5 @@ goog.editor.plugins.EquationEditorPlugin.prototype.handleOk_ =
   // equation image.
   goog.editor.range.placeCursorNextTo(node, false);
 
-  this.fieldObject.dispatchChange();
+  this.getFieldObject().dispatchChange();
 };

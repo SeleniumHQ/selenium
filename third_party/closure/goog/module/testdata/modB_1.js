@@ -21,4 +21,11 @@ goog.provide('goog.module.testdata.modB_1');
 
 goog.require('goog.module.ModuleManager');
 
+function throwErrorInModuleB() {
+  throw Error();
+}
+
+if (window.modB1Loaded) throw Error('modB_1 loaded twice');
+window.modB1Loaded = true;
+
 goog.module.ModuleManager.getInstance().setLoaded('modB');

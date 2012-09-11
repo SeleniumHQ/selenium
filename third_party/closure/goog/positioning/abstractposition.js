@@ -15,6 +15,7 @@
 /**
  * @fileoverview Abstract base class for positioning implementations.
  *
+ * @author eae@google.com (Emil A Eklund)
  */
 
 goog.provide('goog.positioning.AbstractPosition');

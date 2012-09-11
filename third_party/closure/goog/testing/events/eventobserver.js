@@ -29,6 +29,7 @@
  * assertEquals(2, observer.getEvents('submit').length);
  * </pre>
  *
+ * @author nnaze@google.com (Nathan Naze)
  */
 
 goog.provide('goog.testing.events.EventObserver');

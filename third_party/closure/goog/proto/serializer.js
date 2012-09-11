@@ -14,10 +14,11 @@
 
 /**
  * @fileoverview Protocol buffer serializer.
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 
-// TODO(user): Serialize booleans as 0 and 1
+// TODO(arv): Serialize booleans as 0 and 1
 
 
 goog.provide('goog.proto.Serializer');
@@ -42,11 +43,11 @@ goog.inherits(goog.proto.Serializer, goog.json.Serializer);
 /**
  * Serializes an array to a protocol buffer string. This overrides the JSON
  * method to output empty slots when the value is null or undefined.
- * @private
  * @param {Array} arr The array to serialize.
  * @param {Array} sb Array used as a string builder.
+ * @override
  */
-goog.proto.Serializer.prototype.serializeArray_ = function(arr, sb) {
+goog.proto.Serializer.prototype.serializeArray = function(arr, sb) {
   var l = arr.length;
   sb.push('[');
   var emptySlots = 0;

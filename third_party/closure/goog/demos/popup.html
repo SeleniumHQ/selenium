@@ -44,6 +44,11 @@ See the COPYING file for details.
     display: block;
     width: 15em;
   }
+  #abs-box {
+    border: solid black 2px;
+    height: 200px;
+    width: 200px;
+  }
   </style>
 </head>
 <body>
@@ -108,7 +113,7 @@ See the COPYING file for details.
 
   <hr>
   <h3>Positioning at coordinates</h3>
-  <div id="abs_box" style="width:200px;height:200px;border:solid black 2px;"></div>
+  <div id="abs-box"></div>
 
   <script>
     var popupElt = document.getElementById('popup');
@@ -150,15 +155,16 @@ See the COPYING file for details.
     }
 
     function onMouseMove(e) {
-      var absBox = document.getElementById('abs_box');
-      var viewPortElt = goog.style.getClientViewportElement();
+      var absBox = document.getElementById('abs-box');
+
+      var offset = goog.style.getViewportPageOffset(
+          goog.dom.getOwnerDocument(absBox));
       var size = goog.style.getSize(absBox);
 
       var boxPagePosition = goog.style.getPageOffset(absBox);
-      var viewPortPagePosition =  goog.style.getPageOffset(viewPortElt);
       var boxClientPosition = new goog.math.Coordinate(
-          boxPagePosition.x - viewPortElt.scrollLeft,
-          boxPagePosition.y - viewPortElt.scrollTop);
+          boxPagePosition.x - offset.x,
+          boxPagePosition.y - offset.y);
 
       if (e.clientX >= boxClientPosition.x &&
           e.clientX < (boxClientPosition.x + size.width) &&

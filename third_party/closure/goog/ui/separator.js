@@ -16,6 +16,7 @@
  * @fileoverview A class for representing a separator, with renderers for both
  * horizontal (menu) and vertical (toolbar) separators.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.ui.Separator');
@@ -58,6 +59,7 @@ goog.inherits(goog.ui.Separator, goog.ui.Control);
  * Configures the component after its DOM has been rendered.  Overrides
  * {@link goog.ui.Control#enterDocument} by making sure no event handler
  * is allocated.
+ * @override
  */
 goog.ui.Separator.prototype.enterDocument = function() {
   goog.ui.Separator.superClass_.enterDocument.call(this);

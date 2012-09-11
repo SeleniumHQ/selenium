@@ -52,6 +52,9 @@ goog.dom.annotate.annotateTerms = function(node, terms, annotateFn,
                                            opt_ignoreCase,
                                            opt_classesToSkip,
                                            opt_maxMs) {
+  if (opt_ignoreCase) {
+    terms = goog.dom.annotate.lowercaseTerms_(terms);
+  }
   var stopTime = opt_maxMs > 0 ? goog.now() + opt_maxMs : 0;
 
   return goog.dom.annotate.annotateTermsInNode_(

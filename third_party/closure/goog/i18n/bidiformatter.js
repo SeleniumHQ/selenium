@@ -38,8 +38,8 @@ goog.require('goog.string');
  * displayed incorrectly unless the inserted string is explicitly separated
  * from the surrounding text in a "wrapper" that declares its directionality at
  * the start and then resets it back at the end. This wrapping can be done in
- * HTML mark-up (e.g. a 'span dir=rtl' tag) or - only in contexts where mark-up
- * can not be used - in Unicode BiDi formatting codes (LRE|RLE and PDF).
+ * HTML mark-up (e.g. a 'span dir="rtl"' tag) or - only in contexts where
+ * mark-up can not be used - in Unicode BiDi formatting codes (LRE|RLE and PDF).
  * Providing such wrapping services is the basic purpose of the BiDi formatter.
  *
  * 2. Directionality estimation
@@ -185,8 +185,8 @@ goog.i18n.BidiFormatter.prototype.dirResetIfNeeded_ = function(str, dir,
         goog.i18n.bidi.endsWithRtl(str, opt_isHtml)) ||
        (this.contextDir_ == goog.i18n.bidi.Dir.RTL &&
         goog.i18n.bidi.endsWithLtr(str, opt_isHtml)))) {
-   return this.contextDir_ == goog.i18n.bidi.Dir.LTR ?
-       goog.i18n.bidi.Format.LRM : goog.i18n.bidi.Format.RLM;
+    return this.contextDir_ == goog.i18n.bidi.Dir.LTR ?
+        goog.i18n.bidi.Format.LRM : goog.i18n.bidi.Format.RLM;
   } else {
     return '';
   }
@@ -229,15 +229,15 @@ goog.i18n.BidiFormatter.prototype.knownDirAttrValue = function(dir) {
 
 
 /**
- * Returns "dir=ltr" or "dir=rtl", depending on {@code str}'s estimated
+ * Returns 'dir="ltr"' or 'dir="rtl"', depending on {@code str}'s estimated
  * directionality, if it is not the same as the context directionality.
  * Otherwise, returns the empty string.
  *
  * @param {string} str Text whose directionality is to be estimated.
  * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
  *     Default: false.
- * @return {string} "dir=rtl" for RTL text in non-RTL context; "dir=ltr" for LTR
- *     text in non-LTR context; else, the empty string.
+ * @return {string} 'dir="rtl"' for RTL text in non-RTL context; 'dir="ltr"' for
+ *     LTR text in non-LTR context; else, the empty string.
  */
 goog.i18n.BidiFormatter.prototype.dirAttr = function(str, opt_isHtml) {
   return this.knownDirAttr(this.estimateDirection(str, opt_isHtml));
@@ -245,18 +245,18 @@ goog.i18n.BidiFormatter.prototype.dirAttr = function(str, opt_isHtml) {
 
 
 /**
- * Returns "dir=ltr" or "dir=rtl", depending on the given directionality, if it
- * is not the same as the context directionality. Otherwise, returns the empty
- * string.
+ * Returns 'dir="ltr"' or 'dir="rtl"', depending on the given directionality, if
+ * it is not the same as the context directionality. Otherwise, returns the
+ * empty string.
  *
  * @param {goog.i18n.bidi.Dir} dir A directionality.
- * @return {string} "dir=rtl" for RTL text in non-RTL context; "dir=ltr" for LTR
- *     text in non-LTR context; else, the empty string.
+ * @return {string} 'dir="rtl"' for RTL text in non-RTL context; 'dir="ltr"' for
+ *     LTR text in non-LTR context; else, the empty string.
  */
 goog.i18n.BidiFormatter.prototype.knownDirAttr = function(dir) {
   if (dir != this.contextDir_) {
-    return dir == goog.i18n.bidi.Dir.RTL ? 'dir=rtl' :
-        dir == goog.i18n.bidi.Dir.LTR ? 'dir=ltr' : '';
+    return dir == goog.i18n.bidi.Dir.RTL ? 'dir="rtl"' :
+        dir == goog.i18n.bidi.Dir.LTR ? 'dir="ltr"' : '';
   }
   return '';
 };
@@ -268,9 +268,9 @@ goog.i18n.BidiFormatter.prototype.knownDirAttr = function(dir) {
  * garbled nor garbles what follows it.
  * The algorithm: estimates the directionality of input argument {@code str}. In
  * case its directionality doesn't match the context directionality, wraps it
- * with a 'span' tag and adds a "dir" attribute (either 'dir=rtl' or 'dir=ltr').
- * If setAlwaysSpan(true) was used, the input is always wrapped with 'span',
- * skipping just the dir attribute when it's not needed.
+ * with a 'span' tag and adds a "dir" attribute (either 'dir="rtl"' or
+ * 'dir="ltr"'). If setAlwaysSpan(true) was used, the input is always wrapped
+ * with 'span', skipping just the dir attribute when it's not needed.
  *
  * If {@code opt_dirReset}, and if the overall directionality or the exit
  * directionality of {@code str} are opposite to the context directionality, a
@@ -299,9 +299,9 @@ goog.i18n.BidiFormatter.prototype.spanWrap = function(str, opt_isHtml,
  * context directionality, so an opposite-directionality string is neither
  * garbled nor garbles what follows it.
  * The algorithm: If {@code dir} doesn't match the context directionality, wraps
- * {@code str} with a 'span' tag and adds a "dir" attribute (either 'dir=rtl' or
- * 'dir=ltr'). If setAlwaysSpan(true) was used, the input is always wrapped with
- * 'span', skipping just the dir attribute when it's not needed.
+ * {@code str} with a 'span' tag and adds a "dir" attribute (either 'dir="rtl"'
+ * or 'dir="ltr"'). If setAlwaysSpan(true) was used, the input is always wrapped
+ * with 'span', skipping just the dir attribute when it's not needed.
  *
  * If {@code opt_dirReset}, and if {@code dir} or the exit directionality of
  * {@code str} are opposite to the context directionality, a trailing unicode
@@ -332,7 +332,7 @@ goog.i18n.BidiFormatter.prototype.spanWrapWithKnownDir = function(dir, str,
   if (this.alwaysSpan_ || dirCondition) {  // Wrap is needed
     result.push('<span');
     if (dirCondition) {
-      result.push(dir == goog.i18n.bidi.Dir.RTL ? ' dir=rtl' : ' dir=ltr');
+      result.push(dir == goog.i18n.bidi.Dir.RTL ? ' dir="rtl"' : ' dir="ltr"');
     }
     result.push('>' + str + '</span>');
   } else {
@@ -452,11 +452,11 @@ goog.i18n.BidiFormatter.prototype.markAfter = function(str, opt_isHtml) {
  */
 goog.i18n.BidiFormatter.prototype.mark = function() {
   switch (this.contextDir_) {
-  case (goog.i18n.bidi.Dir.LTR):
+    case (goog.i18n.bidi.Dir.LTR):
       return goog.i18n.bidi.Format.LRM;
-  case (goog.i18n.bidi.Dir.RTL):
+    case (goog.i18n.bidi.Dir.RTL):
       return goog.i18n.bidi.Format.RLM;
-  default:
+    default:
       return '';
   }
 };

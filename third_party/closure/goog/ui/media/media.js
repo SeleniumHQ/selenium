@@ -195,6 +195,8 @@ goog.inherits(goog.ui.media.MediaRenderer, goog.ui.ControlRenderer);
  *
  * @param {goog.ui.Control} control The control instance.
  * @return {Element} The DOM structure that represents control.
+ * @suppress {visibility} Calling protected control.setElementInternal().
+ * @override
  */
 goog.ui.media.MediaRenderer.prototype.createDom = function(control) {
   var domHelper = control.getDomHelper();

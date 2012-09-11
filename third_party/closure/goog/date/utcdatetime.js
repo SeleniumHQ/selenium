@@ -73,7 +73,8 @@ goog.date.UtcDateTime.fromIsoString = function(formatted) {
 /**
  * Clones the UtcDateTime object.
  *
- * @return {goog.date.UtcDateTime} A clone of the datetime object.
+ * @return {!goog.date.UtcDateTime} A clone of the datetime object.
+ * @override
  */
 goog.date.UtcDateTime.prototype.clone = function() {
   var date = new goog.date.UtcDateTime(this.date_);

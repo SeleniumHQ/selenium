@@ -91,6 +91,7 @@ goog.ds.JsonDataSource['dataSources'] = {};
 /**
  * Load or reload the backing data for this node.
  * Fires the JsonDataSource
+ * @override
  */
 goog.ds.JsonDataSource.prototype.load = function() {
   if (this.uri_) {
@@ -122,6 +123,7 @@ goog.ds.JsonDataSource.prototype.load = function() {
 /**
  * Gets the state of the backing data for this node
  * @return {goog.ds.LoadState} The state.
+ * @override
  */
 goog.ds.JsonDataSource.prototype.getLoadState = function() {
   return this.loadState_;

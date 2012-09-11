@@ -112,6 +112,7 @@ goog.dom.pattern.Repeat.prototype.matches;
  *     but already had accumulated matches, <code>MATCHING</code> if the pattern
  *     starts a match, and <code>NO_MATCH</code> if the pattern does not match.
  * @suppress {missingProperties} See the broken line below.
+ * @override
  */
 goog.dom.pattern.Repeat.prototype.matchToken = function(token, type) {
   // Reset if we're starting a new match
@@ -179,6 +180,7 @@ goog.dom.pattern.Repeat.prototype.matchToken = function(token, type) {
 
 /**
  * Reset any internal state this pattern keeps.
+ * @override
  */
 goog.dom.pattern.Repeat.prototype.reset = function() {
   this.pattern_.reset();

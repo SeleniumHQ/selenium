@@ -59,7 +59,8 @@ goog.inherits(goog.testing.MockRange.ConcreteRange_, goog.dom.AbstractRange);
 /**
  * Undefine the iterator so the mock framework can loop through this class'
  * properties.
- * @type {undefined}
  * @override
  */
-goog.testing.MockRange.ConcreteRange_.prototype.__iterator__ = undefined;
+goog.testing.MockRange.ConcreteRange_.prototype.__iterator__ =
+    // This isn't really type-safe.
+    /** @type {?} */ (undefined);

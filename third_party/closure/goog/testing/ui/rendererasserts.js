@@ -42,6 +42,7 @@ goog.testing.ui.rendererasserts.assertNoGetCssClassCallsInConstructor =
   }
   goog.inherits(TestControlRenderer, rendererClassUnderTest);
 
+  /** @override */
   TestControlRenderer.prototype.getCssClass = function() {
     getCssClassCalls++;
     return TestControlRenderer.superClass_.getCssClass.call(this);

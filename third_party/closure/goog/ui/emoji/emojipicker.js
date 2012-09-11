@@ -452,7 +452,10 @@ goog.ui.emoji.EmojiPicker.prototype.loadImages = function() {
 };
 
 
-/** @override */
+/**
+ * @override
+ * @suppress {deprecated} Using deprecated goog.ui.TabPane.
+ */
 goog.ui.emoji.EmojiPicker.prototype.createDom = function() {
   this.setElementInternal(this.getDomHelper().createDom('div'));
 
@@ -588,13 +591,17 @@ goog.ui.emoji.EmojiPicker.prototype.createPlaceholderEmojiPage_ =
  * structure they build is fairly complicated.
  * @param {Element} element Element to decorate.
  * @return {boolean} Returns always false.
+ * @override
  */
 goog.ui.emoji.EmojiPicker.prototype.canDecorate = function(element) {
   return false;
 };
 
 
-/** @override */
+/**
+ * @override
+ * @suppress {deprecated} Using deprecated goog.ui.TabPane.
+ */
 goog.ui.emoji.EmojiPicker.prototype.enterDocument = function() {
   goog.ui.emoji.EmojiPicker.superClass_.enterDocument.call(this);
 
@@ -768,6 +775,7 @@ goog.ui.emoji.EmojiPicker.prototype.onPageChanged_ = function(e) {
  *
  * @param {number} index Index of the page to load.
  * @private
+ * @suppress {deprecated} Using deprecated goog.ui.TabPane.
  */
 goog.ui.emoji.EmojiPicker.prototype.loadPage_ = function(index) {
   if (index < 0 || index > this.pages_.length) {

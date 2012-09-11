@@ -15,6 +15,7 @@
 /**
  * @fileoverview Advanced tooltip widget implementation.
  *
+ * @author eae@google.com (Emil A Eklund)
  * @see ../demos/advancedtooltip.html
  */
 
@@ -82,17 +83,6 @@ goog.ui.AdvancedTooltip.prototype.hotSpotPadding_;
  * @private
  */
 goog.ui.AdvancedTooltip.prototype.boundingBox_;
-
-
-/**
- * Bounding box including padding. If the cursor moves outside of it the tooltip
- * is closed.
- * Only used if a cursor padding has been specified.
- *
- * @type {goog.math.Box}
- * @private
- */
-goog.ui.AdvancedTooltip.prototype.paddingBox_;
 
 
 /**
@@ -208,7 +198,6 @@ goog.ui.AdvancedTooltip.prototype.onHide_ = function() {
                        goog.events.EventType.MOUSEMOVE,
                        this.handleMouseMove, false, this);
 
-  this.paddingBox_ = null;
   this.boundingBox_ = null;
   this.anchorBox_ = null;
   this.tracking_ = false;
@@ -231,11 +220,17 @@ goog.ui.AdvancedTooltip.prototype.isMouseInTooltip = function() {
  * padding if any.
  * @param {goog.math.Coordinate} coord Coordinate being tested.
  * @return {boolean} Whether the coord is in the tooltip.
+ * @override
  */
 goog.ui.AdvancedTooltip.prototype.isCoordinateInTooltip = function(coord) {
   // Check if coord is inside the bounding box of the tooltip
-  if (this.paddingBox_) {
-    return this.paddingBox_.contains(coord);
+  if (this.hotSpotPadding_) {
+    var offset = goog.style.getPageOffset(this.getElement());
+    var size = goog.style.getSize(this.getElement());
+    return offset.x - this.hotSpotPadding_.left <= coord.x &&
+        coord.x <= offset.x + size.width + this.hotSpotPadding_.right &&
+        offset.y - this.hotSpotPadding_.top <= coord.y &&
+        coord.y <= offset.y + size.height + this.hotSpotPadding_.bottom;
   }
 
   return goog.ui.AdvancedTooltip.superClass_.isCoordinateInTooltip.call(this,
@@ -269,6 +264,7 @@ goog.ui.AdvancedTooltip.prototype.isCoordinateActive_ = function(coord) {
  * Called by timer from mouse out handler. Hides tooltip if cursor is still
  * outside element and tooltip.
  * @param {Element} el Anchor when hide timer was started.
+ * @override
  */
 goog.ui.AdvancedTooltip.prototype.maybeHide = function(el) {
   this.hideTimer = undefined;
@@ -296,6 +292,7 @@ goog.ui.AdvancedTooltip.prototype.maybeHide = function(el) {
  *
  * @param {goog.events.BrowserEvent} event Event object.
  * @protected
+ * @override
  */
 goog.ui.AdvancedTooltip.prototype.handleMouseMove = function(event) {
   var startTimer = this.isVisible();
@@ -314,7 +311,7 @@ goog.ui.AdvancedTooltip.prototype.handleMouseMove = function(event) {
   }
 
   if (startTimer) {
-    this.startHideTimer_();
+    this.startHideTimer();
 
     // Even though the mouse coordinate is not on the tooltip (or nested child),
     // they may have an active element because of a focus event.  Don't let
@@ -337,15 +334,12 @@ goog.ui.AdvancedTooltip.prototype.handleMouseMove = function(event) {
  *
  * @param {goog.events.BrowserEvent} event Event object.
  * @protected
+ * @override
  */
 goog.ui.AdvancedTooltip.prototype.handleTooltipMouseOver = function(event) {
   if (this.getActiveElement() != this.getElement()) {
     this.tracking_ = false;
     this.setActiveElement(this.getElement());
-
-    if (!this.paddingBox_ && this.hotSpotPadding_) {
-      this.paddingBox_ = this.boundingBox_.clone().expand(this.hotSpotPadding_);
-    }
   }
 };
 
@@ -353,6 +347,7 @@ goog.ui.AdvancedTooltip.prototype.handleTooltipMouseOver = function(event) {
 /**
  * Override hide delay with cursor tracking hide delay while tracking.
  * @return {number} Hide delay to use.
+ * @override
  */
 goog.ui.AdvancedTooltip.prototype.getHideDelayMs = function() {
   return this.tracking_ ? this.cursorTrackingHideDelayMs_ :
@@ -362,7 +357,7 @@ goog.ui.AdvancedTooltip.prototype.getHideDelayMs = function() {
 
 /**
  * Forces the recalculation of the hotspot on the next mouse over event.
+ * @deprecated Not ever necessary to call this function. Hot spot is calculated
+ *     as neccessary.
  */
-goog.ui.AdvancedTooltip.prototype.resetHotSpot = function() {
-  this.paddingBox_ = null;
-};
+goog.ui.AdvancedTooltip.prototype.resetHotSpot = goog.nullFunction;

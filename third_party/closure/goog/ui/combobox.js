@@ -29,6 +29,8 @@ goog.require('goog.events');
 goog.require('goog.events.InputHandler');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
+goog.require('goog.positioning.Corner');
+goog.require('goog.positioning.MenuAnchoredPosition');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
@@ -268,6 +270,7 @@ goog.ui.ComboBox.prototype.exitDocument = function() {
 /**
  * Combo box currently can't decorate elements.
  * @return {boolean} The value false.
+ * @override
  */
 goog.ui.ComboBox.prototype.canDecorate = function() {
   return false;
@@ -386,6 +389,14 @@ goog.ui.ComboBox.prototype.getMenu = function() {
 
 
 /**
+ * @return {Element} The input element.
+ */
+goog.ui.ComboBox.prototype.getInputElement = function() {
+  return this.input_;
+};
+
+
+/**
  * @return {number} The number of visible items in the menu.
  * @private
  */
@@ -430,6 +441,9 @@ goog.ui.ComboBox.prototype.getMatchFunction = function() {
  */
 goog.ui.ComboBox.prototype.setDefaultText = function(text) {
   this.defaultText_ = text;
+  if (this.labelInput_) {
+    this.labelInput_.setLabel(this.defaultText_);
+  }
 };
 
 
@@ -551,8 +565,9 @@ goog.ui.ComboBox.prototype.maybeShowMenu_ = function(showAll) {
     goog.Timer.callOnce(this.clearDismissTimer_, 1, this);
 
     this.showMenu_();
-    this.positionMenu();
   }
+
+  this.positionMenu();
 };
 
 
@@ -561,10 +576,11 @@ goog.ui.ComboBox.prototype.maybeShowMenu_ = function(showAll) {
  * @protected
  */
 goog.ui.ComboBox.prototype.positionMenu = function() {
-  if (this.menu_) {
-    // TODO(user):  Make it right-aligned for RTL.
-    var pos = goog.style.getPageOffset(this.getElement());
-    this.menu_.setPosition(pos.x, pos.y + this.getElement().offsetHeight);
+  if (this.menu_ && this.menu_.isVisible()) {
+    var position = new goog.positioning.MenuAnchoredPosition(this.getElement(),
+        goog.positioning.Corner.BOTTOM_START, true);
+    position.reposition(this.menu_.getElement(),
+        goog.positioning.Corner.TOP_START);
   }
 };
 
@@ -873,11 +889,13 @@ goog.ui.ComboBox.prototype.isItemSticky_ = function(item) {
  * @param {Object=} opt_data Identifying data for the menu item.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional dom helper used for dom
  *     interactions.
+ * @param {goog.ui.MenuItemRenderer=} opt_renderer Optional renderer.
  * @constructor
  * @extends {goog.ui.MenuItem}
  */
-goog.ui.ComboBoxItem = function(content, opt_data, opt_domHelper) {
-  goog.ui.MenuItem.call(this, content, opt_data, opt_domHelper);
+goog.ui.ComboBoxItem = function(content, opt_data, opt_domHelper,
+    opt_renderer) {
+  goog.ui.MenuItem.call(this, content, opt_data, opt_domHelper, opt_renderer);
 };
 goog.inherits(goog.ui.ComboBoxItem, goog.ui.MenuItem);
 

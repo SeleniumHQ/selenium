@@ -289,6 +289,7 @@ goog.graphics.AffineTransform.prototype.preShear = function(shx, shy) {
  * @return {string} A string representation of this transform. The format of
  *     of the string is compatible with SVG matrix notation, i.e.
  *     "matrix(a,b,c,d,e,f)".
+ * @override
  */
 goog.graphics.AffineTransform.prototype.toString = function() {
   return 'matrix(' +

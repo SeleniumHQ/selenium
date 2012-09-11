@@ -53,6 +53,7 @@ goog.inherits(goog.testing.messaging.MockMessageChannel,
  * {@link goog.testing.FunctionMock}.
  * @param {string} serviceName The name of the remote service to run.
  * @param {string|!Object} payload The payload to send to the remote page.
+ * @override
  */
 goog.testing.messaging.MockMessageChannel.prototype.send = function(
     serviceName, payload) {};
@@ -60,6 +61,7 @@ goog.testing.messaging.MockMessageChannel.prototype.send = function(
 
 /**
  * Sets a flag indicating that this is disposed.
+ * @override
  */
 goog.testing.messaging.MockMessageChannel.prototype.dispose = function() {
   this.disposed = true;

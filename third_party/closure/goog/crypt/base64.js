@@ -17,6 +17,8 @@
  * work with decoded values in arrays of bytes. By "byte" I mean a number
  * in [0, 255].
  *
+ * @author doughtie@google.com (Gavin Doughtie)
+ * @author fschneider@google.com (Fritz Schneider)
  */
 
 goog.provide('goog.crypt.base64');
@@ -102,8 +104,8 @@ goog.crypt.base64.HAS_NATIVE_SUPPORT = goog.userAgent.GECKO ||
 /**
  * Base64-encode an array of bytes.
  *
- * @param {Array.<number>} input An array of bytes (numbers with value in
- *     [0, 255]) to encode.
+ * @param {Array.<number>|Uint8Array} input An array of bytes (numbers with
+ *     value in [0, 255]) to encode.
  * @param {boolean=} opt_webSafe Boolean indicating we should use the
  *     alternative alphabet.
  * @return {string} The base64 encoded string.

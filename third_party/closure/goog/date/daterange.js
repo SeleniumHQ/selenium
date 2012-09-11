@@ -32,19 +32,19 @@ goog.require('goog.iter.StopIteration');
 /**
  * Constructs a date range.
  * @constructor
- * @param {goog.date.Date} startDate The start date of the range.
- * @param {goog.date.Date} endDate The end date of the range.
+ * @param {goog.date.Date} startDate The first date in the range.
+ * @param {goog.date.Date} endDate The last date in the range.
  */
 goog.date.DateRange = function(startDate, endDate) {
   /**
-   * The start date.
+   * The first date in the range.
    * @type {goog.date.Date}
    * @private
    */
   this.startDate_ = startDate;
 
   /**
-   * The end date.
+   * The last date in the range.
    * @type {goog.date.Date}
    * @private
    */
@@ -67,7 +67,7 @@ goog.date.DateRange.MAXIMUM_DATE = new goog.date.Date(9999, 11, 31);
 
 
 /**
- * @return {goog.date.Date} The start date.
+ * @return {goog.date.Date} The first date in the range.
  */
 goog.date.DateRange.prototype.getStartDate = function() {
   return this.startDate_;
@@ -75,7 +75,7 @@ goog.date.DateRange.prototype.getStartDate = function() {
 
 
 /**
- * @return {goog.date.Date} The end date.
+ * @return {goog.date.Date} The last date in the range.
  */
 goog.date.DateRange.prototype.getEndDate = function() {
   return this.endDate_;

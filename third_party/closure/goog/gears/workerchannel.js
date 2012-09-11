@@ -88,6 +88,7 @@ goog.gears.WorkerChannel.prototype.peerOrigin;
  * Logger for this class.
  * @type {goog.debug.Logger}
  * @protected
+ * @override
  */
 goog.gears.WorkerChannel.prototype.logger =
     goog.debug.Logger.getLogger('goog.gears.WorkerChannel');

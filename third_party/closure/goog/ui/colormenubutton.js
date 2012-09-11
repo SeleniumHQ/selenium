@@ -152,9 +152,11 @@ goog.ui.ColorMenuButton.prototype.setSelectedColor = function(color) {
  * Sets the value associated with the color menu button.  Overrides
  * {@link goog.ui.Button#setValue} by interpreting the value as a color
  * spec string.
- * @param {?string} color New button value; should be a color spec string.
+ * @param {*} value New button value; should be a color spec string.
+ * @override
  */
-goog.ui.ColorMenuButton.prototype.setValue = function(color) {
+goog.ui.ColorMenuButton.prototype.setValue = function(value) {
+  var color = /** @type {?string} */ (value);
   for (var i = 0, item; item = this.getItemAt(i); i++) {
     if (typeof item.setSelectedColor == 'function') {
       // This menu item looks like a color palette.
@@ -172,6 +174,7 @@ goog.ui.ColorMenuButton.prototype.setValue = function(color) {
  * dispatches an ACTION event on behalf of the button itself.  Overrides
  * {@link goog.ui.MenuButton#handleMenuAction}.
  * @param {goog.events.Event} e Action event to handle.
+ * @override
  */
 goog.ui.ColorMenuButton.prototype.handleMenuAction = function(e) {
   if (typeof e.target.getSelectedColor == 'function') {

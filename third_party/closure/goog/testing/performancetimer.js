@@ -17,9 +17,11 @@
  *
  * {@see goog.testing.benchmark} for an easy way to use this functionality.
  *
+ * @author attila@google.com (Attila Bodis)
  */
 
 goog.provide('goog.testing.PerformanceTimer');
+goog.provide('goog.testing.PerformanceTimer.Task');
 
 goog.require('goog.array');
 goog.require('goog.math');
@@ -136,15 +138,36 @@ goog.testing.PerformanceTimer.prototype.isDiscardOutliers = function() {
  * @return {Object} Object containing performance stats.
  */
 goog.testing.PerformanceTimer.prototype.run = function(testFn) {
+  return this.runTask(new goog.testing.PerformanceTimer.Task(
+      (/** @type {function()} */ testFn)));
+};
+
+
+/**
+ * Executes the test function of the specified task as described in
+ * {@code run}. In addition, if specified, the set up and tear down functions of
+ * the task are invoked before and after each invocation of the test function.
+ * @see goog.testing.PerformanceTimer#run
+ * @param {goog.testing.PerformanceTimer.Task} task A task describing the test
+ *     function to invoke.
+ * @return {Object} Object containing performance stats.
+ */
+goog.testing.PerformanceTimer.prototype.runTask = function(task) {
   var samples = [];
   var testStart = goog.now();
   var totalRunTime = 0;
 
+  var testFn = task.getTest();
+  var setUpFn = task.getSetUp();
+  var tearDownFn = task.getTearDown();
+
   for (var i = 0; i < this.numSamples_ && totalRunTime <= this.timeoutInterval_;
        i++) {
+    setUpFn();
     var sampleStart = goog.now();
     testFn();
     var sampleEnd = goog.now();
+    tearDownFn();
     samples[i] = sampleEnd - sampleStart;
     totalRunTime = sampleEnd - testStart;
   }
@@ -154,12 +177,105 @@ goog.testing.PerformanceTimer.prototype.run = function(testFn) {
     goog.array.remove(samples, Math.max.apply(null, samples));
   }
 
+  return goog.testing.PerformanceTimer.createResults(samples);
+};
+
+
+/**
+ * Creates a performance timer results object by analyzing a given array of
+ * sample timings.
+ * @param {Array.<number>} samples The samples to analyze.
+ * @return {Object} Object containing performance stats.
+ */
+goog.testing.PerformanceTimer.createResults = function(samples) {
   return {
     'average': goog.math.average.apply(null, samples),
-    'count': i,
+    'count': samples.length,
     'maximum': Math.max.apply(null, samples),
     'minimum': Math.min.apply(null, samples),
     'standardDeviation': goog.math.standardDeviation.apply(null, samples),
     'total': goog.math.sum.apply(null, samples)
   };
+};
+
+
+
+/**
+ * A task for the performance timer to measure. Callers can specify optional
+ * setUp and tearDown methods to control state before and after each run of the
+ * test function.
+ * @param {function()} test Test function whose performance is to be measured.
+ * @constructor
+ */
+goog.testing.PerformanceTimer.Task = function(test) {
+  /**
+   * The test function to time.
+   * @type {function()}
+   * @private
+   */
+  this.test_ = test;
+};
+
+
+/**
+ * An optional set up function to run before each invocation of the test
+ * function.
+ * @type {function()}
+ * @private
+ */
+goog.testing.PerformanceTimer.Task.prototype.setUp_ = goog.nullFunction;
+
+
+/**
+ * An optional tear down function to run after each invocation of the test
+ * function.
+ * @type {function()}
+ * @private
+ */
+goog.testing.PerformanceTimer.Task.prototype.tearDown_ = goog.nullFunction;
+
+
+/** @return {function()} The test function to time. */
+goog.testing.PerformanceTimer.Task.prototype.getTest = function() {
+  return this.test_;
+};
+
+
+/**
+ * Specifies a set up function to be invoked before each invocation of the test
+ * function.
+ * @param {function()} setUp The set up function.
+ * @return {goog.testing.PerformanceTimer.Task} This task.
+ */
+goog.testing.PerformanceTimer.Task.prototype.withSetUp = function(setUp) {
+  this.setUp_ = setUp;
+  return this;
+};
+
+
+/**
+ * @return {function()} The set up function or null if none was specified.
+ */
+goog.testing.PerformanceTimer.Task.prototype.getSetUp = function() {
+  return this.setUp_;
+};
+
+
+/**
+ * Specifies a tear down function to be invoked after each invocation of the
+ * test function.
+ * @param {function()} tearDown The tear down function.
+ * @return {goog.testing.PerformanceTimer.Task} This task.
+ */
+goog.testing.PerformanceTimer.Task.prototype.withTearDown = function(tearDown) {
+  this.tearDown_ = tearDown;
+  return this;
+};
+
+
+/**
+ * @return {function()} The tear down function or null if none was specified.
+ */
+goog.testing.PerformanceTimer.Task.prototype.getTearDown = function() {
+  return this.tearDown_;
 };

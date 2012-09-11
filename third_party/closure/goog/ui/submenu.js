@@ -247,6 +247,7 @@ goog.ui.SubMenu.prototype.clearTimers = function() {
  * @param {boolean=} opt_force If true, doesn't check whether the component
  *     already has the requested visibility, and doesn't dispatch any events.
  * @return {boolean} Whether the visibility was changed.
+ * @override
  */
 goog.ui.SubMenu.prototype.setVisible = function(visible, opt_force) {
   var visibilityChanged = goog.ui.SubMenu.superClass_.setVisible.call(this,
@@ -279,17 +280,22 @@ goog.ui.SubMenu.prototype.dismissSiblings_ = function() {
  * it is highlighted.  If the right key is pressed the sub menu takes control
  * and delegates further key events to its menu until it is dismissed OR the
  * left key is pressed.
- * TODO(user): RTL lookup
  * @param {goog.events.KeyEvent} e A key event.
  * @return {boolean} Whether the event was handled.
+ * @override
  */
 goog.ui.SubMenu.prototype.handleKeyEvent = function(e) {
   var keyCode = e.keyCode;
+  var openKeyCode = this.isRightToLeft() ? goog.events.KeyCodes.LEFT :
+      goog.events.KeyCodes.RIGHT;
+  var closeKeyCode = this.isRightToLeft() ? goog.events.KeyCodes.RIGHT :
+      goog.events.KeyCodes.LEFT;
 
   if (!this.hasKeyboardControl_) {
     // Menu item doesn't have keyboard control and the right key was pressed.
     // So open take keyboard control and open the sub menu.
-    if (this.isEnabled() && keyCode == goog.events.KeyCodes.RIGHT) {
+    if (this.isEnabled() &&
+        (keyCode == openKeyCode || keyCode == this.getMnemonic())) {
       this.showSubMenu();
       this.getMenu().highlightFirst();
       this.clearTimers();
@@ -307,7 +313,7 @@ goog.ui.SubMenu.prototype.handleKeyEvent = function(e) {
 
   // The menu has control and the key hasn't yet been handled, on left arrow
   // we turn off key control.
-  } else if (keyCode == goog.events.KeyCodes.LEFT) {
+  } else if (keyCode == closeKeyCode) {
     this.dismissSubMenu();
 
   } else {
@@ -374,8 +380,9 @@ goog.ui.SubMenu.prototype.handleMouseOver = function(e) {
 /**
  * Overrides the default mouseup event handler, so that the ACTION isn't
  * dispatched for the submenu itself, instead the submenu is shown instantly.
- * @param {goog.events.BrowserEvent} e The browser event.
+ * @param {goog.events.Event} e The browser event.
  * @return {boolean} True if the action was allowed to proceed, false otherwise.
+ * @override
  */
 goog.ui.SubMenu.prototype.performActionInternal = function(e) {
   this.clearTimers();
@@ -407,13 +414,17 @@ goog.ui.SubMenu.prototype.setSubMenuVisible_ = function(visible) {
       if (!subMenu.isInDocument()) {
         subMenu.render();
       }
-      this.positionSubMenu_();
       subMenu.setHighlightedIndex(-1);
     }
     this.hasKeyboardControl_ = visible;
     goog.dom.classes.enable(this.getElement(),
         goog.getCssName('goog-submenu-open'), visible);
     subMenu.setVisible(visible);
+    // We must position after the menu is visible, otherwise positioning logic
+    // breaks in RTL.
+    if (visible) {
+      this.positionSubMenu_();
+    }
   }
 };
 

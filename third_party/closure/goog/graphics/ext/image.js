@@ -44,6 +44,7 @@ goog.inherits(goog.graphics.ext.Image, goog.graphics.ext.Element);
 /**
  * Redraw the image.  Called when the coordinate system is changed.
  * @protected
+ * @override
  */
 goog.graphics.ext.Image.prototype.redraw = function() {
   goog.graphics.ext.Image.superClass_.redraw.call(this);

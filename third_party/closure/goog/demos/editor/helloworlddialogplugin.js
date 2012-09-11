@@ -90,10 +90,10 @@ goog.demos.editor.HelloWorldDialogPlugin.prototype.handleOk_ = function(e) {
   this.restoreOriginalSelection();
 
   // Notify listeners that the field's contents are about to change.
-  this.fieldObject.dispatchBeforeChange();
+  this.getFieldObject().dispatchBeforeChange();
 
   // Now we can clear out what was previously selected (if anything).
-  var range = this.fieldObject.getRange();
+  var range = this.getFieldObject().getRange();
   range.removeContents();
   // And replace it with a span containing our hello world message.
   var createdNode = this.getFieldDomHelper().createDom(goog.dom.TagName.SPAN,
@@ -104,7 +104,7 @@ goog.demos.editor.HelloWorldDialogPlugin.prototype.handleOk_ = function(e) {
   goog.editor.range.placeCursorNextTo(createdNode, false);
 
   // Notify listeners that the field's selection has changed.
-  this.fieldObject.dispatchSelectionChangeEvent();
+  this.getFieldObject().dispatchSelectionChangeEvent();
   // Notify listeners that the field's contents have changed.
-  this.fieldObject.dispatchChange();
+  this.getFieldObject().dispatchChange();
 };

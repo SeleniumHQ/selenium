@@ -262,6 +262,7 @@ goog.ui.SplitPane.Orientation = {
 
 /**
  * Create the DOM node & text node needed for the splitpane.
+ * @override
  */
 goog.ui.SplitPane.prototype.createDom = function() {
   var dom = this.getDomHelper();
@@ -291,6 +292,7 @@ goog.ui.SplitPane.prototype.createDom = function() {
  * Determines if a given element can be decorated by this type of component.
  * @param {Element} element Element to decorate.
  * @return {boolean} True if the element can be decorated, false otherwise.
+ * @override
  */
 goog.ui.SplitPane.prototype.canDecorate = function(element) {
   var className = goog.ui.SplitPane.FIRST_CONTAINER_CLASS_NAME_;
@@ -329,6 +331,7 @@ goog.ui.SplitPane.prototype.canDecorate = function(element) {
  * goog.ui.Component#decorateInternal}.  Considered protected.
  * @param {Element} element Element (SplitPane div) to decorate.
  * @protected
+ * @override
  */
 goog.ui.SplitPane.prototype.decorateInternal = function(element) {
   goog.ui.SplitPane.superClass_.decorateInternal.call(this, element);
@@ -379,6 +382,7 @@ goog.ui.SplitPane.prototype.finishSetup_ = function() {
 
 /**
  * Setup all events and do an initial resize.
+ * @override
  */
 goog.ui.SplitPane.prototype.enterDocument = function() {
   goog.ui.SplitPane.superClass_.enterDocument.call(this);
@@ -639,7 +643,7 @@ goog.ui.SplitPane.prototype.setFirstComponentSize = function(opt_size) {
 
 /**
  * Dummy object to work around compiler warning.
- * TODO(user): Fix compiler or refactor to not depend on resize()
+ * TODO(arv): Fix compiler or refactor to not depend on resize()
  * @private
  * @type {Object}
  */

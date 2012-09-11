@@ -72,8 +72,8 @@ goog.demos.editor.HelloWorld.prototype.isSupportedCommand = function(
  */
 goog.demos.editor.HelloWorld.prototype.execCommandInternal = function(
     command) {
-  var domHelper = this.fieldObject.getEditableDomHelper();
-  var range = this.fieldObject.getRange();
+  var domHelper = this.getFieldObject().getEditableDomHelper();
+  var range = this.getFieldObject().getRange();
   range.removeContents();
   var newNode =
       domHelper.createDom(goog.dom.TagName.SPAN, null, 'Hello World!');

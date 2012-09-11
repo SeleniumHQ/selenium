@@ -16,6 +16,7 @@
  * @fileoverview An animation class that animates CSS sprites by changing the
  * CSS background-position.
  *
+ * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/cssspriteanimation.html
  */
 
@@ -28,7 +29,7 @@ goog.require('goog.fx.Animation');
 /**
  * This animation class is used to animate a CSS sprite (moving a background
  * image).  This moves through a series of images in a single image sprite and
- * loops the animation when donw.  You should set up the
+ * loops the animation when done.  You should set up the
  * {@code background-image} and size in a CSS rule for the relevant element.
  *
  * @param {Element} element The HTML element to animate the background for.

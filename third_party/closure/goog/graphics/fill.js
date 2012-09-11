@@ -15,6 +15,7 @@
 
 /**
  * @fileoverview Represents a fill goog.graphics.
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 

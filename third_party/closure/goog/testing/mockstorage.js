@@ -52,6 +52,7 @@ goog.testing.MockStorage = function() {
  * Sets an item to the storage.
  * @param {string} key Storage key.
  * @param {*} value Storage value. Must be convertible to string.
+ * @override
  */
 goog.testing.MockStorage.prototype.setItem = function(key, value) {
   this.store_.set(key, String(value));
@@ -65,6 +66,7 @@ goog.testing.MockStorage.prototype.setItem = function(key, value) {
  * string.
  * @param {string} key Storage key.
  * @return {?string} Storage value for key; null if does not exist.
+ * @override
  */
 goog.testing.MockStorage.prototype.getItem = function(key) {
   var val = this.store_.get(key);
@@ -76,6 +78,7 @@ goog.testing.MockStorage.prototype.getItem = function(key) {
 /**
  * Removes and item from the storage.
  * @param {string} key Storage key.
+ * @override
  */
 goog.testing.MockStorage.prototype.removeItem = function(key) {
   this.store_.remove(key);
@@ -85,6 +88,7 @@ goog.testing.MockStorage.prototype.removeItem = function(key) {
 
 /**
  * Clears the storage.
+ * @override
  */
 goog.testing.MockStorage.prototype.clear = function() {
   this.store_.clear();
@@ -96,6 +100,7 @@ goog.testing.MockStorage.prototype.clear = function() {
  * Returns the key at the given index.
  * @param {number} index The index for the key.
  * @return {?string} Key at the given index, null if not found.
+ * @override
  */
 goog.testing.MockStorage.prototype.key = function(index) {
   return this.store_.getKeys()[index] || null;

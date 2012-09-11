@@ -47,6 +47,7 @@ goog.ui.editor.TabPane = function(dom, opt_caption) {
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
+  this.registerDisposable(this.eventHandler_);
 
   /**
    * The tab bar used to render the tabs.

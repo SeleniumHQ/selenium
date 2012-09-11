@@ -54,6 +54,7 @@ if (goog.DEBUG) {
   /**
    * Returns a string representing the range.
    * @return {string} In the form [-3.5, 8.13].
+   * @override
    */
   goog.math.Range.prototype.toString = function() {
     return '[' + this.start + ', ' + this.end + ']';

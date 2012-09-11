@@ -74,6 +74,7 @@ goog.testing.fs.Blob.prototype.slice = function(
 
 /**
  * @return {string} The string data encapsulated by the blob.
+ * @override
  */
 goog.testing.fs.Blob.prototype.toString = function() {
   return this.data_;

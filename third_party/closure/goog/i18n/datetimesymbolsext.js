@@ -31,9 +31,10 @@ goog.provide('goog.i18n.DateTimeSymbols_aa');
 goog.provide('goog.i18n.DateTimeSymbols_aa_DJ');
 goog.provide('goog.i18n.DateTimeSymbols_aa_ER');
 goog.provide('goog.i18n.DateTimeSymbols_aa_ET');
-goog.provide('goog.i18n.DateTimeSymbols_af');
 goog.provide('goog.i18n.DateTimeSymbols_af_NA');
 goog.provide('goog.i18n.DateTimeSymbols_af_ZA');
+goog.provide('goog.i18n.DateTimeSymbols_agq');
+goog.provide('goog.i18n.DateTimeSymbols_agq_CM');
 goog.provide('goog.i18n.DateTimeSymbols_ak');
 goog.provide('goog.i18n.DateTimeSymbols_ak_GH');
 goog.provide('goog.i18n.DateTimeSymbols_am_ET');
@@ -63,6 +64,8 @@ goog.provide('goog.i18n.DateTimeSymbols_az_Cyrl');
 goog.provide('goog.i18n.DateTimeSymbols_az_Cyrl_AZ');
 goog.provide('goog.i18n.DateTimeSymbols_az_Latn');
 goog.provide('goog.i18n.DateTimeSymbols_az_Latn_AZ');
+goog.provide('goog.i18n.DateTimeSymbols_bas');
+goog.provide('goog.i18n.DateTimeSymbols_bas_CM');
 goog.provide('goog.i18n.DateTimeSymbols_be');
 goog.provide('goog.i18n.DateTimeSymbols_be_BY');
 goog.provide('goog.i18n.DateTimeSymbols_bem');
@@ -86,11 +89,8 @@ goog.provide('goog.i18n.DateTimeSymbols_bs_BA');
 goog.provide('goog.i18n.DateTimeSymbols_byn');
 goog.provide('goog.i18n.DateTimeSymbols_byn_ER');
 goog.provide('goog.i18n.DateTimeSymbols_ca_ES');
-goog.provide('goog.i18n.DateTimeSymbols_cch');
-goog.provide('goog.i18n.DateTimeSymbols_cch_NG');
 goog.provide('goog.i18n.DateTimeSymbols_cgg');
 goog.provide('goog.i18n.DateTimeSymbols_cgg_UG');
-goog.provide('goog.i18n.DateTimeSymbols_chr');
 goog.provide('goog.i18n.DateTimeSymbols_chr_US');
 goog.provide('goog.i18n.DateTimeSymbols_ckb');
 goog.provide('goog.i18n.DateTimeSymbols_ckb_Arab');
@@ -101,7 +101,6 @@ goog.provide('goog.i18n.DateTimeSymbols_ckb_IR');
 goog.provide('goog.i18n.DateTimeSymbols_ckb_Latn');
 goog.provide('goog.i18n.DateTimeSymbols_ckb_Latn_IQ');
 goog.provide('goog.i18n.DateTimeSymbols_cs_CZ');
-goog.provide('goog.i18n.DateTimeSymbols_cy');
 goog.provide('goog.i18n.DateTimeSymbols_cy_GB');
 goog.provide('goog.i18n.DateTimeSymbols_da_DK');
 goog.provide('goog.i18n.DateTimeSymbols_dav');
@@ -110,6 +109,12 @@ goog.provide('goog.i18n.DateTimeSymbols_de_BE');
 goog.provide('goog.i18n.DateTimeSymbols_de_DE');
 goog.provide('goog.i18n.DateTimeSymbols_de_LI');
 goog.provide('goog.i18n.DateTimeSymbols_de_LU');
+goog.provide('goog.i18n.DateTimeSymbols_dje');
+goog.provide('goog.i18n.DateTimeSymbols_dje_NE');
+goog.provide('goog.i18n.DateTimeSymbols_dua');
+goog.provide('goog.i18n.DateTimeSymbols_dua_CM');
+goog.provide('goog.i18n.DateTimeSymbols_dyo');
+goog.provide('goog.i18n.DateTimeSymbols_dyo_SN');
 goog.provide('goog.i18n.DateTimeSymbols_dz');
 goog.provide('goog.i18n.DateTimeSymbols_dz_BT');
 goog.provide('goog.i18n.DateTimeSymbols_ebu');
@@ -119,15 +124,17 @@ goog.provide('goog.i18n.DateTimeSymbols_ee_GH');
 goog.provide('goog.i18n.DateTimeSymbols_ee_TG');
 goog.provide('goog.i18n.DateTimeSymbols_el_CY');
 goog.provide('goog.i18n.DateTimeSymbols_el_GR');
-goog.provide('goog.i18n.DateTimeSymbols_el_POLYTON');
 goog.provide('goog.i18n.DateTimeSymbols_en_AS');
+goog.provide('goog.i18n.DateTimeSymbols_en_BB');
 goog.provide('goog.i18n.DateTimeSymbols_en_BE');
+goog.provide('goog.i18n.DateTimeSymbols_en_BM');
 goog.provide('goog.i18n.DateTimeSymbols_en_BW');
 goog.provide('goog.i18n.DateTimeSymbols_en_BZ');
 goog.provide('goog.i18n.DateTimeSymbols_en_CA');
 goog.provide('goog.i18n.DateTimeSymbols_en_Dsrt');
 goog.provide('goog.i18n.DateTimeSymbols_en_Dsrt_US');
 goog.provide('goog.i18n.DateTimeSymbols_en_GU');
+goog.provide('goog.i18n.DateTimeSymbols_en_GY');
 goog.provide('goog.i18n.DateTimeSymbols_en_HK');
 goog.provide('goog.i18n.DateTimeSymbols_en_JM');
 goog.provide('goog.i18n.DateTimeSymbols_en_MH');
@@ -138,7 +145,6 @@ goog.provide('goog.i18n.DateTimeSymbols_en_NA');
 goog.provide('goog.i18n.DateTimeSymbols_en_NZ');
 goog.provide('goog.i18n.DateTimeSymbols_en_PH');
 goog.provide('goog.i18n.DateTimeSymbols_en_PK');
-goog.provide('goog.i18n.DateTimeSymbols_en_Shaw');
 goog.provide('goog.i18n.DateTimeSymbols_en_TT');
 goog.provide('goog.i18n.DateTimeSymbols_en_UM');
 goog.provide('goog.i18n.DateTimeSymbols_en_VI');
@@ -167,6 +173,8 @@ goog.provide('goog.i18n.DateTimeSymbols_es_UY');
 goog.provide('goog.i18n.DateTimeSymbols_es_VE');
 goog.provide('goog.i18n.DateTimeSymbols_et_EE');
 goog.provide('goog.i18n.DateTimeSymbols_eu_ES');
+goog.provide('goog.i18n.DateTimeSymbols_ewo');
+goog.provide('goog.i18n.DateTimeSymbols_ewo_CM');
 goog.provide('goog.i18n.DateTimeSymbols_fa_AF');
 goog.provide('goog.i18n.DateTimeSymbols_fa_IR');
 goog.provide('goog.i18n.DateTimeSymbols_ff');
@@ -189,6 +197,7 @@ goog.provide('goog.i18n.DateTimeSymbols_fr_CM');
 goog.provide('goog.i18n.DateTimeSymbols_fr_DJ');
 goog.provide('goog.i18n.DateTimeSymbols_fr_FR');
 goog.provide('goog.i18n.DateTimeSymbols_fr_GA');
+goog.provide('goog.i18n.DateTimeSymbols_fr_GF');
 goog.provide('goog.i18n.DateTimeSymbols_fr_GN');
 goog.provide('goog.i18n.DateTimeSymbols_fr_GP');
 goog.provide('goog.i18n.DateTimeSymbols_fr_GQ');
@@ -205,12 +214,11 @@ goog.provide('goog.i18n.DateTimeSymbols_fr_RW');
 goog.provide('goog.i18n.DateTimeSymbols_fr_SN');
 goog.provide('goog.i18n.DateTimeSymbols_fr_TD');
 goog.provide('goog.i18n.DateTimeSymbols_fr_TG');
+goog.provide('goog.i18n.DateTimeSymbols_fr_YT');
 goog.provide('goog.i18n.DateTimeSymbols_fur');
 goog.provide('goog.i18n.DateTimeSymbols_fur_IT');
 goog.provide('goog.i18n.DateTimeSymbols_ga');
 goog.provide('goog.i18n.DateTimeSymbols_ga_IE');
-goog.provide('goog.i18n.DateTimeSymbols_gaa');
-goog.provide('goog.i18n.DateTimeSymbols_gaa_GH');
 goog.provide('goog.i18n.DateTimeSymbols_gl_ES');
 goog.provide('goog.i18n.DateTimeSymbols_gsw_CH');
 goog.provide('goog.i18n.DateTimeSymbols_gu_IN');
@@ -223,7 +231,6 @@ goog.provide('goog.i18n.DateTimeSymbols_ha_Latn');
 goog.provide('goog.i18n.DateTimeSymbols_ha_Latn_GH');
 goog.provide('goog.i18n.DateTimeSymbols_ha_Latn_NE');
 goog.provide('goog.i18n.DateTimeSymbols_ha_Latn_NG');
-goog.provide('goog.i18n.DateTimeSymbols_haw');
 goog.provide('goog.i18n.DateTimeSymbols_haw_US');
 goog.provide('goog.i18n.DateTimeSymbols_he_IL');
 goog.provide('goog.i18n.DateTimeSymbols_hi_IN');
@@ -247,12 +254,8 @@ goog.provide('goog.i18n.DateTimeSymbols_ka');
 goog.provide('goog.i18n.DateTimeSymbols_ka_GE');
 goog.provide('goog.i18n.DateTimeSymbols_kab');
 goog.provide('goog.i18n.DateTimeSymbols_kab_DZ');
-goog.provide('goog.i18n.DateTimeSymbols_kaj');
-goog.provide('goog.i18n.DateTimeSymbols_kaj_NG');
 goog.provide('goog.i18n.DateTimeSymbols_kam');
 goog.provide('goog.i18n.DateTimeSymbols_kam_KE');
-goog.provide('goog.i18n.DateTimeSymbols_kcg');
-goog.provide('goog.i18n.DateTimeSymbols_kcg_NG');
 goog.provide('goog.i18n.DateTimeSymbols_kde');
 goog.provide('goog.i18n.DateTimeSymbols_kde_TZ');
 goog.provide('goog.i18n.DateTimeSymbols_kea');
@@ -276,19 +279,13 @@ goog.provide('goog.i18n.DateTimeSymbols_kok');
 goog.provide('goog.i18n.DateTimeSymbols_kok_IN');
 goog.provide('goog.i18n.DateTimeSymbols_ksb');
 goog.provide('goog.i18n.DateTimeSymbols_ksb_TZ');
+goog.provide('goog.i18n.DateTimeSymbols_ksf');
+goog.provide('goog.i18n.DateTimeSymbols_ksf_CM');
 goog.provide('goog.i18n.DateTimeSymbols_ksh');
 goog.provide('goog.i18n.DateTimeSymbols_ksh_DE');
 goog.provide('goog.i18n.DateTimeSymbols_ku');
-goog.provide('goog.i18n.DateTimeSymbols_ku_Arab');
-goog.provide('goog.i18n.DateTimeSymbols_ku_Arab_IQ');
-goog.provide('goog.i18n.DateTimeSymbols_ku_Arab_IR');
-goog.provide('goog.i18n.DateTimeSymbols_ku_Latn');
-goog.provide('goog.i18n.DateTimeSymbols_ku_Latn_SY');
-goog.provide('goog.i18n.DateTimeSymbols_ku_Latn_TR');
 goog.provide('goog.i18n.DateTimeSymbols_kw');
 goog.provide('goog.i18n.DateTimeSymbols_kw_GB');
-goog.provide('goog.i18n.DateTimeSymbols_ky');
-goog.provide('goog.i18n.DateTimeSymbols_ky_KG');
 goog.provide('goog.i18n.DateTimeSymbols_lag');
 goog.provide('goog.i18n.DateTimeSymbols_lag_TZ');
 goog.provide('goog.i18n.DateTimeSymbols_lg');
@@ -298,6 +295,8 @@ goog.provide('goog.i18n.DateTimeSymbols_ln_CG');
 goog.provide('goog.i18n.DateTimeSymbols_lo');
 goog.provide('goog.i18n.DateTimeSymbols_lo_LA');
 goog.provide('goog.i18n.DateTimeSymbols_lt_LT');
+goog.provide('goog.i18n.DateTimeSymbols_lu');
+goog.provide('goog.i18n.DateTimeSymbols_lu_CD');
 goog.provide('goog.i18n.DateTimeSymbols_luo');
 goog.provide('goog.i18n.DateTimeSymbols_luo_KE');
 goog.provide('goog.i18n.DateTimeSymbols_luy');
@@ -312,18 +311,17 @@ goog.provide('goog.i18n.DateTimeSymbols_mfe');
 goog.provide('goog.i18n.DateTimeSymbols_mfe_MU');
 goog.provide('goog.i18n.DateTimeSymbols_mg');
 goog.provide('goog.i18n.DateTimeSymbols_mg_MG');
+goog.provide('goog.i18n.DateTimeSymbols_mgh');
+goog.provide('goog.i18n.DateTimeSymbols_mgh_MZ');
 goog.provide('goog.i18n.DateTimeSymbols_mk');
 goog.provide('goog.i18n.DateTimeSymbols_mk_MK');
 goog.provide('goog.i18n.DateTimeSymbols_ml_IN');
-goog.provide('goog.i18n.DateTimeSymbols_mn');
-goog.provide('goog.i18n.DateTimeSymbols_mn_Cyrl');
-goog.provide('goog.i18n.DateTimeSymbols_mn_Cyrl_MN');
-goog.provide('goog.i18n.DateTimeSymbols_mn_Mong');
-goog.provide('goog.i18n.DateTimeSymbols_mn_Mong_CN');
 goog.provide('goog.i18n.DateTimeSymbols_mr_IN');
 goog.provide('goog.i18n.DateTimeSymbols_ms_BN');
 goog.provide('goog.i18n.DateTimeSymbols_ms_MY');
 goog.provide('goog.i18n.DateTimeSymbols_mt_MT');
+goog.provide('goog.i18n.DateTimeSymbols_mua');
+goog.provide('goog.i18n.DateTimeSymbols_mua_CM');
 goog.provide('goog.i18n.DateTimeSymbols_my');
 goog.provide('goog.i18n.DateTimeSymbols_my_MM');
 goog.provide('goog.i18n.DateTimeSymbols_naq');
@@ -332,23 +330,24 @@ goog.provide('goog.i18n.DateTimeSymbols_nb');
 goog.provide('goog.i18n.DateTimeSymbols_nb_NO');
 goog.provide('goog.i18n.DateTimeSymbols_nd');
 goog.provide('goog.i18n.DateTimeSymbols_nd_ZW');
-goog.provide('goog.i18n.DateTimeSymbols_nds');
-goog.provide('goog.i18n.DateTimeSymbols_nds_DE');
 goog.provide('goog.i18n.DateTimeSymbols_ne');
 goog.provide('goog.i18n.DateTimeSymbols_ne_IN');
 goog.provide('goog.i18n.DateTimeSymbols_ne_NP');
+goog.provide('goog.i18n.DateTimeSymbols_nl_AW');
 goog.provide('goog.i18n.DateTimeSymbols_nl_BE');
 goog.provide('goog.i18n.DateTimeSymbols_nl_NL');
+goog.provide('goog.i18n.DateTimeSymbols_nmg');
+goog.provide('goog.i18n.DateTimeSymbols_nmg_CM');
 goog.provide('goog.i18n.DateTimeSymbols_nn');
 goog.provide('goog.i18n.DateTimeSymbols_nn_NO');
 goog.provide('goog.i18n.DateTimeSymbols_nr');
 goog.provide('goog.i18n.DateTimeSymbols_nr_ZA');
 goog.provide('goog.i18n.DateTimeSymbols_nso');
 goog.provide('goog.i18n.DateTimeSymbols_nso_ZA');
+goog.provide('goog.i18n.DateTimeSymbols_nus');
+goog.provide('goog.i18n.DateTimeSymbols_nus_SD');
 goog.provide('goog.i18n.DateTimeSymbols_nyn');
 goog.provide('goog.i18n.DateTimeSymbols_nyn_UG');
-goog.provide('goog.i18n.DateTimeSymbols_oc');
-goog.provide('goog.i18n.DateTimeSymbols_oc_FR');
 goog.provide('goog.i18n.DateTimeSymbols_om');
 goog.provide('goog.i18n.DateTimeSymbols_om_ET');
 goog.provide('goog.i18n.DateTimeSymbols_om_KE');
@@ -364,8 +363,11 @@ goog.provide('goog.i18n.DateTimeSymbols_ps_AF');
 goog.provide('goog.i18n.DateTimeSymbols_pt_AO');
 goog.provide('goog.i18n.DateTimeSymbols_pt_GW');
 goog.provide('goog.i18n.DateTimeSymbols_pt_MZ');
+goog.provide('goog.i18n.DateTimeSymbols_pt_ST');
 goog.provide('goog.i18n.DateTimeSymbols_rm');
 goog.provide('goog.i18n.DateTimeSymbols_rm_CH');
+goog.provide('goog.i18n.DateTimeSymbols_rn');
+goog.provide('goog.i18n.DateTimeSymbols_rn_BI');
 goog.provide('goog.i18n.DateTimeSymbols_ro_MD');
 goog.provide('goog.i18n.DateTimeSymbols_ro_RO');
 goog.provide('goog.i18n.DateTimeSymbols_rof');
@@ -377,8 +379,12 @@ goog.provide('goog.i18n.DateTimeSymbols_rw');
 goog.provide('goog.i18n.DateTimeSymbols_rw_RW');
 goog.provide('goog.i18n.DateTimeSymbols_rwk');
 goog.provide('goog.i18n.DateTimeSymbols_rwk_TZ');
+goog.provide('goog.i18n.DateTimeSymbols_sah');
+goog.provide('goog.i18n.DateTimeSymbols_sah_RU');
 goog.provide('goog.i18n.DateTimeSymbols_saq');
 goog.provide('goog.i18n.DateTimeSymbols_saq_KE');
+goog.provide('goog.i18n.DateTimeSymbols_sbp');
+goog.provide('goog.i18n.DateTimeSymbols_sbp_TZ');
 goog.provide('goog.i18n.DateTimeSymbols_se');
 goog.provide('goog.i18n.DateTimeSymbols_se_FI');
 goog.provide('goog.i18n.DateTimeSymbols_se_NO');
@@ -395,8 +401,6 @@ goog.provide('goog.i18n.DateTimeSymbols_shi_Tfng');
 goog.provide('goog.i18n.DateTimeSymbols_shi_Tfng_MA');
 goog.provide('goog.i18n.DateTimeSymbols_si');
 goog.provide('goog.i18n.DateTimeSymbols_si_LK');
-goog.provide('goog.i18n.DateTimeSymbols_sid');
-goog.provide('goog.i18n.DateTimeSymbols_sid_ET');
 goog.provide('goog.i18n.DateTimeSymbols_sk_SK');
 goog.provide('goog.i18n.DateTimeSymbols_sl_SI');
 goog.provide('goog.i18n.DateTimeSymbols_sn');
@@ -427,6 +431,8 @@ goog.provide('goog.i18n.DateTimeSymbols_sv_FI');
 goog.provide('goog.i18n.DateTimeSymbols_sv_SE');
 goog.provide('goog.i18n.DateTimeSymbols_sw_KE');
 goog.provide('goog.i18n.DateTimeSymbols_sw_TZ');
+goog.provide('goog.i18n.DateTimeSymbols_swc');
+goog.provide('goog.i18n.DateTimeSymbols_swc_CD');
 goog.provide('goog.i18n.DateTimeSymbols_ta_IN');
 goog.provide('goog.i18n.DateTimeSymbols_ta_LK');
 goog.provide('goog.i18n.DateTimeSymbols_te_IN');
@@ -447,10 +453,10 @@ goog.provide('goog.i18n.DateTimeSymbols_tn_ZA');
 goog.provide('goog.i18n.DateTimeSymbols_to');
 goog.provide('goog.i18n.DateTimeSymbols_to_TO');
 goog.provide('goog.i18n.DateTimeSymbols_tr_TR');
-goog.provide('goog.i18n.DateTimeSymbols_trv');
-goog.provide('goog.i18n.DateTimeSymbols_trv_TW');
 goog.provide('goog.i18n.DateTimeSymbols_ts');
 goog.provide('goog.i18n.DateTimeSymbols_ts_ZA');
+goog.provide('goog.i18n.DateTimeSymbols_twq');
+goog.provide('goog.i18n.DateTimeSymbols_twq_NE');
 goog.provide('goog.i18n.DateTimeSymbols_tzm');
 goog.provide('goog.i18n.DateTimeSymbols_tzm_Latn');
 goog.provide('goog.i18n.DateTimeSymbols_tzm_Latn_MA');
@@ -464,17 +470,26 @@ goog.provide('goog.i18n.DateTimeSymbols_uz_Cyrl');
 goog.provide('goog.i18n.DateTimeSymbols_uz_Cyrl_UZ');
 goog.provide('goog.i18n.DateTimeSymbols_uz_Latn');
 goog.provide('goog.i18n.DateTimeSymbols_uz_Latn_UZ');
+goog.provide('goog.i18n.DateTimeSymbols_vai');
+goog.provide('goog.i18n.DateTimeSymbols_vai_Latn');
+goog.provide('goog.i18n.DateTimeSymbols_vai_Latn_LR');
+goog.provide('goog.i18n.DateTimeSymbols_vai_Vaii');
+goog.provide('goog.i18n.DateTimeSymbols_vai_Vaii_LR');
 goog.provide('goog.i18n.DateTimeSymbols_ve');
 goog.provide('goog.i18n.DateTimeSymbols_ve_ZA');
 goog.provide('goog.i18n.DateTimeSymbols_vi_VN');
 goog.provide('goog.i18n.DateTimeSymbols_vun');
 goog.provide('goog.i18n.DateTimeSymbols_vun_TZ');
+goog.provide('goog.i18n.DateTimeSymbols_wae');
+goog.provide('goog.i18n.DateTimeSymbols_wae_CH');
 goog.provide('goog.i18n.DateTimeSymbols_wal');
 goog.provide('goog.i18n.DateTimeSymbols_wal_ET');
 goog.provide('goog.i18n.DateTimeSymbols_xh');
 goog.provide('goog.i18n.DateTimeSymbols_xh_ZA');
 goog.provide('goog.i18n.DateTimeSymbols_xog');
 goog.provide('goog.i18n.DateTimeSymbols_xog_UG');
+goog.provide('goog.i18n.DateTimeSymbols_yav');
+goog.provide('goog.i18n.DateTimeSymbols_yav_CM');
 goog.provide('goog.i18n.DateTimeSymbols_yo');
 goog.provide('goog.i18n.DateTimeSymbols_yo_NG');
 goog.provide('goog.i18n.DateTimeSymbols_zh_Hans');
@@ -486,7 +501,6 @@ goog.provide('goog.i18n.DateTimeSymbols_zh_Hant');
 goog.provide('goog.i18n.DateTimeSymbols_zh_Hant_HK');
 goog.provide('goog.i18n.DateTimeSymbols_zh_Hant_MO');
 goog.provide('goog.i18n.DateTimeSymbols_zh_Hant_TW');
-goog.provide('goog.i18n.DateTimeSymbols_zu');
 goog.provide('goog.i18n.DateTimeSymbols_zu_ZA');
 
 goog.require('goog.i18n.DateTimeSymbols');
@@ -525,7 +539,7 @@ goog.i18n.DateTimeSymbols_aa = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -563,7 +577,7 @@ goog.i18n.DateTimeSymbols_aa_DJ = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -577,42 +591,6 @@ goog.i18n.DateTimeSymbols_aa_ER = goog.i18n.DateTimeSymbols_aa;
  * Date/time formatting symbols for locale aa_ET.
  */
 goog.i18n.DateTimeSymbols_aa_ET = goog.i18n.DateTimeSymbols_aa;
-
-
-/**
- * Date/time formatting symbols for locale af.
- */
-goog.i18n.DateTimeSymbols_af = {
-  ERAS: ['v.C.', 'n.C.'],
-  ERANAMES: ['voor Christus', 'na Christus'],
-  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
-  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
-      'N', 'D'],
-  MONTHS: ['Januarie', 'Februarie', 'Maart', 'April', 'Mei', 'Junie', 'Julie',
-      'Augustus', 'September', 'Oktober', 'November', 'Desember'],
-  STANDALONEMONTHS: ['Januarie', 'Februarie', 'Maart', 'April', 'Mei', 'Junie',
-      'Julie', 'Augustus', 'September', 'Oktober', 'November', 'Desember'],
-  SHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep',
-      'Okt', 'Nov', 'Des'],
-  STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul',
-      'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
-  WEEKDAYS: ['Sondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrydag',
-      'Saterdag'],
-  STANDALONEWEEKDAYS: ['Sondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag',
-      'Vrydag', 'Saterdag'],
-  SHORTWEEKDAYS: ['So', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Sa'],
-  STANDALONESHORTWEEKDAYS: ['So', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Sa'],
-  NARROWWEEKDAYS: ['S', 'M', 'D', 'W', 'D', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['S', 'M', 'D', 'W', 'D', 'V', 'S'],
-  SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
-  QUARTERS: ['1ste kwartaal', '2de kwartaal', '3de kwartaal', '4de kwartaal'],
-  AMPMS: ['vm.', 'nm.'],
-  DATEFORMATS: ['EEEE dd MMMM y', 'dd MMMM y', 'dd MMM y', 'yyyy-MM-dd'],
-  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 0,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
-};
 
 
 /**
@@ -647,14 +625,94 @@ goog.i18n.DateTimeSymbols_af_NA = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
 /**
  * Date/time formatting symbols for locale af_ZA.
  */
-goog.i18n.DateTimeSymbols_af_ZA = goog.i18n.DateTimeSymbols_af;
+goog.i18n.DateTimeSymbols_af_ZA = {
+  ERAS: ['v.C.', 'n.C.'],
+  ERANAMES: ['voor Christus', 'na Christus'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
+  MONTHS: ['Januarie', 'Februarie', 'Maart', 'April', 'Mei', 'Junie', 'Julie',
+      'Augustus', 'September', 'Oktober', 'November', 'Desember'],
+  STANDALONEMONTHS: ['Januarie', 'Februarie', 'Maart', 'April', 'Mei', 'Junie',
+      'Julie', 'Augustus', 'September', 'Oktober', 'November', 'Desember'],
+  SHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep',
+      'Okt', 'Nov', 'Des'],
+  STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul',
+      'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
+  WEEKDAYS: ['Sondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrydag',
+      'Saterdag'],
+  STANDALONEWEEKDAYS: ['Sondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag',
+      'Vrydag', 'Saterdag'],
+  SHORTWEEKDAYS: ['So', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Sa'],
+  STANDALONESHORTWEEKDAYS: ['So', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Sa'],
+  NARROWWEEKDAYS: ['S', 'M', 'D', 'W', 'D', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['S', 'M', 'D', 'W', 'D', 'V', 'S'],
+  SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
+  QUARTERS: ['1ste kwartaal', '2de kwartaal', '3de kwartaal', '4de kwartaal'],
+  AMPMS: ['vm.', 'nm.'],
+  DATEFORMATS: ['EEEE dd MMMM y', 'dd MMMM y', 'dd MMM y', 'yyyy-MM-dd'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
+  FIRSTDAYOFWEEK: 6,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 5
+};
+
+
+/**
+ * Date/time formatting symbols for locale agq.
+ */
+goog.i18n.DateTimeSymbols_agq = {
+  ERAS: ['SK', 'BK'],
+  ERANAMES: ['Sěe Kɨ̀lesto', 'Bǎa Kɨ̀lesto'],
+  NARROWMONTHS: ['n', 'k', 't', 't', 's', 'z', 'k', 'f', 'd', 'l', 'c', 'f'],
+  STANDALONENARROWMONTHS: ['n', 'k', 't', 't', 's', 'z', 'k', 'f', 'd', 'l',
+      'c', 'f'],
+  MONTHS: ['ndzɔ̀ŋɔ̀nùm', 'ndzɔ̀ŋɔ̀kƗ̀zùʔ',
+      'ndzɔ̀ŋɔ̀tƗ̀dʉ̀ghà', 'ndzɔ̀ŋɔ̀tǎafʉ̄ghā',
+      'ndzɔ̀ŋèsèe', 'ndzɔ̀ŋɔ̀nzùghò', 'ndzɔ̀ŋɔ̀dùmlo',
+      'ndzɔ̀ŋɔ̀kwîfɔ̀e', 'ndzɔ̀ŋɔ̀tƗ̀fʉ̀ghàdzughù',
+      'ndzɔ̀ŋɔ̀ghǔuwelɔ̀m', 'ndzɔ̀ŋɔ̀chwaʔàkaa wo',
+      'ndzɔ̀ŋèfwòo'],
+  STANDALONEMONTHS: ['ndzɔ̀ŋɔ̀nùm', 'ndzɔ̀ŋɔ̀kƗ̀zùʔ',
+      'ndzɔ̀ŋɔ̀tƗ̀dʉ̀ghà', 'ndzɔ̀ŋɔ̀tǎafʉ̄ghā',
+      'ndzɔ̀ŋèsèe', 'ndzɔ̀ŋɔ̀nzùghò', 'ndzɔ̀ŋɔ̀dùmlo',
+      'ndzɔ̀ŋɔ̀kwîfɔ̀e', 'ndzɔ̀ŋɔ̀tƗ̀fʉ̀ghàdzughù',
+      'ndzɔ̀ŋɔ̀ghǔuwelɔ̀m', 'ndzɔ̀ŋɔ̀chwaʔàkaa wo',
+      'ndzɔ̀ŋèfwòo'],
+  SHORTMONTHS: ['nùm', 'kɨz', 'tɨd', 'taa', 'see', 'nzu', 'dum', 'fɔe',
+      'dzu', 'lɔm', 'kaa', 'fwo'],
+  STANDALONESHORTMONTHS: ['nùm', 'kɨz', 'tɨd', 'taa', 'see', 'nzu', 'dum',
+      'fɔe', 'dzu', 'lɔm', 'kaa', 'fwo'],
+  WEEKDAYS: ['tsuʔntsɨ', 'tsuʔukpà', 'tsuʔughɔe', 'tsuʔutɔ̀mlò',
+      'tsuʔumè', 'tsuʔughɨ̂m', 'tsuʔndzɨkɔʔɔ'],
+  STANDALONEWEEKDAYS: ['tsuʔntsɨ', 'tsuʔukpà', 'tsuʔughɔe',
+      'tsuʔutɔ̀mlò', 'tsuʔumè', 'tsuʔughɨ̂m', 'tsuʔndzɨkɔʔɔ'],
+  SHORTWEEKDAYS: ['nts', 'kpa', 'ghɔ', 'tɔm', 'ume', 'ghɨ', 'dzk'],
+  STANDALONESHORTWEEKDAYS: ['nts', 'kpa', 'ghɔ', 'tɔm', 'ume', 'ghɨ', 'dzk'],
+  NARROWWEEKDAYS: ['n', 'k', 'g', 't', 'u', 'g', 'd'],
+  STANDALONENARROWWEEKDAYS: ['n', 'k', 'g', 't', 'u', 'g', 'd'],
+  SHORTQUARTERS: ['kɨbâ kɨ 1', 'ugbâ u 2', 'ugbâ u 3', 'ugbâ u 4'],
+  QUARTERS: ['kɨbâ kɨ 1', 'ugbâ u 2', 'ugbâ u 3', 'ugbâ u 4'],
+  AMPMS: ['a.g', 'a.k'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM, y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale agq_CM.
+ */
+goog.i18n.DateTimeSymbols_agq_CM = goog.i18n.DateTimeSymbols_agq;
 
 
 /**
@@ -695,7 +753,7 @@ goog.i18n.DateTimeSymbols_ak = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -744,9 +802,9 @@ goog.i18n.DateTimeSymbols_am_ET = {
   AMPMS: ['ጡዋት', 'ከሳዓት'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 5,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -754,6 +812,7 @@ goog.i18n.DateTimeSymbols_am_ET = {
  * Date/time formatting symbols for locale ar_AE.
  */
 goog.i18n.DateTimeSymbols_ar_AE = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -792,7 +851,7 @@ goog.i18n.DateTimeSymbols_ar_AE = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -800,6 +859,7 @@ goog.i18n.DateTimeSymbols_ar_AE = {
  * Date/time formatting symbols for locale ar_BH.
  */
 goog.i18n.DateTimeSymbols_ar_BH = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -838,7 +898,7 @@ goog.i18n.DateTimeSymbols_ar_BH = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -883,7 +943,7 @@ goog.i18n.DateTimeSymbols_ar_DZ = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -891,6 +951,7 @@ goog.i18n.DateTimeSymbols_ar_DZ = {
  * Date/time formatting symbols for locale ar_EG.
  */
 goog.i18n.DateTimeSymbols_ar_EG = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -929,7 +990,7 @@ goog.i18n.DateTimeSymbols_ar_EG = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -937,6 +998,7 @@ goog.i18n.DateTimeSymbols_ar_EG = {
  * Date/time formatting symbols for locale ar_IQ.
  */
 goog.i18n.DateTimeSymbols_ar_IQ = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -975,7 +1037,7 @@ goog.i18n.DateTimeSymbols_ar_IQ = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -983,6 +1045,7 @@ goog.i18n.DateTimeSymbols_ar_IQ = {
  * Date/time formatting symbols for locale ar_JO.
  */
 goog.i18n.DateTimeSymbols_ar_JO = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -1025,7 +1088,7 @@ goog.i18n.DateTimeSymbols_ar_JO = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -1033,6 +1096,7 @@ goog.i18n.DateTimeSymbols_ar_JO = {
  * Date/time formatting symbols for locale ar_KW.
  */
 goog.i18n.DateTimeSymbols_ar_KW = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -1071,7 +1135,7 @@ goog.i18n.DateTimeSymbols_ar_KW = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -1079,6 +1143,7 @@ goog.i18n.DateTimeSymbols_ar_KW = {
  * Date/time formatting symbols for locale ar_LB.
  */
 goog.i18n.DateTimeSymbols_ar_LB = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -1121,7 +1186,7 @@ goog.i18n.DateTimeSymbols_ar_LB = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -1129,6 +1194,7 @@ goog.i18n.DateTimeSymbols_ar_LB = {
  * Date/time formatting symbols for locale ar_LY.
  */
 goog.i18n.DateTimeSymbols_ar_LY = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -1167,7 +1233,7 @@ goog.i18n.DateTimeSymbols_ar_LY = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -1212,7 +1278,7 @@ goog.i18n.DateTimeSymbols_ar_MA = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -1220,6 +1286,7 @@ goog.i18n.DateTimeSymbols_ar_MA = {
  * Date/time formatting symbols for locale ar_OM.
  */
 goog.i18n.DateTimeSymbols_ar_OM = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -1258,7 +1325,7 @@ goog.i18n.DateTimeSymbols_ar_OM = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -1266,6 +1333,7 @@ goog.i18n.DateTimeSymbols_ar_OM = {
  * Date/time formatting symbols for locale ar_QA.
  */
 goog.i18n.DateTimeSymbols_ar_QA = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -1304,7 +1372,7 @@ goog.i18n.DateTimeSymbols_ar_QA = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -1312,6 +1380,7 @@ goog.i18n.DateTimeSymbols_ar_QA = {
  * Date/time formatting symbols for locale ar_SA.
  */
 goog.i18n.DateTimeSymbols_ar_SA = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -1350,7 +1419,7 @@ goog.i18n.DateTimeSymbols_ar_SA = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -1358,6 +1427,7 @@ goog.i18n.DateTimeSymbols_ar_SA = {
  * Date/time formatting symbols for locale ar_SD.
  */
 goog.i18n.DateTimeSymbols_ar_SD = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -1396,7 +1466,7 @@ goog.i18n.DateTimeSymbols_ar_SD = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -1404,6 +1474,7 @@ goog.i18n.DateTimeSymbols_ar_SD = {
  * Date/time formatting symbols for locale ar_SY.
  */
 goog.i18n.DateTimeSymbols_ar_SY = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -1446,7 +1517,7 @@ goog.i18n.DateTimeSymbols_ar_SY = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -1489,9 +1560,9 @@ goog.i18n.DateTimeSymbols_ar_TN = {
   AMPMS: ['ص', 'م'],
   DATEFORMATS: ['EEEE، d MMMM، y', 'd MMMM، y', 'yyyy/MM/dd', 'yyyy/M/d'],
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 5,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -1499,6 +1570,7 @@ goog.i18n.DateTimeSymbols_ar_TN = {
  * Date/time formatting symbols for locale ar_YE.
  */
 goog.i18n.DateTimeSymbols_ar_YE = {
+  ZERODIGIT: 0x0660,
   ERAS: ['ق.م', 'م'],
   ERANAMES: ['قبل الميلاد', 'ميلادي'],
   NARROWMONTHS: ['ي', 'ف', 'م', 'أ', 'و', 'ن', 'ل', 'غ', 'س', 'ك',
@@ -1537,7 +1609,7 @@ goog.i18n.DateTimeSymbols_ar_YE = {
   TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -1545,6 +1617,7 @@ goog.i18n.DateTimeSymbols_ar_YE = {
  * Date/time formatting symbols for locale as.
  */
 goog.i18n.DateTimeSymbols_as = {
+  ZERODIGIT: 0x09E6,
   ERAS: ['BCE', 'CE'],
   ERANAMES: ['BCE', 'CE'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
@@ -1594,7 +1667,7 @@ goog.i18n.DateTimeSymbols_as = {
   TIMEFORMATS: ['h.mm.ss a zzzz', 'h.mm.ss a z', 'h.mm.ss a', 'h.mm. a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -1636,7 +1709,7 @@ goog.i18n.DateTimeSymbols_asa = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -1676,9 +1749,9 @@ goog.i18n.DateTimeSymbols_az = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d, MMMM, y', 'd MMMM , y', 'd MMM, y', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 6,
+  FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -1716,9 +1789,9 @@ goog.i18n.DateTimeSymbols_az_Cyrl = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d, MMMM, y', 'd MMMM , y', 'd MMM, y', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 6,
+  FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -1738,6 +1811,52 @@ goog.i18n.DateTimeSymbols_az_Latn = goog.i18n.DateTimeSymbols_az;
  * Date/time formatting symbols for locale az_Latn_AZ.
  */
 goog.i18n.DateTimeSymbols_az_Latn_AZ = goog.i18n.DateTimeSymbols_az;
+
+
+/**
+ * Date/time formatting symbols for locale bas.
+ */
+goog.i18n.DateTimeSymbols_bas = {
+  ERAS: ['b.Y.K', 'm.Y.K'],
+  ERANAMES: ['bisū bi Yesù Krǐstò', 'i mbūs Yesù Krǐstò'],
+  NARROWMONTHS: ['k', 'm', 'm', 'm', 'm', 'h', 'n', 'h', 'd', 'b', 'm', 'l'],
+  STANDALONENARROWMONTHS: ['k', 'm', 'm', 'm', 'm', 'h', 'n', 'h', 'd', 'b',
+      'm', 'l'],
+  MONTHS: ['Kɔndɔŋ', 'Màcɛ̂l', 'Màtùmb', 'Màtop', 'M̀puyɛ',
+      'Hìlòndɛ̀', 'Njèbà', 'Hìkaŋ', 'Dìpɔ̀s', 'Bìòôm',
+      'Màyɛsèp', 'Lìbuy li ńyèe'],
+  STANDALONEMONTHS: ['Kɔndɔŋ', 'Màcɛ̂l', 'Màtùmb', 'Màtop', 'M̀puyɛ',
+      'Hìlòndɛ̀', 'Njèbà', 'Hìkaŋ', 'Dìpɔ̀s', 'Bìòôm',
+      'Màyɛsèp', 'Lìbuy li ńyèe'],
+  SHORTMONTHS: ['kɔn', 'mac', 'mat', 'mto', 'mpu', 'hil', 'nje', 'hik', 'dip',
+      'bio', 'may', 'liɓ'],
+  STANDALONESHORTMONTHS: ['kɔn', 'mac', 'mat', 'mto', 'mpu', 'hil', 'nje',
+      'hik', 'dip', 'bio', 'may', 'liɓ'],
+  WEEKDAYS: ['ŋgwà nɔ̂y', 'ŋgwà njaŋgumba', 'ŋgwà ûm', 'ŋgwà ŋgê',
+      'ŋgwà mbɔk', 'ŋgwà kɔɔ', 'ŋgwà jôn'],
+  STANDALONEWEEKDAYS: ['ŋgwà nɔ̂y', 'ŋgwà njaŋgumba', 'ŋgwà ûm',
+      'ŋgwà ŋgê', 'ŋgwà mbɔk', 'ŋgwà kɔɔ', 'ŋgwà jôn'],
+  SHORTWEEKDAYS: ['nɔy', 'nja', 'uum', 'ŋge', 'mbɔ', 'kɔɔ', 'jon'],
+  STANDALONESHORTWEEKDAYS: ['nɔy', 'nja', 'uum', 'ŋge', 'mbɔ', 'kɔɔ',
+      'jon'],
+  NARROWWEEKDAYS: ['n', 'n', 'u', 'ŋ', 'm', 'k', 'j'],
+  STANDALONENARROWWEEKDAYS: ['n', 'n', 'u', 'ŋ', 'm', 'k', 'j'],
+  SHORTQUARTERS: ['K1s3', 'K2s3', 'K3s3', 'K4s3'],
+  QUARTERS: ['Kèk bisu i soŋ iaâ', 'Kèk i ńyonos biɓaà i soŋ iaâ',
+      'Kèk i ńyonos biaâ i soŋ iaâ', 'Kèk i ńyonos binâ i soŋ iaâ'],
+  AMPMS: ['I bikɛ̂glà', 'I ɓugajɔp'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM, y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale bas_CM.
+ */
+goog.i18n.DateTimeSymbols_bas_CM = goog.i18n.DateTimeSymbols_bas;
 
 
 /**
@@ -1779,9 +1898,9 @@ goog.i18n.DateTimeSymbols_be = {
   AMPMS: ['да палудня', 'пасля палудня'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd.M.yyyy', 'd.M.yy'],
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -1825,7 +1944,7 @@ goog.i18n.DateTimeSymbols_bem = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -1873,7 +1992,7 @@ goog.i18n.DateTimeSymbols_bez = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -1960,7 +2079,7 @@ goog.i18n.DateTimeSymbols_bm = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -1974,6 +2093,7 @@ goog.i18n.DateTimeSymbols_bm_ML = goog.i18n.DateTimeSymbols_bm;
  * Date/time formatting symbols for locale bn_BD.
  */
 goog.i18n.DateTimeSymbols_bn_BD = {
+  ZERODIGIT: 0x09E6,
   ERAS: ['খৃষ্টপূর্ব', 'খৃষ্টাব্দ'],
   ERANAMES: ['খৃষ্টপূর্ব', 'খৃষ্টাব্দ'],
   NARROWMONTHS: ['জা', 'ফে', 'মা', 'এ', 'মে', 'জুন',
@@ -2028,7 +2148,7 @@ goog.i18n.DateTimeSymbols_bn_BD = {
   AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'd MMM, y', 'd/M/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 4,
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
 };
@@ -2038,6 +2158,7 @@ goog.i18n.DateTimeSymbols_bn_BD = {
  * Date/time formatting symbols for locale bn_IN.
  */
 goog.i18n.DateTimeSymbols_bn_IN = {
+  ZERODIGIT: 0x09E6,
   ERAS: ['খৃষ্টপূর্ব', 'খৃষ্টাব্দ'],
   ERANAMES: ['খৃষ্টপূর্ব', 'খৃষ্টাব্দ'],
   NARROWMONTHS: ['জা', 'ফে', 'মা', 'এ', 'মে', 'জুন',
@@ -2092,7 +2213,7 @@ goog.i18n.DateTimeSymbols_bn_IN = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -2164,7 +2285,7 @@ goog.i18n.DateTimeSymbols_bo = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -2212,7 +2333,7 @@ goog.i18n.DateTimeSymbols_br = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -2281,7 +2402,7 @@ goog.i18n.DateTimeSymbols_brx = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -2324,7 +2445,7 @@ goog.i18n.DateTimeSymbols_bs = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -2378,7 +2499,7 @@ goog.i18n.DateTimeSymbols_byn = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -2428,51 +2549,6 @@ goog.i18n.DateTimeSymbols_ca_ES = {
 
 
 /**
- * Date/time formatting symbols for locale cch.
- */
-goog.i18n.DateTimeSymbols_cch = {
-  ERAS: ['GM', 'M'],
-  ERANAMES: ['Gabanin Miladi', 'Miladi'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  MONTHS: ['Pen Dyon', 'Pen Ba\'a', 'Pen Atat', 'Pen Anas', 'Pen Atyon',
-      'Pen Achirim', 'Pen Atariba', 'Pen Awurr', 'Pen Shadon', 'Pen Shakur',
-      'Pen Kur Naba', 'Pen Kur Natat'],
-  STANDALONEMONTHS: ['Pen Dyon', 'Pen Ba\'a', 'Pen Atat', 'Pen Anas',
-      'Pen Atyon', 'Pen Achirim', 'Pen Atariba', 'Pen Awurr', 'Pen Shadon',
-      'Pen Shakur', 'Pen Kur Naba', 'Pen Kur Natat'],
-  SHORTMONTHS: ['Dyon', 'Baa', 'Atat', 'Anas', 'Atyo', 'Achi', 'Atar', 'Awur',
-      'Shad', 'Shak', 'Naba', 'Nata'],
-  STANDALONESHORTMONTHS: ['Dyon', 'Baa', 'Atat', 'Anas', 'Atyo', 'Achi', 'Atar',
-      'Awur', 'Shad', 'Shak', 'Naba', 'Nata'],
-  WEEKDAYS: ['Wai Yoka Bawai', 'Wai Tunga', 'Toki Gitung', 'Tsam Kasuwa',
-      'Wai Na Nas', 'Wai Na Tiyon', 'Wai Na Chirim'],
-  STANDALONEWEEKDAYS: ['Wai Yoka Bawai', 'Wai Tunga', 'Toki Gitung',
-      'Tsam Kasuwa', 'Wai Na Nas', 'Wai Na Tiyon', 'Wai Na Chirim'],
-  SHORTWEEKDAYS: ['Yok', 'Tung', 'T. Tung', 'Tsan', 'Nas', 'Nat', 'Chir'],
-  STANDALONESHORTWEEKDAYS: ['Yok', 'Tung', 'T. Tung', 'Tsan', 'Nas', 'Nat',
-      'Chir'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
-};
-
-
-/**
- * Date/time formatting symbols for locale cch_NG.
- */
-goog.i18n.DateTimeSymbols_cch_NG = goog.i18n.DateTimeSymbols_cch;
-
-
-/**
  * Date/time formatting symbols for locale cgg.
  */
 goog.i18n.DateTimeSymbols_cgg = {
@@ -2487,10 +2563,10 @@ goog.i18n.DateTimeSymbols_cgg = {
   STANDALONEMONTHS: ['Okwokubanza', 'Okwakabiri', 'Okwakashatu', 'Okwakana',
       'Okwakataana', 'Okwamukaaga', 'Okwamushanju', 'Okwamunaana', 'Okwamwenda',
       'Okwaikumi', 'Okwaikumi na kumwe', 'Okwaikumi na ibiri'],
-  SHORTMONTHS: ['KBZ', 'KBR', 'KST', 'KKN', 'KTN', 'KMK', 'KMS', 'KMN', 'KMN',
+  SHORTMONTHS: ['KBZ', 'KBR', 'KST', 'KKN', 'KTN', 'KMK', 'KMS', 'KMN', 'KMW',
       'KKM', 'KNK', 'KNB'],
   STANDALONESHORTMONTHS: ['KBZ', 'KBR', 'KST', 'KKN', 'KTN', 'KMK', 'KMS',
-      'KMN', 'KMN', 'KKM', 'KNK', 'KNB'],
+      'KMN', 'KMW', 'KKM', 'KNK', 'KNB'],
   WEEKDAYS: ['Sande', 'Orwokubanza', 'Orwakabiri', 'Orwakashatu', 'Orwakana',
       'Orwakataano', 'Orwamukaaga'],
   STANDALONEWEEKDAYS: ['Sande', 'Orwokubanza', 'Orwakabiri', 'Orwakashatu',
@@ -2506,7 +2582,7 @@ goog.i18n.DateTimeSymbols_cgg = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -2517,9 +2593,9 @@ goog.i18n.DateTimeSymbols_cgg_UG = goog.i18n.DateTimeSymbols_cgg;
 
 
 /**
- * Date/time formatting symbols for locale chr.
+ * Date/time formatting symbols for locale chr_US.
  */
-goog.i18n.DateTimeSymbols_chr = {
+goog.i18n.DateTimeSymbols_chr_US = {
   ERAS: ['ᎤᏓᎷᎸ', 'ᎤᎶᏐᏅ'],
   ERANAMES: ['Ꮟ ᏥᏌ ᎾᏕᎲᏍᎬᎾ',
       'ᎠᎩᏃᎮᎵᏓᏍᏗᏱ ᎠᏕᏘᏱᏍᎬ ᏱᎰᏩ ᏧᏓᏂᎸᎢᏍᏗ'],
@@ -2554,22 +2630,17 @@ goog.i18n.DateTimeSymbols_chr = {
   AMPMS: ['ᏌᎾᎴ', 'ᏒᎯᏱᎢᏗᏢ'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
-
-
-/**
- * Date/time formatting symbols for locale chr_US.
- */
-goog.i18n.DateTimeSymbols_chr_US = goog.i18n.DateTimeSymbols_chr;
 
 
 /**
  * Date/time formatting symbols for locale ckb.
  */
 goog.i18n.DateTimeSymbols_ckb = {
+  ZERODIGIT: 0x0660,
   ERAS: ['پێش زاییین', 'ز'],
   ERANAMES: ['پێش زایین', 'زایینی'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', 'D'],
@@ -2611,7 +2682,7 @@ goog.i18n.DateTimeSymbols_ckb = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -2686,7 +2757,7 @@ goog.i18n.DateTimeSymbols_cs_CZ = {
   QUARTERS: ['1. čtvrtletí', '2. čtvrtletí', '3. čtvrtletí',
       '4. čtvrtletí'],
   AMPMS: ['dop.', 'odp.'],
-  DATEFORMATS: ['EEEE, d. MMMM y', 'd. MMMM y', 'd.M.yyyy', 'dd.MM.yy'],
+  DATEFORMATS: ['EEEE, d. MMMM y', 'd. MMMM y', 'd. M. yyyy', 'dd.MM.yy'],
   TIMEFORMATS: ['H:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
@@ -2695,9 +2766,9 @@ goog.i18n.DateTimeSymbols_cs_CZ = {
 
 
 /**
- * Date/time formatting symbols for locale cy.
+ * Date/time formatting symbols for locale cy_GB.
  */
-goog.i18n.DateTimeSymbols_cy = {
+goog.i18n.DateTimeSymbols_cy_GB = {
   ERAS: ['CC', 'OC'],
   ERANAMES: ['Cyn Crist', 'Oed Crist'],
   NARROWMONTHS: ['I', 'C', 'M', 'E', 'M', 'M', 'G', 'A', 'M', 'H', 'T', 'R'],
@@ -2728,12 +2799,6 @@ goog.i18n.DateTimeSymbols_cy = {
   WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
 };
-
-
-/**
- * Date/time formatting symbols for locale cy_GB.
- */
-goog.i18n.DateTimeSymbols_cy_GB = goog.i18n.DateTimeSymbols_cy;
 
 
 /**
@@ -2809,7 +2874,7 @@ goog.i18n.DateTimeSymbols_dav = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -2964,6 +3029,137 @@ goog.i18n.DateTimeSymbols_de_LU = {
 
 
 /**
+ * Date/time formatting symbols for locale dje.
+ */
+goog.i18n.DateTimeSymbols_dje = {
+  ERAS: ['IJ', 'IZ'],
+  ERANAMES: ['Isaa jine', 'Isaa zamanoo'],
+  NARROWMONTHS: ['Ž', 'F', 'M', 'A', 'M', 'Ž', 'Ž', 'U', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['Ž', 'F', 'M', 'A', 'M', 'Ž', 'Ž', 'U', 'S', 'O',
+      'N', 'D'],
+  MONTHS: ['Žanwiye', 'Feewiriye', 'Marsi', 'Awiril', 'Me', 'Žuweŋ',
+      'Žuyye', 'Ut', 'Sektanbur', 'Oktoobur', 'Noowanbur', 'Deesanbur'],
+  STANDALONEMONTHS: ['Žanwiye', 'Feewiriye', 'Marsi', 'Awiril', 'Me',
+      'Žuweŋ', 'Žuyye', 'Ut', 'Sektanbur', 'Oktoobur', 'Noowanbur',
+      'Deesanbur'],
+  SHORTMONTHS: ['Žan', 'Fee', 'Mar', 'Awi', 'Me', 'Žuw', 'Žuy', 'Ut', 'Sek',
+      'Okt', 'Noo', 'Dee'],
+  STANDALONESHORTMONTHS: ['Žan', 'Fee', 'Mar', 'Awi', 'Me', 'Žuw', 'Žuy',
+      'Ut', 'Sek', 'Okt', 'Noo', 'Dee'],
+  WEEKDAYS: ['Alhadi', 'Atinni', 'Atalaata', 'Alarba', 'Alhamisi', 'Alzuma',
+      'Asibti'],
+  STANDALONEWEEKDAYS: ['Alhadi', 'Atinni', 'Atalaata', 'Alarba', 'Alhamisi',
+      'Alzuma', 'Asibti'],
+  SHORTWEEKDAYS: ['Alh', 'Ati', 'Ata', 'Ala', 'Alm', 'Alz', 'Asi'],
+  STANDALONESHORTWEEKDAYS: ['Alh', 'Ati', 'Ata', 'Ala', 'Alm', 'Alz', 'Asi'],
+  NARROWWEEKDAYS: ['H', 'T', 'T', 'L', 'M', 'Z', 'S'],
+  STANDALONENARROWWEEKDAYS: ['H', 'T', 'T', 'L', 'M', 'Z', 'S'],
+  SHORTQUARTERS: ['A1', 'A2', 'A3', 'A4'],
+  QUARTERS: ['Arrubu 1', 'Arrubu 2', 'Arrubu 3', 'Arrubu 4'],
+  AMPMS: ['Subbaahi', 'Zaarikay b'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM, y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale dje_NE.
+ */
+goog.i18n.DateTimeSymbols_dje_NE = goog.i18n.DateTimeSymbols_dje;
+
+
+/**
+ * Date/time formatting symbols for locale dua.
+ */
+goog.i18n.DateTimeSymbols_dua = {
+  ERAS: ['ɓ.Ys', 'mb.Ys'],
+  ERANAMES: ['ɓoso ɓwá yáɓe lá', 'mbúsa kwédi a Yés'],
+  NARROWMONTHS: ['d', 'ŋ', 's', 'd', 'e', 'e', 'm', 'd', 'n', 'm', 't', 'e'],
+  STANDALONENARROWMONTHS: ['d', 'ŋ', 's', 'd', 'e', 'e', 'm', 'd', 'n', 'm',
+      't', 'e'],
+  MONTHS: ['dimɔ́di', 'ŋgɔndɛ', 'sɔŋɛ', 'diɓáɓá', 'emiasele',
+      'esɔpɛsɔpɛ', 'madiɓɛ́díɓɛ́', 'diŋgindi', 'nyɛtɛki',
+      'mayésɛ́', 'tiníní', 'eláŋgɛ́'],
+  STANDALONEMONTHS: ['dimɔ́di', 'ŋgɔndɛ', 'sɔŋɛ', 'diɓáɓá',
+      'emiasele', 'esɔpɛsɔpɛ', 'madiɓɛ́díɓɛ́', 'diŋgindi',
+      'nyɛtɛki', 'mayésɛ́', 'tiníní', 'eláŋgɛ́'],
+  SHORTMONTHS: ['di', 'ŋgɔn', 'sɔŋ', 'diɓ', 'emi', 'esɔ', 'mad', 'diŋ',
+      'nyɛt', 'may', 'tin', 'elá'],
+  STANDALONESHORTMONTHS: ['di', 'ŋgɔn', 'sɔŋ', 'diɓ', 'emi', 'esɔ', 'mad',
+      'diŋ', 'nyɛt', 'may', 'tin', 'elá'],
+  WEEKDAYS: ['éti', 'mɔ́sú', 'kwasú', 'mukɔ́sú', 'ŋgisú',
+      'ɗónɛsú', 'esaɓasú'],
+  STANDALONEWEEKDAYS: ['éti', 'mɔ́sú', 'kwasú', 'mukɔ́sú', 'ŋgisú',
+      'ɗónɛsú', 'esaɓasú'],
+  SHORTWEEKDAYS: ['ét', 'mɔ́s', 'kwa', 'muk', 'ŋgi', 'ɗón', 'esa'],
+  STANDALONESHORTWEEKDAYS: ['ét', 'mɔ́s', 'kwa', 'muk', 'ŋgi', 'ɗón',
+      'esa'],
+  NARROWWEEKDAYS: ['e', 'm', 'k', 'm', 'ŋ', 'ɗ', 'e'],
+  STANDALONENARROWWEEKDAYS: ['e', 'm', 'k', 'm', 'ŋ', 'ɗ', 'e'],
+  SHORTQUARTERS: ['ndu1', 'ndu2', 'ndu3', 'ndu4'],
+  QUARTERS: ['ndúmbū nyá ɓosó', 'ndúmbū ní lóndɛ́ íɓaá',
+      'ndúmbū ní lóndɛ́ ílálo', 'ndúmbū ní lóndɛ́ ínɛ́y'],
+  AMPMS: ['idiɓa', 'ebyámu'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale dua_CM.
+ */
+goog.i18n.DateTimeSymbols_dua_CM = goog.i18n.DateTimeSymbols_dua;
+
+
+/**
+ * Date/time formatting symbols for locale dyo.
+ */
+goog.i18n.DateTimeSymbols_dyo = {
+  ERAS: ['ArY', 'AtY'],
+  ERANAMES: ['Ariŋuu Yeesu', 'Atooŋe Yeesu'],
+  NARROWMONTHS: ['S', 'F', 'M', 'A', 'M', 'S', 'S', 'U', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['S', 'F', 'M', 'A', 'M', 'S', 'S', 'U', 'S', 'O',
+      'N', 'D'],
+  MONTHS: ['Sanvie', 'Fébirie', 'Mars', 'Aburil', 'Mee', 'Sueŋ', 'Súuyee',
+      'Ut', 'Settembar', 'Oktobar', 'Novembar', 'Disambar'],
+  STANDALONEMONTHS: ['Sanvie', 'Fébirie', 'Mars', 'Aburil', 'Mee', 'Sueŋ',
+      'Súuyee', 'Ut', 'Settembar', 'Oktobar', 'Novembar', 'Disambar'],
+  SHORTMONTHS: ['Sa', 'Fe', 'Ma', 'Ab', 'Me', 'Su', 'Sú', 'Ut', 'Se', 'Ok',
+      'No', 'De'],
+  STANDALONESHORTMONTHS: ['Sa', 'Fe', 'Ma', 'Ab', 'Me', 'Su', 'Sú', 'Ut', 'Se',
+      'Ok', 'No', 'De'],
+  WEEKDAYS: ['Dimas', 'Teneŋ', 'Talata', 'Alarbay', 'Aramisay', 'Arjuma',
+      'Sibiti'],
+  STANDALONEWEEKDAYS: ['Dimas', 'Teneŋ', 'Talata', 'Alarbay', 'Aramisay',
+      'Arjuma', 'Sibiti'],
+  SHORTWEEKDAYS: ['Dim', 'Ten', 'Tal', 'Ala', 'Ara', 'Arj', 'Sib'],
+  STANDALONESHORTWEEKDAYS: ['Dim', 'Ten', 'Tal', 'Ala', 'Ara', 'Arj', 'Sib'],
+  NARROWWEEKDAYS: ['D', 'T', 'T', 'A', 'A', 'A', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'T', 'T', 'A', 'A', 'A', 'S'],
+  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale dyo_SN.
+ */
+goog.i18n.DateTimeSymbols_dyo_SN = goog.i18n.DateTimeSymbols_dyo;
+
+
+/**
  * Date/time formatting symbols for locale dz.
  */
 goog.i18n.DateTimeSymbols_dz = {
@@ -3033,9 +3229,9 @@ goog.i18n.DateTimeSymbols_dz = {
       'ཆུ་ཚོད་ h སྐར་མ་ mm སྐར་ཆཱ་ ss a z',
       'ཆུ་ཚོད་h:mm:ss a',
       'ཆུ་ཚོད་ h སྐར་མ་ mm a'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -3076,7 +3272,7 @@ goog.i18n.DateTimeSymbols_ebu = {
   STANDALONESHORTWEEKDAYS: ['Kma', 'Tat', 'Ine', 'Tan', 'Arm', 'Maa', 'NMM'],
   NARROWWEEKDAYS: ['K', 'N', 'N', 'N', 'A', 'M', 'N'],
   STANDALONENARROWWEEKDAYS: ['K', 'N', 'N', 'N', 'A', 'M', 'N'],
-  SHORTQUARTERS: ['K1', 'K1', 'K1', 'K1'],
+  SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
   QUARTERS: ['Kuota ya mbere', 'Kuota ya Kaĩrĩ', 'Kuota ya kathatu',
       'Kuota ya kana'],
   AMPMS: ['KI', 'UT'],
@@ -3084,7 +3280,7 @@ goog.i18n.DateTimeSymbols_ebu = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -3127,7 +3323,7 @@ goog.i18n.DateTimeSymbols_ee = {
   TIMEFORMATS: ['a h:mm:ss zzzz', 'a h:mm:ss z', 'a h:mm:ss', 'a h:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -3183,7 +3379,7 @@ goog.i18n.DateTimeSymbols_el_CY = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -3207,50 +3403,6 @@ goog.i18n.DateTimeSymbols_el_GR = {
       'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'],
   SHORTMONTHS: ['Ιαν', 'Φεβ', 'Μαρ', 'Απρ', 'Μαϊ', 'Ιουν',
       'Ιουλ', 'Αυγ', 'Σεπ', 'Οκτ', 'Νοε', 'Δεκ'],
-  STANDALONESHORTMONTHS: ['Ιαν', 'Φεβ', 'Μάρ', 'Απρ', 'Μάι',
-      'Ιούν', 'Ιούλ', 'Αυγ', 'Σεπ', 'Οκτ', 'Νοέ', 'Δεκ'],
-  WEEKDAYS: ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη',
-      'Πέμπτη', 'Παρασκευή', 'Σάββατο'],
-  STANDALONEWEEKDAYS: ['Κυριακή', 'Δευτέρα', 'Τρίτη',
-      'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'],
-  SHORTWEEKDAYS: ['Κυρ', 'Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ',
-      'Σαβ'],
-  STANDALONESHORTWEEKDAYS: ['Κυρ', 'Δευ', 'Τρί', 'Τετ', 'Πέμ',
-      'Παρ', 'Σάβ'],
-  NARROWWEEKDAYS: ['Κ', 'Δ', 'Τ', 'Τ', 'Π', 'Π', 'Σ'],
-  STANDALONENARROWWEEKDAYS: ['Κ', 'Δ', 'Τ', 'Τ', 'Π', 'Π', 'Σ'],
-  SHORTQUARTERS: ['Τ1', 'Τ2', 'Τ3', 'Τ4'],
-  QUARTERS: ['1ο τρίμηνο', '2ο τρίμηνο', '3ο τρίμηνο',
-      '4ο τρίμηνο'],
-  AMPMS: ['π.μ.', 'μ.μ.'],
-  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yy'],
-  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 0,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
-};
-
-
-/**
- * Date/time formatting symbols for locale el_POLYTON.
- */
-goog.i18n.DateTimeSymbols_el_POLYTON = {
-  ERAS: ['π.Χ.', 'μ.Χ.'],
-  ERANAMES: ['π.Χ.', 'μ.Χ.'],
-  NARROWMONTHS: ['Ι', 'Φ', 'Μ', 'Α', 'Μ', 'Ι', 'Ι', 'Α', 'Σ', 'Ο',
-      'Ν', 'Δ'],
-  STANDALONENARROWMONTHS: ['Ι', 'Φ', 'Μ', 'Α', 'Μ', 'Ι', 'Ι', 'Α', 'Σ',
-      'Ο', 'Ν', 'Δ'],
-  MONTHS: ['Ιανουαρίου', 'Φεβρουαρίου', 'Μαρτίου',
-      'Απριλίου', 'Μαΐου', 'Ιουνίου', 'Ιουλίου',
-      'Αὐγούστου', 'Σεπτεμβρίου', 'Ὀκτωβρίου',
-      'Νοεμβρίου', 'Δεκεμβρίου'],
-  STANDALONEMONTHS: ['Ιανουάριος', 'Φεβρουάριος',
-      'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος',
-      'Ιούλιος', 'Αὔγουστος', 'Σεπτέμβριος',
-      'Ὀκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'],
-  SHORTMONTHS: ['Ιαν', 'Φεβ', 'Μαρ', 'Απρ', 'Μαϊ', 'Ιουν',
-      'Ιουλ', 'Αὐγ', 'Σεπ', 'Ὀκτ', 'Νοε', 'Δεκ'],
   STANDALONESHORTMONTHS: ['Ιαν', 'Φεβ', 'Μάρ', 'Απρ', 'Μάι',
       'Ιούν', 'Ιούλ', 'Αυγ', 'Σεπ', 'Οκτ', 'Νοέ', 'Δεκ'],
   WEEKDAYS: ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη',
@@ -3307,7 +3459,43 @@ goog.i18n.DateTimeSymbols_en_AS = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
+};
+
+
+/**
+ * Date/time formatting symbols for locale en_BB.
+ */
+goog.i18n.DateTimeSymbols_en_BB = {
+  ERAS: ['BC', 'AD'],
+  ERANAMES: ['Before Christ', 'Anno Domini'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
+  MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+      'August', 'September', 'October', 'November', 'December'],
+  STANDALONEMONTHS: ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'],
+  SHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+      'Oct', 'Nov', 'Dec'],
+  STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+      'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  WEEKDAYS: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+      'Saturday'],
+  STANDALONEWEEKDAYS: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+      'Friday', 'Saturday'],
+  SHORTWEEKDAYS: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  STANDALONESHORTWEEKDAYS: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  NARROWWEEKDAYS: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+  STANDALONENARROWWEEKDAYS: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  QUARTERS: ['1st quarter', '2nd quarter', '3rd quarter', '4th quarter'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -3349,6 +3537,42 @@ goog.i18n.DateTimeSymbols_en_BE = {
 
 
 /**
+ * Date/time formatting symbols for locale en_BM.
+ */
+goog.i18n.DateTimeSymbols_en_BM = {
+  ERAS: ['BC', 'AD'],
+  ERANAMES: ['Before Christ', 'Anno Domini'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
+  MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+      'August', 'September', 'October', 'November', 'December'],
+  STANDALONEMONTHS: ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'],
+  SHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+      'Oct', 'Nov', 'Dec'],
+  STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+      'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  WEEKDAYS: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+      'Saturday'],
+  STANDALONEWEEKDAYS: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+      'Friday', 'Saturday'],
+  SHORTWEEKDAYS: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  STANDALONESHORTWEEKDAYS: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  NARROWWEEKDAYS: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+  STANDALONENARROWWEEKDAYS: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  QUARTERS: ['1st quarter', '2nd quarter', '3rd quarter', '4th quarter'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
  * Date/time formatting symbols for locale en_BW.
  */
 goog.i18n.DateTimeSymbols_en_BW = {
@@ -3380,7 +3604,7 @@ goog.i18n.DateTimeSymbols_en_BW = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -3414,9 +3638,9 @@ goog.i18n.DateTimeSymbols_en_BZ = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['dd MMMM y', 'dd MMMM y', 'dd-MMM-y', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -3452,7 +3676,7 @@ goog.i18n.DateTimeSymbols_en_CA = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -3510,7 +3734,7 @@ goog.i18n.DateTimeSymbols_en_Dsrt = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -3552,7 +3776,43 @@ goog.i18n.DateTimeSymbols_en_GU = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
+};
+
+
+/**
+ * Date/time formatting symbols for locale en_GY.
+ */
+goog.i18n.DateTimeSymbols_en_GY = {
+  ERAS: ['BC', 'AD'],
+  ERANAMES: ['Before Christ', 'Anno Domini'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
+  MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+      'August', 'September', 'October', 'November', 'December'],
+  STANDALONEMONTHS: ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'],
+  SHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+      'Oct', 'Nov', 'Dec'],
+  STANDALONESHORTMONTHS: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+      'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  WEEKDAYS: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+      'Saturday'],
+  STANDALONEWEEKDAYS: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+      'Friday', 'Saturday'],
+  SHORTWEEKDAYS: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  STANDALONESHORTWEEKDAYS: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  NARROWWEEKDAYS: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+  STANDALONENARROWWEEKDAYS: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  QUARTERS: ['1st quarter', '2nd quarter', '3rd quarter', '4th quarter'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -3588,7 +3848,7 @@ goog.i18n.DateTimeSymbols_en_HK = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -3624,7 +3884,7 @@ goog.i18n.DateTimeSymbols_en_JM = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -3660,7 +3920,7 @@ goog.i18n.DateTimeSymbols_en_MH = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -3694,9 +3954,9 @@ goog.i18n.DateTimeSymbols_en_MP = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 6,
+  FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -3729,10 +3989,10 @@ goog.i18n.DateTimeSymbols_en_MT = {
   QUARTERS: ['1st quarter', '2nd quarter', '3rd quarter', '4th quarter'],
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d MMMM y', 'dd MMMM y', 'dd MMM y', 'dd/MM/yyyy'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -3768,7 +4028,7 @@ goog.i18n.DateTimeSymbols_en_MU = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -3804,7 +4064,7 @@ goog.i18n.DateTimeSymbols_en_NA = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -3840,7 +4100,7 @@ goog.i18n.DateTimeSymbols_en_NZ = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -3876,7 +4136,7 @@ goog.i18n.DateTimeSymbols_en_PH = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -3912,63 +4172,7 @@ goog.i18n.DateTimeSymbols_en_PK = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
-};
-
-
-/**
- * Date/time formatting symbols for locale en_Shaw.
- */
-goog.i18n.DateTimeSymbols_en_Shaw = {
-  ERAS: ['𐑚·𐑒', '𐑨𐑛'],
-  ERANAMES: ['𐑚𐑰𐑓𐑪𐑮 ·𐑒𐑮𐑲𐑕𐑑',
-      '𐑨𐑙𐑴 𐑛𐑪𐑥𐑦𐑙𐑰'],
-  NARROWMONTHS: ['𐑡', '𐑓', '𐑥', '𐑱', '𐑥', '𐑡', '𐑡', '𐑪',
-      '𐑕', '𐑷', '𐑯', '𐑛'],
-  STANDALONENARROWMONTHS: ['𐑡', '𐑓', '𐑥', '𐑱', '𐑥', '𐑡',
-      '𐑡', '𐑪', '𐑕', '𐑷', '𐑯', '𐑛'],
-  MONTHS: ['·𐑡𐑨𐑙𐑘𐑭𐑢𐑺𐑰',
-      '·𐑓𐑧𐑚𐑘𐑵𐑢𐑺𐑰', '·𐑥𐑸𐑗',
-      '·𐑱𐑐𐑮𐑭𐑤', '·𐑥𐑱', '·𐑡𐑵𐑯',
-      '·𐑡𐑫𐑤𐑲', '·𐑪𐑜𐑭𐑕𐑑',
-      '·𐑕𐑧𐑐𐑑𐑧𐑥𐑚𐑸', '·𐑷𐑒𐑑𐑴𐑚𐑸',
-      '·𐑯𐑴𐑝𐑧𐑥𐑚𐑸', '·𐑛𐑭𐑕𐑧𐑥𐑚𐑸'],
-  STANDALONEMONTHS: ['·𐑡𐑨𐑙𐑘𐑭𐑢𐑺𐑰',
-      '·𐑓𐑧𐑚𐑘𐑵𐑢𐑺𐑰', '·𐑥𐑸𐑗',
-      '·𐑱𐑐𐑮𐑭𐑤', '·𐑥𐑱', '·𐑡𐑵𐑯',
-      '·𐑡𐑫𐑤𐑲', '·𐑪𐑜𐑭𐑕𐑑',
-      '·𐑕𐑧𐑐𐑑𐑧𐑥𐑚𐑸', '·𐑷𐑒𐑑𐑴𐑚𐑸',
-      '·𐑯𐑴𐑝𐑧𐑥𐑚𐑸', '·𐑛𐑭𐑕𐑧𐑥𐑚𐑸'],
-  SHORTMONTHS: ['·𐑡𐑨', '·𐑓𐑧', '·𐑥𐑸', '·𐑱𐑐',
-      '·𐑥𐑱', '·𐑡𐑵', '·𐑡𐑫', '·𐑪𐑜', '·𐑕𐑧',
-      '·𐑷𐑒', '·𐑯𐑴', '·𐑛𐑭'],
-  STANDALONESHORTMONTHS: ['·𐑡𐑨', '·𐑓𐑧', '·𐑥𐑸',
-      '·𐑱𐑐', '·𐑥𐑱', '·𐑡𐑵', '·𐑡𐑫', '·𐑪𐑜',
-      '·𐑕𐑧', '·𐑷𐑒', '·𐑯𐑴', '·𐑛𐑭'],
-  WEEKDAYS: ['·𐑕𐑭𐑙𐑛𐑱', '·𐑥𐑭𐑙𐑛𐑱',
-      '·𐑑𐑵𐑟𐑛𐑱', '·𐑢𐑧𐑙𐑟𐑛𐑱',
-      '·𐑔𐑻𐑟𐑛𐑱', '·𐑓𐑮𐑲𐑛𐑱',
-      '·𐑕𐑨𐑛𐑻𐑛𐑱'],
-  STANDALONEWEEKDAYS: ['·𐑕𐑭𐑙𐑛𐑱', '·𐑥𐑭𐑙𐑛𐑱',
-      '·𐑑𐑵𐑟𐑛𐑱', '·𐑢𐑧𐑙𐑟𐑛𐑱',
-      '·𐑔𐑻𐑟𐑛𐑱', '·𐑓𐑮𐑲𐑛𐑱',
-      '·𐑕𐑨𐑛𐑻𐑛𐑱'],
-  SHORTWEEKDAYS: ['·𐑕𐑭', '·𐑥𐑭', '·𐑑𐑵', '·𐑢𐑧',
-      '·𐑔𐑻', '·𐑓𐑮', '·𐑕𐑨'],
-  STANDALONESHORTWEEKDAYS: ['·𐑕𐑭', '·𐑥𐑭', '·𐑑𐑵',
-      '·𐑢𐑧', '·𐑔𐑻', '·𐑓𐑮', '·𐑕𐑨'],
-  NARROWWEEKDAYS: ['𐑕', '𐑥', '𐑑', '𐑢', '𐑔', '𐑓', '𐑕'],
-  STANDALONENARROWWEEKDAYS: ['𐑕', '𐑥', '𐑑', '𐑢', '𐑔', '𐑓',
-      '𐑕'],
-  SHORTQUARTERS: ['𐑒1', '𐑒2', '𐑒3', '𐑒4'],
-  QUARTERS: ['1𐑕𐑑 𐑒𐑢𐑸𐑛𐑸', '2𐑯𐑛 𐑒𐑢𐑸𐑛𐑸',
-      '3𐑻𐑛 𐑒𐑢𐑸𐑛𐑸', '4𐑹𐑔 𐑒𐑢𐑸𐑛𐑸'],
-  AMPMS: ['𐑨𐑥', '𐑐𐑥'],
-  DATEFORMATS: ['EEEE, MMMM d, y', 'MMMM d, y', 'MMM d, y', 'M/d/yy'],
-  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 0,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4004,7 +4208,7 @@ goog.i18n.DateTimeSymbols_en_TT = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4040,7 +4244,7 @@ goog.i18n.DateTimeSymbols_en_UM = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4076,7 +4280,7 @@ goog.i18n.DateTimeSymbols_en_VI = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4112,7 +4316,7 @@ goog.i18n.DateTimeSymbols_en_ZW = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4151,7 +4355,7 @@ goog.i18n.DateTimeSymbols_eo = {
       'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -4178,18 +4382,18 @@ goog.i18n.DateTimeSymbols_es_AR = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH\'h\'\'\'mm:ss zzzz', 'H:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4216,18 +4420,18 @@ goog.i18n.DateTimeSymbols_es_BO = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -4254,18 +4458,18 @@ goog.i18n.DateTimeSymbols_es_CL = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd-MM-yyyy', 'dd-MM-yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -4292,18 +4496,18 @@ goog.i18n.DateTimeSymbols_es_CO = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'd/MM/yyyy', 'd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4330,18 +4534,18 @@ goog.i18n.DateTimeSymbols_es_CR = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -4368,18 +4572,18 @@ goog.i18n.DateTimeSymbols_es_DO = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4406,18 +4610,18 @@ goog.i18n.DateTimeSymbols_es_EC = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -4444,13 +4648,13 @@ goog.i18n.DateTimeSymbols_es_ES = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
@@ -4482,18 +4686,18 @@ goog.i18n.DateTimeSymbols_es_GQ = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -4520,18 +4724,18 @@ goog.i18n.DateTimeSymbols_es_GT = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'd/MM/yyyy', 'd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4558,8 +4762,8 @@ goog.i18n.DateTimeSymbols_es_HN = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
@@ -4567,9 +4771,9 @@ goog.i18n.DateTimeSymbols_es_HN = {
   DATEFORMATS: ['EEEE dd \'de\' MMMM \'de\' y', 'dd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4596,18 +4800,18 @@ goog.i18n.DateTimeSymbols_es_MX = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4634,18 +4838,18 @@ goog.i18n.DateTimeSymbols_es_NI = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4672,18 +4876,18 @@ goog.i18n.DateTimeSymbols_es_PA = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'MM/dd/yyyy', 'MM/dd/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4710,18 +4914,18 @@ goog.i18n.DateTimeSymbols_es_PE = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'd/MM/yy'],
   TIMEFORMATS: ['HH\'H\'mm\'\'ss\'\' zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4748,18 +4952,18 @@ goog.i18n.DateTimeSymbols_es_PR = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'MM/dd/yyyy', 'MM/dd/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4786,18 +4990,18 @@ goog.i18n.DateTimeSymbols_es_PY = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4824,18 +5028,18 @@ goog.i18n.DateTimeSymbols_es_SV = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4862,18 +5066,18 @@ goog.i18n.DateTimeSymbols_es_US = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'MMM d, y', 'M/d/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -4900,18 +5104,18 @@ goog.i18n.DateTimeSymbols_es_UY = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -4938,18 +5142,18 @@ goog.i18n.DateTimeSymbols_es_VE = {
       'viernes', 'sábado'],
   SHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
   STANDALONESHORTWEEKDAYS: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
-  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
   SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
   QUARTERS: ['1er trimestre', '2º trimestre', '3er trimestre',
       '4º trimestre'],
   AMPMS: ['a.m.', 'p.m.'],
-  DATEFORMATS: ['EEEE d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -5028,9 +5232,60 @@ goog.i18n.DateTimeSymbols_eu_ES = {
 
 
 /**
+ * Date/time formatting symbols for locale ewo.
+ */
+goog.i18n.DateTimeSymbols_ewo = {
+  ERAS: ['oyk', 'ayk'],
+  ERANAMES: ['osúsúa Yésus kiri', 'ámvus Yésus Kirís'],
+  NARROWMONTHS: ['o', 'b', 'l', 'n', 't', 's', 'z', 'm', 'e', 'a', 'd', 'b'],
+  STANDALONENARROWMONTHS: ['o', 'b', 'l', 'n', 't', 's', 'z', 'm', 'e', 'a',
+      'd', 'b'],
+  MONTHS: ['ngɔn osú', 'ngɔn bɛ̌', 'ngɔn lála', 'ngɔn nyina',
+      'ngɔn tána', 'ngɔn samǝna', 'ngɔn zamgbála', 'ngɔn mwom',
+      'ngɔn ebulú', 'ngɔn awóm', 'ngɔn awóm ai dziá',
+      'ngɔn awóm ai bɛ̌'],
+  STANDALONEMONTHS: ['ngɔn osú', 'ngɔn bɛ̌', 'ngɔn lála', 'ngɔn nyina',
+      'ngɔn tána', 'ngɔn samǝna', 'ngɔn zamgbála', 'ngɔn mwom',
+      'ngɔn ebulú', 'ngɔn awóm', 'ngɔn awóm ai dziá',
+      'ngɔn awóm ai bɛ̌'],
+  SHORTMONTHS: ['ngo', 'ngb', 'ngl', 'ngn', 'ngt', 'ngs', 'ngz', 'ngm', 'nge',
+      'nga', 'ngad', 'ngab'],
+  STANDALONESHORTMONTHS: ['ngo', 'ngb', 'ngl', 'ngn', 'ngt', 'ngs', 'ngz',
+      'ngm', 'nge', 'nga', 'ngad', 'ngab'],
+  WEEKDAYS: ['sɔ́ndɔ', 'mɔ́ndi', 'sɔ́ndɔ mǝlú mǝ́bɛ̌',
+      'sɔ́ndɔ mǝlú mǝ́lɛ́', 'sɔ́ndɔ mǝlú mǝ́nyi', 'fúladé',
+      'séradé'],
+  STANDALONEWEEKDAYS: ['sɔ́ndɔ', 'mɔ́ndi', 'sɔ́ndɔ mǝlú mǝ́bɛ̌',
+      'sɔ́ndɔ mǝlú mǝ́lɛ́', 'sɔ́ndɔ mǝlú mǝ́nyi', 'fúladé',
+      'séradé'],
+  SHORTWEEKDAYS: ['sɔ́n', 'mɔ́n', 'smb', 'sml', 'smn', 'fúl', 'sér'],
+  STANDALONESHORTWEEKDAYS: ['sɔ́n', 'mɔ́n', 'smb', 'sml', 'smn', 'fúl',
+      'sér'],
+  NARROWWEEKDAYS: ['s', 'm', 's', 's', 's', 'f', 's'],
+  STANDALONENARROWWEEKDAYS: ['s', 'm', 's', 's', 's', 'f', 's'],
+  SHORTQUARTERS: ['nno', 'nnb', 'nnl', 'nnny'],
+  QUARTERS: ['nsámbá ngɔn asú', 'nsámbá ngɔn bɛ̌',
+      'nsámbá ngɔn lála', 'nsámbá ngɔn nyina'],
+  AMPMS: ['kíkíríg', 'ngǝgógǝle'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale ewo_CM.
+ */
+goog.i18n.DateTimeSymbols_ewo_CM = goog.i18n.DateTimeSymbols_ewo;
+
+
+/**
  * Date/time formatting symbols for locale fa_AF.
  */
 goog.i18n.DateTimeSymbols_fa_AF = {
+  ZERODIGIT: 0x06F0,
   ERAS: ['ق.م.', 'م.'],
   ERANAMES: ['قبل از میلاد', 'میلادی'],
   NARROWMONTHS: ['ژ', 'ف', 'م', 'آ', 'م', 'ژ', 'ژ', 'ا', 'س', 'ا',
@@ -5067,7 +5322,7 @@ goog.i18n.DateTimeSymbols_fa_AF = {
   TIMEFORMATS: ['H:mm:ss (zzzz)', 'H:mm:ss (z)', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -5075,6 +5330,7 @@ goog.i18n.DateTimeSymbols_fa_AF = {
  * Date/time formatting symbols for locale fa_IR.
  */
 goog.i18n.DateTimeSymbols_fa_IR = {
+  ZERODIGIT: 0x06F0,
   ERAS: ['ق.م.', 'م.'],
   ERANAMES: ['قبل از میلاد', 'میلادی'],
   NARROWMONTHS: ['ژ', 'ف', 'م', 'آ', 'م', 'ژ', 'ژ', 'ا', 'س', 'ا',
@@ -5111,7 +5367,7 @@ goog.i18n.DateTimeSymbols_fa_IR = {
   TIMEFORMATS: ['H:mm:ss (zzzz)', 'H:mm:ss (z)', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -5147,7 +5403,7 @@ goog.i18n.DateTimeSymbols_ff = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -5230,7 +5486,7 @@ goog.i18n.DateTimeSymbols_fil_PH = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -5265,9 +5521,9 @@ goog.i18n.DateTimeSymbols_fo = {
   AMPMS: ['um fyrrapartur', 'um seinnapartur'],
   DATEFORMATS: ['EEEE dd MMMM y', 'd. MMM y', 'dd-MM-yyyy', 'dd-MM-yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 6,
+  FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 3
 };
 
 
@@ -5348,7 +5604,7 @@ goog.i18n.DateTimeSymbols_fr_BF = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -5385,7 +5641,7 @@ goog.i18n.DateTimeSymbols_fr_BI = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -5422,7 +5678,7 @@ goog.i18n.DateTimeSymbols_fr_BJ = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -5459,7 +5715,7 @@ goog.i18n.DateTimeSymbols_fr_BL = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -5496,7 +5752,7 @@ goog.i18n.DateTimeSymbols_fr_CD = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -5533,7 +5789,7 @@ goog.i18n.DateTimeSymbols_fr_CF = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -5570,7 +5826,7 @@ goog.i18n.DateTimeSymbols_fr_CG = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -5644,7 +5900,7 @@ goog.i18n.DateTimeSymbols_fr_CI = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -5681,7 +5937,7 @@ goog.i18n.DateTimeSymbols_fr_CM = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -5718,7 +5974,7 @@ goog.i18n.DateTimeSymbols_fr_DJ = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -5792,6 +6048,43 @@ goog.i18n.DateTimeSymbols_fr_GA = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale fr_GF.
+ */
+goog.i18n.DateTimeSymbols_fr_GF = {
+  ERAS: ['av. J.-C.', 'ap. J.-C.'],
+  ERANAMES: ['avant Jésus-Christ', 'après Jésus-Christ'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
+  MONTHS: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
+      'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+  STANDALONEMONTHS: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+      'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+  SHORTMONTHS: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.',
+      'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+  STANDALONESHORTMONTHS: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin',
+      'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+  WEEKDAYS: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi',
+      'samedi'],
+  STANDALONEWEEKDAYS: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi',
+      'vendredi', 'samedi'],
+  SHORTWEEKDAYS: ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'],
+  STANDALONESHORTWEEKDAYS: ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.',
+      'sam.'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
+  QUARTERS: ['1er trimestre', '2e trimestre', '3e trimestre', '4e trimestre'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
   FIRSTWEEKCUTOFFDAY: 3
 };
 
@@ -5829,7 +6122,7 @@ goog.i18n.DateTimeSymbols_fr_GN = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -5903,7 +6196,7 @@ goog.i18n.DateTimeSymbols_fr_GQ = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -5940,7 +6233,7 @@ goog.i18n.DateTimeSymbols_fr_KM = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6051,7 +6344,7 @@ goog.i18n.DateTimeSymbols_fr_MF = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6088,7 +6381,7 @@ goog.i18n.DateTimeSymbols_fr_MG = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6125,7 +6418,7 @@ goog.i18n.DateTimeSymbols_fr_ML = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6199,7 +6492,7 @@ goog.i18n.DateTimeSymbols_fr_NE = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6273,7 +6566,7 @@ goog.i18n.DateTimeSymbols_fr_RW = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6310,7 +6603,7 @@ goog.i18n.DateTimeSymbols_fr_SN = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6347,7 +6640,7 @@ goog.i18n.DateTimeSymbols_fr_TD = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6384,7 +6677,44 @@ goog.i18n.DateTimeSymbols_fr_TG = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale fr_YT.
+ */
+goog.i18n.DateTimeSymbols_fr_YT = {
+  ERAS: ['av. J.-C.', 'ap. J.-C.'],
+  ERANAMES: ['avant Jésus-Christ', 'après Jésus-Christ'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
+  MONTHS: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
+      'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+  STANDALONEMONTHS: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+      'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+  SHORTMONTHS: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.',
+      'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+  STANDALONESHORTMONTHS: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin',
+      'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+  WEEKDAYS: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi',
+      'samedi'],
+  STANDALONEWEEKDAYS: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi',
+      'vendredi', 'samedi'],
+  SHORTWEEKDAYS: ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'],
+  STANDALONESHORTWEEKDAYS: ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.',
+      'sam.'],
+  NARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+  SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
+  QUARTERS: ['1er trimestre', '2e trimestre', '3e trimestre', '4e trimestre'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6422,7 +6752,7 @@ goog.i18n.DateTimeSymbols_fur = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6475,46 +6805,6 @@ goog.i18n.DateTimeSymbols_ga = {
  * Date/time formatting symbols for locale ga_IE.
  */
 goog.i18n.DateTimeSymbols_ga_IE = goog.i18n.DateTimeSymbols_ga;
-
-
-/**
- * Date/time formatting symbols for locale gaa.
- */
-goog.i18n.DateTimeSymbols_gaa = {
-  ERAS: ['DJ', 'KJ'],
-  ERANAMES: ['Dani Jesu', 'KJ'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  MONTHS: ['Aharabata', 'Oflo', 'Ochokrikri', 'Abeibee', 'Agbeinaa',
-      'Otukwadan', 'Maawe', 'Manyawale', 'Gbo', 'Anton', 'Alemle', 'Afuabee'],
-  STANDALONEMONTHS: ['Aharabata', 'Oflo', 'Ochokrikri', 'Abeibee', 'Agbeinaa',
-      'Otukwadan', 'Maawe', 'Manyawale', 'Gbo', 'Anton', 'Alemle', 'Afuabee'],
-  SHORTMONTHS: ['Aha', 'Ofl', 'Och', 'Abe', 'Agb', 'Otu', 'Maa', 'Man', 'Gbo',
-      'Ant', 'Ale', 'Afu'],
-  STANDALONESHORTMONTHS: ['Aha', 'Ofl', 'Och', 'Abe', 'Agb', 'Otu', 'Maa',
-      'Man', 'Gbo', 'Ant', 'Ale', 'Afu'],
-  WEEKDAYS: ['Hogbaa', 'Dzu', 'Dzufo', 'Sho', 'Soo', 'Sohaa', 'Ho'],
-  STANDALONEWEEKDAYS: ['Hogbaa', 'Dzu', 'Dzufo', 'Sho', 'Soo', 'Sohaa', 'Ho'],
-  SHORTWEEKDAYS: ['Ho', 'Dzu', 'Dzf', 'Sho', 'Soo', 'Soh', 'Ho'],
-  STANDALONESHORTWEEKDAYS: ['Ho', 'Dzu', 'Dzf', 'Sho', 'Soo', 'Soh', 'Ho'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['LB', 'SN'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
-};
-
-
-/**
- * Date/time formatting symbols for locale gaa_GH.
- */
-goog.i18n.DateTimeSymbols_gaa_GH = goog.i18n.DateTimeSymbols_gaa;
 
 
 /**
@@ -6603,12 +6893,12 @@ goog.i18n.DateTimeSymbols_gu_IN = {
   MONTHS: ['જાન્યુઆરી', 'ફેબ્રુઆરી',
       'માર્ચ', 'એપ્રિલ', 'મે', 'જૂન',
       'જુલાઈ', 'ઑગસ્ટ', 'સપ્ટેમ્બર',
-      'ઑક્ટ્બર', 'નવેમ્બર',
+      'ઑક્ટોબર', 'નવેમ્બર',
       'ડિસેમ્બર'],
   STANDALONEMONTHS: ['જાન્યુઆરી',
       'ફેબ્રુઆરી', 'માર્ચ', 'એપ્રિલ',
       'મે', 'જૂન', 'જુલાઈ', 'ઑગસ્ટ',
-      'સપ્ટેમ્બર', 'ઑક્ટ્બર',
+      'સપ્ટેમ્બર', 'ઑક્ટોબર',
       'નવેમ્બર', 'ડિસેમ્બર'],
   SHORTMONTHS: ['જાન્યુ', 'ફેબ્રુ', 'માર્ચ',
       'એપ્રિલ', 'મે', 'જૂન', 'જુલાઈ',
@@ -6636,13 +6926,12 @@ goog.i18n.DateTimeSymbols_gu_IN = {
       'ચૌતા હંત 4'],
   QUARTERS: ['પેહલા હંત 1', 'ડૂસઋા હંત 2',
       'તીસઋા હંત 3', 'ચૌતા હંત 4'],
-  AMPMS: ['પૂર્વ મધ્યાહ્ન',
-      'ઉત્તર મધ્યાહ્ન'],
+  AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'd MMM, y', 'd-MM-yy'],
   TIMEFORMATS: ['hh:mm:ss a zzzz', 'hh:mm:ss a z', 'hh:mm:ss a', 'hh:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -6679,7 +6968,7 @@ goog.i18n.DateTimeSymbols_guz = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6724,7 +7013,7 @@ goog.i18n.DateTimeSymbols_gv = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6767,7 +7056,7 @@ goog.i18n.DateTimeSymbols_ha = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -6796,9 +7085,9 @@ goog.i18n.DateTimeSymbols_ha_Latn_NG = goog.i18n.DateTimeSymbols_ha;
 
 
 /**
- * Date/time formatting symbols for locale haw.
+ * Date/time formatting symbols for locale haw_US.
  */
-goog.i18n.DateTimeSymbols_haw = {
+goog.i18n.DateTimeSymbols_haw_US = {
   ERAS: ['BCE', 'CE'],
   ERANAMES: ['BCE', 'CE'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
@@ -6828,14 +7117,8 @@ goog.i18n.DateTimeSymbols_haw = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
-
-
-/**
- * Date/time formatting symbols for locale haw_US.
- */
-goog.i18n.DateTimeSymbols_haw_US = goog.i18n.DateTimeSymbols_haw;
 
 
 /**
@@ -6878,7 +7161,7 @@ goog.i18n.DateTimeSymbols_he_IL = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [4, 5],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -6928,12 +7211,12 @@ goog.i18n.DateTimeSymbols_hi_IN = {
       'तीसरी तिमाही', 'चौथी तिमाही'],
   QUARTERS: ['तिमाही', 'दूसरी तिमाही',
       'तीसरी तिमाही', 'चौथी तिमाही'],
-  AMPMS: ['पूर्वाह्न', 'अपराह्न'],
+  AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'dd-MM-yyyy', 'd-M-yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -6966,12 +7249,12 @@ goog.i18n.DateTimeSymbols_hr_HR = {
   STANDALONENARROWWEEKDAYS: ['n', 'p', 'u', 's', 'č', 'p', 's'],
   SHORTQUARTERS: ['1kv', '2kv', '3kv', '4kv'],
   QUARTERS: ['1. kvartal', '2. kvartal', '3. kvartal', '4. kvartal'],
-  AMPMS: ['prije podne', 'PM'],
+  AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, d. MMMM y.', 'd. MMMM y.', 'd. M. y.', 'd.M.y.'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7009,7 +7292,7 @@ goog.i18n.DateTimeSymbols_hu_HU = {
   TIMEFORMATS: ['H:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7053,7 +7336,7 @@ goog.i18n.DateTimeSymbols_hy = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7097,7 +7380,7 @@ goog.i18n.DateTimeSymbols_ia = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7128,12 +7411,12 @@ goog.i18n.DateTimeSymbols_id_ID = {
   SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
   QUARTERS: ['kuartal pertama', 'kuartal kedua', 'kuartal ketiga',
       'kuartal keempat'],
-  AMPMS: ['pagi', 'malam'],
+  AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, dd MMMM yyyy', 'd MMMM yyyy', 'd MMM yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['H:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -7171,7 +7454,7 @@ goog.i18n.DateTimeSymbols_ig = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7201,9 +7484,9 @@ goog.i18n.DateTimeSymbols_ii = {
       'ꆏꊂꉬ', 'ꆏꊂꃘ'],
   STANDALONEWEEKDAYS: ['ꑭꆏꑍ', 'ꆏꊂꋍ', 'ꆏꊂꑍ', 'ꆏꊂꌕ',
       'ꆏꊂꇖ', 'ꆏꊂꉬ', 'ꆏꊂꃘ'],
-  SHORTWEEKDAYS: ['ꆏꑍ', 'ꆏꋍ', 'ꆏꑍ', 'ꆏꌕ', 'ꆏꇖ', 'ꆏꉬ',
+  SHORTWEEKDAYS: ['ꑭꆏ', 'ꆏꋍ', 'ꆏꑍ', 'ꆏꌕ', 'ꆏꇖ', 'ꆏꉬ',
       'ꆏꃘ'],
-  STANDALONESHORTWEEKDAYS: ['ꆏꑍ', 'ꆏꋍ', 'ꆏꑍ', 'ꆏꌕ', 'ꆏꇖ',
+  STANDALONESHORTWEEKDAYS: ['ꑭꆏ', 'ꆏꋍ', 'ꆏꑍ', 'ꆏꌕ', 'ꆏꇖ',
       'ꆏꉬ', 'ꆏꃘ'],
   NARROWWEEKDAYS: ['ꆏ', 'ꋍ', 'ꑍ', 'ꌕ', 'ꇖ', 'ꉬ', 'ꃘ'],
   STANDALONENARROWWEEKDAYS: ['ꆏ', 'ꋍ', 'ꑍ', 'ꌕ', 'ꇖ', 'ꉬ', 'ꃘ'],
@@ -7214,7 +7497,7 @@ goog.i18n.DateTimeSymbols_ii = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7365,11 +7648,11 @@ goog.i18n.DateTimeSymbols_ja_JP = {
   QUARTERS: ['第1四半期', '第2四半期', '第3四半期',
       '第4四半期'],
   AMPMS: ['午前', '午後'],
-  DATEFORMATS: ['y年M月d日EEEE', 'y年M月d日', 'yyyy/MM/dd', 'yy/MM/dd'],
+  DATEFORMATS: ['y年M月d日EEEE', 'y年M月d日', 'yyyy/MM/dd', 'yyyy/MM/dd'],
   TIMEFORMATS: ['H時mm分ss秒 zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -7405,7 +7688,7 @@ goog.i18n.DateTimeSymbols_jmc = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7464,9 +7747,9 @@ goog.i18n.DateTimeSymbols_ka = {
   AMPMS: ['დილის', 'საღამოს'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 6,
+  FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7511,7 +7794,7 @@ goog.i18n.DateTimeSymbols_kab = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7519,51 +7802,6 @@ goog.i18n.DateTimeSymbols_kab = {
  * Date/time formatting symbols for locale kab_DZ.
  */
 goog.i18n.DateTimeSymbols_kab_DZ = goog.i18n.DateTimeSymbols_kab;
-
-
-/**
- * Date/time formatting symbols for locale kaj.
- */
-goog.i18n.DateTimeSymbols_kaj = {
-  ERAS: ['G.M.', 'M.'],
-  ERANAMES: ['Gabanin Miladi', 'Miladi'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  MONTHS: ['Hywan A̱yrnig', 'Hywan A̱hwa', 'Hywan A̱tat', 'Hywan A̱naai',
-      'Hywan A̱pfwon', 'Hywan A̱kitat', 'Hywan A̱tyirin', 'Hywan A̱ninai',
-      'Hywan A̱kumviriyin', 'Hywan Swak', 'Hywan Swak B\'a̱yrnig',
-      'Hywan Swak B\'a̱hwa'],
-  STANDALONEMONTHS: ['Hywan A̱yrnig', 'Hywan A̱hwa', 'Hywan A̱tat',
-      'Hywan A̱naai', 'Hywan A̱pfwon', 'Hywan A̱kitat', 'Hywan A̱tyirin',
-      'Hywan A̱ninai', 'Hywan A̱kumviriyin', 'Hywan Swak',
-      'Hywan Swak B\'a̱yrnig', 'Hywan Swak B\'a̱hwa'],
-  SHORTMONTHS: ['A̱yr', 'A̱hw', 'A̱ta', 'A̱na', 'A̱pf', 'A̱ki', 'A̱ty',
-      'A̱ni', 'A̱ku', 'Swa', 'Sby', 'Sbh'],
-  STANDALONESHORTMONTHS: ['A̱yr', 'A̱hw', 'A̱ta', 'A̱na', 'A̱pf', 'A̱ki',
-      'A̱ty', 'A̱ni', 'A̱ku', 'Swa', 'Sby', 'Sbh'],
-  WEEKDAYS: ['Ladi', 'Lintani', 'Talata', 'Larba', 'Lamit', 'Juma', 'Asabar'],
-  STANDALONEWEEKDAYS: ['Ladi', 'Lintani', 'Talata', 'Larba', 'Lamit', 'Juma',
-      'Asabar'],
-  SHORTWEEKDAYS: ['Lad', 'Lin', 'Tal', 'Lar', 'Lam', 'Jum', 'Asa'],
-  STANDALONESHORTWEEKDAYS: ['Lad', 'Lin', 'Tal', 'Lar', 'Lam', 'Jum', 'Asa'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['A.M.', 'P.M.'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
-};
-
-
-/**
- * Date/time formatting symbols for locale kaj_NG.
- */
-goog.i18n.DateTimeSymbols_kaj_NG = goog.i18n.DateTimeSymbols_kaj;
 
 
 /**
@@ -7603,7 +7841,7 @@ goog.i18n.DateTimeSymbols_kam = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7611,49 +7849,6 @@ goog.i18n.DateTimeSymbols_kam = {
  * Date/time formatting symbols for locale kam_KE.
  */
 goog.i18n.DateTimeSymbols_kam_KE = goog.i18n.DateTimeSymbols_kam;
-
-
-/**
- * Date/time formatting symbols for locale kcg.
- */
-goog.i18n.DateTimeSymbols_kcg = {
-  ERAS: ['GM', 'M'],
-  ERANAMES: ['Gabanin Miladi', 'Miladi'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  MONTHS: ['Zwat Juwung', 'Zwat Swiyang', 'Zwat Tsat', 'Zwat Nyai',
-      'Zwat Tswon', 'Zwat Ataah', 'Zwat Anatat', 'Zwat Arinai',
-      'Zwat Akubunyung', 'Zwat Swag', 'Zwat Mangjuwang', 'Zwat Swag-Ma-Suyang'],
-  STANDALONEMONTHS: ['Zwat Juwung', 'Zwat Swiyang', 'Zwat Tsat', 'Zwat Nyai',
-      'Zwat Tswon', 'Zwat Ataah', 'Zwat Anatat', 'Zwat Arinai',
-      'Zwat Akubunyung', 'Zwat Swag', 'Zwat Mangjuwang', 'Zwat Swag-Ma-Suyang'],
-  SHORTMONTHS: ['Juw', 'Swi', 'Tsa', 'Nya', 'Tsw', 'Ata', 'Ana', 'Ari', 'Aku',
-      'Swa', 'Man', 'Mas'],
-  STANDALONESHORTMONTHS: ['Juw', 'Swi', 'Tsa', 'Nya', 'Tsw', 'Ata', 'Ana',
-      'Ari', 'Aku', 'Swa', 'Man', 'Mas'],
-  WEEKDAYS: ['Ladi', 'Tanii', 'Talata', 'Larba', 'Lamit', 'Juma', 'Asabat'],
-  STANDALONEWEEKDAYS: ['Ladi', 'Tanii', 'Talata', 'Larba', 'Lamit', 'Juma',
-      'Asabat'],
-  SHORTWEEKDAYS: ['Lad', 'Tan', 'Tal', 'Lar', 'Lam', 'Jum', 'Asa'],
-  STANDALONESHORTWEEKDAYS: ['Lad', 'Tan', 'Tal', 'Lar', 'Lam', 'Jum', 'Asa'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
-};
-
-
-/**
- * Date/time formatting symbols for locale kcg_NG.
- */
-goog.i18n.DateTimeSymbols_kcg_NG = goog.i18n.DateTimeSymbols_kcg;
 
 
 /**
@@ -7696,7 +7891,7 @@ goog.i18n.DateTimeSymbols_kde = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7740,7 +7935,7 @@ goog.i18n.DateTimeSymbols_kea = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7772,18 +7967,18 @@ goog.i18n.DateTimeSymbols_khq = {
       'Assabdu'],
   STANDALONEWEEKDAYS: ['Alhadi', 'Atini', 'Atalata', 'Alarba', 'Alhamiisa',
       'Aljuma', 'Assabdu'],
-  SHORTWEEKDAYS: ['Alh', 'Ati', 'Ata', 'Ala', 'Ala', 'Ala', 'Ass'],
-  STANDALONESHORTWEEKDAYS: ['Alh', 'Ati', 'Ata', 'Ala', 'Ala', 'Ala', 'Ass'],
+  SHORTWEEKDAYS: ['Alh', 'Ati', 'Ata', 'Ala', 'Alm', 'Alj', 'Ass'],
+  STANDALONESHORTWEEKDAYS: ['Alh', 'Ati', 'Ata', 'Ala', 'Alm', 'Alj', 'Ass'],
   NARROWWEEKDAYS: ['H', 'T', 'T', 'L', 'L', 'L', 'S'],
   STANDALONENARROWWEEKDAYS: ['H', 'T', 'T', 'L', 'L', 'L', 'S'],
   SHORTQUARTERS: ['A1', 'A2', 'A3', 'A4'],
-  QUARTERS: ['Arrubu 1', 'Arrubu 3', 'Arrubu 3', 'Arrubu 4'],
+  QUARTERS: ['Arrubu 1', 'Arrubu 2', 'Arrubu 3', 'Arrubu 4'],
   AMPMS: ['Adduha', 'Aluula'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM, y', 'd/M/yyyy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7830,7 +8025,7 @@ goog.i18n.DateTimeSymbols_ki = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7881,7 +8076,7 @@ goog.i18n.DateTimeSymbols_kk = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7928,9 +8123,9 @@ goog.i18n.DateTimeSymbols_kl = {
   AMPMS: ['ulloqeqqata-tungaa', 'ulloqeqqata-kingorna'],
   DATEFORMATS: ['EEEE dd MMMM y', 'dd MMMM y', 'MMM dd, y', 'yyyy-MM-dd'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 6,
+  FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -7975,7 +8170,7 @@ goog.i18n.DateTimeSymbols_kln = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8031,9 +8226,9 @@ goog.i18n.DateTimeSymbols_km = {
   TIMEFORMATS: ['H ម៉ោង m នាទី ss វិនាទី​ zzzz',
       'H ម៉ោង m នាទី ss វិនាទី​z', 'H:mm:ss',
       'H:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -8091,12 +8286,12 @@ goog.i18n.DateTimeSymbols_kn_IN = {
       'ನಾಲೃಕ 4'],
   QUARTERS: ['ಒಂದು 1', 'ಎರಡು 2', 'ಮೂರು 3',
       'ನಾಲೃಕ 4'],
-  AMPMS: ['AM', 'PM'],
+  AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd-M-yy'],
   TIMEFORMATS: ['hh:mm:ss a zzzz', 'hh:mm:ss a z', 'hh:mm:ss a', 'hh:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -8136,7 +8331,7 @@ goog.i18n.DateTimeSymbols_ko_KR = {
       'a h:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -8190,7 +8385,7 @@ goog.i18n.DateTimeSymbols_kok = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -8232,7 +8427,7 @@ goog.i18n.DateTimeSymbols_ksb = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8240,6 +8435,57 @@ goog.i18n.DateTimeSymbols_ksb = {
  * Date/time formatting symbols for locale ksb_TZ.
  */
 goog.i18n.DateTimeSymbols_ksb_TZ = goog.i18n.DateTimeSymbols_ksb;
+
+
+/**
+ * Date/time formatting symbols for locale ksf.
+ */
+goog.i18n.DateTimeSymbols_ksf = {
+  ERAS: ['d.Y.', 'k.Y.'],
+  ERANAMES: ['di Yɛ́sus aká yálɛ', 'cámɛɛn kǝ kǝbɔpka Y'],
+  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+      '11', '12'],
+  MONTHS: ['ŋwíí a ntɔ́ntɔ', 'ŋwíí akǝ bɛ́ɛ', 'ŋwíí akǝ ráá',
+      'ŋwíí akǝ nin', 'ŋwíí akǝ táan', 'ŋwíí akǝ táafɔk',
+      'ŋwíí akǝ táabɛɛ', 'ŋwíí akǝ táaraa', 'ŋwíí akǝ táanin',
+      'ŋwíí akǝ ntɛk', 'ŋwíí akǝ ntɛk di bɔ́k',
+      'ŋwíí akǝ ntɛk di bɛ́ɛ'],
+  STANDALONEMONTHS: ['ŋwíí a ntɔ́ntɔ', 'ŋwíí akǝ bɛ́ɛ',
+      'ŋwíí akǝ ráá', 'ŋwíí akǝ nin', 'ŋwíí akǝ táan',
+      'ŋwíí akǝ táafɔk', 'ŋwíí akǝ táabɛɛ', 'ŋwíí akǝ táaraa',
+      'ŋwíí akǝ táanin', 'ŋwíí akǝ ntɛk',
+      'ŋwíí akǝ ntɛk di bɔ́k', 'ŋwíí akǝ ntɛk di bɛ́ɛ'],
+  SHORTMONTHS: ['ŋ1', 'ŋ2', 'ŋ3', 'ŋ4', 'ŋ5', 'ŋ6', 'ŋ7', 'ŋ8', 'ŋ9',
+      'ŋ10', 'ŋ11', 'ŋ12'],
+  STANDALONESHORTMONTHS: ['ŋ1', 'ŋ2', 'ŋ3', 'ŋ4', 'ŋ5', 'ŋ6', 'ŋ7',
+      'ŋ8', 'ŋ9', 'ŋ10', 'ŋ11', 'ŋ12'],
+  WEEKDAYS: ['sɔ́ndǝ', 'lǝndí', 'maadí', 'mɛkrɛdí', 'jǝǝdí',
+      'júmbá', 'samdí'],
+  STANDALONEWEEKDAYS: ['sɔ́ndǝ', 'lǝndí', 'maadí', 'mɛkrɛdí',
+      'jǝǝdí', 'júmbá', 'samdí'],
+  SHORTWEEKDAYS: ['sɔ́n', 'lǝn', 'maa', 'mɛk', 'jǝǝ', 'júm', 'sam'],
+  STANDALONESHORTWEEKDAYS: ['sɔ́n', 'lǝn', 'maa', 'mɛk', 'jǝǝ', 'júm',
+      'sam'],
+  NARROWWEEKDAYS: ['s', 'l', 'm', 'm', 'j', 'j', 's'],
+  STANDALONENARROWWEEKDAYS: ['s', 'l', 'm', 'm', 'j', 'j', 's'],
+  SHORTQUARTERS: ['i1', 'i2', 'i3', 'i4'],
+  QUARTERS: ['id́ɛ́n kǝbǝk kǝ ntɔ́ntɔ́',
+      'idɛ́n kǝbǝk kǝ kǝbɛ́ɛ', 'idɛ́n kǝbǝk kǝ kǝráá',
+      'idɛ́n kǝbǝk kǝ kǝnin'],
+  AMPMS: ['sárúwá', 'cɛɛ́nko'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale ksf_CM.
+ */
+goog.i18n.DateTimeSymbols_ksf_CM = goog.i18n.DateTimeSymbols_ksf;
 
 
 /**
@@ -8275,7 +8521,7 @@ goog.i18n.DateTimeSymbols_ksh = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8318,44 +8564,8 @@ goog.i18n.DateTimeSymbols_ku = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
-
-
-/**
- * Date/time formatting symbols for locale ku_Arab.
- */
-goog.i18n.DateTimeSymbols_ku_Arab = goog.i18n.DateTimeSymbols_ku;
-
-
-/**
- * Date/time formatting symbols for locale ku_Arab_IQ.
- */
-goog.i18n.DateTimeSymbols_ku_Arab_IQ = goog.i18n.DateTimeSymbols_ku;
-
-
-/**
- * Date/time formatting symbols for locale ku_Arab_IR.
- */
-goog.i18n.DateTimeSymbols_ku_Arab_IR = goog.i18n.DateTimeSymbols_ku;
-
-
-/**
- * Date/time formatting symbols for locale ku_Latn.
- */
-goog.i18n.DateTimeSymbols_ku_Latn = goog.i18n.DateTimeSymbols_ku;
-
-
-/**
- * Date/time formatting symbols for locale ku_Latn_SY.
- */
-goog.i18n.DateTimeSymbols_ku_Latn_SY = goog.i18n.DateTimeSymbols_ku;
-
-
-/**
- * Date/time formatting symbols for locale ku_Latn_TR.
- */
-goog.i18n.DateTimeSymbols_ku_Latn_TR = goog.i18n.DateTimeSymbols_ku;
 
 
 /**
@@ -8392,7 +8602,7 @@ goog.i18n.DateTimeSymbols_kw = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8400,44 +8610,6 @@ goog.i18n.DateTimeSymbols_kw = {
  * Date/time formatting symbols for locale kw_GB.
  */
 goog.i18n.DateTimeSymbols_kw_GB = goog.i18n.DateTimeSymbols_kw;
-
-
-/**
- * Date/time formatting symbols for locale ky.
- */
-goog.i18n.DateTimeSymbols_ky = {
-  ERAS: ['BCE', 'CE'],
-  ERANAMES: ['BCE', 'CE'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  MONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONEMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
-      '12'],
-  SHORTMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONESHORTMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  WEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONEWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONESHORTWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 6,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
-};
-
-
-/**
- * Date/time formatting symbols for locale ky_KG.
- */
-goog.i18n.DateTimeSymbols_ky_KG = goog.i18n.DateTimeSymbols_ky;
 
 
 /**
@@ -8477,7 +8649,7 @@ goog.i18n.DateTimeSymbols_lag = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8520,7 +8692,7 @@ goog.i18n.DateTimeSymbols_lg = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8571,7 +8743,7 @@ goog.i18n.DateTimeSymbols_ln_CD = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8616,7 +8788,7 @@ goog.i18n.DateTimeSymbols_ln_CG = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8665,7 +8837,7 @@ goog.i18n.DateTimeSymbols_lo = {
       'H ໂມງ mນາທີss z', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -8714,6 +8886,50 @@ goog.i18n.DateTimeSymbols_lt_LT = {
 
 
 /**
+ * Date/time formatting symbols for locale lu.
+ */
+goog.i18n.DateTimeSymbols_lu = {
+  ERAS: ['kmp. Y.K.', 'kny. Y. K.'],
+  ERANAMES: ['Kumpala kwa Yezu Kli', 'Kunyima kwa Yezu Kli'],
+  NARROWMONTHS: ['C', 'L', 'L', 'M', 'L', 'L', 'K', 'L', 'L', 'L', 'K', 'C'],
+  STANDALONENARROWMONTHS: ['C', 'L', 'L', 'M', 'L', 'L', 'K', 'L', 'L', 'L',
+      'K', 'C'],
+  MONTHS: ['Ciongo', 'Lùishi', 'Lusòlo', 'Mùuyà', 'Lumùngùlù', 'Lufuimi',
+      'Kabàlàshìpù', 'Lùshìkà', 'Lutongolo', 'Lungùdi', 'Kaswèkèsè',
+      'Ciswà'],
+  STANDALONEMONTHS: ['Ciongo', 'Lùishi', 'Lusòlo', 'Mùuyà', 'Lumùngùlù',
+      'Lufuimi', 'Kabàlàshìpù', 'Lùshìkà', 'Lutongolo', 'Lungùdi',
+      'Kaswèkèsè', 'Ciswà'],
+  SHORTMONTHS: ['Cio', 'Lui', 'Lus', 'Muu', 'Lum', 'Luf', 'Kab', 'Lush', 'Lut',
+      'Lun', 'Kas', 'Cis'],
+  STANDALONESHORTMONTHS: ['Cio', 'Lui', 'Lus', 'Muu', 'Lum', 'Luf', 'Kab',
+      'Lush', 'Lut', 'Lun', 'Kas', 'Cis'],
+  WEEKDAYS: ['Lumingu', 'Nkodya', 'Ndàayà', 'Ndangù', 'Njòwa', 'Ngòvya',
+      'Lubingu'],
+  STANDALONEWEEKDAYS: ['Lumingu', 'Nkodya', 'Ndàayà', 'Ndangù', 'Njòwa',
+      'Ngòvya', 'Lubingu'],
+  SHORTWEEKDAYS: ['Lum', 'Nko', 'Ndy', 'Ndg', 'Njw', 'Ngv', 'Lub'],
+  STANDALONESHORTWEEKDAYS: ['Lum', 'Nko', 'Ndy', 'Ndg', 'Njw', 'Ngv', 'Lub'],
+  NARROWWEEKDAYS: ['L', 'N', 'N', 'N', 'N', 'N', 'L'],
+  STANDALONENARROWWEEKDAYS: ['L', 'N', 'N', 'N', 'N', 'N', 'L'],
+  SHORTQUARTERS: ['M1', 'M2', 'M3', 'M4'],
+  QUARTERS: ['Mueji 1', 'Mueji 2', 'Mueji 3', 'Mueji 4'],
+  AMPMS: ['Dinda', 'Dilolo'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale lu_CD.
+ */
+goog.i18n.DateTimeSymbols_lu_CD = goog.i18n.DateTimeSymbols_lu;
+
+
+/**
  * Date/time formatting symbols for locale luo.
  */
 goog.i18n.DateTimeSymbols_luo = {
@@ -8750,7 +8966,7 @@ goog.i18n.DateTimeSymbols_luo = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8793,7 +9009,7 @@ goog.i18n.DateTimeSymbols_luy = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8838,7 +9054,7 @@ goog.i18n.DateTimeSymbols_lv_LV = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8878,7 +9094,7 @@ goog.i18n.DateTimeSymbols_mas = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8929,7 +9145,7 @@ goog.i18n.DateTimeSymbols_mer = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -8971,7 +9187,7 @@ goog.i18n.DateTimeSymbols_mfe = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -9015,7 +9231,7 @@ goog.i18n.DateTimeSymbols_mg = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -9023,6 +9239,52 @@ goog.i18n.DateTimeSymbols_mg = {
  * Date/time formatting symbols for locale mg_MG.
  */
 goog.i18n.DateTimeSymbols_mg_MG = goog.i18n.DateTimeSymbols_mg;
+
+
+/**
+ * Date/time formatting symbols for locale mgh.
+ */
+goog.i18n.DateTimeSymbols_mgh = {
+  ERAS: ['HY', 'YY'],
+  ERANAMES: ['Hinapiya yesu', 'Yopia yesu'],
+  NARROWMONTHS: ['K', 'U', 'R', 'C', 'T', 'M', 'S', 'N', 'T', 'K', 'M', 'Y'],
+  STANDALONENARROWMONTHS: ['K', 'U', 'R', 'C', 'T', 'M', 'S', 'N', 'T', 'K',
+      'M', 'Y'],
+  MONTHS: ['Mweri wo kwanza', 'Mweri wo unayeli', 'Mweri wo uneraru',
+      'Mweri wo unecheshe', 'Mweri wo unethanu', 'Mweri wo thanu na mocha',
+      'Mweri wo saba', 'Mweri wo nane', 'Mweri wo tisa', 'Mweri wo kumi',
+      'Mweri wo kumi na moja', 'Mweri wo kumi na yel\'li'],
+  STANDALONEMONTHS: ['Mweri wo kwanza', 'Mweri wo unayeli', 'Mweri wo uneraru',
+      'Mweri wo unecheshe', 'Mweri wo unethanu', 'Mweri wo thanu na mocha',
+      'Mweri wo saba', 'Mweri wo nane', 'Mweri wo tisa', 'Mweri wo kumi',
+      'Mweri wo kumi na moja', 'Mweri wo kumi na yel\'li'],
+  SHORTMONTHS: ['Kwa', 'Una', 'Rar', 'Che', 'Tha', 'Moc', 'Sab', 'Nan', 'Tis',
+      'Kum', 'Moj', 'Yel'],
+  STANDALONESHORTMONTHS: ['Kwa', 'Una', 'Rar', 'Che', 'Tha', 'Moc', 'Sab',
+      'Nan', 'Tis', 'Kum', 'Moj', 'Yel'],
+  WEEKDAYS: ['Sabato', 'Jumatatu', 'Jumanne', 'Jumatano', 'Arahamisi', 'Ijumaa',
+      'Jumamosi'],
+  STANDALONEWEEKDAYS: ['Sabato', 'Jumatatu', 'Jumanne', 'Jumatano', 'Arahamisi',
+      'Ijumaa', 'Jumamosi'],
+  SHORTWEEKDAYS: ['Sab', 'Jtt', 'Jnn', 'Jtn', 'Ara', 'Iju', 'Jmo'],
+  STANDALONESHORTWEEKDAYS: ['Sab', 'Jtt', 'Jnn', 'Jtn', 'Ara', 'Iju', 'Jmo'],
+  NARROWWEEKDAYS: ['S', 'J', 'J', 'J', 'A', 'I', 'J'],
+  STANDALONENARROWWEEKDAYS: ['S', 'J', 'J', 'J', 'A', 'I', 'J'],
+  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale mgh_MZ.
+ */
+goog.i18n.DateTimeSymbols_mgh_MZ = goog.i18n.DateTimeSymbols_mgh;
 
 
 /**
@@ -9065,7 +9327,7 @@ goog.i18n.DateTimeSymbols_mk = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -9126,77 +9388,13 @@ goog.i18n.DateTimeSymbols_ml_IN = {
   QUARTERS: ['ഒന്നാം പാദം',
       'രണ്ടാം പാദം', 'മൂന്നാം പാദം',
       'നാലാം പാദം'],
-  AMPMS: ['രാവിലെ', 'വൈകുന്നേരം'],
+  AMPMS: ['am', 'pm'],
   DATEFORMATS: ['y, MMMM d, EEEE', 'y, MMMM d', 'y, MMM d', 'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
-
-
-/**
- * Date/time formatting symbols for locale mn.
- */
-goog.i18n.DateTimeSymbols_mn = {
-  ERAS: ['м.э.ө', 'м.э.'],
-  ERANAMES: ['манай эриний өмнөх', 'манай эриний'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  MONTHS: ['Хулгана', 'Үхэр', 'Бар', 'Туулай', 'Луу',
-      'Могой', 'Морь', 'Хонь', 'Бич', 'Тахиа',
-      'Нохой', 'Гахай'],
-  STANDALONEMONTHS: ['Хулгана', 'Үхэр', 'Бар', 'Туулай',
-      'Луу', 'Могой', 'Морь', 'Хонь', 'Бич', 'Тахиа',
-      'Нохой', 'Гахай'],
-  SHORTMONTHS: ['хул', 'үхэ', 'бар', 'туу', 'луу', 'мог',
-      'мор', 'хон', 'бич', 'тах', 'нох', 'гах'],
-  STANDALONESHORTMONTHS: ['хул', 'үхэ', 'бар', 'туу', 'луу',
-      'мог', 'мор', 'хон', 'бич', 'тах', 'нох', 'гах'],
-  WEEKDAYS: ['ням', 'даваа', 'мягмар', 'лхагва',
-      'пүрэв', 'баасан', 'бямба'],
-  STANDALONEWEEKDAYS: ['ням', 'даваа', 'мягмар', 'лхагва',
-      'пүрэв', 'баасан', 'бямба'],
-  SHORTWEEKDAYS: ['Ня', 'Да', 'Мя', 'Лх', 'Пү', 'Ба', 'Бя'],
-  STANDALONESHORTWEEKDAYS: ['Ня', 'Да', 'Мя', 'Лх', 'Пү', 'Ба',
-      'Бя'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['1/4', '2/4', '3/4', '4/4'],
-  QUARTERS: ['дөрөвний нэг', 'дөрөвний хоёр',
-      'дөрөвний гурав', 'дөрөвний дөрөв'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 6,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
-};
-
-
-/**
- * Date/time formatting symbols for locale mn_Cyrl.
- */
-goog.i18n.DateTimeSymbols_mn_Cyrl = goog.i18n.DateTimeSymbols_mn;
-
-
-/**
- * Date/time formatting symbols for locale mn_Cyrl_MN.
- */
-goog.i18n.DateTimeSymbols_mn_Cyrl_MN = goog.i18n.DateTimeSymbols_mn;
-
-
-/**
- * Date/time formatting symbols for locale mn_Mong.
- */
-goog.i18n.DateTimeSymbols_mn_Mong = goog.i18n.DateTimeSymbols_mn;
-
-
-/**
- * Date/time formatting symbols for locale mn_Mong_CN.
- */
-goog.i18n.DateTimeSymbols_mn_Mong_CN = goog.i18n.DateTimeSymbols_mn;
 
 
 /**
@@ -9247,12 +9445,12 @@ goog.i18n.DateTimeSymbols_mr_IN = {
       'द्वितीय तिमाही',
       'तृतीय तिमाही',
       'चतुर्थ तिमाही'],
-  AMPMS: ['म.पू.', 'म.नं.'],
+  AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd-M-yy'],
   TIMEFORMATS: ['h-mm-ss a zzzz', 'h-mm-ss a z', 'h-mm-ss a', 'h-mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -9287,7 +9485,7 @@ goog.i18n.DateTimeSymbols_ms_BN = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -9322,7 +9520,7 @@ goog.i18n.DateTimeSymbols_ms_MY = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -9359,14 +9557,62 @@ goog.i18n.DateTimeSymbols_mt_MT = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
+
+
+/**
+ * Date/time formatting symbols for locale mua.
+ */
+goog.i18n.DateTimeSymbols_mua = {
+  ERAS: ['KK', 'PK'],
+  ERANAMES: ['KǝPel Kristu', 'Pel Kristu'],
+  NARROWMONTHS: ['O', 'A', 'I', 'F', 'D', 'B', 'L', 'M', 'E', 'U', 'W', 'Y'],
+  STANDALONENARROWMONTHS: ['O', 'A', 'I', 'F', 'D', 'B', 'L', 'M', 'E', 'U',
+      'W', 'Y'],
+  MONTHS: ['Fĩi Loo', 'Cokcwaklaŋne', 'Cokcwaklii', 'Fĩi Marfoo',
+      'Madǝǝuutǝbijaŋ', 'Mamǝŋgwãafahbii', 'Mamǝŋgwãalii',
+      'Madǝmbii', 'Fĩi Dǝɓlii', 'Fĩi Mundaŋ', 'Fĩi Gwahlle',
+      'Fĩi Yuru'],
+  STANDALONEMONTHS: ['Fĩi Loo', 'Cokcwaklaŋne', 'Cokcwaklii', 'Fĩi Marfoo',
+      'Madǝǝuutǝbijaŋ', 'Mamǝŋgwãafahbii', 'Mamǝŋgwãalii',
+      'Madǝmbii', 'Fĩi Dǝɓlii', 'Fĩi Mundaŋ', 'Fĩi Gwahlle',
+      'Fĩi Yuru'],
+  SHORTMONTHS: ['FLO', 'CLA', 'CKI', 'FMF', 'MAD', 'MBI', 'MLI', 'MAM', 'FDE',
+      'FMU', 'FGW', 'FYU'],
+  STANDALONESHORTMONTHS: ['FLO', 'CLA', 'CKI', 'FMF', 'MAD', 'MBI', 'MLI',
+      'MAM', 'FDE', 'FMU', 'FGW', 'FYU'],
+  WEEKDAYS: ['Com\'yakke', 'Comlaaɗii', 'Comzyiiɗii', 'Comkolle',
+      'Comkaldǝɓlii', 'Comgaisuu', 'Comzyeɓsuu'],
+  STANDALONEWEEKDAYS: ['Com\'yakke', 'Comlaaɗii', 'Comzyiiɗii', 'Comkolle',
+      'Comkaldǝɓlii', 'Comgaisuu', 'Comzyeɓsuu'],
+  SHORTWEEKDAYS: ['Cya', 'Cla', 'Czi', 'Cko', 'Cka', 'Cga', 'Cze'],
+  STANDALONESHORTWEEKDAYS: ['Cya', 'Cla', 'Czi', 'Cko', 'Cka', 'Cga', 'Cze'],
+  NARROWWEEKDAYS: ['Y', 'L', 'Z', 'O', 'A', 'G', 'E'],
+  STANDALONENARROWWEEKDAYS: ['Y', 'L', 'Z', 'O', 'A', 'G', 'E'],
+  SHORTQUARTERS: ['F1', 'F2', 'F3', 'F4'],
+  QUARTERS: ['Tai fĩi sai ma tǝn kee zah', 'Tai fĩi sai zah lǝn gwa ma kee',
+      'Tai fĩi sai zah lǝn sai ma kee', 'Tai fĩi sai ma coo kee zah \'na'],
+  AMPMS: ['comme', 'lilli'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale mua_CM.
+ */
+goog.i18n.DateTimeSymbols_mua_CM = goog.i18n.DateTimeSymbols_mua;
 
 
 /**
  * Date/time formatting symbols for locale my.
  */
 goog.i18n.DateTimeSymbols_my = {
+  ZERODIGIT: 0x1040,
   ERAS: ['ဘီစီ', 'အေဒီ'],
   ERANAMES: ['ခရစ်တော် မပေါ်မီကာလ',
       'ခရစ်တော် ပေါ်ထွန်းပြီးကာလ'],
@@ -9411,9 +9657,9 @@ goog.i18n.DateTimeSymbols_my = {
   AMPMS: ['နံနက်', 'ညနေ'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -9452,7 +9698,7 @@ goog.i18n.DateTimeSymbols_naq = {
   STANDALONESHORTWEEKDAYS: ['Son', 'Ma', 'De', 'Wu', 'Do', 'Fr', 'Sat'],
   NARROWWEEKDAYS: ['S', 'M', 'E', 'W', 'D', 'F', 'A'],
   STANDALONENARROWWEEKDAYS: ['S', 'M', 'E', 'W', 'D', 'F', 'A'],
-  SHORTQUARTERS: ['KW1', 'KW2', 'KW3', 'KW3'],
+  SHORTQUARTERS: ['KW1', 'KW2', 'KW3', 'KW4'],
   QUARTERS: ['1ro kwartals', '2ǁî kwartals', '3ǁî kwartals',
       '4ǁî kwartals'],
   AMPMS: ['ǁgoagas', 'ǃuias'],
@@ -9460,7 +9706,7 @@ goog.i18n.DateTimeSymbols_naq = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -9527,10 +9773,10 @@ goog.i18n.DateTimeSymbols_nd = {
   STANDALONEMONTHS: ['Zibandlela', 'Nhlolanja', 'Mbimbitho', 'Mabasa',
       'Nkwenkwezi', 'Nhlangula', 'Ntulikazi', 'Ncwabakazi', 'Mpandula',
       'Mfumfu', 'Lwezi', 'Mpalakazi'],
-  SHORTMONTHS: ['Zib', 'Nhl', 'Mbi', 'Mab', 'Nkw', 'Nhl', 'Ntu', 'Ncw', 'Mpa',
-      'Mfu', 'Lwe', 'Mpa'],
-  STANDALONESHORTMONTHS: ['Zib', 'Nhl', 'Mbi', 'Mab', 'Nkw', 'Nhl', 'Ntu',
-      'Ncw', 'Mpa', 'Mfu', 'Lwe', 'Mpa'],
+  SHORTMONTHS: ['Zib', 'Nhlo', 'Mbi', 'Mab', 'Nkw', 'Nhla', 'Ntu', 'Ncw',
+      'Mpan', 'Mfu', 'Lwe', 'Mpal'],
+  STANDALONESHORTMONTHS: ['Zib', 'Nhlo', 'Mbi', 'Mab', 'Nkw', 'Nhla', 'Ntu',
+      'Ncw', 'Mpan', 'Mfu', 'Lwe', 'Mpal'],
   WEEKDAYS: ['Sonto', 'Mvulo', 'Sibili', 'Sithathu', 'Sine', 'Sihlanu',
       'Mgqibelo'],
   STANDALONEWEEKDAYS: ['Sonto', 'Mvulo', 'Sibili', 'Sithathu', 'Sine',
@@ -9546,7 +9792,7 @@ goog.i18n.DateTimeSymbols_nd = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -9554,44 +9800,6 @@ goog.i18n.DateTimeSymbols_nd = {
  * Date/time formatting symbols for locale nd_ZW.
  */
 goog.i18n.DateTimeSymbols_nd_ZW = goog.i18n.DateTimeSymbols_nd;
-
-
-/**
- * Date/time formatting symbols for locale nds.
- */
-goog.i18n.DateTimeSymbols_nds = {
-  ERAS: ['BCE', 'CE'],
-  ERANAMES: ['BCE', 'CE'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  MONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONEMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
-      '12'],
-  SHORTMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONESHORTMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  WEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONEWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONESHORTWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
-};
-
-
-/**
- * Date/time formatting symbols for locale nds_DE.
- */
-goog.i18n.DateTimeSymbols_nds_DE = goog.i18n.DateTimeSymbols_nds;
 
 
 /**
@@ -9641,9 +9849,9 @@ goog.i18n.DateTimeSymbols_ne = {
       'उत्तर मध्यान्ह'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -9694,7 +9902,7 @@ goog.i18n.DateTimeSymbols_ne_IN = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -9702,6 +9910,42 @@ goog.i18n.DateTimeSymbols_ne_IN = {
  * Date/time formatting symbols for locale ne_NP.
  */
 goog.i18n.DateTimeSymbols_ne_NP = goog.i18n.DateTimeSymbols_ne;
+
+
+/**
+ * Date/time formatting symbols for locale nl_AW.
+ */
+goog.i18n.DateTimeSymbols_nl_AW = {
+  ERAS: ['v. Chr.', 'n. Chr.'],
+  ERANAMES: ['Voor Christus', 'na Christus'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
+  MONTHS: ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli',
+      'augustus', 'september', 'oktober', 'november', 'december'],
+  STANDALONEMONTHS: ['januari', 'februari', 'maart', 'april', 'mei', 'juni',
+      'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
+  SHORTMONTHS: ['jan.', 'feb.', 'mrt.', 'apr.', 'mei', 'jun.', 'jul.', 'aug.',
+      'sep.', 'okt.', 'nov.', 'dec.'],
+  STANDALONESHORTMONTHS: ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul',
+      'aug', 'sep', 'okt', 'nov', 'dec'],
+  WEEKDAYS: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag',
+      'zaterdag'],
+  STANDALONEWEEKDAYS: ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag',
+      'vrijdag', 'zaterdag'],
+  SHORTWEEKDAYS: ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'],
+  STANDALONESHORTWEEKDAYS: ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'],
+  NARROWWEEKDAYS: ['Z', 'M', 'D', 'W', 'D', 'V', 'Z'],
+  STANDALONENARROWWEEKDAYS: ['Z', 'M', 'D', 'W', 'D', 'V', 'Z'],
+  SHORTQUARTERS: ['K1', 'K2', 'K3', 'K4'],
+  QUARTERS: ['1e kwartaal', '2e kwartaal', '3e kwartaal', '4e kwartaal'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd-MM-yy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
 
 
 /**
@@ -9777,6 +10021,54 @@ goog.i18n.DateTimeSymbols_nl_NL = {
 
 
 /**
+ * Date/time formatting symbols for locale nmg.
+ */
+goog.i18n.DateTimeSymbols_nmg = {
+  ERAS: ['BL', 'PB'],
+  ERANAMES: ['Bó Lahlɛ̄', 'Pfiɛ Burī'],
+  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+      '11', '12'],
+  MONTHS: ['ngwɛn matáhra', 'ngwɛn ńmba', 'ngwɛn ńlal', 'ngwɛn ńna',
+      'ngwɛn ńtan', 'ngwɛn ńtuó', 'ngwɛn hɛmbuɛrí', 'ngwɛn lɔmbi',
+      'ngwɛn rɛbvuâ', 'ngwɛn wum', 'ngwɛn wum navŭr', 'krísimin'],
+  STANDALONEMONTHS: ['ngwɛn matáhra', 'ngwɛn ńmba', 'ngwɛn ńlal',
+      'ngwɛn ńna', 'ngwɛn ńtan', 'ngwɛn ńtuó', 'ngwɛn hɛmbuɛrí',
+      'ngwɛn lɔmbi', 'ngwɛn rɛbvuâ', 'ngwɛn wum', 'ngwɛn wum navŭr',
+      'krísimin'],
+  SHORTMONTHS: ['ng1', 'ng2', 'ng3', 'ng4', 'ng5', 'ng6', 'ng7', 'ng8', 'ng9',
+      'ng10', 'ng11', 'kris'],
+  STANDALONESHORTMONTHS: ['ng1', 'ng2', 'ng3', 'ng4', 'ng5', 'ng6', 'ng7',
+      'ng8', 'ng9', 'ng10', 'ng11', 'kris'],
+  WEEKDAYS: ['sɔ́ndɔ', 'mɔ́ndɔ', 'sɔ́ndɔ mafú mába',
+      'sɔ́ndɔ mafú málal', 'sɔ́ndɔ mafú mána', 'mabágá má sukul',
+      'sásadi'],
+  STANDALONEWEEKDAYS: ['sɔ́ndɔ', 'mɔ́ndɔ', 'sɔ́ndɔ mafú mába',
+      'sɔ́ndɔ mafú málal', 'sɔ́ndɔ mafú mána', 'mabágá má sukul',
+      'sásadi'],
+  SHORTWEEKDAYS: ['sɔ́n', 'mɔ́n', 'smb', 'sml', 'smn', 'mbs', 'sas'],
+  STANDALONESHORTWEEKDAYS: ['sɔ́n', 'mɔ́n', 'smb', 'sml', 'smn', 'mbs',
+      'sas'],
+  NARROWWEEKDAYS: ['s', 'm', 's', 's', 's', 'm', 's'],
+  STANDALONENARROWWEEKDAYS: ['s', 'm', 's', 's', 's', 'm', 's'],
+  SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
+  QUARTERS: ['Tindɛ nvúr', 'Tindɛ ńmba', 'Tindɛ ńlal', 'Tindɛ ńna'],
+  AMPMS: ['maná', 'kugú'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale nmg_CM.
+ */
+goog.i18n.DateTimeSymbols_nmg_CM = goog.i18n.DateTimeSymbols_nmg;
+
+
+/**
  * Date/time formatting symbols for locale nn.
  */
 goog.i18n.DateTimeSymbols_nn = {
@@ -9849,9 +10141,9 @@ goog.i18n.DateTimeSymbols_nr = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -9892,9 +10184,9 @@ goog.i18n.DateTimeSymbols_nso = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -9902,6 +10194,53 @@ goog.i18n.DateTimeSymbols_nso = {
  * Date/time formatting symbols for locale nso_ZA.
  */
 goog.i18n.DateTimeSymbols_nso_ZA = goog.i18n.DateTimeSymbols_nso;
+
+
+/**
+ * Date/time formatting symbols for locale nus.
+ */
+goog.i18n.DateTimeSymbols_nus = {
+  ERAS: ['AY', 'ƐY'],
+  ERANAMES: ['A ka̱n Yecu ni dap', 'Ɛ ca Yecu dap'],
+  NARROWMONTHS: ['T', 'P', 'D', 'G', 'D', 'K', 'P', 'T', 'T', 'L', 'K', 'T'],
+  STANDALONENARROWMONTHS: ['T', 'P', 'D', 'G', 'D', 'K', 'P', 'T', 'T', 'L',
+      'K', 'T'],
+  MONTHS: ['Tiop thar pɛt', 'Pɛt', 'Duɔ̱ɔ̱ŋ', 'Guak', 'Duät',
+      'Kornyoot', 'Pay yie̱tni', 'Tho̱o̱r', 'Tɛɛr', 'Laath', 'Kur',
+      'Tio̱p in di̱i̱t'],
+  STANDALONEMONTHS: ['Tiop thar pɛt', 'Pɛt', 'Duɔ̱ɔ̱ŋ', 'Guak', 'Duät',
+      'Kornyoot', 'Pay yie̱tni', 'Tho̱o̱r', 'Tɛɛr', 'Laath', 'Kur',
+      'Tio̱p in di̱i̱t'],
+  SHORTMONTHS: ['Tiop', 'Pɛt', 'Duɔ̱ɔ̱', 'Guak', 'Duä', 'Kor', 'Pay',
+      'Thoo', 'Tɛɛ', 'Laa', 'Kur', 'Tid'],
+  STANDALONESHORTMONTHS: ['Tiop', 'Pɛt', 'Duɔ̱ɔ̱', 'Guak', 'Duä', 'Kor',
+      'Pay', 'Thoo', 'Tɛɛ', 'Laa', 'Kur', 'Tid'],
+  WEEKDAYS: ['Cäŋ kuɔth', 'Jiec la̱t', 'Rɛw lätni', 'Diɔ̱k lätni',
+      'Ŋuaan lätni', 'Dhieec lätni', 'Bäkɛl lätni'],
+  STANDALONEWEEKDAYS: ['Cäŋ kuɔth', 'Jiec la̱t', 'Rɛw lätni',
+      'Diɔ̱k lätni', 'Ŋuaan lätni', 'Dhieec lätni', 'Bäkɛl lätni'],
+  SHORTWEEKDAYS: ['Cäŋ', 'Jiec', 'Rɛw', 'Diɔ̱k', 'Ŋuaan', 'Dhieec',
+      'Bäkɛl'],
+  STANDALONESHORTWEEKDAYS: ['Cäŋ', 'Jiec', 'Rɛw', 'Diɔ̱k', 'Ŋuaan',
+      'Dhieec', 'Bäkɛl'],
+  NARROWWEEKDAYS: ['C', 'J', 'R', 'D', 'Ŋ', 'D', 'B'],
+  STANDALONENARROWWEEKDAYS: ['C', 'J', 'R', 'D', 'Ŋ', 'D', 'B'],
+  SHORTQUARTERS: ['P1', 'P2', 'P3', 'P4'],
+  QUARTERS: ['Päth diɔk tin nhiam', 'Päth diɔk tin guurɛ',
+      'Päth diɔk tin wä kɔɔriɛn', 'Päth diɔk tin jiɔakdiɛn'],
+  AMPMS: ['RW', 'TŊ'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/MM/yyyy'],
+  TIMEFORMATS: ['zzzz h:mm:ss a', 'z h:mm:ss a', 'h:mm:ss a', 'h:mm a'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale nus_SD.
+ */
+goog.i18n.DateTimeSymbols_nus_SD = goog.i18n.DateTimeSymbols_nus;
 
 
 /**
@@ -9919,10 +10258,10 @@ goog.i18n.DateTimeSymbols_nyn = {
   STANDALONEMONTHS: ['Okwokubanza', 'Okwakabiri', 'Okwakashatu', 'Okwakana',
       'Okwakataana', 'Okwamukaaga', 'Okwamushanju', 'Okwamunaana', 'Okwamwenda',
       'Okwaikumi', 'Okwaikumi na kumwe', 'Okwaikumi na ibiri'],
-  SHORTMONTHS: ['KBZ', 'KBR', 'KST', 'KKN', 'KTN', 'KMK', 'KMS', 'KMN', 'KMN',
+  SHORTMONTHS: ['KBZ', 'KBR', 'KST', 'KKN', 'KTN', 'KMK', 'KMS', 'KMN', 'KMW',
       'KKM', 'KNK', 'KNB'],
   STANDALONESHORTMONTHS: ['KBZ', 'KBR', 'KST', 'KKN', 'KTN', 'KMK', 'KMS',
-      'KMN', 'KMN', 'KKM', 'KNK', 'KNB'],
+      'KMN', 'KMW', 'KKM', 'KNK', 'KNB'],
   WEEKDAYS: ['Sande', 'Orwokubanza', 'Orwakabiri', 'Orwakashatu', 'Orwakana',
       'Orwakataano', 'Orwamukaaga'],
   STANDALONEWEEKDAYS: ['Sande', 'Orwokubanza', 'Orwakabiri', 'Orwakashatu',
@@ -9938,7 +10277,7 @@ goog.i18n.DateTimeSymbols_nyn = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -9946,51 +10285,6 @@ goog.i18n.DateTimeSymbols_nyn = {
  * Date/time formatting symbols for locale nyn_UG.
  */
 goog.i18n.DateTimeSymbols_nyn_UG = goog.i18n.DateTimeSymbols_nyn;
-
-
-/**
- * Date/time formatting symbols for locale oc.
- */
-goog.i18n.DateTimeSymbols_oc = {
-  ERAS: ['BCE', 'CE'],
-  ERANAMES: ['BCE', 'CE'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  MONTHS: ['genièr', 'febrièr', 'març', 'abril', 'mai', 'junh', 'julhet',
-      'agost', 'setembre', 'octòbre', 'novembre', 'dezembre'],
-  STANDALONEMONTHS: ['genièr', 'febrièr', 'març', 'abril', 'mai', 'junh',
-      'julhet', 'agost', 'setembre', 'octòbre', 'novembre', 'dezembre'],
-  SHORTMONTHS: ['genièr', 'febrièr', 'març', 'abril', 'mai', 'junh',
-      'julhet', 'agost', 'setembre', 'octòbre', 'novembre', 'dezembre'],
-  STANDALONESHORTMONTHS: ['genièr', 'febrièr', 'març', 'abril', 'mai',
-      'junh', 'julhet', 'agost', 'setembre', 'octòbre', 'novembre',
-      'dezembre'],
-  WEEKDAYS: ['Dimenge', 'diluns', 'dimarç', 'dimècres', 'dijòus',
-      'divèndres', 'dissabte'],
-  STANDALONEWEEKDAYS: ['Dimenge', 'diluns', 'dimarç', 'dimècres', 'dijòus',
-      'divèndres', 'dissabte'],
-  SHORTWEEKDAYS: ['Dimenge', 'diluns', 'dimarç', 'dimècres', 'dijòus',
-      'divèndres', 'dissabte'],
-  STANDALONESHORTWEEKDAYS: ['Dimenge', 'diluns', 'dimarç', 'dimècres',
-      'dijòus', 'divèndres', 'dissabte'],
-  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['AM', 'PM'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
-};
-
-
-/**
- * Date/time formatting symbols for locale oc_FR.
- */
-goog.i18n.DateTimeSymbols_oc_FR = goog.i18n.DateTimeSymbols_oc;
 
 
 /**
@@ -10027,7 +10321,7 @@ goog.i18n.DateTimeSymbols_om = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10094,7 +10388,7 @@ goog.i18n.DateTimeSymbols_or_IN = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -10147,7 +10441,7 @@ goog.i18n.DateTimeSymbols_pa = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -10155,6 +10449,7 @@ goog.i18n.DateTimeSymbols_pa = {
  * Date/time formatting symbols for locale pa_Arab.
  */
 goog.i18n.DateTimeSymbols_pa_Arab = {
+  ZERODIGIT: 0x06F0,
   ERAS: ['ਈ. ਪੂ.', 'ਸਾਲ'],
   ERANAMES: ['ايساپورو', 'سں'],
   NARROWMONTHS: ['ਜ', 'ਫ', 'ਮਾ', 'ਅ', 'ਮ', 'ਜੂ', 'ਜੁ',
@@ -10196,7 +10491,7 @@ goog.i18n.DateTimeSymbols_pa_Arab = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10261,6 +10556,7 @@ goog.i18n.DateTimeSymbols_pl_PL = {
  * Date/time formatting symbols for locale ps.
  */
 goog.i18n.DateTimeSymbols_ps = {
+  ZERODIGIT: 0x06F0,
   ERAS: ['ق.م.', 'م.'],
   ERANAMES: ['ق.م.', 'م.'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
@@ -10295,7 +10591,7 @@ goog.i18n.DateTimeSymbols_ps = {
   TIMEFORMATS: ['H:mm:ss (zzzz)', 'H:mm:ss (z)', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 5,
   WEEKENDRANGE: [3, 4],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 4
 };
 
 
@@ -10340,7 +10636,7 @@ goog.i18n.DateTimeSymbols_pt_AO = {
       'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10379,7 +10675,7 @@ goog.i18n.DateTimeSymbols_pt_GW = {
       'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10416,9 +10712,48 @@ goog.i18n.DateTimeSymbols_pt_MZ = {
       'dd/MM/yyyy', 'dd/MM/yy'],
   TIMEFORMATS: ['HH\'h\'mm\'min\'ss\'s\' zzzz', 'HH\'h\'mm\'min\'ss\'s\' z',
       'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 6,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 5
+};
+
+
+/**
+ * Date/time formatting symbols for locale pt_ST.
+ */
+goog.i18n.DateTimeSymbols_pt_ST = {
+  ERAS: ['a.C.', 'd.C.'],
+  ERANAMES: ['Antes de Cristo', 'Ano do Senhor'],
+  NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O',
+      'N', 'D'],
+  MONTHS: ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho',
+      'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'],
+  STANDALONEMONTHS: ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+      'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'],
+  SHORTMONTHS: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set',
+      'out', 'nov', 'dez'],
+  STANDALONESHORTMONTHS: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul',
+      'ago', 'set', 'out', 'nov', 'dez'],
+  WEEKDAYS: ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira',
+      'quinta-feira', 'sexta-feira', 'sábado'],
+  STANDALONEWEEKDAYS: ['domingo', 'segunda-feira', 'terça-feira',
+      'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'],
+  SHORTWEEKDAYS: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'],
+  STANDALONESHORTWEEKDAYS: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'],
+  NARROWWEEKDAYS: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+  STANDALONENARROWWEEKDAYS: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+  SHORTQUARTERS: ['T1', 'T2', 'T3', 'T4'],
+  QUARTERS: ['1º trimestre', '2º trimestre', '3º trimestre',
+      '4º trimestre'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE, d \'de\' MMMM \'de\' y', 'd \'de\' MMMM \'de\' y',
+      'dd/MM/yyyy', 'dd/MM/yy'],
+  TIMEFORMATS: ['HH\'h\'mm\'min\'ss\'s\' zzzz', 'HH\'h\'mm\'min\'ss\'s\' z',
+      'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10450,7 +10785,8 @@ goog.i18n.DateTimeSymbols_rm = {
   SHORTQUARTERS: ['1. quartal', '2. quartal', '3. quartal', '4. quartal'],
   QUARTERS: ['1. quartal', '2. quartal', '3. quartal', '4. quartal'],
   AMPMS: ['am', 'sm'],
-  DATEFORMATS: ['EEEE, d. MMMM y', 'd. MMMM y', 'dd.MM.yyyy', 'dd.MM.yy'],
+  DATEFORMATS: ['EEEE, \'ils\' d \'da\' MMMM y', 'd \'da\' MMMM y',
+      'dd-MM-yyyy', 'dd-MM-yy'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
@@ -10462,6 +10798,51 @@ goog.i18n.DateTimeSymbols_rm = {
  * Date/time formatting symbols for locale rm_CH.
  */
 goog.i18n.DateTimeSymbols_rm_CH = goog.i18n.DateTimeSymbols_rm;
+
+
+/**
+ * Date/time formatting symbols for locale rn.
+ */
+goog.i18n.DateTimeSymbols_rn = {
+  ERAS: ['Mb.Y.', 'Ny.Y'],
+  ERANAMES: ['Mbere ya Yezu', 'Nyuma ya Yezu'],
+  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+      '11', '12'],
+  MONTHS: ['Nzero', 'Ruhuhuma', 'Ntwarante', 'Ndamukiza', 'Rusama', 'Ruheshi',
+      'Mukakaro', 'Nyandagaro', 'Nyakanga', 'Gitugutu', 'Munyonyo', 'Kigarama'],
+  STANDALONEMONTHS: ['Nzero', 'Ruhuhuma', 'Ntwarante', 'Ndamukiza', 'Rusama',
+      'Ruheshi', 'Mukakaro', 'Nyandagaro', 'Nyakanga', 'Gitugutu', 'Munyonyo',
+      'Kigarama'],
+  SHORTMONTHS: ['Mut.', 'Gas.', 'Wer.', 'Mat.', 'Gic.', 'Kam.', 'Nya.', 'Kan.',
+      'Nze.', 'Ukw.', 'Ugu.', 'Uku.'],
+  STANDALONESHORTMONTHS: ['Mut.', 'Gas.', 'Wer.', 'Mat.', 'Gic.', 'Kam.',
+      'Nya.', 'Kan.', 'Nze.', 'Ukw.', 'Ugu.', 'Uku.'],
+  WEEKDAYS: ['Ku w\'indwi', 'Ku wa mbere', 'Ku wa kabiri', 'Ku wa gatatu',
+      'Ku wa kane', 'Ku wa gatanu', 'Ku wa gatandatu'],
+  STANDALONEWEEKDAYS: ['Ku w\'indwi', 'Ku wa mbere', 'Ku wa kabiri',
+      'Ku wa gatatu', 'Ku wa kane', 'Ku wa gatanu', 'Ku wa gatandatu'],
+  SHORTWEEKDAYS: ['cu.', 'mbe.', 'kab.', 'gtu.', 'kan.', 'gnu.', 'gnd.'],
+  STANDALONESHORTWEEKDAYS: ['cu.', 'mbe.', 'kab.', 'gtu.', 'kan.', 'gnu.',
+      'gnd.'],
+  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  SHORTQUARTERS: ['I1', 'I2', 'I3', 'I4'],
+  QUARTERS: ['Igice ca mbere c\'umwaka', 'Igice ca kabiri c\'umwaka',
+      'Igice ca gatatu c\'umwaka', 'Igice ca kane c\'umwaka'],
+  AMPMS: ['Z.MU.', 'Z.MW.'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale rn_BI.
+ */
+goog.i18n.DateTimeSymbols_rn_BI = goog.i18n.DateTimeSymbols_rn;
 
 
 /**
@@ -10498,7 +10879,7 @@ goog.i18n.DateTimeSymbols_ro_MD = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10536,7 +10917,7 @@ goog.i18n.DateTimeSymbols_ro_RO = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10565,8 +10946,8 @@ goog.i18n.DateTimeSymbols_rof = {
       'Ijumaa', 'Ijumamosi'],
   STANDALONEWEEKDAYS: ['Ijumapili', 'Ijumatatu', 'Ijumanne', 'Ijumatano',
       'Alhamisi', 'Ijumaa', 'Ijumamosi'],
-  SHORTWEEKDAYS: ['Ijp', 'Ijt', 'Ijn', 'Ijt', 'Alh', 'Iju', 'Ijm'],
-  STANDALONESHORTWEEKDAYS: ['Ijp', 'Ijt', 'Ijn', 'Ijt', 'Alh', 'Iju', 'Ijm'],
+  SHORTWEEKDAYS: ['Ijp', 'Ijt', 'Ijn', 'Ijtn', 'Alh', 'Iju', 'Ijm'],
+  STANDALONESHORTWEEKDAYS: ['Ijp', 'Ijt', 'Ijn', 'Ijtn', 'Alh', 'Iju', 'Ijm'],
   NARROWWEEKDAYS: ['2', '3', '4', '5', '6', '7', '1'],
   STANDALONENARROWWEEKDAYS: ['2', '3', '4', '5', '6', '7', '1'],
   SHORTQUARTERS: ['R1', 'R2', 'R3', 'R4'],
@@ -10577,7 +10958,7 @@ goog.i18n.DateTimeSymbols_rof = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10603,8 +10984,9 @@ goog.i18n.DateTimeSymbols_ru_MD = {
   STANDALONEMONTHS: ['Январь', 'Февраль', 'Март',
       'Апрель', 'Май', 'Июнь', 'Июль', 'Август',
       'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-  SHORTMONTHS: ['янв', 'фев', 'мар', 'апр', 'мая', 'июн',
-      'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
+  SHORTMONTHS: ['янв.', 'февр.', 'марта', 'апр.', 'мая',
+      'июня', 'июля', 'авг.', 'сент.', 'окт.', 'нояб.',
+      'дек.'],
   STANDALONESHORTMONTHS: ['Янв.', 'Февр.', 'Март', 'Апр.',
       'Май', 'Июнь', 'Июль', 'Авг.', 'Сент.', 'Окт.',
       'Нояб.', 'Дек.'],
@@ -10628,7 +11010,7 @@ goog.i18n.DateTimeSymbols_ru_MD = {
   TIMEFORMATS: ['H:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10648,8 +11030,9 @@ goog.i18n.DateTimeSymbols_ru_RU = {
   STANDALONEMONTHS: ['Январь', 'Февраль', 'Март',
       'Апрель', 'Май', 'Июнь', 'Июль', 'Август',
       'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-  SHORTMONTHS: ['янв', 'фев', 'мар', 'апр', 'мая', 'июн',
-      'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
+  SHORTMONTHS: ['янв.', 'февр.', 'марта', 'апр.', 'мая',
+      'июня', 'июля', 'авг.', 'сент.', 'окт.', 'нояб.',
+      'дек.'],
   STANDALONESHORTMONTHS: ['Янв.', 'Февр.', 'Март', 'Апр.',
       'Май', 'Июнь', 'Июль', 'Авг.', 'Сент.', 'Окт.',
       'Нояб.', 'Дек.'],
@@ -10673,7 +11056,7 @@ goog.i18n.DateTimeSymbols_ru_RU = {
   TIMEFORMATS: ['H:mm:ss zzzz', 'H:mm:ss z', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10693,8 +11076,9 @@ goog.i18n.DateTimeSymbols_ru_UA = {
   STANDALONEMONTHS: ['Январь', 'Февраль', 'Март',
       'Апрель', 'Май', 'Июнь', 'Июль', 'Август',
       'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-  SHORTMONTHS: ['янв', 'фев', 'мар', 'апр', 'мая', 'июн',
-      'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
+  SHORTMONTHS: ['янв.', 'февр.', 'марта', 'апр.', 'мая',
+      'июня', 'июля', 'авг.', 'сент.', 'окт.', 'нояб.',
+      'дек.'],
   STANDALONESHORTMONTHS: ['Янв.', 'Февр.', 'Март', 'Апр.',
       'Май', 'Июнь', 'Июль', 'Авг.', 'Сент.', 'Окт.',
       'Нояб.', 'Дек.'],
@@ -10717,7 +11101,7 @@ goog.i18n.DateTimeSymbols_ru_UA = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10756,7 +11140,7 @@ goog.i18n.DateTimeSymbols_rw = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10798,7 +11182,7 @@ goog.i18n.DateTimeSymbols_rwk = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10806,6 +11190,61 @@ goog.i18n.DateTimeSymbols_rwk = {
  * Date/time formatting symbols for locale rwk_TZ.
  */
 goog.i18n.DateTimeSymbols_rwk_TZ = goog.i18n.DateTimeSymbols_rwk;
+
+
+/**
+ * Date/time formatting symbols for locale sah.
+ */
+goog.i18n.DateTimeSymbols_sah = {
+  ERAS: ['б. э. и.', 'б. э'],
+  ERANAMES: ['б. э. и.', 'б. э'],
+  NARROWMONTHS: ['Т', 'О', 'К', 'М', 'Ы', 'Б', 'О', 'А', 'Б', 'А',
+      'С', 'А'],
+  STANDALONENARROWMONTHS: ['Т', 'О', 'К', 'М', 'Ы', 'Б', 'О', 'А', 'Б',
+      'А', 'С', 'А'],
+  MONTHS: ['Тохсунньу', 'Олунньу', 'Кулун тутар',
+      'Муус устар', 'Ыам ыйын', 'Бэс ыйын',
+      'От ыйын', 'Атырдьых ыйын', 'Балаҕан ыйын',
+      'Алтынньы', 'Сэтинньи', 'Ахсынньы'],
+  STANDALONEMONTHS: ['Тохсунньу', 'Олунньу',
+      'Кулун тутар', 'Муус устар', 'Ыам ыйын',
+      'Бэс ыйын', 'От ыйын', 'Атырдьых ыйын',
+      'Балаҕан ыйын', 'Алтынньы', 'Сэтинньи',
+      'Ахсынньы'],
+  SHORTMONTHS: ['Тохс', 'Олун', 'Клн_ттр', 'Мус_уст',
+      'Ыам_йн', 'Бэс_йн', 'От_йн', 'Атрдь_йн',
+      'Блҕн_йн', 'Алт', 'Сэт', 'Ахс'],
+  STANDALONESHORTMONTHS: ['Тохс', 'Олун', 'Клн_ттр',
+      'Мус_уст', 'Ыам_йн', 'Бэс_йн', 'От_йн',
+      'Атрдь_йн', 'Блҕн_йн', 'Алт', 'Сэт', 'Ахс'],
+  WEEKDAYS: ['Баскыһыанньа', 'Бэнидиэлинньик',
+      'Оптуорунньук', 'Сэрэдэ', 'Чэппиэр',
+      'Бээтиҥсэ', 'Субуота'],
+  STANDALONEWEEKDAYS: ['Баскыһыанньа',
+      'Бэнидиэлинньик', 'Оптуорунньук',
+      'Сэрэдэ', 'Чэппиэр', 'Бээтиҥсэ', 'Субуота'],
+  SHORTWEEKDAYS: ['Бс', 'Бн', 'Оп', 'Сэ', 'Чп', 'Бэ', 'Сб'],
+  STANDALONESHORTWEEKDAYS: ['Бс', 'Бн', 'Оп', 'Сэ', 'Чп', 'Бэ',
+      'Сб'],
+  NARROWWEEKDAYS: ['Б', 'Б', 'О', 'С', 'Ч', 'Б', 'С'],
+  STANDALONENARROWWEEKDAYS: ['Б', 'Б', 'О', 'С', 'Ч', 'Б', 'С'],
+  SHORTQUARTERS: ['1-кы кб', '2-с кб', '3-с кб', '4-с кб'],
+  QUARTERS: ['1-кы кыбаартал', '2-с кыбаартал',
+      '3-с кыбаартал', '4-с кыбаартал'],
+  AMPMS: ['ЭИ', 'ЭК'],
+  DATEFORMATS: ['y \'сыл\' MMMM d \'күнэ\', EEEE', 'y, MMMM d',
+      'y, MMM d', 'yy/M/d'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale sah_RU.
+ */
+goog.i18n.DateTimeSymbols_sah_RU = goog.i18n.DateTimeSymbols_sah;
 
 
 /**
@@ -10838,14 +11277,13 @@ goog.i18n.DateTimeSymbols_saq = {
   NARROWWEEKDAYS: ['A', 'K', 'O', 'I', 'I', 'S', 'K'],
   STANDALONENARROWWEEKDAYS: ['A', 'K', 'O', 'I', 'I', 'S', 'K'],
   SHORTQUARTERS: ['R1', 'R2', 'R3', 'R4'],
-  QUARTERS: ['Robo e kwe', 'Robo le waare', 'Robo le waare',
-      'Robo le ong\'wan'],
+  QUARTERS: ['Robo 1', 'Robo 2', 'Robo 3', 'Robo 4'],
   AMPMS: ['Tesiran', 'Teipa'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -10853,6 +11291,50 @@ goog.i18n.DateTimeSymbols_saq = {
  * Date/time formatting symbols for locale saq_KE.
  */
 goog.i18n.DateTimeSymbols_saq_KE = goog.i18n.DateTimeSymbols_saq;
+
+
+/**
+ * Date/time formatting symbols for locale sbp.
+ */
+goog.i18n.DateTimeSymbols_sbp = {
+  ERAS: ['AK', 'PK'],
+  ERANAMES: ['Ashanali uKilisito', 'Pamwandi ya Kilisto'],
+  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+      '11', '12'],
+  MONTHS: ['Mupalangulwa', 'Mwitope', 'Mushende', 'Munyi', 'Mushende Magali',
+      'Mujimbi', 'Mushipepo', 'Mupuguto', 'Munyense', 'Mokhu', 'Musongandembwe',
+      'Muhaano'],
+  STANDALONEMONTHS: ['Mupalangulwa', 'Mwitope', 'Mushende', 'Munyi',
+      'Mushende Magali', 'Mujimbi', 'Mushipepo', 'Mupuguto', 'Munyense',
+      'Mokhu', 'Musongandembwe', 'Muhaano'],
+  SHORTMONTHS: ['Mup', 'Mwi', 'Msh', 'Mun', 'Mag', 'Muj', 'Msp', 'Mpg', 'Mye',
+      'Mok', 'Mus', 'Muh'],
+  STANDALONESHORTMONTHS: ['Mup', 'Mwi', 'Msh', 'Mun', 'Mag', 'Muj', 'Msp',
+      'Mpg', 'Mye', 'Mok', 'Mus', 'Muh'],
+  WEEKDAYS: ['Mulungu', 'Jumatatu', 'Jumanne', 'Jumatano', 'Alahamisi',
+      'Ijumaa', 'Jumamosi'],
+  STANDALONEWEEKDAYS: ['Mulungu', 'Jumatatu', 'Jumanne', 'Jumatano',
+      'Alahamisi', 'Ijumaa', 'Jumamosi'],
+  SHORTWEEKDAYS: ['Mul', 'Jtt', 'Jnn', 'Jtn', 'Alh', 'Iju', 'Jmo'],
+  STANDALONESHORTWEEKDAYS: ['Mul', 'Jtt', 'Jnn', 'Jtn', 'Alh', 'Iju', 'Jmo'],
+  NARROWWEEKDAYS: ['M', 'J', 'J', 'J', 'A', 'I', 'J'],
+  STANDALONENARROWWEEKDAYS: ['M', 'J', 'J', 'J', 'A', 'I', 'J'],
+  SHORTQUARTERS: ['L1', 'L2', 'L3', 'L4'],
+  QUARTERS: ['Lobo 1', 'Lobo 2', 'Lobo 3', 'Lobo 4'],
+  AMPMS: ['Lwamilawu', 'Pashamihe'],
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale sbp_TZ.
+ */
+goog.i18n.DateTimeSymbols_sbp_TZ = goog.i18n.DateTimeSymbols_sbp;
 
 
 /**
@@ -10974,7 +11456,7 @@ goog.i18n.DateTimeSymbols_seh = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11017,7 +11499,7 @@ goog.i18n.DateTimeSymbols_ses = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11061,7 +11543,7 @@ goog.i18n.DateTimeSymbols_sg = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11092,9 +11574,9 @@ goog.i18n.DateTimeSymbols_shi = {
       'asiḍyas'],
   STANDALONEWEEKDAYS: ['asamas', 'aynas', 'asinas', 'akṛas', 'akwas',
       'asimwas', 'asiḍyas'],
-  SHORTWEEKDAYS: ['asi', 'ayn', 'asi', 'akṛ', 'akw', 'asim', 'Asiḍ'],
-  STANDALONESHORTWEEKDAYS: ['asi', 'ayn', 'asi', 'akṛ', 'akw', 'asim',
-      'Asiḍ'],
+  SHORTWEEKDAYS: ['asa', 'ayn', 'asi', 'akṛ', 'akw', 'asim', 'asiḍ'],
+  STANDALONESHORTWEEKDAYS: ['asa', 'ayn', 'asi', 'akṛ', 'akw', 'asim',
+      'asiḍ'],
   NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
   STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
   SHORTQUARTERS: ['ak 1', 'ak 2', 'ak 3', 'ak 4'],
@@ -11105,7 +11587,7 @@ goog.i18n.DateTimeSymbols_shi = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11167,7 +11649,7 @@ goog.i18n.DateTimeSymbols_shi_Tfng = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11231,7 +11713,7 @@ goog.i18n.DateTimeSymbols_si = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'a h.mm.ss', 'a h.mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11239,46 +11721,6 @@ goog.i18n.DateTimeSymbols_si = {
  * Date/time formatting symbols for locale si_LK.
  */
 goog.i18n.DateTimeSymbols_si_LK = goog.i18n.DateTimeSymbols_si;
-
-
-/**
- * Date/time formatting symbols for locale sid.
- */
-goog.i18n.DateTimeSymbols_sid = {
-  ERAS: ['YIA', 'YIG'],
-  ERANAMES: ['YIA', 'YIG'],
-  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  MONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONEMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
-      '12'],
-  SHORTMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-  STANDALONESHORTMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-      '11', '12'],
-  WEEKDAYS: ['Sambata', 'Sanyo', 'Maakisanyo', 'Roowe', 'Hamuse', 'Arbe',
-      'Qidaame'],
-  STANDALONEWEEKDAYS: ['Sambata', 'Sanyo', 'Maakisanyo', 'Roowe', 'Hamuse',
-      'Arbe', 'Qidaame'],
-  SHORTWEEKDAYS: ['Sam', 'San', 'Mak', 'Row', 'Ham', 'Arb', 'Qid'],
-  STANDALONESHORTWEEKDAYS: ['Sam', 'San', 'Mak', 'Row', 'Ham', 'Arb', 'Qid'],
-  NARROWWEEKDAYS: ['S', 'S', 'M', 'R', 'H', 'A', 'Q'],
-  STANDALONENARROWWEEKDAYS: ['S', 'S', 'M', 'R', 'H', 'A', 'Q'],
-  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
-  AMPMS: ['soodo', 'hawwaro'],
-  DATEFORMATS: ['EEEE, MMMM dd, y', 'dd MMMM y', 'dd-MMM-y', 'dd/MM/yy'],
-  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 0,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
-};
-
-
-/**
- * Date/time formatting symbols for locale sid_ET.
- */
-goog.i18n.DateTimeSymbols_sid_ET = goog.i18n.DateTimeSymbols_sid;
 
 
 /**
@@ -11351,7 +11793,7 @@ goog.i18n.DateTimeSymbols_sl_SI = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11369,9 +11811,9 @@ goog.i18n.DateTimeSymbols_sn = {
   STANDALONEMONTHS: ['Ndira', 'Kukadzi', 'Kurume', 'Kubvumbi', 'Chivabvu',
       'Chikumi', 'Chikunguru', 'Nyamavhuvhu', 'Gunyana', 'Gumiguru', 'Mbudzi',
       'Zvita'],
-  SHORTMONTHS: ['Ndi', 'Kuk', 'Kur', 'Kub', 'Chi', 'Chi', 'Chi', 'Nya', 'Gun',
+  SHORTMONTHS: ['Ndi', 'Kuk', 'Kur', 'Kub', 'Chv', 'Chk', 'Chg', 'Nya', 'Gun',
       'Gum', 'Mb', 'Zvi'],
-  STANDALONESHORTMONTHS: ['Ndi', 'Kuk', 'Kur', 'Kub', 'Chi', 'Chi', 'Chi',
+  STANDALONESHORTMONTHS: ['Ndi', 'Kuk', 'Kur', 'Kub', 'Chv', 'Chk', 'Chg',
       'Nya', 'Gun', 'Gum', 'Mb', 'Zvi'],
   WEEKDAYS: ['Svondo', 'Muvhuro', 'Chipiri', 'Chitatu', 'China', 'Chishanu',
       'Mugovera'],
@@ -11389,7 +11831,7 @@ goog.i18n.DateTimeSymbols_sn = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -11433,9 +11875,9 @@ goog.i18n.DateTimeSymbols_so = {
   AMPMS: ['sn.', 'gn.'],
   DATEFORMATS: ['EEEE, MMMM dd, y', 'dd MMMM y', 'dd-MMM-y', 'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 5,
+  FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11495,7 +11937,7 @@ goog.i18n.DateTimeSymbols_sq_AL = {
   TIMEFORMATS: ['h.mm.ss.a zzzz', 'h.mm.ss.a z', 'h.mm.ss.a', 'h.mm.a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11537,7 +11979,7 @@ goog.i18n.DateTimeSymbols_sr_Cyrl = {
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11581,7 +12023,7 @@ goog.i18n.DateTimeSymbols_sr_Cyrl_BA = {
       'HH.mm.ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11629,7 +12071,7 @@ goog.i18n.DateTimeSymbols_sr_Latn = {
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11671,7 +12113,7 @@ goog.i18n.DateTimeSymbols_sr_Latn_ME = {
   TIMEFORMATS: ['HH.mm.ss zzzz', 'HH.mm.ss z', 'HH.mm.ss', 'HH.mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11713,9 +12155,9 @@ goog.i18n.DateTimeSymbols_ss = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -11765,7 +12207,7 @@ goog.i18n.DateTimeSymbols_ssy = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -11807,9 +12249,9 @@ goog.i18n.DateTimeSymbols_st = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -11931,9 +12373,9 @@ goog.i18n.DateTimeSymbols_sw_KE = {
   AMPMS: ['asubuhi', 'alasiri'],
   DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 5,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -11969,8 +12411,54 @@ goog.i18n.DateTimeSymbols_sw_TZ = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
+
+
+/**
+ * Date/time formatting symbols for locale swc.
+ */
+goog.i18n.DateTimeSymbols_swc = {
+  ERAS: ['mbele ya Y', 'kisha ya Y'],
+  ERANAMES: ['mbele ya Yezu Kristo', 'kisha ya Yezu Kristo'],
+  NARROWMONTHS: ['k', 'p', 't', 'i', 't', 's', 's', 'm', 't', 'k', 'm', 'm'],
+  STANDALONENARROWMONTHS: ['k', 'p', 't', 'i', 't', 's', 's', 'm', 't', 'k',
+      'm', 'm'],
+  MONTHS: ['mwezi ya kwanja', 'mwezi ya pili', 'mwezi ya tatu', 'mwezi ya ine',
+      'mwezi ya tanu', 'mwezi ya sita', 'mwezi ya saba', 'mwezi ya munane',
+      'mwezi ya tisa', 'mwezi ya kumi', 'mwezi ya kumi na moya',
+      'mwezi ya kumi ya mbili'],
+  STANDALONEMONTHS: ['mwezi ya kwanja', 'mwezi ya pili', 'mwezi ya tatu',
+      'mwezi ya ine', 'mwezi ya tanu', 'mwezi ya sita', 'mwezi ya saba',
+      'mwezi ya munane', 'mwezi ya tisa', 'mwezi ya kumi',
+      'mwezi ya kumi na moya', 'mwezi ya kumi ya mbili'],
+  SHORTMONTHS: ['mkw', 'mpi', 'mtu', 'min', 'mtn', 'mst', 'msb', 'mun', 'mts',
+      'mku', 'mkm', 'mkb'],
+  STANDALONESHORTMONTHS: ['mkw', 'mpi', 'mtu', 'min', 'mtn', 'mst', 'msb',
+      'mun', 'mts', 'mku', 'mkm', 'mkb'],
+  WEEKDAYS: ['siku ya yenga', 'siku ya kwanza', 'siku ya pili', 'siku ya tatu',
+      'siku ya ine', 'siku ya tanu', 'siku ya sita'],
+  STANDALONEWEEKDAYS: ['siku ya yenga', 'siku ya kwanza', 'siku ya pili',
+      'siku ya tatu', 'siku ya ine', 'siku ya tanu', 'siku ya sita'],
+  SHORTWEEKDAYS: ['yen', 'kwa', 'pil', 'tat', 'ine', 'tan', 'sit'],
+  STANDALONESHORTWEEKDAYS: ['yen', 'kwa', 'pil', 'tat', 'ine', 'tan', 'sit'],
+  NARROWWEEKDAYS: ['y', 'k', 'p', 't', 'i', 't', 's'],
+  STANDALONENARROWWEEKDAYS: ['y', 'k', 'p', 't', 'i', 't', 's'],
+  SHORTQUARTERS: ['R1', 'R2', 'R3', 'R4'],
+  QUARTERS: ['Robo 1', 'Robo 2', 'Robo 3', 'Robo 4'],
+  AMPMS: ['ya asubuyi', 'ya muchana'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale swc_CD.
+ */
+goog.i18n.DateTimeSymbols_swc_CD = goog.i18n.DateTimeSymbols_swc;
 
 
 /**
@@ -12020,12 +12508,12 @@ goog.i18n.DateTimeSymbols_ta_IN = {
       'இரண்டாம் காலாண்டு',
       'மூன்றாம் காலாண்டு',
       'நான்காம் காலாண்டு'],
-  AMPMS: ['முற்பகல்', 'பிற்பகல்'],
+  AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'd MMM, y', 'd-M-yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -12076,12 +12564,12 @@ goog.i18n.DateTimeSymbols_ta_LK = {
       'இரண்டாம் காலாண்டு',
       'மூன்றாம் காலாண்டு',
       'நான்காம் காலாண்டு'],
-  AMPMS: ['முற்பகல்', 'பிற்பகல்'],
+  AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE, d MMMM, y', 'd MMMM, y', 'd MMM, y', 'd-M-yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -12127,19 +12615,19 @@ goog.i18n.DateTimeSymbols_te_IN = {
       'గురు', 'శుక్ర', 'శని'],
   STANDALONESHORTWEEKDAYS: ['ఆది', 'సోమ', 'మంగళ',
       'బుధ', 'గురు', 'శుక్ర', 'శని'],
-  NARROWWEEKDAYS: ['ఆ', 'సో', 'మ', 'భు', 'గు', 'శు', 'శ'],
-  STANDALONENARROWWEEKDAYS: ['ఆ', 'సో', 'మ', 'భు', 'గు',
+  NARROWWEEKDAYS: ['ఆ', 'సో', 'మ', 'బు', 'గు', 'శు', 'శ'],
+  STANDALONENARROWWEEKDAYS: ['ఆ', 'సో', 'మ', 'బు', 'గు',
       'శు', 'శ'],
   SHORTQUARTERS: ['ఒకటి 1', 'రెండు 2', 'మూడు 3',
       'నాలుగు 4'],
   QUARTERS: ['ఒకటి 1', 'రెండు 2', 'మూడు 3',
       'నాలుగు 4'],
-  AMPMS: ['పూర్వాహ్నం', 'అపరాహ్నం'],
+  AMPMS: ['am', 'pm'],
   DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'dd-MM-yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -12177,7 +12665,7 @@ goog.i18n.DateTimeSymbols_teo = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -12229,7 +12717,7 @@ goog.i18n.DateTimeSymbols_tg = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -12298,7 +12786,7 @@ goog.i18n.DateTimeSymbols_th_TH = {
       'H:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -12341,9 +12829,9 @@ goog.i18n.DateTimeSymbols_ti = {
   DATEFORMATS: ['EEEE፣ dd MMMM መዓልቲ y G', 'dd MMMM y', 'dd-MMM-y',
       'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 5,
+  FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -12385,9 +12873,9 @@ goog.i18n.DateTimeSymbols_ti_ER = {
   DATEFORMATS: ['EEEE፡ dd MMMM መዓልቲ y G', 'dd MMMM y', 'dd-MMM-y',
       'dd/MM/yy'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 5,
+  FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 1
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -12438,7 +12926,7 @@ goog.i18n.DateTimeSymbols_tig = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -12480,9 +12968,9 @@ goog.i18n.DateTimeSymbols_tn = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -12526,7 +13014,7 @@ goog.i18n.DateTimeSymbols_to = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -12568,56 +13056,8 @@ goog.i18n.DateTimeSymbols_tr_TR = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
-
-
-/**
- * Date/time formatting symbols for locale trv.
- */
-goog.i18n.DateTimeSymbols_trv = {
-  ERAS: ['BRY', 'BUY'],
-  ERANAMES: ['Brah jikan Yisu Thulang', 'Bukuy jikan Yisu Thulang'],
-  NARROWMONTHS: ['K', 'D', 'T', 'S', 'R', 'M', 'E', 'P', 'A', 'M', 'K', 'D'],
-  STANDALONENARROWMONTHS: ['K', 'D', 'T', 'S', 'R', 'M', 'E', 'P', 'A', 'M',
-      'K', 'D'],
-  MONTHS: ['Kingal idas', 'Dha idas', 'Tru idas', 'Spat idas', 'Rima idas',
-      'Mataru idas', 'Empitu idas', 'Maspat idas', 'Mngari idas', 'Maxal idas',
-      'Maxal kingal idas', 'Maxal dha idas'],
-  STANDALONEMONTHS: ['Kingal idas', 'Dha idas', 'Tru idas', 'Spat idas',
-      'Rima idas', 'Mataru idas', 'Empitu idas', 'Maspat idas', 'Mngari idas',
-      'Maxal idas', 'Maxal kingal idas', 'Maxal dha idas'],
-  SHORTMONTHS: ['Kii', 'Dhi', 'Tri', 'Spi', 'Rii', 'Mti', 'Emi', 'Mai', 'Mni',
-      'Mxi', 'Mxk', 'Mxd'],
-  STANDALONESHORTMONTHS: ['Kii', 'Dhi', 'Tri', 'Spi', 'Rii', 'Mti', 'Emi',
-      'Mai', 'Mni', 'Mxi', 'Mxk', 'Mxd'],
-  WEEKDAYS: ['Jiyax sngayan', 'tgKingal jiyax iyax sngayan',
-      'tgDha jiyax iyax sngayan', 'tgTru jiyax iyax sngayan',
-      'tgSpac jiyax iyax sngayan', 'tgRima jiyax iyax sngayan',
-      'tgMataru jiyax iyax sngayan'],
-  STANDALONEWEEKDAYS: ['Jiyax sngayan', 'tgKingal jiyax iyax sngayan',
-      'tgDha jiyax iyax sngayan', 'tgTru jiyax iyax sngayan',
-      'tgSpac jiyax iyax sngayan', 'tgRima jiyax iyax sngayan',
-      'tgMataru jiyax iyax sngayan'],
-  SHORTWEEKDAYS: ['Emp', 'Kin', 'Dha', 'Tru', 'Spa', 'Rim', 'Mat'],
-  STANDALONESHORTWEEKDAYS: ['Emp', 'Kin', 'Dha', 'Tru', 'Spa', 'Rim', 'Mat'],
-  NARROWWEEKDAYS: ['E', 'K', 'D', 'T', 'S', 'R', 'M'],
-  STANDALONENARROWWEEKDAYS: ['E', 'K', 'D', 'T', 'S', 'R', 'M'],
-  SHORTQUARTERS: ['mn1', 'mn2', 'mn3', 'mn4'],
-  QUARTERS: ['mnprxan', 'mndha', 'mntru', 'mnspat'],
-  AMPMS: ['Brax kndaax', 'Baubau kndaax'],
-  DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
-  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
-  WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
-};
-
-
-/**
- * Date/time formatting symbols for locale trv_TW.
- */
-goog.i18n.DateTimeSymbols_trv_TW = goog.i18n.DateTimeSymbols_trv;
 
 
 /**
@@ -12653,9 +13093,9 @@ goog.i18n.DateTimeSymbols_ts = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -12663,6 +13103,49 @@ goog.i18n.DateTimeSymbols_ts = {
  * Date/time formatting symbols for locale ts_ZA.
  */
 goog.i18n.DateTimeSymbols_ts_ZA = goog.i18n.DateTimeSymbols_ts;
+
+
+/**
+ * Date/time formatting symbols for locale twq.
+ */
+goog.i18n.DateTimeSymbols_twq = {
+  ERAS: ['IJ', 'IZ'],
+  ERANAMES: ['Isaa jine', 'Isaa zamanoo'],
+  NARROWMONTHS: ['Ž', 'F', 'M', 'A', 'M', 'Ž', 'Ž', 'U', 'S', 'O', 'N', 'D'],
+  STANDALONENARROWMONTHS: ['Ž', 'F', 'M', 'A', 'M', 'Ž', 'Ž', 'U', 'S', 'O',
+      'N', 'D'],
+  MONTHS: ['Žanwiye', 'Feewiriye', 'Marsi', 'Awiril', 'Me', 'Žuweŋ',
+      'Žuyye', 'Ut', 'Sektanbur', 'Oktoobur', 'Noowanbur', 'Deesanbur'],
+  STANDALONEMONTHS: ['Žanwiye', 'Feewiriye', 'Marsi', 'Awiril', 'Me',
+      'Žuweŋ', 'Žuyye', 'Ut', 'Sektanbur', 'Oktoobur', 'Noowanbur',
+      'Deesanbur'],
+  SHORTMONTHS: ['Žan', 'Fee', 'Mar', 'Awi', 'Me', 'Žuw', 'Žuy', 'Ut', 'Sek',
+      'Okt', 'Noo', 'Dee'],
+  STANDALONESHORTMONTHS: ['Žan', 'Fee', 'Mar', 'Awi', 'Me', 'Žuw', 'Žuy',
+      'Ut', 'Sek', 'Okt', 'Noo', 'Dee'],
+  WEEKDAYS: ['Alhadi', 'Atinni', 'Atalaata', 'Alarba', 'Alhamiisa', 'Alzuma',
+      'Asibti'],
+  STANDALONEWEEKDAYS: ['Alhadi', 'Atinni', 'Atalaata', 'Alarba', 'Alhamiisa',
+      'Alzuma', 'Asibti'],
+  SHORTWEEKDAYS: ['Alh', 'Ati', 'Ata', 'Ala', 'Alm', 'Alz', 'Asi'],
+  STANDALONESHORTWEEKDAYS: ['Alh', 'Ati', 'Ata', 'Ala', 'Alm', 'Alz', 'Asi'],
+  NARROWWEEKDAYS: ['H', 'T', 'T', 'L', 'L', 'L', 'S'],
+  STANDALONENARROWWEEKDAYS: ['H', 'T', 'T', 'L', 'L', 'L', 'S'],
+  SHORTQUARTERS: ['A1', 'A2', 'A3', 'A4'],
+  QUARTERS: ['Arrubu 1', 'Arrubu 2', 'Arrubu 3', 'Arrubu 4'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale twq_NE.
+ */
+goog.i18n.DateTimeSymbols_twq_NE = goog.i18n.DateTimeSymbols_twq;
 
 
 /**
@@ -12698,7 +13181,7 @@ goog.i18n.DateTimeSymbols_tzm = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -12754,7 +13237,7 @@ goog.i18n.DateTimeSymbols_uk_UA = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -12762,21 +13245,22 @@ goog.i18n.DateTimeSymbols_uk_UA = {
  * Date/time formatting symbols for locale ur_IN.
  */
 goog.i18n.DateTimeSymbols_ur_IN = {
+  ZERODIGIT: 0x06F0,
   ERAS: ['ق م', 'عيسوی سن'],
   ERANAMES: ['قبل مسيح', 'عيسوی سن'],
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
       '11', '12'],
-  MONTHS: ['جنوری', 'فروری', 'مار چ', 'اپريل', 'مئ',
+  MONTHS: ['جنوری', 'فروری', 'مارچ', 'اپريل', 'مئ',
       'جون', 'جولائ', 'اگست', 'ستمبر', 'اکتوبر',
       'نومبر', 'دسمبر'],
-  STANDALONEMONTHS: ['جنوری', 'فروری', 'مار چ', 'اپريل',
+  STANDALONEMONTHS: ['جنوری', 'فروری', 'مارچ', 'اپريل',
       'مئ', 'جون', 'جولائ', 'اگست', 'ستمبر', 'اکتوبر',
       'نومبر', 'دسمبر'],
-  SHORTMONTHS: ['جنوری', 'فروری', 'مار چ', 'اپريل', 'مئ',
+  SHORTMONTHS: ['جنوری', 'فروری', 'مارچ', 'اپريل', 'مئ',
       'جون', 'جولائ', 'اگست', 'ستمبر', 'اکتوبر',
       'نومبر', 'دسمبر'],
-  STANDALONESHORTMONTHS: ['جنوری', 'فروری', 'مار چ', 'اپريل',
+  STANDALONESHORTMONTHS: ['جنوری', 'فروری', 'مارچ', 'اپريل',
       'مئ', 'جون', 'جولائ', 'اگست', 'ستمبر', 'اکتوبر',
       'نومبر', 'دسمبر'],
   WEEKDAYS: ['اتوار', 'پير', 'منگل', 'بده', 'جمعرات',
@@ -12798,7 +13282,7 @@ goog.i18n.DateTimeSymbols_ur_IN = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [6, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -12811,16 +13295,16 @@ goog.i18n.DateTimeSymbols_ur_PK = {
   NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
   STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
       '11', '12'],
-  MONTHS: ['جنوری', 'فروری', 'مار چ', 'اپريل', 'مئ',
+  MONTHS: ['جنوری', 'فروری', 'مارچ', 'اپريل', 'مئ',
       'جون', 'جولائ', 'اگست', 'ستمبر', 'اکتوبر',
       'نومبر', 'دسمبر'],
-  STANDALONEMONTHS: ['جنوری', 'فروری', 'مار چ', 'اپريل',
+  STANDALONEMONTHS: ['جنوری', 'فروری', 'مارچ', 'اپريل',
       'مئ', 'جون', 'جولائ', 'اگست', 'ستمبر', 'اکتوبر',
       'نومبر', 'دسمبر'],
-  SHORTMONTHS: ['جنوری', 'فروری', 'مار چ', 'اپريل', 'مئ',
+  SHORTMONTHS: ['جنوری', 'فروری', 'مارچ', 'اپريل', 'مئ',
       'جون', 'جولائ', 'اگست', 'ستمبر', 'اکتوبر',
       'نومبر', 'دسمبر'],
-  STANDALONESHORTMONTHS: ['جنوری', 'فروری', 'مار چ', 'اپريل',
+  STANDALONESHORTMONTHS: ['جنوری', 'فروری', 'مارچ', 'اپريل',
       'مئ', 'جون', 'جولائ', 'اگست', 'ستمبر', 'اکتوبر',
       'نومبر', 'دسمبر'],
   WEEKDAYS: ['اتوار', 'پير', 'منگل', 'بده', 'جمعرات',
@@ -12842,7 +13326,7 @@ goog.i18n.DateTimeSymbols_ur_PK = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -12881,9 +13365,9 @@ goog.i18n.DateTimeSymbols_uz = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 6,
+  FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -12891,6 +13375,7 @@ goog.i18n.DateTimeSymbols_uz = {
  * Date/time formatting symbols for locale uz_Arab.
  */
 goog.i18n.DateTimeSymbols_uz_Arab = {
+  ZERODIGIT: 0x06F0,
   ERAS: ['ق.م.', 'م.'],
   ERANAMES: ['ق.م.', 'م.'],
   NARROWMONTHS: ['Я', 'Ф', 'М', 'А', 'М', 'И', 'И', 'А', 'С', 'О',
@@ -12923,7 +13408,7 @@ goog.i18n.DateTimeSymbols_uz_Arab = {
   TIMEFORMATS: ['H:mm:ss (zzzz)', 'H:mm:ss (z)', 'H:mm:ss', 'H:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -12976,9 +13461,9 @@ goog.i18n.DateTimeSymbols_uz_Latn = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yy/MM/dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 6,
+  FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -12986,6 +13471,104 @@ goog.i18n.DateTimeSymbols_uz_Latn = {
  * Date/time formatting symbols for locale uz_Latn_UZ.
  */
 goog.i18n.DateTimeSymbols_uz_Latn_UZ = goog.i18n.DateTimeSymbols_uz_Latn;
+
+
+/**
+ * Date/time formatting symbols for locale vai.
+ */
+goog.i18n.DateTimeSymbols_vai = {
+  ERAS: ['BCE', 'CE'],
+  ERANAMES: ['BCE', 'CE'],
+  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+      '11', '12'],
+  MONTHS: ['ꖨꕪꖃ ꔞꕮ', 'ꕒꕡꖝꖕ', 'ꕾꖺ', 'ꖢꖕ', 'ꖑꕱ',
+      '6', '7', 'ꗛꔕ', 'ꕢꕌ', 'ꕭꖃ', 'ꔞꘋꕔꕿ ꕸꖃꗏ',
+      'ꖨꕪꕱ ꗏꕮ'],
+  STANDALONEMONTHS: ['ꖨꕪꖃ ꔞꕮ', 'ꕒꕡꖝꖕ', 'ꕾꖺ', 'ꖢꖕ',
+      'ꖑꕱ', '6', '7', 'ꗛꔕ', 'ꕢꕌ', 'ꕭꖃ',
+      'ꔞꘋꕔꕿ ꕸꖃꗏ', 'ꖨꕪꕱ ꗏꕮ'],
+  SHORTMONTHS: ['ꖨꕪꖃ ꔞꕮ', 'ꕒꕡꖝꖕ', 'ꕾꖺ', 'ꖢꖕ',
+      'ꖑꕱ', '6', '7', 'ꗛꔕ', 'ꕢꕌ', 'ꕭꖃ',
+      'ꔞꘋꕔꕿ ꕸꖃꗏ', 'ꖨꕪꕱ ꗏꕮ'],
+  STANDALONESHORTMONTHS: ['ꖨꕪꖃ ꔞꕮ', 'ꕒꕡꖝꖕ', 'ꕾꖺ',
+      'ꖢꖕ', 'ꖑꕱ', '6', '7', 'ꗛꔕ', 'ꕢꕌ', 'ꕭꖃ',
+      'ꔞꘋꕔꕿ ꕸꖃꗏ', 'ꖨꕪꕱ ꗏꕮ'],
+  WEEKDAYS: ['ꕞꕌꔵ', 'ꗳꗡꘉ', 'ꕚꕞꕚ', 'ꕉꕞꕒ', 'ꕉꔤꕆꕢ',
+      'ꕉꔤꕀꕮ', 'ꔻꔬꔳ'],
+  STANDALONEWEEKDAYS: ['ꕞꕌꔵ', 'ꗳꗡꘉ', 'ꕚꕞꕚ', 'ꕉꕞꕒ',
+      'ꕉꔤꕆꕢ', 'ꕉꔤꕀꕮ', 'ꔻꔬꔳ'],
+  SHORTWEEKDAYS: ['ꕞꕌꔵ', 'ꗳꗡꘉ', 'ꕚꕞꕚ', 'ꕉꕞꕒ',
+      'ꕉꔤꕆꕢ', 'ꕉꔤꕀꕮ', 'ꔻꔬꔳ'],
+  STANDALONESHORTWEEKDAYS: ['ꕞꕌꔵ', 'ꗳꗡꘉ', 'ꕚꕞꕚ', 'ꕉꕞꕒ',
+      'ꕉꔤꕆꕢ', 'ꕉꔤꕀꕮ', 'ꔻꔬꔳ'],
+  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale vai_Latn.
+ */
+goog.i18n.DateTimeSymbols_vai_Latn = {
+  ERAS: ['BCE', 'CE'],
+  ERANAMES: ['BCE', 'CE'],
+  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+      '11', '12'],
+  MONTHS: ['luukao kemã', 'ɓandaɓu', 'vɔɔ', 'fulu', 'goo', '6', '7',
+      'kɔnde', 'saah', 'galo', 'kenpkato ɓololɔ', 'luukao lɔma'],
+  STANDALONEMONTHS: ['luukao kemã', 'ɓandaɓu', 'vɔɔ', 'fulu', 'goo', '6',
+      '7', 'kɔnde', 'saah', 'galo', 'kenpkato ɓololɔ', 'luukao lɔma'],
+  SHORTMONTHS: ['luukao kemã', 'ɓandaɓu', 'vɔɔ', 'fulu', 'goo', '6', '7',
+      'kɔnde', 'saah', 'galo', 'kenpkato ɓololɔ', 'luukao lɔma'],
+  STANDALONESHORTMONTHS: ['luukao kemã', 'ɓandaɓu', 'vɔɔ', 'fulu', 'goo',
+      '6', '7', 'kɔnde', 'saah', 'galo', 'kenpkato ɓololɔ', 'luukao lɔma'],
+  WEEKDAYS: ['lahadi', 'tɛɛnɛɛ', 'talata', 'alaba', 'aimisa', 'aijima',
+      'siɓiti'],
+  STANDALONEWEEKDAYS: ['lahadi', 'tɛɛnɛɛ', 'talata', 'alaba', 'aimisa',
+      'aijima', 'siɓiti'],
+  SHORTWEEKDAYS: ['lahadi', 'tɛɛnɛɛ', 'talata', 'alaba', 'aimisa', 'aijima',
+      'siɓiti'],
+  STANDALONESHORTWEEKDAYS: ['lahadi', 'tɛɛnɛɛ', 'talata', 'alaba', 'aimisa',
+      'aijima', 'siɓiti'],
+  NARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  STANDALONENARROWWEEKDAYS: ['1', '2', '3', '4', '5', '6', '7'],
+  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  QUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE, d MMMM y', 'd MMMM y', 'd MMM y', 'dd/MM/yyyy'],
+  TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale vai_Latn_LR.
+ */
+goog.i18n.DateTimeSymbols_vai_Latn_LR = goog.i18n.DateTimeSymbols_vai_Latn;
+
+
+/**
+ * Date/time formatting symbols for locale vai_Vaii.
+ */
+goog.i18n.DateTimeSymbols_vai_Vaii = goog.i18n.DateTimeSymbols_vai;
+
+
+/**
+ * Date/time formatting symbols for locale vai_Vaii_LR.
+ */
+goog.i18n.DateTimeSymbols_vai_Vaii_LR = goog.i18n.DateTimeSymbols_vai;
 
 
 /**
@@ -13003,9 +13586,9 @@ goog.i18n.DateTimeSymbols_ve = {
   STANDALONEMONTHS: ['Phando', 'Luhuhi', 'Ṱhafamuhwe', 'Lambamai',
       'Shundunthule', 'Fulwi', 'Fulwana', 'Ṱhangule', 'Khubvumedzi',
       'Tshimedzi', 'Ḽara', 'Nyendavhusiku'],
-  SHORTMONTHS: ['Pha', 'Luh', 'Ṱha', 'Lam', 'Shu', 'Lwi', 'Lwa', 'Ṱha',
+  SHORTMONTHS: ['Pha', 'Luh', 'Ṱhf', 'Lam', 'Shu', 'Lwi', 'Lwa', 'Ṱha',
       'Khu', 'Tsh', 'Ḽar', 'Nye'],
-  STANDALONESHORTMONTHS: ['Pha', 'Luh', 'Ṱha', 'Lam', 'Shu', 'Lwi', 'Lwa',
+  STANDALONESHORTMONTHS: ['Pha', 'Luh', 'Ṱhf', 'Lam', 'Shu', 'Lwi', 'Lwa',
       'Ṱha', 'Khu', 'Tsh', 'Ḽar', 'Nye'],
   WEEKDAYS: ['Swondaha', 'Musumbuluwo', 'Ḽavhuvhili', 'Ḽavhuraru',
       'Ḽavhuṋa', 'Ḽavhuṱanu', 'Mugivhela'],
@@ -13021,9 +13604,9 @@ goog.i18n.DateTimeSymbols_ve = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -13071,7 +13654,7 @@ goog.i18n.DateTimeSymbols_vi_VN = {
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -13107,7 +13690,7 @@ goog.i18n.DateTimeSymbols_vun = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -13115,6 +13698,50 @@ goog.i18n.DateTimeSymbols_vun = {
  * Date/time formatting symbols for locale vun_TZ.
  */
 goog.i18n.DateTimeSymbols_vun_TZ = goog.i18n.DateTimeSymbols_vun;
+
+
+/**
+ * Date/time formatting symbols for locale wae.
+ */
+goog.i18n.DateTimeSymbols_wae = {
+  ERAS: ['v. Chr.', 'n. Chr'],
+  ERANAMES: ['v. Chr.', 'n. Chr'],
+  NARROWMONTHS: ['J', 'H', 'M', 'A', 'M', 'B', 'H', 'Ö', 'H', 'W', 'W', 'C'],
+  STANDALONENARROWMONTHS: ['J', 'H', 'M', 'A', 'M', 'B', 'H', 'Ö', 'H', 'W',
+      'W', 'C'],
+  MONTHS: ['Jenner', 'Hornig', 'Märze', 'Abrille', 'Meije', 'Bráčet',
+      'Heiwet', 'Öigšte', 'Herbštmánet', 'Wímánet', 'Wintermánet',
+      'Chrištmánet'],
+  STANDALONEMONTHS: ['Jenner', 'Hornig', 'Märze', 'Abrille', 'Meije',
+      'Bráčet', 'Heiwet', 'Öigšte', 'Herbštmánet', 'Wímánet',
+      'Wintermánet', 'Chrištmánet'],
+  SHORTMONTHS: ['Jen', 'Hor', 'Mär', 'Abr', 'Mei', 'Brá', 'Hei', 'Öig',
+      'Her', 'Wím', 'Win', 'Chr'],
+  STANDALONESHORTMONTHS: ['Jen', 'Hor', 'Mär', 'Abr', 'Mei', 'Brá', 'Hei',
+      'Öig', 'Her', 'Wím', 'Win', 'Chr'],
+  WEEKDAYS: ['Sunntag', 'Mäntag', 'Zištag', 'Mittwuč', 'Fróntag', 'Fritag',
+      'Samštag'],
+  STANDALONEWEEKDAYS: ['Sunntag', 'Mäntag', 'Zištag', 'Mittwuč', 'Fróntag',
+      'Fritag', 'Samštag'],
+  SHORTWEEKDAYS: ['Sun', 'Män', 'Ziš', 'Mit', 'Fró', 'Fri', 'Sam'],
+  STANDALONESHORTWEEKDAYS: ['Sun', 'Män', 'Ziš', 'Mit', 'Fró', 'Fri', 'Sam'],
+  NARROWWEEKDAYS: ['S', 'M', 'Z', 'M', 'F', 'F', 'S'],
+  STANDALONENARROWWEEKDAYS: ['S', 'M', 'Z', 'M', 'F', 'F', 'S'],
+  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  QUARTERS: ['1. quartal', '2. quartal', '3. quartal', '4. quartal'],
+  AMPMS: ['AM', 'PM'],
+  DATEFORMATS: ['EEEE, d. MMMM y', 'd. MMMM y', 'd. MMM y', 'yyyy-MM-dd'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale wae_CH.
+ */
+goog.i18n.DateTimeSymbols_wae_CH = goog.i18n.DateTimeSymbols_wae;
 
 
 /**
@@ -13158,7 +13785,7 @@ goog.i18n.DateTimeSymbols_wal = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -13199,9 +13826,9 @@ goog.i18n.DateTimeSymbols_xh = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE, y MMMM dd', 'y MMMM d', 'y MMM d', 'yyyy-MM-dd'],
   TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -13246,7 +13873,7 @@ goog.i18n.DateTimeSymbols_xog = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -13254,6 +13881,54 @@ goog.i18n.DateTimeSymbols_xog = {
  * Date/time formatting symbols for locale xog_UG.
  */
 goog.i18n.DateTimeSymbols_xog_UG = goog.i18n.DateTimeSymbols_xog;
+
+
+/**
+ * Date/time formatting symbols for locale yav.
+ */
+goog.i18n.DateTimeSymbols_yav = {
+  ERAS: ['-J.C.', '+J.C.'],
+  ERANAMES: ['katikupíen Yésuse', 'ékélémkúnupíén n'],
+  NARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  STANDALONENARROWMONTHS: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+      '11', '12'],
+  MONTHS: ['pikítíkítie, oólí ú kutúan', 'siɛyɛ́, oóli ú kándíɛ',
+      'ɔnsúmbɔl, oóli ú kátátúɛ', 'mesiŋ, oóli ú kénie',
+      'ensil, oóli ú kátánuɛ', 'ɔsɔn', 'efute', 'pisuyú',
+      'imɛŋ i puɔs', 'imɛŋ i putúk,oóli ú kátíɛ', 'makandikɛ',
+      'pilɔndɔ́'],
+  STANDALONEMONTHS: ['pikítíkítie, oólí ú kutúan',
+      'siɛyɛ́, oóli ú kándíɛ', 'ɔnsúmbɔl, oóli ú kátátúɛ',
+      'mesiŋ, oóli ú kénie', 'ensil, oóli ú kátánuɛ', 'ɔsɔn',
+      'efute', 'pisuyú', 'imɛŋ i puɔs', 'imɛŋ i putúk,oóli ú kátíɛ',
+      'makandikɛ', 'pilɔndɔ́'],
+  SHORTMONTHS: ['o.1', 'o.2', 'o.3', 'o.4', 'o.5', 'o.6', 'o.7', 'o.8', 'o.9',
+      'o.10', 'o.11', 'o.12'],
+  STANDALONESHORTMONTHS: ['o.1', 'o.2', 'o.3', 'o.4', 'o.5', 'o.6', 'o.7',
+      'o.8', 'o.9', 'o.10', 'o.11', 'o.12'],
+  WEEKDAYS: ['sɔ́ndiɛ', 'móndie', 'muányáŋmóndie', 'metúkpíápɛ',
+      'kúpélimetúkpiapɛ', 'feléte', 'séselé'],
+  STANDALONEWEEKDAYS: ['sɔ́ndiɛ', 'móndie', 'muányáŋmóndie',
+      'metúkpíápɛ', 'kúpélimetúkpiapɛ', 'feléte', 'séselé'],
+  SHORTWEEKDAYS: ['sd', 'md', 'mw', 'et', 'kl', 'fl', 'ss'],
+  STANDALONESHORTWEEKDAYS: ['sd', 'md', 'mw', 'et', 'kl', 'fl', 'ss'],
+  NARROWWEEKDAYS: ['s', 'm', 'm', 'e', 'k', 'f', 's'],
+  STANDALONENARROWWEEKDAYS: ['s', 'm', 'm', 'e', 'k', 'f', 's'],
+  SHORTQUARTERS: ['Q1', 'Q2', 'Q3', 'Q4'],
+  QUARTERS: ['ndátúɛ 1', 'ndátúɛ 2', 'ndátúɛ 3', 'ndátúɛ 4'],
+  AMPMS: ['kiɛmɛ́ɛm', 'kisɛ́ndɛ'],
+  DATEFORMATS: ['EEEE d MMMM y', 'd MMMM y', 'd MMM y', 'd/M/yyyy'],
+  TIMEFORMATS: ['HH:mm:ss zzzz', 'HH:mm:ss z', 'HH:mm:ss', 'HH:mm'],
+  FIRSTDAYOFWEEK: 0,
+  WEEKENDRANGE: [5, 6],
+  FIRSTWEEKCUTOFFDAY: 6
+};
+
+
+/**
+ * Date/time formatting symbols for locale yav_CM.
+ */
+goog.i18n.DateTimeSymbols_yav_CM = goog.i18n.DateTimeSymbols_yav;
 
 
 /**
@@ -13299,7 +13974,7 @@ goog.i18n.DateTimeSymbols_yo = {
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
   FIRSTDAYOFWEEK: 0,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 6
 };
 
 
@@ -13344,7 +14019,7 @@ goog.i18n.DateTimeSymbols_zh_Hans = {
   TIMEFORMATS: ['zzzzah时mm分ss秒', 'zah时mm分ss秒', 'ah:mm:ss', 'ah:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -13388,7 +14063,7 @@ goog.i18n.DateTimeSymbols_zh_Hans_HK = {
   TIMEFORMATS: ['zzzzah:mm:ss', 'zah:mm:ss', 'ah:mm:ss', 'ah:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -13426,7 +14101,7 @@ goog.i18n.DateTimeSymbols_zh_Hans_MO = {
   TIMEFORMATS: ['zzzzah:mm:ss', 'zah:mm:ss', 'ah:mm:ss', 'ah:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -13464,7 +14139,7 @@ goog.i18n.DateTimeSymbols_zh_Hans_SG = {
   TIMEFORMATS: ['zzzzah:mm:ss', 'ahh:mm:ssz', 'ah:mm:ss', 'ahh:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -13498,11 +14173,11 @@ goog.i18n.DateTimeSymbols_zh_Hant = {
   SHORTQUARTERS: ['1季', '2季', '3季', '4季'],
   QUARTERS: ['第1季', '第2季', '第3季', '第4季'],
   AMPMS: ['上午', '下午'],
-  DATEFORMATS: ['y年M月d日EEEE', 'y年M月d日', 'yyyy/M/d', 'yy/M/d'],
+  DATEFORMATS: ['y年M月d日EEEE', 'y年M月d日', 'yyyy/M/d', 'y/M/d'],
   TIMEFORMATS: ['zzzzah時mm分ss秒', 'zah時mm分ss秒', 'ah:mm:ss', 'ah:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -13541,7 +14216,7 @@ goog.i18n.DateTimeSymbols_zh_Hant_HK = {
   TIMEFORMATS: ['ah:mm:ss [zzzz]', 'ah:mm:ss [z]', 'ahh:mm:ss', 'ah:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -13580,7 +14255,7 @@ goog.i18n.DateTimeSymbols_zh_Hant_MO = {
   TIMEFORMATS: ['ah:mm:ss [zzzz]', 'ah:mm:ss [z]', 'ahh:mm:ss', 'ah:mm'],
   FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 2
+  FIRSTWEEKCUTOFFDAY: 5
 };
 
 
@@ -13591,9 +14266,9 @@ goog.i18n.DateTimeSymbols_zh_Hant_TW = goog.i18n.DateTimeSymbols_zh_Hant;
 
 
 /**
- * Date/time formatting symbols for locale zu.
+ * Date/time formatting symbols for locale zu_ZA.
  */
-goog.i18n.DateTimeSymbols_zu = {
+goog.i18n.DateTimeSymbols_zu_ZA = {
   ERAS: ['BC', 'AD'],
   ERANAMES: ['BC', 'AD'],
   NARROWMONTHS: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
@@ -13621,16 +14296,10 @@ goog.i18n.DateTimeSymbols_zu = {
   AMPMS: ['AM', 'PM'],
   DATEFORMATS: ['EEEE dd MMMM y', 'd MMMM y', 'd MMM y', 'yyyy-MM-dd'],
   TIMEFORMATS: ['h:mm:ss a zzzz', 'h:mm:ss a z', 'h:mm:ss a', 'h:mm a'],
-  FIRSTDAYOFWEEK: 0,
+  FIRSTDAYOFWEEK: 6,
   WEEKENDRANGE: [5, 6],
-  FIRSTWEEKCUTOFFDAY: 3
+  FIRSTWEEKCUTOFFDAY: 5
 };
-
-
-/**
- * Date/time formatting symbols for locale zu_ZA.
- */
-goog.i18n.DateTimeSymbols_zu_ZA = goog.i18n.DateTimeSymbols_zu;
 
 
 /**
@@ -13652,16 +14321,20 @@ if (goog.LOCALE == 'aa_ET' || goog.LOCALE == 'aa-ET') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_aa;
 }
 
-if (goog.LOCALE == 'af') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_af;
-}
-
 if (goog.LOCALE == 'af_NA' || goog.LOCALE == 'af-NA') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_af_NA;
 }
 
 if (goog.LOCALE == 'af_ZA' || goog.LOCALE == 'af-ZA') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_af;
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_af_ZA;
+}
+
+if (goog.LOCALE == 'agq') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_agq;
+}
+
+if (goog.LOCALE == 'agq_CM' || goog.LOCALE == 'agq-CM') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_agq;
 }
 
 if (goog.LOCALE == 'ak') {
@@ -13780,6 +14453,14 @@ if (goog.LOCALE == 'az_Latn_AZ' || goog.LOCALE == 'az-Latn-AZ') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_az;
 }
 
+if (goog.LOCALE == 'bas') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_bas;
+}
+
+if (goog.LOCALE == 'bas_CM' || goog.LOCALE == 'bas-CM') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_bas;
+}
+
 if (goog.LOCALE == 'be') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_be;
 }
@@ -13872,14 +14553,6 @@ if (goog.LOCALE == 'ca_ES' || goog.LOCALE == 'ca-ES') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ca_ES;
 }
 
-if (goog.LOCALE == 'cch') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_cch;
-}
-
-if (goog.LOCALE == 'cch_NG' || goog.LOCALE == 'cch-NG') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_cch;
-}
-
 if (goog.LOCALE == 'cgg') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_cgg;
 }
@@ -13888,12 +14561,8 @@ if (goog.LOCALE == 'cgg_UG' || goog.LOCALE == 'cgg-UG') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_cgg;
 }
 
-if (goog.LOCALE == 'chr') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_chr;
-}
-
 if (goog.LOCALE == 'chr_US' || goog.LOCALE == 'chr-US') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_chr;
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_chr_US;
 }
 
 if (goog.LOCALE == 'ckb') {
@@ -13932,12 +14601,8 @@ if (goog.LOCALE == 'cs_CZ' || goog.LOCALE == 'cs-CZ') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_cs_CZ;
 }
 
-if (goog.LOCALE == 'cy') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_cy;
-}
-
 if (goog.LOCALE == 'cy_GB' || goog.LOCALE == 'cy-GB') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_cy;
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_cy_GB;
 }
 
 if (goog.LOCALE == 'da_DK' || goog.LOCALE == 'da-DK') {
@@ -13966,6 +14631,30 @@ if (goog.LOCALE == 'de_LI' || goog.LOCALE == 'de-LI') {
 
 if (goog.LOCALE == 'de_LU' || goog.LOCALE == 'de-LU') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_de_LU;
+}
+
+if (goog.LOCALE == 'dje') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_dje;
+}
+
+if (goog.LOCALE == 'dje_NE' || goog.LOCALE == 'dje-NE') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_dje;
+}
+
+if (goog.LOCALE == 'dua') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_dua;
+}
+
+if (goog.LOCALE == 'dua_CM' || goog.LOCALE == 'dua-CM') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_dua;
+}
+
+if (goog.LOCALE == 'dyo') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_dyo;
+}
+
+if (goog.LOCALE == 'dyo_SN' || goog.LOCALE == 'dyo-SN') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_dyo;
 }
 
 if (goog.LOCALE == 'dz') {
@@ -14004,16 +14693,20 @@ if (goog.LOCALE == 'el_GR' || goog.LOCALE == 'el-GR') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_el_GR;
 }
 
-if (goog.LOCALE == 'el_POLYTON' || goog.LOCALE == 'el-POLYTON') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_el_POLYTON;
-}
-
 if (goog.LOCALE == 'en_AS' || goog.LOCALE == 'en-AS') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_en_AS;
 }
 
+if (goog.LOCALE == 'en_BB' || goog.LOCALE == 'en-BB') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_en_BB;
+}
+
 if (goog.LOCALE == 'en_BE' || goog.LOCALE == 'en-BE') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_en_BE;
+}
+
+if (goog.LOCALE == 'en_BM' || goog.LOCALE == 'en-BM') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_en_BM;
 }
 
 if (goog.LOCALE == 'en_BW' || goog.LOCALE == 'en-BW') {
@@ -14038,6 +14731,10 @@ if (goog.LOCALE == 'en_Dsrt_US' || goog.LOCALE == 'en-Dsrt-US') {
 
 if (goog.LOCALE == 'en_GU' || goog.LOCALE == 'en-GU') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_en_GU;
+}
+
+if (goog.LOCALE == 'en_GY' || goog.LOCALE == 'en-GY') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_en_GY;
 }
 
 if (goog.LOCALE == 'en_HK' || goog.LOCALE == 'en-HK') {
@@ -14078,10 +14775,6 @@ if (goog.LOCALE == 'en_PH' || goog.LOCALE == 'en-PH') {
 
 if (goog.LOCALE == 'en_PK' || goog.LOCALE == 'en-PK') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_en_PK;
-}
-
-if (goog.LOCALE == 'en_Shaw' || goog.LOCALE == 'en-Shaw') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_en_Shaw;
 }
 
 if (goog.LOCALE == 'en_TT' || goog.LOCALE == 'en-TT') {
@@ -14196,6 +14889,14 @@ if (goog.LOCALE == 'eu_ES' || goog.LOCALE == 'eu-ES') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_eu_ES;
 }
 
+if (goog.LOCALE == 'ewo') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ewo;
+}
+
+if (goog.LOCALE == 'ewo_CM' || goog.LOCALE == 'ewo-CM') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ewo;
+}
+
 if (goog.LOCALE == 'fa_AF' || goog.LOCALE == 'fa-AF') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_fa_AF;
 }
@@ -14284,6 +14985,10 @@ if (goog.LOCALE == 'fr_GA' || goog.LOCALE == 'fr-GA') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_fr_GA;
 }
 
+if (goog.LOCALE == 'fr_GF' || goog.LOCALE == 'fr-GF') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_fr_GF;
+}
+
 if (goog.LOCALE == 'fr_GN' || goog.LOCALE == 'fr-GN') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_fr_GN;
 }
@@ -14348,6 +15053,10 @@ if (goog.LOCALE == 'fr_TG' || goog.LOCALE == 'fr-TG') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_fr_TG;
 }
 
+if (goog.LOCALE == 'fr_YT' || goog.LOCALE == 'fr-YT') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_fr_YT;
+}
+
 if (goog.LOCALE == 'fur') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_fur;
 }
@@ -14362,14 +15071,6 @@ if (goog.LOCALE == 'ga') {
 
 if (goog.LOCALE == 'ga_IE' || goog.LOCALE == 'ga-IE') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ga;
-}
-
-if (goog.LOCALE == 'gaa') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_gaa;
-}
-
-if (goog.LOCALE == 'gaa_GH' || goog.LOCALE == 'gaa-GH') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_gaa;
 }
 
 if (goog.LOCALE == 'gl_ES' || goog.LOCALE == 'gl-ES') {
@@ -14420,12 +15121,8 @@ if (goog.LOCALE == 'ha_Latn_NG' || goog.LOCALE == 'ha-Latn-NG') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ha;
 }
 
-if (goog.LOCALE == 'haw') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_haw;
-}
-
 if (goog.LOCALE == 'haw_US' || goog.LOCALE == 'haw-US') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_haw;
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_haw_US;
 }
 
 if (goog.LOCALE == 'he_IL' || goog.LOCALE == 'he-IL') {
@@ -14516,28 +15213,12 @@ if (goog.LOCALE == 'kab_DZ' || goog.LOCALE == 'kab-DZ') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_kab;
 }
 
-if (goog.LOCALE == 'kaj') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_kaj;
-}
-
-if (goog.LOCALE == 'kaj_NG' || goog.LOCALE == 'kaj-NG') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_kaj;
-}
-
 if (goog.LOCALE == 'kam') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_kam;
 }
 
 if (goog.LOCALE == 'kam_KE' || goog.LOCALE == 'kam-KE') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_kam;
-}
-
-if (goog.LOCALE == 'kcg') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_kcg;
-}
-
-if (goog.LOCALE == 'kcg_NG' || goog.LOCALE == 'kcg-NG') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_kcg;
 }
 
 if (goog.LOCALE == 'kde') {
@@ -14632,6 +15313,14 @@ if (goog.LOCALE == 'ksb_TZ' || goog.LOCALE == 'ksb-TZ') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ksb;
 }
 
+if (goog.LOCALE == 'ksf') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ksf;
+}
+
+if (goog.LOCALE == 'ksf_CM' || goog.LOCALE == 'ksf-CM') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ksf;
+}
+
 if (goog.LOCALE == 'ksh') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ksh;
 }
@@ -14644,44 +15333,12 @@ if (goog.LOCALE == 'ku') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku;
 }
 
-if (goog.LOCALE == 'ku_Arab' || goog.LOCALE == 'ku-Arab') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku;
-}
-
-if (goog.LOCALE == 'ku_Arab_IQ' || goog.LOCALE == 'ku-Arab-IQ') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku;
-}
-
-if (goog.LOCALE == 'ku_Arab_IR' || goog.LOCALE == 'ku-Arab-IR') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku;
-}
-
-if (goog.LOCALE == 'ku_Latn' || goog.LOCALE == 'ku-Latn') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku;
-}
-
-if (goog.LOCALE == 'ku_Latn_SY' || goog.LOCALE == 'ku-Latn-SY') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku;
-}
-
-if (goog.LOCALE == 'ku_Latn_TR' || goog.LOCALE == 'ku-Latn-TR') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ku;
-}
-
 if (goog.LOCALE == 'kw') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_kw;
 }
 
 if (goog.LOCALE == 'kw_GB' || goog.LOCALE == 'kw-GB') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_kw;
-}
-
-if (goog.LOCALE == 'ky') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ky;
-}
-
-if (goog.LOCALE == 'ky_KG' || goog.LOCALE == 'ky-KG') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ky;
 }
 
 if (goog.LOCALE == 'lag') {
@@ -14718,6 +15375,14 @@ if (goog.LOCALE == 'lo_LA' || goog.LOCALE == 'lo-LA') {
 
 if (goog.LOCALE == 'lt_LT' || goog.LOCALE == 'lt-LT') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_lt_LT;
+}
+
+if (goog.LOCALE == 'lu') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_lu;
+}
+
+if (goog.LOCALE == 'lu_CD' || goog.LOCALE == 'lu-CD') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_lu;
 }
 
 if (goog.LOCALE == 'luo') {
@@ -14776,6 +15441,14 @@ if (goog.LOCALE == 'mg_MG' || goog.LOCALE == 'mg-MG') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_mg;
 }
 
+if (goog.LOCALE == 'mgh') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_mgh;
+}
+
+if (goog.LOCALE == 'mgh_MZ' || goog.LOCALE == 'mgh-MZ') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_mgh;
+}
+
 if (goog.LOCALE == 'mk') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_mk;
 }
@@ -14786,26 +15459,6 @@ if (goog.LOCALE == 'mk_MK' || goog.LOCALE == 'mk-MK') {
 
 if (goog.LOCALE == 'ml_IN' || goog.LOCALE == 'ml-IN') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ml_IN;
-}
-
-if (goog.LOCALE == 'mn') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_mn;
-}
-
-if (goog.LOCALE == 'mn_Cyrl' || goog.LOCALE == 'mn-Cyrl') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_mn;
-}
-
-if (goog.LOCALE == 'mn_Cyrl_MN' || goog.LOCALE == 'mn-Cyrl-MN') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_mn;
-}
-
-if (goog.LOCALE == 'mn_Mong' || goog.LOCALE == 'mn-Mong') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_mn;
-}
-
-if (goog.LOCALE == 'mn_Mong_CN' || goog.LOCALE == 'mn-Mong-CN') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_mn;
 }
 
 if (goog.LOCALE == 'mr_IN' || goog.LOCALE == 'mr-IN') {
@@ -14822,6 +15475,14 @@ if (goog.LOCALE == 'ms_MY' || goog.LOCALE == 'ms-MY') {
 
 if (goog.LOCALE == 'mt_MT' || goog.LOCALE == 'mt-MT') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_mt_MT;
+}
+
+if (goog.LOCALE == 'mua') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_mua;
+}
+
+if (goog.LOCALE == 'mua_CM' || goog.LOCALE == 'mua-CM') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_mua;
 }
 
 if (goog.LOCALE == 'my') {
@@ -14856,14 +15517,6 @@ if (goog.LOCALE == 'nd_ZW' || goog.LOCALE == 'nd-ZW') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nd;
 }
 
-if (goog.LOCALE == 'nds') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nds;
-}
-
-if (goog.LOCALE == 'nds_DE' || goog.LOCALE == 'nds-DE') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nds;
-}
-
 if (goog.LOCALE == 'ne') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ne;
 }
@@ -14876,12 +15529,24 @@ if (goog.LOCALE == 'ne_NP' || goog.LOCALE == 'ne-NP') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ne;
 }
 
+if (goog.LOCALE == 'nl_AW' || goog.LOCALE == 'nl-AW') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nl_AW;
+}
+
 if (goog.LOCALE == 'nl_BE' || goog.LOCALE == 'nl-BE') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nl_BE;
 }
 
 if (goog.LOCALE == 'nl_NL' || goog.LOCALE == 'nl-NL') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nl_NL;
+}
+
+if (goog.LOCALE == 'nmg') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nmg;
+}
+
+if (goog.LOCALE == 'nmg_CM' || goog.LOCALE == 'nmg-CM') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nmg;
 }
 
 if (goog.LOCALE == 'nn') {
@@ -14908,20 +15573,20 @@ if (goog.LOCALE == 'nso_ZA' || goog.LOCALE == 'nso-ZA') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nso;
 }
 
+if (goog.LOCALE == 'nus') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nus;
+}
+
+if (goog.LOCALE == 'nus_SD' || goog.LOCALE == 'nus-SD') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nus;
+}
+
 if (goog.LOCALE == 'nyn') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nyn;
 }
 
 if (goog.LOCALE == 'nyn_UG' || goog.LOCALE == 'nyn-UG') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_nyn;
-}
-
-if (goog.LOCALE == 'oc') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_oc;
-}
-
-if (goog.LOCALE == 'oc_FR' || goog.LOCALE == 'oc-FR') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_oc;
 }
 
 if (goog.LOCALE == 'om') {
@@ -14984,12 +15649,24 @@ if (goog.LOCALE == 'pt_MZ' || goog.LOCALE == 'pt-MZ') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_pt_MZ;
 }
 
+if (goog.LOCALE == 'pt_ST' || goog.LOCALE == 'pt-ST') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_pt_ST;
+}
+
 if (goog.LOCALE == 'rm') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_rm;
 }
 
 if (goog.LOCALE == 'rm_CH' || goog.LOCALE == 'rm-CH') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_rm;
+}
+
+if (goog.LOCALE == 'rn') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_rn;
+}
+
+if (goog.LOCALE == 'rn_BI' || goog.LOCALE == 'rn-BI') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_rn;
 }
 
 if (goog.LOCALE == 'ro_MD' || goog.LOCALE == 'ro-MD') {
@@ -15036,12 +15713,28 @@ if (goog.LOCALE == 'rwk_TZ' || goog.LOCALE == 'rwk-TZ') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_rwk;
 }
 
+if (goog.LOCALE == 'sah') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_sah;
+}
+
+if (goog.LOCALE == 'sah_RU' || goog.LOCALE == 'sah-RU') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_sah;
+}
+
 if (goog.LOCALE == 'saq') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_saq;
 }
 
 if (goog.LOCALE == 'saq_KE' || goog.LOCALE == 'saq-KE') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_saq;
+}
+
+if (goog.LOCALE == 'sbp') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_sbp;
+}
+
+if (goog.LOCALE == 'sbp_TZ' || goog.LOCALE == 'sbp-TZ') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_sbp;
 }
 
 if (goog.LOCALE == 'se') {
@@ -15106,14 +15799,6 @@ if (goog.LOCALE == 'si') {
 
 if (goog.LOCALE == 'si_LK' || goog.LOCALE == 'si-LK') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_si;
-}
-
-if (goog.LOCALE == 'sid') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_sid;
-}
-
-if (goog.LOCALE == 'sid_ET' || goog.LOCALE == 'sid-ET') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_sid;
 }
 
 if (goog.LOCALE == 'sk_SK' || goog.LOCALE == 'sk-SK') {
@@ -15236,6 +15921,14 @@ if (goog.LOCALE == 'sw_TZ' || goog.LOCALE == 'sw-TZ') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_sw_TZ;
 }
 
+if (goog.LOCALE == 'swc') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_swc;
+}
+
+if (goog.LOCALE == 'swc_CD' || goog.LOCALE == 'swc-CD') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_swc;
+}
+
 if (goog.LOCALE == 'ta_IN' || goog.LOCALE == 'ta-IN') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ta_IN;
 }
@@ -15316,20 +16009,20 @@ if (goog.LOCALE == 'tr_TR' || goog.LOCALE == 'tr-TR') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_tr_TR;
 }
 
-if (goog.LOCALE == 'trv') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_trv;
-}
-
-if (goog.LOCALE == 'trv_TW' || goog.LOCALE == 'trv-TW') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_trv;
-}
-
 if (goog.LOCALE == 'ts') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ts;
 }
 
 if (goog.LOCALE == 'ts_ZA' || goog.LOCALE == 'ts-ZA') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ts;
+}
+
+if (goog.LOCALE == 'twq') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_twq;
+}
+
+if (goog.LOCALE == 'twq_NE' || goog.LOCALE == 'twq-NE') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_twq;
 }
 
 if (goog.LOCALE == 'tzm') {
@@ -15384,6 +16077,26 @@ if (goog.LOCALE == 'uz_Latn_UZ' || goog.LOCALE == 'uz-Latn-UZ') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_uz_Latn;
 }
 
+if (goog.LOCALE == 'vai') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_vai;
+}
+
+if (goog.LOCALE == 'vai_Latn' || goog.LOCALE == 'vai-Latn') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_vai_Latn;
+}
+
+if (goog.LOCALE == 'vai_Latn_LR' || goog.LOCALE == 'vai-Latn-LR') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_vai_Latn;
+}
+
+if (goog.LOCALE == 'vai_Vaii' || goog.LOCALE == 'vai-Vaii') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_vai;
+}
+
+if (goog.LOCALE == 'vai_Vaii_LR' || goog.LOCALE == 'vai-Vaii-LR') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_vai;
+}
+
 if (goog.LOCALE == 've') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ve;
 }
@@ -15402,6 +16115,14 @@ if (goog.LOCALE == 'vun') {
 
 if (goog.LOCALE == 'vun_TZ' || goog.LOCALE == 'vun-TZ') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_vun;
+}
+
+if (goog.LOCALE == 'wae') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_wae;
+}
+
+if (goog.LOCALE == 'wae_CH' || goog.LOCALE == 'wae-CH') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_wae;
 }
 
 if (goog.LOCALE == 'wal') {
@@ -15426,6 +16147,14 @@ if (goog.LOCALE == 'xog') {
 
 if (goog.LOCALE == 'xog_UG' || goog.LOCALE == 'xog-UG') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_xog;
+}
+
+if (goog.LOCALE == 'yav') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_yav;
+}
+
+if (goog.LOCALE == 'yav_CM' || goog.LOCALE == 'yav-CM') {
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_yav;
 }
 
 if (goog.LOCALE == 'yo') {
@@ -15472,11 +16201,7 @@ if (goog.LOCALE == 'zh_Hant_TW' || goog.LOCALE == 'zh-Hant-TW') {
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_zh_Hant;
 }
 
-if (goog.LOCALE == 'zu') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_zu;
-}
-
 if (goog.LOCALE == 'zu_ZA' || goog.LOCALE == 'zu-ZA') {
-  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_zu;
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_zu_ZA;
 }
 

@@ -166,6 +166,7 @@ goog.ui.DrilldownRow.sampleProperties = {
 /**
  * The base class method calls its superclass method and this
  * drilldown's 'decorator' method as defined in the constructor.
+ * @override
  */
 goog.ui.DrilldownRow.prototype.enterDocument = function() {
   goog.ui.DrilldownRow.superClass_.enterDocument.call(this);
@@ -185,6 +186,7 @@ goog.ui.DrilldownRow.prototype.createDom = function() {
  *
  * @param {Element} node The element to test for decorability.
  * @return {boolean} true iff the node is a TR.
+ * @override
  */
 goog.ui.DrilldownRow.prototype.canDecorate = function(node) {
   return node.tagName == 'TR';
@@ -194,9 +196,10 @@ goog.ui.DrilldownRow.prototype.canDecorate = function(node) {
 /**
  * Child drilldowns are rendered when needed.
  *
- * @param {goog.ui.DrilldownRow} child New child to be added.
+ * @param {goog.ui.Component} child New DrilldownRow child to be added.
  * @param {number} index position to be occupied by the child.
  * @param {boolean=} opt_render true to force immediate rendering.
+ * @override
  */
 goog.ui.DrilldownRow.prototype.addChildAt = function(child, index, opt_render) {
   goog.ui.DrilldownRow.superClass_.addChildAt.call(this, child, index, false);
@@ -231,6 +234,7 @@ goog.ui.DrilldownRow.prototype.disposeInternal = function() {
  * way so this method does not use any arguments.  This does not call
  * the base class method and does not modify any of this
  * DrilldownRow's children.
+ * @override
  */
 goog.ui.DrilldownRow.prototype.render = function() {
   if (arguments.length) {

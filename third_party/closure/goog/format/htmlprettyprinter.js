@@ -400,6 +400,7 @@ goog.format.HtmlPrettyPrinter.Buffer.prototype.lineBreak = function() {
 
 /**
  * @return {string} String representation of tokens.
+ * @override
  */
 goog.format.HtmlPrettyPrinter.Buffer.prototype.toString = function() {
   return this.out_.toString();

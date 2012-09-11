@@ -31,6 +31,7 @@
  *     trigger in emulation mode if text was modified by context menu commands
  *     such as 'Undo' and 'Delete'.
  * </ul>
+ * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/inputhandler.html
  */
 
@@ -152,7 +153,7 @@ goog.events.InputHandler.prototype.handleEvent = function(e) {
     this.timer_ = goog.Timer.callOnce(function() {
       this.timer_ = null;
       if (this.element_.value != valueBeforeKey) {
-        this.dispatchAndDisposeEvent_(inputEvent);
+        this.dispatchEvent(inputEvent);
       }
     }, 0, this);
   } else {
@@ -162,7 +163,7 @@ goog.events.InputHandler.prototype.handleEvent = function(e) {
     // to suppress bogus notification.
     if (!goog.userAgent.OPERA || this.element_ ==
         goog.dom.getOwnerDocument(this.element_).activeElement) {
-      this.dispatchAndDisposeEvent_(this.createInputEvent_(e));
+      this.dispatchEvent(this.createInputEvent_(e));
     }
   }
 };
@@ -190,20 +191,6 @@ goog.events.InputHandler.prototype.createInputEvent_ = function(be) {
   var e = new goog.events.BrowserEvent(be.getBrowserEvent());
   e.type = goog.events.InputHandler.EventType.INPUT;
   return e;
-};
-
-
-/**
- * Dispatches and disposes an event.
- * @param {goog.events.BrowserEvent} event Event to dispatch.
- * @private
- */
-goog.events.InputHandler.prototype.dispatchAndDisposeEvent_ = function(event) {
-  try {
-    this.dispatchEvent(event);
-  } finally {
-    event.dispose();
-  }
 };
 
 

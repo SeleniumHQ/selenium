@@ -126,6 +126,7 @@ goog.addSingletonGetter(goog.ui.media.Youtube);
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @return {goog.ui.media.Media} A Control binded to the youtube renderer.
+ * @suppress {visibility} Calling protected control.setStateInternal().
  */
 goog.ui.media.Youtube.newControl = function(youtubeModel, opt_domHelper) {
   var control = new goog.ui.media.Media(
@@ -151,11 +152,13 @@ goog.ui.media.Youtube.CSS_CLASS = goog.getCssName('goog-ui-media-youtube');
  * on the thumbnail), which means we have to embed the youtube flash video and
  * play it.
  *
- * @param {goog.ui.media.Media} control The media control.
+ * @param {goog.ui.Control} c The media control.
  * @param {goog.ui.Component.State} state The state to be set or cleared.
  * @param {boolean} enable Whether the state is enabled or disabled.
+ * @override
  */
-goog.ui.media.Youtube.prototype.setState = function(control, state, enable) {
+goog.ui.media.Youtube.prototype.setState = function(c, state, enable) {
+  var control = /** @type {goog.ui.media.Media} */ (c);
   goog.ui.media.Youtube.superClass_.setState.call(this, control, state, enable);
 
   // control.createDom has to be called before any state is set.
@@ -189,6 +192,7 @@ goog.ui.media.Youtube.prototype.setState = function(control, state, enable) {
  * rendered using this renderer.
  *
  * @return {string} Renderer-specific CSS class.
+ * @override
  */
 goog.ui.media.Youtube.prototype.getCssClass = function() {
   return goog.ui.media.Youtube.CSS_CLASS;

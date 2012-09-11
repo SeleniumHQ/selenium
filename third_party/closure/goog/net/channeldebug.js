@@ -54,6 +54,15 @@ goog.net.ChannelDebug.prototype.getLogger = function() {
 
 
 /**
+ * Logs that the browser went offline during the lifetime of a request.
+ * @param {goog.Uri} url The URL being requested.
+ */
+goog.net.ChannelDebug.prototype.browserOfflineResponse = function(url) {
+  this.info('BROWSER_OFFLINE: ' + url);
+};
+
+
+/**
  * Logs an XmlHttp request..
  * @param {string} verb The request type (GET/POST).
  * @param {goog.Uri} uri The request destination.

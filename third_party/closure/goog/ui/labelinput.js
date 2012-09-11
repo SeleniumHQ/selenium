@@ -32,6 +32,7 @@
  * users encounter trouble because the label is deleted upon focus. For now we
  * set the "aria-label" attribute.
  *
+ * @author arv@google.com (Erik Arvidsson)
  * @see ../demos/labelinput.html
  */
 
@@ -104,6 +105,7 @@ goog.ui.LabelInput.prototype.hasFocus_ = false;
 
 /**
  * Creates the DOM nodes needed for the label input.
+ * @override
  */
 goog.ui.LabelInput.prototype.createDom = function() {
   this.setElementInternal(
@@ -115,7 +117,8 @@ goog.ui.LabelInput.prototype.createDom = function() {
  * Decorates an existing HTML input element as a label input. If the element
  * has a "label" attribute then that will be used as the label property for the
  * label input object.
- * @param {HTMLInputElement} element The HTML input element to decorate.
+ * @param {Element} element The HTML input element to decorate.
+ * @override
  */
 goog.ui.LabelInput.prototype.decorateInternal = function(element) {
   goog.ui.LabelInput.superClass_.decorateInternal.call(this, element);
@@ -140,9 +143,7 @@ goog.ui.LabelInput.prototype.decorateInternal = function(element) {
 };
 
 
-/**
- * Called when the DOM for the component is for sure in the document.
- */
+/** @override */
 goog.ui.LabelInput.prototype.enterDocument = function() {
   goog.ui.LabelInput.superClass_.enterDocument.call(this);
   this.attachEvents_();
@@ -154,10 +155,7 @@ goog.ui.LabelInput.prototype.enterDocument = function() {
 };
 
 
-/**
- * Called when the DOM for the component is removed from the document or
- * when the component no longer is managing the DOM.
- */
+/** @override */
 goog.ui.LabelInput.prototype.exitDocument = function() {
   goog.ui.LabelInput.superClass_.exitDocument.call(this);
   this.detachEvents_();

@@ -15,6 +15,7 @@
 /**
  * @fileoverview Shared unit tests for scrollbar measurement
  *
+ * @author flan@google.com (Ian Flanigan)
  */
 
 goog.provide('goog.style_test');

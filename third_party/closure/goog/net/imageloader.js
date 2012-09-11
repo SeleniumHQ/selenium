@@ -16,10 +16,14 @@
  * @fileoverview Image loader utility class.  Useful when an application needs
  * to preload multiple images, for example so they can be sized.
  *
+ * @author attila@google.com (Attila Bodis)
+ * @author zachlloyd@google.com (Zachary Lloyd)
+ * @author jonemerson@google.com (Jon Emerson)
  */
 
 goog.provide('goog.net.ImageLoader');
 
+goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
@@ -35,6 +39,23 @@ goog.require('goog.userAgent');
  * event for each image loaded, with an {@link Image} object as the target of
  * the event, normalized to have {@code naturalHeight} and {@code naturalWidth}
  * attributes.
+ *
+ * To use this class, run:
+ *
+ * <pre>
+ *   var imageLoader = new goog.net.ImageLoader();
+ *   goog.events.listen(imageLoader, goog.net.EventType.COMPLETE,
+ *       function(e) { ... });
+ *   imageLoader.addImage("image_id", "http://path/to/image.gif");
+ *   imageLoader.start();
+ * </pre>
+ *
+ * The start() method must be called to start image loading.  Images can be
+ * added and removed after loading has started, but only those images added
+ * before start() was called will be loaded until start() is called again.
+ * A goog.net.EventType.COMPLETE event will be dispatched only once all
+ * outstanding images have completed uploading.
+ *
  * @param {Element=} opt_parent An optional parent element whose document object
  *     should be used to load images.
  * @constructor
@@ -42,38 +63,61 @@ goog.require('goog.userAgent');
  */
 goog.net.ImageLoader = function(opt_parent) {
   goog.events.EventTarget.call(this);
-  this.images_ = {};
+
+  /**
+   * Map of image IDs to their image src, used to keep track of the images to
+   * load.  Once images have started loading, they're removed from this map.
+   * @type {!Object.<string, string>}
+   * @private
+   */
+  this.imageIdToUrlMap_ = {};
+
+  /**
+   * Map of image IDs to their image element, used only for images that are in
+   * the process of loading.  Used to clean-up event listeners and to know
+   * when we've completed loading images.
+   * @type {!Object.<string, !Element>}
+   * @private
+   */
+  this.imageIdToImageMap_ = {};
+
+  /**
+   * Event handler object, used to keep track of onload and onreadystatechange
+   * listeners.
+   * @type {!goog.events.EventHandler}
+   * @private
+   */
   this.handler_ = new goog.events.EventHandler(this);
+
+  /**
+   * The parent element whose document object will be used to load images.
+   * Useful if you want to load the images from a window other than the current
+   * window in order to control the Referer header sent when the image is
+   * loaded.
+   * @type {Element|undefined}
+   * @private
+   */
   this.parent_ = opt_parent;
 };
 goog.inherits(goog.net.ImageLoader, goog.events.EventTarget);
 
 
 /**
- * Map of image IDs to images src, used to keep track of the images to load.
- * @private
- * @type {Object.<string, string>}
- */
-goog.net.ImageLoader.prototype.images_;
-
-
-/**
- * Event handler object, used to keep track of onload and onreadystatechange
- * listeners.
- * @private
- * @type {goog.events.EventHandler}
- */
-goog.net.ImageLoader.prototype.handler_;
-
-
-/**
- * The parent element whose document object will be used to load images.
- * Useful if you want to load the images from a window other than the current
- * window in order to control the Referer header sent when the image is loaded.
- * @type {(Element|undefined)}
+ * An array of event types to listen to on images.  This is browser dependent.
+ * Internet Explorer doesn't reliably raise LOAD events on images, so we must
+ * use READY_STATE_CHANGE.  If the image is cached locally, IE won't fire the
+ * LOAD event while the onreadystate event is fired always.  On the other hand,
+ * the ERROR event is always fired whenever the image is not loaded successfully
+ * no matter whether it's cached or not.
+ * @type {!Array.<string>}
  * @private
  */
-goog.net.ImageLoader.prototype.parent_;
+goog.net.ImageLoader.IMAGE_LOAD_EVENTS_ = [
+  goog.userAgent.IE ? goog.net.EventType.READY_STATE_CHANGE :
+      goog.events.EventType.LOAD,
+  goog.net.EventType.ABORT,
+  goog.net.EventType.ERROR
+];
 
 
 /**
@@ -90,17 +134,34 @@ goog.net.ImageLoader.prototype.addImage = function(id, image) {
   var src = goog.isString(image) ? image : image.src;
   if (src) {
     // For now, we just store the source URL for the image.
-    this.images_[id] = src;
+    this.imageIdToUrlMap_[id] = src;
   }
 };
 
 
 /**
  * Removes the image associated with the given ID string from the image loader.
+ * If the image was previously loading, removes any listeners for its events
+ * and dispatches a COMPLETE event if all remaining images have now completed.
  * @param {string} id The ID of the image to remove.
  */
 goog.net.ImageLoader.prototype.removeImage = function(id) {
-  goog.object.remove(this.images_, id);
+  delete this.imageIdToUrlMap_[id];
+
+  var image = this.imageIdToImageMap_[id];
+  if (image) {
+    delete this.imageIdToImageMap_[id];
+
+    // Stop listening for events on the image.
+    this.handler_.unlisten(image, goog.net.ImageLoader.IMAGE_LOAD_EVENTS_,
+        this.onNetworkEvent_);
+
+    // If this was the last image, raise a COMPLETE event.
+    if (goog.object.isEmpty(this.imageIdToImageMap_) &&
+        goog.object.isEmpty(this.imageIdToUrlMap_)) {
+      this.dispatchEvent(goog.net.EventType.COMPLETE);
+    }
+  }
 };
 
 
@@ -110,18 +171,36 @@ goog.net.ImageLoader.prototype.removeImage = function(id) {
  * images have finished loading.
  */
 goog.net.ImageLoader.prototype.start = function() {
-  goog.object.forEach(this.images_, this.loadImage_, this);
+  // Iterate over the keys, rather than the full object, to essentially clone
+  // the initial queued images in case any event handlers decide to add more
+  // images before this loop has finished executing.
+  var imageIdToUrlMap = this.imageIdToUrlMap_;
+  goog.array.forEach(goog.object.getKeys(imageIdToUrlMap),
+      function(id) {
+        var src = imageIdToUrlMap[id];
+        if (src) {
+          delete imageIdToUrlMap[id];
+          this.loadImage_(src, id);
+        }
+      }, this);
 };
 
 
 /**
  * Creates an {@code Image} object with the specified ID and source URL, and
  * listens for network events raised as the image is loaded.
- * @private
  * @param {string} src The image source URL.
  * @param {string} id The unique ID of the image to load.
+ * @private
  */
 goog.net.ImageLoader.prototype.loadImage_ = function(src, id) {
+  if (this.isDisposed()) {
+    // When loading an image in IE7 (and maybe IE8), the error handler
+    // may fire before we yield JS control. If the error handler
+    // dispose the ImageLoader, this method will throw exception.
+    return;
+  }
+
   var image;
   if (this.parent_) {
     var dom = goog.dom.getDomHelper(this.parent_);
@@ -130,18 +209,9 @@ goog.net.ImageLoader.prototype.loadImage_ = function(src, id) {
     image = new Image();
   }
 
-  // Internet Explorer doesn't reliably raise LOAD events on images, so we must
-  // use READY_STATE_CHANGE (thanks, Jeff!).
-  // If the image is cached locally, IE won't fire the LOAD event while the
-  // onreadystate event is fired always. On the other hand, the ERROR event
-  // is always fired whenever the image is not loaded successfully no matter
-  // whether it's cached or not.
-
-  var loadEvent = goog.userAgent.IE ? goog.net.EventType.READY_STATE_CHANGE :
-      goog.events.EventType.LOAD;
-  this.handler_.listen(image, [
-    loadEvent, goog.net.EventType.ABORT, goog.net.EventType.ERROR
-  ], this.onNetworkEvent_);
+  this.handler_.listen(image, goog.net.ImageLoader.IMAGE_LOAD_EVENTS_,
+      this.onNetworkEvent_);
+  this.imageIdToImageMap_[id] = image;
 
   image.id = id;
   image.src = src;
@@ -150,18 +220,18 @@ goog.net.ImageLoader.prototype.loadImage_ = function(src, id) {
 
 /**
  * Handles net events (READY_STATE_CHANGE, LOAD, ABORT, and ERROR).
- * @private
  * @param {goog.events.Event} evt The network event to handle.
+ * @private
  */
 goog.net.ImageLoader.prototype.onNetworkEvent_ = function(evt) {
-  var image = evt.currentTarget;
+  var image = /** @type {Element} */ (evt.currentTarget);
 
   if (!image) {
     return;
   }
 
   if (evt.type == goog.net.EventType.READY_STATE_CHANGE) {
-    // This implies that the user agent is IE; see loadImage()_.
+    // This implies that the user agent is IE; see loadImage_().
     // Noe that this block is used to check whether the image is ready to
     // dispatch the COMPLETE event.
     if (image.readyState == goog.net.EventType.COMPLETE) {
@@ -208,28 +278,15 @@ goog.net.ImageLoader.prototype.onNetworkEvent_ = function(evt) {
     return;
   }
 
-  // Remove the image from the map.
-  goog.object.remove(this.images_, image.id);
-
-  // If this was the last image, raise a COMPLETE event.
-  if (goog.object.isEmpty(this.images_)) {
-    this.dispatchEvent(goog.net.EventType.COMPLETE);
-    // Unlisten for all network events.
-    if (this.handler_) {
-      this.handler_.removeAll();
-    }
-  }
+  this.removeImage(image.id);
 };
 
 
 /** @override */
 goog.net.ImageLoader.prototype.disposeInternal = function() {
-  if (this.images_) {
-    delete this.images_;
-  }
-  if (this.handler_) {
-    this.handler_.dispose();
-    this.handler_ = null;
-  }
+  delete this.imageIdToUrlMap_;
+  delete this.imageIdToImageMap_;
+  goog.dispose(this.handler_);
+
   goog.net.ImageLoader.superClass_.disposeInternal.call(this);
 };

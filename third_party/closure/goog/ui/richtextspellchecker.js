@@ -15,6 +15,8 @@
 /**
  * @fileoverview Rich text spell checker implementation.
  *
+ * @author eae@google.com (Emil A Eklund)
+ * @author sergeys@google.com (Sergey Solyanik)
  * @see ../demos/richtextspellchecker.html
  */
 
@@ -116,9 +118,9 @@ goog.ui.RichTextSpellChecker.prototype.editorDom_;
  * Tag name porition of the marker for the text that does not need to be checked
  * for spelling.
  *
- * @type {string|undefined}
+ * @type {Array.<string|undefined>}
  */
-goog.ui.RichTextSpellChecker.prototype.excludeTag;
+goog.ui.RichTextSpellChecker.prototype.excludeTags;
 
 
 /**
@@ -136,6 +138,7 @@ goog.ui.RichTextSpellChecker.prototype.invalidWordCssText =
  *
  * @throws {Error} Not supported. Use decorate.
  * @see #decorate
+ * @override
  */
 goog.ui.RichTextSpellChecker.prototype.createDom = function() {
   throw Error('Render not supported for goog.ui.RichTextSpellChecker.');
@@ -146,6 +149,7 @@ goog.ui.RichTextSpellChecker.prototype.createDom = function() {
  * Decorates the element for the UI component.
  *
  * @param {Element} element Element to decorate.
+ * @override
  */
 goog.ui.RichTextSpellChecker.prototype.decorateInternal = function(element) {
   this.setElementInternal(element);
@@ -160,9 +164,7 @@ goog.ui.RichTextSpellChecker.prototype.decorateInternal = function(element) {
 };
 
 
-/**
- * Called when the component's element is known to be in the document.
- */
+/** @override */
 goog.ui.RichTextSpellChecker.prototype.enterDocument = function() {
   goog.ui.RichTextSpellChecker.superClass_.enterDocument.call(this);
   this.initSuggestionsMenu();
@@ -171,6 +173,7 @@ goog.ui.RichTextSpellChecker.prototype.enterDocument = function() {
 
 /**
  * Checks spelling for all text and displays correction UI.
+ * @override
  */
 goog.ui.RichTextSpellChecker.prototype.check = function() {
   this.blockReadyEvents();
@@ -226,7 +229,7 @@ goog.ui.RichTextSpellChecker.prototype.onDictionaryCharged_ = function(e) {
                        this.onDictionaryCharged_, true, this);
 
   // Now actually do the spell checking.
-  this.wordElements_ = {};
+  this.clearWordElements();
   this.initializeAsyncMode();
   this.elementsInserted_ = 0;
   var result = this.processNode_(this.rootNode_);
@@ -267,7 +270,7 @@ goog.ui.RichTextSpellChecker.prototype.finishCheck_ = function() {
   delete this.currentNode_;
   this.handler_.processPending();
 
-  if (!this.isVisible_) {
+  if (!this.isVisible()) {
     goog.events.listen(this.rootNode_, goog.events.EventType.CLICK,
                        this.onWordClick_, false, this);
   }
@@ -309,9 +312,24 @@ goog.ui.RichTextSpellChecker.prototype.isTextLeaf_ = function(node) {
 
 /** @override */
 goog.ui.RichTextSpellChecker.prototype.setExcludeMarker = function(marker) {
-  var parts = marker.split('.');
-  this.excludeTag = parts[0] || undefined;
-  this.excludeMarker = parts[1] || undefined;
+  if (marker) {
+    if (typeof marker == 'string') {
+      marker = [marker];
+    }
+
+    this.excludeTags = [];
+    this.excludeMarker = [];
+    for (var i = 0; i < marker.length; i++) {
+      var parts = marker[i].split('.');
+      if (parts.length == 2) {
+        this.excludeTags.push(parts[0]);
+        this.excludeMarker.push(parts[1]);
+      } else {
+        this.excludeMarker.push(parts[0]);
+        this.excludeTags.push(undefined);
+      }
+    }
+  }
 };
 
 
@@ -323,9 +341,19 @@ goog.ui.RichTextSpellChecker.prototype.setExcludeMarker = function(marker) {
  * @private
  */
 goog.ui.RichTextSpellChecker.prototype.isExcluded_ = function(node) {
-  return !!(this.excludeMarker && node.className &&
-      node.className.indexOf(this.excludeMarker) != -1 &&
-      (!this.excludeTag || node.tagName == this.excludeTag));
+  if (this.excludeMarker && node.className) {
+    for (var i = 0; i < this.excludeMarker.length; i++) {
+      var excludeTag = this.excludeTags[i];
+      var excludeClass = this.excludeMarker[i];
+      var isExcluded = !!(excludeClass &&
+          node.className.indexOf(excludeClass) != -1 &&
+          (!excludeTag || node.tagName == excludeTag));
+      if (isExcluded) {
+        return true;
+      }
+    }
+  }
+  return false;
 };
 
 
@@ -411,6 +439,7 @@ goog.ui.RichTextSpellChecker.prototype.processNode_ = function(node) {
  * @param {string} word Word to process.
  * @param {goog.spell.SpellCheck.WordStatus} status Status of the word.
  * @protected
+ * @override
  */
 goog.ui.RichTextSpellChecker.prototype.processWord = function(node, word,
                                                               status) {
@@ -425,6 +454,7 @@ goog.ui.RichTextSpellChecker.prototype.processWord = function(node, word,
  * @param {Node} node Node containing separator.
  * @param {string} text Text to process.
  * @protected
+ * @override
  */
 goog.ui.RichTextSpellChecker.prototype.processRange = function(node, text) {
   // The text does not change, it only gets split, so if the lengths are the
@@ -440,12 +470,8 @@ goog.ui.RichTextSpellChecker.prototype.processRange = function(node, text) {
 
 
 /**
- * Creates an element for a specified word and stores a reference to it.
- *
- * @param {string} word Word to create element for.
- * @param {goog.spell.SpellCheck.WordStatus} status Status of the word.
- * @return {HTMLSpanElement} The created element.
- * @private
+ * @override
+ * @suppress {accessControls}
  */
 goog.ui.RichTextSpellChecker.prototype.createWordElement_ = function(word,
                                                                      status) {
@@ -468,6 +494,7 @@ goog.ui.RichTextSpellChecker.prototype.createWordElement_ = function(word,
  * @param {string} word Word to update status for.
  * @param {goog.spell.SpellCheck.WordStatus} status Status of word.
  * @protected
+ * @override
  */
 goog.ui.RichTextSpellChecker.prototype.updateElement = function(el, word,
     status) {
@@ -482,6 +509,7 @@ goog.ui.RichTextSpellChecker.prototype.updateElement = function(el, word,
 
 /**
  * Hides correction UI.
+ * @override
  */
 goog.ui.RichTextSpellChecker.prototype.resume = function() {
   goog.ui.RichTextSpellChecker.superClass_.resume.call(this);
@@ -489,7 +517,7 @@ goog.ui.RichTextSpellChecker.prototype.resume = function() {
   this.restoreNode_(this.rootNode_);
 
   goog.events.unlisten(this.rootNode_, goog.events.EventType.CLICK,
-                     this.onWordClick_, false, this);
+                       this.onWordClick_, false, this);
 };
 
 
@@ -561,6 +589,7 @@ goog.ui.RichTextSpellChecker.prototype.restoreNode_ = function(node) {
  * @param {goog.spell.SpellCheck.WordStatus} status Status of the word.
  * @return {Object} Properties to apply to word element.
  * @protected
+ * @override
  */
 goog.ui.RichTextSpellChecker.prototype.getElementProperties =
     function(status) {

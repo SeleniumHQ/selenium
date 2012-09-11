@@ -134,6 +134,7 @@ goog.dom.browserrange.W3cRange.createFromNodes = function(startNode,
 
 /**
  * @return {goog.dom.browserrange.W3cRange} A clone of this range.
+ * @override
  */
 goog.dom.browserrange.W3cRange.prototype.clone = function() {
   return new this.constructor(this.range_.cloneRange());

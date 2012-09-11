@@ -15,6 +15,7 @@
 
 /**
  * @fileoverview Represents a gradient to be used with a Graphics implementor.
+ * @author arv@google.com (Erik Arvidsson)
  */
 
 

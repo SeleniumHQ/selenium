@@ -103,7 +103,17 @@ goog.editor.icontent.getInitialIframeContent_ =
   }
 
   // <HTML>
-  html.push('<html style="background:none transparent;');
+  // NOTE(user): Override min-widths that may be set for all
+  // HTML/BODY nodes. A similar workaround is below for the <body> tag. This
+  // can happen if the host page includes a rule like this in its CSS:
+  //
+  // html, body {min-width: 500px}
+  //
+  // In this case, the iframe's <html> and/or <body> may be affected. This was
+  // part of the problem observed in http://b/5674613. (The other part of that
+  // problem had to do with the presence of a spurious horizontal scrollbar,
+  // which caused the editor height to be computed incorrectly.)
+  html.push('<html style="background:none transparent;min-width:0;');
 
   // Make sure that the HTML element's height has the
   // correct value as the body element's percentage height is made relative
@@ -152,7 +162,7 @@ goog.editor.icontent.getInitialIframeContent_ =
   // TODO: put the field's original ID on the body and stop using ID as a
   // way of getting the pointer to the field in the iframe now that it's
   // always the body.
-  html.push('" id="', info.fieldId_, '" style="');
+  html.push('" id="', info.fieldId_, '" style="min-width:0;');
 
   if (goog.userAgent.GECKO && info.blended_) {
     // IMPORTANT: Apply the css from the body then all of the clearing
