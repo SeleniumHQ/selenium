@@ -19,6 +19,13 @@
     var findElement = bot.locators.findElement;
     var expectedFailures;
 
+    function shouldRunTests() {
+      if (goog.userAgent.product.ANDROID) {
+        // Disabling tests for Android jellybean
+        return !bot.userAgent.isProductVersion(4.1);
+      }
+    }
+
     function setUp() {
       goog.events.removeAll();
       window.scrollTo(0, 0);
