@@ -17,8 +17,8 @@
     // WebDriver does not enable database on Android ICS (b/6373564).
     var DATABASE_NOT_WORKING =
         !bot.html5.isSupported(bot.html5.API.DATABASE) ||
-         (goog.userAgent.product.ANDROID && bot.userAgent.isProductVersion(4) &&
-             !bot.userAgent.isProductVersion(5));
+        (goog.userAgent.product.ANDROID && bot.userAgent.isProductVersion(4) &&
+            !bot.userAgent.isProductVersion(5));
 
     /**
      * Initial function to create the database. I use the top-level window
