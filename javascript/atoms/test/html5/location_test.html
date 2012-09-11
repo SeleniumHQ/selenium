@@ -6,8 +6,8 @@
   <script type="text/javascript">
     goog.require('bot');
     goog.require('bot.geolocation');
-    goog.require('bot.test');
     goog.require('bot.html5');
+    goog.require('bot.test');
     goog.require('bot.userAgent');
     goog.require('goog.testing.AsyncTestCase');
     goog.require('goog.testing.jsunit');
@@ -19,7 +19,6 @@
     var asyncTestCase = null;
 
     // WebDriver does not enable geolocation for Android (b/5787618).
-    // WebDriver does not enable geolocation for Chrome (b/5416356).
     // WebDriver does not enable geolocation for Firefox (b/5787180).
     // WebDriver does not enable geolocation for Opera 11.5 (b/5746540).
     // WebDriver does not enable geolocation for IE 9 (b/5817463).
@@ -27,7 +26,6 @@
     var GEOLOCATION_NOT_WORKING =
       !bot.html5.isSupported(bot.html5.API.GEOLOCATION) ||
       goog.userAgent.product.ANDROID ||
-      goog.userAgent.product.CHROME ||
       goog.userAgent.product.FIREFOX ||
       bot.userAgent.IE_DOC_9 ||
       (goog.userAgent.OPERA && (bot.test.isSeleniumBacked() ||
@@ -51,8 +49,20 @@
       }
 
       function onError(error) {
+        switch (error.code) {
+          case error.POSITION_UNAVAILABLE:
+            // Some test machines run on a private ip address range where
+            // location is not be available, so do not consider this case as an
+            // error.
+            break;
+          case error.PERMISSION_DENIED:
+            fail('User denied the request for Geolocation.');
+          case error.TIMEOUT:
+            fail('When enabled, location should be known within 10s');
+          default:
+            fail('An unknown error occurred. ' + error.message);
+        }
         asyncTestCase.continueTesting();
-        fail('When enabled, location should be known within 10s');
       }
 
       try {
