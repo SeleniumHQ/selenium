@@ -59,6 +59,7 @@ static const NSString* kGeoAltitudeKey = @"altitude";
   }
   
   lastJSResult_ = nil;
+  screenshot_ = nil;
 		
   // Creating a new session if auto-create is enabled
   if ([[RootViewController sharedInstance] isAutoCreateSession]) {
@@ -98,6 +99,7 @@ static const NSString* kGeoAltitudeKey = @"altitude";
 - (void)dealloc {
   [[self webView] setDelegate:nil];
   [lastJSResult_ release];
+  [screenshot_ release];
   [super dealloc];
 }
 
@@ -473,18 +475,8 @@ static const NSString* kGeoAltitudeKey = @"altitude";
 
 // Takes a screenshot.
 - (UIImage *)screenshot {
-  UIGraphicsBeginImageContext([[self webView] bounds].size);
-  [[self webView].layer renderInContext:UIGraphicsGetCurrentContext()];
-  UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
-  UIGraphicsEndImageContext();
-  
-  // dump the screenshot into a file for debugging
-  //NSString *path = [[[NSSearchPathForDirectoriesInDomains
-  //   (NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
-  //  stringByAppendingPathComponent:@"screenshot.png"] retain];
-  //[UIImagePNGRepresentation(viewImage) writeToFile:path atomically:YES];
-  
-  return viewImage;
+    [self performSelectorOnMainThread:@selector(getFullPageScreenShot) withObject:nil waitUntilDone:YES];
+    return screenshot_;
 }
 
 - (NSString *)URL {
@@ -567,6 +559,40 @@ static const NSString* kGeoAltitudeKey = @"altitude";
   [locStorage setCoordinate:[longitude doubleValue]
                    latitude:[latitude doubleValue]];
   [locStorage setAltitude:[altitude doubleValue]];
+}
+
+// get the full page screenshot.
+- (void)getFullPageScreenShot {
+    // stop the webview
+    [self.webView setDelegate:nil];
+    [self.webView stopLoading];
+    
+    // keep the original window size.
+    CGRect oriFrame = self.webView.frame;
+    CGRect oriBounds = self.webView.bounds;
+    
+    // get the page render actual size
+    CGRect tmpFrame = self.webView.frame;
+    tmpFrame.size.height = 1;
+    self.webView.frame = tmpFrame;
+    CGSize fittingSize = [self.webView sizeThatFits:CGSizeZero];
+    tmpFrame.size = fittingSize;
+    self.webView.frame = tmpFrame;
+    
+    // render the page and take the screenshot
+    UIGraphicsBeginImageContext(fittingSize);
+    CGContextRef resizedContext = UIGraphicsGetCurrentContext();
+    [[self webView].layer renderInContext:resizedContext];
+    UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    //reset webview back to original size.
+    self.webView.bounds = oriBounds;
+    self.webView.frame = oriFrame;
+    
+    // retain the screenshot for webdriver
+    [screenshot_ release];
+    screenshot_ = [viewImage retain];
 }
 
 // Finds out if browser connection is alive

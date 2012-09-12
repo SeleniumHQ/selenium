@@ -28,6 +28,9 @@
   int numPendingPageLoads_;
 
   NSString *lastJSResult_;
+    
+    // Get a screenshot of the page we've loaded
+  UIImage *screenshot_;
  
   NSURLRequestCachePolicy cachePolicy_;
   
@@ -89,6 +92,9 @@
 
 // Set geolocation
 - (void)setLocation:(NSDictionary *)dict;
+
+// get ss
+- (void)getFullPageScreenShot;
 
 // Check if browser connection is alive
 - (NSNumber *)isBrowserOnline;
