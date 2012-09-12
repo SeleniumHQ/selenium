@@ -25,6 +25,9 @@ import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactoryUnitTes
 import org.openqa.selenium.server.browserlaunchers.FirefoxChromeLauncherUnitTest;
 import org.openqa.selenium.server.browserlaunchers.MakeProxyPacUnitTest;
 import org.openqa.selenium.server.htmlrunner.HTMLSuiteResultUnitTest;
+import org.openqa.selenium.server.log.DefaultPerSessionLogHandlerUnitTest;
+import org.openqa.selenium.server.log.LoggingManagerUnitTest;
+import org.openqa.selenium.server.log.ShortTermMemoryHandlerUnitTest;
 import org.openqa.selenium.server.mock.MockPIFrameUnitTest;
 
 @RunWith(Suite.class)
@@ -39,16 +42,19 @@ import org.openqa.selenium.server.mock.MockPIFrameUnitTest;
     CommandQueueUnitTest.class,
     CommandResultHolderUnitTest.class,
     DefaultRemoteCommandUnitTest.class,
+    DefaultPerSessionLogHandlerUnitTest.class,
     FirefoxChromeLauncherUnitTest.class,
     FrameGroupCommandQueueUnitTest.class,
     FsResourceLocatorUnitTest.class,
     HTMLSuiteResultUnitTest.class,
+    LoggingManagerUnitTest.class,
     MakeProxyPacUnitTest.class,
     MockPIFrameUnitTest.class,
     ProxyHandlerUnitTest.class,
     RemoteControlConfigurationUnitTest.class,
     SeleniumDriverResourceHandlerUnitTest.class,
     SeleniumServerUnitTest.class,
+    ShortTermMemoryHandlerUnitTest.class,
     SingleEntryAsyncQueueUnitTest.class,
     StaticContentHandlerUnitTest.class
 })

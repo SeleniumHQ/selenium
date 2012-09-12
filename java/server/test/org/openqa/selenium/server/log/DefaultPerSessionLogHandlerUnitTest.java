@@ -18,7 +18,11 @@ limitations under the License.
 
 package org.openqa.selenium.server.log;
 
+import static org.junit.Assert.assertEquals;
+
 import junit.framework.TestCase;
+
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.logging.Formatter;
@@ -28,10 +32,11 @@ import java.util.logging.LogRecord;
 /**
  * {@link org.openqa.selenium.server.log.PerSessionLogHandler} unit test class.
  */
-public class DefaultPerSessionLogHandlerUnitTest extends TestCase {
+public class DefaultPerSessionLogHandlerUnitTest {
 
   private static final int CAPACITY = 1;
 
+  @Test
   public void testThreadToSessionMappingOnInitialNullSession()
       throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
@@ -46,6 +51,7 @@ public class DefaultPerSessionLogHandlerUnitTest extends TestCase {
                                      "First Log Record", "Second Log Record");
   }
 
+  @Test
   public void testThreadToSessionMappingOnTwoInitialNullSessions()
       throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
@@ -71,6 +77,7 @@ public class DefaultPerSessionLogHandlerUnitTest extends TestCase {
                                      "Another Log Record", "One More Log Record");
   }
 
+  @Test
   public void testThreadToSessionMappingAndClearMapping() throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
     LogRecord firstSessionLog = new LogRecord(Level.INFO,
@@ -94,6 +101,7 @@ public class DefaultPerSessionLogHandlerUnitTest extends TestCase {
                                      "Second Session Related Log Record");
   }
 
+  @Test
   public void testShouldReturnEmptyLogIfNoRecordHasBeenLogged()
       throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
@@ -101,6 +109,7 @@ public class DefaultPerSessionLogHandlerUnitTest extends TestCase {
     assertNoMessageLoggedForSessionId(handler, "session");
   }
 
+  @Test
   public void testShouldNotCopyThreadTempLogsToSessionLogsIfNoLogRecordForThreadPresent()
       throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
