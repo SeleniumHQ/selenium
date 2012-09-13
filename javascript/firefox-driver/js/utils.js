@@ -251,16 +251,16 @@ Utils.useNativeEvents = function() {
 Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseModifiers,
     opt_keysState) {
 
+  // For consistency between native and synthesized events, convert common
+  // escape sequences to their Key enum aliases.
+  text = text.replace(/[\b]/g, '\uE003').   // DOM_VK_BACK_SPACE
+      replace(/\t/g, '\uE004').                           // DOM_VK_TAB
+      replace(/(\r\n|\n|\r)/g, '\uE006');                 // DOM_VK_RETURN
+
   var obj = Utils.getNativeKeyboard();
   var node = Utils.getNodeForNativeEvents(element);
   var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
   var isUsingNativeEvents = opt_useNativeEvents && obj && node && thmgr_cls;
-
-  // For consistency between native and synthesized events, convert common
-  // escape sequences to their Key enum aliases.
-  text = text.replace(new RegExp('\b', 'g'), '\uE003').   // DOM_VK_BACK_SPACE
-      replace(/\t/g, '\uE004').                           // DOM_VK_TAB
-      replace(/(\r\n|\n|\r)/g, '\uE006');                 // DOM_VK_RETURN
 
   if (isUsingNativeEvents) {
     var pageUnloadedIndicator = Utils.getPageUnloadedIndicator(element);
