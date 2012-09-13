@@ -736,3 +736,58 @@ fxdriver.logging.getPrefNameLogIgnore_ = function(logType) {
   return 'webdriver.log.' + logType + '.ignore';
 };
 
+/**
+ * Takes an object and attempts to discover which interfaces it implements.
+ *
+ * @param {*} object The object to dump
+ */
+fxdriver.logging.dumpObject = function(element) {
+  var msg = "=============\n";
+
+  var rows = [];
+
+  msg += "Supported interfaces: ";
+  for (var i in Components.interfaces) {
+    try {
+      var view = element.QueryInterface(Components.interfaces[i]);
+      msg += i + ", ";
+    } catch (e) {
+      // Doesn't support the interface
+    }
+  }
+  msg += "\n------------\n";
+
+  try {
+    fxdriver.logging.dumpProperties_(element, rows);
+  } catch (ignored) {
+  }
+
+  rows.sort();
+  for (var j in rows) {
+    msg += rows[j] + "\n";
+  }
+
+  msg += "=============\n\n\n";
+  fxdriver.logging.info(msg);
+};
+
+/**
+ * @param {*} view The object to get the properties of
+ * @param {!Array<string>} rows The place to output results to.
+ * @private
+ */
+fxdriver.logging.dumpProperties_ = function(view, rows) {
+  for (var i in view) {
+    var value = "\t" + i + ": ";
+    try {
+      if (typeof(view[i]) == typeof(Function)) {
+        value += " function()";
+      } else {
+        value += String(view[i]);
+      }
+    } catch (e) {
+      value += " Cannot obtain value";
+    }
+    rows.push(value);
+  }
+};
