@@ -25,6 +25,7 @@ import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import org.openqa.selenium.Capabilities;
@@ -56,6 +57,7 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore
   public void testDisableJavascriptCapability() {
     try {
       configureCapability(CapabilityType.SUPPORTS_JAVASCRIPT, false);
@@ -65,6 +67,7 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore
   public void testDisableHandlesAlertsCapability() {
     try {
       configureCapability(CapabilityType.SUPPORTS_ALERTS, false);
@@ -74,6 +77,7 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore
   public void testDisableCssSelectorCapability() {
     try {
       configureCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, false);
@@ -83,6 +87,7 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore
   public void testDisableScreenshotCapability() {
     try {
       configureCapability(CapabilityType.TAKES_SCREENSHOT, false);
@@ -91,7 +96,8 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
     }
   }
 
-  @Test 
+  @Test
+  @Ignore
   public void testEnableRotatableCapability() {
     try {
       configureCapability(CapabilityType.ROTATABLE, true);
