@@ -554,6 +554,7 @@ module Javascript
             "--compilation_level=#{compilation_level(minify)} " <<
             "--define=goog.NATIVE_ARRAY_PROTOTYPES=false " <<
             "--define=bot.json.NATIVE_JSON=false " <<
+            "--jscomp_off=unknownDefines " <<
             "#{defines} " <<
             "--js='" <<
             all_deps.join("' --js='") << "'"
