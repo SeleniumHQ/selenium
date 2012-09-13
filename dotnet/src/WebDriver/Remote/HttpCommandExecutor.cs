@@ -35,6 +35,7 @@ namespace OpenQA.Selenium.Remote
         private const string RequestAcceptHeader = JsonMimeType + ", image/png";
         private Uri remoteServerUri;
         private TimeSpan serverResponseTimeout;
+        private bool enableKeepAlive;
 
         /// <summary>
         /// Initializes a new instance of the HttpCommandExecutor class
@@ -42,6 +43,18 @@ namespace OpenQA.Selenium.Remote
         /// <param name="addressOfRemoteServer">Address of the WebDriver Server</param>
         /// <param name="timeout">The timeout within which the server must respond.</param>
         public HttpCommandExecutor(Uri addressOfRemoteServer, TimeSpan timeout)
+            : this(addressOfRemoteServer, timeout, true)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the HttpCommandExecutor class
+        /// </summary>
+        /// <param name="addressOfRemoteServer">Address of the WebDriver Server</param>
+        /// <param name="timeout">The timeout within which the server must respond.</param>
+        /// <param name="enableKeepAlive"><see langword="true"/> if the KeepAlive header should be sent
+        /// with HTTP requests; otherwise, <see langword="false"/>.</param>
+        public HttpCommandExecutor(Uri addressOfRemoteServer, TimeSpan timeout, bool enableKeepAlive)
         {
             if (addressOfRemoteServer == null)
             {
@@ -55,6 +68,7 @@ namespace OpenQA.Selenium.Remote
 
             this.remoteServerUri = addressOfRemoteServer;
             this.serverResponseTimeout = timeout;
+            this.enableKeepAlive = enableKeepAlive;
 
             // In the .NET Framework, HttpWebRequest responses with an error code are limited
             // to 64k by default. Since the remote server error responses include a screenshot,
@@ -83,6 +97,7 @@ namespace OpenQA.Selenium.Remote
             HttpWebRequest request = info.CreateWebRequest(this.remoteServerUri, commandToExecute);
             request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;
             request.Accept = RequestAcceptHeader;
+            request.KeepAlive = this.enableKeepAlive;
             if (request.Method == CommandInfo.PostCommand)
             {
                 string payload = commandToExecute.ParametersAsJsonString;

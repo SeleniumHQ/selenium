@@ -40,13 +40,25 @@ namespace OpenQA.Selenium.Remote
         /// <param name="driverService">The <see cref="DriverService"/> that drives the browser.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public DriverServiceCommandExecutor(DriverService driverService, TimeSpan commandTimeout)
-            : base(GetDriverServiceUrl(driverService), commandTimeout)
+            : this(driverService, commandTimeout, true)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DriverServiceCommandExecutor"/> class.
+        /// </summary>
+        /// <param name="driverService">The <see cref="DriverService"/> that drives the browser.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        /// <param name="enableKeepAlive"><see langword="true"/> if the KeepAlive header should be sent
+        /// with HTTP requests; otherwise, <see langword="false"/>.</param>
+        public DriverServiceCommandExecutor(DriverService driverService, TimeSpan commandTimeout, bool enableKeepAlive)
+            : base(GetDriverServiceUrl(driverService), commandTimeout, enableKeepAlive)
         {
             this.service = driverService;
         }
 
         /// <summary>
-        /// Executes a command with the ChromeDriver.
+        /// Executes a command with the Driver.
         /// </summary>
         /// <param name="commandToExecute">The command you wish to execute</param>
         /// <returns>A response from the browser</returns>
