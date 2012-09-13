@@ -285,6 +285,13 @@
         assertContains('text-align: center;', style);
       }
 
+      function testGetsFloat() {
+        var rightFloated = bot.locators.findElement({id: 'right-floated'});
+        var notFloated = bot.locators.findElement({id: 'green'});
+        assertEquals('right', bot.dom.getEffectiveStyle(rightFloated, 'float'));
+        assertEquals('none', bot.dom.getEffectiveStyle(notFloated, 'float'));
+      }
+
       /**
        * Checks equivalence between two colors' respective values.  Accepts +- delta
        * for each pair of values
@@ -333,5 +340,6 @@
     <div id="rgba" style="background-color: rgba(0,128,0, 0.5);">rgba</div>
     <div id="rgbapct" style="background-color: rgba(0%,50%,0%, 0.5);">rgba</div>
     <div id="hsla" style="background-color: hsla(120,100%,25%,0.5);">hsla</div>
+    <div id="right-floated" style="float: right">Right floated</div>
   </body>
 </html>

@@ -22,16 +22,20 @@ goog.provide('bot.Device');
 
 goog.require('bot');
 goog.require('bot.dom');
+goog.require('bot.locators');
 goog.require('bot.userAgent');
+goog.require('goog.array');
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
-
 
 
 /**
  * A Device class that provides common functionality for input devices.
  * @param {bot.Device.ModifiersState=} opt_modifiersState state of modifier
  * keys. The state is shared, not copied from this parameter.
+ *
  * @constructor
  */
 bot.Device = function(opt_modifiersState) {
@@ -92,6 +96,7 @@ bot.Device.prototype.setElement = function(element) {
     this.select_ = null;
   }
 };
+
 
 /**
  * Fires an HTML event given the state of the device.
@@ -625,6 +630,7 @@ bot.Device.prototype.submitForm = function(form) {
   }
 };
 
+
 /**
  * Regular expression for splitting up a URL into components.
  * @type {!RegExp}
@@ -721,14 +727,15 @@ bot.Device.ModifiersState.prototype.isPressed = function(modifier) {
  * @param {!bot.Device.Modifier} modifier The modifier to set.
  * @param {boolean} isPressed whether the modifier is set or released.
  */
-bot.Device.ModifiersState.prototype.setPressed = function(modifier,
-                                                          isPressed) {
+bot.Device.ModifiersState.prototype.setPressed =
+    function(modifier, isPressed) {
   if (isPressed) {
     this.pressedModifiers_ = this.pressedModifiers_ | modifier;
   } else {
     this.pressedModifiers_ = this.pressedModifiers_ & (~modifier);
   }
 };
+
 
 /**
  *
@@ -738,6 +745,7 @@ bot.Device.ModifiersState.prototype.isShiftPressed = function() {
   return this.isPressed(bot.Device.Modifier.SHIFT);
 };
 
+
 /**
  *
  * @return {boolean} State of the Control key.
@@ -746,6 +754,7 @@ bot.Device.ModifiersState.prototype.isControlPressed = function() {
   return this.isPressed(bot.Device.Modifier.CONTROL);
 };
 
+
 /**
  *
  * @return {boolean} State of the Alt key.
@@ -753,6 +762,7 @@ bot.Device.ModifiersState.prototype.isControlPressed = function() {
 bot.Device.ModifiersState.prototype.isAltPressed = function() {
   return this.isPressed(bot.Device.Modifier.ALT);
 };
+
 
 /**
  *

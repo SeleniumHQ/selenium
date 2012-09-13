@@ -29,9 +29,12 @@ goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.json');
+/**
+ * @suppress {extraRequire} Used as a forward declaration which causes
+ * compilation errors if missing.
+ */
 goog.require('bot.response.ResponseObject');
 goog.require('goog.array');
-goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 
@@ -301,7 +304,8 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
   var sendError = goog.partial(sendResponse, bot.ErrorCode.UNKNOWN_ERROR);
 
   if (win.closed) {
-    return sendError('Unable to execute script; the target window is closed.');
+    sendError('Unable to execute script; the target window is closed.');
+    return;
   }
 
   fn = bot.inject.recompileFunction_(fn, win);

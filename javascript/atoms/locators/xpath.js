@@ -36,10 +36,12 @@ goog.provide('bot.locators.xpath');
 goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
 
 
 /**
@@ -99,11 +101,25 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
     return null;
   }
   try {
-    // Android 2.2 and earlier do not support createNSResolver
+    // On Android 2.2 and earlier, the evaluate function is only defined on the
+    // top-level document.
+    var docForEval;
+    if (goog.userAgent.product.ANDROID &&
+        !bot.userAgent.isProductVersion(2.3)) {
+      try {
+        docForEval = goog.dom.getWindow(doc).top.document;
+      } catch (e) {
+        // Crossed domains trying to find the evaluate function.
+        // Return null to indicate the element could not be found.
+        return null;
+      }
+    } else {
+      docForEval = doc;
+    }
     var resolver = doc.createNSResolver ?
         doc.createNSResolver(doc.documentElement) :
         bot.locators.xpath.DEFAULT_RESOLVER_;
-    return doc.evaluate(path, node, resolver, resultType, null);
+    return docForEval.evaluate(path, node, resolver, resultType, null);
   } catch (ex) {
     // The Firefox XPath evaluator can throw an exception if the document is
     // queried while it's in the midst of reloading, so we ignore it. In all

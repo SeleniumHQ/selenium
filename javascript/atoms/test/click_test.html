@@ -28,6 +28,11 @@
     var findElements = bot.locators.findElements;
     var log = goog.debug.Logger.getLogger('click_test');
 
+    var FIRST_EVENT_OF_CLICK = goog.userAgent.IE ?
+        goog.events.EventType.MOUSEMOVE : goog.events.EventType.MOUSEOVER;
+    var SECOND_EVENT_OF_CLICK = goog.userAgent.IE ?
+        goog.events.EventType.MOUSEOVER : goog.events.EventType.MOUSEMOVE;
+
     function checkActionCompatibility(action) {
       if (action == bot.action.tap) {
         return bot.events.SUPPORTS_TOUCH_EVENTS;
@@ -183,8 +188,8 @@
 
     function testShouldGenerateTheCorrectClickSequence() {
       var expectedEvents = [
-        goog.events.EventType.MOUSEOVER,
-        goog.events.EventType.MOUSEMOVE,
+        FIRST_EVENT_OF_CLICK,
+        SECOND_EVENT_OF_CLICK,
         goog.events.EventType.MOUSEDOWN,
         goog.events.EventType.MOUSEUP,
         goog.events.EventType.CLICK];
@@ -198,8 +203,8 @@
 
     function testShouldGenerateTheCorrectDoubleClickSequence() {
       var expectedEvents = [
-        goog.events.EventType.MOUSEOVER,
-        goog.events.EventType.MOUSEMOVE,
+        FIRST_EVENT_OF_CLICK,
+        SECOND_EVENT_OF_CLICK,
         goog.events.EventType.MOUSEDOWN,
         goog.events.EventType.MOUSEUP,
         goog.events.EventType.CLICK,
@@ -318,8 +323,12 @@
         goog.events.EventType.MOUSEUP,
         goog.events.EventType.CLICK];
 
-    var expectedClickEvents =
-        [goog.events.EventType.MOUSEOVER].concat(expectedTapEvents);
+    var expectedClickEvents = [
+        FIRST_EVENT_OF_CLICK,
+        SECOND_EVENT_OF_CLICK,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK];
 
     var testClickCancelledMousedownDoesNotFocus = goog.partial(
           cancelledMousedownDoesNotFocus,
@@ -353,8 +362,8 @@
 
 
     function shouldNotBeAbleToClickOnElementWithPointerEventsNone(action) {
-      if (!checkActionCompatibility(action) || goog.userAgent.IE || goog.userAgent.OPERA || 
-           (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6))) {
+      if (!checkActionCompatibility(action) || goog.userAgent.IE || goog.userAgent.OPERA ||
+          (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6))) {
         return;
       }
       var el = findElement({id: 'pointerEvents'});
@@ -363,10 +372,12 @@
     }
 
     var testClickShouldNotBeAbleToClickOnElementWithPointerEventsNone = goog.partial(
-          shouldNotBeAbleToClickOnElementWithPointerEventsNone, bot.action.click);
+        shouldNotBeAbleToClickOnElementWithPointerEventsNone, bot.action.click);
 
     var testTapShouldNotBeAbleToClickOnElementWithPointerEventsNone = goog.partial(
-          shouldNotBeAbleToClickOnElementWithPointerEventsNone, bot.action.tap);
+        shouldNotBeAbleToClickOnElementWithPointerEventsNone, bot.action.tap);
+
+
 
     function testClickShouldNotScrollWhenElementInView() {
       if (bot.userAgent.MOBILE) {

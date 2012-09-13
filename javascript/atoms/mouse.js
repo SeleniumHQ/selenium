@@ -29,7 +29,6 @@ goog.require('bot.dom');
 goog.require('bot.events.EventType');
 goog.require('bot.userAgent');
 goog.require('goog.dom');
-goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
@@ -42,6 +41,7 @@ goog.require('goog.userAgent');
  * supports having one button pressed at a time.
  * @param {bot.Mouse.State=} opt_state The mouse's initial state.
  * @param {bot.Device.ModifiersState=} opt_modifiersState State of the keyboard.
+ *
  * @constructor
  * @extends {bot.Device}
  */
@@ -108,13 +108,13 @@ goog.inherits(bot.Mouse, bot.Device);
 
 
 /**
- * @typedef {{buttonPressed: ?bot.Mouse.Button,
- *           elementPressed: Element,
- *           clientXY: !goog.math.Coordinate,
- *           nextClickIsDoubleClick: boolean,
- *           hasEverInteracted: boolean,
- *           element: Element}}
- */
+  * @typedef {{buttonPressed: ?bot.Mouse.Button,
+  *           elementPressed: Element,
+  *           clientXY: !goog.math.Coordinate,
+  *           nextClickIsDoubleClick: boolean,
+  *           hasEverInteracted: boolean,
+  *           element: Element}}
+  */
 bot.Mouse.State;
 
 
@@ -328,10 +328,20 @@ bot.Mouse.prototype.move = function(element, coords) {
       this.fireMouseEvent_(bot.events.EventType.MOUSEOUT, element);
     }
     this.setElement(element);
-    this.fireMouseEvent_(bot.events.EventType.MOUSEOVER, fromElement);
+
+    // All browsers except IE fire the mouseover before the mousemove.
+    if (!goog.userAgent.IE) {
+      this.fireMouseEvent_(bot.events.EventType.MOUSEOVER, fromElement);
+    }
   }
 
   this.fireMouseEvent_(bot.events.EventType.MOUSEMOVE);
+
+  // IE fires the mouseover event after the mousemove.
+  if (goog.userAgent.IE && element != fromElement) {
+    this.fireMouseEvent_(bot.events.EventType.MOUSEOVER, fromElement);
+  }
+
   this.nextClickIsDoubleClick_ = false;
 };
 
@@ -407,9 +417,9 @@ bot.Mouse.prototype.getButtonValue_ = function(eventType) {
 };
 
 /**
-* Serialize the current state of the mouse.
-* @return {!bot.Mouse.State} The current mouse state.
-*/
+ * Serialize the current state of the mouse.
+ * @return {!bot.Mouse.State} The current mouse state.
+ */
 bot.Mouse.prototype.getState = function () {
   var state = {};
   state.buttonPressed = this.buttonPressed_;

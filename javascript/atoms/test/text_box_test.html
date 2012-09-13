@@ -45,7 +45,6 @@ div.example div.header {
     goog.require('goog.dom');
     goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
-    goog.require('goog.userAgent');
   </script>
   </head>
   <body>
@@ -229,22 +228,23 @@ function testListItem() {
 }
 
 
+// TODO: tests for display: run-in
+
+
 function testRunIn_followedByBlock() {
   var expectedFailures = new goog.testing.ExpectedFailures();
-  expectedFailures.expectFailureFor(goog.userAgent.GECKO ||
-      (goog.userAgent.IE && !bot.userAgent.isProductVersion(8)),
+  expectedFailures.expectFailureFor(true,
       'display:run-in not handled properly');
   expectedFailures.run(function() {
-  new DisplayBoxTester('run-in').
-      addTestNode(goog.dom.TagName.H3, 'green', 'Hello').
-      addNode(goog.dom.TagName.DIV, {
-        className: 'blue',
-        style: 'display: block'
-      }, ', world.').
-      assertTextIs('Hello, world.');
+    new DisplayBoxTester('run-in').
+        addTestNode(goog.dom.TagName.H3, 'green', 'Hello').
+        addNode(goog.dom.TagName.DIV, {
+          className: 'blue',
+          style: 'display: block'
+        }, ', world.').
+        assertTextIs('Hello, world.');
   });
 }
-
 
 function testRunIn_followedByFloat() {
   new DisplayBoxTester('run-in').
@@ -253,7 +253,7 @@ function testRunIn_followedByFloat() {
         className: 'blue',
         style: 'float: right; width: 50%; clear: right;'
       }, ', world.').
-      assertTextIs('Hello\n, world.');
+  assertTextIs('Hello\n, world.');
 }
   </script>
 </body>

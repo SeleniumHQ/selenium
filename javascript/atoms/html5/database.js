@@ -24,7 +24,6 @@ goog.provide('bot.storage.database.ResultSet');
 goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
-goog.require('bot.html5');
 
 
 /**

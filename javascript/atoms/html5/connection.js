@@ -30,10 +30,10 @@ goog.require('bot.html5');
  * @return {boolean} Whether the browser currently has an internet
  *     connection.
  */
-bot.connection.isOnline = function(aWindow) {
+bot.connection.isOnline = function() {
 
-  var win = aWindow || bot.getWindow();
-  if (bot.html5.isSupported(bot.html5.API.BROWSER_CONNECTION, win)) {
+  if (bot.html5.isSupported(bot.html5.API.BROWSER_CONNECTION)) {
+    var win = bot.getWindow();
     return win.navigator.onLine;
   } else {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,

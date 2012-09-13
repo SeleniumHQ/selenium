@@ -170,6 +170,18 @@ limitations under the License.
       assertEquals('after', doggies.id);
     }
 
+    function testCanLocateElementsUsingXPathInIframe() {
+      if (!CAN_SELECT_SINGLE_NODE) {
+        return;  // Skip this until we get xpath working on all browsers
+      }
+
+      var frameDoc = window.frames[0].document;
+      var frameBody = bot.locators.findElement({xpath: '//body'}, frameDoc);
+      assertNotNull(frameBody);
+      assertEquals('BODY', frameBody.tagName);
+    }
+
+
     function testWillReturnNullIfNoMatchUsingXPathIsFound() {
       if (!CAN_SELECT_SINGLE_NODE) {
         return;  // Skip this until we get xpath working on all browsers
@@ -425,5 +437,7 @@ limitations under the License.
   <a href="#">unrelated</a>
   <a href="#" id="empty-link"></a>
   <a href="#" id="comma-in-alt" alt="has, a comma">has, a comma</a>
+
+  <iframe src="./testdata/iframe_page.htm"></iframe>
   </body>
 </html>

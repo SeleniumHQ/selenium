@@ -21,9 +21,6 @@
 goog.provide('bot');
 
 
-goog.require('goog.userAgent');
-
-
 /**
  * Frameworks using the atoms keep track of which window or frame is currently
  * being used for command execution. Note that "window" may not always be

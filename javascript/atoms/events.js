@@ -41,8 +41,9 @@ goog.require('goog.userAgent.product');
  * @const
  * @type {boolean}
  */
-bot.events.SUPPORTS_TOUCH_EVENTS = !goog.userAgent.IE && !goog.userAgent.OPERA;
-
+bot.events.SUPPORTS_TOUCH_EVENTS = !(goog.userAgent.IE &&
+                                   !bot.userAgent.isEngineVersion(10)) &&
+                                   !goog.userAgent.OPERA;
 
 /**
  * Whether the browser supports a native touch api.
@@ -319,19 +320,19 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
       Object.defineProperty( event, "pageX", {
         get: function() {
           return args.clientX +
-            ( doc && doc.scrollLeft || body && body.scrollLeft || 0 ) -
-            ( doc && doc.clientLeft || body && body.clientLeft || 0 );
+              ( doc && doc.scrollLeft || body && body.scrollLeft || 0 ) -
+              ( doc && doc.clientLeft || body && body.clientLeft || 0 );
         }
       });
       Object.defineProperty( event, "pageY", {
         get: function() {
           return args.clientY +
-          ( doc && doc.scrollTop || body && body.scrollTop || 0 ) -
-          ( doc && doc.clientTop || body && body.clientTop || 0 );
-        }
+              ( doc && doc.scrollTop || body && body.scrollTop || 0 ) -
+              ( doc && doc.clientTop || body && body.clientTop || 0 );
+          }
       });
     }
-  }
+}
 
   return event;
 };
@@ -515,6 +516,8 @@ bot.events.EventType = {
   BLUR: new bot.events.EventFactory_('blur', false, false),
   CHANGE: new bot.events.EventFactory_('change', true, false),
   FOCUS: new bot.events.EventFactory_('focus', false, false),
+  FOCUSIN: new bot.events.EventFactory_('focusin', true, false),
+  FOCUSOUT: new bot.events.EventFactory_('focusout', true, false),
   INPUT: new bot.events.EventFactory_('input', false, false),
   PROPERTYCHANGE: new bot.events.EventFactory_('propertychange', false, false),
   SELECT: new bot.events.EventFactory_('select', true, false),
@@ -562,7 +565,7 @@ bot.events.fire = function(target, type, opt_args) {
   // Ensure the event's isTrusted property is set to false, so that
   // bot.events.isSynthetic() can identify synthetic events from native ones.
   if (!('isTrusted' in event)) {
-    event.isTrusted = false;
+    event['isTrusted'] = false;
   }
 
   if (bot.userAgent.IE_DOC_PRE9) {
@@ -582,5 +585,5 @@ bot.events.fire = function(target, type, opt_args) {
  */
 bot.events.isSynthetic = function(event) {
   var e = event.getBrowserEvent ? event.getBrowserEvent() : event;
-  return 'isTrusted' in e ? !e.isTrusted : false;
+  return 'isTrusted' in e ? !e['isTrusted'] : false;
 };

@@ -20,6 +20,7 @@
 goog.require('bot.dom');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.NodeType');
 goog.require('goog.testing.TestCase');
 
 

@@ -24,8 +24,6 @@ goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.userAgent');
-goog.require('goog.array');
-goog.require('goog.dom');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.userAgent');

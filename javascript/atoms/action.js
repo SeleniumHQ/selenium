@@ -32,15 +32,13 @@ goog.require('bot.Touchscreen');
 goog.require('bot.dom');
 goog.require('bot.events');
 goog.require('bot.events.EventType');
-goog.require('bot.locators');
 goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.dom.NodeType');
-goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
 goog.require('goog.math.Vec2');
+goog.require('goog.style');
 goog.require('goog.userAgent');
 
 
@@ -138,7 +136,7 @@ bot.action.focusOnElement = function(element) {
 bot.action.type = function(element, values, opt_keyboard) {
   bot.action.checkShown_(element);
   bot.action.checkInteractable_(element);
-  var keyboard = opt_keyboard || new bot.Keyboard();
+  var keyboard = opt_keyboard || new bot.Keyboard(null);
   keyboard.moveCursor(element);
 
   function typeValue(value) {
@@ -516,7 +514,7 @@ bot.action.prepareToInteractWith_ = function(element, opt_coords) {
   // necessary, not scrolling at all if the element is already in view.
   var doc = goog.dom.getOwnerDocument(element);
   goog.style.scrollIntoContainerView(element,
-      goog.userAgent.WEBKIT || goog.userAgent.IE ? doc.body : doc.documentElement);
+      goog.userAgent.WEBKIT ? doc.body : doc.documentElement);
 
   // NOTE(user): Ideally, we would check that any provided coordinates fall
   // within the bounds of the element, but this has proven difficult, because:

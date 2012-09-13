@@ -28,6 +28,7 @@ goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.events.EventType');
 goog.require('goog.array');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.selection');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.structs.Map');
@@ -40,7 +41,7 @@ goog.require('goog.userAgent');
  * A keyboard that provides atomic typing actions.
  *
  * @constructor
- * @param {Array.<!bot.Keyboard.Key>=} opt_state Optional keyboard state.
+ * @param {Array.<!bot.Keyboard.Key>} opt_state Optional keyboard state.
  * @extends {bot.Device}
  */
 bot.Keyboard = function(opt_state) {
@@ -76,6 +77,7 @@ goog.inherits(bot.Keyboard, bot.Device);
  * @private
  */
 bot.Keyboard.CHAR_TO_KEY_ = {};
+
 
 /**
  * Constructs a new key and, if it is a character key, adds a mapping from the
@@ -114,6 +116,8 @@ bot.Keyboard.newKey_ = function(code, opt_char, opt_shiftChar) {
 
   return key;
 };
+
+
 
 /**
  * A key on the keyboard.
@@ -261,7 +265,6 @@ bot.Keyboard.Keys = {
   // Punctuation keys
   EQUALS: bot.Keyboard.newKey_(
       {gecko: 107, ieWebkit: 187, opera: 61}, '=', '+'),
-  SEPARATOR: bot.Keyboard.newKey_(108, ','),
   HYPHEN: bot.Keyboard.newKey_(
       {gecko: 109, ieWebkit: 189, opera: 109}, '-', '_'),
   COMMA: bot.Keyboard.newKey_(188, ',', '<'),
@@ -313,7 +316,7 @@ bot.Keyboard.Key.fromChar = function(ch) {
 /**
  * Array of modifier keys.
  *
- * @type {!Array.<bot.Keyboard.Key>}
+ * @type {!Array.<!bot.Keyboard.Key>}
  * @const
  */
 bot.Keyboard.MODIFIERS = [
@@ -331,16 +334,17 @@ bot.Keyboard.MODIFIERS = [
 bot.Keyboard.MODIFIER_TO_KEY_MAP_ = (function() {
   var modifiersMap = new goog.structs.Map();
   modifiersMap.set(bot.Device.Modifier.SHIFT,
-    bot.Keyboard.Keys.SHIFT);
+      bot.Keyboard.Keys.SHIFT);
   modifiersMap.set(bot.Device.Modifier.CONTROL,
-    bot.Keyboard.Keys.CONTROL);
+      bot.Keyboard.Keys.CONTROL);
   modifiersMap.set(bot.Device.Modifier.ALT,
-    bot.Keyboard.Keys.ALT);
+      bot.Keyboard.Keys.ALT);
   modifiersMap.set(bot.Device.Modifier.META,
-    bot.Keyboard.Keys.META);
+      bot.Keyboard.Keys.META);
 
   return modifiersMap;
 })();
+
 
 /**
  * The reverse map - key to modifier.
@@ -350,11 +354,34 @@ bot.Keyboard.MODIFIER_TO_KEY_MAP_ = (function() {
 bot.Keyboard.KEY_TO_MODIFIER_ = (function(modifiersMap) {
   var keyToModifierMap = new goog.structs.Map();
   goog.array.forEach(modifiersMap.getKeys(), function(m) {
-    keyToModifierMap.set(modifiersMap.get(m).code, m);
+      keyToModifierMap.set(modifiersMap.get(m).code, m);
   });
 
   return keyToModifierMap;
 })(bot.Keyboard.MODIFIER_TO_KEY_MAP_);
+
+
+/**
+ * Set the modifier state if the provided key is one, otherwise just add
+ * to the list of pressed keys.
+ * @param {bot.Keyboard.Key} key
+ * @param {boolean} isPressed
+ * @private
+ */
+bot.Keyboard.prototype.setKeyPressed_ = function(key, isPressed) {
+  if (goog.array.contains(bot.Keyboard.MODIFIERS, key)) {
+    var modifier = /** @type {bot.Device.Modifier}*/
+        bot.Keyboard.KEY_TO_MODIFIER_.get(key.code);
+    this.modifiersState.setPressed(modifier, isPressed);
+  }
+
+  if (isPressed) {
+    this.pressed_.add(key);
+  } else {
+    this.pressed_.remove(key);
+  }
+};
+
 
 /**
  * The value used for newlines in the current browser/OS combination. Although
@@ -378,26 +405,6 @@ bot.Keyboard.prototype.isPressed = function(key) {
   return this.pressed_.contains(key);
 };
 
-/**
- * Set the modifier state if the provided key is one, otherwise just add
- * to the list of pressed keys.
- * @param {bot.Keyboard.Key} key
- * @param {boolean} isPressed
- * @private
- */
-bot.Keyboard.prototype.setKeyPressed_ = function(key, isPressed) {
-  if (goog.array.contains(bot.Keyboard.MODIFIERS, key)) {
-    var modifier = /** @type {bot.Device.Modifier}*/
-      bot.Keyboard.KEY_TO_MODIFIER_.get(key.code);
-    this.modifiersState.setPressed(modifier, isPressed);
-  }
-
-  if (isPressed) {
-    this.pressed_.add(key);
-  } else {
-    this.pressed_.remove(key);
-  }
-};
 
 /**
  * Presses the given key on the keyboard. Keys that are pressed can be pressed
@@ -574,7 +581,7 @@ bot.Keyboard.prototype.getChar_ = function(key) {
  * @private
  */
 bot.Keyboard.KEYPRESS_EDITS_TEXT_ = goog.userAgent.GECKO &&
-    !bot.userAgent.isEngineVersion(12)
+    !bot.userAgent.isEngineVersion(12);
 
 
 /**
@@ -734,7 +741,6 @@ bot.Keyboard.prototype.moveCursor = function(element) {
 bot.Keyboard.prototype.getState = function() {
   return this.pressed_.getValues();
 };
-
 
 /**
  * Returns the state of the modifier keys, to be shared with other input

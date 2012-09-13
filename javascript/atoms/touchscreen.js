@@ -27,7 +27,6 @@ goog.require('bot.ErrorCode');
 goog.require('bot.events.EventType');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
-goog.require('goog.userAgent.product');
 
 
 
@@ -39,11 +38,10 @@ goog.require('goog.userAgent.product');
  * The touchscreen supports three actions: press, release, and move.
  *
  * @constructor
- * @param {bot.Device.ModifiersState=} opt_modifiersState
  * @extends {bot.Device}
  */
-bot.Touchscreen = function(opt_modifiersState) {
-  goog.base(this, opt_modifiersState);
+bot.Touchscreen = function() {
+  goog.base(this);
 
   /**
    * @type {!goog.math.Coordinate}

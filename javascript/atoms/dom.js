@@ -26,14 +26,14 @@ goog.require('bot.userAgent');
 goog.require('bot.window');
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.dom.NodeIterator');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
+goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
-goog.require('goog.math.Size');
 goog.require('goog.string');
 goog.require('goog.style');
+goog.require('goog.userAgent');
 
 
 /**
@@ -73,12 +73,12 @@ bot.dom.isElement = function(node, opt_tagName) {
  */
 bot.dom.isInteractable = function(element) {
   return bot.dom.isShown(element, /*ignoreOpacity=*/true) &&
-         bot.dom.isEnabled(element) &&
-         // check pointer-style isn't 'none'
-         // Although IE, Opera, FF < 3.6 don't care about this property.
-         (goog.userAgent.IE || goog.userAgent.OPERA || 
-           (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6)) ||
-           bot.dom.getEffectiveStyle(element, 'pointer-events') != 'none');
+      bot.dom.isEnabled(element) &&
+      // check pointer-style isn't 'none'
+      // Although IE, Opera, FF < 3.6 don't care about this property.
+      (goog.userAgent.IE || goog.userAgent.OPERA ||
+          (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6)) ||
+        bot.dom.getEffectiveStyle(element, 'pointer-events') != 'none');
 };
 
 
@@ -213,8 +213,8 @@ bot.dom.getProperty = function(element, propertyName) {
   if (propertyName == 'value' &&
       bot.dom.isElement(element, goog.dom.TagName.OPTION) &&
       !bot.dom.hasAttribute(element, propertyName)) {
-    // See http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
-    // IE does not adhere to this behaviour, so we hack it in.
+    // IE does not adhere to this behaviour, so we hack it in. See:
+    // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
     value = goog.dom.getRawTextContent(element);
   }
   return value;
@@ -298,7 +298,7 @@ bot.dom.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_ =
  * @return {boolean} Whether the specified attribute is a boolean attribute.
  */
 bot.dom.isBooleanAttribute = function(attributeName) {
-  return goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName);
+    return goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName);
 };
 
 
@@ -367,7 +367,7 @@ bot.dom.getAttribute = function(element, attributeName) {
   // out when compiled for non-IE browsers.
   if (goog.userAgent.IE) {
     if (!attr && goog.userAgent.isVersion(8) &&
-        bot.dom.isBooleanAttribute(attributeName)) {
+        goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName)) {
       attr = element[attributeName];
     }
   }
@@ -382,8 +382,8 @@ bot.dom.getAttribute = function(element, attributeName) {
   // that is sometimes false for user-specified boolean attributes.
   // IE does consistently yield 'true' or 'false' strings for boolean attribute
   // values, and so we know 'false' attribute values were not user-specified.
-  if (bot.dom.isBooleanAttribute(attributeName)) {
-    return bot.userAgent.IE_DOC_PRE9 && !attr.specified && attr.value == 'false' ? null : 'true';
+  if (goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName)) {
+    return bot.userAgent.IE_DOC_PRE9 && attr.value == 'false' ? null : 'true';
   }
 
   // For non-boolean attributes, we compensate for IE's extra attributes by
@@ -480,7 +480,7 @@ bot.dom.TEXTUAL_INPUT_TYPES_ = [
 
 
 /**
- * TODO(user): Add support for designMode elements.
+ * TODO(gdennis): Add support for designMode elements.
  *
  * @param {!Element} element The element to check.
  * @return {boolean} Whether the element accepts user-typed text.
@@ -534,7 +534,7 @@ bot.dom.isContentEditable = function(element) {
 
 
 /**
- * TODO(user): Merge isTextual into this function and move to bot.dom.
+ * TODO(gdennis): Merge isTextual into this function and move to bot.dom.
  * For Puppet, requires adding support to getVisibleText for grabbing
  * text from all textual elements.
  *
@@ -598,6 +598,11 @@ bot.dom.getInlineStyle = function(elem, styleName) {
  */
 bot.dom.getEffectiveStyle = function(elem, propertyName) {
   var styleName = goog.string.toCamelCase(propertyName);
+  if (styleName == 'float' ||
+      styleName == 'cssFloat' ||
+      styleName == 'styleFloat') {
+    styleName = bot.userAgent.IE_DOC_PRE9 ? 'styleFloat' : 'cssFloat';
+  }
   var style = goog.style.getComputedStyle(elem, styleName) ||
       bot.dom.getCascadedStyle_(elem, styleName);
   if (style === null) {
@@ -645,7 +650,7 @@ bot.dom.getCascadedStyle_ = function(elem, styleName) {
 bot.dom.isBodyScrollBarShown_ = function(bodyElement) {
   if (!bot.dom.isElement(bodyElement, goog.dom.TagName.BODY)) {
     // bail
-  }
+    }
 
   var bodyOverflow = bot.dom.getEffectiveStyle(bodyElement, 'overflow');
   if (bodyOverflow != 'hidden') {
@@ -730,7 +735,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     }
     var mapDoc = goog.dom.getOwnerDocument(elem);
     var mapImage;
-    // TODO(user): Avoid brute-force search once a cross-browser xpath
+    // TODO(gdennis): Avoid brute-force search once a cross-browser xpath
     // locator is available.
     if (mapDoc['evaluate']) {
       // The "//*" XPath syntax can confuse the closure compiler, so we use
@@ -739,13 +744,14 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       // TODO(jleyba): Restrict to applet, img, input:image, and object nodes.
       var imageXpath = '/descendant::*[@usemap = "#' + elem.name + '"]';
 
-      // TODO(user): Break dependency of bot.locators on bot.dom,
+      // TODO(gdennis): Break dependency of bot.locators on bot.dom,
       // so bot.locators.findElement can be called here instead.
       mapImage = bot.locators.xpath.single(imageXpath, mapDoc);
     } else {
       mapImage = goog.dom.findNode(mapDoc, function(n) {
         return bot.dom.isElement(n) &&
-               bot.dom.getAttribute(n, 'usemap') == '#' + elem.name;
+               bot.dom.getAttribute(
+                   /** @type {!Element} */ (n), 'usemap') == '#' + elem.name;
       });
     }
     return !!mapImage && bot.dom.isShown((/** @type {!Element} */ mapImage),
@@ -889,10 +895,11 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
     return (/** @type {string|undefined} */ goog.array.peek(lines)) || '';
   }
 
-  // TODO(user): Add case here for textual form elements.
+  // TODO(gdennis): Add case here for textual form elements.
   if (bot.dom.isElement(elem, goog.dom.TagName.BR)) {
     lines.push('');
   } else {
+    // TODO: properly handle display:run-in
     var isTD = bot.dom.isElement(elem, goog.dom.TagName.TD);
     var display = bot.dom.getEffectiveStyle(elem, 'display');
     // On some browsers, table cells incorrectly show up with block styles.
@@ -1036,7 +1043,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
  * @return {number} Opacity between 0 and 1.
  */
 bot.dom.getOpacity = function(elem) {
-  // TODO(BobS): Does this need to deal with rgba colors?
+  // TODO(bsilverberg): Does this need to deal with rgba colors?
   if (!goog.userAgent.IE) {
     return bot.dom.getOpacityNonIE_(elem);
   } else {
