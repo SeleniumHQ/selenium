@@ -232,10 +232,7 @@ function testListItem() {
 
 
 function testRunIn_followedByBlock() {
-  var expectedFailures = new goog.testing.ExpectedFailures();
-  expectedFailures.expectFailureFor(true,
-      'display:run-in not handled properly');
-  expectedFailures.run(function() {
+  var testFunction = function() {
     new DisplayBoxTester('run-in').
         addTestNode(goog.dom.TagName.H3, 'green', 'Hello').
         addNode(goog.dom.TagName.DIV, {
@@ -243,7 +240,16 @@ function testRunIn_followedByBlock() {
           style: 'display: block'
         }, ', world.').
         assertTextIs('Hello, world.');
-  });
+  };
+
+  if (goog.userAgent.GECKO || (goog.userAgent.IE && !bot.userAgent.isProductVersion(8))) {
+    var expectedFailures = new goog.testing.ExpectedFailures();
+    expectedFailures.expectFailureFor(true,
+        'display:run-in not handled properly');
+    expectedFailures.run(testFunction);
+  } else {
+    testFunction();
+  }
 }
 
 function testRunIn_followedByFloat() {
