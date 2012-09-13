@@ -24,6 +24,7 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.inject');
 goog.require('bot.response');
+goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('safaridriver.console');
@@ -89,12 +90,9 @@ safaridriver.inject.page.init = function() {
   safaridriver.inject.page.LOG_.info('Sending ' + message);
   message.sendSync(window);
 
-  window.alert = goog.partial(safaridriver.inject.page.sendAlert_,
-      'alert', window.alert);
-  window.confirm = goog.partial(safaridriver.inject.page.sendAlert_,
-      'confirm', window.confirm);
-  window.prompt = goog.partial(safaridriver.inject.page.sendAlert_,
-      'prompt', window.prompt);
+  window.alert = safaridriver.inject.page.wrappedAlert_;
+  window.confirm = safaridriver.inject.page.wrappedConfirm_;
+  window.prompt = safaridriver.inject.page.wrappedPrompt_;
 
   var script = document.querySelector(
       safaridriver.inject.page.SCRIPT_SELECTOR_);
@@ -110,36 +108,90 @@ goog.exportSymbol('init', safaridriver.inject.page.init);
 
 
 /**
- * @param {string} type The type of alert.
- * @param {function(string): (boolean|string|undefined)} nativeFn The native
- *     alert function that was intercepted.
- * @param {string} text The text message passed to the alert.
- * @return {(boolean|string|undefined)} The alert response.
+ * The native dialog functions.
+ * @enum {{name: string, fn: !Function}}
  * @private
  */
-safaridriver.inject.page.sendAlert_ = function(type, nativeFn, text) {
+safaridriver.inject.page.NativeDialog_ = {
+  alert: {name: 'alert', fn: window.alert},
+  confirm: {name: 'confirm', fn: window.confirm},
+  prompt: {name: 'prompt', fn: window.prompt}
+};
+
+
+/**
+ * Wraps window.alert.
+ * @param {...*} var_args The alert arguments.
+ * @this {Window}
+ * @private
+ */
+safaridriver.inject.page.wrappedAlert_ = function(var_args) {
+  var args = goog.array.concat(safaridriver.inject.page.NativeDialog_.alert,
+      arguments);
+  var sendFn = goog.partial.apply(null, args);
+  sendFn();
+};
+
+
+/**
+ * Wraps window.confirm.
+ * @param {*} arg The confirm argument.
+ * @return {boolean} The confirmation response.
+ * @this {Window}
+ * @private
+ */
+safaridriver.inject.page.wrappedConfirm_ = function(arg) {
+  return (/** @type {boolean} */safaridriver.inject.page.sendAlert_(
+      safaridriver.inject.page.NativeDialog_.confirm, arg));
+};
+
+
+/**
+ * Wraps window.prompt.
+ * @param {*} arg The prompt argument.
+ * @return {?string} The prompt response.
+ * @this {Window}
+ * @private
+ */
+safaridriver.inject.page.wrappedPrompt_ = function(arg) {
+  return (/** @type {?string} */safaridriver.inject.page.sendAlert_(
+      safaridriver.inject.page.NativeDialog_.prompt, arg));
+};
+
+
+/**
+ * @param {!safaridriver.inject.page.NativeDialog_} dialog The dialog
+ *     descriptor.
+ * @param {...*} var_args The alert function dialogs.
+ * @return {?(boolean|string|undefined)} The alert response.
+ * @private
+ */
+safaridriver.inject.page.sendAlert_ = function(dialog, var_args) {
+  var args = goog.array.slice(arguments, 1);
+
   safaridriver.inject.page.LOG_.info('Sending alert notification; ' +
-      'type: ' + type + ', text: ' + text);
-  var message = new safaridriver.message.Alert(text);
+      'type: ' + dialog.name + ', text: ' + args[0]);
+
+  var message = new safaridriver.message.Alert(args[0] + '');
   var ignoreAlert = message.sendSync(window);
 
   if (ignoreAlert == '1') {
     safaridriver.inject.page.LOG_.info('Invoking native alert');
-    return nativeFn(text);
+    return dialog.fn.apply(window, args);
   }
 
   safaridriver.inject.page.LOG_.info('Dismissing unexpected alert');
-  var undef;
-  switch (type) {
-    case 'alert':
-      return undef;
-
-    case 'cancel':
-      return false;
+  var response;
+  switch (dialog.name) {
+    case 'confirm':
+      response = false;
+      break;
 
     case 'prompt':
-      return '';
+      response = null;
+      break;
   }
+  return response;
 };
 
 
