@@ -15,6 +15,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "IE renders plain text pages as HTML with <pre> tags.")]
         [IgnoreBrowser(Browser.Firefox, "Firefox renders plain text pages as HTML with <pre> tags.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome renders plain text pages as HTML with <pre> tags.")]
+        [IgnoreBrowser(Browser.PhantomJS, "PhantomJS renders plain text pages as HTML with <pre> tags.")]
         public void ShouldBeAbleToLoadASimplePageOfText()
         {
             driver.Url = textPage;
@@ -33,6 +34,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "IE allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Chrome, "Chrome allows addition of cookie on text pages")]
+        [IgnoreBrowser(Browser.PhantomJS, "PhantomJS allows addition of cookie on text pages")]
         [ExpectedException(typeof(WebDriverException))]
         public void ShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml()
         {

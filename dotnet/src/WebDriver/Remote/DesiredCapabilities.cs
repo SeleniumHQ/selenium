@@ -73,7 +73,17 @@ namespace OpenQA.Selenium.Remote
                         Platform rawAsPlatform = raw as Platform;
                         if (rawAsString != null)
                         {
-                            PlatformType platformInfo = (PlatformType)Enum.Parse(typeof(PlatformType), rawAsString, true);
+                            PlatformType platformInfo = PlatformType.Any;
+                            try
+                            {
+                                platformInfo = (PlatformType)Enum.Parse(typeof(PlatformType), rawAsString, true);
+                            }
+                            catch (ArgumentException)
+                            {
+                                // If the server does not pass back a valid platform type, ignore it and
+                                // use PlatformType.Any.
+                            }
+
                             this.capabilities[CapabilityType.Platform] = new Platform(platformInfo);
                         }
                         else if (rawAsPlatform != null)
@@ -179,6 +189,15 @@ namespace OpenQA.Selenium.Remote
         public static DesiredCapabilities Firefox()
         {
             return new DesiredCapabilities("firefox", string.Empty, new Platform(PlatformType.Any));
+        }
+
+        /// <summary>
+        /// Method to return a new DesiredCapabilities using defaults
+        /// </summary>
+        /// <returns>New instance of DesiredCapabilites for use with Firefox</returns>
+        public static DesiredCapabilities PhantomJS()
+        {
+            return new DesiredCapabilities("phantomjs", string.Empty, new Platform(PlatformType.Any));
         }
 
         /// <summary>

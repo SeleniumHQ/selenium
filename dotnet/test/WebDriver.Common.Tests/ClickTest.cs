@@ -26,7 +26,7 @@ namespace OpenQA.Selenium
         public void CanClickOnALinkAndFollowIt()
         {
             driver.FindElement(By.Id("normal")).Click();
-
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
@@ -192,6 +192,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = simpleTestPage;
             driver.FindElement(By.Id("multilinelink")).Click();
+            WaitFor(() => { return driver.Title == "We Arrive Here"; });
             Assert.AreEqual("We Arrive Here", driver.Title);
         }
 

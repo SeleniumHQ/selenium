@@ -85,6 +85,10 @@
   <ItemGroup>
     <Compile Include="Android\AndroidDriver.cs" />
     <Compile Include="By.cs" />
+    <Compile Include="PhantomJS\PhantomJSDriver.cs" />
+    <Compile Include="PhantomJS\PhantomJSDriverService.cs" />
+    <Compile Include="PhantomJS\PhantomJSOptions.cs" />
+    <Compile Include="PhantomJS\PhantomJSWebElement.cs" />
     <Compile Include="WebDriverTimeoutException.cs" />
     <Compile Include="IE\InternetExplorerDriverLogLevel.cs" />
     <Compile Include="IE\InternetExplorerOptions.cs" />

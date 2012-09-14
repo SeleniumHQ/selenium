@@ -103,7 +103,7 @@ namespace OpenQA.Selenium.Remote
                         writer.WritePropertyName("expiry");
                         DateTime zeroDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
                         TimeSpan span = cookieValue.Expiry.Value.ToUniversalTime().Subtract(zeroDate);
-                        writer.WriteValue(span.TotalSeconds);
+                        writer.WriteValue(Convert.ToInt64(span.TotalSeconds));
                     }
 
                     writer.WritePropertyName("secure");

@@ -23,6 +23,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldNotTimeoutIfCallbackInvokedImmediately()
         {
             driver.Url = ajaxyPage;
@@ -32,6 +33,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNullNorUndefined()
         {
             driver.Url = ajaxyPage;
@@ -42,6 +44,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined()
         {
             driver.Url = ajaxyPage;
@@ -50,6 +53,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript()
         {
             driver.Url = ajaxyPage;
@@ -61,6 +65,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToReturnAnArrayObjectFromAnAsyncScript()
         {
             driver.Url = ajaxyPage;
@@ -72,6 +77,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -89,6 +95,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToReturnWebElementsFromAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -99,6 +106,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -115,6 +123,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         [ExpectedException(typeof(WebDriverTimeoutException))]
         public void ShouldTimeoutIfScriptDoesNotInvokeCallback()
         {
@@ -123,6 +132,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         [ExpectedException(typeof(WebDriverTimeoutException))]
         public void ShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout()
         {
@@ -131,6 +141,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout()
         {
             driver.Url = ajaxyPage;
@@ -140,6 +151,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         [ExpectedException(typeof(WebDriverTimeoutException))]
         public void ShouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout()
         {
@@ -151,6 +163,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         [ExpectedException(typeof(InvalidOperationException))]
         public void ShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError()
         {
@@ -160,6 +173,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         [ExpectedException(typeof(InvalidOperationException))]
         public void ShouldCatchErrorsWhenExecutingInitialScript()
         {
@@ -168,6 +182,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToExecuteAsynchronousScripts()
         {
             driver.Url = ajaxyPage;
@@ -192,6 +207,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToPassMultipleArgumentsToAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -200,6 +216,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse()
         {
             string script =

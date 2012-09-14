@@ -15,6 +15,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToOverrideTheWindowAlertMethod()
@@ -31,6 +32,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToAcceptAnAlertManually()
@@ -50,6 +52,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToAcceptAnAlertWithNoTextManually()
         {
@@ -67,6 +70,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         public void ShouldGetTextOfAlertOpenedInSetTimeout()
         {
             driver.Url = alertsPage;
@@ -92,6 +96,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToDismissAnAlertManually()
@@ -112,6 +117,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowAUserToAcceptAPrompt()
@@ -132,6 +138,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowAUserToDismissAPrompt()
@@ -152,6 +159,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowAUserToSetTheValueOfAPrompt()
@@ -174,6 +182,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "Chrome does not throw when setting the text of an alert")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void SettingTheValueOfAnAlertThrows()
@@ -202,6 +211,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowTheUserToGetTheTextOfAnAlert()
@@ -222,6 +232,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver.exe returns a JSON response with no status code")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         [ExpectedException(typeof(NoAlertPresentException))]
@@ -241,6 +252,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToAcceptAnAlertInAFrame()
@@ -260,6 +272,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         public void ShouldAllowUsersToAcceptAnAlertInANestedFrame()
         {
             driver.Url = alertsPage;
@@ -276,6 +289,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         public void ShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert()
         {
             driver.Url = alertsPage;
@@ -303,6 +317,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver.exe returns a JSON response with no status code")]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         [ExpectedException(typeof(NoAlertPresentException))]
@@ -318,6 +333,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void PromptShouldUseDefaultValueIfNoKeysSent()
@@ -338,6 +354,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void PromptShouldHaveNullValueIfDismissed()
@@ -357,6 +374,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
         public void HandlesTwoAlertsFromOneInteraction()
@@ -382,6 +400,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         public void ShouldHandleAlertOnPageLoad()
         {
             driver.Url = alertsPage;
@@ -399,6 +418,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         public void ShouldHandleAlertOnPageLoadUsingGet()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnLoad.html");
@@ -415,7 +435,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Firefox, "Firefox waits too long, may be hangs")]
         [IgnoreBrowser(Browser.Chrome)]
-        //[IgnoreBrowser(Browser.IE, "Not confirmed working.")]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         public void ShouldNotHandleAlertInAnotherWindow()
         {
             driver.Url = alertsPage;
@@ -454,7 +474,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("JavaScript")]
-        //[IgnoreBrowser(Browser.IE, "IE Crashes")]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Chrome)]
         public void ShouldHandleAlertOnPageUnload()
         {
@@ -475,6 +495,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android, "alerts do not pop up when a window is closed")]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         public void ShouldHandleAlertOnWindowClose()
         {
             driver.Url = alertsPage;
@@ -507,6 +528,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Opera)]
         public void IncludesAlertInUnhandledAlertException()
         {
@@ -530,6 +552,7 @@ namespace OpenQA.Selenium
         [Test]
         [NeedsFreshDriver(AfterTest = true)]
         [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
         public void CanQuitWhenAnAlertIsPresent()
         {
             driver.Url = alertsPage;

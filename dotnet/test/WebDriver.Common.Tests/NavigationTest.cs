@@ -11,6 +11,7 @@ namespace OpenQA.Selenium
         [Test]
         [NeedsFreshDriver(BeforeTest = true)]
         [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldNotHaveProblemNavigatingWithNoPagesBrowsed()
         {
             INavigation navigation;

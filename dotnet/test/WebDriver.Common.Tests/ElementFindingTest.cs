@@ -35,7 +35,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.LinkText("click me")).Click();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(() => { return driver.Title == "We Arrive Here"; });
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -45,7 +45,7 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.LinkText("click me")).Click();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(() => { return driver.Title == "We Arrive Here"; });
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -54,7 +54,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             driver.FindElement(By.Id("linkId")).Click();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(() => { return driver.Title == "We Arrive Here"; });
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 

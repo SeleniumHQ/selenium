@@ -9,13 +9,7 @@ namespace OpenQA.Selenium
     public class ClearTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.IE, "Untested feature")]
-        [IgnoreBrowser(Browser.Firefox, "Untested feature")]
         [IgnoreBrowser(Browser.Chrome, "Untested feature")]
-        [IgnoreBrowser(Browser.Remote, "Untested feature")]
-        [IgnoreBrowser(Browser.Safari, "Untested feature")]
-        [IgnoreBrowser(Browser.Opera, "Untested feature")]
-        [IgnoreBrowser(Browser.IPhone, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         public void WritableTextInputShouldClear()
         {
@@ -26,13 +20,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Untested feature")]
-        [IgnoreBrowser(Browser.Firefox, "Untested feature")]
         [IgnoreBrowser(Browser.Chrome, "Untested feature")]
-        [IgnoreBrowser(Browser.Remote, "Untested feature")]
-        [IgnoreBrowser(Browser.Safari, "Untested feature")]
-        [IgnoreBrowser(Browser.Opera, "Untested feature")]
-        [IgnoreBrowser(Browser.IPhone, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         [ExpectedException(typeof(InvalidElementStateException))]
         public void TextInputShouldNotClearWhenDisabled()
@@ -44,14 +32,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Untested feature")]
-        [IgnoreBrowser(Browser.Firefox, "Untested feature")]
         [IgnoreBrowser(Browser.Chrome, "Untested feature")]
-        [IgnoreBrowser(Browser.Remote, "Untested feature")]
-        [IgnoreBrowser(Browser.Safari, "Untested feature")]
-        [IgnoreBrowser(Browser.Opera, "Untested feature")]
-        [IgnoreBrowser(Browser.IPhone, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
+        [IgnoreBrowser(Browser.Opera, "Untested feature")]
         [ExpectedException(typeof(InvalidElementStateException))]
         public void TextInputShouldNotClearWhenReadOnly()
         {
@@ -62,13 +45,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Untested feature")]
-        [IgnoreBrowser(Browser.Firefox, "Untested feature")]
         [IgnoreBrowser(Browser.Chrome, "Untested feature")]
-        [IgnoreBrowser(Browser.Remote, "Untested feature")]
-        [IgnoreBrowser(Browser.Safari, "Untested feature")]
-        [IgnoreBrowser(Browser.Opera, "Untested feature")]
-        [IgnoreBrowser(Browser.IPhone, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         public void WritableTextAreaShouldClear()
         {
@@ -79,13 +56,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Untested feature")]
-        [IgnoreBrowser(Browser.Firefox, "Untested feature")]
         [IgnoreBrowser(Browser.Chrome, "Untested feature")]
-        [IgnoreBrowser(Browser.Remote, "Untested feature")]
-        [IgnoreBrowser(Browser.Safari, "Untested feature")]
-        [IgnoreBrowser(Browser.Opera, "Untested feature")]
-        [IgnoreBrowser(Browser.IPhone, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         [ExpectedException(typeof(InvalidElementStateException))]
         public void TextAreaShouldNotClearWhenDisabled()
@@ -96,14 +67,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Untested feature")]
-        [IgnoreBrowser(Browser.Firefox, "Untested feature")]
         [IgnoreBrowser(Browser.Chrome, "Untested feature")]
-        [IgnoreBrowser(Browser.Remote, "Untested feature")]
-        [IgnoreBrowser(Browser.Safari, "Untested feature")]
-        [IgnoreBrowser(Browser.Opera, "Untested feature")]
-        [IgnoreBrowser(Browser.IPhone, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
+        [IgnoreBrowser(Browser.Opera, "Untested feature")]
         [ExpectedException(typeof(InvalidElementStateException))]
         public void TextAreaShouldNotClearWhenReadOnly()
         {
@@ -111,5 +77,18 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("textAreaReadOnly"));
             element.Clear();
         }
-    }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Untested feature")]
+        [IgnoreBrowser(Browser.Android, "Untested feature")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Untested feature")]
+        [IgnoreBrowser(Browser.IPhone, "Untested feature")]
+        public void ContentEditableAreaShouldClear()
+        {
+            driver.Url = readOnlyPage;
+            IWebElement element = driver.FindElement(By.Id("content-editable"));
+            element.Clear();
+            Assert.AreEqual(string.Empty, element.Text);
+        }
+   }
 }

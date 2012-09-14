@@ -83,6 +83,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         [NeedsFreshDriver(BeforeTest = true)]
         public void ShouldDoNothingIfThereIsNothingToGoBackTo()
         {
@@ -109,7 +110,7 @@ namespace OpenQA.Selenium
             Assert.AreEqual(driver.Title, "We Arrive Here");
 
             driver.Navigate().Back();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(TitleToBeEqualTo("We Leave From Here"));
             Assert.AreEqual(driver.Title, "We Leave From Here");
         }
 
@@ -123,7 +124,7 @@ namespace OpenQA.Selenium
             Assert.AreEqual(driver.Title, "This page has iframes");
 
             driver.Navigate().Back();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(TitleToBeEqualTo("XHTML Test Page"));
             Assert.AreEqual(driver.Title, "XHTML Test Page");
         }
 
@@ -137,11 +138,11 @@ namespace OpenQA.Selenium
             Assert.AreEqual(driver.Title, "We Arrive Here");
 
             driver.Navigate().Back();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(TitleToBeEqualTo("We Leave From Here"));
             Assert.AreEqual(driver.Title, "We Leave From Here");
 
             driver.Navigate().Forward();
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            WaitFor(TitleToBeEqualTo("We Arrive Here"));
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -189,6 +190,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "Not implemented for browser")]
         [IgnoreBrowser(Browser.HtmlUnit, "Not implemented for browser")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.PhantomJS, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
         public void ShouldTimeoutIfAPageTakesTooLongToLoad()
         {

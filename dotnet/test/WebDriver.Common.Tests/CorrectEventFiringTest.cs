@@ -298,6 +298,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.PhantomJS, "Browser does not return so test waits to timeout")]
         public void SubmittingFormFromFormElementShouldFireOnSubmitForThatForm()
         {
             driver.Url = javascriptPage;
@@ -308,6 +309,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.PhantomJS, "Browser does not return so test waits to timeout")]
         public void SubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm()
         {
             driver.Url = javascriptPage;
@@ -318,6 +320,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.PhantomJS, "Browser does not return so test waits to timeout")]
         public void SubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput()
         {
             driver.Url = javascriptPage;
