@@ -43,6 +43,8 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Semaphore;
 
 import java.util.List;
 import java.util.Map;
@@ -182,25 +184,20 @@ public class AndroidWebElement implements WebElement,
         this);
 
     final WebView view = driver.getWebView();
-    done = false;
-    long end = System.currentTimeMillis() + AndroidWebDriver.UI_TIMEOUT;
+
+    final Semaphore sem = new Semaphore(0);
     driver.getActivity().runOnUiThread(new Runnable() {
       public void run() {
-        synchronized (syncObject) {
-          EventSender.sendKeys(view, driver.getActivity(), value);
-          done = true;
-          syncObject.notify();
-        }
+        EventSender.sendKeys(view, driver.getActivity(), value);
+        sem.release();
       }
     });
-    while (!done && System.currentTimeMillis() < end) {
-      synchronized (syncObject) {
-        try {
-          syncObject.wait();
-        } catch (InterruptedException e) {
-          throw new WebDriverException("Error while sending keys.", e);
-        }
-      }
+
+
+    try {
+      sem.tryAcquire(AndroidWebDriver.UI_TIMEOUT, TimeUnit.MILLISECONDS);
+    } catch (InterruptedException e) {
+      throw new WebDriverException("Error while sending keys.", e);
     }
   }
 
