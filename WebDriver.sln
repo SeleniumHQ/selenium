@@ -74,6 +74,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriverServer", "cpp\IEDri
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-10", "cpp\webdriver-firefox\webdriver-firefox-10.vcxproj", "{979D51D1-AB6B-482D-AC3F-C5B226CFB904}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.PhantomJS.Tests", "dotnet\test\WebDriver.PhantomJS.Tests\WebDriver.PhantomJS.Tests.csproj", "{2329720E-A694-4A6F-B4E6-EDEA911298E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -460,6 +462,20 @@ Global
 		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|Win32.ActiveCfg = Release|Win32
 		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|Win32.Build.0 = Release|Win32
 		{979D51D1-AB6B-482D-AC3F-C5B226CFB904}.Release|x64.ActiveCfg = Release|x64
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Release|.NET.ActiveCfg = Release|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Release|Win32.ActiveCfg = Release|Any CPU
+		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
