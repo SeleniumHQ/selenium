@@ -73,6 +73,7 @@ public class ErrorCodes {
   public static final int INVALID_SELECTOR_ERROR = 32;
   public static final int SESSION_NOT_CREATED = 33;
   public static final int MOVE_TARGET_OUT_OF_BOUNDS = 34;
+  public static final int SQL_DATABASE_ERROR = 35;
   public static final int INVALID_XPATH_SELECTOR = 51;
   public static final int INVALID_XPATH_SELECTOR_RETURN_TYPER = 52;
   // The following error codes are derived straight from HTTP return codes.

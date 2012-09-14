@@ -57,7 +57,6 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore
   public void testDisableJavascriptCapability() {
     try {
       configureCapability(CapabilityType.SUPPORTS_JAVASCRIPT, false);
@@ -67,7 +66,6 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore
   public void testDisableHandlesAlertsCapability() {
     try {
       configureCapability(CapabilityType.SUPPORTS_ALERTS, false);
@@ -77,7 +75,6 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore
   public void testDisableCssSelectorCapability() {
     try {
       configureCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, false);
@@ -87,7 +84,6 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore
   public void testDisableScreenshotCapability() {
     try {
       configureCapability(CapabilityType.TAKES_SCREENSHOT, false);
@@ -97,7 +93,6 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore
   public void testEnableRotatableCapability() {
     try {
       configureCapability(CapabilityType.ROTATABLE, true);
