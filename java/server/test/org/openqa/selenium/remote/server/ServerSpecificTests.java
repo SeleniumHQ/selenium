@@ -40,6 +40,7 @@ import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxyTest;
     RemoteWebDriverTest.class,
     ResultConfigTest.class,
     SessionCleanerTest.class,
+    SessionLogsTest.class,
     UploadFileTest.class,
     UrlMapperTest.class
 })

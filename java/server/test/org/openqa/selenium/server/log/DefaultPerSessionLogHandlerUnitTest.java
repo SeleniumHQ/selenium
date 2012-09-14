@@ -15,14 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package org.openqa.selenium.server.log;
 
 import static org.junit.Assert.assertEquals;
-
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.SessionLogs;
+import org.openqa.selenium.remote.SessionId;
 
 import java.io.IOException;
 import java.util.logging.Formatter;
@@ -36,6 +39,42 @@ public class DefaultPerSessionLogHandlerUnitTest {
 
   private static final int CAPACITY = 1;
 
+  public void testPopulationOfSessionLog() throws IOException {
+    PerSessionLogHandler handler = createPerSessionLogHandler();
+    SessionId sessionId = new SessionId("session-1");
+    handler.attachToCurrentThread(sessionId);
+    LogRecord firstRecord = new LogRecord(Level.INFO, "First Log Record");
+    handler.publish(firstRecord);
+    LogEntries entries = handler.getSessionLog(sessionId);
+    assertEquals("Session log should contain one entry", 1, entries.getAll().size());
+    assertEquals("Session log should contain logged entry",
+        firstRecord.getMessage(), entries.getAll().get(0).getMessage());
+  }
+
+  public void testLoggedSessions() {
+    PerSessionLogHandler handler = createPerSessionLogHandler();
+    SessionId sessionId = new SessionId("session-1");
+    handler.attachToCurrentThread(sessionId);
+    handler.publish(new LogRecord(Level.INFO, "First Log Record"));
+    assertTrue("Added session should be provided as a logged session",
+        handler.getLoggedSessions().contains(sessionId));
+  }
+
+  public void testGetSessionLogsWithLogCaptureDisabled() {
+    PerSessionLogHandler handler = createPerSessionLogHandler();
+    SessionId sessionId = new SessionId("session-1");
+    handler.attachToCurrentThread(sessionId);
+    LogRecord firstRecord = new LogRecord(Level.INFO, "First Log Record");
+    handler.publish(firstRecord);
+    SessionLogs sessionLogs = handler.getAllLogsForSession(sessionId);
+    assertTrue("Session logs for session should contain server logs",
+        sessionLogs.getLogTypes().contains(LogType.SERVER));
+    assertEquals("Session logs for server should contain one entry",
+        1, sessionLogs.getLogs(LogType.SERVER).getAll().size());
+    assertEquals("Session log should contain logged entry", firstRecord.getMessage(),
+        sessionLogs.getLogs(LogType.SERVER).getAll().get(0).getMessage());
+  }   
+  
   @Test
   public void testThreadToSessionMappingOnInitialNullSession()
       throws IOException {
@@ -43,11 +82,13 @@ public class DefaultPerSessionLogHandlerUnitTest {
     LogRecord firstRecord = new LogRecord(Level.INFO, "First Log Record");
     LogRecord secondRecord = new LogRecord(Level.INFO, "Second Log Record");
 
+    SessionId sessionId = new SessionId("session-1");
+    
     handler.publish(firstRecord);
-    handler.attachToCurrentThread("session-1");
+    handler.attachToCurrentThread(sessionId);
     handler.publish(secondRecord);
 
-    assertMessagesLoggedForSessionId(handler, "session-1",
+    assertMessagesLoggedForSessionId(handler, sessionId,
                                      "First Log Record", "Second Log Record");
   }
 
@@ -63,17 +104,20 @@ public class DefaultPerSessionLogHandlerUnitTest {
     LogRecord oneMoreRecord = new LogRecord(Level.INFO,
                                             "One More Log Record");
 
+    SessionId sessionIdOne = new SessionId("session-1");
+    SessionId sessionIdTwo = new SessionId("session-2");
+    
     handler.publish(firstRecord);
-    handler.attachToCurrentThread("session-1");
+    handler.attachToCurrentThread(sessionIdOne);
     handler.publish(secondRecord);
     handler.detachFromCurrentThread();
     handler.publish(anotherRecord);
-    handler.attachToCurrentThread("session-2");
+    handler.attachToCurrentThread(sessionIdTwo);
     handler.publish(oneMoreRecord);
 
-    assertMessagesLoggedForSessionId(handler, "session-1",
+    assertMessagesLoggedForSessionId(handler, sessionIdOne,
                                      firstRecord.getMessage(), "Second Log Record");
-    assertMessagesLoggedForSessionId(handler, "session-2",
+    assertMessagesLoggedForSessionId(handler, sessionIdTwo,
                                      "Another Log Record", "One More Log Record");
   }
 
@@ -85,19 +129,22 @@ public class DefaultPerSessionLogHandlerUnitTest {
     LogRecord secondSessionLog = new LogRecord(Level.INFO,
                                                "Second Session Related Log Record");
 
+    SessionId sessionIdOne = new SessionId("session-one");
+    SessionId sessionIdTwo = new SessionId("session-two");
+    
     // set logs for session-1
-    handler.attachToCurrentThread("session-one");
+    handler.attachToCurrentThread(sessionIdOne);
     handler.publish(firstSessionLog);
     handler.detachFromCurrentThread();
 
     // set logs for session-2
-    handler.attachToCurrentThread("session-two");
+    handler.attachToCurrentThread(sessionIdTwo);
     handler.publish(secondSessionLog);
     handler.detachFromCurrentThread();
 
-    assertMessagesLoggedForSessionId(handler, "session-one",
+    assertMessagesLoggedForSessionId(handler, sessionIdOne,
                                      "First Session Related Log Record");
-    assertMessagesLoggedForSessionId(handler, "session-two",
+    assertMessagesLoggedForSessionId(handler, sessionIdTwo,
                                      "Second Session Related Log Record");
   }
 
@@ -106,7 +153,7 @@ public class DefaultPerSessionLogHandlerUnitTest {
       throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
 
-    assertNoMessageLoggedForSessionId(handler, "session");
+    assertNoMessageLoggedForSessionId(handler, new SessionId("session"));
   }
 
   @Test
@@ -114,13 +161,15 @@ public class DefaultPerSessionLogHandlerUnitTest {
       throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
 
-    handler.transferThreadTempLogsToSessionLogs("session");
+    SessionId sessionId = new SessionId("session");
+    
+    handler.transferThreadTempLogsToSessionLogs(sessionId);
 
-    assertNoMessageLoggedForSessionId(handler, "session");
+    assertNoMessageLoggedForSessionId(handler, sessionId);
   }
 
   private void assertMessagesLoggedForSessionId(PerSessionLogHandler handler,
-                                                String sessionId, String... expectedMessages)
+                                                SessionId sessionId, String... expectedMessages)
       throws IOException {
     StringBuilder expectedLogMessage = new StringBuilder(
         "\n<RC_Logs RC_Session_ID=");
@@ -138,13 +187,13 @@ public class DefaultPerSessionLogHandlerUnitTest {
   }
 
   private void assertNoMessageLoggedForSessionId(
-      PerSessionLogHandler handler, String sessionId) throws IOException {
+      PerSessionLogHandler handler, SessionId sessionId) throws IOException {
     assertMessagesLoggedForSessionId(handler, sessionId);
   }
 
   private PerSessionLogHandler createPerSessionLogHandler() {
     return new DefaultPerSessionLogHandler(CAPACITY, Level.INFO,
-                                    new FormatterStub());
+                                    new FormatterStub(), false);
   }
 
   static class FormatterStub extends Formatter {

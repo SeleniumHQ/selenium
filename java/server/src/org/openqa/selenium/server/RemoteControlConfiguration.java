@@ -67,6 +67,7 @@ public class RemoteControlConfiguration {
   private String dontInjectRegex;
   private File firefoxProfileTemplate;
   private boolean reuseBrowserSessions;
+  private boolean captureLogsOnQuit;
   private String logOutFileName;
   private String forcedBrowserMode;
   private boolean honorSystemProxy;
@@ -239,6 +240,14 @@ public class RemoteControlConfiguration {
 
   public boolean reuseBrowserSessions() {
     return reuseBrowserSessions;
+  }
+  
+  public void setCaptureLogsOnQuit(boolean captureLogs) {
+    captureLogsOnQuit = captureLogs;
+  }
+  
+  public boolean isCaptureOfLogsOnQuitEnabled() {
+    return captureLogsOnQuit;
   }
 
   public void setLogOutFileName(String newLogOutFileName) {

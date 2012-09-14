@@ -19,6 +19,8 @@ package org.openqa.selenium.remote.server.handler;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
@@ -63,7 +65,11 @@ public class NewSession implements RestishHandler, JsonParametersAware {
     response.setSessionId(sessionId.toString());
     response.setValue(allSessions.get(sessionId).getCapabilities().asMap());
 
-    LoggingManager.perSessionLogHandler().attachToCurrentThread(sessionId.toString());
+    if (desiredCapabilities != null) {
+      LoggingManager.perSessionLogHandler().configureLogging(
+          (LoggingPreferences)desiredCapabilities.getCapability(CapabilityType.LOGGING_PREFS));
+    }
+    LoggingManager.perSessionLogHandler().attachToCurrentThread(sessionId);
     return ResultType.SUCCESS;
   }
 

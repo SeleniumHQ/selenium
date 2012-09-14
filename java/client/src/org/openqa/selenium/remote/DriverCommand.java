@@ -158,6 +158,7 @@ public interface DriverCommand {
   String MAXIMIZE_WINDOW = "maximizeWindow";
 
   // Logging API
-  String GET_LOG = "getLog";
   String GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes";
+  String GET_LOG = "getLog";
+  String GET_SESSION_LOGS = "getSessionLogs";
 }

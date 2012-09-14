@@ -18,6 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.server.log;
 
+import org.openqa.selenium.remote.SessionId;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -78,10 +80,10 @@ class LogFile {
 
 
 public class SessionLogsToFileRepository {
-  private Map<String, LogFile> sessionToLogFileMap;
+  private Map<SessionId, LogFile> sessionToLogFileMap;
 
   public SessionLogsToFileRepository() {
-    sessionToLogFileMap = new HashMap<String, LogFile>();
+    sessionToLogFileMap = new HashMap<SessionId, LogFile>();
   }
 
   /**
@@ -92,10 +94,10 @@ public class SessionLogsToFileRepository {
    * @param sessionId session-id for the log file entry needs to be created.
    * @throws IOException
    */
-  private void createLogFileAndAddToMap(String sessionId) throws IOException {
+  public void createLogFileAndAddToMap(SessionId sessionId) throws IOException {
     File rcLogFile;
     // create logFile;
-    rcLogFile = File.createTempFile(sessionId, ".rclog");
+    rcLogFile = File.createTempFile(sessionId.toString(), ".rclog");
     rcLogFile.deleteOnExit();
     LogFile logFile = new LogFile(rcLogFile.getAbsolutePath());
     sessionToLogFileMap.put(sessionId, logFile);
@@ -110,7 +112,7 @@ public class SessionLogsToFileRepository {
    * @param records logRecords that need to be stored
    * @throws IOException
    */
-  synchronized public void flushRecordsToLogFile(String sessionId,
+  synchronized public void flushRecordsToLogFile(SessionId sessionId,
       List<LogRecord> records) throws IOException {
     LogFile logFile = sessionToLogFileMap.get(sessionId);
 
@@ -134,7 +136,7 @@ public class SessionLogsToFileRepository {
    * @return A List of LogRecord objects, which can be <i>null</i>.
    * @throws IOException
    */
-  public List<LogRecord> getLogRecords(String sessionId) throws IOException {
+  public List<LogRecord> getLogRecords(SessionId sessionId) throws IOException {
     LogFile logFile = sessionToLogFileMap.get(sessionId);
     if (logFile == null) {
       return new ArrayList<LogRecord>();
@@ -159,7 +161,7 @@ public class SessionLogsToFileRepository {
     return logRecords;
   }
 
-  public void removeLogFile(String sessionId) {
+  public void removeLogFile(SessionId sessionId) {
     LogFile logFile = sessionToLogFileMap.get(sessionId);
     sessionToLogFileMap.remove(sessionId);
     if (logFile == null) {

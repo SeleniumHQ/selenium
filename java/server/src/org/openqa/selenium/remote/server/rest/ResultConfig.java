@@ -180,6 +180,7 @@ public class ResultConfig {
   public void handle(String pathInfo, final HttpRequest request,
       final HttpResponse response) throws Exception {
     String sessionId = HttpCommandExecutor.getSessionId(request.getUri());
+    
     SessionId sessId = sessionId != null ? new SessionId(sessionId) : null;
 
     ResultType result;
@@ -244,8 +245,8 @@ public class ResultConfig {
       if (handler instanceof DeleteSession) {
         // Yes, this is funky. See javadoc on cleatThreadTempLogs for details.
         final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
-        logHandler.transferThreadTempLogsToSessionLogs(sessionId);
-        logHandler.removeSessionLogs(sessionId);
+        logHandler.transferThreadTempLogsToSessionLogs(sessId);
+        logHandler.removeSessionLogs(sessId);
         sessions.deleteSession(sessId);
       }
 

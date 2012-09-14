@@ -117,8 +117,8 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
         if (useDeleteSession || killed) {
           driverSessions.deleteSession(sessionId);
           final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
-          logHandler.transferThreadTempLogsToSessionLogs(sessionId.toString());
-          logHandler.removeSessionLogs(sessionId.toString());
+          logHandler.transferThreadTempLogsToSessionLogs(sessionId);
+          logHandler.removeSessionLogs(sessionId);
         }
       }
     }

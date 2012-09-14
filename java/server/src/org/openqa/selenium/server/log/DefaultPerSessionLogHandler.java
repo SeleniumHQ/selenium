@@ -1,4 +1,3 @@
-package org.openqa.selenium.server.log;
 /*
 Copyright 2007-2011 Selenium committers
 
@@ -13,16 +12,31 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
+
+package org.openqa.selenium.server.log;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.SessionLogs;
+import org.openqa.selenium.remote.SessionId;
 
 /**
  * RestishHandler which keeps in memory the log records per session so that users can retrieve logs per
@@ -30,7 +44,9 @@ import java.util.logging.LogRecord;
  */
 public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
 
-  private final Map<String, List<LogRecord>> perSessionRecords;
+  private final Map<SessionId, List<LogRecord>> perSessionRecords;
+  
+  private final Map<SessionId, Map<String, LogEntries>> perSessionDriverEntries;
 
   // Used to store log records that doesnt have associated session.
   // These records get mapped to session id once the session gets created
@@ -38,10 +54,13 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
   // associated till the session gets created.
   private final Map<ThreadKey, List<LogRecord>> perThreadTempRecords;
   private final Formatter formatter;
-  private Map<ThreadKey, String> threadToSessionMap;
-  private Map<String, ThreadKey> sessionToThreadMap;
+  private Map<ThreadKey, SessionId> threadToSessionMap;
+  private Map<SessionId, ThreadKey> sessionToThreadMap;
   private SessionLogsToFileRepository logFileRepository;
   private int capacity;
+  private boolean storeLogsOnSessionQuit = false;
+  
+  private Level serverLogLevel = Level.INFO;
 
   /**
    * New handler keeping track of log records per session.
@@ -50,21 +69,25 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
    * @param minimumLevel Only keep track of records whose level is equal or greater than
    *                     minimumLevel.
    * @param formatter    Formatter to use when retrieving log messages.
+   * @param captureLogsOnQuit Whether to enable log capture on quit.
    */
-  public DefaultPerSessionLogHandler(int capacity, Level minimumLevel, Formatter formatter) {
+  public DefaultPerSessionLogHandler(int capacity, Level minimumLevel, Formatter formatter, 
+      boolean captureLogsOnQuit) {
     this.capacity = capacity;
     this.formatter = formatter;
-    this.perSessionRecords = new HashMap<String, List<LogRecord>>();
-    this.perThreadTempRecords = new HashMap<ThreadKey, List<LogRecord>>();
-    this.threadToSessionMap = new HashMap<ThreadKey, String>();
-    this.sessionToThreadMap = new HashMap<String, ThreadKey>();
+    this.storeLogsOnSessionQuit = captureLogsOnQuit;
+    this.perSessionRecords = Maps.<SessionId, List<LogRecord>>newHashMap();
+    this.perThreadTempRecords = Maps.<ThreadKey, List<LogRecord>>newHashMap();
+    this.threadToSessionMap = Maps.<ThreadKey, SessionId>newHashMap();
+    this.sessionToThreadMap = Maps.<SessionId, ThreadKey>newHashMap();
     this.logFileRepository = new SessionLogsToFileRepository();
+    this.perSessionDriverEntries = Maps.<SessionId, Map<String, LogEntries>>newHashMap();
   }
 
   @Override
   synchronized public void publish(LogRecord record) {
     ThreadKey threadId = new ThreadKey();
-    String sessionId = threadToSessionMap.get(threadId);
+    SessionId sessionId = threadToSessionMap.get(threadId);
 
     if (sessionId != null) {
       List<LogRecord> records = perSessionRecords.get(sessionId);
@@ -73,6 +96,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
       }
       records.add(record);
       perSessionRecords.put(sessionId, records);
+      
       if (records.size() > capacity) {
         perSessionRecords.put( sessionId, new ArrayList<LogRecord>());
         // flush records to file;
@@ -105,16 +129,17 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     perThreadTempRecords.clear();
   }
 
-  private LogRecord[] records(String sessionId) throws IOException {
+  private LogRecord[] records(SessionId sessionId) throws IOException {
     List<LogRecord> logFileRecords = logFileRepository.getLogRecords(sessionId);
-    List<LogRecord> records = perSessionRecords.get(sessionId);
+    List<LogRecord> records = perSessionRecords.remove(sessionId);
     if (records != null) {
       logFileRecords.addAll(records);
     }
+    logFileRepository.removeLogFile(sessionId);
     return logFileRecords.toArray(new LogRecord[logFileRecords.size()]);
   }
 
-  private String formattedRecords(String sessionId) throws IOException {
+  private String formattedRecords(SessionId sessionId) throws IOException {
     final StringWriter writer;
 
     writer = new StringWriter();
@@ -125,7 +150,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
   }
 
   @Override
-  public synchronized void attachToCurrentThread(String sessionId) {
+  public synchronized void attachToCurrentThread(SessionId sessionId) {
     ThreadKey threadId = new ThreadKey();
     if (threadToSessionMap.get(threadId) == null
         || threadToSessionMap.get(threadId).equals(sessionId)) {
@@ -136,7 +161,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
   }
 
   @Override
-  public void transferThreadTempLogsToSessionLogs(String sessionId) {
+  public void transferThreadTempLogsToSessionLogs(SessionId sessionId) {
     ThreadKey threadId = new ThreadKey();
     List<LogRecord> threadRecords = perThreadTempRecords.get(threadId);
     List<LogRecord> sessionRecords = perSessionRecords.get(sessionId);
@@ -154,7 +179,7 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
   @Override
   public synchronized void detachFromCurrentThread() {
     ThreadKey threadId = new ThreadKey();
-    String sessionId = threadToSessionMap.get(threadId);
+    SessionId sessionId = threadToSessionMap.get(threadId);
     if (sessionId != null) {
       threadToSessionMap.remove(threadId);
       sessionToThreadMap.remove(sessionId);
@@ -162,10 +187,20 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
     }
   }
 
+  /**
+   * Removes session logs for the given session id. 
+   * 
+   * NB! If the handler has been configured to capture logs on quit no logs will be removed.
+   * 
+   * @param sessionId The session id to use.
+   */
   @Override
-  public synchronized void removeSessionLogs(String sessionId) {
+  public synchronized void removeSessionLogs(SessionId sessionId) {
+    if (storeLogsOnSessionQuit) {
+      return;
+    }
     ThreadKey threadId = sessionToThreadMap.get(sessionId);
-    String sessionIdForThread = threadToSessionMap.get(threadId);
+    SessionId sessionIdForThread = threadToSessionMap.get(threadId);
     if (threadId != null && sessionIdForThread != null && sessionIdForThread.equals(sessionId)) {
       threadToSessionMap.remove(threadId);
       sessionToThreadMap.remove(sessionId);
@@ -200,12 +235,106 @@ public class DefaultPerSessionLogHandler extends PerSessionLogHandler {
    * @throws IOException when the elves go bad
    */
   @Override
-  public synchronized String getLog(String sessionId) throws IOException {
+  public synchronized String getLog(SessionId sessionId) throws IOException {
     // TODO(chandra): Provide option to clear logs after getLog()
     String logs = formattedRecords(sessionId);
     logs = "\n<RC_Logs RC_Session_ID=" + sessionId + ">\n" + logs
            + "\n</RC_Logs>\n";
     return logs;
+  }
+
+  /**
+   * Returns the server log for the given session id.
+   * 
+   * @param sessionId The session id.
+   * @return The available server log entries for the session.
+   * @throws IOException If there was a problem reading from file.
+   */
+  @Override
+  public synchronized LogEntries getSessionLog(SessionId sessionId) throws IOException {
+    List<LogEntry> entries = Lists.<LogEntry>newLinkedList();
+    LogRecord[] records = records(sessionId);
+    if (records != null) {
+      for (LogRecord record : records) {
+        if (record.getLevel().intValue() >= serverLogLevel.intValue())
+          entries.add(new LogEntry(record.getLevel(), record.getMillis(), record.getMessage()));
+      }
+    }
+    return new LogEntries(entries);
+  }
+
+  /**
+   * Returns a list of session IDs for which there are logs. 
+   * 
+   * The type of logs that are available depends on the log types provided
+   * by the driver. An included session id will at least have server logs.
+   * 
+   * @return The list of session IDs.
+   */
+  @Override
+  public synchronized List<SessionId> getLoggedSessions() {
+    // TODO: Find a solution that can handle large numbers of sessions, maybe by
+    // reading them from disc.
+    ImmutableList.Builder<SessionId> builder = new ImmutableList.Builder<SessionId>();
+    builder.addAll(perSessionDriverEntries.keySet());
+    return builder.build();
+  }
+  
+  /**
+   * Gets all logs for a session.
+   * 
+   * @param sessionId The id of the session.
+   * @return The logs for the session, ordered after log types in a session logs object. 
+   */
+  @Override
+  public synchronized SessionLogs getAllLogsForSession(SessionId sessionId) {
+    SessionLogs sessionLogs = new SessionLogs();
+    if (perSessionDriverEntries.containsKey(sessionId)) {
+      Map<String, LogEntries> typeToEntriesMap = perSessionDriverEntries.get(sessionId);
+      for (String logType : typeToEntriesMap.keySet()) {
+        sessionLogs.addLog(logType, typeToEntriesMap.get(logType));
+      }
+      perSessionDriverEntries.remove(sessionId);
+    }
+    return sessionLogs;
+  }
+
+  /**
+   * Fetches and stores available logs from the given session and driver.
+   * 
+   *  @param sessionId The id of the session.
+   *  @param driver The driver to get the logs from.
+   *  @throws IOException If there was a problem reading from file.
+   */
+  @Override
+  public synchronized void fetchAndStoreLogsFromDriver(SessionId sessionId, WebDriver driver) 
+      throws IOException {
+    if (!perSessionDriverEntries.containsKey(sessionId)) {
+      perSessionDriverEntries.put(sessionId, Maps.<String, LogEntries>newHashMap());
+    }
+    Map<String, LogEntries> typeToEntriesMap = perSessionDriverEntries.get(sessionId);
+    if (storeLogsOnSessionQuit) {
+      typeToEntriesMap.put(LogType.SERVER, getSessionLog(sessionId));
+      Set<String> logTypeSet = driver.manage().logs().getAvailableLogTypes();
+      for (String logType : logTypeSet) {
+        typeToEntriesMap.put(logType, driver.manage().logs().get(logType));
+      }
+    }
+  }
+  
+  /**
+   * Configures logging using a logging preferences object.
+   * 
+   * @param prefs The logging preferences object.
+   */
+  @Override
+  public void configureLogging(LoggingPreferences prefs) {
+    if (prefs == null) {
+      return;
+    }
+    if (prefs.getEnabledLogTypes().contains(LogType.SERVER)) {      
+      serverLogLevel = prefs.getLevel(LogType.SERVER);
+    }
   }
 
   private static class ThreadKey {

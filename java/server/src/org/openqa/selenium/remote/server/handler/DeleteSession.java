@@ -39,6 +39,8 @@ public class DeleteSession extends WebDriverHandler {
       return ResultType.SUCCESS;
     }
 
+    LoggingManager.perSessionLogHandler().fetchAndStoreLogsFromDriver(getSessionId(), driver);
+    
     driver.quit();
 
     // Yes, this is funky. See javadocs on PerSessionLogHandler#clearThreadTempLogs for details.

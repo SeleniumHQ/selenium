@@ -134,6 +134,8 @@ public class RemoteControlLauncher {
         }
       } else if ("-log".equalsIgnoreCase(arg)) {
         configuration.setLogOutFileName(getArg(args, ++i));
+      } else if ("-captureLogsOnQuit".equalsIgnoreCase(arg)) {
+        configuration.setCaptureLogsOnQuit(true);
       } else if ("-port".equalsIgnoreCase(arg)) {
         configuration.setPort(Integer.parseInt(getArg(args, ++i)));
       } else if ("-multiWindow".equalsIgnoreCase(arg)) {

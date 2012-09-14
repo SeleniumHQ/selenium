@@ -16,9 +16,11 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
+import org.openqa.selenium.server.log.LoggingManager;
 
 import java.util.Map;
 
@@ -33,7 +35,11 @@ public class GetLogHandler extends ResponseAwareWebDriverHandler implements Json
   }
 
   public ResultType call() throws Exception {
-    response.setValue(getDriver().manage().logs().get(type));
+    if (LogType.SERVER.equals(type)) {
+      response.setValue(LoggingManager.perSessionLogHandler().getSessionLog(getSessionId()));
+    } else {
+      response.setValue(getDriver().manage().logs().get(type));
+    }
     return ResultType.SUCCESS;
   }
 

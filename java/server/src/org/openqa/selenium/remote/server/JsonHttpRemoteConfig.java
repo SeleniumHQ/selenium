@@ -60,6 +60,7 @@ import org.openqa.selenium.remote.server.handler.GetElementText;
 import org.openqa.selenium.remote.server.handler.GetElementValue;
 import org.openqa.selenium.remote.server.handler.GetPageSource;
 import org.openqa.selenium.remote.server.handler.GetScreenOrientation;
+import org.openqa.selenium.remote.server.handler.GetSessionLogsHandler;
 import org.openqa.selenium.remote.server.handler.GetSessionCapabilities;
 import org.openqa.selenium.remote.server.handler.GetTagName;
 import org.openqa.selenium.remote.server.handler.GetTitle;
@@ -479,6 +480,8 @@ public class JsonHttpRemoteConfig {
     getMapper.bind("/session/:sessionId/log/types", GetAvailableLogTypesHandler.class)
         .on(ResultType.SUCCESS, jsonResponse);
     postMapper.bind("/session/:sessionId/log", GetLogHandler.class)
+        .on(ResultType.SUCCESS, jsonResponse);
+    postMapper.bind("/logs", GetSessionLogsHandler.class)
         .on(ResultType.SUCCESS, jsonResponse);
   }
 }

@@ -15,11 +15,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package org.openqa.selenium.server.log;
 
-import java.io.IOException;
+import com.google.common.collect.ImmutableList;
+
 import java.util.logging.LogRecord;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.SessionLogs;
+import org.openqa.selenium.remote.SessionId;
 
 /**
  * @author Kristian Rosenvold
@@ -27,11 +34,11 @@ import java.util.logging.LogRecord;
 public class NoOpSessionLogHandler extends PerSessionLogHandler {
 
   @Override
-  public void attachToCurrentThread(String sessionId) {
+  public void attachToCurrentThread(SessionId sessionId) {
   }
 
   @Override
-  public void transferThreadTempLogsToSessionLogs(String sessionId) {
+  public void transferThreadTempLogsToSessionLogs(SessionId sessionId) {
   }
 
   @Override
@@ -39,7 +46,7 @@ public class NoOpSessionLogHandler extends PerSessionLogHandler {
   }
 
   @Override
-  public void removeSessionLogs(String sessionId) {
+  public void removeSessionLogs(SessionId sessionId) {
   }
 
   @Override
@@ -47,7 +54,7 @@ public class NoOpSessionLogHandler extends PerSessionLogHandler {
   }
 
   @Override
-  public String getLog(String sessionId) throws IOException {
+  public String getLog(SessionId sessionId) {
     return null;
   }
 
@@ -61,5 +68,28 @@ public class NoOpSessionLogHandler extends PerSessionLogHandler {
 
   @Override
   public void close() throws SecurityException {
+  }
+
+  @Override
+  public LogEntries getSessionLog(SessionId sessionId) {
+    return new LogEntries(ImmutableList.<LogEntry>of());
+  }
+  
+  @Override
+  public ImmutableList<SessionId> getLoggedSessions() {
+    return ImmutableList.<SessionId>of();
+  }
+
+  @Override
+  public SessionLogs getAllLogsForSession(SessionId sessionId) {
+    return new SessionLogs();
+  }
+
+  @Override
+  public void fetchAndStoreLogsFromDriver(SessionId sessionId, WebDriver driver) {
+  }
+  
+  @Override
+  public void configureLogging(LoggingPreferences prefs) {    
   }
 }

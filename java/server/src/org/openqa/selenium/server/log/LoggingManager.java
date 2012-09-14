@@ -97,11 +97,11 @@ public class LoggingManager {
     if (debugMode) {
       perSessionLogHandler =
           new DefaultPerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
-              Level.FINE, new TerseFormatter(true));
+              Level.FINE, new TerseFormatter(true), configuration.isCaptureOfLogsOnQuitEnabled());
     } else {
       perSessionLogHandler =
           new DefaultPerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
-              Level.INFO, new TerseFormatter(true));
+              Level.INFO, new TerseFormatter(true), configuration.isCaptureOfLogsOnQuitEnabled());
     }
     logger.addHandler(perSessionLogHandler);
   }

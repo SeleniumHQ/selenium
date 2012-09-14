@@ -25,6 +25,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.DoNotUseProxyPac;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.SessionLogs;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -143,6 +144,10 @@ public class BeanToJsonConverter {
         converted.put(logType, prefs.getLevel(logType));
       }
       return converted;
+    }
+    
+    if (toConvert instanceof SessionLogs) {
+      return convertObject(((SessionLogs)toConvert).getAll(), maxDepth - 1);
     }
 
     if (toConvert instanceof LogEntries) {

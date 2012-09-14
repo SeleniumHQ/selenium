@@ -49,8 +49,8 @@ public abstract class WebDriverHandler implements RestishHandler, Callable<Resul
     }
   }
 
-  public String getSessionId() {
-    return session.getSessionId().toString();
+  public SessionId getSessionId() {
+    return session.getSessionId();
   }
 
   public String getScreenshot() {

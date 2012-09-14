@@ -38,7 +38,7 @@ java_library(name = "logging",
     "log/*.java",
   ],
   deps = [
-    "//java/client/src/org/openqa/selenium/remote:base",
+    "//java/client/src/org/openqa/selenium/remote:common",
     "//java/server/src/org/openqa/jetty",
   ])
 

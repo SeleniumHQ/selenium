@@ -21,6 +21,7 @@ package org.openqa.selenium.server;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
 import org.openqa.selenium.server.log.LoggingManager;
@@ -229,7 +230,7 @@ public class BrowserSessionFactory {
           availableSessions.add(sessionInfo);
         }
       } finally {
-        LoggingManager.perSessionLogHandler().removeSessionLogs(sessionId);
+        LoggingManager.perSessionLogHandler().removeSessionLogs(new SessionId(sessionId));
         if (ensureClean) {
           // need to add this to the launcher API.
           // sessionInfo.launcher.restoreOriginalSessionData();
@@ -243,7 +244,7 @@ public class BrowserSessionFactory {
           availableSessions.remove(sessionInfo);
           shutdownBrowserAndClearSessionData(sessionInfo);
         } finally {
-          LoggingManager.perSessionLogHandler().removeSessionLogs(sessionId);
+          LoggingManager.perSessionLogHandler().removeSessionLogs(new SessionId(sessionId));
           if (ensureClean) {
             // sessionInfo.launcher.restoreOriginalSessionData();
           }
@@ -394,7 +395,7 @@ public class BrowserSessionFactory {
     log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
 
     final PerSessionLogHandler perSessionLogHandler = LoggingManager.perSessionLogHandler();
-    perSessionLogHandler.attachToCurrentThread(sessionId);
+    perSessionLogHandler.attachToCurrentThread(new SessionId(sessionId));
     try {
       launcher.launchRemoteSession(startURL);
       queueSet.waitForLoad(configuration.getTimeoutInSeconds() * 1000l);

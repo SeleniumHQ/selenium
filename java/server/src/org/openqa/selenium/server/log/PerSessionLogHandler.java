@@ -17,25 +17,43 @@ limitations under the License.
  */
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.LogRecord;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.SessionLogs;
+import org.openqa.selenium.remote.SessionId;
 
 /**
  * @author Kristian Rosenvold
  */
 public abstract class PerSessionLogHandler extends java.util.logging.Handler {
 
-  public abstract void attachToCurrentThread(String sessionId);
+  public abstract void attachToCurrentThread(SessionId sessionId);
 
-  public abstract void transferThreadTempLogsToSessionLogs(String sessionId);
+  public abstract void transferThreadTempLogsToSessionLogs(SessionId sessionId);
 
   public abstract void detachFromCurrentThread();
 
-  public abstract void removeSessionLogs(String sessionId);
+  public abstract void removeSessionLogs(SessionId sessionId);
 
   public abstract void clearThreadTempLogs();
 
-  public abstract String getLog(String sessionId) throws IOException;
+  public abstract String getLog(SessionId sessionId) throws IOException;
 
+  public abstract List<SessionId> getLoggedSessions();
+
+  public abstract SessionLogs getAllLogsForSession(SessionId sessionId);
+
+  public abstract LogEntries getSessionLog(SessionId sessionId) throws IOException;
+
+  public abstract void fetchAndStoreLogsFromDriver(SessionId sessionId, WebDriver driver) 
+      throws IOException;
+
+  public abstract void configureLogging(LoggingPreferences loggingPrefs);
+  
   @Override
   public abstract void publish(LogRecord record);
 }

@@ -36,4 +36,9 @@ public class GetAvailableLogTypesHandler extends ResponseAwareWebDriverHandler {
     		 ImmutableSet.of(LogType.SERVER)));
     return ResultType.SUCCESS;
   }
+
+  @Override
+  public String toString() {
+    return String.format("[fetching available log types]");
+  }
 }

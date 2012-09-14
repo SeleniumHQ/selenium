@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.LinkedList;
+import java.util.List;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -41,8 +43,18 @@ public class OutOfProcessSeleniumServer {
 
   private String baseUrl;
   private CommandLine command;
+  private boolean captureLogs = false;
+  
+  /**
+   * Creates an out of process server with log capture enabled.
+   * 
+   * @return The new server.
+   */
+  public void enableLogCapture() {
+    captureLogs = true;
+  }
 
-  public void start() {
+  public OutOfProcessSeleniumServer start() {
     if (command != null) {
       throw new RuntimeException("Server already started");
     }
@@ -53,8 +65,19 @@ public class OutOfProcessSeleniumServer {
     String localAddress = new NetworkUtils().getPrivateLocalAddress();
     baseUrl = String.format("http://%s:%d", localAddress, port);
 
-    command = new CommandLine("java", "-cp", classPath, "org.openqa.grid.selenium.GridLauncher",
-        "-port", String.valueOf((port)), "-browserSideLog");
+    List<String> cmdLine = new LinkedList<String>();
+    cmdLine.add("java");
+    cmdLine.add("-cp");
+    cmdLine.add(classPath);
+    cmdLine.add("org.openqa.grid.selenium.GridLauncher");
+    cmdLine.add("-port");
+    cmdLine.add(String.valueOf(port));
+    cmdLine.add("-browserSideLog");
+    if (captureLogs) {
+      cmdLine.add("-captureLogsOnQuit");
+    }
+    command = new CommandLine(cmdLine.toArray(new String[cmdLine.size()]));
+    
     if (Boolean.getBoolean("webdriver.development")) {
       command.copyOutputTo(System.err);
     }
@@ -69,6 +92,8 @@ public class OutOfProcessSeleniumServer {
     } catch (MalformedURLException e) {
       throw Throwables.propagate(e);
     }
+    
+    return this;
   }
 
   public Capabilities describe() {
@@ -102,6 +127,7 @@ public class OutOfProcessSeleniumServer {
 
     return "";
   }
+  
   public URL getWebDriverUrl() {
     try {
       return new URL(baseUrl + "/wd/hub");

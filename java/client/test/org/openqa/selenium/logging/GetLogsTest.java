@@ -33,6 +33,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import org.junit.After;
 import org.junit.Test;
 
+import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -66,7 +67,8 @@ public class GetLogsTest extends JUnit4TestBase {
       LogEntries firstEntries = driver.manage().logs().get(logType);
       assumeTrue(firstEntries.getAll().size() > 0);
       LogEntries secondEntries = driver.manage().logs().get(logType);
-      assertFalse("There should be no overlapping log entries in consecutive get log calls",
+      assertFalse(String.format("There should be no overlapping log entries in " +
+          "consecutive get log calls for %s logs", logType),
           LogEntriesChecks.hasOverlappingLogEntries(firstEntries, secondEntries));
     }
   }
@@ -90,7 +92,7 @@ public class GetLogsTest extends JUnit4TestBase {
       }
     }
   }
-  
+
   @Test
   public void turningOffLogShouldMeanNoLogMessages() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();

@@ -24,6 +24,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
@@ -143,7 +144,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
       boolean closing = "true".equals(closingParam);
 
       if (sessionId != null) {
-        perSessionLogHandler.attachToCurrentThread(sessionId);
+        perSessionLogHandler.attachToCurrentThread(new SessionId(sessionId));
       }
       log.fine("req: " + req);
       // If this is a browser requesting work for the first time...
@@ -436,7 +437,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         try {
           sessionId = getNewBrowserSession(browserString, values.get(1), extensionJs,
               BrowserOptions.newBrowserOptions(browserConfigurations));
-          LoggingManager.perSessionLogHandler().attachToCurrentThread(sessionId);
+          LoggingManager.perSessionLogHandler().attachToCurrentThread(new SessionId(sessionId));
 
           setDomain(sessionId, values.get(1));
           results = "OK," + sessionId;
@@ -460,7 +461,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         break;
       case getLog:
         try {
-          results = "OK," + LoggingManager.perSessionLogHandler().getLog(sessionId);
+          results = "OK," + LoggingManager.perSessionLogHandler().getLog(new SessionId(sessionId));
         } catch (IOException ioex) {
           results =
               "Failed to get RC logs for the session: " + sessionId + " exception message: " + ioex
