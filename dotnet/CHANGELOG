@@ -1,3 +1,47 @@
+v2.26.0
+=======
+ * Added .NET implementation of PhantomJSDriver, as a headless option for .NET
+   users. This driver requires PhantomJS and GhostDriver. Since the GhostDriver
+   project isn't ready to be used just yet, these classes are marked with 
+   "internal" visibility. When the GhostDriver project is ready, these classes
+   will be made public. Also including test enhancements for use with 
+   PhantomJS.
+ * Made keep-alive configurable on .NET HttpCommandExecutor and
+   DriverServiceCommandExecutor.
+ * Shortcut trying to convert element to ILocatable if an Action in the .NET
+   bindings is called specifically with a null value for element.
+ * Added the LibraryExtractionPath propery to InternetExplorerDriverService to
+   be able to set the location to which the support library of the
+   IEDriverServer.exe is extracted. 
+ * Implementing SuppressInitialDiagnosticInformation property on DriverService
+   to allow users of standalone driver servers to suppress the display of the
+   initial information from the console via the -silent switch.
+ * Updated .NET Actions class to accept IWebDriver objects that implement
+   IWrapsDriver as well as IHasInputDevices. Similarly, actions now can take
+   IWebElement objects that implement IWrapsElement as well as ILocatable. This
+   allows the use of EventFiringWebDriver objects directly without casting in
+   end-user code.
+ * Changing the disposal semantics of the .NET bindings to more closely match
+   the .NET Framework disposal semantics. This means that calling Dispose() on
+   a driver is equivalent to calling Quit(), which enables usage of the using()
+   construct.
+ * Replaced throwing of System.TimeoutException with throwing
+   WebDriverTimeoutException, which now descends from WebDriverException.
+ * Added .NET InternetExplorerOptions.UnexpectedAlertBehavior property to
+   specify how unexpected alerts are handled by the IE driver.
+ * Updated the .NET deployment build to use ILMerge, which merges the dependent
+   assemblies into the main WebDriver.dll assembly. This also removes
+   dependencies on NuGet packages for the core WebDriver.dll assembly.
+ * Updated .NET UnhandledAlertException to include a reference to the Alert not
+   handled.
+ * Expose setting the port for DriverService-based drivers.
+ * Removed visibility of Finder property for FindsByAttribute. This will never
+   work because of .NET's rules around attribute parameter types.
+ * Made .NET 4.0 the default of the .NET bindings for development and
+   debugging.
+ * Updated constructor to .NET Actions class to check that driver parameter
+   implements IHasInputDevices.
+
 v2.25.1
 =======
  * Updated InternetExplorerOptions to allow users to set the IgnoreZoomLevel
