@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.26.0.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Release to coincide with full Selenium release.
+
 v2.25.3.6
 =========
  * Modified behavior such that sending a Quit command on a non-existent
