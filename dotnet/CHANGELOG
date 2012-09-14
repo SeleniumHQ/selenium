@@ -1,5 +1,8 @@
 v2.26.0
 =======
+ * Handled the case where a JSON Wire Protocol error response contains a null
+   value for the message property. Also guarded against null values in other 
+   members of the error response.
  * Added .NET implementation of PhantomJSDriver, as a headless option for .NET
    users. This driver requires PhantomJS and GhostDriver. Since the GhostDriver
    project isn't ready to be used just yet, these classes are marked with 

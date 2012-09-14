@@ -49,15 +49,22 @@ namespace OpenQA.Selenium.Remote
             {
                 if (responseValue.ContainsKey("message"))
                 {
-                    this.message = responseValue["message"].ToString();
+                    if (responseValue["message"] != null)
+                    {
+                        this.message = responseValue["message"].ToString();
+                    }
+                    else
+                    {
+                        this.message = "The error did not contain a message.";
+                    }
                 }
 
-                if (responseValue.ContainsKey("screen"))
+                if (responseValue.ContainsKey("screen") && responseValue["screen"] != null)
                 {
                     this.screenshot = responseValue["screen"].ToString();
                 }
 
-                if (responseValue.ContainsKey("class"))
+                if (responseValue.ContainsKey("class") && responseValue["class"] != null)
                 {
                     this.className = responseValue["class"].ToString();
                 }
