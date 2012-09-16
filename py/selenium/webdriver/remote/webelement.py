@@ -163,8 +163,9 @@ class WebElement(object):
 
     @property
     def location_once_scrolled_into_view(self):
-        """Use this to discover where on the screen an element is so that we can click it. This method should cause the
-        element to be scrolled into view.
+        """CONSIDERED LIABLE TO CHANGE WITHOUT WARNING. Use this to discover where on the screen an
+        element is so that we can click it. This method should cause the element to be scrolled
+        into view.
 
         Returns the top lefthand corner location on the screen, or None if the element is not visible"""
         return self._execute(Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW)['value']
