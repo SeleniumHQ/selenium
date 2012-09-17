@@ -40,11 +40,6 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
                                             parent_wrapper,
                                             criteria,
                                             found_element);
-    } else if (mechanism == L"xpath") {
-      return this->FindElementByXPath(executor,
-                                      parent_wrapper,
-                                      criteria,
-                                      found_element);
     } else {
       std::wstring sanitized_criteria = criteria;
       this->SanitizeCriteria(mechanism, &sanitized_criteria);
@@ -76,17 +71,32 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
         }
 
         status_code = script_wrapper.Execute();
-        if (status_code == SUCCESS && script_wrapper.ResultIsElement()) {
-          script_wrapper.ConvertResultToJsonValue(executor, found_element);
+        if (status_code == SUCCESS) {
+          if (script_wrapper.ResultIsElement()) {
+            script_wrapper.ConvertResultToJsonValue(executor, found_element);
+          } else {
+            LOG(WARN) << "Unable to find element by mechanism "
+                      << LOGWSTRING(mechanism.c_str()) << " and criteria " 
+                      << LOGWSTRING(sanitized_criteria.c_str());
+            status_code = ENOSUCHELEMENT;
+          }
         } else {
-          LOG(WARN) << "Unable to find element by mechanism "
-                    << LOGWSTRING(mechanism.c_str()) << " and criteria" 
-                    << LOGWSTRING(sanitized_criteria.c_str());
-          status_code = ENOSUCHELEMENT;
+          // An error in the execution of the FindElement atom for XPath is assumed
+          // to be a syntactically invalid XPath.
+          if (mechanism == L"xpath") {
+            LOG(WARN) << "Attempted to find element using invalid xpath: "
+                      << LOGWSTRING(sanitized_criteria.c_str());
+            status_code = EINVALIDSELECTOR;
+          } else {
+            LOG(WARN) << "Unexpected error attempting to find element by mechanism "
+                      << LOGWSTRING(mechanism.c_str()) << " with criteria "
+                      << LOGWSTRING(sanitized_criteria.c_str());
+            status_code = ENOSUCHELEMENT;
+          }
         }
       } else {
         LOG(WARN) << "Unable to create criteria object for mechanism "
-                  << LOGWSTRING(mechanism.c_str()) << " and criteria" 
+                  << LOGWSTRING(mechanism.c_str()) << " and criteria " 
                   << LOGWSTRING(sanitized_criteria.c_str());
         status_code = ENOSUCHELEMENT;
       }
@@ -112,11 +122,6 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
                                              parent_wrapper,
                                              criteria,
                                              found_elements);
-    } else if (mechanism == L"xpath") {
-      return this->FindElementsByXPath(executor,
-                                       parent_wrapper,
-                                       criteria,
-                                       found_elements);
     } else {
       std::wstring sanitized_criteria = criteria;
       this->SanitizeCriteria(mechanism, &sanitized_criteria);
@@ -154,14 +159,22 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
             status_code = ENOSUCHELEMENT;
           }
         } else {
-          LOG(WARN) << "Unable to find elements by mechanism "
-                    << LOGWSTRING(mechanism.c_str()) << " and criteria"
-                    << LOGWSTRING(sanitized_criteria.c_str());
-          status_code = ENOSUCHELEMENT;
+          // An error in the execution of the FindElement atom for XPath is assumed
+          // to be a syntactically invalid XPath.
+          if (mechanism == L"xpath") {
+            LOG(WARN) << "Attempted to find elements using invalid xpath: "
+                      << LOGWSTRING(sanitized_criteria.c_str());
+            status_code = EINVALIDSELECTOR;
+          } else {
+            LOG(WARN) << "Unexpected error attempting to find element by mechanism "
+                      << LOGWSTRING(mechanism.c_str()) << " and criteria "
+                      << LOGWSTRING(sanitized_criteria.c_str());
+            status_code = ENOSUCHELEMENT;
+          }
         }
       } else {
         LOG(WARN) << "Unable to create criteria object for mechanism "
-                  << LOGWSTRING(mechanism.c_str()) << " and criteria"
+                  << LOGWSTRING(mechanism.c_str()) << " and criteria "
                   << LOGWSTRING(sanitized_criteria.c_str());
         status_code = ENOSUCHELEMENT;
       }
@@ -302,174 +315,6 @@ int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor,
   }
 
   return result;
-}
-
-int ElementFinder::FindElementByXPath(const IECommandExecutor& executor,
-                                      const ElementHandle parent_wrapper,
-                                      const std::wstring& criteria,
-                                      Json::Value* found_element) {
-  LOG(TRACE) << "Entering ElementFinder::FindElementByXPath";
-
-  int result;
-
-  BrowserHandle browser;
-  result = executor.GetCurrentBrowser(&browser);
-  if (result != SUCCESS) {
-    LOG(WARN) << "Unable to get browser";
-    return result;
-  }
-
-  result = this->InjectXPathEngine(browser);
-  // TODO(simon): Why does the injecting sometimes fail?
-  if (result != SUCCESS) {
-    LOG(WARN) << "Unable to inject xpath engine";
-    return result;
-  }
-
-  // Call it
-  std::wstring query;
-  if (parent_wrapper) {
-    query += L"(function() { return function(){var res = document.__webdriver_evaluate(arguments[0], arguments[1], null, 7, null); return res.snapshotItem(0) ;};})();";
-  } else {
-    query += L"(function() { return function(){var res = document.__webdriver_evaluate(arguments[0], document, null, 7, null); return res.snapshotLength != 0 ? res.snapshotItem(0) : undefined ;};})();";
-  }
-
-  CComPtr<IHTMLDocument2> doc;
-  browser->GetDocument(&doc);
-  Script script_wrapper(doc, query, 2);
-  script_wrapper.AddArgument(criteria);
-  if (parent_wrapper) {
-    CComPtr<IHTMLElement> parent(parent_wrapper->element());
-    IHTMLElement* parent_element_copy;
-    HRESULT hr = parent.CopyTo(&parent_element_copy);
-    script_wrapper.AddArgument(parent_element_copy);
-  }
-  result = script_wrapper.Execute();
-
-  if (result == SUCCESS) {
-    if(script_wrapper.ResultIsEmpty()){
-      LOG(WARN) << "Unable to find elements by xpath";
-      result = ENOSUCHELEMENT;
-    } else if (!script_wrapper.ResultIsElement()) {
-      // The xpath expression did not result in the selection of an element,
-      // so the expression was invalid.
-      LOG(WARN) << "No elements we found by xpath";
-      result = EINVALIDSELECTOR;
-    } else {
-      result = script_wrapper.ConvertResultToJsonValue(executor, found_element);
-    }
-  } else if (result == EUNEXPECTEDJSERROR) {
-    // The given xpath expression caused an error. We change the error code so that it is
-    // consistent with the error codes of the other browsers.
-    LOG(WARN) << "Unable to exec xpath due js error";
-    result = EINVALIDSELECTOR;
-  } else {    LOG(WARN) << "Unable to exec xpath";
-    result = EINVALIDSELECTOR;
-  }
-
-  return result;
-}
-
-int ElementFinder::FindElementsByXPath(const IECommandExecutor& executor,
-                                       const ElementHandle parent_wrapper,
-                                       const std::wstring& criteria,
-                                       Json::Value* found_elements) {
-  LOG(TRACE) << "Entering ElementFinder::FindElementsByXPath";
-
-  int result;
-
-  BrowserHandle browser;
-  result = executor.GetCurrentBrowser(&browser);
-  if (result != SUCCESS) {
-    LOG(WARN) << "Unable to get browser";
-    return result;
-  }
-  result = this->InjectXPathEngine(browser);
-  // TODO(simon): Why does the injecting sometimes fail?
-  if (result != SUCCESS) {
-    LOG(WARN) << "Unable to inject xpath engine";
-    return result;
-  }
-
-  // Call it
-  std::wstring query;
-  if (parent_wrapper) {
-    query += L"(function() { return function() {var res = document.__webdriver_evaluate(arguments[0], arguments[1], null, 7, null); return res;};})();";
-  } else {
-    query += L"(function() { return function() {var res = document.__webdriver_evaluate(arguments[0], document, null, 7, null); return res;};})();";
-  }
-
-  CComPtr<IHTMLDocument2> doc;
-  browser->GetDocument(&doc);
-
-  Script script_wrapper(doc, query, 2);
-  script_wrapper.AddArgument(criteria);
-  if (parent_wrapper) {
-    // Use a copy for the parent element?
-    CComPtr<IHTMLElement> parent(parent_wrapper->element());
-    IHTMLElement* parent_element_copy;
-    HRESULT hr = parent.CopyTo(&parent_element_copy);
-    script_wrapper.AddArgument(parent_element_copy);
-  }
-
-  result = script_wrapper.Execute();
-  if (result != SUCCESS) {
-    // The given xpath expression caused an error. We change the error code so that it is 
-    // consistent with the error codes of the other browsers.
-    LOG(WARN) << "Unable to exec xpath";
-    return EINVALIDSELECTOR;
-  }
-
-  CComVariant snapshot = script_wrapper.result();
-
-  std::wstring get_element_count_script = L"(function(){return function() {return arguments[0].snapshotLength;}})();";
-  Script get_element_count_script_wrapper(doc, get_element_count_script, 1);
-  get_element_count_script_wrapper.AddArgument(snapshot);
-  result = get_element_count_script_wrapper.Execute();
-  if (result == SUCCESS) {
-    if (!get_element_count_script_wrapper.ResultIsInteger()) {
-      LOG(WARN) << "Unable to parse xpath result count as integer";
-      result = EUNEXPECTEDJSERROR;
-    } else {
-      long length = get_element_count_script_wrapper.result().lVal;
-      std::wstring get_next_element_script(L"(function(){return function() {return arguments[0].iterateNext();}})();");
-      for (long i = 0; i < length; ++i) {
-        Script get_element_script_wrapper(doc, get_next_element_script, 2);
-        get_element_script_wrapper.AddArgument(snapshot);
-        get_element_script_wrapper.AddArgument(i);
-        result = get_element_script_wrapper.Execute();
-        if (result == SUCCESS) {
-          Json::Value json_element;
-          get_element_script_wrapper.ConvertResultToJsonValue(executor,
-                                                            &json_element);
-          found_elements->append(json_element);
-        } else {
-          LOG(WARN) << "Unable to load " << i << " element found by xpath";
-        }
-      }
-    }
-  } else {
-    LOG(WARN) << "Unable to exec xpath result count";
-  }
-
-  return result;
-}
-
-int ElementFinder::InjectXPathEngine(BrowserHandle browser_wrapper) {
-  LOG(TRACE) << "Entering ElementFinder::InjectXPathEngine";
-
-  // Inject the XPath engine
-  std::wstring script_source;
-  for (int i = 0; XPATHJS[i]; i++) {
-    script_source += XPATHJS[i];
-  }
-
-  CComPtr<IHTMLDocument2> doc;
-  browser_wrapper->GetDocument(&doc);
-  Script script_wrapper(doc, script_source, 0);
-  int status_code = script_wrapper.Execute();
-
-  return status_code;
 }
 
 void ElementFinder::SanitizeCriteria(const std::wstring& mechanism,

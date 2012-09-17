@@ -497,10 +497,11 @@ task :sizzle_header => [ "cpp/IEDriver/sizzle.h" ]
 
 file "build/javascript/deps.js" => FileList[
     "third_party/closure/goog/**/*.js",
+	"third_party/js/wgxpath/**/*.js",
     "javascript/*/**/*.js",  # Don't depend on js files directly in javascript/
   ] do
   our_cmd = "java -jar third_party/py/jython.jar third_party/closure/bin/calcdeps.py "
-  our_cmd << "--output_mode=deps --path=javascript "
+  our_cmd << "--output_mode=deps --path=javascript --path=third_party/js/wgxpath "
   our_cmd << "--dep=third_party/closure/goog"
 
   # Generate the deps. The file paths will be as they appear on the filesystem,

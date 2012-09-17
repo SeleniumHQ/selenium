@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<!--
+Copyright 2012 Google Inc. All Rights Reserved.
+-->
+<html>
+<head>
+  <title>parser_test</title>
+  <script src="../closure-library/closure/goog/base.js"></script>
+  <script src="test_js_deps.js"></script>
+  <script>
+    goog.require('goog.dom.NodeType');
+    goog.require('goog.testing.jsunit');
+    goog.require('wgxpath.Lexer');
+    goog.require('wgxpath.Parser');
+  </script>
+</head>
+<body>
+  <script>
+    function testKindTest() {
+      var nodeTypeName = ['text', '(', ')'];
+      var lexer = new wgxpath.Lexer(nodeTypeName);
+      var resultKindTest = (new wgxpath.Parser(lexer)).parseKindTest_();
+      assertEquals(goog.dom.NodeType.TEXT, resultKindTest.type_);
+    }
+
+    function testNameTestWithoutNamespace() {
+      var nodeName = ['nodename'];
+      var lexer = new wgxpath.Lexer(nodeName);
+      var resultNameTest = (new wgxpath.Parser(lexer)).parseNameTest_();
+      assertEquals(nodeName.join(''), resultNameTest.name_);
+    }
+
+    function testNameTestWithNamespace() {
+      var nodeName = ['namespace', ':', '*'];
+      var lexer = new wgxpath.Lexer(nodeName);
+      var resultNameTest = (new wgxpath.Parser(lexer)).parseNameTest_();
+      assertEquals(nodeName.join(''), resultNameTest.name_);
+    }
+
+    function parsePredicates(tokens) {
+      //A fake Expr parser for Predicates to use internally.
+      wgxpath.Parser.parseExpr_ = function(lexer) {
+          lexer.next();
+          return {};
+      };
+      var lexer = new wgxpath.Lexer(tokens);
+      return (new wgxpath.Parser(lexer)).parsePredicates_();
+    }
+
+    function testPredicatesNoPredicates() {
+      var predicates = parsePredicates([]);
+      assert(predicates.length == 0);
+    }
+
+    function testPredicatesSinglePredicates() {
+      // [some expression]
+      var predicates = parsePredicates(
+          ['[', 'some expression', ']']);
+      assert(predicates.length == 1);
+    }
+
+    function testPredicatesMultiplePredicates() {
+      //[some expresion][some other expression]'
+      var predicates = parsePredicates(['[', 'some expression', ']',
+          '[', 'some other expression', ']']);
+      assert(predicates.length == 2);
+
+      //[some expression][some other expression][third expression]
+      var predicates = parsePredicates(['[', 'some expression', ']',
+          '[', 'some other expression', ']', '[', 'third expression', ']']);
+      assert(predicates.length == 3);
+    }
+
+    function testPredicatesUnclosedPredicate() {
+      assertThrows(function() {
+        parsePredicates(['[', 'some expression']);
+      });
+    }
+
+    function testPredicatesEmptyPredicate() {
+      assertThrows(function() {
+        parsePredicates(['[']);
+      });
+    }
+
+    function testPredicatesBadToken() {
+      // Assuming Parser.Expr.parse works correctly, after the expression in a
+      // predicate is parsed, the next token should be "]". Throw an error if
+      // this is false.
+
+      assertThrows(function() {
+        parsePredicates(['[', 'expression', 'not a ]']);
+      });
+    }
+  </script>
+</body>
+</html>

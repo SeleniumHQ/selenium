@@ -41,6 +41,7 @@ goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.userAgent');
+goog.require('wgxpath');
 goog.require('goog.userAgent.product');
 
 
@@ -90,15 +91,19 @@ bot.locators.xpath.DEFAULT_RESOLVER_ = (function() {
  */
 bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   var doc = goog.dom.getOwnerDocument(node);
-  try {
-    if (!doc.implementation ||
-        !doc.implementation.hasFeature('XPath', '3.0')) {
+  if (goog.userAgent.IE) {
+    wgxpath.install(goog.dom.getWindow(doc));
+  } else {
+    try {
+      if (!doc.implementation ||
+          !doc.implementation.hasFeature('XPath', '3.0')) {
+        return null;
+      }
+    } catch (ex) {
+      // If the document isn't ready yet, Firefox may throw NS_ERROR_UNEXPECTED on
+      // accessing doc.implementation
       return null;
     }
-  } catch (ex) {
-    // If the document isn't ready yet, Firefox may throw NS_ERROR_UNEXPECTED on
-    // accessing doc.implementation
-    return null;
   }
   try {
     // On Android 2.2 and earlier, the evaluate function is only defined on the

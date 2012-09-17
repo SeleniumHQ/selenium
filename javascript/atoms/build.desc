@@ -9,6 +9,9 @@ js_library(name = "all_js",
     "*.js",
     "locators/*.js",
     "html5/*.js"
+  ],
+  deps = [
+    "//third_party/js/wgxpath:wgxpath"
   ])
 
 js_library(name = "dom",
@@ -27,6 +30,9 @@ js_deps(name = "deps",
     "*.js",
     "locators/*.js",
     "html5/*.js",
+  ],
+  deps = [
+    "//third_party/js/wgxpath:wgxpath"
   ])
 
 js_test(name = "test",

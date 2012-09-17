@@ -24,6 +24,7 @@ limitations under the License.
     goog.require('bot.ErrorCode');
     goog.require('bot.locators');
     goog.require('goog.events.EventType');
+    goog.require('goog.userAgent');
     goog.require('goog.testing.PropertyReplacer');
     goog.require('goog.testing.jsunit');
   </script>
@@ -160,7 +161,7 @@ limitations under the License.
     }
 
     function testCanLocateElementsUsingXPath() {
-      if (!CAN_SELECT_SINGLE_NODE) {
+      if (!CAN_SELECT_SINGLE_NODE && !goog.userAgent.IE) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -171,7 +172,7 @@ limitations under the License.
     }
 
     function testCanLocateElementsUsingXPathInIframe() {
-      if (!CAN_SELECT_SINGLE_NODE) {
+      if (!CAN_SELECT_SINGLE_NODE && !goog.userAgent.IE) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -183,7 +184,7 @@ limitations under the License.
 
 
     function testWillReturnNullIfNoMatchUsingXPathIsFound() {
-      if (!CAN_SELECT_SINGLE_NODE) {
+      if (!CAN_SELECT_SINGLE_NODE && !goog.userAgent.IE) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -191,7 +192,7 @@ limitations under the License.
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathIsSyntacticallyInvalidInSingle() {
-      if (!CAN_SELECT_SINGLE_NODE) {
+      if (!CAN_SELECT_SINGLE_NODE && !goog.userAgent.IE) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -207,7 +208,7 @@ limitations under the License.
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathReturnsAWrongTypeInSingle() {
-      if (!CAN_SELECT_SINGLE_NODE) {
+      if (!CAN_SELECT_SINGLE_NODE && !goog.userAgent.IE) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -251,7 +252,7 @@ limitations under the License.
     }
 
     function testCanFindManyElementsViaXPath() {
-      if (!CAN_SELECT_MANY_NODES) {
+      if (!CAN_SELECT_MANY_NODES && !goog.userAgent.IE) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -261,7 +262,7 @@ limitations under the License.
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathIsSyntacticallyInvalidInMany() {
-      if (!CAN_SELECT_MANY_NODES) {
+      if (!CAN_SELECT_MANY_NODES && !goog.userAgent.IE) {
         return;  // Skip this until we get xpath working on all browsers
       }
 
@@ -277,7 +278,7 @@ limitations under the License.
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathReturnsAWrongTypeInMany() {
-      if (!CAN_SELECT_MANY_NODES) {
+      if (!CAN_SELECT_MANY_NODES && !goog.userAgent.IE) {
         return;  // Skip this until we get xpath working on all browsers
       }
 

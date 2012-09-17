@@ -7,6 +7,7 @@
     goog.require('goog.dom');
     goog.require('goog.events.EventType');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
     goog.require('bot');
     goog.require('bot.dom');
     goog.require('bot.locators');
@@ -103,7 +104,7 @@
     }
 
     function testCanFindChildElementByXpath() {
-      if (!document['evaluate']) {
+      if (!document['evaluate'] && !goog.userAgent.IE) {
         return;  // Skip this until we get xpath working on all browsers
       }
       var parent = bot.locators.findElement({id: 'parent'});
@@ -113,7 +114,7 @@
     }
 
     function testCanFindChildElementsByXpath() {
-      if (!document['evaluate']) {
+      if (!document['evaluate'] && !goog.userAgent.IE) {
         return;  // Skip this until we get xpath working on all browsers
       }
       var parent = bot.locators.findElement({id: 'parent'});

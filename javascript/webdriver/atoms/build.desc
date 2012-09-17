@@ -35,32 +35,32 @@ js_library(name = "inject_lib",
 js_fragment(name = "clear",
   module = "bot.action",
   function = "bot.action.clear",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "click",
   module = "bot.action",
   function = "bot.action.click",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "execute_script",
   module = "bot.inject",
   function = "bot.inject.executeScript",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "execute_async_script",
   module = "bot.inject",
   function = "bot.inject.executeAsyncScript",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "find_element",
   module = "bot.locators",
   function = "bot.locators.findElement",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "find_elements",
   module = "bot.locators",
   function = "bot.locators.findElements",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "get_attribute",
   module = "webdriver.atoms.element",
@@ -70,28 +70,28 @@ js_fragment(name = "get_attribute",
 js_fragment(name = "get_effective_style",
   module = "bot.dom",
   function = "bot.dom.getEffectiveStyle",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "get_location",
   module = "goog.style",
   function = "goog.style.getPageOffset",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "get_in_view_location",
   module = "bot.dom",
   function = "bot.dom.getInViewLocation",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "get_location_in_view",
   module = "bot.dom",
   function = "bot.dom.getLocationInView",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 # TODO(simon): I'm not convinced this is right
 js_fragment(name = "get_size",
   module = "goog.style",
   function = "goog.style.getSize",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "get_text",
   module = "webdriver.atoms.element",
@@ -101,12 +101,12 @@ js_fragment(name = "get_text",
 js_fragment(name = "is_displayed",
   module = "bot.dom",
   function = "bot.dom.isShown",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "is_enabled",
   module = "bot.dom",
   function = "bot.dom.isEnabled",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "is_selected",
   module = "webdriver.atoms.element",
@@ -116,37 +116,37 @@ js_fragment(name = "is_selected",
 js_fragment(name = "submit",
   module = "bot.action",
   function = "bot.action.submit",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "type",
   module = "bot.action",
   function = "bot.action.type",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "get_frame_index",
   module = "bot.frame",
   function = "bot.frame.getFrameIndex",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "get_window_size",
   module = "bot.window",
   function = "bot.window.getSize",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "set_window_size",
   module = "bot.window",
   function = "bot.window.setSize",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "get_window_position",
   module = "bot.window",
   function = "bot.window.getPosition",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "set_window_position",
   module = "bot.window",
   function = "bot.window.setPosition",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 # TODO(simon): Consider pulling in the cookie functions from closure
 
@@ -155,17 +155,17 @@ js_fragment(name = "set_window_position",
 js_fragment(name = "is_online",
   module = "bot.connection",
   function = "bot.connection.isOnline",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "get_current_position",
   module = "bot.geolocation",
   function = "bot.geolocation.getCurrentPosition",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "execute_sql",
   module = "bot.storage.database",
   function = "bot.storage.database.executeSql",
-  deps = [ "//javascript/atoms:deps" ])
+  deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(name = "set_local_storage_item",
   module = "webdriver.atoms.storage.local",
