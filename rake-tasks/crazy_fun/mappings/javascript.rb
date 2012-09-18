@@ -469,7 +469,7 @@ module Javascript
 
         mkdir_p File.dirname(output)
 
-        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner" do
+        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
           classpath do
             pathelement :path =>  "third_party/closure/bin/compiler-20120710.jar"
           end
@@ -561,7 +561,7 @@ module Javascript
 
         mkdir_p File.dirname(output)
 
-        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :fork => false do
+        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :fork => false, :failonerror => true do
           classpath do
             pathelement :path =>  "third_party/closure/bin/compiler-20120710.jar"
           end
