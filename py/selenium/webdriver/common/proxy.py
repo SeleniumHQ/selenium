@@ -5,13 +5,13 @@ class ProxyTypeFactory:
 
 class ProxyType:
 
-    DIRECT = ProxyTypeFactory.make(0, 'direct')           # Direct connection, no proxy (default on Windows).
-    MANUAL = ProxyTypeFactory.make(1, 'manual')           # Manual proxy settings (e.g., for httpProxy).
-    PAC = ProxyTypeFactory.make(2, 'pac')                 # Proxy autoconfiguration from URL.
-    RESERVED_1 = ProxyTypeFactory.make(3, 'reserved1')    # Never used.
-    AUTODETECT = ProxyTypeFactory.make(4, 'autodetect')   # Proxy autodetection (presumably with WPAD).
-    SYSTEM = ProxyTypeFactory.make(5, 'system')           # Use system settings (default on Linux).
-    UNSPECIFIED = ProxyTypeFactory.make(6, 'unspecified')
+    DIRECT = ProxyTypeFactory.make(0, 'DIRECT')           # Direct connection, no proxy (default on Windows).
+    MANUAL = ProxyTypeFactory.make(1, 'MANUAL')           # Manual proxy settings (e.g., for httpProxy).
+    PAC = ProxyTypeFactory.make(2, 'PAC')                 # Proxy autoconfiguration from URL.
+    RESERVED_1 = ProxyTypeFactory.make(3, 'RESERVED1')    # Never used.
+    AUTODETECT = ProxyTypeFactory.make(4, 'AUTODETECT')   # Proxy autodetection (presumably with WPAD).
+    SYSTEM = ProxyTypeFactory.make(5, 'SYSTEM')           # Use system settings (default on Linux).
+    UNSPECIFIED = ProxyTypeFactory.make(6, 'UNSPECIFIED')
 
 
 class Proxy(object):
