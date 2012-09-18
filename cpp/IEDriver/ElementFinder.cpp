@@ -321,7 +321,11 @@ void ElementFinder::SanitizeCriteria(const std::wstring& mechanism,
                                      std::wstring* criteria) {
   LOG(TRACE) << "Entering ElementFinder::SanitizeCriteria";
 
-  if (mechanism == L"linkText" || mechanism == L"partialLinkText") {
+  // Any finder mechanism where the value can have embedded quotation
+  // marks needs to have those quotes escaped for calling into JavaScript.
+  if (mechanism == L"linkText" || 
+      mechanism == L"partialLinkText" || 
+      mechanism == L"xpath") {
     this->ReplaceAllSubstrings(L"\\", L"\\\\", criteria);
     this->ReplaceAllSubstrings(L"\"", L"\\\"", criteria);
   }

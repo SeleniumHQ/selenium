@@ -9,10 +9,15 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.26.0.2
+=========
+ * Modified find-by-XPath code to correctly escape embedded quotes before
+   invoking the findElement atom.
+
 v2.26.0.1
 =========
  * Updates to JavaScript automation atoms.
- * Updates to use Wicked Good XPath (http://code.google.com/p/wicked-good-xpath)
+ * Updated to use Wicked Good XPath (http://code.google.com/p/wicked-good-xpath)
    as the XPath engine for the IE driver.
 
 v2.26.0.0
