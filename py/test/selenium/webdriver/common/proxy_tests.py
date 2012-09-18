@@ -30,7 +30,7 @@ class ProxyTests(unittest.TestCase):
 
         expected_capabilities = {
             'proxy': {
-                'proxyType': 'manual',
+                'proxyType': 'MANUAL',
                 'httpProxy': 'some.url:1234'
             }
         }
