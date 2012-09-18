@@ -64,6 +64,8 @@ wgxpath.NameTest.prototype.getName = function() {
 
 /**
  * @override
+ * @param {string=} opt_indent Optional indentation.
+ * @return {string} The string representation.
  */
 wgxpath.NameTest.prototype.toString = function(opt_indent) {
   var indent = opt_indent || '';
