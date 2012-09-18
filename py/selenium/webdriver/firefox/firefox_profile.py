@@ -211,6 +211,9 @@ class FirefoxProfile(object):
         return base64.encodestring(fp.getvalue())
 
     def set_proxy(self, proxy):
+        import warnings
+        warnings.warn("This method has been deprecated. Please pass in the proxy object to the Driver Object",
+                    DeprecationWarning)
         if proxy is None:
             raise ValueError("proxy can not be None")
 

@@ -33,7 +33,8 @@ class WebDriver(RemoteWebDriver):
     # There is no native event support on Mac
     NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
 
-    def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30):
+    def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
+                 capabilities=None, proxy=None):
 
         self.binary = firefox_binary
         self.profile = firefox_profile
@@ -46,10 +47,17 @@ class WebDriver(RemoteWebDriver):
         if self.binary is None:
             self.binary = FirefoxBinary()
 
+        if capabilities is None:
+            capabilities = DesiredCapabilities.FIREFOX
+
+        if proxy is not None:
+            proxy.add_to_capabilities(capabilities)
+
+
         RemoteWebDriver.__init__(self,
             command_executor=ExtensionConnection("127.0.0.1", self.profile,
             self.binary, timeout),
-            desired_capabilities=DesiredCapabilities.FIREFOX)
+            desired_capabilities=capabilities)
 
     def create_web_element(self, element_id):
         """Override from RemoteWebDriver to use firefox.WebElement."""
