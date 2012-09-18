@@ -73,6 +73,31 @@ public class Color {
     return String.format("#%02x%02x%02x", red, green, blue);
   }
 
+  @Override
+  public boolean equals(Object other) {
+    if (other == null) {
+      return false;
+    }
+
+    if (!(other instanceof Color)) {
+      return false;
+    }
+
+    return asRgba().equals(((Color) other).asRgba());
+  }
+
+  @Override
+  public int hashCode() {
+    int result;
+    long temp;
+    result = (int) red;
+    result = 31 * result + (int) green;
+    result = 31 * result + (int) blue;
+    temp = alpha != +0.0d ? Double.doubleToLongBits(alpha) : 0L;
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    return result;
+  }
+
   private static abstract class Converter {
     public Color getColor(String value) {
       Matcher matcher = getPattern().matcher(value);

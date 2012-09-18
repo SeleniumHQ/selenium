@@ -118,4 +118,17 @@ public class ColorTest {
     assertEquals(rgba, Color.fromString(hsla).asRgba());
   }
 
+  @Test
+  public void checkEqualsWorks() {
+    Color objectA = Color.fromString("#f00");
+    Color objectB = Color.fromString("rgb(255, 0, 0)");
+    assertEquals(objectA, objectB);
+  }
+
+  @Test
+  public void checkHashCodeWorks() {
+    Color objectA = Color.fromString("#f00");
+    Color objectB = Color.fromString("rgb(255, 0, 0)");
+    assertEquals(objectA.hashCode(), objectB.hashCode());
+  }
 }
