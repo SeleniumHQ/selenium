@@ -255,7 +255,7 @@ namespace OpenQA.Selenium.Support.UI
         {
             if (!this.IsMultiple)
             {
-                throw new WebDriverException("You may only deselect all options if multi-select is supported");
+                throw new InvalidOperationException("You may only deselect all options if multi-select is supported");
             }
 
             foreach (IWebElement webElement in this.Options)
