@@ -14,9 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-
-
 package org.openqa.selenium;
 
 import com.google.common.collect.Lists;
@@ -69,7 +66,13 @@ public class Build {
 
   private ProcessBuilder prepareBuild() {
     List<String> command = new ArrayList<String>();
-    command.add(Platform.getCurrent().is(WINDOWS) ? "go.bat" : "./go");
+    if (Platform.getCurrent().is(WINDOWS)) {
+      command.add("cmd.exe");
+      command.add("/c");
+      command.add("go.bat");
+    } else {
+      command.add("./go");
+    }
     command.addAll(targets);
     ProcessBuilder builder = new ProcessBuilder(command);
     builder.directory(InProject.locate("Rakefile").getParentFile());
