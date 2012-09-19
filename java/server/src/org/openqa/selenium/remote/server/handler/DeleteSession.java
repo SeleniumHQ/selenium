@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.server.log.LoggingManager;
@@ -39,8 +40,13 @@ public class DeleteSession extends WebDriverHandler {
       return ResultType.SUCCESS;
     }
 
-    LoggingManager.perSessionLogHandler().fetchAndStoreLogsFromDriver(getSessionId(), driver);
-    
+    try {
+      LoggingManager.perSessionLogHandler().fetchAndStoreLogsFromDriver(getSessionId(), driver);
+    } catch (WebDriverException ignored) {
+      // A failure to retrieve logs should not cause a test to fail.
+      // Silently ignore this exception.
+    }
+
     driver.quit();
 
     // Yes, this is funky. See javadocs on PerSessionLogHandler#clearThreadTempLogs for details.
