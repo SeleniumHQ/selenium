@@ -139,9 +139,15 @@ class WebElement(object):
 
     def send_keys(self, *value):
         """Simulates typing into the element."""
-        local_file = LocalFileDetector.is_local_file(*value)
-        if local_file is not None:
-            value = self._upload(local_file)
+         # transfer file to another machine only if remote driver is used
+         # the same behaviour as for java binding
+        parent_class = self.parent.__class__
+        fqcn = parent_class.__module__ + "." + parent_class.__name__
+        is_remote = fqcn == "selenium.webdriver.remote.webdriver.WebDriver"
+        if is_remote:
+            local_file = LocalFileDetector.is_local_file(*value)
+            if local_file is not None:
+                value = self._upload(local_file)
 
         typing = []
         for val in value:
