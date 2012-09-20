@@ -22,7 +22,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.TestUtilities;
-import org.testng.internal.annotations.Sets;
+import com.google.common.collect.Sets;
 
 import java.util.Set;
 import java.util.concurrent.Callable;
