@@ -20,11 +20,11 @@ package org.openqa.selenium.v1;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class TestFifteenSecondSleep extends InternalSelenseTestBase
 {
-  @Test(dataProvider = "system-properties")
+  @Test
   public void testFifteenSecondSleep() throws Throwable {
 
     selenium.open("/selenium-server/tests/html/test_open.html");

@@ -1,5 +1,6 @@
 /*
- * Copyright 2011 Software Freedom Conservancy.
+ * Copyright 2011-2012 Selenium committers
+ * Copyright 2011-2012 Software Freedom Conservancy.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,15 +22,11 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.SeleniumLogLevels;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-/**
- * @author Paul Hammant
- * @version $Revision: 131 $
- */
 public class RealDealIntegrationTest extends InternalSelenseTestBase {
 
-  @Test(dataProvider = "system-properties")
+  @Test
   public void testWithJavaScript() {
     selenium
         .setContext("A real test, using the real Selenium on the browser side served by Jetty, driven from Java");
@@ -48,12 +45,12 @@ public class RealDealIntegrationTest extends InternalSelenseTestBase {
     assertTrue(selenium.getLocation().endsWith("/selenium-server/tests/html/test_click_page1.html"));
   }
 
-  @Test(dataProvider = "system-properties")
+  @Test
   public void testAgain() {
     testWithJavaScript();
   }
 
-  @Test(dataProvider = "system-properties")
+  @Test
   public void testFailure() {
     selenium
         .setContext("A real negative test, using the real Selenium on the browser side served by Jetty, driven from Java");

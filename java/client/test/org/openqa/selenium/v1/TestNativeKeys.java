@@ -20,13 +20,13 @@ package org.openqa.selenium.v1;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.awt.event.KeyEvent;
 
 public class TestNativeKeys extends InternalSelenseTestBase {
-  @Test(dataProvider = "system-properties")
+  @Test
   public void testKeyPressNative() {
     selenium.open("/selenium-server/tests/html/test_type_page1.html");
     selenium.focus("username");

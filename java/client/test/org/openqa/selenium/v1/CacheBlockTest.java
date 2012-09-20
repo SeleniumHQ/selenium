@@ -18,15 +18,15 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
-import static org.testng.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class CacheBlockTest extends InternalSelenseTestBase {
 
-  @Test(dataProvider = "system-properties")
+  @Test
   public void testCacheBlock() throws Exception {
     selenium.open("/selenium-server/cachedContentTest");
     String text = selenium.getBodyText();
