@@ -177,7 +177,7 @@ Alert::DialogButtonInfo Alert::GetDialogButton(BUTTON_TYPE button_type) {
 }
 
 bool Alert::IsOKButton(int control_id) {
-  return control_id == IDOK || control_id == IDYES;
+  return control_id == IDOK || control_id == IDYES || control_id == IDRETRY;
 }
 
 bool Alert::IsCancelButton(int control_id) {
