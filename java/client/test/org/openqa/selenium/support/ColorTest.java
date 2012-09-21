@@ -119,6 +119,16 @@ public class ColorTest {
   }
 
   @Test
+  public void baseColourToRgba() {
+    String baseColour = "green";
+    String rgba = "rgba(0, 128, 0, 1)";
+    assertEquals(rgba, Color.fromString(baseColour).asRgba());
+    baseColour = "gray";
+    rgba = "rgba(128, 128, 128, 1)";
+    assertEquals(rgba, Color.fromString(baseColour).asRgba());
+  }
+
+  @Test
   public void checkEqualsWorks() {
     Color objectA = Color.fromString("#f00");
     Color objectB = Color.fromString("rgb(255, 0, 0)");

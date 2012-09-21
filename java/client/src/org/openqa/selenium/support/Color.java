@@ -22,9 +22,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Color {
-  private final short red;
-  private final short green;
-  private final short blue;
+  private final int red;
+  private final int green;
+  private final int blue;
   private final double alpha;
 
   private static final Converter[] CONVERTERS = {
@@ -36,6 +36,7 @@ public class Color {
       new Hex3Converter(),
       new HslConverter(),
       new HslaConverter(),
+      new NamedColorConverter(),
   };
 
   /*
@@ -53,7 +54,7 @@ public class Color {
     );
   }
 
-  private Color(short red, short green, short blue, double alpha) {
+  Color(int red, int green, int blue, double alpha) {
     this.red = red;
     this.green = green;
     this.blue = blue;
@@ -267,6 +268,18 @@ public class Color {
       return HSLA_PATTERN;
     }
 
+  }
+
+  private static class NamedColorConverter extends Converter {
+    @Override
+    public Color getColor(String value) {
+      return Colors.valueOf(value.toUpperCase()).getColorValue();
+    }
+
+    @Override
+    public Pattern getPattern() {
+      throw new UnsupportedOperationException("getPattern is unsupported");
+    }
   }
 
 }
