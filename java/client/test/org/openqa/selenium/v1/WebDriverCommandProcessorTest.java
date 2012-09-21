@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
+import org.junit.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
@@ -23,7 +24,10 @@ import org.openqa.selenium.WebDriverCommandProcessor;
 
 import junit.framework.TestCase;
 
-public class WebDriverCommandProcessorTest extends TestCase {
+import static org.junit.Assert.fail;
+
+public class WebDriverCommandProcessorTest {
+  @Test
   public void testDriverNeedNotImplementHasCapabilities() {
     WebDriver driver = new StubJsDriver();
 
@@ -34,6 +38,7 @@ public class WebDriverCommandProcessorTest extends TestCase {
     }
   }
 
+  @Test
   public void testRequiresAJavascriptEnabledDriver() {
     WebDriver driver = new StubDriver();
 

@@ -20,14 +20,16 @@ package org.openqa.selenium.v1.internal.seleniumemulation;
 
 import com.thoughtworks.selenium.SeleniumException;
 
+import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.seleniumemulation.SeleneseCommand;
 import org.openqa.selenium.internal.seleniumemulation.Timer;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.fail;
 
-public class TimerTest extends TestCase {
+public class TimerTest {
 
+  @Test
   public void testCannotExecuteCommandsAfterStoppingTheTimer() {
     Timer timer = new Timer(250);
     timer.stop();
@@ -39,6 +41,7 @@ public class TimerTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldTimeOut() throws Exception {
     Timer timer = new Timer(10);
     try {
@@ -50,7 +53,7 @@ public class TimerTest extends TestCase {
     fail("Expecting timeout");
   }
 
-
+  @Test
   public void testShouldNotTimeOut() throws Exception {
     Timer timer = new Timer(200);
     timer.run(new SeleneseCallable(10), null, new String[0]);

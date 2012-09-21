@@ -51,3 +51,18 @@ java_test(name = "selenium-backed-webdriver-test",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
     "//java/client/test/org/openqa/selenium:tests",
   ])
+
+java_test(name = "small_tests",
+  srcs = [
+    "SmallTests.java",
+    "FastWebDriverBackedSeleniumTest.java",
+    "WebDriverCommandProcessorTest.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium:base",
+    "//java/client/test/org/openqa/selenium:base",
+    "//java/client/test/org/openqa/selenium/testing:junit_4",
+    "//java/client/test/org/openqa/selenium/v1/internal/seleniumemulation:small_tests",
+    "//third_party/java/jmock",
+    "//third_party/java/junit",
+  ])

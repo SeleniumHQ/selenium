@@ -16,21 +16,22 @@ limitations under the License.
 
 package org.openqa.selenium.v1.internal.seleniumemulation;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.internal.seleniumemulation.CompoundMutator;
 import org.openqa.selenium.internal.seleniumemulation.ScriptMutator;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
 
-public class CompoundMutatorTest extends TestCase {
+public class CompoundMutatorTest {
   private ScriptMutator mutator;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+  @Before
+  public void setUp() {
     mutator = new CompoundMutator("http://selenium.googlecode.com");
   }
 
+  @Test
   public void testLeavesAPlainScriptIntact() {
     StringBuilder builder = new StringBuilder();
 
@@ -39,6 +40,7 @@ public class CompoundMutatorTest extends TestCase {
     assertTrue(builder.toString().contains("return document"));
   }
 
+  @Test
   public void testEscapesNewLines() {
     StringBuilder builder = new StringBuilder();
 
@@ -47,6 +49,7 @@ public class CompoundMutatorTest extends TestCase {
     assertTrue(builder.toString().contains("return\\ndocument"));
   }
 
+  @Test
   public void testEscapesSingleQuotes() {
     StringBuilder builder = new StringBuilder();
 
@@ -55,6 +58,7 @@ public class CompoundMutatorTest extends TestCase {
     assertTrue(builder.toString().contains("return \\'document\\'"));
   }
 
+  @Test
   public void testReplacesReferencesViaSeleniumToDocument() {
     StringBuilder builder = new StringBuilder();
 
@@ -66,6 +70,7 @@ public class CompoundMutatorTest extends TestCase {
     assertTrue(script, script.contains("getDocument = function() { return document; }"));
   }
 
+  @Test
   public void testShouldWrapJavascriptInAnEvalStatement() {
     StringBuilder builder = new StringBuilder();
 

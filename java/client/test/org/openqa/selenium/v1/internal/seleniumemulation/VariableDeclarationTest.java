@@ -16,24 +16,25 @@ limitations under the License.
 
 package org.openqa.selenium.v1.internal.seleniumemulation;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.internal.seleniumemulation.VariableDeclaration;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class VariableDeclarationTest extends TestCase {
+public class VariableDeclarationTest {
 
   private static final String REPLACEMENT = "selenium.browserbot = {};";
 
   private VariableDeclaration declaration;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+  @Before
+  public void setUp() throws Exception {
     declaration = new VariableDeclaration(
         "selenium.browserbot", REPLACEMENT);
   }
 
+  @Test
   public void testShouldLeaveThingsWellAloneIfNotNeeded() {
     StringBuilder builder = new StringBuilder();
     declaration.mutate("I like cheese", builder);
@@ -42,6 +43,7 @@ public class VariableDeclarationTest extends TestCase {
     assertEquals(builder.toString(), "", builder.toString());
   }
 
+  @Test
   public void testShouldAddDeclarationIfNecesssary() {
     StringBuilder builder = new StringBuilder();
     declaration.mutate("selenium.browserbot.findElement", builder);
@@ -49,6 +51,7 @@ public class VariableDeclarationTest extends TestCase {
     assertEquals(REPLACEMENT, builder.toString());
   }
 
+  @Test
   public void testReplacementStillHappensWithStrangeSpacing() {
     StringBuilder builder = new StringBuilder();
     declaration.mutate("selenium   \n\n\n .browserbot .findCheese", builder);

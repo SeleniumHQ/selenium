@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
@@ -30,12 +31,14 @@ public class FastWebDriverBackedSeleniumTest extends MockTestBase {
     final WebDriverBackedSelenium selenium;
     final WebDriver driver;
 
-    driver = mock(WebDriver.class);
-    selenium = new WebDriverBackedSelenium(driver, "http://a.base.url:3000");
+    driver = mock(WebDriverWithJs.class);
     checking(new Expectations() {{
+        allowing(driver).getWindowHandle();
         one(driver).get("http://a.base.url:3000/a/relative/path");
       }
     });
+
+    selenium = new WebDriverBackedSelenium(driver, "http://a.base.url:3000");
     selenium.open("a/relative/path");
   }
 
@@ -44,12 +47,14 @@ public class FastWebDriverBackedSeleniumTest extends MockTestBase {
     final WebDriverBackedSelenium selenium;
     final WebDriver driver;
 
-    driver = mock(WebDriver.class);
-    selenium = new WebDriverBackedSelenium(driver, "http://a.base.url:3000");
+    driver = mock(WebDriverWithJs.class);
     checking(new Expectations() {{
+        allowing(driver).getWindowHandle();
         one(driver).get("http://a.base.url:3000/relative/path/starting_with_a_slash");
       }
     });
+
+    selenium = new WebDriverBackedSelenium(driver, "http://a.base.url:3000");
     selenium.open("/relative/path/starting_with_a_slash");
   }
 
@@ -58,12 +63,14 @@ public class FastWebDriverBackedSeleniumTest extends MockTestBase {
     final WebDriverBackedSelenium selenium;
     final WebDriver driver;
 
-    driver = mock(WebDriver.class);
-    selenium = new WebDriverBackedSelenium(driver, "http://a.base.url:3000");
+    driver = mock(WebDriverWithJs.class);
     checking(new Expectations() {{
+        allowing(driver).getWindowHandle();
         one(driver).get("http://a.url/with/protocol.info");
       }
     });
+
+    selenium = new WebDriverBackedSelenium(driver, "http://a.base.url:3000");
     selenium.open("http://a.url/with/protocol.info");
   }
 
@@ -72,13 +79,18 @@ public class FastWebDriverBackedSeleniumTest extends MockTestBase {
     final WebDriverBackedSelenium selenium;
     final WebDriver driver;
 
-    driver = mock(WebDriver.class);
-    selenium = new WebDriverBackedSelenium(driver, "http://a.base.url:3000");
+    driver = mock(WebDriverWithJs.class);
     checking(new Expectations() {{
+        allowing(driver).getWindowHandle();
         one(driver).get("https://a.url/with/protocol.info");
       }
     });
+
+    selenium = new WebDriverBackedSelenium(driver, "http://a.base.url:3000");
     selenium.open("https://a.url/with/protocol.info");
   }
 
+  public static interface WebDriverWithJs extends WebDriver, JavascriptExecutor {
+    // empty
+  }
 }

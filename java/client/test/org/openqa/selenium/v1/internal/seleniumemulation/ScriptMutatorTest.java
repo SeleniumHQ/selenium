@@ -35,7 +35,7 @@ public class ScriptMutatorTest extends JUnit4TestBase {
     selenium.open(pages.tables);
 
     String rowCount = selenium.getEval(
-        "var table = selenium.browserbot.findElement('id=foo'); " +
+        "var table = selenium.browserbot.findElement('id=base'); " +
         "table.rows[0].cells.length;");
 
     assertEquals("3", rowCount);

@@ -56,6 +56,8 @@ import org.openqa.selenium.testing.IgnoreComparitorUnitTest;
     TemporaryFilesystemTest.class,
     WebDriverExceptionTest.class,
     WindowsUtilsUnitTest.class,
-    ZipTest.class
+    ZipTest.class,
+
+    org.openqa.selenium.v1.SmallTests.class
 })
 public class SmallTests {}

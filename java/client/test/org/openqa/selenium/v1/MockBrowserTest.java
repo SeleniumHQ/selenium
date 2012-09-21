@@ -25,6 +25,8 @@ import static org.junit.Assert.assertTrue;
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 
+import org.junit.Test;
+
 public class MockBrowserTest {
   Selenium sel;
 
@@ -37,6 +39,7 @@ public class MockBrowserTest {
     sel.stop();
   }
 
+  @Test
   public void testMock() {
     sel.open("/");
     sel.click("foo");

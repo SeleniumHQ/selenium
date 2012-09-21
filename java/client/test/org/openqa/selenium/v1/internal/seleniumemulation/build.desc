@@ -1,0 +1,12 @@
+
+java_library(name = "small_tests",
+  srcs = [
+    "CompoundMutatorTest.java",
+    "SmallTests.java",
+    "TimerTest.java",
+    "VariableDeclarationTest.java",
+  ],
+  deps = [
+    "//java/client/src/org/openqa/selenium/internal/seleniumemulation",
+    "//third_party/java/junit",
+  ])
