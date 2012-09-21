@@ -185,7 +185,6 @@ import org.junit.runners.Suite;
     CacheBlockTest.class,
     RealDealIntegrationTest.class,
     SessionExtensionJsTest.class,
-    TestFifteenSecondSleep.class,
     TestLargeHtml.class,
     TestNativeKeys.class
 })
