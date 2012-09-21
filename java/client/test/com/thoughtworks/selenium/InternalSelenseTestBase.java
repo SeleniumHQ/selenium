@@ -19,6 +19,7 @@ limitations under the License.
 package com.thoughtworks.selenium;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Throwables;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
@@ -39,7 +40,6 @@ import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import org.openqa.selenium.v1.SeleneseBackedWebDriver;
 import org.openqa.selenium.v1.SeleniumTestEnvironment;
-import org.testng.Assert;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,7 +122,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
       ((JavascriptExecutor) driver).executeScript(script);
     } catch (IOException e) {
-      Assert.fail("Cannot read script", e);
+      fail("Cannot read script: " + Throwables.getStackTraceAsString(e));
     }
   }
 
