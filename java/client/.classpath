@@ -6,7 +6,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/third-party/java/hamcrest/hamcrest-core-1.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/hamcrest/hamcrest-library-1.1.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/testng/testng-6.0.1-nobsh-noguice.jar" sourcepath="/third-party/java/testng/testng-6.0.1-nobsh-noguice-src.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/testng/testng-6.8.jar" sourcepath="/third-party/java/testng/testng-6.8-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-13.0.1.jar" sourcepath="/third-party/java/guava-libraries/guava-13.0.1-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-2.10.jar" sourcepath="/third-party/java/htmlunit/htmlunit-2.10-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/htmlunit/htmlunit-core-js-2.10.jar"/>

@@ -12,7 +12,7 @@
 	<classpathentry kind="lib" path="/third-party/java/hamcrest/hamcrest-core-1.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/hamcrest/hamcrest-library-1.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/junit/junit-dep-4.10.jar" sourcepath="/third-party/java/junit/junit-dep-4.10-src.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/testng/testng-6.0.1-nobsh-noguice.jar" sourcepath="/third-party/java/testng/testng-6.0.1-nobsh-noguice-src.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/testng/testng-6.8.jar" sourcepath="/third-party/java/testng/testng-6.8-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/bouncycastle/bcprov-jdk15on-147.jar" sourcepath="/third-party/java/bouncycastle/bcprov-jdk15on-147-src.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-repacked-7.6.1.jar" sourcepath="/third-party/java/jetty/jetty-repacked-7.6.1-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-logging/commons-logging-1.1.1.jar"/>

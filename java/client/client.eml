@@ -8,8 +8,8 @@
 	<lib name="junit-dep-4.10.jar" scope="COMPILE">
 		<srcroot url="file:///third-party/java/junit/junit-dep-4.10-src.jar"/>
 	</lib>
-	<lib name="testng-6.0.1-nobsh-noguice.jar" scope="COMPILE">
-		<srcroot url="file:///third-party/java/testng/testng-6.0.1-nobsh-noguice-src.jar"/>
+	<lib name="testng-6.8.jar" scope="COMPILE">
+		<srcroot url="file:///third-party/java/testng/testng-6.8-sources.jar"/>
 	</lib>
 	<lib name="guava-11.0.1.jar" scope="COMPILE">
 		<srcroot url="file:///third-party/java/guava-libraries/guava-11.0.1-src.jar"/>
