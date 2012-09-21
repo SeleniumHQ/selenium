@@ -98,12 +98,6 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.v1.CacheBlockTest;
-import org.openqa.selenium.v1.RealDealIntegrationTest;
-import org.openqa.selenium.v1.SessionExtensionJsTest;
-import org.openqa.selenium.v1.TestFifteenSecondSleep;
-import org.openqa.selenium.v1.TestLargeHtml;
-import org.openqa.selenium.v1.TestNativeKeys;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

@@ -16,20 +16,21 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.v1;
+package com.thoughtworks.selenium;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-public class TestFifteenSecondSleep extends InternalSelenseTestBase
-{
+public class TestLargeHtml extends InternalSelenseTestBase {
   @Test
-  public void testFifteenSecondSleep() throws Throwable {
-
-    selenium.open("/selenium-server/tests/html/test_open.html");
-    selenium.setContext("Sleeping 15 seconds");
-    Thread.sleep(15000);
-    selenium.open("/selenium-server/tests/html/test_open.html");
+  public void testLargeHtml() {
+    selenium.open("/selenium-server/tests/html/test_large_html.html");
+    String source = selenium.getHtmlSource().trim();
+    String expectedEndsWith = "</body>";
+    int index = source.length() - expectedEndsWith.length();
+    String actualEndsWith = source.substring(index).toLowerCase();
+    Assert.assertEquals("source doesn't end correctly", actualEndsWith, expectedEndsWith);
   }
 }

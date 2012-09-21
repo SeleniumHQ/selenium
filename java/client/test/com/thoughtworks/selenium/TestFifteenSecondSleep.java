@@ -16,21 +16,20 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.v1;
+package com.thoughtworks.selenium;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import java.awt.event.KeyEvent;
-
-public class TestNativeKeys extends InternalSelenseTestBase {
+public class TestFifteenSecondSleep extends InternalSelenseTestBase
+{
   @Test
-  public void testKeyPressNative() {
-    selenium.open("/selenium-server/tests/html/test_type_page1.html");
-    selenium.focus("username");
-    selenium.keyPressNative(Integer.toString(KeyEvent.VK_H));
-    Assert.assertEquals(selenium.getValue("username"), "h");
+  public void testFifteenSecondSleep() throws Throwable {
+
+    selenium.open("/selenium-server/tests/html/test_open.html");
+    selenium.setContext("Sleeping 15 seconds");
+    Thread.sleep(15000);
+    selenium.open("/selenium-server/tests/html/test_open.html");
   }
 }

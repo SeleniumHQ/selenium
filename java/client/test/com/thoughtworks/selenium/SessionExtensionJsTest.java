@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.v1;
+package com.thoughtworks.selenium;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
@@ -27,6 +27,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.v1.SeleniumTestEnvironment;
 
 import java.net.MalformedURLException;
 import java.net.URL;

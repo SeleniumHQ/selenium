@@ -14,20 +14,6 @@ java_library(name = "test-webdriver",
     "//third_party/java/junit",
   ])
 
-java_library(name = "test-selenium",
-  srcs = [
-    "CacheBlockTest.java",
-    "RealDealIntegrationTest.java",
-    "SessionExtensionJsTest.java",
-    "TestFifteenSecondSleep.java",
-    "TestLargeHtml.java",
-    "TestNativeKeys.java",
-  ],
-  deps = [
-    "//java/client/src/com/thoughtworks/selenium",
-    "//java/client/test/com/thoughtworks/selenium:test",
-  ])
-
 java_library(name = "environment",
   srcs = [
     "SeleniumTestEnvironment.java",
