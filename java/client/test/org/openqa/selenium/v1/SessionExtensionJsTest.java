@@ -19,42 +19,62 @@ limitations under the License.
 package org.openqa.selenium.v1;
 
 import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.InternalSelenseTestBase;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Optional;
-import org.testng.annotations.Parameters;
-import org.testng.annotations.Test;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class SessionExtensionJsTest extends InternalSelenseTestBase {
+import java.net.MalformedURLException;
+import java.net.URL;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
+
+public class SessionExtensionJsTest {
+
+  private static SeleniumTestEnvironment environment;
   private Selenium privateSelenium;
-  private String host, browser;
-  private int port;
 
-  private static final String TEST_URL =
-      "http://localhost:4444/selenium-server/tests/html/test_click_page1.html";
+  private static final String TEST_URL = "tests/html/test_click_page1.html";
 
-  @BeforeMethod
-  @Parameters({"selenium.host", "selenium.port", "selenium.browser"})
-  public void privateSetUp(@Optional("localhost") String host, @Optional("4444") String port,
-      @Optional String browser) {
-    if (browser == null) browser = runtimeBrowserString();
-    this.host = host;
-    this.port = Integer.parseInt(port);
-    this.browser = browser;
-    privateSelenium = getNewSelenium();
+  @BeforeClass
+  public static void startEnvironment() {
+    environment = new SeleniumTestEnvironment();
   }
 
-  @AfterMethod(alwaysRun = true)
+  @AfterClass
+  public static void stopEnvironment() {
+    environment.stop();
+  }
+
+  @Before
+  public void privateSetUp() throws MalformedURLException {
+    // Only makes sense to do this for RC
+    assumeTrue(Boolean.getBoolean("selenium.browser.selenium"));
+
+    String browserName = System.getProperty("selenium.browser");
+    assumeTrue(browserName != null && browserName.startsWith("*"));
+
+    String baseUrl = environment.getAppServer().whereIs("/selenium-server/");
+    URL url = new URL(baseUrl);
+
+    privateSelenium = new DefaultSelenium(url.getHost(), url.getPort(), browserName, baseUrl);
+  }
+
+  @After
   public void privateTearDown() {
-    if (privateSelenium != null) privateSelenium.stop();
+    if (privateSelenium != null) {
+      privateSelenium.stop();
+    }
   }
 
-  @Test(dataProvider = "system-properties")
+  @Test
   public void expectFailureWhenExtensionNotSet() {
     try {
       runCommands(privateSelenium);
@@ -64,7 +84,7 @@ public class SessionExtensionJsTest extends InternalSelenseTestBase {
     }
   }
 
-  @Test(dataProvider = "system-properties")
+  @Test
   public void loadSimpleExtensionJs() {
     // everything is peachy when the extension is set
     privateSelenium.setExtensionJs("var comeGetSome = 'in';");
@@ -77,15 +97,10 @@ public class SessionExtensionJsTest extends InternalSelenseTestBase {
     assertEquals("Click Page Target", privateSelenium.getTitle());
   }
 
-  private Selenium getNewSelenium() {
-    return new DefaultSelenium(host, port, browser, TEST_URL);
-  }
-
   private void runCommands(Selenium selenium) {
     selenium.start();
     selenium.open(TEST_URL);
     selenium.click("javascript{ 'l' + comeGetSome + 'k' }");
     selenium.waitForPageToLoad("5000");
   }
-
 }

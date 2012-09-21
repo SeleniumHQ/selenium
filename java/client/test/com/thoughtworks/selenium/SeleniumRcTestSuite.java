@@ -98,6 +98,12 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openqa.selenium.v1.CacheBlockTest;
+import org.openqa.selenium.v1.RealDealIntegrationTest;
+import org.openqa.selenium.v1.SessionExtensionJsTest;
+import org.openqa.selenium.v1.TestFifteenSecondSleep;
+import org.openqa.selenium.v1.TestLargeHtml;
+import org.openqa.selenium.v1.TestNativeKeys;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -179,7 +185,15 @@ import org.junit.runners.Suite;
     TestWaitForNot.class,
     TestWaitInPopupWindow.class,
     TestXPathLocatorInXHtml.class,
-    TestXPathLocators.class
+    TestXPathLocators.class,
+
+    // v1 tests
+    CacheBlockTest.class,
+    RealDealIntegrationTest.class,
+    SessionExtensionJsTest.class,
+    TestFifteenSecondSleep.class,
+    TestLargeHtml.class,
+    TestNativeKeys.class
 })
 public class SeleniumRcTestSuite extends BaseSuite {
   // empty
