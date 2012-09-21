@@ -11,6 +11,7 @@ java_library(name = "test-webdriver",
     "//java/client/src/org/openqa/selenium/support",
     "//java/client/src/org/openqa/selenium/internal/seleniumemulation",
     "//java/client/test/org/openqa/selenium:base",
+    "//java/client/test/org/openqa/selenium/testing:junit_4",
     "//third_party/java/junit",
   ])
 
