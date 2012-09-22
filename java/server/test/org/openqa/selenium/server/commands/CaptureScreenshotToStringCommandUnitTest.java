@@ -18,29 +18,34 @@ limitations under the License.
 
 package org.openqa.selenium.server.commands;
 
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
-
-import junit.framework.TestCase;
-
 import org.bouncycastle.util.encoders.Base64;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 
-public class CaptureScreenshotToStringCommandUnitTest extends TestCase {
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class CaptureScreenshotToStringCommandUnitTest {
 
   private CaptureScreenshotToStringCommand command;
 
+  @Test
   public void testDumbJUnit() {
     // this test is needed to make JUnit happy since the rest of the tests are disabled temporarily
   }
 
-  public void disabled_testExecuteReturnsOkAndCommaWhenEmptyCaptureAndEncodeSystemScreenshotSucceeds()
+  @Test
+  @Ignore
+  public void testExecuteReturnsOkAndCommaWhenEmptyCaptureAndEncodeSystemScreenshotSucceeds()
       throws Exception {
 
     command = createMock(CaptureScreenshotToStringCommand.class,
@@ -53,7 +58,9 @@ public class CaptureScreenshotToStringCommandUnitTest extends TestCase {
     verify(command);
   }
 
-  public void disabled_testExecuteReturnsErrorWhenEmptyCaptureAndEncodeSystemScreenshotThrowsException()
+  @Test
+  @Ignore
+  public void testExecuteReturnsErrorWhenEmptyCaptureAndEncodeSystemScreenshotThrowsException()
       throws Exception {
 
     command = createMock(CaptureScreenshotToStringCommand.class,
@@ -69,7 +76,9 @@ public class CaptureScreenshotToStringCommandUnitTest extends TestCase {
     verify(command);
   }
 
-  public void disabled_testCapturedScreenshotIsReturnedAsBase64EncodedString()
+  @Test
+  @Ignore
+  public void testCapturedScreenshotIsReturnedAsBase64EncodedString()
       throws Exception {
     command = new CaptureScreenshotToStringCommand();
     String returnValue = command.execute();

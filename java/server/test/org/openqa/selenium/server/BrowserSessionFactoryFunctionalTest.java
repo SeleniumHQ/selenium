@@ -19,14 +19,16 @@ limitations under the License.
 package org.openqa.selenium.server;
 
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 
-public class BrowserSessionFactoryFunctionalTest extends TestCase {
+import static org.junit.Assert.fail;
 
+public class BrowserSessionFactoryFunctionalTest {
+
+  @Test
   public void testBrowserIsAutomaticallyCloseWhenTimingOutOnBrowserLaunch() {
     final BrowserSessionFactory factory;
     final RemoteControlConfiguration configuration;

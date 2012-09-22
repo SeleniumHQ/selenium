@@ -18,30 +18,39 @@ limitations under the License.
 
 package com.thoughtworks.selenium;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class BrowserConfigurationOptionsTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+public class BrowserConfigurationOptionsTest {
+
+  @Test
   public void testCanUseWithValidArg() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions();
     assertTrue(bco.canUse("foobar"));
   }
 
+  @Test
   public void testCanUseWithNullArg() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions();
     assertFalse(bco.canUse(null));
   }
 
+  @Test
   public void testCanUseWithEmptyArg() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions();
     assertFalse(bco.canUse(""));
   }
 
+  @Test
   public void testSetProfileWithNullDoesNotSet() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setProfile(null);
     assertFalse(bco.isSet(BrowserConfigurationOptions.PROFILE_NAME));
   }
 
+  @Test
   public void testSetProfileWithNonNullDoesSet() {
     String profile = "foo";
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setProfile(profile);
@@ -49,12 +58,14 @@ public class BrowserConfigurationOptionsTest extends TestCase {
     assertEquals(profile, bco.getProfile());
   }
 
+  @Test
   public void testSetSingleWindow() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setSingleWindow();
     assertTrue(bco.isSingleWindow());
     assertTrue(bco.isSet(BrowserConfigurationOptions.SINGLE_WINDOW));
   }
 
+  @Test
   public void testSetSingleWindowWhenMultiWindowWasAlreadySet() {
     BrowserConfigurationOptions bco =
         new BrowserConfigurationOptions().setMultiWindow().setSingleWindow();
@@ -63,12 +74,14 @@ public class BrowserConfigurationOptionsTest extends TestCase {
     assertTrue(bco.isSet(BrowserConfigurationOptions.SINGLE_WINDOW));
   }
 
+  @Test
   public void testSetMultiWindow() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setMultiWindow();
     assertTrue(bco.isMultiWindow());
     assertTrue(bco.isSet(BrowserConfigurationOptions.MULTI_WINDOW));
   }
 
+  @Test
   public void testSetMultiWindowWhenSingleWindowWasAlreadySet() {
     BrowserConfigurationOptions bco =
         new BrowserConfigurationOptions().setSingleWindow().setMultiWindow();
@@ -77,12 +90,14 @@ public class BrowserConfigurationOptionsTest extends TestCase {
     assertTrue(bco.isSet(BrowserConfigurationOptions.MULTI_WINDOW));
   }
 
+  @Test
   public void testSetBrowserExecutablePathWithNullPath() {
     BrowserConfigurationOptions bco =
         new BrowserConfigurationOptions().setBrowserExecutablePath(null);
     assertFalse(bco.isSet(BrowserConfigurationOptions.BROWSER_EXECUTABLE_PATH));
   }
 
+  @Test
   public void testSetBrowserExcecutablePathWithValidPath() {
     String path = "c:\\chrome\\is\\cool.exe with_arg";
     BrowserConfigurationOptions bco =
@@ -91,6 +106,7 @@ public class BrowserConfigurationOptionsTest extends TestCase {
     assertEquals(path, bco.getBrowserExecutablePath());
   }
 
+  @Test
   public void testSetTimeoutInSeconds() {
     int timeout = 17;
     BrowserConfigurationOptions bco =
@@ -99,16 +115,19 @@ public class BrowserConfigurationOptionsTest extends TestCase {
     assertEquals(timeout, bco.getTimeoutInSeconds());
   }
 
+  @Test
   public void testGetTimeoutWhenNoneSet() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions();
     assertEquals(BrowserConfigurationOptions.DEFAULT_TIMEOUT_IN_SECONDS, bco.getTimeoutInSeconds());
   }
 
+  @Test
   public void testBrowserModeWithNullMode() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setBrowserMode(null);
     assertFalse(bco.isSet(BrowserConfigurationOptions.BROWSER_MODE));
   }
 
+  @Test
   public void testBrowserModeWithNonNullMode() {
     String mode = "hta";
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setBrowserMode(mode);

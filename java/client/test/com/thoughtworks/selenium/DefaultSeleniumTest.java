@@ -18,12 +18,16 @@ limitations under the License.
 
 package com.thoughtworks.selenium;
 
-import junit.framework.TestCase;
 
-public class DefaultSeleniumTest extends TestCase {
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
+public class DefaultSeleniumTest {
 
   private static final String prefix = "setContext,com.thoughtworks.selenium.DefaultSeleniumTest: ";
 
+  @Test
   public void testBannerSimple() throws Throwable {
     MyCommandProcessor cp = new MyCommandProcessor();
     DefaultSelenium selenium = new DefaultSelenium(cp);
@@ -31,6 +35,7 @@ public class DefaultSeleniumTest extends TestCase {
     assertEquals(prefix + "test Banner Simple\n", cp.commands.toString());
   }
 
+  @Test
   public void testMoreComplexExample() throws Throwable {
     MyCommandProcessor cp = new MyCommandProcessor();
     DefaultSelenium selenium = new DefaultSelenium(cp);
@@ -38,6 +43,7 @@ public class DefaultSeleniumTest extends TestCase {
     assertEquals(prefix + "test More Complex Example\n", cp.commands.toString());
   }
 
+  @Test
   public void testEvenMOREComplexExample() throws Throwable {
     MyCommandProcessor cp = new MyCommandProcessor();
     DefaultSelenium selenium = new DefaultSelenium(cp);

@@ -18,16 +18,14 @@ limitations under the License.
 
 package org.openqa.selenium.server.log;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import junit.framework.TestCase;
-
 import org.junit.Test;
 
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * {@link org.openqa.selenium.server.log.ShortTermMemoryHandler} unit test class.

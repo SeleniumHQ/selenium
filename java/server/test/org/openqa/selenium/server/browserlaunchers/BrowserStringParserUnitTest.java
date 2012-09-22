@@ -18,13 +18,19 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * {@link BrowserInstallationCache} unit test class.
  */
-public class BrowserStringParserUnitTest extends TestCase {
+public class BrowserStringParserUnitTest {
 
+  @Test
   public void testBrowserStartCommandMatchWhenBrowserStringIsTheBrowserName() {
     final BrowserStringParser.Result result;
 
@@ -33,6 +39,7 @@ public class BrowserStringParserUnitTest extends TestCase {
     assertNull(result.customLauncher());
   }
 
+  @Test
   public void testBrowserStartCommandMatchWhenBrowserStringIsStarTheBrowserName() {
     final BrowserStringParser.Result result;
 
@@ -40,6 +47,7 @@ public class BrowserStringParserUnitTest extends TestCase {
     assertTrue(result.match());
   }
 
+  @Test
   public void testBrowserStartCommandDoNotMatchWhenBrowsersAreWayDifferent() {
     final BrowserStringParser.Result result;
 
@@ -48,6 +56,7 @@ public class BrowserStringParserUnitTest extends TestCase {
     assertNull(result.customLauncher());
   }
 
+  @Test
   public void testBrowserStartCommandMatchWhenCustomLauncherIsProvided() {
     final BrowserStringParser.Result result;
 
@@ -58,6 +67,7 @@ public class BrowserStringParserUnitTest extends TestCase {
     assertEquals("/a/custom/launcher", result.customLauncher());
   }
 
+  @Test
   public void testBrowserStartCommandDoNotMatchWhenBrowsersisASubstring() {
     final BrowserStringParser.Result result;
 
@@ -66,6 +76,7 @@ public class BrowserStringParserUnitTest extends TestCase {
     assertNull(result.customLauncher());
   }
 
+  @Test
   public void testBrowserStartCommandIsNullWhenThereIsNothingButSpaceAfterTheBrowserName() {
     final BrowserStringParser.Result result;
 
@@ -74,6 +85,7 @@ public class BrowserStringParserUnitTest extends TestCase {
     assertNull(result.customLauncher());
   }
 
+  @Test
   public void testBrowserStartCommandMatchIgnoredTrailingSpacesWhenCustomLauncherIsProvided() {
     final BrowserStringParser.Result result;
 
@@ -84,6 +96,7 @@ public class BrowserStringParserUnitTest extends TestCase {
     assertEquals("/a/custom/launcher", result.customLauncher());
   }
 
+  @Test
   public void testBrowserStartCommandMatchPreservedSpacesWhithinCustomLauncher() {
     final BrowserStringParser.Result result;
 

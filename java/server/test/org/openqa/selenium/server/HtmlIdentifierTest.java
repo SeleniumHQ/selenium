@@ -18,17 +18,21 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
-import junit.framework.TestCase;
-
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.server.log.LoggingManager;
 
-public class HtmlIdentifierTest extends TestCase {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-  @Override
+public class HtmlIdentifierTest {
+
+  @Before
   public void setUp() throws Exception {
     LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
   }
 
+  @Test
   public void testMetaEquiv() {
     boolean result =
         HtmlIdentifier
@@ -39,6 +43,7 @@ public class HtmlIdentifierTest extends TestCase {
     assertFalse("improper injection", result);
   }
 
+  @Test
   public void testGoogleScenario() {
     boolean result = HtmlIdentifier.shouldBeInjected("http://www.google.com/webhp",
         "text/html; charset=UTF-8",
@@ -46,6 +51,7 @@ public class HtmlIdentifierTest extends TestCase {
     assertTrue("improper injection", result);
   }
 
+  @Test
   public void testStupidDellDotComScenario() {
     boolean result =
         HtmlIdentifier.shouldBeInjected("/menu.htm", "text/html",

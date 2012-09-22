@@ -22,8 +22,6 @@ import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverCommandProcessor;
 
-import junit.framework.TestCase;
-
 import static org.junit.Assert.fail;
 
 public class WebDriverCommandProcessorTest {

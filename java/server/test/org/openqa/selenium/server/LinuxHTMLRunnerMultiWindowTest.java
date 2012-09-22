@@ -19,20 +19,29 @@ limitations under the License.
 package org.openqa.selenium.server;
 
 
+import org.junit.Assume;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.Platform;
+
+import static org.openqa.selenium.Platform.LINUX;
+
 public class LinuxHTMLRunnerMultiWindowTest extends HTMLRunnerTestBase {
   public LinuxHTMLRunnerMultiWindowTest() {
     super.multiWindow = true;
   }
 
-  public LinuxHTMLRunnerMultiWindowTest(String name) {
-    super(name);
-    super.multiWindow = true;
+  @Before
+  public void assumeOnLinux() {
+    Assume.assumeTrue(Platform.getCurrent().is(LINUX));
   }
 
+  @Test
   public void testFirefox() throws Exception {
     runHTMLSuite("*firefox", false);
   }
 
+  @Test
   public void testChrome() throws Exception {
     runHTMLSuite("*chrome", false);
   }

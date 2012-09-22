@@ -18,6 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
+import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 
 
@@ -29,15 +30,8 @@ public class FirefoxMiniHTMLRunnerTest extends HTMLRunnerTestBase {
     super.suiteName = "TestSuite.html";
   }
 
-  public FirefoxMiniHTMLRunnerTest(String name) {
-    super(name);
-    super.suiteName = "TestSuite.html";
-  }
-
+  @Test
   public void testFirefoxMini() throws Exception {
     runHTMLSuite("*firefox", false);
   }
-
-
-
 }

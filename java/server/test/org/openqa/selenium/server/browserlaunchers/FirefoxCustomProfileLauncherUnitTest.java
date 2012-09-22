@@ -18,14 +18,17 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
 
-public class FirefoxCustomProfileLauncherUnitTest extends TestCase {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+public class FirefoxCustomProfileLauncherUnitTest {
+
+  @Test
   public void testProfileRemovedWhenProcessNull() {
     FirefoxCustomProfileLauncherStubbedForShutdown launcher =
         new FirefoxCustomProfileLauncherStubbedForShutdown();
@@ -35,6 +38,7 @@ public class FirefoxCustomProfileLauncherUnitTest extends TestCase {
     assertTrue(launcher.wasRemoveCustomProfileCalled());
   }
 
+  @Test
   public void testProfileRemovedWhenProcessKillFails() {
     FirefoxCustomProfileLauncherStubbedForShutdown launcher =
         new FirefoxCustomProfileLauncherStubbedForShutdown();
@@ -46,6 +50,7 @@ public class FirefoxCustomProfileLauncherUnitTest extends TestCase {
     assertTrue(launcher.wasRemoveCustomProfileCalled());
   }
 
+  @Test
   public void testProfileRemovedWhenProcessNotNull() {
     FirefoxCustomProfileLauncherStubbedForShutdown launcher =
         new FirefoxCustomProfileLauncherStubbedForShutdown();
@@ -56,6 +61,7 @@ public class FirefoxCustomProfileLauncherUnitTest extends TestCase {
     assertTrue(launcher.wasRemoveCustomProfileCalled());
   }
 
+  @Test
   public void testNothingRemovedIfAlreadyNull() {
     FirefoxCustomProfileLauncherStubbedForShutdown launcher =
         new FirefoxCustomProfileLauncherStubbedForShutdown();
@@ -64,6 +70,7 @@ public class FirefoxCustomProfileLauncherUnitTest extends TestCase {
     assertFalse(launcher.wasRemoveCustomProfileCalled());
   }
 
+  @Test
   public void testSecondCloseIsNoOp() {
     FirefoxCustomProfileLauncherStubbedForShutdown launcher =
         new FirefoxCustomProfileLauncherStubbedForShutdown();

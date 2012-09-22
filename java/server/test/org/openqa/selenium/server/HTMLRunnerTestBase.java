@@ -16,8 +16,10 @@
  */
 package org.openqa.selenium.server;
 
-import junit.framework.TestCase;
-
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
@@ -25,7 +27,12 @@ import org.openqa.selenium.server.htmlrunner.HTMLTestResults;
 
 import java.io.File;
 
-public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResultsListener {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public abstract class HTMLRunnerTestBase implements HTMLResultsListener {
+
+  @Rule public TestName name = new TestName();
 
   SeleniumServer server;
   HTMLLauncher launcher;
@@ -39,13 +46,9 @@ public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResults
     super();
   }
 
-  public HTMLRunnerTestBase(String name) {
-    super(name);
-  }
-
-  @Override
+  @Before
   public void setUp() throws Exception {
-    output = new File(getName() + "-results.html");
+    output = new File(name.getMethodName() + "-results.html");
     System.out.println("Will print results to " + output.getAbsolutePath());
     HttpRequest.__maxFormContentSize = 400000;
 
@@ -66,7 +69,7 @@ public abstract class HTMLRunnerTestBase extends TestCase implements HTMLResults
   }
 
 
-  @Override
+  @After
   public void tearDown() throws Exception {
     if (server != null) server.stop();
   }

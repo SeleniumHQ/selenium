@@ -18,10 +18,14 @@ limitations under the License.
 
 package com.thoughtworks.selenium;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class DefaultSeleniumStartErrorHandlingTest extends TestCase {
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+public class DefaultSeleniumStartErrorHandlingTest {
+
+  @Test
   public void testWrapsConnectionRefusedWithUserFriendlyExceptionMessage() {
     final FailOnStartCommandProcessor failOnStartCommandProcessor;
 
@@ -37,6 +41,7 @@ public class DefaultSeleniumStartErrorHandlingTest extends TestCase {
     }
   }
 
+  @Test
   public void testShouldLeaveOtherExceptionAlone() {
     FailOnStartCommandProcessor failOnStartCommandProcessor;
     failOnStartCommandProcessor =

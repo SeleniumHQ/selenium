@@ -18,32 +18,39 @@ limitations under the License.
 
 package org.openqa.selenium.server.commands;
 
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
-
-import junit.framework.TestCase;
-
 import org.easymock.classextension.ConstructorArgs;
+import org.junit.After;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
 
-public class CaptureScreenshotCommandUnitTest extends TestCase {
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+public class CaptureScreenshotCommandUnitTest {
 
   private CaptureScreenshotCommand command;
   private String fileName = "test_screenshot.png";
   private File file = new File(fileName);
   private String tempDirName = System.getProperty("java.io.tmpdir");
 
+  @Test
   public void testDumbJUnit() {
     // this test is needed to make JUnit happy since the rest of the tests are disabled temporarily
   }
 
-  public void disable_testExecuteReturnsOKWhencaptureSystemScreenshotSucceeds() throws Exception {
+  @Test
+  @Ignore
+  public void testExecuteReturnsOKWhencaptureSystemScreenshotSucceeds() throws Exception {
     final ConstructorArgs args;
 
     args =
@@ -58,7 +65,9 @@ public class CaptureScreenshotCommandUnitTest extends TestCase {
     verify(command);
   }
 
-  public void disable_testExecuteReturnsAnErrorWhencaptureSystemScreenshotRaise() throws Exception {
+  @Test
+  @Ignore
+  public void testExecuteReturnsAnErrorWhencaptureSystemScreenshotRaise() throws Exception {
 
     final ConstructorArgs args;
 
@@ -76,15 +85,18 @@ public class CaptureScreenshotCommandUnitTest extends TestCase {
   }
 
   // TODO: Mock File, Robot and ImageIO.write to reduce execution time
-
-  public void disable_testTakingScreenshotToSingleFileNameCreatesScreenshotInWorkingDirectory()
+  @Test
+  @Ignore
+  public void testTakingScreenshotToSingleFileNameCreatesScreenshotInWorkingDirectory()
       throws Exception {
     command = new CaptureScreenshotCommand(file);
     assertEquals("OK", command.execute());
     assertTrue(file.exists());
   }
 
-  public void disable_testTakingScreenshotToAbsolutePathWithExistingComponentsCreatesScreenshot()
+  @Test
+  @Ignore
+  public void testTakingScreenshotToAbsolutePathWithExistingComponentsCreatesScreenshot()
       throws Exception {
     file = new File(tempDirName + File.separator + fileName);
     command = new CaptureScreenshotCommand(file);
@@ -92,7 +104,9 @@ public class CaptureScreenshotCommandUnitTest extends TestCase {
     assertTrue(file.exists());
   }
 
-  public void disable_testTakingScreenshotToAbsolutePathWithPartiallyExistingComponentsCreatesNecessaryDirectories()
+  @Test
+  @Ignore
+  public void testTakingScreenshotToAbsolutePathWithPartiallyExistingComponentsCreatesNecessaryDirectories()
       throws Exception {
     file = new File(tempDirName + File.separator + "toBeCreated" + File.separator + fileName);
     command = new CaptureScreenshotCommand(file);
@@ -100,14 +114,16 @@ public class CaptureScreenshotCommandUnitTest extends TestCase {
     assertTrue(file.exists());
   }
 
-  public void disable_testScreenshotIsValidImage() throws Exception {
-    disable_testTakingScreenshotToSingleFileNameCreatesScreenshotInWorkingDirectory();
+  @Test
+  @Ignore
+  public void testScreenshotIsValidImage() throws Exception {
+    testTakingScreenshotToSingleFileNameCreatesScreenshotInWorkingDirectory();
     BufferedImage image = ImageIO.read(file);
     assertNotNull(image);
   }
 
-  @Override
-  public void tearDown() throws Exception {
+  @After
+  public void tearDown() {
     if (file.exists()) {
       file.delete();
     }

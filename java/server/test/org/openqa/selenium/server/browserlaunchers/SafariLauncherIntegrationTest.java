@@ -18,9 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.logging.Log;
+import org.junit.Test;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.server.RemoteControlConfiguration;
@@ -29,12 +28,13 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
  * {@link org.openqa.selenium.server.browserlaunchers.SafariCustomProfileLauncher} integration test
  * class.
  */
-public class SafariLauncherIntegrationTest extends TestCase {
+public class SafariLauncherIntegrationTest {
 
   private static final Log LOGGER = LogFactory.getLog(SafariLauncherIntegrationTest.class);
   private static final int SECONDS = 1000;
   private static final int WAIT_TIME = 15 * SECONDS;
 
+  @Test
   public void testLauncherWithDefaultConfiguration() throws Exception {
     final SafariCustomProfileLauncher launcher;
 
@@ -49,6 +49,7 @@ public class SafariLauncherIntegrationTest extends TestCase {
     LOGGER.info("He's dead now, right?");
   }
 
+  @Test
   public void testLauncherWithHonorSystemProxyEnabled() throws Exception {
     final SafariCustomProfileLauncher launcher;
     final RemoteControlConfiguration configuration;

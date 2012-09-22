@@ -18,25 +18,29 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * {@link BrowserInstallationCache} unit test class.
  */
-public class BrowserLocationCacheUnitTest extends TestCase {
+public class BrowserLocationCacheUnitTest {
 
+  @Test
   public void tesCacheKeyIsTheBrowserStringWhenNoCustomPathIsProvided() {
     assertEquals("*aBrowser", new BrowserInstallationCache().cacheKey("*aBrowser", null));
   }
 
+  @Test
   public void testCacaheIsTheBrowserStringConcatenatedWithCustomPathWhenCustomPathIsProvided() {
     assertEquals("*aBrowseraCustomPath",
         new BrowserInstallationCache().cacheKey("*aBrowser", "aCustomPath"));
   }
 
+  @Test
   public void testLocateBrowserInstallationUseLocatorWhenCacheIsEmpty() {
     final BrowserInstallation expectedInstallation;
     final BrowserLocator locator;
@@ -58,6 +62,7 @@ public class BrowserLocationCacheUnitTest extends TestCase {
         new BrowserInstallationCache().locateBrowserInstallation("aBrowser", null, locator));
   }
 
+  @Test
   public void testLocateBrowserInstallationUseCacheOnSecondAccess() {
     final BrowserInstallation expectedInstallation;
     final BrowserInstallationCache cache;
@@ -80,6 +85,7 @@ public class BrowserLocationCacheUnitTest extends TestCase {
     assertEquals(expectedInstallation, cache.locateBrowserInstallation("aBrowser", null, null));
   }
 
+  @Test
   public void testLocateBrowserInstallationUseLocatorWhenCacheIsEmptyAndACustomPathIsProvided() {
     final BrowserInstallation expectedInstallation;
     final BrowserLocator locator;
@@ -105,6 +111,7 @@ public class BrowserLocationCacheUnitTest extends TestCase {
             locator));
   }
 
+  @Test
   public void testLocateBrowserInstallationUseCacheOnSecondAccessWhenCustomLauncherIsProvided() {
     final BrowserInstallation expectedInstallation;
     final BrowserInstallationCache cache;

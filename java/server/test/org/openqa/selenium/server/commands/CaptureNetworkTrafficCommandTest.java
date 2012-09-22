@@ -18,8 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.server.commands;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.openqa.jetty.http.HttpRequest;
 import org.openqa.jetty.http.HttpResponse;
 import org.openqa.selenium.server.ModifiedIO;
@@ -35,17 +34,24 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class CaptureNetworkTrafficCommandTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class CaptureNetworkTrafficCommandTest {
+
+  @Test
   public void testJson() throws ParseException, IOException {
     prepare();
     check("json", "json.txt");
   }
 
+  @Test
   public void testXml() throws ParseException, IOException {
     prepare();
     check("xml", "xml.xml");
   }
 
+  @Test
   public void testPlain() throws ParseException, IOException {
     prepare();
     check("plain", "plain.txt");

@@ -17,32 +17,45 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
+import org.junit.Assume;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.Platform;
+
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.Platform.WINDOWS;
+
 public class WindowsHTMLRunnerMultiWindowFunctionalTest extends HTMLRunnerTestBase {
   public WindowsHTMLRunnerMultiWindowFunctionalTest() {
     super.multiWindow = true;
   }
 
-  public WindowsHTMLRunnerMultiWindowFunctionalTest(String name) {
-    super(name);
-    super.multiWindow = true;
+  @Before
+  public void assumeOnLinux() {
+    Assume.assumeTrue(Platform.getCurrent().is(WINDOWS));
   }
 
+  @Test
   public void testFirefox() throws Exception {
     runHTMLSuite("*firefox", false);
   }
 
+  @Test
   public void testIExplore() throws Exception {
     runHTMLSuite("*iexplore", false);
   }
 
+  @Test
   public void testChrome() throws Exception {
     runHTMLSuite("*chrome", false);
   }
 
+  @Test
   public void testOpera() throws Exception {
     runHTMLSuite("*opera", false);
   }
 
+  @Test
   public void testHTA() throws Exception {
     try {
       runHTMLSuite("*iehta", false);

@@ -18,6 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.v1.support;
 
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
@@ -26,9 +27,11 @@ import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.support.PageFactory;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class DecoratedWebElementTest extends TestCase {
+public class DecoratedWebElementTest {
+
+  @Test
   public void testDecoratedElementsShouldBeUnwrapped() {
     final RemoteWebElement element = new RemoteWebElement();
     element.setId("foo");

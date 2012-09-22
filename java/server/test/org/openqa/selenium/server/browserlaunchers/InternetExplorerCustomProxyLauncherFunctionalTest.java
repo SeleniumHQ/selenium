@@ -18,8 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
@@ -27,8 +26,9 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
  * {@link org.openqa.selenium.server.browserlaunchers.InternetExplorerCustomProxyLauncher}
  * functional test class.
  */
-public class InternetExplorerCustomProxyLauncherFunctionalTest extends TestCase {
+public class InternetExplorerCustomProxyLauncherFunctionalTest {
 
+  @Test
   public void testCanLaunchASingleBrowser() {
     final InternetExplorerCustomProxyLauncher launcher;
 
@@ -40,6 +40,7 @@ public class InternetExplorerCustomProxyLauncherFunctionalTest extends TestCase 
     launcher.close();
   }
 
+  @Test
   public void testCanLaunchTwoBrowsersInSequence() {
     final InternetExplorerCustomProxyLauncher firstLauncher;
     final InternetExplorerCustomProxyLauncher secondLauncher;
@@ -58,6 +59,7 @@ public class InternetExplorerCustomProxyLauncherFunctionalTest extends TestCase 
     secondLauncher.close();
   }
 
+  @Test
   public void testCanLaunchTwoBrowsersInterleaved() {
     final InternetExplorerCustomProxyLauncher firstLauncher;
     final InternetExplorerCustomProxyLauncher secondLauncher;

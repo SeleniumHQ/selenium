@@ -18,8 +18,8 @@ limitations under the License.
 
 package com.thoughtworks.selenium;
 
-import junit.framework.TestCase;
 import org.easymock.classextension.ConstructorArgs;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -30,11 +30,16 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 /**
  * {@link com.thoughtworks.selenium.HttpCommandProcessor} unit test class.
  */
-public class HttpCommandProcessorUnitTest extends TestCase {
+public class HttpCommandProcessorUnitTest {
 
+  @Test
   public void testCanStopTheSeleneseSessionEvenIfThereIsNoCurrentSession() {
     final HttpCommandProcessor processor;
 
@@ -42,6 +47,7 @@ public class HttpCommandProcessorUnitTest extends TestCase {
     processor.stop();
   }
 
+  @Test
   public void testCanStopTheSeleneseSessionWhenASessionIsInProgress() {
     final HttpCommandProcessor processor;
 
@@ -57,18 +63,20 @@ public class HttpCommandProcessorUnitTest extends TestCase {
     processor.stop();
   }
 
+  @Test
   public void testResourcesClosedWhenIoeOnGetConnection() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
     cmdProc.throwIoeOnGetConnection = true;
     try {
-      String response = cmdProc.getCommandResponseAsString("testCommand");
+      cmdProc.getCommandResponseAsString("testCommand");
       fail();
     } catch (IOException ioe) {
       cmdProc.verifyClosedResources(false, false, false);
     }
   }
 
+  @Test
   public void testResourcesClosedWhenIoeOnGetOutputStream() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
@@ -81,23 +89,25 @@ public class HttpCommandProcessorUnitTest extends TestCase {
     }
   }
 
+  @Test
   public void testResourcesClosedWhenIoeOnGetInputStream() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
     cmdProc.throwIoeOnGetInputStream = true;
     try {
-      String response = cmdProc.getCommandResponseAsString("testCommand");
+      cmdProc.getCommandResponseAsString("testCommand");
       fail();
     } catch (IOException ioe) {
       cmdProc.verifyClosedResources(true, true, false);
     }
   }
 
+  @Test
   public void testResourcesClosedWhenNoIoes() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
     try {
-      String response = cmdProc.getCommandResponseAsString("testCommand");
+      cmdProc.getCommandResponseAsString("testCommand");
       cmdProc.verifyClosedResources(true, true, true);
     } catch (IOException ioe) {
       fail();
@@ -124,11 +134,6 @@ public class HttpCommandProcessorUnitTest extends TestCase {
     public IOEThrowingHttpCommandProcessor(String serverHost,
         int serverPort, String browserStartCommand, String browserURL) {
       super(serverHost, serverPort, browserStartCommand, browserURL);
-    }
-
-    public IOEThrowingHttpCommandProcessor(String pathToServlet,
-        String browserStartCommand, String browserURL) {
-      super(pathToServlet, browserStartCommand, browserURL);
     }
 
     @Override
@@ -184,6 +189,7 @@ public class HttpCommandProcessorUnitTest extends TestCase {
 
   }
 
+  @Test
   public void testGetBooleanArray() throws Exception {
     final HttpCommandProcessor processor;
     final ConstructorArgs constArgs =

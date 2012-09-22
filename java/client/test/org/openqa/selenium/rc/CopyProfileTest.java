@@ -18,10 +18,9 @@ limitations under the License.
 
 package org.openqa.selenium.rc;
 
-import static org.openqa.selenium.Platform.MAC;
-import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
-
-import org.openqa.selenium.testing.Ignore;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.Pages;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
@@ -32,35 +31,36 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
 
-import junit.framework.TestCase;
-
 import java.net.MalformedURLException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
 // TODO(reorg): This test is never run. It must be.
 // Firefox specific test, but needs to be in remote
 @Ignore
-public class CopyProfileTest extends TestCase {
+public class CopyProfileTest {
   private OutOfProcessSeleniumServer selenium;
   private TestEnvironment env;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
+  @Before
+  public void setUp() throws Exception {
     env = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
     selenium = new OutOfProcessSeleniumServer();
     selenium.start();
   }
 
-  @Override
+  @After
   protected void tearDown() throws Exception {
     selenium.stop();
-
-    super.tearDown();
   }
 
+  @Test
   public void testShouldCopyProfileFromLocalMachineToRemoteInstance() throws Exception {
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -79,6 +79,7 @@ public class CopyProfileTest extends TestCase {
     assertEquals(title, "XHTML Test Page", title);
   }
 
+  @Test
   public void testCanEnableNativeEventsOnRemoteFirefox() throws MalformedURLException {
     if (Platform.getCurrent().is(MAC)) {
       System.out.println("Skipping test: no native events here");

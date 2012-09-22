@@ -18,8 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.browserlaunchers.Sleeper;
@@ -27,7 +25,7 @@ import org.openqa.selenium.browserlaunchers.Sleeper;
 /**
  * {@link org.openqa.selenium.server.browserlaunchers.Firefox2Launcher} integration test class.
  */
-public class LauncherFunctionalTestCase extends TestCase {
+public class LauncherFunctionalTestCase {
 
   private static final Log LOGGER = LogFactory.getLog(SafariLauncherIntegrationTest.class);
   private static final int SECONDS = 1000;
