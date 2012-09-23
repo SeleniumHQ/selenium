@@ -1,6 +1,8 @@
 package org.openqa.selenium.safari;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import org.junit.Before;
@@ -12,12 +14,12 @@ public class SafariTestBase extends JUnit4TestBase {
   @Before
   @Override
   public void createDriver() {
-    driver = actuallyCreateDriver();
+    driver = actuallyCreateDriver(DesiredCapabilities.safari());
   }
 
-  public static WebDriver actuallyCreateDriver() {
+  public static WebDriver actuallyCreateDriver(Capabilities capabilities) {
     if (staticDriver == null) {
-      staticDriver = new SafariDriver();
+      staticDriver = new SafariDriver(capabilities);
     }
     return staticDriver;
   }

@@ -31,18 +31,30 @@ import java.io.IOException;
 
 /**
  * A WebDriver implementation that controls Safari using a browser extension
- * (consequently, only Safari 5+ is supported).
+ * (consequently, only Safari 5.1+ is supported).
  */
 @Beta
 public class SafariDriver extends RemoteWebDriver
     implements TakesScreenshot {
-  
+
+  /**
+   * A boolean capability that instructs the SafariDriver to delete all existing
+   * session data when starting a new session. This includes browser history,
+   * cache, cookies, HTML5 local storage, and HTML5 databases.
+   *
+   * <p><strong>Warning:</strong> Since Safari uses a single profile for the
+   * current user, enabling this capability will permanently erase any existing
+   * session data.
+   */
+  public static final String CLEAN_SESSION_CAPABILITY = "safari.cleanSession";
+
   public SafariDriver() {
     this(DesiredCapabilities.safari());
   }
 
   public SafariDriver(Capabilities desiredCapabilities) {
-    super(new SafariDriverCommandExecutor(0), desiredCapabilities);
+    super(new SafariDriverCommandExecutor(0, desiredCapabilities.is(CLEAN_SESSION_CAPABILITY)),
+        desiredCapabilities);
   }
 
   @Override

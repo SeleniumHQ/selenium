@@ -21,8 +21,11 @@ import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
@@ -35,6 +38,7 @@ import org.openqa.selenium.remote.Response;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,6 +49,8 @@ class SafariDriverCommandExecutor implements CommandExecutor {
 
   private final SafariDriverServer server;
   private final BrowserLocator browserLocator;
+  private final SessionData sessionData;
+  private final boolean cleanSession;
 
   private CommandLine commandLine;
   private SafariDriverConnection connection;
@@ -52,10 +58,14 @@ class SafariDriverCommandExecutor implements CommandExecutor {
   /**
    * @param port The port the {@link SafariDriverServer} should be started on,
    *     or 0 if the server should select a free port.
+   * @param cleanSession Whether all system data should be cleared before
+   *     starting a new session.
    */
-  public SafariDriverCommandExecutor(int port) {
+  public SafariDriverCommandExecutor(int port, boolean cleanSession) {
     server = new SafariDriverServer(port);
     browserLocator = new SafariLocator();
+    sessionData = SessionData.forCurrentPlatform();
+    this.cleanSession = cleanSession;
   }
 
   /**
@@ -70,6 +80,10 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     }
 
     server.start();
+
+    if (cleanSession) {
+      sessionData.clear();
+    }
 
     File connectFile = prepareConnectFile(server.getUri());
     BrowserInstallation installation = browserLocator.findBrowserLocationOrFail();

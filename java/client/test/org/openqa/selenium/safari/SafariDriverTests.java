@@ -30,6 +30,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     AlertTests.class,
+    CleanSessionTest.class,
     CrossDomainTest.class,
     StandardSeleniumTests.class
 })
