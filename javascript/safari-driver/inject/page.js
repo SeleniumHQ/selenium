@@ -126,10 +126,11 @@ safaridriver.inject.page.NativeDialog_ = {
  * @private
  */
 safaridriver.inject.page.wrappedAlert_ = function(var_args) {
-  var args = goog.array.concat(safaridriver.inject.page.NativeDialog_.alert,
-      arguments);
-  var sendFn = goog.partial.apply(null, args);
-  sendFn();
+  safaridriver.inject.page.sendAlert_(
+      safaridriver.inject.page.NativeDialog_.alert,
+      // Closure's extern definition for window.alert says it takes var_args,
+      // but Safari's only accepts a single argument.
+      arguments[0]);
 };
 
 
