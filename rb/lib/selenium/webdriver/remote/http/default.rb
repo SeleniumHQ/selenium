@@ -1,4 +1,5 @@
 require 'net/https'
+require 'ipaddr'
 
 module Selenium
   module WebDriver
@@ -113,8 +114,19 @@ module Selenium
             return false if proxy.nil?
 
             if proxy.no_proxy
-              hosts = proxy.no_proxy.split(",")
-              !(hosts.include?(server_url.host) || hosts.first == "*")
+              ignored = proxy.no_proxy.split(",").any? do |host|
+                host == "*" ||
+                host == server_url.host || (
+                  begin
+                    IPAddr.new(host).include?(server_url.host)
+                  rescue ArgumentError
+                    false
+                  end
+                )
+
+              end
+
+              not ignored
             else
               true
             end

@@ -91,6 +91,15 @@ module Selenium
                 http.should_not be_proxy
               end
             end
+
+            it "understands subnetting in #{no_proxy_var}" do
+              with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "localhost,127.0.0.0/8") do
+                client.server_url = URI.parse("http://127.0.0.1:4444/wd/hub")
+
+                http = client.send :http
+                http.should_not be_proxy
+              end
+            end
           end
 
           it "raises a sane error if a proxy is refusing connections" do
