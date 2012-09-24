@@ -41,7 +41,7 @@ public class DeleteSession extends WebDriverHandler {
 
     try {
       LoggingManager.perSessionLogHandler().fetchAndStoreLogsFromDriver(getSessionId(), driver);
-    } catch (RuntimeException ignored) {
+    } catch (Throwable ignored) {
       // A failure to retrieve logs should not cause a test to fail.
       // Silently ignore this exception.
     }
