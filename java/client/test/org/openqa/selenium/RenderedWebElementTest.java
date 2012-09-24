@@ -201,7 +201,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, IE, OPERA, OPERA_MOBILE})
+  @Ignore({CHROME, OPERA, OPERA_MOBILE})
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     assumeTrue(hasInputDevices());
     assumeTrue(TestUtilities.isNativeEventsEnabled(driver));
@@ -258,7 +258,6 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     assertTrue("The element and the enclosing map should be considered shown.", isShown);
   }
 
-  @Ignore
   @JavascriptEnabled
   @Test
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
@@ -277,6 +276,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     new Actions(driver).moveToElement(element).build().perform();
 
     WebElement target = driver.findElement(By.id("item1"));
+
     assertTrue(target.isDisplayed());
     target.click();
 

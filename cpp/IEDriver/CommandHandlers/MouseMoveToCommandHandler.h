@@ -79,7 +79,6 @@ class MouseMoveToCommandHandler : public IECommandHandler {
           end_y += yoffset_parameter_iterator->second.asInt();
         }
 
-
         HWND browser_window_handle = browser_wrapper->GetWindowHandle();
         LRESULT move_result = mouseMoveTo(browser_window_handle,
                                           executor.speed(),
@@ -90,7 +89,7 @@ class MouseMoveToCommandHandler : public IECommandHandler {
 
         mutable_executor.set_last_known_mouse_x(end_x);
         mutable_executor.set_last_known_mouse_y(end_y);
-      } else {
+      } else { // Fall back on synthesized events.
         std::wstring script_source = L"(function() { return function(){" + 
                                       atoms::asString(atoms::INPUTS) + 
                                       L"; return webdriver.atoms.inputs.mouseMove(arguments[0], arguments[1], arguments[2], arguments[3]);" + 
@@ -167,12 +166,73 @@ class MouseMoveToCommandHandler : public IECommandHandler {
       *x_coordinate = element_x;
       *y_coordinate = element_y;
     } else {
-      *x_coordinate = element_x + (element_width / 2);
-      *y_coordinate = element_y + (element_height / 2);
+      LOG(INFO) << "Checking whether element has single text node.";
+      BrowserHandle browser_wrapper;
+      executor.GetCurrentBrowser(&browser_wrapper);
+      CComPtr<IHTMLDocument2> doc;
+      browser_wrapper->GetDocument(&doc);
+      if (this->HasSingleTextNode(doc, target_element)) {
+        LOG(INFO) << "Element has single text node. Will use the middle of that.";
+        std::pair<int, int> textSize = this->GetBoundariesOfElementText(executor, doc, target_element);
+
+        // Get middle of selection if there's only one text node.
+        *x_coordinate = element_x + textSize.first / 2;
+        *y_coordinate = element_y + textSize.second / 2;
+      } else {
+        *x_coordinate = element_x + (element_width / 2);
+        *y_coordinate = element_y + (element_height / 2);
+      }
     }
 
     return SUCCESS;
   }
+
+  bool MouseMoveToCommandHandler::HasSingleTextNode(CComPtr<IHTMLDocument2> doc,
+                                                    ElementHandle target_element) {
+    std::wstring script_source = L"(function() { return function() { var e = arguments[0]; ";
+    script_source += L"return (e.childNodes.length > 1) && (e.childNodes[0].nodeType == 3); };})();";
+
+    LOG(INFO) << "Executing: " << string(script_source.begin(), script_source.end());
+    Script script_wrapper(doc, script_source, 1);
+
+    script_wrapper.AddArgument(target_element->element());
+    int status_code = script_wrapper.Execute();
+    if (status_code == SUCCESS) {
+      std::string res;
+      script_wrapper.ConvertResultToString(&res);
+      return (res == "true");
+    } else {
+      LOG(WARN) << "Unable to execute js to detect if there is a single text node. Error: " << status_code; 
+    }
+    return false;
+  }
+
+  std::pair<int, int> GetBoundariesOfElementText(const IECommandExecutor& executor,
+      CComPtr<IHTMLDocument2> doc, ElementHandle target_element) {
+    std::wstring script_source = L"(function() { return function() { var e = arguments[0]; ";
+    script_source += L"var tr = document.body.createTextRange(); tr.moveToElementText(e);";
+    script_source += L"return [tr.boundingHeight, tr.boundingWidth]; };})();";
+
+    LOG(INFO) << "Executing: " << string(script_source.begin(), script_source.end());
+    Script script_wrapper(doc, script_source, 1);
+
+    script_wrapper.AddArgument(target_element->element());
+    int status_code = script_wrapper.Execute();
+    if (status_code == SUCCESS) {
+      Json::Value boundaries_array;
+      script_wrapper.ConvertResultToJsonValue(executor, &boundaries_array);
+      Json::UInt index = 0;
+      Json::Value& height(boundaries_array[index]);
+      index++;
+      Json::Value& width(boundaries_array[index]);
+      LOG(INFO) << "Got height: " << height << " and width: " << width;
+      return std::make_pair(width.asInt(), height.asInt());
+    } else {
+      LOG(WARN) << "Unable to execute js to detect if there is a single text node. Error: " << status_code; 
+    }
+    return std::make_pair(0, 0);
+  }
+
 };
 
 } // namespace webdriver
