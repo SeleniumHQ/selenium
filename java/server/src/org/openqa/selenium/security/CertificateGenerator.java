@@ -100,7 +100,7 @@ public class CertificateGenerator {
         "CN=%s, OU=Test, O=CyberVillainsCA, L=Seattle, S=Washington, C=US", hostname);
     X500Principal x500subject = new X500Principal(subject);
 
-    Date begin = new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(-1));
+    Date begin = new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1));
     Date end = new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(365));
 
     KeyPair keypair = pairGenerator.generateKeyPair();
