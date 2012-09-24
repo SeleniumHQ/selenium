@@ -29,7 +29,12 @@ module Selenium
 
           remote_opts.merge!(:http_client => http_client) if http_client
 
-          super(remote_opts)
+          begin
+            super(remote_opts)
+          rescue
+            @launcher.quit
+            raise
+          end
         end
 
         def browser
