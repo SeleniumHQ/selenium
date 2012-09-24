@@ -513,6 +513,10 @@ module CrazyFunJava
                 ant.sysproperty :key => 'webdriver.chrome.driver', :value => chromedriver
               end
 
+              if safaridriver
+                ant.sysproperty :key => 'webdriver.safari.driver', :value => safaridriver
+              end
+
               if chrome
                 ant.sysproperty :key => 'webdriver.chrome.binary', :value => chrome
               end
@@ -570,6 +574,10 @@ module CrazyFunJava
 
     def chromedriver
       return ENV['chromedriver']
+    end
+
+    def safaridriver
+      return ENV['safaridriver']
     end
 
     def chrome

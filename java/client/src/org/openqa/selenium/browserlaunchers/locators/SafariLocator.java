@@ -31,7 +31,8 @@ public class SafariLocator extends SingleBrowserLocator {
   };
 
   private static final String[] USUAL_WINDOWS_LAUNCHER_LOCATIONS = {
-      WindowsUtils.getProgramFilesPath() + "\\Safari"
+      WindowsUtils.getProgramFilesPath() + "\\Safari",
+      WindowsUtils.getProgramFiles86Path() + "\\Safari"
   };
 
   @Override

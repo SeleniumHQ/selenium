@@ -47,6 +47,7 @@ import java.util.concurrent.TimeUnit;
  */
 class SafariDriverCommandExecutor implements CommandExecutor {
 
+  private final SafariDriverExtension extension;
   private final SafariDriverServer server;
   private final BrowserLocator browserLocator;
   private final SessionData sessionData;
@@ -62,6 +63,7 @@ class SafariDriverCommandExecutor implements CommandExecutor {
    *     starting a new session.
    */
   public SafariDriverCommandExecutor(int port, boolean cleanSession) {
+    extension = new SafariDriverExtension();
     server = new SafariDriverServer(port);
     browserLocator = new SafariLocator();
     sessionData = SessionData.forCurrentPlatform();
@@ -81,6 +83,7 @@ class SafariDriverCommandExecutor implements CommandExecutor {
 
     server.start();
 
+    extension.install();
     if (cleanSession) {
       sessionData.clear();
     }
