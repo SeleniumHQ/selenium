@@ -42,6 +42,7 @@ js_test(name = "test",
   ],
   deps = [
     ":deps",
+    "//cpp:ie_win32_exe",
     "//java/client/test/org/openqa/selenium/javascript",
     "//java/server/test/org/openqa/selenium:server-with-tests:uber",
   ])
