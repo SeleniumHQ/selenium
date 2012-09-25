@@ -124,7 +124,14 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
     var resolver = doc.createNSResolver ?
         doc.createNSResolver(doc.documentElement) :
         bot.locators.xpath.DEFAULT_RESOLVER_;
-    return docForEval.evaluate(path, node, resolver, resultType, null);
+    if (goog.userAgent.IE && !goog.userAgent.isVersion(7)) {
+      // IE6, and only IE6, has an issue where calling a custom function
+      // directly attached to the document object does not correctly propagate
+      // thrown errors. So in that case *only* we will use apply().
+      return docForEval.evaluate.apply(null, [path, node, resolver, resultType, null]);
+    } else {
+      return docForEval.evaluate(path, node, resolver, resultType, null);
+    }
   } catch (ex) {
     // The Firefox XPath evaluator can throw an exception if the document is
     // queried while it's in the midst of reloading, so we ignore it. In all
