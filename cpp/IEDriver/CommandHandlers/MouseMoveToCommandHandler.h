@@ -171,7 +171,7 @@ class MouseMoveToCommandHandler : public IECommandHandler {
       executor.GetCurrentBrowser(&browser_wrapper);
       CComPtr<IHTMLDocument2> doc;
       browser_wrapper->GetDocument(&doc);
-      if (this->HasSingleTextNode(doc, target_element)) {
+      if (this->HasDirectTextNode(doc, target_element)) {
         LOG(INFO) << "Element has single text node. Will use the middle of that.";
         std::pair<int, int> textSize = this->GetBoundariesOfElementText(executor, doc, target_element);
 
@@ -187,7 +187,7 @@ class MouseMoveToCommandHandler : public IECommandHandler {
     return SUCCESS;
   }
 
-  bool MouseMoveToCommandHandler::HasSingleTextNode(CComPtr<IHTMLDocument2> doc,
+  bool MouseMoveToCommandHandler::HasDirectTextNode(CComPtr<IHTMLDocument2> doc,
                                                     ElementHandle target_element) {
     std::wstring script_source = L"(function() { return function() { var e = arguments[0]; ";
     script_source += L"return (e.childNodes.length > 1) && (e.childNodes[0].nodeType == 3); };})();";
