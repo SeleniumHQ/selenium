@@ -34,7 +34,7 @@ BROWSERS = {
     },
     :java => {
       :class => "org.openqa.selenium.ie.InternetExplorerDriver",
-      :deps => [ "//java/client/src/org/openqa/selenium/ie:ie" ]
+      :deps => [ "//java/client/src/org/openqa/selenium/ie:ie", "//cpp:ie_win32_exe" ]
     },
     :browser_name => "internet explorer",
     :available => windows?
