@@ -328,7 +328,7 @@ namespace OpenQA.Selenium
         public static readonly string F10 = Convert.ToString(Convert.ToChar(0xE03A, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
 
         /// <summary>
-        /// Represents the function key F12.
+        /// Represents the function key F11.
         /// </summary>
         public static readonly string F11 = Convert.ToString(Convert.ToChar(0xE03B, CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
 
