@@ -323,10 +323,19 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
 };
 
 BrowserBot.prototype._windowClosed = function(win) {
-    var c = win.closed;
-    if (c == null) return true;
-    return c;
+    try {
+        var c = win.closed;
+        if (c == null) return true;
+        return c;
+    } catch (ignored) {
+        // Firefox 15+ may already have marked the win dead. Accessing it
+        // causes an exception to be thrown. That exception tells us the window
+        // is closed.
+        return true;
+    }
 };
+
+BrowserBot.uniqueKey = 1;
 
 BrowserBot.prototype._modifyWindow = function(win) {
     // In proxyInjectionMode, have to suppress LOG calls in _modifyWindow to avoid an infinite loop
@@ -339,6 +348,10 @@ BrowserBot.prototype._modifyWindow = function(win) {
     if (!this.proxyInjectionMode) {
         LOG.debug('modifyWindow ' + this.uniqueId + ":" + win[this.uniqueId]);
     }
+
+    // Assign a unique label for this window. We set this on a known attribute so we can reliably
+    // find it later. This is slightly different from uniqueId.
+    win.seleniumKey = BrowserBot.uniqueKey++;
 
     this.modifyWindowToRecordPopUpDialogs(win, this);
     
@@ -1231,7 +1244,8 @@ BrowserBot.prototype._handleClosedSubFrame = function(testWindow, doNotModify) {
         var missing = true;
         if (testWindow.parent && testWindow.parent.frames && testWindow.parent.frames.length) {
             for (var i = 0; i < testWindow.parent.frames.length; i++) {
-                if (testWindow.parent.frames[i] == testWindow) {
+                var frame = testWindow.parent.frames[i];
+                if (frame == testWindow || frame.seleniumKey == testWindow.seleniumKey) {
                     missing = false;
                     break;
                 }

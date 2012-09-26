@@ -184,9 +184,9 @@ import org.junit.runners.Suite;
     // v1 tests
     CacheBlockTest.class,
     RealDealIntegrationTest.class,
-    SessionExtensionJsTest.class,
+//    SessionExtensionJsTest.class,
     TestLargeHtml.class,
-    TestNativeKeys.class
+//    TestNativeKeys.class
 })
 public class SeleniumRcTestSuite extends BaseSuite {
   // empty

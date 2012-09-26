@@ -121,6 +121,9 @@ TestLoop.prototype = {
             LOG.exception(e);
             var msg = "Command execution failure. Please search the user group at https://groups.google.com/forum/#!forum/selenium-users for error details from the log window.";
             msg += "  The error message is: " + extractExceptionMessage(e);
+            if (e.stack) {
+                msg += '\n' + e.stack;
+            }
             return this.commandError(msg);
         } else {
             LOG.error(e.message);
@@ -156,6 +159,9 @@ TestLoop.prototype = {
             this.result = {};
             this.result.failed = true;
             this.result.failureMessage = extractExceptionMessage(e);
+            if (e.stack) {
+                this.result.failureMessage += '\n' + e.stack;
+            }
             this.commandComplete(this.result);
             this.continueTest();
         }

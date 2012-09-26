@@ -38,7 +38,12 @@ core.firefox.unwrap = function(thing) {
 
     // If we've already unwrapped the object, don't unwrap it again.
     // TODO(simon): see whether XPCWrapper->IsSecurityWrapper is available in JS
-    if (thing.__fxdriver_unwrapped) {
+    try {
+        if (thing.__fxdriver_unwrapped) {
+            return thing;
+        }
+    } catch (ignored) {
+        // We have a dead object. Just return it. Calling sites know what to do.
         return thing;
     }
 
