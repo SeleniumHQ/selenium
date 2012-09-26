@@ -31,7 +31,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -57,7 +56,6 @@ import java.util.concurrent.Callable;
 
 import static java.lang.Thread.sleep;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -390,44 +388,10 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     };
   }
 
-  @Ignore(value = FIREFOX,
-      reason = "Reworking alert handling. First step: removing existing broken alert support")
-  @Test
-  public void shouldThrowWhenAlertNotHandled() {
-    WebDriver firefox = newFirefoxDriver();
-    firefox.get(pages.alertsPage);
-
-    try {
-      WebElement alert = firefox.findElement(By.id("alert"));
-      alert.click();
-
-      Boolean exceptionThrown = waitFor(
-          unhandledAlertExceptionToBeThrown(firefox));
-
-      assertTrue("Should have thrown an UnhandledAlertException", exceptionThrown);
-    } finally {
-      firefox.quit();
-    }
-  }
-
   @Test
   public void canAccessUrlProtectedByBasicAuth() {
     driver.get(appServer.whereIsWithCredentials("basicAuth", "test", "test"));
     assertEquals("authorized", driver.findElement(By.tagName("h1")).getText());
-  }
-
-  private Callable<Boolean> unhandledAlertExceptionToBeThrown(final WebDriver driver) {
-    return new Callable<Boolean>() {
-
-      public Boolean call() throws Exception {
-        try {
-          driver.getTitle();
-          return false;
-        } catch (UnhandledAlertException e) {
-          return true;
-        }
-      }
-    };
   }
 
   @Test
