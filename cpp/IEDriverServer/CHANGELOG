@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.26.0.4
+=========
+ * Updates to JavaScript automation atoms.
+
 v2.26.0.3
 =========
  * Allowed buttons on alerts with control IDs of IDRETRY to be handled as 
