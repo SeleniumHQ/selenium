@@ -1893,7 +1893,11 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
     // DGF normally you should use []s instead of eval "win."+attributeName
     // but in this case, attributeName may contain dots (e.g. document.title)
     // in that case, we have no choice but to use eval...
-    attributes.push(eval("win."+attributeName));
+    try {
+        attributes.push(eval("win."+attributeName));
+    } catch (ignored) {
+        // Dead object
+    }
     for (var windowName in this.browserbot.openedWindows)
     {
         try {
