@@ -362,19 +362,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Test
-  public void testShouldBeAbleToFlipToAFrameIdentifiedByItsId() {
-    driver.get(pages.framesetPage);
-
-    driver.switchTo().frame("fifth");
-
-    try {
-      driver.findElement(By.id("username"));
-    } catch (NoSuchElementException e) {
-      fail("Driver did not switch by frame id");
-    }
-  }
-
   @Ignore(ANDROID)
   @Test
   public void testShouldBeAbleToFindElementsInIframesByXPath() {
