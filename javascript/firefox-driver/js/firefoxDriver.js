@@ -22,6 +22,7 @@ goog.require('Utils');
 goog.require('WebLoadingListener');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
+goog.require('bot.frame');
 goog.require('bot.locators');
 goog.require('bot.userAgent');
 goog.require('bot.window');
@@ -626,25 +627,10 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
     newWindow = respond.session.getBrowser().contentWindow;
   } else if (goog.isString(parameters.id)) {
     fxdriver.logging.info("Switching to frame with name or ID: " + parameters.id);
-    var foundById;
-    var numFrames = currentWindow.frames.length;
-    for (var i = 0; i < numFrames; i++) {
-      var frame = currentWindow.frames[i];
-      var frameElement = frame.frameElement;
-      if (frameElement.name == parameters.id) {
-        newWindow = frame;
-        break;
-      } else if (!foundById && frameElement.id == parameters.id) {
-        foundById = frame;
-      }
-    }
-
-    if (!newWindow && foundById) {
-      newWindow = foundById;
-    }
+    newWindow = bot.frame.findFrameByNameOrId(parameters.id, currentWindow);
   } else if (goog.isNumber(parameters.id)) {
     fxdriver.logging.info("Switching to frame by index: " + parameters.id);
-    newWindow = currentWindow.frames[parameters.id];
+    newWindow = bot.frame.findFrameByIndex(parameters.id, currentWindow);
   } else if (goog.isObject(parameters.id) && 'ELEMENT' in parameters.id) {
     fxdriver.logging.info("Switching to frame by element: " + parameters.id['ELEMENT']);
 

@@ -88,20 +88,25 @@ bot.frame.findFrameByNameOrId = function(nameOrId, opt_root) {
   var domWindow = opt_root || bot.getWindow();
 
   // Lookup frame by name
-  var frame = domWindow.frames[nameOrId];
-  if (frame) {
+  var numFrames = domWindow.frames.length;
+  for (var i = 0; i < numFrames; i++) {
+    var frame = domWindow.frames[i];
     // This is needed because Safari 4 returns
     // an HTMLFrameElement instead of a Window object.
-    if (frame.document) {
-      return frame;
-    } else {
-      return goog.dom.getFrameContentWindow(frame);
+    var frameElement = frame.frameElement || frame;
+    if (frameElement.name == nameOrId) {
+      // This is needed because Safari 4 returns
+      // an HTMLFrameElement instead of a Window object.
+      if (frame.document) {
+        return frame;
+      } else {
+        return goog.dom.getFrameContentWindow(frame);
+      }
     }
   }
 
   // Lookup frame by id
-  var elements = bot.locators.findElements({id: nameOrId},
-      domWindow.document);
+  var elements = bot.locators.findElements({id: nameOrId}, domWindow.document);
   for (var i = 0; i < elements.length; i++) {
     if (bot.frame.isFrame_(elements[i])) {
       return goog.dom.getFrameContentWindow(elements[i]);
@@ -109,7 +114,6 @@ bot.frame.findFrameByNameOrId = function(nameOrId, opt_root) {
   }
   return null;
 };
-
 
 /**
  * Looks for a frame by its index under the given root.

@@ -409,6 +409,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
     WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
     addIFrame.click();
+    waitFor(elementToExist(driver, "iframe1"));
 
     driver.switchTo().frame("iframe1");
 
@@ -446,6 +447,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
         driver.switchTo().frame(locator);
       } catch (NoSuchFrameException e) {
         return;
+      } finally {
+        driver.switchTo().defaultContent();
       }
     }
 
