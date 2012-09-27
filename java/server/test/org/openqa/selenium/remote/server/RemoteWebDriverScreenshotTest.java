@@ -32,9 +32,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 @Ignore(HTMLUNIT)
 public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
   @Test

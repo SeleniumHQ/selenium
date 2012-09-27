@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import org.openqa.selenium.Capabilities;

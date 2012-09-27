@@ -41,7 +41,7 @@ public abstract class AsyncHttpRequest {
   public static final int DEFAULT_TIMEOUT = 30000; // 0 = infinite, good for debugging
 
   protected AsyncHttpRequest() {
-  };
+  }
 
   static Logger log = Logger.getLogger(AsyncHttpRequest.class.getName());
 

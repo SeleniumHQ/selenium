@@ -21,7 +21,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.firefox.internal.Streams;

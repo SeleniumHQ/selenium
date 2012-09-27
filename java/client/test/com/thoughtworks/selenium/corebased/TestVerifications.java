@@ -44,11 +44,11 @@ public class TestVerifications extends InternalSelenseTestBase {
     verifyEquals(selenium.getTable("theTable.1.0"), "a");
     verifyEquals(selenium.getTable("theTable.2.1"), "d");
     verifyEquals(selenium.getTable("theTable.3.1"), "f2");
-    verifyEquals(selenium.getSelectedIndex("theSelect"), "1");;
-    verifyEquals(selenium.getSelectedValue("theSelect"), "option2");;
-    verifyEquals(selenium.getSelectedLabel("theSelect"), "second option");;
-    verifyEquals(selenium.getSelectedLabel("theSelect"), "second option");;
-    verifyEquals(selenium.getSelectedId("theSelect"), "o2");;
+    verifyEquals(selenium.getSelectedIndex("theSelect"), "1");
+    verifyEquals(selenium.getSelectedValue("theSelect"), "option2");
+    verifyEquals(selenium.getSelectedLabel("theSelect"), "second option");
+    verifyEquals(selenium.getSelectedLabel("theSelect"), "second option");
+    verifyEquals(selenium.getSelectedId("theSelect"), "o2");
     verifyEquals(join(selenium.getSelectOptions("theSelect"), ','),
         "first option,second option,third,,option");
     verifyEquals(selenium.getAttribute("theText@class"), "foo");

@@ -48,7 +48,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.SessionLogHandler;
 import org.openqa.selenium.logging.SessionLogs;
 import org.openqa.selenium.remote.DesiredCapabilities;

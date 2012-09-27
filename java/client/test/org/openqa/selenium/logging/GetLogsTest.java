@@ -33,7 +33,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import org.junit.After;
 import org.junit.Test;
 
-import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;

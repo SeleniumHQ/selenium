@@ -1,7 +1,5 @@
 package org.openqa.selenium.safari;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Platform;

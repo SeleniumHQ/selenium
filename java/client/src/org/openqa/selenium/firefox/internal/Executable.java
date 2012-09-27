@@ -24,7 +24,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
 import java.io.File;

@@ -54,7 +54,7 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot, We
   protected static final String DEFAULT_IWEBDRIVER_URL =
       "http://localhost:3001/wd/hub";
   
-  public enum STORAGE_TYPE { local, session };
+  public enum STORAGE_TYPE { local, session }
 
   /**
    * Create an IPhoneDriver that will use the given {@code executor} to communicate with the

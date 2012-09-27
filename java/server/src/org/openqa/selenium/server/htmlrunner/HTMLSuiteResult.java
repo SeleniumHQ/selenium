@@ -95,7 +95,7 @@ public class HTMLSuiteResult {
         hrefList.add(href);
         tagPositions.add(pos);
       }
-    };
+    }
   }
 
 }

@@ -36,7 +36,7 @@ public class TestMultiSelect extends InternalSelenseTestBase {
     selenium.removeSelection("theSelect", "id=o7");
     verifyEquals(join(selenium.getSelectedLabels("theSelect"), ','), "Third Option,Fifth Option");
     selenium.removeSelection("theSelect", "label=Fifth Option");
-    verifyEquals(selenium.getSelectedLabel("theSelect"), "Third Option");;
+    verifyEquals(selenium.getSelectedLabel("theSelect"), "Third Option");
     selenium.addSelection("theSelect", "");
     verifyEquals(join(selenium.getSelectedLabels("theSelect"), ','), "Third Option,");
     selenium.removeSelection("theSelect", "");

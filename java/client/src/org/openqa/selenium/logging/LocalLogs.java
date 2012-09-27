@@ -18,11 +18,7 @@ package org.openqa.selenium.logging;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**

@@ -22,7 +22,6 @@ import static org.junit.Assume.assumeTrue;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.StandardSeleniumTests;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

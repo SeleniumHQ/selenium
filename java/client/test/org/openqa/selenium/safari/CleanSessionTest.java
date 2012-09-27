@@ -23,7 +23,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.Test;
 
 public class CleanSessionTest extends SafariTestBase {

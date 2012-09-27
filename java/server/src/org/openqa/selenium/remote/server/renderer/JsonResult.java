@@ -24,8 +24,6 @@ import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
 
-import java.nio.charset.Charset;
-
 public class JsonResult implements Renderer {
 
   protected final String propertyName;

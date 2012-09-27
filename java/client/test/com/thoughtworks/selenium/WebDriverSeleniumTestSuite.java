@@ -47,7 +47,6 @@ import com.thoughtworks.selenium.corebased.TestPatternMatching;
 import com.thoughtworks.selenium.corebased.TestPause;
 import com.thoughtworks.selenium.corebased.TestQuickOpen;
 import com.thoughtworks.selenium.corebased.TestSelect;
-import com.thoughtworks.selenium.corebased.TestSubmit;
 import com.thoughtworks.selenium.corebased.TestType;
 import com.thoughtworks.selenium.corebased.TestTypeRichText;
 import com.thoughtworks.selenium.corebased.TestVerifications;

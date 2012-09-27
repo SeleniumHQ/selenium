@@ -105,7 +105,7 @@ public class AndroidWebDriver implements WebDriver, SearchContext, JavascriptExe
   private AndroidWebElement element;
   private DomWindow currentWindowOrFrame;
   private long implicitWait = 0;
-  ;
+
   // Maps the element ID to the AndroidWebElement
   private Map<String, AndroidWebElement> store;
   private AndroidTouchScreen touchScreen;

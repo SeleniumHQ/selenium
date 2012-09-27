@@ -125,5 +125,5 @@ public class IgnoreComparitorUnitTest extends MockTestBase {
     }});
     
     return ignore;
-  };
+  }
 }

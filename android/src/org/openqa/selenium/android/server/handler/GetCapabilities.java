@@ -20,12 +20,10 @@ import com.google.common.collect.Maps;
 
 import android.os.Build;
 
-import org.openqa.selenium.android.app.MainActivity;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.GetSessionCapabilities;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**

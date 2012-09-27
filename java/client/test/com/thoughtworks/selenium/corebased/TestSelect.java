@@ -27,23 +27,23 @@ public class TestSelect extends InternalSelenseTestBase {
   public void testSelect() throws Exception {
     selenium.open("../tests/html/test_select.html");
     assertTrue(selenium.isSomethingSelected("theSelect"));
-    assertEquals(selenium.getSelectedLabel("theSelect"), "Second Option");;
+    assertEquals(selenium.getSelectedLabel("theSelect"), "Second Option");
     selenium.select("theSelect", "index=4");
     verifyEquals(selenium.getSelectedLabel("theSelect"), "Fifth Option");
     verifyEquals(selenium.getSelectedIndex("theSelect"), "4");
     verifyEquals(selenium.getSelectedLabel("theSelect"), "Fifth Option");
     verifyEquals(join(selenium.getSelectedLabels("theSelect"), ','), "Fifth Option");
     selenium.select("theSelect", "Third Option");
-    verifyEquals(selenium.getSelectedLabel("theSelect"), "Third Option");;
-    verifyEquals(selenium.getSelectedLabel("theSelect"), "Third Option");;
+    verifyEquals(selenium.getSelectedLabel("theSelect"), "Third Option");
+    verifyEquals(selenium.getSelectedLabel("theSelect"), "Third Option");
     verifyEquals(selenium.getSelectedLabel("theSelect"), "Third Option");
     selenium.select("theSelect", "label=Fourth Option");
     verifyEquals(selenium.getSelectedLabel("theSelect"), "Fourth Option");
-    verifyEquals(selenium.getSelectedLabel("theSelect"), "Fourth Option");;
+    verifyEquals(selenium.getSelectedLabel("theSelect"), "Fourth Option");
     selenium.select("theSelect", "value=option6");
     verifyEquals(selenium.getSelectedLabel("theSelect"), "Sixth Option");
     verifyEquals(selenium.getSelectedValue("theSelect"), "option6");
-    verifyEquals(selenium.getSelectedValue("theSelect"), "option6");;
+    verifyEquals(selenium.getSelectedValue("theSelect"), "option6");
     selenium.select("theSelect", "value=");
     verifyEquals(selenium.getSelectedLabel("theSelect"), "Empty Value Option");
     selenium.select("theSelect", "id=o4");

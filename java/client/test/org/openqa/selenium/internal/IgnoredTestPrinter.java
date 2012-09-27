@@ -25,7 +25,6 @@ import org.openqa.selenium.testing.drivers.TestIgnorance;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 import org.junit.internal.runners.model.ReflectiveCallable;
-import org.junit.internal.runners.statements.Fail;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
