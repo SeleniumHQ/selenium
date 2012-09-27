@@ -32,7 +32,7 @@ goog.require('webdriver.atoms.element');
  *     WebDriver wire protocol.
  */
 webdriver.atoms.inject.dom.getText = function(element) {
-  return bot.inject.executeScript(bot.dom.getVisibleText, [element], true);
+  return bot.inject.executeScript(webdriver.atoms.element.getText, [element], true);
 };
 
 
