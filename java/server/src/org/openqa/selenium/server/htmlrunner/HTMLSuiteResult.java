@@ -56,7 +56,9 @@ public class HTMLSuiteResult {
     for (int i = p.tagPositions.size() - 1; i >= 0; i--) {
       int pos = p.tagPositions.get(i);
       String href = p.hrefList.get(i);
-      String snippet = originalSuite.substring(pos, previousPosition);
+      System.out.println(href);
+      String snippet = originalSuite.substring(pos, previousPosition).replace('\\', '/');
+      System.out.println(snippet);
       String replaceSnippet = snippet.replaceFirst("\\Q" + href + "\\E", "#testresult" + i);
       sb.insert(0, replaceSnippet);
       previousPosition = pos;
@@ -92,7 +94,7 @@ public class HTMLSuiteResult {
     public void handleStartTag(Tag tag, MutableAttributeSet attributes, int pos) {
       if (Tag.A.equals(tag)) {
         String href = (String) attributes.getAttribute(HTML.Attribute.HREF);
-        hrefList.add(href);
+        hrefList.add(href.replace('\\', '/'));
         tagPositions.add(pos);
       }
     }
