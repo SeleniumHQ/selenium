@@ -441,7 +441,7 @@ namespace OpenQA.Selenium
             IOptions options = driver.Manage();
             options.Cookies.AddCookie(cookie);
 
-            cookie = options.Cookies.GetCookieNamed("fish");
+            cookie = options.Cookies.GetCookieNamed("expired");
             Assert.IsNull(cookie, "Cookie expired before it was set, so nothing should be returned: " + cookie);
         }
         

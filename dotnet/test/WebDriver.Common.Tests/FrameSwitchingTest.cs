@@ -214,7 +214,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage()
         {
             driver.Url = framesetPage;

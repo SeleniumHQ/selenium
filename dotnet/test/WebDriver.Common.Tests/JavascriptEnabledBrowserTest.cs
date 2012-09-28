@@ -62,6 +62,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("changeme")).Click();
 
+            System.Threading.Thread.Sleep(2000);
             Assert.AreEqual("3", driver.FindElement(By.Id("pageNumber")).Text);
         }
 
@@ -111,6 +112,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("jsSubmitButton"));
             element.Click();
 
+            WaitFor(() => { return driver.Title == "We Arrive Here"; });
             Assert.AreEqual("We Arrive Here", driver.Title);
         }
 
@@ -123,6 +125,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("submittingButton"));
             element.Click();
 
+            WaitFor(() => { return driver.Title == "We Arrive Here"; });
             Assert.AreEqual("We Arrive Here", driver.Title);
         }
 

@@ -28,6 +28,7 @@ namespace OpenQA.Selenium
         public void ShouldFollowMetaRedirects()
         {
             driver.Url = metaRedirectPage;
+            WaitFor(() => { return driver.Title == "We Arrive Here"; });
             Assert.AreEqual(driver.Title, "We Arrive Here");
         }
 
@@ -83,7 +84,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         [NeedsFreshDriver(BeforeTest = true)]
         public void ShouldDoNothingIfThereIsNothingToGoBackTo()
         {

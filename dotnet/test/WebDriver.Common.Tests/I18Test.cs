@@ -19,7 +19,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToReadChinese()
         {
             driver.Url = chinesePage;
@@ -27,7 +26,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToEnterHebrewTextFromLeftToRight()
         {
             driver.Url = chinesePage;
@@ -39,7 +37,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToEnterHebrewTextFromRightToLeft()
         {
             driver.Url = chinesePage;

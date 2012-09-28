@@ -23,6 +23,7 @@ namespace OpenQA.Selenium
             WaitFor(WindowCountToBe(2));
 
             driver.SwitchTo().Window("result");
+            WaitFor(() => { return driver.Title == "We Arrive Here"; });
             Assert.AreEqual("We Arrive Here", driver.Title);
 
             driver.Url = iframesPage;
@@ -209,7 +210,8 @@ namespace OpenQA.Selenium
 
             try
             {
-                driver.FindElement(By.Id("close")).Click();
+                IWebElement closeElement = WaitFor(() => { return driver.FindElement(By.Id("close")); });
+                closeElement.Click();
                 // If we make it this far, we're all good.
             }
             finally
@@ -235,7 +237,8 @@ namespace OpenQA.Selenium
 
             try
             {
-                driver.FindElement(By.Id("close")).Click();
+                IWebElement closeElement = WaitFor(() => { return driver.FindElement(By.Id("close")); });
+                closeElement.Click();
                 ReadOnlyCollection<string> handles = driver.WindowHandles;
                 // If we make it this far, we're all good.
             }
