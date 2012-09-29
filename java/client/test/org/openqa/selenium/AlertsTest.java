@@ -183,6 +183,18 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("cheese", value);
   }
 
+  @Test
+  @Ignore(value = {IE}, issues = {4594})
+  public void testShouldAllowTheUserToGetTheTextOfAPrompt() {
+    driver.findElement(By.id("prompt")).click();
+
+    Alert alert = waitFor(alertToBePresent(driver));
+    String value = alert.getText();
+    alert.accept();
+
+    assertEquals("Enter something", value);
+  }
+
   @JavascriptEnabled
   @Test
   public void testAlertShouldNotAllowAdditionalCommandsIfDismissed() {
