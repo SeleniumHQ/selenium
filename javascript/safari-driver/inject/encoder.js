@@ -149,6 +149,8 @@ safaridriver.inject.Encoder.prototype.encode = function(value) {
           this.encode, this);
 
     case 'function':
+      return value.toString();
+
     default:
       throw Error('Invalid value type: ' + type + ' => ' + value);
   }
