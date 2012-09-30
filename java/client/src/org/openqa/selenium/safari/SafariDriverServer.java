@@ -100,6 +100,13 @@ class SafariDriverServer {
     }
   }
 
+  /**
+   * Returns whether the server is currently running.
+   */
+  public boolean isRunning() {
+    return bootstrap != null;
+  }
+
   public String getUri() {
     checkState(serverChannel != null, "The server is not running; call #start()!");
     return "http://localhost:" + serverPort;

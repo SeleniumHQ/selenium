@@ -95,11 +95,9 @@ class SafariDriverConnection {
    * @param message The raw message.
    */
   /* package */ void onMessage(String message) {
-    LOG.info("Processing message: " + message);
-
     SafariCommand command = commands.poll();
     if (command == null) {
-      LOG.warning("Was not expecting a response!");
+      LOG.warning("Was not expecting a response! " + message);
       return;
     }
 

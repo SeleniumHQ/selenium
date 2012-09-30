@@ -31,6 +31,8 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 
 import java.io.File;
@@ -130,9 +132,16 @@ class SafariDriverCommandExecutor implements CommandExecutor {
       commandLine = null;
     }
     server.stop();
+    connection = null;
   }
 
   public Response execute(Command command) {
+    if (!server.isRunning() && DriverCommand.QUIT.equals(command.getName())) {
+      Response itsOkToQuitMultipleTimes = new Response();
+      itsOkToQuitMultipleTimes.setStatus(ErrorCodes.SUCCESS);
+      return itsOkToQuitMultipleTimes;
+    }
+
     checkState(connection != null, "Executor has not been started yet");
     try {
       return connection.send(command);
