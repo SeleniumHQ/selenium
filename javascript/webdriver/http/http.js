@@ -87,7 +87,8 @@ webdriver.http.Executor.prototype.execute = function(command, callback) {
     var responseObj;
     if (!e) {
       try {
-        responseObj = webdriver.http.Executor.parseHttpResponse_(response);
+        responseObj = webdriver.http.Executor.parseHttpResponse_(
+            (/** @type {!webdriver.http.Response} */response));
       } catch (ex) {
         e = ex;
       }
