@@ -446,11 +446,14 @@ safaridriver.inject.commands.switchToFrame = function(command) {
   if (goog.isNull(id)) {
     safaridriver.inject.commands.LOG_.info('Resetting focus to window.top');
     frameWindow = window.top;
-  } else if (goog.isString(id) || goog.isNumber(id)) {
-    safaridriver.inject.commands.LOG_.info('Switching to frame by index, ' +
-        'name, or ID: ' + id);
-    frameWindow = bot.frame.findFrameByNameOrId(
-        (/** @type {(string|number)} */id));
+  } else if (goog.isString(id)) {
+    safaridriver.inject.commands.LOG_.info(
+        'Switching to frame by name or ID: ' + id);
+    frameWindow = bot.frame.findFrameByNameOrId((/** @type {string} */id));
+  } else if (goog.isNumber(id)) {
+    safaridriver.inject.commands.LOG_.info(
+        'Switching to frame by index: ' + id);
+    frameWindow = bot.frame.findFrameByIndex((/** @type {number} */id));
   } else {
     var elementKey = (/** @type {string} */id[bot.inject.ELEMENT_KEY]);
     safaridriver.inject.commands.LOG_.info('Switching to frame by ' +
