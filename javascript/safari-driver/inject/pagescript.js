@@ -83,7 +83,7 @@ safaridriver.inject.PageScript.prototype.installedPageScript_ = null;
  */
 safaridriver.inject.PageScript.prototype.installPageScript = function() {
   if (!this.installedPageScript_) {
-    this.log_.info('Installing page script');
+    this.log_.finer('Installing page script');
     this.installedPageScript_ = new webdriver.promise.Deferred();
 
     var script = document.createElement('script');

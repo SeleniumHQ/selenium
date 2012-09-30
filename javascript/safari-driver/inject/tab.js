@@ -57,8 +57,8 @@ goog.require('webdriver.promise');
  */
 safaridriver.inject.Tab = function() {
   goog.base(this, window);
-  this.setLogger('safaridriver.inject.Tab' +
-      (safaridriver.inject.Tab.IS_TOP ? '.TOP' : ''));
+  this.setLogger('safaridriver.inject.' +
+      (safaridriver.inject.Tab.IS_TOP ? '_Top_' : 'Frame'));
 
   /**
    * @type {!safaridriver.inject.PageScript}
@@ -100,12 +100,13 @@ safaridriver.inject.Tab.IS_TOP = window === window.top;
  * @see {safaridriver.inject.Tab#isActive}
  * @private
  */
-safaridriver.inject.Tab.prototype.isActive_ =
-    safaridriver.inject.Tab.IS_TOP;
+safaridriver.inject.Tab.prototype.isActive_ = safaridriver.inject.Tab.IS_TOP;
 
 
 /**
- * The active frame for this tab.
+ * A reference to the frame that should handle commands sent from the global
+ * extension. This value will always be {@code null} when {@link #IS_TOP} is
+ * false.
  * @type {Window}
  * @private
  */
@@ -113,9 +114,10 @@ safaridriver.inject.Tab.prototype.activeFrame_ = null;
 
 
 /**
- * Key of the interval used to check whether the
+ * Key of the interval used to check whether the active frame has been closed.
  * @type {number}
  * @private
+ * @see {#checkFrame_}
  */
 safaridriver.inject.Tab.prototype.frameCheckKey_ = 0;
 
@@ -153,23 +155,9 @@ safaridriver.inject.Tab.prototype.setActive = function(active) {
 };
 
 
-/**
- * @param {Window} win The new active frame, or {@code null} if none are active.
- */
-safaridriver.inject.Tab.prototype.setActiveFrame = function(win) {
-  goog.asserts.assert(safaridriver.inject.Tab.IS_TOP,
-      'Active frames may only be saved with the top-most frame');
-  goog.asserts.assert(goog.isNull(win) || win.top === window,
-      'Frame does not belong to this window.');
-  this.activeFrame_ = win;
-};
-
-
 /** Initializes this tab. */
 safaridriver.inject.Tab.prototype.init = function() {
-  this.log(
-      'Loaded injected script for: ' + window.location.href +
-          ' (is ' + (this.isActive_ ? '' : 'not ') + 'active)');
+  this.log('Loaded injected script for: ' + window.location);
 
   this.pageScript_.installPageScript();
 
@@ -282,6 +270,8 @@ safaridriver.inject.Tab.prototype.onActivate_ = function(message, e) {
 
 
 /**
+ * Responds to messages from window.top instructing this frame to activate and
+ * start handling command messages.
  * @param {!safaridriver.inject.message.ActivateFrame} message The activate
  *     message.
  * @param {!MessageEvent} e The original message event.
@@ -293,7 +283,8 @@ safaridriver.inject.Tab.prototype.onActivateFrame_ = function(message, e) {
     this.log('Sub-frame has been activated');
     this.activeFrame_ = e.source;
     var response = bot.response.createResponse(null);
-    this.sendResponse_(message.getCommand(), response, true);
+    var forceSend = true;
+    this.sendResponse_(message.getCommand(), response, forceSend);
   }
 };
 

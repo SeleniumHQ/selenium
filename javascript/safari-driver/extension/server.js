@@ -286,7 +286,8 @@ safaridriver.extension.Server.prototype.execute = function(command,
         Error('Unknown command: ' + command.getName())));
   }
 
-  this.logMessage_('Scheduling command: ' + command.getName());
+  this.logMessage_('Scheduling command: ' + command.getName(),
+      goog.debug.Logger.Level.FINER);
   var description = this.session_.getId() + '::' + command.getName();
   var fn = goog.bind(this.executeCommand_, this, command, handler);
   var result = webdriver.promise.Application.getInstance().

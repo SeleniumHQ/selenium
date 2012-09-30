@@ -76,7 +76,8 @@ safaridriver.inject.page.encoder_;
  */
 safaridriver.inject.page.init = function() {
   safaridriver.console.init();
-  safaridriver.inject.page.LOG_.info('Initializing');
+  safaridriver.inject.page.LOG_.info(
+      'Loaded page script for ' + window.location);
 
   var messageTarget = new safaridriver.message.MessageTarget(window);
   messageTarget.setLogger(safaridriver.inject.page.LOG_);
@@ -86,7 +87,7 @@ safaridriver.inject.page.init = function() {
   safaridriver.inject.page.encoder_ =
       new safaridriver.inject.Encoder(messageTarget);
 
-  var message = new safaridriver.message.Load();
+  var message = new safaridriver.message.Load(window === window.top);
   safaridriver.inject.page.LOG_.info('Sending ' + message);
   message.sendSync(window);
 

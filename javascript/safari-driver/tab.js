@@ -15,6 +15,7 @@
 
 goog.provide('safaridriver.Tab');
 
+goog.require('goog.debug.Logger');
 goog.require('goog.string');
 goog.require('safaridriver.message.MessageTarget');
 
@@ -87,7 +88,8 @@ safaridriver.Tab.prototype.whenReady = function(callback) {
   if (this.isReady_) {
     callback();
   } else {
-    this.log('Tab is not ready; registering callback');
+    this.log('Tab is not ready; registering callback',
+        goog.debug.Logger.Level.FINER);
     this.readyListeners_.push(callback);
   }
 };

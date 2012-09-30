@@ -78,6 +78,8 @@ safaridriver.extension.Tab.prototype.onLoad_ = function() {
 
 
 /**
+ * Responds to queries from the tab on whether one of its descendant frames is
+ * currently loading.
  * @param {!safaridriver.message.PendingFrame} message The message.
  * @param {!SafariExtensionMessageEvent} e The original message event.
  * @private
@@ -85,7 +87,7 @@ safaridriver.extension.Tab.prototype.onLoad_ = function() {
 safaridriver.extension.Tab.prototype.onPendingFrame_ = function(message, e) {
   goog.asserts.assert(e.name === 'canLoad',
       'Received an async pending frame query');
-  this.log('onPendingFrame_(' + this.frameIsLoading_ + ')');
+  this.log('onPendingFrame_(frameIsLoading=' + this.frameIsLoading_ + ')');
   e.message = this.frameIsLoading_;
   e.stopPropagation();
 };
@@ -150,8 +152,9 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
 
   var self = this;
   var timeoutKey;
-  self.log('Preparing message: ' + message);
+
   this.whenReady(onReady);
+
   return response.promise;
 
   /**
@@ -226,11 +229,17 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
     cleanUp(/*leaveResponseListener=*/true);
     self.log('Tab has unloaded before we received a response; waiting for the' +
         ' page to reload before we try again');
-    self.whenReady(function() {
-      if (response.isPending()) {
-        onReady();
-      }
-    });
+
+    // Unload notifications are sent synchronously, so we must yield before
+    // scheduling a retry or we could end up in an infinite loop when the
+    // target window is a frame.
+    setTimeout(function() {
+      self.whenReady(function() {
+        if (response.isPending()) {
+          onReady();
+        }
+      });
+    }, 150);
   }
 
   function onClose() {
