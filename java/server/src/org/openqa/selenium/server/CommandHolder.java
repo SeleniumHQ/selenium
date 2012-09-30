@@ -32,7 +32,7 @@ public class CommandHolder {
   private static final Logger log = Logger.getLogger(CommandHolder.class.getName());
   private static final int defaultTimeout = 10; // seconds
   private static final RemoteCommand poisonCommand = new DefaultRemoteCommand(
-      "CommandHolder.POISION", "", "");
+      "CommandHolder.POISON", "", "");
   protected static final String RETRY_CMD_STRING = "retryLast";
   protected static final RemoteCommand retryCommand = new DefaultRemoteCommand(RETRY_CMD_STRING,
       "", "", "");
