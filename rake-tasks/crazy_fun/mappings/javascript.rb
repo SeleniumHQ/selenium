@@ -964,7 +964,7 @@ module Javascript
                      :outfile => "TEST-" + browser_task_name.gsub(/[\/:]+/, "-"),
                      :todir => 'build/test_logs')
           end
-          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(verbose ? 2 : 0)
+          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(DEBUG ? 2 : 0)
         end
       end
 

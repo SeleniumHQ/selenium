@@ -1,5 +1,5 @@
 def find_file(file)
-  puts "Copying #{file}" if verbose
+  puts "Copying #{file}" if DEBUG
   
   if Rake::Task.task_defined?(file) and Rake::Task[file].out
     # Grab the "out" of the task represented by this symbol

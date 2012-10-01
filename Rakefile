@@ -7,7 +7,7 @@ require 'net/telnet'
 include Rake::DSL if defined?(Rake::DSL)
 
 Rake.application.instance_variable_set "@name", "go"
-verbose false
+DEBUG = verbose() == true ? true : false unless defined?(DEBUG)
 
 # The CrazyFun build grammar. There's no magic here, just ruby
 require 'rake-tasks/crazy_fun'
