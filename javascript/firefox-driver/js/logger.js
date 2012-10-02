@@ -31,10 +31,7 @@ goog.require('goog.object');
 /**
  * Represents the logging preferences as sent across the wire.
  *
- * @typedef {{
- *     driver: number=,
- *     profiler: number=
- * }}
+ * @typedef {{driver: (number=), profiler: (number=)}}
  */
 fxdriver.logging.LoggingPreferences;
 
@@ -156,7 +153,7 @@ fxdriver.logging.getDriverLogger_ = function() {
  * Get log entries for a given log type.
  *
  * @param {string} logType The log type.
- * @return {!Array<!fxdriver.logging.LogEntry>>} The log entries for the type.
+ * @return {!Array.<!fxdriver.logging.LogEntry>} The log entries for the type.
  */
 fxdriver.logging.getLog = function(logType) {
   fxdriver.logging.initialize_();
@@ -186,7 +183,7 @@ fxdriver.logging.getAvailableLogTypes = function() {
 /**
  * Configures logging using logging preferences.
  *
- * @param {string=|!fxdriver.logging.LoggingPreferences} logging_prefs
+ * @param {(string|!fxdriver.logging.LoggingPreferences)=} logging_prefs
  *   The preferences to use.
  * @param {boolean} enable_profiler Whether to collect profiler log.
  */
@@ -343,9 +340,9 @@ fxdriver.logging.addClosureToDriverFileLogger_ = function(logger) {
  *
  * @private
  * @param {!LogLevel} logType The log type.
- * @param {!Array<!fxdriver.logging.LogEntry>>} logEntries The log entries
+ * @param {!Array.<!fxdriver.logging.LogEntry>} logEntries The log entries
  *    to filter.
- * @return {!Array<!fxdriver.logging.LogEntry>>} A filtered list of log entries.
+ * @return {!Array.<!fxdriver.logging.LogEntry>} A filtered list of log entries.
  */
 fxdriver.logging.filterLogEntries_ = function(logType, logEntries) {
   var result = [];
@@ -595,7 +592,7 @@ fxdriver.logging.getLogFile_ = function(logType) {
  *
  * @private
  * @param {!LogType} logType The log type.
- * @return {!Array<!fxdriver.logging.LogEntry>>} All logged entries.
+ * @return {!Array.<!fxdriver.logging.LogEntry>} All logged entries.
  */
 fxdriver.logging.getLogFromFile_ = function(logType) {
 
@@ -773,7 +770,7 @@ fxdriver.logging.dumpObject = function(element) {
 
 /**
  * @param {*} view The object to get the properties of
- * @param {!Array<string>} rows The place to output results to.
+ * @param {!Array.<string>} rows The place to output results to.
  * @private
  */
 fxdriver.logging.dumpProperties_ = function(view, rows) {
