@@ -87,6 +87,7 @@ setup(
  	          'selenium.test.selenium.common',
  	          'selenium.test.selenium.webdriver',
  	          'selenium.test.selenium.webdriver.common',
+ 	          'selenium.test.selenium.webdriver.common.html5',
  	          'selenium.test.selenium.webdriver.ie',
  	          'selenium.test.selenium.webdriver.support',
               'selenium.webdriver',
