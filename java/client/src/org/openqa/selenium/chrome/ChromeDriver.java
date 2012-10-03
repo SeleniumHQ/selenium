@@ -124,9 +124,7 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
    * 
    * @param capabilities The capabilities required from the ChromeDriver.
    * @see #ChromeDriver(ChromeDriverService, Capabilities)
-   * @deprecated Use {@link #ChromeDriver(ChromeOptions)} instead.
    */
-  @Deprecated
   public ChromeDriver(Capabilities capabilities) {
     this(ChromeDriverService.createDefaultService(), capabilities);
   }
@@ -147,9 +145,7 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
    *
    * @param service The service to use.
    * @param capabilities The capabilities required from the ChromeDriver.
-   * @deprecated Use {@link #ChromeDriver(ChromeDriverService, ChromeOptions)}
    */
-  @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
     super(new DriverCommandExecutor(service), capabilities);
   }

@@ -47,6 +47,11 @@ import java.util.Map;
  * // For use with ChromeDriver:
  * ChromeDriver driver = new ChromeDriver(options);
  *
+ * // or alternatively:
+ * DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+ * capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+ * ChromeDriver driver = new ChromeDriver(capabilities);
+ *
  * // For use with RemoteWebDriver:
  * DesiredCapabilities capabilities = DesiredCapabilities.chrome();
  * capabilities.setCapability(ChromeOptions.CAPABILITY, options);
@@ -129,6 +134,18 @@ public class ChromeOptions {
           path.getAbsolutePath());
     }
     extensionFiles.addAll(paths);
+  }
+
+  /**
+   * Sets an experimental option.  Useful for new ChromeDriver options not yet
+   * exposed through the {@link ChromeOptions} API.
+   *
+   * @param name Name of the experimental option.
+   * @param value Value of the experimental option, which must be convertible
+   *     to JSON.
+   */
+  public void setExperimentalOptions(String name, Object value) {
+    experimentalOptions.put(checkNotNull(name), value);
   }
 
   /**
