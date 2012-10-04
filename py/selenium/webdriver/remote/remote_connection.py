@@ -353,6 +353,7 @@ class RemoteConnection(object):
 
 
         request.add_header('Accept', 'application/json')
+        request.add_header('Content-Type', 'application/json;charset=UTF-8')
 
         if password_manager:
             opener = urllib2.build_opener(urllib2.HTTPRedirectHandler(),
