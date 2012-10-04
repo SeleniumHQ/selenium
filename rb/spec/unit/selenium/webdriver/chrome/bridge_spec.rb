@@ -60,6 +60,13 @@ module Selenium
           caps['chrome.detach'].should be_false
         end
 
+        it "lets the user override chrome.noWebsiteTestingDefaults" do
+          Bridge.new(:http_client => http, :no_website_testing_defaults => true)
+
+          caps['chromeOptions']['noWebsiteTestingDefaults'].should be_true
+          caps['chrome.noWebsiteTestingDefaults'].should be_true
+        end
+
         it "uses the user-provided server URL if given" do
           Service.should_not_receive(:default_service)
           http.should_receive(:server_url=).with(URI.parse("http://example.com"))

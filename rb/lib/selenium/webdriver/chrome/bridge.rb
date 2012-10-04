@@ -53,12 +53,13 @@ module Selenium
         private
 
         def create_capabilities(opts)
-          args          = opts.delete(:args) || opts.delete(:switches)
-          native_events = opts.delete(:native_events)
-          verbose       = opts.delete(:verbose)
-          profile       = opts.delete(:profile)
-          detach        = opts.delete(:detach)
-          proxy         = opts.delete(:proxy)
+          args                        = opts.delete(:args) || opts.delete(:switches)
+          native_events               = opts.delete(:native_events)
+          verbose                     = opts.delete(:verbose)
+          profile                     = opts.delete(:profile)
+          detach                      = opts.delete(:detach)
+          proxy                       = opts.delete(:proxy)
+          no_website_testing_defaults = opts.delete(:no_website_testing_defaults)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -82,10 +83,11 @@ module Selenium
           end
 
 
-          chrome_options['binary']       = Chrome.path if Chrome.path
-          chrome_options['nativeEvents'] = true if native_events
-          chrome_options['verbose']      = true if verbose
-          chrome_options['detach']       = detach.nil? || !!detach
+          chrome_options['binary']                   = Chrome.path if Chrome.path
+          chrome_options['nativeEvents']             = true if native_events
+          chrome_options['verbose']                  = true if verbose
+          chrome_options['detach']                   = detach.nil? || !!detach
+          chrome_options['noWebsiteTestingDefaults'] = true if no_website_testing_defaults
 
           caps = Remote::Capabilities.chrome
           caps['chromeOptions'] = chrome_options
@@ -93,7 +95,7 @@ module Selenium
 
           # legacy options - for chromedriver < 17.0.963.0
           caps["chrome.switches"] = chrome_options['args'] if chrome_options.member?('args')
-          %w[binary detach extensions nativeEvents profile verbose].each do |key|
+          %w[binary detach extensions nativeEvents noWebsiteTestingDefaults profile verbose].each do |key|
             caps["chrome.#{key}"] = chrome_options[key] if chrome_options.member?(key)
           end
 
