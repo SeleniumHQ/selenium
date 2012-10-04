@@ -229,6 +229,27 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.IE, "Issue number 4594")]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.Safari)]
+        public void ShouldAllowTheUserToGetTheTextOfAPrompt()
+        {
+            driver.Url = alertsPage;
+
+            driver.FindElement(By.Id("prompt")).Click();
+
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            string value = alert.Text;
+            alert.Accept();
+
+            Assert.AreEqual("Enter something", value);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver.exe returns a JSON response with no status code")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
@@ -559,6 +580,25 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("alert")).Click();
             IAlert alert = WaitFor<IAlert>(AlertToBePresent);
             EnvironmentManager.Instance.CloseCurrentDriver();
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Commands not yet implemented in GhostDriver")]
+        public void ShouldHandleOnBeforeUnloadAlert()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("onBeforeUnload.html");
+            IWebElement element = driver.FindElement(By.Id("navigate"));
+            element.Click();
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            alert.Dismiss();
+            Assert.IsTrue(driver.Url.Contains("onBeforeUnload.html"));
+
+            // Can't move forward or even quit the driver
+            // until the alert is accepted.
+            element.Click();
+            alert.Accept();
+            WaitFor(() => { return driver.Url.Contains(alertsPage); });
+            Assert.IsTrue(driver.Url.Contains(alertsPage));
         }
 
         private IAlert AlertToBePresent()

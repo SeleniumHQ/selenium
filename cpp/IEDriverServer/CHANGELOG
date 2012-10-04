@@ -9,6 +9,14 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.26.0.5
+=========
+ * Refactored alert handling to allow handling of OnBeforeUnload dialogs. This
+   is a slightly incomplete solution, as the dialog is not automatically
+   handled on window close/browser exit. To work around this limitation,
+   navigate to a different page (handling the OnBeforeUnload dialog), then
+   call the quit() method.
+
 v2.26.0.4
 =========
  * Updates to JavaScript automation atoms.

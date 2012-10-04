@@ -400,7 +400,7 @@ void IECommandExecutor::DispatchCommand() {
         LOG(DEBUG) << "No alert handle is found";
       }
       if (alert_is_active) {
-      Alert dialog(browser, alert_handle);
+        Alert dialog(browser, alert_handle);
         int command_type = this->current_command_.command_type();
         if (command_type == GetAlertText ||
             command_type == SendKeysToAlert ||
@@ -417,7 +417,13 @@ void IECommandExecutor::DispatchCommand() {
             // If a quit command was issued, we should not ignore an unhandled
             // alert, even if the alert behavior is set to "ignore".
             LOG(DEBUG) << "Automatically dismissing the alert";
-            dialog.Dismiss();
+            if (dialog.is_standard_alert()) {
+              dialog.Dismiss();
+            } else {
+              // The dialog was non-standard. The most common case of this is
+              // an onBeforeUnload dialog, which must be accepted to continue.
+              dialog.Accept();
+            }
           }
           if (command_type != Quit) {
             // To keep pace with what Firefox does, we'll return the text of the

@@ -20,6 +20,12 @@ Alert::Alert(BrowserHandle browser, HWND handle) {
   LOG(TRACE) << "Entering Alert::Alert";
   this->browser_ = browser;
   this->alert_handle_ = handle;
+
+  HWND direct_ui_child = NULL;
+  ::EnumChildWindows(this->alert_handle_,
+                     &Alert::FindDirectUIChild,
+                     reinterpret_cast<LPARAM>(&direct_ui_child));
+  this->is_standard_alert_ = direct_ui_child == NULL;
 }
 
 
@@ -42,7 +48,7 @@ int Alert::Accept() {
     return EUNHANDLEDERROR;
   } else {
     LOG(DEBUG) << "Closing alert using SendMessage";
-    int status_code = this->ClickAlertButton(button_info.button_control_id);
+    int status_code = this->ClickAlertButton(button_info);
   }
   return SUCCESS;
 }
@@ -57,7 +63,7 @@ int Alert::Dismiss() {
     // TODO(JimEvans): Check return code and return an appropriate
     // error if the alert didn't get closed properly.
     LOG(DEBUG) << "Closing alert using SendMessage";
-    int status_code = this->ClickAlertButton(button_info.button_control_id);
+    int status_code = this->ClickAlertButton(button_info);
   }
   return SUCCESS;
 }
@@ -119,13 +125,20 @@ std::string Alert::GetText() {
   return alert_text_value;
 }
 
-int Alert::ClickAlertButton(int control_id) {
+int Alert::ClickAlertButton(DialogButtonInfo button_info) {
   LOG(TRACE) << "Entering Alert::ClickAlertButton";
   // Click on the appropriate button of the Alert
-  ::SendMessage(this->alert_handle_,
-                WM_COMMAND,
-                control_id,
-                NULL);
+  if (this->is_standard_alert_) {
+    ::SendMessage(this->alert_handle_,
+                  WM_COMMAND,
+                  button_info.button_control_id,
+                  NULL);
+  } else {
+    ::SendMessage(button_info.button_handle,
+                  BM_CLICK,
+                  NULL,
+                  NULL);
+  }
   // Hack to make sure alert is really closed, and browser
   // is ready for the next operation. This may be a flawed
   // algorithim, since the busy property of the browser may
@@ -147,7 +160,7 @@ Alert::DialogButtonInfo Alert::GetDialogButton(BUTTON_TYPE button_type) {
   LOG(TRACE) << "Entering Alert::GetDialogButton";
   DialogButtonFindInfo button_find_info;
   button_find_info.button_handle = NULL;
-  button_find_info.button_control_id = IDOK;
+  button_find_info.button_control_id = this->is_standard_alert_ ? IDOK : INVALID_CONTROL_ID;
   if (button_type == OK) {
     button_find_info.match_proc = &Alert::IsOKButton;
   } else {
@@ -176,18 +189,40 @@ Alert::DialogButtonInfo Alert::GetDialogButton(BUTTON_TYPE button_type) {
   return button_info;
 }
 
-bool Alert::IsOKButton(int control_id) {
-  return control_id == IDOK || control_id == IDYES || control_id == IDRETRY;
+bool Alert::IsOKButton(HWND button_handle) {
+  int control_id = ::GetDlgCtrlID(button_handle);
+  if (control_id != 0) {
+    return control_id == IDOK || control_id == IDYES || control_id == IDRETRY;
+  }
+  vector<TCHAR> button_window_class(100);
+  ::GetClassName(button_handle, &button_window_class[0], static_cast<int>(button_window_class.size()));
+  if (wcscmp(&button_window_class[0], L"Button") == 0) {
+    long window_long = ::GetWindowLong(button_handle, GWL_STYLE);
+    return (window_long & BS_DEFCOMMANDLINK) == BS_DEFCOMMANDLINK;
+  }
+  return false;
 }
 
-bool Alert::IsCancelButton(int control_id) {
-  return control_id == IDCANCEL || control_id == IDNO;
+bool Alert::IsCancelButton(HWND button_handle) {
+  int control_id = ::GetDlgCtrlID(button_handle);
+  if (control_id != 0) {
+    return control_id == IDCANCEL || control_id == IDNO;
+  }
+  vector<TCHAR> button_window_class(100);
+  ::GetClassName(button_handle, &button_window_class[0], static_cast<int>(button_window_class.size()));
+  if (wcscmp(&button_window_class[0], L"Button") == 0) {
+    long window_long = ::GetWindowLong(button_handle, GWL_STYLE);
+    // The BS_DEFCOMMANDLINK mask includes BS_COMMANDLINK, but we
+    // want only to match those without the default bits set.
+    return (window_long & BS_DEFCOMMANDLINK) == BS_COMMANDLINK;
+  }
+  return false;
 }
 
 BOOL CALLBACK Alert::FindDialogButton(HWND hwnd, LPARAM arg) {
   Alert::DialogButtonFindInfo* button_info = reinterpret_cast<Alert::DialogButtonFindInfo*>(arg);
   int control_id = ::GetDlgCtrlID(hwnd);
-  if (button_info->match_proc(control_id)) {
+  if (button_info->match_proc(hwnd)) {
     button_info->button_handle = hwnd;
     button_info->button_control_id = control_id;
     return FALSE;
@@ -216,12 +251,25 @@ BOOL CALLBACK Alert::FindTextLabel(HWND hwnd, LPARAM arg) {
     return TRUE;
   }
 
+  int control_id = ::GetDlgCtrlID(hwnd);
   int text_length = ::GetWindowTextLength(hwnd);
   if (text_length > 0) {
     *dialog_handle = hwnd;
     return FALSE;
   }
   return TRUE;
+}
+
+BOOL CALLBACK Alert::FindDirectUIChild(HWND hwnd, LPARAM arg){
+  HWND *dialog_handle = reinterpret_cast<HWND*>(arg);
+  TCHAR child_window_class[100];
+  ::GetClassName(hwnd, child_window_class, 100);
+
+  if (wcscmp(child_window_class, L"DirectUIHWND") != 0) {
+    return TRUE;
+  }
+  *dialog_handle = hwnd;
+  return FALSE;
 }
 
 } // namespace webdriver

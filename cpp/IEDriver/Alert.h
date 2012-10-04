@@ -19,6 +19,8 @@
 #include "DocumentHost.h"
 #include "ErrorCodes.h"
 
+#define INVALID_CONTROL_ID -1
+
 using namespace std;
 
 namespace webdriver {
@@ -33,8 +35,10 @@ class Alert {
   int SendKeys(std::string keys);
   std::string GetText(void);
 
+  bool is_standard_alert(void) const { return this->is_standard_alert_; }
+
  private:
-  typedef bool (__cdecl *ISBUTTONMATCHPROC)(int); 
+  typedef bool (__cdecl *ISBUTTONMATCHPROC)(HWND); 
 
   struct DialogButtonInfo {
     HWND button_handle;
@@ -54,16 +58,18 @@ class Alert {
   };
 
   DialogButtonInfo GetDialogButton(BUTTON_TYPE button_type);
-  int ClickAlertButton(int control_id);
+  int ClickAlertButton(DialogButtonInfo button_info);
 
-  static bool IsOKButton(int control_id);
-  static bool IsCancelButton(int control_id);
+  static bool IsOKButton(HWND button_handle);
+  static bool IsCancelButton(HWND button_handle);
   static BOOL CALLBACK FindDialogButton(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindTextBox(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindTextLabel(HWND hwnd, LPARAM arg);
+  static BOOL CALLBACK FindDirectUIChild(HWND hwnd, LPARAM arg);
 
   HWND alert_handle_;
   BrowserHandle browser_;
+  bool is_standard_alert_;
 };
 
 
