@@ -688,6 +688,7 @@ bot.Device.resolveUrl_ = function(base, rel) {
       target.search + target.hash;
 };
 
+
 /**
  * Stores the state of modifier keys
  *
@@ -702,6 +703,7 @@ bot.Device.ModifiersState = function() {
   this.pressedModifiers_ = 0;
 };
 
+
 /**
  * An enum for the various modifier keys (keycode-independent).
  * @enum {number}
@@ -713,6 +715,7 @@ bot.Device.Modifier = {
   META: 0x8
 };
 
+
 /**
  * Checks whether a specific modifier is pressed
  * @param {!bot.Device.Modifier} modifier The modifier to check.
@@ -722,13 +725,14 @@ bot.Device.ModifiersState.prototype.isPressed = function(modifier) {
   return (this.pressedModifiers_ & modifier) != 0;
 };
 
+
 /**
  * Sets the state of a given modifier.
  * @param {!bot.Device.Modifier} modifier The modifier to set.
  * @param {boolean} isPressed whether the modifier is set or released.
  */
-bot.Device.ModifiersState.prototype.setPressed =
-    function(modifier, isPressed) {
+bot.Device.ModifiersState.prototype.setPressed = function(
+    modifier, isPressed) {
   if (isPressed) {
     this.pressedModifiers_ = this.pressedModifiers_ | modifier;
   } else {
@@ -738,7 +742,6 @@ bot.Device.ModifiersState.prototype.setPressed =
 
 
 /**
- *
  * @return {boolean} State of the Shift key.
  */
 bot.Device.ModifiersState.prototype.isShiftPressed = function() {
@@ -747,7 +750,6 @@ bot.Device.ModifiersState.prototype.isShiftPressed = function() {
 
 
 /**
- *
  * @return {boolean} State of the Control key.
  */
 bot.Device.ModifiersState.prototype.isControlPressed = function() {
@@ -756,7 +758,6 @@ bot.Device.ModifiersState.prototype.isControlPressed = function() {
 
 
 /**
- *
  * @return {boolean} State of the Alt key.
  */
 bot.Device.ModifiersState.prototype.isAltPressed = function() {
@@ -765,7 +766,6 @@ bot.Device.ModifiersState.prototype.isAltPressed = function() {
 
 
 /**
- *
  * @return {boolean} State of the Meta key.
  */
 bot.Device.ModifiersState.prototype.isMetaPressed = function() {
