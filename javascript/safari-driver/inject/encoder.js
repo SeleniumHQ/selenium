@@ -26,7 +26,6 @@ goog.require('bot.dom');
 goog.require('bot.inject');
 goog.require('bot.response');
 goog.require('goog.array');
-goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.object');
 goog.require('goog.string');

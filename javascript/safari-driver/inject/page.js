@@ -29,7 +29,7 @@ goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('safaridriver.console');
 goog.require('safaridriver.inject.Encoder');
-goog.require('safaridriver.inject.message.Encode');
+goog.require('safaridriver.inject.message');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Command');

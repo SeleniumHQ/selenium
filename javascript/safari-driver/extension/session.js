@@ -16,10 +16,9 @@
 
 goog.provide('safaridriver.extension.Session');
 
-goog.require('goog.asserts');
 goog.require('goog.string');
 goog.require('goog.userAgent');
-goog.require('goog.userAgent.product.isVersion');
+goog.require('goog.userAgent.product');
 goog.require('webdriver.Session');
 
 
@@ -169,25 +168,25 @@ safaridriver.extension.Session.prototype.getTabIds = function() {
 };
 
 
-/** @return {number} The current implicit wait setting. */
+/** @return {number} The current implicit wait setting, in milliseconds. */
 safaridriver.extension.Session.prototype.getImplicitWait = function() {
   return this.implicitWait_;
 };
 
 
-/** @param {number} wait How long to wait. */
+/** @param {number} wait How long to wait, in milliseconds. */
 safaridriver.extension.Session.prototype.setImplicitWait = function(wait) {
   this.implicitWait_ = wait;
 };
 
 
-/** @return {number} The current script timeout setting. */
+/** @return {number} The current script timeout setting, in milliseconds. */
 safaridriver.extension.Session.prototype.getScriptTimeout = function() {
   return this.scriptTimeout_;
 };
 
 
-/** @param {number} wait How long to wait. */
+/** @param {number} wait How long to wait, in milliseconds. */
 safaridriver.extension.Session.prototype.setScriptTimeout = function(wait) {
   this.scriptTimeout_ = wait;
 };

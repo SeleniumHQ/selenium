@@ -86,7 +86,7 @@ webdriver.atoms.storage.local.size = function() {
  * Returns the key item of the key/value pairs in the localStorage object
  * of a given index.
  * @param {number} index The index of the key/value pair list.
- * @return {string} The key item of a given index.
+ * @return {?string} The key item of a given index.
  */
 webdriver.atoms.storage.local.key = function(index) {
   return bot.storage.getLocalStorage().key(index);
