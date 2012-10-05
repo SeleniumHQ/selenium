@@ -70,7 +70,7 @@ webdriver.atoms.inject.dom.getAttributeValue = function(element, attribute) {
 
 
 /**
- * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
+ * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
  * @return {string} The element size in a JSON string as
  *     defined by the wire protocol.
  */
@@ -80,7 +80,7 @@ webdriver.atoms.inject.dom.getSize = function(element) {
 
 
 /**
- * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
+ * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
  * @param {string} property The property to look up.
  * @return {string} The value of the requested CSS property in a JSON
  *     string as defined by the wire protocol.
@@ -92,7 +92,7 @@ webdriver.atoms.inject.dom.getValueOfCssProperty = function(element, property) {
 
 
 /**
- * @param {bot.inject.ELEMENT_KEY:string} element The element to query.
+ * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
  * @return {string} A boolean describing whether the element is enabled
  *     in a JSON string as defined by the wire protocol.
  */
@@ -102,7 +102,7 @@ webdriver.atoms.inject.dom.isEnabled = function(element) {
 
 
 /**
- * @param {bot.inject.ELEMENT_KEY:string} element The element to check.
+ * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to check.
  * @return {string} true if the element is visisble, false otherwise.
  *     The result is wrapped in a JSON string as defined by the wire
  *     protocol.
