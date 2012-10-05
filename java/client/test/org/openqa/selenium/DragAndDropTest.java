@@ -23,6 +23,8 @@ import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,9 +43,10 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
 
 @Ignore(
-    value = {ANDROID, HTMLUNIT, IPHONE, SAFARI, SELENESE},
+    value = {ANDROID, HTMLUNIT, IPHONE, SAFARI, SELENESE, OPERA_MOBILE},
     reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers" +
              "Safari: not implemented (issue 4136)",
     issues = {4136})
@@ -56,6 +59,9 @@ public class DragAndDropTest extends JUnit4TestBase {
       System.out.println("Skipping testDragAndDrop on Mac: See issue 2281.");
       return;
     }
+    assumeFalse(Browser.detect() == Browser.opera &&
+                TestUtilities.getEffectivePlatform() == Platform.WINDOWS);
+
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
     Point expectedLocation = img.getLocation();

@@ -17,12 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import com.google.common.collect.Sets;
+
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.TestUtilities;
-import com.google.common.collect.Sets;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -46,6 +48,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
 
 @Ignore(value = {IPHONE}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends JUnit4TestBase {
@@ -53,6 +56,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Ignore({SELENESE, OPERA_MOBILE})
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
+    assumeFalse(Browser.detect() == Browser.opera &&
+                TestUtilities.getEffectivePlatform() == Platform.WINDOWS);
+
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
     int currentWindowHandles = driver.getWindowHandles().size();
@@ -202,6 +208,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
+    assumeFalse(Browser.detect() == Browser.opera &&
+                TestUtilities.getEffectivePlatform() == Platform.WINDOWS);
+
     driver.get(pages.xhtmlTestPage);
     Boolean isIEDriver = TestUtilities.isInternetExplorer(driver);
     Boolean isIE6 = TestUtilities.isIe6(driver);
@@ -234,6 +243,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testCanCallGetWindowHandlesAfterClosingAWindow() {
+    assumeFalse(Browser.detect() == Browser.opera &&
+                TestUtilities.getEffectivePlatform() == Platform.WINDOWS);
+
     driver.get(pages.xhtmlTestPage);
 
     Boolean isIEDriver = TestUtilities.isInternetExplorer(driver);

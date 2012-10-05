@@ -21,6 +21,8 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
@@ -41,6 +43,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
+import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
 
 public class TypingTest extends JUnit4TestBase {
 
@@ -266,6 +269,9 @@ public class TypingTest extends JUnit4TestBase {
           reason = "firefox-specific. Android uses prev/next.")
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
+    assumeFalse(Browser.detect() == Browser.opera &&
+                TestUtilities.getEffectivePlatform() == Platform.WINDOWS);
+
     driver.get(pages.javascriptPage);
 
     WebElement result = driver.findElement(By.id("result"));
@@ -298,6 +304,9 @@ public class TypingTest extends JUnit4TestBase {
           reason = "untested user agents")
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
+    assumeFalse(Browser.detect() == Browser.opera &&
+                TestUtilities.getEffectivePlatform() == Platform.WINDOWS);
+
     driver.get(pages.javascriptPage);
 
     WebElement result = driver.findElement(By.id("result"));
