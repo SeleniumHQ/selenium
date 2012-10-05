@@ -18,6 +18,7 @@ goog.provide('safaridriver.extension.Session');
 
 goog.require('goog.string');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product.isVersion');
 goog.require('webdriver.Session');
 
 
@@ -49,7 +50,7 @@ goog.inherits(safaridriver.extension.Session, webdriver.Session);
  */
 safaridriver.extension.Session.CAPABILITIES = {
   'browserName': 'safari',
-  'version': goog.userAgent.VERSION,
+  'version': goog.userAgent.product.VERSION,
   'platform': goog.userAgent.MAC ? 'MAC' : 'WINDOWS',
   'javascriptEnabled': true,
   'takesScreenshot': true,
