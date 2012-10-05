@@ -365,7 +365,7 @@ wdSession.quitBrowser = function(timeDelay) {
           getService(Components.interfaces.nsIAppStartup).
           quit(Components.interfaces.nsIAppStartup.eForceQuit);
   };
-  wdSession.quitTimer = new fxdriver.Timer();	
+  wdSession.quitTimer = new fxdriver.Timer();
   wdSession.quitTimer.setTimeout(event, timeDelay);
   return wdSession.quitTimer;
 };
