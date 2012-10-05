@@ -723,7 +723,7 @@ Utils.getLocation = function(element, opt_onlyFirstRect) {
     var clientRect = undefined;
     if (opt_onlyFirstRect && element.getClientRects().length > 1) {
       for (var i = 0; i < element.getClientRects().length; i++) {
-        var candidate = element.getClientRects()[0];
+        var candidate = element.getClientRects()[i];
         if (candidate.width != 0 && candidate.height != 0) {
           clientRect = candidate;
           break;
