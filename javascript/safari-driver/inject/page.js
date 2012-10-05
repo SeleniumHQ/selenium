@@ -114,9 +114,9 @@ goog.exportSymbol('init', safaridriver.inject.page.init);
  * @private
  */
 safaridriver.inject.page.NativeDialog_ = {
-  alert: {name: 'alert', fn: window.alert},
-  confirm: {name: 'confirm', fn: window.confirm},
-  prompt: {name: 'prompt', fn: window.prompt}
+  ALERT: {name: 'alert', fn: window.alert},
+  CONFIRM: {name: 'confirm', fn: window.confirm},
+  PROMPT: {name: 'prompt', fn: window.prompt}
 };
 
 
@@ -128,7 +128,7 @@ safaridriver.inject.page.NativeDialog_ = {
  */
 safaridriver.inject.page.wrappedAlert_ = function(var_args) {
   safaridriver.inject.page.sendAlert_(
-      safaridriver.inject.page.NativeDialog_.alert,
+      safaridriver.inject.page.NativeDialog_.ALERT,
       // Closure's extern definition for window.alert says it takes var_args,
       // but Safari's only accepts a single argument.
       arguments[0]);
@@ -144,7 +144,7 @@ safaridriver.inject.page.wrappedAlert_ = function(var_args) {
  */
 safaridriver.inject.page.wrappedConfirm_ = function(arg) {
   return (/** @type {boolean} */safaridriver.inject.page.sendAlert_(
-      safaridriver.inject.page.NativeDialog_.confirm, arg));
+      safaridriver.inject.page.NativeDialog_.CONFIRM, arg));
 };
 
 
@@ -157,7 +157,7 @@ safaridriver.inject.page.wrappedConfirm_ = function(arg) {
  */
 safaridriver.inject.page.wrappedPrompt_ = function(arg) {
   return (/** @type {?string} */safaridriver.inject.page.sendAlert_(
-      safaridriver.inject.page.NativeDialog_.prompt, arg));
+      safaridriver.inject.page.NativeDialog_.PROMPT, arg));
 };
 
 
