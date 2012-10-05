@@ -91,8 +91,6 @@ bot.frame.findFrameByNameOrId = function(nameOrId, opt_root) {
   var numFrames = domWindow.frames.length;
   for (var i = 0; i < numFrames; i++) {
     var frame = domWindow.frames[i];
-    // This is needed because Safari 4 returns
-    // an HTMLFrameElement instead of a Window object.
     var frameElement = frame.frameElement || frame;
     if (frameElement.name == nameOrId) {
       // This is needed because Safari 4 returns
@@ -114,6 +112,7 @@ bot.frame.findFrameByNameOrId = function(nameOrId, opt_root) {
   }
   return null;
 };
+
 
 /**
  * Looks for a frame by its index under the given root.
