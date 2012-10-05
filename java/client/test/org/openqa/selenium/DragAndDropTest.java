@@ -1,4 +1,5 @@
 /*
+Copyright 2012 Software Freedom Conservancy
 Copyright 2007-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,13 +45,13 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 @Ignore(
     value = {ANDROID, HTMLUNIT, IPHONE, SAFARI, SELENESE},
     reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers" +
-        "Safari: not implemented (issue 4136)",
-    issues = { 4136 })
+             "Safari: not implemented (issue 4136)",
+    issues = {4136})
 public class DragAndDropTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  public void testDragAndDrop() throws Exception {
+  public void testDragAndDrop() {
     if (Platform.getCurrent().is(Platform.MAC)) {
       System.out.println("Skipping testDragAndDrop on Mac: See issue 2281.");
       return;
@@ -85,7 +86,8 @@ public class DragAndDropTest extends JUnit4TestBase {
   public void testDragAndDropToElementInIframe() {
     driver.get(pages.iframePage);
     final WebElement iframe = driver.findElement(By.tagName("iframe"));
-    ((JavascriptExecutor) driver).executeScript("arguments[0].src = arguments[1]", iframe, pages.dragAndDropPage);
+    ((JavascriptExecutor) driver).executeScript("arguments[0].src = arguments[1]", iframe,
+                                                pages.dragAndDropPage);
     driver.switchTo().frame(0);
     WebElement img1 = driver.findElement(By.id("test1"));
     WebElement img2 = driver.findElement(By.id("test2"));
@@ -164,7 +166,7 @@ public class DragAndDropTest extends JUnit4TestBase {
     WebElement dropInto = driver.findElement(By.id("droppable"));
 
     // Wait until all event handlers are installed.
-    doSleep(500);
+    sleep(500);
 
     new Actions(driver).dragAndDrop(toDrag, dropInto).perform();
 
@@ -173,7 +175,7 @@ public class DragAndDropTest extends JUnit4TestBase {
     long waitEndTime = System.currentTimeMillis() + 15000;
 
     while (!text.equals("Dropped!") && (System.currentTimeMillis() < waitEndTime)) {
-      doSleep(200);
+      sleep(200);
       text = dropInto.findElement(By.tagName("p")).getText();
     }
 
@@ -190,11 +192,12 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertTrue("Reporter text:" + reporterText, matcher.matches());
   }
 
-  private static void doSleep(int ms) {
+  private static void sleep(int ms) {
     try {
       Thread.sleep(ms);
     } catch (InterruptedException e) {
       throw new RuntimeException("Interrupted: " + e.toString());
     }
   }
+
 }
