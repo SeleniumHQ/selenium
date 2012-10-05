@@ -1171,8 +1171,8 @@ Utils.removePageUnloadEventListener = function(element, pageUnloadData) {
             pageUnloadData.callback, false);
       }
       if (element.ownerDocument.defaultView) {
-	element.ownerDocument.defaultView.removeEventListener("pagehide",
-	    pageUnloadData.callback, false);
+        element.ownerDocument.defaultView.removeEventListener("pagehide",
+            pageUnloadData.callback, false);
       }
     }
   }
@@ -1184,7 +1184,7 @@ Utils.convertNSIArrayToNative = function(arrayToConvert) {
   if (arrayToConvert == null) {
     return returnArray;
   }
-  
+
   returnArray.length = arrayToConvert.length;
 
   // Copy the contents of the array as each string is nsISupportsString,
