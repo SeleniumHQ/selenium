@@ -23,7 +23,6 @@ goog.require('safaridriver.inject.message');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.Response');
-goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
 
 

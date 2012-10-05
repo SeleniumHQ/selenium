@@ -18,7 +18,6 @@
 goog.provide('safaridriver.Command');
 
 goog.require('webdriver.Command');
-goog.require('webdriver.CommandName');
 
 
 

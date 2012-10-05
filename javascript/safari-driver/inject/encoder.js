@@ -30,7 +30,6 @@ goog.require('goog.dom');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('safaridriver.inject.message.Encode');
-goog.require('safaridriver.message.MessageTarget');
 goog.require('safaridriver.message.Response');
 goog.require('webdriver.promise');
 

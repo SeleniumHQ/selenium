@@ -20,7 +20,6 @@
 goog.provide('safaridriver.inject');
 
 goog.require('bot.inject');
-goog.require('bot.response');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.console');
 goog.require('safaridriver.inject.Tab');
