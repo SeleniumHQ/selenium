@@ -290,6 +290,31 @@ function testWhen_WaitsForValueToBeResolvedBeforeInvokingCallback() {
 }
 
 
+function testWhen_canCancelReturnedPromise() {
+  var callbacks = callbackPair(null, function(e) {
+    assertEquals('cancelled', e);
+  });
+
+  var promiseLike = {
+    then: function(cb, eb) {
+      this.callback = cb;
+      this.errback = eb;
+    }
+  };
+
+  var promise = webdriver.promise.when(promiseLike,
+      callbacks.callback, callbacks.errback);
+
+  assertTrue(promise.isPending());
+  promise.cancel('cancelled');
+  callbacks.assertErrback();
+
+  // The following should have no effect.
+  promiseLike.callback();
+  promiseLike.errback();
+}
+
+
 function testFiresUncaughtExceptionEventIfRejectionNeverHandled() {
   webdriver.promise.rejected('ouch');
   var handler = callbackHelper(function(value) {

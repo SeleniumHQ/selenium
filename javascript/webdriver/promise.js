@@ -560,11 +560,19 @@ webdriver.promise.when = function(value, opt_callback, opt_errback) {
     return value.then(opt_callback, opt_errback);
   }
 
-  var deferred = new webdriver.promise.Deferred(function() {
-    throw Error('This Deferred may not be cancelled');
-  });
-  webdriver.promise.asap(value, deferred.resolve, deferred.reject);
+  var deferred = new webdriver.promise.Deferred();
+
+  webdriver.promise.asap(value,
+      goog.partial(maybeResolve, deferred.resolve),
+      goog.partial(maybeResolve, deferred.reject));
+
   return deferred.then(opt_callback, opt_errback);
+
+  function maybeResolve(resolveFn, value) {
+    if (deferred.isPending()) {
+      resolveFn(value);
+    }
+  }
 };
 
 
