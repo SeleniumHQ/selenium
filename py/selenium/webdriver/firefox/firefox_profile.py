@@ -45,6 +45,7 @@ class FirefoxProfile(object):
         "browser.offline": "false",
         "browser.safebrowsing.enabled": "false",
         "browser.search.update": "false",
+        "extensions.blocklist.enabled": "false",
         "browser.sessionstore.resume_from_crash": "false",
         "browser.shell.checkDefaultBrowser": "false",
         "browser.tabs.warnOnClose": "false",

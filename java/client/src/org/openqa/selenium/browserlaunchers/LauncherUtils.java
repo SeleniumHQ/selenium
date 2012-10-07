@@ -343,6 +343,7 @@ public class LauncherUtils {
     out.println("user_pref('app.update.enabled', false);");
     out.println("user_pref('extensions.update.enabled', false);");
     out.println("user_pref('browser.search.update', false);");
+    out.println("user_pref('extensions.blocklist.enabled', false);");
     out.println("user_pref('browser.safebrowsing.enabled', false);");
 
     if (changeMaxConnections) {
