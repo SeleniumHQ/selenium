@@ -1210,6 +1210,12 @@ function testIsStillConsideredUnHandledIfNoCallbacksWereGivenOnCallsToThen() {
   handler.assertCalled();
 }
 
+function testResolvedReturnsInputValueIfItIsAPromise() {
+  var input = webdriver.promise.resolved('a');
+  var output = webdriver.promise.resolved(input);
+  assertEquals(input, output);
+}
+
 </script>
 </body>
 </html>

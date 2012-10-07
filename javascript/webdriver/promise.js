@@ -493,6 +493,9 @@ webdriver.promise.delayed = function(ms) {
  * @return {!webdriver.promise.Promise} The resolved promise.
  */
 webdriver.promise.resolved = function(opt_value) {
+  if (opt_value instanceof webdriver.promise.Promise) {
+    return opt_value;
+  }
   var deferred = new webdriver.promise.Deferred();
   deferred.resolve(opt_value);
   return deferred.promise;
