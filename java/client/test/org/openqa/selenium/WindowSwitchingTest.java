@@ -57,7 +57,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     assumeFalse(Browser.detect() == Browser.opera &&
-                TestUtilities.getEffectivePlatform() == Platform.WINDOWS);
+                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
@@ -209,7 +209,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     assumeFalse(Browser.detect() == Browser.opera &&
-                TestUtilities.getEffectivePlatform() == Platform.WINDOWS);
+                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);
     Boolean isIEDriver = TestUtilities.isInternetExplorer(driver);
@@ -244,7 +244,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   public void testCanCallGetWindowHandlesAfterClosingAWindow() {
     assumeFalse(Browser.detect() == Browser.opera &&
-                TestUtilities.getEffectivePlatform() == Platform.WINDOWS);
+                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);
 
