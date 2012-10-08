@@ -60,7 +60,7 @@ public class DragAndDropTest extends JUnit4TestBase {
       return;
     }
     assumeFalse(Browser.detect() == Browser.opera &&
-                TestUtilities.getEffectivePlatform() == Platform.WINDOWS);
+                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
@@ -76,7 +76,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({OPERA, OPERA_MOBILE})
+  @Ignore(OPERA)
   @Test
   public void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
@@ -87,7 +87,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({OPERA, OPERA_MOBILE})
+  @Ignore(OPERA)
   @Test
   public void testDragAndDropToElementInIframe() {
     driver.get(pages.iframePage);
@@ -116,7 +116,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({CHROME, IE, OPERA, OPERA_MOBILE})
+  @Ignore({CHROME, IE, OPERA})
   @Test
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
