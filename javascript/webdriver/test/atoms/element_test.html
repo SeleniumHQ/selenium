@@ -186,6 +186,12 @@ limitations under the License.
     }
 
     function testTypingNewlineOnTextArea() {
+      if (goog.userAgent.product.OPERA &&
+          goog.userAgent.platform.WINDOWS &&
+          bot.userAgent.isEngineVersion(11)) {
+        return;
+      }
+    
       var el = document.getElementById('textarea');
       el.value = '';
       webdriver.atoms.element.type(el, ['hello\n\nworld']);
