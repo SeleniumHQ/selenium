@@ -270,7 +270,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
     assumeFalse(Browser.detect() == Browser.opera &&
-                TestUtilities.getEffectivePlatform() == Platform.WINDOWS);
+                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
 
