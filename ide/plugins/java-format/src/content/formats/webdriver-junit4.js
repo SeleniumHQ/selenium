@@ -186,9 +186,8 @@ function defaultExtension() {
 
 this.options = {
   receiver: "driver",
-  environment: "*chrome",
   packageName: "com.example.tests",
-  indent:    'tab',
+  indent:    '2',
   initialIndents:    '2',
   showSelenese: 'false',
   defaultExtension: "java"
@@ -261,10 +260,24 @@ options.footer =
 this.configForm =
     '<description>Variable for Selenium instance</description>' +
         '<textbox id="options_receiver" />' +
-        '<description>Environment</description>' +
-        '<textbox id="options_environment" />' +
         '<description>Package</description>' +
         '<textbox id="options_packageName" />' +
+        '<description>Header</description>' +
+        '<textbox id="options_header" multiline="true" flex="1" rows="4"/>' +
+        '<description>Footer</description>' +
+        '<textbox id="options_footer" multiline="true" flex="1" rows="4"/>' +
+        '<description>Indent</description>' +
+        '<menulist id="options_indent"><menupopup>' +
+        '<menuitem label="Tab" value="tab"/>' +
+        '<menuitem label="1 space" value="1"/>' +
+        '<menuitem label="2 spaces" value="2"/>' +
+        '<menuitem label="3 spaces" value="3"/>' +
+        '<menuitem label="4 spaces" value="4"/>' +
+        '<menuitem label="5 spaces" value="5"/>' +
+        '<menuitem label="6 spaces" value="6"/>' +
+        '<menuitem label="7 spaces" value="7"/>' +
+        '<menuitem label="8 spaces" value="8"/>' +
+        '</menupopup></menulist>' +
         '<checkbox id="options_showSelenese" label="Show Selenese"/>';
 
 this.name = "JUnit 4 (WebDriver)";
