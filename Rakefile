@@ -41,7 +41,7 @@ require 'rake-tasks/gecko_sdks'
 def version
   "2.25.0"
 end
-ide_version = "1.9.1"
+ide_version = "1.10.0"
 
 # The build system used by webdriver is layered on top of rake, and we call it
 # "crazy fun" for no readily apparent reason.
