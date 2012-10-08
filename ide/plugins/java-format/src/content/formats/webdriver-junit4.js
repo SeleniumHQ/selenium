@@ -207,40 +207,56 @@ options.header =
         "import org.openqa.selenium.support.ui.Select;\n" +
         "\n" +
         "public class ${className} {\n" +
-        "\tprivate WebDriver driver;\n" +
-        "\tprivate String baseUrl;\n" +
-        "\tprivate StringBuffer verificationErrors = new StringBuffer();\n" +
-        "\t@Before\n" +
-        "\tpublic void setUp() throws Exception {\n" +
-        "\t\tdriver = new FirefoxDriver();\n" +
-        "\t\tbaseUrl = \"${baseURL}\";\n" +
-        "\t\tdriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);\n" +
-        "\t}\n" +
-        "\n" +
-        "\t@Test\n" +
-        "\tpublic void ${methodName}() throws Exception {\n";
+        indents(1) + "private WebDriver driver;\n" +
+        indents(1) + "private String baseUrl;\n" +
+        indents(1) + "private boolean acceptNextAlert = true;\n" +
+        indents(1) + "private StringBuffer verificationErrors = new StringBuffer();\n" +
+        indents(0) + "\n" +
+        indents(1) + "@Before\n" +
+        indents(1) + "public void setUp() throws Exception {\n" +
+        indents(2) + "driver = new FirefoxDriver();\n" +
+        indents(2) + "baseUrl = \"${baseURL}\";\n" +
+        indents(2) + "driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);\n" +
+        indents(1) + "}\n" +
+        indents(0) + "\n" +
+        indents(1) + "@Test\n" +
+        indents(1) + "public void ${methodName}() throws Exception {\n";
 
 options.footer =
-    "\t}\n" +
-        "\n" +
-        "\t@After\n" +
-        "\tpublic void tearDown() throws Exception {\n" +
-        "\t\tdriver.quit();\n" +
-        "\t\tString verificationErrorString = verificationErrors.toString();\n" +
-        "\t\tif (!\"\".equals(verificationErrorString)) {\n" +
-        "\t\t\tfail(verificationErrorString);\n" +
-        "\t\t}\n" +
-        "\t}\n" +
-        "\n" +
-        "\tprivate boolean isElementPresent(By by) {\n" +
-        "\t\ttry {\n" +
-        "\t\t\tdriver.findElement(by);\n" +
-        "\t\t\treturn true;\n" +
-        "\t\t} catch (NoSuchElementException e) {\n" +
-        "\t\t\treturn false;\n" +
-        "\t\t}\n" +
-        "\t}\n" +
-        "}\n";
+    indents(1) + "}\n" +
+        indents(0) + "\n" +
+        indents(1) + "@After\n" +
+        indents(1) + "public void tearDown() throws Exception {\n" +
+        indents(2) + "driver.quit();\n" +
+        indents(2) + "String verificationErrorString = verificationErrors.toString();\n" +
+        indents(2) + "if (!\"\".equals(verificationErrorString)) {\n" +
+        indents(3) + "fail(verificationErrorString);\n" +
+        indents(2) + "}\n" +
+        indents(1) + "}\n" +
+        indents(0) + "\n" +
+        indents(1) + "private boolean isElementPresent(By by) {\n" +
+        indents(2) + "try {\n" +
+        indents(3) + "driver.findElement(by);\n" +
+        indents(3) + "return true;\n" +
+        indents(2) + "} catch (NoSuchElementException e) {\n" +
+        indents(3) + "return false;\n" +
+        indents(2) + "}\n" +
+        indents(1) + "}\n" +
+        indents(0) + "\n" +
+        indents(1) + "private String closeAlertAndGetItsText() {\n" +
+        indents(2) + "try {\n" +
+        indents(3) + "Alert alert = driver.switchTo().alert();\n" +
+        indents(3) + "if (acceptNextAlert) {\n" +
+        indents(4) + "alert.accept();\n" +
+        indents(3) + "} else {\n" +
+        indents(4) + "alert.dismiss();\n" +
+        indents(3) + "}\n" +
+        indents(3) + "return alert.getText();\n" +
+        indents(2) + "} finally {\n" +
+        indents(3) + "acceptNextAlert = true;\n" +
+        indents(2) + "}\n" +
+        indents(1) + "}\n" +
+        indents(0) + "}\n";
 
 this.configForm =
     '<description>Variable for Selenium instance</description>' +
@@ -309,6 +325,18 @@ WDAPI.Driver.prototype.get = function(url) {
 
 WDAPI.Driver.prototype.getTitle = function() {
   return this.ref + ".getTitle()";
+};
+
+WDAPI.Driver.prototype.getAlert = function() {
+  return "closeAlertAndGetItsText()";
+};
+
+WDAPI.Driver.prototype.chooseOkOnNextConfirmation = function() {
+  return "acceptNextAlert = true";
+};
+
+WDAPI.Driver.prototype.chooseCancelOnNextConfirmation = function() {
+  return "acceptNextAlert = false";
 };
 
 WDAPI.Driver.prototype.refresh = function() {

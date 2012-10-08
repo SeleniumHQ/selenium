@@ -665,6 +665,26 @@ SeleniumWebDriverAdaptor.prototype.getTitle = function() {
   return driver.getTitle();
 };
 
+SeleniumWebDriverAdaptor.prototype.getAlert = function() {
+  var driver = new WDAPI.Driver();
+  return driver.getAlert();
+};
+
+SeleniumWebDriverAdaptor.prototype.getConfirmation = function() {
+  var driver = new WDAPI.Driver();
+  return driver.getAlert();
+};
+
+SeleniumWebDriverAdaptor.prototype.chooseOkOnNextConfirmation = function() {
+  var driver = new WDAPI.Driver();
+  return driver.chooseOkOnNextConfirmation();
+};
+
+SeleniumWebDriverAdaptor.prototype.chooseCancelOnNextConfirmation = function() {
+  var driver = new WDAPI.Driver();
+  return driver.chooseCancelOnNextConfirmation();
+};
+
 SeleniumWebDriverAdaptor.prototype.getValue = function(elementLocator) {
   var locator = this._elementLocator(this.rawArgs[0]);
   var driver = new WDAPI.Driver();
