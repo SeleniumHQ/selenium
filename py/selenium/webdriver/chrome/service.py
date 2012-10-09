@@ -92,6 +92,6 @@ class Service(object):
             if self.process:
                 self.process.kill()
                 self.process.wait()
-        except AttributeError:
+        except WindowsError:
             # kill may not be available under windows environment
             pass
