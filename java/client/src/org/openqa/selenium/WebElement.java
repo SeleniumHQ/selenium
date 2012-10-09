@@ -148,7 +148,7 @@ public interface WebElement extends SearchContext {
 
   /**
    * Find the first {@link WebElement} using the given method. See the note in
-   * {@link #findElement(By)} about finding via XPath.
+   * {@link #findElements(By)} about finding via XPath.
    * This method is affected by the 'implicit wait' times in force at the time of execution.
    * The findElement(..) invocation will return a matching row, or try again repeatedly until 
    * the configured timeout is reached.
