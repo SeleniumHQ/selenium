@@ -261,6 +261,22 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/orientation'),
             Command.GET_SCREEN_ORIENTATION:
                 ('GET', '/session/$sessionId/orientation'),
+            Command.SINGLE_TAP:
+                ('POST', '/session/$sessionId/touch/click'),
+            Command.TOUCH_DOWN:
+                ('POST', '/session/$sessionId/touch/down'),
+            Command.TOUCH_UP:
+                ('POST', '/session/$sessionId/touch/up'),
+            Command.TOUCH_MOVE:
+                ('POST', '/session/$sessionId/touch/move'),
+            Command.TOUCH_SCROLL:
+                ('POST', '/session/$sessionId/touch/scroll'),
+            Command.DOUBLE_TAP:
+                ('POST', '/session/$sessionId/touch/doubleclick'),
+            Command.LONG_PRESS:
+                ('POST', '/session/$sessionId/touch/longclick'),
+            Command.FLICK:
+                ('POST', '/session/$sessionId/touch/flick'),
             Command.EXECUTE_SQL:
                 ('POST', '/session/$sessionId/execute_sql'),
             Command.GET_LOCATION:

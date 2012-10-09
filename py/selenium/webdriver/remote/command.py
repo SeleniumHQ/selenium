@@ -106,6 +106,16 @@ class Command(object):
     SET_SCREEN_ORIENTATION = "setScreenOrientation"
     GET_SCREEN_ORIENTATION = "getScreenOrientation"
 
+    # Touch Actions
+    SINGLE_TAP = "touchSingleTap";
+    TOUCH_DOWN = "touchDown";
+    TOUCH_UP = "touchUp";
+    TOUCH_MOVE = "touchMove";
+    TOUCH_SCROLL = "touchScroll";
+    DOUBLE_TAP = "touchDoubleTap";
+    LONG_PRESS = "touchLongPress";
+    FLICK = "touchFlick";
+
     #HTML 5
     EXECUTE_SQL = "executeSql"
 
