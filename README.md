@@ -54,6 +54,7 @@ Of course, building the entire project can take too long. If you just want to bu
   ./go firefox
   ./go htmlunit
   ./go ie
+  ./go opera
 
 As the build progresses, you'll see it report where the build outputs are being placed. Of course, just building isn't enough. We should really be able to run the tests too. Try:
 
