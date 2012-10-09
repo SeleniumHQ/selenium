@@ -67,6 +67,16 @@ BROWSERS = {
     :browser_name => "opera",
     :available => opera?
   },
+  "gd" => {
+    :python => {
+      :ignore => "ghostdriver",
+      :dir => "ghostdriver",
+      :file_string => "gd",
+      :class => "Remote",
+      :constructor_args => "'http://localhost:8080/wd/hub', {}"
+    },
+    :browser_name => "ghostdriver",
+  },
   "remote_firefox" => {
     :python => {
       :dir => "remote",
