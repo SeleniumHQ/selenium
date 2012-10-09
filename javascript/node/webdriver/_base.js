@@ -58,6 +58,7 @@ var CLOSURE = vm.createContext({
   clearInterval: clearInterval,
   process: process,
   require: require,
+  Buffer: Buffer,
   CLOSURE_IMPORT_SCRIPT: function(src) {
     src = path.join(path.dirname(CLOSURE_BASE_FILE_PATH), src);
     loadScript(src);

@@ -67,7 +67,7 @@ node.http.HttpClient.prototype.send = function(httpRequest, callback) {
   httpRequest.headers['Content-Length'] = 0;
   if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
     data = JSON.stringify(httpRequest.data);
-    httpRequest.headers['Content-Length'] = data.length;
+    httpRequest.headers['Content-Length'] = Buffer.byteLength(data, 'utf8');
     httpRequest.headers['Content-Type'] = 'application/json;charset=UTF-8';
   }
 
