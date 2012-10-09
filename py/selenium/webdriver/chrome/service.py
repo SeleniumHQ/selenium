@@ -26,7 +26,7 @@ class Service(object):
     Object that manages the starting and stopping of the ChromeDriver
     """
 
-    def __init__(self, executable_path, port=0):
+    def __init__(self, executable_path, port=0, service_args=None):
         """
         Creates a new instance of the Service
         
@@ -36,6 +36,7 @@ class Service(object):
 
         self.port = port
         self.path = executable_path
+        self.service_args= service_args
         if self.port == 0:
             self.port = utils.free_port()
 
@@ -48,8 +49,8 @@ class Service(object):
            or when it can't connect to the service
         """
         try:
-            self.process = subprocess.Popen([self.path, "--port=%d" % self.port],
-                    stdout=PIPE, stderr=PIPE)
+            self.process = subprocess.Popen([self.path, "--port=%d%s" % (self.port, 
+                ' '.join(self.service_args) if self.service_args else '')], stdout=PIPE, stderr=PIPE)
         except:
             raise WebDriverException(
                 "ChromeDriver executable needs to be available in the path. \
