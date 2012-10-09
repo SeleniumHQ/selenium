@@ -15,13 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 package org.openqa.selenium.testing;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -34,8 +28,14 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
+
 @RunWith(SeleniumTestRunner.class)
 public abstract class JUnit4TestBase implements WrapsDriver {
+
   protected TestEnvironment environment;
   protected AppServer appServer;
   protected Pages pages;
@@ -44,7 +44,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
 
   @Before
   public void prepareEnvironment() throws Exception {
-    environment = GlobalTestEnvironment.get();
+    environment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
     appServer = environment.getAppServer();
 
     pages = new Pages(appServer);
@@ -64,14 +64,9 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     return storedDriver.get();
   }
 
-  @Before
-  public void createEnvironment() {
-    environment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
-  }
-
   public static WebDriver actuallyCreateDriver() {
     WebDriver driver = storedDriver.get();
-    
+
     if (driver == null) {
       driver = new WebDriverBuilder().get();
       storedDriver.set(driver);
@@ -83,6 +78,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     if (Boolean.getBoolean("webdriver.singletestsuite.leaverunning")) {
       return;
     }
+
     WebDriver current = storedDriver.get();
 
     if (current == null) {
@@ -92,8 +88,9 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     try {
       current.quit();
     } catch (RuntimeException ignored) {
-      // Fall through
+      // fall through
     }
+
     storedDriver.remove();
   }
 
@@ -101,4 +98,5 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     // The IE driver may throw a timed out exception
     return e.getClass().getName().contains("TimedOutException");
   }
+
 }
