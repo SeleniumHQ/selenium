@@ -186,8 +186,8 @@ limitations under the License.
     }
 
     function testTypingNewlineOnTextArea() {
-      if (goog.userAgent.product.OPERA &&
-          goog.userAgent.platform.WINDOWS &&
+      if (goog.userAgent.OPERA &&
+          goog.userAgent.ASSUME_WINDOWS &&
           bot.userAgent.isEngineVersion(11)) {
         return;
       }
