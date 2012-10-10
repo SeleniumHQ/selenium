@@ -12,7 +12,6 @@
 // limitations under the License.
 
 #include "Generated/atoms.h"
-#include "Generated/jsxpath.h"
 #include "Generated/sizzle.h"
 #include "IECommandExecutor.h"
 #include "logging.h"

@@ -322,7 +322,6 @@
     <ClInclude Include="CommandHandlers\SwitchToWindowCommandHandler.h" />
     <ClInclude Include="Generated\atoms.h" />
     <ClInclude Include="Generated\cookies.h" />
-    <ClInclude Include="Generated\jsxpath.h" />
     <ClInclude Include="Generated\sizzle.h" />
   </ItemGroup>
   <ItemGroup>

@@ -265,9 +265,6 @@
     <ClInclude Include="Generated\cookies.h">
       <Filter>Header Files\Generated</Filter>
     </ClInclude>
-    <ClInclude Include="Generated\jsxpath.h">
-      <Filter>Header Files\Generated</Filter>
-    </ClInclude>
     <ClInclude Include="Generated\sizzle.h">
       <Filter>Header Files\Generated</Filter>
     </ClInclude>
