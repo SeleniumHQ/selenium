@@ -113,7 +113,6 @@ class text_to_be_present_in_element(object):
     def __call__(self, driver):     
         try :
             element_text = _find_element(driver, self.locator).text
-            print element_text
             return self.text in element_text
         except StaleElementReferenceException:
             return False        
