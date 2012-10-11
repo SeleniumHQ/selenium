@@ -17,10 +17,13 @@ package org.openqa.selenium;
 
 import org.junit.Test;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.concurrent.Callable;
 
@@ -31,6 +34,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.remote.CapabilityType.ENABLE_PERSISTENT_HOVERING;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -165,38 +169,46 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       return;
     }
 
+    WebDriver localDriver = getDriverWithPersistentHover(driver);
+
     // This test passes on IE. When running in Firefox on Windows, the test
     // will fail if the mouse cursor is not in the window. Solution: Maximize.
     if ((TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) &&
-        TestUtilities.isFirefox(driver)) {
-      driver.manage().window().maximize();
+        TestUtilities.isFirefox(localDriver)) {
+      localDriver.manage().window().maximize();
     }
 
+    try {
+      localDriver.get(pages.javascriptPage);
+      // Move to a different element to make sure the mouse is not over the
+      // element with id 'item1' (from a previous test).
+      new Actions(localDriver).moveToElement(localDriver.findElement(By.id("dynamo"))).build().perform();
 
-    driver.get(pages.javascriptPage);
-    // Move to a different element to make sure the mouse is not over the
-    // element with id 'item1' (from a previous test).
-    new Actions(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
+      WebElement element = localDriver.findElement(By.id("menu1"));
 
-    WebElement element = driver.findElement(By.id("menu1"));
+      final WebElement item = localDriver.findElement(By.id("item1"));
+      assertEquals("", item.getText());
 
-    final WebElement item = driver.findElement(By.id("item1"));
-    assertEquals("", item.getText());
+      ((JavascriptExecutor) localDriver).executeScript("arguments[0].style.background = 'green'", element);
+      new Actions(localDriver).moveToElement(element).build().perform();
 
-    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
-    new Actions(driver).moveToElement(element).build().perform();
+      // Intentionally wait to make sure hover persists.
+      Thread.sleep(2000);
 
-    // Intentionally wait to make sure hover persists.
-    Thread.sleep(2000);
+      waitFor(new Callable<Boolean>() {
 
-    waitFor(new Callable<Boolean>() {
+        public Boolean call() throws Exception {
+          return !item.getText().equals("");
+        }
+      });
 
-      public Boolean call() throws Exception {
-        return !item.getText().equals("");
+      assertEquals("Item 1", item.getText());
+
+    } finally {
+      if (localDriver != driver) {
+        localDriver.quit();
       }
-    });
-
-    assertEquals("Item 1", item.getText());
+    }
   }
 
   @JavascriptEnabled
@@ -206,33 +218,41 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     assumeTrue(hasInputDevices());
     assumeTrue(TestUtilities.isNativeEventsEnabled(driver));
 
+    WebDriver localDriver = getDriverWithPersistentHover(driver);
+
     // This test passes on IE. When running in Firefox on Windows, the test
     // will fail if the mouse cursor is not in the window. Solution: Maximize.
     if ((TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) &&
-        TestUtilities.isFirefox(driver)) {
-      driver.manage().window().maximize();
+        TestUtilities.isFirefox(localDriver)) {
+      localDriver.manage().window().maximize();
     }
 
-    driver.get(pages.javascriptPage);
-    // Move to a different element to make sure the mouse is not over the
-    // element with id 'item1' (from a previous test).
-    new Actions(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
+    try {
+      localDriver.get(pages.javascriptPage);
+      // Move to a different element to make sure the mouse is not over the
+      // element with id 'item1' (from a previous test).
+      new Actions(localDriver).moveToElement(localDriver.findElement(By.id("dynamo"))).build().perform();
 
-    WebElement element = driver.findElement(By.id("menu1"));
+      WebElement element = localDriver.findElement(By.id("menu1"));
 
-    final WebElement item = driver.findElement(By.id("item1"));
-    assertEquals("", item.getText());
+      final WebElement item = localDriver.findElement(By.id("item1"));
+      assertEquals("", item.getText());
 
-    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
-    new Actions(driver).moveToElement(element).build().perform();
+      ((JavascriptExecutor) localDriver).executeScript("arguments[0].style.background = 'green'", element);
+      new Actions(localDriver).moveToElement(element).build().perform();
 
-    // Intentionally wait to make sure hover persists.
-    Thread.sleep(2000);
+      // Intentionally wait to make sure hover persists.
+      Thread.sleep(2000);
 
-    item.click();
+      item.click();
 
-    WebElement result = driver.findElement(By.id("result"));
-    waitFor(WaitingConditions.elementTextToContain(result, "item 1"));
+      WebElement result = localDriver.findElement(By.id("result"));
+      waitFor(WaitingConditions.elementTextToContain(result, "item 1"));
+    } finally {
+      if (localDriver != driver) {
+        localDriver.quit();
+      }
+    }
   }
 
   @JavascriptEnabled
@@ -388,5 +408,16 @@ public class RenderedWebElementTest extends JUnit4TestBase {
             x + ", " + y;
       }
     };
+  }
+
+  private WebDriver getDriverWithPersistentHover(WebDriver originalDriver) {
+    if (TestUtilities.isInternetExplorer(driver)) {
+      // Persistent hover must be enabled explicitly
+      DesiredCapabilities caps = new DesiredCapabilities();
+      caps.setCapability(ENABLE_PERSISTENT_HOVERING, true);
+      WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(caps);
+      return builder.get();
+    }
+    return originalDriver;
   }
 }

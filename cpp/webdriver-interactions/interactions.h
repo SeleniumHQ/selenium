@@ -58,6 +58,7 @@ EXPORT void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timeP
 EXPORT void releaseModifierKeys(WINDOW_HANDLE windowHandle, int timePerKey);
 EXPORT BOOL_TYPE pending_input_events();
 EXPORT void stopPersistentEventFiring();
+EXPORT void setEnablePersistentHover(BOOL_TYPE enablePersistentHover);
 
 // Mouse interactions
 EXPORT WD_RESULT clickAt(WINDOW_HANDLE directInputTo, long x, long y, long button);

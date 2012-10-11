@@ -546,6 +546,9 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
     this->is_waiting_ = false;
     return ENOSUCHDRIVER;
   }
+  // Set persistent hover functionality in the interactions implementation. 
+  setEnablePersistentHover(this->enable_persistent_hover_);
+
   BrowserHandle wrapper(new Browser(process_window_info.pBrowser,
                                     process_window_info.hwndBrowser,
                                     this->m_hWnd));

@@ -175,6 +175,10 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->enable_native_events_ = enable_native_events;
   }
 
+  void set_enable_persistent_hover(const bool enable_persistent_hover) {
+    this->enable_persistent_hover_ = enable_persistent_hover;
+  }
+
   std::string initial_browser_url(void) const {
     return this->initial_browser_url_;
   }
@@ -239,6 +243,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   int port_;
   bool ignore_protected_mode_settings_;
   bool enable_native_events_;
+  bool enable_persistent_hover_;
   bool ignore_zoom_setting_;
   std::string initial_browser_url_;
   std::string unexpected_alert_behavior_;

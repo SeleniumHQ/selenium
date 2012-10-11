@@ -17,6 +17,7 @@ limitations under the License.
 #include "stdafx.h"
 #include "event_firing_thread.h"
 
+static boolean gEnablePersistentEventFiring = false;
 // Thread for firing event
 HANDLE hConstantEventsThread = NULL;
 class EventFiringData
@@ -123,6 +124,11 @@ void updateLeftMouseButtonState(bool isButtonPressed)
 void resumePersistentEventsFiring(
     HWND inputTo, long toX, long toY, WPARAM buttonValue)
 {
+  if (!gEnablePersistentEventFiring) {
+    // Persistent event firing is disabled.
+    return;
+  }
+
   if (hConstantEventsThread == NULL) {
     EVENT_FIRING_DATA = new EventFiringData(inputTo, toX, toY, buttonValue);
     hConstantEventsThread = CreateThread(
@@ -140,6 +146,10 @@ void resumePersistentEventsFiring(
 
 void resumePersistentEventsFiring()
 {
+  if (!gEnablePersistentEventFiring) {
+    // Persistent event firing is disabled.
+    return;
+  }
   if ((hConstantEventsThread == NULL) || (EVENT_FIRING_DATA == NULL)) {
     return;
   }
@@ -158,5 +168,10 @@ void stopPersistentEventFiring()
     delete EVENT_FIRING_DATA;
     EVENT_FIRING_DATA = NULL;
   }
+}
+
+void setEnablePersistentHover(boolean enablePersistentHover)
+{
+  gEnablePersistentEventFiring = enablePersistentHover;
 }
 }

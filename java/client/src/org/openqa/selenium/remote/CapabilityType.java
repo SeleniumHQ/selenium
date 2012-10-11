@@ -43,6 +43,9 @@ public interface CapabilityType {
 
   String ENABLE_PROFILING_CAPABILITY = "webdriver.logging.profiler.enabled";
 
+  // Only applies to Internet Explorer
+  String ENABLE_PERSISTENT_HOVERING = "enablePersistentHover";
+
   interface ForSeleniumServer {
     String AVOIDING_PROXY = "avoidProxy";
     String ONLY_PROXYING_SELENIUM_TRAFFIC = "onlyProxySeleniumTraffic";
