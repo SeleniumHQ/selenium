@@ -17,7 +17,6 @@
 
 import base64
 import httplib
-import warnings
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
@@ -27,13 +26,14 @@ from options import Options
 class WebDriver(RemoteWebDriver):
     """
     Controls the ChromeDriver and allows you to drive the browser.
-    
+
     You will need to download the ChromeDriver executable from
     http://code.google.com/p/chromedriver/downloads/list
     """
 
     def __init__(self, executable_path="chromedriver", port=0,
-                 chrome_options=None, service_args=None):
+                 chrome_options=None, service_args=None,
+                 desired_capabilities=None):
         """
         Creates a new instance of the chrome driver.
 
@@ -42,8 +42,8 @@ class WebDriver(RemoteWebDriver):
         :Args:
          - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
          - port - port you would like the service to run, if left as 0, a free port will be found.
-         - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various chrome
-           switches). This is being deprecated, please use chrome_options
+         - desired_capabilities: Dictionary object with non-browser specific
+           capabilities only, such as "proxy" or "loggingPref".
          - chrome_options: this takes an instance of ChromeOptions
         """
         if chrome_options is None:
@@ -51,7 +51,10 @@ class WebDriver(RemoteWebDriver):
         else:
             options = chrome_options
 
-        desired_capabilities = options.to_capabilities()
+        if desired_capabilities is not None:
+          desired_capabilities.update(options.to_capabilities())
+        else:
+          desired_capabilities = options.to_capabilities()
 
         self.service = Service(executable_path, port=port, service_args=service_args)
         self.service.start()

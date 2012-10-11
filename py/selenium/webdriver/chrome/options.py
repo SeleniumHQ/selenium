@@ -25,6 +25,7 @@ class Options(object):
     _binary_location = ''
     _arguments = []
     _extension_files = []
+    _experimental_options = {}
 
     @property
     def binary_location(self):
@@ -95,6 +96,23 @@ class Options(object):
         else:
             raise ValueError("argument can not be null")
 
+    @property
+    def experimental_options(self):
+        """
+        Returns a dictionary of experimental options for chrome.
+        """
+        return self._experimental_options
+
+    def add_experimental_option(self, name, value):
+        """
+        Adds an experimental option which is passed to chrome.
+
+        Args:
+          name: The experimental option name.
+          value: The option value.
+        """
+        self._experimental_options[name] = value
+
     def to_capabilities(self):
         """
             Creates a capabilities with all the options that have been set and
@@ -103,7 +121,7 @@ class Options(object):
         """
         chrome = DesiredCapabilities.CHROME
 
-        chrome_options = {}
+        chrome_options = self.experimental_options.copy()
         chrome_options["extensions"] = self.extensions
         chrome_options["binary"] = self.binary_location
         chrome_options["args"] = self.arguments
