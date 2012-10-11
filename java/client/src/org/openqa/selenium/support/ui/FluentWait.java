@@ -143,7 +143,7 @@ public class FluentWait<T> implements Wait<T> {
    * @param types The types of exceptions to ignore.
    * @return A self reference.
    */
-  public FluentWait<T> ignoreAll(Collection<Class<? extends Throwable>> types) {
+  public <K extends Throwable> FluentWait<T> ignoreAll(Collection<Class<? extends K>> types) {
     ignoredExceptions.addAll(types);
     return this;
   }
