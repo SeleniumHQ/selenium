@@ -42,7 +42,7 @@ namespace OpenQA.Selenium.PhantomJS
     /// }
     /// </code>
     /// </example>
-    internal class PhantomJSWebElement : RemoteWebElement
+    public class PhantomJSWebElement : RemoteWebElement
     {
         /// <summary>
         /// Initializes a new instance of the PhantomJSWebElement class.

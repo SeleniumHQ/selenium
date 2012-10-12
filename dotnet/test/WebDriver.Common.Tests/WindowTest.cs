@@ -63,6 +63,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
         public void ShouldBeAbleToGetThePositionOfTheCurrentWindow()
         {
             Point position = driver.Manage().Window.Position;
@@ -76,6 +77,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
         public void ShouldBeAbleToSetThePositionOfTheCurrentWindow()
         {
             IWindow window = driver.Manage().Window;
@@ -97,6 +99,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
         public void ShouldBeAbleToMaximizeTheCurrentWindow()
         {
             Size targetSize = new Size(275, 275);

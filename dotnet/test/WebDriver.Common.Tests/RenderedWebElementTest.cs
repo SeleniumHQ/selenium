@@ -19,17 +19,18 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("green-parent"));
             string backgroundColour = element.GetCssValue("background-color");
 
-            Assert.That(backgroundColour, Is.EqualTo("#008000").Or.EqualTo("rgba(0,128,0,1)"));
+            Assert.That(backgroundColour, Is.EqualTo("#008000").Or.EqualTo("rgba(0, 128, 0, 1)"));
 
             element = driver.FindElement(By.Id("red-item"));
             backgroundColour = element.GetCssValue("background-color");
 
-            Assert.That(backgroundColour, Is.EqualTo("#ff0000").Or.EqualTo("rgba(255,0,0,1)"));
+            Assert.That(backgroundColour, Is.EqualTo("#ff0000").Or.EqualTo("rgba(255, 0, 0, 1)"));
         }
 
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.Chrome, "WebKit bug 28804")]
+        [IgnoreBrowser(Browser.PhantomJS, "WebKit bug 28804")]
         [IgnoreBrowser(Browser.IE, "Position and size are always integer in IE")]
         public void ShouldHandleNonIntegerPositionAndSize()
         {
