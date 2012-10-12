@@ -19,6 +19,7 @@
 goog.provide('wdSession');
 
 goog.require('fxdriver.moz');
+goog.require('fxdriver.logging');
 
 /**
  * An active FirefoxDriver session.
@@ -177,8 +178,13 @@ wdSession.prototype.getChromeWindow = function() {
 /** @return {?nsIDOMWindow} This session's current window. */
 wdSession.prototype.getWindow = function() {
   var win;
-  if (this.window_) {
-    win = this.window_.get();
+  try {
+    if (this.window_) {
+      win = this.window_.get();
+    }
+  } catch (ex) {
+    fxdriver.logging.error(ex);
+    // ignore exception and try other way
   }
 
   if (!win || !win.document) {
