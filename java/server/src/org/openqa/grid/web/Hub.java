@@ -115,7 +115,7 @@ public class Hub {
 
     for (String s : config.getServlets()) {
       Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
-      if (s != null) {
+      if (servletClass != null) {
         String path = "/grid/admin/" + servletClass.getSimpleName() + "/*";
         log.info("binding " + servletClass.getCanonicalName() + " to " + path);
         addServlet(path, servletClass);
