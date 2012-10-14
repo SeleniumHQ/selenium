@@ -199,7 +199,11 @@ function testShouldBeAbleToPassMultipleArgumentsToAsyncScripts() {
 }
 
 function testShouldBeAbleToExecuteAsynchronousScripts() {
-  var typer = driver.findElement(By.name("typer"));
+  driver.wait(function() {
+    return driver.isElementPresent(By.name('typer'));
+  }, 1000, 'Typing target not found; page load error?');
+
+  var typer = driver.findElement(By.name('typer'));
   typer.sendKeys("bob");
   assertThat(typer.getAttribute('value'), equals('bob'));
 

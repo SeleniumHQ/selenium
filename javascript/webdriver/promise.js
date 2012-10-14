@@ -224,7 +224,7 @@ webdriver.promise.Deferred = function(opt_canceller) {
    * The listeners registered with this Deferred. Each element in the list will
    * be a 3-tuple of the callback function, errback function, and the
    * corresponding deferred object.
-   * @type {!Array.<!webdriver.promise.Deferred.Listener>}
+   * @type {!Array.<!webdriver.promise.Deferred.Listener_>}
    */
   var listeners = [];
 
@@ -239,27 +239,27 @@ webdriver.promise.Deferred = function(opt_canceller) {
 
   /**
    * This Deferred's current state.
-   * @type {!webdriver.promise.Deferred.State}
+   * @type {!webdriver.promise.Deferred.State_}
    */
-  var state = webdriver.promise.Deferred.State.PENDING;
+  var state = webdriver.promise.Deferred.State_.PENDING;
 
   /**
    * This Deferred's resolved value; set when the state transitions from
-   * {@code webdriver.promise.Deferred.State.PENDING}.
+   * {@code webdriver.promise.Deferred.State_.PENDING}.
    * @type {*}
    */
   var value;
 
   /** @return {boolean} Whether this promise's value is still pending. */
   function isPending() {
-    return state == webdriver.promise.Deferred.State.PENDING;
+    return state == webdriver.promise.Deferred.State_.PENDING;
   }
 
   /**
    * Notifies all of the listeners registered with this Deferred that its state
    * has changed. Will throw an error if this Deferred has already been
    * resolved.
-   * @param {!webdriver.promise.Deferred.State} newState The deferred's new
+   * @param {!webdriver.promise.Deferred.State_} newState The deferred's new
    *     state.
    * @param {*} newValue The deferred's new value.
    */
@@ -274,7 +274,7 @@ webdriver.promise.Deferred = function(opt_canceller) {
       notify(listeners.shift());
     }
 
-    if (!handled && state == webdriver.promise.Deferred.State.REJECTED) {
+    if (!handled && state == webdriver.promise.Deferred.State_.REJECTED) {
       var app = webdriver.promise.Application.getInstance();
       app.pendingRejections_ += 1;
       setTimeout(function() {
@@ -288,11 +288,11 @@ webdriver.promise.Deferred = function(opt_canceller) {
 
   /**
    * Notifies a single listener of this Deferred's change in state.
-   * @param {!webdriver.promise.Deferred.Listener} listener The listener to
+   * @param {!webdriver.promise.Deferred.Listener_} listener The listener to
    *     notify.
    */
   function notify(listener) {
-    var func = state == webdriver.promise.Deferred.State.RESOLVED ?
+    var func = state == webdriver.promise.Deferred.State_.RESOLVED ?
         listener.callback : listener.errback;
     if (func) {
       var app = webdriver.promise.Application.getInstance();
@@ -300,7 +300,7 @@ webdriver.promise.Deferred = function(opt_canceller) {
       webdriver.promise.asap(result,
           listener.deferred.resolve,
           listener.deferred.reject);
-    } else if (state == webdriver.promise.Deferred.State.REJECTED) {
+    } else if (state == webdriver.promise.Deferred.State_.REJECTED) {
       listener.deferred.reject(value);
     } else {
       listener.deferred.resolve(value);
@@ -338,7 +338,7 @@ webdriver.promise.Deferred = function(opt_canceller) {
       deferred: new webdriver.promise.Deferred(cancel)
     };
 
-    if (state == webdriver.promise.Deferred.State.PENDING) {
+    if (state == webdriver.promise.Deferred.State_.PENDING) {
       listeners.push(listener);
     } else {
       notify(listener);
@@ -359,13 +359,14 @@ webdriver.promise.Deferred = function(opt_canceller) {
     if (webdriver.promise.isPromise(opt_value) && opt_value !== self) {
       if (opt_value instanceof webdriver.promise.Deferred) {
         opt_value.then(
-            goog.partial(notifyAll, webdriver.promise.Deferred.State.RESOLVED),
-            goog.partial(notifyAll, webdriver.promise.Deferred.State.REJECTED));
+            goog.partial(notifyAll, webdriver.promise.Deferred.State_.RESOLVED),
+            goog.partial(notifyAll,
+                webdriver.promise.Deferred.State_.REJECTED));
         return;
       }
       webdriver.promise.asap(opt_value, resolve, reject);
     } else {
-      notifyAll(webdriver.promise.Deferred.State.RESOLVED, opt_value);
+      notifyAll(webdriver.promise.Deferred.State_.RESOLVED, opt_value);
     }
   }
 
@@ -379,13 +380,14 @@ webdriver.promise.Deferred = function(opt_canceller) {
     if (webdriver.promise.isPromise(opt_error) && opt_error !== self) {
       if (opt_error instanceof webdriver.promise.Deferred) {
         opt_error.then(
-            goog.partial(notifyAll, webdriver.promise.Deferred.State.REJECTED),
-            goog.partial(notifyAll, webdriver.promise.Deferred.State.REJECTED));
+            goog.partial(notifyAll, webdriver.promise.Deferred.State_.REJECTED),
+            goog.partial(notifyAll,
+                webdriver.promise.Deferred.State_.REJECTED));
         return;
       }
       webdriver.promise.asap(opt_error, reject, reject);
     } else {
-      notifyAll(webdriver.promise.Deferred.State.REJECTED, opt_error);
+      notifyAll(webdriver.promise.Deferred.State_.REJECTED, opt_error);
     }
   }
 
@@ -441,15 +443,17 @@ goog.inherits(webdriver.promise.Deferred, webdriver.promise.Promise);
  * @typedef {{callback:(Function|undefined),
  *            errback:(Function|undefined),
  *            deferred:!webdriver.promise.Deferred}}
+ * @private
  */
-webdriver.promise.Deferred.Listener;
+webdriver.promise.Deferred.Listener_;
 
 
 /**
  * The three states a {@code webdriver.promise.Deferred} object may be in.
  * @enum {number}
+ * @private
  */
-webdriver.promise.Deferred.State = {
+webdriver.promise.Deferred.State_ = {
   REJECTED: -1,
   PENDING: 0,
   RESOLVED: 1
@@ -768,7 +772,7 @@ webdriver.promise.Application = function() {
    * A list of recently completed tasks. Each time a new task is started or a
    * frame is completed, the previously recorded task is removed from this
    * list.
-   * @type {!Array.<!webdriver.promise.Application.Task>}
+   * @type {!Array.<!webdriver.promise.Application.Task_>}
    * @private
    */
   this.history_ = [];
@@ -810,7 +814,7 @@ webdriver.promise.Application.EVENT_LOOP_FREQUENCY = 10;
 /**
  * Tracks the active execution frame for this application. Lazily initialized
  * when the first task is scheduled.
- * @type {webdriver.promise.Application.Frame}
+ * @type {webdriver.promise.Application.Frame_}
  * @private
  */
 webdriver.promise.Application.prototype.activeFrame_ = null;
@@ -822,7 +826,7 @@ webdriver.promise.Application.prototype.activeFrame_ = null;
  * a function to run in the context of a new frame, this pointer is used to
  * ensure tasks are scheduled within the newly created frame, even though it
  * won't be active yet.
- * @type {webdriver.promise.Application.Frame}
+ * @type {webdriver.promise.Application.Frame_}
  * @private
  * @see {#runInNewFrame_}
  */
@@ -918,7 +922,7 @@ webdriver.promise.Application.prototype.getHistory = function() {
     }
     // A frame's parent node will always be another frame.
     currentFrame =
-        (/** @type {webdriver.promise.Application.Frame} */currentFrame.
+        (/** @type {webdriver.promise.Application.Frame_} */currentFrame.
             getParent());
   }
 
@@ -1000,11 +1004,14 @@ webdriver.promise.Application.prototype.schedule = function(description, fn) {
   this.cancelShutdown_();
 
   if (!this.activeFrame_) {
-    this.activeFrame_ = new webdriver.promise.Application.Frame();
+    this.activeFrame_ = new webdriver.promise.Application.Frame_();
   }
 
-  var task = new webdriver.promise.Application.Task(fn, description,
-      new webdriver.stacktrace.Snapshot(3));
+  // Remove the first 3 frames from the generated stack trace. The first two
+  // will be references to where webdriver.stacktrace generated the stacktrace,
+  // and the third will be this function.
+  var snapshot = new webdriver.stacktrace.Snapshot(3);
+  var task = new webdriver.promise.Application.Task_(fn, description, snapshot);
   var scheduleIn = this.schedulingFrame_ || this.activeFrame_;
   scheduleIn.addChild(task);
 
@@ -1169,7 +1176,7 @@ webdriver.promise.Application.prototype.runEventLoop_ = function() {
 
 
 /**
- * @return {webdriver.promise.Application.Task} The next task to execute, or
+ * @return {webdriver.promise.Application.Task_} The next task to execute, or
  *     {@code null} if a frame was resolved.
  * @private
  */
@@ -1182,7 +1189,7 @@ webdriver.promise.Application.prototype.getNextTask_ = function() {
     return null;
   }
 
-  if (firstChild instanceof webdriver.promise.Application.Frame) {
+  if (firstChild instanceof webdriver.promise.Application.Frame_) {
     this.activeFrame_ = firstChild;
     return this.getNextTask_();
   }
@@ -1193,7 +1200,7 @@ webdriver.promise.Application.prototype.getNextTask_ = function() {
 
 
 /**
- * @param {!webdriver.promise.Application.Frame} frame The frame to resolve.
+ * @param {!webdriver.promise.Application.Frame_} frame The frame to resolve.
  * @private
  */
 webdriver.promise.Application.prototype.resolveFrame_ = function(frame) {
@@ -1201,7 +1208,7 @@ webdriver.promise.Application.prototype.resolveFrame_ = function(frame) {
     // Frame parent is always another frame, but the compiler is not smart
     // enough to recognize this.
     this.activeFrame_ =
-        (/** @type {webdriver.promise.Application.Frame} */frame.getParent());
+        (/** @type {webdriver.promise.Application.Frame_} */frame.getParent());
   }
 
   if (frame.getParent()) {
@@ -1234,7 +1241,7 @@ webdriver.promise.Application.prototype.abortFrame_ = function(error) {
 
   // Frame parent is always another frame, but the compiler is not smart
   // enough to recognize this.
-  var parent = (/** @type {webdriver.promise.Application.Frame} */
+  var parent = (/** @type {webdriver.promise.Application.Frame_} */
       this.activeFrame_.getParent());
   if (parent) {
     parent.removeChild(this.activeFrame_);
@@ -1254,20 +1261,20 @@ webdriver.promise.Application.prototype.abortFrame_ = function(error) {
  * the function have been completed. If the function's frame is aborted, the
  * returned promise will be rejected.
  *
- * <p>When executing a {@link webdriver.promise.Application.Task}, this
+ * <p>When executing a {@link webdriver.promise.Application.Task_}, this
  * application's active frame will be updated to the newly created frame to
  * permit tasks to schedule sub-tasks.
  *
  * @param {!Function} fn The function to execute.
  * @param {boolean=} opt_isTask Whether the function is a task's
- *     {@link webdriver.promise.Application.Task#execute execute} function.
+ *     {@link webdriver.promise.Application.Task_#execute execute} function.
  * @return {*} The function's return value, or a promise that will be resolved
  *     once all tasks scheduled by the function have completed.
  * @private
  */
 webdriver.promise.Application.prototype.runInNewFrame_ = function(fn,
                                                                   opt_isTask) {
-  var newFrame = new webdriver.promise.Application.Frame(),
+  var newFrame = new webdriver.promise.Application.Frame_(),
       self = this,
       oldFrame = this.activeFrame_;
   try {
@@ -1392,38 +1399,38 @@ webdriver.promise.Application.prototype.abortNow_ = function(error) {
  * @extends {webdriver.promise.Deferred}
  * @private
  */
-webdriver.promise.Application.Node = function() {
+webdriver.promise.Application.Node_ = function() {
   webdriver.promise.Deferred.call(this);
 };
-goog.inherits(webdriver.promise.Application.Node, webdriver.promise.Deferred);
+goog.inherits(webdriver.promise.Application.Node_, webdriver.promise.Deferred);
 
 
 /**
  * This node's parent.
- * @type {webdriver.promise.Application.Node}
+ * @type {webdriver.promise.Application.Node_}
  * @private
  */
-webdriver.promise.Application.Node.prototype.parent_ = null;
+webdriver.promise.Application.Node_.prototype.parent_ = null;
 
 
-/** @return {webdriver.promise.Application.Node} This node's parent. */
-webdriver.promise.Application.Node.prototype.getParent = function() {
+/** @return {webdriver.promise.Application.Node_} This node's parent. */
+webdriver.promise.Application.Node_.prototype.getParent = function() {
   return this.parent_;
 };
 
 
 /**
- * @param {webdriver.promise.Application.Node} parent This node's new parent.
+ * @param {webdriver.promise.Application.Node_} parent This node's new parent.
  */
-webdriver.promise.Application.Node.prototype.setParent = function(parent) {
+webdriver.promise.Application.Node_.prototype.setParent = function(parent) {
   this.parent_ = parent;
 };
 
 
 /**
- * @return {!webdriver.promise.Application.Node} The root of this node's tree.
+ * @return {!webdriver.promise.Application.Node_} The root of this node's tree.
  */
-webdriver.promise.Application.Node.prototype.getRoot = function() {
+webdriver.promise.Application.Node_.prototype.getRoot = function() {
   var root = this;
   while (root.parent_) {
     root = root.parent_;
@@ -1436,36 +1443,36 @@ webdriver.promise.Application.Node.prototype.getRoot = function() {
 /**
  * An execution frame within a {@link webdriver.promise.Application}.  Each
  * frame represents the execution context for either a
- * {@link webdriver.promise.Application.Task} or a callback on a
+ * {@link webdriver.promise.Application.Task_} or a callback on a
  * {@link webdriver.promise.Deferred}.
  *
  * <p>Each frame may contain sub-frames.  If child N is a sub-frame, then the
  * items queued within it are given priority over child N+1.
  *
  * @constructor
- * @extends {webdriver.promise.Application.Node}
+ * @extends {webdriver.promise.Application.Node_}
  * @private
  */
-webdriver.promise.Application.Frame = function() {
-  webdriver.promise.Application.Node.call(this);
+webdriver.promise.Application.Frame_ = function() {
+  webdriver.promise.Application.Node_.call(this);
 
   /**
-   * @type {!Array.<!(webdriver.promise.Application.Frame|
-   *                  webdriver.promise.Application.Task)>}
+   * @type {!Array.<!(webdriver.promise.Application.Frame_|
+   *                  webdriver.promise.Application.Task_)>}
    * @private
    */
   this.children_ = [];
 };
-goog.inherits(webdriver.promise.Application.Frame,
-    webdriver.promise.Application.Node);
+goog.inherits(webdriver.promise.Application.Frame_,
+    webdriver.promise.Application.Node_);
 
 
 /**
  * The task currently being executed within this frame.
- * @type {webdriver.promise.Application.Task}
+ * @type {webdriver.promise.Application.Task_}
  * @private
  */
-webdriver.promise.Application.Frame.prototype.pendingTask_ = null;
+webdriver.promise.Application.Frame_.prototype.pendingTask_ = null;
 
 
 /**
@@ -1487,7 +1494,7 @@ webdriver.promise.Application.Frame.prototype.pendingTask_ = null;
  * @type {boolean}
  * @private
  */
-webdriver.promise.Application.Frame.prototype.isActive_ = false;
+webdriver.promise.Application.Frame_.prototype.isActive_ = false;
 
 
 /**
@@ -1501,49 +1508,49 @@ webdriver.promise.Application.Frame.prototype.isActive_ = false;
  * @type {boolean}
  * @private
  */
-webdriver.promise.Application.Frame.prototype.isLocked_ = false;
+webdriver.promise.Application.Frame_.prototype.isLocked_ = false;
 
 
 /**
  * A reference to the last node inserted in this frame.
- * @type {webdriver.promise.Application.Node}
+ * @type {webdriver.promise.Application.Node_}
  * @private
  */
-webdriver.promise.Application.Frame.prototype.lastInsertedChild_ = null;
+webdriver.promise.Application.Frame_.prototype.lastInsertedChild_ = null;
 
 
 /**
- * @return {webdriver.promise.Application.Task} The task currently executing
+ * @return {webdriver.promise.Application.Task_} The task currently executing
  *     within this frame, if any.
  */
-webdriver.promise.Application.Frame.prototype.getPendingTask = function() {
+webdriver.promise.Application.Frame_.prototype.getPendingTask = function() {
   return this.pendingTask_;
 };
 
 
 /**
- * @param {webdriver.promise.Application.Task} task The task currently executing
- *     within this frame, if any.
+ * @param {webdriver.promise.Application.Task_} task The task currently
+ *     executing within this frame, if any.
  */
-webdriver.promise.Application.Frame.prototype.setPendingTask = function(task) {
+webdriver.promise.Application.Frame_.prototype.setPendingTask = function(task) {
   this.pendingTask_ = task;
 };
 
 
 /** Locks this frame. */
-webdriver.promise.Application.Frame.prototype.lockFrame = function() {
+webdriver.promise.Application.Frame_.prototype.lockFrame = function() {
   this.isLocked_ = true;
 };
 
 
 /**
  * Adds a new node to this frame.
- * @param {!(webdriver.promise.Application.Frame|
- *           webdriver.promise.Application.Task)} node The node to insert.
+ * @param {!(webdriver.promise.Application.Frame_|
+    *           webdriver.promise.Application.Task_)} node The node to insert.
  */
-webdriver.promise.Application.Frame.prototype.addChild = function(node) {
+webdriver.promise.Application.Frame_.prototype.addChild = function(node) {
   if (this.lastInsertedChild_ &&
-      this.lastInsertedChild_ instanceof webdriver.promise.Application.Frame &&
+      this.lastInsertedChild_ instanceof webdriver.promise.Application.Frame_ &&
       !this.lastInsertedChild_.isLocked_) {
     this.lastInsertedChild_.addChild(node);
     return;
@@ -1551,10 +1558,10 @@ webdriver.promise.Application.Frame.prototype.addChild = function(node) {
 
   node.setParent(this);
 
-  if (this.isActive_ && node instanceof webdriver.promise.Application.Frame) {
+  if (this.isActive_ && node instanceof webdriver.promise.Application.Frame_) {
     var index = 0;
     if (this.lastInsertedChild_ instanceof
-        webdriver.promise.Application.Frame) {
+        webdriver.promise.Application.Frame_) {
       index = goog.array.indexOf(this.children_, this.lastInsertedChild_) + 1;
     }
     goog.array.insertAt(this.children_, node, index);
@@ -1568,10 +1575,10 @@ webdriver.promise.Application.Frame.prototype.addChild = function(node) {
 
 
 /**
- * @return {(webdriver.promise.Application.Frame|
- *           webdriver.promise.Application.Task)} This frame's fist child.
+ * @return {(webdriver.promise.Application.Frame_|
+ *           webdriver.promise.Application.Task_)} This frame's fist child.
  */
-webdriver.promise.Application.Frame.prototype.getFirstChild = function() {
+webdriver.promise.Application.Frame_.prototype.getFirstChild = function() {
   this.isActive_ = true;
   return this.children_[0];
 };
@@ -1579,10 +1586,10 @@ webdriver.promise.Application.Frame.prototype.getFirstChild = function() {
 
 /**
  * Removes a child from this frame.
- * @param {!(webdriver.promise.Application.Frame|
- *           webdriver.promise.Application.Task)} child The child to remove.
+ * @param {!(webdriver.promise.Application.Frame_|
+ *           webdriver.promise.Application.Task_)} child The child to remove.
  */
-webdriver.promise.Application.Frame.prototype.removeChild = function(child) {
+webdriver.promise.Application.Frame_.prototype.removeChild = function(child) {
   var index = goog.array.indexOf(this.children_, child);
   child.setParent(null);
   goog.array.removeAt(this.children_, index);
@@ -1593,7 +1600,7 @@ webdriver.promise.Application.Frame.prototype.removeChild = function(child) {
 
 
 /** @override */
-webdriver.promise.Application.Frame.prototype.toString = function() {
+webdriver.promise.Application.Frame_.prototype.toString = function() {
   return '[' + goog.array.map(this.children_, function(child) {
     return child.toString();
   }).join(',') + ']';
@@ -1611,11 +1618,11 @@ webdriver.promise.Application.Frame.prototype.toString = function() {
  * @param {!webdriver.stacktrace.Snapshot} snapshot A snapshot of the stack
  *     when this task was scheduled.
  * @constructor
- * @extends {webdriver.promise.Application.Node}
+ * @extends {webdriver.promise.Application.Node_}
  * @private
  */
-webdriver.promise.Application.Task = function(fn, description, snapshot) {
-  webdriver.promise.Application.Node.call(this);
+webdriver.promise.Application.Task_ = function(fn, description, snapshot) {
+  webdriver.promise.Application.Node_.call(this);
 
   /**
    * Executes this task.
@@ -1635,18 +1642,18 @@ webdriver.promise.Application.Task = function(fn, description, snapshot) {
    */
   this.snapshot_ = snapshot;
 };
-goog.inherits(webdriver.promise.Application.Task,
-    webdriver.promise.Application.Node);
+goog.inherits(webdriver.promise.Application.Task_,
+    webdriver.promise.Application.Node_);
 
 
 /** @return {string} This task's description. */
-webdriver.promise.Application.Task.prototype.getDescription = function() {
+webdriver.promise.Application.Task_.prototype.getDescription = function() {
   return this.description_;
 };
 
 
 /** @override */
-webdriver.promise.Application.Task.prototype.toString = function() {
+webdriver.promise.Application.Task_.prototype.toString = function() {
   var stack = this.snapshot_.getStacktrace();
   var ret = this.description_;
   if (stack) {

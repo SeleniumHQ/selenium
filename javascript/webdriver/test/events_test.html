@@ -72,6 +72,21 @@ limitations under the License.
     assertEquals(3, count);
   }
 
+  function testCanOnlyAddAListenerConfigOnce() {
+    var emitter = new webdriver.EventEmitter();
+    var count = 0;
+    function onFoo() { count++; }
+
+    emitter.on('foo', onFoo);
+    emitter.on('foo', onFoo);
+
+    emitter.emit('foo');
+    assertEquals(1, count);
+
+    emitter.emit('foo');
+    assertEquals(2, count);
+  }
+
   function testAddingListenersWithCustomScope() {
     var obj = {
       count: 0,
@@ -81,12 +96,18 @@ limitations under the License.
     };
     var emitter = new webdriver.EventEmitter();
     emitter.addListener('foo', obj.inc, obj);
-    emitter.once('foo', obj.inc, obj);
+
+    emitter.emit('foo');
+    assertEquals(1, obj.count);
 
     emitter.emit('foo');
     assertEquals(2, obj.count);
 
-    emitter.emit('foo');
+    emitter.once('bar', obj.inc, obj);
+    emitter.emit('bar');
+    assertEquals(3, obj.count);
+
+    emitter.emit('bar');
     assertEquals(3, obj.count);
   }
 

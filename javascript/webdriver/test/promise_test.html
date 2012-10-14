@@ -856,7 +856,7 @@ function testFullyResolved_rejectsIfHashPromiseRejects() {
       errback = callbackHelper(function(error) {
         assertEquals(e, error);
       }));
-  
+
   callback.assertNotCalled();
   errback.assertCalled();
 }

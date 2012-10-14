@@ -109,14 +109,14 @@ limitations under the License.
    * @return {!webdriver.promise.Application.Task} The new task.
    */
   function createTask(opt_description) {
-    return new webdriver.promise.Application.Task(goog.nullFunction,
+    return new webdriver.promise.Application.Task_(goog.nullFunction,
         opt_description || '',
         new webdriver.stacktrace.Snapshot());
   }
 
 
   function testAddChild_toEmptyFrame() {
-    var frame = new webdriver.promise.Application.Frame();
+    var frame = new webdriver.promise.Application.Frame_();
 
     var task1 = createTask(),
         task2 = createTask(),
@@ -131,13 +131,13 @@ limitations under the License.
 
 
   function testAddChild_withSubframes() {
-    var root = new webdriver.promise.Application.Frame();
+    var root = new webdriver.promise.Application.Frame_();
 
     var task1 = createTask('task1');
     root.addChild(task1);
     assertArrayEquals([task1], root.children_);
 
-    var frame1 = new webdriver.promise.Application.Frame();
+    var frame1 = new webdriver.promise.Application.Frame_();
     root.addChild(frame1);
     assertArrayEquals([task1, frame1], root.children_);
 
@@ -154,8 +154,8 @@ limitations under the License.
     assertArrayEquals([task1, frame1, task4, task5], root.children_);
     assertArrayEquals([task2, task3], frame1.children_);
 
-    var frame2 = new webdriver.promise.Application.Frame(),
-        frame3 = new webdriver.promise.Application.Frame(),
+    var frame2 = new webdriver.promise.Application.Frame_(),
+        frame3 = new webdriver.promise.Application.Frame_(),
         task6 = createTask('task6'),
         task7 = createTask('task7'),
         task8 = createTask('task8');
@@ -176,9 +176,9 @@ limitations under the License.
   }
 
   function testAddChild_insertingFramesIntoAnActiveFrame() {
-    var root = new webdriver.promise.Application.Frame(),
-        frame2 = new webdriver.promise.Application.Frame(),
-        frame3 = new webdriver.promise.Application.Frame(),
+    var root = new webdriver.promise.Application.Frame_(),
+        frame2 = new webdriver.promise.Application.Frame_(),
+        frame3 = new webdriver.promise.Application.Frame_(),
         task1 = createTask('task1');
 
     root.addChild(task1);
@@ -192,8 +192,8 @@ limitations under the License.
   }
 
   function testRemoveChild() {
-    var frame1 = new webdriver.promise.Application.Frame(),
-        frame2 = new webdriver.promise.Application.Frame();
+    var frame1 = new webdriver.promise.Application.Frame_(),
+        frame2 = new webdriver.promise.Application.Frame_();
 
     frame1.addChild(frame2);
     assertArrayEquals([frame2], frame1.children_);
@@ -203,9 +203,9 @@ limitations under the License.
 
 
   function testResolveFrame() {
-    var frame1 = new webdriver.promise.Application.Frame(),
-        frame2 = new webdriver.promise.Application.Frame(),
-        frame3 = new webdriver.promise.Application.Frame();
+    var frame1 = new webdriver.promise.Application.Frame_(),
+        frame2 = new webdriver.promise.Application.Frame_(),
+        frame3 = new webdriver.promise.Application.Frame_();
 
     frame2.addChild(frame3);
     frame1.addChild(frame2);
@@ -252,11 +252,11 @@ limitations under the License.
 
   function testGetNextTask() {
     var app = webdriver.promise.Application.getInstance();
-    var root = app.activeFrame_ = new webdriver.promise.Application.Frame();
+    var root = app.activeFrame_ = new webdriver.promise.Application.Frame_();
 
-    var frame1 = new webdriver.promise.Application.Frame(),
-        frame2 = new webdriver.promise.Application.Frame(),
-        frame3 = new webdriver.promise.Application.Frame(),
+    var frame1 = new webdriver.promise.Application.Frame_(),
+        frame2 = new webdriver.promise.Application.Frame_(),
+        frame3 = new webdriver.promise.Application.Frame_(),
         task1 = createTask('task1'),
         task2 = createTask('task2'),
         task3 = createTask('task3'),
@@ -402,7 +402,7 @@ limitations under the License.
     var pair = callbackPair(null, assertIsStubError);
     appTester.$attachAppListener(pair);
 
-    app.activeFrame_ = new webdriver.promise.Application.Frame();
+    app.activeFrame_ = new webdriver.promise.Application.Frame_();
     app.abortFrame_(STUB_ERROR);
     assertNull(app.activeFrame_);
     pair.assertNeither();
@@ -417,10 +417,10 @@ limitations under the License.
     var pair = callbackPair(null, assertIsStubError);
     appTester.$attachAppListener(pair);
 
-    var root = app.activeFrame_ = new webdriver.promise.Application.Frame(),
-        frame1 = new webdriver.promise.Application.Frame(),
-        frame2 = new webdriver.promise.Application.Frame(),
-        frame3 = new webdriver.promise.Application.Frame(),
+    var root = app.activeFrame_ = new webdriver.promise.Application.Frame_(),
+        frame1 = new webdriver.promise.Application.Frame_(),
+        frame2 = new webdriver.promise.Application.Frame_(),
+        frame3 = new webdriver.promise.Application.Frame_(),
         task = createTask();
 
     var rootHelper = installResolveHelper(root),
@@ -493,7 +493,7 @@ limitations under the License.
 
   function testRunInNewFrame_nothingScheduledInFunction() {
     var app = webdriver.promise.Application.getInstance();
-    var root = app.activeFrame_ = new webdriver.promise.Application.Frame(),
+    var root = app.activeFrame_ = new webdriver.promise.Application.Frame_(),
         task1 = createTask(),
         task2 = createTask();
 
@@ -513,7 +513,7 @@ limitations under the License.
 
   function testRunInNewFrame_functionThrows() {
     var app = webdriver.promise.Application.getInstance();
-    var root = app.activeFrame_ = new webdriver.promise.Application.Frame(),
+    var root = app.activeFrame_ = new webdriver.promise.Application.Frame_(),
         task1 = createTask(),
         task2 = createTask();
 
@@ -535,7 +535,7 @@ limitations under the License.
 
   function testRunInNewFrame_functionThrowsAfterSchedulingTasks() {
     var app = webdriver.promise.Application.getInstance();
-    var root = app.activeFrame_ = new webdriver.promise.Application.Frame(),
+    var root = app.activeFrame_ = new webdriver.promise.Application.Frame_(),
         task1 = createTask('task1'),
         task2 = createTask('task2');
 
@@ -602,7 +602,7 @@ limitations under the License.
 
   function testRunInNewFrame_updatesSchedulingFrameForContextOfFunction() {
     var app = webdriver.promise.Application.getInstance();
-    var root = app.activeFrame_ = new webdriver.promise.Application.Frame();
+    var root = app.activeFrame_ = new webdriver.promise.Application.Frame_();
 
     var error;
     app.runInNewFrame_(function() {
@@ -627,7 +627,7 @@ limitations under the License.
 
   function testRunInNewFrame_doesNotReturnUntilScheduledFrameResolved() {
     var app = webdriver.promise.Application.getInstance();
-    var root = app.activeFrame_ = new webdriver.promise.Application.Frame(),
+    var root = app.activeFrame_ = new webdriver.promise.Application.Frame_(),
         task1 = createTask('task1'),
         task2 = createTask('task2');
 
@@ -661,7 +661,7 @@ limitations under the License.
 
   function testRunInNewFrame_doesNotReturnUntilScheduledFrameResolved_nested() {
     var app = webdriver.promise.Application.getInstance();
-    var root = app.activeFrame_ = new webdriver.promise.Application.Frame();
+    var root = app.activeFrame_ = new webdriver.promise.Application.Frame_();
 
     schedule('task1');
     schedule('task2');

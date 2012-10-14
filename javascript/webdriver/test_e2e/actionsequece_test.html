@@ -125,8 +125,12 @@ limitations under the License.
   <hr class="hr_clear">
 </div>
 <script>
-  var GREEN = 'rgba(0, 100, 0, 1)';
-  var RED = 'rgba(100, 0, 0, 1)';
+  function shouldRunTests() {
+    return !goog.userAgent.IE;
+  }
+
+  var GREEN_REGEX = /rgba\(0,\s?100,\s?0,\s?1\)/;
+  var RED_REGEX = /rgba\(100,\s?0,\s?0,\s?1\)/;
 
   var dom, driver, groups, wd;
 
@@ -237,29 +241,31 @@ limitations under the License.
     });
   }
 
-  function assertColor(element, expected) {
+  function assertColor(element, expectedRegex) {
     element.getCssValue('background-color').then(function(color) {
       color = bot.color.standardizeColor('background-color', color);
-      assertEquals(expected, color);
+      assertTrue(
+          'Expected to match ' + expectedRegex + ' but was ' + color,
+          expectedRegex.test(color));
     });
   }
 
   function testRightClick() {
     driver.actions().click(wd.cxtclick, webdriver.Button.RIGHT).perform();
-    assertColor(wd.cxtclick, GREEN);
+    assertColor(wd.cxtclick, GREEN_REGEX);
   }
 
   function testDoubleClick() {
     driver.actions().doubleClick(wd.dblclick).perform();
-    assertColor(wd.dblclick, GREEN);
+    assertColor(wd.dblclick, GREEN_REGEX);
   }
 
   function testMouseDownUp() {
-    assertColor(wd.clicknhold, RED);
+    assertColor(wd.clicknhold, RED_REGEX);
     driver.actions().mouseDown(wd.clicknhold).perform();
-    assertColor(wd.clicknhold, GREEN);
+    assertColor(wd.clicknhold, GREEN_REGEX);
     driver.actions().mouseUp().perform();
-    assertColor(wd.clicknhold, RED);
+    assertColor(wd.clicknhold, RED_REGEX);
   }
 
   function testSendKeys() {

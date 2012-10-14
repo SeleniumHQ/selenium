@@ -75,6 +75,12 @@ limitations under the License.
             webdriver.Locator.checkLocator(By[prop](TARGET)));
       }
     }
+
+    function testToString() {
+      assertEquals('By.id("foo")', By.id('foo').toString());
+      assertEquals('By.className("foo")', By.className('foo').toString());
+      assertEquals('By.linkText("foo")', By['link text']('foo').toString());
+    }
   </script>
 </head>
 <body>

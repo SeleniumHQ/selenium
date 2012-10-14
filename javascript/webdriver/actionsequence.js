@@ -80,7 +80,7 @@ webdriver.ActionSequence.prototype.perform = function() {
   // Make a protected copy of the scheduled actions. This will protect against
   // users defining additional commands before this sequence is actually
   // executed.
-  var actions = goog.array.concat(this.actions_);
+  var actions = goog.array.clone(this.actions_);
   var driver = this.driver_;
   return webdriver.promise.Application.getInstance().schedule(
       'ActionSequence.perform', function() {
@@ -98,6 +98,7 @@ webdriver.ActionSequence.prototype.perform = function() {
  * @param {(!webdriver.WebElement|{x: number, y: number})} location The
  *     location to drag to, as either another WebElement or an offset in pixels.
  * @param {{x: number, y: number}=} opt_offset An optional offset, in pixels.
+ *     Defaults to (0, 0).
  * @return {!webdriver.ActionSequence} A self reference.
  */
 webdriver.ActionSequence.prototype.mouseMove = function(location, opt_offset) {
@@ -133,6 +134,8 @@ webdriver.ActionSequence.prototype.mouseMove = function(location, opt_offset) {
  * @param {!webdriver.CommandName} commandName The name of the command.
  * @param {(webdriver.WebElement|webdriver.Button)=} opt_elementOrButton Either
  *     the element to interact with or the button to click with.
+ *     Defaults to {@link webdriver.Button.LEFT} if neither an element nor
+ *     button is specified.
  * @param {webdriver.Button=} opt_button The button to use. Defaults to
  *     {@link webdriver.Button.LEFT}. Ignored if the previous argument is
  *     provided as a button.
@@ -148,11 +151,11 @@ webdriver.ActionSequence.prototype.scheduleMouseAction_ = function(
     if (opt_elementOrButton) {
       this.mouseMove((/** @type {!webdriver.WebElement} */opt_elementOrButton));
     }
-    button = opt_button;
+    button = goog.isDef(opt_button) ? opt_button : webdriver.Button.LEFT;
   }
 
   var command = new webdriver.Command(commandName).
-      setParameter('button', button || webdriver.Button.LEFT);
+      setParameter('button', button);
   this.schedule_(description, command);
   return this;
 };
@@ -173,6 +176,8 @@ webdriver.ActionSequence.prototype.scheduleMouseAction_ = function(
  *
  * @param {(webdriver.WebElement|webdriver.Button)=} opt_elementOrButton Either
  *     the element to interact with or the button to click with.
+ *     Defaults to {@link webdriver.Button.LEFT} if neither an element nor
+ *     button is specified.
  * @param {webdriver.Button=} opt_button The button to use. Defaults to
  *     {@link webdriver.Button.LEFT}. Ignored if a button is provided as the
  *     first argument.
@@ -198,6 +203,8 @@ webdriver.ActionSequence.prototype.mouseDown = function(opt_elementOrButton,
  *
  * @param {(webdriver.WebElement|webdriver.Button)=} opt_elementOrButton Either
  *     the element to interact with or the button to click with.
+ *     Defaults to {@link webdriver.Button.LEFT} if neither an element nor
+ *     button is specified.
  * @param {webdriver.Button=} opt_button The button to use. Defaults to
  *     {@link webdriver.Button.LEFT}. Ignored if a button is provided as the
  *     first argument.
@@ -233,6 +240,8 @@ webdriver.ActionSequence.prototype.dragAndDrop = function(element, location) {
  *
  * @param {(webdriver.WebElement|webdriver.Button)=} opt_elementOrButton Either
  *     the element to interact with or the button to click with.
+ *     Defaults to {@link webdriver.Button.LEFT} if neither an element nor
+ *     button is specified.
  * @param {webdriver.Button=} opt_button The button to use. Defaults to
  *     {@link webdriver.Button.LEFT}. Ignored if a button is provided as the
  *     first argument.
@@ -257,6 +266,8 @@ webdriver.ActionSequence.prototype.click = function(opt_elementOrButton,
  *
  * @param {(webdriver.WebElement|webdriver.Button)=} opt_elementOrButton Either
  *     the element to interact with or the button to click with.
+ *     Defaults to {@link webdriver.Button.LEFT} if neither an element nor
+ *     button is specified.
  * @param {webdriver.Button=} opt_button The button to use. Defaults to
  *     {@link webdriver.Button.LEFT}. Ignored if a button is provided as the
  *     first argument.
@@ -273,7 +284,7 @@ webdriver.ActionSequence.prototype.doubleClick = function(opt_elementOrButton,
  * Schedules a keyboard action.
  * @param {string} description A simple descriptive label for the scheduled
  *     action.
- * @param {!Array.<string>} keys The keys to send.
+ * @param {!Array.<(string|!webdriver.Key)>} keys The keys to send.
  * @return {!webdriver.ActionSequence} A self reference.
  * @private
  */
@@ -334,7 +345,8 @@ webdriver.ActionSequence.prototype.keyUp = function(key) {
  * Simulates typing multiple keys. Each modifier key encountered in the
  * sequence will not be released until it is encountered again. All key events
  * will be targetted at the currently focused element.
- * @param {...(string|!Array.<string>)} var_args The keys to type.
+ * @param {...(string|!webdriver.Key|!Array.<(string|!webdriver.Key)>)}
+ *     var_args The keys to type.
  * @return {!webdriver.ActionSequence} A self reference.
  * @throws {Error} If the key is not a valid modifier key.
  */

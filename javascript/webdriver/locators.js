@@ -19,8 +19,8 @@
 goog.provide('webdriver.Locator');
 goog.provide('webdriver.Locator.Strategy');
 
+goog.require('bot.json');
 goog.require('goog.object');
-goog.require('goog.string');
 
 
 
@@ -116,5 +116,7 @@ webdriver.Locator.checkLocator = function(locator) {
 
 /** @return {string} String representation of this locator. */
 webdriver.Locator.prototype.toString = function() {
-  return 'By ' + this.using + ' (' + this.value + ')';
+  return 'By.' + this.using.replace(/ ([a-z])/g, function(all, match) {
+    return match.toUpperCase();
+  }) + '(' + bot.json.stringify(this.value) + ')';
 };

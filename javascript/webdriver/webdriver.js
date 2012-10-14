@@ -36,9 +36,6 @@ goog.require('webdriver.Key');
 goog.require('webdriver.Locator');
 goog.require('webdriver.Session');
 goog.require('webdriver.promise');
-goog.require('webdriver.promise.Application');
-goog.require('webdriver.promise.Deferred');
-goog.require('webdriver.promise.Promise');
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -141,7 +138,7 @@ webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
         return webdriver.promise.checkedNodeCall(fn).then(function(response) {
           bot.response.checkResponse(response);
           return new webdriver.Session(response['sessionId'],
-                                       response['value']);
+              response['value']);
         });
       });
   return new webdriver.WebDriver(session, executor);
