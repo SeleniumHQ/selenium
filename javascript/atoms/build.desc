@@ -18,11 +18,17 @@ js_library(name = "dom",
   srcs = [
     "dom.js",
   ])
-  
+
 js_library(name = "error_lib",
   srcs = [
     "error.js",
     "response.js"
+  ])
+
+js_library(name = "json",
+  srcs = [
+    "json.js",
+    "userAgent.js"
   ])
 
 js_deps(name = "deps",

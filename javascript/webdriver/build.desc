@@ -19,6 +19,7 @@ js_library(name = "webdriver_lib",
   ],
   deps = [
     "//javascript/atoms:error_lib",
+    "//javascript/atoms:json",
   ])
 
 js_library(name = "test_lib",
@@ -46,6 +47,7 @@ js_binary(name = "webdriver",
   ],
   deps = [
     "//javascript/atoms:error_lib",
+    "//javascript/atoms:json",
   ],
   externs = [
     "externs/externs.js",
