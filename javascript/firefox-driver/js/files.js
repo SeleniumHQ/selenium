@@ -150,21 +150,17 @@ fxdriver.files.File.prototype.read = function() {
       .createInstance(Components.interfaces['nsIFileInputStream']);
   istream.init(this.nsIFile_, fxdriver.files.READ_MODE_, 0666, 0);
 
-  var scriptableStream =
-      Components.classes['@mozilla.org/scriptableinputstream;1'].
-      createInstance(Components.interfaces.nsIScriptableInputStream);
-  scriptableStream.init(istream);
+  var converter = Components.classes['@mozilla.org/intl/converter-input-stream;1']
+      .createInstance(Components.interfaces['nsIConverterInputStream']);
+  converter.init(istream, 'UTF-8', 1024, 0);
 
-  // TODO(dawagner): Chunk output if we need to read more than 10MB.
-  // Currently if the log file is >10MB, we will just return the truncated file.
+  var toReturn = '';
+  var str = {};
+  while (converter.readString(4096, str) != 0) {
+    toReturn = toReturn + str.value;
+  }
 
-  var bytesToRead = Math.min(istream.available(), 10485760);
-  // TODO(dawagner): Use NetUtil.jsm#readInputStreamToString when we drop
-  // support for FF<4
-  // Note: This will not be happy with NULL characters being read
-  var toReturn = scriptableStream.read(bytesToRead);
-
-  scriptableStream.close();
+  converter.close();
   istream.close();
 
   return toReturn;
