@@ -60,7 +60,7 @@ public class LogEntry {
   }
 
   /**
-   * Gets the timestamp of the log statement in seconds since UNIX Epoch.
+   * Gets the timestamp of the log statement in milliseconds since UNIX Epoch.
    *
    * @return timestamp as UNIX Epoch
    */
@@ -80,7 +80,7 @@ public class LogEntry {
   @Override
   public String toString() {
     return String.format("[%s] [%s] %s",
-                         DATE_FORMAT.format(new Date(timestamp * 1000L)), level, message);
+                         DATE_FORMAT.format(new Date(timestamp)), level, message);
   }
 
   @SuppressWarnings("unused")
