@@ -17,6 +17,7 @@ limitations under the License.
 #include "stdafx.h"
 #include "event_firing_thread.h"
 
+// Defaults to false, unless the driver explicitly turns this on.
 static boolean gEnablePersistentEventFiring = false;
 // Thread for firing event
 HANDLE hConstantEventsThread = NULL;

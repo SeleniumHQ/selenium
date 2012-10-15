@@ -121,6 +121,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->ignore_protected_mode_settings_ = false;
   this->ignore_zoom_setting_ = false;
   this->enable_native_events_ = true;
+  this->enable_persistent_hover_ = true;
   this->unexpected_alert_behavior_ = IGNORE_UNEXPECTED_ALERTS;
   this->speed_ = 0;
   this->implicit_wait_timeout_ = 0;
@@ -548,6 +549,11 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   }
   // Set persistent hover functionality in the interactions implementation. 
   setEnablePersistentHover(this->enable_persistent_hover_);
+  LOG(INFO) << "Persistent hovering set to: " << this->enable_persistent_hover_;
+  if (!this->enable_persistent_hover_) {
+    LOG(INFO) << "Stopping previously-running persistent event thread.";
+    stopPersistentEventFiring();
+  }
 
   BrowserHandle wrapper(new Browser(process_window_info.pBrowser,
                                     process_window_info.hwndBrowser,
