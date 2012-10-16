@@ -17,8 +17,6 @@
 import subprocess
 from subprocess import PIPE
 import time
-import os
-import signal
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 
@@ -66,6 +64,8 @@ class Service(object):
                 cmd.append("--log-file=%s" % self.log_file)
             self.process = subprocess.Popen(cmd,
                     stdout=PIPE, stderr=PIPE)
+        except TypeError:
+            raise
         except:
             raise WebDriverException(
                 "IEDriver executable needs to be available in the path. \
