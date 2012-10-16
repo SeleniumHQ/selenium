@@ -16,6 +16,9 @@
 
 #include "session.h"
 
+#define MUTEX_NAME L"WD_INITIALIZATION_MUTEX"
+#define MUTEX_WAIT_TIMEOUT 30000
+
 using namespace std;
 
 namespace webdriver {

@@ -29,6 +29,27 @@ void IESession::Initialize(void* init_params) {
 
   unsigned int thread_id = 0;
   HWND executor_window_handle = NULL;
+
+  HANDLE mutex = ::CreateMutex(NULL, FALSE, MUTEX_NAME);
+  if (mutex != NULL) {
+    // Wait for up to the timeout (currently 30 seconds) for other sessions
+    // to completely initialize.
+    DWORD mutex_wait_status = ::WaitForSingleObject(mutex, MUTEX_WAIT_TIMEOUT);
+    if (mutex_wait_status == WAIT_ABANDONED) {
+      LOG(WARN) << "Acquired mutex, but received wait abandoned status. This "
+                << "could mean the process previously owning the mutex was "
+                << "unexpectedly terminated.";
+    } else if (mutex_wait_status == WAIT_TIMEOUT) {
+      LOG(WARN) << "Could not acquire mutex within the timeout. Multiple "
+                << "instances may hang or behave unpredictably";
+    } else if (mutex_wait_status == WAIT_OBJECT_0) {
+      LOG(DEBUG) << "Mutex acquired for session initalization";
+    }
+  } else {
+    LOG(WARN) << "Could not create session initialization mutex. Multiple " 
+              << "instances will behave unpredictably.";
+  }
+
   HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, EVENT_NAME);
   HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
                                                                  0,
@@ -55,6 +76,12 @@ void IESession::Initialize(void* init_params) {
   vector<TCHAR> window_text_buffer(37);
   ::GetWindowText(executor_window_handle, &window_text_buffer[0], 37);
   std::string session_id = CW2A(&window_text_buffer[0], CP_UTF8);
+
+  if (mutex != NULL) {
+    LOG(DEBUG) << "Releasing session initialization mutex";
+    ::ReleaseMutex(mutex);
+    ::CloseHandle(mutex);
+  }
 
   this->executor_window_handle_ = executor_window_handle;
   this->set_session_id(session_id);

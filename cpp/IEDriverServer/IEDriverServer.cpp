@@ -210,7 +210,6 @@ int _tmain(int argc, _TCHAR* argv[]) {
               << L"host = '" << host_address << "', "
               << L"log level = '" << log_level << "', "
               << L"log file = '" << log_file << "'";
-    ;
     return ERR_SERVER_START;
   }
   if (!silent) {
