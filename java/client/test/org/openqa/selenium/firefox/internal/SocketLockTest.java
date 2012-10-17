@@ -50,7 +50,7 @@ public class SocketLockTest {
   public void serialLockOnSamePort() {
     for (int i = 0; i < 20; i++) {
       Lock lock = new SocketLock(freePort);
-      lock.lock(TimeUnit.SECONDS.toMillis(1));
+      lock.lock(TimeUnit.SECONDS.toMillis(2));
       lock.unlock();
     }
   }
