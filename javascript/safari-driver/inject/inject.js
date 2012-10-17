@@ -76,16 +76,13 @@ safaridriver.inject.onConnect_ = function(message, e) {
 safaridriver.inject.onEncode_ = function(message, e) {
   if (!e.source) {
     safaridriver.inject.LOG.severe('Not looking up element: ' +
-        message.getXPath() + '; no window to respond to!');
+        message.getLocator() + '; no window to respond to!');
     return;
   }
 
   var result = bot.inject.executeScript(function() {
-    var xpath = message.getXPath();
-    var resolver = document.createNSResolver(document.documentElement);
-    var result = document.evaluate(xpath, document, resolver,
-        XPathResult.FIRST_ORDERED_NODE_TYPE, null);
-    return result.singleNodeValue;
+    var locator = message.getLocator();
+    return bot.getDocument().querySelector(locator);
   }, []);
 
   var response = new safaridriver.message.Response(

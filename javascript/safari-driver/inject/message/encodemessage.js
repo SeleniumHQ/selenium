@@ -26,15 +26,15 @@ goog.require('safaridriver.message');
 /**
  * A {@link safaridriver.message.Type.ENCODE} message.
  * @param {string} id The ID from the command this is a response to.
- * @param {string} xpath The XPath locator for the element to encode.
+ * @param {string} css The CSS locator for the element to encode.
  * @constructor
  * @extends {safaridriver.message.Message}
  */
-safaridriver.inject.message.Encode = function(id, xpath) {
+safaridriver.inject.message.Encode = function(id, css) {
   goog.base(this, safaridriver.inject.message.Encode.TYPE);
 
   this.setField(safaridriver.inject.message.Encode.Field_.ID, id);
-  this.setField(safaridriver.inject.message.Encode.Field_.XPATH, xpath);
+  this.setField(safaridriver.inject.message.Encode.Field_.CSS, css);
 };
 goog.inherits(safaridriver.inject.message.Encode,
     safaridriver.message.Message);
@@ -53,7 +53,7 @@ safaridriver.inject.message.Encode.TYPE = 'encode';
  */
 safaridriver.inject.message.Encode.Field_ = {
   ID: 'id',
-  XPATH: 'xpath'
+  CSS: 'css'
 };
 
 
@@ -65,11 +65,11 @@ safaridriver.inject.message.Encode.Field_ = {
  */
 safaridriver.inject.message.Encode.fromData_ = function(data) {
   var id = data[safaridriver.inject.message.Encode.Field_.ID];
-  var xpath = data[safaridriver.inject.message.Encode.Field_.XPATH];
-  if (!goog.isString(id) || !goog.isString(xpath)) {
+  var css = data[safaridriver.inject.message.Encode.Field_.CSS];
+  if (!goog.isString(id) || !goog.isString(css)) {
     throw Error('Invalid message: ' + JSON.stringify(data));
   }
-  return new safaridriver.inject.message.Encode(id, xpath);
+  return new safaridriver.inject.message.Encode(id, css);
 };
 
 
@@ -80,10 +80,10 @@ safaridriver.inject.message.Encode.prototype.getId = function() {
 };
 
 
-/** @return {string} The XPath locator of the element to encode. */
-safaridriver.inject.message.Encode.prototype.getXPath = function() {
+/** @return {string} The CSS locator of the element to encode. */
+safaridriver.inject.message.Encode.prototype.getLocator = function() {
   return (/** @type {string} */this.getField(
-      safaridriver.inject.message.Encode.Field_.XPATH));
+      safaridriver.inject.message.Encode.Field_.CSS));
 };
 
 

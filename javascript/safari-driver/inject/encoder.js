@@ -70,28 +70,31 @@ safaridriver.inject.Encoder.ENCODED_ELEMENT_KEY_ =
 
 
 /**
- * Computes the canonical XPath locator for an element.
- * @param {!Element} element The element to compute an XPath expression for.
- * @return {string} The element's XPath locator.
+ * Computes the canonical CSSLocator locator for an element.
+ * @param {!Element} element The element to compute a CSS selector for.
+ * @return {string} The element's CSS selector.
  * @private
  */
-safaridriver.inject.Encoder.getElementXPath_ = function(element) {
+safaridriver.inject.Encoder.getElementCssSelector_ = function(element) {
   var path = '';
   for (var current = element; current;
        current = bot.dom.getParentElement(current)) {
     var index = 1;
     for (var sibling = current.previousSibling; sibling;
          sibling = sibling.previousSibling) {
-      if (sibling.nodeType == goog.dom.NodeType.ELEMENT &&
-          sibling.tagName == current.tagName) {
+      if (sibling.nodeType == goog.dom.NodeType.ELEMENT) {
         index++;
       }
     }
-    var tmp = '/' + current.tagName;
+    var tmp = current.tagName.toLowerCase();
     if (index > 1) {
-      tmp += '[' + index + ']';
+      tmp += ':nth-child(' + index + ')';
     }
-    path = tmp + path;
+    if (path == '') {
+        path = tmp + path;
+    } else {
+        path = tmp + ' > ' + path;
+    }
   }
   return path;
 };
@@ -132,7 +135,7 @@ safaridriver.inject.Encoder.prototype.encode = function(value) {
 
         var encoded = {};
         encoded[safaridriver.inject.Encoder.ENCODED_ELEMENT_KEY_] =
-            safaridriver.inject.Encoder.getElementXPath_(
+            safaridriver.inject.Encoder.getElementCssSelector_(
                 (/** @type {!Element} */value));
         return encoded;
       }
@@ -164,8 +167,8 @@ safaridriver.inject.Encoder.prototype.encode = function(value) {
 safaridriver.inject.Encoder.prototype.encodeElement_ = function(element) {
   var webElement = new webdriver.promise.Deferred();
   var id = goog.string.getRandomString();
-  var xpath = safaridriver.inject.Encoder.getElementXPath_(element);
-  var message = new safaridriver.inject.message.Encode(id, xpath);
+  var css = safaridriver.inject.Encoder.getElementCssSelector_(element);
+  var message = new safaridriver.inject.message.Encode(id, css);
   var doc = goog.dom.getOwnerDocument(element);
   var win = (/** @type {!Window} */goog.dom.getWindow(doc));
   message.send(win);
@@ -206,15 +209,11 @@ safaridriver.inject.Encoder.prototype.decode = function(value) {
       var keys = Object.keys(obj);
       if (keys.length == 1 &&
           keys[0] === safaridriver.inject.Encoder.ENCODED_ELEMENT_KEY_) {
-        var xpath = value[safaridriver.inject.Encoder.ENCODED_ELEMENT_KEY_];
-
-        var resolver = document.createNSResolver(document.documentElement);
-        var result = document.evaluate(xpath, document, resolver,
-            XPathResult.FIRST_ORDERED_NODE_TYPE, null);
-        var element = result.singleNodeValue;
+        var css = value[safaridriver.inject.Encoder.ENCODED_ELEMENT_KEY_];
+        var element = bot.getDocument().querySelector(css);
         if (!element) {
           throw new bot.Error(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
-              'Unable to locate encoded element: ' + xpath);
+              'Unable to locate encoded element: ' + css);
         }
         return element;
       }

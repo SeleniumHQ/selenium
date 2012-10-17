@@ -18,28 +18,31 @@ limitations under the License.
 <script src="../test_bootstrap.js"></script>
 <script>
   goog.require('goog.testing.jsunit');
-  goog.require('safaridriver.inject.page');
+  goog.require('safaridriver.inject.Encoder');
 </script>
 <script>
   function testGetElementXPath() {
     var a1 = document.querySelector('div.a');
     assertEquals('a.1', a1.innerHTML);
 
-    var xpath = safaridriver.inject.page.getElementXPath_(a1);
-    assertEquals('/HTML/BODY/DIV', xpath);
-    assertEquals(a1, bot.locators.xpath.single(xpath, document));
+    var css = safaridriver.inject.Encoder.getElementCssSelector_(a1);
+    assertEquals('html > body:nth-child(2) > div', css);
+    assertEquals(a1, document.querySelector(css));
 
     var b1 = document.querySelector('div.b');
     assertEquals('b.1', b1.innerHTML);
-    xpath = safaridriver.inject.page.getElementXPath_(b1);
-    assertEquals('/HTML/BODY/DIV[3]/DIV/DIV', xpath);
-    assertEquals(b1, bot.locators.xpath.single(xpath, document));
+    css = safaridriver.inject.Encoder.getElementCssSelector_(b1);
+    assertEquals(
+        'html > body:nth-child(2) > div:nth-child(3) > div > div', css);
+    assertEquals(b1, document.querySelector(css));
 
     var b2 = document.querySelectorAll('div.b')[1];
     assertEquals('b.2', b2.innerHTML);
-    xpath = safaridriver.inject.page.getElementXPath_(b2);
-    assertEquals('/HTML/BODY/DIV[3]/DIV/DIV[3]', xpath);
-    assertEquals(b2, bot.locators.xpath.single(xpath, document));
+    css = safaridriver.inject.Encoder.getElementCssSelector_(b2);
+    assertEquals(
+        'html > body:nth-child(2) > div:nth-child(3) > div > div:nth-child(4)',
+        css);
+    assertEquals(b2, document.querySelector(css));
   }
 </script>
 <body>
