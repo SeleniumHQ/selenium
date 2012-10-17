@@ -275,7 +275,10 @@ class LocalFileDetector(object):
         if file_path is '':
             return None
 
-        if os.path.exists(file_path):
-            return file_path
-        else:
-            return None
+        try:
+          if os.path.exists(file_path):
+              return file_path
+        except:
+          pass
+        return None
+
