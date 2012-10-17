@@ -202,16 +202,18 @@ options.header =
     "package ${packageName};\n" +
     "\n" +
     "import com.thoughtworks.selenium.Selenium;\n" +
-    "import com.thoughtworks.selenium.SeleneseTestCase;\n" +
     "import org.openqa.selenium.firefox.FirefoxDriver;\n" +
     "import org.openqa.selenium.WebDriver;\n" +
     "import org.openqa.selenium.WebDriverBackedSelenium;\n" +
     "import org.junit.After;\n" +
     "import org.junit.Before;\n" +
     "import org.junit.Test;\n" +
+    "import static org.junit.Assert.*;\n" +
     "import java.util.regex.Pattern;\n" +
     "\n" +
-    "public class ${className} extends ${superClass} {\n" + 
+    "public class ${className} {\n" + 
+    indents(1) + "private Selenium selenium;\n" +
+    "\n" +
     indents(1) + "@Before\n" +
     indents(1) + "public void setUp() throws Exception {\n" +
     indents(2) + "WebDriver driver = new FirefoxDriver();\n" +
