@@ -678,18 +678,6 @@ Utils.getElementLocation = function(element) {
     elementParent = elementParent.offsetParent;
   }
 
-  // Netscape can get confused in some cases, such that the height of the parent
-  // is smaller than that of the element (which it shouldn't really be). If this
-  // is the case, we need to exclude this element, since it will result in too
-  // large a 'top' return value.
-  if (element.offsetParent && element.offsetParent.offsetHeight
-      && element.offsetParent.offsetHeight < element.offsetHeight) {
-    // skip the parent that's too small
-    element = element.offsetParent.offsetParent;
-  } else {
-    // Next up...
-    element = element.offsetParent;
-  }
   var location = new Object();
   location.x = x;
   location.y = y;
