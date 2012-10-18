@@ -150,7 +150,7 @@ void stopPersistentEventFiring()
 {
 }
 
-void setEnablePersistentHover(enablePersistentHover)
+void setEnablePersistentHover(bool enablePersistentHover)
 {
 }
 
