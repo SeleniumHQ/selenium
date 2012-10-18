@@ -942,7 +942,7 @@ module Javascript
               end
             end
 
-            if (ENV['debug'])
+            if ($DEBUG)
               ant.jvmarg(:line => "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005")
             end
 
@@ -964,7 +964,7 @@ module Javascript
                      :outfile => "TEST-" + browser_task_name.gsub(/[\/:]+/, "-"),
                      :todir => 'build/test_logs')
           end
-          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(DEBUG ? 2 : 0)
+          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel($DEBUG ? 2 : 0)
         end
       end
 

@@ -77,7 +77,7 @@ module CrazyFunJava
       ant.project.setProperty 'build.compiler', 'org.eclipse.jdt.core.JDTCompilerAdapter'
 
       unless ENV['log']
-        ant.project.getBuildListeners().get(0).setMessageOutputLevel(DEBUG ? 2 : 0)
+        ant.project.getBuildListeners().get(0).setMessageOutputLevel($DEBUG ? 2 : 0)
       end
       ant.project.addBuildListener logger
 
@@ -166,7 +166,7 @@ module CrazyFunJava
       CrazyFunJava.ant.java :classname => classname, :fork => true do
         arg :line => args
 
-        if (ENV['debug'])
+        if ($DEBUG)
           jvmarg(:line => "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005")
         end
 
@@ -406,7 +406,7 @@ module CrazyFunJava
 
         ant_java_task(task_name, args[:main_class], cp, nil, args[:sysproperties])
 
-        CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(DEBUG ? 2 : 0)
+        CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel($DEBUG ? 2 : 0)
       end
     end
   end
@@ -546,7 +546,7 @@ module CrazyFunJava
               logfile = "TEST-#{args[:name]}-#{name}"
               ant.test(:name => name, :todir => 'build/test_logs', :outfile => logfile)
             end
-            CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(DEBUG ? 2 : 0)
+            CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel($DEBUG ? 2 : 0)
           end
         end
       end
@@ -557,7 +557,7 @@ module CrazyFunJava
     end
 
     def debug?
-      ENV['debug'] == 'true'
+      $DEBUG
     end
 
     def only_run_class

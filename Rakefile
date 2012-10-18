@@ -7,7 +7,8 @@ require 'net/telnet'
 include Rake::DSL if defined?(Rake::DSL)
 
 Rake.application.instance_variable_set "@name", "go"
-DEBUG = verbose() == true ? true : false unless defined?(DEBUG)
+orig_verbose = verbose
+verbose(false)
 
 # The CrazyFun build grammar. There's no magic here, just ruby
 require 'rake-tasks/crazy_fun'
@@ -37,6 +38,12 @@ require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
 
 require 'rake-tasks/gecko_sdks'
+
+$DEBUG = orig_verbose != :default ? true : false
+if (ENV['debug'] == 'true') 
+  $DEBUG = true
+end
+verbose($DEBUG)
 
 def version
   "2.25.0"

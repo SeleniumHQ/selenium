@@ -50,7 +50,7 @@ class CrazyFun
 
   def create_tasks(files)
     files.each do |f|
-      puts "Parsing #{f}" if DEBUG
+      puts "Parsing #{f}" if $DEBUG
       outputs = BuildFile.new().parse_file(f)
       outputs.each do |type|
         if !@mappings.has_key? type.name
