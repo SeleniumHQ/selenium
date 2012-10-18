@@ -40,7 +40,6 @@ namespace OpenQA.Selenium
         {
             driver.Url = readOnlyPage;
             IWebElement element = driver.FindElement(By.Id("readOnlyTextInput"));
-            Assert.IsFalse(element.Enabled);
             element.Clear();
         }
 

@@ -91,6 +91,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.PhantomJS)]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.IPhone)]
         public void ShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting()

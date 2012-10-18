@@ -36,10 +36,6 @@ namespace OpenQA.Selenium
             IWebElement apples = options[0];
             IWebElement oranges = options[1];
 
-            Assert.IsFalse(select.Displayed, "Select should not be displayed");
-            Assert.IsFalse(apples.Displayed, "Apples should not be displayed");
-            Assert.IsFalse(oranges.Displayed, "Oranges should not be displayed");
-
             Assert.IsTrue(apples.Selected, "Apples should be selected");
             Assert.IsFalse(oranges.Selected, "Oranges shoudl be selected");
 
