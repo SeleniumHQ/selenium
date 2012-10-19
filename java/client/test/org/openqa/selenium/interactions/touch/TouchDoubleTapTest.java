@@ -41,7 +41,7 @@ public class TouchDoubleTapTest extends TouchTestBase {
 
   @Test
   public void testCanDoubleTapOnAnImageAndAlterLocationOfElementsInScreen() {
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement image = driver.findElement(By.id("imagestart"));
     int y = image.getLocation().y;

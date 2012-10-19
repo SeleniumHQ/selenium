@@ -42,7 +42,7 @@ public class TouchScrollTest extends TouchTestBase {
   @NeedsFreshDriver
   @Test
   public void testCanScrollVerticallyFromWebElement() {
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement link = driver.findElement(By.id("link3"));
     int y = link.getLocation().y;
@@ -62,7 +62,7 @@ public class TouchScrollTest extends TouchTestBase {
   @NeedsFreshDriver
   @Test
   public void testCanScrollHorizontallyFromWebElement() {
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement link = driver.findElement(By.id("link1"));
     int x = link.getLocation().x;
@@ -82,7 +82,7 @@ public class TouchScrollTest extends TouchTestBase {
   @NeedsFreshDriver
   @Test
   public void testCanScrollVertically() {
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement link = driver.findElement(By.id("link3"));
     int y = link.getLocation().y;
@@ -101,7 +101,7 @@ public class TouchScrollTest extends TouchTestBase {
   @NeedsFreshDriver
   @Test
   public void testCanScrollHorizontally() {
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement link = driver.findElement(By.id("link1"));
     int x = link.getLocation().x;

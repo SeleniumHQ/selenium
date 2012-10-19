@@ -43,7 +43,7 @@ public class TouchFlickTest extends TouchTestBase {
   @NeedsFreshDriver
   @Test
   public void testCanFlickHorizontallyFromWebElement() {
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement toFlick = driver.findElement(By.id("imagestart"));
     WebElement link = driver.findElement(By.id("link1"));
@@ -64,7 +64,7 @@ public class TouchFlickTest extends TouchTestBase {
   @NeedsFreshDriver
   @Test
   public void testCanFlickHorizontallyFastFromWebElement() {
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement toFlick = driver.findElement(By.id("imagestart"));
     WebElement link = driver.findElement(By.id("link2"));
@@ -85,7 +85,7 @@ public class TouchFlickTest extends TouchTestBase {
   @Test
   public void testCanFlickHorizontally() {
     driver.get(pages.clicksPage);
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement link = driver.findElement(By.id("link1"));
     int x = link.getLocation().x;
@@ -105,7 +105,7 @@ public class TouchFlickTest extends TouchTestBase {
   @NeedsFreshDriver
   @Test
   public void testCanFlickHorizontallyFast() {
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement link = driver.findElement(By.id("link2"));
     int x = link.getLocation().x;
@@ -123,7 +123,7 @@ public class TouchFlickTest extends TouchTestBase {
   @NeedsFreshDriver
   @Test
   public void testCanFlickVerticallyFromWebElement() {
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement link = driver.findElement(By.id("link3"));
     int y = link.getLocation().y;
@@ -143,7 +143,7 @@ public class TouchFlickTest extends TouchTestBase {
   @NeedsFreshDriver
   @Test
   public void testCanFlickVerticallyFastFromWebElement() {
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement link = driver.findElement(By.id("link4"));
     int y = link.getLocation().y;
@@ -163,7 +163,7 @@ public class TouchFlickTest extends TouchTestBase {
   @NeedsFreshDriver
   @Test
   public void testCanFlickVertically() {
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement link = driver.findElement(By.id("link3"));
     int y = link.getLocation().y;
@@ -182,7 +182,7 @@ public class TouchFlickTest extends TouchTestBase {
   @NeedsFreshDriver
   @Test
   public void testCanFlickVerticallyFast() {
-    driver.get(pages.touchLongContentPage);
+    driver.get(pages.longContentPage);
 
     WebElement link = driver.findElement(By.id("link4"));
     int y = link.getLocation().y;
