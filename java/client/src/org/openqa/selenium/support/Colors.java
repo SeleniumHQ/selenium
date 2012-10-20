@@ -6,6 +6,7 @@ package org.openqa.selenium.support;
 import org.openqa.selenium.support.Color;
 
 public enum Colors {
+    TRANSPARENT(new Color(0, 0, 0, 0d)),
     BLACK(new Color(0, 0, 0, 1d)),
     SILVER(new Color(192, 192, 192, 1d)),
     GRAY(new Color(128, 128, 128, 1d)),

@@ -66,7 +66,14 @@ public class Color {
   }
 
   public String asRgba() {
-    String alphaString = (alpha == 1) ? "1" : Double.toString(alpha);
+    String alphaString;
+    if (alpha == 1) {
+      alphaString = "1";
+    } else if (alpha == 0) {
+      alphaString = "0";
+    } else {
+      alphaString = Double.toString(alpha);
+    }
     return String.format("rgba(%d, %d, %d, %s)", red, green, blue, alphaString);
   }
 
@@ -114,10 +121,10 @@ public class Color {
 
     protected Color createColor(Matcher matcher, double a) {
       return new Color(
-        fromMatchGroup(matcher, 1),
-        fromMatchGroup(matcher, 2),
-        fromMatchGroup(matcher, 3),
-        a);
+          fromMatchGroup(matcher, 1),
+          fromMatchGroup(matcher, 2),
+          fromMatchGroup(matcher, 3),
+          a);
     }
 
     protected short fromMatchGroup(Matcher matcher, int index) {
@@ -144,6 +151,7 @@ public class Color {
         "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*" +
         "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*" +
         "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*\\)\\s*$");
+
     @Override
     protected Pattern getPattern() {
       return RGBPCT_PATTERN;
@@ -160,6 +168,7 @@ public class Color {
     private static final Pattern RGBA_PATTERN = Pattern.compile("^\\s*rgba\\(\\s*" +
         "(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*" +
         "(\\d{1,3})\\s*,\\s*(0|1|0\\.\\d+)\\s*\\)\\s*$");
+
     @Override
     protected Pattern getPattern() {
       return RGBA_PATTERN;
@@ -172,6 +181,7 @@ public class Color {
         "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*" +
         "(\\d{1,3}|\\d{1,2}\\.\\d+)%\\s*,\\s*" +
         "(0|1|0\\.\\d+)\\s*\\)\\s*$");
+
     @Override
     protected Pattern getPattern() {
       return RGBAPCT_PATTERN;
@@ -216,6 +226,7 @@ public class Color {
         "(\\d{1,3})\\s*,\\s*" +
         "(\\d{1,3})\\%\\s*,\\s*" +
         "(\\d{1,3})\\%\\s*\\)\\s*$");
+
     @Override
     protected Pattern getPattern() {
       return HSL_PATTERN;
@@ -223,9 +234,9 @@ public class Color {
 
     @Override
     protected Color createColor(Matcher matcher, double a) {
-      double h =  Double.parseDouble(matcher.group(1)) / 360;
-      double s =  Double.parseDouble(matcher.group(2)) / 100;
-      double l =  Double.parseDouble(matcher.group(3)) / 100;
+      double h = Double.parseDouble(matcher.group(1)) / 360;
+      double s = Double.parseDouble(matcher.group(2)) / 100;
+      double l = Double.parseDouble(matcher.group(3)) / 100;
       double r, g, b;
 
       if (s == 0) {
@@ -263,6 +274,7 @@ public class Color {
         "(\\d{1,3})\\%\\s*,\\s*" +
         "(\\d{1,3})\\%\\s*,\\s*" +
         "(0|1|0\\.\\d+)\\s*\\)\\s*$");
+
     @Override
     protected Pattern getPattern() {
       return HSLA_PATTERN;
