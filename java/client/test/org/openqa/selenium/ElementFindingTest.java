@@ -555,7 +555,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Ignore(value = {ANDROID, OPERA, SELENESE, OPERA_MOBILE}, reason = "Just not working")
   @Test
   public void testAnElementFoundInADifferentFrameIsStale() {
-    driver.get(appServer.whereIs("missedJsReference.html"));
+    driver.get(pages.missedJsReferencePage);
     driver.switchTo().frame("inner");
     WebElement element = driver.findElement(By.id("oneline"));
     driver.switchTo().defaultContent();
@@ -571,8 +571,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Ignore({ANDROID, IPHONE, OPERA, SELENESE, OPERA_MOBILE})
   @Test
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
-    String url = appServer.whereIs("missedJsReference.html");
-    driver.get(url);
+    driver.get(pages.missedJsReferencePage);
 
     try {
       driver.switchTo().frame("inner");

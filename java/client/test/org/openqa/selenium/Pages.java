@@ -51,6 +51,7 @@ public class Pages {
   public String macbethPage;
   public String mapVisibilityPage;
   public String metaRedirectPage;
+  public String missedJsReferencePage;
   public String mouseTrackerPage;
   public String nestedPage;
   public String readOnlyPage;
@@ -63,6 +64,7 @@ public class Pages {
   public String simpleXmlDocument;
   public String sleepingPage;
   public String slowIframes;
+  public String slowLoadingAlertPage;
   public String svgPage;
   public String tables;
   public String underscorePage;
@@ -106,6 +108,7 @@ public class Pages {
     macbethPage = appServer.whereIs("macbeth.html");
     mapVisibilityPage = appServer.whereIs("map_visibility.html");
     metaRedirectPage = appServer.whereIs("meta-redirect.html");
+    missedJsReferencePage = appServer.whereIs("missedJsReference.html");
     mouseTrackerPage = appServer.whereIs("mousePositionTracker.html");
     nestedPage = appServer.whereIs("nestedElements.html");
     readOnlyPage = appServer.whereIs("readOnlyPage.html");
@@ -118,6 +121,7 @@ public class Pages {
     simpleXmlDocument = appServer.whereIs("simple.xml");
     sleepingPage = appServer.whereIs("sleep");
     slowIframes = appServer.whereIs("slow_loading_iframes.html");
+    slowLoadingAlertPage = appServer.whereIs("slowLoadingAlert.html");
     svgPage = appServer.whereIs("svgPiechart.xhtml");
     tables = appServer.whereIs("tables.html");
     underscorePage = appServer.whereIs("underscore.html");

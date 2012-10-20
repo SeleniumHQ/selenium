@@ -329,7 +329,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfAlertHappensDuringScript() {
-    driver.get(appServer.whereIs("slowLoadingAlert.html"));
+    driver.get(pages.slowLoadingAlertPage);
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
     try {
       ((JavascriptExecutor) driver).executeAsyncScript("setTimeout(arguments[0], 1000);");
@@ -363,7 +363,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfAlertHappensDuringScriptWhichTimesOut() {
-    driver.get(appServer.whereIs("slowLoadingAlert.html"));
+    driver.get(pages.slowLoadingAlertPage);
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
     try {
       ((JavascriptExecutor) driver).executeAsyncScript("");

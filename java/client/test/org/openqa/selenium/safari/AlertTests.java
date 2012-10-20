@@ -89,7 +89,7 @@ public class AlertTests extends SafariTestBase {
 
   @Test
   public void throwsIfAlertHappensDuringScript() {
-    driver.get(appServer.whereIs("slowLoadingAlert.html"));
+    driver.get(pages.slowLoadingAlertPage);
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
     try {
       ((JavascriptExecutor)driver).executeAsyncScript("setTimeout(arguments[0], 1000);");
@@ -118,7 +118,7 @@ public class AlertTests extends SafariTestBase {
 
   @Test
   public void throwsIfAlertHappensDuringScriptWhichTimesOut() {
-    driver.get(appServer.whereIs("slowLoadingAlert.html"));
+    driver.get(pages.slowLoadingAlertPage);
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
     try {
       ((JavascriptExecutor)driver).executeAsyncScript("");

@@ -124,7 +124,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   private void navigateToClicksPageAndClickLink() {
-    driver.get(appServer.whereIs("clicks.html"));
+    driver.get(pages.clicksPage);
 
     waitFor(elementToExist(driver, "normal"));
     WebElement link = driver.findElement(By.id("normal"));
@@ -147,7 +147,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testCanClickOnLinksWithAnOffset() {
-    driver.get(appServer.whereIs("clicks.html"));
+    driver.get(pages.clicksPage);
 
     waitFor(elementToExist(driver, "normal"));
     WebElement link = driver.findElement(By.id("normal"));

@@ -40,7 +40,6 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 
 import org.junit.Test;
-import org.openqa.selenium.environment.GlobalTestEnvironment;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -305,7 +304,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   @Ignore(value = {IPHONE, SELENESE})
   @Test
   public void testReadALargeAmountOfData() {
-    driver.get(GlobalTestEnvironment.get().getAppServer().whereIs("macbeth.html"));
+    driver.get(pages.macbethPage);
     String source = driver.getPageSource().trim().toLowerCase();
 
     assertThat(source.endsWith("</html>"), is(true));

@@ -80,8 +80,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
           reason = "Opera: Needs investigation")
   @Test
   public void testAnElementFoundInADifferentFrameViaJsShouldHaveSameId() {
-    String url = appServer.whereIs("missedJsReference.html");
-    driver.get(url);
+    driver.get(pages.missedJsReferencePage);
 
     driver.switchTo().frame("inner");
     WebElement first = driver.findElement(By.id("oneline"));
