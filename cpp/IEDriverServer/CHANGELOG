@@ -9,6 +9,13 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.26.0.7
+=========
+ * Modified so that closing a window (or quitting a browser) now sets the 
+   focused frame to NULL, as if switchTo().defaultContent() had been called.
+   This is to prevent crashes of the executable when quitting the driver. Fixes
+   issue #4178.
+
 v2.26.0.6
 =========
  * Added use of a mutex when creating a session. This should allow multiple

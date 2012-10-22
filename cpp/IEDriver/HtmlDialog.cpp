@@ -61,6 +61,9 @@ void HtmlDialog::GetDocument(IHTMLDocument2** doc) {
 void HtmlDialog::Close() {
   if (!this->is_closing()) {
     this->is_navigating_ = false;
+    // Closing the browser, so having focus on a frame doesn't
+    // make any sense.
+    this->SetFocusedFrameByElement(NULL);
     this->DetachEvents();
     this->window_->close();
 

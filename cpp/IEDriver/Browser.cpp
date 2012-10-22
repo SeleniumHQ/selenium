@@ -248,6 +248,9 @@ void Browser::DetachEvents() {
 
 void Browser::Close() {
   LOG(TRACE) << "Entering Browser::Close";
+  // Closing the browser, so having focus on a frame doesn't
+  // make any sense.
+  this->SetFocusedFrameByElement(NULL);
   HRESULT hr = this->browser_->Quit();
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Call to IWebBrowser2::Quit failed";
