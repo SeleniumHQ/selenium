@@ -20,17 +20,18 @@
  */
 
 goog.provide('webdriver.stacktrace');
-goog.provide('webdriver.stacktrace.Frame');
 goog.provide('webdriver.stacktrace.Snapshot');
 
 goog.require('goog.array');
+goog.require('goog.string');
 
 
 
 /**
  * Stores a snapshot of the stack trace at the time this instance was created.
+ * The stack trace will always be adjusted to exclude this function call.
  * @param {number=} opt_slice The number of frames to remove from the top of
- *     the generate stack trace.
+ *     the generated stack trace.
  * @constructor
  */
 webdriver.stacktrace.Snapshot = function(opt_slice) {
@@ -42,11 +43,38 @@ webdriver.stacktrace.Snapshot = function(opt_slice) {
   this.slice_ = opt_slice || 0;
 
   /**
+   * @type {!Error}
+   * @private
+   */
+  this.error_ = Error();
+
+  if (webdriver.stacktrace.CAN_CAPTURE_STACK_TRACE_) {
+    Error.captureStackTrace(this.error_, webdriver.stacktrace.Snapshot);
+  } else {
+    // Opera and Firefox do not generate a stack frame for calls to Error(),
+    // so just remove 1 extra for the call to this constructor.
+    this.slice_ += 1;
+  }
+
+  /**
+   * The error's stacktrace.  This must be accessed immediately to ensure Opera
+   * computes the context correctly.
    * @type {string}
    * @private
    */
-  this.stack_ = Error().stack;
+  this.stack_ = this.error_.stack;
 };
+
+
+/**
+ * Whether the current environment supports the Error.captureStackTrace
+ * function (as of 10/17/2012, only V8).
+ * @type {boolean}
+ * @const
+ * @private
+ */
+webdriver.stacktrace.CAN_CAPTURE_STACK_TRACE_ =
+    goog.isFunction(Error.captureStackTrace);
 
 
 /**
@@ -63,13 +91,14 @@ webdriver.stacktrace.Snapshot.prototype.parsedStack_ = null;
  */
 webdriver.stacktrace.Snapshot.prototype.getStacktrace = function() {
   if (goog.isNull(this.parsedStack_)) {
-    var stack = this.stack_ ? webdriver.stacktrace.parse_(this.stack_) : [];
+    var stack = webdriver.stacktrace.parse(this.error_);
     if (this.slice_) {
       stack = goog.array.slice(stack, this.slice_);
     }
     this.parsedStack_ = stack.join('\n');
-    delete this.stack_;
+    delete this.error_;
     delete this.slice_;
+    delete this.stack_;
   }
   return this.parsedStack_;
 };
@@ -78,31 +107,61 @@ webdriver.stacktrace.Snapshot.prototype.getStacktrace = function() {
 
 /**
  * Class representing one stack frame.
- * @param {string} context Context object, empty in case of global functions or
- *     if the browser doesn't provide this information.
- * @param {string} name Function name, empty in case of anonymous functions.
- * @param {string} alias Alias of the function if available. For example the
- *     function name will be 'c' and the alias will be 'b' if the function is
- *     defined as <code>a.b = function c() {};</code>.
- * @param {string} args Arguments of the function in parentheses if available.
- * @param {string} path File path or URL including line number and optionally
- *     column number separated by colons.
+ * @param {(string|undefined)} context Context object, empty in case of global
+ *     functions or if the browser doesn't provide this information.
+ * @param {(string|undefined)} name Function name, empty in case of anonymous
+ *     functions.
+ * @param {(string|undefined)} alias Alias of the function if available. For
+ *     example the function name will be 'c' and the alias will be 'b' if the
+ *     function is defined as <code>a.b = function c() {};</code>.
+ * @param {(string|undefined)} path File path or URL including line number and
+ *     optionally column number separated by colons.
  * @constructor
+ * @private
  */
-webdriver.stacktrace.Frame = function(context, name, alias, args, path) {
-  this.context_ = context;
-  this.name_ = name;
-  this.alias_ = alias;
-  this.args_ = args;
-  this.path_ = path;
+webdriver.stacktrace.Frame_ = function(context, name, alias, path) {
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.context_ = context || '';
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.name_ = name || '';
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.alias_ = alias || '';
+
+  /**
+   * @type {string}
+   * @private
+   */
+  this.path_ = path || '';
 };
+
+
+/**
+ * Constant for an anonymous frame.
+ * @type {!webdriver.stacktrace.Frame_}
+ * @const
+ * @private
+ */
+webdriver.stacktrace.ANONYMOUS_FRAME_ =
+    new webdriver.stacktrace.Frame_('', '', '', '');
 
 
 /**
  * @return {string} The function name or empty string if the function is
  *     anonymous and the object field which it's assigned to is unknown.
  */
-webdriver.stacktrace.Frame.prototype.getName = function() {
+webdriver.stacktrace.Frame_.prototype.getName = function() {
   return this.name_;
 };
 
@@ -110,31 +169,28 @@ webdriver.stacktrace.Frame.prototype.getName = function() {
 /**
  * @return {boolean} Whether the stack frame contains an anonymous function.
  */
-webdriver.stacktrace.Frame.prototype.isAnonymous = function() {
+webdriver.stacktrace.Frame_.prototype.isAnonymous = function() {
   return !this.name_ || this.context_ == '[object Object]';
 };
 
 
-/** @override */
-webdriver.stacktrace.Frame.prototype.toString = function() {
-  return [
-    this.context_ ? this.context_ + '.' : '',
-    this.name_ || 'anonymous',
-    // For the time being, we don't care about args. If we ever do, replace
-    // this with: this.args_
-    '()',
-    this.alias_ ? ' [as ' + this.alias_ + ']' : '',
-    this.path_ ? ' at ' + this.path_ : ''
-  ].join('');
-};
-
-
 /**
- * Maximum number of steps while the call chain is followed.
- * @type {number}
- * @private
+ * Converts this frame to its string representation using V8's stack trace
+ * format: http://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
+ * @return {string} The string representation of this frame.
+ * @override
  */
-webdriver.stacktrace.MAX_DEPTH_ = 20;
+webdriver.stacktrace.Frame_.prototype.toString = function() {
+  var context = this.context_;
+  if (context && context !== 'new ') {
+    context += '.';
+  }
+  context += this.name_;
+  context += this.alias_ ? ' [as ' + this.alias_ + ']' : '';
+
+  var path = this.path_ || '<anonymous>';
+  return '    at ' + (context ? context + ' (' + path + ')' : path);
+};
 
 
 /**
@@ -144,6 +200,7 @@ webdriver.stacktrace.MAX_DEPTH_ = 20;
  * when goog.globalEval is invoked with a long argument; such as
  * when loading a module.
  * @type {number}
+ * @const
  * @private
  */
 webdriver.stacktrace.MAX_FIREFOX_FRAMESTRING_LENGTH_ = 500000;
@@ -153,14 +210,42 @@ webdriver.stacktrace.MAX_FIREFOX_FRAMESTRING_LENGTH_ = 500000;
  * RegExp pattern for JavaScript identifiers. We don't support Unicode
  * identifiers defined in ECMAScript v3.
  * @type {string}
+ * @const
  * @private
  */
 webdriver.stacktrace.IDENTIFIER_PATTERN_ = '[a-zA-Z_$][\\w$]*';
 
 
 /**
+ * Pattern for a matching the type on a fully-qualified name. Forms an
+ * optional sub-match on the type. For example, in "foo.bar.baz", will match on
+ * "foo.bar".
+ * @type {string}
+ * @const
+ * @private
+ */
+webdriver.stacktrace.CONTEXT_PATTERN_ =
+    '(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ +
+    '(?:\\.' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + ')*)\\.';
+
+
+/**
+ * Pattern for matching a fully qualified name. Will create two sub-matches:
+ * the type (optional), and the name. For example, in "foo.bar.baz", will
+ * match on ["foo.bar", "baz"].
+ * @type {string}
+ * @const
+ * @private
+ */
+webdriver.stacktrace.QUALIFIED_NAME_PATTERN_ =
+    '(?:' + webdriver.stacktrace.CONTEXT_PATTERN_ + ')?' +
+    '(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + ')';
+
+
+/**
  * RegExp pattern for function name alias in the V8 stack trace.
  * @type {string}
+ * @const
  * @private
  */
 webdriver.stacktrace.V8_ALIAS_PATTERN_ =
@@ -171,11 +256,27 @@ webdriver.stacktrace.V8_ALIAS_PATTERN_ =
  * RegExp pattern for function names and constructor calls in the V8 stack
  * trace.
  * @type {string}
+ * @const
  * @private
  */
 webdriver.stacktrace.V8_FUNCTION_NAME_PATTERN_ =
-    '(?:new )?(?:' + webdriver.stacktrace.IDENTIFIER_PATTERN_ +
-    '|<anonymous>)';
+    '(?:' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + '|<anonymous>)';
+
+
+/**
+ * RegExp pattern for the context of a function call in V8. Creates two
+ * submatches, only one of which will ever match: either the namespace
+ * identifier (with optional "new" keyword in the case of a constructor call),
+ * or just the "new " phrase for a top level constructor call.
+ * @type {string}
+ * @const
+ * @private
+ */
+webdriver.stacktrace.V8_CONTEXT_PATTERN_ =
+    '(?:((?:new )?(?:\\[object Object\\]|' +
+    webdriver.stacktrace.IDENTIFIER_PATTERN_ +
+    '(?:\\.' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + ')*)' +
+    ')\\.|(new ))';
 
 
 /**
@@ -183,16 +284,19 @@ webdriver.stacktrace.V8_FUNCTION_NAME_PATTERN_ =
  * Creates 3 submatches with context object (optional), function name and
  * function alias (optional).
  * @type {string}
+ * @const
  * @private
  */
 webdriver.stacktrace.V8_FUNCTION_CALL_PATTERN_ =
-    ' (?:(.*?)\\.)?(' + webdriver.stacktrace.V8_FUNCTION_NAME_PATTERN_ +
-    ')' + webdriver.stacktrace.V8_ALIAS_PATTERN_;
+    ' (?:' + webdriver.stacktrace.V8_CONTEXT_PATTERN_ + ')?' +
+    '(' + webdriver.stacktrace.V8_FUNCTION_NAME_PATTERN_ + ')' +
+    webdriver.stacktrace.V8_ALIAS_PATTERN_;
 
 
 /**
  * RegExp pattern for an URL + position inside the file.
  * @type {string}
+ * @const
  * @private
  */
 webdriver.stacktrace.URL_PATTERN_ =
@@ -200,44 +304,45 @@ webdriver.stacktrace.URL_PATTERN_ =
 
 
 /**
- * RegExp pattern for an URL + line number + column number in V8.
- * The URL is either in submatch 1 or submatch 2.
+ * RegExp pattern for a location string in a V8 stack frame. Creates two
+ * submatches for the location, one for enclosed in parentheticals and on
+ * where the location appears alone (which will only occur if the location is
+ * the only information in the frame).
  * @type {string}
+ * @const
  * @private
+ * @see http://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
  */
-webdriver.stacktrace.V8_URL_PATTERN_ = ' (?:' +
-    '\\(unknown source\\)' + '|' +
-    '\\(native\\)' + '|' +
-    '\\((?:eval at )?' + webdriver.stacktrace.URL_PATTERN_ + '\\)' + '|' +
-    '\\((?:eval at <anonymous> \\(unknown source\\))?\\)' + '|' +
-    '\\(?(.*:\\d+:\\d+)\\)?' + '|' +
-    webdriver.stacktrace.URL_PATTERN_ + ')';
+webdriver.stacktrace.V8_LOCATION_PATTERN_ = ' (?:\\((.*)\\)|(.*))';
 
 
 /**
  * Regular expression for parsing one stack frame in V8.
  * @type {!RegExp}
+ * @const
  * @private
  */
 webdriver.stacktrace.V8_STACK_FRAME_REGEXP_ = new RegExp('^    at' +
     '(?:' + webdriver.stacktrace.V8_FUNCTION_CALL_PATTERN_ + ')?' +
-    webdriver.stacktrace.V8_URL_PATTERN_ + '$');
+    webdriver.stacktrace.V8_LOCATION_PATTERN_ + '$');
 
 
 /**
  * RegExp pattern for function call in the Firefox stack trace.
- * Creates 2 submatches with function name (optional) and arguments.
+ * Creates a submatch for the function name.
  * @type {string}
+ * @const
  * @private
  */
 webdriver.stacktrace.FIREFOX_FUNCTION_CALL_PATTERN_ =
     '(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + ')?' +
-    '(\\(.*\\))?@';
+    '(?:\\(.*\\))?@';
 
 
 /**
  * Regular expression for parsing one stack frame in Firefox.
  * @type {!RegExp}
+ * @const
  * @private
  */
 webdriver.stacktrace.FIREFOX_STACK_FRAME_REGEXP_ = new RegExp('^' +
@@ -254,16 +359,13 @@ webdriver.stacktrace.FIREFOX_STACK_FRAME_REGEXP_ = new RegExp('^' +
  */
 webdriver.stacktrace.OPERA_ANONYMOUS_FUNCTION_NAME_PATTERN_ =
     '<anonymous function(?:\\: ' +
-    '(?:(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ +
-    '(?:\\.' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + ')*)\\.)?' +
-    '(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + '))?>';
+    webdriver.stacktrace.QUALIFIED_NAME_PATTERN_ + ')?>';
 
 
 /**
  * RegExp pattern for a function call in an Opera stack frame.
- * Creates 4 (optional) submatches: the function name (if not anonymous),
- * the aliased context object and function name (if anonymous), and the
- * function call arguments.
+ * Creates 3 (optional) submatches: the function name (if not anonymous),
+ * the aliased context object and the function name (if anonymous).
  * @type {string}
  * @const
  * @private
@@ -271,7 +373,7 @@ webdriver.stacktrace.OPERA_ANONYMOUS_FUNCTION_NAME_PATTERN_ =
 webdriver.stacktrace.OPERA_FUNCTION_CALL_PATTERN_ =
     '(?:(?:(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + ')|' +
     webdriver.stacktrace.OPERA_ANONYMOUS_FUNCTION_NAME_PATTERN_ +
-    ')(\\(.*\\)))?@';
+    ')(?:\\(.*\\)))?@';
 
 
 /**
@@ -286,17 +388,63 @@ webdriver.stacktrace.OPERA_STACK_FRAME_REGEXP_ = new RegExp('^' +
 
 
 /**
+ * Placeholder for an unparsable frame in a stack trace generated by
+ * {@link goog.testing.stacktrace}.
+ * @type {string}
+ * @const
+ * @private
+ */
+webdriver.stacktrace.UNKNOWN_CLOSURE_FRAME_ = '> (unknown)';
+
+
+/**
+ * Representation of an anonymous frame in a stack trace generated by
+ * {@link goog.testing.stacktrace}.
+ * @type {string}
+ * @const
+ * @private
+ */
+webdriver.stacktrace.ANONYMOUS_CLOSURE_FRAME_ = '> anonymous';
+
+
+/**
+ * Pattern for a function call in a Closure stack trace. Creates three optional
+ * submatches: the context, function name, and alias.
+ * @type {string}
+ * @const
+ * @private
+ */
+webdriver.stacktrace.CLOSURE_FUNCTION_CALL_PATTERN_ =
+    webdriver.stacktrace.QUALIFIED_NAME_PATTERN_ +
+    '(?:\\(.*\\))?' +  // Ignore arguments if present.
+    webdriver.stacktrace.V8_ALIAS_PATTERN_;
+
+
+/**
+ * Regular expression for parsing a stack frame generated by Closure's
+ * {@link goog.testing.stacktrace}.
+ * @type {!RegExp}
+ * @const
+ * @private
+ */
+webdriver.stacktrace.CLOSURE_STACK_FRAME_REGEXP_ = new RegExp('^> ' +
+    '(?:' + webdriver.stacktrace.CLOSURE_FUNCTION_CALL_PATTERN_ +
+    '(?: at )?)?' +
+    '(?:(.*:\\d+:\\d+)|' + webdriver.stacktrace.URL_PATTERN_ + ')?$');
+
+
+/**
  * Parses one stack frame.
  * @param {string} frameStr The stack frame as string.
- * @return {webdriver.stacktrace.Frame} Stack frame object or null if the
+ * @return {webdriver.stacktrace.Frame_} Stack frame object or null if the
  *     parsing failed.
  * @private
  */
 webdriver.stacktrace.parseStackFrame_ = function(frameStr) {
   var m = frameStr.match(webdriver.stacktrace.V8_STACK_FRAME_REGEXP_);
   if (m) {
-    return new webdriver.stacktrace.Frame(m[1] || '', m[2] || '', m[3] || '',
-        '', m[4] || m[5] || '');
+    return new webdriver.stacktrace.Frame_(
+        m[1] || m[2], m[3], m[4], m[5] || m[6]);
   }
 
   if (frameStr.length >
@@ -306,14 +454,22 @@ webdriver.stacktrace.parseStackFrame_ = function(frameStr) {
 
   m = frameStr.match(webdriver.stacktrace.FIREFOX_STACK_FRAME_REGEXP_);
   if (m) {
-    return new webdriver.stacktrace.Frame('', m[1] || '', '', m[2] || '',
-        m[3] || '');
+    return new webdriver.stacktrace.Frame_('', m[1], '', m[2]);
   }
 
   m = frameStr.match(webdriver.stacktrace.OPERA_STACK_FRAME_REGEXP_);
   if (m) {
-    return new webdriver.stacktrace.Frame(m[2] || '', m[1] || m[3] || '',
-        '', m[4] || '', m[5] || '');
+    return new webdriver.stacktrace.Frame_(m[2], m[1] || m[3], '', m[4]);
+  }
+
+  if (frameStr == webdriver.stacktrace.UNKNOWN_CLOSURE_FRAME_ ||
+      frameStr == webdriver.stacktrace.ANONYMOUS_CLOSURE_FRAME_) {
+    return webdriver.stacktrace.ANONYMOUS_FRAME_;
+  }
+
+  m = frameStr.match(webdriver.stacktrace.CLOSURE_STACK_FRAME_REGEXP_);
+  if (m) {
+    return new webdriver.stacktrace.Frame_(m[1], m[2], m[3], m[4] || m[5]);
   }
 
   return null;
@@ -323,7 +479,7 @@ webdriver.stacktrace.parseStackFrame_ = function(frameStr) {
 /**
  * Parses a long firefox stack frame.
  * @param {string} frameStr The stack frame as string.
- * @return {!webdriver.stacktrace.Frame} Stack frame object.
+ * @return {!webdriver.stacktrace.Frame_} Stack frame object.
  * @private
  */
 webdriver.stacktrace.parseLongFirefoxFrame_ = function(frameStr) {
@@ -338,33 +494,54 @@ webdriver.stacktrace.parseLongFirefoxFrame_ = function(frameStr) {
   if ((lastAmpersand >= 0) && (lastAmpersand + 1 < lastColon)) {
     loc = frameStr.substring(lastAmpersand + 1);
   }
-  var args = '';
-  if ((firstParen >= 0 && lastAmpersand > 0) &&
-      (firstParen < lastAmpersand)) {
-    args = frameStr.substring(firstParen, lastAmpersand);
-  }
-  return new webdriver.stacktrace.Frame('', functionName, '', args, loc);
+  return new webdriver.stacktrace.Frame_('', functionName, '', loc);
 };
 
 
 /**
- * Parses the browser's native stack trace.
- * @param {string} stack Stack trace.
- * @return {!Array.<webdriver.stacktrace.Frame>} Stack frames. The
+ * Formats an error's stack trace.
+ * @param {!(Error|goog.testing.JsUnitException)} error The error to format.
+ * @return {!(Error|goog.testing.JsUnitException)} The formatted error.
+ */
+webdriver.stacktrace.format = function(error) {
+  var stack = webdriver.stacktrace.parse(error).join('\n');
+
+  // Ensure the error is in the V8 style with the error's string representation
+  // prepended to the stack.
+  error.stack = error.toString() + '\n' + stack;
+  return error;
+};
+
+
+/**
+ * Parses an Error object's stack trace.
+ * @param {!(Error|goog.testing.JsUnitException)} error The error.
+ * @return {!Array.<webdriver.stacktrace.Frame_>} Stack frames. The
  *     unrecognized frames will be nulled out.
  * @private
  */
-webdriver.stacktrace.parse_ = function(stack) {
+webdriver.stacktrace.parse = function(error) {
+  var stack = error.stack || error.stackTrace;
+  if (!stack) {
+    return [];
+  }
+
+  // V8 prepends the string representation of an error to its stack trace.
+  // Remove this so the stack trace is parsed consistently with the other JS
+  // engines.
+  var errorStr = error + '\n';
+
+  if (goog.string.startsWith(stack, errorStr)) {
+    stack = stack.substring(errorStr.length);
+  }
+
   var lines = stack.
-      // V8 appends a header line with the error name and message. Remove this
-      // so the stacktrace is parsed consistently with the other JS engines.
-      replace(/^Error\n/, '').
       replace(/\s*$/, '').
       split('\n');
   var frames = [];
   for (var i = 0; i < lines.length; i++) {
     var frame = webdriver.stacktrace.parseStackFrame_(lines[i]);
-    frames.push(frame || '(unknown)');
+    frames.push(frame || webdriver.stacktrace.ANONYMOUS_FRAME_);
   }
   return frames;
 };
@@ -372,10 +549,10 @@ webdriver.stacktrace.parse_ = function(stack) {
 
 /**
  * Gets the native stack trace if available otherwise follows the call chain.
- * @param {number=} opt_slice The number of frames to remove from the top of
- *     the generated stack trace.
+ * The generated trace will exclude all frames up to and including the call to
+ * this function.
  * @return {string} The stack trace in canonical format.
  */
-webdriver.stacktrace.get = function(opt_slice) {
-  return new webdriver.stacktrace.Snapshot(opt_slice).getStacktrace();
+webdriver.stacktrace.get = function() {
+  return new webdriver.stacktrace.Snapshot(1).getStacktrace();
 };

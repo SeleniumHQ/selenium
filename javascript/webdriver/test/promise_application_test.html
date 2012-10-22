@@ -1833,7 +1833,7 @@ limitations under the License.
   }
 
   function assertFrame(description, frame) {
-    var regexp = new RegExp('^' + description + '(\\n  > .*)*$');
+    var regexp = new RegExp('^' + description + '(\\n    at .*)*$');
     assertTrue(
         'Frame did not match expected regex:' +
             '\n expected: ' + regexp +

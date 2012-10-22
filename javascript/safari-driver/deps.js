@@ -32,7 +32,8 @@ goog.addDependency(
         'goog.events.BrowserEvent',
         'goog.events.Event',
         'goog.events.EventHandler',
-        'goog.events.EventTarget'
+        'goog.events.EventTarget',
+        'goog.testing.JsUnitException'
     ],
     // And symbols we require, which is always empty here.
     []);

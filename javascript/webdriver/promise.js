@@ -956,27 +956,34 @@ webdriver.promise.Application.prototype.trimHistory_ = function() {
 
 
 /**
+ * Property used to track whether an error has been annotated by
+ * {@link webdriver.promise.Application#annotateError}.
+ * @type {string}
+ * @const
+ * @private
+ */
+webdriver.promise.Application.ANNOTATION_PROPERTY_ =
+    'webdriver_promise_error_';
+
+
+/**
  * Appends a summary of this application's recent task history to the given
- * error's message.
- * @param {(string|!Error)} e The error to annotate.
- * @return {(string|!Error)} The annotated error.
+ * error's stack trace. This function will also ensure the error's stack trace
+ * is in canonical form.
+ * @param {!(Error|goog.testing.JsUnitException)} e The error to annotate.
+ * @return {!(Error|goog.testing.JsUnitException)} The annotated error.
  */
 webdriver.promise.Application.prototype.annotateError = function(e) {
-  var tasks = goog.array.map(this.getHistory(), function(task) {
-    return task.split('\n').join('\n| ');
-  });
-
-  var history = [
-    '\n+------------------------- Recent Task(s) -------------------------',
-    '\n| ', tasks.join('\n| ----- scheduled in -----\n| '),
-    '\n+-------------------------------------------------------------------'
-  ].join('');
-
-  if (e && goog.isString(e.message)) {
-    e.message += history;
-  } else {
-    e = e + history;
+  if (!!e[webdriver.promise.Application.ANNOTATION_PROPERTY_]) {
+    return e;
   }
+
+  e = webdriver.stacktrace.format(e);
+  e.stack += [
+    '\n==== async task ====\n',
+    this.getHistory().join('\n==== async task ====\n')
+  ].join('');
+  e[webdriver.promise.Application.ANNOTATION_PROPERTY_] = true;
   return e;
 };
 
@@ -1007,10 +1014,9 @@ webdriver.promise.Application.prototype.schedule = function(description, fn) {
     this.activeFrame_ = new webdriver.promise.Application.Frame_();
   }
 
-  // Remove the first 3 frames from the generated stack trace. The first two
-  // will be references to where webdriver.stacktrace generated the stacktrace,
-  // and the third will be this function.
-  var snapshot = new webdriver.stacktrace.Snapshot(3);
+  // Trim an extra frame off the generated stack trace for the call to this
+  // function.
+  var snapshot = new webdriver.stacktrace.Snapshot(1);
   var task = new webdriver.promise.Application.Task_(fn, description, snapshot);
   var scheduleIn = this.schedulingFrame_ || this.activeFrame_;
   scheduleIn.addChild(task);
@@ -1165,12 +1171,13 @@ webdriver.promise.Application.prototype.runEventLoop_ = function() {
 
   this.trimHistory_();
   var result = this.runInNewFrame_(task.execute, true);
+  var self = this;
   webdriver.promise.asap(result, function(result) {
     markTaskComplete();
     task.resolve(result);
   }, function(error) {
     markTaskComplete();
-    task.reject(error);
+    task.reject(self.annotateError(error));
   });
 };
 
@@ -1232,6 +1239,14 @@ webdriver.promise.Application.prototype.resolveFrame_ = function(frame) {
  * @private
  */
 webdriver.promise.Application.prototype.abortFrame_ = function(error) {
+  // Annotate the error value if it is Error-like.  We cannot use an instanceof
+  // check because in Node the value may come from a different context that
+  // this script so instanceof Error would fail.
+  if (goog.isObject(error) &&
+      goog.isString(error['message']) &&
+      goog.isString(error['stack'])) {
+    this.annotateError((/** @type {!Error} */error));
+  }
   this.numAbortedFrames_++;
 
   if (!this.activeFrame_) {
@@ -1546,7 +1561,7 @@ webdriver.promise.Application.Frame_.prototype.lockFrame = function() {
 /**
  * Adds a new node to this frame.
  * @param {!(webdriver.promise.Application.Frame_|
-    *           webdriver.promise.Application.Task_)} node The node to insert.
+ *           webdriver.promise.Application.Task_)} node The node to insert.
  */
 webdriver.promise.Application.Frame_.prototype.addChild = function(node) {
   if (this.lastInsertedChild_ &&
@@ -1657,7 +1672,7 @@ webdriver.promise.Application.Task_.prototype.toString = function() {
   var stack = this.snapshot_.getStacktrace();
   var ret = this.description_;
   if (stack) {
-    ret += '\n  > ' + stack.split('\n').join('\n  > ');
+    ret += '\n' + stack;
   }
   return ret;
 };

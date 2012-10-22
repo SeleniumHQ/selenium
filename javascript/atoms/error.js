@@ -137,6 +137,6 @@ bot.Error.prototype.isAutomationError = true;
 if (goog.DEBUG) {
   /** @return {string} The string representation of this error. */
   bot.Error.prototype.toString = function() {
-    return '[' + this.name + '] ' + this.message;
+    return this.name + ': ' + this.message;
   };
 }

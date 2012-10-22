@@ -27,9 +27,9 @@
 
 goog.provide('webdriver.testing.TestCase');
 
-goog.require('goog.array');
 goog.require('goog.testing.TestCase');
 goog.require('webdriver.promise.Application');
+/** @suppress {extraRequire} Imported for user convenience. */
 goog.require('webdriver.testing.asserts');
 
 
@@ -79,6 +79,40 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
     hadError = true;
     self.doError(test, app.annotateError(e));
   }
+};
+
+
+/** @override */
+webdriver.testing.TestCase.prototype.logError = function(name, opt_e) {
+  var errMsg = null;
+  var stack = null;
+  if (opt_e) {
+    this.log(opt_e);
+    if (goog.isString(opt_e)) {
+      errMsg = opt_e;
+    } else {
+      // In case someone calls this function directly, make sure we have a
+      // properly annotated error.
+      webdriver.promise.Application.getInstance().annotateError(opt_e);
+      errMsg = opt_e.toString();
+      stack = opt_e.stack.substring(errMsg.length + 1);
+    }
+  } else {
+    errMsg = 'An unknown error occurred';
+  }
+  var err = new goog.testing.TestCase.Error(name, errMsg, stack);
+
+  // Avoid double logging.
+  if (!opt_e || !opt_e['isJsUnitException'] ||
+      !opt_e['loggedJsUnitException']) {
+    this.saveMessage(err.toString());
+  }
+
+  if (opt_e && opt_e['isJsUnitException']) {
+    opt_e['loggedJsUnitException'] = true;
+  }
+
+  return err;
 };
 
 

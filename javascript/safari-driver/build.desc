@@ -18,6 +18,7 @@ js_library(name = "common_lib",
 # The global extension script.
 js_binary(name = "extension",
   srcs = [
+    "deps.js",
     "extension/commands.js",
     "extension/extension.js",
     "extension/server.js",

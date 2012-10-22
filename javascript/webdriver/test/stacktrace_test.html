@@ -20,128 +20,221 @@ limitations under the License.
 <script>
   goog.require('goog.string');
   goog.require('goog.testing.ExpectedFailures');
+  goog.require('goog.testing.JsUnitException');
+  goog.require('goog.testing.PropertyReplacer');
   goog.require('goog.testing.StrictMock');
   goog.require('goog.testing.jsunit');
+  goog.require('goog.testing.stacktrace');
   goog.require('goog.userAgent');
   goog.require('webdriver.stacktrace');
 </script>
 <script>
 var expectedFailures;
+var stubs;
 
 function setUpPage() {
   expectedFailures = new goog.testing.ExpectedFailures();
+  stubs = new goog.testing.PropertyReplacer();
 }
 
 function tearDown() {
   expectedFailures.handleTearDown();
+  stubs.reset();
 }
 
-function assertStackFrame(message, frameString, expectedFrame) {
-  var frame = webdriver.stacktrace.parseStackFrame_(frameString);
-  assertObjectEquals(message, expectedFrame, frame);
+
+function assertStackFrame(message, frameOrFrameString, expectedFrame) {
+  var frame = frameOrFrameString;
+  if (goog.isString(frame)) {
+    frame = webdriver.stacktrace.parseStackFrame_(frame);
+    assertNotNull(message + '\nunable to parse frame: ' + frameOrFrameString,
+        frame);
+  }
+  var diff = [];
+  for (var prop in expectedFrame) {
+    if (goog.isString(expectedFrame[prop]) &&
+        frame[prop] !== expectedFrame[prop]) {
+      diff.push([
+        prop, ': <', expectedFrame[prop], '> !== <', frame[prop], '>'
+      ].join(''));
+    }
+  }
+  if (diff.length) {
+    fail(message +
+        '\nfor:      <' + frameOrFrameString + '>' +
+        '\nexpected: <' + expectedFrame + '>' +
+        '\nbut was:  <' + frame + '>' +
+        '\n    ' +
+        diff.join('\n    '));
+  }
 }
 
 function testParseStackFrameInV8() {
-  assertStackFrame('exception name only',
+  assertStackFrame('exception name only (node v0.8)',
       '    at Error (unknown source)',
-      new webdriver.stacktrace.Frame('', 'Error', '', '', ''));
+      new webdriver.stacktrace.Frame_('', 'Error', '', 'unknown source'));
+
+  assertStackFrame('exception name only (chrome v22)',
+      '    at Error (<anonymous>)',
+      new webdriver.stacktrace.Frame_('', 'Error', '', '<anonymous>'));
 
   assertStackFrame('context object + function name + url',
       '    at Object.assert (file:///.../asserts.js:29:10)',
-      new webdriver.stacktrace.Frame('Object', 'assert', '', '',
+      new webdriver.stacktrace.Frame_('Object', 'assert', '',
           'file:///.../asserts.js:29:10'));
 
   assertStackFrame('context object + function name + file',
       '    at Object.assert (asserts.js:29:10)',
-      new webdriver.stacktrace.Frame('Object', 'assert', '', '',
+      new webdriver.stacktrace.Frame_('Object', 'assert', '',
           'asserts.js:29:10'));
 
   assertStackFrame('context object + anonymous function + file',
       '    at Interface.<anonymous> (repl.js:182:12)',
-      new webdriver.stacktrace.Frame('Interface', '<anonymous>', '', '',
+      new webdriver.stacktrace.Frame_('Interface', '<anonymous>', '',
           'repl.js:182:12'));
 
   assertStackFrame('url only',
       '    at http://www.example.com/jsunit.js:117:13',
-      new webdriver.stacktrace.Frame('', '', '', '',
+      new webdriver.stacktrace.Frame_('', '', '',
           'http://www.example.com/jsunit.js:117:13'));
 
   assertStackFrame('file only',
       '    at repl:1:57',
-      new webdriver.stacktrace.Frame('', '', '', '', 'repl:1:57'));
+      new webdriver.stacktrace.Frame_('', '', '', 'repl:1:57'));
 
   assertStackFrame('function alias',
       '    at [object Object].exec [as execute] (file:///foo)',
-      new webdriver.stacktrace.Frame('[object Object]', 'exec',
-          'execute', '', 'file:///foo'));
+      new webdriver.stacktrace.Frame_('[object Object]', 'exec',
+          'execute', 'file:///foo'));
 
   assertStackFrame('constructor call',
       '    at new Class (file:///foo)',
-      new webdriver.stacktrace.Frame('', 'new Class', '', '', 'file:///foo'));
+      new webdriver.stacktrace.Frame_('new ', 'Class', '', 'file:///foo'));
+
+  assertStackFrame('object property constructor call',
+      '    at new [object Object].foo (repl:1:2)',
+      new webdriver.stacktrace.Frame_('new [object Object]', 'foo', '',
+          'repl:1:2'));
+
+  assertStackFrame('namespaced constructor call',
+      '    at new foo.bar.Class (foo:1:2)',
+      new webdriver.stacktrace.Frame_('new foo.bar', 'Class', '', 'foo:1:2'));
 
   assertStackFrame('anonymous constructor call',
       '    at new <anonymous> (file:///foo)',
-      new webdriver.stacktrace.Frame('', 'new <anonymous>', '', '',
+      new webdriver.stacktrace.Frame_('new ', '<anonymous>', '',
           'file:///foo'));
 
   assertStackFrame('native function call',
       '    at Array.forEach (native)',
-      new webdriver.stacktrace.Frame('Array', 'forEach', '', '', ''));
+      new webdriver.stacktrace.Frame_('Array', 'forEach', '', 'native'));
 
   assertStackFrame('eval',
       '    at foo (eval at file://bar)',
-      new webdriver.stacktrace.Frame('', 'foo', '', '', 'file://bar'));
+      new webdriver.stacktrace.Frame_('', 'foo', '', 'eval at file://bar'));
+
+  assertStackFrame('nested anonymous eval',
+      '    at eval (eval at <anonymous> (unknown source), <anonymous>:2:7)',
+      new webdriver.stacktrace.Frame_('', 'eval', '',
+          'eval at <anonymous> (unknown source), <anonymous>:2:7'));
 }
 
 function testParseStackFrameInOpera() {
-  assertStackFrame('empty frame',
-      '@', new webdriver.stacktrace.Frame('', '', '', '', ''));
+  assertStackFrame('empty frame', '@', webdriver.stacktrace.ANONYMOUS_FRAME_);
 
   assertStackFrame('javascript path only',
       '@javascript:console.log(Error().stack):1',
-      new webdriver.stacktrace.Frame('', '', '', '',
+      new webdriver.stacktrace.Frame_('', '', '',
           'javascript:console.log(Error().stack):1'));
 
   assertStackFrame('path only',
       '@file:///foo:42',
-      new webdriver.stacktrace.Frame('', '', '', '', 'file:///foo:42'));
+      new webdriver.stacktrace.Frame_('', '', '', 'file:///foo:42'));
 
   // (function go() { throw Error() })()
   // var c = go; c()
   assertStackFrame('name and empty path',
       'go([arguments not available])@',
-      new webdriver.stacktrace.Frame('', 'go', '',
-          '([arguments not available])', ''));
+      new webdriver.stacktrace.Frame_('', 'go', '', ''));
 
   assertStackFrame('name and path',
       'go([arguments not available])@file:///foo:42',
-      new webdriver.stacktrace.Frame('', 'go', '',
-          '([arguments not available])', 'file:///foo:42'));
+      new webdriver.stacktrace.Frame_('', 'go', '', 'file:///foo:42'));
 
   // (function() { throw Error() })()
   assertStackFrame('anonymous function',
       '<anonymous function>([arguments not available])@file:///foo:42',
-      new webdriver.stacktrace.Frame('', '', '',
-          '([arguments not available])', 'file:///foo:42'));
+      new webdriver.stacktrace.Frame_('', '', '', 'file:///foo:42'));
 
   // var b = {foo: function() { throw Error() }}
   assertStackFrame('object literal function',
       '<anonymous function: foo>()@file:///foo:42',
-      new webdriver.stacktrace.Frame('', 'foo', '', '()', 'file:///foo:42'));
+      new webdriver.stacktrace.Frame_('', 'foo', '', 'file:///foo:42'));
 
   // var c = {}; c.foo = function() { throw Error() }
   assertStackFrame('named object literal function',
       '<anonymous function: c.foo>()@file:///foo:42',
-      new webdriver.stacktrace.Frame('c', 'foo', '', '()', 'file:///foo:42'));
+      new webdriver.stacktrace.Frame_('c', 'foo', '', 'file:///foo:42'));
 
   assertStackFrame('prototype function',
       '<anonymous function: Foo.prototype.bar>()@',
-      new webdriver.stacktrace.Frame('Foo.prototype', 'bar', '', '()', ''));
+      new webdriver.stacktrace.Frame_('Foo.prototype', 'bar', '', ''));
 
   assertStackFrame('namespaced prototype function',
       '<anonymous function: goog.Foo.prototype.bar>()@',
-      new webdriver.stacktrace.Frame(
-          'goog.Foo.prototype', 'bar', '', '()', ''));
+      new webdriver.stacktrace.Frame_(
+          'goog.Foo.prototype', 'bar', '', ''));
+}
+
+function testParseClosureCanonicalStackFrame() {
+  assertStackFrame('unknown frame', '> (unknown)',
+      webdriver.stacktrace.ANONYMOUS_FRAME_);
+  assertStackFrame('anonymous frame', '> anonymous',
+      webdriver.stacktrace.ANONYMOUS_FRAME_);
+
+  assertStackFrame('name only', '> foo',
+      new webdriver.stacktrace.Frame_('', 'foo', '', ''));
+
+  assertStackFrame('name and path', '> foo at http://x:123',
+      new webdriver.stacktrace.Frame_('', 'foo', '', 'http://x:123'));
+
+  assertStackFrame('anonymous function with path',
+      '> anonymous at file:///x/y/z',
+      new webdriver.stacktrace.Frame_('', 'anonymous', '', 'file:///x/y/z'));
+
+  assertStackFrame('anonymous function with v8 path',
+      '> anonymous at /x/y/z:12:34',
+      new webdriver.stacktrace.Frame_('', 'anonymous', '', '/x/y/z:12:34'));
+
+  assertStackFrame('context and name only',
+      '> foo.bar', new webdriver.stacktrace.Frame_('foo', 'bar', '', ''));
+
+  assertStackFrame('name and alias',
+      '> foo [as bar]', new webdriver.stacktrace.Frame_('', 'foo', 'bar', ''));
+
+  assertStackFrame('context, name, and alias',
+      '> foo.bar [as baz]',
+      new webdriver.stacktrace.Frame_('foo', 'bar', 'baz', ''));
+
+  assertStackFrame('path only', '> http://x:123',
+      new webdriver.stacktrace.Frame_('', '', '', 'http://x:123'));
+
+  assertStackFrame('name and arguments',
+      '> foo(arguments)', new webdriver.stacktrace.Frame_('', 'foo', '', ''));
+
+  assertStackFrame('full frame',
+      '> foo.bar(123, "abc") [as baz] at http://x:123',
+      new webdriver.stacktrace.Frame_('foo', 'bar', 'baz', 'http://x:123'));
+
+  assertStackFrame('name and url with sub-domain',
+      '> foo at http://x.y.z:80/path:1:2',
+      new webdriver.stacktrace.Frame_('', 'foo', '',
+          'http://x.y.z:80/path:1:2'));
+
+  assertStackFrame('name and url with sub-domain',
+      '> foo.bar.baz at http://x.y.z:80/path:1:2',
+      new webdriver.stacktrace.Frame_('foo.bar', 'baz', '',
+          'http://x.y.z:80/path:1:2'));
 }
 
 // All test strings are parsed with the conventional and long
@@ -149,8 +242,7 @@ function testParseStackFrameInOpera() {
 function testParseStackFrameInFirefox() {
   var frameString = 'Error("Assertion failed")@:0';
   var frame = webdriver.stacktrace.parseStackFrame_(frameString);
-  var expected = new webdriver.stacktrace.Frame('', 'Error', '',
-      '("Assertion failed")', '');
+  var expected = new webdriver.stacktrace.Frame_('', 'Error', '', '');
   assertObjectEquals('function name + arguments', expected, frame);
 
   frame = webdriver.stacktrace.parseLongFirefoxFrame_(frameString);
@@ -158,8 +250,7 @@ function testParseStackFrameInFirefox() {
 
   frameString = '()@file:///foo:42';
   frame = webdriver.stacktrace.parseStackFrame_(frameString);
-  expected = new webdriver.stacktrace.Frame('', '', '', '()',
-      'file:///foo:42');
+  expected = new webdriver.stacktrace.Frame_('', '', '', 'file:///foo:42');
   assertObjectEquals('anonymous function', expected, frame);
 
   frame = webdriver.stacktrace.parseLongFirefoxFrame_(frameString);
@@ -167,18 +258,36 @@ function testParseStackFrameInFirefox() {
 
   frameString = '@javascript:alert(0)';
   frame = webdriver.stacktrace.parseStackFrame_(frameString);
-  expected = new webdriver.stacktrace.Frame('', '', '', '',
-      'javascript:alert(0)');
+  expected = new webdriver.stacktrace.Frame_('', '', '', 'javascript:alert(0)');
   assertObjectEquals('anonymous function', expected, frame);
 
   frame = webdriver.stacktrace.parseLongFirefoxFrame_(frameString);
-  assertObjectEquals('anonymous function', expected, frame);}
+  assertObjectEquals('anonymous function', expected, frame);
+}
 
 function testStringRepresentation() {
-  var frame = new webdriver.stacktrace.Frame('window', 'foo', 'bar',
-      '(args, should, be, ignored)', 'http://x?a=1&b=2:1');
-  assertEquals('window.foo() [as bar] at http://x?a=1&b=2:1',
+  var frame = new webdriver.stacktrace.Frame_('window', 'foo', 'bar',
+      'http://x?a=1&b=2:1');
+  assertEquals('    at window.foo [as bar] (http://x?a=1&b=2:1)',
       frame.toString());
+
+  frame = new webdriver.stacktrace.Frame_('', 'Error', '', '');
+  assertEquals('    at Error (<anonymous>)', frame.toString());
+
+  assertEquals('    at <anonymous>',
+      webdriver.stacktrace.ANONYMOUS_FRAME_.toString());
+
+  frame = new webdriver.stacktrace.Frame_('', '', '', 'http://x:123');
+  assertEquals('    at http://x:123', frame.toString());
+
+  frame = new webdriver.stacktrace.Frame_('foo', 'bar', '', 'http://x:123');
+  assertEquals('    at foo.bar (http://x:123)', frame.toString());
+
+  frame = new webdriver.stacktrace.Frame_('new ', 'Foo', '', 'http://x:123');
+  assertEquals('    at new Foo (http://x:123)', frame.toString());
+
+  frame = new webdriver.stacktrace.Frame_('new foo', 'Bar', '', '');
+  assertEquals('    at new foo.Bar (<anonymous>)', frame.toString());
 }
 
 // Create a stack trace string with one modest record and one long record,
@@ -192,14 +301,99 @@ function testParsingLongStackTrace() {
       'longFrame',
       longArg,
       '@http://google.com/somescript:0\n');
-  var frames = webdriver.stacktrace.parse_(stackTrace);
+  var error = {stack: stackTrace};
+  var frames = webdriver.stacktrace.parse(error);
   assertEquals('number of returned frames', 2, frames.length);
-  var expected = new webdriver.stacktrace.Frame(
-      '', 'shortFrame', '', '()', '');
-  assertObjectEquals('short frame', expected, frames[0]);
+  var expected = new webdriver.stacktrace.Frame_('', 'shortFrame', '', '');
+  assertStackFrame('short frame', frames[0], expected);
 
-  expected = new webdriver.stacktrace.Frame(
-      '', 'longFrame', '', longArg, 'http://google.com/somescript:0');
-  assertObjectEquals('exception name only', expected, frames[1]);
+  expected = new webdriver.stacktrace.Frame_(
+      '', 'longFrame', '', 'http://google.com/somescript:0');
+  assertStackFrame('exception name only', frames[1], expected);
+}
+
+function testRemovesV8MessageHeaderBeforeParsingStack() {
+  var errorStub = {
+    toString: function() { return 'Error: foo'; },
+    stack:
+        'Error: foo\n' +
+        '    at Color.red (http://x:1234)\n' +
+        '    at Foo.bar (http://y:5678)'
+  };
+
+  var frames = webdriver.stacktrace.parse(errorStub);
+  assertEquals(2, frames.length);
+  assertEquals('    at Color.red (http://x:1234)', frames[0].toString());
+  assertEquals('    at Foo.bar (http://y:5678)', frames[1].toString());
+}
+
+function testCanParseClosureJsUnitExceptions() {
+  stubs.set(goog.testing.stacktrace, 'get', function() {
+    return '> Color.red at http://x:1234\n' +
+           '> Foo.bar at http://y:5678';
+  });
+
+  var error = new goog.testing.JsUnitException('stub');
+  stubs.reset();
+
+  var frames = webdriver.stacktrace.parse(error);
+  assertEquals(2, frames.length);
+  assertEquals('    at Color.red (http://x:1234)', frames[0].toString());
+  assertEquals('    at Foo.bar (http://y:5678)', frames[1].toString());
+}
+
+function testFormattingAV8StyleError() {
+  var errorStub = {
+    toString: function() { return 'Error: foo'; },
+    stack:
+        'Error: foo\n' +
+        '    at Color.red (http://x:1234)\n' +
+        '    at Foo.bar (http://y:5678)'
+  };
+
+  var ret = webdriver.stacktrace.format(errorStub);
+  assertEquals(errorStub, ret);
+  assertEquals([
+    'Error: foo',
+    '    at Color.red (http://x:1234)',
+    '    at Foo.bar (http://y:5678)'
+  ].join('\n'), ret.stack);
+}
+
+function testFormattingAFirefoxStyleError() {
+  var errorStub = {
+    toString: function() { return 'Error: boom'; },
+    stack:
+        'foo@file:///foo/foo.js:1\n' +
+        '@file:///bar/bar.js:1'
+  };
+
+  var ret = webdriver.stacktrace.format(errorStub);
+  assertEquals(errorStub, ret);
+  assertEquals([
+    'Error: boom',
+    '    at foo (file:///foo/foo.js:1)',
+    '    at file:///bar/bar.js:1'
+  ].join('\n'), ret.stack);
+}
+
+function testInsertsAnAnonymousFrameWhenUnableToParse() {
+  var errorStub = {
+    toString: function() { return 'Error: boom'; },
+    stack:
+        'foo@file:///foo/foo.js:1\n' +
+        'this is unparsable garbage\n' +
+        '@file:///bar/bar.js:1'
+  };
+
+  var ret = webdriver.stacktrace.format(errorStub);
+  assertEquals(errorStub, ret);
+  assertEquals([
+    'Error: boom',
+    '    at foo (file:///foo/foo.js:1)',
+    '    at <anonymous>',
+    '    at file:///bar/bar.js:1'
+  ].join('\n'), ret.stack);
 }
 </script>
+
