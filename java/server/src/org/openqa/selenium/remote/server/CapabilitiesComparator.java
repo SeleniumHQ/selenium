@@ -19,6 +19,8 @@ package org.openqa.selenium.remote.server;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
@@ -35,15 +37,20 @@ import java.util.Comparator;
  *   <li>and {@link Capabilities#getPlatform() platform}
  * </ol>
  * For all comparisons, if the capability is missing, that particular criteria shall not factor
- * into the comparison. When comparing platforms, preference will be given to an exact platform
- * match over a fuzzy match (e.g. Platform.WINDOWS will match Platform.WINDOWS before it matches
- * Platform.XP).
+ * into the comparison.
+ *
+ * <p>When comparing platforms, preference will be given to an exact platform match over a fuzzy
+ * match (e.g. Platform.WINDOWS will match Platform.WINDOWS before it matches Platform.XP).
+ * Furthermore, configurations matching the current system's platform will be given preference.
+ * For example, when {@code Platform.getCurrent() == Platform.WINDOWS}, a set of Capabilities
+ * with {@code Platform.WINDOWS} will score higher than one with {@code Platform.ANY}.
  */
 class CapabilitiesComparator implements Comparator<Capabilities> {
 
   private final Comparator<Capabilities> compareWith;
 
-  public CapabilitiesComparator(final Capabilities desiredCapabilities) {
+  public CapabilitiesComparator(final Capabilities desiredCapabilities,
+      final Platform currentPlatform) {
     final CapabilityScorer<String> browserNameScorer = CapabilityScorer.scoreAgainst(
         desiredCapabilities.getBrowserName());
     Comparator<Capabilities> byBrowserName = new Comparator<Capabilities>() {
@@ -76,6 +83,15 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
       desiredPlatform = Platform.ANY;
     }
 
+    final CapabilityScorer<Platform> currentPlatformScorer = new CurrentPlatformScorer(
+        currentPlatform, desiredPlatform);
+    Comparator<Capabilities> byCurrentPlatform = new Comparator<Capabilities>() {
+      public int compare(Capabilities c1, Capabilities c2) {
+        return currentPlatformScorer.score(c1.getPlatform())
+            - currentPlatformScorer.score(c2.getPlatform());
+      }
+    };
+
     final CapabilityScorer<Platform> strictPlatformScorer = CapabilityScorer.scoreAgainst(
         desiredPlatform);
     Comparator<Capabilities> byStrictPlatform = new Comparator<Capabilities>() {
@@ -98,13 +114,20 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
         byBrowserName,
         byVersion,
         byJavaScript,
+        byCurrentPlatform,
         byStrictPlatform,
         byFuzzyPlatform));
   }
 
   public static <T extends Capabilities> T getBestMatch(
       Capabilities against, Collection<T> toCompare) {
-    return Ordering.from(new CapabilitiesComparator(against)).max(toCompare);
+    return getBestMatch(against, toCompare, Platform.getCurrent());
+  }
+
+  @VisibleForTesting
+  static <T extends Capabilities> T getBestMatch(
+      Capabilities against, Collection<T> toCompare, Platform currentPlatform) {
+    return Ordering.from(new CapabilitiesComparator(against, currentPlatform)).max(toCompare);
   }
 
   public int compare(final Capabilities a, final Capabilities b) {
@@ -119,7 +142,7 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
     }
 
     public int score(T value) {
-      if (value == null) {
+      if (value == null || scoreAgainst == null) {
         return 0;
       } else if (value.equals(scoreAgainst)) {
         return 1;
@@ -129,6 +152,34 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
 
     static <T> CapabilityScorer<T> scoreAgainst(T value) {
       return new CapabilityScorer<T>(value);
+    }
+  }
+
+  private static class CurrentPlatformScorer extends CapabilityScorer<Platform> {
+
+    private final boolean currentIsDesired;
+
+    private CurrentPlatformScorer(Platform currentPlatform, Platform desiredPlatform) {
+      super(currentPlatform);
+      currentIsDesired = !isNullOrAny(currentPlatform)
+          && (currentPlatform.is(desiredPlatform) || desiredPlatform.is(currentPlatform));
+    }
+
+    private static boolean isNullOrAny(Platform p) {
+      return p == null || p.equals(Platform.ANY);
+    }
+
+    @Override
+    public int score(Platform value) {
+      if (!currentIsDesired) {
+        return 0;
+      }
+
+      if (value == null) {
+        value = Platform.ANY;
+      }
+
+      return scoreAgainst.is(value) ? 1 : -1;
     }
   }
 

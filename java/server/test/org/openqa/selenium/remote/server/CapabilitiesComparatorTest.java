@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.number.OrderingComparisons.greaterThan;
 import static org.hamcrest.number.OrderingComparisons.lessThan;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.remote.server.CapabilitiesComparator.getBestMatch;
 
@@ -103,8 +104,10 @@ public class CapabilitiesComparatorTest {
     Capabilities c2 = capabilities("firefox", "", Platform.ANY, true);
     Capabilities c3 = capabilities("firefox", "6", Platform.ANY, true);
 
-    assertGreaterThan(c1, c2);
-    assertGreaterThan(c1, c3);
+    assertEquals(0, comparator.compare(c1, c2));
+    assertEquals(0, comparator.compare(c2, c1));
+    assertEquals(0, comparator.compare(c1, c3));
+    assertEquals(0, comparator.compare(c3, c1));
   }
 
   @Test
@@ -115,6 +118,18 @@ public class CapabilitiesComparatorTest {
     Capabilities c2 = capabilities("firefox", "6", Platform.LINUX, true);
 
     assertGreaterThan(c1, c2);
+  }
+
+  @Test
+  public void shouldPreferCurrentPlatformOverOthers() {
+    comparator = compareBy(capabilities("firefox", "6", Platform.ANY, true), Platform.LINUX);
+
+    Capabilities c1 = capabilities("firefox", "6", Platform.ANY, true);
+    Capabilities c2 = capabilities("firefox", "6", Platform.LINUX, true);
+    Capabilities c3 = capabilities("firefox", "6", Platform.WINDOWS, true);
+
+    assertGreaterThan(c2, c1);
+    assertGreaterThan(c2, c3);
   }
 
   @Test
@@ -207,13 +222,34 @@ public class CapabilitiesComparatorTest {
     Capabilities xp = capabilities("internet explorer", "", Platform.XP, true);
     Capabilities vista = capabilities("internet explorer", "", Platform.VISTA, true);
 
-    assertThat(getBestMatch(vista, newArrayList(any)), equalTo(any));
-    assertThat(getBestMatch(vista, newArrayList(any, windows)), equalTo(windows));
-    assertThat(getBestMatch(vista, newArrayList(windows, xp, vista)), equalTo(vista));
-    assertThat(getBestMatch(vista, newArrayList(windows, xp)), equalTo(windows));
-    assertThat(getBestMatch(vista, newArrayList(xp, vista)), equalTo(vista));
-    assertThat(getBestMatch(vista, newArrayList(xp)), equalTo(xp));
-    assertThat(getBestMatch(vista, newArrayList(vista)), equalTo(vista));
+    Platform current = Platform.WINDOWS;
+    assertThat(getBestMatch(vista, newArrayList(any), current), equalTo(any));
+    assertThat(getBestMatch(vista, newArrayList(any, windows), current), equalTo(windows));
+    assertThat(getBestMatch(vista, newArrayList(windows, xp, vista), current), equalTo(vista));
+    assertThat(getBestMatch(vista, newArrayList(windows, xp), current), equalTo(windows));
+    assertThat(getBestMatch(vista, newArrayList(xp, vista), current), equalTo(vista));
+    assertThat(getBestMatch(vista, newArrayList(xp), current), equalTo(xp));
+    assertThat(getBestMatch(vista, newArrayList(vista), current), equalTo(vista));
+
+    current = Platform.VISTA;
+    assertThat(getBestMatch(vista, newArrayList(any), current), equalTo(any));
+    assertThat(getBestMatch(vista, newArrayList(any, windows), current), equalTo(windows));
+    assertThat(getBestMatch(vista, newArrayList(any, vista), current), equalTo(vista));
+    assertThat(getBestMatch(vista, newArrayList(windows, xp, vista), current), equalTo(vista));
+    assertThat(getBestMatch(vista, newArrayList(windows, xp), current), equalTo(windows));
+    assertThat(getBestMatch(vista, newArrayList(xp, vista), current), equalTo(vista));
+    assertThat(getBestMatch(vista, newArrayList(xp), current), equalTo(xp));
+    assertThat(getBestMatch(vista, newArrayList(vista), current), equalTo(vista));
+
+    current = Platform.XP;
+    assertThat(getBestMatch(vista, newArrayList(any), current), equalTo(any));
+    assertThat(getBestMatch(vista, newArrayList(any, windows), current), equalTo(windows));
+    assertThat(getBestMatch(vista, newArrayList(any, vista), current), equalTo(vista));
+    assertThat(getBestMatch(vista, newArrayList(windows, xp, vista), current), equalTo(vista));
+    assertThat(getBestMatch(vista, newArrayList(windows, xp), current), equalTo(windows));
+    assertThat(getBestMatch(vista, newArrayList(xp, vista), current), equalTo(vista));
+    assertThat(getBestMatch(vista, newArrayList(xp), current), equalTo(xp));
+    assertThat(getBestMatch(vista, newArrayList(vista), current), equalTo(vista));
   }
 
   @Test
@@ -263,13 +299,89 @@ public class CapabilitiesComparatorTest {
         equalTo(windows));
   }
 
+  @Test
+  public void matchesWithPreferenceToCurrentPlatform() {
+    Capabilities chromeUnix = capabilities("chrome", "", Platform.UNIX, true);
+    Capabilities chromeVista = capabilities("chrome", "", Platform.VISTA, true);
+    Capabilities anyChrome = DesiredCapabilities.chrome();
+
+    List<Capabilities> allCaps = newArrayList(anyChrome, chromeVista, chromeUnix,
+        // This last option should never match.
+        DesiredCapabilities.firefox());
+
+    // Should match to corresponding platform.
+    assertThat(getBestMatch(anyChrome, allCaps, Platform.UNIX), equalTo(chromeUnix));
+    assertThat(getBestMatch(chromeUnix, allCaps, Platform.UNIX), equalTo(chromeUnix));
+
+    assertThat(getBestMatch(anyChrome, allCaps, Platform.LINUX), equalTo(chromeUnix));
+    assertThat(getBestMatch(chromeUnix, allCaps, Platform.LINUX), equalTo(chromeUnix));
+
+    assertThat(getBestMatch(anyChrome, allCaps, Platform.VISTA), equalTo(chromeVista));
+    assertThat(getBestMatch(chromeVista, allCaps, Platform.VISTA), equalTo(chromeVista));
+
+    assertThat(getBestMatch(anyChrome, allCaps, Platform.WINDOWS), equalTo(chromeVista));
+    assertThat(getBestMatch(chromeVista, allCaps, Platform.WINDOWS), equalTo(chromeVista));
+
+    // No configs registered to current platform, should fallback to normal matching rules.
+    assertThat(getBestMatch(anyChrome, allCaps, Platform.MAC), equalTo(anyChrome));
+    assertThat(getBestMatch(anyChrome, allCaps, Platform.XP), equalTo(anyChrome));
+  }
+
+  @Test
+  public void currentPlatformCheckDoesNotTrumpExactPlatformMatch() {
+    Capabilities chromeUnix = capabilities("chrome", "", Platform.UNIX, true);
+    Capabilities chromeVista = capabilities("chrome", "", Platform.VISTA, true);
+    Capabilities anyChrome = DesiredCapabilities.chrome();
+
+    List<Capabilities> allCaps = newArrayList(anyChrome, chromeVista, chromeUnix);
+
+    assertThat(getBestMatch(chromeVista, allCaps, Platform.UNIX), equalTo(chromeVista));
+    assertThat(getBestMatch(chromeVista, allCaps, Platform.LINUX), equalTo(chromeVista));
+    assertThat(getBestMatch(chromeVista, allCaps, Platform.MAC), equalTo(chromeVista));
+
+    assertThat(getBestMatch(chromeUnix, allCaps, Platform.MAC), equalTo(chromeUnix));
+    assertThat(getBestMatch(chromeUnix, allCaps, Platform.VISTA), equalTo(chromeUnix));
+    assertThat(getBestMatch(chromeUnix, allCaps, Platform.WINDOWS), equalTo(chromeUnix));
+  }
+
+  @Test
+  public void currentPlatformCheckDoesNotTrumpExactVersionMatch() {
+    Capabilities chromeUnix = capabilities("chrome", "", Platform.UNIX, true);
+    Capabilities chromeBetaUnix = capabilities("chrome", "beta", Platform.UNIX, true);
+    Capabilities chromeVista = capabilities("chrome", "", Platform.VISTA, true);
+    Capabilities anyChrome = DesiredCapabilities.chrome();
+
+    List<Capabilities> allCaps = newArrayList(anyChrome, chromeVista, chromeUnix, chromeBetaUnix);
+
+    assertThat(getBestMatch(chromeUnix, allCaps, Platform.UNIX), equalTo(chromeUnix));
+    assertThat(getBestMatch(chromeBetaUnix, allCaps, Platform.UNIX), equalTo(chromeBetaUnix));
+  }
+
+  @Test
+  public void absentExactMatchPrefersItemsInInputOrder() {
+    Capabilities chromeWindows = capabilities("chrome", "", Platform.WINDOWS, true);
+    Capabilities chromeVista = capabilities("chrome", "", Platform.VISTA, true);
+    Capabilities anyChrome = DesiredCapabilities.chrome();
+
+    List<Capabilities> allCaps = newArrayList(chromeWindows, chromeVista);
+    List<Capabilities> reversedCaps = Lists.reverse(allCaps);
+
+    assertThat(getBestMatch(anyChrome, allCaps, Platform.UNIX), equalTo(chromeWindows));
+    assertThat(getBestMatch(anyChrome, reversedCaps, Platform.UNIX), equalTo(chromeVista));
+  }
+
   private void assertGreaterThan(Capabilities a, Capabilities b) {
     assertThat(comparator.compare(a, b), greaterThan(0));
     assertThat(comparator.compare(b, a), lessThan(0));
   }
 
   private static Comparator<Capabilities> compareBy(Capabilities capabilities) {
-    return new CapabilitiesComparator(capabilities);
+    return compareBy(capabilities, Platform.ANY);
+  }
+
+  private static Comparator<Capabilities> compareBy(Capabilities capabilities,
+      Platform currentPlatform) {
+    return new CapabilitiesComparator(capabilities, currentPlatform);
   }
 
   private static Capabilities capabilities(String browserName, String version,
