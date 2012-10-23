@@ -16,13 +16,12 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Platform;
-
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 
 import java.util.Collection;
 import java.util.Comparator;
