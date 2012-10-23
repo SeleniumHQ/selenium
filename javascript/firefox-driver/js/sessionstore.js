@@ -110,7 +110,7 @@ wdSessionStoreService.prototype.createSession = function(response, desiredCaps,
   fxdriver.proxy.configure(desiredCaps['proxy']);
   fxdriver.modals.configure(desiredCaps['unexpectedAlertBehaviour']);
 
-  this.configure_(response, requiredCaps, driver);
+  this.configure_(response, desiredCaps, requiredCaps, driver);
   this.sessions_[id] = session;
   return session;
 };
@@ -122,15 +122,34 @@ wdSessionStoreService.prototype.createSession = function(response, desiredCaps,
  * @private
  */ 
 wdSessionStoreService.READ_ONLY_CAPABILITIES_ = { 
-  'javascriptEnabled':true, 
-  'takesScreenshot':true, 
-  'handlesAlerts':true, 
-  'cssSelectorsEnabled':true,
-  'rotatable':false
+  'javascriptEnabled': true, 
+  'takesScreenshot': true, 
+  'handlesAlerts': true, 
+  'cssSelectorsEnabled': true,
+  'rotatable': false
 };
+
+/**		
+ * Read-write capabilities for FirefoxDriver corresponding to (boolean)		
+ * profile preferences. NB! the native events capability is not mapped to a		
+ * Firefox preferences.		
+ * @type {!Object.<string, string>}		
+ * @const		
+ */		
+wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING = {		
+  'webStorageEnabled': 'dom.storage.enabled',		
+  'applicationCacheEnabled': 'browser.cache.offline.enable',		
+  'databaseEnabled': 'dom.indexedDB.enabled',		
+  'locationContextEnabled': 'geo.enabled',		
+  'browserConnectionEnabled': 'dom.network.enabled',		
+  'acceptSslCerts': 'webdriver_accept_untrusted_certs',		
+  'nativeEvents' : 'webdriver_enable_native_events'		
+};		
+// TODO: Don't save firefox specific capability acceptSslCerts as preferences.
 
 /**
  * @param {!Response} response The object to send the command response in.
+ * @param {!Object.<*>} desiredCaps A map describing desired capabilities.
  * @param {Object.<*>} requiredCaps A map describing required capabilities.
  * @param {!FirefoxDriver} driver The driver instance.
  * @private
