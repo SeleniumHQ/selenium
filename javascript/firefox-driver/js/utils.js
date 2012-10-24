@@ -98,12 +98,12 @@ function notifyOfCloseWindow(windowId) {
 }
 
 function notifyOfSwitchToWindow(windowId) {
-  if (Utils.useNativeEvents()) {
-    var events = Utils.getNativeEvents();
-    if (events) {
-      events.notifyOfSwitchToWindow(windowId);
-    }
-  }
+//  if (Utils.useNativeEvents()) {
+//    var events = Utils.getNativeEvents();
+//    if (events) {
+//      events.notifyOfSwitchToWindow(windowId);
+//    }
+//  }
 }
 
 Utils.newInstance = function(className, interfaceName) {
