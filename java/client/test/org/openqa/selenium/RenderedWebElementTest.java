@@ -21,6 +21,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
@@ -207,8 +208,9 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Ignore(
       value = {HTMLUNIT, IPHONE, SELENESE, OPERA, FIREFOX},
-      reason = "This is an IE only tests.")
+      reason = "This is an IE only tests")
   @NoDriverAfterTest
+  @NeedsLocalEnvironment
   @Test
   public void testPersistentHoverCanBeTurnedOff() throws Exception {
     if (!hasInputDevices()) {
