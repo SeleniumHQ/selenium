@@ -385,7 +385,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, CHROME}, reason = "IE crashes")
+  @Ignore(value = {CHROME})
   @Test
   public void testShouldHandleAlertOnPageUnload() {
     driver.findElement(By.id("open-page-with-onunload-alert")).click();
@@ -447,7 +447,7 @@ public class AlertsTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Ignore(value = {SELENESE, OPERA, OPERA_MOBILE})
   @Test
-  public void testCanQuitWhenAnAlersIsPresent() {
+  public void testCanQuitWhenAnAlertIsPresent() {
     driver.get(pages.alertsPage);
     driver.findElement(By.id("alert")).click();
     waitFor(alertToBePresent(driver));
