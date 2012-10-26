@@ -1,7 +1,45 @@
-v2.26.0 (not released)
+v2.26.0
 =======
 WebDriver:
   * Updated OperaDriver to 0.15.
+  * Added transparency support to the Color class.
+  * Increased lock time a bit for the FirefoxDriver to make tests more 
+    stable on Windows.
+  * Added the enablePersistenHover capability to allow the user to specify
+    whether to use the persistent hover thread in the IE driver. Defaults
+	to true for IE.
+  * Added support for native events for Firefox 15 and 16.
+  * Removed deprecation from ChromeDriver constructors that take a Capabilities
+    object. Also added a method to set experimental options in ChromeOptions
+	which may be used to set options that aren't exposed through the ChromeOptions
+    API.
+  * Fixed SafariDriver to allow calling .quit() consecutively without error.
+  * Modified FirefoxDriver to use atoms to switch between frames.
+  * FIXED: 4535: Hover still does not work perfectly in IE.
+  * FIXED: 4676: Unable to fire javascript events into SVG's. 
+  * FIXED: 4320: Impossible to IE run tests in parallel via TestNG.
+  * FIXED: 4309: 'Could not convert Native argument arg 0' error with Firefox.
+  * FIXED: 4593: Alert.accept() Cancels the Resend Alert/Dialog Box.
+  * FIXED: 4321: Upgrade HtmlUnitDriver to HtmlUnit 2.10.
+  * FIXED: 4639: Webdriver 2.25 fails to quit on Windows.
+  * FIXED: 3774: New SafariDriver sessions do not come with a clean profile.
+  * FIXED: 4375: Executing javascript hangs Firefox.
+  * FIXED: 4203: Java SafariDriver has limited websocket frame size.
+  * FIXED: 4165: WebDriver fails on a machine with no IP address.
+  * FIXED: 3969: SafariDriver should auto-dismiss alerts.
+
+WebDriverJS:
+  * FIXED: 4648: findElement errros not helpful.
+  * FIXED: 4687: webserverjs cannot find module in node.js.
+  * FIXED: 4649: Wrong Content-Length calculation in webdriverjs.
+  * FIXED: 4425: Webdriver.js regression: webdriver.By.* selectors defect when
+    using Node.js.
+
+Grid:
+  * FIXED: 4433: NPE at grid launch if invalid servlet class name is specified.
+  * FIXED: 4526: elenium node stop responding when there are 2 or more tests
+    waiting for a specific node.
+  * FIXED: 2549: "-role hub" doesn't allow Firefox to starts.
 
 v2.25.0
 =======

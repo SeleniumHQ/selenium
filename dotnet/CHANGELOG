@@ -1,5 +1,9 @@
 v2.26.0
 =======
+ * Prevent firefox from updating, checking and warning for extension and plugin
+   updates
+ * Bumping .NET HttpWebRequest service point connection limit to 2000. Fixes 
+   issue #4526.
  * Handled the case where a JSON Wire Protocol error response contains a null
    value for the message property. Also guarded against null values in other 
    members of the error response.
