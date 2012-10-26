@@ -17,7 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.testing;
 
+import java.util.logging.Logger;
+
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.Pages;
 import org.openqa.selenium.WebDriver;
@@ -35,6 +41,8 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SeleniumTestRunner.class)
 public abstract class JUnit4TestBase implements WrapsDriver {
+
+  private static final Logger logger = Logger.getLogger(JUnit4TestBase.class.getName());
 
   protected TestEnvironment environment;
   protected AppServer appServer;
@@ -60,6 +68,21 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     driver = actuallyCreateDriver();
   }
 
+  @Rule
+  public TestRule traceMethodName = new TestWatcher() {
+    @Override
+    protected void starting(Description description) {
+      super.starting(description);
+      logger.info(">>> Starting " + description);
+    }
+
+    @Override
+    protected void finished(Description description) {
+      super.finished(description);
+      logger.info("<<< Finished " + description);
+    }
+  };
+  
   public WebDriver getWrappedDriver() {
     return storedDriver.get();
   }
