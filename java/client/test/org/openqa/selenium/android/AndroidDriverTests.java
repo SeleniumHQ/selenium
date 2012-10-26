@@ -19,13 +19,15 @@ package org.openqa.selenium.android;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.StandardSeleniumTests;
+import org.openqa.selenium.interactions.touch.TouchTests;
 
 /**
  * Unit tests suite for Android driver.
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    StandardSeleniumTests.class
+    StandardSeleniumTests.class,
+    TouchTests.class
 })
 public class AndroidDriverTests {
 }

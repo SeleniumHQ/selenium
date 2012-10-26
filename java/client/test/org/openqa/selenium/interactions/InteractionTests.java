@@ -18,11 +18,6 @@ package org.openqa.selenium.interactions;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.interactions.touch.TouchDoubleTapTest;
-import org.openqa.selenium.interactions.touch.TouchFlickTest;
-import org.openqa.selenium.interactions.touch.TouchLongPressTest;
-import org.openqa.selenium.interactions.touch.TouchScrollTest;
-import org.openqa.selenium.interactions.touch.TouchSingleTapTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -33,11 +28,6 @@ import org.openqa.selenium.interactions.touch.TouchSingleTapTest;
     CompositeActionTest.class,
     IndividualKeyboardActionsTest.class,
     IndividualMouseActionsTest.class,
-    TouchDoubleTapTest.class,
-    TouchFlickTest.class,
-    TouchLongPressTest.class,
-    TouchScrollTest.class,
-    TouchSingleTapTest.class
 })
 public class InteractionTests {
 }

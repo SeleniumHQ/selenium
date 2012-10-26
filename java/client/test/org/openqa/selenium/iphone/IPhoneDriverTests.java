@@ -22,11 +22,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.StandardSeleniumTests;
+import org.openqa.selenium.interactions.touch.TouchTests;
 import org.openqa.selenium.testing.InProject;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
+    TouchTests.class,
     IPhoneSpecificTests.class
 })
 public class IPhoneDriverTests {

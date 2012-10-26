@@ -14,19 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-
-package org.openqa.selenium.opera.mobile;
+package org.openqa.selenium.interactions.touch;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.interactions.touch.TouchTests;
+import org.openqa.selenium.interactions.touch.TouchDoubleTapTest;
+import org.openqa.selenium.interactions.touch.TouchFlickTest;
+import org.openqa.selenium.interactions.touch.TouchLongPressTest;
+import org.openqa.selenium.interactions.touch.TouchScrollTest;
+import org.openqa.selenium.interactions.touch.TouchSingleTapTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    TouchTests.class
+    TouchDoubleTapTest.class,
+    TouchFlickTest.class,
+    TouchLongPressTest.class,
+    TouchScrollTest.class,
+    TouchSingleTapTest.class
 })
-public class OperaMobileDriverTests {
+public class TouchTests {
 }
