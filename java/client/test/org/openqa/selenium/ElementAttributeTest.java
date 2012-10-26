@@ -36,7 +36,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -251,7 +250,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(element.getAttribute("rows"), is("5"));
   }
 
-  @Ignore(FIREFOX)
   @Test
   public void testCanReturnATextApproximationOfTheStyleAttribute() {
     driver.get(pages.javascriptPage);
@@ -350,7 +348,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertNull(element2.getAttribute("nowrap"));
   }
 
-  @Ignore({IE, IPHONE, ANDROID, SELENESE})
+  @Ignore({IPHONE, ANDROID, SELENESE})
   @Test
   public void testShouldReturnTrueForPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);

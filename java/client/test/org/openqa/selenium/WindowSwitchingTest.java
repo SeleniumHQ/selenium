@@ -40,7 +40,6 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -182,7 +181,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({IE, FIREFOX, REMOTE, SELENESE})
+  @Ignore({IE, REMOTE, SELENESE})
   @Test
   public void testShouldBeAbleToIterateOverAllOpenWindows() {
     driver.get(pages.xhtmlTestPage);
