@@ -18,7 +18,7 @@ limitations under the License.
 #include "event_firing_thread.h"
 
 // Defaults to false, unless the driver explicitly turns this on.
-static boolean gEnablePersistentEventFiring = false;
+static bool gEnablePersistentEventFiring = false;
 // Thread for firing event
 HANDLE hConstantEventsThread = NULL;
 class EventFiringData
@@ -89,6 +89,10 @@ EventFiringData* EVENT_FIRING_DATA;
 
 void pausePersistentEventsFiring()
 {
+  if (!gEnablePersistentEventFiring) {
+    // Persistent event firing is disabled.
+    return;
+  }
   if ((hConstantEventsThread != NULL) && (EVENT_FIRING_DATA != NULL)) {
     EVENT_FIRING_DATA->pauseFiring();
     Sleep(10 /* ms */);
@@ -98,6 +102,10 @@ void pausePersistentEventsFiring()
 // Helper method to update the state of a given flag according to a toggle.
 static void setStateByFlag(bool shouldSetFlag, UINT flagValue)
 {
+  if (!gEnablePersistentEventFiring) {
+    // Persistent event firing is disabled.
+    return;
+  }
   if ((hConstantEventsThread == NULL) || (EVENT_FIRING_DATA == NULL)) {
     return;
   }
@@ -171,7 +179,7 @@ void stopPersistentEventFiring()
   }
 }
 
-void setEnablePersistentHover(boolean enablePersistentHover)
+void setEnablePersistentHover(bool enablePersistentHover)
 {
   gEnablePersistentEventFiring = enablePersistentHover;
 }
