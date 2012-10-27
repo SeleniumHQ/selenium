@@ -38,7 +38,6 @@ import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -388,7 +387,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     waitFor(elementTextToEqual(resultArea, expectedEvents));
   }
 
-  @Ignore(ALL)
+  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldClickElementInIFrame() {
     driver.get(pages.clicksPage);
