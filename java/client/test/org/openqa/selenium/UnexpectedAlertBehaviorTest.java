@@ -44,7 +44,7 @@ import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
-@Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE},
+@Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE},
         issues = {3862})
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
@@ -93,6 +93,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   }
   
   @Test
+  @Ignore(value = {IE}, reason = "IE: required capabilities not implemented")
   public void requiredUnhandledAlertCapabilityHasPriorityOverDesired() {
     // TODO: Resolve why this test doesn't work on the remote server
     assumeTrue(TestUtilities.isLocal());
@@ -109,7 +110,9 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   private void runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour behaviour, 
       String expectedAlertText) {
-    desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
+    if (behaviour != null) {
+      desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
+    }
     driver2 = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).get();
     runScenarioWithUnhandledAlert(expectedAlertText);
   }

@@ -727,7 +727,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("foobar"));
   }
 
-  @Ignore(value = {ANDROID, CHROME, FIREFOX, HTMLUNIT, IE, IPHONE, OPERA, SAFARI, SELENESE,
+  @Ignore(value = {ANDROID, HTMLUNIT, IPHONE, OPERA, SAFARI, SELENESE,
                    OPERA_MOBILE},
           reason = "Untested browsers;" +
                    " Safari: cannot type on contentEditable with synthetic events",

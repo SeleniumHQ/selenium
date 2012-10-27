@@ -311,7 +311,8 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE},
-          reason = "Untested on all other browsers, fails on chrome.")
+          reason = "Untested on all other browsers, fails on chrome, fails on IE.",
+          issues = {3508})
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);

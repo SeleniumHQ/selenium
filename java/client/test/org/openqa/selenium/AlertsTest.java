@@ -430,7 +430,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
   @Test
   public void testIncludesAlertInUnhandledAlertException() {
     driver.findElement(By.id("alert")).click();

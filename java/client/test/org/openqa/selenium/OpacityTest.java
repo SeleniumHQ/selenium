@@ -52,12 +52,8 @@ public class OpacityTest extends JUnit4TestBase {
     assertEquals("1", element.getCssValue("opacity"));
   }
 
-  /**
-   * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1941">
-   *      http://code.google.com/p/selenium/issues/detail?id=1941</a>
-   */
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, SELENESE})
+  @Ignore(value = {ANDROID, SELENESE})
   @Test
   public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);

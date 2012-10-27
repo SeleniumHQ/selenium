@@ -160,7 +160,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore(IE)
   @Test
   public void testShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral() {
     if (!(driver instanceof JavascriptExecutor)) {
@@ -189,7 +188,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore(IE)
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral() {
     if (!(driver instanceof JavascriptExecutor)) {
@@ -418,7 +416,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(IE)
   @Test
   public void testShouldBeAbleToPassACollectionAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
@@ -488,7 +485,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore(value = IE, reason = "Untested")
   @Test
   public void testShouldBeAbleToReturnAnArrayOfWebElements() {
     driver.get(pages.formPage);
@@ -585,8 +581,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, HTMLUNIT, IE, OPERA, OPERA_MOBILE},
-          reason = "Opera and HtmlUnit obey the method contract. Android and IE not tested")
+  @Ignore(value = {ANDROID, HTMLUNIT, OPERA, OPERA_MOBILE},
+          reason = "Opera and HtmlUnit obey the method contract. Android not tested")
   @Test
   public void testCanPassAMapAsAParameter() {
     driver.get(pages.simpleTestPage);

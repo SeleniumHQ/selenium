@@ -57,7 +57,7 @@ public class I18nTest extends JUnit4TestBase {
    */
   private static final String tokyo = "\u6771\u4EAC";
 
-  @Ignore({IE, FIREFOX, IPHONE})
+  @Ignore({IPHONE})
   @Test
   public void testCn() {
     driver.get(pages.chinesePage);
@@ -86,7 +86,7 @@ public class I18nTest extends JUnit4TestBase {
     assertEquals(tmunot, input.getAttribute("value"));
   }
 
-  @Ignore(value = {IE, SELENESE})
+  @Ignore(value = {SELENESE})
   @Test
   public void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()

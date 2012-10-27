@@ -46,8 +46,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-@Ignore(value = {IE, IPHONE, OPERA, ANDROID, OPERA_MOBILE},
-        reason = "IE: Every test appears to be failing. Opera: not implemented yet")
+@Ignore(value = {IPHONE, OPERA, ANDROID, OPERA_MOBILE},
+        reason = "Opera: not implemented yet")
 public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   private JavascriptExecutor executor;
@@ -213,6 +213,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(IE)
   public void shouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError() {
     driver.get(pages.ajaxyPage);
     driver.manage().timeouts().setScriptTimeout(100, TimeUnit.MILLISECONDS);

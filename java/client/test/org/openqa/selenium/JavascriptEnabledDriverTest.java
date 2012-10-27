@@ -39,7 +39,6 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
@@ -83,7 +82,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, IPHONE, SELENESE, ANDROID},
+  @Ignore(value = {IPHONE, SELENESE, ANDROID},
           reason = "iPhone: does not detect that a new page loaded.")
   @Test
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
@@ -96,7 +95,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, SELENESE, IPHONE, ANDROID},
+  @Ignore(value = {SELENESE, IPHONE, ANDROID},
           reason = "iPhone: does not detect that a new page loaded.")
   @Test
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
@@ -163,7 +162,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, ANDROID}, reason = "Fails for IE in the continuous build")
+  @Ignore(value = {ANDROID})
   @Test
   public void testShouldBeAbleToClickOnSubmitButtons() {
     driver.get(pages.javascriptPage);
@@ -214,7 +213,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, FIREFOX, REMOTE, SAFARI, SELENESE},
+  @Ignore(value = {FIREFOX, REMOTE, SAFARI, SELENESE},
           reason = "Firefox: Window demands focus to work." +
               " Safari: issue 4061." +
               " Other platforms: not properly tested")
@@ -288,7 +287,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
    * running: "ImplicitWaitTest", "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
    * SimonStewart 2010-10-04
    */
-  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, SAFARI}, reason = "Safari: issue 3693")
+  @Ignore(value = {SELENESE, IPHONE, OPERA, SAFARI}, reason = "Safari: issue 3693")
   @JavascriptEnabled
   @NeedsFreshDriver
   @Test
