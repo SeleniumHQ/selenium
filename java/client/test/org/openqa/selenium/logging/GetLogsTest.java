@@ -38,6 +38,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.HashMap;
@@ -93,6 +94,7 @@ public class GetLogsTest extends JUnit4TestBase {
   }
 
   @Test
+  @NeedsLocalEnvironment
   public void turningOffLogShouldMeanNoLogMessages() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     for (String logType : logTypes) {
