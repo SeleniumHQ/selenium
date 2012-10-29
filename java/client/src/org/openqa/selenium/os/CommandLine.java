@@ -142,6 +142,15 @@ public class CommandLine {
   public int destroy() {
     return process.destroy();
   }
+  
+  /**
+   * Check whether the current command is still executing.
+   * 
+   * @return true if the current command is still executing, false otherwise
+   */
+  public boolean isRunning() {
+    return process.isRunning();
+  }
 
   public void setInput(String allInput) {
     process.setInput(allInput);

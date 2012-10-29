@@ -109,32 +109,37 @@ class UnixProcess implements OsProcess {
   }
 
   public int destroy() {
-SeleniumWatchDog watchdog = executeWatchdog;
-  watchdog.waitForProcessStarted();
-  watchdog.destroyProcess();
-  watchdog.waitForTerminationAfterDestroy(2, SECONDS);
-  if (handler.hasResult()) {
-    return getExitCode();
-  }
+    SeleniumWatchDog watchdog = executeWatchdog;
+    watchdog.waitForProcessStarted();
+    watchdog.destroyProcess();
+    watchdog.waitForTerminationAfterDestroy(2, SECONDS);
+    if (!isRunning()) {
+      return getExitCode();
+    }
 
-  watchdog.destroyHarder();
-  watchdog.waitForTerminationAfterDestroy(1, SECONDS);
-  if (handler.hasResult()) {
-    return getExitCode();
-  }
+    watchdog.destroyHarder();
+    watchdog.waitForTerminationAfterDestroy(1, SECONDS);
+    if (!isRunning()) {
+      return getExitCode();
+    }
 
-  log.severe(String.format("Unable to kill process with PID %s", watchdog.getPID()));
-  int exitCode = -1;
-  executor.setExitValue(exitCode);
-  return exitCode;
+    log.severe(String.format("Unable to kill process with PID %s",
+        watchdog.getPID()));
+    int exitCode = -1;
+    executor.setExitValue(exitCode);
+    return exitCode;
   }
 
   public void waitFor() throws InterruptedException {
     handler.waitFor();
   }
+  
+  public boolean isRunning() {
+    return !handler.hasResult();
+  }
 
   public int getExitCode() {
-    if (!handler.hasResult()) {
+    if (isRunning()) {
       throw new IllegalStateException(
           "Cannot get exit code before executing command line: " + cl);
     }
@@ -142,7 +147,7 @@ SeleniumWatchDog watchdog = executeWatchdog;
   }
 
   public String getStdOut() {
-    if (!handler.hasResult()) {
+    if (isRunning()) {
       throw new IllegalStateException(
           "Cannot get output before executing command line: " + cl);
     }
@@ -202,7 +207,7 @@ SeleniumWatchDog watchdog = executeWatchdog;
 
     private void waitForTerminationAfterDestroy(int duration, TimeUnit unit) {
       long end = System.currentTimeMillis() + unit.toMillis(duration);
-      while (!handler.hasResult() && System.currentTimeMillis() < end) {
+      while (isRunning() && System.currentTimeMillis() < end) {
         try {
           Thread.sleep(50);
         } catch (InterruptedException e) {

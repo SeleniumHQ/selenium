@@ -133,8 +133,7 @@ public class DriverService {
       if (process == null) {
         return false;
       }
-      process.destroy();
-      return false;
+      return process.isRunning();
     } catch (IllegalThreadStateException e) {
       return true;
     } finally {

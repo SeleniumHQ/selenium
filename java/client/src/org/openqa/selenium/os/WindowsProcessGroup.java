@@ -50,7 +50,6 @@ public class WindowsProcessGroup implements OsProcess {
     StringBuilder toExecute = new StringBuilder();
     toExecute.append(executable);
 
-    boolean first = true;
     for (String arg : args) {
       toExecute.append(" ");
       toExecute.append(quote(arg));
@@ -144,7 +143,7 @@ public class WindowsProcessGroup implements OsProcess {
   }
 
   public int destroy() {
-    if (hJob == null) {
+    if (!isRunning()) {
       return 0; // Hard code the return value
     }
 
@@ -158,6 +157,10 @@ public class WindowsProcessGroup implements OsProcess {
 
   public int getExitCode() {
     return 0;
+  }
+  
+  public boolean isRunning() {
+    return hJob != null;
   }
 
   public String getStdOut() {

@@ -41,4 +41,6 @@ interface OsProcess {
   int getExitCode();
 
   String getStdOut();
+  
+  boolean isRunning();
 }
