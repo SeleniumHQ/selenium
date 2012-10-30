@@ -69,6 +69,7 @@ namespace OpenQA.Selenium
         public string readOnlyPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("readOnlyPage.html");
         public string clicksPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("clicks.html");
         public string booleanAttributes = EnvironmentManager.Instance.UrlBuilder.WhereIs("booleanAttributes.html");
+        public string linkedImage = EnvironmentManager.Instance.UrlBuilder.WhereIs("linked_image.html");
 
         protected IWebDriver driver;
 
@@ -76,6 +77,20 @@ namespace OpenQA.Selenium
         {
             get { return driver; }
             set { driver = value; }
+        }
+
+        public bool IsNativeEventsEnabled
+        {
+            get
+            {
+                IHasCapabilities capsDriver = driver as IHasCapabilities;
+                if (capsDriver == null)
+                {
+                    return false;
+                }
+
+                return capsDriver.Capabilities.HasCapability(OpenQA.Selenium.Remote.CapabilityType.HasNativeEvents) && (bool)capsDriver.Capabilities.GetCapability(OpenQA.Selenium.Remote.CapabilityType.HasNativeEvents);
+            }
         }
 
         [TestFixtureSetUp]
