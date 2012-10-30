@@ -39,6 +39,7 @@
     <copy file="${build.location}/java/client/src/org/openqa/selenium/browserlaunchers/proxies.jar" tofile="libs/proxies.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/support/events/events.jar" tofile="libs/events.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/logging/logging.jar" tofile="libs/logging.jar" />
+	<copy file="${build.location}/java/client/src/org/openqa/selenium/interactions/interactions.jar" tofile="libs/interactions.jar" />
     <copy file="${build.location}/java/server/src/org/openqa/selenium/remote/server/resource/resource.jar" tofile="libs/remote-wdserver-resource.jar" />
     <copy file="${build.location}/java/server/src/org/openqa/selenium/remote/server/server_very_core.jar" tofile="libs/remote-wdserver-verycore.jar" />
     <copy file="${build.location}/java/server/src/org/openqa/selenium/remote/server/server_core.jar" tofile="libs/remote-wdserver.jar" />
