@@ -76,6 +76,19 @@ public class Windows {
       return;
     }
 
+    if (locator.startsWith("index=")) {
+      try {
+        int index = Integer.parseInt(locator.substring("index=".length()));
+        lastFrame.put(driver.getWindowHandle(), locator);
+        driver.switchTo().frame(index);
+        return;
+      } catch (NumberFormatException e) {
+        throw new SeleniumException(e.getMessage(), e);
+      } catch (NoSuchFrameException e) {
+        throw new SeleniumException(e.getMessage(), e);
+      }
+    }
+
     try {
       lastFrame.put(driver.getWindowHandle(), locator);
       driver.switchTo().frame(locator);
