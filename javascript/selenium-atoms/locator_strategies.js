@@ -57,7 +57,7 @@ core.LocatorStrategies.implicit_ = function(locator, opt_doc) {
  * @private
  */
 core.LocatorStrategies.alt_ = function(locator, opt_doc) {
-  var doc = opt_doc || goog.dom.getOwnerDocument(bot.window_);
+  var doc = opt_doc || goog.dom.getOwnerDocument(bot.getWindow());
 
   return core.locators.elementFindFirstMatchingChild(doc,
       function(element) {
@@ -75,7 +75,7 @@ core.LocatorStrategies.alt_ = function(locator, opt_doc) {
  * @private
  */
 core.LocatorStrategies.class_ = function(locator, opt_doc) {
-  var doc = opt_doc || goog.dom.getOwnerDocument(bot.window_);
+  var doc = opt_doc || goog.dom.getOwnerDocument(bot.getWindow());
 
   return core.locators.elementFindFirstMatchingChild(doc,
       function(element) {
@@ -140,7 +140,7 @@ core.LocatorStrategies.identifier_ = function(locator, opt_doc) {
  * @private
  */
 core.LocatorStrategies.name_ = function(locator, opt_doc) {
-  var doc = opt_doc || goog.dom.getOwnerDocument(bot.window_);
+  var doc = opt_doc || goog.dom.getOwnerDocument(bot.getWindow());
   var dom = goog.dom.getDomHelper(doc);
 
   var elements = goog.dom.getElementsByTagNameAndClass('*', null, doc);
