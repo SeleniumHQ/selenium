@@ -18,6 +18,8 @@ package org.openqa.selenium.html5;
 
 import org.openqa.selenium.WebDriverException;
 
+// Web SQL has been deprecated, see http://dev.w3.org/html5/webdatabase/
+@Deprecated
 public interface DatabaseStorage {
 
   /**
