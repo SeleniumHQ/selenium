@@ -156,7 +156,7 @@ core.locators.findElementRecursive_ = function(locatorType, locatorString,
 core.locators.findElementOrNull = function(locator, opt_win) {
   var loc = core.locators.parseLocator_(locator);
 
-  var win = opt_win || bot.window_;
+  var win = opt_win || bot.getWindow();
   var element = core.locators.findElementRecursive_(
       loc['type'], loc['string'], win.document, win);
 
@@ -182,7 +182,7 @@ core.locators.findElement = function(locator, opt_doc, opt_win) {
     return locator;
   }
 
-  var win = opt_win || bot.window_;
+  var win = opt_win || bot.getWindow();
   var element = core.locators.findElementOrNull(locator, win);
   if (element == null) {
     throw new core.Error('Element ' + locator + ' not found');
