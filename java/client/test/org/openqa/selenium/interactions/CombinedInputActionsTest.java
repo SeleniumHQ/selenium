@@ -254,6 +254,12 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore({SELENESE, HTMLUNIT, OPERA, OPERA_MOBILE, IPHONE, IE})
   @Test
   public void testHoldingDownShiftKeyWhileClicking() {
+    if (!isNativeEventsEnabled(driver) || (!getEffectivePlatform().is(Platform.LINUX))) {
+      System.out.println("Skipping testHoldingDownShiftKeyWhileClicking: " +
+          "Only works with native events on Linux.");
+      return;
+    }
+
     driver.get(pages.clickEventPage);
 
     WebElement toClick = driver.findElement(By.id("eventish"));
