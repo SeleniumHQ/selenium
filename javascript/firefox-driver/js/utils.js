@@ -88,22 +88,22 @@ WebDriverError = function(code, messageOrError, additional) {
 }
 
 function notifyOfCloseWindow(windowId) {
-//  windowId = windowId || 0;
-//  if (Utils.useNativeEvents()) {
-//    var events = Utils.getNativeEvents();
-//    if (events) {
-//      events.notifyOfCloseWindow(windowId);
-//    }
-//  }
+  windowId = windowId || 0;
+  if (Utils.useNativeEvents()) {
+    var events = Utils.getNativeEvents();
+    if (events) {
+      events.notifyOfCloseWindow(windowId);
+    }
+  }
 }
 
 function notifyOfSwitchToWindow(windowId) {
-//  if (Utils.useNativeEvents()) {
-//    var events = Utils.getNativeEvents();
-//    if (events) {
-//      events.notifyOfSwitchToWindow(windowId);
-//    }
-//  }
+  if (Utils.useNativeEvents()) {
+    var events = Utils.getNativeEvents();
+    if (events) {
+      events.notifyOfSwitchToWindow(windowId);
+    }
+  }
 }
 
 Utils.newInstance = function(className, interfaceName) {

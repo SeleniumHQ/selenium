@@ -25,6 +25,7 @@ import org.openqa.selenium.firefox.internal.StreamsTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    CapabilitiesToProfileTest.class,
     ExecutableTest.class,
     FirefoxCapabilitiesTest.class,
     FirefoxDriverTest.class,
@@ -34,5 +35,6 @@ import org.openqa.selenium.firefox.internal.StreamsTest;
     SocketLockTest.class,
     StreamsTest.class
 })
+
 public class FirefoxSpecificTests {
 }

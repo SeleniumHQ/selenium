@@ -19,6 +19,7 @@ package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
@@ -133,8 +134,8 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
     
     return profile;
   }
-  
-  private static void populateProfile(FirefoxProfile profile, Capabilities capabilities) {
+
+  static void populateProfile(FirefoxProfile profile, Capabilities capabilities) {
     if (capabilities == null) {
       return;
     }
@@ -153,6 +154,11 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
         profile.setPreference("webdriver.log." + logtype, 
             logsPrefs.getLevel(logtype).intValue());
       }
+    }
+
+    if (capabilities.getCapability(HAS_NATIVE_EVENTS) != null) {
+      Boolean nativeEventsEnabled = (Boolean) capabilities.getCapability(HAS_NATIVE_EVENTS);
+      profile.setEnableNativeEvents(nativeEventsEnabled);
     }
   }
 
