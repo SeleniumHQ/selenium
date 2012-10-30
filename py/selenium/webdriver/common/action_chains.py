@@ -29,7 +29,7 @@ class ActionChains(object):
     def __init__(self, driver):
         """
         Creates a new ActionChains.
-        
+
         :Args:
          - driver: The WebDriver instance which performs user actions.
         """
@@ -46,7 +46,7 @@ class ActionChains(object):
     def click(self, on_element=None):
         """
         Clicks an element.
-        
+
         :Args:
          - on_element: The element to click.
            If None, clicks on current mouse position.
@@ -59,7 +59,7 @@ class ActionChains(object):
     def click_and_hold(self, on_element=None):
         """
         Holds down the left mouse button on an element.
-        
+
         :Args:
          - on_element: The element to mouse down.
            If None, clicks on current mouse position.
@@ -72,7 +72,7 @@ class ActionChains(object):
     def context_click(self, on_element=None):
         """
         Performs a context-click (right click) on an element.
-        
+
         :Args:
          - on_element: The element to context-click.
            If None, clicks on current mouse position.
@@ -85,7 +85,7 @@ class ActionChains(object):
     def double_click(self, on_element=None):
         """
         Double-clicks an element.
-        
+
         :Args:
          - on_element: The element to double-click.
            If None, clicks on current mouse position.
@@ -98,7 +98,7 @@ class ActionChains(object):
     def drag_and_drop(self, source, target):
         """Holds down the left mouse button on the source element,
            then moves to the target element and releases the mouse button.
-        
+
         :Args:
          - source: The element to mouse down.
          - target: The element to mouse up.
@@ -111,7 +111,7 @@ class ActionChains(object):
         """
         Holds down the left mouse button on the source element,
            then moves to the target element and releases the mouse button.
-        
+
         :Args:
          - source: The element to mouse down.
          - xoffset: X offset to move to.
