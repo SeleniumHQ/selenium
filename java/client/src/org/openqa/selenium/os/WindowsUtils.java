@@ -32,7 +32,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -47,7 +46,7 @@ public class WindowsUtils {
 
   public static Boolean regVersion1 = null;
 
-  private static Logger log = Logger.getLogger(WindowsUtils.class.getName());
+  private static Logger LOG = Logger.getLogger(WindowsUtils.class.getName());
   private static final boolean THIS_IS_WINDOWS = Platform.getCurrent().is(WINDOWS);
   private static String wmic = null;
   private static File wbem = null;
@@ -69,7 +68,7 @@ public class WindowsUtils {
   }
 
   public static void traceWith(Logger log) {
-    WindowsUtils.log = log;
+    WindowsUtils.LOG = log;
   }
 
   /**
@@ -89,7 +88,7 @@ public class WindowsUtils {
     try {
       killByName(name);
     } catch (WindowsRegistryException e) {
-      log.log(Level.WARNING, "Exception thrown", e);
+      LOG.log(Level.WARNING, "Exception thrown", e);
     }
   }
 
@@ -101,7 +100,7 @@ public class WindowsUtils {
    *         command line
    */
   public static void kill(String[] cmdarray) throws Exception {
-    StringBuffer pattern = new StringBuffer();
+    StringBuilder pattern = new StringBuilder();
     File executable = new File(cmdarray[0]);
     /*
      * For the first argument, the executable, Windows may modify the start path in any number of
@@ -113,7 +112,7 @@ public class WindowsUtils {
     pattern.append("\"?.*?\\\\");
     pattern.append(executable.getName());
     pattern.append("\"?");
-    for (int i = 1; i < cmdarray.length; i++) {
+    for (String arg : cmdarray) {
       /*
        * There may be a space, but maybe not (\\s?), may be a quote or maybe not (\"?), but then
        * turn on block quotation (as if *everything* had a regex backslash in front of it) with \Q.
@@ -121,40 +120,38 @@ public class WindowsUtils {
        * quotation. Now ignore a final quote if any (\"?)
        */
       pattern.append("\\s?\"?\\Q");
-      String arg = cmdarray[i];
       pattern.append(arg);
       pattern.append("\\E\"?");
     }
     pattern.append("\\s*");
     Pattern cmd = Pattern.compile(pattern.toString(), Pattern.CASE_INSENSITIVE);
-    Map procMap = procMap();
+    Map<String, String> procMap = procMap();
     boolean killedOne = false;
-    for (Iterator i = procMap.keySet().iterator(); i.hasNext();) {
-      String commandLine = (String) i.next();
+    for (String commandLine : procMap.keySet()) {
       if (commandLine == null) {
         continue;
       }
       Matcher m = cmd.matcher(commandLine);
       if (m.matches()) {
-        String processID = (String) procMap.get(commandLine);
+        String processID = procMap.get(commandLine);
         StringBuilder logMessage = new StringBuilder("Killing PID ");
         logMessage.append(processID);
         logMessage.append(": ");
         logMessage.append(commandLine);
-        log.info(logMessage.toString());
+        LOG.info(logMessage.toString());
         killPID(processID);
-        log.info("Killed");
+        LOG.info("Killed");
         killedOne = true;
       }
     }
     if (!killedOne) {
       StringBuilder errorMessage = new StringBuilder("Didn't find any matches for");
-      for (int i = 0; i < cmdarray.length; i++) {
+      for (String arg : cmdarray) {
         errorMessage.append(" '");
-        errorMessage.append(cmdarray[i]);
+        errorMessage.append(arg);
         errorMessage.append('\'');
       }
-      log.warning(errorMessage.toString());
+      LOG.warning(errorMessage.toString());
     }
   }
 
@@ -171,15 +168,15 @@ public class WindowsUtils {
    * @return a map of process IDs to command lines
    * @throws Exception - if something goes wrong while reading the process list
    */
-  public static Map procMap() throws Exception {
-    log.info("Reading Windows Process List...");
+  public static Map<String, String> procMap() throws Exception {
+    LOG.info("Reading Windows Process List...");
     String output = executeCommand(findWMIC(), "process", "list", "full", "/format:rawxml.xsl");
     // exec.setFailonerror(true);
-    log.info("Done, searching for processes to kill...");
+    LOG.info("Done, searching for processes to kill...");
     // WMIC drops an ugly zero-length batch file; clean that up
-    File TempWmicBatchFile = new File("TempWmicBatchFile.bat");
-    if (TempWmicBatchFile.exists()) {
-      TempWmicBatchFile.delete();
+    File tempWmicBatchFile = new File("TempWmicBatchFile.bat");
+    if (tempWmicBatchFile.exists()) {
+      tempWmicBatchFile.delete();
     }
 
     // TODO This would be faster if it used SAX instead of DOM
@@ -190,7 +187,7 @@ public class WindowsUtils {
     for (int i = 0; i < procList.getLength(); i++) {
       Element process = (Element) procList.item(i);
       NodeList propList = process.getElementsByTagName("PROPERTY");
-      Map<String, Object> procProps = new HashMap<String, Object>();
+      Map<String, String> procProps = new HashMap<String, String>();
       for (int j = 0; j < propList.getLength(); j++) {
         Element property = (Element) propList.item(j);
         String propName = property.getAttribute("NAME");
@@ -203,8 +200,8 @@ public class WindowsUtils {
         }
         procProps.put(propName, value);
       }
-      String processID = (String) procProps.get("ProcessId");
-      String commandLine = (String) procProps.get("CommandLine");
+      String processID = procProps.get("ProcessId");
+      String commandLine = procProps.get("CommandLine");
       processes.put(commandLine, processID);
     }
     return processes;
@@ -241,12 +238,11 @@ public class WindowsUtils {
   }
 
   private static String getEnvVarPath(final String envVar, final String defaultValue) {
-    loadEnvironment();
     String pf = getEnvVarIgnoreCase(envVar);
     if (pf != null) {
-      File ProgramFiles = new File(pf);
-      if (ProgramFiles.exists()) {
-        return ProgramFiles.getAbsolutePath();
+      File programFiles = new File(pf);
+      if (programFiles.exists()) {
+        return programFiles.getAbsolutePath();
       }
     }
     return new File(defaultValue).getAbsolutePath();
@@ -269,7 +265,6 @@ public class WindowsUtils {
    * @return the path to Local AppData
    */
   public static String getLocalAppDataPath() {
-    loadEnvironment();
     final String keyLocalAppData =
         "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\\Local AppData";
     String localAppDataPath = readStringRegistryValue(keyLocalAppData);
@@ -281,9 +276,8 @@ public class WindowsUtils {
   }
 
   public static String getEnvVarIgnoreCase(String var) {
-    loadEnvironment();
-    for (Iterator i = env.keySet().iterator(); i.hasNext();) {
-      String key = (String) i.next();
+    Properties p = loadEnvironment();
+    for (String key : p.stringPropertyNames()) {
       if (key.equalsIgnoreCase(var)) {
         return env.getProperty(key);
       }
@@ -296,12 +290,12 @@ public class WindowsUtils {
    */
   public static File findSystemRoot() {
     Properties p = loadEnvironment();
-    String systemRootPath = (String) p.get("SystemRoot");
+    String systemRootPath = p.getProperty("SystemRoot");
     if (systemRootPath == null) {
-      systemRootPath = (String) p.get("SYSTEMROOT");
+      systemRootPath = p.getProperty("SYSTEMROOT");
     }
     if (systemRootPath == null) {
-      systemRootPath = (String) p.get("systemroot");
+      systemRootPath = p.getProperty("systemroot");
     }
     if (systemRootPath == null) {
       throw new RuntimeException("SystemRoot apparently not set!");
@@ -331,7 +325,7 @@ public class WindowsUtils {
         return wmic;
       }
     }
-    log.warning("Couldn't find wmic! Hope it's on the path...");
+    LOG.warning("Couldn't find wmic! Hope it's on the path...");
     wmic = "wmic";
     return wmic;
   }
@@ -348,7 +342,7 @@ public class WindowsUtils {
     File systemRoot = findSystemRoot();
     wbem = new File(systemRoot, "system32/wbem");
     if (!wbem.exists()) {
-      log.severe("Couldn't find wbem!");
+      LOG.severe("Couldn't find wbem!");
       return null;
     }
     return wbem;
@@ -370,7 +364,7 @@ public class WindowsUtils {
       taskkill = taskkillExe.getAbsolutePath();
       return taskkill;
     }
-    log.warning("Couldn't find taskkill! Hope it's on the path...");
+    LOG.warning("Couldn't find taskkill! Hope it's on the path...");
     taskkill = "taskkill";
     return taskkill;
   }
@@ -400,7 +394,7 @@ public class WindowsUtils {
     if (reg != null) {
       return reg;
     }
-    log.severe("OS Version: " + System.getProperty("os.version"));
+    LOG.severe("OS Version: " + System.getProperty("os.version"));
     throw new WindowsRegistryException("Couldn't find reg.exe!\n" +
         "Please download it from Microsoft and install it in a standard location.\n"
         +
@@ -418,7 +412,7 @@ public class WindowsUtils {
     return version1;
   }
 
-  public static Class discoverRegistryKeyType(String key) {
+  public static Class<?> discoverRegistryKeyType(String key) {
     if (!doesRegistryValueExist(key)) {
       return null;
     }
