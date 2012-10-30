@@ -35,7 +35,8 @@ public enum Platform {
   WINDOWS("") {
     @Override
     public boolean is(Platform compareWith) {
-      return compareWith == WINDOWS || compareWith == XP || compareWith == VISTA;
+      return compareWith == WINDOWS || compareWith == XP
+          || compareWith == VISTA || compareWith == WIN8;
     }
   },
 
@@ -43,7 +44,7 @@ public enum Platform {
    * For versions of Windows that "feel like" Windows XP. These are ones that store files in
    * "\Program Files\" and documents under "\\documents and settings\\username"
    */
-  XP("xp", "windows", "winnt") {
+  XP("Windows Server 2003", "xp", "windows", "winnt") {
     @Override
     public boolean is(Platform compareWith) {
       return compareWith == WINDOWS || compareWith == XP;
@@ -57,6 +58,16 @@ public enum Platform {
     @Override
     public boolean is(Platform compareWith) {
       return compareWith == WINDOWS || compareWith == VISTA;
+    }
+  },
+
+  /**
+   * For versions of Windows that "feel like" Windows 8.
+   */
+  WIN8("Windows Server 2012", "windows 8", "win8") {
+    @Override
+    public boolean is(Platform compareWith) {
+      return compareWith == WINDOWS || compareWith == WIN8;
     }
   },
 
