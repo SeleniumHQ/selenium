@@ -46,7 +46,7 @@ public class AddDatabaseStorage implements AugmenterProvider {
         String query = (String) args[1];
         Object[] arguments = (Object[]) args[2];
 
-        query.replaceAll("\"", "\\\"");
+        query = query.replaceAll("\"", "\\\"");
         Iterable<Object> convertedArgs = Iterables.transform(
             Lists.newArrayList(arguments), new WebElementToJsonConverter());
 
