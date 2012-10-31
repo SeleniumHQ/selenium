@@ -279,7 +279,7 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def context_click(element)
+      def context_click(element = nil)
         @actions << [:mouse, :context_click, [element]]
         self
       end

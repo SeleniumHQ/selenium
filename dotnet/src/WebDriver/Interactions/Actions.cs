@@ -274,6 +274,15 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
+        /// Right-clicks the mouse at the last known mouse coordinates.
+        /// </summary>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions ContextClick()
+        {
+            return this.ContextClick(null);
+        }
+
+        /// <summary>
         /// Performs a drag-and-drop operation from one element to another.
         /// </summary>
         /// <param name="source">The element on which the drag operation is started.</param>
