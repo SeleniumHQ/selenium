@@ -298,6 +298,14 @@ public class Actions {
   }
 
   /**
+   * Performs a context-click at the current mouse location.
+   * @return A self reference.
+   */
+  public Actions contextClick() {
+    return this.contextClick(null);
+  }
+
+  /**
    * A convenience method that performs click-and-hold at the location of the source element,
    * moves to the location of the target element, then releases the mouse.
    *
