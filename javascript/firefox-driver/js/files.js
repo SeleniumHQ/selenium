@@ -150,8 +150,9 @@ fxdriver.files.File.prototype.read = function() {
       .createInstance(Components.interfaces['nsIFileInputStream']);
   istream.init(this.nsIFile_, fxdriver.files.READ_MODE_, 0666, 0);
 
-  var converter = Components.classes['@mozilla.org/intl/converter-input-stream;1']
-      .createInstance(Components.interfaces['nsIConverterInputStream']);
+  var converter =
+      Components.classes['@mozilla.org/intl/converter-input-stream;1']
+          .createInstance(Components.interfaces['nsIConverterInputStream']);
   converter.init(istream, 'UTF-8', 1024, 0);
 
   var toReturn = '';
