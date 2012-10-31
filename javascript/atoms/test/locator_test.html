@@ -177,9 +177,9 @@ limitations under the License.
       }
 
       var frameDoc = window.frames[0].document;
-      var frameBody = bot.locators.findElement({xpath: '//body'}, frameDoc);
-      assertNotNull(frameBody);
-      assertEquals('BODY', frameBody.tagName);
+      var frameElement = bot.locators.findElement({xpath: '//body/h1'}, frameDoc);
+      assertNotNull(frameElement);
+      assertEquals('H1', frameElement.tagName);
     }
 
 
@@ -439,6 +439,6 @@ limitations under the License.
   <a href="#" id="empty-link"></a>
   <a href="#" id="comma-in-alt" alt="has, a comma">has, a comma</a>
 
-  <iframe src="./testdata/iframe_page.htm"></iframe>
+  <iframe src="./testdata/iframe_page.html"></iframe>
   </body>
 </html>
