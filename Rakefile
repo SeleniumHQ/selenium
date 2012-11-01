@@ -425,7 +425,7 @@ task :javadocs => [:common, :firefox, :htmlunit, :ie, :remote, :support, :chrome
    sourcepath = ""
    classpath = '.'
    Dir["third_party/java/*/*.jar"].each do |jar|
-     classpath << ":" + jar
+     classpath << ":" + jar unless jar.to_s =~ /.*-src.*\.jar/
    end
    [File.join(%w(java client src))].each do |m|
      sourcepath += File::PATH_SEPARATOR + m
