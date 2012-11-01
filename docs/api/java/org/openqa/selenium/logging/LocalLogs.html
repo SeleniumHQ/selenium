@@ -59,13 +59,13 @@
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>
@@ -97,7 +97,7 @@
 </dl>
 <hr>
 <br>
-<pre>public class <span class="strong">LocalLogs</span>
+<pre>public abstract class <span class="strong">LocalLogs</span>
 extends java.lang.Object
 implements <a href="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</a></pre>
 <div class="block">Stores and retrieves logs in-process (i.e. without any RPCs).</div>
@@ -107,27 +107,6 @@ implements <a href="../../../../org/openqa/selenium/logging/Logs.html" title="in
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field_summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static <a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LocalLogs.html#NULL_LOGGER">NULL_LOGGER</a></strong></code>
-<div class="block">Logger which doesn't do anything.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_summary">
@@ -137,13 +116,12 @@ implements <a href="../../../../org/openqa/selenium/logging/Logs.html" title="in
 <table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
 <caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
-<th class="colOne" scope="col">Constructor and Description</th>
+<th class="colFirst" scope="col">Modifier</th>
+<th class="colLast" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/logging/LocalLogs.html#LocalLogs()">LocalLogs</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/logging/LocalLogs.html#LocalLogs(java.util.Set)">LocalLogs</a></strong>(java.util.Set&lt;java.lang.String&gt;&nbsp;logTypesToIgnore)</code>&nbsp;</td>
+<td class="colFirst"><code>protected </code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LocalLogs.html#LocalLogs()">LocalLogs</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -161,15 +139,38 @@ implements <a href="../../../../org/openqa/selenium/logging/Logs.html" title="in
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code>abstract void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LocalLogs.html#addEntry(java.lang.String, org.openqa.selenium.logging.LogEntry)">addEntry</a></strong>(java.lang.String&nbsp;logType,
         <a href="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</a>&nbsp;entry)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a></code></td>
+<td class="colFirst"><code>abstract <a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LocalLogs.html#get(java.lang.String)">get</a></strong>(java.lang.String&nbsp;logType)</code>
-<div class="block">Fetches the logs for the given log type.</div>
+<div class="block">Fetches available log entries for the given log type.</div>
 </td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LocalLogs.html#getCombinedLogsHolder(org.openqa.selenium.logging.LocalLogs, org.openqa.selenium.logging.LocalLogs)">getCombinedLogsHolder</a></strong>(<a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;predefinedTypeLogger,
+                     <a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;allTypesLogger)</code>
+<div class="block">See documentation of CompositeLocalLogs about the difference between the first
+ LocalLogs instance and the second one.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LocalLogs.html#getHandlerBasedLoggerInstance(org.openqa.selenium.logging.LoggingHandler, java.util.Set)">getHandlerBasedLoggerInstance</a></strong>(<a href="../../../../org/openqa/selenium/logging/LoggingHandler.html" title="class in org.openqa.selenium.logging">LoggingHandler</a>&nbsp;loggingHandler,
+                             java.util.Set&lt;java.lang.String&gt;&nbsp;logTypesToInclude)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LocalLogs.html#getNullLogger()">getNullLogger</a></strong>()</code>
+<div class="block">Logger which doesn't do anything.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LocalLogs.html#getStoringLoggerInstance(java.util.Set)">getStoringLoggerInstance</a></strong>(java.util.Set&lt;java.lang.String&gt;&nbsp;logTypesToIgnore)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -179,6 +180,13 @@ implements <a href="../../../../org/openqa/selenium/logging/Logs.html" title="in
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
 <code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
 </ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.openqa.selenium.logging.Logs">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.logging.<a href="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</a></h3>
+<code><a href="../../../../org/openqa/selenium/logging/Logs.html#getAvailableLogTypes()">getAvailableLogTypes</a></code></li>
+</ul>
 </li>
 </ul>
 </li>
@@ -187,24 +195,6 @@ implements <a href="../../../../org/openqa/selenium/logging/Logs.html" title="in
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field_detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="NULL_LOGGER">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>NULL_LOGGER</h4>
-<pre>public static final&nbsp;<a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a> NULL_LOGGER</pre>
-<div class="block">Logger which doesn't do anything.</div>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_detail">
@@ -214,19 +204,10 @@ implements <a href="../../../../org/openqa/selenium/logging/Logs.html" title="in
 <a name="LocalLogs()">
 <!--   -->
 </a>
-<ul class="blockList">
-<li class="blockList">
-<h4>LocalLogs</h4>
-<pre>public&nbsp;LocalLogs()</pre>
-</li>
-</ul>
-<a name="LocalLogs(java.util.Set)">
-<!--   -->
-</a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>LocalLogs</h4>
-<pre>public&nbsp;LocalLogs(java.util.Set&lt;java.lang.String&gt;&nbsp;logTypesToIgnore)</pre>
+<pre>protected&nbsp;LocalLogs()</pre>
 </li>
 </ul>
 </li>
@@ -237,23 +218,70 @@ implements <a href="../../../../org/openqa/selenium/logging/Logs.html" title="in
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="getNullLogger()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getNullLogger</h4>
+<pre>public static&nbsp;<a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;getNullLogger()</pre>
+<div class="block">Logger which doesn't do anything.</div>
+</li>
+</ul>
+<a name="getStoringLoggerInstance(java.util.Set)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getStoringLoggerInstance</h4>
+<pre>public static&nbsp;<a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;getStoringLoggerInstance(java.util.Set&lt;java.lang.String&gt;&nbsp;logTypesToIgnore)</pre>
+</li>
+</ul>
+<a name="getHandlerBasedLoggerInstance(org.openqa.selenium.logging.LoggingHandler, java.util.Set)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getHandlerBasedLoggerInstance</h4>
+<pre>public static&nbsp;<a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;getHandlerBasedLoggerInstance(<a href="../../../../org/openqa/selenium/logging/LoggingHandler.html" title="class in org.openqa.selenium.logging">LoggingHandler</a>&nbsp;loggingHandler,
+                                      java.util.Set&lt;java.lang.String&gt;&nbsp;logTypesToInclude)</pre>
+</li>
+</ul>
+<a name="getCombinedLogsHolder(org.openqa.selenium.logging.LocalLogs, org.openqa.selenium.logging.LocalLogs)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCombinedLogsHolder</h4>
+<pre>public static&nbsp;<a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;getCombinedLogsHolder(<a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;predefinedTypeLogger,
+                              <a href="../../../../org/openqa/selenium/logging/LocalLogs.html" title="class in org.openqa.selenium.logging">LocalLogs</a>&nbsp;allTypesLogger)</pre>
+<div class="block">See documentation of CompositeLocalLogs about the difference between the first
+ LocalLogs instance and the second one.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>predefinedTypeLogger</code> - LocalLogs which pre-defines the log types it stores.</dd><dd><code>allTypesLogger</code> - LocalLogs which can store log entries for all log types.</dd>
+<dt><span class="strong">Returns:</span></dt><dd></dd></dl>
+</li>
+</ul>
 <a name="get(java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>get</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&nbsp;get(java.lang.String&nbsp;logType)</pre>
+<pre>public abstract&nbsp;<a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&nbsp;get(java.lang.String&nbsp;logType)</pre>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/logging/Logs.html#get(java.lang.String)">Logs</a></code></strong></div>
-<div class="block">Fetches the logs for the given log type.
+<div class="block">Fetches available log entries for the given log type.
+ 
+ Note that log buffers are reset after each call, meaning that available log 
+ entries correspond to those entries not yet returned for a given log type. 
+ In practice, this means that this call will return the available log entries 
+ since the last call, or from the start of the session.
  
  For more info on enabling logging, look at <a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><code>LoggingPreferences</code></a>.</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/logging/Logs.html#get(java.lang.String)">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging">Logs</a></code></dd>
-<dt><span class="strong">Parameters:</span></dt><dd><code>logType</code> - String. Can be any of the values in <a href="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><code>LogType</code></a>.</dd>
-<dt><span class="strong">Returns:</span></dt><dd>all log entries for the specified logtype if enabled. Returns null
-     if the log type is unknown by the dtiver.</dd></dl>
+<dt><span class="strong">Parameters:</span></dt><dd><code>logType</code> - The log type.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>Available log entries for the specified log type.</dd></dl>
 </li>
 </ul>
 <a name="addEntry(java.lang.String, org.openqa.selenium.logging.LogEntry)">
@@ -262,7 +290,7 @@ implements <a href="../../../../org/openqa/selenium/logging/Logs.html" title="in
 <ul class="blockListLast">
 <li class="blockList">
 <h4>addEntry</h4>
-<pre>public&nbsp;void&nbsp;addEntry(java.lang.String&nbsp;logType,
+<pre>public abstract&nbsp;void&nbsp;addEntry(java.lang.String&nbsp;logType,
             <a href="../../../../org/openqa/selenium/logging/LogEntry.html" title="class in org.openqa.selenium.logging">LogEntry</a>&nbsp;entry)</pre>
 </li>
 </ul>
@@ -317,13 +345,13 @@ implements <a href="../../../../org/openqa/selenium/logging/Logs.html" title="in
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>

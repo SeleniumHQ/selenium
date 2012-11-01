@@ -34,7 +34,7 @@
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/logging/LoggingHandler.html" title="class in org.openqa.selenium.logging"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/logging/LoggingUtil.html" title="class in org.openqa.selenium.logging"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/logging/LogLevelMapping.html" title="class in org.openqa.selenium.logging"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/logging/LoggingPreferences.html" target="_top">Frames</a></li>
@@ -140,17 +140,24 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html#addPreferences(org.openqa.selenium.logging.LoggingPreferences)">addPreferences</a></strong>(<a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</a>&nbsp;prefs)</code>
+<div class="block">Adds the given logging preferences giving them precedence over existing
+ preferences.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html#enable(java.lang.String, java.util.logging.Level)">enable</a></strong>(java.lang.String&nbsp;logType,
       java.util.logging.Level&nbsp;level)</code>
 <div class="block">Enables logging for the given log type at the specified level and above.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html#getEnabledLogTypes()">getEnabledLogTypes</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.util.logging.Level</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html#getLevel(java.lang.String)">getLevel</a></strong>(java.lang.String&nbsp;logType)</code>&nbsp;</td>
 </tr>
@@ -218,13 +225,26 @@ extends java.lang.Object</pre>
 <a name="getLevel(java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getLevel</h4>
 <pre>public&nbsp;java.util.logging.Level&nbsp;getLevel(java.lang.String&nbsp;logType)</pre>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>logType</code> - String the <a href="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><code>LogType</code></a>.</dd>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>logType</code> - The log type.</dd>
 <dt><span class="strong">Returns:</span></dt><dd>the <code>Level</code> for the given <a href="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><code>LogType</code></a> if enabled.
      Otherwise returns <code>Level.OFF</code>.</dd></dl>
+</li>
+</ul>
+<a name="addPreferences(org.openqa.selenium.logging.LoggingPreferences)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>addPreferences</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</a>&nbsp;addPreferences(<a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging">LoggingPreferences</a>&nbsp;prefs)</pre>
+<div class="block">Adds the given logging preferences giving them precedence over existing
+ preferences.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>prefs</code> - The logging preferences to add.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>A references to this object.</dd></dl>
 </li>
 </ul>
 </li>
@@ -253,7 +273,7 @@ extends java.lang.Object</pre>
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/logging/LoggingHandler.html" title="class in org.openqa.selenium.logging"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/logging/LoggingUtil.html" title="class in org.openqa.selenium.logging"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/logging/LogLevelMapping.html" title="class in org.openqa.selenium.logging"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/logging/LoggingPreferences.html" target="_top">Frames</a></li>

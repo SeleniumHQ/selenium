@@ -95,10 +95,6 @@
 <dt>All Implemented Interfaces:</dt>
 <dd><a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/internal/Locatable.html" title="interface in org.openqa.selenium.internal">Locatable</a>, <a href="../../../../org/openqa/selenium/internal/WrapsDriver.html" title="interface in org.openqa.selenium.internal">WrapsDriver</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></dd>
 </dl>
-<dl>
-<dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../../org/openqa/selenium/firefox/FirefoxWebElement.html" title="class in org.openqa.selenium.firefox">FirefoxWebElement</a>, <a href="../../../../org/openqa/selenium/ie/InternetExplorerElement.html" title="class in org.openqa.selenium.ie">InternetExplorerElement</a></dd>
-</dl>
 <hr>
 <br>
 <pre>public class <span class="strong">RemoteWebElement</span>
@@ -756,7 +752,7 @@ implements <a href="../../../../org/openqa/selenium/WebElement.html" title="inte
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;findElement(<a href="../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;by)</pre>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/WebElement.html#findElement(org.openqa.selenium.By)">WebElement</a></code></strong></div>
 <div class="block">Find the first <a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> using the given method. See the note in
- <a href="../../../../org/openqa/selenium/WebElement.html#findElement(org.openqa.selenium.By)"><code>WebElement.findElement(By)</code></a> about finding via XPath.
+ <a href="../../../../org/openqa/selenium/WebElement.html#findElements(org.openqa.selenium.By)"><code>WebElement.findElements(By)</code></a> about finding via XPath.
  This method is affected by the 'implicit wait' times in force at the time of execution.
  The findElement(..) invocation will return a matching row, or try again repeatedly until 
  the configured timeout is reached.

@@ -139,15 +139,21 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.util.logging.Level</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LogEntry.html#getLevel()">getLevel</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LogEntry.html#getLevel()">getLevel</a></strong>()</code>
+<div class="block">Gets the logging entry's severity.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LogEntry.html#getMessage()">getMessage</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LogEntry.html#getMessage()">getMessage</a></strong>()</code>
+<div class="block">Gets the log entry's message.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LogEntry.html#getTimestamp()">getTimestamp</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LogEntry.html#getTimestamp()">getTimestamp</a></strong>()</code>
+<div class="block">Gets the timestamp of the log statement in milliseconds since UNIX Epoch.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>org.json.JSONObject</code></td>
@@ -188,8 +194,7 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;LogEntry(java.util.logging.Level&nbsp;level,
         long&nbsp;timestamp,
         java.lang.String&nbsp;message)</pre>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>level</code> - the level of the log, e.g. INFO.</dd><dd><code>timestamp</code> - long value of the timestamp at which this log entry
-     was created.</dd><dd><code>message</code> - String the log's message.</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>level</code> - the severity of the log entry</dd><dd><code>timestamp</code> - UNIX Epoch timestamp at which this log entry was created</dd><dd><code>message</code> - ew  the log entry's message</dd></dl>
 </li>
 </ul>
 </li>
@@ -207,6 +212,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getLevel</h4>
 <pre>public&nbsp;java.util.logging.Level&nbsp;getLevel()</pre>
+<div class="block">Gets the logging entry's severity.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>severity of log statement</dd></dl>
 </li>
 </ul>
 <a name="getTimestamp()">
@@ -216,6 +223,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getTimestamp</h4>
 <pre>public&nbsp;long&nbsp;getTimestamp()</pre>
+<div class="block">Gets the timestamp of the log statement in milliseconds since UNIX Epoch.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>timestamp as UNIX Epoch</dd></dl>
 </li>
 </ul>
 <a name="getMessage()">
@@ -225,6 +234,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getMessage</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getMessage()</pre>
+<div class="block">Gets the log entry's message.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the log statement</dd></dl>
 </li>
 </ul>
 <a name="toString()">

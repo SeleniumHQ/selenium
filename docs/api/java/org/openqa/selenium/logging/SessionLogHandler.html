@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>InternetExplorerDriverServer</title>
+<title>SessionLogHandler</title>
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="InternetExplorerDriverServer";
+        parent.document.title="SessionLogHandler";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverLogLevel.html" title="enum in org.openqa.selenium.ie"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/ie/InternetExplorerDriverServer.html" target="_top">Frames</a></li>
-<li><a href="InternetExplorerDriverServer.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/logging/SessionLogHandler.html" target="_top">Frames</a></li>
+<li><a href="SessionLogHandler.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -76,15 +76,15 @@
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">org.openqa.selenium.ie</div>
-<h2 title="Class InternetExplorerDriverServer" class="title">Class InternetExplorerDriverServer</h2>
+<div class="subTitle">org.openqa.selenium.logging</div>
+<h2 title="Class SessionLogHandler" class="title">Class SessionLogHandler</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>org.openqa.selenium.ie.InternetExplorerDriverServer</li>
+<li>org.openqa.selenium.logging.SessionLogHandler</li>
 </ul>
 </li>
 </ul>
@@ -93,7 +93,7 @@
 <li class="blockList">
 <hr>
 <br>
-<pre>public class <span class="strong">InternetExplorerDriverServer</span>
+<pre>public class <span class="strong">SessionLogHandler</span>
 extends java.lang.Object</pre>
 </li>
 </ul>
@@ -113,7 +113,7 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverServer.html#InternetExplorerDriverServer(int)">InternetExplorerDriverServer</a></strong>(int&nbsp;port)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogHandler.html#SessionLogHandler()">SessionLogHandler</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -131,16 +131,11 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>java.net.URL</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverServer.html#getUrl()">getUrl</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverServer.html#start()">start</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverServer.html#stop()">stop</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>static java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogHandler.html#getSessionLogs(org.json.JSONObject)">getSessionLogs</a></strong>(org.json.JSONObject&nbsp;rawSessionMap)</code>
+<div class="block">Creates a session logs map, with session logs mapped to session IDs, given
+ a raw session log map as a JSON object.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -164,13 +159,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="InternetExplorerDriverServer(int)">
+<a name="SessionLogHandler()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>InternetExplorerDriverServer</h4>
-<pre>public&nbsp;InternetExplorerDriverServer(int&nbsp;port)</pre>
+<h4>SessionLogHandler</h4>
+<pre>public&nbsp;SessionLogHandler()</pre>
 </li>
 </ul>
 </li>
@@ -181,31 +176,21 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getUrl()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getUrl</h4>
-<pre>public&nbsp;java.net.URL&nbsp;getUrl()</pre>
-</li>
-</ul>
-<a name="start()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>start</h4>
-<pre>public&nbsp;void&nbsp;start()</pre>
-</li>
-</ul>
-<a name="stop()">
+<a name="getSessionLogs(org.json.JSONObject)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>stop</h4>
-<pre>public&nbsp;void&nbsp;stop()</pre>
+<h4>getSessionLogs</h4>
+<pre>public static&nbsp;java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a>&gt;&nbsp;getSessionLogs(org.json.JSONObject&nbsp;rawSessionMap)
+                                                                  throws org.json.JSONException</pre>
+<div class="block">Creates a session logs map, with session logs mapped to session IDs, given
+ a raw session log map as a JSON object.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>rawSessionMap</code> - The raw session map.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The session logs mapped to session IDs.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>java.lang.Exception</code> - If something goes wrong in server communication or JSON parsing.</dd>
+<dd><code>org.json.JSONException</code></dd></dl>
 </li>
 </ul>
 </li>
@@ -233,12 +218,12 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverLogLevel.html" title="enum in org.openqa.selenium.ie"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/logging/NeedsLocalLogs.html" title="interface in org.openqa.selenium.logging"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/ie/InternetExplorerDriverServer.html" target="_top">Frames</a></li>
-<li><a href="InternetExplorerDriverServer.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/logging/SessionLogHandler.html" target="_top">Frames</a></li>
+<li><a href="SessionLogHandler.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>

@@ -216,9 +216,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver(org.openqa.selenium.Capabilities)">ChromeDriver</a></strong>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
-<div class="block"><strong>Deprecated.</strong>&nbsp;
-<div class="block"><i>Use <a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver(org.openqa.selenium.chrome.ChromeOptions)"><code>ChromeDriver(ChromeOptions)</code></a> instead.</i></div>
-</div>
+<div class="block">Creates a new ChromeDriver instance.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -229,9 +227,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <tr class="rowColor">
 <td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver(org.openqa.selenium.chrome.ChromeDriverService, org.openqa.selenium.Capabilities)">ChromeDriver</a></strong>(<a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a>&nbsp;service,
             <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
-<div class="block"><strong>Deprecated.</strong>&nbsp;
-<div class="block"><i>Use <a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver(org.openqa.selenium.chrome.ChromeDriverService, org.openqa.selenium.chrome.ChromeOptions)"><code>ChromeDriver(ChromeDriverService, ChromeOptions)</code></a></i></div>
-</div>
+<div class="block">Creates a new ChromeDriver instance.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -331,9 +327,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <ul class="blockList">
 <li class="blockList">
 <h4>ChromeDriver</h4>
-<pre>@Deprecated
-public&nbsp;ChromeDriver(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
-<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>Use <a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver(org.openqa.selenium.chrome.ChromeOptions)"><code>ChromeDriver(ChromeOptions)</code></a> instead.</i></div>
+<pre>public&nbsp;ChromeDriver(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
 <div class="block">Creates a new ChromeDriver instance. The <code>capabilities</code> will be passed to the
  chromedriver service.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>capabilities</code> - The capabilities required from the ChromeDriver.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver(org.openqa.selenium.chrome.ChromeDriverService, org.openqa.selenium.Capabilities)"><code>ChromeDriver(ChromeDriverService, Capabilities)</code></a></dd></dl>
@@ -356,10 +350,8 @@ public&nbsp;ChromeDriver(<a href="../../../../org/openqa/selenium/Capabilities.h
 <ul class="blockList">
 <li class="blockList">
 <h4>ChromeDriver</h4>
-<pre>@Deprecated
-public&nbsp;ChromeDriver(<a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a>&nbsp;service,
-                       <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
-<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>Use <a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver(org.openqa.selenium.chrome.ChromeDriverService, org.openqa.selenium.chrome.ChromeOptions)"><code>ChromeDriver(ChromeDriverService, ChromeOptions)</code></a></i></div>
+<pre>public&nbsp;ChromeDriver(<a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a>&nbsp;service,
+            <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
 <div class="block">Creates a new ChromeDriver instance. The <code>service</code> will be started along with the
  driver, and shutdown upon calling <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit()"><code>RemoteWebDriver.quit()</code></a>.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>service</code> - The service to use.</dd><dd><code>capabilities</code> - The capabilities required from the ChromeDriver.</dd></dl>

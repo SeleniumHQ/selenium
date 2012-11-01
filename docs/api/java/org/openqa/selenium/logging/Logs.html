@@ -33,7 +33,7 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/logging/LoggingUtil.html" title="class in org.openqa.selenium.logging"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/logging/LogLevelMapping.html" title="class in org.openqa.selenium.logging"><span class="strong">Prev Class</span></a></li>
 <li><a href="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -91,7 +91,7 @@
 <br>
 <pre><a href="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
 public interface <span class="strong">Logs</span></pre>
-<div class="block">Interface which provides logs.</div>
+<div class="block">Interface for providing logs.</div>
 </li>
 </ul>
 </div>
@@ -113,7 +113,13 @@ public interface <span class="strong">Logs</span></pre>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/Logs.html#get(java.lang.String)">get</a></strong>(java.lang.String&nbsp;logType)</code>
-<div class="block">Fetches the logs for the given log type.</div>
+<div class="block">Fetches available log entries for the given log type.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/Logs.html#getAvailableLogTypes()">getAvailableLogTypes</a></strong>()</code>
+<div class="block">Queries for available log types.</div>
 </td>
 </tr>
 </table>
@@ -134,16 +140,31 @@ public interface <span class="strong">Logs</span></pre>
 <a name="get(java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>get</h4>
 <pre><a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&nbsp;get(java.lang.String&nbsp;logType)</pre>
-<div class="block">Fetches the logs for the given log type.
+<div class="block">Fetches available log entries for the given log type.
+ 
+ Note that log buffers are reset after each call, meaning that available log 
+ entries correspond to those entries not yet returned for a given log type. 
+ In practice, this means that this call will return the available log entries 
+ since the last call, or from the start of the session.
  
  For more info on enabling logging, look at <a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><code>LoggingPreferences</code></a>.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>logType</code> - String. Can be any of the values in <a href="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><code>LogType</code></a>.</dd>
-<dt><span class="strong">Returns:</span></dt><dd>all log entries for the specified logtype if enabled. Returns null
-     if the log type is unknown by the dtiver.</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>logType</code> - The log type.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>Available log entries for the specified log type.</dd></dl>
+</li>
+</ul>
+<a name="getAvailableLogTypes()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getAvailableLogTypes</h4>
+<pre>java.util.Set&lt;java.lang.String&gt;&nbsp;getAvailableLogTypes()</pre>
+<div class="block">Queries for available log types.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>A set of available log types.</dd></dl>
 </li>
 </ul>
 </li>
@@ -171,7 +192,7 @@ public interface <span class="strong">Logs</span></pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/logging/LoggingUtil.html" title="class in org.openqa.selenium.logging"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/logging/LogLevelMapping.html" title="class in org.openqa.selenium.logging"><span class="strong">Prev Class</span></a></li>
 <li><a href="../../../../org/openqa/selenium/logging/LogType.html" title="class in org.openqa.selenium.logging"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">

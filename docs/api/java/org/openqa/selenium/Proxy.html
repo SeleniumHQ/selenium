@@ -95,13 +95,11 @@
 <br>
 <pre>public class <span class="strong">Proxy</span>
 extends java.lang.Object</pre>
-<div class="block">Configuration parameters for using proxies in WebDriver.
- <p/>
- Generally you should pass an object of this type to a WebDriver constructor, or in some cases to
- the profile object used in the WebDriver construction.
- <p/>
- For simplicity, setting values here commits the proxy to a certain configuration. That is, it is
- an error to set an httpProxy manually and then turn on proxy autodetect.</div>
+<div class="block">Configuration parameters for using proxies in WebDriver. Generally you should pass an object of
+ this type to a WebDriver constructor, or in some cases to the profile object used in the
+ WebDriver construction.  For simplicity, setting values here commits the proxy to a certain
+ configuration.  That is, it is an error to set an <code>httpProxy</code> manually and then turn
+ on proxy autodetect.</div>
 </li>
 </ul>
 </div>
@@ -161,61 +159,131 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getFtpProxy()">getFtpProxy</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getFtpProxy()">getFtpProxy</a></strong>()</code>
+<div class="block">Gets the FTP proxy.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getHttpProxy()">getHttpProxy</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getHttpProxy()">getHttpProxy</a></strong>()</code>
+<div class="block">Gets the HTTP proxy.</div>
+</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getHttpsProxy()">getHttpsProxy</a></strong>()</code>
+<div class="block">Gets the HTTPS proxy.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getNoProxy()">getNoProxy</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getProxyAutoconfigUrl()">getProxyAutoconfigUrl</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getProxyAutoconfigUrl()">getProxyAutoconfigUrl</a></strong>()</code>
+<div class="block">Gets the proxy auto-configuration URL.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../org/openqa/selenium/Proxy.ProxyType.html" title="enum in org.openqa.selenium">Proxy.ProxyType</a></code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getProxyType()">getProxyType</a></strong>()</code>
+<div class="block">Gets the <a href="../../../org/openqa/selenium/Proxy.ProxyType.html" title="enum in org.openqa.selenium"><code>Proxy.ProxyType</code></a>.</div>
+</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="../../../org/openqa/selenium/Proxy.ProxyType.html" title="enum in org.openqa.selenium">Proxy.ProxyType</a></code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getProxyType()">getProxyType</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getSocksPassword()">getSocksPassword</a></strong>()</code>
+<div class="block">Gets the SOCKS proxy's password.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getSslProxy()">getSslProxy</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getSocksProxy()">getSocksProxy</a></strong>()</code>
+<div class="block">Gets the SOCKS proxy.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getSocksUsername()">getSocksUsername</a></strong>()</code>
+<div class="block">Gets the SOCKS proxy's username.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#getSslProxy()">getSslProxy</a></strong>()</code>
+<div class="block">Gets the SSL tunnel proxy.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#isAutodetect()">isAutodetect</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#isAutodetect()">isAutodetect</a></strong>()</code>
+<div class="block">Whether to autodetect proxy settings.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setAutodetect(boolean)">setAutodetect</a></strong>(boolean&nbsp;autodetect)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setAutodetect(boolean)">setAutodetect</a></strong>(boolean&nbsp;autodetect)</code>
+<div class="block">Specifies whether to autodetect proxy settings.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setFtpProxy(java.lang.String)">setFtpProxy</a></strong>(java.lang.String&nbsp;ftpProxy)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setFtpProxy(java.lang.String)">setFtpProxy</a></strong>(java.lang.String&nbsp;ftpProxy)</code>
+<div class="block">Specify which proxy to use for FTP connections.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setHttpProxy(java.lang.String)">setHttpProxy</a></strong>(java.lang.String&nbsp;httpProxy)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setHttpProxy(java.lang.String)">setHttpProxy</a></strong>(java.lang.String&nbsp;httpProxy)</code>
+<div class="block">Specify which proxy to use for HTTP connections.</div>
+</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code><a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setHttpsProxy(java.lang.String)">setHttpsProxy</a></strong>(java.lang.String&nbsp;httpsProxy)</code>
+<div class="block">Specify which proxy to use for HTTPS connections.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setNoProxy(java.lang.String)">setNoProxy</a></strong>(java.lang.String&nbsp;noProxy)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
-<td class="colFirst"><code><a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setProxyAutoconfigUrl(java.lang.String)">setProxyAutoconfigUrl</a></strong>(java.lang.String&nbsp;proxyAutoconfigUrl)</code>&nbsp;</td>
-</tr>
 <tr class="altColor">
+<td class="colFirst"><code><a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setProxyAutoconfigUrl(java.lang.String)">setProxyAutoconfigUrl</a></strong>(java.lang.String&nbsp;proxyAutoconfigUrl)</code>
+<div class="block">Specifies the URL to be used for proxy auto-configuration.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setProxyType(org.openqa.selenium.Proxy.ProxyType)">setProxyType</a></strong>(<a href="../../../org/openqa/selenium/Proxy.ProxyType.html" title="enum in org.openqa.selenium">Proxy.ProxyType</a>&nbsp;proxyType)</code>
 <div class="block">Explicitly sets the proxy type, useful for forcing direct connection on Linux.</div>
 </td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setSocksPassword(java.lang.String)">setSocksPassword</a></strong>(java.lang.String&nbsp;password)</code>
+<div class="block">Specifies a password for the SOCKS proxy.</div>
+</td>
+</tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setSslProxy(java.lang.String)">setSslProxy</a></strong>(java.lang.String&nbsp;sslProxy)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setSocksProxy(java.lang.String)">setSocksProxy</a></strong>(java.lang.String&nbsp;socksProxy)</code>
+<div class="block">Specifies which proxy to use for SOCKS.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setSocksUsername(java.lang.String)">setSocksUsername</a></strong>(java.lang.String&nbsp;username)</code>
+<div class="block">Specifies a username for the SOCKS proxy.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a></code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Proxy.html#setSslProxy(java.lang.String)">setSslProxy</a></strong>(java.lang.String&nbsp;sslProxy)</code>
+<div class="block">Specify which proxy to use for SSL connections.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -272,6 +340,10 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getProxyType</h4>
 <pre>public&nbsp;<a href="../../../org/openqa/selenium/Proxy.ProxyType.html" title="enum in org.openqa.selenium">Proxy.ProxyType</a>&nbsp;getProxyType()</pre>
+<div class="block">Gets the <a href="../../../org/openqa/selenium/Proxy.ProxyType.html" title="enum in org.openqa.selenium"><code>Proxy.ProxyType</code></a>.  This can signal if set to use a direct connection (without proxy),
+ manually set proxy settings, auto-configured proxy settings, or whether to use the default
+ system proxy settings.  It defaults to <a href="../../../org/openqa/selenium/Proxy.ProxyType.html#UNSPECIFIED"><code>Proxy.ProxyType.UNSPECIFIED</code></a>.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the proxy type employed</dd></dl>
 </li>
 </ul>
 <a name="setProxyType(org.openqa.selenium.Proxy.ProxyType)">
@@ -282,7 +354,7 @@ extends java.lang.Object</pre>
 <h4>setProxyType</h4>
 <pre>public&nbsp;<a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;setProxyType(<a href="../../../org/openqa/selenium/Proxy.ProxyType.html" title="enum in org.openqa.selenium">Proxy.ProxyType</a>&nbsp;proxyType)</pre>
 <div class="block">Explicitly sets the proxy type, useful for forcing direct connection on Linux.</div>
-<dl><dt><span class="strong">Returns:</span></dt><dd>This Proxy object.</dd></dl>
+<dl><dt><span class="strong">Returns:</span></dt><dd>reference to self</dd></dl>
 </li>
 </ul>
 <a name="isAutodetect()">
@@ -292,6 +364,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>isAutodetect</h4>
 <pre>public&nbsp;boolean&nbsp;isAutodetect()</pre>
+<div class="block">Whether to autodetect proxy settings.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>true if set to autodetect proxy settings, false otherwise</dd></dl>
 </li>
 </ul>
 <a name="setAutodetect(boolean)">
@@ -301,6 +375,10 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>setAutodetect</h4>
 <pre>public&nbsp;<a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;setAutodetect(boolean&nbsp;autodetect)</pre>
+<div class="block">Specifies whether to autodetect proxy settings.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>autodetect</code> - set to true to use proxy auto detection, false to leave proxy settings
+                   unspecified</dd>
+<dt><span class="strong">Returns:</span></dt><dd>reference to self</dd></dl>
 </li>
 </ul>
 <a name="getFtpProxy()">
@@ -310,6 +388,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getFtpProxy</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getFtpProxy()</pre>
+<div class="block">Gets the FTP proxy.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the FTP proxy hostname if present, or null if not set</dd></dl>
 </li>
 </ul>
 <a name="setFtpProxy(java.lang.String)">
@@ -319,6 +399,9 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>setFtpProxy</h4>
 <pre>public&nbsp;<a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;setFtpProxy(java.lang.String&nbsp;ftpProxy)</pre>
+<div class="block">Specify which proxy to use for FTP connections.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>ftpProxy</code> - the proxy host, expected format is <code>hostname.com:1234</code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>reference to self</dd></dl>
 </li>
 </ul>
 <a name="getHttpProxy()">
@@ -328,6 +411,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getHttpProxy</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getHttpProxy()</pre>
+<div class="block">Gets the HTTP proxy.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the HTTP proxy hostname if present, or null if not set</dd></dl>
 </li>
 </ul>
 <a name="setHttpProxy(java.lang.String)">
@@ -337,6 +422,32 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>setHttpProxy</h4>
 <pre>public&nbsp;<a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;setHttpProxy(java.lang.String&nbsp;httpProxy)</pre>
+<div class="block">Specify which proxy to use for HTTP connections.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>httpProxy</code> - the proxy host, expected format is <code>hostname:1234</code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>reference to self</dd></dl>
+</li>
+</ul>
+<a name="getHttpsProxy()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getHttpsProxy</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getHttpsProxy()</pre>
+<div class="block">Gets the HTTPS proxy.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the HTTPS proxy hostname if present, or null if not set</dd></dl>
+</li>
+</ul>
+<a name="setHttpsProxy(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setHttpsProxy</h4>
+<pre>public&nbsp;<a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;setHttpsProxy(java.lang.String&nbsp;httpsProxy)</pre>
+<div class="block">Specify which proxy to use for HTTPS connections.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>httpsProxy</code> - the proxy host, expected format is <code>hostname:1234</code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>reference to self</dd></dl>
 </li>
 </ul>
 <a name="getNoProxy()">
@@ -357,24 +468,6 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;<a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;setNoProxy(java.lang.String&nbsp;noProxy)</pre>
 </li>
 </ul>
-<a name="getProxyAutoconfigUrl()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getProxyAutoconfigUrl</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getProxyAutoconfigUrl()</pre>
-</li>
-</ul>
-<a name="setProxyAutoconfigUrl(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setProxyAutoconfigUrl</h4>
-<pre>public&nbsp;<a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;setProxyAutoconfigUrl(java.lang.String&nbsp;proxyAutoconfigUrl)</pre>
-</li>
-</ul>
 <a name="getSslProxy()">
 <!--   -->
 </a>
@@ -382,15 +475,112 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getSslProxy</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getSslProxy()</pre>
+<div class="block">Gets the SSL tunnel proxy.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the SSL tunnel proxy hostname if present, null otherwise</dd></dl>
 </li>
 </ul>
 <a name="setSslProxy(java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setSslProxy</h4>
 <pre>public&nbsp;<a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;setSslProxy(java.lang.String&nbsp;sslProxy)</pre>
+<div class="block">Specify which proxy to use for SSL connections.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>sslProxy</code> - the proxy host, expected format is <code>hostname.com:1234</code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>reference to self</dd></dl>
+</li>
+</ul>
+<a name="getSocksProxy()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSocksProxy</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getSocksProxy()</pre>
+<div class="block">Gets the SOCKS proxy.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the SOCKS proxy if present, null otherwise</dd></dl>
+</li>
+</ul>
+<a name="setSocksProxy(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setSocksProxy</h4>
+<pre>public&nbsp;<a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;setSocksProxy(java.lang.String&nbsp;socksProxy)</pre>
+<div class="block">Specifies which proxy to use for SOCKS.  Currently only supported in <code>com.opera.core.systems.OperaDriver</code>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>socksProxy</code> - the proxy host, expected format is <code>hostname.com:1234</code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>reference to self</dd></dl>
+</li>
+</ul>
+<a name="getSocksUsername()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSocksUsername</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getSocksUsername()</pre>
+<div class="block">Gets the SOCKS proxy's username.  Supported by SOCKS v5 and above.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the SOCKS proxy's username</dd></dl>
+</li>
+</ul>
+<a name="setSocksUsername(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setSocksUsername</h4>
+<pre>public&nbsp;void&nbsp;setSocksUsername(java.lang.String&nbsp;username)</pre>
+<div class="block">Specifies a username for the SOCKS proxy.  Supported by SOCKS v5 and above.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>username</code> - username for the SOCKS proxy</dd></dl>
+</li>
+</ul>
+<a name="getSocksPassword()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSocksPassword</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getSocksPassword()</pre>
+<div class="block">Gets the SOCKS proxy's password.  Supported by SOCKS v5 and above.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the SOCKS proxy's password</dd></dl>
+</li>
+</ul>
+<a name="setSocksPassword(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setSocksPassword</h4>
+<pre>public&nbsp;void&nbsp;setSocksPassword(java.lang.String&nbsp;password)</pre>
+<div class="block">Specifies a password for the SOCKS proxy.  Supported by SOCKS v5 and above.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>password</code> - password for the SOCKS proxy</dd></dl>
+</li>
+</ul>
+<a name="getProxyAutoconfigUrl()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getProxyAutoconfigUrl</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getProxyAutoconfigUrl()</pre>
+<div class="block">Gets the proxy auto-configuration URL.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the proxy auto-configuration URL</dd></dl>
+</li>
+</ul>
+<a name="setProxyAutoconfigUrl(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setProxyAutoconfigUrl</h4>
+<pre>public&nbsp;<a href="../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;setProxyAutoconfigUrl(java.lang.String&nbsp;proxyAutoconfigUrl)</pre>
+<div class="block">Specifies the URL to be used for proxy auto-configuration.  Expected format is
+ <code>http://hostname.com:1234/pacfile</code>.  This is required if <a href="../../../org/openqa/selenium/Proxy.html#getProxyType()"><code>getProxyType()</code></a> is
+ set to <a href="../../../org/openqa/selenium/Proxy.ProxyType.html#PAC"><code>Proxy.ProxyType.PAC</code></a>, ignored otherwise.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>proxyAutoconfigUrl</code> - the URL for proxy auto-configuration</dd>
+<dt><span class="strong">Returns:</span></dt><dd>reference to self</dd></dl>
 </li>
 </ul>
 </li>

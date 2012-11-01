@@ -60,13 +60,13 @@
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#methods_inherited_from_class_java.lang.Object">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li>Method</li>
 </ul>
 </div>
@@ -116,8 +116,20 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LogType.html#BROWSER">BROWSER</a></strong></code>
+<div class="block">This log type pertains to logs from the browser.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LogType.html#CLIENT">CLIENT</a></strong></code>
+<div class="block">This log type pertains to logs from the client.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LogType.html#DRIVER">DRIVER</a></strong></code>
-<div class="block">This log type pertains to logs from the driver.</div>
+<div class="block">This log pertains to logs from the WebDriver implementation.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -125,6 +137,29 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LogType.html#PROFILER">PROFILER</a></strong></code>
 <div class="block">This log type pertains to logs relating to performance timings.</div>
 </td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LogType.html#SERVER">SERVER</a></strong></code>
+<div class="block">This log type pertains to logs from the remote server.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/logging/LogType.html#LogType()">LogType</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -156,6 +191,39 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Field Detail</h3>
+<a name="BROWSER">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>BROWSER</h4>
+<pre>public static final&nbsp;java.lang.String BROWSER</pre>
+<div class="block">This log type pertains to logs from the browser.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.logging.LogType.BROWSER">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CLIENT">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CLIENT</h4>
+<pre>public static final&nbsp;java.lang.String CLIENT</pre>
+<div class="block">This log type pertains to logs from the client.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.logging.LogType.CLIENT">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="PROFILER">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>PROFILER</h4>
+<pre>public static final&nbsp;java.lang.String PROFILER</pre>
+<div class="block">This log type pertains to logs relating to performance timings.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.logging.LogType.PROFILER">Constant Field Values</a></dd></dl>
+</li>
+</ul>
 <a name="DRIVER">
 <!--   -->
 </a>
@@ -163,20 +231,36 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>DRIVER</h4>
 <pre>public static final&nbsp;java.lang.String DRIVER</pre>
-<div class="block">This log type pertains to logs from the driver. If the driver is a remote
- WebDriver, the logs from the remote driver will be included.</div>
+<div class="block">This log pertains to logs from the WebDriver implementation.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.logging.LogType.DRIVER">Constant Field Values</a></dd></dl>
 </li>
 </ul>
-<a name="PROFILER">
+<a name="SERVER">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>PROFILER</h4>
-<pre>public static final&nbsp;java.lang.String PROFILER</pre>
-<div class="block">This log type pertains to logs relating to performance timings.</div>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.logging.LogType.PROFILER">Constant Field Values</a></dd></dl>
+<h4>SERVER</h4>
+<pre>public static final&nbsp;java.lang.String SERVER</pre>
+<div class="block">This log type pertains to logs from the remote server.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.logging.LogType.SERVER">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="LogType()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>LogType</h4>
+<pre>public&nbsp;LogType()</pre>
 </li>
 </ul>
 </li>
@@ -231,13 +315,13 @@ extends java.lang.Object</pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#methods_inherited_from_class_java.lang.Object">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li>Method</li>
 </ul>
 </div>

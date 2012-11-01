@@ -174,38 +174,44 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/CommandLine.html#isSuccessful()">isSuccessful</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/CommandLine.html#isRunning()">isRunning</a></strong>()</code>
+<div class="block">Check whether the current command is still executing.</div>
+</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/CommandLine.html#isSuccessful()">isSuccessful</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/CommandLine.html#setDynamicLibraryPath(java.lang.String)">setDynamicLibraryPath</a></strong>(java.lang.String&nbsp;newLibraryPath)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/CommandLine.html#setEnvironmentVariable(java.lang.String, java.lang.String)">setEnvironmentVariable</a></strong>(java.lang.String&nbsp;name,
                       java.lang.String&nbsp;value)</code>
 <div class="block">Adds the specified environment variable.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/CommandLine.html#setEnvironmentVariables(java.util.Map)">setEnvironmentVariables</a></strong>(java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;environment)</code>
 <div class="block">Adds the specified environment variables.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/CommandLine.html#setInput(java.lang.String)">setInput</a></strong>(java.lang.String&nbsp;allInput)</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/CommandLine.html#setWorkingDirectory(java.lang.String)">setWorkingDirectory</a></strong>(java.lang.String&nbsp;workingDirectory)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/CommandLine.html#toString()">toString</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/os/CommandLine.html#waitFor()">waitFor</a></strong>()</code>&nbsp;</td>
 </tr>
@@ -378,6 +384,17 @@ public static&nbsp;java.lang.String&nbsp;find(java.lang.String&nbsp;executable)<
 <pre>public&nbsp;int&nbsp;destroy()</pre>
 <div class="block">Destroy the current command.</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>The exit code of the command.</dd></dl>
+</li>
+</ul>
+<a name="isRunning()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isRunning</h4>
+<pre>public&nbsp;boolean&nbsp;isRunning()</pre>
+<div class="block">Check whether the current command is still executing.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>true if the current command is still executing, false otherwise</dd></dl>
 </li>
 </ul>
 <a name="setInput(java.lang.String)">

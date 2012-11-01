@@ -84,8 +84,13 @@
 <ul class="blockList">
 <li class="blockList">
 <hr>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>Web SQL has been deprecated, see
+     http://dev.w3.org/html5/webdatabase/</i></div>
+</div>
 <br>
-<pre>public interface <span class="strong">DatabaseStorage</span></pre>
+<pre>@Deprecated
+public interface <span class="strong">DatabaseStorage</span></pre>
 </li>
 </ul>
 </div>
@@ -109,6 +114,7 @@
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/html5/DatabaseStorage.html#executeSQL(java.lang.String, java.lang.String, java.lang.Object...)">executeSQL</a></strong>(java.lang.String&nbsp;databaseName,
           java.lang.String&nbsp;query,
           java.lang.Object...&nbsp;args)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Executes an SQL statement on the given database name.</div>
 </td>
 </tr>
@@ -137,6 +143,7 @@
                    java.lang.String&nbsp;query,
                    java.lang.Object...&nbsp;args)
                      throws <a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Executes an SQL statement on the given database name.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>databaseName</code> - The database name</dd><dd><code>query</code> - The SQL query</dd><dd><code>args</code> - Optional arguments to the SQL query</dd>
 <dt><span class="strong">Returns:</span></dt><dd>A <a href="../../../../org/openqa/selenium/html5/ResultSet.html" title="class in org.openqa.selenium.html5"><code>ResultSet</code></a> containing the result of the executed query</dd>

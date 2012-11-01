@@ -63,14 +63,34 @@
 <h1 title="Deprecated API" class="title">Deprecated API</h1>
 <h2 title="Contents">Contents</h2>
 <ul>
+<li><a href="#interface">Deprecated Interfaces</a></li>
 <li><a href="#class">Deprecated Classes</a></li>
-<li><a href="#exception">Deprecated Exceptions</a></li>
 <li><a href="#field">Deprecated Fields</a></li>
 <li><a href="#method">Deprecated Methods</a></li>
-<li><a href="#constructor">Deprecated Constructors</a></li>
 </ul>
 </div>
-<div class="contentContainer"><a name="class">
+<div class="contentContainer"><a name="interface">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table border="0" cellpadding="3" cellspacing="0" summary="Deprecated Interfaces table, listing deprecated interfaces, and an explanation">
+<caption><span>Deprecated Interfaces</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Interface and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/html5/DatabaseStorage.html" title="interface in org.openqa.selenium.html5">org.openqa.selenium.html5.DatabaseStorage</a>
+<div class="block"><i>Web SQL has been deprecated, see
+     http://dev.w3.org/html5/webdatabase/</i></div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<a name="class">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -82,38 +102,8 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxWebElement.html" title="class in org.openqa.selenium.firefox">org.openqa.selenium.firefox.FirefoxWebElement</a>
-<div class="block"><i>This class is historical relic, use RemoteWebElement instead</i></div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/ie/InternetExplorerElement.html" title="class in org.openqa.selenium.ie">org.openqa.selenium.ie.InternetExplorerElement</a>
-<div class="block"><i>This class is historical relic, use RemoteWebElement instead</i></div>
-</td>
-</tr>
-<tr class="altColor">
 <td class="colOne"><a href="com/thoughtworks/selenium/SeleneseTestCase.html" title="class in com.thoughtworks.selenium">com.thoughtworks.selenium.SeleneseTestCase</a>
 <div class="block"><i>Please consider updating to junit 4 or above</i></div>
-</td>
-</tr>
-</tbody>
-</table>
-</li>
-</ul>
-<a name="exception">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<table border="0" cellpadding="3" cellspacing="0" summary="Deprecated Exceptions table, listing deprecated exceptions, and an explanation">
-<caption><span>Deprecated Exceptions</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colOne" scope="col">Exceptions and Description</th>
-</tr>
-<tbody>
-<tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/chrome/FatalChromeException.html" title="class in org.openqa.selenium.chrome">org.openqa.selenium.chrome.FatalChromeException</a>
-<div class="block"><i>This class has no uses in the code anymore. To be deleted soon.</i></div>
 </td>
 </tr>
 </tbody>
@@ -163,39 +153,8 @@
 </td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/support/ui/FluentWait.html#timeoutException(java.lang.String, java.lang.RuntimeException)">org.openqa.selenium.support.ui.FluentWait.timeoutException(String, RuntimeException)</a>
-<div class="block"><i>Use <a href="org/openqa/selenium/support/ui/FluentWait.html#timeoutException(java.lang.String, java.lang.Throwable)"><code>FluentWait.timeoutException(String, Throwable)</code></a>. This method is scheduled for
-             removal in the Selenium 2.26 release.</i></div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colOne"><a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#usingChromeDriverExecutable(java.io.File)">org.openqa.selenium.chrome.ChromeDriverService.Builder.usingChromeDriverExecutable(File)</a>
 <div class="block"><i>Use <a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#usingDriverExecutable(java.io.File)"><code>ChromeDriverService.Builder.usingDriverExecutable(File)</code></a> instead</i></div>
-</td>
-</tr>
-</tbody>
-</table>
-</li>
-</ul>
-<a name="constructor">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<table border="0" cellpadding="3" cellspacing="0" summary="Deprecated Constructors table, listing deprecated constructors, and an explanation">
-<caption><span>Deprecated Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colOne" scope="col">Constructor and Description</th>
-</tr>
-<tbody>
-<tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver(org.openqa.selenium.Capabilities)">org.openqa.selenium.chrome.ChromeDriver(Capabilities)</a>
-<div class="block"><i>Use <a href="org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver(org.openqa.selenium.chrome.ChromeOptions)"><code>ChromeDriver.ChromeDriver(ChromeOptions)</code></a> instead.</i></div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver(org.openqa.selenium.chrome.ChromeDriverService, org.openqa.selenium.Capabilities)">org.openqa.selenium.chrome.ChromeDriver(ChromeDriverService, Capabilities)</a>
-<div class="block"><i>Use <a href="org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver(org.openqa.selenium.chrome.ChromeDriverService, org.openqa.selenium.chrome.ChromeOptions)"><code>ChromeDriver.ChromeDriver(ChromeDriverService, ChromeOptions)</code></a></i></div>
 </td>
 </tr>
 </tbody>

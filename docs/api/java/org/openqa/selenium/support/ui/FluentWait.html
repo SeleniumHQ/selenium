@@ -193,8 +193,8 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoreAll(java.util.Collection)">ignoreAll</a></strong>(java.util.Collection&lt;java.lang.Class&lt;? extends java.lang.Throwable&gt;&gt;&nbsp;types)</code>
+<td class="colFirst"><code>&lt;K extends java.lang.Throwable&gt;&nbsp;<br><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoreAll(java.util.Collection)">ignoreAll</a></strong>(java.util.Collection&lt;java.lang.Class&lt;? extends K&gt;&gt;&nbsp;types)</code>
 <div class="block">Configures this instance to ignore specific types of exceptions while waiting for a condition.</div>
 </td>
 </tr>
@@ -216,22 +216,12 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected java.lang.RuntimeException</code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#timeoutException(java.lang.String, java.lang.RuntimeException)">timeoutException</a></strong>(java.lang.String&nbsp;message,
-                java.lang.RuntimeException&nbsp;lastException)</code>
-<div class="block"><strong>Deprecated.</strong>&nbsp;
-<div class="block"><i>Use <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#timeoutException(java.lang.String, java.lang.Throwable)"><code>timeoutException(String, Throwable)</code></a>. This method is scheduled for
-             removal in the Selenium 2.26 release.</i></div>
-</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>protected java.lang.RuntimeException</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#timeoutException(java.lang.String, java.lang.Throwable)">timeoutException</a></strong>(java.lang.String&nbsp;message,
                 java.lang.Throwable&nbsp;lastException)</code>
 <div class="block">Throws a timeout exception.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>&lt;V&gt;&nbsp;V</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#until(com.google.common.base.Function)">until</a></strong>(com.google.common.base.Function&lt;? super <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>,V&gt;&nbsp;isTrue)</code>
 <div class="block">Repeatedly applies this instance's input value to the given function until one of the following
@@ -245,20 +235,20 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
  </div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#until(com.google.common.base.Predicate)">until</a></strong>(com.google.common.base.Predicate&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;&nbsp;isTrue)</code>
 <div class="block">Repeatedly applies this instance's input value to the given predicate until the timeout expires
  or the predicate evaluates to true.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withMessage(java.lang.String)">withMessage</a></strong>(java.lang.String&nbsp;message)</code>
 <div class="block">Sets the message to be displayed when time expires.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withTimeout(long, java.util.concurrent.TimeUnit)">withTimeout</a></strong>(long&nbsp;duration,
            java.util.concurrent.TimeUnit&nbsp;unit)</code>
@@ -387,7 +377,7 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
 <ul class="blockList">
 <li class="blockList">
 <h4>ignoreAll</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;&nbsp;ignoreAll(java.util.Collection&lt;java.lang.Class&lt;? extends java.lang.Throwable&gt;&gt;&nbsp;types)</pre>
+<pre>public&nbsp;&lt;K extends java.lang.Throwable&gt;&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;&nbsp;ignoreAll(java.util.Collection&lt;java.lang.Class&lt;? extends K&gt;&gt;&nbsp;types)</pre>
 <div class="block">Configures this instance to ignore specific types of exceptions while waiting for a condition.
  Any exceptions not whitelisted will be allowed to propagate, terminating the wait.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>types</code> - The types of exceptions to ignore.</dd>
@@ -424,7 +414,9 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
 <pre>public&nbsp;void&nbsp;until(com.google.common.base.Predicate&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;&nbsp;isTrue)</pre>
 <div class="block">Repeatedly applies this instance's input value to the given predicate until the timeout expires
  or the predicate evaluates to true.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>isTrue</code> - The predicate to wait on.</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>isTrue</code> - The predicate to wait on.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/TimeoutException.html" title="class in org.openqa.selenium">TimeoutException</a></code> - If the timeout expires.</dd></dl>
 </li>
 </ul>
 <a name="until(com.google.common.base.Function)">
@@ -447,37 +439,22 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../../org/openqa/selenium/support/ui/Wait.html#until(com.google.common.base.Function)">until</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/Wait.html" title="interface in org.openqa.selenium.support.ui">Wait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;</code></dd>
 <dt><span class="strong">Type Parameters:</span></dt><dd><code>V</code> - The function's expected return type.</dd><dt><span class="strong">Parameters:</span></dt><dd><code>isTrue</code> - the parameter to pass to the <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui"><code>ExpectedCondition</code></a></dd>
-<dt><span class="strong">Returns:</span></dt><dd>The functions' return value.</dd></dl>
+<dt><span class="strong">Returns:</span></dt><dd>The functions' return value if the function returned something different
+         from null or false before the timeout expired.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/TimeoutException.html" title="class in org.openqa.selenium">TimeoutException</a></code> - If the timeout expires.</dd></dl>
 </li>
 </ul>
 <a name="timeoutException(java.lang.String, java.lang.Throwable)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>timeoutException</h4>
 <pre>protected&nbsp;java.lang.RuntimeException&nbsp;timeoutException(java.lang.String&nbsp;message,
                                           java.lang.Throwable&nbsp;lastException)</pre>
 <div class="block">Throws a timeout exception. This method may be overridden to throw an exception that is
  idiomatic for a particular test infrastructure, such as an AssertionError in JUnit4.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>message</code> - The timeout message.</dd><dd><code>lastException</code> - The last exception to be thrown and subsequently suppressed while waiting
-        on a function.</dd>
-<dt><span class="strong">Returns:</span></dt><dd>Nothing will ever be returned; this return type is only specified as a convenience.</dd></dl>
-</li>
-</ul>
-<a name="timeoutException(java.lang.String, java.lang.RuntimeException)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>timeoutException</h4>
-<pre>@Deprecated
-protected&nbsp;java.lang.RuntimeException&nbsp;timeoutException(java.lang.String&nbsp;message,
-                                                     java.lang.RuntimeException&nbsp;lastException)</pre>
-<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>Use <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#timeoutException(java.lang.String, java.lang.Throwable)"><code>timeoutException(String, Throwable)</code></a>. This method is scheduled for
-             removal in the Selenium 2.26 release.</i></div>
-<div class="block">Kept for backwards compatibility. New code, in particular code using <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#ignoring(java.lang.Class)"><code>ignoring(Class)</code></a>
- with <code>Throwable</code>s should override <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#timeoutException(java.lang.String, java.lang.Throwable)"><code>timeoutException(String, Throwable)</code></a>.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>message</code> - The timeout message.</dd><dd><code>lastException</code> - The last exception to be thrown and subsequently suppressed while waiting
         on a function.</dd>
 <dt><span class="strong">Returns:</span></dt><dd>Nothing will ever be returned; this return type is only specified as a convenience.</dd></dl>

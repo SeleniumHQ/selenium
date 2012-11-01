@@ -34,7 +34,7 @@
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/chrome/FatalChromeException.html" title="class in org.openqa.selenium.chrome"><span class="strong">Next Class</span></a></li>
+<li>Next Class</li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/chrome/ChromeOptions.html" target="_top">Frames</a></li>
@@ -105,6 +105,11 @@ extends java.lang.Object</pre>
 
  // For use with ChromeDriver:
  ChromeDriver driver = new ChromeDriver(options);
+
+ // or alternatively:
+ DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+ capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+ ChromeDriver driver = new ChromeDriver(capabilities);
 
  // For use with RemoteWebDriver:
  DesiredCapabilities capabilities = DesiredCapabilities.chrome();
@@ -198,6 +203,13 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setExperimentalOptions(java.lang.String, java.lang.Object)">setExperimentalOptions</a></strong>(java.lang.String&nbsp;name,
+                      java.lang.Object&nbsp;value)</code>
+<div class="block">Sets an experimental option.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>org.json.JSONObject</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#toJson()">toJson</a></strong>()</code>
 <div class="block">Converts this instance to its JSON representation.</div>
@@ -328,6 +340,20 @@ extends java.lang.Object</pre>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>paths</code> - Paths to the extensions to install.</dd></dl>
 </li>
 </ul>
+<a name="setExperimentalOptions(java.lang.String, java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setExperimentalOptions</h4>
+<pre>public&nbsp;void&nbsp;setExperimentalOptions(java.lang.String&nbsp;name,
+                          java.lang.Object&nbsp;value)</pre>
+<div class="block">Sets an experimental option.  Useful for new ChromeDriver options not yet
+ exposed through the <a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome"><code>ChromeOptions</code></a> API.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - Name of the experimental option.</dd><dd><code>value</code> - Value of the experimental option, which must be convertible
+     to JSON.</dd></dl>
+</li>
+</ul>
 <a name="toJson()">
 <!--   -->
 </a>
@@ -372,7 +398,7 @@ extends java.lang.Object</pre>
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/chrome/ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/chrome/FatalChromeException.html" title="class in org.openqa.selenium.chrome"><span class="strong">Next Class</span></a></li>
+<li>Next Class</li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/chrome/ChromeOptions.html" target="_top">Frames</a></li>

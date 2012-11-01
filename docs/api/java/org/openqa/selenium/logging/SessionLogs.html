@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>LoggingUtil</title>
+<title>SessionLogs</title>
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="LoggingUtil";
+        parent.document.title="SessionLogs";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/logging/SessionLogHandler.html" title="class in org.openqa.selenium.logging"><span class="strong">Prev Class</span></a></li>
+<li>Next Class</li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/logging/LoggingUtil.html" target="_top">Frames</a></li>
-<li><a href="LoggingUtil.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/logging/SessionLogs.html" target="_top">Frames</a></li>
+<li><a href="SessionLogs.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -77,14 +77,14 @@
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="subTitle">org.openqa.selenium.logging</div>
-<h2 title="Class LoggingUtil" class="title">Class LoggingUtil</h2>
+<h2 title="Class SessionLogs" class="title">Class SessionLogs</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>org.openqa.selenium.logging.LoggingUtil</li>
+<li>org.openqa.selenium.logging.SessionLogs</li>
 </ul>
 </li>
 </ul>
@@ -93,8 +93,10 @@
 <li class="blockList">
 <hr>
 <br>
-<pre>public class <span class="strong">LoggingUtil</span>
+<pre><a href="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
+public class <span class="strong">SessionLogs</span>
 extends java.lang.Object</pre>
+<div class="block">Contains the logs for a session divided by supported log types.</div>
 </li>
 </ul>
 </div>
@@ -113,7 +115,7 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/logging/LoggingUtil.html#LoggingUtil()">LoggingUtil</a></strong>()</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#SessionLogs()">SessionLogs</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -131,8 +133,25 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static java.util.logging.Level</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/LoggingUtil.html#toLevel(long)">toLevel</a></strong>(long&nbsp;longValue)</code>&nbsp;</td>
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#addLog(java.lang.String, org.openqa.selenium.logging.LogEntries)">addLog</a></strong>(java.lang.String&nbsp;logType,
+      <a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&nbsp;logEntries)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#fromJSON(org.json.JSONObject)">fromJSON</a></strong>(org.json.JSONObject&nbsp;rawSessionLogs)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#getAll()">getAll</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#getLogs(java.lang.String)">getLogs</a></strong>(java.lang.String&nbsp;logType)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/logging/SessionLogs.html#getLogTypes()">getLogTypes</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -156,13 +175,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="LoggingUtil()">
+<a name="SessionLogs()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>LoggingUtil</h4>
-<pre>public&nbsp;LoggingUtil()</pre>
+<h4>SessionLogs</h4>
+<pre>public&nbsp;SessionLogs()</pre>
 </li>
 </ul>
 </li>
@@ -173,13 +192,53 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="toLevel(long)">
+<a name="getLogs(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLogs</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&nbsp;getLogs(java.lang.String&nbsp;logType)</pre>
+</li>
+</ul>
+<a name="addLog(java.lang.String, org.openqa.selenium.logging.LogEntries)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addLog</h4>
+<pre>public&nbsp;void&nbsp;addLog(java.lang.String&nbsp;logType,
+          <a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&nbsp;logEntries)</pre>
+</li>
+</ul>
+<a name="getLogTypes()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLogTypes</h4>
+<pre>public&nbsp;java.util.Set&lt;java.lang.String&gt;&nbsp;getLogTypes()</pre>
+</li>
+</ul>
+<a name="getAll()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAll</h4>
+<pre>public&nbsp;java.util.Map&lt;java.lang.String,<a href="../../../../org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a>&gt;&nbsp;getAll()</pre>
+</li>
+</ul>
+<a name="fromJSON(org.json.JSONObject)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>toLevel</h4>
-<pre>public static&nbsp;java.util.logging.Level&nbsp;toLevel(long&nbsp;longValue)</pre>
+<h4>fromJSON</h4>
+<pre>public static&nbsp;<a href="../../../../org/openqa/selenium/logging/SessionLogs.html" title="class in org.openqa.selenium.logging">SessionLogs</a>&nbsp;fromJSON(org.json.JSONObject&nbsp;rawSessionLogs)
+                            throws org.json.JSONException</pre>
+<dl><dt><span class="strong">Throws:</span></dt>
+<dd><code>org.json.JSONException</code></dd></dl>
 </li>
 </ul>
 </li>
@@ -207,12 +266,12 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/logging/LoggingPreferences.html" title="class in org.openqa.selenium.logging"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/logging/Logs.html" title="interface in org.openqa.selenium.logging"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/logging/SessionLogHandler.html" title="class in org.openqa.selenium.logging"><span class="strong">Prev Class</span></a></li>
+<li>Next Class</li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/logging/LoggingUtil.html" target="_top">Frames</a></li>
-<li><a href="LoggingUtil.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/logging/SessionLogs.html" target="_top">Frames</a></li>
+<li><a href="SessionLogs.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
