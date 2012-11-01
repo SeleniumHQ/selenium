@@ -70,19 +70,26 @@
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">TimeoutException</span>
 
 <span class="n">POLL_FREQUENCY</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c"># How long to sleep inbetween calls to the method</span>
+<span class="n">IGNORED_EXCEPTIONS</span> <span class="o">=</span> <span class="p">[</span><span class="n">NoSuchElementException</span><span class="p">]</span> <span class="c"># list of exceptions ignored during calls to the method</span>
 
 <div class="viewcode-block" id="WebDriverWait"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait">[docs]</a><span class="k">class</span> <span class="nc">WebDriverWait</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">poll_frequency</span><span class="o">=</span><span class="n">POLL_FREQUENCY</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">poll_frequency</span><span class="o">=</span><span class="n">POLL_FREQUENCY</span><span class="p">,</span> <span class="n">ignored_exceptions</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor, takes a WebDriver instance and timeout in seconds.</span>
 <span class="sd">           </span>
 <span class="sd">           :Args:</span>
 <span class="sd">            - driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote)</span>
 <span class="sd">            - timeout - Number of seconds before timing out</span>
+<span class="sd">            - poll_frequency - sleep interval between calls</span>
+<span class="sd">              By default, it is 0.5 second.</span>
+<span class="sd">            - ignored_exceptions - iterable structure of exception classes ignored during calls.</span>
+<span class="sd">              By default, it contains NoSuchElementException only.</span>
 
 <span class="sd">           Example:</span>
 <span class="sd">            from selenium.webdriver.support.ui import WebDriverWait \n</span>
-<span class="sd">            element = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id(&quot;someId&quot;))</span>
+<span class="sd">            element = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id(&quot;someId&quot;)) \n</span>
+<span class="sd">            is_disappeared = WebDriverWait(driver, 30, 1, (ElementNotVisibleException)).\ \n</span>
+<span class="sd">                        until_not(lambda x: x.find_element_by_id(&quot;someId&quot;).is_displayed())</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="o">=</span> <span class="n">driver</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">timeout</span>
@@ -90,6 +97,13 @@
         <span class="c"># avoid the divide by zero</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poll</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_poll</span> <span class="o">=</span> <span class="n">POLL_FREQUENCY</span>
+        <span class="n">exceptions</span> <span class="o">=</span> <span class="n">IGNORED_EXCEPTIONS</span>
+        <span class="k">if</span> <span class="n">ignored_exceptions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">exceptions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">ignored_exceptions</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span> <span class="c"># ignored_exceptions is not iterable</span>
+                <span class="n">exceptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ignored_exceptions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ignored_exceptions</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">exceptions</span><span class="p">)</span>
 
 <div class="viewcode-block" id="WebDriverWait.until"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait.until">[docs]</a>    <span class="k">def</span> <span class="nf">until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calls the method provided with the driver as an argument until the \</span>
@@ -100,7 +114,7 @@
                 <span class="n">value</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">value</span>
-            <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
+            <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ignored_exceptions</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_poll</span><span class="p">)</span>
             <span class="k">if</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">end_time</span><span class="p">):</span>
@@ -116,7 +130,7 @@
                   <span class="n">value</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
                   <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
                       <span class="k">return</span> <span class="n">value</span>
-              <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
+              <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ignored_exceptions</span><span class="p">:</span>
                   <span class="k">return</span> <span class="bp">True</span>
               <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_poll</span><span class="p">)</span>
               <span class="k">if</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">end_time</span><span class="p">):</span>

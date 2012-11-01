@@ -66,48 +66,75 @@
 
 <div class="viewcode-block" id="DesiredCapabilities"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.desired_capabilities.html#selenium.webdriver.common.desired_capabilities.DesiredCapabilities">[docs]</a><span class="k">class</span> <span class="nc">DesiredCapabilities</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="n">FIREFOX</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;firefox&quot;</span><span class="p">,</span>
-                <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-                <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span><span class="p">,</span>
-                <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span> <span class="p">}</span>
+    <span class="n">FIREFOX</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;firefox&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span><span class="p">,</span>
+        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="p">}</span>
 
-    <span class="n">INTERNETEXPLORER</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;internet explorer&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;WINDOWS&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span> <span class="p">}</span>
+    <span class="n">INTERNETEXPLORER</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;internet explorer&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;WINDOWS&quot;</span><span class="p">,</span>
+        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="p">}</span>
 
-    <span class="n">CHROME</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;chrome&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span> <span class="p">}</span>
-    <span class="n">OPERA</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;opera&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span><span class="p">}</span>
+    <span class="n">CHROME</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;chrome&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span><span class="p">,</span>
+        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="p">}</span>
 
-    <span class="n">HTMLUNIT</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;htmlunit&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span> <span class="p">}</span>
-                        
-    <span class="n">HTMLUNITWITHJS</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;htmlunit&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;firefox&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span> <span class="p">}</span>
+    <span class="n">OPERA</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;opera&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span><span class="p">,</span>
+        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="p">}</span>
 
-    <span class="n">IPHONE</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;iPhone&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;MAC&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span> <span class="p">}</span>
-    
-    <span class="n">IPAD</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;iPad&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;MAC&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span> <span class="p">}</span>
-    
-    <span class="n">ANDROID</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;android&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANDROID&quot;</span><span class="p">,</span>
-                        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span> <span class="p">}</span>
-</pre></div></div>
+    <span class="n">SAFARI</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;safari&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;5&quot;</span><span class="p">,</span>
+        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;MAC&quot;</span><span class="p">,</span>
+        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">HTMLUNIT</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;htmlunit&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">HTMLUNITWITHJS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;htmlunit&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;firefox&quot;</span><span class="p">,</span>
+        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span><span class="p">,</span>
+        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">IPHONE</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;iPhone&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;MAC&quot;</span><span class="p">,</span>
+        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">IPAD</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;iPad&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;MAC&quot;</span><span class="p">,</span>
+        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">ANDROID</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;android&quot;</span><span class="p">,</span>
+        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANDROID&quot;</span><span class="p">,</span>
+        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="p">}</span></div>
+</pre></div>
 
           </div>
         </div>

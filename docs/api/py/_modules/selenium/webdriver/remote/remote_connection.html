@@ -312,6 +312,62 @@
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/orientation&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_SCREEN_ORIENTATION</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/orientation&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">SINGLE_TAP</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/touch/click&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">TOUCH_DOWN</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/touch/down&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">TOUCH_UP</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/touch/up&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">TOUCH_MOVE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/touch/move&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">TOUCH_SCROLL</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/touch/scroll&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">DOUBLE_TAP</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/touch/doubleclick&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">LONG_PRESS</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/touch/longclick&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">FLICK</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/touch/flick&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">EXECUTE_SQL</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/execute_sql&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_LOCATION</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/location&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">SET_LOCATION</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/location&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_APP_CACHE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/application_cache&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_APP_CACHE_STATUS</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/application_cache/status&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">CLEAR_APP_CACHE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/application_cache/clear&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">IS_BROWSER_ONLINE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/browser_connection&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">SET_BROWSER_ONLINE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/browser_connection&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_LOCAL_STORAGE_ITEM</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/local_storage/key/$key&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">REMOVE_LOCAL_STORAGE_ITEM</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/local_storage/key/$key&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_LOCAL_STORAGE_KEYS</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/local_storage&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">SET_LOCAL_STORAGE_ITEM</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/local_storage&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">CLEAR_LOCAL_STORAGE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/local_storage&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_LOCAL_STORAGE_SIZE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/local_storage/size&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_SESSION_STORAGE_ITEM</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/session_storage/key/$key&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">REMOVE_SESSION_STORAGE_ITEM</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/session_storage/key/$key&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_SESSION_STORAGE_KEYS</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/session_storage&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">SET_SESSION_STORAGE_ITEM</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/session_storage&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">CLEAR_SESSION_STORAGE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/session_storage&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_SESSION_STORAGE_SIZE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span><span class="s">&#39;/session/$sessionId/session_storage/size&#39;</span><span class="p">),</span>
             <span class="p">}</span>
 
 <div class="viewcode-block" id="RemoteConnection.execute"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
@@ -364,6 +420,7 @@
 
 
         <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&#39;Accept&#39;</span><span class="p">,</span> <span class="s">&#39;application/json&#39;</span><span class="p">)</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s">&#39;application/json;charset=UTF-8&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">password_manager</span><span class="p">:</span>
             <span class="n">opener</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">urllib2</span><span class="o">.</span><span class="n">HTTPRedirectHandler</span><span class="p">(),</span>

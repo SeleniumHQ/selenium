@@ -190,9 +190,15 @@
 </div>
 <div class="viewcode-block" id="WebElement.send_keys"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.send_keys">[docs]</a>    <span class="k">def</span> <span class="nf">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Simulates typing into the element.&quot;&quot;&quot;</span>
-        <span class="n">local_file</span> <span class="o">=</span> <span class="n">LocalFileDetector</span><span class="o">.</span><span class="n">is_local_file</span><span class="p">(</span><span class="o">*</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">local_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload</span><span class="p">(</span><span class="n">local_file</span><span class="p">)</span>
+         <span class="c"># transfer file to another machine only if remote driver is used</span>
+         <span class="c"># the same behaviour as for java binding</span>
+        <span class="n">parent_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">__class__</span>
+        <span class="n">fqcn</span> <span class="o">=</span> <span class="n">parent_class</span><span class="o">.</span><span class="n">__module__</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">parent_class</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="n">is_remote</span> <span class="o">=</span> <span class="n">fqcn</span> <span class="o">==</span> <span class="s">&quot;selenium.webdriver.remote.webdriver.WebDriver&quot;</span>
+        <span class="k">if</span> <span class="n">is_remote</span><span class="p">:</span>
+            <span class="n">local_file</span> <span class="o">=</span> <span class="n">LocalFileDetector</span><span class="o">.</span><span class="n">is_local_file</span><span class="p">(</span><span class="o">*</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">local_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload</span><span class="p">(</span><span class="n">local_file</span><span class="p">)</span>
 
         <span class="n">typing</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
@@ -211,6 +217,15 @@
 <div class="viewcode-block" id="WebElement.is_displayed"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.is_displayed">[docs]</a>    <span class="k">def</span> <span class="nf">is_displayed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Whether the element would be visible to a user&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">IS_ELEMENT_DISPLAYED</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="WebElement.location_once_scrolled_into_view"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.location_once_scrolled_into_view">[docs]</a>    <span class="k">def</span> <span class="nf">location_once_scrolled_into_view</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;CONSIDERED LIABLE TO CHANGE WITHOUT WARNING. Use this to discover where on the screen an</span>
+<span class="sd">        element is so that we can click it. This method should cause the element to be scrolled</span>
+<span class="sd">        into view.</span>
+
+<span class="sd">        Returns the top lefthand corner location on the screen, or None if the element is not visible&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebElement.size"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.size">[docs]</a>    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -238,8 +253,11 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebElement.id"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.id">[docs]</a>    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
+</div>
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="n">element</span><span class="o">.</span><span class="n">id</span>
 
-    <span class="c"># Private Methods</span></div>
+    <span class="c"># Private Methods</span>
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Executes a command against the underlying HTML element.</span>
 
@@ -308,11 +326,13 @@
         <span class="k">if</span> <span class="n">file_path</span> <span class="ow">is</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
 
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">file_path</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span></div></div>
-</pre></div>
+        <span class="k">try</span><span class="p">:</span>
+          <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+              <span class="k">return</span> <span class="n">file_path</span>
+        <span class="k">except</span><span class="p">:</span>
+          <span class="k">pass</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</pre></div></div></div>
 
           </div>
         </div>

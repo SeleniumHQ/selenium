@@ -96,6 +96,7 @@
         <span class="s">&quot;browser.offline&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
         <span class="s">&quot;browser.safebrowsing.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
         <span class="s">&quot;browser.search.update&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
+        <span class="s">&quot;extensions.blocklist.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
         <span class="s">&quot;browser.sessionstore.resume_from_crash&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
         <span class="s">&quot;browser.shell.checkDefaultBrowser&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
         <span class="s">&quot;browser.tabs.warnOnClose&quot;</span><span class="p">:</span> <span class="s">&quot;false&quot;</span><span class="p">,</span>
@@ -262,6 +263,9 @@
         <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">encodestring</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
 </div>
 <div class="viewcode-block" id="FirefoxProfile.set_proxy"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_profile.html#selenium.webdriver.firefox.firefox_profile.FirefoxProfile.set_proxy">[docs]</a>    <span class="k">def</span> <span class="nf">set_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proxy</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">warnings</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;This method has been deprecated. Please pass in the proxy object to the Driver Object&quot;</span><span class="p">,</span>
+                    <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">proxy</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;proxy can not be None&quot;</span><span class="p">)</span>
 
