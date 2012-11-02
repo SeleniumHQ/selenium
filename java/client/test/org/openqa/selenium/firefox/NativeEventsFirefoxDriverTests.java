@@ -16,8 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import junit.framework.TestSuite;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -30,7 +28,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
     StandardSeleniumTests.class,
     FirefoxSpecificTests.class
 })
-public class NativeEventsFirefoxDriverTests extends TestSuite {
+public class NativeEventsFirefoxDriverTests {
 
   @BeforeClass
   public static void forceNativeEvents() {
