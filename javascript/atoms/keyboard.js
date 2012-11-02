@@ -706,7 +706,7 @@ bot.Keyboard.prototype.updateOnLeftOrRight_ = function(key) {
   var start = goog.dom.selection.getStart(element);
   var end = goog.dom.selection.getEnd(element);
 
-  var newPos, startPos, endPos;
+  var newPos, startPos = 0, endPos = 0;
   if (key == bot.Keyboard.Keys.LEFT) {
     if (this.isPressed(bot.Keyboard.Keys.SHIFT)) {
       // If the current position of the cursor is at the start of the

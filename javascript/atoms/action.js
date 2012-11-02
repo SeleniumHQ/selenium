@@ -136,7 +136,7 @@ bot.action.focusOnElement = function(element) {
 bot.action.type = function(element, values, opt_keyboard) {
   bot.action.checkShown_(element);
   bot.action.checkInteractable_(element);
-  var keyboard = opt_keyboard || new bot.Keyboard(null);
+  var keyboard = opt_keyboard || new bot.Keyboard();
   keyboard.moveCursor(element);
 
   function typeValue(value) {
