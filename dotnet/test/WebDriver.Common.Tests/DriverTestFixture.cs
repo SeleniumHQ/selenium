@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium
 {
@@ -70,6 +71,7 @@ namespace OpenQA.Selenium
         public string clicksPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("clicks.html");
         public string booleanAttributes = EnvironmentManager.Instance.UrlBuilder.WhereIs("booleanAttributes.html");
         public string linkedImage = EnvironmentManager.Instance.UrlBuilder.WhereIs("linked_image.html");
+        public string xhtmlFormPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("xhtmlFormPage.xhtml");
 
         protected IWebDriver driver;
 
@@ -83,13 +85,13 @@ namespace OpenQA.Selenium
         {
             get
             {
-                IHasCapabilities capsDriver = driver as IHasCapabilities;
-                if (capsDriver == null)
+                IHasCapabilities capabilitiesDriver = driver as IHasCapabilities;
+                if (capabilitiesDriver != null && capabilitiesDriver.Capabilities.HasCapability(CapabilityType.HasNativeEvents) && (bool)capabilitiesDriver.Capabilities.GetCapability(CapabilityType.HasNativeEvents))
                 {
-                    return false;
+                    return true;
                 }
 
-                return capsDriver.Capabilities.HasCapability(OpenQA.Selenium.Remote.CapabilityType.HasNativeEvents) && (bool)capsDriver.Capabilities.GetCapability(OpenQA.Selenium.Remote.CapabilityType.HasNativeEvents);
+                return false;
             }
         }
 

@@ -168,10 +168,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Ignore("Issue #1225. Issue in the automation atom.")]
+        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldReturnEmptyStringWhenTagIsSelfClosing()
         {
-            driver.Url = (xhtmlTestPage);
+            driver.Url = (xhtmlFormPage);
 
             string text = driver.FindElement(By.Id("self-closed")).Text;
             Assert.AreEqual(text, string.Empty);
@@ -276,7 +276,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void houldGetTextWhichIsAValidComplexJSONObject()
+        public void ShouldGetTextWhichIsAValidComplexJSONObject()
         {
             driver.Url = simpleTestPage;
             IWebElement element = driver.FindElement(By.Id("complexJsonText"));
