@@ -143,12 +143,13 @@ bot.action.type = function(element, values, opt_keyboard) {
     if (goog.isString(value)) {
       goog.array.forEach(value.split(''), function(ch) {
         var keyShiftPair = bot.Keyboard.Key.fromChar(ch);
-        if (keyShiftPair.shift) {
+        var shiftIsPressed = keyboard.isPressed(bot.Keyboard.Keys.SHIFT);
+        if (keyShiftPair.shift && !shiftIsPressed) {
           keyboard.pressKey(bot.Keyboard.Keys.SHIFT);
         }
         keyboard.pressKey(keyShiftPair.key);
         keyboard.releaseKey(keyShiftPair.key);
-        if (keyShiftPair.shift) {
+        if (keyShiftPair.shift && !shiftIsPressed) {
           keyboard.releaseKey(bot.Keyboard.Keys.SHIFT);
         }
       });

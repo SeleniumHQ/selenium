@@ -41,7 +41,8 @@ goog.require('goog.userAgent');
  * A keyboard that provides atomic typing actions.
  *
  * @constructor
- * @param {Array.<!bot.Keyboard.Key>=} opt_state Optional keyboard state.
+ * @param {{pressed: !Array.<!bot.Keyboard.Key>,
+            currentPos: number}=} opt_state Optional keyboard state.
  * @extends {bot.Device}
  */
 bot.Keyboard = function(opt_state) {
@@ -54,15 +55,25 @@ bot.Keyboard = function(opt_state) {
   this.editable_ = bot.dom.isEditable(this.getElement());
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.currentPos_ = 0;
+
+  /**
    * @type {!goog.structs.Set.<!bot.Keyboard.Key>}
    * @private
    */
   this.pressed_ = new goog.structs.Set();
 
   if (opt_state) {
-    goog.array.forEach(opt_state, function(key) {
+    // If a state is passed, let's assume we were passed an object with
+    // the correct properties.
+    goog.array.forEach(opt_state['pressed'], function(key) {
       this.setKeyPressed_(key, true);
     }, this);
+
+    this.currentPos_ = opt_state['currentPos'];
   }
 };
 goog.inherits(bot.Keyboard, bot.Device);
@@ -268,6 +279,7 @@ bot.Keyboard.Keys = {
   HYPHEN: bot.Keyboard.newKey_(
       {gecko: 109, ieWebkit: 189, opera: 109}, '-', '_'),
   COMMA: bot.Keyboard.newKey_(188, ',', '<'),
+  SEPARATOR: bot.Keyboard.newKey_(188, ','),
   PERIOD: bot.Keyboard.newKey_(190, '.', '>'),
   SLASH: bot.Keyboard.newKey_(191, '/', '?'),
   BACKTICK: bot.Keyboard.newKey_(192, '`', '~'),
@@ -414,7 +426,7 @@ bot.Keyboard.prototype.isPressed = function(key) {
  * @param {!bot.Keyboard.Key} key Key to press.
  */
 bot.Keyboard.prototype.pressKey = function(key) {
-  if (this.isPressed(key) && goog.array.contains(bot.Keyboard.MODIFIERS, key)) {
+  if (goog.array.contains(bot.Keyboard.MODIFIERS, key) && this.isPressed(key)) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
         'Cannot press a modifier key that is already pressed.');
   }
@@ -531,6 +543,10 @@ bot.Keyboard.prototype.maybeEditText_ = function(key) {
       case bot.Keyboard.Keys.RIGHT:
         this.updateOnLeftOrRight_(key);
         break;
+      case bot.Keyboard.Keys.HOME:
+      case bot.Keyboard.Keys.END:
+        this.updateOnHomeOrEnd_(key);
+        break;
     }
   }
 };
@@ -594,15 +610,16 @@ bot.Keyboard.prototype.updateOnCharacter_ = function(key) {
   }
 
   var character = this.getChar_(key);
+  var newPos = goog.dom.selection.getStart(this.getElement()) + 1;
   goog.dom.selection.setText(this.getElement(), character);
-  goog.dom.selection.setStart(this.getElement(),
-      goog.dom.selection.getStart(this.getElement()) + 1);
+  goog.dom.selection.setStart(this.getElement(), newPos);
   if (goog.userAgent.WEBKIT) {
     this.fireHtmlEvent(bot.events.EventType.TEXTINPUT);
   }
   if (!bot.userAgent.IE_DOC_PRE9) {
     this.fireHtmlEvent(bot.events.EventType.INPUT);
   }
+  this.updateCurrentPos_(newPos);
 };
 
 
@@ -620,13 +637,14 @@ bot.Keyboard.prototype.updateOnEnter_ = function() {
     this.fireHtmlEvent(bot.events.EventType.TEXTINPUT);
   }
   if (bot.dom.isElement(this.getElement(), goog.dom.TagName.TEXTAREA)) {
+    var newPos = goog.dom.selection.getStart(this.getElement()) + 
+        bot.Keyboard.NEW_LINE_.length;
     goog.dom.selection.setText(this.getElement(), bot.Keyboard.NEW_LINE_);
-    goog.dom.selection.setStart(this.getElement(),
-        goog.dom.selection.getStart(this.getElement()) +
-        bot.Keyboard.NEW_LINE_.length);
+    goog.dom.selection.setStart(this.getElement(), newPos);
     if (!goog.userAgent.IE) {
       this.fireHtmlEvent(bot.events.EventType.INPUT);
     }
+    this.updateCurrentPos_(newPos);
   }
 };
 
@@ -643,12 +661,14 @@ bot.Keyboard.prototype.updateOnBackspaceOrDelete_ = function(key) {
   // Determine what should be deleted.  If text is already selected, that
   // text is deleted, else we move left/right from the current cursor.
   var endpoints = goog.dom.selection.getEndPoints(this.getElement());
-  if (key == bot.Keyboard.Keys.BACKSPACE && endpoints[0] == endpoints[1]) {
-    goog.dom.selection.setStart(this.getElement(), endpoints[1] - 1);
-    // On IE, changing goog.dom.selection.setStart also changes the end.
-    goog.dom.selection.setEnd(this.getElement(), endpoints[1]);
-  } else {
-    goog.dom.selection.setEnd(this.getElement(), endpoints[1] + 1);
+  if (endpoints[0] == endpoints[1]) {
+    if (key == bot.Keyboard.Keys.BACKSPACE) {
+      goog.dom.selection.setStart(this.getElement(), endpoints[1] - 1);
+      // On IE, changing goog.dom.selection.setStart also changes the end.
+      goog.dom.selection.setEnd(this.getElement(), endpoints[1]);
+    } else {
+      goog.dom.selection.setEnd(this.getElement(), endpoints[1] + 1);
+    }
   }
 
   // If the endpoints are equal (e.g., the cursor was at the beginning/end
@@ -670,6 +690,10 @@ bot.Keyboard.prototype.updateOnBackspaceOrDelete_ = function(key) {
       (goog.userAgent.GECKO && key == bot.Keyboard.Keys.BACKSPACE)) {
     this.fireHtmlEvent(bot.events.EventType.INPUT);
   }
+
+  // Update the cursor position
+  endpoints = goog.dom.selection.getEndPoints(this.getElement());
+  this.updateCurrentPos_(endpoints[1]);
 };
 
 
@@ -678,23 +702,122 @@ bot.Keyboard.prototype.updateOnBackspaceOrDelete_ = function(key) {
  * @private
  */
 bot.Keyboard.prototype.updateOnLeftOrRight_ = function(key) {
-  var start = goog.dom.selection.getStart(this.getElement());
+  var element = this.getElement();
+  var start = goog.dom.selection.getStart(element);
+  var end = goog.dom.selection.getEnd(element);
+
+  var newPos, startPos, endPos;
   if (key == bot.Keyboard.Keys.LEFT) {
-    goog.dom.selection.setCursorPosition(this.getElement(), start - 1);
+    if (this.isPressed(bot.Keyboard.Keys.SHIFT)) {
+      // If the current position of the cursor is at the start of the
+      // selection, pressing left expands the selection one character to the
+      // left; otherwise, pressing left collapses it one character to the
+      // left.
+      if (this.currentPos_ == start) {
+        // Never attempt to move further left than the beginning of the text.
+        startPos = Math.max(start - 1, 0);
+        endPos = end;
+        newPos = startPos;
+      } else {
+        startPos = start;
+        endPos = end - 1;
+        newPos = endPos;
+      }
+    } else {
+      // With no current selection, pressing left moves the cursor one
+      // character to the left; with an existing selection, it collapses the
+      // selection to the beginning of the selection.
+      newPos = start == end ? Math.max(start - 1, 0) : start;
+    }
   } else {  // (key == bot.Keyboard.Keys.RIGHT)
-    goog.dom.selection.setCursorPosition(this.getElement(), start + 1);
+    if (this.isPressed(bot.Keyboard.Keys.SHIFT)) {
+      // If the current position of the cursor is at the end of the selection,
+      // pressing right expands the selection one character to the right;
+      // otherwise, pressing right collapses it one character to the right.
+      if (this.currentPos_ == end) {
+        startPos = start;
+        // Never attempt to move further right than the end of the text.
+        endPos = Math.min(end + 1, element.value.length);
+        newPos = endPos;
+      } else {
+        startPos = start + 1;
+        endPos = end;
+        newPos = startPos;
+      }
+    } else {
+      // With no current selection, pressing right moves the cursor one
+      // character to the right; with an existing selection, it collapses the
+      // selection to the end of the selection.
+      newPos = start == end ? Math.min(end + 1, element.value.length) : end;
+    }
   }
+
+  if (this.isPressed(bot.Keyboard.Keys.SHIFT)) {
+    goog.dom.selection.setStart(element, startPos);
+    // On IE, changing goog.dom.selection.setStart also changes the end.
+    goog.dom.selection.setEnd(element, endPos);
+  } else {
+    goog.dom.selection.setCursorPosition(element, newPos);
+  }
+  this.updateCurrentPos_(newPos);
 };
 
 
 /**
- * @param {bot.events.EventType} type Event type.
- * @param {!bot.Keyboard.Key} key Key.
- * @param {boolean=} opt_preventDefault Whether the default event should be
- *     prevented. Defaults to false.
- * @return {boolean} Whether the event fired successfully or was cancelled.
+ * @param {!bot.Keyboard.Key} key Special key to press.
  * @private
  */
+bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
+  var element = this.getElement();
+  var start = goog.dom.selection.getStart(element);
+  var end = goog.dom.selection.getEnd(element);
+  // TODO: Handle multiline (TEXTAREA) elements.
+  if (key == bot.Keyboard.Keys.HOME) {
+    if (this.isPressed(bot.Keyboard.Keys.SHIFT)) {
+      goog.dom.selection.setStart(element, 0);
+      // If current position is at the end of the selection, typing home
+      // changes the selection to begin at the beginning of the text, running
+      // to the where the current selection begins. 
+      var endPos = this.currentPos_ == start ? end : start;
+      // On IE, changing goog.dom.selection.setStart also changes the end.
+      goog.dom.selection.setEnd(element, endPos);
+    } else {
+      goog.dom.selection.setCursorPosition(element, 0);
+    }
+    this.updateCurrentPos_(0);
+  } else {  // (key == bot.Keyboard.Keys.END)
+    if (this.isPressed(bot.Keyboard.Keys.SHIFT)) {
+      if (this.currentPos_ == start) {
+        // Current position is at the beginning of the selection. Typing end
+        // changes the selection to begin where the current selection ends, 
+        // running to the end of the text. 
+        goog.dom.selection.setStart(element, end);
+      }
+      goog.dom.selection.setEnd(element, element.value.length);
+    } else {
+      goog.dom.selection.setCursorPosition(element, element.value.length);
+    }
+    this.updateCurrentPos_(element.value.length);
+  }
+};
+
+/**
+* @param {number} pos New position of the cursor
+* @private
+*/
+bot.Keyboard.prototype.updateCurrentPos_ = function(pos) {
+  this.currentPos_ = pos;
+};
+
+
+/**
+* @param {bot.events.EventType} type Event type.
+* @param {!bot.Keyboard.Key} key Key.
+* @param {boolean=} opt_preventDefault Whether the default event should be
+*     prevented. Defaults to false.
+* @return {boolean} Whether the event fired successfully or was cancelled.
+* @private
+*/
 bot.Keyboard.prototype.fireKeyEvent_ = function(type, key, opt_preventDefault) {
   if (goog.isNull(key.code)) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
@@ -729,6 +852,7 @@ bot.Keyboard.prototype.moveCursor = function(element) {
   var focusChanged = this.focusOnElement();
   if (this.editable_ && focusChanged) {
     goog.dom.selection.setCursorPosition(element, element.value.length);
+    this.updateCurrentPos_(element.value.length);
   }
 };
 
@@ -736,10 +860,19 @@ bot.Keyboard.prototype.moveCursor = function(element) {
 /**
  * Serialize the current state of the keyboard.
  *
- * @return {!Array.<!bot.Keyboard.Key>} The current keyboard state.
+ * @return {{pressed: !Array.<!bot.Keyboard.Key>, currentPos: number}} The 
+ *     current keyboard state.
  */
-bot.Keyboard.prototype.getState = function() {
-  return this.pressed_.getValues();
+bot.Keyboard.prototype.getState = function () {
+  // Need to use quoted literals here, so the compiler will not rename the
+  // properties of the emitted object. When the object is created via the
+  // "constructor", we will look for these *specific* properties. Everywhere
+  // else internally, we use the dot-notation, so it's okay if the compiler
+  // renames the internal variable name.
+  return {
+    'pressed': this.pressed_.getValues(),
+    'currentPos': this.currentPos_
+  };
 };
 
 /**

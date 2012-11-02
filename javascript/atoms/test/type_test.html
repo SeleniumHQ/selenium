@@ -36,6 +36,8 @@
     var META = bot.Keyboard.Keys.META;
     var RIGHT = bot.Keyboard.Keys.RIGHT;
     var SHIFT = bot.Keyboard.Keys.SHIFT;
+    var HOME = bot.Keyboard.Keys.HOME;
+    var END = bot.Keyboard.Keys.END;
 
     function setUpPage() {
       for (var i = 0; i < INPUT_IDS.length; i++) {
@@ -183,6 +185,10 @@
       // the text was not changed.
       var inputs = goog.userAgent.GECKO ? 5 : 4;
       runTypingTest(['ab', LEFT, BACKSPACE, BACKSPACE, 'c'], 'cb', inputs, 3);
+  }
+
+    function testShiftNavigation() {
+      runTypingTest(['axyz', SHIFT, LEFT, LEFT, LEFT, 'Bcd'], 'aBCD', 7);
     }
 
     function testDelete() {
@@ -199,6 +205,14 @@
       } else {
         runTypingTest(['abcd', DELETE, DELETE], 'abcd', 4);
       }
+    }
+
+    function testShiftDelete() {
+      runTypingTest(['abcd', HOME, SHIFT, END, DELETE], '', 5, 4);
+      runTypingTest(['abcd', HOME, RIGHT, SHIFT, END, DELETE], 'a', 5, 4);
+      runTypingTest(['abcd', HOME, END, LEFT, SHIFT, HOME, DELETE], 'd', 5, 4);
+      runTypingTest(['abcd', SHIFT, LEFT, LEFT, LEFT, DELETE], 'a', 5, 4);
+      runTypingTest(['abcd', HOME, SHIFT, RIGHT, RIGHT, RIGHT, DELETE], 'd', 5, 4);
     }
 
     function testEventCancel() {
