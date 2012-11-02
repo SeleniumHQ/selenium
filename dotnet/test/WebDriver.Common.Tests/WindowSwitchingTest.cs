@@ -346,7 +346,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Ignore]
+        [Ignore("Ignored for all browsers")]
         [NeedsFreshDriver(AfterTest = true)]
         public void CloseShouldCloseCurrentHandleOnly()
         {

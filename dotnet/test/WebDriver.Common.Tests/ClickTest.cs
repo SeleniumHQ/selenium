@@ -123,7 +123,7 @@ namespace OpenQA.Selenium
             // Note: It is not guaranteed that the relatedTarget property of the mouseover
             // event will be the parent, when using native events. Only check that the mouse
             // has moved to this element, not that the parent element was the related target.
-            if (this.IsNativeEventsEnabled(driver))
+            if (this.IsNativeEventsEnabled)
             {
                 Assert.IsTrue(log.StartsWith("parent matches?"), "Should have moved to this element.");
             }
@@ -149,7 +149,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Ignore]
+        [Ignore("Ignored for all browsers")]
         public void ShouldSetRelatedTargetForMouseOut()
         {
             Assert.Fail("Must. Write. Meamingful. Test (but we don't fire mouse outs synthetically");
@@ -204,15 +204,23 @@ namespace OpenQA.Selenium
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
-        private bool IsNativeEventsEnabled(IWebDriver driver)
+        // See http://code.google.com/p/selenium/issues/attachmentText?id=2700
+        [Test]
+        public void ShouldBeAbleToClickOnAnElementInTheViewport()
         {
-            IHasCapabilities capabilitiesDriver = driver as IHasCapabilities;
-            if (capabilitiesDriver != null && capabilitiesDriver.Capabilities.HasCapability(CapabilityType.HasNativeEvents) && (bool)capabilitiesDriver.Capabilities.GetCapability(CapabilityType.HasNativeEvents))
-            {
-                return true;
-            }
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_out_of_bounds.html");
 
-            return false;
+            driver.Url = url;
+            IWebElement button = driver.FindElement(By.Id("button"));
+            button.Click();
+        }
+
+        [Test]
+        public void ClicksASurroundingStrongTag()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("ClickTest_testClicksASurroundingStrongTag.html");
+            driver.FindElement(By.TagName("a")).Click();
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
         }
     }
 }
