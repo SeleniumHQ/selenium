@@ -1,3 +1,20 @@
+2.26.0 (2012-11-02)
+===================
+
+Firefox:
+  * Added support for native events for Firefox 15 and 16.
+  * Modified FirefoxDriver to use atoms to switch between frames.
+  * FIXED: 4309: 'Could not convert Native argument arg 0' error with Firefox.
+  * FIXED: 4375: Executing javascript hangs Firefox.
+  * FIXED: 4165: WebDriver fails on a machine with no IP address.
+Safari:
+  * Fixed SafariDriver to allow calling .quit() consecutively without error.
+  * FIXED: 4676: Unable to fire javascript events into SVG's. 
+  * FIXED: 3969: SafariDriver should auto-dismiss alerts.
+IE:
+  * FIXED: 4535: Hover still does not work perfectly in IE.
+  * FIXED: 4593: Alert.accept() Cancels the Resend Alert/Dialog Box.
+
 2.25.0 (2012-07-19)
 ===================
 
