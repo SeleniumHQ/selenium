@@ -85,10 +85,14 @@
   <ItemGroup>
     <Compile Include="Android\AndroidDriver.cs" />
     <Compile Include="By.cs" />
+    <Compile Include="DefaultFileDetector.cs" />
+    <Compile Include="IAllowsFileDetection.cs" />
+    <Compile Include="IFileDetector.cs" />
     <Compile Include="PhantomJS\PhantomJSDriver.cs" />
     <Compile Include="PhantomJS\PhantomJSDriverService.cs" />
     <Compile Include="PhantomJS\PhantomJSOptions.cs" />
     <Compile Include="PhantomJS\PhantomJSWebElement.cs" />
+    <Compile Include="Remote\LocalFileDetector.cs" />
     <Compile Include="WebDriverTimeoutException.cs" />
     <Compile Include="IE\InternetExplorerDriverLogLevel.cs" />
     <Compile Include="IE\InternetExplorerOptions.cs" />

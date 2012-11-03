@@ -60,7 +60,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IHasInputDevices, IHasCapabilities
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IHasInputDevices, IHasCapabilities, IAllowsFileDetection
     {
         #region Private members
         private ICommandExecutor executor;
@@ -68,6 +68,7 @@ namespace OpenQA.Selenium.Remote
         private IMouse mouse;
         private IKeyboard keyboard;
         private SessionId sessionId;
+        private IFileDetector fileDetector = new DefaultFileDetector();
         #endregion
 
         #region Constructors
@@ -257,6 +258,30 @@ namespace OpenQA.Selenium.Remote
         public ICapabilities Capabilities
         {
             get { return this.capabilities; }
+        }
+        #endregion
+
+        #region IAllowsFileDetection Members
+        /// <summary>
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
+        /// sequences of keystrokes representing file paths and names. 
+        /// </summary>
+        public IFileDetector FileDetector
+        {
+            get
+            {
+                return this.fileDetector;
+            }
+
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", "FileDetector cannot be null");
+                }
+
+                this.fileDetector = value;
+            }
         }
         #endregion
 

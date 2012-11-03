@@ -352,5 +352,10 @@ namespace OpenQA.Selenium.Remote
         /// Represents the SendKeysToActiveElement command.
         /// </summary>
         public static readonly string SendKeysToActiveElement = "sendKeysToActiveElement";
+
+        /// <summary>
+        /// Represents the UploadFile command.
+        /// </summary>
+        public static readonly string UploadFile = "uploadFile";
     }
 }

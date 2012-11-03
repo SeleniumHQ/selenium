@@ -23,6 +23,8 @@ using System.Drawing;
 using System.Globalization;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
+using Ionic.Zip;
+using System.IO;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -281,6 +283,11 @@ namespace OpenQA.Selenium.Remote
             if (text == null)
             {
                 throw new ArgumentNullException("text", "text cannot be null");
+            }
+
+            if (this.driver.FileDetector.IsFile(text))
+            {
+                text = this.UploadFile(text);
             }
 
             // N.B. The Java remote server expects a CharSequence as the value input to
@@ -803,5 +810,31 @@ namespace OpenQA.Selenium.Remote
             return this.driver.InternalExecute(commandToExecute, parameters);
         }
         #endregion
+
+        private string UploadFile(string localFile)
+        {
+            string base64zip = string.Empty;
+            try
+            {
+                using (ZipFile profileZipFile = new ZipFile())
+                {
+                    profileZipFile.AddFile(localFile, "/");
+                    using (MemoryStream profileMemoryStream = new MemoryStream())
+                    {
+                        profileZipFile.Save(profileMemoryStream);
+                        base64zip = Convert.ToBase64String(profileMemoryStream.ToArray());
+                    }
+                }
+
+                Dictionary<string, object> parameters = new Dictionary<string,object>();
+                parameters.Add("file", base64zip);
+                Response response = this.Execute(DriverCommand.UploadFile, parameters);
+                return response.Value.ToString();
+            }
+            catch (IOException e)
+            {
+                throw new WebDriverException("Cannot upload " + localFile, e);
+            }
+        }
     }
 }
