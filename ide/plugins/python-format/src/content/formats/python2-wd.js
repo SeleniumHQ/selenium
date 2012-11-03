@@ -215,6 +215,7 @@ this.options = {
           '        self.driver.implicitly_wait(30)\n' +
           '        self.base_url = "${baseURL}"\n' +
           '        self.verificationErrors = []\n' +
+          '        self.accept_next_alert = true\n' +
           '    \n' +
           '    def ${methodName}(self):\n' +
           '        ${receiver} = self.driver\n',
@@ -224,6 +225,16 @@ this.options = {
           '        try: self.driver.find_element(by=how, value=what)\n' +
           '        except NoSuchElementException, e: return False\n' +
           '        return True\n' +
+          '    \n' +
+          '    def close_alert_and_get_its_text(self):\n' +
+          '        try:\n' +
+          '            alert = self.driver.switch_to_alert()\n' +
+          '            if self.accept_next_alert:\n' +
+          '                alert.accept()\n' +
+          '            else:\n' +
+          '                alert.dismiss()\n' +
+          '            return alert.text\n' +
+          '        finally: self.accept_next_alert = True\n' +
           '    \n' +
           '    def tearDown(self):\n' +
           '        self.driver.quit()\n' +
@@ -340,6 +351,18 @@ WDAPI.Driver.prototype.get = function(url) {
 
 WDAPI.Driver.prototype.getTitle = function() {
   return this.ref + ".title";
+};
+
+WDAPI.Driver.prototype.getAlert = function() {
+  return "self.close_alert_and_get_its_text()";
+};
+
+WDAPI.Driver.prototype.chooseOkOnNextConfirmation = function() {
+  return "self.accept_next_alert = true";
+};
+
+WDAPI.Driver.prototype.chooseCancelOnNextConfirmation = function() {
+  return "self.accept_next_alert = false";
 };
 
 WDAPI.Driver.prototype.refresh = function() {

@@ -221,6 +221,7 @@ this.options = {
           '        private IWebDriver driver;\n' +
           '        private StringBuilder verificationErrors;\n' +
           '        private string baseURL;\n' +
+          "        private bool acceptNextAlert = true;\n" +
           '        \n' +
           '        [SetUp]\n' +
           '        public void SetupTest()\n' +
@@ -248,7 +249,7 @@ this.options = {
           '        public void ${methodName}()\n' +
           '        {\n',
   footer:
-      '        }\n' +
+          '        }\n' +
           "        private bool IsElementPresent(By by)\n" +
           "        {\n" +
           "            try\n" +
@@ -259,6 +260,20 @@ this.options = {
           "            catch (NoSuchElementException)\n" +
           "            {\n" +
           "                return false;\n" +
+          "            }\n" +
+          "        }\n" +
+          '        \n' +
+          "        private string CloseAlertAndGetItsText() {\n" +
+          "            try {\n" +
+          "                IAlert alert = driver.SwitchTo().Alert();\n" +
+          "                if (acceptNextAlert) {\n" +
+          "                    alert.Accept();\n" +
+          "                } else {\n" +
+          "                    alert.Dismiss();\n" +
+          "                }\n" +
+          "                return alert.Text;\n" +
+          "            } finally {\n" +
+          "                acceptNextAlert = true;\n" +
           "            }\n" +
           "        }\n" +
           '    }\n' +
@@ -329,6 +344,18 @@ WDAPI.Driver.prototype.get = function(url) {
 
 WDAPI.Driver.prototype.getTitle = function() {
   return this.ref + ".Title";
+};
+
+WDAPI.Driver.prototype.getAlert = function() {
+  return "CloseAlertAndGetItsText()";
+};
+
+WDAPI.Driver.prototype.chooseOkOnNextConfirmation = function() {
+  return "acceptNextAlert = true";
+};
+
+WDAPI.Driver.prototype.chooseCancelOnNextConfirmation = function() {
+  return "acceptNextAlert = false";
 };
 
 WDAPI.Driver.prototype.refresh = function() {

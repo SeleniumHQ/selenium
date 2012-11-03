@@ -228,6 +228,7 @@ this.options = {
           '  before(:each) do\n' +
           '    ${receiver} = Selenium::WebDriver.for :firefox\n' +
           '    @base_url = "${baseURL}"\n' +
+          '    @accept_next_alert = true\n' +
           '    ${receiver}.manage.timeouts.implicit_wait = 30\n' +
           '    @verification_errors = []\n' +
           '  end\n' +
@@ -252,6 +253,18 @@ this.options = {
           "    yield\n" +
           "  rescue ExpectationNotMetError => ex\n" +
           "    @verification_errors << ex\n" +
+          "  end\n" +
+          "  \n" +
+          "  def close_alert_and_get_its_text(how, what)\n" +
+          "    alert = @driver.switch_to().alert()\n" +
+          "    if (@accept_next_alert) then\n" +
+          "      alert.accept()\n" +
+          "    else\n" +
+          "      alert.dismiss()\n" +
+          "    end\n" +
+          "    alert.text\n" +
+          "  ensure\n" +
+          "    @accept_next_alert = true\n" +
           "  end\n" +
           "end\n",
   indent: "2",
@@ -338,6 +351,18 @@ WDAPI.Driver.prototype.get = function(url) {
 
 WDAPI.Driver.prototype.getTitle = function() {
   return this.ref + ".title";
+};
+
+WDAPI.Driver.prototype.getAlert = function() {
+  return "close_alert_and_get_its_text()";
+};
+
+WDAPI.Driver.prototype.chooseOkOnNextConfirmation = function() {
+  return "@accept_next_alert = true";
+};
+
+WDAPI.Driver.prototype.chooseCancelOnNextConfirmation = function() {
+  return "@accept_next_alert = false";
 };
 
 WDAPI.Driver.prototype.refresh = function() {
