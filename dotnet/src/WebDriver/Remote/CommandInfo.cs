@@ -77,7 +77,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Creates a webrequest for your command
+        /// Creates a web request for your command
         /// </summary>
         /// <param name="baseUri">Uri that will have the command run against</param>
         /// <param name="commandToExecute">Command to execute</param>

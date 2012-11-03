@@ -241,7 +241,7 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Gets a mechanism to find elements by their cascading stylesheet (CSS) selector.
+        /// Gets a mechanism to find elements by their cascading style sheet (CSS) selector.
         /// </summary>
         /// <param name="cssSelectorToFind">The CSS selector to find.</param>
         /// <returns>A <see cref="By"/> object the driver can use to find the elements.</returns>

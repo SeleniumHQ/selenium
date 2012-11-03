@@ -99,22 +99,22 @@ namespace OpenQA.Selenium.Remote
         public static readonly string DeleteAllCookies = "deleteAllCookies";
 
         /// <summary>
-        /// Represents findelement command
+        /// Represents FindElement command
         /// </summary>
         public static readonly string FindElement = "findElement";
 
         /// <summary>
-        /// Represents findelements command
+        /// Represents FindElements command
         /// </summary>
         public static readonly string FindElements = "findElements";
 
         /// <summary>
-        /// Represents findchildelements command
+        /// Represents FindChildElement command
         /// </summary>
         public static readonly string FindChildElement = "findChildElement";
 
         /// <summary>
-        /// Represents findchildelements command
+        /// Represents FindChildElements command
         /// </summary>
         public static readonly string FindChildElements = "findChildElements";
 
@@ -124,12 +124,12 @@ namespace OpenQA.Selenium.Remote
         public static readonly string DescribeElement = "describeElement";
 
         /// <summary>
-        /// Represents clearelements command
+        /// Represents ClearElement command
         /// </summary>
         public static readonly string ClearElement = "clearElement";
 
         /// <summary>
-        /// Represents clickelements command
+        /// Represents ClickElement command
         /// </summary>
         public static readonly string ClickElement = "clickElement";
 
@@ -144,7 +144,7 @@ namespace OpenQA.Selenium.Remote
         public static readonly string SubmitElement = "submitElement";
 
         /// <summary>
-        /// Represents findchildelements command
+        /// Represents GetCurrentWindowHandle command
         /// </summary>
         public static readonly string GetCurrentWindowHandle = "getCurrentWindowHandle";
 
@@ -239,7 +239,7 @@ namespace OpenQA.Selenium.Remote
         public static readonly string GetElementAttribute = "getElementAttribute";
 
         /// <summary>
-        /// Represents GetElementValueOfCssProperty command
+        /// Represents GetElementValueOfCSSProperty command
         /// </summary>
         public static readonly string GetElementValueOfCssProperty = "getElementValueOfCssProperty";
 

@@ -22,7 +22,7 @@ using Newtonsoft.Json;
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
-    /// Provides a way to store errors from a repsonse
+    /// Provides a way to store errors from a response
     /// </summary>
     public class ErrorResponse
     {
@@ -91,7 +91,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets or sets the message from the reponse
+        /// Gets or sets the message from the response
         /// </summary>
         [JsonProperty("message")]
         public string Message

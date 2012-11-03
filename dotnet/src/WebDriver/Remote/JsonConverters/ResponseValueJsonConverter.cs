@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Pricess the reader to return an object from JSON
+        /// Process the reader to return an object from JSON
         /// </summary>
         /// <param name="reader">A JSON reader</param>
         /// <param name="objectType">Type of the object</param>

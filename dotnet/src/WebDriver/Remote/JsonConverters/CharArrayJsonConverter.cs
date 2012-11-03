@@ -22,7 +22,7 @@ using Newtonsoft.Json;
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
-    /// Provides a way to convert a Char arry to JSON
+    /// Provides a way to convert a Char array to JSON
     /// </summary>
     internal class CharArrayJsonConverter : JsonConverter
     {

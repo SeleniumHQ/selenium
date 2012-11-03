@@ -106,7 +106,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Initializes a new instance of the RemoteWebDriver class using the specified remote address, desired capabilties, and command timeout.
+        /// Initializes a new instance of the RemoteWebDriver class using the specified remote address, desired capabilities, and command timeout.
         /// </summary>
         /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
@@ -308,7 +308,7 @@ namespace OpenQA.Selenium.Remote
         /// Finds the first element in the page that matches the <see cref="By"/> object
         /// </summary>
         /// <param name="by">By mechanism to find the object</param>
-        /// <returns>IWebElement object so that you can interction that object</returns>
+        /// <returns>IWebElement object so that you can interact with that object</returns>
         /// <example>
         /// <code>
         /// IWebDriver driver = new InternetExplorerDriver();
@@ -363,7 +363,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Method For getting an object to set the Speen
+        /// Method For getting an object to set the Speed
         /// </summary>
         /// <returns>Returns an IOptions object that allows the driver to set the speed and cookies and getting cookies</returns>
         /// <seealso cref="IOptions"/>
@@ -438,7 +438,7 @@ namespace OpenQA.Selenium.Remote
         /// Finds the first element in the page that matches the ID supplied
         /// </summary>
         /// <param name="id">ID of the element</param>
-        /// <returns>IWebElement object so that you can interction that object</returns>
+        /// <returns>IWebElement object so that you can interact with that object</returns>
         /// <example>
         /// <code>
         /// IWebDriver driver = new RemoteWebDriver(DesiredCapabilities.Firefox());
@@ -486,7 +486,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Finds a list of elements that match the classname supplied
+        /// Finds a list of elements that match the class name supplied
         /// </summary>
         /// <param name="className">CSS class Name on the element</param>
         /// <returns>ReadOnlyCollection of IWebElement object so that you can interact with those objects</returns>
@@ -556,7 +556,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Finds a list of elements that match the classname supplied
+        /// Finds a list of elements that match the class name supplied
         /// </summary>
         /// <param name="partialLinkText">part of the link text</param>
         /// <returns>ReadOnlyCollection<![CDATA[<IWebElement>]]> objects so that you can interact that object</returns>
@@ -727,7 +727,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Find the element in the response
         /// </summary>
-        /// <param name="response">Reponse from the browser</param>
+        /// <param name="response">Response from the browser</param>
         /// <returns>Element from the page</returns>
         internal IWebElement GetElementFromResponse(Response response)
         {
@@ -878,7 +878,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="mechanism">The mechanism by which to find the elements.</param>
         /// <param name="value">The value to use to search for the elements.</param>
-        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matchings the given criteria.</returns>
+        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
         protected ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();

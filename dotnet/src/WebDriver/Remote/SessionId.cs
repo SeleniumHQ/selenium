@@ -44,9 +44,9 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Get the hashcode of the key
+        /// Get the hash code of the key
         /// </summary>
-        /// <returns>The hashcode of the key</returns>
+        /// <returns>The hash code of the key</returns>
         public override int GetHashCode()
         {
             return this.sessionOpaqueKey.GetHashCode();

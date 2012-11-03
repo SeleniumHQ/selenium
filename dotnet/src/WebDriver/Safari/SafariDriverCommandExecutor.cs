@@ -54,7 +54,7 @@ namespace OpenQA.Selenium.Safari
         /// Initializes a new instance of the <see cref="SafariDriverCommandExecutor"/> class.
         /// </summary>
         /// <param name="port">The port on which the executor communicates with the extension.</param>
-        /// <param name="safariLocation">The locatoin of the Safari exectuable</param>
+        /// <param name="safariLocation">The location of the Safari executable</param>
         public SafariDriverCommandExecutor(int port, string safariLocation)
         {
             this.server = new SafariDriverServer(port);

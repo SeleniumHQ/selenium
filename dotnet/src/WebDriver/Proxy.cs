@@ -42,12 +42,12 @@ namespace OpenQA.Selenium
         Manual,
 
         /// <summary>
-        /// Proxy autoconfiguration from URL.
+        /// Proxy automatic configuration from URL.
         /// </summary>
         ProxyAutoConfigure,
 
         /// <summary>
-        /// Use proxy autodetection.
+        /// Use proxy automatic detection.
         /// </summary>
         AutoDetect = 4,
 
@@ -148,7 +148,7 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the proxy uses autodetection.
+        /// Gets or sets a value indicating whether the proxy uses automatic detection.
         /// </summary>
         public bool IsAutoDetect
         {
@@ -225,7 +225,7 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Gets or sets the URL used for proxy autoconfiguration.
+        /// Gets or sets the URL used for proxy automatic configuration.
         /// </summary>
         public string ProxyAutoConfigUrl
         {

@@ -39,7 +39,7 @@ namespace OpenQA.Selenium
         /// <remarks>
         /// The <see cref="TagName"/> property returns the tag name of the
         /// element, not the value of the name attribute. For example, it will return
-        /// "input" for an element specifiedby the HTML markup &lt;input name="foo" /&gt;. 
+        /// "input" for an element specified by the HTML markup &lt;input name="foo" /&gt;. 
         /// </remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         string TagName { get; }
@@ -68,7 +68,7 @@ namespace OpenQA.Selenium
         bool Selected { get; }
 
         /// <summary>
-        /// Gets a <see cref="Point"/> object containgin the coordinates of the upper-left corner
+        /// Gets a <see cref="Point"/> object containing the coordinates of the upper-left corner
         /// of this element relative to the upper-left corner of the page.
         /// </summary>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>

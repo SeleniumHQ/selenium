@@ -26,7 +26,7 @@ namespace OpenQA.Selenium
     /// </summary>
     /// <remarks>
     /// The <see cref="IWebDriver"/> interface is the main interface to use for testing, which
-    /// represents an idealised web browser. The methods in this class fall into three categories: 
+    /// represents an idealized web browser. The methods in this class fall into three categories: 
     /// <list type="bullet">
     /// <item><description>Control of the browser itself</description></item>
     /// <item><description>Selection of <see cref="IWebElement">IWebElements</see></description></item>
@@ -71,7 +71,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <remarks>
         /// If the page has been modified after loading (for example, by JavaScript) 
-        /// there is no guarentee that the returned text is that of the modified page. 
+        /// there is no guarantee that the returned text is that of the modified page. 
         /// Please consult the documentation of the particular driver being used to 
         /// determine whether the returned text reflects the current state of the page 
         /// or the text last sent by the web server. The page source returned is a 

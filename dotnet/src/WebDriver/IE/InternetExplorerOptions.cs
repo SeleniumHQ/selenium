@@ -166,7 +166,7 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Returns DesiredCapabiliites for IE with these options included as
+        /// Returns DesiredCapabilities for IE with these options included as
         /// capabilities. This copies the options. Further changes will not be
         /// reflected in the returned capabilities.
         /// </summary>

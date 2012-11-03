@@ -190,7 +190,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Returns DesiredCapabiliites for Chrome with these options included as
+        /// Returns DesiredCapabilities for Chrome with these options included as
         /// capabilities. This does not copy the options. Further changes will be
         /// reflected in the returned capabilities.
         /// </summary>

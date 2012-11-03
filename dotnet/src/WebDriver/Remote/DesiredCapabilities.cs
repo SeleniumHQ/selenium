@@ -54,7 +54,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Initializes a new instance of the DesiredCapabilities class
         /// </summary>
-        /// <param name="rawMap">Dictionary of items for the remotedriver</param>
+        /// <param name="rawMap">Dictionary of items for the remote driver</param>
         /// <example>
         /// <code>
         /// DesiredCapabilities capabilities = new DesiredCapabilities(new Dictionary<![CDATA[<string,object>]]>(){["browserName","firefox"],["version",string.Empty],["javaScript",true]});
@@ -152,7 +152,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the browser is javascript enabled
+        /// Gets or sets a value indicating whether the browser is JavaScript enabled
         /// </summary>
         public bool IsJavaScriptEnabled
         {
@@ -185,7 +185,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Method to return a new DesiredCapabilities using defaults
         /// </summary>
-        /// <returns>New instance of DesiredCapabilites for use with Firefox</returns>
+        /// <returns>New instance of DesiredCapabilities for use with Firefox</returns>
         public static DesiredCapabilities Firefox()
         {
             return new DesiredCapabilities("firefox", string.Empty, new Platform(PlatformType.Any));
@@ -194,7 +194,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Method to return a new DesiredCapabilities using defaults
         /// </summary>
-        /// <returns>New instance of DesiredCapabilites for use with Firefox</returns>
+        /// <returns>New instance of DesiredCapabilities for use with Firefox</returns>
         public static DesiredCapabilities PhantomJS()
         {
             return new DesiredCapabilities("phantomjs", string.Empty, new Platform(PlatformType.Any));
@@ -287,7 +287,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets a value indicating whether the browser has a given capability.
         /// </summary>
-        /// <param name="capability">The capability ot get.</param>
+        /// <param name="capability">The capability to get.</param>
         /// <returns>Returns <see langword="true"/> if the browser has the capability; otherwise, <see langword="false"/>.</returns>
         public bool HasCapability(string capability)
         {
@@ -322,7 +322,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Return HashCode for the DesiredCapabilties that has been created
+        /// Return HashCode for the DesiredCapabilities that has been created
         /// </summary>
         /// <returns>Integer of HashCode generated</returns>
         public override int GetHashCode()
@@ -336,9 +336,9 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Return a string of capabilies being used
+        /// Return a string of capabilities being used
         /// </summary>
-        /// <returns>String of capabilites being used</returns>
+        /// <returns>String of capabilities being used</returns>
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, IsJavaScriptEnabled={1}, Platform={2}, Version={3}]", this.BrowserName, this.IsJavaScriptEnabled, this.Platform.PlatformType.ToString(), this.Version);
@@ -347,7 +347,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Compare two DesiredCapabilities and will return either true or false
         /// </summary>
-        /// <param name="obj">DesiredCapabities you wish to compare</param>
+        /// <param name="obj">DesiredCapabilities you wish to compare</param>
         /// <returns>true if they are the same or false if they are not</returns>
         public override bool Equals(object obj)
         {

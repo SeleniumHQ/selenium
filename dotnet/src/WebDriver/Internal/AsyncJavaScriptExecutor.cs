@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Internal
     /// script execution.
     /// <para>Warning: this class is intended for internal use
     /// only. This class will be removed without warning after all
-    /// native asynchronous implemenations have been completed.
+    /// native asynchronous implementations have been completed.
     /// </para>
     /// </summary>
     public class AsyncJavaScriptExecutor

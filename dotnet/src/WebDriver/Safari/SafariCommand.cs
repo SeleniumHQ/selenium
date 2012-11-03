@@ -26,7 +26,7 @@ using OpenQA.Selenium.Remote;
 namespace OpenQA.Selenium.Safari
 {
     /// <summary>
-    /// Wraps a commmand object to give it a unique ID as required by the Safari extension.
+    /// Wraps a command object to give it a unique ID as required by the Safari extension.
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class SafariCommand : Command

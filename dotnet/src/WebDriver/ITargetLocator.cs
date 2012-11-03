@@ -61,7 +61,7 @@ namespace OpenQA.Selenium
         IWebDriver Window(string windowName);
 
         /// <summary>
-        /// Selects either the first frame on the page or the main document when a page contains iframes.
+        /// Selects either the first frame on the page or the main document when a page contains iFrames.
         /// </summary>
         /// <returns>An <see cref="IWebDriver"/> instance focused on the default frame.</returns>
         IWebDriver DefaultContent();

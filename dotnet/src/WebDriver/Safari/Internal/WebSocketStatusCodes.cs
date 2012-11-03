@@ -52,7 +52,7 @@ namespace OpenQA.Selenium.Safari.Internal
         public const ushort NoStatusReceived = 1005;
 
         /// <summary>
-        /// Represens an abnormal closure of the socket.
+        /// Represents an abnormal closure of the socket.
         /// </summary>
         public const ushort AbnormalClosure = 1006;
 

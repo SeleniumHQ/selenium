@@ -21,10 +21,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
+using Ionic.Zip;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
-using Ionic.Zip;
-using System.IO;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -70,7 +70,7 @@ namespace OpenQA.Selenium.Remote
         /// <remarks>
         /// The <see cref="TagName"/> property returns the tag name of the
         /// element, not the value of the name attribute. For example, it will return
-        /// "input" for an element specifiedby the HTML markup &lt;input name="foo" /&gt;. 
+        /// "input" for an element specified by the HTML markup &lt;input name="foo" /&gt;. 
         /// </remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         public string TagName
@@ -135,7 +135,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets a <see cref="Point"/> object containgin the coordinates of the upper-left corner
+        /// Gets a <see cref="Point"/> object containing the coordinates of the upper-left corner
         /// of this element relative to the upper-left corner of the page.
         /// </summary>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
@@ -489,7 +489,7 @@ namespace OpenQA.Selenium.Remote
         /// Finds the first element in the page that matches the ID supplied
         /// </summary>
         /// <param name="id">ID of the element</param>
-        /// <returns>IWebElement object so that you can interction that object</returns>
+        /// <returns>IWebElement object so that you can interact with that object</returns>
         /// <example>
         /// <code>
         /// IWebDriver driver = new RemoteWebDriver(DesiredCapabilities.Firefox());
@@ -592,7 +592,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Finds the first element in the page that matches the CSS Class supplied
         /// </summary>
-        /// <param name="className">className of the</param>
+        /// <param name="className">CSS class name of the element on the page</param>
         /// <returns>IWebElement object so that you can interact that object</returns>
         /// <example>
         /// <code>
@@ -606,7 +606,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Finds a list of elements that match the classname supplied
+        /// Finds a list of elements that match the class name supplied
         /// </summary>
         /// <param name="className">CSS class name of the elements on the page</param>
         /// <returns>ReadOnlyCollection of IWebElement object so that you can interact with those objects</returns>
@@ -674,7 +674,7 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Finds a list of elements that match the classname supplied
+        /// Finds a list of elements that match the link text supplied
         /// </summary>
         /// <param name="partialLinkText">part of the link text</param>
         /// <returns>ReadOnlyCollection<![CDATA[<IWebElement>]]> objects so that you can interact that object</returns>
@@ -717,7 +717,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Method to get the hash code of the element
         /// </summary>
-        /// <returns>Interger of the hash code for the element</returns>
+        /// <returns>Integer of the hash code for the element</returns>
         public override int GetHashCode()
         {
             return this.elementId.GetHashCode();
@@ -788,7 +788,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="mechanism">The mechanism by which to find the elements.</param>
         /// <param name="value">The value to use to search for the elements.</param>
-        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matchings the given criteria.</returns>
+        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
         protected ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -826,7 +826,7 @@ namespace OpenQA.Selenium.Remote
                     }
                 }
 
-                Dictionary<string, object> parameters = new Dictionary<string,object>();
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("file", base64zip);
                 Response response = this.Execute(DriverCommand.UploadFile, parameters);
                 return response.Value.ToString();

@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.Interactions.Internal
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriverAction"/> class for the given element.
         /// </summary>
-        /// <param name="actionLocation">An <see cref="ILocatable"/> object tha provides coordinates for this action.</param>
+        /// <param name="actionLocation">An <see cref="ILocatable"/> object that provides coordinates for this action.</param>
         protected WebDriverAction(ILocatable actionLocation)
         {
             this.where = actionLocation;

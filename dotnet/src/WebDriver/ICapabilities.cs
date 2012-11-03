@@ -48,7 +48,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets a value indicating whether the browser has a given capability.
         /// </summary>
-        /// <param name="capability">The capability ot get.</param>
+        /// <param name="capability">The capability to get.</param>
         /// <returns>Returns <see langword="true"/> if the browser has the capability; otherwise, <see langword="false"/>.</returns>
         bool HasCapability(string capability);
 

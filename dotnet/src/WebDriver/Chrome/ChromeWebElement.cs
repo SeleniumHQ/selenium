@@ -47,7 +47,7 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Returns the HashCode of the Element
         /// </summary>
-        /// <returns>Hashcode of the element</returns>
+        /// <returns>Hash code of the element</returns>
         public override int GetHashCode()
         {
             return base.GetHashCode();

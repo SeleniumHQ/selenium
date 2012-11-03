@@ -47,7 +47,7 @@ namespace OpenQA.Selenium.PhantomJS
     internal class PhantomJSOptions
     {
         /// <summary>
-        /// Returns DesiredCapabiliites for PhantomJS with these options included as
+        /// Returns DesiredCapabilities for PhantomJS with these options included as
         /// capabilities. This copies the options. Further changes will not be
         /// reflected in the returned capabilities.
         /// </summary>

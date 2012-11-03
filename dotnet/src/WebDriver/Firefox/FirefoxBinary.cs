@@ -228,7 +228,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Intializes the binary with the specified profile.
+        /// Initializes the binary with the specified profile.
         /// </summary>
         /// <param name="profile">The <see cref="FirefoxProfile"/> to use to initialize the binary.</param>
         public void Clean(FirefoxProfile profile)

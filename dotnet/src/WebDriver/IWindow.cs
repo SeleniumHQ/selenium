@@ -35,7 +35,7 @@ namespace OpenQA.Selenium
         Point Position { get; set; }
 
         /// <summary>
-        /// Gets or sets ths size of the outer browser window, including title bars and window borders.
+        /// Gets or sets the size of the outer browser window, including title bars and window borders.
         /// </summary>
         /// <remarks>When setting this property, it should act as the JavaScript window.resizeTo() method.</remarks>
         Size Size { get; set; }
