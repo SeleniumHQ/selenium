@@ -6,5 +6,5 @@ unset GEM_PATH
 
 JAVA_OPTS="-client"
 
-java $JAVA_OPTS -Xmx900m -XX:MaxPermSize=384m -XX:ReservedCodeCacheSize=128m -jar third_party/jruby/jruby-complete.jar -X-C -S rake $*
+java $JAVA_OPTS -Xmx2048m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=256m -jar third_party/jruby/jruby-complete.jar -X-C -S rake $*
 
