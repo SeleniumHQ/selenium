@@ -2532,7 +2532,8 @@ Selenium.prototype.doWaitForPageToLoad.dontCheckAlertsAndConfirms = true;
 Selenium.prototype.preprocessParameter = function(value) {
     var match = value.match(/^javascript\{((.|\r?\n)+)\}$/);
     if (match && match[1]) {
-        return eval(match[1]).toString();
+        var result = eval(match[1]);
+        return result == null ? null : result.toString();
     }
     return this.replaceVariables(value);
 };
