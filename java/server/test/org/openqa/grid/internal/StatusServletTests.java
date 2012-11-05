@@ -23,8 +23,6 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -45,6 +43,11 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class StatusServletTests {
 
@@ -119,10 +122,9 @@ public class StatusServletTests {
     BasicHttpRequest r = new BasicHttpRequest("GET", proxyApi.toExternalForm() + "?id=" + id);
 
     HttpResponse response = client.execute(host, r);
-    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
     JSONObject o = extractObject(response);
-    Assert.assertEquals(id, o.get("id"));
-
+    assertEquals(id, o.get("id"));
   }
 
   @Test
@@ -133,12 +135,11 @@ public class StatusServletTests {
     BasicHttpRequest r = new BasicHttpRequest("GET", proxyApi.toExternalForm() + "?id=" + id);
 
     HttpResponse response = client.execute(host, r);
-    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
     JSONObject o = extractObject(response);
 
-    Assert.assertEquals(false, o.get("success"));
+    assertEquals(false, o.get("success"));
     // System.out.println(o.get("msg"));
-
   }
 
   @Test
@@ -154,9 +155,9 @@ public class StatusServletTests {
     r.setEntity(new StringEntity(o.toString()));
 
     HttpResponse response = client.execute(host, r);
-    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
     JSONObject res = extractObject(response);
-    Assert.assertEquals(id, res.get("id"));
+    assertEquals(id, res.get("id"));
 
   }
 
@@ -176,14 +177,13 @@ public class StatusServletTests {
     r.setEntity(new StringEntity(o.toString()));
 
     HttpResponse response = client.execute(host, r);
-    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
     JSONObject res = extractObject(response);
 
-    Assert.assertEquals(MyCustomProxy.MY_BOOLEAN, res.get("getBoolean"));
-    Assert.assertEquals(MyCustomProxy.MY_STRING, res.get("getString"));
+    assertEquals(MyCustomProxy.MY_BOOLEAN, res.get("getBoolean"));
+    assertEquals(MyCustomProxy.MY_STRING, res.get("getString"));
     // url converted to string
-    Assert.assertEquals(MyCustomProxy.MY_URL.toString(), res.get("getURL"));
-
+    assertEquals(MyCustomProxy.MY_URL.toString(), res.get("getURL"));
   }
 
   @Test
@@ -198,15 +198,15 @@ public class StatusServletTests {
     r.setEntity(new StringEntity(o.toString()));
 
     HttpResponse response = client.execute(host, r);
-    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
     JSONObject res = extractObject(response);
 
-    Assert.assertTrue(res.getBoolean("success"));
+    assertTrue(res.getBoolean("success"));
 
-    Assert.assertNotNull(res.get("internalKey"));
-    Assert.assertEquals(s, ExternalSessionKey.fromJSON((String) res.get("session")));
-    Assert.assertNotNull(res.get("inactivityTime"));
-    Assert.assertEquals(p1.getId(), res.get("proxyId"));
+    assertNotNull(res.get("internalKey"));
+    assertEquals(s, ExternalSessionKey.fromJSON((String) res.get("session")));
+    assertNotNull(res.get("inactivityTime"));
+    assertEquals(p1.getId(), res.get("proxyId"));
   }
 
   @Test
@@ -220,15 +220,15 @@ public class StatusServletTests {
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
 
     HttpResponse response = client.execute(host, r);
-    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
     JSONObject o = extractObject(response);
 
-    Assert.assertTrue(o.getBoolean("success"));
+    assertTrue(o.getBoolean("success"));
 
-    Assert.assertNotNull(o.get("internalKey"));
-    Assert.assertEquals(s, ExternalSessionKey.fromJSON((String) o.get("session")));
-    Assert.assertNotNull(o.get("inactivityTime"));
-    Assert.assertEquals(p1.getId(), o.get("proxyId"));
+    assertNotNull(o.get("internalKey"));
+    assertEquals(s, ExternalSessionKey.fromJSON((String) o.get("session")));
+    assertNotNull(o.get("inactivityTime"));
+    assertEquals(p1.getId(), o.get("proxyId"));
 
   }
 
@@ -257,14 +257,14 @@ public class StatusServletTests {
     r.setEntity(new StringEntity(j.toString()));
 
     HttpResponse response = client.execute(host, r);
-    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
     JSONObject o = extractObject(response);
 
-    Assert.assertTrue(o.getBoolean("success"));
-    Assert.assertEquals(12345, o.getInt(RegistrationRequest.TIME_OUT));
-    Assert.assertEquals(JSONObject.NULL, o.get("I'm not a valid key"));
-    Assert.assertEquals(0, o.getJSONArray(RegistrationRequest.SERVLETS).length());
-    Assert.assertFalse(o.has("capabilityMatcher"));
+    assertTrue(o.getBoolean("success"));
+    assertEquals(12345, o.getInt(RegistrationRequest.TIME_OUT));
+    assertEquals(JSONObject.NULL, o.get("I'm not a valid key"));
+    assertEquals(0, o.getJSONArray(RegistrationRequest.SERVLETS).length());
+    assertFalse(o.has("capabilityMatcher"));
 
   }
 
@@ -288,13 +288,13 @@ public class StatusServletTests {
     r.setEntity(new StringEntity(j.toString()));
 
     HttpResponse response = client.execute(host, r);
-    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
     JSONObject o = extractObject(response);
 
-    Assert.assertTrue(o.getBoolean("success"));
-    Assert.assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
-                        o.getString("capabilityMatcher"));
-    Assert.assertEquals(JSONObject.NULL, o.opt("prioritizer"));
+    assertTrue(o.getBoolean("success"));
+    assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
+                 o.getString("capabilityMatcher"));
+    assertEquals(JSONObject.NULL, o.opt("prioritizer"));
 
   }
 
@@ -307,13 +307,13 @@ public class StatusServletTests {
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
 
     HttpResponse response = client.execute(host, r);
-    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
     JSONObject o = extractObject(response);
 
-    Assert.assertTrue(o.getBoolean("success"));
-    Assert.assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
-                        o.getString("capabilityMatcher"));
-    Assert.assertEquals(JSONObject.NULL, o.opt("prioritizer"));
+    assertTrue(o.getBoolean("success"));
+    assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
+                 o.getString("capabilityMatcher"));
+    assertEquals(JSONObject.NULL, o.opt("prioritizer"));
 
   }
 
@@ -329,10 +329,10 @@ public class StatusServletTests {
     r.setEntity(new StringEntity(o.toString()));
 
     HttpResponse response = client.execute(host, r);
-    Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
     JSONObject res = extractObject(response);
 
-    Assert.assertFalse(res.getBoolean("success"));
+    assertFalse(res.getBoolean("success"));
 
   }
 

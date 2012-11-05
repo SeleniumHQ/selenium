@@ -17,12 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.server.mock;
 
-import static junit.framework.Assert.fail;
-
 import org.openqa.selenium.server.RemoteCommand;
 import org.openqa.selenium.server.WindowClosedException;
 
 import java.util.logging.Logger;
+
+import static org.junit.Assert.fail;
 
 /**
  * Impersonates a single frame running in PI mode. This is basically a helper object to manage

@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import java.util.ArrayList;
@@ -24,8 +26,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.Assert;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -110,8 +110,8 @@ public class DefaultToFIFOPriorityTest {
       }
       Thread.sleep(250);
     }
-    Assert.assertNotNull(requests.get(0).getSession());
-    Assert.assertEquals(1, requests.get(0).getRequest().getDesiredCapabilities().get("_priority"));
+    assertNotNull(requests.get(0).getSession());
+    assertEquals(1, requests.get(0).getRequest().getDesiredCapabilities().get("_priority"));
   }
 
   @AfterClass

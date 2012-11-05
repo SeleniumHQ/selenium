@@ -23,8 +23,6 @@ import static org.junit.Assert.fail;
 
 import com.google.common.base.Function;
 
-import junit.framework.AssertionFailedError;
-
 import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -267,7 +265,7 @@ public class FluentWaitTest extends MockTestBase {
 
   @Test
   public void canIgnoreThrowables() {
-    final AssertionFailedError exception = new AssertionFailedError();
+    final AssertionError exception = new AssertionError();
 
     checking(new Expectations() {{
         one(mockClock).laterBy(0L);
@@ -282,7 +280,7 @@ public class FluentWaitTest extends MockTestBase {
     Wait<WebDriver> wait = new FluentWait<WebDriver>(mockDriver, mockClock, mockSleeper)
         .withTimeout(0, TimeUnit.MILLISECONDS)
         .pollingEvery(2, TimeUnit.SECONDS)
-        .ignoring(AssertionFailedError.class);
+        .ignoring(AssertionError.class);
 
     try {
       wait.until(mockCondition);

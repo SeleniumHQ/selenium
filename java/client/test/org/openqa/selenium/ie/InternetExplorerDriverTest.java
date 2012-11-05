@@ -16,13 +16,13 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static junit.framework.Assert.assertEquals;
-
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+
+import static org.junit.Assert.assertEquals;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class InternetExplorerDriverTest extends JUnit4TestBase {

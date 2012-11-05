@@ -17,9 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.server.mock;
 
-import junit.framework.Assert;
-
 import org.openqa.selenium.server.RemoteCommand;
+
+import static org.junit.Assert.assertEquals;
 
 
 public class DriverRequest extends AsyncHttpRequest {
@@ -52,7 +52,7 @@ public class DriverRequest extends AsyncHttpRequest {
 
   public void expectResult(String expected) {
     String message = cmd.getCommand() + " result got mangled";
-    Assert.assertEquals(message, expected, getResult());
+    assertEquals(message, expected, getResult());
   }
 
   /** returns the result of the previous command, e.g. "OK" or "OK,123" */

@@ -19,8 +19,6 @@ package org.openqa.selenium.remote.server;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterators;
 
-import junit.framework.Assert;
-
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.json.JSONException;
@@ -216,8 +214,8 @@ public class DriverServletTest {
 
   @Test
   public void timeouts() throws IOException, ServletException, JSONException {
-    Assert.assertEquals(2000, browserTimeout);
-    Assert.assertEquals(18000, clientTimeout);
+    assertEquals(2000, browserTimeout);
+    assertEquals(18000, clientTimeout);
   }
 
 }

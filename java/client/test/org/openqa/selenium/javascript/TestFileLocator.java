@@ -20,12 +20,12 @@ import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.LinkedList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -33,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.System.getProperty;
 
 /**
- * Builder for {@link junit.framework.TestSuite suites} that run JavaScript tests.
+ * Builder for test suites that run JavaScript tests.
  */
 class TestFileLocator {
 
@@ -47,7 +47,7 @@ class TestFileLocator {
   }
   
   private static List<File> findTestFiles(File directory, FilenameFilter filter) {
-    List<File> files = new LinkedList<File>();
+    List<File> files = Lists.newLinkedList();
     for (File file : directory.listFiles()) {
       if (file.isDirectory()) {
         files.addAll(findTestFiles(file, filter));

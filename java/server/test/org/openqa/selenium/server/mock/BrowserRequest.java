@@ -18,10 +18,10 @@ limitations under the License.
 
 package org.openqa.selenium.server.mock;
 
-import junit.framework.Assert;
-
 import org.openqa.selenium.server.DefaultRemoteCommand;
 import org.openqa.selenium.server.RemoteCommand;
+
+import static org.junit.Assert.assertEquals;
 
 
 public class BrowserRequest extends AsyncHttpRequest {
@@ -62,7 +62,7 @@ public class BrowserRequest extends AsyncHttpRequest {
   public RemoteCommand expectCommand(String cmd, String arg1, String arg2) {
     RemoteCommand actual = getCommand();
     RemoteCommand expected = new DefaultRemoteCommand(cmd, arg1, arg2);
-    Assert.assertEquals(cmd + " command got mangled", expected, actual);
+    assertEquals(cmd + " command got mangled", expected, actual);
     return actual;
   }
 }

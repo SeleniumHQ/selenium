@@ -16,9 +16,10 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
+import org.junit.Assert;
+
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import junit.framework.Assert;
 
 /**
  * A {@link LoadableComponent} which might not have finished loading when load() returns. After a
@@ -63,7 +64,7 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
 
       isError();
 
-      waitFor(sleepFor());
+      waitFor();
     }
 
     isLoaded();
@@ -86,7 +87,7 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
     return 200;
   }
 
-  private void waitFor(long timeoutInMillis) {
+  private void waitFor() {
     try {
       Thread.sleep(sleepFor());
     } catch (InterruptedException e) {

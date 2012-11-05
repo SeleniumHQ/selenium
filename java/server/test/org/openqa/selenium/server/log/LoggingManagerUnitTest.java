@@ -18,10 +18,10 @@ limitations under the License.
 
 package org.openqa.selenium.server.log;
 
-import static junit.framework.Assert.assertNotNull;
-
 import org.junit.Test;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Kristian Rosenvold

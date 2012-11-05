@@ -23,8 +23,8 @@ import org.openqa.grid.common.SeleniumProtocol;
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
 public class TestSessionTest {
