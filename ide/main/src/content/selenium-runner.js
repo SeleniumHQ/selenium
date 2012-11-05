@@ -375,6 +375,8 @@ var useHighlightFromCore_ = (function() {
 function showElement(locator) {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var contentWindow = wm.getMostRecentWindow('navigator:browser').getBrowser().contentWindow;
+	var selenium = Selenium.createForWindow(contentWindow);
+	locator = selenium.preprocessParameter(locator);
 
     //var pageBot = contentWindow._test_pageBot;
     //if (pageBot == null) {
