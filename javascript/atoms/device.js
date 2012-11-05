@@ -379,7 +379,9 @@ bot.Device.prototype.focusOnElement = function() {
     // out of order sometimes causes IE to throw an "Unspecified error", so we
     // wrap it in a try-catch and catch and ignore the error in this case.
     try {
-      activeElement.blur();
+      if (activeElement.tagName.toLowerCase() !== 'body') {
+        activeElement.blur();
+      }
     } catch (e) {
       if (!(goog.userAgent.IE && e.message == 'Unspecified error.')) {
         throw e;
