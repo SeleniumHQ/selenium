@@ -227,7 +227,7 @@ public class InjectionHelper {
     // else if (lengthOfBOM>0) {
     // out.write(buf, 0, lengthOfBOM);
     // }
-    String sessionId = SeleniumDriverResourceHandler.getLastSessionId();
+    String sessionId = SessionIdTracker.getLastSessionId();
 
     long bytesCopied = len;
 

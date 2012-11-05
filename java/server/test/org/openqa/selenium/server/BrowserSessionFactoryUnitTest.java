@@ -108,7 +108,7 @@ public class BrowserSessionFactoryUnitTest {
     replay(blf);
     factory.createNewRemoteSession("", "", "", bco, true, configuration);
     String expected = ((BrowserSessionInfo) (factory.activeSessions.toArray()[0])).sessionId;
-    assertEquals(expected, SeleniumDriverResourceHandler.getLastSessionId());
+    assertEquals(expected, SessionIdTracker.getLastSessionId());
   }
 
   @Test

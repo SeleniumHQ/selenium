@@ -391,7 +391,7 @@ public class BrowserSessionFactory {
     }
 
     sessionInfo = new BrowserSessionInfo(sessionId, browserString, startURL, launcher, queueSet);
-    SeleniumDriverResourceHandler.setLastSessionId(sessionId);
+    SessionIdTracker.setLastSessionId(sessionId);
     log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
 
     final PerSessionLogHandler perSessionLogHandler = LoggingManager.perSessionLogHandler();

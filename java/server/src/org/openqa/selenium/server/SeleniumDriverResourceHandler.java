@@ -91,7 +91,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
       LogFactory.getLog(SeleniumDriverResourceHandler.class.getName() + ".browserSideLog");
 
   private SeleniumServer remoteControl;
-  private static String lastSessionId = null;
   private Map<String, String> domainsBySessionId = new HashMap<String, String>();
   private StringBuffer logMessagesBuffer = new StringBuffer();
 
@@ -811,7 +810,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     BrowserSessionInfo sessionInfo = browserSessionFactory
         .getNewBrowserSession(browserString, startURL, extensionJs,
             browserConfigurations, remoteControl.getConfiguration());
-    setLastSessionId(sessionInfo.sessionId);
+    SessionIdTracker.setLastSessionId(sessionInfo.sessionId);
     return sessionInfo.sessionId;
   }
 
@@ -897,14 +896,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
   private void setDomain(String sessionId, String domain) {
     domainsBySessionId.put(sessionId, domain);
-  }
-
-  public static String getLastSessionId() {
-    return lastSessionId;
-  }
-
-  public static void setLastSessionId(String sessionId) {
-    SeleniumDriverResourceHandler.lastSessionId = sessionId;
   }
 
   public BrowserLauncherFactory getBrowserLauncherFactory() {
