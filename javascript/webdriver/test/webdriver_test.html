@@ -48,7 +48,8 @@ limitations under the License.
       STUB_ERROR = webdriver.test.testutil.STUB_ERROR,
       throwStubError = webdriver.test.testutil.throwStubError,
       assertIsStubError = webdriver.test.testutil.assertIsStubError,
-      callbackHelper = webdriver.test.testutil.callbackHelper;
+      callbackHelper = webdriver.test.testutil.callbackHelper,
+      callbackPair = webdriver.test.testutil.callbackPair;
 
   // By is exported by webdriver.Locator, but IDEs don't
   // recognize goog.exportSymbol. Explicitly define it here to make
@@ -1945,6 +1946,79 @@ limitations under the License.
       return driver.isElementPresent(By.id('foo'));
     }, 200);
     testHelper.execute();
+  }
+
+  function testInterceptsAndTransformsUnhandledAlertErrors() {
+    var testHelper = TestHelper.
+        expectingSuccess().
+        expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
+        andReturnError(ECode.MODAL_DIALOG_OPENED, {
+          'message': 'boom',
+          'alert': {'text': 'hello'}
+        }).
+        replayAll();
+
+    var pair = callbackPair(null, function(e) {
+      assertTrue(e instanceof webdriver.UnhandledAlertError);
+
+      var pair = callbackPair(goog.partial(assertEquals, 'hello'));
+      e.getAlert().getText().then(pair.callback, pair.errback);
+      pair.assertCallback();
+    });
+
+    var driver = testHelper.createDriver();
+    driver.findElement(By.id('foo')).then(pair.callback, pair.errback);
+    testHelper.execute();
+    pair.assertErrback();
+  }
+
+  function testUnhandledAlertErrors_usesEmptyStringIfAlertTextOmittedFromResponse() {
+    var testHelper = TestHelper.
+        expectingSuccess().
+        expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
+        andReturnError(ECode.MODAL_DIALOG_OPENED, {'message': 'boom'}).
+        replayAll();
+
+    var pair = callbackPair(null, function(e) {
+      assertTrue(e instanceof webdriver.UnhandledAlertError);
+
+      var pair = callbackPair(goog.partial(assertEquals, ''));
+      e.getAlert().getText().then(pair.callback, pair.errback);
+      pair.assertCallback();
+    });
+
+    var driver = testHelper.createDriver();
+    driver.findElement(By.id('foo')).then(pair.callback, pair.errback);
+    testHelper.execute();
+    pair.assertErrback();
+  }
+
+  function testAlertHandleResolvesWhenPromisedTextResolves() {
+    var text = new webdriver.promise.Deferred();
+
+    var alert = new webdriver.Alert({}, text);
+    assertTrue(alert.isPending());
+
+    var callback, textCallback;
+    webdriver.promise.when(alert,
+        callback = callbackHelper(function(resolvedAlert) {
+          assertEquals(alert, resolvedAlert);
+          assertFalse(alert.getText().isPending());
+        }));
+
+    webdriver.promise.when(alert.getText(),
+        textCallback = callbackHelper(function(text) {
+          assertEquals('foo', text);
+        }));
+
+    callback.assertNotCalled();
+    textCallback.assertNotCalled();
+
+    text.resolve('foo');
+
+    callback.assertCalled();
+    textCallback.assertCalled();
+    verifyAll();  // Make tearDown happy.
   }
   </script>
 </body>

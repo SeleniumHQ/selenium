@@ -277,6 +277,14 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
       put(webdriver.CommandName.MOVE_TO, post('/session/:sessionId/moveto')).
       put(webdriver.CommandName.SEND_KEYS_TO_ACTIVE_ELEMENT,
           post('/session/:sessionId/keys')).
+      put(webdriver.CommandName.ACCEPT_ALERT,
+          post('/session/:sessionId/accept_alert')).
+      put(webdriver.CommandName.DISMISS_ALERT,
+          post('/session/:sessionId/dismiss_alert')).
+      put(webdriver.CommandName.GET_ALERT_TEXT,
+          get('/session/:sessionId/alert_text')).
+      put(webdriver.CommandName.SET_ALERT_TEXT,
+          post('/session/:sessionId/alert_text')).
       build();
 
   /** @constructor */

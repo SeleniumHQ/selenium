@@ -162,15 +162,13 @@ webdriver.CommandName = {
   ELEMENT_EQUALS: 'elementEquals',
 
   SCREENSHOT: 'screenshot',
-  DIMISS_ALERT: 'dimissAlert',
   IMPLICITLY_WAIT: 'implicitlyWait',
   SET_SCRIPT_TIMEOUT: 'setScriptTimeout',
 
-  GET_ALERT: 'getAlert',
   ACCEPT_ALERT: 'acceptAlert',
   DISMISS_ALERT: 'dismissAlert',
   GET_ALERT_TEXT: 'getAlertText',
-  SET_ALERT_VALUE: 'setAlertValue',
+  SET_ALERT_TEXT: 'setAlertValue',
 
   EXECUTE_SQL: 'executeSQL',
   GET_LOCATION: 'getLocation',

@@ -16,12 +16,9 @@
  * @fileoverview The heart of the WebDriver JavaScript API.
  */
 
+goog.provide('webdriver.Alert');
+goog.provide('webdriver.UnhandledAlertError');
 goog.provide('webdriver.WebDriver');
-goog.provide('webdriver.WebDriver.Navigation');
-goog.provide('webdriver.WebDriver.Options');
-goog.provide('webdriver.WebDriver.TargetLocator');
-goog.provide('webdriver.WebDriver.Timeouts');
-goog.provide('webdriver.WebDriver.Window');
 goog.provide('webdriver.WebElement');
 
 goog.require('bot.Error');
@@ -255,7 +252,17 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
               goog.bind(self.executor_.execute, self.executor_, command));
         });
   }).then(function(response) {
-    bot.response.checkResponse(response);
+    try {
+      bot.response.checkResponse(response);
+    } catch (ex) {
+      var value = response['value'];
+      if (ex.code === bot.ErrorCode.MODAL_DIALOG_OPENED) {
+        var text = value && value['alert'] ? value['alert']['text'] : '';
+        throw new webdriver.UnhandledAlertError(ex.message,
+            new webdriver.Alert(self, text));
+      }
+      throw ex;
+    }
     return webdriver.WebDriver.fromWireValue_(self, response['value']);
   });
 
@@ -1296,6 +1303,20 @@ webdriver.WebDriver.TargetLocator.prototype.window = function(nameOrHandle) {
 
 
 /**
+ * Schedules a command to change focus to the active alert dialog. This command
+ * will return a {@link bot.ErrorCode.NO_MODAL_DIALOG_OPEN} error if a modal
+ * dialog is not currently open.
+ * @return {!webdriver.Alert} The open alert.
+ */
+webdriver.WebDriver.TargetLocator.prototype.alert = function() {
+  var text = this.driver_.schedule(
+      new webdriver.Command(webdriver.CommandName.GET_ALERT_TEXT),
+      'WebDriver.switchTo().alert()');
+  return new webdriver.Alert(this.driver_, text);
+};
+
+
+/**
  * Simulate pressing many keys at once in a "chord". Takes a sequence of
  * {@link webdriver.Key}s or strings, appends each of the values to a string,
  * and adds the chord termination key ({@link webdriver.Key.NULL}) and returns
@@ -1838,3 +1859,125 @@ webdriver.WebElement.prototype.getInnerHtml = function() {
   return this.driver_.executeScript('return arguments[0].innerHTML', this);
 };
 
+
+
+/**
+ * Represents a modal dialog such as {@code alert}, {@code confirm}, or
+ * {@code prompt}. Provides functions to retrieve the message displayed with
+ * the alert, accept or dismiss the alert, and set the response text (in the
+ * case of {@code prompt}).
+ * @param {!webdriver.WebDriver} driver The driver controlling the browser this
+ *     alert is attached to.
+ * @param {!(string|webdriver.promise.Promise)} text Either the message text
+ *     displayed with this alert, or a promise that will be resolved to said
+ *     text.
+ * @constructor
+ * @extends {webdriver.promise.Deferred}
+ */
+webdriver.Alert = function(driver, text) {
+  goog.base(this);
+
+  /**
+   * @type {!webdriver.WebDriver}
+   * @private
+   */
+  this.driver_ = driver;
+
+  // This class is responsible for resolving itself; delete the resolve and
+  // reject methods so they may not be accessed by consumers of this class.
+  var resolve = goog.partial(this.resolve, this);
+  var reject = this.reject;
+  delete this.promise;
+  delete this.resolve;
+  delete this.reject;
+
+  /**
+   * @type {!webdriver.promise.Promise}
+   * @private
+   */
+  this.text_ = webdriver.promise.when(text);
+
+  // Make sure this instance is resolved when its displayed text is.
+  this.text_.then(resolve, reject);
+};
+goog.inherits(webdriver.Alert, webdriver.promise.Deferred);
+
+
+/**
+ * Retrieves the message text displayed with this alert. For instance, if the
+ * alert were opened with alert("hello"), then this would return "hello".
+ * @return {!webdriver.promise.Promise} A promise that will be resolved to the
+ *     text displayed with this alert.
+ */
+webdriver.Alert.prototype.getText = function() {
+  return this.text_;
+};
+
+
+/**
+ * Accepts this alert.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     this command has completed.
+ */
+webdriver.Alert.prototype.accept = function() {
+  return this.driver_.schedule(
+      new webdriver.Command(webdriver.CommandName.ACCEPT_ALERT),
+      'WebDriver.switchTo().alert().accept()');
+};
+
+
+/**
+ * Dismisses this alert.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     this command has completed.
+ */
+webdriver.Alert.prototype.dismiss = function() {
+  return this.driver_.schedule(
+      new webdriver.Command(webdriver.CommandName.DISMISS_ALERT),
+      'WebDriver.switchTo().alert().dismiss()');
+};
+
+
+/**
+ * Sets the response text on this alert. This command will return an error if
+ * the underlying alert does not support response text (e.g. window.alert and
+ * window.confirm).
+ * @param {string} text The text to set.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     this command has completed.
+ */
+webdriver.Alert.prototype.sendKeys = function(text) {
+  return this.driver_.schedule(
+      new webdriver.Command(webdriver.CommandName.SET_ALERT_TEXT).
+          setParameter('text', text),
+      'WebDriver.switchTo().alert().sendKeys(' + text + ')');
+};
+
+
+
+/**
+ * An error returned to indicate that there is an unhandled modal dialog on the
+ * current page.
+ * @param {string} message The error message.
+ * @param {!webdriver.Alert} alert The alert handle.
+ * @constructor
+ * @extends {bot.Error}
+ */
+webdriver.UnhandledAlertError = function(message, alert) {
+  goog.base(this, bot.ErrorCode.MODAL_DIALOG_OPENED, message);
+
+  /**
+   * @type {!webdriver.Alert}
+   * @private
+   */
+  this.alert_ = alert;
+};
+goog.inherits(webdriver.UnhandledAlertError, bot.Error);
+
+
+/**
+ * @return {!webdriver.Alert} The open alert.
+ */
+webdriver.UnhandledAlertError.prototype.getAlert = function() {
+  return this.alert_;
+};

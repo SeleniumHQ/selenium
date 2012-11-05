@@ -166,11 +166,10 @@ map[CommandName.SET_SCRIPT_TIMEOUT] = commands.setScriptTimeout;
 
 map[CommandName.SCREENSHOT] = commands.takeScreenshot;
 
-map[CommandName.GET_ALERT] = commands.handleNoAlertsPresent;
 map[CommandName.ACCEPT_ALERT] = commands.handleNoAlertsPresent;
 map[CommandName.DISMISS_ALERT] = commands.handleNoAlertsPresent;
 map[CommandName.GET_ALERT_TEXT] = commands.handleNoAlertsPresent;
-map[CommandName.SET_ALERT_VALUE] = commands.handleNoAlertsPresent;
+map[CommandName.SET_ALERT_TEXT] = commands.handleNoAlertsPresent;
 });  // goog.scope
 
 
