@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
-
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closeables;
 import com.google.common.io.Resources;
@@ -26,6 +24,7 @@ import com.google.common.io.Resources;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.server.ClassPathResource;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -93,7 +92,7 @@ public class ResourceExtractor {
       }
     } else {
       FileOutputStream fos = new FileOutputStream(dest);
-      copyStream(getSeleniumResourceAsStream(resourcePath), fos);
+      copyStream(ClassPathResource.getSeleniumResourceAsStream(resourcePath), fos);
 
     }
   }

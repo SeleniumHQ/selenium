@@ -18,7 +18,6 @@
 package org.openqa.selenium.server;
 
 import static java.lang.String.format;
-import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -307,7 +306,7 @@ public class SeleniumServer implements SslCertificateGenerator {
   private void logVersionNumber() throws IOException {
     final Properties p = new Properties();
 
-    InputStream stream = getSeleniumResourceAsStream("/VERSION.txt");
+    InputStream stream = ClassPathResource.getSeleniumResourceAsStream("/VERSION.txt");
     if (stream == null) {
       LOGGER.error("Couldn't determine version number");
       return;

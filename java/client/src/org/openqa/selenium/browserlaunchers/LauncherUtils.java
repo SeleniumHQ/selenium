@@ -174,20 +174,8 @@ public class LauncherUtils {
     return hta;
   }
 
-  public static InputStream getSeleniumResourceAsStream(String resourceFile) {
-    Class clazz = LauncherUtils.class;
-    InputStream input = clazz.getResourceAsStream(resourceFile);
-    if (input == null) {
-      try {
-        // This is hack for the OneJar version of Selenium-Server.
-        // Examine the contents of the jar made by
-        // https://svn.openqa.org/svn/selenium-rc/trunk/selenium-server-onejar/build.xml
-        clazz = Class.forName("OneJar");
-        input = clazz.getResourceAsStream(resourceFile);
-      } catch (ClassNotFoundException e) {
-      }
-    }
-    return input;
+  private static InputStream getSeleniumResourceAsStream(String resourceFile) {
+    return LauncherUtils.class.getResourceAsStream(resourceFile);
   }
 
   public static boolean isScriptFile(File aFile) {

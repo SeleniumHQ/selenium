@@ -16,8 +16,6 @@
  */
 package org.openqa.selenium.server;
 
-import static org.openqa.selenium.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
-
 import org.openqa.jetty.util.IO;
 import org.openqa.jetty.util.Resource;
 
@@ -54,6 +52,10 @@ public class ClassPathResource extends Resource {
         e.printStackTrace();
       }
     }
+  }
+
+  public static InputStream getSeleniumResourceAsStream(String resourceFile) {
+    return ClassPathResource.class.getResourceAsStream(resourceFile);
   }
 
   /* ------------------------------------------------------------ */
