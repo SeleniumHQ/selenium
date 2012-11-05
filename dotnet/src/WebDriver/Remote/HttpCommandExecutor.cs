@@ -70,6 +70,8 @@ namespace OpenQA.Selenium.Remote
             this.serverResponseTimeout = timeout;
             this.enableKeepAlive = enableKeepAlive;
 
+            ServicePointManager.Expect100Continue = false;
+
             // In the .NET Framework, HttpWebRequest responses with an error code are limited
             // to 64k by default. Since the remote server error responses include a screenshot,
             // they can frequently exceed this size. This only applies to the .NET Framework;
