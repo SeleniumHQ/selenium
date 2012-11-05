@@ -121,7 +121,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Uploads crash PhantomJS browser")]
         public void ShouldBeAbleToAlterTheContentsOfAFileUploadInputElement()
         {
             driver.Url = formsPage;
@@ -141,7 +140,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Uploads crash PhantomJS browser")]
         public void ShouldBeAbleToUploadTheSameFileTwice()
         {
             System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");

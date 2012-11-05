@@ -23,7 +23,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldNotTimeoutIfCallbackInvokedImmediately()
         {
             driver.Url = ajaxyPage;
@@ -33,18 +32,19 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNullNorUndefined()
         {
             driver.Url = ajaxyPage;
             Assert.AreEqual(123, (long)executor.ExecuteAsyncScript("arguments[arguments.length - 1](123);"));
+            driver.Url = ajaxyPage;
             Assert.AreEqual("abc", executor.ExecuteAsyncScript("arguments[arguments.length - 1]('abc');").ToString());
+            driver.Url = ajaxyPage;
             Assert.IsFalse((bool)executor.ExecuteAsyncScript("arguments[arguments.length - 1](false);"));
+            driver.Url = ajaxyPage;
             Assert.IsTrue((bool)executor.ExecuteAsyncScript("arguments[arguments.length - 1](true);"));
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined()
         {
             driver.Url = ajaxyPage;
@@ -53,7 +53,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript()
         {
             driver.Url = ajaxyPage;
@@ -65,7 +64,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldBeAbleToReturnAnArrayObjectFromAnAsyncScript()
         {
             driver.Url = ajaxyPage;
@@ -77,7 +75,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -95,7 +92,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldBeAbleToReturnWebElementsFromAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -106,7 +102,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -124,7 +119,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(WebDriverTimeoutException))]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldTimeoutIfScriptDoesNotInvokeCallback()
         {
             driver.Url = ajaxyPage;
@@ -133,7 +127,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(WebDriverTimeoutException))]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout()
         {
             driver.Url = ajaxyPage;
@@ -141,7 +134,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout()
         {
             driver.Url = ajaxyPage;
@@ -152,7 +144,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(WebDriverTimeoutException))]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout()
         {
             driver.Manage().Timeouts().SetScriptTimeout(TimeSpan.FromMilliseconds(500));
@@ -164,7 +155,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError()
         {
             driver.Url = ajaxyPage;
@@ -174,7 +164,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldCatchErrorsWhenExecutingInitialScript()
         {
             driver.Url = ajaxyPage;
@@ -182,7 +171,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldBeAbleToExecuteAsynchronousScripts()
         {
             driver.Url = ajaxyPage;
@@ -207,7 +195,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldBeAbleToPassMultipleArgumentsToAsyncScripts()
         {
             driver.Url = ajaxyPage;
@@ -216,7 +203,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Executing async JavaScript can crash PhantomJS")]
         public void ShouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse()
         {
             string script =

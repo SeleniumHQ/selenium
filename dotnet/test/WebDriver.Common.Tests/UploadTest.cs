@@ -29,7 +29,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.PhantomJS, "Uploads crash PhantomJS browser")]
         public void ShouldAllowFileUploading()
         {
             driver.Url = uploadPage;
