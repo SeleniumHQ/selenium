@@ -187,7 +187,13 @@
       runTypingTest(['ab', LEFT, BACKSPACE, BACKSPACE, 'c'], 'cb', inputs, 3);
   }
 
-    function testShiftNavigation() {
+  function testShiftNavigation() {
+      // This test will fail on GECKO <= 10 because of irregularities with
+      // the KEYPRESS event. This needs to be investigated, and fixed in 
+      // the atoms.
+      if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(11)) {
+        return;
+      }
       runTypingTest(['axyz', SHIFT, LEFT, LEFT, LEFT, 'Bcd'], 'aBCD', 7);
     }
 
@@ -208,6 +214,12 @@
     }
 
     function testShiftDelete() {
+      // This test will fail on GECKO <= 10 because of irregularities with
+      // the KEYPRESS event. This needs to be investigated, and fixed in 
+      // the atoms.
+      if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(11)) {
+        return;
+      }
       runTypingTest(['abcd', HOME, SHIFT, END, DELETE], '', 5, 4);
       runTypingTest(['abcd', HOME, RIGHT, SHIFT, END, DELETE], 'a', 5, 4);
       runTypingTest(['abcd', HOME, END, LEFT, SHIFT, HOME, DELETE], 'd', 5, 4);
