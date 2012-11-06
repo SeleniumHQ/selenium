@@ -849,7 +849,43 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     return true;
   }
 
-  return isOverflowHiding(elem);
+  if (!isOverflowHiding(elem)) {
+    return false;
+  }
+
+  function isTransformHiding(e) {
+    var transform = bot.dom.getEffectiveStyle(e, '-o-transform') ||
+                    bot.dom.getEffectiveStyle(e, '-webkit-transform') ||
+                    bot.dom.getEffectiveStyle(e, '-ms-transform') ||
+                    bot.dom.getEffectiveStyle(e, 'transform');
+
+    // Not all browsers know what a transform is so if we have a returned value
+    // lets carry on checking
+    if (transform && transform !== "none") {
+      var getTransformValues = function (matrix){
+        // The transform matrix looks like the following
+        // matrix(0.866025, 0.5, -0.5, 0.866025, 0px, 0px)
+        var values = matrix.split('(')[1];
+        values = values.split(')')[0];
+        values = values.split(',');
+        return {x: values[4].trim(),
+                y: values[5].trim()};
+      }
+
+      var transformValues = getTransformValues(transform);
+      transformValues.x = transformValues.x * 1
+      transformValues.y = transformValues.y * 1
+      if (transformValues.x >= 0 && transformValues.y >= 0){
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      var parent = bot.dom.getParentElement(e);
+      return !parent || isTransformHiding(parent);
+    }
+  }
+  return isTransformHiding(elem);
 };
 
 

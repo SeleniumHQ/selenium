@@ -102,6 +102,25 @@ class VisibilityTests(unittest.TestCase):
 
         self.assertTrue(element.get_attribute("value") is not "You don't see me")
 
+    def testShouldSayElementsWithNegativeTransformAreNotDisplayed(self):
+        self._loadPage('cssTransform')
+        elementX = self.driver.find_element(By.ID, value='parentX')
+        self.assertFalse(elementX.is_displayed())
+        elementY = self.driver.find_element(By.ID, value='parentY')
+        self.assertFalse(elementY.is_displayed())
+
+    def testShouldSayElementsWithParentWithNegativeTransformAreNotDisplayed(self):
+        self._loadPage('cssTransform')
+        elementX = self.driver.find_element(By.ID, value='childX')
+        self.assertFalse(elementX.is_displayed())
+        elementY = self.driver.find_element(By.ID, value='childY')
+        self.assertFalse(elementY.is_displayed())
+
+    def testShouldSayElementWithZeroTransformIsVisible(self):
+        self._loadPage('cssTransform')
+        zero_tranform = self.driver.find_element(By.ID, 'zero-tranform')
+        self.assertTrue(zero_tranform.is_displayed())
+
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
 

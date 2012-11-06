@@ -349,6 +349,34 @@
           assertEquals(possibility[1], isShown(sometimesSeen));
       });
     }
+
+    function testElementWithTransformIsReallyHidden() {
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(9)) {
+       return;
+      }
+      var hiddenTransformY = findElement({id: 'hidden-transformY'});
+      assertFalse(isShown(hiddenTransformY));
+      var hiddenTransformX = findElement({id: 'hidden-transformX'});
+      assertFalse(isShown(hiddenTransformX))
+    }
+
+    function testElementsParentWithTransformIsReallyHidden() {
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(9)) {
+       return;
+      }
+      var hiddenTransformY = findElement({id: 'child-of-hidden-transformY'});
+      assertFalse(isShown(hiddenTransformY));
+      var hiddenTransformX = findElement({id: 'child-of-hidden-transformX'});
+      assertFalse(isShown(hiddenTransformX))
+    }
+
+    function testElementWithZeroTransformAreSeenAsHidden() {
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(9)) {
+       return;
+      }
+      var zeroTransform = findElement({id: "zero-transform"});
+      assertTrue(isShown(zeroTransform));
+    }
   </script>
 
   <style type="text/css">
@@ -383,6 +411,29 @@
         .box-popup {
             border : 1px;
             min-width : 150px;
+        }
+
+        #hidden-transformY {
+          transform: translateY(-10000px);
+          -webkit-transform: translateY(-10000px);
+          -ms-transform: translateY(-10000px);
+          -o-transform: translateY(-10000px);
+        }
+        #hidden-transformX {
+          transform: translateX(-10000px);
+          -webkit-transform: translateX(-10000px);
+          -ms-transform: translateX(-10000px);
+          -o-transform: translateX(-10000px);
+        }
+        #zero-transform {
+          transform: translateX(0px);
+          -webkit-transform: translateX(0px);
+          -ms-transform: translateX(0px);
+          -o-transform: translateX(0px);
+          transform: translateY(0px);
+          -webkit-transform: translateY(0px);
+          -ms-transform: translateY(0px);
+          -o-transform: translateY(0px);
         }
   </style>
 </head>
@@ -488,6 +539,8 @@
 <!-- This iframe is deliberately diminutive -->
 <iframe src="testdata/overflow_hidden.html" id="body-overflow" width="75%" height="100px"></iframe>
 </div>
-
+<div id='hidden-transformY'>will never be shown<div id='child-of-hidden-transformY'>I am a hidden child</div></div>
+<div id='hidden-transformX'>will never be shown<div id='child-of-hidden-transformX'>I am a hidden child</div></div>
+<div id='zero-transform'>I have a zero transform</div>
 </body>
 </html>
