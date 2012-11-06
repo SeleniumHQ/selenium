@@ -16,14 +16,14 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.os;
+package org.openqa.selenium.firefox.internal;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.firefox.internal.Executable;
+import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
 
