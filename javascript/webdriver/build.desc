@@ -44,6 +44,7 @@ js_binary(name = "webdriver",
     "*.js",
     "http/*.js",
     "exports/exports.js",
+    "externs/deps.js",
   ],
   deps = [
     "//javascript/atoms:error_lib",
