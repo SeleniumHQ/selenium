@@ -244,4 +244,16 @@ public class WaitingConditions {
     };
   }
 
+  public static Callable<Alert> alertToBePresent(final WebDriver driver) {
+    return new Callable<Alert>() {
+      public Alert call() throws Exception {
+        try {
+          return driver.switchTo().alert();
+        } catch (NoAlertPresentException e) {
+          return null;
+        }
+      }
+    };
+  }
+
 }

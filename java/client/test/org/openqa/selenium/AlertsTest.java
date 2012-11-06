@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.alertToBePresent;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -45,7 +46,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 @Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE})
@@ -238,7 +238,7 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore({ANDROID, CHROME, HTMLUNIT})
+  @Ignore({ANDROID, CHROME})
   @Test
   public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert() {
     driver.findElement(By.id("alert")).click();
@@ -445,7 +445,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @NoDriverAfterTest
-  @Ignore(value = {SELENESE, OPERA, OPERA_MOBILE})
   @Test
   public void testCanQuitWhenAnAlertIsPresent() {
     driver.get(pages.alertsPage);
@@ -453,18 +452,6 @@ public class AlertsTest extends JUnit4TestBase {
     waitFor(alertToBePresent(driver));
 
     driver.quit();
-  }
-
-  private Callable<Alert> alertToBePresent(final WebDriver driver) {
-    return new Callable<Alert>() {
-      public Alert call() throws Exception {
-        try {
-          return driver.switchTo().alert();
-        } catch (NoAlertPresentException e) {
-          return null;
-        }
-      }
-    };
   }
 
 }

@@ -22,10 +22,9 @@ import org.openqa.selenium.security.UserAndPassword;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-import java.util.concurrent.Callable;
-
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.alertToBePresent;
 
 @Ignore
 public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
@@ -47,18 +46,6 @@ public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
   @Test
   public void canAuthenticateUsingDigestAuthentication() {
 
-  }
-
-  private Callable<Alert> alertToBePresent(final WebDriver driver) {
-    return new Callable<Alert>() {
-      public Alert call() throws Exception {
-        try {
-          return driver.switchTo().alert();
-        } catch (NoAlertPresentException e) {
-          return null;
-        }
-      }
-    };
   }
 
 }

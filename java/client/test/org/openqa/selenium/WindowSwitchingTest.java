@@ -37,6 +37,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.alertToBePresent;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -359,18 +360,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
     driver.close();
-  }
-
-  private Callable<Alert> alertToBePresent(final WebDriver driver) {
-    return new Callable<Alert>() {
-      public Alert call() throws Exception {
-        try {
-          return driver.switchTo().alert();
-        } catch (NoAlertPresentException e) {
-          return null;
-        }
-      }
-    };
   }
 
   private boolean waitUntilNewWindowIsOpened(final WebDriver driver, final int originalCount) {
