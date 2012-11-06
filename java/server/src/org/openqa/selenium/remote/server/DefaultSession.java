@@ -58,6 +58,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DefaultSession implements Session {
 
+  private static final String QUIET_EXCEPTIONS_KEY = "webdriver.remote.quietExceptions";
   private final SessionId sessionId;
   private final WebDriver driver;
   /**
@@ -110,7 +111,7 @@ public class DefaultSession implements Session {
     // Ensure that the browser is created on the single thread.
     EventFiringWebDriver initialDriver = execute(webDriverFutureTask);
 
-    if (!browserCreator.isAndroid() && !capabilities.is("webdriver.remote.quietExceptions")) {
+    if (!isQuietModeEnabled(browserCreator, capabilities)) {
       // Memo to self; this is not a constructor escape of "this" - probably ;)
       initialDriver.register(new SnapshotScreenListener(this));
     }
@@ -118,6 +119,22 @@ public class DefaultSession implements Session {
     this.driver = initialDriver;
     this.capabilities = browserCreator.getCapabilityDescription();
     updateLastAccessTime();
+  }
+
+  private static boolean isQuietModeEnabled(BrowserCreator browserCreator, Capabilities capabilities) {
+    if (browserCreator.isAndroid()) {
+      return true;
+    }
+    boolean propertySaysQuiet = "true".equalsIgnoreCase(System.getProperty(QUIET_EXCEPTIONS_KEY));
+    if (capabilities == null) {
+      return propertySaysQuiet;
+    }
+    if (capabilities.is(QUIET_EXCEPTIONS_KEY)) {
+      return true;
+    }
+    Object cap = capabilities.asMap().get(QUIET_EXCEPTIONS_KEY);
+    boolean isExplicitlyDisabledByCapability = cap != null && "false".equalsIgnoreCase(cap.toString());
+    return propertySaysQuiet && !isExplicitlyDisabledByCapability;
   }
 
   /**
