@@ -869,8 +869,8 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
         var values = matrix.split('(')[1];
         values = values.split(')')[0];
         values = values.split(',');
-        return {x: goog.string.trim(values[4]),
-                y: goog.string.trim(values[5])};
+        return {x: goog.string.trim(values[4].replace('px','')),
+                y: goog.string.trim(values[5].replace('px', ''))};
       }
 
       var transformValues = getTransformValues(transform);
