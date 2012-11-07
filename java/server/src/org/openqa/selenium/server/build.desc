@@ -40,6 +40,8 @@ java_library(name = "logging",
   deps = [
     "//java/client/src/org/openqa/selenium/remote:common",
     "//java/server/src/org/openqa/jetty",
+    "//java/client/src/org/openqa/selenium/logging:api",
+    "//java/client/src/org/openqa/selenium/logging:logging",
   ])
 
 java_library(name = "base",

@@ -6,6 +6,8 @@ java_library(name = "base",
     "BrowserType.java",
   ],
   deps = [
+    "//java/client/src/org/openqa/selenium/logging:api",
+    "//java/client/src/org/openqa/selenium/logging:logging",
     "//java/client/src/org/openqa/selenium:webdriver-api",
   ])
 
@@ -14,7 +16,6 @@ java_library(name = "common",
     "BeanToJsonConverter.java",
     "CapabilityType.java",
     "Command.java",
-    "DesiredCapabilities.java",
     "DriverCommand.java",
     "ErrorCodes.java",
     "ErrorHandler.java",

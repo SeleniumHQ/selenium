@@ -87,7 +87,7 @@ java_library(name = "webdriver-api",
     ":base",
     ":codecs",
     "//java/client/src/org/openqa/selenium/interactions:api",
-    "//java/client/src/org/openqa/selenium/logging",
+    "//java/client/src/org/openqa/selenium/logging:api",
     "//java/client/src/org/openqa/selenium/security",
   ])
 

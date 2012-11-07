@@ -19,12 +19,12 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.json.JSONObject;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -85,10 +85,11 @@ public class LogEntry {
 
   @SuppressWarnings("unused")
   public JSONObject toJson() {
-    return new JSONObject(ImmutableMap.of(
-        "timestamp", timestamp,
-        "message", message,
-        "level", level.getName()));
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("timestamp", timestamp);
+    map.put("level", level);
+    map.put("message", message);
+    return new JSONObject(map);
   }
 
 }
