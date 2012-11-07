@@ -38,7 +38,7 @@ public class GridLauncher {
   public static void main(String[] args) throws Exception {
 
     CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
-    if (helper.isParamPresent("-help")){
+    if (helper.isParamPresent("-help") || helper.isParamPresent("-h")){
       String separator = "\n----------------------------------\n";
       RemoteControlLauncher.usage(separator+"To use as a standalone server"+separator);
       GridDocHelper.printHelp(separator+"To use in a grid environement :"+separator,false);
