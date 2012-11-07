@@ -84,6 +84,10 @@ public class Hub {
     Level logLevel = config.isDebug() ? Level.FINE : Level.INFO;
     Logger.getLogger("").setLevel(logLevel);
 
+    for (Handler handler : Logger.getLogger("").getHandlers()) {
+      Logger.getLogger("").removeHandler(handler);
+    }
+
     String logFilename =
         config.getLogFilename() == null
         ? RemoteControlConfiguration.getDefaultLogOutFile()
