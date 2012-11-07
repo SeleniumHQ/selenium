@@ -46,8 +46,21 @@ class Downloader
 
   private
 
+  def net_http
+    http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+
+    if http_proxy
+      http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?("http://")
+      uri = URI.parse(http_proxy)
+
+      Net::HTTP::Proxy(uri.host, uri.port)
+    else
+      Net::HTTP
+    end
+  end
+
   def http_download!
-    resp = Net::HTTP.get_response(@url) do |response|
+    resp = net_http.get_response(@url) do |response|
       total = response.content_length
       progress = 0
       segment_count = 0
