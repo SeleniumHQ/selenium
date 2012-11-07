@@ -22,12 +22,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import java.io.File;
 
 public class ExecutableTest {
 
   @Test
+  @NeedsLocalEnvironment
   public void testEnvironmentDiscovery() {
     Executable env = new Executable(null);
     File exe = env.getFile();
