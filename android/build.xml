@@ -34,6 +34,7 @@
     <copy file="${build.location}/java/client/src/org/openqa/selenium/base.jar" tofile="libs/base.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/codecs.jar" tofile="libs/codecs.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/webdriver-api.jar" tofile="libs/webdriver-api.jar" />
+    <copy file="${build.location}/java/client/src/org/openqa/selenium/remote/base.jar" tofile="libs/webdriver-base.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/remote/common.jar" tofile="libs/webdriver-common.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/remote/remote.jar" tofile="libs/webdriver-client-remote.jar" />
     <copy file="${build.location}/java/client/src/org/openqa/selenium/browserlaunchers/proxies.jar" tofile="libs/proxies.jar" />
