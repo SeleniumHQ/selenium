@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.io.File;
 
@@ -31,6 +32,9 @@ public class ExecutableTest {
   @Test
   @NeedsLocalEnvironment
   public void testEnvironmentDiscovery() {
+    if (SauceDriver.shouldUseSauce()) {
+      return;
+    }
     Executable env = new Executable(null);
     File exe = env.getFile();
     assertNotNull(exe);
