@@ -857,6 +857,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     var transform = bot.dom.getEffectiveStyle(e, '-o-transform') ||
                     bot.dom.getEffectiveStyle(e, '-webkit-transform') ||
                     bot.dom.getEffectiveStyle(e, '-ms-transform') ||
+                    bot.dom.getEffectiveStyle(e, '-moz-transform') ||
                     bot.dom.getEffectiveStyle(e, 'transform');
 
     // Not all browsers know what a transform is so if we have a returned value
@@ -868,8 +869,8 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
         var values = matrix.split('(')[1];
         values = values.split(')')[0];
         values = values.split(',');
-        return {x: values[4].trim(),
-                y: values[5].trim()};
+        return {x: goog.string.trim(values[4]),
+                y: goog.string.trim(values[5])};
       }
 
       var transformValues = getTransformValues(transform);
