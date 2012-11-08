@@ -152,11 +152,11 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     return seleneseMethods.containsKey(methodName);
   }
 
-  public void addMethod(String methodName, SeleneseCommand command) {
+  public void addMethod(String methodName, SeleneseCommand<?> command) {
     seleneseMethods.put(methodName, command);
   }
 
-  public SeleneseCommand getMethod(String methodName) {
+  public SeleneseCommand<?> getMethod(String methodName) {
     return seleneseMethods.get(methodName);
   }
 
@@ -253,6 +253,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getTitle", new GetTitle());
     seleneseMethods.put("getValue", new GetValue(elementFinder));
     seleneseMethods.put("getXpathCount", new GetXpathCount());
+    seleneseMethods.put("getCssCount", new GetCssCount());
     seleneseMethods.put("goBack", new GoBack());
     seleneseMethods.put("highlight", new Highlight(elementFinder, javascriptLibrary));
     seleneseMethods.put("isAlertPresent", new IsAlertPresent(alertOverride));
