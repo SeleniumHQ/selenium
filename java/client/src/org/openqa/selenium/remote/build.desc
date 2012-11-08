@@ -14,7 +14,6 @@ java_library(name = "base",
 java_library(name = "common",
   srcs = [
     "BeanToJsonConverter.java",
-    "CapabilityType.java",
     "Command.java",
     "DriverCommand.java",
     "ErrorCodes.java",
