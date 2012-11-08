@@ -54,6 +54,7 @@ public class ExpectedConditions {
     return new ExpectedCondition<Boolean>() {
       private String currentTitle = "";
 
+      @Override
       public Boolean apply(WebDriver driver) {
         currentTitle = driver.getTitle();
         return title.equals(currentTitle);
@@ -77,6 +78,7 @@ public class ExpectedConditions {
     return new ExpectedCondition<Boolean>() {
       private String currentTitle = "";
 
+      @Override
       public Boolean apply(WebDriver driver) {
         currentTitle = driver.getTitle();
         return currentTitle != null && currentTitle.contains(title);
@@ -99,6 +101,7 @@ public class ExpectedConditions {
   public static ExpectedCondition<WebElement> presenceOfElementLocated(
       final By locator) {
     return new ExpectedCondition<WebElement>() {
+      @Override
       public WebElement apply(WebDriver driver) {
         return findElement(locator, driver);
       }
@@ -121,6 +124,7 @@ public class ExpectedConditions {
   public static ExpectedCondition<WebElement> visibilityOfElementLocated(
       final By locator) {
     return new ExpectedCondition<WebElement>() {
+      @Override
       public WebElement apply(WebDriver driver) {
         try {
           return elementIfVisible(findElement(locator, driver));
@@ -147,6 +151,7 @@ public class ExpectedConditions {
   public static ExpectedCondition<WebElement> visibilityOf(
       final WebElement element) {
     return new ExpectedCondition<WebElement>() {
+      @Override
       public WebElement apply(WebDriver driver) {
         return elementIfVisible(element);
       }
@@ -176,6 +181,7 @@ public class ExpectedConditions {
   public static ExpectedCondition<List<WebElement>> presenceOfAllElementsLocatedBy(
       final By locator) {
     return new ExpectedCondition<List<WebElement>>() {
+      @Override
       public List<WebElement> apply(WebDriver driver) {
         List<WebElement> elements = findElements(locator, driver);
         return elements.size() > 0 ? elements : null;
@@ -196,9 +202,10 @@ public class ExpectedConditions {
       final By locator, final String text) {
 
     return new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver from) {
+      @Override
+      public Boolean apply(WebDriver driver) {
         try {
-          String elementText = findElement(locator, from).getText();
+          String elementText = findElement(locator, driver).getText();
           return elementText.contains(text);
         } catch (StaleElementReferenceException e) {
           return null;
@@ -221,9 +228,10 @@ public class ExpectedConditions {
       final By locator, final String text) {
 
     return new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver from) {
+      @Override
+      public Boolean apply(WebDriver driver) {
         try {
-          String elementText = findElement(locator, from).getAttribute("value");
+          String elementText = findElement(locator, driver).getAttribute("value");
           if (elementText != null) {
             return elementText.contains(text);
           } else {
@@ -250,9 +258,10 @@ public class ExpectedConditions {
   public static ExpectedCondition<WebDriver> frameToBeAvailableAndSwitchToIt(
       final String frameLocator) {
     return new ExpectedCondition<WebDriver>() {
-      public WebDriver apply(WebDriver from) {
+      @Override
+      public WebDriver apply(WebDriver driver) {
         try {
-          return from.switchTo().frame(frameLocator);
+          return driver.switchTo().frame(frameLocator);
         } catch (NoSuchFrameException e) {
           return null;
         }
@@ -266,7 +275,7 @@ public class ExpectedConditions {
   }
 
   /**
-   * An Expectation for checking that an element is either invisible or not
+   * An expectation for checking that an element is either invisible or not
    * present on the DOM.
    *
    * @param locator used to find the element
@@ -274,6 +283,7 @@ public class ExpectedConditions {
   public static ExpectedCondition<Boolean> invisibilityOfElementLocated(
       final By locator) {
     return new ExpectedCondition<Boolean>() {
+      @Override
       public Boolean apply(WebDriver driver) {
         try {
           return !(findElement(locator, driver).isDisplayed());
@@ -296,7 +306,41 @@ public class ExpectedConditions {
   }
 
   /**
-   * An Expectation for checking an element is visible and enabled such that you
+   * An expectation for checking that an element with text is either invisible
+   * or not present on the DOM.
+   *
+   * @param locator used to find the element
+   * @param text of the element
+   */
+  public static ExpectedCondition<Boolean> invisibilityOfElementWithText(
+      final By locator, final String text) {
+    return new ExpectedCondition<Boolean>() {
+      @Override
+      public Boolean apply(WebDriver driver) {
+        try {
+          return !findElement(locator, driver).getText().equals(text);
+        } catch (NoSuchElementException e) {
+          // Returns true because the element with text is not present in DOM. The
+          // try block checks if the element is present but is invisible.
+          return true;
+        } catch (StaleElementReferenceException e) {
+          // Returns true because stale element reference implies that element
+          // is no longer visible.
+          return true;
+        }
+      }
+
+
+      @Override
+      public String toString() {
+        return String.format("element containing '%s' to no longer be visible: %s",
+            text, locator);
+      }
+    };
+  }
+
+  /**
+   * An expectation for checking an element is visible and enabled such that you
    * can click it.
    */
   public static ExpectedCondition<WebElement> elementToBeClickable(
@@ -306,6 +350,7 @@ public class ExpectedConditions {
       public ExpectedCondition<WebElement> visibilityOfElementLocated =
           ExpectedConditions.visibilityOfElementLocated(locator);
 
+      @Override
       public WebElement apply(WebDriver driver) {
         WebElement element = visibilityOfElementLocated.apply(driver);
         try {
@@ -336,6 +381,7 @@ public class ExpectedConditions {
   public static ExpectedCondition<Boolean> stalenessOf(
       final WebElement element) {
     return new ExpectedCondition<Boolean>() {
+      @Override
       public Boolean apply(WebDriver ignored) {
         try {
           // Calling any method forces a staleness check
@@ -354,6 +400,34 @@ public class ExpectedConditions {
   }
 
   /**
+   * Wrapper for a condition, which allows for elements to update by redrawing.
+   *
+   * This works around the problem of conditions which have two parts: find an
+   * element and then check for some condition on it. For these conditions it is
+   * possible that an element is located and then subsequently it is redrawn on
+   * the client. When this happens a {@link StaleElementReferenceException} is
+   * thrown when the second part of the condition is checked.
+   */
+  public static <T> ExpectedCondition<T> refreshed(
+      final ExpectedCondition<T> condition) {
+    return new ExpectedCondition<T>() {
+      @Override
+      public T apply(WebDriver driver) {
+        try {
+          return condition.apply(driver);
+        } catch (StaleElementReferenceException e) {
+          return null;
+        }
+      }
+
+      @Override
+      public String toString() {
+        return String.format("condition (%s) to be refreshed", condition);
+      }
+    };
+  }
+
+  /**
    * An expectation for checking if the given element is selected.
    */
   public static ExpectedCondition<Boolean> elementToBeSelected(final WebElement element) {
@@ -366,7 +440,8 @@ public class ExpectedConditions {
   public static ExpectedCondition<Boolean> elementSelectionStateToBe(final WebElement element,
                                                                      final boolean selected) {
     return new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver from) {
+      @Override
+      public Boolean apply(WebDriver driver) {
         return element.isSelected() == selected;
       }
 
@@ -384,9 +459,10 @@ public class ExpectedConditions {
   public static ExpectedCondition<Boolean> elementSelectionStateToBe(final By locator,
                                                                      final boolean selected) {
     return new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver from) {
+      @Override
+      public Boolean apply(WebDriver driver) {
         try {
-          WebElement element = from.findElement(locator);
+          WebElement element = driver.findElement(locator);
           return element.isSelected() == selected;
         } catch (StaleElementReferenceException e) {
           return null;
@@ -403,9 +479,10 @@ public class ExpectedConditions {
 
   public static ExpectedCondition<Alert> alertIsPresent() {
     return new ExpectedCondition<Alert>() {
-      public Alert apply(WebDriver input) {
+      @Override
+      public Alert apply(WebDriver driver) {
         try {
-          return input.switchTo().alert();
+          return driver.switchTo().alert();
         } catch (NoAlertPresentException e) {
           return null;
         }
@@ -414,6 +491,25 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return "alert to be present";
+      }
+    };
+  }
+
+  /**
+   * An expectation with the logical opposite condition of the given condition.
+   * In case of null, it will return false.
+   */
+  public static ExpectedCondition<Boolean> not(final ExpectedCondition<?> condition) {
+    return new ExpectedCondition<Boolean>() {
+      @Override
+      public Boolean apply(WebDriver driver) {
+        Object result = condition.apply(driver);
+        return !(result == null || result == Boolean.TRUE);
+      }
+
+      @Override
+      public String toString() {
+        return "condition to not be valid: " + condition;
       }
     };
   }
