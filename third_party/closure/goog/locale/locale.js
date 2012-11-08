@@ -150,8 +150,8 @@ goog.locale.getVariantSubTag = function(languageCode) {
 goog.locale.getNativeCountryName = function(countryCode) {
   var key = goog.locale.getLanguageSubTag(countryCode) + '_' +
             goog.locale.getRegionSubTag(countryCode);
-  return key in goog.locale.nativeNameConstants.COUNTRY ?
-      goog.locale.nativeNameConstants.COUNTRY[key] : countryCode;
+  return key in goog.locale.nativeNameConstants['COUNTRY'] ?
+      goog.locale.nativeNameConstants['COUNTRY'][key] : countryCode;
 };
 
 
@@ -193,9 +193,11 @@ goog.locale.getLocalizedCountryName = function(languageCode,
  * @return {string} Language name for the provided language code.
  */
 goog.locale.getNativeLanguageName = function(languageCode) {
+  if (languageCode in goog.locale.nativeNameConstants['LANGUAGE'])
+    return goog.locale.nativeNameConstants['LANGUAGE'][languageCode];
   var code = goog.locale.getLanguageSubTag(languageCode);
-  return code in goog.locale.nativeNameConstants.LANGUAGE ?
-      goog.locale.nativeNameConstants.LANGUAGE[code] : languageCode;
+  return code in goog.locale.nativeNameConstants['LANGUAGE'] ?
+      goog.locale.nativeNameConstants['LANGUAGE'][code] : languageCode;
 };
 
 
@@ -218,6 +220,8 @@ goog.locale.getLocalizedLanguageName = function(languageCode,
     opt_localeSymbols = goog.locale.getResource('LocaleNameConstants',
         goog.locale.getLocale());
   }
+  if (languageCode in opt_localeSymbols['LANGUAGE'])
+    return opt_localeSymbols['LANGUAGE'][languageCode];
   var code = goog.locale.getLanguageSubTag(languageCode);
   return code in opt_localeSymbols['LANGUAGE'] ?
       opt_localeSymbols['LANGUAGE'][code] : languageCode;

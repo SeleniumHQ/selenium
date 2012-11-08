@@ -50,6 +50,13 @@ limitations under the License.
       assertEquals('2', webdriver.atoms.element.getAttribute(element, 'rows'));
     }
 
+    function testShouldReturnSameValueForClassAndClassName() {
+      var element = document.body;
+
+      assertEquals(webdriver.atoms.element.getAttribute(element, 'class'),
+                   webdriver.atoms.element.getAttribute(element, 'className'));
+    }
+
     function testShouldReturnBooleanPropertiesAsStrings() {
       var readOnlyElement = bot.locators.findElement({id: 'ro'}),
             normalElement = bot.locators.findElement({id: 'normal'});
@@ -191,7 +198,7 @@ limitations under the License.
           bot.userAgent.isEngineVersion(11)) {
         return;
       }
-    
+
       var el = document.getElementById('textarea');
       el.value = '';
       webdriver.atoms.element.type(el, ['hello\n\nworld']);
@@ -199,7 +206,7 @@ limitations under the License.
     }
   </script>
 </head>
-<body id="body" style="" name="body">
+<body id="body" class="c" style="" name="body">
 
 <p id="has_id" title="cheese">This has an ID</p>
 

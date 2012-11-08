@@ -18,10 +18,10 @@
     function setUp() {
       elem = goog.dom.getElement('multitouch');
       goog.events.removeAll();
-      startCoords = null;
-      firstMoveCoords = null;
-      secondMoveCoords = null;
-      endCoords = null;
+      startCoords = [];
+      firstMoveCoords = [];
+      secondMoveCoords = [];
+      endCoords = [];
 
       function handleCoords(event, touchListName) {
         event.preventDefault();
@@ -29,20 +29,20 @@
         var touches = e[touchListName];
         assertEquals(2, touches.length);
         var touch0 = touches[0], touch1 = touches[1];
-        return {
-          coord0: new goog.math.Coordinate(touch0.clientX, touch0.clientY),
-          coord1: new goog.math.Coordinate(touch1.clientX, touch1.clientY)
-        };
+        return [
+          new goog.math.Coordinate(touch0.clientX, touch0.clientY),
+          new goog.math.Coordinate(touch1.clientX, touch1.clientY)
+        ];
       }
 
       goog.events.listen(elem, goog.events.EventType.TOUCHSTART, function(e) {
-        assert('touchstart already fired', !startCoords);
+        assert('touchstart already fired', !startCoords.length);
         startCoords = handleCoords(e, 'touches');
       });
 
       goog.events.listen(elem, goog.events.EventType.TOUCHMOVE, function(e) {
-        assert('two touchmoves already fired', !secondMoveCoords);
-        if (!firstMoveCoords) {
+        assert('two touchmoves already fired', !secondMoveCoords.length);
+        if (!firstMoveCoords.length) {
           firstMoveCoords = handleCoords(e, 'touches');
         } else {
           secondMoveCoords = handleCoords(e, 'touches');
@@ -50,12 +50,39 @@
       });
 
       goog.events.listen(elem, goog.events.EventType.TOUCHEND, function(e) {
-        assert('touchend already fired', !endCoords);
+        assert('touchend already fired', !endCoords.length);
         endCoords = handleCoords(e, 'changedTouches');
+      });
+
+      function handlePointerCoords(event) {
+        event.preventDefault();
+        var e = event.getBrowserEvent();
+        return new goog.math.Coordinate(e.clientX, e.clientY);
+      }
+
+      goog.events.listen(elem, goog.events.EventType.MSPOINTERDOWN,
+                         function(e) {
+        assert('MSPointerDown already fired', startCoords.length < 2);
+        startCoords.push(handlePointerCoords(e));
+      });
+
+      goog.events.listen(elem, goog.events.EventType.MSPOINTERMOVE,
+                         function(e) {
+        assert('MSPointerMoves already fired', secondMoveCoords.length < 2);
+        if (firstMoveCoords.length < 2) {
+          firstMoveCoords.push(handlePointerCoords(e));
+        } else {
+          secondMoveCoords.push(handlePointerCoords(e));
+        }
+      });
+
+      goog.events.listen(elem, goog.events.EventType.MSPOINTERUP, function(e) {
+        assert('MSPointerUp already fired', endCoords.length < 2);
+        endCoords.push(handlePointerCoords(e));
       });
     }
 
-    var EPSILON = 0.000000000001;
+    var EPSILON = 0.01;
 
     function assertApproxEquals(comment, expected, actual) {
       // Android 4+ coerces real numbered coordinates to their floor values.
@@ -72,25 +99,25 @@
 
     function assertMultitouchPoints(start0X, start0Y, start1X, start1Y,
         mid0X, mid0Y, mid1X, mid1Y, end0X, end0Y, end1X, end1Y) {
-      assertApproxEquals('start 0 x', start0X, startCoords.coord0.x);
-      assertApproxEquals('start 0 y', start0Y, startCoords.coord0.y);
-      assertApproxEquals('start 1 x', start1X, startCoords.coord1.x);
-      assertApproxEquals('start 1 y', start1Y, startCoords.coord1.y);
+      assertApproxEquals('start 0 x', start0X, startCoords[0].x);
+      assertApproxEquals('start 0 y', start0Y, startCoords[0].y);
+      assertApproxEquals('start 1 x', start1X, startCoords[1].x);
+      assertApproxEquals('start 1 y', start1Y, startCoords[1].y);
 
-      assertApproxEquals('first move 0 x', mid0X, firstMoveCoords.coord0.x);
-      assertApproxEquals('first move 0 y', mid0Y, firstMoveCoords.coord0.y);
-      assertApproxEquals('first move 1 x', mid1X, firstMoveCoords.coord1.x);
-      assertApproxEquals('first move 1 y', mid1Y, firstMoveCoords.coord1.y);
+      assertApproxEquals('first move 0 x', mid0X, firstMoveCoords[0].x);
+      assertApproxEquals('first move 0 y', mid0Y, firstMoveCoords[0].y);
+      assertApproxEquals('first move 1 x', mid1X, firstMoveCoords[1].x);
+      assertApproxEquals('first move 1 y', mid1Y, firstMoveCoords[1].y);
 
-      assertApproxEquals('second move 0 x', end0X, secondMoveCoords.coord0.x);
-      assertApproxEquals('second move 0 y', end0Y, secondMoveCoords.coord0.y);
-      assertApproxEquals('second move 1 x', end1X, secondMoveCoords.coord1.x);
-      assertApproxEquals('second move 1 y', end1Y, secondMoveCoords.coord1.y);
+      assertApproxEquals('second move 0 x', end0X, secondMoveCoords[0].x);
+      assertApproxEquals('second move 0 y', end0Y, secondMoveCoords[0].y);
+      assertApproxEquals('second move 1 x', end1X, secondMoveCoords[1].x);
+      assertApproxEquals('second move 1 y', end1Y, secondMoveCoords[1].y);
 
-      assertApproxEquals('end 0 x', end0X, endCoords.coord0.x);
-      assertApproxEquals('end 0 y', end0Y, endCoords.coord0.y);
-      assertApproxEquals('end 1 x', end1X, endCoords.coord1.x);
-      assertApproxEquals('end 1 y', end1Y, endCoords.coord1.y);
+      assertApproxEquals('end 0 x', end0X, endCoords[0].x);
+      assertApproxEquals('end 0 y', end0Y, endCoords[0].y);
+      assertApproxEquals('end 1 x', end1X, endCoords[1].x);
+      assertApproxEquals('end 1 y', end1Y, endCoords[1].y);
     }
 
     function testPinchInward() {

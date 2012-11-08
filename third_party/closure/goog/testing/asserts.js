@@ -141,7 +141,7 @@ var _displayStringForValue = function(aVar) {
 };
 
 var fail = function(failureMessage) {
-  goog.testing.asserts.raiseException_('Call to fail()', failureMessage);
+  goog.testing.asserts.raiseException('Call to fail()', failureMessage);
 };
 
 var argumentsIncludeComments = function(expectedNumberOfNonCommentArgs, args) {
@@ -172,7 +172,7 @@ var _validateArguments = function(expectedNumberOfNonCommentArgs, args) {
 
 var _assert = function(comment, booleanValue, failureMessage) {
   if (!booleanValue) {
-    goog.testing.asserts.raiseException_(comment, failureMessage);
+    goog.testing.asserts.raiseException(comment, failureMessage);
   }
 };
 
@@ -267,7 +267,7 @@ var assertThrows = function(a, opt_b) {
     }
     return e;
   }
-  goog.testing.asserts.raiseException_(comment,
+  goog.testing.asserts.raiseException(comment,
       'No exception thrown from function passed to assertThrows');
 };
 
@@ -296,7 +296,7 @@ var assertNotThrows = function(a, opt_b) {
     // Some browsers don't have a stack trace so at least have the error
     // description.
     var stackTrace = e['stack'] || e['stacktrace'] || e.toString();
-    goog.testing.asserts.raiseException_(comment, stackTrace);
+    goog.testing.asserts.raiseException(comment, stackTrace);
   }
 };
 
@@ -1143,9 +1143,8 @@ var standardizeCSSValue = function(propertyName, value) {
  * Raises a JsUnit exception with the given comment.
  * @param {string} comment A summary for the exception.
  * @param {string=} opt_message A description of the exception.
- * @private
  */
-goog.testing.asserts.raiseException_ = function(comment, opt_message) {
+goog.testing.asserts.raiseException = function(comment, opt_message) {
   if (goog.global['CLOSURE_INSPECTOR___'] &&
       goog.global['CLOSURE_INSPECTOR___']['supportsJSUnit']) {
     goog.global['CLOSURE_INSPECTOR___']['jsUnitFailure'](comment, opt_message);

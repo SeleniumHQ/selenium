@@ -150,7 +150,7 @@ core.text.getText = function(locator) {
   var text = '';
   var isRecentFirefox =
       (goog.userAgent.GECKO && goog.userAgent.VERSION >= '1.8');
-  
+
   if (isRecentFirefox ||
       goog.userAgent.SAFARI || goog.userAgent.OPERA || goog.userAgent.IE) {
     text = core.text.getTextContent_(element, false);
@@ -191,9 +191,9 @@ core.text.isTextPresent = function(pattern) {
   var allText = core.text.getBodyText();
 
   var patternMatcher = core.patternMatcher.against(pattern);
-  if (patternMatcher.strategyName == "glob") {
-    if (pattern.indexOf("glob:") == 0) {
-      pattern = pattern.substring("glob:".length); // strip off "glob:"
+  if (patternMatcher.strategyName == 'glob') {
+    if (pattern.indexOf('glob:') == 0) {
+      pattern = pattern.substring('glob:'.length); // strip off "glob:"
     }
     patternMatcher = core.patternMatcher.against('globContains:' + pattern);
   }

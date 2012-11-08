@@ -18,7 +18,6 @@ goog.provide('safaridriver.extension.TabManager');
 
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
-goog.require('goog.string');
 goog.require('safaridriver.extension.Tab');
 
 

@@ -64,7 +64,7 @@ goog.require('goog.userAgent');
  */
 goog.ui.SplitPane = function(firstComponent, secondComponent, orientation,
     opt_domHelper) {
-  goog.ui.Component.call(this, opt_domHelper);
+  goog.base(this, opt_domHelper);
 
   /**
    * The orientation of the containers.
@@ -97,6 +97,12 @@ goog.inherits(goog.ui.SplitPane, goog.ui.Component);
  * @enum {string}
  */
 goog.ui.SplitPane.EventType = {
+
+  /**
+   * Dispatched after handle drag.
+   */
+  HANDLE_DRAG: 'handle_drag',
+
   /**
    * Dispatched after handle drag end.
    */
@@ -296,8 +302,7 @@ goog.ui.SplitPane.prototype.createDom = function() {
  */
 goog.ui.SplitPane.prototype.canDecorate = function(element) {
   var className = goog.ui.SplitPane.FIRST_CONTAINER_CLASS_NAME_;
-  var firstContainer = goog.dom.getElementsByTagNameAndClass(
-      null, className, element)[0];
+  var firstContainer = this.getElementToDecorate_(element, className);
   if (!firstContainer) {
     return false;
   }
@@ -306,16 +311,15 @@ goog.ui.SplitPane.prototype.canDecorate = function(element) {
   this.firstComponentContainer_ = firstContainer;
 
   className = goog.ui.SplitPane.SECOND_CONTAINER_CLASS_NAME_;
-  var secondContainer = goog.dom.getElementsByTagNameAndClass(
-      null, className, element)[0];
+  var secondContainer = this.getElementToDecorate_(element, className);
+
   if (!secondContainer) {
     return false;
   }
   this.secondComponentContainer_ = secondContainer;
 
   className = goog.ui.SplitPane.HANDLE_CLASS_NAME_;
-  var splitpaneHandle = goog.dom.getElementsByTagNameAndClass(
-      null, className, element)[0];
+  var splitpaneHandle = this.getElementToDecorate_(element, className);
   if (!splitpaneHandle) {
     return false;
   }
@@ -327,6 +331,34 @@ goog.ui.SplitPane.prototype.canDecorate = function(element) {
 
 
 /**
+ * Obtains the element to be decorated by class name. If multiple such elements
+ * are found, preference is given to those directly attached to the specified
+ * root element.
+ * @param {Element} rootElement The root element from which to retrieve the
+ *     element to be decorated.
+ * @param {!string} className The target class name.
+ * @return {Element} The element to decorate.
+ * @private
+ */
+goog.ui.SplitPane.prototype.getElementToDecorate_ = function(rootElement,
+    className) {
+
+  // Decorate the root element's children, if available.
+  var childElements = goog.dom.getChildren(rootElement);
+  for (var i = 0; i < childElements.length; i++) {
+    var childElement = childElements[i];
+    if (goog.dom.classes.has(childElement, className)) {
+      return childElement;
+    }
+  }
+
+  // Default to the first descendent element with the correct class.
+  return goog.dom.getElementsByTagNameAndClass(
+      null, className, rootElement)[0];
+};
+
+
+/**
  * Decorates the given HTML element as a SplitPane.  Overrides {@link
  * goog.ui.Component#decorateInternal}.  Considered protected.
  * @param {Element} element Element (SplitPane div) to decorate.
@@ -334,7 +366,7 @@ goog.ui.SplitPane.prototype.canDecorate = function(element) {
  * @override
  */
 goog.ui.SplitPane.prototype.decorateInternal = function(element) {
-  goog.ui.SplitPane.superClass_.decorateInternal.call(this, element);
+  goog.base(this, 'decorateInternal', element);
 
   this.setUpHandle_();
 
@@ -385,7 +417,7 @@ goog.ui.SplitPane.prototype.finishSetup_ = function() {
  * @override
  */
 goog.ui.SplitPane.prototype.enterDocument = function() {
-  goog.ui.SplitPane.superClass_.enterDocument.call(this);
+  goog.base(this, 'enterDocument');
 
   // If position is not set in the inline style of the element, it is not
   // possible to get the element's real CSS position until the element is in
@@ -807,6 +839,7 @@ goog.ui.SplitPane.prototype.handleDrag_ = function(e) {
       var left = this.getRelativeLeft_(e.left);
       this.setFirstComponentSize(left);
     }
+    this.dispatchEvent(goog.ui.SplitPane.EventType.HANDLE_DRAG);
   }
 };
 
@@ -849,7 +882,7 @@ goog.ui.SplitPane.prototype.handleDoubleClick_ = function(e) {
 
 /** @override */
 goog.ui.SplitPane.prototype.disposeInternal = function() {
-  goog.ui.SplitPane.superClass_.disposeInternal.call(this);
+  goog.base(this, 'disposeInternal');
 
   this.splitDragger_.dispose();
   this.splitDragger_ = null;

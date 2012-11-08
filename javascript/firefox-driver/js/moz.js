@@ -19,6 +19,7 @@ goog.provide('fxdriver.moz');
 
 goog.require('bot.userAgent');
 goog.require('fxdriver.logging');
+goog.require('goog.array');
 
 
 /** @const */ var CC = Components.classes;
@@ -93,7 +94,7 @@ fxdriver.moz.queryInterface = function(self, iids) {
  * Unwraps a something which is wrapped into a XPCNativeWrapper or XrayWrapper.
  *
  * @param {!Object} thing The "something" to unwrap.
- * @returns {!Object} The object, unwrapped if possible.
+ * @return {!Object} The object, unwrapped if possible.
  */
 fxdriver.moz.unwrap = function(thing) {
   // TODO(simon): This is identical to the same function in firefox-chrome
@@ -121,7 +122,7 @@ fxdriver.moz.unwrap = function(thing) {
       toReturn.__fxdriver_unwrapped = true;
       return toReturn;
     }
-  } catch(e) {
+  } catch (e) {
     // Unwrapping will fail for JS literals - numbers, for example. Catch
     // the exception and proceed, it will eventually be returned as-is.
   }
@@ -136,13 +137,13 @@ fxdriver.moz.unwrap = function(thing) {
  * See: https://developer.mozilla.org/en/XPCNativeWrapper
  */
 fxdriver.moz.unwrapXpcOnly = function(thing) {
-  if (XPCNativeWrapper && "unwrap" in XPCNativeWrapper) {
+  if (XPCNativeWrapper && 'unwrap' in XPCNativeWrapper) {
     try {
       return XPCNativeWrapper.unwrap(thing);
-    } catch(e) {
+    } catch (e) {
       //Unwrapping will fail for JS literals - numbers, for example. Catch
       // the exception and proceed, it will eventually be returend as-is.
-      fxdriver.logging.warning("Unwrap From XPC only failed: " + e);
+      fxdriver.logging.warning('Unwrap From XPC only failed: ' + e);
     }
 
   }
@@ -157,4 +158,3 @@ fxdriver.moz.unwrapFor4 = function(doc) {
   }
   return doc;
 };
-

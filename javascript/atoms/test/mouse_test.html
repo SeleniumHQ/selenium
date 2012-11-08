@@ -12,8 +12,9 @@
   goog.require('goog.events');
   goog.require('goog.events.EventType');
   goog.require('goog.math.Coordinate');
-  goog.require('goog.testing.jsunit');
+  goog.require('goog.style');
   goog.require('goog.testing.AsyncTestCase');
+  goog.require('goog.testing.jsunit');
   goog.require('goog.userAgent');
 </script>
 <body>
@@ -42,7 +43,12 @@ position: relative; top:25px;">Red</div>
     goog.events.EventType.MOUSEPIXELSCROLL,
     goog.events.EventType.CLICK,
     goog.events.EventType.CONTEXTMENU,
-    goog.events.EventType.DBLCLICK
+    goog.events.EventType.DBLCLICK,
+    goog.events.EventType.MSPOINTERDOWN,
+    goog.events.EventType.MSPOINTERMOVE,
+    goog.events.EventType.MSPOINTEROVER,
+    goog.events.EventType.MSPOINTEROUT,
+    goog.events.EventType.MSPOINTERUP
   ];
 
   function setUpPage() {
@@ -79,14 +85,46 @@ position: relative; top:25px;">Red</div>
     events = [];
   }
 
-  function mouseoverSequence(elem, button) {
+  function mousedownEvents(elem, button) {
+     var events = [goog.events.EventType.MOUSEDOWN, elem, button];
+     return !bot.userAgent.IE_DOC_10 ? events :
+         [goog.events.EventType.MSPOINTERDOWN, elem, button].concat(events);
+  }
+
+  function mousemoveEvents(elem, button) {
+     var events = [goog.events.EventType.MOUSEMOVE, elem, button];
+     return bot.userAgent.IE_DOC_10 ?
+         [goog.events.EventType.MSPOINTERMOVE, elem, -1].concat(events) :
+         events;
+  }
+
+  function mouseoutEvents(elem, button) {
+     var events = [goog.events.EventType.MOUSEOUT, elem, button];
+     return bot.userAgent.IE_DOC_10 ?
+         [goog.events.EventType.MSPOINTEROUT, elem, -1].concat(events) :
+         events;
+  }
+
+  function mouseupEvents(elem, button) {
+     var events = [goog.events.EventType.MOUSEUP, elem, button];
+     return bot.userAgent.IE_DOC_10 ?
+         [goog.events.EventType.MSPOINTERUP, elem, button].concat(events) :
+         events;
+  }
+
+  function mouseoverAndMoveEvents(elem, button) {
+    function mouseoverEvents(elem, button) {
+       var events = [goog.events.EventType.MOUSEOVER, elem, button];
+       return bot.userAgent.IE_DOC_10 ?
+           [goog.events.EventType.MSPOINTEROVER, elem, -1].concat(events) :
+           events;
+    }
     // IE fires the movemove *before* the mouseover event, and
     // IE < 9 always supplies a mouseover button value of 0.
-    return goog.userAgent.IE ? [goog.events.EventType.MOUSEMOVE, elem, button,
-                                goog.events.EventType.MOUSEOVER, elem,
-                                bot.userAgent.IE_DOC_9 ? button : 0] :
-                               [goog.events.EventType.MOUSEOVER, elem, button,
-                                goog.events.EventType.MOUSEMOVE, elem, button];
+    return goog.userAgent.IE ?
+        mousemoveEvents(elem, button).concat(
+             mouseoverEvents(elem, bot.userAgent.IE_DOC_9 ? button : 0)) :
+        mouseoverEvents(elem, button).concat(mousemoveEvents(elem, button));
   }
 
   function testNoClickWhenPressHiddenElement() {
@@ -97,7 +135,7 @@ position: relative; top:25px;">Red</div>
     mouse.pressButton(bot.Mouse.Button.LEFT);
     mouse.releaseButton();
 
-    assertEvents(mouseoverSequence(greenDiv, 0));
+    assertEvents(mouseoverAndMoveEvents(greenDiv, 0));
     goog.style.showElement(greenDiv, true);
   }
 
@@ -109,9 +147,9 @@ position: relative; top:25px;">Red</div>
     mouse.releaseButton();
 
     assertEvents(
-      mouseoverSequence(redDiv, 0),
-      goog.events.EventType.MOUSEDOWN, redDiv, b({ie: 1, wk: 0, ff: 0}),
-      goog.events.EventType.MOUSEUP, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      mouseoverAndMoveEvents(redDiv, 0),
+      mousedownEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
+      mouseupEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
       goog.events.EventType.CLICK, redDiv, 0
     );
   }
@@ -126,11 +164,11 @@ position: relative; top:25px;">Red</div>
 
     // No click if we released on another element.
     assertEvents(
-      mouseoverSequence(greenDiv, 0),
-      goog.events.EventType.MOUSEDOWN, greenDiv, b({ie: 1, wk: 0, ff: 0}),
-      goog.events.EventType.MOUSEOUT, greenDiv, 0,
-      mouseoverSequence(redDiv, b({ie: 1, wk: 0, ff: 0})),
-      goog.events.EventType.MOUSEUP, redDiv, b({ie: 1, wk: 0, ff: 0})
+      mouseoverAndMoveEvents(greenDiv, 0),
+      mousedownEvents(greenDiv, b({ie: 1, wk: 0, ff: 0})),
+      mouseoutEvents(greenDiv, 0),
+      mouseoverAndMoveEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
+      mouseupEvents(redDiv, b({ie: 1, wk: 0, ff: 0}))
     );
   }
 
@@ -144,11 +182,11 @@ position: relative; top:25px;">Red</div>
 
     // Right click triggers contextmenu even when released over another element.
     assertEvents(
-      mouseoverSequence(greenDiv, 0),
-      goog.events.EventType.MOUSEDOWN, greenDiv, 2,
-      goog.events.EventType.MOUSEOUT, greenDiv, b({ie: 0, wk: 2, ff: 0}),
-      mouseoverSequence(redDiv, b({ie: 2, wk: 2, ff: 0})),
-      goog.events.EventType.MOUSEUP, redDiv, 2,
+      mouseoverAndMoveEvents(greenDiv, 0),
+      mousedownEvents(greenDiv, 2),
+      mouseoutEvents(greenDiv, b({ie: 0, wk: 2, ff: 0})),
+      mouseoverAndMoveEvents(redDiv, b({ie: 2, wk: 2, ff: 0})),
+      mouseupEvents(redDiv, 2),
       goog.events.EventType.CONTEXTMENU, redDiv, b({ie: 0, wk: 2, ff: 2})
     );
   }
@@ -163,12 +201,12 @@ position: relative; top:25px;">Red</div>
     mouse.releaseButton();
 
     assertEvents(
-      mouseoverSequence(redDiv, 0),
-      goog.events.EventType.MOUSEDOWN, redDiv, b({ie: 1, wk: 0, ff: 0}),
-      goog.events.EventType.MOUSEUP, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      mouseoverAndMoveEvents(redDiv, 0),
+      mousedownEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
+      mouseupEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
       goog.events.EventType.CLICK, redDiv, 0,
-      goog.events.EventType.MOUSEDOWN, redDiv, b({ie: 1, wk: 0, ff: 0}),
-      goog.events.EventType.MOUSEUP, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      mousedownEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
+      mouseupEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
       goog.events.EventType.CLICK, redDiv, 0,
       goog.events.EventType.DBLCLICK, redDiv, 0
     );
@@ -185,14 +223,14 @@ position: relative; top:25px;">Red</div>
     mouse.releaseButton();
 
     assertEvents(
-      mouseoverSequence(greenDiv, 0),
-      goog.events.EventType.MOUSEDOWN, greenDiv, b({ie: 1, wk: 0, ff: 0}),
-      goog.events.EventType.MOUSEUP, greenDiv, b({ie: 1, wk: 0, ff: 0}),
+      mouseoverAndMoveEvents(greenDiv, 0),
+      mousedownEvents(greenDiv, b({ie: 1, wk: 0, ff: 0})),
+      mouseupEvents(greenDiv, b({ie: 1, wk: 0, ff: 0})),
       goog.events.EventType.CLICK, greenDiv, 0,
-      goog.events.EventType.MOUSEOUT, greenDiv, 0,
-      mouseoverSequence(redDiv, 0),
-      goog.events.EventType.MOUSEDOWN, redDiv, b({ie: 1, wk: 0, ff: 0}),
-      goog.events.EventType.MOUSEUP, redDiv, b({ie: 1, wk: 0, ff: 0}),
+      mouseoutEvents(greenDiv, 0),
+      mouseoverAndMoveEvents(redDiv, 0),
+      mousedownEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
+      mouseupEvents(redDiv, b({ie: 1, wk: 0, ff: 0})),
       goog.events.EventType.CLICK, redDiv, 0
     );
   }
@@ -205,8 +243,8 @@ position: relative; top:25px;">Red</div>
     mouse.move(greenDiv, coords2);
 
     assertEvents(
-      mouseoverSequence(greenDiv, 0),
-      goog.events.EventType.MOUSEMOVE, greenDiv, 0
+      mouseoverAndMoveEvents(greenDiv, 0),
+      mousemoveEvents(greenDiv, 0)
     );
   }
 
@@ -217,9 +255,9 @@ position: relative; top:25px;">Red</div>
     mouse.move(redDiv, coords);
 
     assertEvents(
-      mouseoverSequence(greenDiv, 0),
-      goog.events.EventType.MOUSEOUT, greenDiv, 0,
-      mouseoverSequence(redDiv, 0)
+      mouseoverAndMoveEvents(greenDiv, 0),
+      mouseoutEvents(greenDiv, 0),
+      mouseoverAndMoveEvents(redDiv, 0)
     );
   }
 
@@ -263,7 +301,7 @@ position: relative; top:25px;">Red</div>
 
   function testMoveMouseFromClosedWindowDoesNotError() {
     var mouse = new bot.Mouse();
-    var coord =  new goog.math.Coordinate(0, 0);
+    var coord = new goog.math.Coordinate(0, 0);
     var iframe = document.createElement('iframe');
 
     goog.events.listenOnce(iframe, 'load', function() {
@@ -284,6 +322,23 @@ position: relative; top:25px;">Red</div>
     document.body.appendChild(iframe);
   }
 
+  function testMoveMouseFiresAllEventsOnElementHiddenMidSequence() {
+    var coords = new goog.math.Coordinate(5, 5);
+    var mouse = new bot.Mouse();
+    mouse.move(greenDiv, coords);
+    goog.events.listen(greenDiv, 'mouseout', function() {
+      goog.style.showElement(redDiv, false);
+    });
+    mouse.move(redDiv, coords);
+    goog.style.showElement(redDiv, true);
+
+    assertEvents(
+      mouseoverAndMoveEvents(greenDiv, 0),
+      mouseoutEvents(greenDiv, 0),
+      mouseoverAndMoveEvents(redDiv, 0)
+    );
+  }
+
   function testScrollMouseZeroTicksThrowsError() {
     var mouse = new bot.Mouse();
     mouse.move(greenDiv, new goog.math.Coordinate(5, 5));
@@ -299,13 +354,13 @@ position: relative; top:25px;">Red</div>
 
     if (goog.userAgent.GECKO) {
       assertEvents(
-        mouseoverSequence(greenDiv, 0),
+        mouseoverAndMoveEvents(greenDiv, 0),
         goog.events.EventType.MOUSEWHEEL, greenDiv, 0,
         goog.events.EventType.MOUSEPIXELSCROLL, greenDiv, 0
       );
     } else {
       assertEvents(
-        mouseoverSequence(greenDiv, 0),
+        mouseoverAndMoveEvents(greenDiv, 0),
         goog.events.EventType.MOUSEWHEEL, greenDiv, 0
       );
     }
@@ -318,7 +373,7 @@ position: relative; top:25px;">Red</div>
 
     if (goog.userAgent.GECKO) {
       assertEvents(
-        mouseoverSequence(greenDiv, 0),
+        mouseoverAndMoveEvents(greenDiv, 0),
         goog.events.EventType.MOUSEWHEEL, greenDiv, 0,
         goog.events.EventType.MOUSEPIXELSCROLL, greenDiv, 0,
         goog.events.EventType.MOUSEWHEEL, greenDiv, 0,
@@ -326,7 +381,7 @@ position: relative; top:25px;">Red</div>
       );
     } else {
       assertEvents(
-        mouseoverSequence(greenDiv, 0),
+        mouseoverAndMoveEvents(greenDiv, 0),
         goog.events.EventType.MOUSEWHEEL, greenDiv, 0,
         goog.events.EventType.MOUSEWHEEL, greenDiv, 0
       );

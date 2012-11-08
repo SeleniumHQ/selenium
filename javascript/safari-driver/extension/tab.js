@@ -19,6 +19,7 @@ goog.provide('safaridriver.extension.Tab');
 goog.require('bot.response');
 goog.require('goog.Uri');
 goog.require('goog.asserts');
+goog.require('goog.debug.Logger');
 goog.require('safaridriver.Tab');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Load');

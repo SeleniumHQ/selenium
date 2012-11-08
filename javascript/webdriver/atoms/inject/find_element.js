@@ -19,9 +19,8 @@
 
 goog.provide('webdriver.atoms.inject.locators');
 
-goog.require('bot.inject');
 goog.require('bot.locators');
-
+goog.require('webdriver.atoms.inject');
 
 /**
  * Finds an element by using the given lookup strategy.
@@ -33,12 +32,12 @@ goog.require('bot.locators');
  * @return {string} The result wrapped
  *     in a JSON string as defined by the WebDriver wire protocol.
  */
-webdriver.atoms.inject.locators.findElement = function(strategy, using,
-    opt_root) {
+webdriver.atoms.inject.locators.findElement =
+    function(strategy, using, opt_root) {
   var locator = {};
   locator[strategy] = using;
-  return bot.inject.executeScript(bot.locators.findElement,
-      [locator, opt_root], true);
+  return webdriver.atoms.inject.executeScript(bot.locators.findElement,
+      [locator, opt_root]);
 };
 
 
@@ -52,10 +51,10 @@ webdriver.atoms.inject.locators.findElement = function(strategy, using,
  * @return {string} The result wrapped
  *     in a JSON string as defined by the WebDriver wire protocol.
  */
-webdriver.atoms.inject.locators.findElements = function(strategy, using,
-    opt_root) {
+webdriver.atoms.inject.locators.findElements =
+    function(strategy, using, opt_root) {
   var locator = {};
   locator[strategy] = using;
-  return bot.inject.executeScript(bot.locators.findElements,
-                                  [locator, opt_root], true);
+  return webdriver.atoms.inject.executeScript(bot.locators.findElements,
+      [locator, opt_root]);
 };

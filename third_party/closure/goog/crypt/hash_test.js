@@ -19,6 +19,7 @@
 
 goog.provide('goog.crypt.hash_test');
 
+goog.require('goog.array');
 goog.require('goog.testing.asserts');
 goog.setTestOnly('hash_test');
 
@@ -81,3 +82,66 @@ goog.crypt.hash_test.runBasicTests = function(hash) {
   assertArrayEquals('Updating with an empty string did not give an empty hash',
       empty, hash.digest());
 };
+
+
+// Run performance tests
+goog.crypt.hash_test.runPerfTests = function (hashFactory, hashName) {
+
+  var body = goog.dom.getDocument().body;
+  var perfTable = goog.dom.createElement('div');
+  goog.dom.appendChild(body, perfTable);
+
+  var table = new goog.testing.PerformanceTable(perfTable)
+
+  function runPerfTest(byteLength, updateCount) {
+
+    var label = (hashName + ': ' + updateCount + ' update(s) of ' + byteLength
+        + ' bytes');
+
+    function run(data, dataType) {
+      table.run(function() {
+        var hash = hashFactory();
+        for (var i = 0; i < updateCount; i++) {
+          hash.update(data, byteLength);
+        }
+        var digest = hash.digest();
+      }, label + ' (' + dataType + ')');
+    }
+
+    var byteArray = goog.crypt.hash_test.createRandomByteArray_(length);
+    var byteString = goog.crypt.hash_test.createByteString_(byteArray);
+
+    run(byteArray, 'byte array');
+    run(byteString, 'byte string');
+  }
+
+  var MESSAGE_LENGTH_LONG = 10000002;
+  var MESSAGE_LENGTH_SHORT = 1000002;
+
+  runPerfTest(MESSAGE_LENGTH_SHORT, 1);
+  runPerfTest(MESSAGE_LENGTH_LONG, 1);
+  runPerfTest(MESSAGE_LENGTH_SHORT, 10);
+};
+
+
+goog.crypt.hash_test.createRandomByteArray_ = function(length) {
+  var random = new goog.testing.PseudoRandom(0);
+  var bytes = [];
+
+  for (var i = 0; i < length; ++i) {
+    // Generates an integer from 0 to 255.
+    var byte = Math.floor(random.random() * 0x100);
+    bytes.push(byte);
+  }
+
+  return bytes;
+};
+
+
+goog.crypt.hash_test.createByteString_ = function(bytes) {
+  var str = '';
+  goog.array.forEach(bytes, function(byte) {
+    str += String.fromCharCode(byte);
+  });
+  return str;
+}

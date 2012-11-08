@@ -141,6 +141,7 @@ goog.require('goog.debug');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.json');
@@ -344,8 +345,9 @@ goog.net.IframeIo.getForm_ = function() {
  * @private
  */
 goog.net.IframeIo.addFormInputs_ = function(form, data) {
+  var helper = goog.dom.getDomHelper(form);
   goog.structs.forEach(data, function(value, key) {
-    var inp = goog.dom.createDom('input',
+    var inp = helper.createDom('input',
         {'type': 'hidden', 'name': key, 'value': value});
     form.appendChild(inp);
   });
@@ -1114,8 +1116,8 @@ goog.net.IframeIo.prototype.createIframe_ = function() {
     iframeAttributes.src = 'javascript:""';
   }
 
-  this.iframe_ = /** @type {HTMLIFrameElement} */(goog.dom.createDom(
-      'iframe', iframeAttributes));
+  this.iframe_ = /** @type {HTMLIFrameElement} */(
+      goog.dom.getDomHelper(this.form_).createDom('iframe', iframeAttributes));
 
   var s = this.iframe_.style;
   s.visibility = 'hidden';
@@ -1137,7 +1139,8 @@ goog.net.IframeIo.prototype.createIframe_ = function() {
  * @private
  */
 goog.net.IframeIo.prototype.appendIframe_ = function() {
-  goog.dom.getDocument().body.appendChild(this.iframe_);
+  goog.dom.getDomHelper(this.form_).getDocument().body.appendChild(
+      this.iframe_);
 };
 
 

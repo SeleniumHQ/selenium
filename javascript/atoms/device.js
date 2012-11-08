@@ -31,6 +31,7 @@ goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
 
 
+
 /**
  * A Device class that provides common functionality for input devices.
  * @param {bot.Device.ModifiersState=} opt_modifiersState state of modifier
@@ -132,15 +133,16 @@ bot.Device.prototype.fireKeyboardEvent = function(type, args) {
  * @param {!goog.math.Coordinate} coord The coordinate where event will fire.
  * @param {number} button The mouse button value for the event.
  * @param {Element=} opt_related The related element of this event.
- * @param {number=} opt_wheelDelta The wheel delta value for the event.
+ * @param {?number=} opt_wheelDelta The wheel delta value for the event.
+ * @param {boolean=} opt_force Whether the event should be fired even if the
+ *     element is not interactable, such as the case of a mousemove or
+ *     mouseover event that immediately follows a mouseout.
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
  */
 bot.Device.prototype.fireMouseEvent = function(type, coord, button,
-                                               opt_related, opt_wheelDelta) {
-  // TODO(user): Event if the element is not interactable, the mouse event
-  // should still fire on another element (offset parent?).
-  if (!bot.dom.isInteractable(this.element_)) {
+    opt_related, opt_wheelDelta, opt_force) {
+  if (!opt_force && !bot.dom.isInteractable(this.element_)) {
     return false;
   }
 
@@ -227,6 +229,63 @@ bot.Device.prototype.fireTouchEvent = function(type, id, coord, opt_id2,
 
 
 /**
+ * Fires a MSPointer event given the state of the device and the given
+ * arguments.
+ *
+ * @param {bot.events.EventType} type MSPointer event type.
+ * @param {!goog.math.Coordinate} coord The coordinate where event will fire.
+ * @param {number} button The mouse button value for the event.
+ * @param {number} pointerId The pointer id for this event.
+ * @param {number} device The device type used for this event.
+ * @param {boolean} isPrimary Whether the pointer represents the primary point
+ *     of contact.
+ * @param {Element=} opt_related The related element of this event.
+ * @param {boolean=} opt_force Whether the event should be fired even if the
+ *     element is not interactable, such as the case of a mousemove or
+ *     mouseover event that immediately follows a mouseout.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+bot.Device.prototype.fireMSPointerEvent = function(type, coord, button,
+    pointerId, device, isPrimary, opt_related, opt_force) {
+  if (!opt_force && !bot.dom.isInteractable(this.element_)) {
+    return false;
+  }
+
+  if (opt_related &&
+      !(bot.events.EventType.MSPOINTEROVER == type ||
+        bot.events.EventType.MSPOINTEROUT == type)) {
+    throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
+                        'Event type does not allow related target: ' + type);
+  }
+
+  var args = {
+    clientX: coord.x,
+    clientY: coord.y,
+    button: button,
+    altKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    metaKey: false,
+    relatedTarget: opt_related || null,
+    width: 0,
+    height: 0,
+    pressure: 0, // Pressure is only given when a stylus is used.
+    rotation: 0,
+    pointerId: pointerId,
+    tiltX: 0,
+    tiltY: 0,
+    pointerType: device,
+    isPrimary: isPrimary
+  };
+
+  var target = this.select_ ?
+      this.getTargetOfOptionMouseEvent_(type) : this.element_;
+  return target ? bot.events.fire(target, type, args) : true;
+};
+
+
+/**
  * A mouse event fired "on" an <option> element, doesn't always fire on the
  * <option> element itself. Sometimes it fires on the parent <select> element
  * and sometimes not at all, depending on the browser and event type. This
@@ -241,9 +300,11 @@ bot.Device.prototype.getTargetOfOptionMouseEvent_ = function(type) {
   if (goog.userAgent.IE) {
     switch (type) {
       case bot.events.EventType.MOUSEOVER:
+      case bot.events.EventType.MSPOINTEROVER:
         return null;
       case bot.events.EventType.CONTEXTMENU:
       case bot.events.EventType.MOUSEMOVE:
+      case bot.events.EventType.MSPOINTERMOVE:
         return this.select_.multiple ? this.select_ : null;
       default:
         return this.select_;
@@ -427,7 +488,7 @@ bot.Device.prototype.focusOnElement = function() {
  */
 bot.Device.ALWAYS_FOLLOWS_LINKS_ON_CLICK_ =
     goog.userAgent.WEBKIT || goog.userAgent.OPERA ||
-      (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6));
+    (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6));
 
 
 /**
@@ -689,6 +750,7 @@ bot.Device.resolveUrl_ = function(base, rel) {
   return target.protocol + '//' + target.host + target.pathname +
       target.search + target.hash;
 };
+
 
 
 /**

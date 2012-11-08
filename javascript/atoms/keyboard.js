@@ -30,7 +30,6 @@ goog.require('bot.events.EventType');
 goog.require('goog.array');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.selection');
-goog.require('goog.events.KeyCodes');
 goog.require('goog.structs.Map');
 goog.require('goog.structs.Set');
 goog.require('goog.userAgent');
@@ -276,10 +275,10 @@ bot.Keyboard.Keys = {
   // Punctuation keys
   EQUALS: bot.Keyboard.newKey_(
       {gecko: 107, ieWebkit: 187, opera: 61}, '=', '+'),
+  SEPARATOR: bot.Keyboard.newKey_(108, ','),
   HYPHEN: bot.Keyboard.newKey_(
       {gecko: 109, ieWebkit: 189, opera: 109}, '-', '_'),
   COMMA: bot.Keyboard.newKey_(188, ',', '<'),
-  SEPARATOR: bot.Keyboard.newKey_(188, ','),
   PERIOD: bot.Keyboard.newKey_(190, '.', '>'),
   SLASH: bot.Keyboard.newKey_(191, '/', '?'),
   BACKTICK: bot.Keyboard.newKey_(192, '`', '~'),
@@ -382,8 +381,8 @@ bot.Keyboard.KEY_TO_MODIFIER_ = (function(modifiersMap) {
  */
 bot.Keyboard.prototype.setKeyPressed_ = function(key, isPressed) {
   if (goog.array.contains(bot.Keyboard.MODIFIERS, key)) {
-    var modifier = /** @type {bot.Device.Modifier}*/
-        bot.Keyboard.KEY_TO_MODIFIER_.get(key.code);
+    var modifier = /** @type {bot.Device.Modifier}*/ (
+        bot.Keyboard.KEY_TO_MODIFIER_.get(key.code));
     this.modifiersState.setPressed(modifier, isPressed);
   }
 
@@ -882,5 +881,5 @@ bot.Keyboard.prototype.getState = function () {
  * @return {bot.Device.ModifiersState} Modifiers state.
  */
 bot.Keyboard.prototype.getModifiersState = function() {
-  return this.modifiersState
+  return this.modifiersState;
 };

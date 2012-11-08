@@ -29,6 +29,8 @@ goog.provide('bot');
  * @type {!Window}
  * @private
  */
+bot.window_;
+
 try {
   bot.window_ = window;
 } catch (ignored) {

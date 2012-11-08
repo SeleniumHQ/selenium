@@ -161,12 +161,14 @@ goog.structs.clear = function(col) {
  * Calls a function for each value in a collection. The function takes
  * three arguments; the value, the key and the collection.
  *
- * @param {Object} col The collection-like object.
- * @param {Function} f The function to call for every value. This function takes
+ * @param {S} col The collection-like object.
+ * @param {function(this:T,?,?,S):?} f The function to call for every value.
+ *     This function takes
  *     3 arguments (the value, the key or undefined if the collection has no
  *     notion of keys, and the collection) and the return value is irrelevant.
- * @param {Object=} opt_obj The object to be used as the value of 'this'
+ * @param {T=} opt_obj The object to be used as the value of 'this'
  *     within {@code f}.
+ * @template T,S
  */
 goog.structs.forEach = function(col, f, opt_obj) {
   if (typeof col.forEach == 'function') {
@@ -188,17 +190,19 @@ goog.structs.forEach = function(col, f, opt_obj) {
  * Calls a function for every value in the collection. When a call returns true,
  * adds the value to a new collection (Array is returned by default).
  *
- * @param {Object} col The collection-like object.
- * @param {Function} f The function to call for every value. This function takes
+ * @param {S} col The collection-like object.
+ * @param {function(this:T,?,?,S):boolean} f The function to call for every
+ *     value. This function takes
  *     3 arguments (the value, the key or undefined if the collection has no
  *     notion of keys, and the collection) and should return a Boolean. If the
  *     return value is true the value is added to the result collection. If it
  *     is false the value is not included.
- * @param {Object=} opt_obj The object to be used as the value of 'this'
+ * @param {T=} opt_obj The object to be used as the value of 'this'
  *     within {@code f}.
  * @return {!Object|!Array} A new collection where the passed values are
  *     present. If col is a key-less collection an array is returned.  If col
  *     has keys and values a plain old JS object is returned.
+ * @template T,S
  */
 goog.structs.filter = function(col, f, opt_obj) {
   if (typeof col.filter == 'function') {
@@ -238,16 +242,17 @@ goog.structs.filter = function(col, f, opt_obj) {
  * Calls a function for every value in the collection and adds the result into a
  * new collection (defaults to creating a new Array).
  *
- * @param {Object} col The collection-like object.
- * @param {Function} f The function to call for every value. This function
- *     takes 3 arguments (the value, the key or undefined if the collection has
- *     no notion of keys, and the collection) and should return something. The
- *     result will be used as the value in the new collection.
- * @param {Object=} opt_obj  The object to be used as the value of 'this'
+ * @param {S} col The collection-like object.
+ * @param {function(this:T,?,?,S):V} f The function to call for every value.
+ *     This function takes 3 arguments (the value, the key or undefined if the
+ *     collection has no notion of keys, and the collection) and should return
+ *     something. The result will be used as the value in the new collection.
+ * @param {T=} opt_obj  The object to be used as the value of 'this'
  *     within {@code f}.
- * @return {!Object|!Array} A new collection with the new values.  If col is a
- *     key-less collection an array is returned.  If col has keys and values a
- *     plain old JS object is returned.
+ * @return {!Object.<V>|!Array.<V>} A new collection with the new values.  If
+ *     col is a key-less collection an array is returned.  If col has keys and
+ *     values a plain old JS object is returned.
+ * @template T,S,V
  */
 goog.structs.map = function(col, f, opt_obj) {
   if (typeof col.map == 'function') {
@@ -283,13 +288,15 @@ goog.structs.map = function(col, f, opt_obj) {
  * Calls f for each value in a collection. If any call returns true this returns
  * true (without checking the rest). If all returns false this returns false.
  *
- * @param {Object|Array|string} col The collection-like object.
- * @param {Function} f The function to call for every value. This function takes
- *     3 arguments (the value, the key or undefined if the collection has no
- *     notion of keys, and the collection) and should return a Boolean.
- * @param {Object=} opt_obj  The object to be used as the value of 'this'
+ * @param {S} col The collection-like object.
+ * @param {function(this:T,?,?,S):boolean} f The function to call for every
+ *     value. This function takes 3 arguments (the value, the key or undefined
+ *     if the collection has no notion of keys, and the collection) and should
+ *     return a boolean.
+ * @param {T=} opt_obj  The object to be used as the value of 'this'
  *     within {@code f}.
  * @return {boolean} True if any value passes the test.
+ * @template T,S
  */
 goog.structs.some = function(col, f, opt_obj) {
   if (typeof col.some == 'function') {
@@ -315,13 +322,15 @@ goog.structs.some = function(col, f, opt_obj) {
  * true this returns true. If any returns false this returns false at this point
  *  and does not continue to check the remaining values.
  *
- * @param {Object} col The collection-like object.
- * @param {Function} f The function to call for every value. This function takes
- *     3 arguments (the value, the key or undefined if the collection has no
- *     notion of keys, and the collection) and should return a Boolean.
- * @param {Object=} opt_obj  The object to be used as the value of 'this'
+ * @param {S} col The collection-like object.
+ * @param {function(this:T,?,?,S):boolean} f The function to call for every
+ *     value. This function takes 3 arguments (the value, the key or
+ *     undefined if the collection has no notion of keys, and the collection)
+ *     and should return a boolean.
+ * @param {T=} opt_obj  The object to be used as the value of 'this'
  *     within {@code f}.
  * @return {boolean} True if all key-value pairs pass the test.
+ * @template T,S
  */
 goog.structs.every = function(col, f, opt_obj) {
   if (typeof col.every == 'function') {

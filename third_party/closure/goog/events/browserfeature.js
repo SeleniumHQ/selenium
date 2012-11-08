@@ -67,5 +67,17 @@ goog.events.BrowserFeature = {
    */
   HTML5_NETWORK_EVENTS_FIRE_ON_BODY:
       goog.userAgent.GECKO && !goog.userAgent.isVersion('8') ||
-      goog.userAgent.IE && !goog.userAgent.isVersion('9')
+      goog.userAgent.IE && !goog.userAgent.isVersion('9'),
+
+  /**
+   * Whether touch is enabled in the browser.
+   */
+  TOUCH_ENABLED:
+      ('ontouchstart' in goog.global ||
+          !!(goog.global['document'] &&
+             document.documentElement &&
+             'ontouchstart' in document.documentElement) ||
+          // IE10 uses non-standard touch events, so it has a different check.
+          !!(goog.global['navigator'] &&
+              goog.global['navigator']['msMaxTouchPoints']))
 };

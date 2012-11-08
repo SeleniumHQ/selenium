@@ -47,6 +47,75 @@ webdriver.atoms.element.isSelected = function(element) {
 
 
 /**
+ * Common aliases for properties. This maps names that users use to the correct
+ * property name.
+ *
+ * @const
+ * @private
+ */
+webdriver.atoms.element.PROPERTY_ALIASES_ = {
+  'class': 'className',
+  'readonly': 'readOnly'
+};
+
+
+/**
+ * Used to determine whether we should return a boolean value from getAttribute.
+ * These are all extracted from the WHATWG spec:
+ *
+ *   http://www.whatwg.org/specs/web-apps/current-work/
+ *
+ * These must all be lower-case.
+ *
+ * @const
+ * @private
+ */
+webdriver.atoms.element.BOOLEAN_PROPERTIES_ = [
+  'async',
+  'autofocus',
+  'autoplay',
+  'checked',
+  'compact',
+  'complete',
+  'controls',
+  'declare',
+  'defaultchecked',
+  'defaultselected',
+  'defer',
+  'disabled',
+  'draggable',
+  'ended',
+  'formnovalidate',
+  'hidden',
+  'indeterminate',
+  'iscontenteditable',
+  'ismap',
+  'itemscope',
+  'loop',
+  'multiple',
+  'muted',
+  'nohref',
+  'noresize',
+  'noshade',
+  'novalidate',
+  'nowrap',
+  'open',
+  'paused',
+  'pubdate',
+  'readonly',
+  'required',
+  'reversed',
+  'scoped',
+  'seamless',
+  'seeking',
+  'selected',
+  'spellcheck',
+  'truespeed',
+  'willvalidate'
+];
+
+
+/**
  * Get the value of the given property or attribute. If the "attribute" is for
  * a boolean property, we return null in the case where the value is false. If
  * the attribute name is "style" an attempt to convert that style into a string
@@ -70,7 +139,7 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
     return (/** @type {?string} */value);
   }
 
-  if ('selected' == name || 'checked' == name &&
+  if (('selected' == name || 'checked' == name) &&
       bot.dom.isSelectable(element)) {
     return bot.dom.isSelected(element) ? 'true' : null;
   }
@@ -92,15 +161,17 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
     return (/** @type {?string} */value);
   }
 
-  if (bot.dom.isBooleanAttribute(attribute.toLowerCase())) {
+  var propName = webdriver.atoms.element.PROPERTY_ALIASES_[attribute] ||
+      attribute;
+  if (goog.array.contains(webdriver.atoms.element.BOOLEAN_PROPERTIES_, name)) {
     value = bot.dom.getAttribute(element, attribute) ||
-        bot.dom.getProperty(element, attribute);
+        bot.dom.getProperty(element, propName);
     return value ? 'true' : null;
   }
 
   var property;
   try {
-    property = bot.dom.getProperty(element, attribute);
+    property = bot.dom.getProperty(element, propName);
   } catch (e) {
     // Leaves property undefined or null
   }
@@ -170,7 +241,7 @@ webdriver.atoms.element.getText = function(element) {
   if (webdriver.atoms.element.isInHead_(element)) {
     var doc = goog.dom.getOwnerDocument(element);
     if (element.tagName.toUpperCase() == goog.dom.TagName.TITLE &&
-        goog.dom.getWindow(doc) == bot.window_.top) {
+        goog.dom.getWindow(doc) == bot.getWindow().top) {
       return goog.string.trim((/** @type {string} */doc.title));
     }
     return '';

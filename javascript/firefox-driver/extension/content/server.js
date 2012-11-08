@@ -34,8 +34,8 @@ try {
 // This will configure a FirefoxDriver and DomMessenger for each
 // _browser window_ (not chrome window). Multiple tabs in the same window will
 // share a FirefoxDriver and DomMessenger instance.
-window.addEventListener("load", function(e) {
-  handle = Components.classes["@googlecode.com/webdriver/fxdriver;1"].createInstance();
+window.addEventListener('load', function(e) {
+  handle = Components.classes['@googlecode.com/webdriver/fxdriver;1'].createInstance();
   var server = handle.wrappedJSObject;
 
   if (!domMessenger) {

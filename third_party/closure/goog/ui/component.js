@@ -1015,7 +1015,10 @@ goog.ui.Component.prototype.addChildAt = function(child, index, opt_render) {
     // render_() calls enterDocument() if the parent is already in the document.
     child.render_(this.getContentElement(), sibling ? sibling.element_ : null);
   } else if (this.inDocument_ && !child.inDocument_ && child.element_ &&
-      child.element_.parentNode) {
+      child.element_.parentNode &&
+      // Under some circumstances, IE8 implicitly creates a Document Fragment
+      // for detached nodes, so ensure the parent is an Element as it should be.
+      child.element_.parentNode.nodeType == goog.dom.NodeType.ELEMENT) {
     // We don't touch the DOM, but if the parent is in the document, and the
     // child element is in the document but not marked as such, then we call
     // enterDocument on the child.
@@ -1134,9 +1137,10 @@ goog.ui.Component.prototype.getChildAt = function(index) {
  * {@code opt_obj} is provided, it will be used as the 'this' object in the
  * function when called.  The function should take two arguments:  the child
  * component and its 0-based index.  The return value is ignored.
- * @param {Function} f The function to call for every child component; should
- *    take 2 arguments (the child and its index).
- * @param {Object=} opt_obj Used as the 'this' object in f when called.
+ * @param {function(this:T,?,number):?} f The function to call for every
+ * child component; should take 2 arguments (the child and its index).
+ * @param {T=} opt_obj Used as the 'this' object in f when called.
+ * @template T
  */
 goog.ui.Component.prototype.forEachChild = function(f, opt_obj) {
   if (this.children_) {
@@ -1233,7 +1237,7 @@ goog.ui.Component.prototype.removeChildAt = function(index, opt_unrender) {
  * @see goog.ui.Component#removeChild
  * @param {boolean=} opt_unrender If true, calls {@link #exitDocument} on the
  *    removed child components, and detaches their DOM from the document.
- * @return {!Array.<goog.ui.Component>|undefined} The removed components if any.
+ * @return {!Array.<goog.ui.Component>} The removed components if any.
  */
 goog.ui.Component.prototype.removeChildren = function(opt_unrender) {
   var removedChildren = [];

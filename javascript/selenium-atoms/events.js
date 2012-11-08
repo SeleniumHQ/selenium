@@ -31,6 +31,7 @@ goog.require('core.locators');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.style');
+goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
 
 
@@ -39,6 +40,9 @@ core.events.altKeyDown_ = false;
 core.events.metaKeyDown_ = false;
 core.events.shiftKeyDown_ = false;
 
+/**
+ * @type {function(*): !Object}
+ */
 var XPCNativeWrapper = XPCNativeWrapper || function(_) {};
 
 core.events.getEventFactory_ = function(eventName) {
@@ -140,7 +144,7 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
       metaKey: false,
       relatedTarget: null
   };
-  bot.events.fire(element, type, (/** @type{!bot.events.MouseArgs} */args));
+  bot.events.fire(element, type, (/** @type {!bot.events.MouseArgs} */args));
 };
 
 
@@ -201,8 +205,8 @@ core.events.replaceText_ = function(element, value) {
  */
 core.events.setValue = function(locator, value) {
   if (core.events.controlKeyDown_ || core.events.altKeyDown_ || core.events.metaKeyDown_) {
-    throw new core.Error("type not supported immediately after call to " +
-        "controlKeyDown() or altKeyDown() or metaKeyDown()");
+    throw new core.Error('type not supported immediately after call to ' +
+        'controlKeyDown() or altKeyDown() or metaKeyDown()');
   }
 
   // TODO(simon): fail if it can't be typed into.

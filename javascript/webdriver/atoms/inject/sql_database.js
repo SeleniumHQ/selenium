@@ -21,8 +21,8 @@ goog.provide('webdriver.atoms.inject.storage.database');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
-goog.require('bot.inject');
 goog.require('bot.storage.database');
+goog.require('webdriver.atoms.inject');
 
 
 /**
@@ -31,23 +31,23 @@ goog.require('bot.storage.database');
  * @param {string} databaseName The name of the database.
  * @param {string} query The SQL statement.
  * @param {Array.<*>} args Arguments to pass to the query.
- * @param {!function(string)} onDone The callback to invoke when done. The
+ * @param {function(string)} onDone The callback to invoke when done. The
  *     result, according to the wire protocol, will be passed to this callback.
  */
 webdriver.atoms.inject.storage.database.executeSql =
     function(databaseName, query, args, onDone) {
   var onSuccessCallback = function(tx, result) {
-    onDone(bot.inject.executeScript(function(res) {
+    onDone(webdriver.atoms.inject.executeScript(function(res) {
       return result;
-    }, [result], true));
+    }, [result]));
   };
 
   var onErrorCallback = function(error) {
-    onDone(bot.inject.executeScript(function() {
+    onDone(webdriver.atoms.inject.executeScript(function() {
       throw new bot.Error(bot.ErrorCode.SQL_DATABASE_ERROR,
           'SQL Error Code: ' + error.code + '. SQL Error Message: ' +
           error.message);
-    }, [], true));
+    }, []));
   };
 
   bot.storage.database.executeSql(

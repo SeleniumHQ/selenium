@@ -292,7 +292,7 @@ goog.editor.plugins.LinkDialogPlugin.prototype.createDialog = function(
   dialog.setStopReferrerLeaks(this.stopReferrerLeaks_);
   this.eventHandler_.
       listen(dialog, goog.ui.editor.AbstractDialog.EventType.OK,
-          this.handleOk_).
+          this.handleOk).
       listen(dialog, goog.ui.editor.AbstractDialog.EventType.CANCEL,
           this.handleCancel_).
       listen(dialog, goog.ui.editor.LinkDialog.EventType.BEFORE_TEST_LINK,
@@ -311,9 +311,9 @@ goog.editor.plugins.LinkDialogPlugin.prototype.disposeInternal = function() {
 /**
  * Handles the OK event from the dialog by updating the link in the field.
  * @param {goog.ui.editor.LinkDialog.OkEvent} e OK event object.
- * @private
+ * @protected
  */
-goog.editor.plugins.LinkDialogPlugin.prototype.handleOk_ = function(e) {
+goog.editor.plugins.LinkDialogPlugin.prototype.handleOk = function(e) {
   // We're not restoring the original selection, so clear it out.
   this.disposeOriginalSelection();
 

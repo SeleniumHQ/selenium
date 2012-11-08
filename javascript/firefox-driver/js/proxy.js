@@ -133,7 +133,7 @@ fxdriver.proxy.autodetectConfig_ = function(prefs, ignored) {
 fxdriver.proxy.systemConfig_ = function(prefs, ignored) {
   fxdriver.logging.info('Using system proxy to connect to the network');
 
-  prefs.setIntPref('network.proxy.type', 
+  prefs.setIntPref('network.proxy.type',
     fxdriver.proxy.TYPES_['SYSTEM'].value);
 };
 

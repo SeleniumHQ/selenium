@@ -474,16 +474,6 @@ goog.userAgent.isVersion = function(version) {
 
 
 /**
- * Cache for {@link goog.userAgent.isDocumentMode}.
- * Browsers document mode version number is unlikely to change during a session
- * we cache the results.
- * @type {Object}
- * @private
- */
-goog.userAgent.isDocumentModeCache_ = {};
-
-
-/**
  * Whether the IE effective document mode is higher or the same as the given
  * document mode version.
  * NOTE: Only for IE, return false for another browser.
@@ -493,7 +483,24 @@ goog.userAgent.isDocumentModeCache_ = {};
  *     same as the given version.
  */
 goog.userAgent.isDocumentMode = function(documentMode) {
-  return goog.userAgent.isDocumentModeCache_[documentMode] ||
-      (goog.userAgent.isDocumentModeCache_[documentMode] = goog.userAgent.IE &&
-      !!document.documentMode && document.documentMode >= documentMode);
+  return goog.userAgent.IE && goog.userAgent.DOCUMENT_MODE >= documentMode;
 };
+
+
+/**
+ * For IE version < 7, documentMode is undefined, so attempt to use the
+ * CSS1Compat property to see if we are in standards mode. If we are in
+ * standards mode, treat the browser version as the document mode. Otherwise,
+ * IE is emulating version 5.
+ * @type {number|undefined}
+ * @const
+ */
+goog.userAgent.DOCUMENT_MODE = (function() {
+  var doc = goog.global['document'];
+  if (!doc || !goog.userAgent.IE) {
+    return undefined;
+  }
+  var mode = goog.userAgent.getDocumentMode_();
+  return mode || (doc['compatMode'] == 'CSS1Compat' ?
+      parseInt(goog.userAgent.VERSION, 10) : 5);
+})();

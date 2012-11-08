@@ -62,10 +62,14 @@ goog.style.transition.set = function(element, properties) {
         if (goog.isString(p)) {
           return p;
         } else {
-          goog.asserts.assert(p && p.property && goog.isNumber(p.duration) &&
-              p.timing && goog.isNumber(p.delay));
-          return p.property + ' ' + p.duration + 's ' + p.timing + ' ' +
-              p.delay + 's';
+          goog.asserts.assertObject(p,
+              'Expected css3 property to be an object.');
+          var propString = p.property + ' ' + p.duration + 's ' + p.timing +
+              ' ' + p.delay + 's';
+          goog.asserts.assert(p.property && goog.isNumber(p.duration) &&
+              p.timing && goog.isNumber(p.delay),
+              'Unexpected css3 property value: %s', propString);
+          return propString;
         }
       });
   goog.style.transition.setPropertyValue_(element, values.join(','));

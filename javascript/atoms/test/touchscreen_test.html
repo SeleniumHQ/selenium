@@ -23,8 +23,15 @@
       goog.events.EventType.TOUCHMOVE,
       goog.events.EventType.MOUSEMOVE,
       goog.events.EventType.MOUSEDOWN,
+      goog.events.EventType.MOUSEOUT,
+      goog.events.EventType.MOUSEOVER,
       goog.events.EventType.MOUSEUP,
-      goog.events.EventType.CLICK
+      goog.events.EventType.CLICK,
+      goog.events.EventType.MSPOINTERDOWN,
+      goog.events.EventType.MSPOINTERMOVE,
+      goog.events.EventType.MSPOINTEROVER,
+      goog.events.EventType.MSPOINTEROUT,
+      goog.events.EventType.MSPOINTERUP
     ];
 
     function setUpPage() {
@@ -53,7 +60,29 @@
       events = [];
     }
 
-    function assertEvents(expectedEvents) {
+    function msPointerDownEvents(elem) {
+        return [goog.events.EventType.MOUSEMOVE, target].concat(
+                   [goog.events.EventType.MSPOINTEROVER, target],
+                   [goog.events.EventType.MOUSEOVER, target],
+                   [goog.events.EventType.MSPOINTERDOWN, target],
+                   [goog.events.EventType.MOUSEDOWN, target]);
+    }
+
+    function msPointerMoveEvents(elem) {
+        return [goog.events.EventType.MSPOINTERMOVE, target].concat(
+                   [goog.events.EventType.MOUSEMOVE, target]);
+    }
+
+    function msPointerUpEvents(elem) {
+        return [goog.events.EventType.MSPOINTERUP, target].concat(
+                   [goog.events.EventType.MOUSEUP, target],
+                   [goog.events.EventType.CLICK, target],
+                   [goog.events.EventType.MSPOINTEROUT, target],
+                   [goog.events.EventType.MOUSEOUT, target]);
+    }
+
+    function assertEvents(var_args) {
+      var expectedEvents = goog.array.concat.apply(null, arguments);
       assertArrayEquals(expectedEvents, events);
       events = [];
     }
@@ -65,7 +94,12 @@
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
       touchscreen.press();
       assertTrue(touchscreen.isPressed());
-      assertEvents([goog.events.EventType.TOUCHSTART, target, 1]);
+
+      if (bot.userAgent.IE_DOC_10) {
+        assertEvents(msPointerDownEvents(target));
+      } else {
+        assertEvents([goog.events.EventType.TOUCHSTART, target, 1]);
+      }
     }
 
     function testTouchScreen2FingerPress() {
@@ -77,7 +111,12 @@
                        new goog.math.Coordinate(10, 10));
       touchscreen.press(/* opt_press2 */ true);
       assertTrue(touchscreen.isPressed());
-      assertEvents([goog.events.EventType.TOUCHSTART, target, 2]);
+      if (bot.userAgent.IE_DOC_10) {
+        assertEvents(msPointerDownEvents(target),
+                     msPointerDownEvents(target));
+      } else {
+        assertEvents([goog.events.EventType.TOUCHSTART, target, 2]);
+      }
     }
 
     function testTouchScreen2FingerPinch() {
@@ -92,9 +131,18 @@
                        new goog.math.Coordinate(0, 10),
                        new goog.math.Coordinate(0, 40));
       touchscreen.release();
-      assertEvents([goog.events.EventType.TOUCHSTART, target, 2,
-                    goog.events.EventType.TOUCHMOVE, target, 2,
-                    goog.events.EventType.TOUCHEND, target, 2]);
+      if (bot.userAgent.IE_DOC_10) {
+        assertEvents(msPointerDownEvents(target),
+                     msPointerDownEvents(target),
+                     msPointerMoveEvents(target),
+                     msPointerMoveEvents(target),
+                     msPointerUpEvents(target),
+                     msPointerUpEvents(target));
+      } else {
+        assertEvents([goog.events.EventType.TOUCHSTART, target, 2,
+                      goog.events.EventType.TOUCHMOVE, target, 2,
+                      goog.events.EventType.TOUCHEND, target, 2]);
+      }
     }
 
     function testTouchScreen2FingerRotate() {
@@ -108,10 +156,21 @@
       touchscreen.move(target, new goog.math.Coordinate(10, 40));
       touchscreen.move(target, new goog.math.Coordinate(50, 50));
       touchscreen.release();
-      assertEvents([goog.events.EventType.TOUCHSTART, target, 2,
-                    goog.events.EventType.TOUCHMOVE, target, 2,
-                    goog.events.EventType.TOUCHMOVE, target, 2,
-                    goog.events.EventType.TOUCHEND, target, 2]);
+      if (bot.userAgent.IE_DOC_10) {
+        assertEvents(msPointerDownEvents(target),
+                     msPointerDownEvents(target),
+                     msPointerMoveEvents(target),
+                     msPointerMoveEvents(target),
+                     msPointerMoveEvents(target),
+                     msPointerMoveEvents(target),
+                     msPointerUpEvents(target),
+                     msPointerUpEvents(target));
+      } else {
+        assertEvents([goog.events.EventType.TOUCHSTART, target, 2,
+                      goog.events.EventType.TOUCHMOVE, target, 2,
+                      goog.events.EventType.TOUCHMOVE, target, 2,
+                      goog.events.EventType.TOUCHEND, target, 2]);
+      }
     }
 
     function testTouchScreenRelease() {
@@ -122,12 +181,16 @@
       touchscreen.press();
       touchscreen.release();
       assertFalse(touchscreen.isPressed());
-      assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
-                    goog.events.EventType.TOUCHEND, target, 1,
-                    goog.events.EventType.MOUSEMOVE, target,
-                    goog.events.EventType.MOUSEDOWN, target,
-                    goog.events.EventType.MOUSEUP, target,
-                    goog.events.EventType.CLICK, target]);
+      if (bot.userAgent.IE_DOC_10) {
+        assertEvents(msPointerDownEvents(target), msPointerUpEvents(target));
+      } else {
+        assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
+                      goog.events.EventType.TOUCHEND, target, 1,
+                      goog.events.EventType.MOUSEMOVE, target,
+                      goog.events.EventType.MOUSEDOWN, target,
+                      goog.events.EventType.MOUSEUP, target,
+                      goog.events.EventType.CLICK, target]);
+      }
     }
 
     function testTouchScreenReleaseAfterMove() {
@@ -139,9 +202,15 @@
       // After a move, the mouseclick should not happen.
       touchscreen.move(target, new goog.math.Coordinate(10, 10));
       touchscreen.release();
-      assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
-                    goog.events.EventType.TOUCHMOVE, target, 1,
-                    goog.events.EventType.TOUCHEND, target, 1]);
+      if (bot.userAgent.IE_DOC_10) {
+        assertEvents(msPointerDownEvents(target),
+                     msPointerMoveEvents(target),
+                     msPointerUpEvents(target));
+      } else {
+        assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
+                      goog.events.EventType.TOUCHMOVE, target, 1,
+                      goog.events.EventType.TOUCHEND, target, 1]);
+      }
     }
 
     function testTouchScreenReleaseAfterNewElement() {
@@ -154,9 +223,15 @@
       // events should fire on the element where the touch started.
       touchscreen.move(lowerTarget, new goog.math.Coordinate(0, 0));
       touchscreen.release();
-      assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
-                    goog.events.EventType.TOUCHMOVE, target, 1,
-                    goog.events.EventType.TOUCHEND, target, 1]);
+      if (bot.userAgent.IE_DOC_10) {
+        assertEvents(msPointerDownEvents(target),
+                     msPointerMoveEvents(target),
+                     msPointerUpEvents(lowerTarget));
+      } else {
+        assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
+                      goog.events.EventType.TOUCHMOVE, target, 1,
+                      goog.events.EventType.TOUCHEND, target, 1]);
+      }
     }
 
     function testTouchScreenMoveWithoutPress() {
@@ -175,8 +250,13 @@
       touchscreen.press();
       touchscreen.move(target, new goog.math.Coordinate(20, 20));
       assertTrue(touchscreen.isPressed());
-      assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
-                    goog.events.EventType.TOUCHMOVE, target, 1]);
+      if (bot.userAgent.IE_DOC_10) {
+        assertEvents(msPointerDownEvents(target),
+                     msPointerMoveEvents(target));
+      } else {
+        assertEvents([goog.events.EventType.TOUCHSTART, target, 1,
+                      goog.events.EventType.TOUCHMOVE, target, 1]);
+      }
     }
 
     function testExceptionReleasingWhenNotPressed() {
@@ -193,7 +273,7 @@
       }
       touchscreen.move(target, new goog.math.Coordinate(0, 0));
       touchscreen.press();
-      assertThrows('Pressing when alread pressed should throw an exception',
+      assertThrows('Pressing when already pressed should throw an exception',
                    goog.bind(touchscreen.press, touchscreen));
     }
   </script>

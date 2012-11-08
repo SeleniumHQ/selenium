@@ -20,16 +20,18 @@ goog.provide('SyntheticMouse');
 goog.require('Utils');
 goog.require('bot.ErrorCode');
 goog.require('bot.Mouse');
-goog.require('bot.events.EventType');
 goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('bot.events');
+goog.require('bot.events.EventType');
 goog.require('bot.window');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
-goog.require('fxdriver.logging');
-goog.require('goog.events.EventType');
+goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
+goog.require('goog.style');
 
 
 SyntheticMouse = function() {
@@ -48,7 +50,7 @@ SyntheticMouse = function() {
   // track of the viewport scroll offset in this variable, when we mouseDown,
   // until we mouseUp, so that we can account for any scrolling which may have
   // happened, when we fire events.
-  this.viewPortOffset = new goog.math.Coordinate(0,0);
+  this.viewPortOffset = new goog.math.Coordinate(0, 0);
 };
 
 
@@ -69,7 +71,7 @@ SyntheticMouse.newResponse = function(status, message) {
 SyntheticMouse.prototype.isElementShown = function(element) {
   if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
     return SyntheticMouse.newResponse(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
-        'Element is not currently visible and so may not be interacted with')
+        'Element is not currently visible and so may not be interacted with');
   }
 };
 
@@ -126,7 +128,7 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
 
   mouse.move(element, coords);
 
-  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
+  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
 };
 
 
@@ -144,18 +146,18 @@ SyntheticMouse.prototype.click = function(target) {
   // Check to see if this is an option element. If it is, and the parent isn't a multiple
   // select, then click on the select first.
   var tagName = element.tagName.toLowerCase();
-  if ("option" == tagName) {
+  if ('option' == tagName) {
     var parent = element;
-    while (parent.parentNode != null && parent.tagName.toLowerCase() != "select") {
+    while (parent.parentNode != null && parent.tagName.toLowerCase() != 'select') {
       parent = parent.parentNode;
     }
 
-    if (parent && parent.tagName.toLowerCase() == "select" && !parent.multiple) {
+    if (parent && parent.tagName.toLowerCase() == 'select' && !parent.multiple) {
       bot.action.click(parent);
     }
   }
 
-  fxdriver.logging.info("About to do a bot.action.click on " + element);
+  fxdriver.logging.info('About to do a bot.action.click on ' + element);
   var keyboardState = new bot.Device.ModifiersState();
   if (this.modifierKeys !== undefined) {
     keyboardState.setPressed(bot.Device.Modifier.SHIFT, this.modifierKeys.isShiftPressed());
@@ -167,7 +169,7 @@ SyntheticMouse.prototype.click = function(target) {
   var mouseWithKeyboardState = new bot.Mouse(null, keyboardState);
 
   bot.action.click(element, undefined /* coords */, mouseWithKeyboardState);
-  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
+  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
 };
 
 SyntheticMouse.prototype.contextClick = function(target) {
@@ -181,10 +183,10 @@ SyntheticMouse.prototype.contextClick = function(target) {
     return error;
   }
 
-  fxdriver.logging.info("About to do a bot.action.rightClick on " + element);
+  fxdriver.logging.info('About to do a bot.action.rightClick on ' + element);
   bot.action.rightClick(element);
 
-  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
+  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
 };
 
 SyntheticMouse.prototype.doubleClick = function(target) {
@@ -195,10 +197,10 @@ SyntheticMouse.prototype.doubleClick = function(target) {
     return error;
   }
 
-  fxdriver.logging.info("About to do a bot.action.doubleClick on " + element);
+  fxdriver.logging.info('About to do a bot.action.doubleClick on ' + element);
   bot.action.doubleClick(element);
 
-  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
+  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
 };
 
 
@@ -224,7 +226,7 @@ SyntheticMouse.prototype.down = function(coordinates) {
   this.addEventModifierKeys(botCoords);
   bot.events.fire(element, bot.events.EventType.MOUSEDOWN, botCoords);
 
-  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
+  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
 };
 
 
@@ -250,11 +252,11 @@ SyntheticMouse.prototype.up = function(coordinates) {
   this.viewPortOffset.x = 0;
   this.viewPortOffset.y = 0;
 
-  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, "ok");
+  return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
 };
 
 
-SyntheticMouse.prototype.addEventModifierKeys = function (botCoords) {
+SyntheticMouse.prototype.addEventModifierKeys = function(botCoords) {
   if (this.modifierKeys !== undefined) {
     botCoords.altKey = this.modifierKeys.isAltPressed();
     botCoords.ctrlKey = this.modifierKeys.isControlPressed();
@@ -265,7 +267,7 @@ SyntheticMouse.prototype.addEventModifierKeys = function (botCoords) {
 
 
 // And finally, registering
-SyntheticMouse.prototype.classDescription = "Pure JS implementation of a mouse";
+SyntheticMouse.prototype.classDescription = 'Pure JS implementation of a mouse';
 SyntheticMouse.prototype.contractID = '@googlecode.com/webdriver/syntheticmouse;1';
 SyntheticMouse.prototype.classID = Components.ID('{E8F9FEFE-C513-4097-98BE-BE00A41D3645}');
 

@@ -1,16 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
   <title>scrolling_test.html</title>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
-    goog.require('bot');
-    goog.require('bot.action');
     goog.require('bot.dom');
+    goog.require('bot.locators');
+    goog.require('bot.userAgent');
     goog.require('goog.events');
     goog.require('goog.testing.jsunit');
-    goog.require('goog.userAgent');
-    goog.require('goog.userAgent.product');
   </script>
 </head>
 <body>
@@ -130,6 +128,10 @@
     }
 
     function testNestedIframeWhereMiddleNeedsScrollingIsNotInView() {
+      // Android Froyo zooms out to auto-fit the page and make the element visible.
+      if (bot.userAgent.ANDROID_PRE_GINGERBREAD) {
+        return;
+      }
       var iframe = findElement({id: 'nested-iframe-parent'});
       var frameDocument = iframe.contentWindow.document;
       var innerIframe = findElement({id: 'middle'}, frameDocument);

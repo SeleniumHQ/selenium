@@ -1290,9 +1290,7 @@ goog.dom.compareNodeOrder = function(node1, node2) {
   }
 
   // Special case for document nodes on IE 7 and 8.
-  if ((node1.nodeType == goog.dom.NodeType.DOCUMENT ||
-      node2.nodeType == goog.dom.NodeType.DOCUMENT) &&
-      goog.userAgent.IE && !goog.userAgent.isVersion(9)) {
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentMode(9)) {
     if (node1.nodeType == goog.dom.NodeType.DOCUMENT) {
       return -1;
     }

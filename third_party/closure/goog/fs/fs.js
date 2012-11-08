@@ -25,6 +25,7 @@
 
 goog.provide('goog.fs');
 
+goog.require('goog.array');
 goog.require('goog.async.Deferred');
 goog.require('goog.events');
 goog.require('goog.fs.Error');
@@ -168,11 +169,16 @@ goog.fs.getUrlObject_ = function() {
  */
 goog.fs.getBlob = function(var_args) {
   var BlobBuilder = goog.global.BlobBuilder || goog.global.WebKitBlobBuilder;
-  var bb = new BlobBuilder();
-  for (var i = 0; i < arguments.length; i++) {
-    bb.append(arguments[i]);
+
+  if (goog.isDef(BlobBuilder)) {
+    var bb = new BlobBuilder();
+    for (var i = 0; i < arguments.length; i++) {
+      bb.append(arguments[i]);
+    }
+    return bb.getBlob();
+  } else {
+    return new Blob(goog.array.toArray(arguments));
   }
-  return bb.getBlob();
 };
 
 

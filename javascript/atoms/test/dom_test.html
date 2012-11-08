@@ -126,7 +126,7 @@
   }
 
   function testStandardizeStyleAttributeReturnsIdenticalStringWithLowercasedPropertyNames() {
-    toTest = [
+    var toTest = [
       {input: "Left: 0px; Text-align: center;",
         expected: "left: 0px; text-align: center;"},
       {input: "background-image: url('http://www.google.ca/Test.gif');",
@@ -136,7 +136,7 @@
         expected: "-ms-filter: 'progid:DXImageTransform(strength=50)," +
             " progid:DXImageTransform.(mirror=1)';"}
     ];
-    for (var i in toTest) {
+    for (var i = 0; i < toTest.length; i++) {
       assertObjectEquals(toTest[i].expected,
           bot.dom.standardizeStyleAttribute_(toTest[i].input));
     }
@@ -150,7 +150,7 @@
   }
 
   function testStandardizeStyleAttributeShouldWorkWithQuotesAndParens() {
-    toTest = [
+    var toTest = [
       {input: "key:value", expected: "key:value;"},
       {input: "key:value;", expected: "key:value;"},
       {input: "key1:value1; key2: value2",
@@ -173,7 +173,7 @@
         expected: "key1:\"double;quoted;string!\";" +
             " key2:'single;quoted;string;'; key3:it(is;in;parens);"}
     ];
-    for (var i in toTest) {
+    for (var i = 0; i < toTest.length; i++) {
       assertObjectEquals(toTest[i].expected,
           bot.dom.standardizeStyleAttribute_(toTest[i].input));
     }

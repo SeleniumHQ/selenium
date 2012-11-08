@@ -8,6 +8,7 @@
     goog.require('bot.action');
     goog.require('bot.locators');
     goog.require('bot.test');
+    goog.require('bot.userAgent');
     goog.require('goog.Uri');
     goog.require('goog.debug.DivConsole');
     goog.require('goog.debug.Logger');
@@ -223,8 +224,7 @@
     }
 
     // http://code.google.com/p/selenium/issues/detail?id=1207
-    function shouldRespondCorrectlyIfElementIsHiddenMidClickSequence(
-        actionEvents, action) {
+    function shouldRespondCorrectlyIfElementIsHiddenMidClickSequence(action) {
       if (!checkActionCompatibility(action)) {
         return;
       }
@@ -233,20 +233,20 @@
         return;
       }
 
+      var clickEvents = [
+        goog.events.EventType.MOUSEMOVE,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.FOCUS,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK
+      ];
+
       function runTest(hideOn, expectedEvents) {
         resetClicker();
         var events = [];
-        goog.events.listen(clicker,
-            [
-             goog.events.EventType.MOUSEOVER,
-             goog.events.EventType.MOUSEMOVE,
-             goog.events.EventType.MOUSEDOWN,
-             goog.events.EventType.FOCUS,
-             goog.events.EventType.MOUSEUP,
-             goog.events.EventType.CLICK],
-            function(e) {
-              events.push(e.type);
-            });
+        goog.events.listen(clicker, clickEvents, function(e) {
+          events.push(e.type);
+        });
         hideClickerOn(hideOn);
 
         assertTrue('Should start shown', bot.dom.isShown(clicker));
@@ -257,9 +257,9 @@
       }
 
       // Test hiding on each of the expected events in the click sequence.
-      for (var i = 0; i < actionEvents.length; i++) {
-        var hideOn = actionEvents[i];
-        var expectedEvents = goog.array.slice(actionEvents, 0, i + 1);
+      for (var i = 0; i < clickEvents.length; i++) {
+        var hideOn = clickEvents[i];
+        var expectedEvents = goog.array.slice(clickEvents, 0, i + 1);
 
         // Opera fires a focus event when the element is hidden on mousedown.
         if (goog.userAgent.OPERA && hideOn == goog.events.EventType.MOUSEDOWN) {
@@ -274,25 +274,13 @@
       }
     }
 
-    var expectedTapHiddenMidClickSequenceEvents = [
-        goog.events.EventType.MOUSEMOVE,
-        goog.events.EventType.MOUSEDOWN,
-        goog.events.EventType.FOCUS,
-        goog.events.EventType.MOUSEUP,
-        goog.events.EventType.CLICK];
-
-    var expectedClickHiddenMidClickSequenceEvents =
-        [goog.events.EventType.MOUSEOVER].
-          concat(expectedTapHiddenMidClickSequenceEvents);
-
     var testClickShouldRespondCorrectlyIfElementIsHiddenMidClickSequence =
         goog.partial(shouldRespondCorrectlyIfElementIsHiddenMidClickSequence,
-                     expectedClickHiddenMidClickSequenceEvents,
                      bot.action.click);
 
     var testTapShouldRespondCorrectlyIfElementIsHiddenMidClickSequence =
         goog.partial(shouldRespondCorrectlyIfElementIsHiddenMidClickSequence,
-                     expectedTapHiddenMidClickSequenceEvents, bot.action.tap);
+                     bot.action.tap);
 
 
     function cancelledMousedownDoesNotFocus(expectedEvents, action) {
@@ -306,7 +294,8 @@
            goog.events.EventType.MOUSEDOWN,
            goog.events.EventType.FOCUS,
            goog.events.EventType.MOUSEUP,
-           goog.events.EventType.CLICK],
+           goog.events.EventType.CLICK,
+           goog.events.EventType.MOUSEOUT],
           function(e) {
             events.push(e.type);
           });
@@ -323,6 +312,14 @@
         goog.events.EventType.MOUSEUP,
         goog.events.EventType.CLICK];
 
+    var expectedIETouchEvents = [
+        goog.events.EventType.MOUSEMOVE,
+        goog.events.EventType.MOUSEOVER,
+        goog.events.EventType.MOUSEDOWN,
+        goog.events.EventType.MOUSEUP,
+        goog.events.EventType.CLICK,
+        goog.events.EventType.MOUSEOUT];
+
     var expectedClickEvents = [
         FIRST_EVENT_OF_CLICK,
         SECOND_EVENT_OF_CLICK,
@@ -336,14 +333,16 @@
           bot.action.click);
 
     var testTapCancelledMousedownDoesNotFocus = goog.partial(
-          cancelledMousedownDoesNotFocus, expectedTapEvents, bot.action.tap);
+          cancelledMousedownDoesNotFocus,
+          bot.userAgent.IE_DOC_10 ? expectedIETouchEvents : expectedTapEvents,
+          bot.action.tap);
 
     function shouldBeAbleToClickOnElementsWithOpacityZero(action) {
       if (!checkActionCompatibility(action)) {
         return;
       }
       var clickJacker = findElement({id: 'clickJacker'});
-      if (goog.userAgent.IE) {
+      if (bot.userAgent.IE_DOC_PRE10) {
         clickJacker.style.filter = 'alpha(opacity=0)';
       } else {
         clickJacker.style.opacity = 0;
@@ -360,10 +359,9 @@
     var testTapShouldBeAbleToClickOnElementsWithOpacityZero = goog.partial(
           shouldBeAbleToClickOnElementsWithOpacityZero, bot.action.tap);
 
-
     function shouldNotBeAbleToClickOnElementWithPointerEventsNone(action) {
       if (!checkActionCompatibility(action) || goog.userAgent.IE || goog.userAgent.OPERA ||
-          (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6))) {
+          (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion('1.9.2'))) {
         return;
       }
       var el = findElement({id: 'pointerEvents'});
@@ -376,8 +374,6 @@
 
     var testTapShouldNotBeAbleToClickOnElementWithPointerEventsNone = goog.partial(
         shouldNotBeAbleToClickOnElementWithPointerEventsNone, bot.action.tap);
-
-
 
     function testClickShouldNotScrollWhenElementInView() {
       if (bot.userAgent.MOBILE) {
@@ -432,7 +428,7 @@
     <script type="text/javascript">
       var clickJacker = document.getElementById('clickJacker');
       function setOpacity(opacity) {
-        if (goog.userAgent.IE) {
+        if (bot.userAgent.IE_DOC_PRE10) {
           clickJacker.style.filter = 'alpha(opacity=' + (opacity * 100) + ')';
         } else {
           clickJacker.style.opacity = opacity;

@@ -26,12 +26,12 @@ goog.provide('goog.editor.Field');
 goog.provide('goog.editor.Field.EventType');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.async.Delay');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.Plugin');
@@ -334,6 +334,22 @@ goog.editor.Field.prototype.selectionChangeTarget_;
 
 
 /**
+ * Flag controlling wether to capture mouse up events on the window or not.
+ * @type {boolean}
+ * @private
+ */
+goog.editor.Field.prototype.useWindowMouseUp_ = false;
+
+
+/**
+ * FLag indicating the handling of a mouse event sequence.
+ * @type {boolean}
+ * @private
+ */
+goog.editor.Field.prototype.waitingForMouseUp_ = false;
+
+
+/**
  * Sets the active field id.
  * @param {?string} fieldId The active field id.
  */
@@ -347,6 +363,18 @@ goog.editor.Field.setActiveFieldId = function(fieldId) {
  */
 goog.editor.Field.getActiveFieldId = function() {
   return goog.editor.Field.activeFieldId_;
+};
+
+
+/**
+ * Sets flag to control whether to use window mouse up after seeing
+ * a mouse down operation on the field.
+ * @param {boolean} flag True to track window mouse up.
+ */
+goog.editor.Field.prototype.setUseWindowMouseUp = function(flag) {
+  goog.asserts.assert(!flag || !this.usesIframe(),
+      'procssing window mouse up should only be enabled when not using iframe');
+  this.useWindowMouseUp_ = flag;
 };
 
 
@@ -840,7 +868,13 @@ goog.editor.Field.prototype.setupChangeListeners_ = function() {
   }
 
   this.addListener(goog.events.EventType.MOUSEDOWN, this.handleMouseDown_);
-  this.addListener(goog.events.EventType.MOUSEUP, this.handleMouseUp_);
+  if (this.useWindowMouseUp_) {
+    this.eventRegister.listen(this.editableDomHelper.getDocument(),
+        goog.events.EventType.MOUSEUP, this.handleMouseUp_);
+    this.addListener(goog.events.EventType.DRAGSTART, this.handleDragStart_);
+  } else {
+    this.addListener(goog.events.EventType.MOUSEUP, this.handleMouseUp_);
+  }
 };
 
 
@@ -1927,11 +1961,7 @@ goog.editor.Field.cancelLinkClick_ = function(e) {
  * @private
  */
 goog.editor.Field.prototype.handleMouseDown_ = function(e) {
-  // If the user clicks on an object (like an image) in the field
-  // and the activeField is not set, set it.
-  if (!goog.editor.Field.getActiveFieldId()) {
-    goog.editor.Field.setActiveFieldId(this.id);
-  }
+  goog.editor.Field.setActiveFieldId(this.id);
 
   // Open links in a new window if the user control + clicks.
   if (goog.userAgent.IE) {
@@ -1941,6 +1971,18 @@ goog.editor.Field.prototype.handleMouseDown_ = function(e) {
       this.originalDomHelper.getWindow().open(targetElement.href);
     }
   }
+  this.waitingForMouseUp_ = true;
+};
+
+
+/**
+ * Handle drag start. Needs to cancel listening for the mouse up event on the
+ * window.
+ * @param {goog.events.BrowserEvent} e The event.
+ * @private
+ */
+goog.editor.Field.prototype.handleDragStart_ = function(e) {
+  this.waitingForMouseUp_ = false;
 };
 
 
@@ -1950,6 +1992,11 @@ goog.editor.Field.prototype.handleMouseDown_ = function(e) {
  * @private
  */
 goog.editor.Field.prototype.handleMouseUp_ = function(e) {
+  if (this.useWindowMouseUp_ && !this.waitingForMouseUp_) {
+    return;
+  }
+  this.waitingForMouseUp_ = false;
+
   /*
    * We fire a selection change event immediately for listeners that depend on
    * the native browser event object (e).  On IE, a listener that tries to

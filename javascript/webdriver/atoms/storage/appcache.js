@@ -31,4 +31,3 @@ goog.require('bot.appcache');
 webdriver.atoms.storage.appcache.getStatus = function() {
   return bot.appcache.getStatus();
 };
-

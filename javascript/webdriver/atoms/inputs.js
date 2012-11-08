@@ -23,13 +23,16 @@ goog.require('bot.Keyboard');
 goog.require('bot.Mouse');
 goog.require('bot.action');
 goog.require('goog.array');
+goog.require('goog.dom');
+goog.require('goog.math.Coordinate');
+goog.require('goog.style');
 goog.require('webdriver.atoms.element');
 
 
 /**
  * Send keyboard input to a particular element.
  *
- * @param {!Element} element The element to send the keyboard input to.
+ * @param {Element} element The element to send the keyboard input to.
  * @param {Array.<!bot.Keyboard.Key>=} opt_state The keyboard to use, or
  *     construct one.
  * @param {...(string|!Array.<string>)} var_args What to type.
@@ -42,6 +45,9 @@ webdriver.atoms.inputs.sendKeys = function(element, opt_state, var_args) {
   if (!element) {
     element = bot.dom.getActiveElement(document);
   }
+  if (!element) {
+    throw Error('No element to send keys to');
+  }
   webdriver.atoms.element.type(element, flattened, keyboard);
 
   return keyboard.getState();
@@ -53,15 +59,17 @@ goog.exportSymbol('webdriver.atoms.inputs.sendKeys',
 /**
  * Click on an element.
  *
- * @param {!Element} element The element to click.
- * @param {Object=} opt_state The serialized state of the mouse.
+ * @param {Element} element The element to click.
+ * @param {bot.Mouse.State=} opt_state The serialized state of the mouse.
  * @return {!bot.Mouse.State} The mouse state.
- * @return {Object} The mouse state.
  */
 webdriver.atoms.inputs.click = function(element, opt_state) {
   var mouse = new bot.Mouse(opt_state);
   if (!element) {
-    element = mouse.getElement();
+    element = mouse.getState().element;
+  }
+  if (!element) {
+    throw Error('No element to send keys to');
   }
   bot.action.click(element, null, mouse);
   return mouse.getState();
@@ -82,7 +90,7 @@ goog.exportSymbol('webdriver.atoms.inputs.click',
 webdriver.atoms.inputs.mouseMove = function(element, x_offset, y_offset,
     opt_state) {
   var mouse = new bot.Mouse(opt_state);
-  var target = element || mouse.getElement();
+  var target = element || mouse.getState().element;
 
   var offset_specified = (x_offset != null) && (y_offset != null);
   x_offset = x_offset || 0;
@@ -92,7 +100,7 @@ webdriver.atoms.inputs.mouseMove = function(element, x_offset, y_offset,
   // move the mouse to the center of the specified element.
   if (element) {
     if (!offset_specified) {
-      var source_element_size = bot.action.getInteractableSize_(element);
+      var source_element_size = bot.action.getInteractableSize(element);
       x_offset = Math.floor(source_element_size.width / 2);
       y_offset = Math.floor(source_element_size.height / 2);
     }
@@ -101,8 +109,8 @@ webdriver.atoms.inputs.mouseMove = function(element, x_offset, y_offset,
     // so we have to account for the existing offset of the current
     // mouse position to the element origin (upper-left corner).
     var pos = goog.style.getClientPosition(target);
-    x_offset += (mouse.clientXY_.x - pos.x);
-    y_offset += (mouse.clientXY_.y - pos.y);
+    x_offset += (mouse.getState().clientXY.x - pos.x);
+    y_offset += (mouse.getState().clientXY.y - pos.y);
   }
 
   var doc = goog.dom.getOwnerDocument(target);
@@ -122,8 +130,8 @@ goog.exportSymbol('webdriver.atoms.inputs.mouseMove',
 /**
  * Presses the primary mouse button at the current location.
  *
- * @param {Object=} opt_state The serialized state of the mouse.
- * @return {Object} The mouse state.
+ * @param {bot.Mouse.State=} opt_state The serialized state of the mouse.
+ * @return {!bot.Mouse.State} The mouse state.
  */
 webdriver.atoms.inputs.mouseButtonDown = function(opt_state) {
   var mouse = new bot.Mouse(opt_state);
@@ -137,8 +145,8 @@ goog.exportSymbol('webdriver.atoms.inputs.mouseButtonDown',
 /**
  * Releases the primary mouse button at the current location.
  *
- * @param {Object=} opt_state The serialized state of the mouse.
- * @return {Object} The mouse state.
+ * @param {bot.Mouse.State=} opt_state The serialized state of the mouse.
+ * @return {!bot.Mouse.State} The mouse state.
  */
 webdriver.atoms.inputs.mouseButtonUp = function(opt_state) {
   var mouse = new bot.Mouse(opt_state);
@@ -152,8 +160,8 @@ goog.exportSymbol('webdriver.atoms.inputs.mouseButtonUp',
 /**
  * Double-clicks primary mouse button at the current location.
  *
- * @param {Object=} opt_state The serialized state of the mouse.
- * @return {Object} The mouse state.
+ * @param {bot.Mouse.State=} opt_state The serialized state of the mouse.
+ * @return {!bot.Mouse.State} The mouse state.
  */
 webdriver.atoms.inputs.doubleClick = function(opt_state) {
   var mouse = new bot.Mouse(opt_state);
@@ -170,8 +178,8 @@ goog.exportSymbol('webdriver.atoms.inputs.doubleClick',
 /**
  * Right-clicks mouse button at the current location.
  *
- * @param {Object=} opt_state The serialized state of the mouse.
- * @return {Object} The mouse state.
+ * @param {bot.Mouse.State=} opt_state The serialized state of the mouse.
+ * @return {!bot.Mouse.State} The mouse state.
  */
 webdriver.atoms.inputs.rightClick = function(opt_state) {
   var mouse = new bot.Mouse(opt_state);

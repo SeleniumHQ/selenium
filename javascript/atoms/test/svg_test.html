@@ -1,10 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-      PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:svg="http://www.w3.org/2000/svg"
-      xmlns:xlink="http://www.w3.org/1999/xlink">
+<!DOCTYPE html>
+<html>
 <head>
   <title>svg_test.html</title>
   <script src="test_bootstrap.js"></script>
@@ -12,77 +7,51 @@
     goog.require('bot.action');
     goog.require('bot.dom');
     goog.require('bot.locators');
+    goog.require('bot.test');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
   </script>
   <script type="text/javascript">
-    // Skip this test on IE and Android until SVG is natively supported.
-    var SUPPORTS_SVG = !goog.userAgent.IE && !goog.userAgent.product.ANDROID;
-
     function testSvgElementsShouldBeVisible() {
-      if (!SUPPORTS_SVG) {
+      if (!bot.test.SUPPORTS_INLINE_SVG) {
         return;
       }
-      var doc = window.frames['chart'].document.documentElement;
-      var element = bot.locators.findElement({id: 'title'}, doc);
+      var element = bot.locators.findElement({id: 'rect'});
       assertTrue(bot.dom.isShown(element));
     }
 
     function testFocusingOnSvgElementDoesNotThrow() {
-      if (!SUPPORTS_SVG) {
+      if (!bot.test.SUPPORTS_INLINE_SVG) {
         return;
       }
-      var doc = window.frames['chart'].document.documentElement;
-      var element = bot.locators.findElement({id: 'title'}, doc);
-      var otherElement = bot.locators.findElement({id: 'someText'});
-
+      var element = bot.locators.findElement({id: 'rect'});
+      var otherElement = bot.locators.findElement({id: 'text'});
       bot.action.focusOnElement(otherElement);
       bot.action.focusOnElement(element);
     }
 
-    function testCanFindElementsWithinFramedSvg() {
-      if (!SUPPORTS_SVG) {
-        return;
-      }
-      var doc = window.frames['chart'].document.documentElement;
-      var element = bot.locators.findElement({tagName: 'text'}, doc);
-      assertEquals('title', element.id);
-    }
-
-    function testLocatingSvgElementsByTagNameIsCaseSensitive() {
-      if (!SUPPORTS_SVG) {
-        return;
-      }
-      // Just documenting this for posterity...
-      var doc = window.frames['chart'].document.documentElement;
-      assertNull(bot.locators.findElement({tagName: 'TEXT'}, doc));
-      assertNotNull(bot.locators.findElement({tagName: 'text'}, doc));
-    }
-
     function testGettingTextOfSvgElementDoesNotThrow() {
-      if (!SUPPORTS_SVG) {
+      if (!bot.test.SUPPORTS_INLINE_SVG) {
         return;
       }
+      var element = bot.locators.findElement({id: 'text'});
+      bot.dom.getVisibleText(element);
+    }
 
-      var doc = window.frames['chart'].document.documentElement;
-      bot.dom.getVisibleText(doc);
+    function testSvgLineWithZeroSizeBBoxIsShown() {
+      if (!bot.test.SUPPORTS_INLINE_SVG) {
+        return;
+      }
+      var element = bot.locators.findElement({id: 'path'});
+      assertTrue(bot.dom.isShown(element));
     }
   </script>
 </head>
 <body>
-  <div id="someText">
-    Some text for the chart.
-  </div>
-  <div id="result">Nothing.</div>
-  <div id="chart_container" style="width: 400px; height: 220px; border: 1px solid #808080;">
-    <script type="text/javascript">
-      if (SUPPORTS_SVG) {
-        document.write('<iframe name="chart" src="testdata/chart.svg" ' +
-                       'width="400" height="220" ' +
-                       'type="image/svg+xml"></iframe>');
-      }
-    </script>
-  </div>
-  <div style="display: none; position: absolute; top: 230px; left: 410px; white-space: nowrap; font-family: Arial; font-size: 12px;">WOrange</div>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1000 50">
+  <rect id="rect" fill="red" stroke="none" height="12" width="12" y="20" x="100"></rect>
+  <text id="text" fill="black" font-size="12" font-family="Arial" y="30" x="115">Apple</text> 
+  <path id="path" d="M 200 26 L 600 26" stroke="red" stroke-width="1em"/>
+</svg>
 </body>
 </html>

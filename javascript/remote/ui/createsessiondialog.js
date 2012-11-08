@@ -20,11 +20,11 @@ goog.require('goog.ui.Component.EventType');
 goog.require('remote.ui.ActionDialog');
 
 
-
 /**
  * Dialog used to configure a new session request.
- * @param {!Array.<string>} browsers List of possible browsers to create
- *     sessions for.
+ * @param {!Array.<!(Object|string)>} browsers List of possible browsers to
+ *     create sessions for: each browser should be defined either by its name,
+ *     or a fully defined capabilities object.
  * @constructor
  * @extends {remote.ui.ActionDialog}
  */
@@ -32,10 +32,12 @@ remote.ui.CreateSessionDialog = function(browsers) {
   goog.base(this, 'Create a New Session');
 
   /**
-   * @type {!Array.<string>}
+   * @type {!Array.<!Object>}
    * @private
    */
-  this.browsers_ = browsers;
+  this.browsers_ = goog.array.map(browsers, function(browser) {
+    return goog.isString(browser) ? {'browserName': browser} : browser;
+  });
 
   goog.events.listen(this, goog.ui.Component.EventType.SHOW,
       this.onShow_, false, this);
@@ -71,11 +73,13 @@ remote.ui.CreateSessionDialog.prototype.createContentDom = function() {
   return dom.createDom(goog.dom.TagName.LABEL, null,
       'Browser:\xa0', this.browserSelect_);
 
-  function createOption(value) {
-    return dom.createDom(goog.dom.TagName.OPTION, {'value': value},
-        value.toLowerCase().replace(/\b[a-z]/g, function(c) {
-          return c.toUpperCase();
-        }));
+  function createOption(capabilities) {
+    var displayText = capabilities['browserName'];
+    var version = capabilities['version'];
+    if (version) {
+      displayText += ' ' + version;
+    }
+    return dom.createDom(goog.dom.TagName.OPTION, null, displayText);
   }
 };
 
@@ -90,13 +94,7 @@ remote.ui.CreateSessionDialog.prototype.getBrowserSelectElement = function() {
 
 /** @override */
 remote.ui.CreateSessionDialog.prototype.getUserSelection = function() {
-  var selected = this.browserSelect_.selectedIndex;
-  return {
-    'browserName': this.browserSelect_.options[selected].value,
-    'version': '',
-    'platform': 'ANY',
-    'javascriptEnabled': true
-  };
+  return this.browsers_[this.browserSelect_.selectedIndex - 1];
 };
 
 

@@ -282,11 +282,28 @@ goog.ui.ac.Renderer.prototype.setTopAlign = function(align) {
 
 
 /**
+ * @return {boolean} Whether we should be aligning to the top of
+ *     the target element.
+ */
+goog.ui.ac.Renderer.prototype.getTopAlign = function() {
+  return this.topAlign_;
+};
+
+
+/**
  * Set whether to align autocomplete to the right of the target element.
  * @param {boolean} align If true, align to right.
  */
 goog.ui.ac.Renderer.prototype.setRightAlign = function(align) {
   this.rightAlign_ = align;
+};
+
+
+/**
+ * @return {boolean} Whether the autocomplete menu should be right aligned.
+ */
+goog.ui.ac.Renderer.prototype.getRightAlign = function() {
+  return this.rightAlign_;
 };
 
 
@@ -566,18 +583,28 @@ goog.ui.ac.Renderer.prototype.redraw = function() {
 
 
 /**
+ * @return {goog.positioning.Corner} The anchor corner to position the popup at.
+ * @protected
+ */
+goog.ui.ac.Renderer.prototype.getAnchorCorner = function() {
+  var anchorCorner = this.rightAlign_ ?
+      goog.positioning.Corner.BOTTOM_RIGHT :
+      goog.positioning.Corner.BOTTOM_LEFT;
+  if (this.topAlign_) {
+    anchorCorner = goog.positioning.flipCornerVertical(anchorCorner);
+  }
+  return anchorCorner;
+};
+
+
+/**
  * Repositions the auto complete popup relative to the location node, if it
  * exists and the auto position has been set.
  */
 goog.ui.ac.Renderer.prototype.reposition = function() {
   if (this.target_ && this.reposition_) {
     var anchorElement = this.anchorElement_ || this.target_;
-    var anchorCorner = this.rightAlign_ ?
-        goog.positioning.Corner.BOTTOM_RIGHT :
-        goog.positioning.Corner.BOTTOM_LEFT;
-    if (this.topAlign_) {
-      anchorCorner = goog.positioning.flipCornerVertical(anchorCorner);
-    }
+    var anchorCorner = this.getAnchorCorner();
 
     goog.positioning.positionAtAnchor(
         anchorElement, anchorCorner,

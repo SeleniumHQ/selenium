@@ -31,25 +31,25 @@ goog.require('fxdriver.moz');
 WebDriverServer = function() {
   this.wrappedJSObject = this;
   this.serverSocket =
-  Components.classes["@mozilla.org/network/server-socket;1"].
+  Components.classes['@mozilla.org/network/server-socket;1'].
       createInstance(Components.interfaces.nsIServerSocket);
-  this.generator = fxdriver.moz.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
+  this.generator = fxdriver.moz.getService('@mozilla.org/uuid-generator;1', 'nsIUUIDGenerator');
   this.enableNativeEvents = null;
 
   // Force our cert override service to be loaded - otherwise, it will not be
   // loaded and cause a "too deep recursion" error.
-  var overrideService = Components.classes["@mozilla.org/security/certoverride;1"]
+  var overrideService = Components.classes['@mozilla.org/security/certoverride;1']
       .getService(Components.interfaces.nsICertOverrideService);
 
   var dispatcher_ = new Dispatcher();
 
   try {
-    this.server_ = Utils.newInstance("@mozilla.org/server/jshttp;1", "nsIHttpServer");
+    this.server_ = Utils.newInstance('@mozilla.org/server/jshttp;1', 'nsIHttpServer');
   } catch (e) {
     fxdriver.logging.warning(e);
   }
 
-  this.server_.registerGlobHandler(".*/hub/.*", { handle: function(request, response) {
+  this.server_.registerGlobHandler('.*/hub/.*', { handle: function(request, response) {
     response.processAsync();
     dispatcher_.dispatch(new Request(request), new Response(response));
   }});
@@ -74,10 +74,10 @@ WebDriverServer.prototype.getNextId = function() {
 WebDriverServer.prototype.startListening = function(port) {
   if (!port) {
     var prefs =
-        fxdriver.moz.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
+        fxdriver.moz.getService('@mozilla.org/preferences-service;1', 'nsIPrefBranch');
 
-    port = prefs.prefHasUserValue("webdriver_firefox_port") ?
-           prefs.getIntPref("webdriver_firefox_port") : 7055;
+    port = prefs.prefHasUserValue('webdriver_firefox_port') ?
+           prefs.getIntPref('webdriver_firefox_port') : 7055;
   }
 
   if (!this.isListening) {

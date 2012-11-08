@@ -142,7 +142,8 @@ goog.ui.ActivityMonitor.MIN_EVENT_SPACING = 3 * 1000;
 goog.ui.ActivityMonitor.userEventTypesBody_ =
   [goog.events.EventType.CLICK, goog.events.EventType.DBLCLICK,
    goog.events.EventType.MOUSEDOWN, goog.events.EventType.MOUSEUP,
-   goog.events.EventType.MOUSEMOVE];
+   goog.events.EventType.MOUSEMOVE, goog.events.EventType.TOUCHSTART,
+   goog.events.EventType.TOUCHMOVE, goog.events.EventType.TOUCHEND];
 
 
 /**

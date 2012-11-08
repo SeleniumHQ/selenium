@@ -121,6 +121,50 @@ limitations under the License.
     });
   }
 
+  function testCanFireMSGestureEvent() {
+    if (!bot.events.SUPPORTS_MSPOINTER_EVENTS) {
+      return;
+    }
+    fireAndTest(bot.events.EventType.MSGESTURESTART, {
+      clientX: 0,
+      clientY: 0,
+      translationX: 0,
+      translationY: 0,
+      scale: 0,
+      expansion: 0,
+      rotation: 0,
+      velocityX: 0,
+      velocityY: 0,
+      velocityExpansion: 0,
+      velocityAngular: 0,
+      relatedTarget: null
+    });
+  }
+
+  function testCanFireMSPointerEvent() {
+    if (!bot.events.SUPPORTS_MSPOINTER_EVENTS) {
+      return;
+    }
+    fireAndTest(bot.events.EventType.MSPOINTERMOVE, {
+      clientX: 0,
+      clientY: 0,
+      button: 0,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      relatedTarget: null,
+      width: 1,
+      height: 1,
+      pressure: 10,
+      rotation: 0,
+      pointerIdArg: 1,
+      tiltX: 0,
+      tiltY: 0,
+      pointerType: MSPointerEvent.MSPOINTER_TYPE_MOUSE,
+      isPrimary: 2
+    });
+  }
+
   function testIsSynthentic() {
     fireAndTest(bot.events.EventType.CHANGE, {}, function(event) {
       assertTrue(bot.events.isSynthetic(event));

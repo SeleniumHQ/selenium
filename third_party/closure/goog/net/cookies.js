@@ -22,8 +22,6 @@
 goog.provide('goog.net.Cookies');
 goog.provide('goog.net.cookies');
 
-goog.require('goog.userAgent');
-
 
 
 /**
@@ -190,7 +188,8 @@ goog.net.Cookies.prototype.get = function(name, opt_default) {
   var nameEq = name + '=';
   var parts = this.getParts_();
   for (var i = 0, part; part = parts[i]; i++) {
-    if (part.indexOf(nameEq) == 0) {
+    // startsWith
+    if (part.lastIndexOf(nameEq, 0) == 0) {
       return part.substr(nameEq.length);
     }
     if (part == name) {

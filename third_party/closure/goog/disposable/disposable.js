@@ -203,8 +203,9 @@ goog.Disposable.prototype.registerDisposable = function(disposable) {
 /**
  * Invokes a callback function when this object is disposed. Callbacks are
  * invoked in the order in which they were added.
- * @param {!Function} callback The callback function.
- * @param {Object=} opt_scope An optional scope to call the callback in.
+ * @param {function(this:T):?} callback The callback function.
+ * @param {T=} opt_scope An optional scope to call the callback in.
+ * @template T
  */
 goog.Disposable.prototype.addOnDisposeCallback = function(callback, opt_scope) {
   if (!this.onDisposeCallbacks_) {

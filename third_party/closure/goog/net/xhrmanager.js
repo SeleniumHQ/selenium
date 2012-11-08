@@ -178,6 +178,8 @@ goog.net.XhrManager.prototype.getOutstandingRequestIds = function() {
  *     complete. The only param is the event object from the COMPLETE event.
  * @param {number=} opt_maxRetries The maximum number of times the request
  *     should be retried.
+ * @param {goog.net.XhrIo.ResponseType=} opt_responseType The response type of
+ *     this request; defaults to goog.net.XhrIo.ResponseType.DEFAULT.
  * @return {goog.net.XhrManager.Request} The queued request object.
  */
 goog.net.XhrManager.prototype.send = function(
@@ -188,7 +190,8 @@ goog.net.XhrManager.prototype.send = function(
     opt_headers,
     opt_priority,
     opt_callback,
-    opt_maxRetries) {
+    opt_maxRetries,
+    opt_responseType) {
   var requests = this.requests_;
   // Check if there is already a request with the given id.
   if (requests.get(id)) {
@@ -203,7 +206,8 @@ goog.net.XhrManager.prototype.send = function(
       opt_content,
       opt_headers,
       opt_callback,
-      goog.isDef(opt_maxRetries) ? opt_maxRetries : this.maxRetries_);
+      goog.isDef(opt_maxRetries) ? opt_maxRetries : this.maxRetries_,
+      opt_responseType);
   this.requests_.set(id, request);
 
   // Setup the callback for the pool.
@@ -263,6 +267,7 @@ goog.net.XhrManager.prototype.handleAvailableXhr_ = function(id, xhrIo) {
 
     // Set properties for the XhrIo.
     xhrIo.setTimeoutInterval(this.timeoutInterval_);
+    xhrIo.setResponseType(request.getResponseType());
 
     // Add a reference to the XhrIo object to the request.
     request.xhrIo = request.xhrLite = xhrIo;
@@ -546,12 +551,14 @@ goog.net.XhrManager.Event.prototype.disposeInternal = function() {
  *     complete. NOTE: Only 1 callback supported across all events.
  * @param {number=} opt_maxRetries The maximum number of times the request
  *     should be retried (Default: 1).
+ * @param {goog.net.XhrIo.ResponseType=} opt_responseType The response type of
+ *     this request; defaults to goog.net.XhrIo.ResponseType.DEFAULT.
  *
  * @constructor
  * @extends {goog.Disposable}
  */
 goog.net.XhrManager.Request = function(url, xhrEventCallback, opt_method,
-    opt_content, opt_headers, opt_callback, opt_maxRetries) {
+    opt_content, opt_headers, opt_callback, opt_maxRetries, opt_responseType) {
   goog.Disposable.call(this);
 
   /**
@@ -623,6 +630,13 @@ goog.net.XhrManager.Request = function(url, xhrEventCallback, opt_method,
    * @private
    */
   this.completeCallback_ = opt_callback;
+
+  /**
+   * A response type to set on this.xhrIo when it's populated.
+   * @type {!goog.net.XhrIo.ResponseType}
+   * @private
+   */
+  this.responseType_ = opt_responseType || goog.net.XhrIo.ResponseType.DEFAULT;
 
   /**
    * The XhrIo instance handling this request. Set in handleAvailableXhr.
@@ -758,6 +772,17 @@ goog.net.XhrManager.Request.prototype.getXhrEventCallback = function() {
  */
 goog.net.XhrManager.Request.prototype.getCompleteCallback = function() {
   return this.completeCallback_;
+};
+
+
+/**
+ * Gets the response type that will be set on this request's XhrIo when it's
+ * available.
+ * @return {!goog.net.XhrIo.ResponseType} The response type to be set
+ *     when an XhrIo becomes available to this request.
+ */
+goog.net.XhrManager.Request.prototype.getResponseType = function() {
+  return this.responseType_;
 };
 
 

@@ -10,6 +10,8 @@ See the COPYING file for details.
 <title>goog.events.InputHandler</title>
 <script src="../base.js"></script>
 <script>
+goog.require('goog.debug.DivConsole');
+goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.InputHandler');
@@ -19,19 +21,38 @@ goog.require('goog.events.InputHandler');
 <body>
 <h1>goog.events.InputHandler</h1>
 <p><button onclick="addSome('text')">Add Some</button>
-<input type=text id=text><span></span>
-
+<input type="text" id="text"><span></span>
 
 <p><button onclick="addSome('password')">Add Some</button>
-<input type=password id=password><span></span>
+<input type="password" id="password"><span></span>
 
 
 <p><button onclick="addSome('textarea')">Add Some</button>
-<textarea id=textarea></textarea><span></span>
+<textarea id="textarea"></textarea><span></span>
+
+<br><br>
+<fieldset class="goog-debug-panel">
+  <legend>Event Log</legend>
+  <div id="log" style="height: 400px;"></div>
+</fieldset>
 
 <script>
-
 var $ = goog.dom.getElement;
+var logger = goog.debug.Logger.getLogger('demo');
+var logconsole = new goog.debug.DivConsole(goog.dom.getElement('log'));
+
+goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.FINER);
+logconsole.setCapturing(true);
+
+var DOM_EVENTS = ['keydown', 'keyup', 'keypress', 'change', 'cut', 'paste',
+    'drop', 'input'];
+var INPUTHANDLER_EVENTS =
+    goog.object.getValues(goog.events.InputHandler.EventType);
+
+
+function logEvent(src, e) {
+  logger.info('[Event from ' + src + ']:  ' + e.type);
+}
 
 function addSome(id) {
   var el = $(id);
@@ -47,26 +68,21 @@ function updateText(e) {
   outputEl.appendChild(document.createTextNode(inputEl.value));
 }
 
-var textIh = new goog.events.InputHandler($('text'));
-var passwordIh = new goog.events.InputHandler($('password'));
-var textareaIh = new goog.events.InputHandler($('textarea'));
 
-goog.events.listen(textIh, goog.events.InputHandler.EventType.INPUT,
-                   updateText);
-goog.events.listen(passwordIh, goog.events.InputHandler.EventType.INPUT,
-                   updateText);
-goog.events.listen(textareaIh, goog.events.InputHandler.EventType.INPUT,
-                   updateText);
+goog.object.forEach(['text', 'password', 'textarea'], function(id) {
+  var el = $(id);
+  var ih = new goog.events.InputHandler(el);
 
-goog.events.listen(window, 'unload', function() {
-  goog.events.unlisten(textIh, goog.events.InputHandler.EventType.INPUT,
-                       updateText);
-  goog.events.unlisten(passwordIh, goog.events.InputHandler.EventType.INPUT,
-                       updateText);
-  goog.events.unlisten(textareaIh, goog.events.InputHandler.EventType.INPUT,
-                       updateText);
+  goog.events.listen(ih, goog.events.InputHandler.EventType.INPUT, updateText);
+  goog.events.listen(ih, INPUTHANDLER_EVENTS,
+      goog.partial(logEvent, 'InputHandler'));
+  goog.events.listen(el, DOM_EVENTS,
+      goog.partial(logEvent, 'DOM'));
 });
 
+goog.events.listen(window, 'unload', function() {
+  goog.events.removeAll();
+});
 </script>
 </body>
 </html>

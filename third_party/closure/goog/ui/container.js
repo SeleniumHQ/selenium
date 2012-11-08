@@ -41,7 +41,7 @@ goog.require('goog.ui.Component.Error');
 goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.Component.State');
 goog.require('goog.ui.ContainerRenderer');
-
+goog.require('goog.ui.Control');
 
 
 /**
@@ -833,6 +833,8 @@ goog.ui.Container.prototype.registerChildId_ = function(child) {
  * @override
  */
 goog.ui.Container.prototype.addChild = function(child, opt_render) {
+  goog.asserts.assertInstanceof(child, goog.ui.Control,
+      'The child of a container must be a control');
   goog.ui.Container.superClass_.addChild.call(this, child, opt_render);
 };
 

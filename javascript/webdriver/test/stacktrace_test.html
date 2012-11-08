@@ -18,6 +18,8 @@ limitations under the License.
 <title>stacktrace_test</title>
 <script src="test_bootstrap.js"></script>
 <script>
+  goog.require('bot.Error');
+  goog.require('bot.ErrorCode');
   goog.require('goog.string');
   goog.require('goog.testing.ExpectedFailures');
   goog.require('goog.testing.JsUnitException');
@@ -394,6 +396,20 @@ function testInsertsAnAnonymousFrameWhenUnableToParse() {
     '    at <anonymous>',
     '    at file:///bar/bar.js:1'
   ].join('\n'), ret.stack);
+}
+
+function testFormattingBotErrors() {
+  var error = new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT, 'boom');
+  var expectedStack = [
+    'NoSuchElementError: boom',
+    '    at Color.red (http://x:1234)',
+    '    at Foo.bar (http://y:5678)'
+  ].join('\n');
+  error.stack = expectedStack;
+
+  var ret = webdriver.stacktrace.format(error);
+  assertEquals(ret, error);
+  assertEquals(expectedStack, error.stack);
 }
 </script>
 

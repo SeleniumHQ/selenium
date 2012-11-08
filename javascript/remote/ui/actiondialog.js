@@ -16,7 +16,7 @@ goog.provide('remote.ui.ActionDialog');
 
 goog.require('goog.dom');
 goog.require('goog.events');
-goog.require('goog.ui.Component.EventType');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.Dialog');
 
 

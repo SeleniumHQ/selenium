@@ -233,7 +233,7 @@ wdSession.prototype.setWindow = function(win) {
     if (win == win.top) {
       self.window_ = null;
     }
-  }
+  };
 
   // Listen in capture mode to force us to be called (can't stop event
   // propagation in capture mode)
@@ -354,7 +354,7 @@ wdSession.prototype.setMousePressed = function(isPressed) {
 wdSession.prototype.setMouseViewportOffset = function(x, y) {
   this.mousePosition_.viewPortXOffset = x;
   this.mousePosition_.viewPortYOffset = y;
-}
+};
 
 /**
  * Close the browser after a given time delay.
@@ -462,8 +462,8 @@ NSGetModule = function() {
   return new wdSessionModule();
 };
 
-wdSession.prototype.classID = wdSession.CLASS_ID
-fxdriver.moz.load("resource://gre/modules/XPCOMUtils.jsm");
+wdSession.prototype.classID = wdSession.CLASS_ID;
+fxdriver.moz.load('resource://gre/modules/XPCOMUtils.jsm');
 if (XPCOMUtils.generateNSGetFactory) {
   /** @const */ NSGetFactory = XPCOMUtils.generateNSGetFactory([wdSession]);
 }

@@ -14,9 +14,11 @@
 
 goog.provide('remote.ui.OpenScriptDialog');
 
+goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classes');
-goog.require('goog.ui.Component.EventType');
+goog.require('goog.events');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.LabelInput');
 goog.require('remote.ui.ActionDialog');
 

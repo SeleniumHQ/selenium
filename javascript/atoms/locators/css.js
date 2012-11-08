@@ -18,10 +18,7 @@
 goog.provide('bot.locators.css');
 
 goog.require('bot.userAgent');
-goog.require('goog.array');
-goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.userAgent');
 

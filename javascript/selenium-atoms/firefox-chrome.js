@@ -1,7 +1,7 @@
 goog.provide('core.firefox');
 
 /**
- * @returns {boolean} Whether the firefox instance needs elements to be
+ * @return {boolean} Whether the firefox instance needs elements to be
  * unwrapped.
  */
 core.firefox.isUsingUnwrapping_ = function() {
@@ -12,7 +12,7 @@ core.firefox.isUsingUnwrapping_ = function() {
                 getService(Components.interfaces.nsIVersionComparator);
 
         return (versionChecker.compare(appInfo.version, '4.0') >= 0);
-    } catch(e) {
+    } catch (e) {
         // like when its not Firefox
         return false;
     }
@@ -25,7 +25,7 @@ core.firefox.isUsingUnwrapping_ = core.firefox.isUsingUnwrapping_();
  * Unwraps a something which is wrapped into a XPCNativeWrapper or XrayWrapper.
  *
  * @param {!Object} thing The "something" to unwrap.
- * @returns {!Object} The object, unwrapped if possible.
+ * @return {!Object} The object, unwrapped if possible.
  */
 core.firefox.unwrap = function(thing) {
     if (!core.firefox.isUsingUnwrapping_) {
@@ -61,7 +61,7 @@ core.firefox.unwrap = function(thing) {
             toReturn.__fxdriver_unwrapped = true;
             return toReturn;
         }
-    } catch(e) {
+    } catch (e) {
         // Unwrapping will fail for JS literals - numbers, for example. Catch
         // the exception and proceed, it will eventually be returned as-is.
     }

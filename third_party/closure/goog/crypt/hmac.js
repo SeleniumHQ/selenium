@@ -153,11 +153,10 @@ goog.crypt.Hmac.prototype.digest = function() {
  * Calculates an HMAC for a given message.
  *
  * @param {Array.<number>} message  An array of integers in {0, 255}.
- * @return {Array} the digest of the given message.
+ * @return {!Array.<number>} the digest of the given message.
  */
 goog.crypt.Hmac.prototype.getHmac = function(message) {
   this.reset();
   this.update(message);
   return this.digest();
 };
-

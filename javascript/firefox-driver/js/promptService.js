@@ -26,7 +26,7 @@ function addInterfaces(to, delegate, interfaces) {
     try {
       var queried = delegate.QueryInterface(iid);
       for (var i in queried) {
-        if (!goog.array.contains(EXCLUDED_NAMES,  i.toString())) {
+        if (!goog.array.contains(EXCLUDED_NAMES, i.toString())) {
           to[i] = queried[i];
         }
       }
@@ -53,7 +53,7 @@ ObservingAlert.prototype.alert = function(dialogTitle, text) {
 
 ObservingAlert.prototype.alertCheck = function(dialogTitle, text, checkMsg, checkValue) {
   fxdriver.modals.signalOpenModal(this.parentWindow_, text);
-  this.delegate_.alertCheck(dialogTitle, text, checkMsg,  checkValue);
+  this.delegate_.alertCheck(dialogTitle, text, checkMsg, checkValue);
 };
 
 ObservingAlert.prototype.confirm = function(dialogTitle, text) {
@@ -63,7 +63,7 @@ ObservingAlert.prototype.confirm = function(dialogTitle, text) {
 
 ObservingAlert.prototype.confirmCheck = function(dialogTitle, text, checkMsg, checkValue) {
   fxdriver.modals.signalOpenModal(this.parentWindow_, text);
-  return this.delegate_.confirmCheck(dialogTitle, text, checkMsg,  checkValue);
+  return this.delegate_.confirmCheck(dialogTitle, text, checkMsg, checkValue);
 };
 
 ObservingAlert.prototype.confirmEx = function(dialogTitle, text,
@@ -100,17 +100,17 @@ ObservingAlert.prototype.select = function(dialogTitle, text, count, selectList,
 
 // Spoof implementation
 function DrivenPromptService() {
-  fxdriver.logging.info("Spoofing prompt service");
+  fxdriver.logging.info('Spoofing prompt service');
 
   // @mozilla.org/prompter;1
   var prompters = [
-    "{1c978d25-b37f-43a8-a2d6-0c7a239ead87}" // nsPrompter.js: Firefox 4 late betas onwards
+    '{1c978d25-b37f-43a8-a2d6-0c7a239ead87}' // nsPrompter.js: Firefox 4 late betas onwards
   ];
 
   // @mozilla.org/embedcomp/prompt-service;
   var promptServices = [
-    "{7ad1b327-6dfa-46ec-9234-f2a620ea7e00}", // nsPrompter.js: Firefox 4 betas
-    "{A2112D6A-0E28-421f-B46A-25C0B308CBD0}"  // nsPromptService.h: Firefox 3.x
+    '{7ad1b327-6dfa-46ec-9234-f2a620ea7e00}', // nsPrompter.js: Firefox 4 betas
+    '{A2112D6A-0E28-421f-B46A-25C0B308CBD0}'  // nsPromptService.h: Firefox 3.x
   ];
 
   var findImplementation = function(interfaceName, cids) {
@@ -123,7 +123,7 @@ function DrivenPromptService() {
 
       try {
         var toReturn = service.QueryInterface(interfaceName);
-        fxdriver.logging.info("Found implementation at: " + cids[i]);
+        fxdriver.logging.info('Found implementation at: ' + cids[i]);
         return toReturn;
       } catch (ignored) {}
     }
@@ -136,11 +136,11 @@ function DrivenPromptService() {
   var originalPrompter_ = findImplementation(CI.nsIPromptFactory, prompters);
 
   if (!originalPromptService_) {
-    fxdriver.logging.info("Unable to locate original prompt service");
+    fxdriver.logging.info('Unable to locate original prompt service');
   }
 
   if (!originalPrompter_) {
-    fxdriver.logging.info("Unable to locate original prompter");
+    fxdriver.logging.info('Unable to locate original prompter');
   }
 
   this.delegate_ = originalPrompter_ ? originalPrompter_ : originalPromptService_;
@@ -151,7 +151,7 @@ function DrivenPromptService() {
   this.QueryInterface = fxdriver.moz.queryInterface(this,
     [CI.nsIPromptFactory, CI.nsIPromptService, CI.nsIPromptService2]);
 
-  fxdriver.logging.info("Finished initializing spoofed prompt service");
+  fxdriver.logging.info('Finished initializing spoofed prompt service');
 }
 
 // Constants from nsIPromtService.idl
@@ -269,15 +269,15 @@ DrivenPromptService.prototype.asyncPromptAuth = function(aParent, aChannel, aCal
   fxdriver.modals.signalOpenModal(aParent, '');
 
   var service = this.delegate_.QueryInterface(CI.nsIPromptService2);
-  return service.asyncPromptAuth(aParent, aChannel, aCallback, aContext, level, authInfo, checkboxLabel,checkValue)
+  return service.asyncPromptAuth(aParent, aChannel, aCallback, aContext, level, authInfo, checkboxLabel, checkValue);
 };
 
 
 // nsIPromptFactory
-DrivenPromptService.prototype.getPrompt = function (domWin, iid) {
+DrivenPromptService.prototype.getPrompt = function(domWin, iid) {
   var factory = this.delegate_.QueryInterface(CI.nsIPromptFactory);
   var rawPrompt = factory.getPrompt(domWin, iid);
-  
+
   return new ObservingAlert(domWin, rawPrompt);
 };
 
@@ -287,8 +287,8 @@ DrivenPromptService.prototype.observe = function(aSubject, aTopic, aData) {
 };
 
 
-/** @const */ var PROMPT_SERVICE_CONTRACT_ID = "@mozilla.org/embedcomp/prompt-service;1";
-/** @const */ var PROMPTER_CONTRACT_ID = "@mozilla.org/prompter;1";
+/** @const */ var PROMPT_SERVICE_CONTRACT_ID = '@mozilla.org/embedcomp/prompt-service;1';
+/** @const */ var PROMPTER_CONTRACT_ID = '@mozilla.org/prompter;1';
 
 // This is defined by us
 /** @const */ var DRIVEN_PROMPT_SERVICE_CLASS_ID = Components.ID('{e26dbdcd-d3ba-4ded-88c3-6cb07ee3e9e0}');
@@ -296,7 +296,7 @@ DrivenPromptService.prototype.observe = function(aSubject, aTopic, aData) {
 var service = undefined;
 
 var PromptServiceSpoofFactory = {
-  createInstance: function (aOuter, aIID) {
+  createInstance: function(aOuter, aIID) {
     if (aOuter != null)
       throw Components.results.NS_ERROR_NO_AGGREGATION;
     if (service == undefined) {
@@ -317,13 +317,13 @@ PromptServiceSpoofModule.prototype.registerSelf = function(aCompMgr, aFileSpec, 
   }
   aCompMgr = aCompMgr.QueryInterface(CI.nsIComponentRegistrar);
   aCompMgr.registerFactoryLocation(
-      DRIVEN_PROMPT_SERVICE_CLASS_ID, "Driven prompt service", PROMPT_SERVICE_CONTRACT_ID, aFileSpec, aLocation, aType);
+      DRIVEN_PROMPT_SERVICE_CLASS_ID, 'Driven prompt service', PROMPT_SERVICE_CONTRACT_ID, aFileSpec, aLocation, aType);
   aCompMgr.registerFactoryLocation(
-      DRIVEN_PROMPT_SERVICE_CLASS_ID, "Driven prompter service", PROMPTER_CONTRACT_ID, aFileSpec, aLocation, aType);
+      DRIVEN_PROMPT_SERVICE_CLASS_ID, 'Driven prompter service', PROMPTER_CONTRACT_ID, aFileSpec, aLocation, aType);
 };
 
 PromptServiceSpoofModule.prototype.unregisterSelf = function(aCompMgr, aLocation, aType) {
-  fxdriver.logging.info("Unregistering\n");
+  fxdriver.logging.info('Unregistering\n');
   aCompMgr.QueryInterface(CI.nsIComponentRegistrar);
   aCompMgr.unregisterFactoryLocation(DRIVEN_PROMPT_SERVICE_CLASS_ID, aLocation);
 };

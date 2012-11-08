@@ -95,7 +95,7 @@ goog.db.IndexedDb.prototype.getVersion = function() {
 
 
 /**
- * @return {Array} List of object stores in this database.
+ * @return {DOMStringList} List of object stores in this database.
  */
 goog.db.IndexedDb.prototype.getObjectStoreNames = function() {
   return this.db_.objectStoreNames;

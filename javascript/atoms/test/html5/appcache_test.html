@@ -19,13 +19,11 @@
     // WebDriver does not enable application cache for Android-Froyo (b/5478400).
     // WebDriver does not enable application cache for Firefox (b/5787180).
     // Selenium breaks application cache on Opera (b/578165).
-    // Chrome/Linux does not always cache (b/6658688).
     var APPCACHE_NOT_WORKING =
       !bot.html5.isSupported(bot.html5.API.APPCACHE) ||
       goog.userAgent.product.ANDROID ||
       goog.userAgent.product.FIREFOX ||
-      (goog.userAgent.OPERA && bot.test.isSeleniumBacked()) ||
-      (goog.userAgent.product.CHROME && goog.userAgent.LINUX);
+      (goog.userAgent.OPERA && bot.test.isSeleniumBacked());
 
 
     function testGetStatusWithHtmlManifest() {

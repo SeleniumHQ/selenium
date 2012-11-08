@@ -36,13 +36,12 @@ goog.provide('bot.locators.xpath');
 goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
-goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.userAgent');
-goog.require('wgxpath');
 goog.require('goog.userAgent.product');
+goog.require('wgxpath');
 
 
 /**
@@ -91,36 +90,14 @@ bot.locators.xpath.DEFAULT_RESOLVER_ = (function() {
  */
 bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   var doc = goog.dom.getOwnerDocument(node);
-  if (goog.userAgent.IE) {
+
+  // Let the wgxpath library be compiled away unless we are on IE or Android.
+  // TODO(gdennis): Restrict this to just IE when we drop support for Froyo.
+  if (goog.userAgent.IE || goog.userAgent.product.ANDROID) {
     wgxpath.install(goog.dom.getWindow(doc));
-  } else {
-    try {
-      if (!doc.implementation ||
-          !doc.implementation.hasFeature('XPath', '3.0')) {
-        return null;
-      }
-    } catch (ex) {
-      // If the document isn't ready yet, Firefox may throw NS_ERROR_UNEXPECTED on
-      // accessing doc.implementation
-      return null;
-    }
   }
+
   try {
-    // On Android 2.2 and earlier, the evaluate function is only defined on the
-    // top-level document.
-    var docForEval;
-    if (goog.userAgent.product.ANDROID &&
-        !bot.userAgent.isProductVersion(2.3)) {
-      try {
-        docForEval = goog.dom.getWindow(doc).top.document;
-      } catch (e) {
-        // Crossed domains trying to find the evaluate function.
-        // Return null to indicate the element could not be found.
-        return null;
-      }
-    } else {
-      docForEval = doc;
-    }
     var resolver = doc.createNSResolver ?
         doc.createNSResolver(doc.documentElement) :
         bot.locators.xpath.DEFAULT_RESOLVER_;
@@ -128,9 +105,9 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
       // IE6, and only IE6, has an issue where calling a custom function
       // directly attached to the document object does not correctly propagate
       // thrown errors. So in that case *only* we will use apply().
-      return docForEval.evaluate.apply(null, [path, node, resolver, resultType, null]);
+      return doc.evaluate.call(doc, path, node, resolver, resultType, null);
     } else {
-      return docForEval.evaluate(path, node, resolver, resultType, null);
+      return doc.evaluate(path, node, resolver, resultType, null);
     }
   } catch (ex) {
     // The Firefox XPath evaluator can throw an exception if the document is

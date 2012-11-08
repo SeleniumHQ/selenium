@@ -171,7 +171,7 @@ goog.proto2.FieldDescriptor.prototype.getTag = function() {
  * @return {goog.proto2.Descriptor} The descriptor.
  */
 goog.proto2.FieldDescriptor.prototype.getContainingType = function() {
-  return this.parent_.descriptor_;
+  return this.parent_.getDescriptor();
 };
 
 
@@ -250,7 +250,7 @@ goog.proto2.FieldDescriptor.prototype.deserializationConversionPermitted =
 goog.proto2.FieldDescriptor.prototype.getFieldMessageType = function() {
   goog.proto2.Util.assert(this.isCompositeType(), 'Expected message or group');
 
-  return this.nativeType_.descriptor_;
+  return this.nativeType_.getDescriptor();
 };
 
 

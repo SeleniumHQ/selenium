@@ -36,11 +36,13 @@
   // this page when the popup has loaded (b/3504107). On Opera 11.5, the popup
   // blocker is currently enabled (b/5746540). On Webview (Android),
   // window.open will cause a dialog prompt that will cause load failure.
+  // On IE 10, the popup block is enabled (b/7126679).
   // For these browsers, we test history in an iframe instead of a popup,
   // which limits the history properties we can reliably check.
   // TODO (gdennis): Use popups on all browsers once these bugs are fixed.
   if (bot.test.isSeleniumBacked() || goog.userAgent.product.ANDROID ||
-      (goog.userAgent.OPERA && bot.userAgent.isEngineVersion(11.5))) {
+      (goog.userAgent.OPERA && bot.userAgent.isEngineVersion(11.5)) ||
+      bot.userAgent.IE_DOC_10) {
     // A bug in prior versions of WebKit (persisting into Safari 5) causes the
     // initial page of an iframe to not enter the browser history, so we
     // initialize the iframe to a dummy page and the test cases here do not

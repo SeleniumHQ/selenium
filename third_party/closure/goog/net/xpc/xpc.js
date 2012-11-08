@@ -252,10 +252,11 @@ goog.net.xpc.SETUP_ACK_NTPV2 = 'SETUP_ACK_NTPV2';
 
 /**
  * Object holding active channels.
- * @type {Object}
- * @private
+ * Package private. Do not call from outside goog.net.xpc.
+ *
+ * @type {Object.<string, goog.net.xpc.CrossPageChannel>}
  */
-goog.net.xpc.channels_ = {};
+goog.net.xpc.channels = {};
 
 
 /**

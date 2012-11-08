@@ -14,101 +14,104 @@
 // limitations under the License.
 
 /**
- *@fileoverview Ready to inject atoms for querying the DOM.
+ * @fileoverview Ready to inject atoms for querying the DOM.
  */
 
 goog.provide('webdriver.atoms.inject.dom');
 
 goog.require('bot.action');
 goog.require('bot.dom');
-goog.require('bot.inject');
 goog.require('webdriver.atoms.element');
+goog.require('webdriver.atoms.inject');
 
 
 /**
  * Gets the visisble text for the given element.
- * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
+ * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
  * @return {string} The visible text wrapped in a JSON string as defined by the
  *     WebDriver wire protocol.
  */
 webdriver.atoms.inject.dom.getText = function(element) {
-  return bot.inject.executeScript(webdriver.atoms.element.getText, [element], true);
+  return webdriver.atoms.inject.executeScript(bot.dom.getVisibleText,
+      [element]);
 };
 
 
 /**
- * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
+ * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
  * @return {string} A boolean describing whether the element is
  *     checked or selected wrapped in a JSON string as defined by
  *     the wire protocol.
  */
 webdriver.atoms.inject.dom.isSelected = function(element) {
-  return bot.inject.executeScript(bot.dom.isSelected, [element], true);
+  return webdriver.atoms.inject.executeScript(bot.dom.isSelected, [element]);
 };
 
 
 /**
- * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
+ * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
  * @return {string} The coordinates of the top left corner in a JSON
  *     string as defined by the wire protocol.
  */
 webdriver.atoms.inject.dom.getTopLeftCoordinates = function(element) {
-  return bot.inject.executeScript(bot.dom.getLocationInView, [element], true);
+  return webdriver.atoms.inject.executeScript(bot.dom.getLocationInView,
+      [element]);
 };
 
 
 /**
- * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
+ * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
  * @param {string} attribute The attribute to look up.
  * @return {string} The requested attribute value in a JSON string
  *     as defined by the wire protocol.
  */
 webdriver.atoms.inject.dom.getAttributeValue = function(element, attribute) {
-  return bot.inject.executeScript(
-      webdriver.atoms.element.getAttribute, [element, attribute], true);
+  return webdriver.atoms.inject.executeScript(
+      webdriver.atoms.element.getAttribute, [element, attribute]);
 };
 
 
 /**
- * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
+ * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
  * @return {string} The element size in a JSON string as
  *     defined by the wire protocol.
  */
 webdriver.atoms.inject.dom.getSize = function(element) {
-  return bot.inject.executeScript(bot.dom.getElementSize, [element], true);
+  return webdriver.atoms.inject.executeScript(bot.dom.getElementSize,
+      [element]);
 };
 
 
 /**
- * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
+ * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
  * @param {string} property The property to look up.
  * @return {string} The value of the requested CSS property in a JSON
  *     string as defined by the wire protocol.
  */
-webdriver.atoms.inject.dom.getValueOfCssProperty = function(element, property) {
-  return bot.inject.executeScript(bot.dom.getEffectiveStyle,
-      [element, property], true);
+webdriver.atoms.inject.dom.getValueOfCssProperty =
+    function(element, property) {
+  return webdriver.atoms.inject.executeScript(bot.dom.getEffectiveStyle,
+      [element, property]);
 };
 
 
 /**
- * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
+ * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
  * @return {string} A boolean describing whether the element is enabled
  *     in a JSON string as defined by the wire protocol.
  */
 webdriver.atoms.inject.dom.isEnabled = function(element) {
-  return bot.inject.executeScript(bot.dom.isEnabled, [element], true);
+  return webdriver.atoms.inject.executeScript(bot.dom.isEnabled, [element]);
 };
 
 
 /**
- * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to check.
+ * @param {{bot.inject.ELEMENT_KEY: string}} element The element to check.
  * @return {string} true if the element is visisble, false otherwise.
  *     The result is wrapped in a JSON string as defined by the wire
  *     protocol.
  */
 webdriver.atoms.inject.dom.isDisplayed = function(element) {
-  return bot.inject.executeScript(
-      bot.dom.isShown, [element, /*ignoreOpacity=*/true], true);
+  return webdriver.atoms.inject.executeScript(bot.dom.isShown,
+      [element, /*ignoreOpacity=*/true]);
 };
-

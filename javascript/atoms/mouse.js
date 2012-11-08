@@ -20,6 +20,7 @@
 
 goog.provide('bot.Mouse');
 goog.provide('bot.Mouse.Button');
+goog.provide('bot.Mouse.State');
 
 goog.require('bot');
 goog.require('bot.Device');
@@ -96,7 +97,7 @@ bot.Mouse = function(opt_state, opt_modifiersState) {
     this.hasEverInteracted_ = opt_state.hasEverInteracted;
 
     try {
-      if(bot.dom.isElement(opt_state.element)) {
+      if (bot.dom.isElement(opt_state.element)) {
         this.setElement((/** @type {!Element} */opt_state.element));
       }
     } catch (ignored) {
@@ -178,6 +179,18 @@ bot.Mouse.MOUSE_BUTTON_VALUE_MAP_ = (function() {
     buttonValueMap[bot.events.EventType.MOUSEMOVE] = [0, 0, 0, 0];
   }
 
+  if (bot.userAgent.IE_DOC_10) {
+    buttonValueMap[bot.events.EventType.MSPOINTERDOWN] =
+        buttonValueMap[bot.events.EventType.MOUSEUP];
+    buttonValueMap[bot.events.EventType.MSPOINTERUP] =
+        buttonValueMap[bot.events.EventType.MOUSEUP];
+    buttonValueMap[bot.events.EventType.MSPOINTERMOVE] = [-1, -1, -1, -1];
+    buttonValueMap[bot.events.EventType.MSPOINTEROUT] =
+        buttonValueMap[bot.events.EventType.MSPOINTERMOVE];
+    buttonValueMap[bot.events.EventType.MSPOINTEROVER] =
+        buttonValueMap[bot.events.EventType.MSPOINTERMOVE];
+  }
+
   buttonValueMap[bot.events.EventType.DBLCLICK] =
       buttonValueMap[bot.events.EventType.CLICK];
   buttonValueMap[bot.events.EventType.MOUSEDOWN] =
@@ -186,6 +199,20 @@ bot.Mouse.MOUSE_BUTTON_VALUE_MAP_ = (function() {
       buttonValueMap[bot.events.EventType.MOUSEOUT];
   return buttonValueMap;
 })();
+
+
+/**
+ * Maps mouse events to corresponding MSPointer event.
+ * @type {!Object.<bot.events.EventType, bot.events.EventType>}
+ * @private
+ */
+bot.Mouse.MOUSE_EVENT_MAP_ = {
+  mousedown: bot.events.EventType.MSPOINTERDOWN,
+  mousemove: bot.events.EventType.MSPOINTERMOVE,
+  mouseout: bot.events.EventType.MSPOINTEROUT,
+  mouseover: bot.events.EventType.MSPOINTEROVER,
+  mouseup: bot.events.EventType.MSPOINTERUP
+};
 
 
 /**
@@ -295,6 +322,10 @@ bot.Mouse.prototype.maybeDoubleClickElement_ = function() {
  * @param {!goog.math.Coordinate} coords Mouse position related to the target.
  */
 bot.Mouse.prototype.move = function(element, coords) {
+  // If the element is interactable at the start of the move, it receives the
+  // full event sequence, even if hidden by an element mid sequence.
+  var toElemWasInteractable = bot.dom.isInteractable(element);
+
   var pos = goog.style.getClientPosition(element);
   this.clientXY_.x = coords.x + pos.x;
   this.clientXY_.y = coords.y + pos.y;
@@ -331,15 +362,18 @@ bot.Mouse.prototype.move = function(element, coords) {
 
     // All browsers except IE fire the mouseover before the mousemove.
     if (!goog.userAgent.IE) {
-      this.fireMouseEvent_(bot.events.EventType.MOUSEOVER, fromElement);
+      this.fireMouseEvent_(bot.events.EventType.MOUSEOVER, fromElement, null,
+          toElemWasInteractable);
     }
   }
 
-  this.fireMouseEvent_(bot.events.EventType.MOUSEMOVE);
+  this.fireMouseEvent_(bot.events.EventType.MOUSEMOVE, null, null,
+      toElemWasInteractable);
 
   // IE fires the mouseover event after the mousemove.
   if (goog.userAgent.IE && element != fromElement) {
-    this.fireMouseEvent_(bot.events.EventType.MOUSEOVER, fromElement);
+    this.fireMouseEvent_(bot.events.EventType.MOUSEOVER, fromElement, null,
+        toElemWasInteractable);
   }
 
   this.nextClickIsDoubleClick_ = false;
@@ -380,15 +414,30 @@ bot.Mouse.prototype.scroll = function(ticks) {
  *
  * @param {bot.events.EventType} type Event type.
  * @param {Element=} opt_related The related element of this event.
- * @param {number=} opt_wheelDelta The wheel delta value for the event.
+ * @param {?number=} opt_wheelDelta The wheel delta value for the event.
+ * @param {boolean=} opt_force Whether the event should be fired even if the
+ *     element is not interactable.
  * @return {boolean} Whether the event fired successfully or was cancelled.
  * @private
  */
 bot.Mouse.prototype.fireMouseEvent_ = function(type, opt_related,
-                                               opt_wheelDelta) {
+                                               opt_wheelDelta, opt_force) {
   this.hasEverInteracted_ = true;
+  if (bot.userAgent.IE_DOC_10) {
+    var msPointerEvent = bot.Mouse.MOUSE_EVENT_MAP_[type];
+    if (msPointerEvent) {
+      // The pointerId for mouse events is always 1 and the mouse event is never
+      // fired if the MSPointer event fails.
+      if (!this.fireMSPointerEvent(msPointerEvent, this.clientXY_,
+          this.getButtonValue_(msPointerEvent),  /* pointerId */ 1,
+          MSPointerEvent.MSPOINTER_TYPE_MOUSE, /* isPrimary */ true,
+          opt_related, opt_force)) {
+        return false;
+      }
+    }
+  }
   return this.fireMouseEvent(type, this.clientXY_,
-      this.getButtonValue_(type), opt_related, opt_wheelDelta);
+      this.getButtonValue_(type), opt_related, opt_wheelDelta, opt_force);
 };
 
 
@@ -416,11 +465,12 @@ bot.Mouse.prototype.getButtonValue_ = function(eventType) {
   return buttonValue;
 };
 
+
 /**
  * Serialize the current state of the mouse.
  * @return {!bot.Mouse.State} The current mouse state.
  */
-bot.Mouse.prototype.getState = function () {
+bot.Mouse.prototype.getState = function() {
   var state = {};
   state.buttonPressed = this.buttonPressed_;
   state.elementPressed = this.elementPressed_;

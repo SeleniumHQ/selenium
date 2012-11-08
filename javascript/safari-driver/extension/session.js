@@ -18,7 +18,7 @@ goog.provide('safaridriver.extension.Session');
 
 goog.require('goog.string');
 goog.require('goog.userAgent');
-goog.require('goog.userAgent.product.isVersion');
+goog.require('goog.userAgent.product');
 goog.require('webdriver.Session');
 
 

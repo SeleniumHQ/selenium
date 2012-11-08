@@ -115,7 +115,7 @@ webdriver.EventEmitter.prototype.addListener_ = function(type, listenerFn,
  * @return {!webdriver.EventEmitter} A self reference.
  */
 webdriver.EventEmitter.prototype.addListener = function(type, listenerFn,
-                                                        opt_scope) {
+    opt_scope) {
   return this.addListener_(type, listenerFn, opt_scope);
 };
 

@@ -20,7 +20,6 @@ goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.debug.Console');
 goog.require('goog.debug.Logger');
-goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('remote.ui.Banner');
 goog.require('remote.ui.Event.Type');

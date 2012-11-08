@@ -61,7 +61,7 @@
     }
 
     function assertElementIsActiveElement(expected) {
-      var actual = document.activeElement;
+      var actual = goog.dom.getActiveElement(document);
       if (actual) {
         // NOTE(jleyba): Using assertEquals(expected, document.activeElement)
         // causes an error in IE when the assertion fails (from trying to

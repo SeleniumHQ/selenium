@@ -27,6 +27,8 @@ goog.require('goog.editor.style');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
+goog.require('goog.events.KeyCodes');
+goog.require('goog.events.actionEventWrapper');
 goog.require('goog.functions');
 goog.require('goog.string.Unicode');
 goog.require('goog.ui.Component.EventType');
@@ -150,6 +152,27 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.bubbleParent_;
  * @private
  */
 goog.editor.plugins.AbstractBubblePlugin.prototype.panelId_ = null;
+
+
+/**
+ * Whether this bubble should support tabbing through the link elements. False
+ * by default.
+ * @type {boolean}
+ * @private
+ */
+goog.editor.plugins.AbstractBubblePlugin.prototype.keyboardNavigationEnabled_ =
+    false;
+
+
+/**
+ * Sets whether the bubble should support tabbing through the link elements.
+ * @param {boolean} keyboardNavigationEnabled Whether the bubble should support
+ *     tabbing through the link elements.
+ */
+goog.editor.plugins.AbstractBubblePlugin.prototype.enableKeyboardNavigation =
+    function(keyboardNavigationEnabled) {
+  this.keyboardNavigationEnabled_ = keyboardNavigationEnabled;
+};
 
 
 /**
@@ -338,7 +361,13 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.createBubble = function(
         this.shouldPreferBubbleAboveElement());
     this.eventRegister.listen(bubble, goog.ui.Component.EventType.HIDE,
         this.handlePanelClosed_);
+
     this.onShow();
+
+    if (this.keyboardNavigationEnabled_) {
+      this.eventRegister.listen(bubble.getContentElement(),
+          goog.events.EventType.KEYDOWN, this.onBubbleKey_);
+    }
   }
 };
 
@@ -388,10 +417,25 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.createBubbleContents =
  * @param {Element} target The event source element.
  * @param {Function} handler The event handler.
  * @protected
+ * @deprecated Use goog.editor.plugins.AbstractBubblePlugin.
+ *     registerActionHandler to register click and enter events.
  */
 goog.editor.plugins.AbstractBubblePlugin.prototype.registerClickHandler =
     function(target, handler) {
-  this.eventRegister.listen(target, goog.events.EventType.CLICK, handler);
+  this.registerActionHandler(target, handler);
+};
+
+
+/**
+ * Register the handler for the target's CLICK and ENTER key events.
+ * @param {Element} target The event source element.
+ * @param {Function} handler The event handler.
+ * @protected
+ */
+goog.editor.plugins.AbstractBubblePlugin.prototype.registerActionHandler =
+    function(target, handler) {
+  this.eventRegister.listenWithWrapper(target, goog.events.actionEventWrapper,
+      handler);
 };
 
 
@@ -424,6 +468,53 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.handlePanelClosed_ =
   this.targetElement_ = null;
   this.panelId_ = null;
   this.eventRegister.removeAll();
+};
+
+
+/**
+ * In case the keyboard navigation is enabled, this will focus to the first link
+ * element in the bubble when TAB is clicked. The user could still go through
+ * the rest of tabbable UI elements using shift + TAB.
+ * @override
+ */
+goog.editor.plugins.AbstractBubblePlugin.prototype.handleKeyDown = function(e) {
+  if (this.keyboardNavigationEnabled_ &&
+      this.isVisible() &&
+      e.keyCode == goog.events.KeyCodes.TAB && !e.shiftKey) {
+    var bubbleEl = this.getSharedBubble_().getContentElement();
+    var linkEl = goog.dom.getElementByClass(
+        goog.editor.plugins.AbstractBubblePlugin.LINK_CLASSNAME_, bubbleEl);
+    if (linkEl) {
+      linkEl.focus();
+      e.preventDefault();
+      return true;
+    }
+  }
+  return false;
+};
+
+
+/**
+ * Handles a key event on the bubble. This ensures that the focus loops through
+ * the link elements found in the bubble and then the focus is got by the field
+ * element.
+ * @param {goog.events.BrowserEvent} e The event.
+ * @private
+ */
+goog.editor.plugins.AbstractBubblePlugin.prototype.onBubbleKey_ = function(e) {
+  if (this.isVisible() &&
+      e.keyCode == goog.events.KeyCodes.TAB) {
+    var bubbleEl = this.getSharedBubble_().getContentElement();
+    var links = goog.dom.getElementsByClass(
+        goog.editor.plugins.AbstractBubblePlugin.LINK_CLASSNAME_, bubbleEl);
+    var tabbingOutOfBubble = e.shiftKey ?
+        links[0] == e.target :
+        links.length && links[links.length - 1] == e.target;
+    if (tabbingOutOfBubble) {
+      this.getFieldObject().focus();
+      e.preventDefault();
+    }
+  }
 };
 
 
@@ -482,7 +573,7 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.createLink = function(
     linkId, linkText, opt_onClick, opt_container) {
   var link = this.createLinkHelper(linkId, linkText, false, opt_container);
   if (opt_onClick) {
-    this.registerClickHandler(link, opt_onClick);
+    this.registerActionHandler(link, opt_onClick);
   }
   return link;
 };
@@ -506,6 +597,10 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.createLinkHelper = function(
       isAnchor ? goog.dom.TagName.A : goog.dom.TagName.SPAN,
       {className: goog.editor.plugins.AbstractBubblePlugin.LINK_CLASSNAME_},
       linkText);
+  if (this.keyboardNavigationEnabled_) {
+    link.setAttribute('tabindex', 0);
+  }
+  link.setAttribute('role', 'link');
   this.setupLink(link, linkId, opt_container);
   goog.editor.style.makeUnselectable(link, this.eventRegister);
   return link;

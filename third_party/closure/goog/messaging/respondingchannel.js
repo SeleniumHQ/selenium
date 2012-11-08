@@ -141,6 +141,8 @@ goog.messaging.RespondingChannel.prototype.getNextSignature_ = function() {
 goog.messaging.RespondingChannel.prototype.disposeInternal = function() {
   goog.dispose(this.messageChannel_);
   delete this.messageChannel_;
+  // Note: this.publicChannel_ and this.privateChannel_ get disposed by
+  //     this.messageChannel_
   delete this.publicChannel_;
   delete this.privateChannel_;
 };
@@ -224,8 +226,11 @@ goog.messaging.RespondingChannel.prototype.callbackProxy_ = function(
   var resultMessage = {};
   resultMessage['data'] = callback(message['data']);
   resultMessage['signature'] = message['signature'];
-
-  this.privateChannel_.send(
-      goog.messaging.RespondingChannel.CALLBACK_SERVICE_,
-      resultMessage);
+  // The callback invoked above may have disposed the channel so check if it
+  // exists.
+  if (this.privateChannel_) {
+    this.privateChannel_.send(
+        goog.messaging.RespondingChannel.CALLBACK_SERVICE_,
+        resultMessage);
+  }
 };

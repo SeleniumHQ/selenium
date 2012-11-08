@@ -27,8 +27,7 @@ goog.require('goog.dom');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.math.Size');
-goog.require('goog.ui.Component.Error');
-goog.require('goog.ui.Component.EventType');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.PaletteRenderer');
 goog.require('goog.ui.SelectionModel');
@@ -55,8 +54,10 @@ goog.require('goog.ui.SelectionModel');
  * @extends {goog.ui.Control}
  */
 goog.ui.Palette = function(items, opt_renderer, opt_domHelper) {
-  goog.ui.Control.call(this, items,
+  goog.base(this, items,
       opt_renderer || goog.ui.PaletteRenderer.getInstance(), opt_domHelper);
+  this.setAutoStates(goog.ui.Component.State.CHECKED |
+      goog.ui.Component.State.SELECTED | goog.ui.Component.State.OPENED, false);
 };
 goog.inherits(goog.ui.Palette, goog.ui.Control);
 
@@ -237,7 +238,7 @@ goog.ui.Palette.prototype.performActionInternal = function(e) {
   var item = this.getHighlightedItem();
   if (item) {
     this.setSelectedItem(item);
-    return this.dispatchEvent(goog.ui.Component.EventType.ACTION);
+    return goog.base(this, 'performActionInternal', e);
   }
   return false;
 };

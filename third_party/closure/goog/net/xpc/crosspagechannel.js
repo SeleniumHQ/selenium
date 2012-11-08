@@ -109,7 +109,7 @@ goog.net.xpc.CrossPageChannel = function(cfg, opt_domHelper) {
       goog.uri.utils.getHost(cfg[goog.net.xpc.CfgFields.PEER_URI] || '') +
           '/robots.txt';
 
-  goog.net.xpc.channels_[this.name] = this;
+  goog.net.xpc.channels[this.name] = this;
 
   goog.events.listen(window, 'unload',
       goog.net.xpc.CrossPageChannel.disposeAll_);
@@ -199,6 +199,28 @@ goog.net.xpc.CrossPageChannel.prototype.iframeElement_ = null;
 
 
 /**
+ * Returns the configuration object for this channel.
+ * Package private. Do not call from outside goog.net.xpc.
+ *
+ * @return {Object} The configuration object for this channel.
+ */
+goog.net.xpc.CrossPageChannel.prototype.getConfig = function() {
+  return this.cfg_;
+};
+
+
+/**
+ * Returns a reference to the iframe-element.
+ * Package private. Do not call from outside goog.net.xpc.
+ *
+ * @return {Object} A reference to the iframe-element.
+ */
+goog.net.xpc.CrossPageChannel.prototype.getIframeElement = function() {
+  return this.iframeElement_;
+};
+
+
+/**
  * Sets the window object the foreign document resides in.
  *
  * @param {Object} peerWindowObject The window object of the peer.
@@ -211,7 +233,7 @@ goog.net.xpc.CrossPageChannel.prototype.setPeerWindowObject =
 
 /**
  * Returns the window object the foreign document resides in.
- * Package private.
+ * Package private. Do not call from outside goog.net.xpc.
  *
  * @return {Object} The window object of the peer.
  */
@@ -222,7 +244,7 @@ goog.net.xpc.CrossPageChannel.prototype.getPeerWindowObject = function() {
 
 /**
  * Determines whether the peer window is available (e.g. not closed).
- * Package private.
+ * Package private. Do not call from outside goog.net.xpc.
  *
  * @return {boolean} Whether the peer window is available.
  */
@@ -599,9 +621,9 @@ goog.net.xpc.CrossPageChannel.prototype.notifyConnected_ =
 
 /**
  * Called by the transport in case of an unrecoverable failure.
- * @private
+ * Package private. Do not call from outside goog.net.xpc.
  */
-goog.net.xpc.CrossPageChannel.prototype.notifyTransportError_ = function() {
+goog.net.xpc.CrossPageChannel.prototype.notifyTransportError = function() {
   goog.net.xpc.logger.info('Transport Error');
   this.close();
 };
@@ -631,7 +653,11 @@ goog.net.xpc.CrossPageChannel.prototype.send = function(serviceName, payload) {
 
 
 /**
- * Delivers messages to the appropriate service-handler.
+ * Delivers messages to the appropriate service-handler. Named xpcDeliver to
+ * avoid name conflict with {@code deliver} function in superclass
+ * goog.messaging.AbstractChannel.
+ *
+ * Package private. Do not call from outside goog.net.xpc.
  *
  * @param {string} serviceName The name of the port.
  * @param {string} payload The payload.
@@ -640,34 +666,17 @@ goog.net.xpc.CrossPageChannel.prototype.send = function(serviceName, payload) {
  *     the PEER_HOSTNAME parameter was provided, they must match or the message
  *     will be rejected.
  */
-goog.net.xpc.CrossPageChannel.prototype.safeDeliver = function(
-    serviceName, payload, opt_origin) {
-  this.deliver_(serviceName, payload, opt_origin);
-};
-
-
-/**
- * Delivers messages to the appropriate service-handler.
- *
- * @param {string} serviceName The name of the port.
- * @param {string} payload The payload.
- * @param {string=} opt_origin An optional origin for the message, where the
- *     underlying transport makes that available.  If this is specified, and
- *     the PEER_HOSTNAME parameter was provided, they must match or the message
- *     will be rejected.
- * @private
- */
-goog.net.xpc.CrossPageChannel.prototype.deliver_ = function(
+goog.net.xpc.CrossPageChannel.prototype.xpcDeliver = function(
     serviceName, payload, opt_origin) {
 
-  // This covers the very rare (but producable) case where the inner frame
+  // This check covers the very rare (but producable) case where the inner frame
   // becomes ready and sends its setup message while the outer frame is
-  // deferring its connect method waiting for the inner frame to be ready.
-  // Without it that message can be passed to deliver_, which is unable to
-  // process it because the channel is not yet fully configured.
+  // deferring its connect method waiting for the inner frame to be ready. The
+  // resulting deferral ensures the message will not be processed until the
+  // channel is fully configured.
   if (this.peerWindowDeferred_) {
     this.deferredDeliveries_.push(
-        goog.bind(this.deliver_, this, serviceName, payload, opt_origin));
+        goog.bind(this.xpcDeliver, this, serviceName, payload, opt_origin));
     return;
   }
 
@@ -679,7 +688,7 @@ goog.net.xpc.CrossPageChannel.prototype.deliver_ = function(
   }
 
   if (this.isDisposed()) {
-    goog.net.xpc.logger.warning('CrossPageChannel::deliver_(): Disposed.');
+    goog.net.xpc.logger.warning('CrossPageChannel::xpcDeliver(): Disposed.');
   } else if (!serviceName ||
       serviceName == goog.net.xpc.TRANSPORT_SERVICE_) {
     this.transport_.transportServiceHandler(payload);
@@ -688,7 +697,8 @@ goog.net.xpc.CrossPageChannel.prototype.deliver_ = function(
     if (this.isConnected()) {
       this.deliver(this.unescapeServiceName_(serviceName), payload);
     } else {
-      goog.net.xpc.logger.info('CrossPageChannel::deliver_(): Not connected.');
+      goog.net.xpc.logger.info(
+          'CrossPageChannel::xpcDeliver(): Not connected.');
     }
   }
 };
@@ -772,7 +782,7 @@ goog.net.xpc.CrossPageChannel.prototype.disposeInternal = function() {
 
   this.peerWindowObject_ = null;
   this.iframeElement_ = null;
-  delete goog.net.xpc.channels_[this.name];
+  delete goog.net.xpc.channels[this.name];
   goog.dispose(this.peerLoadHandler_);
   delete this.peerLoadHandler_;
   goog.base(this, 'disposeInternal');
@@ -784,7 +794,7 @@ goog.net.xpc.CrossPageChannel.prototype.disposeInternal = function() {
  * @private
  */
 goog.net.xpc.CrossPageChannel.disposeAll_ = function() {
-  for (var name in goog.net.xpc.channels_) {
-    goog.dispose(goog.net.xpc.channels_[name]);
+  for (var name in goog.net.xpc.channels) {
+    goog.dispose(goog.net.xpc.channels[name]);
   }
 };

@@ -401,6 +401,33 @@ goog.net.BrowserChannel.prototype.forwardChannelRequestTimeoutMs_ = 20 * 1000;
 
 
 /**
+ * A throttle time in ms for readystatechange events for the backchannel.
+ * Useful for throttling when ready state is INTERACTIVE (partial data).
+ *
+ * This throttle is useful if the server sends large data chunks down the
+ * backchannel.  It prevents examining XHR partial data on every
+ * readystate change event.  This is useful because large chunks can
+ * trigger hundreds of readystatechange events, each of which takes ~5ms
+ * or so to handle, in turn making the UI unresponsive for a significant period.
+ *
+ * If set to zero no throttle is used.
+ * @type {number}
+ * @private
+ */
+goog.net.BrowserChannel.prototype.readyStateChangeThrottleMs_ = 0;
+
+
+/**
+ * Whether cross origin requests are supported for the browser channel.
+ *
+ * See {@link goog.net.XhrIo#setWithCredentials}.
+ * @type {boolean}
+ * @private
+ */
+goog.net.BrowserChannel.prototype.supportsCrossDomainXhrs_ = false;
+
+
+/**
  * The latest protocol version that this class supports. We request this version
  * from the server when opening the connection. Should match
  * com.google.net.browserchannel.BrowserChannel.LATEST_CHANNEL_VERSION.
@@ -1028,6 +1055,37 @@ goog.net.BrowserChannel.prototype.setExtraHeaders = function(extraHeaders) {
 
 
 /**
+ * Sets the throttle for handling onreadystatechange events for the request.
+ *
+ * @param {number} throttle The throttle in ms.  A value of zero indicates
+ *     no throttle.
+ */
+goog.net.BrowserChannel.prototype.setReadyStateChangeThrottle = function(
+    throttle) {
+  this.readyStateChangeThrottleMs_ = throttle;
+};
+
+
+/**
+ * Sets whether cross origin requests are supported for the browser channel.
+ *
+ * Setting this allows the creation of requests to secondary domains and
+ * sends XHRs with the CORS withCredentials bit set to true.
+ *
+ * In order for cross-origin requests to work, the server will also need to set
+ * CORS response headers as per:
+ * https://developer.mozilla.org/en-US/docs/HTTP_access_control
+ *
+ * See {@link goog.net.XhrIo#setWithCredentials}.
+ * @param {boolean} supportCrossDomain Whether cross domain XHRs are supported.
+ */
+goog.net.BrowserChannel.prototype.setSupportsCrossDomainXhrs = function(
+    supportCrossDomain) {
+  this.supportsCrossDomainXhrs_ = supportCrossDomain;
+};
+
+
+/**
  * Returns the handler used for channel callback events.
  *
  * @return {goog.net.BrowserChannel.Handler} The handler.
@@ -1620,6 +1678,8 @@ goog.net.BrowserChannel.prototype.startBackChannel_ = function() {
       'rpc',
       this.backChannelAttemptId_);
   this.backChannelRequest_.setExtraHeaders(this.extraHeaders_);
+  this.backChannelRequest_.setReadyStateChangeThrottle(
+      this.readyStateChangeThrottleMs_);
   var uri = this.backChannelUri_.clone();
   uri.setParameterValue('RID', 'rpc');
   uri.setParameterValue('SID', this.sid_);
@@ -2282,17 +2342,19 @@ goog.net.BrowserChannel.prototype.createDataUri =
 /**
  * Called when BC needs to create an XhrIo object.  Override in a subclass if
  * you need to customize the behavior, for example to enable the creation of
- * XHR's capable of calling a secondary domain.
+ * XHR's capable of calling a secondary domain. Will also allow calling
+ * a secondary domain if withCredentials (CORS) is enabled.
  * @param {?string} hostPrefix The host prefix, if we need an XhrIo object
  *     capable of calling a secondary domain.
  * @return {!goog.net.XhrIo} A new XhrIo object.
  */
 goog.net.BrowserChannel.prototype.createXhrIo = function(hostPrefix) {
-  if (hostPrefix) {
-    throw new Error('Can\'t create secondary domain capable XhrIo object.');
-  } else {
-    return new goog.net.XhrIo();
+  if (hostPrefix && !this.supportsCrossDomainXhrs_) {
+    throw Error('Can\'t create secondary domain capable XhrIo object.');
   }
+  var xhr = new goog.net.XhrIo();
+  xhr.setWithCredentials(this.supportsCrossDomainXhrs_);
+  return xhr;
 };
 
 
@@ -2397,22 +2459,27 @@ goog.net.BrowserChannel.notifyTimingEvent = function(size, rtt, retries) {
  * a host prefix. This allows us to work around browser per-domain
  * connection limits.
  *
- * Currently, we only use secondary domains when using Trident's ActiveXObject,
- * because it supports cross-domain requests out of the box. Even if we wanted
- * to use secondary domains on Gecko/Webkit, they wouldn't work due to
- * security restrictions on cross-origin XHRs. Note that in IE10 we no longer
- * use ActiveX since it's not supported in Metro mode and IE10 supports XHR
- * streaming.
+ * Currently, we  use secondary domains when using Trident's ActiveXObject,
+ * because it supports cross-domain requests out of the box.  Note that in IE10
+ * we no longer use ActiveX since it's not supported in Metro mode and IE10
+ * supports XHR streaming.
  *
- * If you need to use secondary domains on other browsers, you'll need
- * to override this method in a subclass, and make sure that those browsers
- * use some messaging mechanism that works cross-domain.
+ * If you need to use secondary domains on other browsers and IE10,
+ * you have two choices:
+ *     1) If you only care about browsers that support CORS
+ *        (https://developer.mozilla.org/en-US/docs/HTTP_access_control), you
+ *        can use {@link #setSupportsCrossDomainXhrs} and set the appropriate
+ *        CORS response headers on the server.
+ *     2) Or, override this method in a subclass, and make sure that those
+ *        browsers use some messaging mechanism that works cross-domain (e.g
+ *        iframes and window.postMessage).
  *
  * @return {boolean} Whether to use secondary domains.
  * @see http://code.google.com/p/closure-library/issues/detail?id=339
  */
 goog.net.BrowserChannel.prototype.shouldUseSecondaryDomains = function() {
-  return !goog.net.ChannelRequest.supportsXhrStreaming();
+  return this.supportsCrossDomainXhrs_ ||
+      !goog.net.ChannelRequest.supportsXhrStreaming();
 };
 
 

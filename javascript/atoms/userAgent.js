@@ -43,7 +43,8 @@ bot.userAgent.isEngineVersion = function(version) {
   if (bot.userAgent.FIREFOX_EXTENSION) {
     return bot.userAgent.FIREFOX_EXTENSION_IS_ENGINE_VERSION_(version);
   } else if (goog.userAgent.IE) {
-    return goog.string.compareVersions(document.documentMode, version) >= 0;
+    return goog.string.compareVersions(
+        /** @type {number} */ (goog.userAgent.DOCUMENT_MODE), version) >= 0;
   } else {
     return goog.userAgent.isVersion(version);
   }
@@ -183,11 +184,20 @@ bot.userAgent.ANDROID_VERSION_ = (function() {
 
 
 /**
+ * Whether the current document is IE in a documentMode older than 8.
+ * @type {boolean}
+ * @const
+ */
+bot.userAgent.IE_DOC_PRE8 = goog.userAgent.IE &&
+    !goog.userAgent.isDocumentMode(8);
+
+
+/**
  * Whether the current document is IE in IE9 (or newer) standards mode.
  * @type {boolean}
  * @const
  */
-bot.userAgent.IE_DOC_9 = goog.userAgent.IE && document.documentMode >= 9;
+bot.userAgent.IE_DOC_9 = goog.userAgent.isDocumentMode(9);
 
 
 /**
@@ -195,4 +205,31 @@ bot.userAgent.IE_DOC_9 = goog.userAgent.IE && document.documentMode >= 9;
  * @type {boolean}
  * @const
  */
-bot.userAgent.IE_DOC_PRE9 = goog.userAgent.IE && !bot.userAgent.IE_DOC_9;
+bot.userAgent.IE_DOC_PRE9 = goog.userAgent.IE &&
+    !goog.userAgent.isDocumentMode(9);
+
+
+/**
+ * Whether the current document is IE in IE10 (or newer) standards mode.
+ * @type {boolean}
+ * @const
+ */
+bot.userAgent.IE_DOC_10 = goog.userAgent.isDocumentMode(10);
+
+
+/**
+ * Whether the current document is IE in a documentMode older than 10.
+ * @type {boolean}
+ * @const
+ */
+bot.userAgent.IE_DOC_PRE10 = goog.userAgent.IE &&
+    !goog.userAgent.isDocumentMode(10);
+
+
+/**
+ * Whether the current browser is Android pre-gingerbread.
+ * @type {boolean}
+ * @const
+ */
+bot.userAgent.ANDROID_PRE_GINGERBREAD = goog.userAgent.product.ANDROID &&
+    !bot.userAgent.isProductVersion(2.3);

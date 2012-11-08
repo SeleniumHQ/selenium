@@ -50,18 +50,8 @@ limitations under the License.
       assertTrue(result);
     }
 
-    function testShouldAliasClassNameProperty() {
-      var e = bot.locators.findElement({id: 'brie'});
-
-      assertEquals('tasty', bot.dom.getProperty(e, 'class'));
-      assertEquals('tasty', bot.dom.getProperty(e, 'className'));
-    }
-
-    function testShouldHaveDefaultValueOfFalseForDisabledProperty() {
-      var working = bot.locators.findElement({id: 'not_disabled'});
+    function testShouldReturnDisabledProperty() {
       var disabled = bot.locators.findElement({id: 'is_disabled'});
-
-      assertFalse(bot.dom.getProperty(working, 'disabled'));
       assertTrue(bot.dom.getProperty(disabled, 'disabled'));
     }
 
@@ -110,6 +100,5 @@ limitations under the License.
 
     <input id="is_disabled" name="foo" disabled />
   </form>
-  <p id="not_disabled">This paragraph can check for the disabled property.</p>
 </body>
 </html>

@@ -31,31 +31,30 @@ goog.require('bot.inject.cache');
  * @param {Array.<*>} args Array of arguments to pass to fn.
  * @param {{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
  *     object to be read from the cache.
- * @return {!(string|bot.response.ResponseObject)} The response object. If
- *     opt_stringify is true, the result will be serialized and returned in
- *     string format.
+ * @return {string} The response object, serialized and returned in string
+ *     format.
  */
 webdriver.atoms.inject.executeScript = function(fn, args, opt_window) {
-  return bot.inject.executeScript(
-      fn, args, true, webdriver.atoms.inject.getWindow_(opt_window));
+  return /**@type {string}*/(bot.inject.executeScript(fn, args, true,
+      webdriver.atoms.inject.getWindow_(opt_window)));
 };
 
 
 /**
  *
- * @param {!(string|function)} fn The function to execute.
+ * @param {!(string|Function)} fn The function to execute.
  * @param {Array.<*>} args Array of arguments to pass to fn.
- * @param {int} timeout The timeout to wait up to in millis.
+ * @param {number} timeout The timeout to wait up to in millis.
  * @param {{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
  *     object to be read from the cache.
- * @return {!(string|bot.response.ResponseObject)} The response object. If
- *     opt_stringify is true, the result will be serialized and returned in
- *     string format.
+ * @return {string} The response object, serialized and returned in string
+ *     format.
  */
 webdriver.atoms.inject.executeAsyncScript =
     function(fn, args, timeout, onDone, opt_window) {
-  return bot.inject.executeScript(fn, args, timeout, onDone, true,
-      webdriver.atoms.inject.getWindow_(opt_window));
+  return /** @type {string} */(bot.inject.executeAsyncScript(
+      fn, args, timeout, onDone, true,
+      webdriver.atoms.inject.getWindow_(opt_window)));
 };
 
 
@@ -74,5 +73,5 @@ webdriver.atoms.inject.getWindow_ = function(opt_window) {
   } else {
     win = window;
   }
-  return win;
+  return /**@type {!Window}*/(win);
 };

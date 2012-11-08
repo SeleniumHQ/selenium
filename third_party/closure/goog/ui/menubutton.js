@@ -328,8 +328,9 @@ goog.ui.MenuButton.prototype.handleKeyEventInternal = function(e) {
 
   if (e.keyCode == goog.events.KeyCodes.DOWN ||
       e.keyCode == goog.events.KeyCodes.UP ||
-      e.keyCode == goog.events.KeyCodes.SPACE) {
-    // Menu is closed, and the user hit the down/up/space key; open menu.
+      e.keyCode == goog.events.KeyCodes.SPACE ||
+      e.keyCode == goog.events.KeyCodes.ENTER) {
+    // Menu is closed, and the user hit the down/up/space/enter key; open menu.
     this.setOpen(true);
     return true;
   }

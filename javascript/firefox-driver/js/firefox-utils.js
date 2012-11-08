@@ -24,9 +24,9 @@
 
 goog.provide('fxdriver.utils');
 
-goog.require('bot.userAgent');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.userAgent');
 goog.require('fxdriver.moz');
 goog.require('goog.array');
 
@@ -89,16 +89,16 @@ fxdriver.utils.getUniqueId = function() {
   // TODO(simon): initialize this statically.
   if (!fxdriver.utils._generator) {
     fxdriver.utils._generator =
-    fxdriver.moz.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
+    fxdriver.moz.getService('@mozilla.org/uuid-generator;1', 'nsIUUIDGenerator');
   }
   return fxdriver.utils._generator.generateUUID().toString();
 };
 
 
 /**
- * @param {!Element} element The element to use
- * @param {int} x X coordinate
- * @param {int} y Y coordinate
+ * @param {!Element} element The element to use.
+ * @param {int} x X coordinate.
+ * @param {int} y Y coordinate.
  */
 fxdriver.utils.newCoordinates = function(element, x, y) {
   return {
@@ -112,4 +112,4 @@ fxdriver.utils.newCoordinates = function(element, x, y) {
     x: x,
     y: y
   };
-}
+};

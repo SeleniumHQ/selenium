@@ -21,13 +21,13 @@ goog.provide('FirefoxDriver');
 goog.require('Utils');
 goog.require('WebLoadingListener');
 goog.require('bot.ErrorCode');
+goog.require('bot.appcache');
+goog.require('bot.connection');
 goog.require('bot.dom');
 goog.require('bot.frame');
 goog.require('bot.locators');
 goog.require('bot.userAgent');
 goog.require('bot.window');
-goog.require('bot.connection');
-goog.require('bot.appcache');
 goog.require('fxdriver.Timer');
 goog.require('fxdriver.events');
 goog.require('fxdriver.io');
@@ -37,9 +37,10 @@ goog.require('fxdriver.preconditions');
 goog.require('fxdriver.screenshot');
 goog.require('fxdriver.utils');
 goog.require('goog.array');
+goog.require('goog.dom');
 goog.require('goog.dom.selection');
-goog.require('goog.math');
-goog.require('goog.userAgent');
+goog.require('goog.math.Coordinate');
+goog.require('goog.math.Size');
 
 
 FirefoxDriver = function(server, enableNativeEvents, win) {
@@ -56,25 +57,25 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
   // This really shouldn't be here, but the firefoxdriver isn't compiled with closure, so the atoms
   // aren't exported into global scope
   FirefoxDriver.prototype.dismissAlert.preconditions =
-      [ function() { fxdriver.preconditions.alertPresent(this) } ];
+      [function() { fxdriver.preconditions.alertPresent(this) }];
   FirefoxDriver.prototype.acceptAlert.preconditions =
-      [ function() { fxdriver.preconditions.alertPresent(this) } ];
+      [function() { fxdriver.preconditions.alertPresent(this) }];
   FirefoxDriver.prototype.getAlertText.preconditions =
-      [ function() { fxdriver.preconditions.alertPresent(this) } ];
+      [function() { fxdriver.preconditions.alertPresent(this) }];
   FirefoxDriver.prototype.setAlertValue.preconditions =
-      [ function() { fxdriver.preconditions.alertPresent(this) } ];
+      [function() { fxdriver.preconditions.alertPresent(this) }];
 
 
-  FirefoxDriver.listenerScript = Utils.loadUrl("resource://fxdriver/evaluate.js");
+  FirefoxDriver.listenerScript = Utils.loadUrl('resource://fxdriver/evaluate.js');
 
   this.jsTimer = new fxdriver.Timer();
-  this.mouse = Utils.newInstance("@googlecode.com/webdriver/syntheticmouse;1", "wdIMouse");
+  this.mouse = Utils.newInstance('@googlecode.com/webdriver/syntheticmouse;1', 'wdIMouse');
   // Current state of modifier keys (for synthenized events).
-  this.modifierKeysState = Utils.newInstance("@googlecode.com/webdriver/modifierkeys;1", "wdIModifierKeys");
+  this.modifierKeysState = Utils.newInstance('@googlecode.com/webdriver/modifierkeys;1', 'wdIModifierKeys');
   this.mouse.initialize(this.modifierKeysState);
 
   if (!bot.userAgent.isProductVersion('3.5')) {
-    fxdriver.logging.info("Replacing CSS lookup mechanism with Sizzle");
+    fxdriver.logging.info('Replacing CSS lookup mechanism with Sizzle');
     var cssSelectorFunction = (function() {
       var sizzle = [
         'var originalSizzle = window.Sizzle;',
@@ -123,7 +124,7 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
                 text == target;
           });
         }
-      }
+      };
     })();
 
 
@@ -137,7 +138,7 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
 };
 
 
-FirefoxDriver.prototype.__defineGetter__("id", function() {
+FirefoxDriver.prototype.__defineGetter__('id', function() {
   if (!this.id_) {
     this.id_ = this.server.getNextId();
   }
@@ -181,7 +182,7 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
         respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
             'Timed out waiting for page load.'));
       } else {
-        respond.value = "";
+        respond.value = '';
         respond.send();
       }
     }, respond.session.getPageLoadTimeout(), respond.session.getWindow());
@@ -190,7 +191,7 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   respond.session.getBrowser().loadURI(url);
 
   if (!loadEventExpected) {
-    fxdriver.logging.info("No load event expected");
+    fxdriver.logging.info('No load event expected');
     respond.send();
   }
 };
@@ -199,13 +200,13 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
 FirefoxDriver.prototype.close = function(respond) {
   // Grab all the references we'll need. Once we call close all this might go away
   var wm = fxdriver.moz.getService(
-      "@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
+      '@mozilla.org/appshell/window-mediator;1', 'nsIWindowMediator');
   var appService = fxdriver.moz.getService(
-      "@mozilla.org/toolkit/app-startup;1", "nsIAppStartup");
+      '@mozilla.org/toolkit/app-startup;1', 'nsIAppStartup');
   var forceQuit = Components.interfaces.nsIAppStartup.eForceQuit;
 
   var numOpenWindows = 0;
-  var allWindows = wm.getEnumerator("navigator:browser");
+  var allWindows = wm.getEnumerator('navigator:browser');
   while (allWindows.hasMoreElements()) {
     numOpenWindows += 1;
     allWindows.getNext();
@@ -236,7 +237,7 @@ FirefoxDriver.prototype.close = function(respond) {
     var browser = respond.session.getBrowser();
     notifyOfCloseWindow(browser.id);
     browser.contentWindow.close();
-  } catch(e) {
+  } catch (e) {
     fxdriver.logging.warning(e);
   }
 
@@ -252,7 +253,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   var script = parameters['script'];
   var converted = Utils.unwrapParameters(parameters['args'], doc);
 
-  if (doc.designMode && "on" == doc.designMode.toLowerCase()) {
+  if (doc.designMode && 'on' == doc.designMode.toLowerCase()) {
     if (isAsync) {
       respond.sendError(
           'Document designMode is enabled; advanced operations, ' +
@@ -264,7 +265,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
     }
 
     // See https://developer.mozilla.org/en/rich-text_editing_in_mozilla#Internet_Explorer_Differences
-    fxdriver.logging.info("Window in design mode, falling back to sandbox: " + doc.designMode);
+    fxdriver.logging.info('Window in design mode, falling back to sandbox: ' + doc.designMode);
     var window = respond.session.getWindow();
     window = window.wrappedJSObject;
     var sandbox = new Components.utils.Sandbox(window);
@@ -274,8 +275,8 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
     sandbox.__webdriverParams = converted;
 
     try {
-      var scriptSrc = "with(window) { var __webdriverFunc = function(){" + parameters.script +
-          "};  __webdriverFunc.apply(null, __webdriverParams); }";
+      var scriptSrc = 'with(window) { var __webdriverFunc = function(){' + parameters.script +
+          '};  __webdriverFunc.apply(null, __webdriverParams); }';
       var res = Components.utils.evalInSandbox(scriptSrc, sandbox);
       respond.value = Utils.wrapResult(res, doc);
       respond.send();
@@ -292,7 +293,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
       // The modal detection code in modals.js deals with throwing an
       // exception, in the other case.
       respond.sendError(new WebDriverError(bot.ErrorCode.JAVASCRIPT_ERROR,
-          "waiting for doc.body failed"));
+          'waiting for doc.body failed'));
     }
   };
 
@@ -301,7 +302,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
       // The modal detection code in modals.js deals with throwing an
       // exception, in the other case.
       respond.sendError(new WebDriverError(bot.ErrorCode.JAVASCRIPT_ERROR,
-          "waiting for evaluate.js load failed"));
+          'waiting for evaluate.js load failed'));
     }
   };
 
@@ -345,8 +346,8 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   // Attach the listener to the DOM
   var addListener = function() {
     if (!doc.getUserData('webdriver-evaluate-attached')) {
-      var element = doc.createElement("script");
-      element.setAttribute("type", "text/javascript");
+      var element = doc.createElement('script');
+      element.setAttribute('type', 'text/javascript');
       element.innerHTML = FirefoxDriver.listenerScript;
       doc.body.appendChild(element);
       element.parentNode.removeChild(element);
@@ -359,7 +360,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   };
 
   timer.runWhenTrue(checkDocBodyLoaded, addListener, 10000, docBodyLoadTimeOut);
-};
+}
 
 
 FirefoxDriver.prototype.executeScript = function(respond, parameters) {
@@ -384,7 +385,7 @@ FirefoxDriver.prototype.getPageSource = function(respond) {
   var docElement = win.document.documentElement;
   if (!docElement) {
     // empty string means no DOM element available (the page is probably rebuilding at the moment)
-    respond.value = "";
+    respond.value = '';
     respond.send();
     return;
   }
@@ -413,7 +414,7 @@ FirefoxDriver.prototype.getPageSource = function(respond) {
  * @private
  */
 FirefoxDriver.annotateInvalidSelectorError_ = function(selector, ex) {
-  if(ex.code == bot.ErrorCode.INVALID_SELECTOR_ERROR) {
+  if (ex.code == bot.ErrorCode.INVALID_SELECTOR_ERROR) {
     return new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
         'The given selector ' + selector +
             ' is either invalid or does not result' +
@@ -422,8 +423,8 @@ FirefoxDriver.annotateInvalidSelectorError_ = function(selector, ex) {
 
   try {
     var converted = ex.QueryInterface(Components.interfaces['nsIException']);
-    fxdriver.logging.info("Converted the exception: " + converted.name);
-    if ("NS_ERROR_DOM_SYNTAX_ERR" == converted.name) {
+    fxdriver.logging.info('Converted the exception: ' + converted.name);
+    if ('NS_ERROR_DOM_SYNTAX_ERR' == converted.name) {
       return new WebDriverError(bot.ErrorCode.INVALID_SELECTOR_ERROR,
           'The given selector ' + selector +
               ' is either invalid or does not result' +
@@ -617,26 +618,26 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
   var switchingToDefault = !goog.isDef(parameters.id) || goog.isNull(parameters.id);
   if ((!currentWindow || currentWindow.closed) && !switchingToDefault) {
     // By definition there will be no child frames.
-    respond.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_FRAME, "Current window is closed"));
+    respond.sendError(new WebDriverError(bot.ErrorCode.NO_SUCH_FRAME, 'Current window is closed'));
   }
 
   var newWindow = null;
   if (switchingToDefault) {
-    fxdriver.logging.info("Switching to default content (topmost frame)");
+    fxdriver.logging.info('Switching to default content (topmost frame)');
     newWindow = respond.session.getBrowser().contentWindow;
   } else if (goog.isString(parameters.id)) {
-    fxdriver.logging.info("Switching to frame with name or ID: " + parameters.id);
+    fxdriver.logging.info('Switching to frame with name or ID: ' + parameters.id);
     newWindow = bot.frame.findFrameByNameOrId(parameters.id, currentWindow);
   } else if (goog.isNumber(parameters.id)) {
-    fxdriver.logging.info("Switching to frame by index: " + parameters.id);
+    fxdriver.logging.info('Switching to frame by index: ' + parameters.id);
     newWindow = bot.frame.findFrameByIndex(parameters.id, currentWindow);
   } else if (goog.isObject(parameters.id) && 'ELEMENT' in parameters.id) {
-    fxdriver.logging.info("Switching to frame by element: " + parameters.id['ELEMENT']);
+    fxdriver.logging.info('Switching to frame by element: ' + parameters.id['ELEMENT']);
 
     var element = Utils.getElementAt(parameters.id['ELEMENT'],
         currentWindow.document);
 
-    element = fxdriver.moz.unwrapFor4(element)
+    element = fxdriver.moz.unwrapFor4(element);
 
     if (/^i?frame$/i.test(element.tagName)) {
       // Each session maintains a weak reference to the window it is currently
@@ -667,7 +668,7 @@ FirefoxDriver.prototype.getActiveElement = function(respond) {
   var element = Utils.getActiveElement(respond.session.getDocument());
   var id = Utils.addToKnownElements(element);
 
-  respond.value = {'ELEMENT':id};
+  respond.value = {'ELEMENT': id};
   respond.send();
 };
 
@@ -728,7 +729,7 @@ FirefoxDriver.prototype.addCookie = function(respond, parameters) {
     var currDomain = currLocation.host;
     if (currDomain.indexOf(cookie.domain) == -1) {  // Not quite right, but close enough
       throw new WebDriverError(bot.ErrorCode.INVALID_COOKIE_DOMAIN,
-          "You may only set cookies for the current domain");
+          'You may only set cookies for the current domain');
     }
   }
 
@@ -736,17 +737,17 @@ FirefoxDriver.prototype.addCookie = function(respond, parameters) {
   // We'll catch ip6 addresses by mistake. Since no-one uses those
   // this will be okay for now.
   if (cookie.domain.match(/:\d+$/)) {
-    cookie.domain = cookie.domain.replace(/:\d+$/, "");
+    cookie.domain = cookie.domain.replace(/:\d+$/, '');
   }
 
   var document = respond.session.getDocument();
   if (!document || !document.contentType.match(/html/i)) {
     throw new WebDriverError(bot.ErrorCode.UNABLE_TO_SET_COOKIE,
-        "You may only set cookies on html documents");
+        'You may only set cookies on html documents');
   }
 
   var cookieManager =
-      fxdriver.moz.getService("@mozilla.org/cookiemanager;1", "nsICookieManager2");
+      fxdriver.moz.getService('@mozilla.org/cookiemanager;1', 'nsICookieManager2');
 
   // The signature for "add" is different in firefox 3 and 2. We should sniff
   // the browser version and call the right version of the method, but for now
@@ -754,7 +755,7 @@ FirefoxDriver.prototype.addCookie = function(respond, parameters) {
   try {
     cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value,
         cookie.secure, false, cookie.expiry);
-  } catch(e) {
+  } catch (e) {
     cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value,
         cookie.secure, false, false, cookie.expiry);
   }
@@ -766,25 +767,25 @@ function getVisibleCookies(location) {
   var results = [];
 
   var currentPath = location.pathname;
-  if (!currentPath) currentPath = "/";
+  if (!currentPath) currentPath = '/';
   var isForCurrentPath = function(aPath) {
     return currentPath.indexOf(aPath) != -1;
   };
-  var cm = fxdriver.moz.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
+  var cm = fxdriver.moz.getService('@mozilla.org/cookiemanager;1', 'nsICookieManager');
   var e = cm.enumerator;
   while (e.hasMoreElements()) {
-    var cookie = e.getNext().QueryInterface(Components.interfaces["nsICookie"]);
+    var cookie = e.getNext().QueryInterface(Components.interfaces['nsICookie']);
 
     // Take the hostname and progressively shorten it
     var hostname = location.hostname;
     do {
-      if ((cookie.host == "." + hostname || cookie.host == hostname)
+      if ((cookie.host == '.' + hostname || cookie.host == hostname)
           && isForCurrentPath(cookie.path)) {
         results.push(cookie);
         break;
       }
-      hostname = hostname.replace(/^.*?\./, "");
-    } while (hostname.indexOf(".") != -1);
+      hostname = hostname.replace(/^.*?\./, '');
+    } while (hostname.indexOf('.') != -1);
   }
 
   return results;
@@ -821,7 +822,7 @@ FirefoxDriver.prototype.getCookies = function(respond) {
 // doesn't always do The Right Thing
 FirefoxDriver.prototype.deleteCookie = function(respond, parameters) {
   var toDelete = parameters.name;
-  var cm = fxdriver.moz.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
+  var cm = fxdriver.moz.getService('@mozilla.org/cookiemanager;1', 'nsICookieManager');
 
   var cookies = getVisibleCookies(respond.session.getBrowser().
       contentWindow.location);
@@ -837,7 +838,7 @@ FirefoxDriver.prototype.deleteCookie = function(respond, parameters) {
 
 
 FirefoxDriver.prototype.deleteAllCookies = function(respond) {
-  var cm = fxdriver.moz.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
+  var cm = fxdriver.moz.getService('@mozilla.org/cookiemanager;1', 'nsICookieManager');
   var cookies = getVisibleCookies(respond.session.getBrowser().
       contentWindow.location);
 
@@ -889,11 +890,11 @@ FirefoxDriver.prototype.saveScreenshot = function(respond, pngFile) {
     var canvas = fxdriver.screenshot.grab(window);
     try {
       fxdriver.screenshot.save(canvas, pngFile);
-    } catch(e) {
+    } catch (e) {
       throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
           'Could not save screenshot to ' + pngFile + ' - ' + e);
     }
-  } catch(e) {
+  } catch (e) {
     throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
         'Could not take screenshot of current page - ' + e);
   }
@@ -942,7 +943,7 @@ FirefoxDriver.prototype.getAlertText = function(respond) {
   fxdriver.modals.isModalPresent(
     function(present) {
       if (present) {
-        respond.value = fxdriver.modals.getText(driver)
+        respond.value = fxdriver.modals.getText(driver);
       } else {
         respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
         respond.value = { message: 'No alert is present' };
@@ -970,7 +971,7 @@ FirefoxDriver.prototype.imeGetAvailableEngines = function(respond) {
     respond.value = returnArray;
   } catch (e) {
     throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
-        "IME not available on the host: " + e);
+        'IME not available on the host: ' + e);
   }
   respond.send();
 };
@@ -983,7 +984,7 @@ FirefoxDriver.prototype.imeGetActiveEngine = function(respond) {
     respond.value = activeEngine.value;
   } catch (e) {
     throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
-        "IME not available on the host: " + e);
+        'IME not available on the host: ' + e);
   }
   respond.send();
 };
@@ -996,7 +997,7 @@ FirefoxDriver.prototype.imeIsActivated = function(respond) {
     respond.value = isActive.value;
   } catch (e) {
     throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
-        "IME not available on the host: " + e);
+        'IME not available on the host: ' + e);
   }
   respond.send();
 };
@@ -1007,7 +1008,7 @@ FirefoxDriver.prototype.imeDeactivate = function(respond) {
     obj.imeDeactivate();
   } catch (e) {
     throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
-        "IME not available on the host: " + e);
+        'IME not available on the host: ' + e);
   }
 
   respond.send();
@@ -1021,12 +1022,12 @@ FirefoxDriver.prototype.imeActivateEngine = function(respond, parameters) {
     obj.imeActivateEngine(engineToActivate, successfulActivation);
   } catch (e) {
     throw new WebDriverError(bot.ErrorCode.IME_NOT_AVAILABLE,
-        "IME not available on the host: " + e);
+        'IME not available on the host: ' + e);
   }
 
   if (! successfulActivation.value) {
     throw new WebDriverError(bot.ErrorCode.IME_ENGINE_ACTIVATION_FAILED,
-        "Activation of engine failed: " + engineToActivate);
+        'Activation of engine failed: ' + engineToActivate);
   }
   respond.send();
 };
@@ -1050,28 +1051,28 @@ function getElementFromLocation(mouseLocation, doc) {
 
   if (mouseLocation.initialized) {
     elementForNode = doc.elementFromPoint(locationX, locationY);
-    fxdriver.logging.info("Element from (" + locationX + "," + locationY + ") :" + elementForNode);
+    fxdriver.logging.info('Element from (' + locationX + ',' + locationY + ') :' + elementForNode);
   } else {
-    fxdriver.logging.info("Mouse coordinates were not set - using body");
-    elementForNode = doc.getElementsByTagName("body")[0];
+    fxdriver.logging.info('Mouse coordinates were not set - using body');
+    elementForNode = doc.getElementsByTagName('body')[0];
   }
 
   return fxdriver.moz.unwrap(elementForNode);
 }
 
 function generateErrorForNativeEvents(nativeEventsEnabled, nativeEventsObj, nodeForInteraction) {
-  var nativeEventFailureCause = "Could not get node for element or native " +
-      "events are not supported on the platform.";
+  var nativeEventFailureCause = 'Could not get node for element or native ' +
+      'events are not supported on the platform.';
   if (!nativeEventsEnabled) {
-    nativeEventFailureCause = "native events are disabled on this platform.";
+    nativeEventFailureCause = 'native events are disabled on this platform.';
   } else if (!nativeEventsObj) {
-    nativeEventFailureCause = "Could not load native events component.";
+    nativeEventFailureCause = 'Could not load native events component.';
   } else {
-    nativeEventFailureCause = "Could not get node for element - cannot interact.";
+    nativeEventFailureCause = 'Could not get node for element - cannot interact.';
   }
  // TODO: use the correct error type here.
   return new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
-      "Cannot perform native interaction: " + nativeEventFailureCause);
+      'Cannot perform native interaction: ' + nativeEventFailureCause);
 }
 
 FirefoxDriver.prototype.sendResponseFromSyntheticMouse_ = function(mouseReturnValue, respond) {
@@ -1102,7 +1103,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   // Fast path first
   if (!this.enableNativeEvents) {
     var target = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
-    fxdriver.logging.info("Calling move with: " + parameters['xoffset'] + ', ' + parameters['yoffset'] + ", " + target);
+    fxdriver.logging.info('Calling move with: ' + parameters['xoffset'] + ', ' + parameters['yoffset'] + ', ' + target);
     var result = this.mouse.move(target, parameters['xoffset'], parameters['yoffset']);
     this.sendResponseFromSyntheticMouse_(result, respond);
 
@@ -1134,7 +1135,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     } catch (ex) {
       if (ex.code == bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS) {
         respond.sendError(new WebDriverError(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-          "Given coordinates (" + clickPoint_ownerDocumentPreScroll.x + ", " + clickPoint_ownerDocumentPreScroll.y + ") are outside the document. Error: " + ex));
+          'Given coordinates (' + clickPoint_ownerDocumentPreScroll.x + ', ' + clickPoint_ownerDocumentPreScroll.y + ') are outside the document. Error: ' + ex));
         return;
       }
       else {
@@ -1154,8 +1155,8 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     if (nativeEventsEnabled && nativeMouse && node) {
       var currentPosition = respond.session.getMousePosition();
       var currentPosition_windowHandle = {x: currentPosition.x + browserOffset.x, y: currentPosition.y + browserOffset.y};
-      fxdriver.logging.info("Moving from (" + currentPosition.x + ", " + currentPosition.y + ") to (" +
-        clickPoint_ownerDocumentPostScroll.x + ", " + clickPoint_ownerDocumentPostScroll.y + ")");
+      fxdriver.logging.info('Moving from (' + currentPosition.x + ', ' + currentPosition.y + ') to (' +
+        clickPoint_ownerDocumentPostScroll.x + ', ' + clickPoint_ownerDocumentPostScroll.y + ')');
       nativeMouse.mouseMove(node,
           currentPosition_windowHandle.x, currentPosition_windowHandle.y,
           mouseTarget_ownerDocument_windowHandle.x, mouseTarget_ownerDocument_windowHandle.y);
@@ -1241,8 +1242,8 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
     if (isMouseButtonPressed) {
       upX = currentPosition.viewPortXOffset;
       upY = currentPosition.viewPortYOffset;
-      fxdriver.logging.info("Button pressed. Using coordiantes with viewport offset: "
-          + upX + ", " + upY);
+      fxdriver.logging.info('Button pressed. Using coordiantes with viewport offset: '
+          + upX + ', ' + upY);
     }
     var browserOffset = Utils.getBrowserSpecificOffset(respond.session.getBrowser());
 
@@ -1274,7 +1275,7 @@ FirefoxDriver.prototype.mouseClick = function(respond, parameters) {
     // The right mouse button is defined as '2' in the wire protocol
     var RIGHT_MOUSE_BUTTON = 2;
     var result;
-    if(RIGHT_MOUSE_BUTTON == button) {
+    if (RIGHT_MOUSE_BUTTON == button) {
       result = this.mouse.contextClick(null);
     } else {
       result = this.mouse.click(null);
@@ -1353,19 +1354,19 @@ FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) 
 
   var currentlyActiveElement = Utils.getActiveElement(respond.session.getDocument());
 
-  if(bot.dom.isEditable(currentlyActiveElement)) {
+  if (bot.dom.isEditable(currentlyActiveElement)) {
       goog.dom.selection.setCursorPosition(
           currentlyActiveElement, currentlyActiveElement.value.length);
   }
 
   var useElement = currentlyActiveElement;
   var tagName = useElement.tagName.toLowerCase();
-  if (tagName == "body" && useElement.ownerDocument.defaultView.frameElement) {
+  if (tagName == 'body' && useElement.ownerDocument.defaultView.frameElement) {
     useElement.ownerDocument.defaultView.focus();
 
     // Turns out, this is what we should be using as the target
     // to send events to
-    useElement = useElement.ownerDocument.getElementsByTagName("html")[0];
+    useElement = useElement.ownerDocument.getElementsByTagName('html')[0];
   }
 
   // In case Utils.type performs non-native typing, it will modify the state of the
@@ -1422,32 +1423,32 @@ FirefoxDriver.prototype.maximizeWindow = function(respond, parameters) {
 
   var documentWindow = respond.session.getWindow();
   var chromeWindow = this.getChromeWindowFromDocumentWindow(documentWindow);
-  
+
   chromeWindow.maximize();
 
   respond.send();
 };
 
 
-FirefoxDriver.prototype.getChromeWindowFromDocumentWindow = function(documentWindow){
-  // Find the chrome window for the requested document window. 
+FirefoxDriver.prototype.getChromeWindowFromDocumentWindow = function(documentWindow) {
+  // Find the chrome window for the requested document window.
   // This will ignore unfocused tabs
   var wm = fxdriver.moz.getService(
-    "@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
-  var allWindows = wm.getEnumerator("navigator:browser");
+    '@mozilla.org/appshell/window-mediator;1', 'nsIWindowMediator');
+  var allWindows = wm.getEnumerator('navigator:browser');
 
   while (allWindows.hasMoreElements()) {
-    var chromeWindow = allWindows.getNext()	  
+    var chromeWindow = allWindows.getNext();
 
     if (chromeWindow.gBrowser.contentWindow == documentWindow.top) {
       return chromeWindow;
     }
-  }  
+  }
 };
 
 //TODO(jari): could this be made into a precondition?
 FirefoxDriver.prototype.assertTargetsCurrentWindow_ = function(parameters) {
-  if (parameters.windowHandle != "current") {
+  if (parameters.windowHandle != 'current') {
     throw new WebDriverError(bot.ErrorCode.UNSUPPORTED_OPERATION,
       'Window operations are only supported for the currently focused window.');
   }

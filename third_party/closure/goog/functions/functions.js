@@ -25,8 +25,9 @@ goog.provide('goog.functions');
 
 /**
  * Creates a function that always returns the same value.
- * @param {*} retValue The value to return.
- * @return {!Function} The new function.
+ * @param {T} retValue The value to return.
+ * @return {function():T} The new function.
+ * @template T
  */
 goog.functions.constant = function(retValue) {
   return function() {
@@ -59,10 +60,10 @@ goog.functions.NULL = goog.functions.constant(null);
 /**
  * A simple function that returns the first argument of whatever is passed
  * into it.
- * @param {*=} opt_returnValue The single value that will be returned.
+ * @param {T=} opt_returnValue The single value that will be returned.
  * @param {...*} var_args Optional trailing arguments. These are ignored.
- * @return {?} The first argument passed in, or undefined if nothing was passed.
- *     We can't know the type -- just pass it along without type.
+ * @return {T} The first argument passed in, or undefined if nothing was passed.
+ * @template T
  */
 goog.functions.identity = function(opt_returnValue, var_args) {
   return opt_returnValue;
@@ -101,8 +102,9 @@ goog.functions.lock = function(f, opt_numArgs) {
  * Given a function, create a new function that swallows its return value
  * and replaces it with a new one.
  * @param {Function} f A function.
- * @param {*} retValue A new return value.
- * @return {!Function} A new function.
+ * @param {T} retValue A new return value.
+ * @return {function(...[?]):T} A new function.
+ * @template T
  */
 goog.functions.withReturnValue = function(f, retValue) {
   return goog.functions.sequence(f, goog.functions.constant(retValue));
@@ -112,10 +114,12 @@ goog.functions.withReturnValue = function(f, retValue) {
 /**
  * Creates the composition of the functions passed in.
  * For example, (goog.functions.compose(f, g))(a) is equivalent to f(g(a)).
+ * @param {function(...[?]):T} fn The final function.
  * @param {...Function} var_args A list of functions.
- * @return {!Function} The composition of all inputs.
+ * @return {function(...[?]):T} The composition of all inputs.
+ * @template T
  */
-goog.functions.compose = function(var_args) {
+goog.functions.compose = function(fn, var_args) {
   var functions = arguments;
   var length = functions.length;
   return function() {
@@ -158,7 +162,8 @@ goog.functions.sequence = function(var_args) {
  * short-circuited as soon as a function returns false.
  * For example, (goog.functions.and(f, g))(x) is equivalent to f(x) && g(x).
  * @param {...Function} var_args A list of functions.
- * @return {!Function} A function that ANDs its component functions.
+ * @return {function(...[?]):boolean} A function that ANDs its component
+ *      functions.
  */
 goog.functions.and = function(var_args) {
   var functions = arguments;
@@ -180,7 +185,8 @@ goog.functions.and = function(var_args) {
  * short-circuited as soon as a function returns true.
  * For example, (goog.functions.or(f, g))(x) is equivalent to f(x) || g(x).
  * @param {...Function} var_args A list of functions.
- * @return {!Function} A function that ORs its component functions.
+ * @return {function(...[?]):boolean} A function that ORs its component
+ *    functions.
  */
 goog.functions.or = function(var_args) {
   var functions = arguments;
@@ -200,7 +206,8 @@ goog.functions.or = function(var_args) {
  * Creates a function that returns the Boolean opposite of a provided function.
  * For example, (goog.functions.not(f))(x) is equivalent to !f(x).
  * @param {!Function} f The original function.
- * @return {!Function} A function that delegates to f and returns opposite.
+ * @return {function(...[?]):boolean} A function that delegates to f and returns
+ * opposite.
  */
 goog.functions.not = function(f) {
   return function() {

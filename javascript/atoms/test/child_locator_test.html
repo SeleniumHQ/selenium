@@ -7,7 +7,6 @@
     goog.require('goog.dom');
     goog.require('goog.events.EventType');
     goog.require('goog.testing.jsunit');
-    goog.require('goog.userAgent');
     goog.require('bot');
     goog.require('bot.dom');
     goog.require('bot.locators');
@@ -104,9 +103,6 @@
     }
 
     function testCanFindChildElementByXpath() {
-      if (!document['evaluate'] && !goog.userAgent.IE) {
-        return;  // Skip this until we get xpath working on all browsers
-      }
       var parent = bot.locators.findElement({id: 'parent'});
       var child = bot.locators.findElement({xpath: './/*[@id="child"]'}, parent);
 
@@ -114,9 +110,6 @@
     }
 
     function testCanFindChildElementsByXpath() {
-      if (!document['evaluate'] && !goog.userAgent.IE) {
-        return;  // Skip this until we get xpath working on all browsers
-      }
       var parent = bot.locators.findElement({id: 'parent'});
       var children = bot.locators.findElements({xpath: './/*[@id="child"]'}, parent);
 
@@ -205,7 +198,6 @@
   </div>
 
   <p name="child">Me either</p>
-
 
   <div id="link-parent-a">
     <a id="link" href="#">this is a link</a>

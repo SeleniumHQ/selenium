@@ -28,6 +28,7 @@ goog.provide('goog.net.ChannelRequest');
 goog.provide('goog.net.ChannelRequest.Error');
 
 goog.require('goog.Timer');
+goog.require('goog.async.Throttle');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.net.EventType');
@@ -255,6 +256,28 @@ goog.net.ChannelRequest.prototype.cancelled_ = false;
 
 
 /**
+ * A throttle time in ms for readystatechange events for the backchannel.
+ * Useful for throttling when ready state is INTERACTIVE (partial data).
+ * If set to zero no throttle is used.
+ *
+ * @see goog.net.BrowserChannel.prototype.readyStateChangeThrottleMs_
+ *
+ * @type {number}
+ * @private
+ */
+goog.net.ChannelRequest.prototype.readyStateChangeThrottleMs_ = 0;
+
+
+/**
+ * The throttle for readystatechange events for the current request, or null
+ * if there is none.
+ * @type {goog.async.Throttle}
+ * @private
+ */
+goog.net.ChannelRequest.prototype.readyStateChangeThrottle_ = null;
+
+
+/**
  * Default timeout in MS for a request. The server must return data within this
  * time limit for the request to not timeout.
  * @type {number}
@@ -422,6 +445,18 @@ goog.net.ChannelRequest.prototype.setTimeout = function(timeout) {
 
 
 /**
+ * Sets the throttle for handling onreadystatechange events for the request.
+ *
+ * @param {number} throttle The throttle in ms.  A value of zero indicates
+ *     no throttle.
+ */
+goog.net.ChannelRequest.prototype.setReadyStateChangeThrottle = function(
+    throttle) {
+  this.readyStateChangeThrottleMs_ = throttle;
+};
+
+
+/**
  * Uses XMLHTTP to send an HTTP POST to the server.
  *
  * @param {goog.Uri} uri  The uri of the request.
@@ -486,9 +521,16 @@ goog.net.ChannelRequest.prototype.sendXmlHttp_ = function(hostPrefix) {
   var useSecondaryDomains = this.channel_.shouldUseSecondaryDomains();
   this.xmlHttp_ = this.channel_.createXhrIo(useSecondaryDomains ?
       hostPrefix : null);
+
+  if (this.readyStateChangeThrottleMs_ > 0) {
+    this.readyStateChangeThrottle_ = new goog.async.Throttle(
+        goog.bind(this.xmlHttpHandler_, this, this.xmlHttp_),
+        this.readyStateChangeThrottleMs_);
+  }
+
   this.eventHandler_.listen(this.xmlHttp_,
       goog.net.EventType.READY_STATE_CHANGE,
-      this.xmlHttpHandler_, false, this);
+      this.readyStateChangeHandler_);
 
   var headers = this.extraHeaders_ ? goog.object.clone(this.extraHeaders_) : {};
   if (this.postData_) {
@@ -517,12 +559,31 @@ goog.net.ChannelRequest.prototype.sendXmlHttp_ = function(hostPrefix) {
 
 
 /**
- * XmlHttp handler
- * @param {goog.events.Event} e Event object, target is a XhrIo object.
+ * Handles a readystatechange event.
+ * @param {goog.events.Event} evt The event.
  * @private
  */
-goog.net.ChannelRequest.prototype.xmlHttpHandler_ = function(e) {
-  var xmlhttp = e.target;
+goog.net.ChannelRequest.prototype.readyStateChangeHandler_ = function(evt) {
+  var xhr = /** @type {goog.net.XhrIo} */ (evt.target);
+  var throttle = this.readyStateChangeThrottle_;
+  if (throttle &&
+      xhr.getReadyState() == goog.net.XmlHttp.ReadyState.INTERACTIVE) {
+    // Only throttle in the partial data case.
+    this.channelDebug_.debug('Throttling readystatechange.');
+    throttle.fire();
+  } else {
+    // If we haven't throttled, just handle response directly.
+    this.xmlHttpHandler_(xhr);
+  }
+};
+
+
+/**
+ * XmlHttp handler
+ * @param {goog.net.XhrIo} xmlhttp The XhrIo object for the current request.
+ * @private
+ */
+goog.net.ChannelRequest.prototype.xmlHttpHandler_ = function(xmlhttp) {
   goog.net.BrowserChannel.onStartExecution();
   /** @preserveTry */
   try {
@@ -1100,6 +1161,9 @@ goog.net.ChannelRequest.prototype.dispatchFailure_ = function() {
  */
 goog.net.ChannelRequest.prototype.cleanup_ = function() {
   this.cancelWatchDogTimer_();
+
+  goog.dispose(this.readyStateChangeThrottle_);
+  this.readyStateChangeThrottle_ = null;
 
   // Stop the polling timer, if necessary.
   this.pollingTimer_.stop();

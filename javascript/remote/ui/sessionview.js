@@ -16,7 +16,7 @@ goog.provide('remote.ui.SessionView');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.events.Event');
+goog.require('goog.events');
 goog.require('goog.math.Box');
 goog.require('goog.style');
 goog.require('goog.ui.Button');

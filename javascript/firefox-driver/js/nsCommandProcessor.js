@@ -29,14 +29,13 @@ goog.require('WebElement');
 goog.require('bot.ErrorCode');
 goog.require('bot.locators');
 goog.require('bot.userAgent');
-goog.require('fxdriver.logging');
 goog.require('fxdriver.Timer');
 goog.require('fxdriver.error');
-goog.require('fxdriver.moz');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.modals');
+goog.require('fxdriver.moz');
 goog.require('fxdriver.profiler');
-goog.require('goog.dom');
-goog.require('goog.object');
+goog.require('goog.array');
 goog.require('wdSessionStoreService');
 
 
@@ -79,9 +78,9 @@ Response.prototype = {
    * @param {window} win The content window that the command will be executed on.
    */
   startCommand: function(win) {
-    this.statusBarLabel_ = win.document.getElementById("fxdriver-label");
+    this.statusBarLabel_ = win.document.getElementById('fxdriver-label');
     if (this.statusBarLabel_) {
-      this.statusBarLabel_.style.color = "red";
+      this.statusBarLabel_.style.color = 'red';
     }
   },
 
@@ -119,11 +118,11 @@ Response.prototype = {
   },
 
   set name(name) { this.json_.name = name; },
-  get name()     { return this.json_.name; },
+  get name() { return this.json_.name; },
   set status(newStatus) { this.json_.status = newStatus; },
-  get status()          { return this.json_.status; },
-  set value(val)     { this.json_.value = val; },
-  get value()        { return this.json_.value; }
+  get status() { return this.json_.status; },
+  set value(val) { this.json_.value = val; },
+  get value() { return this.json_.value; }
 };
 
 
@@ -214,7 +213,7 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
       var rawRequest = requests.getNext();
 
       try {
-        request = rawRequest.QueryInterface(Components.interfaces.nsIRequest)
+        request = rawRequest.QueryInterface(Components.interfaces.nsIRequest);
       } catch (e) {
         // This may happen for pages that use WebSockets.
         // See https://bugzilla.mozilla.org/show_bug.cgi?id=765618
@@ -226,7 +225,7 @@ DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
       var isPending = false;
       try {
         isPending = request.isPending();
-      } catch(e) {
+      } catch (e) {
           // Normal during page load, which means we should just return "true"
         return true;
       }
@@ -313,7 +312,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
           this.response_, parameters);
       var guards = goog.bind(this.checkPreconditions_, this,
           driverFunction.preconditions, this.response_, parameters);
-      
+
       var toExecute = function() {
         try {
           guards();
@@ -334,7 +333,7 @@ DelayedCommand.prototype.executeInternal_ = function() {
       toExecute();
     } catch (e) {
       if (!e.isWebDriverError) {
-        fxdriver.logging.error('Exception caught by driver: ' + 
+        fxdriver.logging.error('Exception caught by driver: ' +
           this.command_.name + '(' + this.command_.parameters + ')');
         fxdriver.logging.error(e);
       }
@@ -356,7 +355,7 @@ var nsCommandProcessor = function() {
     eval(Utils.loadUrl('resource://fxdriver/json2.js'));
   }
 
-  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces["nsIPrefBranch"]);
+  var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces['nsIPrefBranch']);
 
   if (prefs.prefHasUserValue('webdriver.load.strategy')) {
     loadStrategy_ = prefs.getCharPref('webdriver.load.strategy');
@@ -469,7 +468,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
   }
 
   if (driver.modalOpen) {
-    if (command.name != 'getAlertText' && 
+    if (command.name != 'getAlertText' &&
         command.name != 'setAlertValue' &&
         command.name != 'acceptAlert' &&
         command.name != 'dismissAlert') {
@@ -660,7 +659,7 @@ nsCommandProcessor.prototype.getStatus = function(response) {
           // See https://developer.mozilla.org/en/XPCOM_ABI
           return (xulRuntime.XPCOMABI || 'unknown').split('-')[0];
         } catch (ignored) {
-          return 'unknown'
+          return 'unknown';
         }
       })(),
       // See https://developer.mozilla.org/en/OS_TARGET
@@ -683,7 +682,7 @@ nsCommandProcessor.prototype.getStatus = function(response) {
  * @param {Response} response The object to send the command response in.
  */
 nsCommandProcessor.prototype.newSession = function(response, parameters) {
-  var win = this.wm.getMostRecentWindow("navigator:browser");
+  var win = this.wm.getMostRecentWindow('navigator:browser');
   var driver = win.fxdriver;
   if (!driver) {
     response.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
@@ -789,7 +788,7 @@ nsCommandProcessor.prototype.getInterfaces = function(count) {
 };
 
 
-nsCommandProcessor.prototype.QueryInterface = function (aIID) {
+nsCommandProcessor.prototype.QueryInterface = function(aIID) {
   if (!aIID.equals(Components.interfaces.nsICommandProcessor) &&
       !aIID.equals(Components.interfaces.nsISupports)) {
     throw Components.results.NS_ERROR_NO_INTERFACE;
@@ -810,7 +809,7 @@ nsCommandProcessor.CONTRACT_ID =
  * {@code CommandProcessor}.
  */
 nsCommandProcessor.Factory = {
-  instance_ : null,
+  instance_: null,
 
   createInstance: function(aOuter, aIID) {
     if (aOuter != null) {
@@ -871,7 +870,7 @@ NSGetModule = function() {
 };
 
 nsCommandProcessor.prototype.classID = nsCommandProcessor.CLASS_ID;
-fxdriver.moz.load("resource://gre/modules/XPCOMUtils.jsm");
+fxdriver.moz.load('resource://gre/modules/XPCOMUtils.jsm');
 if (XPCOMUtils.generateNSGetFactory) {
   /** @const */ NSGetFactory = XPCOMUtils.generateNSGetFactory([nsCommandProcessor]);
 }

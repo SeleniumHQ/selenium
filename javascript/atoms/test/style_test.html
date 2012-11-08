@@ -243,7 +243,8 @@
 
       function testEffectiveStyleReturnsQuotedShortMsFilterAsFilter() {
         var e = bot.locators.findElement({id: 'msFilterQuotedFilterShort'});
-        if (goog.userAgent.IE && bot.userAgent.isEngineVersion(8)) {
+        if (goog.userAgent.IE && bot.userAgent.isEngineVersion(8) &&
+            !bot.userAgent.isEngineVersion(10)) {
           assertEquals('alpha(opacity=0)', bot.dom.getInlineStyle(e, 'filter'));
         } else {
           // -ms-filters make sense only on IE.
@@ -253,7 +254,8 @@
 
       function testEffectiveStyleReturnsQuotedLongMsFilterAsFilter() {
         var e = bot.locators.findElement({id: 'msFilterQuotedFilterLong'});
-        if (goog.userAgent.IE && bot.userAgent.isEngineVersion(8)) {
+        if (goog.userAgent.IE && bot.userAgent.isEngineVersion(8) &&
+            !bot.userAgent.isEngineVersion(10)) {
           assertEquals('progid:DXImageTransform.Microsoft.Alpha(Opacity=20)',
               bot.dom.getInlineStyle(e, 'filter'));
         } else {

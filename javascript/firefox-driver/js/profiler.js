@@ -27,4 +27,3 @@ fxdriver.profiler.log = function(message) {
   fxdriver.logging.log(fxdriver.logging.LogType.PROFILER,
       fxdriver.logging.LogLevel.INFO, message);
 };
-

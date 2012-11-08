@@ -1434,6 +1434,7 @@ goog.Uri.QueryData.prototype.clone = function() {
   rv.encodedQuery_ = this.encodedQuery_;
   if (this.keyMap_) {
     rv.keyMap_ = this.keyMap_.clone();
+    rv.count_ = this.count_;
   }
   return rv;
 };

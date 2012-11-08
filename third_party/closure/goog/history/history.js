@@ -286,6 +286,7 @@ goog.History = function(opt_invisible, opt_blankPageUrl, opt_input,
    * @private
    */
   this.timer_ = new goog.Timer(goog.History.PollingType.NORMAL);
+  this.registerDisposable(this.timer_);
 
   /**
    * True if the state tokens are displayed in the address bar, false for hidden

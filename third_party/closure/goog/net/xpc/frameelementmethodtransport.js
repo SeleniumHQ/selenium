@@ -81,7 +81,7 @@ goog.inherits(goog.net.xpc.FrameElementMethodTransport, goog.net.xpc.Transport);
  * @override
  */
 goog.net.xpc.FrameElementMethodTransport.prototype.transportType =
-   goog.net.xpc.TransportTypes.FRAME_ELEMENT_METHOD;
+    goog.net.xpc.TransportTypes.FRAME_ELEMENT_METHOD;
 
 
 /**
@@ -116,7 +116,7 @@ goog.net.xpc.FrameElementMethodTransport.outgoing_ = null;
 goog.net.xpc.FrameElementMethodTransport.prototype.connect = function() {
   if (this.channel_.getRole() == goog.net.xpc.CrossPageChannelRole.OUTER) {
     // get shortcut to iframe-element
-    this.iframeElm_ = this.channel_.iframeElement_;
+    this.iframeElm_ = this.channel_.getIframeElement();
 
     // add the gateway function to the iframe-element
     // (to be called by the peer)
@@ -205,7 +205,7 @@ goog.net.xpc.FrameElementMethodTransport.prototype.transportServiceHandler =
 goog.net.xpc.FrameElementMethodTransport.prototype.incoming_ =
     function(serviceName, payload) {
   if (!this.recursive_ && this.queue_.length == 0) {
-    this.channel_.deliver_(serviceName, payload);
+    this.channel_.xpcDeliver(serviceName, payload);
   }
   else {
     this.queue_.push({serviceName: serviceName, payload: payload});
@@ -224,7 +224,7 @@ goog.net.xpc.FrameElementMethodTransport.prototype.deliverQueued_ =
     function() {
   while (this.queue_.length) {
     var msg = this.queue_.shift();
-    this.channel_.deliver_(msg.serviceName, msg.payload);
+    this.channel_.xpcDeliver(msg.serviceName, msg.payload);
   }
 };
 

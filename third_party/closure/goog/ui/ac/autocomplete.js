@@ -509,6 +509,7 @@ goog.ui.ac.AutoComplete.prototype.dismiss = function() {
   this.dismissTimer_ = null;
   this.renderer_.dismiss();
   this.dispatchEvent(goog.ui.ac.AutoComplete.EventType.SUGGESTIONS_UPDATE);
+  this.dispatchEvent(goog.ui.ac.AutoComplete.EventType.DISMISS);
 };
 
 

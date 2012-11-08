@@ -20,8 +20,8 @@
 
 goog.provide('bot.color');
 
+goog.require('goog.array');
 goog.require('goog.color.names');
-goog.require('goog.math');
 
 
 /**

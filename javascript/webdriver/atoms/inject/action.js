@@ -20,9 +20,9 @@
 goog.provide('webdriver.atoms.inject.action');
 
 goog.require('bot.action');
-goog.require('bot.inject');
 goog.require('goog.dom.selection');
 goog.require('webdriver.atoms.element');
+goog.require('webdriver.atoms.inject');
 
 
 /**
@@ -33,8 +33,8 @@ goog.require('webdriver.atoms.element');
  * @return {string} A stringified {@link bot.response.ResponseObject}.
  */
 webdriver.atoms.inject.action.type = function(element, keys) {
-  return bot.inject.executeScript(webdriver.atoms.element.type,
-      [element, keys], true);
+  return webdriver.atoms.inject.executeScript(webdriver.atoms.element.type,
+      [element, keys]);
 };
 
 
@@ -45,7 +45,7 @@ webdriver.atoms.inject.action.type = function(element, keys) {
  * @return {string} A stringified {@link bot.response.ResponseObject}.
  */
 webdriver.atoms.inject.action.submit = function(element) {
-  return bot.inject.executeScript(bot.action.submit, [element], true);
+  return webdriver.atoms.inject.executeScript(bot.action.submit, [element]);
 };
 
 
@@ -57,7 +57,7 @@ webdriver.atoms.inject.action.submit = function(element) {
  * @see bot.action.clear
  */
 webdriver.atoms.inject.action.clear = function(element) {
-  return bot.inject.executeScript(bot.action.clear, [element], true);
+  return webdriver.atoms.inject.executeScript(bot.action.clear, [element]);
 };
 
 
@@ -69,6 +69,6 @@ webdriver.atoms.inject.action.clear = function(element) {
  * @see bot.action.click
  */
 webdriver.atoms.inject.action.click = function(element) {
-  return bot.inject.executeScript(bot.action.click, [element], true);
+  return webdriver.atoms.inject.executeScript(bot.action.click, [element]);
 };
 

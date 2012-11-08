@@ -19,7 +19,7 @@
 
 goog.provide('webdriver.atoms.inject.storage.local');
 
-goog.require('bot.inject');
+goog.require('webdriver.atoms.inject');
 goog.require('webdriver.atoms.storage.local');
 
 
@@ -28,12 +28,12 @@ goog.require('webdriver.atoms.storage.local');
  *
  * @param {string} key The key of the item.
  * @param {*} value The value of the item.
- * @return {!bot.response.ResponseObject} The result wrapped according
- *     to the wire protocol.
+ * @return {string} The stringified result wrapped according to the wire
+ *     protocol.
  */
 webdriver.atoms.inject.storage.local.setItem = function(key, value) {
-  return bot.inject.executeScript(webdriver.atoms.storage.local.setItem,
-      [key, value], true);
+  return webdriver.atoms.inject.executeScript(
+      webdriver.atoms.storage.local.setItem, [key, value]);
 };
 
 
@@ -41,24 +41,24 @@ webdriver.atoms.inject.storage.local.setItem = function(key, value) {
  * Gets an item from the local storage.
  *
  * @param {string} key The key of the item.
- * @return {!bot.response.ResponseObject} The result wrapped according
- *     to the wire protocol.
+ * @return {string} The stringified result wrapped according to the wire
+ *     protocol.
  */
 webdriver.atoms.inject.storage.local.getItem = function(key) {
-  return bot.inject.executeScript(webdriver.atoms.storage.local.getItem,
-      [key], true);
+  return webdriver.atoms.inject.executeScript(
+      webdriver.atoms.storage.local.getItem, [key]);
 };
 
 
 /**
  * Gets the key set of the entries.
  *
- * @return {!bot.response.ResponseObject} The result wrapped according
- *     to the wire protocol.
+ * @return {string} The stringified result wrapped according to the wire
+ *     protocol.
  */
 webdriver.atoms.inject.storage.local.keySet = function() {
-  return bot.inject.executeScript(webdriver.atoms.storage.local.keySet,
-      [], true);
+  return webdriver.atoms.inject.executeScript(
+      webdriver.atoms.storage.local.keySet, []);
 };
 
 
@@ -66,34 +66,34 @@ webdriver.atoms.inject.storage.local.keySet = function() {
  * Removes an item in the local storage.
  *
  * @param {string} key The key of the item.
- * @return {!bot.response.ResponseObject} The result wrapped according
- *     to the wire protocol.
+ * @return {string} The stringified result wrapped according to the wire
+ *     protocol.
  */
 webdriver.atoms.inject.storage.local.removeItem = function(key) {
-  return bot.inject.executeScript(webdriver.atoms.storage.local.removeItem,
-      [key], true);
+  return webdriver.atoms.inject.executeScript(
+      webdriver.atoms.storage.local.removeItem, [key]);
 };
 
 
 /**
  * Clears the local storage.
  *
- * @return {!bot.response.ResponseObject} The result wrapped according
- *     to the wire protocol.
+ * @return {string} The stringified result wrapped according to the wire
+ *     protocol.
  */
 webdriver.atoms.inject.storage.local.clear = function() {
-  return bot.inject.executeScript(webdriver.atoms.storage.local.clear,
-      [], true);
+  return webdriver.atoms.inject.executeScript(
+      webdriver.atoms.storage.local.clear, []);
 };
 
 
 /**
  * Gets the size of the local storage.
  *
- * @return {!bot.response.ResponseObject} The result wrapped according
- *     to the wire protocol.
+ * @return {string} The stringified result wrapped according to the wire
+ *     protocol.
  */
 webdriver.atoms.inject.storage.local.size = function() {
-  return bot.inject.executeScript(webdriver.atoms.storage.local.size,
-      [], true);
+  return webdriver.atoms.inject.executeScript(
+      webdriver.atoms.storage.local.size, []);
 };

@@ -13,9 +13,9 @@ java_library(name = "firefox",
     "//third_party/java/commons-exec",
   ],
   embedded = [
-    "//javascript/firefox-driver:webdriver",
-    "//javascript/firefox-driver:webdriver_prefs",
     ":amd64",
+    ":firefox_extension",
+    ":webdriver_prefs",
     ":x86",
   ])
 
@@ -38,6 +38,20 @@ folder(name = "x86",
     "x86/x_ignore_nofocus.so",
     "x86/libibushandler.so",
   ])
+
+rename(
+    name = "webdriver_prefs",
+    out = "webdriver_prefs.json",
+    deps = [
+        "//javascript/firefox-driver:webdriver_prefs",
+    ])
+
+rename(
+    name = "firefox_extension",
+    out = "webdriver.xpi",
+    deps = [
+        "//javascript/firefox-driver:webdriver",
+    ])
 
 # TODO(dawagner): These tmp folders are a horrible hack, and should disappear post haste
 rename(name = "noblur",

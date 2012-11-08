@@ -311,9 +311,9 @@ goog.net.xpc.NativeMessagingTransport.messageReceived_ = function(msgEvt) {
   //  - channel was created in a different namespace
   //  - message was sent to the wrong window
   //  - channel has become stale (e.g. caching iframes and back clicks)
-  var channel = goog.net.xpc.channels_[channelName];
+  var channel = goog.net.xpc.channels[channelName];
   if (channel) {
-    channel.deliver_(service, payload, msgEvt.getBrowserEvent().origin);
+    channel.xpcDeliver(service, payload, msgEvt.getBrowserEvent().origin);
     return true;
   }
 
@@ -321,8 +321,8 @@ goog.net.xpc.NativeMessagingTransport.messageReceived_ = function(msgEvt) {
       goog.net.xpc.NativeMessagingTransport.parseTransportPayload_(payload)[0];
 
   // Check if there are any stale channel names that can be updated.
-  for (var staleChannelName in goog.net.xpc.channels_) {
-    var staleChannel = goog.net.xpc.channels_[staleChannelName];
+  for (var staleChannelName in goog.net.xpc.channels) {
+    var staleChannel = goog.net.xpc.channels[staleChannelName];
     if (staleChannel.getRole() == goog.net.xpc.CrossPageChannelRole.INNER &&
         !staleChannel.isConnected() &&
         service == goog.net.xpc.TRANSPORT_SERVICE_ &&
@@ -338,10 +338,10 @@ goog.net.xpc.NativeMessagingTransport.messageReceived_ = function(msgEvt) {
       goog.net.xpc.logger.fine('changing channel name to ' + channelName);
       staleChannel.name = channelName;
       // Remove old stale pointer to channel.
-      delete goog.net.xpc.channels_[staleChannelName];
+      delete goog.net.xpc.channels[staleChannelName];
       // Create fresh pointer to channel.
-      goog.net.xpc.channels_[channelName] = staleChannel;
-      staleChannel.deliver_(service, payload);
+      goog.net.xpc.channels[channelName] = staleChannel;
+      staleChannel.xpcDeliver(service, payload);
       return true;
     }
   }
@@ -522,7 +522,7 @@ goog.net.xpc.NativeMessagingTransport.prototype.maybeAttemptToConnect_ =
  */
 goog.net.xpc.NativeMessagingTransport.prototype.send = function(service,
                                                                 payload) {
-  var win = this.channel_.peerWindowObject_;
+  var win = this.channel_.getPeerWindowObject();
   if (!win) {
     goog.net.xpc.logger.fine('send(): window not ready');
     return;

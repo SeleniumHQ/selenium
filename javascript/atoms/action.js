@@ -469,7 +469,7 @@ bot.action.rotate = function(element, angle, opt_coords, opt_touchscreen) {
 bot.action.multiTouchAction_ = function(element, transformStart, transformHalf,
                                         opt_coords, opt_touchscreen) {
   var center = bot.action.prepareToInteractWith_(element, opt_coords);
-  var size = bot.action.getInteractableSize_(element);
+  var size = bot.action.getInteractableSize(element);
   var offsetVec = new goog.math.Vec2(
       Math.min(center.x, size.width - center.x),
       Math.min(center.y, size.height - center.y));
@@ -528,7 +528,7 @@ bot.action.prepareToInteractWith_ = function(element, opt_coords) {
   if (opt_coords) {
     return goog.math.Vec2.fromCoordinate(opt_coords);
   } else {
-    var size = bot.action.getInteractableSize_(element);
+    var size = bot.action.getInteractableSize(element);
     return new goog.math.Vec2(size.width / 2, size.height / 2);
   }
 };
@@ -539,12 +539,11 @@ bot.action.prepareToInteractWith_ = function(element, opt_coords) {
  *
  * @param {!Element} elem Element.
  * @return {!goog.math.Size} size Size of the element.
- * @private
  */
-bot.action.getInteractableSize_ = function(elem) {
+bot.action.getInteractableSize = function(elem) {
   var size = goog.style.getSize(elem);
   return ((size.width > 0 && size.height > 0) || !elem.offsetParent) ? size :
-      bot.action.getInteractableSize_(elem.offsetParent);
+      bot.action.getInteractableSize(elem.offsetParent);
 };
 
 

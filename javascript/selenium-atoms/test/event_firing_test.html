@@ -18,7 +18,8 @@
         // These should work, they just dosn't.
         var CLICKING_WITH_COORDINATES_BROKEN = goog.userAgent.product.SAFARI ||
             goog.userAgent.product.ANDROID ||
-            goog.userAgent.product.OPERA;
+            (goog.userAgent.product.OPERA &&
+             bot.userAgent.isEngineVersion(12));
 
         function setUp() {
           fired = false;

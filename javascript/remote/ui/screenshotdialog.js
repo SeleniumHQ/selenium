@@ -15,8 +15,8 @@
 goog.provide('remote.ui.ScreenshotDialog');
 goog.provide('remote.ui.ScreenshotDialog.State');
 
+goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.style');
 goog.require('goog.ui.Dialog');
 
 

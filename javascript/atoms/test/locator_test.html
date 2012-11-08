@@ -24,17 +24,11 @@ limitations under the License.
     goog.require('bot.ErrorCode');
     goog.require('bot.locators');
     goog.require('goog.events.EventType');
-    goog.require('goog.userAgent');
     goog.require('goog.testing.PropertyReplacer');
     goog.require('goog.testing.jsunit');
   </script>
 
   <script type="text/javascript">
-    var CAN_SELECT_SINGLE_NODE =
-        document.documentElement['selectSingleNode'] || document['evaluate'];
-    var CAN_SELECT_MANY_NODES =
-        document.documentElement['selectNodes'] || document['evaluate'];
-
     function testCanFindById() {
       var e = bot.locators.findElement({id: 'x'});
 
@@ -161,10 +155,6 @@ limitations under the License.
     }
 
     function testCanLocateElementsUsingXPath() {
-      if (!CAN_SELECT_SINGLE_NODE && !goog.userAgent.IE) {
-        return;  // Skip this until we get xpath working on all browsers
-      }
-
       var doggies = bot.locators.findElement({xpath: "//*[@id = 'after']"});
 
       assertNotNull(doggies);
@@ -172,30 +162,17 @@ limitations under the License.
     }
 
     function testCanLocateElementsUsingXPathInIframe() {
-      if (!CAN_SELECT_SINGLE_NODE && !goog.userAgent.IE) {
-        return;  // Skip this until we get xpath working on all browsers
-      }
-
       var frameDoc = window.frames[0].document;
       var frameElement = bot.locators.findElement({xpath: '//body/h1'}, frameDoc);
       assertNotNull(frameElement);
       assertEquals('H1', frameElement.tagName);
     }
 
-
     function testWillReturnNullIfNoMatchUsingXPathIsFound() {
-      if (!CAN_SELECT_SINGLE_NODE && !goog.userAgent.IE) {
-        return;  // Skip this until we get xpath working on all browsers
-      }
-
       assertNull(bot.locators.findElement({xpath: '//fish'}));
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathIsSyntacticallyInvalidInSingle() {
-      if (!CAN_SELECT_SINGLE_NODE && !goog.userAgent.IE) {
-        return;  // Skip this until we get xpath working on all browsers
-      }
-
       try {
         bot.locators.findElement({xpath: 'this][isnot][valid'});
         fail('Should not have succeeded because the xpath expression is ' +
@@ -208,10 +185,6 @@ limitations under the License.
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathReturnsAWrongTypeInSingle() {
-      if (!CAN_SELECT_SINGLE_NODE && !goog.userAgent.IE) {
-        return;  // Skip this until we get xpath working on all browsers
-      }
-
       try {
         bot.locators.findElement({xpath: 'count(//fish)'});
         fail('Should not have succeeded because the xpath expression does ' +
@@ -252,20 +225,12 @@ limitations under the License.
     }
 
     function testCanFindManyElementsViaXPath() {
-      if (!CAN_SELECT_MANY_NODES && !goog.userAgent.IE) {
-        return;  // Skip this until we get xpath working on all browsers
-      }
-
       var bad = bot.locators.findElements({xpath: '//*[@name = "after"]'});
 
       assertEquals(2, bad.length);
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathIsSyntacticallyInvalidInMany() {
-      if (!CAN_SELECT_MANY_NODES && !goog.userAgent.IE) {
-        return;  // Skip this until we get xpath working on all browsers
-      }
-
       try {
         bot.locators.findElements({xpath: 'this][isnot][valid'});
         fail('Should not have succeeded because the xpath expression is ' +
@@ -278,10 +243,6 @@ limitations under the License.
     }
 
     function testShouldThrowInvalidSelectorErrorWhenXPathReturnsAWrongTypeInMany() {
-      if (!CAN_SELECT_MANY_NODES && !goog.userAgent.IE) {
-        return;  // Skip this until we get xpath working on all browsers
-      }
-
       try {
         bot.locators.findElements({xpath: 'count(//fish)'});
         fail('Should not have succeeded because the xpath expression does ' +
@@ -440,5 +401,5 @@ limitations under the License.
   <a href="#" id="comma-in-alt" alt="has, a comma">has, a comma</a>
 
   <iframe src="./testdata/iframe_page.html"></iframe>
-  </body>
+</body>
 </html>

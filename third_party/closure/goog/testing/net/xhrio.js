@@ -63,6 +63,13 @@ goog.inherits(goog.testing.net.XhrIo, goog.events.EventTarget);
 
 
 /**
+ * Alias this enum here to make mocking of goog.net.XhrIo easier.
+ * @enum {string}
+ */
+goog.testing.net.XhrIo.ResponseType = goog.net.XhrIo.ResponseType;
+
+
+/**
  * All non-disposed instances of goog.testing.net.XhrIo created
  * by {@link goog.testing.net.XhrIo.send} are in this Array.
  * @see goog.testing.net.XhrIo.cleanup

@@ -16,15 +16,15 @@
  */
 
 /**
- * @fileoverview Methods for dealing with modal dialogs
+ * @fileoverview Methods for dealing with modal dialogs.
  */
 
 goog.provide('fxdriver.modals');
 
 goog.require('WebDriverError');
 goog.require('bot.ErrorCode');
-goog.require('fxdriver.logging');
 goog.require('fxdriver.Timer');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
 
@@ -43,7 +43,7 @@ fxdriver.modals.isModalPresent = function(callback, timeout) {
 
 fxdriver.modals.acceptAlert = function(driver) {
   var modal = fxdriver.modals.find_();
-  var button = fxdriver.modals.findButton_(modal, "accept");
+  var button = fxdriver.modals.findButton_(modal, 'accept');
   button.click();
   fxdriver.modals.clearFlag_(driver);
 };
@@ -51,11 +51,11 @@ fxdriver.modals.acceptAlert = function(driver) {
 
 fxdriver.modals.dismissAlert = function(driver) {
   var modal = fxdriver.modals.find_();
-  var button = fxdriver.modals.findButton_(modal, "cancel");
+  var button = fxdriver.modals.findButton_(modal, 'cancel');
 
   if (!button) {
     fxdriver.logging.info('No cancel button Falling back to the accept button');
-    button = fxdriver.modals.findButton_(modal, "accept");
+    button = fxdriver.modals.findButton_(modal, 'accept');
   }
 
   button.click();
@@ -110,7 +110,7 @@ fxdriver.modals.find_ = function() {
 
 fxdriver.modals.findButton_ = function(modal, value) {
   var doc = modal.document;
-  var dialog = doc.getElementsByTagName("dialog")[0];
+  var dialog = doc.getElementsByTagName('dialog')[0];
   return dialog.getButton(value);
 };
 
@@ -126,7 +126,7 @@ fxdriver.modals.clearFlag_ = function(driver) {
 
 
 fxdriver.modals.findAssociatedDriver_ = function(window) {
-  var ww = CC["@mozilla.org/embedcomp/window-watcher;1"].getService(CI["nsIWindowWatcher"]);
+  var ww = CC['@mozilla.org/embedcomp/window-watcher;1'].getService(CI['nsIWindowWatcher']);
 
   var parent = window ? window : ww.activeWindow;
   if (parent.wrappedJSObject) {
@@ -135,13 +135,13 @@ fxdriver.modals.findAssociatedDriver_ = function(window) {
   var top = parent.top;
 
   // Now iterate over all open browsers to find the one we belong to
-  var wm = CC["@mozilla.org/appshell/window-mediator;1"].getService(CI["nsIWindowMediator"]);
-  var allWindows = wm.getEnumerator("navigator:browser");
+  var wm = CC['@mozilla.org/appshell/window-mediator;1'].getService(CI['nsIWindowMediator']);
+  var allWindows = wm.getEnumerator('navigator:browser');
   while (allWindows.hasMoreElements()) {
     var chrome = allWindows.getNext().QueryInterface(CI.nsIDOMWindow);
     if (chrome.content == window) {
       return chrome.fxdriver;
-    } else if(chrome.content.top == window.top) {
+    } else if (chrome.content.top == window.top) {
       return chrome.fxdriver;
     }
   }
@@ -152,7 +152,7 @@ fxdriver.modals.findAssociatedDriver_ = function(window) {
 };
 
 fxdriver.modals.signalOpenModal = function(parent, text) {
-  fxdriver.logging.info("signalOpenModal");
+  fxdriver.logging.info('signalOpenModal');
   // Try to grab the top level window
   var driver = fxdriver.modals.findAssociatedDriver_(parent);
   if (driver && driver.response_) {
@@ -211,7 +211,7 @@ fxdriver.modals.asAcceptableAlertValue = function(value) {
   }
 
   return 'dismiss';
-}
+};
 
 
 /**
@@ -221,10 +221,10 @@ fxdriver.modals.asAcceptableAlertValue = function(value) {
  */
 fxdriver.modals.configure = function(unexpectedAlertBehaviour) {
   var prefs = fxdriver.moz.getService(
-      "@mozilla.org/preferences-service;1", "nsIPrefBranch");
+      '@mozilla.org/preferences-service;1', 'nsIPrefBranch');
 
   var value = fxdriver.modals.asAcceptableAlertValue(unexpectedAlertBehaviour);
-  prefs.setCharPref("webdriver_unexpected_alert_behaviour", value);
+  prefs.setCharPref('webdriver_unexpected_alert_behaviour', value);
 };
 
 
@@ -233,12 +233,12 @@ fxdriver.modals.configure = function(unexpectedAlertBehaviour) {
  */
 fxdriver.modals.getUnexpectedAlertBehaviour = function() {
   var prefs = fxdriver.moz.getService(
-      "@mozilla.org/preferences-service;1", "nsIPrefBranch");
+      '@mozilla.org/preferences-service;1', 'nsIPrefBranch');
 
-  if (!prefs.prefHasUserValue("webdriver_unexpected_alert_behaviour")) {
+  if (!prefs.prefHasUserValue('webdriver_unexpected_alert_behaviour')) {
     return 'dismiss';
   }
 
-  var raw = prefs.getCharPref("webdriver_unexpected_alert_behaviour");
+  var raw = prefs.getCharPref('webdriver_unexpected_alert_behaviour');
   return fxdriver.modals.asAcceptableAlertValue(raw);
 };

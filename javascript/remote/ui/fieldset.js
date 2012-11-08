@@ -14,6 +14,7 @@
 
 goog.provide('remote.ui.FieldSet');
 
+goog.require('goog.dom.TagName');
 goog.require('goog.ui.Component');
 
 

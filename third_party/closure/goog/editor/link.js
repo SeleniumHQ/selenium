@@ -214,20 +214,33 @@ goog.editor.Link.prototype.updateLinkDisplay_ = function(field, url) {
 
 
 /**
+ * @return {string?} The modified string for the link if the link
+ *     text appears to be a valid link. Returns null if this is not
+ *     a valid link address.
+ */
+goog.editor.Link.prototype.getValidLinkFromText = function() {
+  var text = this.getCurrentText();
+  if (goog.editor.Link.isLikelyUrl(text)) {
+    if (text.search(/:/) < 0) {
+      return 'http://' + goog.string.trimLeft(text);
+    }
+    return text;
+  } else if (goog.editor.Link.isLikelyEmailAddress(text)) {
+    return 'mailto:' + text;
+  }
+  return null;
+};
+
+
+/**
  * After link creation, finish creating the link depending on the type
  * of link being created.
  * @param {goog.editor.Field} field The field where this link is being created.
  */
 goog.editor.Link.prototype.finishLinkCreation = function(field) {
-  var text = this.getCurrentText();
-  if (goog.editor.Link.isLikelyUrl(text)) {
-    if (text.search(/:/) < 0) {
-      text = 'http://' + goog.string.trimLeft(text);
-    }
-    this.updateLinkDisplay_(field, text);
-  } else if (goog.editor.Link.isLikelyEmailAddress(text)) {
-    text = 'mailto:' + text;
-    this.updateLinkDisplay_(field, text);
+  var linkFromText = this.getValidLinkFromText();
+  if (linkFromText) {
+    this.updateLinkDisplay_(field, linkFromText);
   } else {
     field.execCommand(goog.editor.Command.MODAL_LINK_EDITOR, this);
   }

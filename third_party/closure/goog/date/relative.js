@@ -208,9 +208,11 @@ goog.date.relative.formatPast = function(dateMs) {
  * "Yesterday" or "Sept 15".
  *
  * @param {number} dateMs Date in milliseconds.
+ * @param {!function(!Date):string=} opt_formatter Formatter for the date.
+ *     Defaults to form 'MMM dd'.
  * @return {string} The formatted date.
  */
-goog.date.relative.formatDay = function(dateMs) {
+goog.date.relative.formatDay = function(dateMs, opt_formatter) {
   var message;
   var today = new Date(goog.now());
 
@@ -229,7 +231,8 @@ goog.date.relative.formatDay = function(dateMs) {
     var MSG_YESTERDAY = goog.getMsg('Yesterday');
     message = MSG_YESTERDAY;
   } else {
-    message = goog.date.relative.formatMonth_(new Date(dateMs));
+    var formatFunction = opt_formatter || goog.date.relative.formatMonth_;
+    message = formatFunction(new Date(dateMs));
   }
   return message;
 };

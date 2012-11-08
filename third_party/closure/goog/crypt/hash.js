@@ -48,7 +48,7 @@ goog.crypt.Hash.prototype.update = goog.abstractMethod;
 
 
 /**
- * @return {Array.<number>} The finalized hash computed
+ * @return {!Array.<number>} The finalized hash computed
  *     from the internal accumulator.
  */
 goog.crypt.Hash.prototype.digest = goog.abstractMethod;

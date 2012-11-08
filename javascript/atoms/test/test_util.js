@@ -19,7 +19,19 @@
 
 goog.provide('bot.test');
 
+goog.require('bot.userAgent');
 goog.require('goog.userAgent');
+
+
+/**
+ * Whether the browser supports SVG element inline with HTML.
+ *
+ * @const
+ * @type {boolean}
+ */
+bot.test.SUPPORTS_INLINE_SVG = !bot.userAgent.IE_DOC_PRE9 &&
+    !bot.userAgent.ANDROID_PRE_GINGERBREAD &&
+    !(goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(2));
 
 
 /**

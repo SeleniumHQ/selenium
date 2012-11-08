@@ -20,8 +20,8 @@
 goog.provide('webdriver.atoms.inject.frame');
 
 goog.require('bot.frame');
-goog.require('bot.inject');
 goog.require('bot.inject.cache');
+goog.require('webdriver.atoms.inject');
 
 
 /**
@@ -33,10 +33,10 @@ goog.require('bot.inject.cache');
  * @return {string} A frame element wrapped in a JSON string as defined by
  *     the wire protocol.
  */
-webdriver.atoms.inject.frame.findFrameByIdOrName = function(idOrName,
-    opt_root) {
-  return bot.inject.executeScript(bot.frame.findFrameByNameOrId,
-      [idOrName, opt_root], true);
+webdriver.atoms.inject.frame.findFrameByIdOrName =
+    function(idOrName, opt_root) {
+  return webdriver.atoms.inject.executeScript(bot.frame.findFrameByNameOrId,
+      [idOrName, opt_root]);
 };
 
 
@@ -44,7 +44,7 @@ webdriver.atoms.inject.frame.findFrameByIdOrName = function(idOrName,
  * @return {string} A string representing the currently active element.
  */
 webdriver.atoms.inject.frame.activeElement = function() {
-  return bot.inject.executeScript(bot.frame.activeElement, [], true);
+  return webdriver.atoms.inject.executeScript(bot.frame.activeElement, []);
 };
 
 
@@ -58,8 +58,8 @@ webdriver.atoms.inject.frame.activeElement = function() {
  *     the wire protocol.
  */
 webdriver.atoms.inject.frame.findFrameByIndex = function(index, opt_root) {
-  return bot.inject.executeScript(bot.frame.findFrameByIndex,
-      [index, opt_root], true);
+  return webdriver.atoms.inject.executeScript(bot.frame.findFrameByIndex,
+      [index, opt_root]);
 };
 
 
@@ -68,17 +68,16 @@ webdriver.atoms.inject.frame.findFrameByIndex = function(index, opt_root) {
  *     which is the top window.
  */
 webdriver.atoms.inject.frame.defaultContent = function() {
-  return bot.inject.executeScript(bot.frame.defaultContent,
-      [], true);
+  return webdriver.atoms.inject.executeScript(bot.frame.defaultContent, []);
 };
 
 
 /**
  * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to query.
  * @return {string} The window corresponding to the frame element
- * wrapped in a JSON string as defined by the wire protocol.
+ *     wrapped in a JSON string as defined by the wire protocol.
  */
 webdriver.atoms.inject.frame.getFrameWindow = function(element) {
-  return bot.inject.executeScript(bot.frame.getFrameWindow,
-      [element], true);
+  return webdriver.atoms.inject.executeScript(bot.frame.getFrameWindow,
+      [element]);
 };

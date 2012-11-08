@@ -147,7 +147,8 @@ goog.editor.BrowserFeature = {
       goog.userAgent.WEBKIT || goog.userAgent.OPERA,
 
   // Whether clicking on an editable link will take you to that site.
-  FOLLOWS_EDITABLE_LINKS: goog.userAgent.WEBKIT,
+  FOLLOWS_EDITABLE_LINKS: goog.userAgent.WEBKIT ||
+      goog.userAgent.IE && goog.userAgent.isVersion('9'),
 
   // Whether this browser has document.activeElement available.
   HAS_ACTIVE_ELEMENT:

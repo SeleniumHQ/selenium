@@ -24,13 +24,14 @@ goog.require('WebLoadingListener');
 goog.require('bot.ErrorCode');
 goog.require('bot.action');
 goog.require('bot.dom');
-goog.require('fxdriver.logging');
 goog.require('fxdriver.io');
+goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.preconditions');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.selection');
+goog.require('goog.math.Coordinate');
 goog.require('webdriver.atoms.element');
 
 
@@ -60,27 +61,27 @@ WebElement.clickElement = function(respond, parameters) {
   var unwrapped = fxdriver.moz.unwrapFor4(element);
   var nativeMouse = Utils.getNativeMouse();
   var node = Utils.getNodeForNativeEvents(unwrapped);
-  var appInfo = Components.classes["@mozilla.org/xre/app-info;1"].
+  var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
       getService(Components.interfaces.nsIXULAppInfo);
   var versionChecker = Components.
-      classes["@mozilla.org/xpcom/version-comparator;1"].
+      classes['@mozilla.org/xpcom/version-comparator;1'].
       getService(Components.interfaces.nsIVersionComparator);
 
   // I'm having trouble getting clicks to work on Firefox 2 on Windows. Always
   // fall back for that
   var useNativeClick =
-      versionChecker.compare(appInfo.platformVersion, "1.9") >= 0;
-  var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
+      versionChecker.compare(appInfo.platformVersion, '1.9') >= 0;
+  var thmgr_cls = Components.classes['@mozilla.org/thread-manager;1'];
 
   // For now, we need to bypass native events for option elements
-  var isOption = "option" == unwrapped.tagName.toLowerCase();
+  var isOption = 'option' == unwrapped.tagName.toLowerCase();
 
-  var location = Utils.getLocation(unwrapped, unwrapped.tagName == "A");
+  var location = Utils.getLocation(unwrapped, unwrapped.tagName == 'A');
   var elementHalfWidth = (location.width ? location.width / 2 : 0);
   var elementHalfHeight = (location.height ? location.height / 2 : 0);
 
   if (!isOption && this.enableNativeEvents && nativeMouse && node && useNativeClick && thmgr_cls) {
-    fxdriver.logging.info("Using native events for click");
+    fxdriver.logging.info('Using native events for click');
 
     var inViewAfterScroll = bot.action.scrollIntoView(
         unwrapped,
@@ -93,7 +94,7 @@ WebElement.clickElement = function(respond, parameters) {
         return;
     }
 
-    location = Utils.getLocationRelativeToWindowHandle(unwrapped, unwrapped.tagName == "A");
+    location = Utils.getLocationRelativeToWindowHandle(unwrapped, unwrapped.tagName == 'A');
     var x = location.x + elementHalfWidth;
     var y = location.y + elementHalfHeight;
 
@@ -124,9 +125,9 @@ WebElement.clickElement = function(respond, parameters) {
       // the error returned from the native call indicates it's not
       // implemented.
 
-      fxdriver.logging.info("Detected error when clicking: " + e.name);
+      fxdriver.logging.info('Detected error when clicking: ' + e.name);
 
-      if (e.name != "NS_ERROR_NOT_IMPLEMENTED") {
+      if (e.name != 'NS_ERROR_NOT_IMPLEMENTED') {
         throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE, e);
       }
 
@@ -134,7 +135,7 @@ WebElement.clickElement = function(respond, parameters) {
     }
   }
 
-  fxdriver.logging.info("Falling back to synthesized click");
+  fxdriver.logging.info('Falling back to synthesized click');
 
   // TODO(simon): Delete the above and sink most of it into a "nativeMouse"
   Utils.installWindowCloseListener(respond);
@@ -153,7 +154,7 @@ WebElement.clickElement = function(respond, parameters) {
   respond.value = res.message;
 };
 WebElement.clickElement.preconditions =
-    [ fxdriver.preconditions.visible ];
+    [fxdriver.preconditions.visible];
 
 
 WebElement.getElementText = function(respond, parameters) {
@@ -183,32 +184,32 @@ WebElement.sendKeysToElement = function(respond, parameters) {
   var newDocument = goog.dom.getOwnerDocument(currentlyActive);
 
   if (currentlyActive != element || currentDocument != new XPCNativeWrapper(newDocument)) {
-    fxdriver.logging.info("Need to switch focus");
+    fxdriver.logging.info('Need to switch focus');
     alreadyFocused = false;
     currentlyActive.blur();
     element.focus();
     element.ownerDocument.defaultView.focus();
   } else {
-    fxdriver.logging.info("No need to switch focus");
+    fxdriver.logging.info('No need to switch focus');
   }
 
   var use = element;
   var tagName = element.tagName.toLowerCase();
-  if (tagName == "body" && element.ownerDocument.defaultView.frameElement) {
+  if (tagName == 'body' && element.ownerDocument.defaultView.frameElement) {
     element.ownerDocument.defaultView.focus();
 
     // Turns out, this is what we should be using as the target
     // to send events to
-    use = element.ownerDocument.getElementsByTagName("html")[0];
+    use = element.ownerDocument.getElementsByTagName('html')[0];
   }
 
   // Handle the special case of the file input element here
 
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
-    var inputtype = element.getAttribute("type");
-    if (inputtype && inputtype.toLowerCase() == "file") {
+    var inputtype = element.getAttribute('type');
+    if (inputtype && inputtype.toLowerCase() == 'file') {
       element.value = parameters.value.join('');
-      Utils.fireHtmlEvent(element, "change");
+      Utils.fireHtmlEvent(element, 'change');
       respond.send();
       return;
     }
@@ -220,7 +221,7 @@ WebElement.sendKeysToElement = function(respond, parameters) {
   this.jsTimer.setTimeout(function() {
     // Unless the element already had focus, set the cursor location to the end of the line
     // TODO(simon): This seems a little arbitrary.
-    if(!alreadyFocused && bot.dom.isEditable(element)) {
+    if (!alreadyFocused && bot.dom.isEditable(element)) {
         var length = element.value ? element.value.length : goog.dom.getTextContent(element).length;
         goog.dom.selection.setCursorPosition(element, length);
     }
@@ -232,7 +233,7 @@ WebElement.sendKeysToElement = function(respond, parameters) {
   }, 0);
 };
 WebElement.sendKeysToElement.preconditions =
-    [ fxdriver.preconditions.visible, fxdriver.preconditions.enabled ];
+    [fxdriver.preconditions.visible, fxdriver.preconditions.enabled];
 
 
 WebElement.clearElement = function(respond, parameters) {
@@ -243,7 +244,7 @@ WebElement.clearElement = function(respond, parameters) {
   respond.send();
 };
 WebElement.clearElement.preconditions =
-    [ fxdriver.preconditions.visible, fxdriver.preconditions.enabled, fxdriver.preconditions.writable ];
+    [fxdriver.preconditions.visible, fxdriver.preconditions.enabled, fxdriver.preconditions.writable];
 
 
 WebElement.getElementTagName = function(respond, parameters) {
@@ -259,7 +260,7 @@ WebElement.getElementAttribute = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                   respond.session.getDocument());
   var attributeName = parameters.name;
-  
+
   respond.value = webdriver.atoms.element.getAttribute(element, attributeName);
   respond.send();
 };
@@ -278,12 +279,12 @@ WebElement.submitElement = function(respond, parameters) {
                                    respond.session.getDocument());
 
   if (element) {
-    while (element.parentNode != null && element.tagName.toLowerCase() != "form") {
+    while (element.parentNode != null && element.tagName.toLowerCase() != 'form') {
       element = element.parentNode;
     }
-    if (element.tagName && element.tagName.toLowerCase() == "form") {
+    if (element.tagName && element.tagName.toLowerCase() == 'form') {
       var current = respond.session.getWindow().location;
-      if (Utils.fireHtmlEvent(element, "submit") &&
+      if (Utils.fireHtmlEvent(element, 'submit') &&
           fxdriver.io.isLoadExpected(current, element.action)) {
         new WebLoadingListener(respond.session.getBrowser(), function(timedOut) {
           if (timedOut) {
@@ -318,16 +319,16 @@ WebElement.isElementSelected = function(respond, parameters) {
     var option =
         element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
     selected = option.selected;
-  } catch(e) {
+  } catch (e) {
   }
 
   try {
     var inputElement =
         element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
-    if (inputElement.type == "checkbox" || inputElement.type == "radio") {
+    if (inputElement.type == 'checkbox' || inputElement.type == 'radio') {
       selected = inputElement.checked;
     }
-  } catch(e) {
+  } catch (e) {
   }
 
  respond.value = selected;
@@ -397,8 +398,8 @@ WebElement.getElementLocationOnceScrolledIntoView = function(
   var elementLocation = Utils.getLocationOnceScrolledIntoView(element);
 
   respond.value = {
-    x : Math.round(elementLocation.x),
-    y : Math.round(elementLocation.y)
+    x: Math.round(elementLocation.x),
+    y: Math.round(elementLocation.y)
   };
 
   respond.send();

@@ -22,6 +22,7 @@ goog.require('fxdriver.logging');
 goog.require('fxdriver.modals');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.proxy');
+goog.require('goog.object');
 goog.require('wdSession');
 
 /**
@@ -115,9 +116,9 @@ wdSessionStoreService.prototype.createSession = function(response, desiredCaps,
 };
 
 /**
- * Extract the setting for a capability. 
+ * Extract the setting for a capability.
  *
- * If a capability is defined both among desired capabilities and among 
+ * If a capability is defined both among desired capabilities and among
  * required capabilities the required setting has priority.
  *
  * @private
@@ -150,7 +151,7 @@ wdSessionStoreService.READ_ONLY_CAPABILITIES_ = {
 };
 
 /**
- * Read-write capabilities for FirefoxDriver corresponding to (boolean) 
+ * Read-write capabilities for FirefoxDriver corresponding to (boolean)
  * profile preferences. NB! the native events capability is not mapped to a
  * Firefox preferences.
  * @type {!Object.<string, string>}
@@ -218,9 +219,9 @@ wdSessionStoreService.prototype.configureCapabilities_ = function(capabilities,
       fxdriver.logging.info('Setting capability ' +
         key + ' (' + pref + ') to ' + value);
       if (key == 'nativeEvents') {
-        driver.enableNativeEvents = value; 
+        driver.enableNativeEvents = value;
       }
-    } 
+    }
   });
 };
 
@@ -319,7 +320,7 @@ wdSessionStoreServiceModule.prototype.registerSelf = function(aCompMgr, aFileSpe
 };
 
 
-/** @see nsIModule.unregisterSelf */ 
+/** @see nsIModule.unregisterSelf */
 wdSessionStoreServiceModule.prototype.unregisterSelf = function(aCompMgr, aLocation) {
   aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar).
       unregisterFactoryLocation(wdSessionStoreService.CLASS_ID, aLocation);
@@ -352,7 +353,7 @@ NSGetModule = function() {
 };
 
 wdSessionStoreService.prototype.classID = wdSessionStoreService.CLASS_ID;
-fxdriver.moz.load("resource://gre/modules/XPCOMUtils.jsm");
+fxdriver.moz.load('resource://gre/modules/XPCOMUtils.jsm');
 if (XPCOMUtils.generateNSGetFactory) {
   /** @const */ NSGetFactory = XPCOMUtils.generateNSGetFactory([wdSessionStoreService]);
 }

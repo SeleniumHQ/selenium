@@ -27,6 +27,7 @@ goog.require('goog.asserts');
 goog.require('goog.async.Deferred');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.Trace');
+goog.require('goog.dispose');
 goog.require('goog.module.ModuleInfo');
 goog.require('goog.module.ModuleLoadCallback');
 goog.require('goog.object');
@@ -1247,7 +1248,8 @@ goog.module.ModuleManager.prototype.disposeInternal = function() {
   goog.module.ModuleManager.superClass_.disposeInternal.call(this);
 
   // Dispose of each ModuleInfo object.
-  goog.array.forEach(goog.object.getValues(this.moduleInfoMap_), goog.dispose);
+  goog.disposeAll(
+      goog.object.getValues(this.moduleInfoMap_), this.baseModuleInfo_);
   this.moduleInfoMap_ = null;
   this.loadingModuleIds_ = null;
   this.requestedLoadingModuleIds_ = null;

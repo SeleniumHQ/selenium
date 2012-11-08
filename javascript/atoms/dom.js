@@ -43,7 +43,8 @@ goog.require('goog.userAgent');
  * @return {Element} The active element, if any.
  */
 bot.dom.getActiveElement = function(nodeOrWindow) {
-  return goog.dom.getOwnerDocument(nodeOrWindow).activeElement;
+  return goog.dom.getActiveElement(
+      goog.dom.getOwnerDocument(nodeOrWindow));
 };
 
 
@@ -53,7 +54,7 @@ bot.dom.getActiveElement = function(nodeOrWindow) {
  * is an element, regardless of the tag name.h
  *
  * @param {Node} node The node to test.
- * @param {goog.dom.TagName=} opt_tagName Tag name to test the node for.
+ * @param {string=} opt_tagName Tag name to test the node for.
  * @return {boolean} Whether the node is an element with the given tag name.
  */
 bot.dom.isElement = function(node, opt_tagName) {
@@ -74,11 +75,23 @@ bot.dom.isElement = function(node, opt_tagName) {
 bot.dom.isInteractable = function(element) {
   return bot.dom.isShown(element, /*ignoreOpacity=*/true) &&
       bot.dom.isEnabled(element) &&
-      // check pointer-style isn't 'none'
-      // Although IE, Opera, FF < 3.6 don't care about this property.
-      (goog.userAgent.IE || goog.userAgent.OPERA ||
-          (bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isProductVersion(3.6)) ||
-        bot.dom.getEffectiveStyle(element, 'pointer-events') != 'none');
+      !bot.dom.hasPointerEventsDisabled_(element);
+};
+
+
+/**
+ * @param {!Element} element Element.
+ * @return {boolean} Whether element is set by the CSS pointer-events property
+ *     not to be interactable.
+ * @private
+ */
+bot.dom.hasPointerEventsDisabled_ = function(element) {
+  if (goog.userAgent.IE || goog.userAgent.OPERA ||
+      (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion('1.9.2'))) {
+    // Don't support pointer events
+    return false;
+  }
+  return bot.dom.getEffectiveStyle(element, 'pointer-events') == 'none';
 };
 
 
@@ -157,124 +170,24 @@ bot.dom.isFocusable = function(element) {
 
 
 /**
- * Common aliases for properties. This maps names that users use to the correct
- * property name.
- *
- * @const
- * @private
- */
-bot.dom.PROPERTY_ALIASES_ = {
-  'class': 'className',
-  'readonly': 'readOnly'
-};
-
-
-/**
- * A list of boolean properties that are defined for all elements
- * according to the HTML5 spec. If any of these are missing when
- * calling 'getProperty' they default to false.
- *
- * http://dev.w3.org/html5/spec/Overview.html#elements-in-the-dom
- *
- * @const
- * @private
- */
-bot.dom.BOOLEAN_PROPERTIES_ = [
-  'checked',
-  'disabled',
-  'draggable',
-  'hidden'
-];
-
-
-/**
  * Looks up the given property (not to be confused with an attribute) on the
- * given element. The following properties are aliased so that they return the
- * values expected by users:
- *
- * <ul>
- * <li>class - as "className"
- * <li>readonly - as "readOnly"
- * </ul>
+ * given element.
  *
  * @param {!Element} element The element to use.
  * @param {string} propertyName The name of the property.
  * @return {*} The value of the property.
  */
 bot.dom.getProperty = function(element, propertyName) {
-  var key = bot.dom.PROPERTY_ALIASES_[propertyName] || propertyName;
-
-  var value = element[key];
-  if (!goog.isDef(value) &&
-      goog.array.contains(bot.dom.BOOLEAN_PROPERTIES_, key)) {
-    return false;
-  }
-
-  if (propertyName == 'value' &&
+  // When an <option>'s value attribute is not set, its value property should be
+  // its text content, but IE < 8 does not adhere to that behavior, so fix it.
+  // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
+  if (bot.userAgent.IE_DOC_PRE8 && propertyName == 'value' &&
       bot.dom.isElement(element, goog.dom.TagName.OPTION) &&
-      !bot.dom.hasAttribute(element, propertyName)) {
-    // IE does not adhere to this behaviour, so we hack it in. See:
-    // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
-    value = goog.dom.getRawTextContent(element);
+      goog.isNull(bot.dom.getAttribute(element, 'value'))) {
+    return goog.dom.getRawTextContent(element);
   }
-  return value;
+  return element[propertyName];
 };
-
-
-/**
- * Used to determine whether we should return a boolean value from getAttribute.
- * These are all extracted from the WHATWG spec:
- *
- *   http://www.whatwg.org/specs/web-apps/current-work/
- *
- * These must all be lower-case.
- *
- * @const
- * @private
- */
-bot.dom.BOOLEAN_ATTRIBUTES_ = [
-  'async',
-  'autofocus',
-  'autoplay',
-  'checked',
-  'compact',
-  'complete',
-  'controls',
-  'declare',
-  'defaultchecked',
-  'defaultselected',
-  'defer',
-  'disabled',
-  'draggable',
-  'ended',
-  'formnovalidate',
-  'hidden',
-  'indeterminate',
-  'iscontenteditable',
-  'ismap',
-  'itemscope',
-  'loop',
-  'multiple',
-  'muted',
-  'nohref',
-  'noresize',
-  'noshade',
-  'novalidate',
-  'nowrap',
-  'open',
-  'paused',
-  'pubdate',
-  'readonly',
-  'required',
-  'reversed',
-  'scoped',
-  'seamless',
-  'seeking',
-  'selected',
-  'spellcheck',
-  'truespeed',
-  'willvalidate'
-];
 
 
 /**
@@ -291,15 +204,6 @@ bot.dom.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_ =
                '(?=(?:(?:[^"]*"){2})*[^"]*$)' +
                '(?=(?:(?:[^\']*\'){2})*[^\']*$)' +
                '(?=(?:[^()]*\\([^()]*\\))*[^()]*$)');
-
-
-/**
- * @param {string} attributeName The name of the attribute to check.
- * @return {boolean} Whether the specified attribute is a boolean attribute.
- */
-bot.dom.isBooleanAttribute = function(attributeName) {
-    return goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName);
-};
 
 
 /**
@@ -333,23 +237,26 @@ bot.dom.standardizeStyleAttribute_ = function(value) {
 
 /**
  * Get the user-specified value of the given attribute of the element, or null
- * if no such value. This method endeavours to return consistent values between
- * browsers. For boolean attributes such as "selected" or "checked", it returns
- * the string "true" if it is present and null if it is not. For the style
- * attribute, it standardizes the value by lower-casing the property names
- * and always including a trailing semi-colon.
+ * if the attribute is not present.
+ *
+ * <p>For boolean attributes such as "selected" or "checked", this method
+ * returns the value of element.getAttribute(attributeName) cast to a String
+ * when attribute is present. For modern browsers, this will be the string the
+ * attribute is given in the HTML, but for IE8 it will be the name of the
+ * attribute, and for IE7, it will be the string "true". To test whether a
+ * boolean attribute is present, test whether the return value is non-null, the
+ * same as one would for non-boolean attributes. Specifically, do *not* test
+ * whether the boolean evaluation of the return value is true, because the value
+ * of a boolean attribute that is present will often be the empty string.
+ *
+ * <p>For the style attribute, it standardizes the value by lower-casing the
+ * property names and always including a trailing semi-colon.
  *
  * @param {!Element} element The element to use.
  * @param {string} attributeName The name of the attribute to return.
  * @return {?string} The value of the attribute or "null" if entirely missing.
  */
 bot.dom.getAttribute = function(element, attributeName) {
-  // Protect ourselves from the case where documentElementsByTagName also
-  // returns comments in IE.
-  if (goog.dom.NodeType.COMMENT == element.nodeType) {
-    return null;
-  }
-
   attributeName = attributeName.toLowerCase();
 
   // The style attribute should be a css text string that includes only what
@@ -360,58 +267,27 @@ bot.dom.getAttribute = function(element, attributeName) {
     return bot.dom.standardizeStyleAttribute_(element.style.cssText);
   }
 
+  // In IE doc mode < 8, the "value" attribute of an <input> is only accessible
+  // as a property.
+  if (bot.userAgent.IE_DOC_PRE8 && attributeName == 'value' &&
+      bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
+    return element['value'];
+  }
+
+  // In IE < 9, element.getAttributeNode will return null for some boolean
+  // attributes that are present, such as the selected attribute on <option>
+  // elements. This if-statement is sufficient if these cases are restricted
+  // to boolean attributes whose reflected property names are all lowercase
+  // (as attributeName is by this point), like "selected". We have not
+  // found a boolean attribute for which this does not work.
+  if (bot.userAgent.IE_DOC_PRE9 && element[attributeName] === true) {
+    return String(element.getAttribute(attributeName));
+  }
+
+  // When the attribute is not present, either attr will be null or
+  // attr.specified will be false.
   var attr = element.getAttributeNode(attributeName);
-
-  // IE8/9 in standards mode handles boolean attributes differently (of
-  // course!). This if-statement is nested so the compiler can easily strip it
-  // out when compiled for non-IE browsers.
-  if (goog.userAgent.IE) {
-    if (!attr && goog.userAgent.isVersion(8) &&
-        goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName)) {
-      attr = element[attributeName];
-    }
-  }
-
-  if (!attr) {
-    return null;
-  }
-
-  // Attempt to always return either true or null for boolean attributes.
-  // In IE, attributes will sometimes be present even when not user-specified.
-  // We would like to rely on the 'specified' property of attribute nodes, but
-  // that is sometimes false for user-specified boolean attributes.
-  // IE does consistently yield 'true' or 'false' strings for boolean attribute
-  // values, and so we know 'false' attribute values were not user-specified.
-  if (goog.array.contains(bot.dom.BOOLEAN_ATTRIBUTES_, attributeName)) {
-    return bot.userAgent.IE_DOC_PRE9 && attr.value == 'false' ? null : 'true';
-  }
-
-  // For non-boolean attributes, we compensate for IE's extra attributes by
-  // returning null if the 'specified' property of the attributes node is false.
-  return attr.specified ? attr.value : null;
-};
-
-
-/**
- * Check if the DOM element has a particular attribute.
- * Convenience method since IE6/7 do not supply it.
- *
- * @param {!Element} element The element to use.
- * @param {string} attributeName The name of the attribute.
- * @return {boolean} Whether the node has the attribute, regardless of whether
- *      it is the default value or user defined.
- */
-bot.dom.hasAttribute = function(element, attributeName) {
-  attributeName = attributeName.toLowerCase();
-  if (element.hasAttribute) {
-    return element.hasAttribute(attributeName);
-  } else {
-    try {
-      return element.attributes[attributeName].specified;
-    } catch (e) {
-      return false;
-    }
-  }
+  return (attr && attr.specified) ? attr.value : null;
 };
 
 
@@ -806,6 +682,12 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     if (size.height > 0 && size.width > 0) {
       return true;
     }
+    // A vertical or horizontal SVG Path element will report zero width or
+    // height but is "shown" if it has a positive stroke-width.
+    if (bot.dom.isElement(e, 'PATH') && (size.height > 0 || size.width > 0)) {
+      var strokeWidth = bot.dom.getEffectiveStyle(e, 'stroke-width');
+      return !!strokeWidth && (parseInt(strokeWidth, 10) > 0);
+    }
     // Zero-sized elements should still be considered to have positive size
     // if they have a child element or text node with positive size.
     return goog.array.some(e.childNodes, function(n) {
@@ -822,8 +704,8 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   // size of the parent
   function isOverflowHiding(e) {
     var parent = goog.style.getOffsetParent(e);
-    var parentNode = goog.userAgent.GECKO || goog.userAgent.IE || goog.userAgent.OPERA ?
-        bot.dom.getParentElement(e) : parent;
+    var parentNode = goog.userAgent.GECKO || goog.userAgent.IE ||
+        goog.userAgent.OPERA ? bot.dom.getParentElement(e) : parent;
 
     // Gecko will skip the BODY tag when calling getOffsetParent. However, the
     // combination of the overflow values on the BODY _and_ HTML tags determine
@@ -1081,7 +963,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
  */
 bot.dom.getOpacity = function(elem) {
   // TODO(bsilverberg): Does this need to deal with rgba colors?
-  if (!goog.userAgent.IE) {
+  if (!bot.userAgent.IE_DOC_PRE10) {
     return bot.dom.getOpacityNonIE_(elem);
   } else {
     if (bot.dom.getEffectiveStyle(elem, 'position') == 'relative') {

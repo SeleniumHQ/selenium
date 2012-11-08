@@ -58,7 +58,7 @@ goog.require('goog.userAgent');
  * @extends {goog.events.EventTarget}
  */
 goog.events.InputHandler = function(element) {
-  goog.events.EventTarget.call(this);
+  goog.base(this);
 
   /**
    * The element that you want to listen for input events on.
@@ -67,20 +67,16 @@ goog.events.InputHandler = function(element) {
    */
   this.element_ = element;
 
-  /**
-   * Whether input event is emulated.
-   * IE doesn't support input events. We could use property change events but
-   * they are broken in many ways:
-   * - Fire even if value was changed programmatically.
-   * - Aren't always delivered. For example, if you change value or even width
-   *   of input programmatically, next value change made by user won't fire an
-   *   event.
-   * WebKit before version 531 did not support input events for textareas.
-   * @type {boolean}
-   * @private
-   */
-  this.inputEventEmulation_ =
-      goog.userAgent.IE ||
+  // Determine whether input event should be emulated.
+  // IE8 doesn't support input events. We could use property change events but
+  // they are broken in many ways:
+  // - Fire even if value was changed programmatically.
+  // - Aren't always delivered. For example, if you change value or even width
+  //   of input programmatically, next value change made by user won't fire an
+  //   event.
+  // IE9 supports input events when characters are inserted, but not deleted.
+  // WebKit before version 531 did not support input events for textareas.
+  var emulateInputEvents = goog.userAgent.IE ||
       (goog.userAgent.WEBKIT && !goog.userAgent.isVersion('531') &&
           element.tagName == 'TEXTAREA');
 
@@ -89,9 +85,19 @@ goog.events.InputHandler = function(element) {
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
+
+  // Even if input event emulation is enabled, still listen for input events
+  // since they may be partially supported by the browser (such as IE9).
+  // If the input event does fire, we will be able to dispatch synchronously.
+  // (InputHandler events being asynchronous for IE is a common issue for
+  // cases like auto-grow textareas where they result in a quick flash of
+  // scrollbars between the textarea content growing and it being resized to
+  // fit.)
   this.eventHandler_.listen(
       this.element_,
-      this.inputEventEmulation_ ? ['keydown', 'paste', 'cut', 'drop'] : 'input',
+      emulateInputEvents ?
+          ['keydown', 'paste', 'cut', 'drop', 'input'] :
+          'input',
       this);
 };
 goog.inherits(goog.events.InputHandler, goog.events.EventTarget);
@@ -119,7 +125,21 @@ goog.events.InputHandler.prototype.timer_ = null;
  * @param {goog.events.BrowserEvent} e The underlying browser event.
  */
 goog.events.InputHandler.prototype.handleEvent = function(e) {
-  if (this.inputEventEmulation_) {
+  if (e.type == 'input') {
+    // This event happens after all the other events we listen to, so cancel
+    // an asynchronous event dispatch if we have it queued up.  Otherwise, we
+    // will end up firing an extra event.
+    this.cancelTimerIfSet_();
+
+    // Unlike other browsers, Opera fires an extra input event when an element
+    // is blurred after the user has input into it. Since Opera doesn't fire
+    // input event on drop, it's enough to check whether element still has focus
+    // to suppress bogus notification.
+    if (!goog.userAgent.OPERA || this.element_ ==
+        goog.dom.getOwnerDocument(this.element_).activeElement) {
+      this.dispatchEvent(this.createInputEvent_(e));
+    }
+  } else {
     // Filter out key events that don't modify text.
     if (e.type == 'keydown' &&
         !goog.events.KeyCodes.isTextModifyingKeyEvent(e)) {
@@ -156,15 +176,6 @@ goog.events.InputHandler.prototype.handleEvent = function(e) {
         this.dispatchEvent(inputEvent);
       }
     }, 0, this);
-  } else {
-    // Unlike other browsers, Opera fires an extra input event when an element
-    // is blurred after the user has input into it. Since Opera doesn't fire
-    // input event on drop, it's enough to check whether element still has focus
-    // to suppress bogus notification.
-    if (!goog.userAgent.OPERA || this.element_ ==
-        goog.dom.getOwnerDocument(this.element_).activeElement) {
-      this.dispatchEvent(this.createInputEvent_(e));
-    }
   }
 };
 
@@ -196,7 +207,7 @@ goog.events.InputHandler.prototype.createInputEvent_ = function(be) {
 
 /** @override */
 goog.events.InputHandler.prototype.disposeInternal = function() {
-  goog.events.InputHandler.superClass_.disposeInternal.call(this);
+  goog.base(this, 'disposeInternal');
   this.eventHandler_.dispose();
   this.cancelTimerIfSet_();
   delete this.element_;

@@ -19,12 +19,12 @@
 goog.provide('Dispatcher');
 goog.provide('Resource');
 
+goog.require('Request');
+goog.require('Response');
+goog.require('Utils');
 goog.require('bot.ErrorCode');
 goog.require('fxdriver.error');
 goog.require('fxdriver.logging');
-goog.require('Response');
-goog.require('Request');
-goog.require('Utils');
 
 
 /**
@@ -121,7 +121,7 @@ Dispatcher.translateNewSession = function() {
         var url = request.getRequestUrl();
         response.setStatus(Response.SEE_OTHER);
         response.setHeader('Location',
-            url.scheme + '://' + url.host + ":" + url.hostPort + url.path + '/' +
+            url.scheme + '://' + url.host + ':' + url.hostPort + url.path + '/' +
                 jsonResponse.value);
         response.commit();
       }
@@ -329,7 +329,7 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.GET, Dispatcher.executeAs('isOnline'));
 
   this.bind_('/session/:sessionId/application_cache/status').
-      on(Request.Method.GET, Dispatcher.executeAs('getAppCacheStatus'))
+      on(Request.Method.GET, Dispatcher.executeAs('getAppCacheStatus'));
 
   // --------------------------------------------------------------------------
   // Firefox extensions to the wire protocol.

@@ -36,9 +36,9 @@ fxdriver.io.isLoadExpected = function(current, future) {
   }
 
   var ioService =
-      fxdriver.moz.getService("@mozilla.org/network/io-service;1", "nsIIOService");
-  var currentUri = ioService.newURI(current, "", null);
-  var futureUri = ioService.newURI(future, "", currentUri);
+      fxdriver.moz.getService('@mozilla.org/network/io-service;1', 'nsIIOService');
+  var currentUri = ioService.newURI(current, '', null);
+  var futureUri = ioService.newURI(future, '', currentUri);
 
   var loadEventExpected = true;
   if (futureUri.scheme == 'javascript') {
@@ -52,7 +52,7 @@ fxdriver.io.isLoadExpected = function(current, future) {
     // Looks like we're at the same url with a ref
     // Being clever and checking the ref was causing me headaches.
     // Brute force for now
-    loadEventExpected = futureUri.path.indexOf("#") == -1;
+    loadEventExpected = futureUri.path.indexOf('#') == -1;
   }
 
   return loadEventExpected;
@@ -158,7 +158,7 @@ ImpatientListener.prototype.onProgressChange = function(webProgress) {
 };
 
 
-var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces["nsIPrefBranch"]);
+var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces['nsIPrefBranch']);
 
 function buildHandler(browser, toCall, opt_window) {
   if (prefs.prefHasUserValue('webdriver.load.strategy')) {

@@ -15,6 +15,7 @@
 goog.provide('remote.ui.Banner');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.style');

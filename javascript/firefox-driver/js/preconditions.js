@@ -20,8 +20,8 @@
 
 goog.provide('fxdriver.preconditions');
 
-goog.require('bot.dom');
 goog.require('Utils');
+goog.require('bot.dom');
 
 
 /**

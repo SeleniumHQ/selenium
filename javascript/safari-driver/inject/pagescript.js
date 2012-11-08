@@ -18,6 +18,7 @@ goog.provide('safaridriver.inject.PageScript');
 goog.require('bot.inject');
 goog.require('bot.response');
 goog.require('goog.debug.Logger');
+goog.require('goog.dom');
 goog.require('safaridriver.inject.Encoder');
 goog.require('safaridriver.inject.message');
 goog.require('safaridriver.message.Command');

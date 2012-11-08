@@ -18,10 +18,10 @@
 
 goog.provide('fxdriver.events');
 
+goog.require('Utils');
 goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 goog.require('goog.style');
-goog.require('Utils');
 
 
 /**
@@ -43,8 +43,8 @@ fxdriver.events.buildCoordinates = function(parameters, doc) {
 
   if (goog.isNull(x) && element) {
     var size = goog.style.getSize(element);
-    x =  size.width / 2;
-    y =  size.height / 2;
+    x = size.width / 2;
+    y = size.height / 2;
   }
 
   return {

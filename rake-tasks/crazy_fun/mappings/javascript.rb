@@ -167,7 +167,7 @@ end
 module Javascript
   # CrazyFunJava.ant.taskdef :name      => "jscomp",
   #                          :classname => "com.google.javascript.jscomp.ant.CompileTask",
-  #                          :classpath => "third_party/closure/bin/compiler-20120710.jar"
+  #                          :classpath => "third_party/closure/bin/compiler-20120917.jar"
 
   class BaseJs < Tasks
     attr_reader :calcdeps
@@ -178,7 +178,7 @@ module Javascript
         py = "python"
       end
       @calcdeps = "#{py} third_party/closure/bin/calcdeps.py " +
-                  "-c third_party/closure/bin/compiler-20120710.jar "
+                  "-c third_party/closure/bin/compiler-20120917.jar "
     end
 
     def js_name(dir, name)
@@ -471,7 +471,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20120710.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler-20120917.jar"
           end
           arg :line => cmd
         end
@@ -563,7 +563,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :fork => false, :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20120710.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler-20120917.jar"
           end
           arg :line => cmd
         end

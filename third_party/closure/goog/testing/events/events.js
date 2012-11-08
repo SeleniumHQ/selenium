@@ -575,3 +575,84 @@ goog.testing.events.fireBrowserEvent = function(event) {
 
   return event.returnValue_;
 };
+
+
+/**
+ * Simulates a touchstart event on the given target.
+ * @param {EventTarget} target The target for the event.
+ * @param {goog.math.Coordinate=} opt_coords Touch position. Defaults to event's
+ *     target's position (if available), otherwise (0, 0).
+ * @param {Object=} opt_eventProperties Event properties to be mixed into the
+ *     BrowserEvent.
+ * @return {boolean} The returnValue of the event: false if preventDefault() was
+ *     called on it, true otherwise.
+ */
+goog.testing.events.fireTouchStartEvent = function(
+    target, opt_coords, opt_eventProperties) {
+  // TODO: Support multi-touch events with array of coordinates.
+  var touchstart =
+      new goog.testing.events.Event(goog.events.EventType.TOUCHSTART, target);
+  goog.testing.events.setEventClientXY_(touchstart, opt_coords);
+  return goog.testing.events.fireBrowserEvent(touchstart);
+};
+
+
+/**
+ * Simulates a touchmove event on the given target.
+ * @param {EventTarget} target The target for the event.
+ * @param {goog.math.Coordinate=} opt_coords Touch position. Defaults to event's
+ *     target's position (if available), otherwise (0, 0).
+ * @param {Object=} opt_eventProperties Event properties to be mixed into the
+ *     BrowserEvent.
+ * @return {boolean} The returnValue of the event: false if preventDefault() was
+ *     called on it, true otherwise.
+ */
+goog.testing.events.fireTouchMoveEvent = function(
+    target, opt_coords, opt_eventProperties) {
+  // TODO: Support multi-touch events with array of coordinates.
+  var touchmove =
+      new goog.testing.events.Event(goog.events.EventType.TOUCHMOVE, target);
+  goog.testing.events.setEventClientXY_(touchmove, opt_coords);
+  return goog.testing.events.fireBrowserEvent(touchmove);
+};
+
+
+/**
+ * Simulates a touchend event on the given target.
+ * @param {EventTarget} target The target for the event.
+ * @param {goog.math.Coordinate=} opt_coords Touch position. Defaults to event's
+ *     target's position (if available), otherwise (0, 0).
+ * @param {Object=} opt_eventProperties Event properties to be mixed into the
+ *     BrowserEvent.
+ * @return {boolean} The returnValue of the event: false if preventDefault() was
+ *     called on it, true otherwise.
+ */
+goog.testing.events.fireTouchEndEvent = function(
+    target, opt_coords, opt_eventProperties) {
+  // TODO: Support multi-touch events with array of coordinates.
+  var touchend =
+      new goog.testing.events.Event(goog.events.EventType.TOUCHEND, target);
+  goog.testing.events.setEventClientXY_(touchend, opt_coords);
+  return goog.testing.events.fireBrowserEvent(touchend);
+};
+
+
+/**
+ * Simulates a simple touch sequence on the given target.
+ * @param {EventTarget} target The target for the event.
+ * @param {goog.math.Coordinate=} opt_coords Touch position. Defaults to event
+ *     target's position (if available), otherwise (0, 0).
+ * @param {Object=} opt_eventProperties Event properties to be mixed into the
+ *     BrowserEvent.
+ * @return {boolean} The returnValue of the sequence: false if preventDefault()
+ *     was called on any of the events, true otherwise.
+ */
+goog.testing.events.fireTouchSequence = function(
+    target, opt_coords, opt_eventProperties) {
+  // TODO: Support multi-touch events with array of coordinates.
+  // Fire touchstart, touchmove, touchend then return the bitwise AND of the 3.
+  return !!(goog.testing.events.fireTouchStartEvent(
+                target, opt_coords, opt_eventProperties) &
+            goog.testing.events.fireTouchEndEvent(
+                target, opt_coords, opt_eventProperties));
+};

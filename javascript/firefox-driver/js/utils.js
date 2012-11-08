@@ -26,9 +26,9 @@ goog.require('bot.userAgent');
 goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
-goog.require('goog.dom.TagName');
-goog.require('goog.style');
+goog.require('goog.dom');
 goog.require('goog.string');
+goog.require('goog.style');
 
 
 /**
@@ -85,7 +85,7 @@ WebDriverError = function(code, messageOrError, additional) {
    * @type {!boolean}
    */
   this.isWebDriverError = true;
-}
+};
 
 function notifyOfCloseWindow(windowId) {
   windowId = windowId || 0;
@@ -110,7 +110,7 @@ Utils.newInstance = function(className, interfaceName) {
   var clazz = Components.classes[className];
 
   if (!clazz) {
-    fxdriver.logging.warning("Unable to find class: " + className);
+    fxdriver.logging.warning('Unable to find class: ' + className);
     return undefined;
   }
   var iface = Components.interfaces[interfaceName];
@@ -118,7 +118,7 @@ Utils.newInstance = function(className, interfaceName) {
   try {
     return clazz.createInstance(iface);
   } catch (e) {
-    fxdriver.logging.warning("Cannot create: " + className + " from " + interfaceName);
+    fxdriver.logging.warning('Cannot create: ' + className + ' from ' + interfaceName);
     fxdriver.logging.warning(e);
     throw e;
   }
@@ -127,7 +127,7 @@ Utils.newInstance = function(className, interfaceName) {
 
 Utils.getServer = function() {
   var handle =
-      Utils.newInstance("@googlecode.com/webdriver/fxdriver;1", "nsISupports");
+      Utils.newInstance('@googlecode.com/webdriver/fxdriver;1', 'nsISupports');
   return handle.wrappedJSObject;
 };
 
@@ -136,7 +136,7 @@ Utils.getActiveElement = function(doc) {
   var window = goog.dom.getWindow(doc);
 
   var element;
-  if (doc["activeElement"]) {
+  if (doc['activeElement']) {
     element = doc.activeElement;
   } else {
     var topWindow = window.top;
@@ -197,29 +197,29 @@ Utils.getNativeComponent = function(componentId, componentInterface) {
   try {
     var obj = Components.classes[componentId].createInstance();
     return obj.QueryInterface(componentInterface);
-  } catch(e) {
-    fxdriver.logging.warning("Unable to find native component: " + componentId);
+  } catch (e) {
+    fxdriver.logging.warning('Unable to find native component: ' + componentId);
     fxdriver.logging.warning(e);
     // Unable to retrieve native events. No biggie, because we fall back to
     // synthesis later
     return undefined;
   }
-}
+};
 
 Utils.getNativeEvents = function() {
-  return Utils.getNativeComponent("@openqa.org/nativeevents;1", Components.interfaces.nsINativeEvents);
+  return Utils.getNativeComponent('@openqa.org/nativeevents;1', Components.interfaces.nsINativeEvents);
 };
 
 Utils.getNativeMouse = function() {
-  return Utils.getNativeComponent("@openqa.org/nativemouse;1", Components.interfaces.nsINativeMouse);
+  return Utils.getNativeComponent('@openqa.org/nativemouse;1', Components.interfaces.nsINativeMouse);
 };
 
 Utils.getNativeKeyboard = function() {
-  return Utils.getNativeComponent("@openqa.org/nativekeyboard;1", Components.interfaces.nsINativeKeyboard);
+  return Utils.getNativeComponent('@openqa.org/nativekeyboard;1', Components.interfaces.nsINativeKeyboard);
 };
 
 Utils.getNativeIME = function() {
-  return Utils.getNativeComponent("@openqa.org/nativeime;1", Components.interfaces.nsINativeIME);
+  return Utils.getNativeComponent('@openqa.org/nativeime;1', Components.interfaces.nsINativeIME);
 };
 
 Utils.getNodeForNativeEvents = function(element) {
@@ -227,12 +227,12 @@ Utils.getNodeForNativeEvents = function(element) {
     // This stuff changes between releases.
     // Do as much up-front work in JS as possible
     var retrieval = Utils.newInstance(
-        "@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
+        '@mozilla.org/accessibleRetrieval;1', 'nsIAccessibleRetrieval');
     var accessible = retrieval.getAccessibleFor(element.ownerDocument);
     var accessibleDoc =
         accessible.QueryInterface(Components.interfaces.nsIAccessibleDocument);
     return accessibleDoc.QueryInterface(Components.interfaces.nsISupports);
-  } catch(e) {
+  } catch (e) {
     // Unable to retrieve the accessible doc
     return undefined;
   }
@@ -240,10 +240,10 @@ Utils.getNodeForNativeEvents = function(element) {
 
 Utils.useNativeEvents = function() {
   var prefs =
-    fxdriver.moz.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
+    fxdriver.moz.getService('@mozilla.org/preferences-service;1', 'nsIPrefBranch');
   var enableNativeEvents =
-    prefs.prefHasUserValue("webdriver_enable_native_events") ?
-    prefs.getBoolPref("webdriver_enable_native_events") : false;
+    prefs.prefHasUserValue('webdriver_enable_native_events') ?
+    prefs.getBoolPref('webdriver_enable_native_events') : false;
 
   return !!(enableNativeEvents && Utils.getNativeEvents());
 };
@@ -259,7 +259,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
 
   var obj = Utils.getNativeKeyboard();
   var node = Utils.getNodeForNativeEvents(element);
-  var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
+  var thmgr_cls = Components.classes['@mozilla.org/thread-manager;1'];
   var isUsingNativeEvents = opt_useNativeEvents && obj && node && thmgr_cls;
 
   if (isUsingNativeEvents) {
@@ -273,7 +273,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     return;
   }
 
-  fxdriver.logging.info("Doing sendKeys in a non-native way...");
+  fxdriver.logging.info('Doing sendKeys in a non-native way...');
   var controlKey = false;
   var shiftKey = false;
   var altKey = false;
@@ -297,25 +297,25 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     if (c == '\uE000') {
       if (controlKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-        Utils.keyEvent(doc, element, "keyup", kCode, 0,
+        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
             controlKey = false, shiftKey, altKey, metaKey, false);
       }
 
       if (shiftKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-        Utils.keyEvent(doc, element, "keyup", kCode, 0,
+        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
             controlKey, shiftKey = false, altKey, metaKey, false);
       }
 
       if (altKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-        Utils.keyEvent(doc, element, "keyup", kCode, 0,
+        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
             controlKey, shiftKey, altKey = false, metaKey, false);
       }
 
       if (metaKey) {
         var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
-        Utils.keyEvent(doc, element, "keyup", kCode, 0,
+        Utils.keyEvent(doc, element, 'keyup', kCode, 0,
             controlKey, shiftKey, altKey, metaKey = false, false);
       }
 
@@ -324,7 +324,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
 
     // otherwise decode keyCode, charCode, modifiers ...
 
-    var modifierEvent = "";
+    var modifierEvent = '';
     var charCode = 0;
     var keyCode = 0;
 
@@ -345,19 +345,19 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     } else if (c == '\uE008') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
       shiftKey = !shiftKey;
-      modifierEvent = shiftKey ? "keydown" : "keyup";
+      modifierEvent = shiftKey ? 'keydown' : 'keyup';
     } else if (c == '\uE009') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
       controlKey = !controlKey;
-      modifierEvent = controlKey ? "keydown" : "keyup";
+      modifierEvent = controlKey ? 'keydown' : 'keyup';
     } else if (c == '\uE00A') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
       altKey = !altKey;
-      modifierEvent = altKey ? "keydown" : "keyup";
+      modifierEvent = altKey ? 'keydown' : 'keyup';
     } else if (c == '\uE03D') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
       metaKey = !metaKey;
-      modifierEvent = metaKey ? "keydown" : "keyup";
+      modifierEvent = metaKey ? 'keydown' : 'keyup';
     } else if (c == '\uE00B') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAUSE;
     } else if (c == '\uE00C') {
@@ -509,7 +509,7 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
 
     if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-      Utils.keyEvent(doc, element, "keydown", kCode, 0,
+      Utils.keyEvent(doc, element, 'keydown', kCode, 0,
           controlKey, true, altKey, metaKey, false);
       Utils.shiftCount += 1;
     }
@@ -540,20 +540,20 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
     }
 
     var accepted =
-        Utils.keyEvent(doc, element, "keydown", keyCode, 0,
+        Utils.keyEvent(doc, element, 'keydown', keyCode, 0,
             controlKey, needsShift || shiftKey, altKey, metaKey, false);
 
-    Utils.keyEvent(doc, element, "keypress", pressCode, charCode,
+    Utils.keyEvent(doc, element, 'keypress', pressCode, charCode,
         controlKey, needsShift || shiftKey, altKey, metaKey, !accepted);
 
-    Utils.keyEvent(doc, element, "keyup", keyCode, 0,
+    Utils.keyEvent(doc, element, 'keyup', keyCode, 0,
         controlKey, needsShift || shiftKey, altKey, metaKey, false);
 
     // shift up if needed
 
     if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-      Utils.keyEvent(doc, element, "keyup", kCode, 0,
+      Utils.keyEvent(doc, element, 'keyup', kCode, 0,
           controlKey, false, altKey, metaKey, false);
     }
   }
@@ -562,25 +562,25 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
 
   if (controlKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-    Utils.keyEvent(doc, element, "keyup", kCode, 0,
+    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
         controlKey = false, shiftKey, altKey, metaKey, false);
   }
 
   if (shiftKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-    Utils.keyEvent(doc, element, "keyup", kCode, 0,
+    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
         controlKey, shiftKey = false, altKey, metaKey, false);
   }
 
   if (altKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-    Utils.keyEvent(doc, element, "keyup", kCode, 0,
+    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
         controlKey, shiftKey, altKey = false, metaKey, false);
   }
 
   if (metaKey && releaseModifiers) {
     var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
-    Utils.keyEvent(doc, element, "keyup", kCode, 0,
+    Utils.keyEvent(doc, element, 'keyup', kCode, 0,
         controlKey, shiftKey, altKey, metaKey = false, false);
   }
 
@@ -599,7 +599,7 @@ Utils.keyEvent = function(doc, element, type, keyCode, charCode,
   var preventDefault = shouldPreventDefault == undefined ? false
       : shouldPreventDefault;
 
-  var keyboardEvent = doc.createEvent("KeyEvents");
+  var keyboardEvent = doc.createEvent('KeyEvents');
   var currentView = doc.defaultView;
 
   keyboardEvent.initKeyEvent(
@@ -631,7 +631,7 @@ Utils.keyEvent = function(doc, element, type, keyCode, charCode,
 
 Utils.fireHtmlEvent = function(element, eventName) {
   var doc = element.ownerDocument;
-  var e = doc.createEvent("HTMLEvents");
+  var e = doc.createEvent('HTMLEvents');
   e.initEvent(eventName, true, true);
   return element.dispatchEvent(e);
 };
@@ -643,7 +643,7 @@ Utils.fireMouseEventOn = function(element, eventName, clientX, clientY) {
 
 
 Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
-  var event = element.ownerDocument.createEvent("MouseEvents");
+  var event = element.ownerDocument.createEvent('MouseEvents');
   var view = element.ownerDocument.defaultView;
 
   clientX = clientX || 0;
@@ -660,7 +660,7 @@ Utils.getElementLocation = function(element) {
   var y = element.offsetTop;
   var elementParent = element.offsetParent;
   while (elementParent != null) {
-    if (elementParent.tagName == "TABLE") {
+    if (elementParent.tagName == 'TABLE') {
       var parentBorder = parseInt(elementParent.border);
       if (isNaN(parentBorder)) {
         var parentFrame = elementParent.getAttribute('frame');
@@ -687,7 +687,7 @@ Utils.getElementLocation = function(element) {
 
 Utils.getLocationViaAccessibilityInterface = function(element) {
   var retrieval = Utils.newInstance(
-    "@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
+    '@mozilla.org/accessibleRetrieval;1', 'nsIAccessibleRetrieval');
   var accessible = retrieval.getAccessibleFor(element);
 
   if (! accessible) {
@@ -698,8 +698,8 @@ Utils.getLocationViaAccessibilityInterface = function(element) {
   accessible.getBounds(x, y, width, height);
 
   return {
-    x : x.value,
-    y : y.value,
+    x: x.value,
+    y: y.value,
     width: width.value,
     height: height.value
   };
@@ -727,8 +727,8 @@ Utils.getLocation = function(element, opt_onlyFirstRect) {
     // Firefox 3.5
     if (clientRect['width']) {
       return {
-        x : clientRect.left,
-        y : clientRect.top,
+        x: clientRect.left,
+        y: clientRect.top,
         width: clientRect.width,
         height: clientRect.height
       };
@@ -739,22 +739,22 @@ Utils.getLocation = function(element, opt_onlyFirstRect) {
       var retWidth = clientRect.right - clientRect.left;
       var retHeight = clientRect.bottom - clientRect.top;
       return {
-        x : clientRect.left,
-        y : clientRect.top,
+        x: clientRect.left,
+        y: clientRect.top,
         width: retWidth,
         height: retHeight
-      }
+      };
     }
 
     // Firefox 3.0, but lacking client rect
-    fxdriver.logging.info("Falling back to firefox3 mechanism");
+    fxdriver.logging.info('Falling back to firefox3 mechanism');
     var accessibleLocation = Utils.getLocationViaAccessibilityInterface(element);
     accessibleLocation.x = clientRect.left;
     accessibleLocation.y = clientRect.top;
     return accessibleLocation;
-  } catch(e) {
+  } catch (e) {
     // Element doesn't have an accessibility node
-    fxdriver.logging.warning("Falling back to using closure to find the location of the element");
+    fxdriver.logging.warning('Falling back to using closure to find the location of the element');
     fxdriver.logging.warning(e);
 
     var position = goog.style.getClientPosition(element);
@@ -810,8 +810,8 @@ Utils.getBrowserSpecificOffset = function(inBrowser) {
     var rect = inBrowser.getBoundingClientRect();
     browserSpecificYOffset += rect.top;
     browserSpecificXOffset += rect.left;
-    fxdriver.logging.info("Browser-specific offset (X,Y): " + browserSpecificXOffset
-        + ", " + browserSpecificYOffset);
+    fxdriver.logging.info('Browser-specific offset (X,Y): ' + browserSpecificXOffset
+        + ', ' + browserSpecificYOffset);
   }
 
   return {x: browserSpecificXOffset, y: browserSpecificYOffset};
@@ -937,19 +937,19 @@ Utils.wrapResult = function(result, doc) {
       return result;
   }
 };
-    
+
 
 Utils.loadUrl = function(url) {
-  fxdriver.logging.info("Loading: " + url);
-  var ioService = fxdriver.moz.getService("@mozilla.org/network/io-service;1", "nsIIOService");
+  fxdriver.logging.info('Loading: ' + url);
+  var ioService = fxdriver.moz.getService('@mozilla.org/network/io-service;1', 'nsIIOService');
   var channel = ioService.newChannel(url, null, null);
   var channelStream = channel.open();
 
-  var scriptableStream = Components.classes["@mozilla.org/scriptableinputstream;1"]
+  var scriptableStream = Components.classes['@mozilla.org/scriptableinputstream;1']
                                  .createInstance(Components.interfaces.nsIScriptableInputStream);
   scriptableStream.init(channelStream);
 
-  var converter = Utils.newInstance("@mozilla.org/intl/scriptableunicodeconverter",
+  var converter = Utils.newInstance('@mozilla.org/intl/scriptableunicodeconverter',
                       'nsIScriptableUnicodeConverter');
   converter.charset = 'UTF-8';
 
@@ -963,11 +963,11 @@ Utils.loadUrl = function(url) {
   scriptableStream.close();
   channelStream.close();
 
-  fxdriver.logging.info("Done reading: " + url);
+  fxdriver.logging.info('Done reading: ' + url);
   return text;
 };
 
-Utils.installWindowCloseListener = function (respond) {
+Utils.installWindowCloseListener = function(respond) {
   var browser = respond.session.getBrowser();
 
   // Override the "respond.send" function to remove the observer, otherwise
@@ -990,7 +990,7 @@ Utils.installWindowCloseListener = function (respond) {
 
 
       if (target == source) {
-        fxdriver.logging.info("Window was closed.");
+        fxdriver.logging.info('Window was closed.');
         respond.send();
       }
     }
@@ -1036,7 +1036,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
     var docLoaderService = browser.webProgress;
     if (!docLoaderService.isLoadingDocument) {
       WebLoadingListener.removeListener(browser, clickListener);
-      fxdriver.logging.info("Not loading document anymore.");
+      fxdriver.logging.info('Not loading document anymore.');
       respond.send();
     }
   };
@@ -1045,7 +1045,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
   if (contentWindow.closed) {
     // Nulls out the session; client will have to switch to another
     // window on their own.
-    fxdriver.logging.info("Content window closed.");
+    fxdriver.logging.info('Content window closed.');
     respond.send();
     return;
   }
@@ -1053,7 +1053,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
 };
 
 Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnloadedData, jsTimer) {
-  var thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
+  var thmgr_cls = Components.classes['@mozilla.org/thread-manager;1'];
   var node = Utils.getNodeForNativeEvents(element);
 
   var hasEvents = {};
@@ -1070,7 +1070,7 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
     var doneNativeEventWait = false;
 
     var callback = function() {
-      fxdriver.logging.info("Done native event wait.");
+      fxdriver.logging.info('Done native event wait.');
       doneNativeEventWait = true;
     };
 
@@ -1078,7 +1078,7 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
 
     nativeEvents.hasUnhandledEvents(node, hasEvents);
 
-    fxdriver.logging.info("Pending native events: " + hasEvents.value);
+    fxdriver.logging.info('Pending native events: ' + hasEvents.value);
     var numEventsProcessed = 0;
     // Do it as long as the timeout function has not been called and the
     // page has not been unloaded. If the page has been unloaded, there is no
@@ -1089,15 +1089,15 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
       thread.processNextEvent(true);
       numEventsProcessed += 1;
     }
-    fxdriver.logging.info("Extra events processed: " + numEventsProcessed +
-                 " Page Unloaded: " + pageUnloadedData.wasUnloaded);
+    fxdriver.logging.info('Extra events processed: ' + numEventsProcessed +
+                 ' Page Unloaded: ' + pageUnloadedData.wasUnloaded);
 
   } while ((hasEvents.value == true) && (!pageUnloadedData.wasUnloaded));
-  fxdriver.logging.info("Done main loop.");
+  fxdriver.logging.info('Done main loop.');
 
   if (pageUnloadedData.wasUnloaded) {
-      fxdriver.logging.info("Page has been reloaded while waiting for native events to "
-          + "be processed. Remaining events? " + hasEvents.value);
+      fxdriver.logging.info('Page has been reloaded while waiting for native events to '
+          + 'be processed. Remaining events? ' + hasEvents.value);
   } else {
     Utils.removePageUnloadEventListener(element, pageUnloadedData);
   }
@@ -1123,7 +1123,7 @@ Utils.waitForNativeEventsProcessing = function(element, nativeEvents, pageUnload
     numExtraEventsProcessed += 1;
   }
 
-  fxdriver.logging.info("Done extra event loop, " + numExtraEventsProcessed);
+  fxdriver.logging.info('Done extra event loop, ' + numExtraEventsProcessed);
 };
 
 Utils.getPageUnloadedIndicator = function(element) {
@@ -1139,12 +1139,12 @@ Utils.getPageUnloadedIndicator = function(element) {
   var unloadFunction = function() { toReturn.wasUnloaded = true };
   toReturn.callback = unloadFunction;
 
-  element.ownerDocument.body.addEventListener("unload",
+  element.ownerDocument.body.addEventListener('unload',
       unloadFunction, false);
 
   // This is a Firefox specific event - See:
   // https://developer.mozilla.org/En/Using_Firefox_1.5_caching
-  element.ownerDocument.defaultView.addEventListener("pagehide",
+  element.ownerDocument.defaultView.addEventListener('pagehide',
       unloadFunction, false);
 
   return toReturn;
@@ -1155,11 +1155,11 @@ Utils.removePageUnloadEventListener = function(element, pageUnloadData) {
     // Remove event listeners...
     if (element.ownerDocument) {
       if (element.ownerDocument.body) {
-        element.ownerDocument.body.removeEventListener("unload",
+        element.ownerDocument.body.removeEventListener('unload',
             pageUnloadData.callback, false);
       }
       if (element.ownerDocument.defaultView) {
-        element.ownerDocument.defaultView.removeEventListener("pagehide",
+        element.ownerDocument.defaultView.removeEventListener('pagehide',
             pageUnloadData.callback, false);
       }
     }

@@ -301,15 +301,28 @@ goog.events.KeyHandler.SAVE_ALT_FOR_KEYPRESS_ = goog.userAgent.MAC &&
  * @private
  */
 goog.events.KeyHandler.prototype.handleKeyDown_ = function(e) {
-
   // Ctrl-Tab and Alt-Tab can cause the focus to be moved to another window
   // before we've caught a key-up event.  If the last-key was one of these we
   // reset the state.
-  if (goog.userAgent.WEBKIT &&
-      (this.lastKey_ == goog.events.KeyCodes.CTRL && !e.ctrlKey ||
-       this.lastKey_ == goog.events.KeyCodes.ALT && !e.altKey)) {
-    this.lastKey_ = -1;
-    this.keyCode_ = -1;
+
+  if (goog.userAgent.WEBKIT) {
+    if (this.lastKey_ == goog.events.KeyCodes.CTRL && !e.ctrlKey ||
+        this.lastKey_ == goog.events.KeyCodes.ALT && !e.altKey ||
+        goog.userAgent.MAC &&
+        this.lastKey_ == goog.events.KeyCodes.META && !e.metaKey) {
+      this.lastKey_ = -1;
+      this.keyCode_ = -1;
+    }
+  }
+
+  if (this.lastKey_ == -1) {
+    if (e.ctrlKey && e.keyCode != goog.events.KeyCodes.CTRL) {
+      this.lastKey_ = goog.events.KeyCodes.CTRL;
+    } else if (e.altKey && e.keyCode != goog.events.KeyCodes.ALT) {
+      this.lastKey_ = goog.events.KeyCodes.ALT;
+    } else if (e.metaKey && e.keyCode != goog.events.KeyCodes.META) {
+      this.lastKey_ = goog.events.KeyCodes.META;
+    }
   }
 
   if (goog.events.KeyHandler.USES_KEYDOWN_ &&
@@ -328,6 +341,17 @@ goog.events.KeyHandler.prototype.handleKeyDown_ = function(e) {
 
 
 /**
+ * Resets the stored previous values. Needed to be called for webkit which will
+ * not generate a key up for meta key operations. This should only be called
+ * when having finished with repeat key possiblities.
+ */
+goog.events.KeyHandler.prototype.resetState = function() {
+  this.lastKey_ = -1;
+  this.keyCode_ = -1;
+};
+
+
+/**
  * Clears the stored previous key value, resetting the key repeat status. Uses
  * -1 because the Safari 3 Windows beta reports 0 for certain keys (like Home
  * and End.)
@@ -335,8 +359,7 @@ goog.events.KeyHandler.prototype.handleKeyDown_ = function(e) {
  * @private
  */
 goog.events.KeyHandler.prototype.handleKeyup_ = function(e) {
-  this.lastKey_ = -1;
-  this.keyCode_ = -1;
+  this.resetState();
   this.altKey_ = e.altKey;
 };
 
