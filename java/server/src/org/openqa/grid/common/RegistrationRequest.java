@@ -57,7 +57,6 @@ public class RegistrationRequest {
   private Map<String, Object> configuration = new HashMap<String, Object>();
 
   private String[] args;
-  private String nodeJSON;
 
   private static final Logger log = Logger.getLogger(RegistrationRequest.class.getName());
 
@@ -79,7 +78,7 @@ public class RegistrationRequest {
   public static final String TIME_OUT = "timeout";
   public static final String BROWSER_TIME_OUT = "browserTimeout";
 
-  // TODO delete to keep only HUB_HOSt and HUB_PORT
+  // TODO delete to keep only HUB_HOST and HUB_PORT
   public static final String REMOTE_HOST = "remoteHost";
 
   public static final String MAX_SESSION = "maxSession";
@@ -381,25 +380,14 @@ public class RegistrationRequest {
     // -file *.json ?
     if (helper.isParamPresent("-nodeConfig")) {
       String value = helper.getParamValue("-nodeConfig");
-      res.nodeJSON = value;
       res.loadFromJSON(value);
     }
 
     // from command line
     res.loadFromCommandLine(args);
 
-    String host = (String) res.configuration.get(HOST);
-    if ("ip".equalsIgnoreCase(host)) {
-      NetworkUtils util = new NetworkUtils();
-      String guessedHost = util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-      res.configuration.put(HOST, guessedHost);
-    } else if ("host".equalsIgnoreCase(host)) {
-      NetworkUtils util = new NetworkUtils();
-      String guessedHost = util.getIp4NonLoopbackAddressOfThisMachine().getHostName();
-      res.configuration.put(HOST, guessedHost);
-    }
-
-
+    res.configuration.put(HOST, guessHost((String) res.configuration.get(HOST)));
+    res.configuration.put(HUB_HOST, guessHost((String) res.configuration.get(HUB_HOST)));
 
     // some values can be calculated.
     if (res.configuration.get(REMOTE_HOST) == null) {
@@ -425,6 +413,18 @@ public class RegistrationRequest {
     }
 
     return res;
+  }
+
+  private static String guessHost(String host) {
+    if ("ip".equalsIgnoreCase(host)) {
+      NetworkUtils util = new NetworkUtils();
+      return util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+    } else if ("host".equalsIgnoreCase(host)) {
+      NetworkUtils util = new NetworkUtils();
+      return util.getIp4NonLoopbackAddressOfThisMachine().getHostName();
+    } else {
+      return host;
+    }
   }
 
   private void loadFromCommandLine(String[] args) {
@@ -555,7 +555,7 @@ public class RegistrationRequest {
         for (int i = 0; i < a.length(); i++) {
           JSONObject cap = a.getJSONObject(i);
           DesiredCapabilities c = new DesiredCapabilities();
-          for (Iterator iterator = cap.keys(); iterator.hasNext();) {
+          for (Iterator<?> iterator = cap.keys(); iterator.hasNext();) {
             String name = (String) iterator.next();
             Object value = cap.get(name);
             c.setCapability(name, value);
@@ -566,7 +566,7 @@ public class RegistrationRequest {
       }
 
       JSONObject o = base.getJSONObject("configuration");
-      for (Iterator iterator = o.keys(); iterator.hasNext();) {
+      for (Iterator<?> iterator = o.keys(); iterator.hasNext();) {
         String key = (String) iterator.next();
         Object value = o.get(key);
         if (value instanceof JSONArray) {
