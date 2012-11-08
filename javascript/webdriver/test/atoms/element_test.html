@@ -181,6 +181,11 @@ limitations under the License.
       assertEquals('true', webdriver.atoms.element.getAttribute(el, 'complete'));
     }
 
+    function testShouldReturnTrueForSpecifiedBooleanProperty() {
+      var el = document.getElementById('nowrap');
+      assertEquals('true', webdriver.atoms.element.getAttribute(el, 'nowrap'));
+    }
+
     var newLine =
         bot.userAgent.IE_DOC_PRE9 || goog.userAgent.OPERA ? '\r\n' : '\n';
 
@@ -239,6 +244,7 @@ limitations under the License.
 <img id="invalidImgTag" />
 
 <div style="background-color: green" id="green">This is a green div</div>
+<div id="nowrap" nowrap>Unwrappable</div>
 
 <iframe name="frame_page" id="frame_page_frame" src="frame_page.html"></iframe>
 </body>
