@@ -164,7 +164,7 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
   var propName = webdriver.atoms.element.PROPERTY_ALIASES_[attribute] ||
       attribute;
   if (goog.array.contains(webdriver.atoms.element.BOOLEAN_PROPERTIES_, name)) {
-    value = goog.isDefAndNotNull(bot.dom.getAttribute(element, attribute)) ||
+    value = !goog.isNull(bot.dom.getAttribute(element, attribute)) ||
         bot.dom.getProperty(element, propName);
     return value ? 'true' : null;
   }
