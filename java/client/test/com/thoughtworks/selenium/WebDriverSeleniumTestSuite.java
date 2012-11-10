@@ -36,6 +36,7 @@ import com.thoughtworks.selenium.corebased.TestFramesClick;
 import com.thoughtworks.selenium.corebased.TestFramesOpen;
 import com.thoughtworks.selenium.corebased.TestFunkEventHandling;
 import com.thoughtworks.selenium.corebased.TestGettingValueOfCheckbox;
+import com.thoughtworks.selenium.corebased.TestGettingValueOfRadioButton;
 import com.thoughtworks.selenium.corebased.TestGoBack;
 import com.thoughtworks.selenium.corebased.TestHtmlSource;
 import com.thoughtworks.selenium.corebased.TestImplicitLocators;
@@ -79,6 +80,8 @@ import org.junit.runners.Suite;
     TestFramesClick.class,
     TestFramesOpen.class,
     TestFunkEventHandling.class,
+    TestGettingValueOfCheckbox.class,
+    TestGettingValueOfRadioButton.class,
     TestGoBack.class,
     TestHtmlSource.class,
     TestImplicitLocators.class,
@@ -98,8 +101,7 @@ import org.junit.runners.Suite;
     TestVisibility.class,
     TestWait.class,
     TestWaitForNot.class,
-    TestXPathLocators.class,
-    TestGettingValueOfCheckbox.class
+    TestXPathLocators.class
 })
 public class WebDriverSeleniumTestSuite extends BaseSuite {
   // Empty

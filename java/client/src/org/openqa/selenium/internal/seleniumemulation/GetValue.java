@@ -29,10 +29,13 @@ public class GetValue extends SeleneseCommand<String> {
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String locator, String ignored) {
     WebElement element = finder.findElement(driver, locator);
-    // Special-case handling for checkboxes: The Selenium API returs "on" for
-    // checked checkboxes and off for unchecked ones. WebDriver will return "null" for
-    // the "checked" attribute if the checkbox is not-checked, "true" otherwise.
-    if (element.getTagName().equals("input") && element.getAttribute("type").equals("checkbox")) {
+    // Special-case handling for checkboxes and radio buttons: The Selenium API returns "on" for
+    // checked checkboxes and radio buttons and off for unchecked ones. WebDriver will return "null" for
+    // the "checked" attribute if the checkbox or the radio button is not-checked, "true" otherwise.
+    if (element.getTagName().equals("input")
+        && (element.getAttribute("type").equals("checkbox")
+            || element.getAttribute("type").equals("radio")))
+    {
       if (element.getAttribute("checked") == null) {
         return "off";
       } else {
