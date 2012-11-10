@@ -56,6 +56,7 @@ import com.thoughtworks.selenium.corebased.TestFunkEventHandling;
 import com.thoughtworks.selenium.corebased.TestGet;
 import com.thoughtworks.selenium.corebased.TestGetTextContent;
 import com.thoughtworks.selenium.corebased.TestGettingValueOfCheckbox;
+import com.thoughtworks.selenium.corebased.TestGettingValueOfRadioButton;
 import com.thoughtworks.selenium.corebased.TestGoBack;
 import com.thoughtworks.selenium.corebased.TestHighlight;
 import com.thoughtworks.selenium.corebased.TestHtmlSource;
@@ -141,6 +142,7 @@ import org.junit.runners.Suite;
     TestGet.class,
     TestGetTextContent.class,
     TestGettingValueOfCheckbox.class,
+    TestGettingValueOfRadioButton.class,
     TestGoBack.class,
     TestHighlight.class,
     TestHtmlSource.class,
