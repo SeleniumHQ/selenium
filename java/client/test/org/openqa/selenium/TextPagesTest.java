@@ -45,7 +45,7 @@ public class TextPagesTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {IE, FIREFOX, SELENESE, CHROME, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE},
-      reason = "Android: WebView adds HTML tags to the page.")
+      reason = "Android: WebView adds HTML tags to the page, IE, Firefox: adds HTML tags.")
   @Test
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
@@ -67,7 +67,7 @@ public class TextPagesTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {CHROME, IE, IPHONE, SELENESE, OPERA, ANDROID, SAFARI, OPERA_MOBILE}, reason =
-      "Opera, Safari: creates DOM for displaying text pages")
+      "Opera, Safari, IE, Firefox: creates DOM for displaying text pages")
   @Test
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);
