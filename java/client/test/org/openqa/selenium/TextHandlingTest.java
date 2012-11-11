@@ -23,7 +23,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -281,7 +280,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, is("Some text" + newLine + "Some more text"));
   }
 
-  @Ignore({FIREFOX, HTMLUNIT, SELENESE, OPERA})
+  @Ignore({HTMLUNIT, SELENESE})
   @Test
   public void testShouldHandleNestedBlockLevelElements() {
     driver.get(pages.simpleTestPage);
@@ -336,7 +335,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, IPHONE, OPERA})
+  @Ignore({SELENESE, IPHONE})
   @Test
   public void testShouldOnlyIncludeVisibleText() {
     driver.get(pages.javascriptPage);
