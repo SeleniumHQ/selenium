@@ -106,6 +106,7 @@ public class FileHandlerTest {
       out.write(buffer);
     }
     out.flush();
+    in.close();
     return out;
   }
 

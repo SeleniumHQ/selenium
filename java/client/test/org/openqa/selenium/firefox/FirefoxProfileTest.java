@@ -186,6 +186,8 @@ public class FirefoxProfileTest {
       prefLines.add(line);
     }
 
+    reader.close();
+
     return prefLines;
   }
 
