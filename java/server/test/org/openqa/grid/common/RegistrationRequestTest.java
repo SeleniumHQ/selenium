@@ -127,9 +127,9 @@ public class RegistrationRequestTest {
 
   @Test
   public void commandLineParamDefault() {
-    String hubHost = "-" + RegistrationRequest.HUB_HOST;
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC","-host","localhost");
-    Assert.assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
+    RegistrationRequest req = RegistrationRequest.build("-role", "rc");
+    // the hub defaults to current IP.
+    Assert.assertNotNull(req.getConfiguration().get(RegistrationRequest.HUB_HOST));
     Assert.assertEquals(4444, req.getConfiguration().get(RegistrationRequest.HUB_PORT));
     // the node defaults to current IP.
     Assert.assertNotNull(req.getConfiguration().get(RegistrationRequest.HOST));
