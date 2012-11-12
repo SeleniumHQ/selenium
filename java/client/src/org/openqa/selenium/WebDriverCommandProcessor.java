@@ -51,13 +51,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
 
   public WebDriverCommandProcessor(String baseUrl, Supplier<WebDriver> maker) {
     this.maker = maker;
-
-    if (baseUrl.endsWith("/")) {
-      this.baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
-    } else {
-      this.baseUrl = baseUrl;
-    }
-
+    this.baseUrl = baseUrl;
     this.timer = new Timer(30000);
     this.scriptMutator = new CompoundMutator(baseUrl);
   }
