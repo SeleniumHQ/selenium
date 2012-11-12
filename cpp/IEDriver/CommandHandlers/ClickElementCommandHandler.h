@@ -14,6 +14,8 @@
 #ifndef WEBDRIVER_IE_CLICKELEMENTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_CLICKELEMENTCOMMANDHANDLER_H_
 
+#define CLICK_OPTION_EVENT_NAME L"ClickOptionEvent"
+
 #include "../Generated/atoms.h"
 #include "../Browser.h"
 #include "../IECommandHandler.h"
@@ -55,8 +57,15 @@ class ClickElementCommandHandler : public IECommandHandler {
       if (status_code == SUCCESS) {
         if (executor.enable_native_events()) {
           if (IsOptionElement(element_wrapper)) {
-            this->ClickOption(browser_wrapper, element_wrapper, response);
-            return;
+            std::string option_click_error = "";
+            status_code = element_wrapper->ExecuteAsyncAtom(
+                CLICK_OPTION_EVENT_NAME,
+                &ClickElementCommandHandler::ClickOptionThreadProc,
+                &option_click_error);
+            if (status_code != SUCCESS) {
+              response->SetErrorResponse(status_code, "Cannot click on option element. " + option_click_error);
+              return;
+            }
           } else {
             status_code = element_wrapper->Click(executor.scroll_behavior());
             browser_wrapper->set_wait_required(true);
@@ -110,32 +119,49 @@ class ClickElementCommandHandler : public IECommandHandler {
     return option != NULL;
   }
 
-  void ClickOption(BrowserHandle browser_wrapper,
-                   ElementHandle element_wrapper,
-                   Response* response) {
-    int status_code = SUCCESS;
-    CComPtr<IHTMLDocument2> doc;
-    browser_wrapper->GetDocument(&doc);
+  static unsigned int WINAPI ClickOptionThreadProc(LPVOID param) {
+    BOOL bRet; 
+    MSG msg;
+    HRESULT hr = ::CoInitialize(NULL);
+    IHTMLDocument2* doc;
+    LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
+    hr = ::CoGetInterfaceAndReleaseStream(message_payload,
+                                          IID_IHTMLDocument2,
+                                          reinterpret_cast<void**>(&doc));
 
-    // The atom is just the definition of an anonymous
-    // function: "function() {...}"; Wrap it in another function so we can
-    // invoke it with our arguments without polluting the current namespace.
-    std::wstring script_source = L"(function() { return (";
-    script_source += atoms::asString(atoms::CLICK);
-    script_source += L")})();";
+    // Establish a message loop for the thread
+    ::PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
 
-    Script script_wrapper(doc, script_source, 1);
-    script_wrapper.AddArgument(element_wrapper);
-    status_code = script_wrapper.Execute();
-    if (status_code != SUCCESS) {
-      response->SetErrorResponse(status_code,
-                                 "An error occurred executing the click atom");
-      return;
+    // Signal the calling thread that this thread is ready to receive messages
+    HANDLE event_handle = ::OpenEvent(NULL, FALSE, CLICK_OPTION_EVENT_NAME);
+    ::SetEvent(event_handle);
+    ::CloseHandle(event_handle);
+
+    while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0) {
+      if (msg.message == WD_EXECUTE_ASYNC_SCRIPT) {
+        IHTMLElement* element;
+        LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
+        hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IHTMLElement, reinterpret_cast<void**>(&element));
+
+        // The atom is just the definition of an anonymous
+        // function: "function() {...}"; Wrap it in another function so we can
+        // invoke it with our arguments without polluting the current namespace.
+        std::wstring script_source = L"(function() { return (";
+        script_source += atoms::asString(atoms::CLICK);
+        script_source += L")})();";
+
+        Script script_wrapper(doc, script_source, 1);
+        script_wrapper.AddArgument(element);
+        int status_code = script_wrapper.Execute();
+
+        // Require a short sleep here to let the browser update the DOM.
+        ::Sleep(100);
+        ::CoUninitialize();
+        return status_code;
+      }
     }
 
-    // Require a short sleep here to let the browser update the DOM.
-    ::Sleep(100);
-    response->SetSuccessResponse(Json::Value::null);
+    return 0;
   }
 };
 

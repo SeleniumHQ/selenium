@@ -716,4 +716,88 @@ int Element::GetParentDocument(IHTMLWindow2* parent_window,
   return SUCCESS;
 }
 
+int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC execute_proc, std::string* error_msg) {
+    CComPtr<IHTMLDocument2> doc;
+    this->GetContainingDocument(false, &doc);
+
+    // Marshal the document and the element to click to streams for use in another thread.
+    LPSTREAM stream;
+    HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLDocument2, doc, &stream);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for document failed";
+      *error_msg = "Couldn't marshal the IHTMLDocument2 interface to a stream. This is an internal COM error.";
+      return EUNEXPECTEDJSERROR;
+    }
+
+    // We need exclusive access to this event. If it's already created,
+    // OpenEvent returns non-NULL, so we need to wait a bit and retry
+    // until OpenEvent returns NULL.
+    int retry_counter = 50;
+    HANDLE event_handle = ::OpenEvent(NULL, FALSE, sync_event_name.c_str());
+    if (event_handle != NULL && --retry_counter > 0) {
+      ::CloseHandle(event_handle);
+      ::Sleep(50);
+      event_handle = ::OpenEvent(NULL, FALSE, sync_event_name.c_str());
+    }
+
+    // Failure condition here.
+    if (event_handle != NULL) {
+      ::CloseHandle(event_handle);
+      LOG(WARN) << "OpenEvent() returned non-NULL, event already exists.";
+      *error_msg = "Couldn't create an event for synchronizing the creation of the thread. This generally means that you were trying to click on an option in two different instances.";
+      return EUNEXPECTEDJSERROR;
+    }
+
+    event_handle = ::CreateEvent(NULL, TRUE, FALSE, sync_event_name.c_str());
+    if (event_handle == NULL) {
+      LOG(WARN) << "CreateEvent() failed.";
+      *error_msg = "Couldn't create an event for synchronizing the creation of the thread. This is an internal failure at the Windows OS level, and is generally not due to an error in the IE driver.";
+      return EUNEXPECTEDJSERROR;
+    }
+
+    // Start the thread and wait up to 1 second to be signaled that it is ready
+    // to receive messages, then close the event handle.
+    unsigned int thread_id = 0;
+    HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
+                                                    0,
+                                                    execute_proc,
+                                                    (void *)stream,
+                                                    0,
+                                                    &thread_id));
+    ::WaitForSingleObject(event_handle, 1000);
+    ::CloseHandle(event_handle);
+
+    if (thread_handle == NULL) {
+      LOG(WARN) << "_beginthreadex() failed.";
+      *error_msg = "Couldn't create the thread for executing JavaScript asynchronously.";
+      return EUNEXPECTEDJSERROR;
+    }
+
+    // This is why we shouldn't do this all the time. We have no way to
+    // verify the success or failure of the called function, so we have to
+    // assume we just succeeded.
+    int status_code = SUCCESS;
+    LPSTREAM element_stream;
+    hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLElement, this->element_, &element_stream);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for element failed";
+      *error_msg = "Couldn't marshal the IHTMLElement interface to a stream. This is an internal COM error.";
+      status_code = EUNEXPECTEDJSERROR;
+    } else {
+      // Post the message to execute the atom to the worker thread.
+      // Try to let the thread complete within a short amount of time
+      // to have a hope of synchronization.
+      DWORD post_message_result = ::PostThreadMessage(thread_id, WD_EXECUTE_ASYNC_SCRIPT, NULL, reinterpret_cast<LPARAM>(&element_stream));
+      DWORD wait_result = ::WaitForSingleObject(thread_handle, 100);
+      if (wait_result == WAIT_OBJECT_0) {
+        LOG(DEBUG) << "Thread exited successfully";
+      } else if (wait_result == WAIT_TIMEOUT) {
+        LOG(DEBUG) << "Thread still running. This does not necesarily mean an error condition. There may be a valid alert displayed.";
+      } else {
+        LOG(WARN) << "WaitForSingleObject returned an unexpected value: " << wait_result;
+      }
+    }
+    ::CloseHandle(thread_handle);
+    return status_code;
+}
 } // namespace webdriver

@@ -24,6 +24,8 @@ enum ELEMENT_SCROLL_BEHAVIOR {
   BOTTOM
 };
 
+typedef unsigned int (__stdcall *ASYNCEXECPROC)(void*);
+
 // Forward declaration of classes to avoid
 // circular include files.
 class Browser;
@@ -46,6 +48,9 @@ class Element {
   bool IsEnabled(void);
   bool IsSelected(void);
   int Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior);
+  int ExecuteAsyncAtom(const std::wstring& sync_event_name,
+                       ASYNCEXECPROC execute_proc,
+                       std::string* error_msg);
 
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }

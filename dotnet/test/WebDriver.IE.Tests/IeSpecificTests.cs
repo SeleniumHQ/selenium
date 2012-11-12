@@ -10,6 +10,15 @@ namespace OpenQA.Selenium.IE
     public class IeSpecificTests : DriverTestFixture
     {
         [Test]
+        public void AlertSelectTest()
+        {
+            driver.Url = alertsPage;
+            driver.FindElement(By.Id("value1")).Click();
+            IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); });
+            alert.Accept();
+        }
+
+        [Test]
         public void ShouldBeAbleToBrowseTransformedXml()
         {
             driver.Url = xhtmlTestPage;

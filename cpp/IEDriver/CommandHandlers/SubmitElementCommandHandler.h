@@ -14,6 +14,8 @@
 #ifndef WEBDRIVER_IE_SUBMITELEMENTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SUBMITELEMENTCOMMANDHANDLER_H_
 
+#define SUBMIT_EVENT_NAME L"SubmitEvent"
+
 #include "../Browser.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
@@ -68,22 +70,15 @@ class SubmitElementCommandHandler : public IECommandHandler {
         }
 
         if (!handled_with_native_events) {
-          // The atom is just the definition of an anonymous
-          // function: "function() {...}"; Wrap it in another function so we can
-          // invoke it with our arguments without polluting the current namespace.
-          std::wstring script_source = L"(function() { return (";
-          script_source += atoms::asString(atoms::SUBMIT);
-          script_source += L")})();";
-
-          CComPtr<IHTMLDocument2> doc;
-          browser_wrapper->GetDocument(&doc);
-          Script script_wrapper(doc, script_source, 1);
-          script_wrapper.AddArgument(element_wrapper);
-          status_code = script_wrapper.Execute();
+          std::string submit_error = "";
+          status_code = element_wrapper->ExecuteAsyncAtom(
+              SUBMIT_EVENT_NAME,
+              &SubmitElementCommandHandler::SubmitFormThreadProc,
+              &submit_error);
 
           if (status_code != SUCCESS) {
             response->SetErrorResponse(status_code,
-                                       "Error submitting when not using native events");
+                                       "Error submitting when not using native events. " + submit_error);
             return;
           }
         }
@@ -113,6 +108,50 @@ class SubmitElementCommandHandler : public IECommandHandler {
       current->get_parentElement(&temp);
       current = temp;
     }
+  }
+  static unsigned int WINAPI SubmitFormThreadProc(LPVOID param) {
+    BOOL bRet; 
+    MSG msg;
+    HRESULT hr = ::CoInitialize(NULL);
+    IHTMLDocument2* doc;
+    LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
+    hr = ::CoGetInterfaceAndReleaseStream(message_payload,
+                                          IID_IHTMLDocument2,
+                                          reinterpret_cast<void**>(&doc));
+
+    // Establish a message loop for the thread
+    ::PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
+
+    // Signal the calling thread that this thread is ready to receive messages
+    HANDLE event_handle = ::OpenEvent(NULL, FALSE, SUBMIT_EVENT_NAME);
+    ::SetEvent(event_handle);
+    ::CloseHandle(event_handle);
+
+    while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0) {
+      if (msg.message == WD_EXECUTE_ASYNC_SCRIPT) {
+        IHTMLElement* element;
+        LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
+        hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IHTMLElement, reinterpret_cast<void**>(&element));
+
+        // The atom is just the definition of an anonymous
+        // function: "function() {...}"; Wrap it in another function so we can
+        // invoke it with our arguments without polluting the current namespace.
+        std::wstring script_source = L"(function() { return (";
+        script_source += atoms::asString(atoms::SUBMIT);
+        script_source += L")})();";
+
+        Script script_wrapper(doc, script_source, 1);
+        script_wrapper.AddArgument(element);
+        int status_code = script_wrapper.Execute();
+
+        // Require a short sleep here to let the browser update the DOM.
+        ::Sleep(100);
+        ::CoUninitialize();
+        return status_code;
+      }
+    }
+
+    return 0;
   }
 };
 

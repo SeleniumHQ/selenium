@@ -9,6 +9,22 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.26.1.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Modified to no longer hang on alerts triggered by onchange of <select>
+   elements or by onsubmit of <form> elements. Fixes issue #3508. Fixes 
+   issue #2103.
+
+v2.26.0.9
+=========
+ * Modified scroll behavior in IE driver SendKeysCommandHandler to call 
+   Element::GetLocationOnceScrolledIntoView() instead of calling the DOM 
+   scrollIntoView() function. Fixes issue #4393.
+ * Modified to not call blur() on focusing element if the active element is
+   the <body> element. This should no longer cause the IE window to drop to
+   the bottom of the Z-order. Fixes issue #2353 and related.
+
 v2.26.0.8
 =========
  * Updates to JavaScript automation atoms.
