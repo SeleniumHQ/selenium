@@ -33,6 +33,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -411,7 +412,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       try {
         if (entity != null) {
           content = EntityUtils.toByteArray(entity);
-          charSet = EntityUtils.getContentCharSet(entity);
+          charSet = ContentType.getOrDefault(entity).getCharset().name();
         } else {
           content = new byte[0];
           charSet = null;
