@@ -279,6 +279,10 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   public Response execute(Command command) throws IOException {
     HttpContext context = new BasicHttpContext();
 
+    if (QUIT.equals(command.getName()) && command.getSessionId() == null) {
+      return new Response();
+    }
+
     CommandInfo info = nameToUrl.get(command.getName());
     try {
       HttpUriRequest httpMethod = info.getMethod(remoteServer, command);
@@ -312,14 +316,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
             e.getCause());
       }
       throw e;
-    } catch (NullPointerException e) {
-      // swallow an NPE on quit. It indicates that the sessionID is null
-      // which is what we expect to be the case.
-      if (QUIT.equals(command.getName())) {
-        return new Response();
-      } else {
-        throw e;
-      }
     }
   }
 
