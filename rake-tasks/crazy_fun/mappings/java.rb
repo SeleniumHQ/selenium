@@ -476,7 +476,7 @@ module CrazyFunJava
               :printsummary  => 'on',
               :haltonerror   => halt_on_error?,
               :haltonfailure => halt_on_failure?,
-              :maxmemory     => "512m"
+              :maxmemory     => "1024m"
             ) do |ant|
               ant.classpath do |ant_cp|
                 cp.all.each do |jar|
