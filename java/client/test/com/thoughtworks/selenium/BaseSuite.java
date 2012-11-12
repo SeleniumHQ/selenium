@@ -16,33 +16,44 @@ limitations under the License.
 
 package com.thoughtworks.selenium;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.rules.ExternalResource;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.v1.SeleniumTestEnvironment;
 
 public class BaseSuite {
-  @BeforeClass
-  public static void initializeServer() {
-    GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
-  }
-
-  @AfterClass
-  public static void shutdownBrowser() {
-    try {
-      InternalSelenseTestBase.destroyDriver();
-    } catch (SeleniumException ignored) {
-      // Nothing sane to do
+  
+  public static ExternalResource testEnvironment = new ExternalResource() {
+    @Override
+    protected void before() throws Throwable {
+      GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
     }
-  }
-
-  @AfterClass
-  public static void shutdown() {
-    TestEnvironment environment = GlobalTestEnvironment.get();
-    if (environment != null) {
-      environment.stop();
-      GlobalTestEnvironment.set(null);
+    @Override
+    protected void after() {
+      TestEnvironment environment = GlobalTestEnvironment.get();
+      if (environment != null) {
+        environment.stop();
+        GlobalTestEnvironment.set(null);
+      }
     }
-  }
+  };
+  
+  public static ExternalResource browser = new ExternalResource() {
+    @Override
+    protected void after() {
+      try {
+        InternalSelenseTestBase.destroyDriver();
+      } catch (SeleniumException ignored) {
+        // Nothing sane to do
+      }
+    }
+  };
+  
+  @ClassRule
+  public static TestRule chain =
+      RuleChain.outerRule(testEnvironment).around(browser);
+
 }
