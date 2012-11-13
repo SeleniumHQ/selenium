@@ -70,16 +70,41 @@ class SubmitElementCommandHandler : public IECommandHandler {
         }
 
         if (!handled_with_native_events) {
-          std::string submit_error = "";
-          status_code = element_wrapper->ExecuteAsyncAtom(
-              SUBMIT_EVENT_NAME,
-              &SubmitElementCommandHandler::SubmitFormThreadProc,
-              &submit_error);
+          // HACK! Until someone can properly debug this on Windows 8, execute the click
+          // atom directly on this thread. This means alerts displayed by the onchange
+          // event of the <select> element will block.
+          OSVERSIONINFO version_info;
+          ::GetVersionEx(&version_info);
+          if (version_info.dwMajorVersion == 6 && version_info.dwMinorVersion >= 2) {
+            CComPtr<IHTMLDocument2> doc;
+            browser_wrapper->GetDocument(&doc);
 
-          if (status_code != SUCCESS) {
-            response->SetErrorResponse(status_code,
-                                        "Error submitting when not using native events. " + submit_error);
-            return;
+            // The atom is just the definition of an anonymous
+            // function: "function() {...}"; Wrap it in another function so we can
+            // invoke it with our arguments without polluting the current namespace.
+            std::wstring script_source = L"(function() { return (";
+            script_source += atoms::asString(atoms::SUBMIT);
+            script_source += L")})();";
+
+            Script script_wrapper(doc, script_source, 1);
+            script_wrapper.AddArgument(element_wrapper);
+            status_code = script_wrapper.Execute();
+            if (status_code != SUCCESS) {
+              response->SetErrorResponse(status_code, "Error submitting when not using native events");
+              return;
+            }
+          } else {
+            std::string submit_error = "";
+            status_code = element_wrapper->ExecuteAsyncAtom(
+                SUBMIT_EVENT_NAME,
+                &SubmitElementCommandHandler::SubmitFormThreadProc,
+                &submit_error);
+
+            if (status_code != SUCCESS) {
+              response->SetErrorResponse(status_code,
+                                         "Error submitting when not using native events. " + submit_error);
+              return;
+            }
           }
         }
         browser_wrapper->set_wait_required(true);
