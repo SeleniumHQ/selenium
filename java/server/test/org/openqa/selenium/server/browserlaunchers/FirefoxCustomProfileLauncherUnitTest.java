@@ -21,6 +21,8 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.junit.Test;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
+import com.thoughtworks.selenium.SeleniumException;
+
 import java.io.File;
 
 import static org.junit.Assert.assertFalse;
@@ -113,10 +115,10 @@ public class FirefoxCustomProfileLauncherUnitTest {
     }
 
     @Override
-    protected void killFirefoxProcess() throws FileLockRemainedException {
+    protected void killFirefoxProcess() {
       killFirefoxProcessCalled = true;
       if (!throwProcessKillException) {
-        throw new FileLockRemainedException("test exception");
+        throw new SeleniumException("test exception");
       }
     }
 

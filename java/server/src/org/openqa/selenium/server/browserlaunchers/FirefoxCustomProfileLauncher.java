@@ -29,7 +29,6 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
@@ -134,27 +133,13 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
   // TODO(jbevan): refactor?
   public void close() {
     if (closed) return;
-    FileLockRemainedException fileLockException = null;
     if (process != null) {
-      try {
-        killFirefoxProcess();
-      } catch (FileLockRemainedException flre) {
-        fileLockException = flre;
-      }
+      killFirefoxProcess();
     }
     if (customProfileDir != null) {
       try {
         removeCustomProfileDir();
       } catch (RuntimeException e) {
-        if (fileLockException != null) {
-          log.log(Level.SEVERE, "Couldn't delete custom Firefox profile directory", e);
-          log.severe("Perhaps caused by this exception:");
-          if (fileLockException != null)
-            log.log(Level.SEVERE, "Perhaps caused by this exception:", fileLockException);
-          throw new RuntimeException("Couldn't delete custom Firefox " +
-              "profile directory, presumably because task kill failed; " +
-              "see error LOGGER!", e);
-        }
         throw e;
       }
     }
@@ -167,13 +152,12 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
   }
 
   /** Wrapper to allow for stubbed-out testing **/
-  protected void killFirefoxProcess() throws FileLockRemainedException {
+  protected void killFirefoxProcess() {
     log.info("Killing Firefox...");
     int exitValue = process.destroy();
     if (exitValue == 0) {
       log.warning("Firefox seems to have ended on its own (did we kill the real browser???)");
     }
-    waitForFileLockToGoAway(0, 500);
   }
 
   // visible for testing
@@ -196,43 +180,6 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
   }
 
   /**
-   * Firefox knows it's running by using a "parent.lock" file in the profile directory. Wait for
-   * this file to go away (and stay gone)
-   * 
-   * @param timeout max time to wait for the file to go away
-   * @param timeToWait minimum time to wait to make sure the file is gone
-   * @throws FileLockRemainedException Wehn the lock file is still present.
-   */
-  private void waitForFileLockToGoAway(long timeout, long timeToWait)
-      throws FileLockRemainedException {
-    File lock = new File(customProfileDir(), "parent.lock");
-    for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeout;) {
-      Sleeper.sleepTight(500);
-      if (!lock.exists() && makeSureFileLockRemainsGone(lock, timeToWait)) return;
-    }
-    if (lock.exists())
-      throw new FileLockRemainedException("Lock file still present! " + lock.getAbsolutePath());
-  }
-
-  /**
-   * When initializing the profile, Firefox rapidly starts, stops, restarts and stops again; we need
-   * to wait a bit to make sure the file lock is really gone.
-   * 
-   * @param lock the parent.lock file in the profile directory
-   * @param timeToWait minimum time to wait to see if the file shows back up again. This is not a
-   *        timeout; we will always wait this amount of time or more.
-   * @return true if the file stayed gone for the entire timeToWait; false if the file exists (or
-   *         came back)
-   */
-  private boolean makeSureFileLockRemainsGone(File lock, long timeToWait) {
-    for (long start = System.currentTimeMillis(); System.currentTimeMillis() < start + timeToWait;) {
-      Sleeper.sleepTight(500);
-      if (lock.exists()) return false;
-    }
-    return !lock.exists();
-  }
-
-  /**
    * Wait for one of the Firefox-generated files to come into existence, then wait for Firefox to
    * exit
    * 
@@ -249,19 +196,6 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     }
     if (!testFile.exists())
       throw new RuntimeException("Timed out waiting for profile to be created!");
-    // wait the rest of the timeout for the file lock to go away
-    long subTimeout = timeout - (System.currentTimeMillis() - start);
-    try {
-      waitForFileLockToGoAway(subTimeout, 500);
-    } catch (FileLockRemainedException e) {
-      throw new RuntimeException("Firefox refused shutdown while preparing a profile", e);
-    }
-  }
-
-  protected class FileLockRemainedException extends Exception {
-    FileLockRemainedException(String message) {
-      super(message);
-    }
   }
 
   public static void setChangeMaxConnections(boolean changeMaxConnections) {
