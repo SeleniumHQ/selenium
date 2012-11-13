@@ -89,21 +89,38 @@ class SafariDriverExtension {
       "</plist>");
 
   /**
+   * @return Safari's application data directory for the current platform.
+   * @throws IllegalStateException If the current platform is unsupported.
+   */
+  private static File getSafariDataDirectory() {
+    Platform current = Platform.getCurrent();
+    if (Platform.MAC.is(current)) {
+      return new File("/Users/" + System.getenv("USER"), "Library/Safari");
+    } else if (Platform.WINDOWS.is(current)) {
+      return new File(System.getenv("APPDATA"), "Apple Computer/Safari");
+    }
+
+    throw new IllegalStateException("The current platform is not supported: " + current);
+  }
+
+  /**
    * @return The directory that the SafariDriver extension should be installed
    *     to for the current platform.
    * @throws IllegalStateException If the extension cannot be installed on the
    *     current platform.
+   * @throws IOException If an I/O error occurs.
    */
-  private static File getInstallDirectory() {
-    Platform current = Platform.getCurrent();
-    if (Platform.MAC.is(current)) {
-      return new File("/Users/" + System.getenv("USER"), "Library/Safari/Extensions");
-    } else if (Platform.WINDOWS.is(current)) {
-      return new File(System.getenv("APPDATA"), "Apple Computer/Safari/Extensions");
-    }
+  private static File getInstallDirectory() throws IOException {
+    File dataDir = getSafariDataDirectory();
+    checkState(dataDir.isDirectory(),
+        "The expected Safari data directory does not exist: %s",
+        dataDir.getAbsolutePath());
 
-    throw new IllegalStateException(
-        "Unable to install the SafariDriver extension on the current platform");
+    File extensionsDir = new File(dataDir, "Extensions");
+    if (!extensionsDir.isDirectory()) {
+      extensionsDir.mkdir();
+    }
+    return extensionsDir;
   }
 
   /**
