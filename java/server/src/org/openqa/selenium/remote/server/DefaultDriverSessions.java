@@ -26,14 +26,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class DefaultDriverSessions implements DriverSessions {
   private final DriverFactory factory;
-
-  // TODO(simon): Replace with an actual factory. Or UUIDs.
-  private static final AtomicLong sessionKeyFactory = new AtomicLong(System.currentTimeMillis());
 
   private final Map<SessionId, Session> sessionIdToDriver =
       new ConcurrentHashMap<SessionId, Session>();
@@ -87,7 +84,7 @@ public class DefaultDriverSessions implements DriverSessions {
   }
 
   public SessionId newSession(Capabilities desiredCapabilities) throws Exception {
-    SessionId sessionId = new SessionId(String.valueOf(sessionKeyFactory.getAndIncrement()));
+    SessionId sessionId = new SessionId(UUID.randomUUID().toString());
     Session session = DefaultSession.createSession(factory, sessionId, desiredCapabilities);
 
     sessionIdToDriver.put(sessionId, session);
