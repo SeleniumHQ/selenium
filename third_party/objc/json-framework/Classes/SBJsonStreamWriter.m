@@ -48,6 +48,7 @@ static NSNumber *kNegativeInfinity;
 @synthesize stateStack;
 @synthesize humanReadable;
 @synthesize sortKeys;
+@synthesize sortKeysComparator;
 
 + (void)initialize {
 	kNotANumber = [NSDecimalNumber notANumber];
@@ -72,10 +73,6 @@ static NSNumber *kNegativeInfinity;
 	return self;
 }
 
-- (void)dealloc {
-    self.state = nil;
-}
-
 #pragma mark Methods
 
 - (void)appendBytes:(const void *)bytes length:(NSUInteger)length {
@@ -87,8 +84,15 @@ static NSNumber *kNegativeInfinity;
 		return NO;
 
 	NSArray *keys = [dict allKeys];
-	if (sortKeys)
-		keys = [keys sortedArrayUsingSelector:@selector(compare:)];
+	
+	if (sortKeys) {
+		if (sortKeysComparator) {
+			keys = [keys sortedArrayWithOptions:NSSortStable usingComparator:sortKeysComparator];
+		}
+		else{
+			keys = [keys sortedArrayUsingSelector:@selector(compare:)];
+		}
+	}
 
 	for (id k in keys) {
 		if (![k isKindOfClass:[NSString class]]) {

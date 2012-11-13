@@ -34,11 +34,9 @@
  
   NSURLRequestCachePolicy cachePolicy_;
   
-  // Pointer to the status / activity label.
-  IBOutlet UILabel *statusLabel_;
-  
   // This is nil if the last operation succeeded.
   NSError *lastError_;
+  
 }
 
 @property (retain, readonly) UIWebView *webView;

@@ -45,12 +45,14 @@
 
 - (void)foreachFilePrefixedBy:(NSString*)prefix inSuite:(NSString*)suite apply:(void(^)(NSString*))block {
     NSString *file;
-    NSDirectoryEnumerator* enumerator = [[NSFileManager defaultManager] enumeratorAtPath:suite];
+    NSString *rootPath = [[self class] pathForSuite:suite];
+    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:rootPath];
+    
     while ((file = [enumerator nextObject])) {
         if (![file hasPrefix:prefix])
             continue;
 
-        NSString *path = [suite stringByAppendingPathComponent:file];
+        NSString *path = [rootPath stringByAppendingPathComponent:file];
         if ([[NSFileManager defaultManager] isReadableFileAtPath:path]) {
             block(path);
             count++;

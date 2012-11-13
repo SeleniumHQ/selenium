@@ -1,8 +1,9 @@
 //
-//  FlipsideViewController.m
+//  AppDelegate.h
 //  iWebDriver
 //
-//  Copyright 2009 Google Inc.
+//
+//  Copyright 2012 Software Freedom Conservancy
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -16,23 +17,10 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-#import "FlipsideViewController.h"
+#import <UIKit/UIKit.h>
 
-// Currently unmodified apple boilerplate
-@implementation FlipsideViewController
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
-- (void)viewDidLoad {
-  [super viewDidLoad];
-  self.view.backgroundColor = [UIColor viewFlipsideBackgroundColor];
-}
-
-- (void)didReceiveMemoryWarning {
-  [super didReceiveMemoryWarning];
-}
-
-- (void)dealloc {
-  [super dealloc];
-}
-
+@property (strong, nonatomic) UIWindow *window;
 
 @end

@@ -25,11 +25,14 @@
 // [MainViewController sharedInstance];
 // The UI element definitions are contained in MainView.xib.
 @interface MainViewController : UIViewController {
-  IBOutlet WebViewController *webViewController;
+  WebViewController *webViewController;
   IBOutlet UILabel *statusLabel_;
+  IBOutlet UIWebView *webView;
 }
 
 @property (nonatomic, retain) WebViewController *webViewController;
+
+@property (nonatomic, retain) UIWebView *webView;
 
 // Set the current status text.
 - (void)describeLastAction:(NSString *)status;

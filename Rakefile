@@ -487,7 +487,7 @@ task :iphone_server do
   sdk = iPhoneSDK?
   if sdk != nil then
     puts "Building iWebDriver iphone app."
-    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target iWebDriver", :verbose => false
+    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target iWebDriver -configuration Debug", :verbose => false
   else
     puts "XCode not found. Not building the iphone driver."
   end
@@ -497,7 +497,7 @@ end
 task :test_iphone_server do
   sdk = iPhoneSDK?
   if sdk != nil then
-    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target Tests"
+    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target Tests -configuration Debug"
   else
     puts "XCode and/or iPhoneSDK not found. Not testing iphone_server."
   end

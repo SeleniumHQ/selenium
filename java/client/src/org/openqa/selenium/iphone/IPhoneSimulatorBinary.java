@@ -62,13 +62,13 @@ public class IPhoneSimulatorBinary {
    */
   public IPhoneSimulatorBinary(File iWebDriverApp) {
 	  System.out.println(String.format(
-      "%s launch %s", getIphoneSimPath(), iWebDriverApp.getParentFile().getAbsoluteFile()));
+      "%s launch %s --exit", getIphoneSimPath(), iWebDriverApp.getParentFile().getAbsoluteFile()));
     this.commandLine = CommandLine.parse(String.format(
-      "%s launch %s", getIphoneSimPath(), iWebDriverApp.getParentFile().getAbsoluteFile()));
+      "%s launch %s --exit", getIphoneSimPath(), iWebDriverApp.getParentFile().getAbsoluteFile()));
   }
 
   protected static String getIphoneSimPath() {
-    String filename = "iphonesim";
+    String filename = "ios-sim";
     File parentDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "libs");
     try {
       FileHandler.copyResource(parentDir, IPhoneSimulatorBinary.class, filename);

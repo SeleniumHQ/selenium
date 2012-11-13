@@ -41,7 +41,7 @@ public class IPhoneDriverTests {
 
     private static IPhoneSimulatorBinary locateSimulatorBinary() throws Exception {
       File iWebDriverApp = InProject.locate(
-          "iphone/build/Release-iphonesimulator/iWebDriver.app/iWebDriver");
+          "iphone/build/Debug-iphonesimulator/iWebDriver.app/iWebDriver");
       return new IPhoneSimulatorBinary(iWebDriverApp);
     }
   }

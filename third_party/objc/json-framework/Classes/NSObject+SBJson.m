@@ -56,3 +56,17 @@
 }
 
 @end
+
+
+
+@implementation NSData (NSData_SBJsonParsing)
+
+- (id)JSONValue {
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    id repr = [parser objectWithData:self];
+    if (!repr)
+        NSLog(@"-JSONValue failed. Error is: %@", parser.error);
+    return repr;
+}
+
+@end

@@ -26,7 +26,6 @@
 #import "HTTPServerController.h"
 #import "HTTPVirtualDirectory+AccessViewController.h"
 #import "HTTPVirtualDirectory+Remove.h"
-#import "RootViewController.h"
 #import "Session+ExecuteScript.h"
 #import "SessionRoot.h"
 #import "Storage.h"

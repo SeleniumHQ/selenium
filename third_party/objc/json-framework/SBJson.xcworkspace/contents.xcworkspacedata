@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "container:SBJson.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Examples/TweetStream/TweetStream.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Examples/DisplayPretty/DisplayPretty.xcodeproj">
+   </FileRef>
+</Workspace>

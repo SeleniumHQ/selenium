@@ -4,4 +4,5 @@
 
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
+    #import <SenTestingKit/SenTestingKit.h>
 #endif

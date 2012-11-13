@@ -67,7 +67,7 @@ STAssertTrue([e rangeOfString:s].location != NSNotFound, @"%@ vs %@", e, s)
         
     }];
     
-    STAssertEquals(count, (NSUInteger)28, nil);
+    STAssertEquals(count, (NSUInteger)31, nil);
 }
 
 - (void)testWriteRecursion {

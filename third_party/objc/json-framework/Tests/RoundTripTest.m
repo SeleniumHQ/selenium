@@ -57,7 +57,7 @@
         STAssertEqualObjects(json, output, @"%@ vs %@", json, output);
     }];
 
-    STAssertEquals(count, (NSUInteger)16, nil);
+    STAssertEquals(count, (NSUInteger)17, nil);
 }
 
 
@@ -80,11 +80,11 @@
         STAssertEqualObjects(json, output, nil);
     }];
 
-    STAssertEquals(count, (NSUInteger)16, nil);
+    STAssertEquals(count, (NSUInteger)17, nil);
 }
 
 
-- (void)testCategory {
+- (void)testStringCategory {
     [self foreachTestInSuite:@"Tests/Data/valid" apply:^(NSString *inpath, NSString *outpath) {
         NSError *error = nil;
         NSString *input = [NSString stringWithContentsOfFile:inpath encoding:NSUTF8StringEncoding error:&error];
@@ -103,7 +103,29 @@
         STAssertEqualObjects(json, output, nil);
     }];
 
-    STAssertEquals(count, (NSUInteger)16, nil);
+    STAssertEquals(count, (NSUInteger)17, nil);
+}
+
+- (void)testDataCategory {
+    [self foreachTestInSuite:@"Tests/Data/valid" apply:^(NSString *inpath, NSString *outpath) {
+        NSError *error = nil;
+        NSData *input = [NSData dataWithContentsOfFile:inpath];
+        STAssertNotNil(input, @"%@ - %@", inpath, error);
+
+        NSString *output = [NSString stringWithContentsOfFile:outpath encoding:NSUTF8StringEncoding error:&error];
+        STAssertNotNil(output, @"%@ - %@", outpath, error);
+
+        id object = [input JSONValue];
+        STAssertNotNil(object, nil);
+
+        NSString *json = [object JSONRepresentation];
+        STAssertNotNil(json, nil);
+
+        json = [json stringByAppendingString:@"\n"];
+        STAssertEqualObjects(json, output, nil);
+    }];
+
+    STAssertEquals(count, (NSUInteger)17, nil);
 }
 
 @end

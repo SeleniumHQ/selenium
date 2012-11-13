@@ -34,6 +34,8 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import <SBJson/SBJson.h>
 
+#import "JsonTestCase.h"
+
 @interface StreamParserIntegrationTest : SenTestCase < SBJsonStreamParserAdapterDelegate> {
 	SBJsonStreamParser *parser;
 	SBJsonStreamParserAdapter *adapter;
@@ -55,7 +57,8 @@
 	
 	arrayCount = objectCount = 0u;
 
-	path = @"Tests/Stream";
+	NSString *suite = @"Tests/Stream/";
+    path = [JsonTestCase pathForSuite:suite];
 	files = [[NSFileManager defaultManager] enumeratorAtPath:path];
 
 }
@@ -78,8 +81,12 @@
 	NSString *fileName;
     while ((fileName = [files nextObject])) {
 		NSString *file = [path stringByAppendingPathComponent:fileName];
-		NSLog(@"Parsing file: %@", file);
-		
+
+        // Don't accidentally test directories. That would be bad.
+        BOOL isDir = NO;
+        if (NO == [[NSFileManager defaultManager] fileExistsAtPath:file isDirectory:&isDir] || YES == isDir)
+            continue;
+
 		NSData *data = [NSData dataWithContentsOfMappedFile:file];
 		STAssertNotNil(data, nil);
 	

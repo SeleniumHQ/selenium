@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3BB5955C14EAA4B8001BE91E /* SortedFormatTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB5955B14EAA4B8001BE91E /* SortedFormatTest.m */; };
+		3BB5955D14EAA4B8001BE91E /* SortedFormatTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BB5955B14EAA4B8001BE91E /* SortedFormatTest.m */; };
 		BC12324B1391D5CC00131607 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC1232491391D5CC00131607 /* InfoPlist.strings */; };
 		BC1232561391D5CC00131607 /* SBJson.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC12323D1391D5CC00131607 /* SBJson.framework */; };
 		BC12325C1391D5CC00131607 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC12325A1391D5CC00131607 /* InfoPlist.strings */; };
@@ -102,6 +104,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3BB5955B14EAA4B8001BE91E /* SortedFormatTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SortedFormatTest.m; sourceTree = "<group>"; };
 		BC12323D1391D5CC00131607 /* SBJson.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SBJson.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC1232481391D5CC00131607 /* SBJson-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SBJson-Info.plist"; sourceTree = "<group>"; };
 		BC12324A1391D5CC00131607 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -191,6 +194,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A0E92A8E16276E3F0091EDF6 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Assets;
+			sourceTree = "<group>";
+		};
 		BC1232311391D5CC00131607 = {
 			isa = PBXGroup;
 			children = (
@@ -275,6 +285,7 @@
 		BC8851581391D6DD00370E55 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				A0E92A8E16276E3F0091EDF6 /* Assets */,
 				BC88522B1391D6DD00370E55 /* ErrorTest.m */,
 				BC88522C1391D6DD00370E55 /* FormatTest.m */,
 				BC88522D1391D6DD00370E55 /* JsonCheckerTest.m */,
@@ -284,6 +295,7 @@
 				BC8852311391D6DD00370E55 /* RoundTripTest.m */,
 				BC8852971391D6DE00370E55 /* StreamParserIntegrationTest.m */,
 				BC8852981391D6DE00370E55 /* WriterTest.m */,
+				3BB5955B14EAA4B8001BE91E /* SortedFormatTest.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -481,6 +493,7 @@
 				BCC2626E13920FC7003D9994 /* Sources */,
 				BCC2626F13920FC7003D9994 /* Frameworks */,
 				BCC2627013920FC7003D9994 /* Resources */,
+				A0E92BF5162772BB0091EDF6 /* ShellScript */,
 				BCC2627113920FC7003D9994 /* ShellScript */,
 			);
 			buildRules = (
@@ -550,6 +563,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		A0E92BF5162772BB0091EDF6 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p \"${BUILT_PRODUCTS_DIR}/${CONTENTS_FOLDER_PATH}/Tests/\"\ncp -r \"${PROJECT_DIR}/Tests/Data/\" \"${BUILT_PRODUCTS_DIR}/${CONTENTS_FOLDER_PATH}/Tests/Data\"\ncp -r \"${PROJECT_DIR}/Tests/Stream/\" \"${BUILT_PRODUCTS_DIR}/${CONTENTS_FOLDER_PATH}/Tests/Stream\"";
+		};
 		BC1232501391D5CC00131607 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -610,6 +637,7 @@
 				BC88532C1391D6DE00370E55 /* RoundTripTest.m in Sources */,
 				BC8853911391D6DE00370E55 /* StreamParserIntegrationTest.m in Sources */,
 				BC8853921391D6DE00370E55 /* WriterTest.m in Sources */,
+				3BB5955C14EAA4B8001BE91E /* SortedFormatTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -644,6 +672,7 @@
 				BC417FFA13A1008F00C8BC49 /* RoundTripTest.m in Sources */,
 				BC417FFB13A1008F00C8BC49 /* StreamParserIntegrationTest.m in Sources */,
 				BC417FFC13A1008F00C8BC49 /* WriterTest.m in Sources */,
+				3BB5955D14EAA4B8001BE91E /* SortedFormatTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -694,17 +723,26 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = "";
 				ONLY_ACTIVE_ARCH = YES;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -713,13 +751,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -727,18 +774,12 @@
 		BC1232651391D5CC00131607 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 37;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 35;
+				DYLIB_CURRENT_VERSION = 37;
 				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = supported;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SBJson/SBJson-Prefix.pch";
 				INFOPLIST_FILE = "SBJson/SBJson-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -750,18 +791,13 @@
 		BC1232661391D5CC00131607 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 37;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 35;
+				DYLIB_CURRENT_VERSION = 37;
 				FRAMEWORK_VERSION = A;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = supported;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SBJson/SBJson-Prefix.pch";
 				INFOPLIST_FILE = "SBJson/SBJson-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -773,15 +809,8 @@
 		BC1232681391D5CC00131607 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = supported;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SBJsonTests/SBJsonTests-Prefix.pch";
 				INFOPLIST_FILE = "SBJsonTests/SBJsonTests-Info.plist";
 				OTHER_LDFLAGS = (
@@ -796,15 +825,9 @@
 		BC1232691391D5CC00131607 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = supported;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SBJsonTests/SBJsonTests-Prefix.pch";
 				INFOPLIST_FILE = "SBJsonTests/SBJsonTests-Info.plist";
 				OTHER_LDFLAGS = (
@@ -819,13 +842,8 @@
 		BCC2628813920FC7003D9994 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/sbjson_ios.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "sbjson-ios/sbjson-ios-Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					include/,
 					"$(BUILT_PRODUCTS_DIR)/usr/local/lib/include/",
@@ -837,20 +855,14 @@
 				PUBLIC_HEADERS_FOLDER_PATH = include/SBJson/;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		BCC2628913920FC7003D9994 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/sbjson_ios.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "sbjson-ios/sbjson-ios-Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(TARGET_BUILD_DIR)/include/";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_LDFLAGS = "-ObjC";
@@ -858,23 +870,17 @@
 				PUBLIC_HEADERS_FOLDER_PATH = include/SBJson/;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
 		BCC2628B13920FC7003D9994 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
 				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "sbjson-iosTests/sbjson-iosTests-Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "sbjson-iosTests/sbjson-iosTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_LDFLAGS = (
@@ -891,16 +897,11 @@
 		BCC2628C13920FC7003D9994 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
 				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "sbjson-iosTests/sbjson-iosTests-Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "sbjson-iosTests/sbjson-iosTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_LDFLAGS = (

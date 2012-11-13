@@ -24,10 +24,10 @@
 	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSMainNibFile</key>
-	<string>MainWindow</string>
-	<key>NSMainNibFile~ipad</key>
-	<string>MainWindow-iPad</string>
+	<key>UIMainStoryboardFile~iphone</key>
+	<string>Storyboard_iPhone</string>
+	<key>UIMainStoryboardFile~ipad</key>
+	<string>Storyboard_iPad</string>
 	<key>UIPrerenderedIcon</key>
 	<string>true</string>
 </dict>

@@ -27,7 +27,6 @@
 #import "SessionRoot.h"
 #import "Status.h"
 #import "HTTPResponse+Utility.h"
-#import "RootViewController.h"
 
 @implementation RESTServiceMapping
 

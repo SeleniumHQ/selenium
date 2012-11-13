@@ -24,21 +24,22 @@ static MainViewController *singleton_;
 
 @implementation MainViewController
 
+@synthesize webView;
 @synthesize webViewController;
-
-// Boilerplate init for loading from the nib.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-      
-    }
-    return self;
-}
 
 - (void)viewDidLoad {
   [super viewDidLoad];
   singleton_ = self;
-  [webViewController.webView loadHTMLString:@"" baseURL:nil];
+  [webView setScalesPageToFit:NO];
+  webViewController = [[WebViewController alloc] init];
+  [webView setDelegate:webViewController];
+  
+  if ([webView respondsToSelector:@selector(mediaPlaybackRequiresUserAction)]) {
+    [webView setMediaPlaybackRequiresUserAction:NO];
+  }
+  [webView loadHTMLString:@"" baseURL:nil];
   [statusLabel_ setAdjustsFontSizeToFitWidth:YES];
+  
 }
 
 // Override to allow orientations other than the default portrait orientation.
@@ -52,6 +53,8 @@ static MainViewController *singleton_;
 }
 
 - (void)dealloc {
+  [webView release];
+  [webViewController dealloc];
   [super dealloc];
 }
 
@@ -63,4 +66,9 @@ static MainViewController *singleton_;
   return singleton_;
 }
 
+- (void)viewDidUnload {
+    [webView release];
+    webView = nil;
+    [super viewDidUnload];
+}
 @end

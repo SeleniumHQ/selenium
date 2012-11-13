@@ -25,10 +25,10 @@
 #import "FrameContext.h"
 #import "GeoLocation.h"
 #import "HTTPServerController.h"
+#import "MainViewController.h"
 #import "NSObject+SBJson.h"
 #import "NSException+WebDriver.h"
 #import "NSURLRequest+IgnoreSSL.h"
-#import "RootViewController.h"
 #import "UIResponder+SimulateTouch.h"
 #import "WebDriverResponse.h"
 #import "WebDriverPreferences.h"
@@ -43,33 +43,11 @@ static const NSString* kGeoAltitudeKey = @"altitude";
 
 @implementation WebViewController
 
-@dynamic webView;
-
-// Executed after the nib loads the interface.
-// Configure the webview to match the mobile safari app.
-- (void)viewDidLoad {
-  [super viewDidLoad];
-  [[self webView] setScalesPageToFit:NO];
-  [[self webView] setDelegate:self];
-
-  if ([[self webView] respondsToSelector:@selector(mediaPlaybackRequiresUserAction)]) {
-    [[self webView] setMediaPlaybackRequiresUserAction:NO];
-  } else {
-    //Too bad, though it seems iOS 3 supported this by default
-  }
+- (id)init {
+  [super init];
   
   lastJSResult_ = nil;
   screenshot_ = nil;
-		
-  // Creating a new session if auto-create is enabled
-  if ([[RootViewController sharedInstance] isAutoCreateSession]) {
-    [[HTTPServerController sharedInstance]
-     httpResponseForQuery:@"/wd/hub/session"
-     method:@"POST"
-     withData:[@"{\"browserName\":\"safari\",\"platform\":\"iOS\","
-               "\"javascriptEnabled\":false,\"version\":\"\"}"
-               dataUsingEncoding:NSASCIIStringEncoding]];
-  }
   
   WebDriverPreferences *preferences = [WebDriverPreferences sharedInstance];
   
@@ -87,6 +65,8 @@ static const NSString* kGeoAltitudeKey = @"altitude";
     [fetcher setViewController:self];
     [self describeLastAction:[fetcher status]];		
   }
+  
+  return self;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -97,18 +77,13 @@ static const NSString* kGeoAltitudeKey = @"altitude";
 }
 
 - (void)dealloc {
-  [[self webView] setDelegate:nil];
   [lastJSResult_ release];
   [screenshot_ release];
   [super dealloc];
 }
 
 - (UIWebView *)webView {
-  if (![[self view] isKindOfClass:[UIWebView class]]) {
-    NSLog(@"NIB error: WebViewController's view is not a UIWebView.");
-    return nil;
-  }
-  return (UIWebView *)[self view];
+  return [[MainViewController sharedInstance] webView];
 }
 
 - (BOOL)webView:(UIWebView *)webView 
@@ -484,7 +459,7 @@ static const NSString* kGeoAltitudeKey = @"altitude";
 }
 
 - (void)describeLastAction:(NSString *)status {
-  [statusLabel_ setText:status];
+  [[MainViewController sharedInstance] describeLastAction:status];
 }
 
 - (CGRect)viewableArea {

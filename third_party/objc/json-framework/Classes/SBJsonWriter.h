@@ -76,6 +76,13 @@
 @property BOOL sortKeys;
 
 /**
+ @brief An optional comparator to be used if sortKeys is YES.
+ 
+ If this is nil, sorting will be done via @selector(compare:).
+ */
+@property (copy) NSComparator sortKeysComparator;
+
+/**
  @brief Return JSON representation for the given object.
  
  Returns a string containing JSON representation of the passed in value, or nil on error.

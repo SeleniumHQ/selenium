@@ -31,8 +31,10 @@
  */
 
 
-#import <SenTestingKit/SenTestingKit.h>
 #import <SBJson/SBJson.h>
+
+typedef void (^ JsonTestCaseBlock)(NSString *, NSString *);
+
 
 @interface JsonTestCase : SenTestCase {
     SBJsonWriter * writer;
@@ -42,6 +44,13 @@
 
 - (NSString*)otherFileName;
 
-- (void) foreachTestInSuite: (NSString*) suite apply: (void (^)(NSString *, NSString *)) block ;
+- (void)foreachTestInSuite:(NSString *)suite apply:(JsonTestCaseBlock)block;
+
+/*
+ * If you want to get a valid path to enumerate over, this method
+ * deals with iOS vs Mac OSX. The path returned is guarenteed to
+ * work with NSFileManager enumeratorWithPath:
+ */
++ (NSString *)pathForSuite:(NSString *)suite;
 
 @end

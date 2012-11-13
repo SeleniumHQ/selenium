@@ -33,6 +33,7 @@
 #import "JsonTestCase.h"
 
 
+
 @implementation JsonTestCase
 
 - (void)setUp {
@@ -45,19 +46,44 @@
     return @"output";
 }
 
-- (void)foreachTestInSuite:(NSString*)suite apply:(void(^)(NSString*, NSString*))block {
-    NSString *file;
-    NSDirectoryEnumerator* enumerator = [[NSFileManager defaultManager] enumeratorAtPath:suite];
-    while ((file = [enumerator nextObject])) {
-        NSString *path = [suite stringByAppendingPathComponent:file];
-        NSString *inpath = [path stringByAppendingPathComponent:@"input"];
++ (NSString *)pathForSuite:(NSString *)suite {
+    // First, can we just find the files from a relative path (Mac OSX tests)
+    NSFileManager *manager = [NSFileManager new];
+    BOOL isDir = NO;
+    if ([manager fileExistsAtPath:suite isDirectory:&isDir] && YES == isDir) {
+        return suite;
+    } else {
+        // Fall back to checking to see if the files are found in a bundle (fix for iOS tests)
+        for (NSBundle *bundle in [NSBundle allBundles]) {
+            NSString *path = [NSString stringWithFormat:@"%@/%@", [bundle resourcePath], suite];
+            isDir = YES;
+            if (NO == [manager fileExistsAtPath:path isDirectory:&isDir] || NO == isDir)
+                continue;
+            
+            NSLog(@"Valid bundle path for suite '%@' : %@", suite, path);
+            return path;
+        }
+    }
+    
+    return nil;
+}
 
-        if ([[NSFileManager defaultManager] isReadableFileAtPath:inpath]) {
+- (void)foreachTestInSuite:(NSString *)suite apply:(JsonTestCaseBlock)block {
+    NSFileManager *manager = [NSFileManager new];
+    NSString *rootPath = [[self class] pathForSuite:suite];
+    NSEnumerator *enumerator = [manager enumeratorAtPath:rootPath];
+    
+    for (NSString *file in enumerator) {
+        NSString *path = [rootPath stringByAppendingPathComponent:file];
+        NSString *inpath = [path stringByAppendingPathComponent:@"input"];
+        
+        if ([manager isReadableFileAtPath:inpath]) {
             NSString *outpath = [path stringByAppendingPathComponent:[self otherFileName]];
-            STAssertTrue([[NSFileManager defaultManager] isReadableFileAtPath:outpath], nil);
+            STAssertTrue([manager isReadableFileAtPath:outpath], nil);
             block(inpath, outpath);
             count++;
         }
     }
 }
+
 @end
