@@ -280,8 +280,12 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   public Response execute(Command command) throws IOException {
     HttpContext context = new BasicHttpContext();
 
-    if (QUIT.equals(command.getName()) && command.getSessionId() == null) {
-      return new Response();
+    if (command.getSessionId() == null) {
+      if (QUIT.equals(command.getName())) {
+        return new Response();
+      }
+      if (! NEW_SESSION.equals(command.getName()))
+      throw new SessionTerminatedException("Session ID is null");
     }
 
     CommandInfo info = nameToUrl.get(command.getName());

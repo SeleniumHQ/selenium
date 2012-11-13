@@ -23,6 +23,11 @@ import org.openqa.selenium.WebDriverException;
 public class SessionTerminatedException extends WebDriverException {
 
   public SessionTerminatedException() {
+    super();
+  }
+
+  public SessionTerminatedException(String message) {
+    super(message);
   }
 
 }

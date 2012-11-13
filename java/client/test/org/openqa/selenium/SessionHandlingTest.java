@@ -19,13 +19,26 @@ package org.openqa.selenium;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.remote.SessionTerminatedException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 @RunWith(SeleniumTestRunner.class)
+@Ignore(value = {ANDROID, IPHONE, OPERA_MOBILE, REMOTE, SAFARI, SELENESE},
+    reason = "Not tested")
 public class SessionHandlingTest {
 
   @Test
@@ -55,6 +68,26 @@ public class SessionHandlingTest {
       throw new RuntimeException(
           "It should be possible to quit a session more than once, got exception:", e);
     }
+  }
+
+  @Test(expected = SessionTerminatedException.class)
+  @Ignore(value = {OPERA, HTMLUNIT}, reason =
+        "Opera: throws Opera-specific exception, HtmlUnit: NPE")
+  public void callingAnyOperationAfterQuitShouldThrowAnException() {
+    WebDriver driver = new WebDriverBuilder().get();
+    driver.quit();
+    driver.getCurrentUrl();
+  }
+
+  @Test(expected = SessionTerminatedException.class)
+  @Ignore(value = {IE, FIREFOX, CHROME, OPERA, HTMLUNIT}, reason =
+      "IE, Chrome: throws generic exception,"
+      + "Firefox, HtmlUnit: can perform an operation after closing the last window,"
+      + "Opera: throws Opera-specific exception")
+  public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
+    WebDriver driver = new WebDriverBuilder().get();
+    driver.close();
+    driver.getCurrentUrl();
   }
 
 }
