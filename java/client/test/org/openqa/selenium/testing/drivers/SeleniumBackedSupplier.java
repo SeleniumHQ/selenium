@@ -49,6 +49,7 @@ public class SeleniumBackedSupplier implements Supplier<WebDriver> {
     try {
       return new SeleneseBackedWebDriver(toUse);
     } catch (Exception e) {
+      oops.stop();
       throw Throwables.propagate(e);
     }
   }

@@ -16,6 +16,8 @@ limitations under the License.
 
 package com.thoughtworks.selenium;
 
+import java.util.logging.Logger;
+
 import org.junit.ClassRule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
@@ -26,13 +28,17 @@ import org.openqa.selenium.v1.SeleniumTestEnvironment;
 
 public class BaseSuite {
   
+  private static final Logger log = Logger.getLogger(BaseSuite.class.getName());
+
   public static ExternalResource testEnvironment = new ExternalResource() {
     @Override
     protected void before() throws Throwable {
+      log.info("Preparing test environment");
       GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
     }
     @Override
     protected void after() {
+      log.info("Cleaning test environment");
       TestEnvironment environment = GlobalTestEnvironment.get();
       if (environment != null) {
         environment.stop();
@@ -44,6 +50,7 @@ public class BaseSuite {
   public static ExternalResource browser = new ExternalResource() {
     @Override
     protected void after() {
+      log.info("Stopping browser");
       try {
         InternalSelenseTestBase.destroyDriver();
       } catch (SeleniumException ignored) {

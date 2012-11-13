@@ -36,10 +36,13 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class OutOfProcessSeleniumServer {
+
+  private static final Logger log = Logger.getLogger(OutOfProcessSeleniumServer.class.getName());
 
   private String baseUrl;
   private CommandLine command;
@@ -55,7 +58,9 @@ public class OutOfProcessSeleniumServer {
   }
 
   public OutOfProcessSeleniumServer start() {
+    log.info("Got a request to start a new selenium server");
     if (command != null) {
+      log.info("Server already started");
       throw new RuntimeException("Server already started");
     }
 
@@ -82,12 +87,16 @@ public class OutOfProcessSeleniumServer {
       command.copyOutputTo(System.err);
     }
     command.setWorkingDirectory(InProject.locate("Rakefile").getParentFile().getAbsolutePath());
+    log.info("Starting selenium server: " + command.toString());
     command.executeAsync();
 
     try {
       URL url = new URL(baseUrl + "/wd/hub/status");
+      log.info("Waiting for server status on URL " + url);
       new UrlChecker().waitUntilAvailable(60, SECONDS, url);
+      log.info("Server is ready");
     } catch (UrlChecker.TimeoutException e) {
+      log.severe("Server failed to start: " + e.getMessage());
       throw Throwables.propagate(e);
     } catch (MalformedURLException e) {
       throw Throwables.propagate(e);
@@ -108,7 +117,9 @@ public class OutOfProcessSeleniumServer {
     if (command == null) {
       return;
     }
+    log.info("Stopping selenium server");
     command.destroy();
+    log.info("Selenium server stopped");
     command = null;
   }
 
