@@ -78,7 +78,7 @@ class SubmitElementCommandHandler : public IECommandHandler {
 
           if (status_code != SUCCESS) {
             response->SetErrorResponse(status_code,
-                                       "Error submitting when not using native events. " + submit_error);
+                                        "Error submitting when not using native events. " + submit_error);
             return;
           }
         }
@@ -113,7 +113,7 @@ class SubmitElementCommandHandler : public IECommandHandler {
     BOOL bRet; 
     MSG msg;
     HRESULT hr = ::CoInitialize(NULL);
-    IHTMLDocument2* doc;
+    CComPtr<IHTMLDocument2> doc;
     LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
     hr = ::CoGetInterfaceAndReleaseStream(message_payload,
                                           IID_IHTMLDocument2,
@@ -129,23 +129,29 @@ class SubmitElementCommandHandler : public IECommandHandler {
 
     while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0) {
       if (msg.message == WD_EXECUTE_ASYNC_SCRIPT) {
-        IHTMLElement* element;
+        int status_code = SUCCESS;
+        CComPtr<IDispatch> dispatch;
         LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
-        hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IHTMLElement, reinterpret_cast<void**>(&element));
+        hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IDispatch, reinterpret_cast<void**>(&dispatch));
+        if (SUCCEEDED(hr) && dispatch != NULL) {
+          CComVariant element(dispatch);
 
-        // The atom is just the definition of an anonymous
-        // function: "function() {...}"; Wrap it in another function so we can
-        // invoke it with our arguments without polluting the current namespace.
-        std::wstring script_source = L"(function() { return (";
-        script_source += atoms::asString(atoms::SUBMIT);
-        script_source += L")})();";
+          // The atom is just the definition of an anonymous
+          // function: "function() {...}"; Wrap it in another function so we can
+          // invoke it with our arguments without polluting the current namespace.
+          std::wstring script_source = L"(function() { return (";
+          script_source += atoms::asString(atoms::SUBMIT);
+          script_source += L")})();";
 
-        Script script_wrapper(doc, script_source, 1);
-        script_wrapper.AddArgument(element);
-        int status_code = script_wrapper.Execute();
+          Script script_wrapper(doc, script_source, 1);
+          script_wrapper.AddArgument(element);
+          status_code = script_wrapper.Execute();
 
-        // Require a short sleep here to let the browser update the DOM.
-        ::Sleep(100);
+          // Require a short sleep here to let the browser update the DOM.
+          ::Sleep(100);
+        } else {
+          status_code = EUNEXPECTEDJSERROR;
+        }
         ::CoUninitialize();
         return status_code;
       }

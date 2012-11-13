@@ -778,7 +778,7 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
     // assume we just succeeded.
     int status_code = SUCCESS;
     LPSTREAM element_stream;
-    hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLElement, this->element_, &element_stream);
+    hr = ::CoMarshalInterThreadInterfaceInStream(IID_IDispatch, this->element_, &element_stream);
     if (FAILED(hr)) {
       LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for element failed";
       *error_msg = "Couldn't marshal the IHTMLElement interface to a stream. This is an internal COM error.";

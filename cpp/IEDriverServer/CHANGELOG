@@ -9,6 +9,12 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.26.1.1
+=========
+ * Attempted to resolve crash on Windows 8 introduced by JavaScript execution
+   on a separate thread. Added checks for proper interface marshaling on the
+   worker thread.
+
 v2.26.1.0
 =========
  * Updates to JavaScript automation atoms.
