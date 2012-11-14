@@ -411,8 +411,7 @@ def main():
 #implementation detail of an old version of the IEDriver.'),
 #      ErrorCode(5, 'NoStringWrapper', 'This is probably an unused \
 #implementation detail of an old version of the IEDriver.'),
-#      ErrorCode(6, 'NoSuchDriver', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
+      ErrorCode(6, 'NoSuchDriver', 'A session is either terminated or not started'),
       ErrorCode(7, 'NoSuchElement', 'An element could not be located on the \
 page using the given search parameters.'),
       ErrorCode(8, 'NoSuchFrame', 'A request to switch to a frame could not be \
