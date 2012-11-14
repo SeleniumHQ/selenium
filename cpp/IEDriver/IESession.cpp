@@ -93,6 +93,20 @@ void IESession::ShutDown(void) {
   // Kill the background thread first - otherwise the IE process crashes.
   stopPersistentEventFiring();
 
+  // Don't terminate the thread until the browsers have all been deallocated.
+  int is_quitting = static_cast<int>(::SendMessage(this->executor_window_handle_,
+                                                   WD_GET_QUIT_STATUS,
+                                                   NULL,
+                                                   NULL));
+  int retry_count = 50;
+  while (is_quitting > 0 && --retry_count > 0) {
+    ::Sleep(100);
+    is_quitting = static_cast<int>(::SendMessage(this->executor_window_handle_,
+                                                 WD_GET_QUIT_STATUS,
+                                                 NULL,
+                                                 NULL));
+  }
+
   DWORD process_id;
   DWORD thread_id = ::GetWindowThreadProcessId(this->executor_window_handle_,
                                                &process_id);

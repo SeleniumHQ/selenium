@@ -146,7 +146,6 @@ LRESULT IECommandExecutor::OnClose(UINT uMsg,
                                    LPARAM lParam,
                                    BOOL& bHandled) {
   LOG(TRACE) << "Entering IECommandExecutor::OnClose";
-
   this->managed_elements_.clear();
   this->DestroyWindow();
   return 0;
@@ -327,6 +326,13 @@ LRESULT IECommandExecutor::OnNewHtmlDialog(UINT uMsg,
   return 0;
 }
 
+LRESULT IECommandExecutor::OnGetQuitStatus(UINT uMsg,
+                                           WPARAM wParam,
+                                           LPARAM lParam,
+                                           BOOL& bHandled) {
+  return this->is_quitting_ && this->managed_browsers_.size() > 0 ? 1 : 0;
+}
+
 unsigned int WINAPI IECommandExecutor::WaitThreadProc(LPVOID lpParameter) {
   HWND window_handle = reinterpret_cast<HWND>(lpParameter);
   ::Sleep(WAIT_TIME_IN_MILLISECONDS);
@@ -351,6 +357,9 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
     LOG(WARN) << "Unable to create new session: " << error;
   }
 
+  MSG msg;
+  ::PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
+
   // Return the HWND back through lpParameter, and signal that the
   // window is ready for messages.
   *window_handle = session_window_handle;
@@ -360,8 +369,7 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
     ::CloseHandle(event_handle);
   }
 
-    // Run the message loop
-  MSG msg;
+  // Run the message loop
   while (::GetMessage(&msg, NULL, 0, 0) > 0) {
     ::TranslateMessage(&msg);
     ::DispatchMessage(&msg);

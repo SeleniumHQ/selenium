@@ -74,10 +74,13 @@ DWORD WINAPI MouseEventFiringFunction(LPVOID lpParam)
   // a more modern signalling method was not used.
   while (firingData->shouldRun()) {
     if (firingData->shouldFire()) {
-      SendMessage(firingData->getTarget(),
-                  WM_MOUSEMOVE, firingData->getInputDevicesState(),
-                  MAKELPARAM(firingData->getXLocation(),
-                             firingData->getYLocation()));
+      HWND target = firingData->getTarget();
+      if (IsWindow(target)) {
+        SendMessage(firingData->getTarget(),
+                    WM_MOUSEMOVE, firingData->getInputDevicesState(),
+                    MAKELPARAM(firingData->getXLocation(),
+                               firingData->getYLocation()));
+      }
     }
     Sleep(10 /* ms */);
   }
@@ -171,7 +174,7 @@ void stopPersistentEventFiring()
 {
   if ((hConstantEventsThread != NULL) && (EVENT_FIRING_DATA != NULL)) {
     EVENT_FIRING_DATA->stopRunning();
-    WaitForSingleObject(hConstantEventsThread, 250 /* ms */);
+    WaitForSingleObject(hConstantEventsThread, 2500 /* ms */);
     CloseHandle(hConstantEventsThread);
     hConstantEventsThread = NULL;
     delete EVENT_FIRING_DATA;

@@ -65,6 +65,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     MESSAGE_HANDLER(WD_BROWSER_QUIT, OnBrowserQuit)
     MESSAGE_HANDLER(WD_IS_SESSION_VALID, OnIsSessionValid)
     MESSAGE_HANDLER(WD_NEW_HTML_DIALOG, OnNewHtmlDialog)
+    MESSAGE_HANDLER(WD_GET_QUIT_STATUS, OnGetQuitStatus)
   END_MSG_MAP()
 
   LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -80,6 +81,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   LRESULT OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnIsSessionValid(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnNewHtmlDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnGetQuitStatus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
   std::string session_id(void) const { return this->session_id_; }
 
@@ -152,6 +154,11 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   bool is_valid(void) const { return this->is_valid_; }
   void set_is_valid(const bool session_is_valid) {
     this->is_valid_ = session_is_valid; 
+  }
+
+  bool is_quitting(void) const { return this->is_quitting_; }
+  void set_is_quitting(const bool session_is_quitting) {
+    this->is_quitting_ = session_is_quitting; 
   }
 
   bool ignore_protected_mode_settings(void) const {
@@ -253,6 +260,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   CommandHandlerMap command_handlers_;
   bool is_waiting_;
   bool is_valid_;
+  bool is_quitting_;
 
   long last_known_mouse_x_;
   long last_known_mouse_y_;

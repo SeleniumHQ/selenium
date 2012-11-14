@@ -70,41 +70,16 @@ class SubmitElementCommandHandler : public IECommandHandler {
         }
 
         if (!handled_with_native_events) {
-          // HACK! Until someone can properly debug this on Windows 8, execute the click
-          // atom directly on this thread. This means alerts displayed by the onchange
-          // event of the <select> element will block.
-          OSVERSIONINFO version_info;
-          ::GetVersionEx(&version_info);
-          if (version_info.dwMajorVersion == 6 && version_info.dwMinorVersion >= 2) {
-            CComPtr<IHTMLDocument2> doc;
-            browser_wrapper->GetDocument(&doc);
+          std::string submit_error = "";
+          status_code = element_wrapper->ExecuteAsyncAtom(
+              SUBMIT_EVENT_NAME,
+              &SubmitElementCommandHandler::SubmitFormThreadProc,
+              &submit_error);
 
-            // The atom is just the definition of an anonymous
-            // function: "function() {...}"; Wrap it in another function so we can
-            // invoke it with our arguments without polluting the current namespace.
-            std::wstring script_source = L"(function() { return (";
-            script_source += atoms::asString(atoms::SUBMIT);
-            script_source += L")})();";
-
-            Script script_wrapper(doc, script_source, 1);
-            script_wrapper.AddArgument(element_wrapper);
-            status_code = script_wrapper.Execute();
-            if (status_code != SUCCESS) {
-              response->SetErrorResponse(status_code, "Error submitting when not using native events");
-              return;
-            }
-          } else {
-            std::string submit_error = "";
-            status_code = element_wrapper->ExecuteAsyncAtom(
-                SUBMIT_EVENT_NAME,
-                &SubmitElementCommandHandler::SubmitFormThreadProc,
-                &submit_error);
-
-            if (status_code != SUCCESS) {
-              response->SetErrorResponse(status_code,
-                                         "Error submitting when not using native events. " + submit_error);
-              return;
-            }
+          if (status_code != SUCCESS) {
+            response->SetErrorResponse(status_code,
+                                        "Error submitting when not using native events. " + submit_error);
+            return;
           }
         }
         browser_wrapper->set_wait_required(true);
@@ -137,23 +112,29 @@ class SubmitElementCommandHandler : public IECommandHandler {
   static unsigned int WINAPI SubmitFormThreadProc(LPVOID param) {
     BOOL bRet; 
     MSG msg;
-    HRESULT hr = ::CoInitialize(NULL);
+    LOG(DEBUG) << "Initializing message pump on new thread";
+    ::PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
+
+    LOG(DEBUG) << "Initializing COM on new thread";
+    HRESULT hr = ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+
+    LOG(DEBUG) << "Unmarshaling document from stream";
     CComPtr<IHTMLDocument2> doc;
     LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
     hr = ::CoGetInterfaceAndReleaseStream(message_payload,
                                           IID_IHTMLDocument2,
                                           reinterpret_cast<void**>(&doc));
 
-    // Establish a message loop for the thread
-    ::PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
-
-    // Signal the calling thread that this thread is ready to receive messages
-    HANDLE event_handle = ::OpenEvent(NULL, FALSE, SUBMIT_EVENT_NAME);
-    ::SetEvent(event_handle);
-    ::CloseHandle(event_handle);
+    LOG(DEBUG) << "Signaling parent thread that the worker thread is ready for messages";
+    HANDLE event_handle = ::OpenEvent(EVENT_MODIFY_STATE, FALSE, SUBMIT_EVENT_NAME);
+    if (event_handle != NULL) {
+      ::SetEvent(event_handle);
+      ::CloseHandle(event_handle);
+    }
 
     while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0) {
       if (msg.message == WD_EXECUTE_ASYNC_SCRIPT) {
+        LOG(DEBUG) << "Received execution message. Unmarshaling element from stream.";
         int status_code = SUCCESS;
         CComPtr<IDispatch> dispatch;
         LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);

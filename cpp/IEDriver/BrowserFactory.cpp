@@ -520,27 +520,15 @@ void BrowserFactory::GetExecutableLocation() {
       // If the executable location in the registry has an environment
       // variable in it, expand the environment variable to an absolute
       // path.
-      size_t start_percent = executable_location.find(L"%");
-      if (start_percent != std::wstring::npos) {
-        size_t end_percent = executable_location.find(L"%", start_percent + 1);
-        if (end_percent != std::wstring::npos) {
-          std::wstring variable_name = executable_location.substr(
-              start_percent + 1,
-              end_percent - start_percent - 1);
-          DWORD variable_value_size = ::GetEnvironmentVariable(
-              variable_name.c_str(),
-              NULL,
-              0);
-          vector<WCHAR> variable_value(variable_value_size);
-          ::GetEnvironmentVariable(variable_name.c_str(),
-                                   &variable_value[0],
-                                   variable_value_size);
-          executable_location.replace(start_percent,
-                                      end_percent - start_percent + 1,
-                                      &variable_value[0]); 
-        }
-      }
+      DWORD expanded_location_size = ::ExpandEnvironmentStrings(executable_location.c_str(), NULL, 0);
+      vector<WCHAR> expanded_location(expanded_location_size);
+      ::ExpandEnvironmentStrings(executable_location.c_str(), &expanded_location[0], expanded_location_size);
+      executable_location = &expanded_location[0];
       this->ie_executable_location_ = executable_location;
+      size_t arg_start_pos = executable_location.find(L" -");
+      if (arg_start_pos != std::string::npos) {
+        this->ie_executable_location_ = executable_location.substr(0, arg_start_pos);
+      }
       if (this->ie_executable_location_.substr(0, 1) == L"\"") {
         this->ie_executable_location_.erase(0, 1);
         this->ie_executable_location_.erase(this->ie_executable_location_.size() - 1, 1);

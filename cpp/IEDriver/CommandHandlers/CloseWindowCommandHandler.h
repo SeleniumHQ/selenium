@@ -52,6 +52,7 @@ class CloseWindowCommandHandler : public IECommandHandler {
     if (current_window_count == 1) {
       IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
       mutable_executor.set_is_valid(false);
+      mutable_executor.set_is_quitting(true);
     }
     response->SetSuccessResponse(Json::Value::null);
   }

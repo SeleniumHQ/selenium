@@ -381,12 +381,15 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
         CComVariant rect_variant;
         hr = rects->item(&index, &rect_variant);
         if (SUCCEEDED(hr) && rect_variant.pdispVal) {
-          hr = rect_variant.pdispVal->QueryInterface(&rect);
-          if (SUCCEEDED(hr) && RectHasNonZeroDimensions(rect)) {
-            // IE returns absolute positions in the page, rather than frame- and scroll-bound
-            // positions, for clientRects (as opposed to boundingClientRects).
-            hasAbsolutePositionReadyToReturn = true;
-            break;
+          CComQIPtr<IHTMLRect> qi_rect(rect_variant.pdispVal);
+          if (qi_rect) {
+            rect = qi_rect;
+            if (RectHasNonZeroDimensions(rect)) {
+              // IE returns absolute positions in the page, rather than frame- and scroll-bound
+              // positions, for clientRects (as opposed to boundingClientRects).
+              hasAbsolutePositionReadyToReturn = true;
+              break;
+            }
           }
         }
       }
@@ -424,7 +427,7 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
         if (child != NULL) {
           Element childElement(child, this->containing_window_handle_);
           int result = childElement.GetLocation(x, y, width, height);
-          if (SUCCEEDED(result)) {
+          if (result == SUCCESS) {
             return result;
           }
         }
@@ -721,6 +724,7 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
     this->GetContainingDocument(false, &doc);
 
     // Marshal the document and the element to click to streams for use in another thread.
+    LOG(DEBUG) << "Marshaling document to stream to send to new thread";
     LPSTREAM stream;
     HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLDocument2, doc, &stream);
     if (FAILED(hr)) {
@@ -733,11 +737,11 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
     // OpenEvent returns non-NULL, so we need to wait a bit and retry
     // until OpenEvent returns NULL.
     int retry_counter = 50;
-    HANDLE event_handle = ::OpenEvent(NULL, FALSE, sync_event_name.c_str());
+    HANDLE event_handle = ::OpenEvent(SYNCHRONIZE, FALSE, sync_event_name.c_str());
     if (event_handle != NULL && --retry_counter > 0) {
       ::CloseHandle(event_handle);
       ::Sleep(50);
-      event_handle = ::OpenEvent(NULL, FALSE, sync_event_name.c_str());
+      event_handle = ::OpenEvent(SYNCHRONIZE, FALSE, sync_event_name.c_str());
     }
 
     // Failure condition here.
@@ -748,6 +752,7 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
       return EUNEXPECTEDJSERROR;
     }
 
+    LOG(DEBUG) << "Creating synchronization event for new thread";
     event_handle = ::CreateEvent(NULL, TRUE, FALSE, sync_event_name.c_str());
     if (event_handle == NULL) {
       LOG(WARN) << "CreateEvent() failed.";
@@ -757,6 +762,7 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
 
     // Start the thread and wait up to 1 second to be signaled that it is ready
     // to receive messages, then close the event handle.
+    LOG(DEBUG) << "Starting new thread";
     unsigned int thread_id = 0;
     HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
                                                     0,
@@ -764,7 +770,11 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
                                                     (void *)stream,
                                                     0,
                                                     &thread_id));
-    ::WaitForSingleObject(event_handle, 1000);
+    LOG(DEBUG) << "Waiting for new thread to be ready for messages";
+    DWORD event_wait_result = ::WaitForSingleObject(event_handle, 5000);
+    if (event_wait_result != WAIT_OBJECT_0) {
+      LOG(WARN) << "Waiting for event to be signaled returned unexpected value: " << event_wait_result;
+    }
     ::CloseHandle(event_handle);
 
     if (thread_handle == NULL) {
@@ -776,6 +786,7 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
     // This is why we shouldn't do this all the time. We have no way to
     // verify the success or failure of the called function, so we have to
     // assume we just succeeded.
+    LOG(DEBUG) << "Marshaling element to stream to send to thread";
     int status_code = SUCCESS;
     LPSTREAM element_stream;
     hr = ::CoMarshalInterThreadInterfaceInStream(IID_IDispatch, this->element_, &element_stream);
@@ -787,6 +798,7 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
       // Post the message to execute the atom to the worker thread.
       // Try to let the thread complete within a short amount of time
       // to have a hope of synchronization.
+      LOG(DEBUG) << "Posting thread message";
       DWORD post_message_result = ::PostThreadMessage(thread_id, WD_EXECUTE_ASYNC_SCRIPT, NULL, reinterpret_cast<LPARAM>(&element_stream));
       DWORD wait_result = ::WaitForSingleObject(thread_handle, 100);
       if (wait_result == WAIT_OBJECT_0) {
