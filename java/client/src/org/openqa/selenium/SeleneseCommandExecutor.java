@@ -97,7 +97,7 @@ import java.util.Map;
 public class SeleneseCommandExecutor implements CommandExecutor {
   private final ErrorCodes errorCodes;
   private final Selenium instance;
-  private Map<String, SeleneseFunction> functions = Maps.newHashMap();
+  private Map<String, SeleneseFunction<?>> functions = Maps.newHashMap();
 
   public SeleneseCommandExecutor(URL seleniumServer, URL remoteAddress, Capabilities capabilities) {
     this(new HttpCommandProcessor(
@@ -121,7 +121,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
   }
 
   public Response execute(Command command) {
-    SeleneseFunction function = functions.get(command.getName());
+    SeleneseFunction<?> function = functions.get(command.getName());
     if (function == null) {
       throw new UnsupportedOperationException("cannot execute: " + command.getName());
     }
@@ -154,7 +154,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     return response;
   }
 
-  public void addCommand(String methodName, SeleneseFunction command) {
+  public void addCommand(String methodName, SeleneseFunction<?> command) {
     functions.put(methodName, command);
   }
 
