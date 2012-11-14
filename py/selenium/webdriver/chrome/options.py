@@ -22,10 +22,11 @@ import base64
 
 class Options(object):
 
-    _binary_location = ''
-    _arguments = []
-    _extension_files = []
-    _experimental_options = {}
+    def __init__(self):
+        self._binary_location = ''
+        self._arguments = []
+        self._extension_files = []
+        self._experimental_options = {}
 
     @property
     def binary_location(self):
