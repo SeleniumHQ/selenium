@@ -743,22 +743,13 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
                     bot.dom.getEffectiveStyle(e, 'transform');
 
     // Not all browsers know what a transform is so if we have a returned value
-    // lets carry on checking
+    // lets carry on checking up the tree just in case. If we ask for the 
+    // transform matrix and look at the details there it will return the centre
+    // of the element
     if (transform && transform !== "none") {
-      var getTransformValues = function (matrix){
-        // The transform matrix looks like the following
-        // matrix(0.866025, 0.5, -0.5, 0.866025, 0px, 0px)
-        var values = matrix.split('(')[1];
-        values = values.split(')')[0];
-        values = values.split(',');
-        return {x: goog.string.trim(values[4].replace('px','')),
-                y: goog.string.trim(values[5].replace('px', ''))};
-      }
-
-      var transformValues = getTransformValues(transform);
-      transformValues.x = transformValues.x * 1
-      transformValues.y = transformValues.y * 1
-      if (transformValues.x >= 0 && transformValues.y >= 0){
+      var locOfElement = goog.style.getClientPosition(e);
+      if ((locOfElement.x) >= 0 && 
+          (locOfElement.y) >= 0){
         return true;
       } else {
         return false;

@@ -377,6 +377,21 @@
       var zeroTransform = findElement({id: "zero-transform"});
       assertTrue(isShown(zeroTransform));
     }
+
+    function testElementWithNegativePercentTransformAreVisible() {
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(9)) {
+       return;
+      }
+      var negativePercentage = findElement({id: "negative-percentage-transform"});
+      assertTrue(isShown(negativePercentage));
+    }
+    function testElementWithNegativePercentTransformAreHidden() {
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(9)) {
+       return;
+      }
+      var negativePercentage = findElement({id: "negative-percentage-transform"});
+      assertTrue(isShown(negativePercentage));
+    }
   </script>
 
   <style type="text/css">
@@ -438,6 +453,20 @@
           -ms-transform: translateY(0px);
           -o-transform: translateY(0px);
           -moz-transform: translateY(0px);
+        }
+        #negative-percentage-transform {
+          transform: translateY(-75%);
+          -webkit-transform: translateY(-75%);
+          -ms-transform: translateY(-75%);
+          -o-transform: translateY(-75%);
+          -moz-transform: translateY(-75%);
+        }
+        #negative-percentage-transform {
+          transform: translateY(-75%);
+          -webkit-transform: translateY(-75%);
+          -ms-transform: translateY(-75%);
+          -o-transform: translateY(-75%);
+          -moz-transform: translateY(-75%);
         }
   </style>
 </head>
@@ -546,5 +575,6 @@
 <div id='hidden-transformY'>will never be shown<div id='child-of-hidden-transformY'>I am a hidden child</div></div>
 <div id='hidden-transformX'>will never be shown<div id='child-of-hidden-transformX'>I am a hidden child</div></div>
 <div id='zero-transform'>I have a zero transform</div>
+<div id='negative-percentage-transform'>I have a negative percentage transform</div>
 </body>
 </html>
