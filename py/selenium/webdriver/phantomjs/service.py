@@ -1,0 +1,93 @@
+#!/usr/bin/python
+#
+# Copyright 2012 Software Freedom Conservancy
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+import subprocess
+import time
+
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common import utils
+
+class Service(object):
+    """
+    Object that manages the starting and stopping of PhantomJS / Ghostdriver
+    """
+
+    def __init__(self, executable_path, ghostdriver_path, port=0, service_args=None):
+        """
+        Creates a new instance of the Service
+        
+        :Args:
+         - executable_path : Path to the ChromeDriver
+         - port : Port the service is running on """
+
+        self.port = port
+        self.path = executable_path
+        self.service_args= service_args
+        if self.port == 0:
+            self.port = utils.free_port()
+        if self.service_args is None:
+            self.service_args = []
+        self.service_args.insert(0, self.path)
+        self.service_args.append(ghostdriver_path)
+        self.service_args.append("%d" % self.port)
+        self._log = open("ghostdriver.log", 'w')
+
+    def start(self):
+        """
+        Starts the ChromeDriver Service. 
+        
+        :Exceptions:
+         - WebDriverException : Raised either when it can't start the service
+           or when it can't connect to the service
+        """
+        try:
+            print "Starting process:", self.path
+            self.process = subprocess.Popen(self.service_args,
+                                            stdout=self._log, stderr=self._log)
+        except:
+            raise WebDriverException("Unable to start phantomjs with ghostdriver.")
+        count = 0
+        while not utils.is_connectable(self.port):
+            count += 1
+            time.sleep(1)
+            if count == 30:
+                 raise WebDriverException("Can not connect to GhostDriver")
+                
+    @property
+    def service_url(self):
+        """
+        Gets the url of the GhostDriver Service
+        """
+        return "http://localhost:%d/wd/hub" % self.port
+
+    def stop(self):
+        """ 
+        Cleans up the process
+        """
+        if self._log:
+            self._log.close()
+            self._log = None
+        #If its dead dont worry
+        if self.process is None:
+            return
+
+        #Tell the Server to properly die in case
+        try:
+            if self.process:
+                self.process.kill()
+                self.process.wait()
+        except WindowsError:
+            # kill may not be available under windows environment
+            pass

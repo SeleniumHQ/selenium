@@ -83,3 +83,11 @@ class DesiredCapabilities(object):
         "platform": "ANDROID",
         "javascriptEnabled": True,
     }
+    
+    PHANTOMJS = {
+        "browserName":"phantomjs",
+        "version": "",
+        "platform": "ANY",
+        "javascriptEnabled": True,
+    }
+

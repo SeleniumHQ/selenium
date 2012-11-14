@@ -17,10 +17,10 @@ py_test(
   browsers = [ "ff" ])
 
 py_test(
-  name = "ghostdriver_test",
-  gd_specific_tests = [ "test/selenium/webdriver/ghostdriver/*_tests.py" ],
-  deps = [ ":test_gd" ],
-  browsers = [ "gd" ])
+  name = "phantomjs_test",
+  gd_specific_tests = [ "test/selenium/webdriver/phantomjs/*_tests.py" ],
+  deps = [ ":test_phantomjs" ],
+  browsers = [ "phantomjs" ])
 
 
 py_test(
@@ -65,7 +65,7 @@ py_test(
     "chrome",
     "ff",
     "ie",
-    "gd",
+    "phantomjs",
     "remote_firefox",
     "opera"
   ])

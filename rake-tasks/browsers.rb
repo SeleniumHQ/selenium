@@ -67,15 +67,15 @@ BROWSERS = {
     :browser_name => "opera",
     :available => opera?
   },
-  "gd" => {
+  "phantomjs" => {
     :python => {
-      :ignore => "ghostdriver",
-      :dir => "ghostdriver",
-      :file_string => "gd",
-      :class => "Remote",
-      :constructor_args => "'http://localhost:8080/wd/hub', {}"
+      :ignore => "phantomjs",
+      :dir => "phantomjs",
+      :file_string => "phantomjs",
+      :class => "PhantomJS",
+      :constructor_args => "'../ghostdriver/src/main.js'"
     },
-    :browser_name => "ghostdriver",
+    :browser_name => "phantomjs",
   },
   "remote_firefox" => {
     :python => {
