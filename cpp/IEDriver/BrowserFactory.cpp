@@ -540,6 +540,7 @@ void BrowserFactory::GetExecutableLocation() {
     LOG(WARN) << "Unable to get IE class id from registry";
   }
 }
+
 bool BrowserFactory::GetRegistryValue(const HKEY root_key,
                                       const std::wstring& subkey,
                                       const std::wstring& value_name,

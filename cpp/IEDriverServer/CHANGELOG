@@ -9,6 +9,12 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.26.2.2
+=========
+ * Disabled execution of JavaScript code on a separate thread for IE10. This
+   reverts the behavior of the driver to that before 2.26.1.0 for IE10 *only*.
+ * Updates to JavaScript automation atoms.
+
 v2.26.2.1
 =========
  * Modified to return ENOSUCHDRIVER if a session is not available.

@@ -124,6 +124,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   int speed(void) const { return this->speed_; }
   void set_speed(const int speed) { this->speed_ = speed; }
 
+  bool allow_asynchronous_javascript(void) const { return this->allow_asynchronous_javascript_;}
+
   int implicit_wait_timeout(void) const { 
     return this->implicit_wait_timeout_; 
   }
@@ -252,6 +254,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   bool enable_native_events_;
   bool enable_persistent_hover_;
   bool ignore_zoom_setting_;
+  bool allow_asynchronous_javascript_;
   std::string initial_browser_url_;
   std::string unexpected_alert_behavior_;
 

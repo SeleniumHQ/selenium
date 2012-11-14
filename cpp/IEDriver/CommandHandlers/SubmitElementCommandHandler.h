@@ -71,10 +71,17 @@ class SubmitElementCommandHandler : public IECommandHandler {
 
         if (!handled_with_native_events) {
           std::string submit_error = "";
-          status_code = element_wrapper->ExecuteAsyncAtom(
-              SUBMIT_EVENT_NAME,
-              &SubmitElementCommandHandler::SubmitFormThreadProc,
-              &submit_error);
+          if (executor.allow_asynchronous_javascript()) {
+            status_code = element_wrapper->ExecuteAsyncAtom(
+                SUBMIT_EVENT_NAME,
+                &SubmitElementCommandHandler::SubmitFormThreadProc,
+                &submit_error);
+          } else {
+            CComPtr<IHTMLDocument2> doc;
+            browser_wrapper->GetDocument(&doc);
+            CComVariant element_variant(element_wrapper->element());
+            status_code = ExecuteSubmitAtom(doc, element_variant);
+          }
 
           if (status_code != SUCCESS) {
             response->SetErrorResponse(status_code,
@@ -109,6 +116,24 @@ class SubmitElementCommandHandler : public IECommandHandler {
       current = temp;
     }
   }
+
+  static int ExecuteSubmitAtom(IHTMLDocument2* doc, VARIANT element_variant) {
+    // The atom is just the definition of an anonymous
+    // function: "function() {...}"; Wrap it in another function so we can
+    // invoke it with our arguments without polluting the current namespace.
+    std::wstring script_source = L"(function() { return (";
+    script_source += atoms::asString(atoms::SUBMIT);
+    script_source += L")})();";
+
+    Script script_wrapper(doc, script_source, 1);
+    script_wrapper.AddArgument(element_variant);
+    int status_code = script_wrapper.Execute();
+
+    // Require a short sleep here to let the browser update the DOM.
+    ::Sleep(100);
+    return status_code;
+  }
+
   static unsigned int WINAPI SubmitFormThreadProc(LPVOID param) {
     BOOL bRet; 
     MSG msg;
@@ -132,29 +157,31 @@ class SubmitElementCommandHandler : public IECommandHandler {
       ::CloseHandle(event_handle);
     }
 
-    while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0) {
+    while ((bRet = ::GetMessage(&msg, NULL, 0, 0)) != 0) {
       if (msg.message == WD_EXECUTE_ASYNC_SCRIPT) {
         LOG(DEBUG) << "Received execution message. Unmarshaling element from stream.";
         int status_code = SUCCESS;
         CComPtr<IDispatch> dispatch;
         LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
         hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IDispatch, reinterpret_cast<void**>(&dispatch));
+        LOG(DEBUG) << "Element unmarshaled from stream, executing JavaScript on worker thread";
         if (SUCCEEDED(hr) && dispatch != NULL) {
           CComVariant element(dispatch);
+          status_code = ExecuteSubmitAtom(doc, element);
 
           // The atom is just the definition of an anonymous
           // function: "function() {...}"; Wrap it in another function so we can
           // invoke it with our arguments without polluting the current namespace.
-          std::wstring script_source = L"(function() { return (";
-          script_source += atoms::asString(atoms::SUBMIT);
-          script_source += L")})();";
+          //std::wstring script_source = L"(function() { return (";
+          //script_source += atoms::asString(atoms::SUBMIT);
+          //script_source += L")})();";
 
-          Script script_wrapper(doc, script_source, 1);
-          script_wrapper.AddArgument(element);
-          status_code = script_wrapper.Execute();
+          //Script script_wrapper(doc, script_source, 1);
+          //script_wrapper.AddArgument(element);
+          //status_code = script_wrapper.Execute();
 
-          // Require a short sleep here to let the browser update the DOM.
-          ::Sleep(100);
+          //// Require a short sleep here to let the browser update the DOM.
+          //::Sleep(100);
         } else {
           status_code = EUNEXPECTEDJSERROR;
         }
