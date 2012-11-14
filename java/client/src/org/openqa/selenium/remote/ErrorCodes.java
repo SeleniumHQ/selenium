@@ -50,6 +50,7 @@ public class ErrorCodes {
   // TODO(jmleyba): Clean up error codes?
 
   public static final int SUCCESS = 0;
+  public static final int NO_SUCH_SESSION = 6;
   public static final int NO_SUCH_ELEMENT = 7;
   public static final int NO_SUCH_FRAME = 8;
   public static final int UNKNOWN_COMMAND = 9;
@@ -91,6 +92,8 @@ public class ErrorCodes {
     switch (statusCode) {
       case SUCCESS:
         return null;
+      case NO_SUCH_SESSION:
+        return SessionTerminatedException.class;
       case INVALID_COOKIE_DOMAIN:
         return InvalidCookieDomainException.class;
       case UNABLE_TO_SET_COOKIE:

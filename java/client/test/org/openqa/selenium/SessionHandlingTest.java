@@ -28,7 +28,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -80,8 +79,8 @@ public class SessionHandlingTest {
   }
 
   @Test(expected = SessionTerminatedException.class)
-  @Ignore(value = {IE, FIREFOX, CHROME, OPERA, HTMLUNIT}, reason =
-      "IE, Chrome: throws generic exception,"
+  @Ignore(value = {FIREFOX, CHROME, OPERA, HTMLUNIT}, reason =
+      "Chrome: throws generic WebDriverException,"
       + "Firefox, HtmlUnit: can perform an operation after closing the last window,"
       + "Opera: throws Opera-specific exception")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {

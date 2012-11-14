@@ -275,7 +275,7 @@ std::string Server::DispatchCommand(const std::string& uri,
         serialized_response.append("\"value\" : null }");
       } else {
         // Hand-code the response for an invalid session id
-        serialized_response.append("{ \"status\" : 404, ");
+        serialized_response.append("{ \"status\" : 6, ");
         serialized_response.append("\"sessionId\" : \"");
         serialized_response.append(session_id);
         serialized_response.append("\", ");
