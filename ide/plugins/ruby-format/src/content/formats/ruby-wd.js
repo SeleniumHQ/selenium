@@ -178,8 +178,8 @@ function formatComment(comment) {
  * @param filename   the file the formatted suite will be saved as
  */
 function formatSuite(testSuite, filename) {
-  formattedSuite = 'require "test/unit"\n' +
-      '\n';
+  formattedSuite = 'gem "test-unit"\n' + 
+    'require "test/unit"\n\n';
 
   for (var i = 0; i < testSuite.tests.length; ++i) {
     // have saved or loaded a suite
@@ -203,6 +203,7 @@ this.options = {
   showSelenese: 'false',
   header:
       'require "selenium-webdriver"\n' +
+          'gem "test-unit"\n' + 
           'require "test/unit"\n' +
           '\n' +
           'class ${className} < Test::Unit::TestCase\n' +
