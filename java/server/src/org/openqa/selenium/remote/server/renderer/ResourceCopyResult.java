@@ -16,19 +16,26 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.renderer;
 
-import com.google.common.io.ByteStreams;
+import static org.openqa.selenium.remote.server.HttpStatusCodes.NOT_FOUND;
+import static org.openqa.selenium.remote.server.HttpStatusCodes.OK;
 
 import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.rest.Renderer;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.ByteStreams;
+import com.google.common.net.MediaType;
+
 import java.net.URL;
 
-import static org.openqa.selenium.remote.server.HttpStatusCodes.NOT_FOUND;
-import static org.openqa.selenium.remote.server.HttpStatusCodes.OK;
-
 public class ResourceCopyResult implements Renderer {
+  
+  private static final ImmutableMap<String, MediaType> MIME_TYPES = ImmutableMap.of(
+      "css", MediaType.CSS_UTF_8.withoutParameters(),
+      "html", MediaType.HTML_UTF_8.withoutParameters(),
+      "js", MediaType.JAVASCRIPT_UTF_8.withoutParameters());
 
   private final String propertyName;
 
@@ -45,6 +52,15 @@ public class ResourceCopyResult implements Renderer {
     if (resource == null) {
       response.setStatus(NOT_FOUND);
       return;
+    }
+    
+    String fileName = resource.getFile();
+    int dotIndex = fileName.lastIndexOf('.');
+    if (dotIndex >= 0) {
+      String extension = fileName.substring(dotIndex + 1);
+      if (MIME_TYPES.containsKey(extension)) {
+        response.setContentType(MIME_TYPES.get(extension).toString());
+      }
     }
 
     response.setStatus(OK);
