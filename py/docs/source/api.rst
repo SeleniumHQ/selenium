@@ -76,6 +76,16 @@ Webdriver.ie
 
    selenium.webdriver.ie.webdriver
 
+Webdriver.phantomjs
+-------------------
+
+.. currentmodule:: selenium.webdriver.phantomjs
+.. autosummary::
+   :toctree: webdriver_phantomjs
+
+   selenium.webdriver.phantomjs.service
+   selenium.webdriver.phantomjs.webdriver
+
 Webdriver.remote
 ----------------
 

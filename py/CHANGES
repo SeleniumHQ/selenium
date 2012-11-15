@@ -1,5 +1,9 @@
+Selenium 2.27 (yet to be released)
+* Added support for phantomjs / ghostdriver
+
 Selenium 2.26
 * Added location_when_scrolled_into_view - Bug 4357
+* Added new expected_conditions support module to be used with WebDriverWait
 
 Selenium 2.25
 * Jython 2.7 Support - Bug 3988

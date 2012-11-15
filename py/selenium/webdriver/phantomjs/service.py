@@ -29,8 +29,11 @@ class Service(object):
         Creates a new instance of the Service
         
         :Args:
-         - executable_path : Path to the ChromeDriver
-         - port : Port the service is running on """
+         - executable_path : Path to PhantomJS binary
+         - ghostdriver_path : Path to ghostdriver/src/main.js
+         - port : Port the service is running on 
+         - service_args : A List of other command line options to pass to PhantomJS
+        """
 
         self.port = port
         self.path = executable_path
@@ -46,7 +49,7 @@ class Service(object):
 
     def start(self):
         """
-        Starts the ChromeDriver Service. 
+        Starts PhantomJS with GhostDriver. 
         
         :Exceptions:
          - WebDriverException : Raised either when it can't start the service
