@@ -41,6 +41,7 @@ Webdriver.support
 .. autosummary::
    :toctree: webdriver_support
 
+   selenium.webdriver.support.expected_conditions
    selenium.webdriver.support.select
    selenium.webdriver.support.wait
 
