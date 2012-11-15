@@ -172,7 +172,8 @@ remote.ui.Client.prototype.init = function(opt_element) {
   this.sessionContainer_.render(opt_element);
   this.serverInfo_.render(opt_element);
   this.scriptButton_.render();
-  this.sessionContainer_.addControlElement(this.scriptButton_.getElement());
+  this.sessionContainer_.addControlElement(
+      /** @type {!Element} */(this.scriptButton_.getElement()));
   return this.updateServerInfo_().
       addCallback(function() {
         this.sessionContainer_.setEnabled(true);
