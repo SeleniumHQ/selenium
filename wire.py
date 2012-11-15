@@ -1308,7 +1308,7 @@ location for correctly generating native events.''').
   resources.append(
       SessionResource('/session/:sessionId/buttondown').
       Post('Click and hold the left mouse button (at the coordinates set by the last moveto '
-           'command). Note that the next mouse-related command that should follow is buttondown'
+           'command). Note that the next mouse-related command that should follow is buttonup'
            ' . Any other mouse command (such as click or another call to buttondown) will yield'
            ' undefined behaviour.').
       AddJsonParameter('button', '{number}', 'Which button, enum: `{LEFT = 0, MIDDLE = 1 '
