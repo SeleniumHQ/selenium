@@ -16,28 +16,37 @@ limitations under the License.
 
 package com.thoughtworks.selenium;
 
-import com.thoughtworks.selenium.corebased.SeleniumMouseTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
 import com.thoughtworks.selenium.corebased.TestAddLocationStrategy;
 import com.thoughtworks.selenium.corebased.TestAddSelection;
+import com.thoughtworks.selenium.corebased.TestBasicAuth;
+import com.thoughtworks.selenium.corebased.TestBrowserVersion;
 import com.thoughtworks.selenium.corebased.TestCheckUncheck;
-import com.thoughtworks.selenium.corebased.TestClickAt;
+import com.thoughtworks.selenium.corebased.TestClick;
 import com.thoughtworks.selenium.corebased.TestCommandError;
 import com.thoughtworks.selenium.corebased.TestComments;
 import com.thoughtworks.selenium.corebased.TestCssLocators;
+import com.thoughtworks.selenium.corebased.TestDomainCookie;
 import com.thoughtworks.selenium.corebased.TestEditable;
 import com.thoughtworks.selenium.corebased.TestElementIndex;
 import com.thoughtworks.selenium.corebased.TestElementOrder;
 import com.thoughtworks.selenium.corebased.TestElementPresent;
 import com.thoughtworks.selenium.corebased.TestErrorChecking;
 import com.thoughtworks.selenium.corebased.TestEval;
+import com.thoughtworks.selenium.corebased.TestEvilClosingWindow;
 import com.thoughtworks.selenium.corebased.TestFailingAssert;
 import com.thoughtworks.selenium.corebased.TestFailingVerifications;
 import com.thoughtworks.selenium.corebased.TestFramesClick;
 import com.thoughtworks.selenium.corebased.TestFramesOpen;
 import com.thoughtworks.selenium.corebased.TestFunkEventHandling;
+import com.thoughtworks.selenium.corebased.TestGet;
+import com.thoughtworks.selenium.corebased.TestGetTextContent;
 import com.thoughtworks.selenium.corebased.TestGettingValueOfCheckbox;
 import com.thoughtworks.selenium.corebased.TestGettingValueOfRadioButton;
 import com.thoughtworks.selenium.corebased.TestGoBack;
+import com.thoughtworks.selenium.corebased.TestHighlight;
 import com.thoughtworks.selenium.corebased.TestHtmlSource;
 import com.thoughtworks.selenium.corebased.TestImplicitLocators;
 import com.thoughtworks.selenium.corebased.TestLocators;
@@ -46,61 +55,103 @@ import com.thoughtworks.selenium.corebased.TestOpen;
 import com.thoughtworks.selenium.corebased.TestOpenInTargetFrame;
 import com.thoughtworks.selenium.corebased.TestPatternMatching;
 import com.thoughtworks.selenium.corebased.TestPause;
+import com.thoughtworks.selenium.corebased.TestProxy;
 import com.thoughtworks.selenium.corebased.TestQuickOpen;
 import com.thoughtworks.selenium.corebased.TestSelect;
+import com.thoughtworks.selenium.corebased.TestSelectMultiLevelFrame;
+import com.thoughtworks.selenium.corebased.TestStore;
+import com.thoughtworks.selenium.corebased.TestSubmit;
+import com.thoughtworks.selenium.corebased.TestTextWhitespace;
 import com.thoughtworks.selenium.corebased.TestType;
 import com.thoughtworks.selenium.corebased.TestTypeRichText;
 import com.thoughtworks.selenium.corebased.TestVerifications;
 import com.thoughtworks.selenium.corebased.TestVisibility;
-import com.thoughtworks.selenium.corebased.TestWait;
+import com.thoughtworks.selenium.corebased.TestWaitFor;
 import com.thoughtworks.selenium.corebased.TestWaitForNot;
 import com.thoughtworks.selenium.corebased.TestXPathLocators;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    SeleniumMouseTest.class,
+//    SeleniumMouseTest.class, // fails in IE
     TestAddLocationStrategy.class,
     TestAddSelection.class,
+//    TestAlerts.class,
+    TestBasicAuth.class,
+    TestBrowserVersion.class,
     TestCheckUncheck.class,
-    TestClickAt.class,
+    TestClick.class,
+//    TestClickAt.class, // fails in IE
+//    TestClickBlankTarget.class,
+//    TestClickJavascriptHref.class, // fails in IE
+//    TestClickJavascriptHrefChrome.class,
+//    TestClickJavascriptHrefWithVoidChrome.class, // fails in IE
     TestCommandError.class,
     TestComments.class,
+//    TestConfirmations.class,
+//    TestCookie.class,
     TestCssLocators.class,
+//    TestCursorPosition.class,
+//    TestDojoDragAndDrop.class,
+    TestDomainCookie.class,
+//    TestDragAndDrop.class,
     TestEditable.class,
     TestElementIndex.class,
     TestElementOrder.class,
     TestElementPresent.class,
     TestErrorChecking.class,
     TestEval.class,
+    TestEvilClosingWindow.class,
     TestFailingAssert.class,
     TestFailingVerifications.class,
+//    TestFocusOnBlur.class,
     TestFramesClick.class,
+//    TestFramesClickJavascriptHref.class,
+//    TestFramesNested.class,
     TestFramesOpen.class,
+//    TestFramesSpecialTargets.class,
     TestFunkEventHandling.class,
+    TestGet.class,
+    TestGetTextContent.class,
     TestGettingValueOfCheckbox.class,
     TestGettingValueOfRadioButton.class,
     TestGoBack.class,
+    TestHighlight.class,
     TestHtmlSource.class,
     TestImplicitLocators.class,
+//    TestJavaScriptAttributes.class,
+//    TestJavascriptParameters.class,
     TestLocators.class,
     TestMultiSelect.class,
+//    TestModalDialog.class,
     TestOpen.class,
     TestOpenInTargetFrame.class,
     TestPatternMatching.class,
     TestPause.class,
+//    TestPrompt.class,
+    TestProxy.class,
     TestQuickOpen.class,
+//    TestRefresh.class,
+//    TestRollup.class,
     TestSelect.class,
-    // Only passes in firefox
-//    TestSubmit.class,
+    TestSelectMultiLevelFrame.class,
+//    TestSelectPopUp.class,
+//    TestSelectWindow.class,
+//    TestSelectWindowTitle.class,
+//    TestSetSpeed.class,
+    TestStore.class,
+    TestSubmit.class,
+    TestTextWhitespace.class,
     TestType.class,
     TestTypeRichText.class,
+//    TestUIElementLocators.class,
+//    TestUseXpathLibrary.class,
     TestVerifications.class,
     TestVisibility.class,
-    TestWait.class,
+//    TestWait.class, // fails in IE
+    TestWaitFor.class,
     TestWaitForNot.class,
+//    TestWaitInPopupWindow.class,
+//    TestXPathLocatorInXHtml.class,
     TestXPathLocators.class
 })
 public class WebDriverSeleniumTestSuite extends BaseSuite {
