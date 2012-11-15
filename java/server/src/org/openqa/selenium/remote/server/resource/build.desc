@@ -12,7 +12,7 @@ java_library(name = "resource",
   ])
 
 rename(name = "client",
-  deps = ["//javascript/remote:clientbin"],
+  deps = ["//javascript/remote:clientbin.js"],
   out = "client.js")
 
 rename(name = "hub",
