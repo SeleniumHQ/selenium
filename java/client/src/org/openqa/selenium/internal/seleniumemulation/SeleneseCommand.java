@@ -22,6 +22,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
 public abstract class SeleneseCommand<T> {
+
+  private long defaultTimeout;
+
   public T apply(WebDriver driver, String[] args) {
     try {
       switch (args.length) {
@@ -40,6 +43,14 @@ public abstract class SeleneseCommand<T> {
     } catch (WebDriverException e) {
       throw new SeleniumException(e.getMessage(), e);
     }
+  }
+  
+  protected void setDefaultTimeout(long defaultTimeout) {
+    this.defaultTimeout = defaultTimeout;
+  }
+  
+  protected long getTimeout(String timeout) {
+    return "".equals(timeout) ? defaultTimeout : Long.valueOf(timeout);
   }
 
   protected abstract T handleSeleneseCommand(WebDriver driver, String locator, String value);

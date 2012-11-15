@@ -28,6 +28,7 @@ import org.openqa.selenium.WebDriver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Windows {
   private final Map<String, String> lastFrame = Maps.newHashMap();
@@ -66,6 +67,20 @@ public class Windows {
       } catch (SeleniumException e) {
         lastFrame.remove(driver.getWindowHandle());
       }
+    }
+  }
+
+  public void selectPopUp(WebDriver driver, String windowID) {
+    if ("null".equals(windowID) || "".equals(windowID)) {
+      Set<String> windowHandles = driver.getWindowHandles();
+      windowHandles.remove(originalWindowHandle);
+      if (windowHandles.size() > 0) {
+        driver.switchTo().window(windowHandles.iterator().next());
+      } else {
+        throw new SeleniumException("Unable to find a popup window");
+      }
+    } else {
+      selectWindow(driver, windowID);
     }
   }
 

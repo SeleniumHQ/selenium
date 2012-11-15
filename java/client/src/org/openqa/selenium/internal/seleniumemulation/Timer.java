@@ -33,6 +33,8 @@ public class Timer {
       throw new IllegalStateException("Timer has already been stopped");
     }
 
+    command.setDefaultTimeout(timeout);
+
     long start = System.currentTimeMillis();
 
     T value = command.apply(driver, args);

@@ -59,6 +59,7 @@ import com.thoughtworks.selenium.corebased.TestProxy;
 import com.thoughtworks.selenium.corebased.TestQuickOpen;
 import com.thoughtworks.selenium.corebased.TestSelect;
 import com.thoughtworks.selenium.corebased.TestSelectMultiLevelFrame;
+import com.thoughtworks.selenium.corebased.TestSelectPopUp;
 import com.thoughtworks.selenium.corebased.TestStore;
 import com.thoughtworks.selenium.corebased.TestSubmit;
 import com.thoughtworks.selenium.corebased.TestTextWhitespace;
@@ -134,7 +135,7 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
 //    TestRollup.class,
     TestSelect.class,
     TestSelectMultiLevelFrame.class,
-//    TestSelectPopUp.class,
+    TestSelectPopUp.class,
 //    TestSelectWindow.class,
 //    TestSelectWindowTitle.class,
 //    TestSetSpeed.class,

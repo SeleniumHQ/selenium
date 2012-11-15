@@ -31,19 +31,14 @@ public class WaitForPopup extends SeleneseCommand<Void> {
   @Override
   protected Void handleSeleneseCommand(final WebDriver driver, final String windowID,
       final String timeout) {
-    final long millis = Long.parseLong(timeout);
+    final long millis = getTimeout(timeout);
     final String current = driver.getWindowHandle();
 
     new Wait() {
       @Override
       public boolean until() {
         try {
-          if ("_blank".equals(windowID)) {
-            windows.selectBlankWindow(driver);
-          } else {
-            driver.switchTo()
-                .window(windowID);
-          }
+          windows.selectPopUp(driver, windowID);
           return !"about:blank".equals(driver.getCurrentUrl());
         } catch (SeleniumException e) {
           // Swallow
