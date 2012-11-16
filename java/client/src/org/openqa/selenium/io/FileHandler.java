@@ -224,6 +224,9 @@ public class FileHandler {
 
     // List children.
     String[] children = from.list();
+    if (children == null) {
+      throw new IOException("Could not copy directory " + from.getPath());
+    }
     for (String child : children) {
       if (!".parentlock".equals(child) && !"parent.lock".equals(child)) {
         copy(new File(from, child), new File(to, child), onlyCopy);
