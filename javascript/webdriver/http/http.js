@@ -243,6 +243,8 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
           get('/session/:sessionId/element/:id/equals/:other')).
       put(webdriver.CommandName.SWITCH_TO_WINDOW,
           post('/session/:sessionId/window')).
+      put(webdriver.CommandName.MAXIMIZE_WINDOW,
+          post('/session/:sessionId/window/:windowHandle/maximize')).
       put(webdriver.CommandName.GET_WINDOW_POSITION,
           get('/session/:sessionId/window/:windowHandle/position')).
       put(webdriver.CommandName.SET_WINDOW_POSITION,

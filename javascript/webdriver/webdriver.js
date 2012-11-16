@@ -1211,6 +1211,19 @@ webdriver.WebDriver.Window.prototype.setSize = function(width, height) {
 };
 
 
+/**
+ * Maximizes the current window.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when the
+ *     command has completed.
+ */
+webdriver.WebDriver.Window.prototype.maximize = function() {
+  return this.driver_.schedule(
+      new webdriver.Command(webdriver.CommandName.MAXIMIZE_WINDOW).
+          setParameter('windowHandle', 'current'),
+      'WebDriver.manage().window().maximize()');
+};
+
+
 
 /**
  * An interface for changing the focus of the driver to another frame or window.
