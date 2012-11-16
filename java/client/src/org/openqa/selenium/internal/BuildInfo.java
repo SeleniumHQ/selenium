@@ -27,8 +27,6 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import com.google.common.io.Closeables;
-
 /**
  * Reads information about how the current application was built from the Build-Info section of the
  * manifest in the jar file, which contains this class.
@@ -52,7 +50,13 @@ public class BuildInfo {
     } catch (IOException ignored) {
     } catch (IllegalArgumentException ignored) {
     } finally {
-      Closeables.closeQuietly(jar);
+      if (jar != null) {
+        try {
+          jar.close();
+        } catch (IOException e) {
+          // ignore
+        }
+      }
     }
 
     if (manifest == null) {
