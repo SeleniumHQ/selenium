@@ -19,7 +19,7 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
-public class SetNextConfirmationState extends SeleneseCommand {
+public class SetNextConfirmationState extends SeleneseCommand<Void> {
   private final boolean result;
 
   public SetNextConfirmationState(boolean result) {
@@ -27,7 +27,7 @@ public class SetNextConfirmationState extends SeleneseCommand {
   }
 
   @Override
-  protected Object handleSeleneseCommand(WebDriver driver, String locator, String value) {
+  protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
     ((JavascriptExecutor) driver).executeScript(
         "window.__webdriverNextConfirm = arguments[0]", result);
     return null;

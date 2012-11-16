@@ -18,9 +18,9 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.WebDriver;
 
-public class GetExpression extends SeleneseCommand {
+public class GetExpression extends SeleneseCommand<String> {
   @Override
-  protected Object handleSeleneseCommand(WebDriver driver, String locator, String value) {
+  protected String handleSeleneseCommand(WebDriver driver, String locator, String value) {
     return locator;
   }
 }

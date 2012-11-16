@@ -18,7 +18,7 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.WebDriver;
 
-public class IsAlertPresent extends SeleneseCommand {
+public class IsAlertPresent extends SeleneseCommand<Boolean> {
   private final AlertOverride alertOverride;
 
   public IsAlertPresent(AlertOverride alertOverride) {
@@ -26,7 +26,7 @@ public class IsAlertPresent extends SeleneseCommand {
   }
 
   @Override
-  protected Object handleSeleneseCommand(WebDriver driver, String locator, String value) {
+  protected Boolean handleSeleneseCommand(WebDriver driver, String locator, String value) {
     return alertOverride.isAlertPresent(driver);
   }
 }

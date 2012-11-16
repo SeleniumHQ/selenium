@@ -19,7 +19,7 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.WebDriver;
 
-public class IsConfirmationPresent extends SeleneseCommand {
+public class IsConfirmationPresent extends SeleneseCommand<Boolean> {
   private final AlertOverride alertOverride;
 
   public IsConfirmationPresent(AlertOverride alertOverride) {
@@ -27,7 +27,7 @@ public class IsConfirmationPresent extends SeleneseCommand {
   }
 
   @Override
-  protected Object handleSeleneseCommand(WebDriver driver, String locator, String value) {
+  protected Boolean handleSeleneseCommand(WebDriver driver, String locator, String value) {
     return alertOverride.isConfirmationPresent(driver);
   }
 }

@@ -18,7 +18,7 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import org.openqa.selenium.WebDriver;
 
-public class GetAlert extends SeleneseCommand {
+public class GetAlert extends SeleneseCommand<String> {
   private final AlertOverride alertOverride;
 
   public GetAlert(AlertOverride alertOverride) {
@@ -26,7 +26,7 @@ public class GetAlert extends SeleneseCommand {
   }
 
   @Override
-  protected Object handleSeleneseCommand(WebDriver driver, String locator, String value) {
+  protected String handleSeleneseCommand(WebDriver driver, String locator, String value) {
     return alertOverride.getNextAlert(driver);
   }
 }
