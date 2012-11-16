@@ -24,6 +24,7 @@ java_library(name = "base",
   ],
   deps = [
     ":beta",
+    "//third_party/java/guava-libraries",
   ])
 
 java_library(name = "webdriver-api",
