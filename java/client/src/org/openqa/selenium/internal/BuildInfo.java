@@ -27,6 +27,8 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import com.google.common.io.Closeables;
+
 /**
  * Reads information about how the current application was built from the Build-Info section of the
  * manifest in the jar file, which contains this class.
@@ -39,15 +41,18 @@ public class BuildInfo {
     Properties properties = new Properties();
 
     Manifest manifest = null;
+    JarFile jar = null;
     try {
       URL url = BuildInfo.class.getProtectionDomain().getCodeSource().getLocation();
       File file = new File(url.toURI());
-      JarFile jar = new JarFile(file);
+      jar = new JarFile(file);
       manifest = jar.getManifest();
     } catch (NullPointerException ignored) {
     } catch (URISyntaxException ignored) {
     } catch (IOException ignored) {
     } catch (IllegalArgumentException ignored) {
+    } finally {
+      Closeables.closeQuietly(jar);
     }
 
     if (manifest == null) {

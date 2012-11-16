@@ -19,6 +19,7 @@ limitations under the License.
 package org.openqa.selenium.browserlaunchers;
 
 import com.google.common.base.Throwables;
+import com.google.common.io.Closeables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.io.FileHandler;
@@ -180,7 +181,7 @@ public class LauncherUtils {
 
   public static boolean isScriptFile(File aFile) {
     final char firstTwoChars[] = new char[2];
-    final FileReader reader;
+    FileReader reader = null;
     int charsRead;
 
     try {
@@ -192,6 +193,8 @@ public class LauncherUtils {
       return (firstTwoChars[0] == '#' && firstTwoChars[1] == '!');
     } catch (IOException e) {
       throw new RuntimeException(e);
+    } finally {
+      Closeables.closeQuietly(reader);
     }
   }
 
