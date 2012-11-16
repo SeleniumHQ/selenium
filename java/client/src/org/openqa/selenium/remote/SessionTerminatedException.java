@@ -19,6 +19,7 @@ import org.openqa.selenium.WebDriverException;
 
 /**
  * Indicates that the session was terminated by the server
+ * @deprecated To be removed in 2.28, use {@link SessionNotFoundException} instead
  */
 public class SessionTerminatedException extends WebDriverException {
 

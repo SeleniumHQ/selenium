@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.selenium.logging.LoggingHandler;
-import org.openqa.selenium.remote.SessionTerminatedException;
+import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
@@ -199,7 +199,7 @@ public class DriverServlet extends HttpServlet {
       HttpResponse res = new JeeServletHttpResponse(response);
 
       mappings.handleRequest(req, res);
-    } catch (SessionTerminatedException e){
+    } catch (SessionNotFoundException e){
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     } catch (Exception e) {
       log("Fatal, unhandled exception: " + request.getPathInfo() + ": " + e);

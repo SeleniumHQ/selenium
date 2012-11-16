@@ -513,7 +513,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       // {"ELEMENT": id} to RemoteWebElements.
       Object value = converter.apply(response.getValue());
       response.setValue(value);
-    } catch (SessionTerminatedException e){
+    } catch (SessionNotFoundException e){
       throw e;
     } catch (Exception e) {
       log(sessionId, command.getName(), command, When.EXCEPTION);

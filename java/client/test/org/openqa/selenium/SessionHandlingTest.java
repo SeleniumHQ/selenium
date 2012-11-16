@@ -19,7 +19,7 @@ package org.openqa.selenium;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.remote.SessionTerminatedException;
+import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -69,7 +69,7 @@ public class SessionHandlingTest {
     }
   }
 
-  @Test(expected = SessionTerminatedException.class)
+  @Test(expected = SessionNotFoundException.class)
   @Ignore(value = {OPERA, HTMLUNIT}, reason =
         "Opera: throws Opera-specific exception, HtmlUnit: NPE")
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
@@ -78,7 +78,7 @@ public class SessionHandlingTest {
     driver.getCurrentUrl();
   }
 
-  @Test(expected = SessionTerminatedException.class)
+  @Test(expected = SessionNotFoundException.class)
   @Ignore(value = {FIREFOX, CHROME, OPERA, HTMLUNIT}, reason =
       "Chrome: throws generic WebDriverException,"
       + "Firefox, HtmlUnit: can perform an operation after closing the last window,"

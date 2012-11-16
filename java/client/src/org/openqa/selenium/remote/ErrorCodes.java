@@ -93,7 +93,7 @@ public class ErrorCodes {
       case SUCCESS:
         return null;
       case NO_SUCH_SESSION:
-        return SessionTerminatedException.class;
+        return SessionNotFoundException.class;
       case INVALID_COOKIE_DOMAIN:
         return InvalidCookieDomainException.class;
       case UNABLE_TO_SET_COOKIE:

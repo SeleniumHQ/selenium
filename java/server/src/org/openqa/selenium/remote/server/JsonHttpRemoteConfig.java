@@ -18,7 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.SessionTerminatedException;
+import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.remote.server.handler.AcceptAlert;
 import org.openqa.selenium.remote.server.handler.AddConfig;
 import org.openqa.selenium.remote.server.handler.AddCookie;
@@ -191,7 +191,7 @@ public class JsonHttpRemoteConfig {
       } else {
         config.handle(request.getPath(), request, response);
       }
-    } catch (SessionTerminatedException e){
+    } catch (SessionNotFoundException e){
       response.setStatus(NOT_FOUND);
       response.end();
     } catch (Exception e) {

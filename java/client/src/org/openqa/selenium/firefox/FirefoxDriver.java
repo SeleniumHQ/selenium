@@ -52,7 +52,7 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.SessionTerminatedException;
+import org.openqa.selenium.remote.SessionNotFoundException;
 
 import java.io.File;
 import java.io.IOException;
@@ -349,7 +349,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
         if (command.getName().equals(DriverCommand.QUIT)) {
           return new Response();
         }
-        throw new SessionTerminatedException(
+        throw new SessionNotFoundException(
             "The FirefoxDriver cannot be used after quit() was called.");
       }
       return connection.execute(command);

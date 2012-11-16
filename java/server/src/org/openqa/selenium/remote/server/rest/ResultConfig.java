@@ -27,7 +27,7 @@ import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.SessionTerminatedException;
+import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.remote.SimplePropertyDescriptor;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.DriverSessions;
@@ -205,7 +205,7 @@ public class ResultConfig {
       throwUpIfSessionTerminated(sessId);
       replyError(request, response, e);
       return;
-    } catch (SessionTerminatedException e){
+    } catch (SessionNotFoundException e){
       throw e;
     } catch (Exception e) {
       result = ResultType.EXCEPTION;
@@ -239,7 +239,7 @@ public class ResultConfig {
       ((WebDriverHandler) handler).execute(task);
       task.get();
       } catch (RejectedExecutionException e){
-        throw new SessionTerminatedException();
+        throw new SessionNotFoundException();
       }
 
       if (handler instanceof DeleteSession) {
@@ -269,7 +269,7 @@ public class ResultConfig {
     Session session = sessions.get(sessId);
     final boolean isTerminated = session == null;
     if (isTerminated){
-      throw new SessionTerminatedException();
+      throw new SessionNotFoundException();
     }
   }
 

@@ -19,6 +19,7 @@ import org.openqa.selenium.WebDriverException;
 
 /**
  * It's a 404!
+ * @deprecated This exception never occur, to be removed in 2.28
  */
 public class SessionNotFoundException extends WebDriverException {
 
