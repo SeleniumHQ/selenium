@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoDriverAfterTest;
@@ -57,6 +58,8 @@ import java.util.concurrent.Callable;
 import static java.lang.Thread.sleep;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -220,6 +223,26 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
     // We will have an infinite hang if this driver does not start properly
     new FirefoxDriver(binary, null).quit();
+  }
+
+  @Test
+  public void shouldBeAbleToPassCommandLineOptions() {
+    FirefoxBinary binary = new FirefoxBinary();
+    binary.addCommandLineOptions("-width", "800", "-height", "600");
+
+    FirefoxDriver driver2 = null;
+    try {
+      driver2 = new FirefoxDriver(binary, null);
+      Dimension size = driver2.manage().window().getSize();
+      assertThat(size.width, greaterThanOrEqualTo(800));
+      assertThat(size.width, lessThan(850));
+      assertThat(size.height, greaterThanOrEqualTo(600));
+      assertThat(size.height, lessThan(650));
+    } finally {
+      if (driver2 != null) {
+        driver2.quit();
+      }
+    }
   }
 
   private static boolean platformHasNativeEvents() {

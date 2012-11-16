@@ -18,6 +18,8 @@ package org.openqa.selenium.firefox;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Platform;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,6 +45,7 @@ public class FirefoxBinary {
       FirefoxBinary.class.getPackage().getName().replace(".", "/") + "/";
 
   private final Map<String, String> extraEnv = Maps.newHashMap();
+  private final List<String> extraOptions = Lists.newArrayList();
   private final Executable executable;
   private CommandLine process;
   private OutputStream stream;
@@ -53,6 +57,19 @@ public class FirefoxBinary {
 
   public FirefoxBinary(File pathToFirefoxBinary) {
     executable = new Executable(pathToFirefoxBinary);
+  }
+
+  public void setEnvironmentProperty(String propertyName, String value) {
+    if (propertyName == null || value == null) {
+      throw new WebDriverException(
+          String.format("You must set both the property name and value: %s, %s", propertyName,
+              value));
+    }
+    extraEnv.put(propertyName, value);
+  }
+
+  public void addCommandLineOptions(String... options) {
+    extraOptions.addAll(Lists.newArrayList(options));
   }
 
   protected boolean isOnLinux() {
@@ -73,8 +90,10 @@ public class FirefoxBinary {
       modifyLinkLibraryPath(profileDir);
     }
 
-    CommandLine command = new CommandLine(
-        getExecutable().getPath(), commandLineFlags);
+    List<String> cmdArray = Lists.newArrayList(getExecutable().getPath());
+    cmdArray.addAll(extraOptions);
+    cmdArray.addAll(Lists.newArrayList(commandLineFlags));
+    CommandLine command = new CommandLine(Iterables.toArray(cmdArray, String.class));
     command.setEnvironmentVariables(getExtraEnv());
     executable.setLibraryPath(command, getExtraEnv());
 
@@ -162,15 +181,6 @@ public class FirefoxBinary {
     }
 
     return builtPath.toString();
-  }
-
-  public void setEnvironmentProperty(String propertyName, String value) {
-    if (propertyName == null || value == null) {
-      throw new WebDriverException(
-          String.format("You must set both the property name and value: %s, %s", propertyName,
-              value));
-    }
-    extraEnv.put(propertyName, value);
   }
 
   public void createProfile(String profileName) throws IOException {
