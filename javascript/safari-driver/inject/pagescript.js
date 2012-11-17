@@ -91,11 +91,7 @@ safaridriver.inject.PageScript.prototype.installPageScript = function() {
     script.src = safari.extension.baseURI + 'page.js';
 
     var docEl = document.documentElement;
-    if (docEl.firstChild) {
-      goog.dom.insertSiblingBefore(script, docEl.firstChild);
-    } else {
-      goog.dom.appendChild(docEl, script);
-    }
+    goog.dom.appendChild(docEl, script);
 
     var installedPageScript = this.installedPageScript_;
 

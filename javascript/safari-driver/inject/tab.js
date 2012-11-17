@@ -159,7 +159,9 @@ safaridriver.inject.Tab.prototype.setActive = function(active) {
 safaridriver.inject.Tab.prototype.init = function() {
   this.log('Loaded injected script for: ' + window.location);
 
-  this.pageScript_.installPageScript();
+  if ('about:blank' !== window.location.href) {
+    this.pageScript_.installPageScript();
+  }
 
   var tab = this;
   tab.on(safaridriver.inject.message.Activate.TYPE, tab.onActivate_, tab).

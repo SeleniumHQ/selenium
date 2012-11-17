@@ -18,6 +18,8 @@ limitations under the License.
 package org.openqa.selenium.safari;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.openqa.selenium.By;
@@ -84,11 +86,19 @@ public class CrossDomainTest extends JUnit4TestBase {
     ((JavascriptExecutor) driver).executeScript("arguments[0].src = arguments[1];", iframe,
         otherPages.iframePage);
 
+    assertEquals(otherPages.iframePage,
+        ((JavascriptExecutor) driver).executeScript("return arguments[0].src", iframe));
+    assertTrue(isTop());
     driver.switchTo().frame(iframe);
+    assertFalse(isTop());
     assertEquals(otherPages.iframePage, getPageUrl());
 
     driver.switchTo().defaultContent();
     assertEquals(pages.iframePage, getPageUrl());
+  }
+
+  private boolean isTop() {
+    return (Boolean) ((JavascriptExecutor) driver).executeScript("return window === window.top");
   }
 
   private String getPageUrl() {
