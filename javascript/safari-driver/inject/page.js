@@ -51,19 +51,6 @@ safaridriver.inject.page.LOG_ = goog.debug.Logger.getLogger(
 
 
 /**
- * CSS selector used to locate the script tag added to the DOM to load this
- * script. Matches on the expected prefix and suffix for the resource URL.
- * The full URL is randomly generated each time Safari loads the WebDriver
- * extension.
- * @type {string}
- * @const
- * @private
- */
-safaridriver.inject.page.SCRIPT_SELECTOR_ =
-    'script[src^="safari-extension://org.openqa.selenium"][src$="/page.js"]';
-
-
-/**
  * @type {!safaridriver.inject.Encoder}
  * @private
  */
@@ -71,39 +58,84 @@ safaridriver.inject.page.encoder_;
 
 
 /**
- * Initializes this script. Removes the script DOM element used to inject it
- * into the page and sends a "load" message to the injected script.
+ * Property on goog.global used to detect whether this script has been loaded
+ * by Safari as part of the extension or if it has been recursively injected
+ * into the web page's context through a DOM node.
+ * @type {string}
+ * @const
+ * @private
  */
-safaridriver.inject.page.init = function() {
+safaridriver.inject.page.IS_EXTENSION_KEY_ = 'safaridriverIsExtension';
+
+
+/**
+ * @param {!Function} fn A reference to the top level function forming a
+ *     closure around this function. This function is defined by the output
+ *     wrapper of the Closure compiler.
+ * @param {!safaridriver.message.MessageTarget} messageTarget The target to use
+ *     to listen to messages from the web page context.
+ * @param {goog.dom.DomHelper=} opt_dom DomHelper for the page to add this
+ *     script to.
+ * @private
+ */
+safaridriver.inject.page.addToPage_ = function(fn, messageTarget, opt_dom) {
+  safaridriver.inject.page.LOG_.info('Installing page script');
+
+  var dom = opt_dom || goog.dom.getDomHelper();
+
+  // TODO(jleyba): Check for about-blank
+  var script = dom.createElement('script');
+  script.type = 'application/javascript';
+  script.innerText = '(' + fn + ').call({});';
+
+  var docEl = dom.getDocument().documentElement;
+  goog.dom.appendChild(docEl, script);
+
+  messageTarget.on(safaridriver.message.Load.TYPE, function(message, e) {
+    if (message.isSameOrigin() && safaridriver.inject.message.isFromSelf(e)) {
+      goog.dom.removeNode(script);
+      messageTarget.dispose();
+    }
+  });
+};
+
+
+/**
+ * Initializes this script.  If injected as part of the extension by Safari,
+ * this function will inject a copy of the entire script into the web page's
+ * JS context by appending a script element to the DOM.  Otherwise, this
+ * function will initialize the script for exchanging messages with the primary
+ * injected script driven by {@link safaridriver.inject.Tab}.
+ * @param {!Function} fn A reference to the top level function forming a
+ *     closure around this function. This function is defined by the output
+ *     wrapper of the Closure compiler.
+ */
+safaridriver.inject.page.init = function(fn) {
+  var messageTarget = new safaridriver.message.MessageTarget(window);
+  messageTarget.setLogger(safaridriver.inject.page.LOG_);
+
+  if (goog.global[safaridriver.inject.page.IS_EXTENSION_KEY_]) {
+    safaridriver.inject.page.addToPage_(fn, messageTarget);
+    return;
+  }
+
   safaridriver.console.init();
   safaridriver.inject.page.LOG_.info(
       'Loaded page script for ' + window.location);
 
-  var messageTarget = new safaridriver.message.MessageTarget(window);
-  messageTarget.setLogger(safaridriver.inject.page.LOG_);
   messageTarget.on(safaridriver.message.Command.TYPE,
       safaridriver.inject.page.onCommand_);
 
   safaridriver.inject.page.encoder_ =
       new safaridriver.inject.Encoder(messageTarget);
 
-  var message = new safaridriver.message.Load(window === window.top);
+  var message = new safaridriver.message.Load(window !== window.top);
   safaridriver.inject.page.LOG_.info('Sending ' + message);
   message.sendSync(window);
 
   window.alert = safaridriver.inject.page.wrappedAlert_;
   window.confirm = safaridriver.inject.page.wrappedConfirm_;
   window.prompt = safaridriver.inject.page.wrappedPrompt_;
-
-  var script = document.querySelector(
-      safaridriver.inject.page.SCRIPT_SELECTOR_);
-  // If we find the script running this script, remove it.
-  if (script) {
-    goog.dom.removeNode(script);
-  } else {
-    safaridriver.inject.page.LOG_.warning(
-        'Unable to locate SafariDriver script element');
-  }
 };
 goog.exportSymbol('init', safaridriver.inject.page.init);
 

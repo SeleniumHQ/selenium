@@ -27,7 +27,9 @@
 		<dict>
 			<key>Start</key>
 			<array>
+				<!-- injected.js must come first! -->
 				<string>injected.js</string>
+				<string>page.js</string>
 			</array>
 		</dict>
 	</dict>

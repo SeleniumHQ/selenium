@@ -421,15 +421,15 @@ safaridriver.inject.commands.maximizeWindow = function() {
 /**
  * Executes a command in the context of the current page.
  * @param {!safaridriver.Command} command The command to execute.
- * @param {!safaridriver.inject.PageScript} pageScript Object to use to execute
- *     the command in the context of the page under test.
+ * @param {!safaridriver.inject.Tab} tab A reference to the tab issuing this
+ *     command.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
  *     {@link bot.response.ResponseObject} from the page.
  * @throws {Error} If there is an error while sending the command to the page.
  */
-safaridriver.inject.commands.executeInPage = function(command, pageScript) {
+safaridriver.inject.commands.executeInPage = function(command, tab) {
   command = safaridriver.inject.commands.prepareElementCommand_(command);
-  return pageScript.execute(command);
+  return tab.executeInPage(command);
 };
 
 

@@ -22,13 +22,15 @@ goog.provide('safaridriver.inject.Tab');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.inject');
 goog.require('bot.response');
 goog.require('goog.asserts');
+goog.require('goog.debug.Logger');
 goog.require('goog.object');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.Tab');
 goog.require('safaridriver.alert');
-goog.require('safaridriver.inject.PageScript');
+goog.require('safaridriver.inject.Encoder');
 goog.require('safaridriver.inject.commands');
 goog.require('safaridriver.inject.message');
 goog.require('safaridriver.inject.message.Activate');
@@ -61,10 +63,10 @@ safaridriver.inject.Tab = function() {
       (safaridriver.inject.Tab.IS_TOP ? '_Top_' : 'Frame'));
 
   /**
-   * @type {!safaridriver.inject.PageScript}
+   * @type {!safaridriver.inject.Encoder}
    * @private
    */
-  this.pageScript_ = new safaridriver.inject.PageScript(this);
+  this.encoder_ = new safaridriver.inject.Encoder(this);
 
   /**
    * Commands that have started execution.
@@ -80,6 +82,22 @@ safaridriver.inject.Tab = function() {
    * @private
    */
   this.queuedCommands_ = {};
+
+  /**
+   * Pending responses to commands that have been broadcast to the page script
+   * for execution in the current page's JavaScript context.
+   * @type {!Object.<!webdriver.promise.Deferred>}
+   * @private
+   */
+  this.pendingPageResponses_ = {};
+
+  /**
+   * A promise that is resolved once the SafariDriver page script has been
+   * loaded by the current page.
+   * @type {!webdriver.promise.Deferred}
+   * @private
+   */
+  this.installedPageScript_ = new webdriver.promise.Deferred();
 };
 goog.inherits(safaridriver.inject.Tab, safaridriver.Tab);
 goog.addSingletonGetter(safaridriver.inject.Tab);
@@ -159,14 +177,11 @@ safaridriver.inject.Tab.prototype.setActive = function(active) {
 safaridriver.inject.Tab.prototype.init = function() {
   this.log('Loaded injected script for: ' + window.location);
 
-  if ('about:blank' !== window.location.href) {
-    this.pageScript_.installPageScript();
-  }
-
   var tab = this;
   tab.on(safaridriver.inject.message.Activate.TYPE, tab.onActivate_, tab).
       on(safaridriver.message.Alert.TYPE, tab.onAlert_, tab).
       on(safaridriver.message.Load.TYPE, tab.onLoad_, tab).
+      on(safaridriver.message.Response.TYPE, tab.onPageResponse_, tab).
       on(safaridriver.inject.message.ReactivateFrame.TYPE,
           tab.onReactivateFrame_, tab);
 
@@ -339,6 +354,12 @@ safaridriver.inject.Tab.prototype.onLoad_ = function(message, e) {
       // #notifyReady. Otherwise, the commands may be sent to the frame before
       // it knows it should handle them, and we'll end hanging.
     }
+  } else if (safaridriver.inject.message.isFromSelf(e) &&
+      // May receive this notification multiple times if there are any
+      // document.open/write/close calls from another frame. We will not
+      // receive a corresponding unload.
+      this.installedPageScript_.isPending()) {
+    this.installedPageScript_.resolve();
   }
 };
 
@@ -470,9 +491,7 @@ safaridriver.inject.Tab.prototype.executeCommand_ = function(command, map) {
       // Don't schedule through webdriver.promise.Application; just execute the
       // command immediately. We're assuming the global page is scheduling
       // commands and only dispatching one at a time.
-      webdriver.promise.when(
-          handler(command, this.pageScript_),
-          sendSuccess, sendError);
+      webdriver.promise.when(handler(command, this), sendSuccess, sendError);
     } catch (ex) {
       sendError(ex);
     }
@@ -523,7 +542,69 @@ safaridriver.inject.Tab.prototype.sendResponse_ = function(command, response,
 
 
 /**
- * @typedef {(function(!safaridriver.Command, !safaridriver.inject.PageScript)|
+ * Broadcasts a command to be executed in the context of the current page.
+ * @param {!safaridriver.Command} command The command to execute.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     a response message has been received.
+ */
+safaridriver.inject.Tab.prototype.executeInPage = function(command) {
+  // Decode the command arguments from WebDriver's wire protocol.
+  var decodeResult = bot.inject.executeScript(function(decodedParams) {
+    command.setParameters(decodedParams);
+  }, [command.getParameters()]);
+  bot.response.checkResponse(
+      /** @type {!bot.response.ResponseObject} */ (decodeResult));
+
+  return this.installedPageScript_.addCallback(function() {
+    var parameters = command.getParameters();
+    parameters = /** @type {!Object.<*>} */ (this.encoder_.encode(parameters));
+    command.setParameters(parameters);
+
+    var message = new safaridriver.message.Command(command);
+    this.log('Sending message: ' + message);
+
+    var commandResponse = new webdriver.promise.Deferred();
+    this.pendingPageResponses_[command.getId()] = commandResponse;
+
+    message.send(window);
+
+    return commandResponse.then(function(result) {
+      return bot.inject.wrapValue(result);
+    });
+  }, this);
+};
+
+
+/**
+ * @param {!safaridriver.message.Response} message The message.
+ * @param {!MessageEvent} e The original message.
+ * @private
+ */
+safaridriver.inject.Tab.prototype.onPageResponse_ = function(message, e) {
+  if (message.isSameOrigin() || !safaridriver.inject.message.isFromSelf(e)) {
+    return;
+  }
+
+  var promise = this.pendingPageResponses_[message.getId()];
+  if (!promise) {
+    this.log('Received response to an unknown command: ' + message,
+        goog.debug.Logger.Level.WARNING);
+    return;
+  }
+  delete this.pendingPageResponses_[message.getId()];
+
+  var response = message.getResponse();
+  try {
+    response['value'] = this.encoder_.decode(response['value']);
+    promise.resolve(response);
+  } catch (ex) {
+    promise.reject(bot.response.createErrorResponse(ex));
+  }
+};
+
+
+/**
+ * @typedef {(function(!safaridriver.Command, !safaridriver.inject.Tab)|
  *            function(!safaridriver.Command)|
  *            function())}
  */
