@@ -1690,21 +1690,29 @@ BrowserBot.prototype._namespaceResolver = function(prefix) {
 /**
  * Returns the number of xpath results.
  */
-BrowserBot.prototype.evaluateXPathCount = function(xpath, inDocument) {
-    return this.xpathEvaluator.countNodes(inDocument, xpath, null,
-        this._namespaceResolver);
+BrowserBot.prototype.evaluateXPathCount = function(selector, inDocument) {
+    var locator = parse_locator(selector);
+    var opts = {};
+    opts['namespaceResolver'] = this._namespaceResolver;
+    if (locator.type == 'xpath' || locator.type == 'implicit') {
+    	return eval_xpath(locator.string, inDocument, opts).length;
+    } else {
+        LOG.error("Locator does not use XPath strategy: " + selector);
+        return 0;
+    }
 };
 
 /**
  * Returns the number of css results.
  */
 BrowserBot.prototype.evaluateCssCount = function(selector, inDocument) {
-    var results = [];
     var locator = parse_locator(selector);
-    if (locator.type == 'css') {
-        results = eval_css(locator.string, inDocument);
+    if (locator.type == 'css' || locator.type == 'implicit') {
+        return eval_css(locator.string, inDocument).length;
+    } else {
+        LOG.error("Locator does not use CSS strategy: " + selector);
+        return 0;
     }
-    return results.length;
 };
 
 /**
