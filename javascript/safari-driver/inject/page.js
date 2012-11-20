@@ -83,10 +83,9 @@ safaridriver.inject.page.addToPage_ = function(fn, messageTarget, opt_dom) {
 
   var dom = opt_dom || goog.dom.getDomHelper();
 
-  // TODO(jleyba): Check for about-blank
   var script = dom.createElement('script');
   script.type = 'application/javascript';
-  script.innerText = '(' + fn + ').call({});';
+  script.textContent = '(' + fn + ').call({});';
 
   var docEl = dom.getDocument().documentElement;
   goog.dom.appendChild(docEl, script);
