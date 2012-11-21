@@ -27,9 +27,11 @@
 		<dict>
 			<key>Start</key>
 			<array>
-				<!-- injected.js must come first! -->
-				<string>injected.js</string>
+				<!-- Inject page.js first so it can set variables required by
+				  -- injected.js
+				  -->
 				<string>page.js</string>
+				<string>injected.js</string>
 			</array>
 		</dict>
 	</dict>

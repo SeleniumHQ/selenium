@@ -78,7 +78,6 @@ js_binary(name = "injected",
     "inject/message/encodemessage.js",
     "inject/message/framemessage.js",
     "inject/message/message.js",
-    "inject/page.js",
     "inject/tab.js",
     "message/connect.js",
   ],
@@ -92,6 +91,7 @@ js_binary(name = "injected",
     "externs/common.js",
     "externs/webcontent.js",
   ],
+  no_format = "true",
   flags = [
     "--jscomp_error=accessControls",
     "--jscomp_error=ambiguousFunctionDecl",
@@ -116,8 +116,11 @@ js_binary(name = "injected",
 
     "--jscomp_warning=checkTypes",
 
-    "--output_wrapper='%output%;safaridriver.inject.init();'",
+    "--output_wrapper='%output%;init();'",
     "--third_party=false",
+
+    "--compilation_level=ADVANCED_OPTIMIZATIONS",
+    "--create_name_map_files=true"
   ],
   deps = [
     ":common_lib",
@@ -146,6 +149,7 @@ js_binary(name = "page",
     "externs/common.js",
     "externs/webcontent.js",
   ],
+  no_format = "true",
   flags = [
     "--jscomp_error=accessControls",
     "--jscomp_error=ambiguousFunctionDecl",
@@ -169,8 +173,11 @@ js_binary(name = "page",
     "--jscomp_error=uselessCode",
     "--jscomp_error=visibility",
 
-    "--output_wrapper='(function(){%output%;this.init(arguments.callee);}).call({safaridriverIsExtension:true})'",
+    "--output_wrapper='var SafariDriverPageScript = (function(){%output%;this.init();});'",
     "--third_party=false",
+
+    "--compilation_level=ADVANCED_OPTIMIZATIONS",
+    "--create_name_map_files=true"
   ],
   deps = [
     ":common_lib",

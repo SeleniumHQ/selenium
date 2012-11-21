@@ -58,70 +58,16 @@ safaridriver.inject.page.encoder_;
 
 
 /**
- * Property on goog.global used to detect whether this script has been loaded
- * by Safari as part of the extension or if it has been recursively injected
- * into the web page's context through a DOM node.
- * @type {string}
- * @const
- * @private
+ * Initializes this module for exchanging messages with the primary injected
+ * script driven by {@link safaridriver.inject.Tab}.
  */
-safaridriver.inject.page.IS_EXTENSION_KEY_ = 'safaridriverIsExtension';
-
-
-/**
- * @param {!Function} fn A reference to the top level function forming a
- *     closure around this function. This function is defined by the output
- *     wrapper of the Closure compiler.
- * @param {!safaridriver.message.MessageTarget} messageTarget The target to use
- *     to listen to messages from the web page context.
- * @param {goog.dom.DomHelper=} opt_dom DomHelper for the page to add this
- *     script to.
- * @private
- */
-safaridriver.inject.page.addToPage_ = function(fn, messageTarget, opt_dom) {
-  safaridriver.inject.page.LOG_.info('Installing page script');
-
-  var dom = opt_dom || goog.dom.getDomHelper();
-
-  var script = dom.createElement('script');
-  script.type = 'application/javascript';
-  script.textContent = '(' + fn + ').call({});';
-
-  var docEl = dom.getDocument().documentElement;
-  goog.dom.appendChild(docEl, script);
-
-  messageTarget.on(safaridriver.message.Load.TYPE, function(message, e) {
-    if (message.isSameOrigin() && safaridriver.inject.message.isFromSelf(e)) {
-      goog.dom.removeNode(script);
-      messageTarget.dispose();
-    }
-  });
-};
-
-
-/**
- * Initializes this script.  If injected as part of the extension by Safari,
- * this function will inject a copy of the entire script into the web page's
- * JS context by appending a script element to the DOM.  Otherwise, this
- * function will initialize the script for exchanging messages with the primary
- * injected script driven by {@link safaridriver.inject.Tab}.
- * @param {!Function} fn A reference to the top level function forming a
- *     closure around this function. This function is defined by the output
- *     wrapper of the Closure compiler.
- */
-safaridriver.inject.page.init = function(fn) {
-  var messageTarget = new safaridriver.message.MessageTarget(window);
-  messageTarget.setLogger(safaridriver.inject.page.LOG_);
-
-  if (goog.global[safaridriver.inject.page.IS_EXTENSION_KEY_]) {
-    safaridriver.inject.page.addToPage_(fn, messageTarget);
-    return;
-  }
-
+safaridriver.inject.page.init = function() {
   safaridriver.console.init();
   safaridriver.inject.page.LOG_.info(
       'Loaded page script for ' + window.location);
 
+  var messageTarget = new safaridriver.message.MessageTarget(window);
+  messageTarget.setLogger(safaridriver.inject.page.LOG_);
   messageTarget.on(safaridriver.message.Command.TYPE,
       safaridriver.inject.page.onCommand_);
 
@@ -130,7 +76,7 @@ safaridriver.inject.page.init = function(fn) {
 
   var message = new safaridriver.message.Load(window !== window.top);
   safaridriver.inject.page.LOG_.info('Sending ' + message);
-  message.sendSync(window);
+  message.send(window);
 
   window.alert = safaridriver.inject.page.wrappedAlert_;
   window.confirm = safaridriver.inject.page.wrappedConfirm_;

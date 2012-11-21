@@ -90,14 +90,6 @@ safaridriver.inject.Tab = function() {
    * @private
    */
   this.pendingPageResponses_ = {};
-
-  /**
-   * A promise that is resolved once the SafariDriver page script has been
-   * loaded by the current page.
-   * @type {!webdriver.promise.Deferred}
-   * @private
-   */
-  this.installedPageScript_ = new webdriver.promise.Deferred();
 };
 goog.inherits(safaridriver.inject.Tab, safaridriver.Tab);
 goog.addSingletonGetter(safaridriver.inject.Tab);
@@ -141,6 +133,15 @@ safaridriver.inject.Tab.prototype.frameCheckKey_ = 0;
 
 
 /**
+ * Promise used to track whether the page script has been installed for the
+ * current page.
+ * @type {webdriver.promise.Deferred}
+ * @private
+ */
+safaridriver.inject.Tab.prototype.installedPageScript_ = null;
+
+
+/**
  * Returns whether the window containing this script is active and should
  * respond to commands from the extension's global page.
  *
@@ -176,6 +177,10 @@ safaridriver.inject.Tab.prototype.setActive = function(active) {
 /** Initializes this tab. */
 safaridriver.inject.Tab.prototype.init = function() {
   this.log('Loaded injected script for: ' + window.location);
+
+  if ('about:blank' !== window.location.href) {
+    this.installPageScript_();
+  }
 
   var tab = this;
   tab.on(safaridriver.inject.message.Activate.TYPE, tab.onActivate_, tab).
@@ -358,6 +363,7 @@ safaridriver.inject.Tab.prototype.onLoad_ = function(message, e) {
       // May receive this notification multiple times if there are any
       // document.open/write/close calls from another frame. We will not
       // receive a corresponding unload.
+      this.installedPageScript_ &&
       this.installedPageScript_.isPending()) {
     this.installedPageScript_.resolve();
   }
@@ -542,6 +548,42 @@ safaridriver.inject.Tab.prototype.sendResponse_ = function(command, response,
 
 
 /**
+ * Installs the page script.
+ * @param {goog.dom.DomHelper=} opt_dom The DomHelper to use.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     the script has fully loaded.
+ * @private
+ */
+safaridriver.inject.Tab.prototype.installPageScript_ = function(opt_dom) {
+  if (!this.installedPageScript_) {
+    this.log('Installing page script');
+    this.installedPageScript_ = new webdriver.promise.Deferred();
+
+    // SafariDriverPageScript constant is applied as an output wrapper on the
+    // compiled page script module.
+    var fn = goog.global['SafariDriverPageScript'];
+    if (!goog.isFunction(fn)) {
+      throw Error(
+          'Fatal internal error: SafariDriverPageScript is not defined');
+    }
+
+    var dom = opt_dom || goog.dom.getDomHelper();
+    var script = dom.createElement('script');
+    script.type = 'application/javascript';
+    script.textContent = '(' + fn + ').call({});';
+
+    var docEl = dom.getDocument().documentElement;
+    goog.dom.appendChild(docEl, script);
+
+    this.installedPageScript_.addBoth(function() {
+      goog.dom.removeNode(script);
+    });
+  }
+  return this.installedPageScript_.promise;
+};
+
+
+/**
  * Broadcasts a command to be executed in the context of the current page.
  * @param {!safaridriver.Command} command The command to execute.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when
@@ -555,7 +597,7 @@ safaridriver.inject.Tab.prototype.executeInPage = function(command) {
   bot.response.checkResponse(
       /** @type {!bot.response.ResponseObject} */ (decodeResult));
 
-  return this.installedPageScript_.addCallback(function() {
+  return this.installPageScript_().addCallback(function() {
     var parameters = command.getParameters();
     parameters = /** @type {!Object.<*>} */ (this.encoder_.encode(parameters));
     command.setParameters(parameters);

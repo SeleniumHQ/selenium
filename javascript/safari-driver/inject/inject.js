@@ -48,6 +48,7 @@ safaridriver.inject.init = function() {
       on(safaridriver.inject.message.Encode.TYPE,
          safaridriver.inject.onEncode_);
 };
+goog.exportSymbol('init', safaridriver.inject.init);
 
 
 /**
