@@ -37,7 +37,7 @@ fxdriver.error.toJSON = function(ex) {
     var stack = ex.stack.replace(/\s*$/, '').split('\n');
 
     for (var frame = stack.shift(); frame; frame = stack.shift()) {
-      var match = frame.match(/^([a-zA-Z_$][\w]*)?(?:\(.*\))?@(.+)?:(\d*)$/);
+      var match = frame.match(/^([a-zA-Z_$][\w./<]*)?(?:\(.*\))?@(.+)?:(\d*)$/);
       stackFrames.push({
         'methodName': match[1],
         'fileName': match[2],
