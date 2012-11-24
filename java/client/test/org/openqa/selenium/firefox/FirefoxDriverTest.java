@@ -33,7 +33,6 @@ import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
@@ -544,29 +543,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       if (one != null) one.quit();
       if (two != null) two.quit();
     }
-  }
-
-  @Test
-  public void canCallQuitTwiceWithoutThrowingAnException() {
-    WebDriver instance = newFirefoxDriver();
-
-    instance.quit();
-    instance.quit();
-  }
-
-  @Test
-  public void anExceptionThrownIfUsingAQuitInstance() {
-    WebDriver instance = newFirefoxDriver();
-
-    instance.quit();
-    try {
-      instance.get(pages.xhtmlTestPage);
-      fail("Expected an exception to be thrown because the instance is dead.");
-    } catch (WebDriverException e) {
-      assertTrue("Unexpected exception message:" + e.getMessage(),
-          e.getMessage().contains("It may have died"));
-    }
-
   }
 
   // See http://code.google.com/p/selenium/issues/detail?id=1774
