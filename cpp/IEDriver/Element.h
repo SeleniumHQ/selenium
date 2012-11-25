@@ -56,14 +56,15 @@ class Element {
   IHTMLElement* element(void) { return this->element_; }
 
  private:
-  int GetLocation(long* x, long* y, long* width, long* height);
+  int GetLocation(long* x, long* y, long* width, long* height, bool* requires_frame_scroll);
   void GetClickPoint(const long x, const long y, const long width, const long height, long* click_x, long* click_y);
   bool IsClickPointInViewPort(const long x,
                               const long y,
                               const long width,
                               const long height);
   bool IsHiddenByOverflow();
-  int GetFrameOffset(long* x, long* y);
+  bool IsScrolledIntoFrame(long* x, long* y, long* width, long* height);
+  bool GetFrameDetails(long* x, long* y, long* width, long* height);
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
   int GetParentDocument(IHTMLWindow2* parent_window,
                         IHTMLDocument2** parent_doc);

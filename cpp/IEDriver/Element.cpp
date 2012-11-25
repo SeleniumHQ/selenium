@@ -230,13 +230,15 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
   }
 
   long top = 0, left = 0, element_width = 0, element_height = 0;
-  result = this->GetLocation(&left, &top, &element_width, &element_height);
+  bool requires_frame_scroll = false;
+  result = this->GetLocation(&left, &top, &element_width, &element_height, &requires_frame_scroll);
   long click_x, click_y;
   this->GetClickPoint(left, top, element_width, element_height, &click_x, &click_y);
 
   if (result != SUCCESS ||
       !this->IsClickPointInViewPort(left, top, element_width, element_height) ||
-      this->IsHiddenByOverflow()) {
+      this->IsHiddenByOverflow() ||
+      requires_frame_scroll) {
     // Scroll the element into view
     LOG(DEBUG) << "Will need to scroll element into view";
     CComVariant scroll_behavior = VARIANT_TRUE;
@@ -249,7 +251,7 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
       return EOBSOLETEELEMENT;
     }
 
-    result = this->GetLocation(&left, &top, &element_width, &element_height);
+    result = this->GetLocation(&left, &top, &element_width, &element_height, &requires_frame_scroll);
     if (result != SUCCESS) {
       LOG(WARN) << "Unable to get location of scrolled to element";
       return result;
@@ -354,7 +356,7 @@ bool Element::IsSelected() {
   return selected;
 }
 
-int Element::GetLocation(long* x, long* y, long* width, long* height) {
+int Element::GetLocation(long* x, long* y, long* width, long* height, bool* requires_frame_scroll) {
   LOG(TRACE) << "Entering Element::GetLocation";
 
   *x = 0, *y = 0, *width = 0, *height = 0;
@@ -368,6 +370,10 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
     return EOBSOLETEELEMENT;
   }
 
+  // If this element is inline, we need to check whether we should 
+  // use getBoundingClientRect() or the first non-zero-sized rect returned
+  // by getClientRects(). If the element is not inline, we can use
+  // getBoundingClientRect() directly.
   CComPtr<IHTMLRect> rect;
   if (this->IsInline()) {
     CComPtr<IHTMLRectCollection> rects;
@@ -426,7 +432,7 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
         childDispatch->QueryInterface(&child);
         if (child != NULL) {
           Element childElement(child, this->containing_window_handle_);
-          int result = childElement.GetLocation(x, y, width, height);
+          int result = childElement.GetLocation(x, y, width, height, requires_frame_scroll);
           if (result == SUCCESS) {
             return result;
           }
@@ -451,17 +457,30 @@ int Element::GetLocation(long* x, long* y, long* width, long* height) {
     // On versions of IE prior to 8 on Vista, if the element is out of the 
     // viewport this would seem to return 0,0,0,0. IE 8 returns position in 
     // the DOM regardless of whether it's in the browser viewport.
-
     long scroll_left, scroll_top = 0;
     element2->get_scrollLeft(&scroll_left);
     element2->get_scrollTop(&scroll_top);
     left += scroll_left;
     top += scroll_top;
 
-    long frame_offset_x = 0, frame_offset_y = 0;
-    this->GetFrameOffset(&frame_offset_x, &frame_offset_y);
-    left += frame_offset_x;
-    top += frame_offset_y;
+    // Only add the frame offset if the element is actually in a frame.
+    long frame_offset_x = 0, frame_offset_y = 0, frame_width = 0, frame_height = 0;
+    bool element_is_in_frame = this->GetFrameDetails(&frame_offset_x, &frame_offset_y, &frame_width, &frame_height);
+    if (element_is_in_frame) {
+      left += frame_offset_x;
+      top += frame_offset_y;
+      // Check if the element is visible in the frame or iframe window.
+      // Note this logic may not be completely correct for nested frames.
+      if (left < frame_offset_x ||
+          (left + (w / 2)) > frame_offset_x + frame_width ||
+          top < frame_offset_y ||
+          (top + (h / 2)) > frame_offset_y + frame_height) {
+        LOG(DEBUG) << "The element is not visible within the frame, and requires scrolling";
+        *requires_frame_scroll = true;
+      }
+    } else {
+      LOG(DEBUG) << "Element is not in a frame";
+    }
   }
 
   *x = left;
@@ -509,23 +528,29 @@ bool Element::RectHasNonZeroDimensions(const CComPtr<IHTMLRect> rect) {
   return w > 0 && h > 0;
 }
 
-int Element::GetFrameOffset(long* x, long* y) {
-  LOG(TRACE) << "Entering Element::GetFrameOffset";
+bool Element::GetFrameDetails(long* x, long* y, long* width, long* height) {
+  LOG(TRACE) << "Entering Element::GetFrameDetails";
 
   CComPtr<IHTMLDocument2> owner_doc;
   int status_code = this->GetContainingDocument(true, &owner_doc);
   if (status_code != SUCCESS) {
     LOG(WARN) << "Unable to get containing document";
-    return status_code;
+    return false;
   }
 
   CComPtr<IHTMLWindow2> owner_doc_window;
   HRESULT hr = owner_doc->get_parentWindow(&owner_doc_window);
   if (!owner_doc_window) {
     LOG(WARN) << "Unable to get parent window, call to IHTMLDocument2::get_parentWindow failed";
-    return ENOSUCHDOCUMENT;
+    return false;
   }
 
+  // Get the parent window to the current window, where "current window" is
+  // the window containing the parent document of this element. If that parent
+  // window exists, and it is not the same as the current window, we assume
+  // this element exists inside a frame or iframe. If it is in a frame, get
+  // the parent document containing the frame, so we can get the information
+  // about the frame or iframe element hosting the document of this element.
   CComPtr<IHTMLWindow2> parent_window;
   hr = owner_doc_window->get_parent(&parent_window);
   if (parent_window && !owner_doc_window.IsEqualObject(parent_window)) {
@@ -567,23 +592,29 @@ int Element::GetFrameOffset(long* x, long* y) {
         script_wrapper.Execute();
         CComQIPtr<IHTMLElement> frame_element(script_wrapper.result().pdispVal);
 
-        // Wrap the element so we can find its location.
+        // Wrap the element so we can find its location. Note that
+        // GetLocation() may recursively call into this method.
         Element element_wrapper(frame_element, this->containing_window_handle_);
         long frame_x, frame_y, frame_width, frame_height;
+        bool frame_requires_frame_scroll = false;
         status_code = element_wrapper.GetLocation(&frame_x,
                                                   &frame_y,
                                                   &frame_width,
-                                                  &frame_height);
+                                                  &frame_height,
+                                                  &frame_requires_frame_scroll);
         if (status_code == SUCCESS) {
           *x = frame_x;
           *y = frame_y;
+          *width = frame_width;
+          *height = frame_height;
         }
-        break;
+        return true;
       }
     }
   }
 
-  return SUCCESS;
+  // If we reach here, the element isn't in a frame/iframe.
+  return false;
 }
 
 void Element::GetClickPoint(const long x, const long y, const long width, const long height, long* click_x, long* click_y) {
