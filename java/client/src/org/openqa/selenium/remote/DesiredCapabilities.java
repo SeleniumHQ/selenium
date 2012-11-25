@@ -143,7 +143,7 @@ public class DesiredCapabilities implements Serializable, Capabilities {
    * Merges the extra capabilities provided into this DesiredCapabilities instance. If capabilities
    * with the same name exist in this instance, they will be overridden by the values from the
    * extraCapabilities object.
-   * 
+   *
    * @param extraCapabilities Additional capabilities to be added.
    */
 
@@ -201,7 +201,7 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   public static DesiredCapabilities iphone() {
     return new DesiredCapabilities("iPhone", "", Platform.MAC);
   }
-  
+
   public static DesiredCapabilities ipad() {
     return new DesiredCapabilities("iPad", "", Platform.MAC);
   }
@@ -209,9 +209,13 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   public static DesiredCapabilities opera() {
     return new DesiredCapabilities("opera", "", Platform.ANY);
   }
-  
+
   public static DesiredCapabilities safari() {
     return new DesiredCapabilities("safari", "", Platform.ANY);
+  }
+
+  public static DesiredCapabilities phantomjs() {
+    return new DesiredCapabilities("phantomjs", "", Platform.ANY);
   }
 
   @Override
