@@ -21,7 +21,7 @@ public:
   nsNativeKeyboard();
 
 private:
-  ~nsNativeKeyboard();
+  virtual ~nsNativeKeyboard();
 
 protected:
   /* additional members */

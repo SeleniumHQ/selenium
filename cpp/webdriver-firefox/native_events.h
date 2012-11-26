@@ -22,7 +22,7 @@ public:
   nsNativeEvents();
 
 private:
-  ~nsNativeEvents();
+  virtual ~nsNativeEvents();
 
 protected:
   /* additional members */

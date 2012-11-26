@@ -21,7 +21,7 @@ public:
   nsNativeIME();
 
 private:
-  ~nsNativeIME();
+  virtual ~nsNativeIME();
 
 protected:
   /* additional members */

@@ -21,7 +21,7 @@ public:
   nsNativeMouse();
 
 private:
-  ~nsNativeMouse();
+  virtual ~nsNativeMouse();
 
 protected:
   /* additional members */
