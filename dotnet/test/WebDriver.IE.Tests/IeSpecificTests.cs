@@ -10,6 +10,30 @@ namespace OpenQA.Selenium.IE
     public class IeSpecificTests : DriverTestFixture
     {
         [Test]
+        public void ScrollingFrameTest()
+        {
+            try
+            {
+                driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("frameScrollPage.html");
+                driver.SwitchTo().Frame("scrolling_frame");
+                IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
+                element.Click();
+                Assert.IsTrue(element.Selected);
+
+                driver.SwitchTo().DefaultContent();
+                driver.SwitchTo().Frame("scrolling_child_frame");
+                driver.SwitchTo().Frame("scrolling_frame");
+                element = driver.FindElement(By.Name("scroll_checkbox"));
+                element.Click();
+                Assert.IsTrue(element.Selected);
+            }
+            finally
+            {
+                driver.SwitchTo().DefaultContent();
+            }
+        }
+
+        [Test]
         public void AlertSelectTest()
         {
             driver.Url = alertsPage;
