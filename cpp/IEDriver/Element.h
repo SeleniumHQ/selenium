@@ -66,7 +66,6 @@ class Element {
   bool IsLocationInViewPort(const LocationInfo location);
   bool IsLocationVisibleInFrames(const LocationInfo location, const std::vector<LocationInfo> frame_locations);
   bool IsHiddenByOverflow();
-  bool IsScrolledIntoFrame(LocationInfo* location);
   bool GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>* frame_locations);
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
   int GetParentDocument(IHTMLWindow2* parent_window,

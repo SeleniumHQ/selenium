@@ -9,6 +9,14 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.26.2.4
+=========
+ * Corrected fix to issue #4800 to better handle nested frames.
+ * Refactored native code to return the location of each frame containing an
+   element.
+ * Refactored location methods of native IE driver code to take a LocationInfo
+   struct instead of separate args for x, y, width and height.
+
 v2.26.2.3
 =========
  * On behalf of AdamWu: Fixed calculation of coordinates for elements in 

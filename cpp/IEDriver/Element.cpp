@@ -231,7 +231,8 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
 
   if (result != SUCCESS ||
       !this->IsLocationInViewPort(click_location) ||
-      this->IsHiddenByOverflow()) {
+      this->IsHiddenByOverflow() ||
+      !this->IsLocationVisibleInFrames(click_location, frame_locations)) {
     // Scroll the element into view
     LOG(DEBUG) << "Will need to scroll element into view";
     CComVariant scroll_behavior = VARIANT_TRUE;
@@ -324,6 +325,19 @@ bool Element::IsHiddenByOverflow() {
   }
 
   return isOverflow;
+}
+
+bool Element::IsLocationVisibleInFrames(const LocationInfo location, const std::vector<LocationInfo> frame_locations) {
+  std::vector<LocationInfo>::const_iterator iterator = frame_locations.begin();
+  for (; iterator != frame_locations.end(); ++iterator) {
+    if (location.x < iterator->x || 
+        location.y < iterator->y ||
+        location.x > iterator->x + iterator->width || 
+        location.y > iterator->y + iterator->height) {
+      return false;
+    }
+  }
+  return true;
 }
 
 bool Element::IsSelected() {
