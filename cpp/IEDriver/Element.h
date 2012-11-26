@@ -15,6 +15,7 @@
 #define WEBDRIVER_IE_ELEMENT_H_
 
 #include <string>
+#include <vector>
 #include "json.h"
 
 namespace webdriver {
@@ -60,12 +61,13 @@ class Element {
   IHTMLElement* element(void) { return this->element_; }
 
  private:
-  int GetLocation(LocationInfo* location, bool* requires_frame_scroll);
-  void GetClickPoint(const LocationInfo location, long* click_x, long* click_y);
-  bool IsClickPointInViewPort(const LocationInfo location);
+  int GetLocation(LocationInfo* location, std::vector<LocationInfo>* frame_locations);
+  LocationInfo GetClickPoint(const LocationInfo location);
+  bool IsLocationInViewPort(const LocationInfo location);
+  bool IsLocationVisibleInFrames(const LocationInfo location, const std::vector<LocationInfo> frame_locations);
   bool IsHiddenByOverflow();
   bool IsScrolledIntoFrame(LocationInfo* location);
-  bool GetFrameDetails(LocationInfo* location);
+  bool GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>* frame_locations);
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
   int GetParentDocument(IHTMLWindow2* parent_window,
                         IHTMLDocument2** parent_doc);
