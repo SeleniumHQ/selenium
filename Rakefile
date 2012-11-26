@@ -386,16 +386,28 @@ GeckoSDKs.new do |sdks|
            '1273ae07fe999c6f4cd3768fb100f741'
 
   sdks.add 'third_party/gecko-16/linux',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/16.0/sdk/xulrunner-16.0.en-US.linux-i686.sdk.tar.bz2',
-           'cc145fa53055d5b19fb03eaebeef6cbd'
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/16.0.2/sdk/xulrunner-16.0.2.en-US.linux-i686.sdk.tar.bz2',
+           '600018d47b803d36abdbb2c12d0aa0d5'
 
   sdks.add 'third_party/gecko-16/linux64',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/16.0/sdk/xulrunner-16.0.en-US.linux-x86_64.sdk.tar.bz2',
-           '734786163aeac73f46103ff73f834c23'
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/16.0.2/sdk/xulrunner-16.0.2.en-US.linux-x86_64.sdk.tar.bz2',
+           'f2bcdce0c60bb59dba7492dcc38aac0d'
 
   sdks.add 'third_party/gecko-16/win32',
-           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/16.0/sdk/xulrunner-16.0.en-US.win32.sdk.zip',
-           'dd17fe741b62cb9abc99a8e22563c42c'
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/16.0.2/sdk/xulrunner-16.0.2.en-US.win32.sdk.zip',
+           'dc016c839bdcab13c95a5bee65008055'
+
+  sdks.add 'third_party/gecko-17/linux',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/17.0/sdk/xulrunner-17.0.en-US.linux-i686.sdk.tar.bz2',
+           '78629c1187112b8daf09d60d5fbd44c1'
+
+  sdks.add 'third_party/gecko-17/linux64',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/17.0/sdk/xulrunner-17.0.en-US.linux-x86_64.sdk.tar.bz2',
+           '7c4fff0850516934b493e46e8c40c247'
+
+  sdks.add 'third_party/gecko-17/win32',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/17.0/sdk/xulrunner-17.0.en-US.win32.sdk.zip',
+           '5c0a467a581778bda72a6a3daea2f8f0'
 end
 
 task :'selenium-server_zip' do
