@@ -21,6 +21,7 @@
 goog.provide('safaridriver.message');
 goog.provide('safaridriver.message.Message');
 
+goog.require('bot.json');
 goog.require('goog.asserts');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.Command');
@@ -74,6 +75,16 @@ safaridriver.message.registerMessageType = function(type, factoryFn) {
 
 
 /**
+ * Throws an error reporting an invalid message.
+ * @param {*} data The invalid message data.
+ * @throws {Error} An error reporting the invalid data.
+ */
+safaridriver.message.throwInvalidMessageError = function(data) {
+  throw Error('Invalid message: ' + bot.json.stringify(data));
+};
+
+
+/**
  * Creates a {@link safaridriver.message.Message} from a message event.
  * @param {!(SafariExtensionMessageEvent|MessageEvent)} event The raw event to
  *     convert to a message.
@@ -83,14 +94,14 @@ safaridriver.message.registerMessageType = function(type, factoryFn) {
 safaridriver.message.fromEvent = function(event) {
   var data = event.message || event.data;
   if (goog.isString(data)) {
-    data = JSON.parse(data);
+    data = bot.json.parse(data);
   }
 
   if (!goog.isObject(data) ||
       (!goog.isString(data[safaridriver.message.Message.Field.ORIGIN]) &&
           !goog.isNumber(data[safaridriver.message.Message.Field.ORIGIN])) ||
       !goog.isString(data[safaridriver.message.Message.Field.TYPE])) {
-    throw Error('Invalid message: ' + JSON.stringify(data));
+    throw safaridriver.message.throwInvalidMessageError(data);
   }
 
   var type = data[safaridriver.message.Message.Field.TYPE];
@@ -98,7 +109,7 @@ safaridriver.message.fromEvent = function(event) {
   if (!factory) {
     safaridriver.message.LOG_.fine(
         'Unknown message type; falling back to the default factory: ' +
-        JSON.stringify(data));
+        bot.json.stringify(data));
     factory = safaridriver.message.Message.fromData_;
   }
 
@@ -314,5 +325,5 @@ safaridriver.message.Message.prototype.toJSON = function() {
 
 /** @override */
 safaridriver.message.Message.prototype.toString = function() {
-  return JSON.stringify(this);
+  return bot.json.stringify(this);
 };

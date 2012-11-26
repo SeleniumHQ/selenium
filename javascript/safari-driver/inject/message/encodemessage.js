@@ -67,7 +67,7 @@ safaridriver.inject.message.Encode.fromData_ = function(data) {
   var id = data[safaridriver.inject.message.Encode.Field_.ID];
   var css = data[safaridriver.inject.message.Encode.Field_.CSS];
   if (!goog.isString(id) || !goog.isString(css)) {
-    throw Error('Invalid message: ' + JSON.stringify(data));
+    throw safaridriver.message.throwInvalidMessageError(data);
   }
   return new safaridriver.inject.message.Encode(id, css);
 };

@@ -141,6 +141,7 @@ js_binary(name = "page",
     "inject/page.js",
   ],
   defines = [
+    "bot.json.NATIVE_JSON=false",
     "goog.userAgent.ASSUME_WEBKIT=true",
     "goog.userAgent.product.ASSUME_SAFARI=true",
     "safaridriver.message.ORIGIN=2"

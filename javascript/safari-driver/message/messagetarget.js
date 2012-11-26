@@ -15,6 +15,7 @@
 
 goog.provide('safaridriver.message.MessageTarget');
 
+goog.require('bot.json');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.message');
 goog.require('webdriver.EventEmitter');
@@ -104,7 +105,7 @@ safaridriver.message.MessageTarget.prototype.onMessage_ = function(e) {
     var name = e.name ? e.name + ': ' : '';
     this.log(
         'Unable to parse message: ' + name +
-            JSON.stringify(e.message || e.data),
+            bot.json.stringify(e.message || e.data),
         goog.debug.Logger.Level.SEVERE,
         ex);
     return;

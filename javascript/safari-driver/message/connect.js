@@ -65,7 +65,7 @@ safaridriver.message.Connect.URL_FIELD_ = 'url';
 safaridriver.message.Connect.fromData_ = function(data) {
   var url = data[safaridriver.message.Connect.URL_FIELD_];
   if (!goog.isString(url)) {
-    throw Error('Invalid connect message: ' + JSON.stringify(data));
+    throw safaridriver.message.throwInvalidMessageError(data);
   }
   return new safaridriver.message.Connect(url);
 };

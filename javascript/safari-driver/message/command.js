@@ -113,11 +113,11 @@ safaridriver.message.BaseCommandMessage.defineCommandMessageType = function(
   function fromData(data) {
     var command = data[safaridriver.message.BaseCommandMessage.COMMAND_FIELD_];
     if (!goog.isObject(command)) {
-      throw Error('Invalid command message: ' + JSON.stringify(data));
+      throw safaridriver.message.throwInvalidMessageError(data);
     }
     command = safaridriver.Command.fromJSONObject(command);
     if (!command) {
-      throw Error('Invalid command message: ' + JSON.stringify(data));
+      throw safaridriver.message.throwInvalidMessageError(data);
     }
     return new cmdCtor(command);
   }
@@ -189,7 +189,7 @@ safaridriver.message.Response.fromData_ = function(data) {
   var id = data[safaridriver.message.Response.Field_.ID];
   var response = data[safaridriver.message.Response.Field_.RESPONSE];
   if (!goog.isString(id) || !goog.isObject(response)) {
-    throw Error('Invalid response message: ' + JSON.stringify(data));
+    throw safaridriver.message.throwInvalidMessageError(data);
   }
   return new safaridriver.message.Response(id, response);
 };

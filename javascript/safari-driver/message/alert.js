@@ -54,7 +54,7 @@ safaridriver.message.Alert.TYPE = 'alert';
 safaridriver.message.Alert.fromData_ = function(data) {
   var message = data['message'];
   if (!goog.isString(message)) {
-    throw Error('Invalid message: ' + JSON.stringify(data));
+    throw safaridriver.message.throwInvalidMessageError(data);
   }
   return new safaridriver.message.Alert(message);
 };

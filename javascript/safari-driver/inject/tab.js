@@ -23,6 +23,7 @@ goog.provide('safaridriver.inject.Tab');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.inject');
+goog.require('bot.json');
 goog.require('bot.response');
 goog.require('goog.asserts');
 goog.require('goog.debug.Logger');
@@ -539,7 +540,7 @@ safaridriver.inject.Tab.prototype.sendResponse_ = function(command, response,
   if (shouldSend || !!opt_force) {
     this.log('Sending response' +
         '\ncommand:  ' + command +
-        '\nresponse: ' + JSON.stringify(response));
+        '\nresponse: ' + bot.json.stringify(response));
 
     var message = new safaridriver.message.Response(command.id, response);
     message.sendSync(safari.self.tab);

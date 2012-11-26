@@ -17,6 +17,7 @@
 
 goog.provide('safaridriver.Command');
 
+goog.require('bot.json');
 goog.require('webdriver.Command');
 
 
@@ -82,5 +83,5 @@ safaridriver.Command.prototype.toJSON = function() {
 
 /** @override */
 safaridriver.Command.prototype.toString = function() {
-  return JSON.stringify(this);
+  return bot.json.stringify(this);
 };

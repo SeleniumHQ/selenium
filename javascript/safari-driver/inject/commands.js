@@ -466,7 +466,7 @@ safaridriver.inject.commands.switchToFrame = function(command) {
 
   if (!frameWindow) {
     throw new bot.Error(bot.ErrorCode.NO_SUCH_FRAME,
-        'Unable to locate frame with ' + JSON.stringify(id));
+        'Unable to locate frame with ' + id);
   }
 
   // De-activate ourselves. We should no longer respond to commands until
