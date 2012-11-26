@@ -599,33 +599,23 @@ Utils.keyEvent = function(doc, element, type, keyCode, charCode,
   var preventDefault = shouldPreventDefault == undefined ? false
       : shouldPreventDefault;
 
-  var keyboardEvent = doc.createEvent('KeyEvents');
-  var currentView = doc.defaultView;
-
-  keyboardEvent.initKeyEvent(
-      type, //  in DOMString typeArg,
-      true, //  in boolean canBubbleArg
-      true, //  in boolean cancelableArg
-      currentView, //  in nsIDOMAbstractView viewArg
-      controlState, //  in boolean ctrlKeyArg
-      altState, //  in boolean altKeyArg
-      shiftState, //  in boolean shiftKeyArg
-      metaState, //  in boolean metaKeyArg
-      keyCode, //  in unsigned long keyCodeArg
-      charCode);    //  in unsigned long charCodeArg
-
-  if (preventDefault) {
-    keyboardEvent.preventDefault();
+  var modsMask = 0;
+  if (altState) {
+    modsMask = modsMask | 0x01;
   }
-
-  if (bot.userAgent.isProductVersion(4)) {
-    var win = doc.defaultView;
-    var domUtil = win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-        .getInterface(Components.interfaces.nsIDOMWindowUtils);
-    return domUtil.dispatchDOMEventViaPresShell(element, keyboardEvent, true);
-  } else {
-    return element.dispatchEvent(keyboardEvent);
+  if (controlState) {
+    modsMask = modsMask | 0x02;
   }
+  if (shiftState) {
+    modsMask = modsMask | 0x04;
+  }
+  if (metaState)  {
+    modsMask = modsMask | 0x08;
+  }
+  var win = doc.defaultView;
+  var domUtil = win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+      .getInterface(Components.interfaces.nsIDOMWindowUtils);
+  return domUtil.sendKeyEvent(type, keyCode, charCode, modsMask, preventDefault);
 };
 
 
