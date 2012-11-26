@@ -63,8 +63,12 @@ int IECommandHandler::GetElement(const IECommandExecutor& executor,
 
       if (next == NULL) {
         BSTR tag;
-        parent->get_tagName(&tag);
-        LOG(TRACE) << "Found null parent of element with tag " << _bstr_t(tag);
+        hr = parent->get_tagName(&tag);
+        if (FAILED(hr)) {
+          LOG(TRACE) << "Found null parent of element and couldn't get tag name";
+        } else {
+          LOG(TRACE) << "Found null parent of element with tag " << _bstr_t(tag);
+        }
       }
       parent = next;
     }
