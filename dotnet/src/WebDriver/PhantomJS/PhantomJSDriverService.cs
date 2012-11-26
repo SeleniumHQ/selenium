@@ -32,7 +32,6 @@ namespace OpenQA.Selenium.PhantomJS
     internal sealed class PhantomJSDriverService : DriverService
     {
         private const string PhantomJSDriverServiceFileName = "PhantomJS.exe";
-        private const string GhostDriverMainFileName = "main.js";
 
         private string ghostDriverPath = string.Empty;
 
@@ -40,12 +39,10 @@ namespace OpenQA.Selenium.PhantomJS
         /// Initializes a new instance of the PhantomJSDriverService class.
         /// </summary>
         /// <param name="executable">The full path to the PhantomJS executable.</param>
-        /// <param name="ghostDriverPath">The full path to the GhostDriver JavaScript library's main.js file.</param>
         /// <param name="port">The port on which the IEDriverServer executable should listen.</param>
-        private PhantomJSDriverService(string executable, string ghostDriverPath, int port)
+        private PhantomJSDriverService(string executable, int port)
             : base(executable, port)
         {
-            this.ghostDriverPath = ghostDriverPath;
         }
 
         /// <summary>
@@ -63,8 +60,8 @@ namespace OpenQA.Selenium.PhantomJS
         {
             get
             {
-                StringBuilder argsBuilder = new StringBuilder(this.ghostDriverPath);
-                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " {0}", this.Port);
+                StringBuilder argsBuilder = new StringBuilder();
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver={0}", this.Port);
                 return argsBuilder.ToString();
             }
         }
@@ -109,13 +106,7 @@ namespace OpenQA.Selenium.PhantomJS
                 throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The PhantomJS file {0} does not exist.", executablePath));
             }
 
-            string ghostDriverMainPath = Path.Combine(ghostDriverPath, GhostDriverMainFileName);
-            if (!File.Exists(ghostDriverMainPath))
-            {
-                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The GhostDriver file {0} does not exist.", ghostDriverMainPath));
-            }
-
-            return new PhantomJSDriverService(executablePath, ghostDriverMainPath, PortUtilities.FindFreePort());
+            return new PhantomJSDriverService(executablePath, PortUtilities.FindFreePort());
         }
     }
 }
