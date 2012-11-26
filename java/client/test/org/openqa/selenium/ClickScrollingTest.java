@@ -131,10 +131,25 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = {OPERA, IPHONE, SAFARI, SELENESE},
-      reason = "Opera: fails, others: not tested")
+          reason = "Opera: fails, others: not tested")
+  public void testShouldBeAbleToClickElementInAFrameThatIsOutOfView() {
+    try {
+      driver.get(appServer.whereIs("scrolling_tests/page_with_frame_out_of_view.html"));
+      driver.switchTo().frame("frame");
+      WebElement element = driver.findElement(By.name("checkbox"));
+      element.click();
+      assertTrue(element.isSelected());
+    } finally {
+      driver.switchTo().defaultContent();
+    }
+  }
+  
+  @Test
+  @Ignore(value = {OPERA, IPHONE, SAFARI, SELENESE},
+          reason = "Opera: fails, others: not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrame() {
     try {
-      driver.get(appServer.whereIs("frameScrollPage.html"));
+      driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame.html"));
       driver.switchTo().frame("scrolling_frame");
       WebElement element = driver.findElement(By.name("scroll_checkbox"));
       element.click();
@@ -146,12 +161,43 @@ public class ClickScrollingTest extends JUnit4TestBase {
   
   @Test
   @Ignore(value = {OPERA, IPHONE, SAFARI, SELENESE},
-      reason = "Opera: fails, others: not tested")
+          reason = "Opera: fails, others: not tested")
+  public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView() {
+    try {
+      driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame_out_of_view.html"));
+      driver.switchTo().frame("scrolling_frame");
+      WebElement element = driver.findElement(By.name("scroll_checkbox"));
+      element.click();
+      assertTrue(element.isSelected());
+    } finally {
+      driver.switchTo().defaultContent();
+    }
+  }
+  
+  @Test
+  @Ignore(value = {OPERA, IPHONE, SAFARI, SELENESE},
+          reason = "Opera: fails, others: not tested")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame() {
     try {
-      driver.get(appServer.whereIs("frameScrollPage.html"));
-      driver.switchTo().frame("scrolling_child_frame");
+      driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames.html"));
       driver.switchTo().frame("scrolling_frame");
+      driver.switchTo().frame("nested_scrolling_frame");
+      WebElement element = driver.findElement(By.name("scroll_checkbox"));
+      element.click();
+      assertTrue(element.isSelected());
+    } finally {
+      driver.switchTo().defaultContent();
+    }
+  }
+  
+  @Test
+  @Ignore(value = {OPERA, IPHONE, SAFARI, SELENESE},
+          reason = "Opera: fails, others: not tested")
+  public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView() {
+    try {
+      driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html"));
+      driver.switchTo().frame("scrolling_frame");
+      driver.switchTo().frame("nested_scrolling_frame");
       WebElement element = driver.findElement(By.name("scroll_checkbox"));
       element.click();
       assertTrue(element.isSelected());
