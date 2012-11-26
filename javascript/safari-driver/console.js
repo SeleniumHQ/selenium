@@ -32,8 +32,26 @@ safaridriver.console.init = function() {
   formatter.showAbsoluteTime = false;
   formatter.showExceptionText = true;
 
+  // Build a protected copy of the global console object to protect against
+  // pages containing scripts that change the "console" variable.
+  var console = window.console || {};
+
+  function bind(fn) {
+    return goog.isFunction(fn) ? goog.bind(fn, console) : goog.nullFunction;
+  }
+
+  console = {
+    debug: bind(console.debug),
+    error: bind(console.error),
+    group: bind(console.group),
+    groupEnd: bind(console.groupEnd),
+    info: bind(console.info),
+    warn: bind(console.warn)
+  };
+
   goog.debug.LogManager.getRoot().addHandler(function(logRecord) {
     var record = formatter.formatRecord(logRecord);
+
 
     switch (logRecord.getLevel()) {
       case goog.debug.Logger.Level.SHOUT:
