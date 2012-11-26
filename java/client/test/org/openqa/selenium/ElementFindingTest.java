@@ -407,14 +407,14 @@ public class ElementFindingTest extends JUnit4TestBase {
     try {
       driver.findElement(By.className("a b"));
       fail("Compound class names aren't allowed");
-    } catch (IllegalLocatorException e) {
+    } catch (InvalidSelectorException e) {
       // This is expected
     }
 
     try {
       driver.findElements(By.className("a b"));
       fail("Compound class names aren't allowed");
-    } catch (IllegalLocatorException e) {
+    } catch (InvalidSelectorException e) {
       // This is expected
     }
   }

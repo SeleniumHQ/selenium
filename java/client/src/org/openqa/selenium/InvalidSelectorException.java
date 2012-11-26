@@ -20,11 +20,10 @@ package org.openqa.selenium;
 /*
  * Thrown by {@link WebDriver#findElement(By) WebDriver.findElement(By by)}
  * and {@link WebElement#findElement(By by) WebElement.findElement(By by)}.
- * Thrown when the selector which is used to find an element does not return
- * a WebElement. Currently this only happens when the selector is an xpath
- * expression is used which is either syntactically invalid (i.e. it is not a
- * xpath expression) or the expression does not select WebElements
- * (e.g. "count(//input)").
+ * Thrown when the selector which is used to find an element is invalid.
+ * It can be a query with syntax errors, e.g. XPath or CSS query with syntax
+ * errors, or a compound class name passed as an argument to By.className(),
+ * or the expression does not select WebElements (e.g. "count(//input)").
  */
 public class InvalidSelectorException extends NoSuchElementException {
 

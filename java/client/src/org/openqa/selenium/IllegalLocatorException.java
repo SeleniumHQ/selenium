@@ -18,7 +18,9 @@ package org.openqa.selenium;
 
 /**
  * Thrown when a By cannot handle the arguments it is given. The most obvious case where this
- * excpetion would be thrown is when By.className() is used with a compound class name.
+ * exception would be thrown is when By.className() is used with a compound class name.
+ * 
+ * @deprecated Superseded by InvalidSelectorException
  */
 public class IllegalLocatorException extends WebDriverException {
   public IllegalLocatorException(String message) {
