@@ -28,6 +28,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -128,7 +129,39 @@ public class ClickScrollingTest extends JUnit4TestBase {
     assertEquals("clicked", driver.findElement(By.id("clicked")).getText());
   }
 
+  @Test
+  @Ignore(value = {OPERA, IPHONE, SAFARI, SELENESE},
+      reason = "Opera: fails, others: not tested")
+  public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrame() {
+    try {
+      driver.get(appServer.whereIs("frameScrollPage.html"));
+      driver.switchTo().frame("scrolling_frame");
+      WebElement element = driver.findElement(By.name("scroll_checkbox"));
+      element.click();
+      assertTrue(element.isSelected());
+    } finally {
+      driver.switchTo().defaultContent();
+    }
+  }
+  
+  @Test
+  @Ignore(value = {OPERA, IPHONE, SAFARI, SELENESE},
+      reason = "Opera: fails, others: not tested")
+  public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame() {
+    try {
+      driver.get(appServer.whereIs("frameScrollPage.html"));
+      driver.switchTo().frame("scrolling_child_frame");
+      driver.switchTo().frame("scrolling_frame");
+      WebElement element = driver.findElement(By.name("scroll_checkbox"));
+      element.click();
+      assertTrue(element.isSelected());
+    } finally {
+      driver.switchTo().defaultContent();
+    }
+  }
+  
   private long getScrollTop() {
     return (Long)((JavascriptExecutor)driver).executeScript("return document.body.scrollTop;");
   }
+  
 }
