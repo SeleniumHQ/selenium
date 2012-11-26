@@ -41,20 +41,18 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "JavaScript execution is asynchronous with the driver in IE")]
         [IgnoreBrowser(Browser.IPhone, "does not detect that a new page loaded.")]
         public void ShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad()
         {
             driver.Url = formsPage;
 
             driver.FindElement(By.Id("changeme")).Click();
-
+            WaitFor(() => { return driver.Title == "Page3"; });
             Assert.AreEqual("Page3", driver.Title);
         }
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "JavaScript execution is asynchronous with the driver in IE")]
         [IgnoreBrowser(Browser.IPhone, "does not detect that a new page loaded.")]
         public void ShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad()
         {
@@ -62,7 +60,7 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.Id("changeme")).Click();
 
-            System.Threading.Thread.Sleep(2000);
+            WaitFor(() => { return driver.Title == "Page3"; });
             Assert.AreEqual("3", driver.FindElement(By.Id("pageNumber")).Text);
         }
 
@@ -118,7 +116,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "Fails for IE in the continuous build")]
         public void ShouldBeAbleToClickOnSubmitButtons()
         {
             driver.Url = javascriptPage;
@@ -168,7 +165,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "not properly tested")]
         [IgnoreBrowser(Browser.Firefox, "Window demands focus to work.")]
         public void ChangeEventIsFiredAppropriatelyWhenFocusIsLost()
         {
@@ -239,7 +235,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE)]
         [NeedsFreshDriver(AfterTest = true)]
         public void ShouldBeAbleToClickALinkThatClosesAWindow()
         {
@@ -247,8 +242,7 @@ namespace OpenQA.Selenium
 
             String handle = driver.CurrentWindowHandle;
             driver.FindElement(By.Id("new_window")).Click();
-
-            driver.SwitchTo().Window("close_me");
+            WaitFor(() => { driver.SwitchTo().Window("close_me"); return true; });
 
             driver.FindElement(By.Id("close")).Click();
 
