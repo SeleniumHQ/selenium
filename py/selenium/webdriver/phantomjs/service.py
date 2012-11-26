@@ -24,13 +24,12 @@ class Service(object):
     Object that manages the starting and stopping of PhantomJS / Ghostdriver
     """
 
-    def __init__(self, executable_path, ghostdriver_path, port=0, service_args=None):
+    def __init__(self, executable_path, port=0, service_args=None):
         """
         Creates a new instance of the Service
         
         :Args:
          - executable_path : Path to PhantomJS binary
-         - ghostdriver_path : Path to ghostdriver/src/main.js
          - port : Port the service is running on 
          - service_args : A List of other command line options to pass to PhantomJS
         """
@@ -43,8 +42,7 @@ class Service(object):
         if self.service_args is None:
             self.service_args = []
         self.service_args.insert(0, self.path)
-        self.service_args.append(ghostdriver_path)
-        self.service_args.append("%d" % self.port)
+        self.service_args.append("--webdriver=%d" % self.port)
         self._log = open("ghostdriver.log", 'w')
 
     def start(self):
@@ -56,11 +54,10 @@ class Service(object):
            or when it can't connect to the service
         """
         try:
-            print "Starting process:", self.path
             self.process = subprocess.Popen(self.service_args,
                                             stdout=self._log, stderr=self._log)
-        except:
-            raise WebDriverException("Unable to start phantomjs with ghostdriver.")
+        except Exception, e:
+            raise WebDriverException("Unable to start phantomjs with ghostdriver.", e)
         count = 0
         while not utils.is_connectable(self.port):
             count += 1

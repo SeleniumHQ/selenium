@@ -30,7 +30,7 @@ class WebDriver(RemoteWebDriver):
     https://github.com/detro/ghostdriver
     """
 
-    def __init__(self, ghostdriver_path, executable_path="phantomjs",
+    def __init__(self, executable_path="phantomjs",
                  port=0, desired_capabilities=DesiredCapabilities.PHANTOMJS):
         """
         Creates a new instance of the PhantomJS / Ghostdriver.
@@ -38,13 +38,12 @@ class WebDriver(RemoteWebDriver):
         Starts the service and then creates new instance of the driver.
 
         :Args:
-         - ghostdriver_path - path to ghostdriver/src/main.js
          - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
          - port - port you would like the service to run, if left as 0, a free port will be found.
          - desired_capabilities: Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
         """
-        self.service = Service(executable_path, ghostdriver_path, port=port)
+        self.service = Service(executable_path, port=port)
         self.service.start()
 
         try:

@@ -73,7 +73,6 @@ BROWSERS = {
       :dir => "phantomjs",
       :file_string => "phantomjs",
       :class => "PhantomJS",
-      :constructor_args => "'../ghostdriver/src/main.js'"
     },
     :browser_name => "phantomjs",
   },
