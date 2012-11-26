@@ -132,19 +132,19 @@ bool Element::IsEnabled() {
 int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
   LOG(TRACE) << "Entering Element::Click";
 
-  long x = 0, y = 0, w = 0, h = 0;
-  int status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior, &x, &y, &w, &h);
+  LocationInfo location = {};
+  int status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior, &location);
 
   if (status_code == SUCCESS) {
     long click_x;
     long click_y;
-    GetClickPoint(x, y, w, h, &click_x, &click_y);
+    GetClickPoint(location, &click_x, &click_y);
 
     // Create a mouse move, mouse down, mouse up OS event
     LRESULT result = mouseMoveTo(this->containing_window_handle_,
                                  /* duration of move in ms = */ 10,
-                                 x,
-                                 y,
+                                 location.x,
+                                 location.y,
                                  click_x,
                                  click_y);
     if (result != SUCCESS) {
@@ -202,10 +202,7 @@ int Element::GetAttributeValue(const std::string& attribute_name,
 }
 
 int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scroll,
-                                             long* x,
-                                             long* y,
-                                             long* width,
-                                             long* height) {
+                                             LocationInfo* location) {
   LOG(TRACE) << "Entering Element::GetLocationOnceScrolledIntoView";
 
   int status_code = SUCCESS;
@@ -229,14 +226,14 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
     return EELEMENTNOTDISPLAYED;
   }
 
-  long top = 0, left = 0, element_width = 0, element_height = 0;
+  LocationInfo element_location = {};
   bool requires_frame_scroll = false;
-  result = this->GetLocation(&left, &top, &element_width, &element_height, &requires_frame_scroll);
+  result = this->GetLocation(&element_location, &requires_frame_scroll);
   long click_x, click_y;
-  this->GetClickPoint(left, top, element_width, element_height, &click_x, &click_y);
+  this->GetClickPoint(element_location, &click_x, &click_y);
 
   if (result != SUCCESS ||
-      !this->IsClickPointInViewPort(left, top, element_width, element_height) ||
+      !this->IsClickPointInViewPort(element_location) ||
       this->IsHiddenByOverflow() ||
       requires_frame_scroll) {
     // Scroll the element into view
@@ -251,22 +248,23 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
       return EOBSOLETEELEMENT;
     }
 
-    result = this->GetLocation(&left, &top, &element_width, &element_height, &requires_frame_scroll);
+    result = this->GetLocation(&element_location, &requires_frame_scroll);
     if (result != SUCCESS) {
       LOG(WARN) << "Unable to get location of scrolled to element";
       return result;
     }
 
-    if (!this->IsClickPointInViewPort(left,
-                                      top,
-                                      element_width,
-                                      element_height)) {
+    if (!this->IsClickPointInViewPort(element_location)) {
       LOG(WARN) << "Scrolled element is not in view";
       status_code = EELEMENTCLICKPOINTNOTSCROLLED;
     }
   }
 
-  LOG(DEBUG) << "(x, y, w, h): " << left << ", " << top << ", " << element_width << ", " << element_height;
+  LOG(DEBUG) << "(x, y, w, h): "
+             << element_location.x << ", "
+             << element_location.y << ", "
+             << element_location.width << ", "
+             << element_location.height;
 
   // At this point, we know the element is displayed according to its
   // style attributes, and we've made a best effort at scrolling it so
@@ -274,10 +272,10 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
   // the coordinates of the element, even if the scrolling is unsuccessful.
   // However, we will still return the "element not displayed" status code
   // if the click point has not been scrolled to the viewport.
-  *x = left;
-  *y = top;
-  *width = element_width;
-  *height = element_height;
+  location->x = element_location.x;
+  location->y = element_location.y;
+  location->width = element_location.width;
+  location->height = element_location.height;
 
   return status_code;
 }
@@ -356,10 +354,8 @@ bool Element::IsSelected() {
   return selected;
 }
 
-int Element::GetLocation(long* x, long* y, long* width, long* height, bool* requires_frame_scroll) {
+int Element::GetLocation(LocationInfo* location, bool* requires_frame_scroll) {
   LOG(TRACE) << "Entering Element::GetLocation";
-
-  *x = 0, *y = 0, *width = 0, *height = 0;
 
   bool hasAbsolutePositionReadyToReturn = false;
 
@@ -432,7 +428,7 @@ int Element::GetLocation(long* x, long* y, long* width, long* height, bool* requ
         childDispatch->QueryInterface(&child);
         if (child != NULL) {
           Element childElement(child, this->containing_window_handle_);
-          int result = childElement.GetLocation(x, y, width, height, requires_frame_scroll);
+          int result = childElement.GetLocation(location, requires_frame_scroll);
           if (result == SUCCESS) {
             return result;
           }
@@ -464,17 +460,17 @@ int Element::GetLocation(long* x, long* y, long* width, long* height, bool* requ
     top += scroll_top;
 
     // Only add the frame offset if the element is actually in a frame.
-    long frame_offset_x = 0, frame_offset_y = 0, frame_width = 0, frame_height = 0;
-    bool element_is_in_frame = this->GetFrameDetails(&frame_offset_x, &frame_offset_y, &frame_width, &frame_height);
+    LocationInfo frame_location = {};
+    bool element_is_in_frame = this->GetFrameDetails(&frame_location);
     if (element_is_in_frame) {
-      left += frame_offset_x;
-      top += frame_offset_y;
+      left += frame_location.x;
+      top += frame_location.y;
       // Check if the element is visible in the frame or iframe window.
       // Note this logic may not be completely correct for nested frames.
-      if (left < frame_offset_x ||
-          (left + (w / 2)) > frame_offset_x + frame_width ||
-          top < frame_offset_y ||
-          (top + (h / 2)) > frame_offset_y + frame_height) {
+      if (left < frame_location.x ||
+          (left + (w / 2)) > frame_location.x + frame_location.width ||
+          top < frame_location.y ||
+          (top + (h / 2)) > frame_location.y + frame_location.height) {
         LOG(DEBUG) << "The element is not visible within the frame, and requires scrolling";
         *requires_frame_scroll = true;
       }
@@ -483,10 +479,10 @@ int Element::GetLocation(long* x, long* y, long* width, long* height, bool* requ
     }
   }
 
-  *x = left;
-  *y = top;
-  *width = w;
-  *height = h;
+  location->x = left;
+  location->y = top;
+  location->width = w;
+  location->height = h;
 
   return SUCCESS;
 }
@@ -528,7 +524,7 @@ bool Element::RectHasNonZeroDimensions(const CComPtr<IHTMLRect> rect) {
   return w > 0 && h > 0;
 }
 
-bool Element::GetFrameDetails(long* x, long* y, long* width, long* height) {
+bool Element::GetFrameDetails(LocationInfo* location) {
   LOG(TRACE) << "Entering Element::GetFrameDetails";
 
   CComPtr<IHTMLDocument2> owner_doc;
@@ -595,18 +591,15 @@ bool Element::GetFrameDetails(long* x, long* y, long* width, long* height) {
         // Wrap the element so we can find its location. Note that
         // GetLocation() may recursively call into this method.
         Element element_wrapper(frame_element, this->containing_window_handle_);
-        long frame_x, frame_y, frame_width, frame_height;
+        LocationInfo frame_location = {};
         bool frame_requires_frame_scroll = false;
-        status_code = element_wrapper.GetLocation(&frame_x,
-                                                  &frame_y,
-                                                  &frame_width,
-                                                  &frame_height,
+        status_code = element_wrapper.GetLocation(&frame_location,
                                                   &frame_requires_frame_scroll);
         if (status_code == SUCCESS) {
-          *x = frame_x;
-          *y = frame_y;
-          *width = frame_width;
-          *height = frame_height;
+          location->x = frame_location.x;
+          location->y = frame_location.y;
+          location->width = frame_location.width;
+          location->height = frame_location.height;
         }
         return true;
       }
@@ -617,22 +610,19 @@ bool Element::GetFrameDetails(long* x, long* y, long* width, long* height) {
   return false;
 }
 
-void Element::GetClickPoint(const long x, const long y, const long width, const long height, long* click_x, long* click_y) {
+void Element::GetClickPoint(const LocationInfo location, long* click_x, long* click_y) {
   LOG(TRACE) << "Entering Element::GetClickPoint";
 
   //Note: This logic is duplicated in javascript in Element::IsHiddenByOverflow
-  *click_x = x + (width / 2);
-  *click_y = y + (height / 2);
+  *click_x = location.x + (location.width / 2);
+  *click_y = location.y + (location.height / 2);
 }
 
-bool Element::IsClickPointInViewPort(const long x,
-                                     const long y,
-                                     const long width,
-                                     const long height) {
+bool Element::IsClickPointInViewPort(const LocationInfo location) {
   LOG(TRACE) << "Entering Element::IsClickPointInViewPort";
 
   long click_x, click_y;
-  GetClickPoint(x, y, width, height, &click_x, &click_y);
+  GetClickPoint(location, &click_x, &click_y);
 
   WINDOWINFO window_info;
   if (!::GetWindowInfo(this->containing_window_handle_, &window_info)) {

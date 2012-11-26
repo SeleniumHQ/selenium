@@ -98,8 +98,8 @@ class SendKeysCommandHandler : public IECommandHandler {
 
         CComQIPtr<IHTMLElement> element(element_wrapper->element());
 
-        long x = 0, y = 0, width = 0, height = 0;
-        element_wrapper->GetLocationOnceScrolledIntoView(executor.scroll_behavior(), &x, &y, &width, &height);
+        LocationInfo location = {};
+        element_wrapper->GetLocationOnceScrolledIntoView(executor.scroll_behavior(), &location);
 
         CComQIPtr<IHTMLInputFileElement> file(element);
         CComQIPtr<IHTMLInputElement> input(element);

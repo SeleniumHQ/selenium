@@ -51,16 +51,13 @@ class GetElementLocationOnceScrolledIntoViewCommandHandler : public IECommandHan
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
       if (status_code == SUCCESS) {
-        long x = 0, y = 0, width = 0, height = 0;
+        LocationInfo location = {};
         status_code = element_wrapper->GetLocationOnceScrolledIntoView(executor.scroll_behavior(),
-                                                                       &x,
-                                                                       &y,
-                                                                       &width,
-                                                                       &height);
+                                                                       &location);
         if (status_code == SUCCESS) {
           Json::Value response_value;
-          response_value["x"] = x;
-          response_value["y"] = y;
+          response_value["x"] = location.x;
+          response_value["y"] = location.y;
           response->SetSuccessResponse(response_value);
           return;
         } else {

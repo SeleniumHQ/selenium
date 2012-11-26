@@ -146,25 +146,22 @@ class MouseMoveToCommandHandler : public IECommandHandler {
       return status_code;
     }
 
-    long element_x = 0, element_y = 0, element_width = 0, element_height = 0;
+    LocationInfo element_location;
     status_code = target_element->GetLocationOnceScrolledIntoView(executor.scroll_behavior(),
-                                                                  &element_x,
-                                                                  &element_y,
-                                                                  &element_width,
-                                                                  &element_height);
+                                                                  &element_location);
     // We can't use the status code alone here. GetLocationOnceScrolledIntoView
     // returns EELEMENTNOTDISPLAYED if the element is visible, but the click
     // point (the center of the element) is not within the viewport. However,
     // we might still be able to move to whatever portion of the element *is*
     // visible in the viewport, so we have to have an extra check.
-    if (status_code != SUCCESS && element_width == 0 && element_height == 0) {
+    if (status_code != SUCCESS && element_location.width == 0 && element_location.height == 0) {
       LOG(WARN) << "Unable to get location after scrolling or element sizes are zero";
       return status_code;
     }
 
     if (get_element_origin) {
-      *x_coordinate = element_x;
-      *y_coordinate = element_y;
+      *x_coordinate = element_location.x;
+      *y_coordinate = element_location.y;
     } else {
       LOG(INFO) << "Checking whether element has single text node.";
       BrowserHandle browser_wrapper;
@@ -176,11 +173,11 @@ class MouseMoveToCommandHandler : public IECommandHandler {
         std::pair<int, int> textSize = this->GetBoundariesOfElementText(executor, doc, target_element);
 
         // Get middle of selection if there's only one text node.
-        *x_coordinate = element_x + textSize.first / 2;
-        *y_coordinate = element_y + textSize.second / 2;
+        *x_coordinate = element_location.x + textSize.first / 2;
+        *y_coordinate = element_location.y + textSize.second / 2;
       } else {
-        *x_coordinate = element_x + (element_width / 2);
-        *y_coordinate = element_y + (element_height / 2);
+        *x_coordinate = element_location.x + (element_location.width / 2);
+        *y_coordinate = element_location.y + (element_location.height / 2);
       }
     }
 

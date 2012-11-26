@@ -24,6 +24,13 @@ enum ELEMENT_SCROLL_BEHAVIOR {
   BOTTOM
 };
 
+struct LocationInfo {
+  long x;
+  long y;
+  long width;
+  long height;
+};
+
 typedef unsigned int (__stdcall *ASYNCEXECPROC)(void*);
 
 // Forward declaration of classes to avoid
@@ -37,10 +44,7 @@ class Element {
   Json::Value ConvertToJson(void);
   std::string GetTagName(void);
   int GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scroll,
-                                      long* x,
-                                      long* y,
-                                      long* width,
-                                      long* height);
+                                      LocationInfo* location);
   int GetAttributeValue(const std::string& attribute_name,
                         std::string* attribute_value,
                         bool* value_is_null);
@@ -56,15 +60,12 @@ class Element {
   IHTMLElement* element(void) { return this->element_; }
 
  private:
-  int GetLocation(long* x, long* y, long* width, long* height, bool* requires_frame_scroll);
-  void GetClickPoint(const long x, const long y, const long width, const long height, long* click_x, long* click_y);
-  bool IsClickPointInViewPort(const long x,
-                              const long y,
-                              const long width,
-                              const long height);
+  int GetLocation(LocationInfo* location, bool* requires_frame_scroll);
+  void GetClickPoint(const LocationInfo location, long* click_x, long* click_y);
+  bool IsClickPointInViewPort(const LocationInfo location);
   bool IsHiddenByOverflow();
-  bool IsScrolledIntoFrame(long* x, long* y, long* width, long* height);
-  bool GetFrameDetails(long* x, long* y, long* width, long* height);
+  bool IsScrolledIntoFrame(LocationInfo* location);
+  bool GetFrameDetails(LocationInfo* location);
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
   int GetParentDocument(IHTMLWindow2* parent_window,
                         IHTMLDocument2** parent_doc);
