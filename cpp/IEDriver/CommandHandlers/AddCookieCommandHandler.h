@@ -57,7 +57,7 @@ class AddCookieCommandHandler : public IECommandHandler {
     Json::Value expiry = cookie_value.get("expiry", Json::Value::null);
     if (!expiry.isNull()) {
       cookie_value.removeMember("expiry");
-      if (expiry.isDouble()) {
+      if (expiry.isNumeric()) {
         time_t expiration_time = static_cast<time_t>(expiry.asDouble());
         char raw_formatted_time[30];
         tm time_info;
