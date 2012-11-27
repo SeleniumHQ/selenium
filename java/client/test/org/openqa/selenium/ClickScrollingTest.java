@@ -159,6 +159,19 @@ public class ClickScrollingTest extends JUnit4TestBase {
     }
   }
   
+  @Test(expected = MoveTargetOutOfBoundsException.class)
+  @Ignore(reason = "All tested browses scroll non-scrollable frames")
+  public void testShouldNotBeAbleToClickElementThatIsOutOfViewInANonScrollableFrame() {
+    try {
+      driver.get(appServer.whereIs("scrolling_tests/page_with_non_scrolling_frame.html"));
+      driver.switchTo().frame("scrolling_frame");
+      WebElement element = driver.findElement(By.name("scroll_checkbox"));
+      element.click();
+    } finally {
+      driver.switchTo().defaultContent();
+    }
+  }
+  
   @Test
   @Ignore(value = {OPERA, IPHONE, SAFARI, SELENESE},
           reason = "Opera: fails, others: not tested")
