@@ -1,5 +1,5 @@
 /*
- Copyright 2011 Software Freedom Conservancy.
+ Copyright 2012 Software Freedom Conservancy.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.openqa.selenium.remote;
 import org.openqa.selenium.WebDriverException;
 
 /**
- * Indicates that the session is not found.
+ * Indicates that the session is not found (either terminated or not started).
  */
 public class SessionNotFoundException extends WebDriverException {
 
