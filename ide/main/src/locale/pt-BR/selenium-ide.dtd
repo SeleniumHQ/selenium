@@ -64,7 +64,7 @@
 <!ENTITY contextMenu.insertCommand.label "Inserir Novo Comando">
 <!ENTITY contextMenu.insertComment.label "Inserir Novo Comentário">
 <!ENTITY contextMenu.clear.label "Limpar Tudo">
-<!ENTITY contextMenu.breakpoint.label "Inserir Breakpoint">
+<!ENTITY contextMenu.breakpoint.label "Definir / Limpar Breakpoint">
 <!ENTITY contextMenu.startpoint.label "Definir / Limpar Ponto de Início">
 <!ENTITY contextMenu.execCommand.label "Executar Este Comando">
 
