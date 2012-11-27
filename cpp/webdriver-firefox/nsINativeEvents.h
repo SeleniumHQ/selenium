@@ -34,19 +34,19 @@
   {0x5a86850b, 0xf376, 0x4ae6, \
     { 0x86, 0x0d, 0x53, 0xa4, 0x41, 0xca, 0xfc, 0xe4 }}
 
-class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
+class NS_NO_VTABLE nsINativeEvents : public nsISupports {
  public: 
 
   NS_DECLARE_STATIC_IID_ACCESSOR(NS_INATIVEEVENTS_IID)
 
   /* void hasUnhandledEvents (in nsISupports aNode, out boolean hasEvents); */
-  NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM) = 0;
+  NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, bool *hasEvents) = 0;
 
   /* void notifyOfSwitchToWindow (in long windowId); */
-  NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId) = 0;
+  NS_IMETHOD NotifyOfSwitchToWindow(int32_t windowId) = 0;
 
   /* void notifyOfCloseWindow (in long windowId); */
-  NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId) = 0;
+  NS_IMETHOD NotifyOfCloseWindow(int32_t windowId) = 0;
 
 };
 
@@ -54,21 +54,21 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
 
 /* Use this macro when declaring classes that implement this interface. */
 #define NS_DECL_NSINATIVEEVENTS \
-  NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM); \
-  NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId); \
-  NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId); 
+  NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, bool *hasEvents); \
+  NS_IMETHOD NotifyOfSwitchToWindow(int32_t windowId); \
+  NS_IMETHOD NotifyOfCloseWindow(int32_t windowId); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSINATIVEEVENTS(_to) \
-  NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM) { return _to HasUnhandledEvents(aNode, hasEvents); } \
-  NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId) { return _to NotifyOfSwitchToWindow(windowId); } \
-  NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId) { return _to NotifyOfCloseWindow(windowId); } 
+  NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, bool *hasEvents) { return _to HasUnhandledEvents(aNode, hasEvents); } \
+  NS_IMETHOD NotifyOfSwitchToWindow(int32_t windowId) { return _to NotifyOfSwitchToWindow(windowId); } \
+  NS_IMETHOD NotifyOfCloseWindow(int32_t windowId) { return _to NotifyOfCloseWindow(windowId); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSINATIVEEVENTS(_to) \
-  NS_SCRIPTABLE NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM) { return !_to ? NS_ERROR_NULL_POINTER : _to->HasUnhandledEvents(aNode, hasEvents); } \
-  NS_SCRIPTABLE NS_IMETHOD NotifyOfSwitchToWindow(PRInt32 windowId) { return !_to ? NS_ERROR_NULL_POINTER : _to->NotifyOfSwitchToWindow(windowId); } \
-  NS_SCRIPTABLE NS_IMETHOD NotifyOfCloseWindow(PRInt32 windowId) { return !_to ? NS_ERROR_NULL_POINTER : _to->NotifyOfCloseWindow(windowId); } 
+  NS_IMETHOD HasUnhandledEvents(nsISupports *aNode, bool *hasEvents) { return !_to ? NS_ERROR_NULL_POINTER : _to->HasUnhandledEvents(aNode, hasEvents); } \
+  NS_IMETHOD NotifyOfSwitchToWindow(int32_t windowId) { return !_to ? NS_ERROR_NULL_POINTER : _to->NotifyOfSwitchToWindow(windowId); } \
+  NS_IMETHOD NotifyOfCloseWindow(int32_t windowId) { return !_to ? NS_ERROR_NULL_POINTER : _to->NotifyOfCloseWindow(windowId); } 
 
 #if 0
 /* Use the code below as a template for the implementation class for this interface. */
@@ -103,19 +103,19 @@ nsNativeEvents::~nsNativeEvents()
 }
 
 /* void hasUnhandledEvents (in nsISupports aNode, out boolean hasEvents); */
-NS_IMETHODIMP nsNativeEvents::HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents NS_OUTPARAM)
+NS_IMETHODIMP nsNativeEvents::HasUnhandledEvents(nsISupports *aNode, bool *hasEvents)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 /* void notifyOfSwitchToWindow (in long windowId); */
-NS_IMETHODIMP nsNativeEvents::NotifyOfSwitchToWindow(PRInt32 windowId)
+NS_IMETHODIMP nsNativeEvents::NotifyOfSwitchToWindow(int32_t windowId)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 /* void notifyOfCloseWindow (in long windowId); */
-NS_IMETHODIMP nsNativeEvents::NotifyOfCloseWindow(PRInt32 windowId)
+NS_IMETHODIMP nsNativeEvents::NotifyOfCloseWindow(int32_t windowId)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }

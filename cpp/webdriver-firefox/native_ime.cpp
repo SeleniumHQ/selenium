@@ -62,7 +62,7 @@ nsNativeIME::~nsNativeIME()
 }
 
 /* void imeIsActivated (out boolean isActive); */
-NS_IMETHODIMP nsNativeIME::ImeIsActivated(PRBool *isActive)
+NS_IMETHODIMP nsNativeIME::ImeIsActivated(bool *isActive)
 {
   LOG(DEBUG) << "Getting if IME is active or not";
 
@@ -117,7 +117,7 @@ NS_IMETHODIMP nsNativeIME::ImeDeactivate()
 }
 
 /* void imeActivateEngine (in string engine, out boolean activationSucceeded); */
-NS_IMETHODIMP nsNativeIME::ImeActivateEngine(const char *engine, PRBool *activationSucceeded)
+NS_IMETHODIMP nsNativeIME::ImeActivateEngine(const char *engine, bool *activationSucceeded)
 {
   LOG(DEBUG) << "Activating IME engine " << engine;
   IMELIB_TYPE lib = tryToOpenImeLib();
@@ -211,7 +211,7 @@ static void fillIMutableArrayFromVector(std::vector<std::string> &engines,
 NS_IMETHODIMP nsNativeIME::ImeGetAvailableEngines(nsIArray **enginesList)
 {
   NS_ENSURE_ARG_POINTER(enginesList);
-  *enginesList = nsnull;
+  *enginesList = NULL;
 
   LOG(DEBUG) << "getting available engines";
 
@@ -236,4 +236,3 @@ NS_IMETHODIMP nsNativeIME::ImeGetAvailableEngines(nsIArray **enginesList)
   }
   return NS_ERROR_FAILURE;
 }
-

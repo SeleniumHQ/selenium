@@ -26,13 +26,13 @@
   {0x50380a2d, 0xab4f, 0x4b3f, \
     { 0x9a, 0x27, 0xcc, 0x7d, 0xbb, 0xa0, 0x7e, 0xe7 }}
 
-class NS_NO_VTABLE NS_SCRIPTABLE nsINativeKeyboard : public nsISupports {
+class NS_NO_VTABLE nsINativeKeyboard : public nsISupports {
  public: 
 
   NS_DECLARE_STATIC_IID_ACCESSOR(NS_INATIVEKEYBOARD_IID)
 
   /* void sendKeys (in nsISupports aNode, in wstring value, in boolean releaseModifiers); */
-  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers) = 0;
+  NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar * value, bool releaseModifiers) = 0;
 
 };
 
@@ -40,15 +40,15 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeKeyboard : public nsISupports {
 
 /* Use this macro when declaring classes that implement this interface. */
 #define NS_DECL_NSINATIVEKEYBOARD \
-  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers); 
+  NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar * value, bool releaseModifiers); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSINATIVEKEYBOARD(_to) \
-  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers) { return _to SendKeys(aNode, value, releaseModifiers); } 
+  NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar * value, bool releaseModifiers) { return _to SendKeys(aNode, value, releaseModifiers); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSINATIVEKEYBOARD(_to) \
-  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers) { return !_to ? NS_ERROR_NULL_POINTER : _to->SendKeys(aNode, value, releaseModifiers); } 
+  NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar * value, bool releaseModifiers) { return !_to ? NS_ERROR_NULL_POINTER : _to->SendKeys(aNode, value, releaseModifiers); } 
 
 #if 0
 /* Use the code below as a template for the implementation class for this interface. */
@@ -83,7 +83,7 @@ nsNativeKeyboard::~nsNativeKeyboard()
 }
 
 /* void sendKeys (in nsISupports aNode, in wstring value, in boolean releaseModifiers); */
-NS_IMETHODIMP nsNativeKeyboard::SendKeys(nsISupports *aNode, const PRUnichar *value, PRBool releaseModifiers)
+NS_IMETHODIMP nsNativeKeyboard::SendKeys(nsISupports *aNode, const PRUnichar * value, bool releaseModifiers)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }

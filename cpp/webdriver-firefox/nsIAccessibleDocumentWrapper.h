@@ -2,7 +2,9 @@
 
 #include "nsCOMPtr.h"
 #include "gecko18/nsIAccessibleDocument.h"
+#ifdef GECKO_19_COMPATIBILITY
 #include "gecko19/nsIAccessibleDocument.h"
+#endif
 #include "nsIAccessibleDocument.h"
 
 class AccessibleDocumentWrapper 
@@ -11,7 +13,9 @@ public:
 	AccessibleDocumentWrapper(nsISupports *node) 
 	{
 		wrapper_18 = do_QueryInterface(node);
+#ifdef GECKO_19_COMPATIBILITY
 		wrapper_19 = do_QueryInterface(node);
+#endif
 		wrapper_2 = do_QueryInterface(node);
 	}
 
@@ -27,10 +31,12 @@ public:
 			if(NS_SUCCEEDED(rv)){ return handle; }
 		}
 
+#ifdef GECKO_19_COMPATIBILITY
 		if (wrapper_19) {
 			rv = wrapper_19->GetWindowHandle(&handle);
 			if(NS_SUCCEEDED(rv)){ return handle; }
 		}
+#endif
 
 		if (wrapper_18) {
 			rv = wrapper_18->GetWindowHandle(&handle);
@@ -43,10 +49,16 @@ public:
 private:
 	bool isValid() const 
 	{
-		return (wrapper_18 != NULL) || (wrapper_19 != NULL) || (wrapper_2 != NULL);
+		return (wrapper_18 != NULL) ||
+#ifdef GECKO_19_COMPATIBILITY
+                    (wrapper_19 != NULL) ||
+#endif
+                    (wrapper_2 != NULL);
 	}
 
 	nsCOMPtr<nsIAccessibleDocument_18> wrapper_18;
+#ifdef GECKO_19_COMPATIBILITY
 	nsCOMPtr<nsIAccessibleDocument_19> wrapper_19;
+#endif
 	nsCOMPtr<nsIAccessibleDocument> wrapper_2;
 };

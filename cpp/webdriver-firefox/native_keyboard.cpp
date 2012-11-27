@@ -54,7 +54,7 @@ nsNativeKeyboard::~nsNativeKeyboard()
 /* void SendKeys (in nsISupports aNode, in wstring value); */
 NS_IMETHODIMP nsNativeKeyboard::SendKeys(nsISupports *aNode,
     const PRUnichar *value,
-    PRBool releaseModifiers)
+    bool releaseModifiers)
 {
   LOG(DEBUG) << "---------- Got to start of callback. aNode: " << aNode
     << " ----------";
@@ -98,4 +98,3 @@ NS_IMETHODIMP nsNativeKeyboard::SendKeys(nsISupports *aNode,
 
   return NS_OK;
 }
-

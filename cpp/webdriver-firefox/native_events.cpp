@@ -86,7 +86,7 @@ NS_IMETHODIMP nsNativeEvents::NotifyOfCloseWindow(PRInt32 windowId)
 
 
 /* void hasUnhandledEvents (in nsISupports aNode, out boolean hasEvents); */
-NS_IMETHODIMP nsNativeEvents::HasUnhandledEvents(nsISupports *aNode, PRBool *hasEvents)
+NS_IMETHODIMP nsNativeEvents::HasUnhandledEvents(nsISupports *aNode, bool *hasEvents)
 {
   *hasEvents = pending_input_events();
   return NS_OK;

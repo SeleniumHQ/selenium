@@ -26,25 +26,25 @@
   {0xeb9123fc, 0x0fdc, 0x4164, \
     { 0xbf, 0xf5, 0x03, 0xb3, 0x24, 0x39, 0x31, 0xd1 }}
 
-class NS_NO_VTABLE NS_SCRIPTABLE nsINativeMouse : public nsISupports {
+class NS_NO_VTABLE nsINativeMouse : public nsISupports {
  public: 
 
   NS_DECLARE_STATIC_IID_ACCESSOR(NS_INATIVEMOUSE_IID)
 
   /* void mouseMove (in nsISupports aNode, in long startX, in long startY, in long endX, in long endY); */
-  NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY) = 0;
+  NS_IMETHOD MouseMove(nsISupports *aNode, int32_t startX, int32_t startY, int32_t endX, int32_t endY) = 0;
 
   /* void click (in nsISupports aNode, in long x, in long y, in long button); */
-  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) = 0;
+  NS_IMETHOD Click(nsISupports *aNode, int32_t x, int32_t y, int32_t button) = 0;
 
   /* void mousePress (in nsISupports aNode, in long x, in long y, in long button); */
-  NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) = 0;
+  NS_IMETHOD MousePress(nsISupports *aNode, int32_t x, int32_t y, int32_t button) = 0;
 
   /* void mouseRelease (in nsISupports anode, in long x, in long y, in long button); */
-  NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button) = 0;
+  NS_IMETHOD MouseRelease(nsISupports *anode, int32_t x, int32_t y, int32_t button) = 0;
 
   /* void doubleClick (in nsISupports aNode, in long x, in long y); */
-  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y) = 0;
+  NS_IMETHOD DoubleClick(nsISupports *aNode, int32_t x, int32_t y) = 0;
 
 };
 
@@ -52,27 +52,27 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeMouse : public nsISupports {
 
 /* Use this macro when declaring classes that implement this interface. */
 #define NS_DECL_NSINATIVEMOUSE \
-  NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY); \
-  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button); \
-  NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button); \
-  NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button); \
-  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y); 
+  NS_IMETHOD MouseMove(nsISupports *aNode, int32_t startX, int32_t startY, int32_t endX, int32_t endY); \
+  NS_IMETHOD Click(nsISupports *aNode, int32_t x, int32_t y, int32_t button); \
+  NS_IMETHOD MousePress(nsISupports *aNode, int32_t x, int32_t y, int32_t button); \
+  NS_IMETHOD MouseRelease(nsISupports *anode, int32_t x, int32_t y, int32_t button); \
+  NS_IMETHOD DoubleClick(nsISupports *aNode, int32_t x, int32_t y); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSINATIVEMOUSE(_to) \
-  NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY) { return _to MouseMove(aNode, startX, startY, endX, endY); } \
-  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return _to Click(aNode, x, y, button); } \
-  NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return _to MousePress(aNode, x, y, button); } \
-  NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button) { return _to MouseRelease(anode, x, y, button); } \
-  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y) { return _to DoubleClick(aNode, x, y); } 
+  NS_IMETHOD MouseMove(nsISupports *aNode, int32_t startX, int32_t startY, int32_t endX, int32_t endY) { return _to MouseMove(aNode, startX, startY, endX, endY); } \
+  NS_IMETHOD Click(nsISupports *aNode, int32_t x, int32_t y, int32_t button) { return _to Click(aNode, x, y, button); } \
+  NS_IMETHOD MousePress(nsISupports *aNode, int32_t x, int32_t y, int32_t button) { return _to MousePress(aNode, x, y, button); } \
+  NS_IMETHOD MouseRelease(nsISupports *anode, int32_t x, int32_t y, int32_t button) { return _to MouseRelease(anode, x, y, button); } \
+  NS_IMETHOD DoubleClick(nsISupports *aNode, int32_t x, int32_t y) { return _to DoubleClick(aNode, x, y); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSINATIVEMOUSE(_to) \
-  NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY) { return !_to ? NS_ERROR_NULL_POINTER : _to->MouseMove(aNode, startX, startY, endX, endY); } \
-  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return !_to ? NS_ERROR_NULL_POINTER : _to->Click(aNode, x, y, button); } \
-  NS_SCRIPTABLE NS_IMETHOD MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button) { return !_to ? NS_ERROR_NULL_POINTER : _to->MousePress(aNode, x, y, button); } \
-  NS_SCRIPTABLE NS_IMETHOD MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button) { return !_to ? NS_ERROR_NULL_POINTER : _to->MouseRelease(anode, x, y, button); } \
-  NS_SCRIPTABLE NS_IMETHOD DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y) { return !_to ? NS_ERROR_NULL_POINTER : _to->DoubleClick(aNode, x, y); } 
+  NS_IMETHOD MouseMove(nsISupports *aNode, int32_t startX, int32_t startY, int32_t endX, int32_t endY) { return !_to ? NS_ERROR_NULL_POINTER : _to->MouseMove(aNode, startX, startY, endX, endY); } \
+  NS_IMETHOD Click(nsISupports *aNode, int32_t x, int32_t y, int32_t button) { return !_to ? NS_ERROR_NULL_POINTER : _to->Click(aNode, x, y, button); } \
+  NS_IMETHOD MousePress(nsISupports *aNode, int32_t x, int32_t y, int32_t button) { return !_to ? NS_ERROR_NULL_POINTER : _to->MousePress(aNode, x, y, button); } \
+  NS_IMETHOD MouseRelease(nsISupports *anode, int32_t x, int32_t y, int32_t button) { return !_to ? NS_ERROR_NULL_POINTER : _to->MouseRelease(anode, x, y, button); } \
+  NS_IMETHOD DoubleClick(nsISupports *aNode, int32_t x, int32_t y) { return !_to ? NS_ERROR_NULL_POINTER : _to->DoubleClick(aNode, x, y); } 
 
 #if 0
 /* Use the code below as a template for the implementation class for this interface. */
@@ -107,31 +107,31 @@ nsNativeMouse::~nsNativeMouse()
 }
 
 /* void mouseMove (in nsISupports aNode, in long startX, in long startY, in long endX, in long endY); */
-NS_IMETHODIMP nsNativeMouse::MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY)
+NS_IMETHODIMP nsNativeMouse::MouseMove(nsISupports *aNode, int32_t startX, int32_t startY, int32_t endX, int32_t endY)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 /* void click (in nsISupports aNode, in long x, in long y, in long button); */
-NS_IMETHODIMP nsNativeMouse::Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)
+NS_IMETHODIMP nsNativeMouse::Click(nsISupports *aNode, int32_t x, int32_t y, int32_t button)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 /* void mousePress (in nsISupports aNode, in long x, in long y, in long button); */
-NS_IMETHODIMP nsNativeMouse::MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y, PRInt32 button)
+NS_IMETHODIMP nsNativeMouse::MousePress(nsISupports *aNode, int32_t x, int32_t y, int32_t button)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 /* void mouseRelease (in nsISupports anode, in long x, in long y, in long button); */
-NS_IMETHODIMP nsNativeMouse::MouseRelease(nsISupports *anode, PRInt32 x, PRInt32 y, PRInt32 button)
+NS_IMETHODIMP nsNativeMouse::MouseRelease(nsISupports *anode, int32_t x, int32_t y, int32_t button)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 /* void doubleClick (in nsISupports aNode, in long x, in long y); */
-NS_IMETHODIMP nsNativeMouse::DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 y)
+NS_IMETHODIMP nsNativeMouse::DoubleClick(nsISupports *aNode, int32_t x, int32_t y)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
