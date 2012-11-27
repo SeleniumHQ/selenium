@@ -37,46 +37,17 @@ int IECommandHandler::GetElement(const IECommandExecutor& executor,
                                  ElementHandle* element_wrapper) {
   LOG(TRACE) << "Entering IECommandHandler::GetElement";
 
-  int status_code = EOBSOLETEELEMENT;
   ElementHandle candidate_wrapper;
   int result = executor.GetManagedElement(element_id, &candidate_wrapper);
   if (result != SUCCESS) {
-    LOG(WARN) << "Unable to get managed element, element not found";
-    status_code = 404;
+    LOG(WARN) << "Unable to get managed element, element not found, assuming stale";
+    return EOBSOLETEELEMENT;
   } else {
-    // Verify that the element is still valid by walking up the
-    // DOM tree until we find no parent or the html tag
-    CComPtr<IHTMLElement> parent(candidate_wrapper->element());
-    while (parent) {
-      CComQIPtr<IHTMLHtmlElement> html(parent);
-      if (html) {
-        status_code = SUCCESS;
-        *element_wrapper = candidate_wrapper;
-        break;
-      }
-
-      CComPtr<IHTMLElement> next;
-      HRESULT hr = parent->get_parentElement(&next);
-      if (FAILED(hr)) {
-        LOGHR(WARN, hr) << "Unable to get parent element, call to IHTMLElement::get_parentElement failed";
-      }
-
-      if (next == NULL) {
-        BSTR tag;
-        hr = parent->get_tagName(&tag);
-        if (FAILED(hr)) {
-          LOG(TRACE) << "Found null parent of element and couldn't get tag name";
-        } else {
-          LOG(TRACE) << "Found null parent of element with tag " << _bstr_t(tag);
-        }
-      }
-      parent = next;
-    }
-
-    if (status_code != SUCCESS) {
+    if (!candidate_wrapper->IsAttachedToDom()) {
       LOG(WARN) << "Found managed element is no longer valid";
       IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
       mutable_executor.RemoveManagedElement(element_id);
+      return EOBSOLETEELEMENT;
     } else {
       // If the element is attached to the DOM, validate that its document
       // is the currently-focused document (via frames).
@@ -86,16 +57,18 @@ int IECommandHandler::GetElement(const IECommandExecutor& executor,
       current_browser->GetDocument(&focused_doc);
 
       CComPtr<IDispatch> parent_doc_dispatch;
-      parent->get_document(&parent_doc_dispatch);
+      candidate_wrapper->element()->get_document(&parent_doc_dispatch);
 
-      if (!focused_doc.IsEqualObject(parent_doc_dispatch)) {
+      if (focused_doc.IsEqualObject(parent_doc_dispatch)) {
+        *element_wrapper = candidate_wrapper;
+        return SUCCESS;
+      } else {
         LOG(WARN) << "Found managed element's document is not currently focused";
-        status_code = EOBSOLETEELEMENT;
       }
     }
   }
 
-  return status_code;
+  return EOBSOLETEELEMENT;
 }
 
 } // namespace webdriver

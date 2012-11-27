@@ -837,4 +837,37 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
     ::CloseHandle(thread_handle);
     return status_code;
 }
+
+bool Element::IsAttachedToDom() {
+  // Verify that the element is still valid by walking up the
+  // DOM tree until we find no parent or the html tag
+  if (this->element_) {
+    CComPtr<IHTMLElement> parent(this->element_);
+    while (parent) {
+      CComQIPtr<IHTMLHtmlElement> html(parent);
+      if (html) {
+        return true;
+      }
+
+      CComPtr<IHTMLElement> next;
+      HRESULT hr = parent->get_parentElement(&next);
+      if (FAILED(hr)) {
+        LOGHR(WARN, hr) << "Unable to get parent element, call to IHTMLElement::get_parentElement failed";
+      }
+
+      if (next == NULL) {
+        BSTR tag;
+        hr = parent->get_tagName(&tag);
+        if (FAILED(hr)) {
+          LOG(TRACE) << "Found null parent of element and couldn't get tag name";
+        } else {
+          LOG(TRACE) << "Found null parent of element with tag " << _bstr_t(tag);
+        }
+      }
+      parent = next;
+    }
+  }
+  return false;
+}
+
 } // namespace webdriver

@@ -52,6 +52,7 @@ class Element {
   int IsDisplayed(bool* result);
   bool IsEnabled(void);
   bool IsSelected(void);
+  bool IsAttachedToDom(void);
   int Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior);
   int ExecuteAsyncAtom(const std::wstring& sync_event_name,
                        ASYNCEXECPROC execute_proc,
