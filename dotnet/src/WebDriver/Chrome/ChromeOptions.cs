@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
@@ -64,6 +65,7 @@ namespace OpenQA.Selenium.Chrome
         private string binaryLocation = string.Empty;
         private List<string> arguments = new List<string>();
         private List<string> extensionFiles = new List<string>();
+        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
 
         /// <summary>
         /// Gets or sets the location of the Chrome browser's binary executable file.
@@ -190,6 +192,34 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options 
+        /// for the Chrome driver.
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to add.</param>
+        /// <param name="capabilityValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or 
+        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
+        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        public void AddAdditionalCapability(string capabilityName, object capabilityValue)
+        {
+            if (capabilityName == ChromeOptions.Capability)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
+                throw new ArgumentException(message, "capabilityName");
+            }
+
+            if (string.IsNullOrEmpty(capabilityName))
+            {
+                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
+            }
+
+            this.additionalCapabilities[capabilityName] = capabilityValue;
+        }
+
+        /// <summary>
         /// Returns DesiredCapabilities for Chrome with these options included as
         /// capabilities. This does not copy the options. Further changes will be
         /// reflected in the returned capabilities.
@@ -208,6 +238,11 @@ namespace OpenQA.Selenium.Chrome
             if (!string.IsNullOrEmpty(this.binaryLocation))
             {
                 capabilities.SetCapability("chrome.binary", this.binaryLocation);
+            }
+
+            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
+            {
+                capabilities.SetCapability(pair.Key, pair.Value);
             }
 
             return capabilities;

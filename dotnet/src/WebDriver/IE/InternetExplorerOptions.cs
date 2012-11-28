@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using OpenQA.Selenium.Remote;
 
@@ -101,6 +102,7 @@ namespace OpenQA.Selenium.IE
         private string initialBrowserUrl = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
         private InternetExplorerUnexpectedAlertBehavior unexpectedAlertBehavior = InternetExplorerUnexpectedAlertBehavior.Default;
+        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
 
         /// <summary>
         /// Gets or sets a value indicating whether to ignore the settings of the Internet Explorer Protected Mode.
@@ -166,6 +168,39 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options 
+        /// for the Internet Explorer driver.
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to add.</param>
+        /// <param name="capabilityValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or 
+        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
+        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        public void AddAdditionalCapability(string capabilityName, object capabilityValue)
+        {
+            if (capabilityName == IgnoreProtectedModeSettingsCapability ||
+                capabilityName == IgnoreZoomSettingCapability ||
+                capabilityName == InitialBrowserUrlCapability ||
+                capabilityName == EnableNativeEventsCapability ||
+                capabilityName == ElementScrollBehaviorCapability ||
+                capabilityName == UnexpectedAlertBehaviorCapability)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
+                throw new ArgumentException(message, "capabilityName");
+            }
+
+            if (string.IsNullOrEmpty(capabilityName))
+            {
+                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
+            }
+
+            this.additionalCapabilities[capabilityName] = capabilityValue;
+        }
+
+        /// <summary>
         /// Returns DesiredCapabilities for IE with these options included as
         /// capabilities. This copies the options. Further changes will not be
         /// reflected in the returned capabilities.
@@ -210,6 +245,11 @@ namespace OpenQA.Selenium.IE
                 }
 
                 capabilities.SetCapability(UnexpectedAlertBehaviorCapability, unexpectedAlertBehaviorSetting);
+            }
+
+            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
+            {
+                capabilities.SetCapability(pair.Key, pair.Value);
             }
 
             return capabilities;
