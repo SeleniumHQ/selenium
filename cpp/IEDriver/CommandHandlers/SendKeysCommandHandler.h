@@ -135,6 +135,7 @@ class SendKeysCommandHandler : public IECommandHandler {
           return;
         }
 
+        this->VerifyPageHasFocus(browser_wrapper->GetTopLevelWindowHandle(), browser_wrapper->window_handle());
         this->WaitUntilElementFocused(element);
         if (executor.enable_native_events()) {
           sendKeys(window_handle, keys.c_str(), executor.speed());
@@ -268,6 +269,29 @@ class SendKeysCommandHandler : public IECommandHandler {
 
     LOG(WARN) << "No edit found";
     return false;
+  }
+
+  void VerifyPageHasFocus(HWND top_level_window_handle, HWND browser_pane_window_handle) {
+    DWORD proc;
+    DWORD thread_id = ::GetWindowThreadProcessId(top_level_window_handle, &proc);
+    GUITHREADINFO info;
+    info.cbSize = sizeof(GUITHREADINFO);
+    ::GetGUIThreadInfo(thread_id, &info);
+
+    if (info.hwndFocus != browser_pane_window_handle) {
+      // The focus is on a UI element other than the HTML viewer pane (like
+      // the address bar, for instance). This has implications for certain
+      // keystrokes, like backspace. We need to set the focus to the HTML
+      // viewer pane.
+      // N.B. The SetFocus() API should *NOT* cause the IE browser window to
+      // magically appear in the foreground. If that is not true, we will need
+      // to find some other solution.
+      LOG(DEBUG) << "Focus is on a UI element other than the HTML viewer pane.";
+      DWORD current_thread_id = ::GetCurrentThreadId();
+      ::AttachThreadInput(current_thread_id, thread_id, TRUE);
+      ::SetFocus(browser_pane_window_handle);
+      ::AttachThreadInput(current_thread_id, thread_id, FALSE);
+    }
   }
 
   bool WaitUntilElementFocused(IHTMLElement *element) {

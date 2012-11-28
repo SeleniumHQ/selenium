@@ -9,6 +9,12 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.26.2.6
+=========
+ * Fixed SendKeysCommandHandler to check that the focus is in the HTML display
+   pane, and not some other UI element (like the address bar) before sending
+   the keystrokes.
+
 v2.26.2.5
 =========
  * Added new capability "enableElementCacheCleanup". When set to true, the
