@@ -22,6 +22,7 @@ goog.provide('fxdriver.io');
 goog.require('fxdriver.Timer');
 goog.require('fxdriver.moz');
 
+goog.require('fxdriver.logging');
 
 /**
  * @param {string} current The URL the browser is currently on.
@@ -99,6 +100,7 @@ PatientListener.prototype.onStateChange = function(webProgress, request, flags) 
   }
 
   if (flags & STATE_STOP) {
+    fxdriver.logging.info('request status is ' + request.status);
     if (request.URI) {
       this.active = false;
 
