@@ -66,6 +66,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     MESSAGE_HANDLER(WD_IS_SESSION_VALID, OnIsSessionValid)
     MESSAGE_HANDLER(WD_NEW_HTML_DIALOG, OnNewHtmlDialog)
     MESSAGE_HANDLER(WD_GET_QUIT_STATUS, OnGetQuitStatus)
+    MESSAGE_HANDLER(WD_REFRESH_MANAGED_ELEMENTS, OnRefreshManagedElements)
   END_MSG_MAP()
 
   LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -82,6 +83,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   LRESULT OnIsSessionValid(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnNewHtmlDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnGetQuitStatus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnRefreshManagedElements(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
   std::string session_id(void) const { return this->session_id_; }
 
@@ -184,6 +186,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->enable_native_events_ = enable_native_events;
   }
 
+  bool enable_element_cache_cleanup(void) const {
+    return this->enable_element_cache_cleanup_;
+  }
+  void set_enable_element_cache_cleanup(const bool enable_element_cache_cleanup) {
+    this->enable_element_cache_cleanup_ = enable_element_cache_cleanup;
+  }
+
   void set_enable_persistent_hover(const bool enable_persistent_hover) {
     this->enable_persistent_hover_ = enable_persistent_hover;
   }
@@ -253,6 +262,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   bool ignore_protected_mode_settings_;
   bool enable_native_events_;
   bool enable_persistent_hover_;
+  bool enable_element_cache_cleanup_;
   bool ignore_zoom_setting_;
   bool allow_asynchronous_javascript_;
   std::string initial_browser_url_;

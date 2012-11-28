@@ -82,9 +82,12 @@ void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
   // assumptions turn out to be wrong and/or the event firing doesn't work
   // the way we expect it to.
   CComPtr<IDispatch> dispatch(this->browser_);
-  if (dispatch.IsEqualObject(pDisp) && this->focused_frame_window() != NULL) {
-    LOG(DEBUG) << "DocumentComplete happened from within a frameset";
-    this->SetFocusedFrameByElement(NULL);
+  if (dispatch.IsEqualObject(pDisp)) {
+    if (this->focused_frame_window() != NULL) {
+      LOG(DEBUG) << "DocumentComplete happened from within a frameset";
+      this->SetFocusedFrameByElement(NULL);
+    }
+    ::PostMessage(this->executor_handle(), WD_REFRESH_MANAGED_ELEMENTS, NULL, NULL);
   }
 }
 

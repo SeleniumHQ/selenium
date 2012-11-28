@@ -9,6 +9,20 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.26.2.5
+=========
+ * Added new capability "enableElementCacheCleanup". When set to true, the
+   IE driver will clean the known-element cache of invalid elements after
+   every page load. This is intended to keep memory usage down and improve
+   performance. However, it is an intrusive change, so this capability is
+   provided temporarily to allow disabling this behavior if problems arise.
+   The default of this new capability is "true", meaning this behavior is
+   turned on by default.
+ * Refactored IE driver Element class to contain IsAttachedToDom() method,
+   and IECommandHandler::GetElement() to use it.
+ * Modified to avoid logging the tag name of the element if getting the tag
+   name fails in the IE driver. Fixes issue #4811.
+
 v2.26.2.4
 =========
  * Corrected fix to issue #4800 to better handle nested frames.

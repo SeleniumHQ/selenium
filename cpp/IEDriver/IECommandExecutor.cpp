@@ -121,6 +121,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->ignore_protected_mode_settings_ = false;
   this->ignore_zoom_setting_ = false;
   this->enable_native_events_ = true;
+  this->enable_element_cache_cleanup_ = true;
   this->enable_persistent_hover_ = true;
   this->unexpected_alert_behavior_ = IGNORE_UNEXPECTED_ALERTS;
   this->speed_ = 0;
@@ -336,6 +337,37 @@ LRESULT IECommandExecutor::OnGetQuitStatus(UINT uMsg,
                                            LPARAM lParam,
                                            BOOL& bHandled) {
   return this->is_quitting_ && this->managed_browsers_.size() > 0 ? 1 : 0;
+}
+
+LRESULT IECommandExecutor::OnRefreshManagedElements(UINT uMsg,
+                                                    WPARAM wParam,
+                                                    LPARAM lParam,
+                                                    BOOL& bHandled) {
+  if (this->enable_element_cache_cleanup_) {
+    // Logic explanation: We can't just remove the elements from the 
+    // managed elements map, within the loop as that would invalidate
+    // the iterator. So we add the keys to a vector, and use the vector
+    // to remove the elements from the map.
+    std::vector<std::string> bad_elements;
+    ElementMap::const_iterator managed_iterator = this->managed_elements_.begin();
+    ElementMap::const_iterator last_managed_element = this->managed_elements_.end();
+    for(; managed_iterator != last_managed_element; ++managed_iterator) {
+      if (!managed_iterator->second->IsAttachedToDom()) {
+        bad_elements.push_back(managed_iterator->first);
+      }
+    }
+
+    LOG(DEBUG) << "Refreshing managed element cache. Found "
+               << bad_elements.size()
+               << " to remove from cache.";
+  
+    std::vector<std::string>::const_iterator id_iterator = bad_elements.begin();
+    std::vector<std::string>::const_iterator last_id = bad_elements.end();
+    for (; id_iterator != last_id; ++id_iterator) {
+      this->RemoveManagedElement(*id_iterator);
+    }
+  }
+  return 0;
 }
 
 unsigned int WINAPI IECommandExecutor::WaitThreadProc(LPVOID lpParameter) {

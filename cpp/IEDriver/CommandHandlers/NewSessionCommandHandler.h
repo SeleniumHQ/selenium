@@ -26,6 +26,7 @@
 #define ELEMENT_SCROLL_BEHAVIOR_CAPABILITY "elementScrollBehavior"
 #define UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY "unexpectedAlertBehaviour"
 #define ENABLE_PERSISTENT_HOVER "enablePersistentHover"
+#define ENABLE_ELEMENT_CACHE_CLEANUP "enableElementCacheCleanup"
 
 namespace webdriver {
 
@@ -59,6 +60,8 @@ class NewSessionCommandHandler : public IECommandHandler {
       mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
       Json::Value enable_persistent_hover = it->second.get(ENABLE_PERSISTENT_HOVER, true);
       mutable_executor.set_enable_persistent_hover(enable_persistent_hover.asBool());
+      Json::Value enable_element_cache_cleanup = it->second.get(ENABLE_ELEMENT_CACHE_CLEANUP, true);
+      mutable_executor.set_enable_element_cache_cleanup(enable_element_cache_cleanup.asBool());
     }
     std::string create_browser_error_message = "";
     int result_code = mutable_executor.CreateNewBrowser(&create_browser_error_message);
