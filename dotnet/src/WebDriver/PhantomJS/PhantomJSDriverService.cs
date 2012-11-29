@@ -29,11 +29,9 @@ namespace OpenQA.Selenium.PhantomJS
     /// <summary>
     /// Exposes the service provided by the native PhantomJS executable and GhostDriver JavaScript library.
     /// </summary>
-    internal sealed class PhantomJSDriverService : DriverService
+    public sealed class PhantomJSDriverService : DriverService
     {
         private const string PhantomJSDriverServiceFileName = "PhantomJS.exe";
-
-        private string ghostDriverPath = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the PhantomJSDriverService class.
@@ -83,17 +81,15 @@ namespace OpenQA.Selenium.PhantomJS
                 currentDirectory = Path.GetDirectoryName(uri.LocalPath);
             }
 
-            return CreateDefaultService(currentDirectory, currentDirectory);
+            return CreateDefaultService(currentDirectory);
         }
 
         /// <summary>
-        /// Creates a default instance of the PhantomJSDriverService using a specified path to the PhantomJS executable
-        /// and the GhostDriver JavaScript library.
+        /// Creates a default instance of the PhantomJSDriverService using a specified path to the PhantomJS executable.
         /// </summary>
         /// <param name="driverPath">The directory containing the PhantomJS executable.</param>
-        /// <param name="ghostDriverPath">The directory containing the GhostDriver JavaScript library's main.js file.</param>
-        /// <returns>A InternetExplorerDriverService using a random port.</returns>
-        public static PhantomJSDriverService CreateDefaultService(string driverPath, string ghostDriverPath)
+        /// <returns>A PhantomJSDriverService using a random port.</returns>
+        public static PhantomJSDriverService CreateDefaultService(string driverPath)
         {
             if (string.IsNullOrEmpty(driverPath))
             {

@@ -65,7 +65,7 @@ namespace OpenQA.Selenium.PhantomJS
     /// }
     /// </code>
     /// </example>
-    internal class PhantomJSDriver : RemoteWebDriver, ITakesScreenshot
+    public class PhantomJSDriver : RemoteWebDriver, ITakesScreenshot
     {
         /// <summary>
         /// Initializes a new instance of the PhantomJSDriver class.
@@ -85,12 +85,11 @@ namespace OpenQA.Selenium.PhantomJS
         }
 
         /// <summary>
-        /// Initializes a new instance of the PhantomJSDriver class using the specified path to the directory containing IEDriverServer.exe.
+        /// Initializes a new instance of the PhantomJSDriver class using the specified path to the directory containing PhantomJS.exe.
         /// </summary>
         /// <param name="phantomJSDriverServerDirectory">The full path to the directory containing PhantomJS.exe.</param>
-        /// <param name="ghostDriverMainDirectory">The full path to the directory containing the GhostDriver JavaScript library's main.js file.</param>
-        public PhantomJSDriver(string phantomJSDriverServerDirectory, string ghostDriverMainDirectory)
-            : this(phantomJSDriverServerDirectory, ghostDriverMainDirectory, new PhantomJSOptions())
+        public PhantomJSDriver(string phantomJSDriverServerDirectory)
+            : this(phantomJSDriverServerDirectory, new PhantomJSOptions())
         {
         }
 
@@ -98,10 +97,9 @@ namespace OpenQA.Selenium.PhantomJS
         /// Initializes a new instance of the PhantomJSDriver class using the specified path to the directory containing IEDriverServer.exe and command timeout.
         /// </summary>
         /// <param name="phantomJSDriverServerDirectory">The full path to the directory containing PhantomJS.exe.</param>
-        /// <param name="ghostDriverMainDirectory">The full path to the directory containing the GhostDriver JavaScript library's main.js file.</param>
         /// <param name="options">The <see cref="PhantomJSOptions"/> used to initialize the driver.</param>
-        public PhantomJSDriver(string phantomJSDriverServerDirectory, string ghostDriverMainDirectory, PhantomJSOptions options)
-            : this(phantomJSDriverServerDirectory, ghostDriverMainDirectory, options, TimeSpan.FromSeconds(60))
+        public PhantomJSDriver(string phantomJSDriverServerDirectory, PhantomJSOptions options)
+            : this(phantomJSDriverServerDirectory, options, TimeSpan.FromSeconds(60))
         {
         }
 
@@ -109,11 +107,10 @@ namespace OpenQA.Selenium.PhantomJS
         /// Initializes a new instance of the PhantomJSDriver class using the specified path to the directory containing IEDriverServer.exe and command timeout.
         /// </summary>
         /// <param name="phantomJSDriverServerDirectory">The full path to the directory containing PhantomJS.exe.</param>
-        /// <param name="ghostDriverMainDirectory">The full path to the directory containing the GhostDriver JavaScript library's main.js file.</param>
         /// <param name="options">The <see cref="PhantomJSOptions"/> used to initialize the driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        public PhantomJSDriver(string phantomJSDriverServerDirectory, string ghostDriverMainDirectory, PhantomJSOptions options, TimeSpan commandTimeout)
-            : this(PhantomJSDriverService.CreateDefaultService(phantomJSDriverServerDirectory, ghostDriverMainDirectory), options, commandTimeout)
+        public PhantomJSDriver(string phantomJSDriverServerDirectory, PhantomJSOptions options, TimeSpan commandTimeout)
+            : this(PhantomJSDriverService.CreateDefaultService(phantomJSDriverServerDirectory), options, commandTimeout)
         {
         }
 

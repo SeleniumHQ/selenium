@@ -28,14 +28,13 @@ namespace OpenQA.Selenium.PhantomJS
     /// </summary>
     /// <example>
     /// <code>
-    /// InternetExplorerOptions options = new InternetExplorerOptions();
-    /// options.IntroduceInstabilityByIgnoringProtectedModeSettings = true;
+    /// PhantomJSOptions options = new PhantomJSOptions();
     /// </code>
     /// <para></para>
-    /// <para>For use with InternetExplorerDriver:</para>
+    /// <para>For use with PhantomJSDriver:</para>
     /// <para></para>
     /// <code>
-    /// InternetExplorerDriver driver = new InternetExplorerDriver(options);
+    /// PhantomJSDriver driver = new PhantomJSDriver(options);
     /// </code>
     /// <para></para>
     /// <para>For use with RemoteWebDriver:</para>
@@ -44,14 +43,14 @@ namespace OpenQA.Selenium.PhantomJS
     /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
     /// </code>
     /// </example>
-    internal class PhantomJSOptions
+    public class PhantomJSOptions
     {
         /// <summary>
         /// Returns DesiredCapabilities for PhantomJS with these options included as
         /// capabilities. This copies the options. Further changes will not be
         /// reflected in the returned capabilities.
         /// </summary>
-        /// <returns>The DesiredCapabilities for IE with these options.</returns>
+        /// <returns>The DesiredCapabilities for PhantomJS with these options.</returns>
         public ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = DesiredCapabilities.PhantomJS();
