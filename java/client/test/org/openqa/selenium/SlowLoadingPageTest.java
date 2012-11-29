@@ -48,7 +48,7 @@ public class SlowLoadingPageTest extends JUnit4TestBase {
     long start = System.currentTimeMillis();
     driver.get(pages.slowIframes);
     long now = System.currentTimeMillis();
-    assertElapsed(LOAD_TIME_IN_SECONDS * 1000, now - start);
+    assertElapsed(3000, now - start);
   }
 
   @Ignore(value = {IE, IPHONE, SELENESE, OPERA},
