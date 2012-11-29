@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 public class CreateCookie extends SeleneseCommand<Void> {
   private final Pattern NAME_VALUE_PAIR_PATTERN = 
-      Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^=\\[\\]\\(\\),\"\\/\\?@:;]*)");
+      Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^\\[\\]\\(\\),\"\\/\\?@:;]*)");
   private static final Pattern MAX_AGE_PATTERN = Pattern.compile("max_age=(\\d+)");
   private static final Pattern PATH_PATTERN = Pattern.compile("path=([^\\s,]+)[,]?");
 
