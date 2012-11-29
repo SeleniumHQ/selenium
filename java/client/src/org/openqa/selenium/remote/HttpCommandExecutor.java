@@ -59,6 +59,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import static org.apache.http.protocol.ExecutionContext.HTTP_TARGET_HOST;
@@ -416,7 +417,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       try {
         if (entity != null) {
           content = EntityUtils.toByteArray(entity);
-          charSet = ContentType.getOrDefault(entity).getCharset().name();
+          Charset entityCharset = ContentType.getOrDefault(entity).getCharset();
+          charSet = entityCharset != null ? entityCharset.name() : null;
         } else {
           content = new byte[0];
           charSet = null;
