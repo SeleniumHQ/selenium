@@ -336,15 +336,11 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
-        /// Adds an action to current list of actions to be performed.
+        /// Gets the <see cref="ILocatable"/> instance of the specified <see cref="IWebElement"/>.
         /// </summary>
-        /// <param name="actionToAdd">The <see cref="IAction"/> to be added.</param>
-        protected void AddAction(IAction actionToAdd)
-        {
-            this.action.AddAction(actionToAdd);
-        }
-
-        private static ILocatable GetLocatableFromElement(IWebElement element)
+        /// <param name="element">The <see cref="IWebElement"/> to get the location of.</param>
+        /// <returns>The <see cref="ILocatable"/> of the <see cref="IWebElement"/>.</returns>
+        protected static ILocatable GetLocatableFromElement(IWebElement element)
         {
             if (element == null)
             {
@@ -373,6 +369,15 @@ namespace OpenQA.Selenium.Interactions
             }
 
             return target;
+        }
+
+        /// <summary>
+        /// Adds an action to current list of actions to be performed.
+        /// </summary>
+        /// <param name="actionToAdd">The <see cref="IAction"/> to be added.</param>
+        protected void AddAction(IAction actionToAdd)
+        {
+            this.action.AddAction(actionToAdd);
         }
     }
 }

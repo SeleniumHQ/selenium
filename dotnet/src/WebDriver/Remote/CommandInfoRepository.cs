@@ -156,6 +156,16 @@ namespace OpenQA.Selenium.Remote
             this.commandDictionary.Add(DriverCommand.MouseMoveTo, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/moveto"));
             this.commandDictionary.Add(DriverCommand.SendKeysToActiveElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/keys"));
 
+            // Touch screen interactions commands
+            this.commandDictionary.Add(DriverCommand.TouchSingleTap, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/touch/click"));
+            this.commandDictionary.Add(DriverCommand.TouchPress, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/touch/down"));
+            this.commandDictionary.Add(DriverCommand.TouchRelease, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/touch/up"));
+            this.commandDictionary.Add(DriverCommand.TouchMove, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/touch/move"));
+            this.commandDictionary.Add(DriverCommand.TouchScroll, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/touch/scroll"));
+            this.commandDictionary.Add(DriverCommand.TouchDoubleTap, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/touch/doubleclick"));
+            this.commandDictionary.Add(DriverCommand.TouchLongPress, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/touch/longclick"));
+            this.commandDictionary.Add(DriverCommand.TouchFlick, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/touch/flick"));
+
             this.commandDictionary.Add(DriverCommand.UploadFile, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/file"));
         }
         #endregion

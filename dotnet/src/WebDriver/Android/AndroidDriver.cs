@@ -60,8 +60,10 @@ namespace OpenQA.Selenium.Android
     /// Using the Android driver requires the Android device or emulator
     /// to be running, and the WebDriver application be active on the device.
     /// </remarks>
-    public class AndroidDriver : RemoteWebDriver, ITakesScreenshot, IRotatable
+    public class AndroidDriver : RemoteWebDriver, ITakesScreenshot, IRotatable, IHasTouchScreen
     {
+        private ITouchScreen touchScreen;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AndroidDriver"/> class.
         /// </summary>
@@ -88,7 +90,18 @@ namespace OpenQA.Selenium.Android
         public AndroidDriver(Uri remoteAddress) :
             base(remoteAddress, GetAndroidCapabilities())
         {
+            this.touchScreen = new RemoteTouchScreen(this);
         }
+
+        #region IHasTouchScreen Members
+        /// <summary>
+        /// Gets the device representing the touch screen.
+        /// </summary>
+        public ITouchScreen TouchScreen
+        {
+            get { return this.touchScreen; }
+        }
+        #endregion
 
         #region IRotatable Members
         /// <summary>

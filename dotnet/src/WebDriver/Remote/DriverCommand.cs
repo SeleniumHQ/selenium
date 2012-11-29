@@ -357,5 +357,45 @@ namespace OpenQA.Selenium.Remote
         /// Represents the UploadFile command.
         /// </summary>
         public static readonly string UploadFile = "uploadFile";
+
+        /// <summary>
+        /// Represents the TouchSingleTap command.
+        /// </summary>
+        public static readonly string TouchSingleTap = "touchSingleTap";
+
+        /// <summary>
+        /// Represents the TouchPress command.
+        /// </summary>
+        public static readonly string TouchPress = "touchDown";
+
+        /// <summary>
+        /// Represents the TouchRelease command.
+        /// </summary>
+        public static readonly string TouchRelease = "touchUp";
+
+        /// <summary>
+        /// Represents the TouchMove command.
+        /// </summary>
+        public static readonly string TouchMove = "touchMove";
+
+        /// <summary>
+        /// Represents the TouchScroll command.
+        /// </summary>
+        public static readonly string TouchScroll = "touchScroll";
+
+        /// <summary>
+        /// Represents the TouchDoubleTap command.
+        /// </summary>
+        public static readonly string TouchDoubleTap = "touchDoubleTap";
+
+        /// <summary>
+        /// Represents the TouchLongPress command.
+        /// </summary>
+        public static readonly string TouchLongPress = "touchLongPress";
+
+        /// <summary>
+        /// Represents the TouchFlick command.
+        /// </summary>
+        public static readonly string TouchFlick = "touchFlick";
     }
 }
