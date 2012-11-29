@@ -36,8 +36,13 @@ public class SleepingServlet extends HttpServlet {
     long timeout = Long.valueOf(duration) * 1000;
 
     reallySleep(timeout);
-
+	
+	
     response.setContentType("text/html");
+	//Dont Cache Anything  at the browser 
+    response.setHeader("Cache-Control","no-cache"); 
+    response.setHeader("Pragma","no-cache"); 
+    response.setDateHeader ("Expires", 0); 
 
     response.getOutputStream().println(
         String.format(RESPONSE_STRING_FORMAT, duration));
