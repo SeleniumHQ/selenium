@@ -226,7 +226,7 @@ describe "Driver" do
     end
   end
 
-  not_compliant_on :browser => [:opera, :iphone, :android] do
+  not_compliant_on :browser => [:opera, :iphone, :android, :phantomjs] do
     describe "execute async script" do
       before {
         driver.manage.timeouts.script_timeout = 0
@@ -238,11 +238,9 @@ describe "Driver" do
         result.should == [nil, 123, 'abc', true, false]
       end
 
-      not_compliant_on :browser => :phantomjs do
-        it "should be able to pass multiple arguments to async scripts" do
-          result = driver.execute_async_script "arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2
-          result.should == 3
-        end
+      it "should be able to pass multiple arguments to async scripts" do
+        result = driver.execute_async_script "arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2
+        result.should == 3
       end
 
       it "times out if the callback is not invoked" do
