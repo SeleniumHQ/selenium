@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using OpenQA.Selenium.Internal;
 
@@ -32,7 +31,7 @@ namespace OpenQA.Selenium.Chrome
     public sealed class ChromeDriverService : DriverService
     {
         private const string ChromeDriverServiceFileName = "chromedriver.exe";
-        private const string ChromeDriverDownloadUrl = "http://code.google.com/p/chromium/downloads/list";
+        private static readonly Uri ChromeDriverDownloadUrl = new Uri("http://code.google.com/p/chromium/downloads/list");
         private string logPath = string.Empty;
 
         /// <summary>
@@ -41,7 +40,7 @@ namespace OpenQA.Selenium.Chrome
         /// <param name="executable">The full path to the ChromeDriver executable.</param>
         /// <param name="port">The port on which the ChromeDriver executable should listen.</param>
         private ChromeDriverService(string executable, int port)
-            : base(executable, port)
+            : base(executable, port, ChromeDriverServiceFileName, ChromeDriverDownloadUrl)
         {
         }
 
@@ -52,14 +51,6 @@ namespace OpenQA.Selenium.Chrome
         {
             get { return this.logPath; }
             set { this.logPath = value; }
-        }
-
-        /// <summary>
-        /// Gets the executable file name of the driver service.
-        /// </summary>
-        protected override string DriverServiceExecutableName
-        {
-            get { return ChromeDriverServiceFileName; }
         }
 
         /// <summary>
@@ -90,18 +81,8 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>A ChromeDriverService that implements default settings.</returns>
         public static ChromeDriverService CreateDefaultService()
         {
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string currentDirectory = Path.GetDirectoryName(executingAssembly.Location);
-
-            // If we're shadow copying, fiddle with 
-            // the codebase instead 
-            if (AppDomain.CurrentDomain.ShadowCopyFiles)
-            {
-                Uri uri = new Uri(executingAssembly.CodeBase);
-                currentDirectory = Path.GetDirectoryName(uri.LocalPath);
-            }
-
-            return CreateDefaultService(currentDirectory);
+            string serviceDirectory = DriverService.FindDriverServiceExecutable(ChromeDriverServiceFileName, ChromeDriverDownloadUrl);
+            return CreateDefaultService(serviceDirectory);
         }
 
         /// <summary>
@@ -111,18 +92,7 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>A ChromeDriverService using a random port.</returns>
         public static ChromeDriverService CreateDefaultService(string driverPath)
         {
-            if (string.IsNullOrEmpty(driverPath))
-            {
-                throw new ArgumentException("Path to locate driver executable cannot be null or empty.", "driverPath");
-            }
-
-            string executablePath = Path.Combine(driverPath, ChromeDriverServiceFileName);
-            if (!File.Exists(executablePath))
-            {
-                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist. The driver can be downloaded at {1}", executablePath, ChromeDriverDownloadUrl));
-            }
-
-            return new ChromeDriverService(executablePath, PortUtilities.FindFreePort());
+            return new ChromeDriverService(driverPath, PortUtilities.FindFreePort());
         }
     }
 }

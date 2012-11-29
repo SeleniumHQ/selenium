@@ -25,6 +25,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Security.Permissions;
 using System.Text;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
@@ -34,6 +35,7 @@ namespace OpenQA.Selenium
     public abstract class DriverService : IDisposable
     {
         private string driverServicePath;
+        private string driverServiceExecutableName;
         private int driverServicePort;
         private bool silent;
         private Process driverServiceProcess;
@@ -41,11 +43,31 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Initializes a new instance of the DriverService class.
         /// </summary>
-        /// <param name="executable">The full path to the executable providing the service to drive the browser.</param>
+        /// <param name="servicePath">The full path to the directory containing the executable providing the service to drive the browser.</param>
         /// <param name="port">The port on which the driver executable should listen.</param>
-        protected DriverService(string executable, int port)
+        /// <param name="driverServiceExecutableName">The file name of the driver service executable.</param>
+        /// <param name="driverServiceDownloadUrl">A URL at which the driver service executable may be downloaded.</param>
+        /// <exception cref="ArgumentException">
+        /// If the path specified is <see langword="null"/> or an empty string.
+        /// </exception>
+        /// <exception cref="DriverServiceNotFoundException">
+        /// If the specified driver service executable does not exist in the specified directory.
+        /// </exception>
+        protected DriverService(string servicePath, int port, string driverServiceExecutableName, Uri driverServiceDownloadUrl)
         {
-            this.driverServicePath = executable;
+            if (string.IsNullOrEmpty(servicePath))
+            {
+                throw new ArgumentException("Path to locate driver executable cannot be null or empty.", "servicePath");
+            }
+
+            string executablePath = Path.Combine(servicePath, driverServiceExecutableName);
+            if (!File.Exists(executablePath))
+            {
+                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist. The driver can be downloaded at {1}", executablePath, driverServiceDownloadUrl));
+            }
+
+            this.driverServicePath = servicePath;
+            this.driverServiceExecutableName = driverServiceExecutableName;
             this.driverServicePort = port;
         }
 
@@ -89,9 +111,9 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the executable file name of the driver service.
         /// </summary>
-        protected abstract string DriverServiceExecutableName
+        protected string DriverServiceExecutableName
         {
-            get;
+            get { return this.driverServiceExecutableName; }
         }
 
         /// <summary>
@@ -102,7 +124,6 @@ namespace OpenQA.Selenium
             get { return string.Format(CultureInfo.InvariantCulture, "-port={0}", this.driverServicePort); }
         }
 
-        #region IDisposable Members
         /// <summary>
         /// Releases all resources associated with this <see cref="DriverService"/>.
         /// </summary>
@@ -111,7 +132,6 @@ namespace OpenQA.Selenium
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
-        #endregion
 
         /// <summary>
         /// Starts the DriverService.
@@ -120,7 +140,7 @@ namespace OpenQA.Selenium
         public void Start()
         {
             this.driverServiceProcess = new Process();
-            this.driverServiceProcess.StartInfo.FileName = this.driverServicePath;
+            this.driverServiceProcess.StartInfo.FileName = Path.Combine(this.driverServicePath, this.driverServiceExecutableName);
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.Start();
@@ -139,6 +159,26 @@ namespace OpenQA.Selenium
                 {
                 }
             }
+        }
+
+        /// <summary>
+        /// Finds the specified driver service executable.
+        /// </summary>
+        /// <param name="executableName">The file name of the executable to find.</param>
+        /// <param name="downloadUrl">A URL at which the driver service executable may be downloaded.</param>
+        /// <returns>The directory containing the driver service exectuable.</returns>
+        /// <exception cref="DriverServiceNotFoundException">
+        /// If the specified driver service executable does not exist in the current directory or in a directory on the system path.
+        /// </exception>
+        protected static string FindDriverServiceExecutable(string executableName, Uri downloadUrl)
+        {
+            string serviceDirectory = FileUtilities.FindFile(executableName);
+            if (string.IsNullOrEmpty(serviceDirectory))
+            {
+                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The {0} file does not exist in the current directory or in a directory on the PATH environment variable. The driver can be downloaded at {1}.", executableName, downloadUrl));
+            }
+
+            return serviceDirectory;
         }
 
         /// <summary>

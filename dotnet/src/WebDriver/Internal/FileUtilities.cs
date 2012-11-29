@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace OpenQA.Selenium.Internal
@@ -101,6 +102,62 @@ namespace OpenQA.Selenium.Internal
             {
                 Console.WriteLine("Unable to delete directory '{0}'", directoryToDelete);
             }
+        }
+
+        /// <summary>
+        /// Searches for a file with the specified name.
+        /// </summary>
+        /// <param name="fileName">The name of the file to find.</param>
+        /// <returns>The full path to the directory where the file can be found,
+        /// or an empty string if the file does not exist in the locations searched.</returns>
+        /// <remarks>
+        /// This method looks first in the directory of the currently executing
+        /// assembly. If the specified file is not there, the method then looks in
+        /// each directory on the PATH environment variable, in order.
+        /// </remarks>
+        public static string FindFile(string fileName)
+        {
+            // Look first in the same directory as the executing assembly
+            string currentDirectory = GetCurrentDirectory();
+
+            // If it's not in the same directory as the executing assembly,
+            // try looking in the system path.
+            if (!File.Exists(Path.Combine(currentDirectory, fileName)))
+            {
+                string systemPath = Environment.GetEnvironmentVariable("PATH");
+                string[] directories = systemPath.Split(Path.PathSeparator);
+                foreach (string directory in directories)
+                {
+                    if (File.Exists(Path.Combine(directory, fileName)))
+                    {
+                        currentDirectory = directory;
+                        return currentDirectory;
+                    }
+                }
+            }
+
+            // Note that if it wasn't found on the system path, currentDirectory is still
+            // set to the same directory as the executing assembly.
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Gets the directory of the currently executing assembly.
+        /// </summary>
+        /// <returns>The directory of the currently executing assembly.</returns>
+        public static string GetCurrentDirectory()
+        {
+            Assembly executingAssembly = Assembly.GetExecutingAssembly();
+            string currentDirectory = Path.GetDirectoryName(executingAssembly.Location);
+
+            // If we're shadow copying, get the directory from the codebase instead 
+            if (AppDomain.CurrentDomain.ShadowCopyFiles)
+            {
+                Uri uri = new Uri(executingAssembly.CodeBase);
+                currentDirectory = Path.GetDirectoryName(uri.LocalPath);
+            }
+
+            return currentDirectory;
         }
     }
 }

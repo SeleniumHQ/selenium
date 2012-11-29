@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using OpenQA.Selenium.Internal;
 
@@ -32,7 +31,7 @@ namespace OpenQA.Selenium.IE
     public sealed class InternetExplorerDriverService : DriverService
     {
         private const string InternetExplorerDriverServiceFileName = "IEDriverServer.exe";
-        private const string InternetExplorerDriverDownloadUrl = "http://code.google.com/p/selenium/downloads/list";
+        private static readonly Uri InternetExplorerDriverDownloadUrl = new Uri("http://code.google.com/p/selenium/downloads/list");
 
         private InternetExplorerDriverLogLevel loggingLevel = InternetExplorerDriverLogLevel.Fatal;
         private string host = string.Empty;
@@ -45,7 +44,7 @@ namespace OpenQA.Selenium.IE
         /// <param name="executable">The full path to the IEDriverServer executable.</param>
         /// <param name="port">The port on which the IEDriverServer executable should listen.</param>
         private InternetExplorerDriverService(string executable, int port)
-            : base(executable, port)
+            : base(executable, port, InternetExplorerDriverServiceFileName, InternetExplorerDriverDownloadUrl)
         {
         }
 
@@ -92,14 +91,6 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets the executable file name of the driver service.
-        /// </summary>
-        protected override string DriverServiceExecutableName
-        {
-            get { return InternetExplorerDriverServiceFileName; }
-        }
-
-        /// <summary>
         /// Gets the command-line arguments for the driver service.
         /// </summary>
         protected override string CommandLineArguments
@@ -142,18 +133,8 @@ namespace OpenQA.Selenium.IE
         /// <returns>A InternetExplorerDriverService that implements default settings.</returns>
         public static InternetExplorerDriverService CreateDefaultService()
         {
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string currentDirectory = Path.GetDirectoryName(executingAssembly.Location);
-
-            // If we're shadow copying, fiddle with 
-            // the codebase instead 
-            if (AppDomain.CurrentDomain.ShadowCopyFiles)
-            {
-                Uri uri = new Uri(executingAssembly.CodeBase);
-                currentDirectory = Path.GetDirectoryName(uri.LocalPath);
-            }
-
-            return CreateDefaultService(currentDirectory);
+            string serviceDirectory = DriverService.FindDriverServiceExecutable(InternetExplorerDriverServiceFileName, InternetExplorerDriverDownloadUrl);
+            return CreateDefaultService(serviceDirectory);
         }
 
         /// <summary>
@@ -163,18 +144,7 @@ namespace OpenQA.Selenium.IE
         /// <returns>A InternetExplorerDriverService using a random port.</returns>
         public static InternetExplorerDriverService CreateDefaultService(string driverPath)
         {
-            if (string.IsNullOrEmpty(driverPath))
-            {
-                throw new ArgumentException("Path to locate driver executable cannot be null or empty.", "driverPath");
-            }
-
-            string executablePath = Path.Combine(driverPath, InternetExplorerDriverServiceFileName);
-            if (!File.Exists(executablePath))
-            {
-                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist. The driver can be downloaded at {1}", executablePath, InternetExplorerDriverDownloadUrl));
-            }
-
-            return new InternetExplorerDriverService(executablePath, PortUtilities.FindFreePort());
+            return new InternetExplorerDriverService(driverPath, PortUtilities.FindFreePort());
         }
     }
 }

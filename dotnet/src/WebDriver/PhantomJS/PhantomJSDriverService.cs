@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using OpenQA.Selenium.Internal;
 
@@ -32,6 +31,7 @@ namespace OpenQA.Selenium.PhantomJS
     public sealed class PhantomJSDriverService : DriverService
     {
         private const string PhantomJSDriverServiceFileName = "PhantomJS.exe";
+        private static readonly Uri PhantomJSDownloadUrl = new Uri("http://phantomjs.org/download.html");
 
         /// <summary>
         /// Initializes a new instance of the PhantomJSDriverService class.
@@ -39,16 +39,8 @@ namespace OpenQA.Selenium.PhantomJS
         /// <param name="executable">The full path to the PhantomJS executable.</param>
         /// <param name="port">The port on which the IEDriverServer executable should listen.</param>
         private PhantomJSDriverService(string executable, int port)
-            : base(executable, port)
+            : base(executable, port, PhantomJSDriverServiceFileName, PhantomJSDownloadUrl)
         {
-        }
-
-        /// <summary>
-        /// Gets the executable file name of the driver service.
-        /// </summary>
-        protected override string DriverServiceExecutableName
-        {
-            get { return PhantomJSDriverServiceFileName; }
         }
 
         /// <summary>
@@ -70,18 +62,8 @@ namespace OpenQA.Selenium.PhantomJS
         /// <returns>A PhantomJSDriverService that implements default settings.</returns>
         public static PhantomJSDriverService CreateDefaultService()
         {
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string currentDirectory = Path.GetDirectoryName(executingAssembly.Location);
-
-            // If we're shadow copying, fiddle with 
-            // the codebase instead 
-            if (AppDomain.CurrentDomain.ShadowCopyFiles)
-            {
-                Uri uri = new Uri(executingAssembly.CodeBase);
-                currentDirectory = Path.GetDirectoryName(uri.LocalPath);
-            }
-
-            return CreateDefaultService(currentDirectory);
+            string serviceDirectory = DriverService.FindDriverServiceExecutable(PhantomJSDriverServiceFileName, PhantomJSDownloadUrl);
+            return CreateDefaultService(serviceDirectory);
         }
 
         /// <summary>
@@ -91,18 +73,7 @@ namespace OpenQA.Selenium.PhantomJS
         /// <returns>A PhantomJSDriverService using a random port.</returns>
         public static PhantomJSDriverService CreateDefaultService(string driverPath)
         {
-            if (string.IsNullOrEmpty(driverPath))
-            {
-                throw new ArgumentException("Path to locate driver executable cannot be null or empty.", "driverPath");
-            }
-
-            string executablePath = Path.Combine(driverPath, PhantomJSDriverServiceFileName);
-            if (!File.Exists(executablePath))
-            {
-                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The PhantomJS file {0} does not exist.", executablePath));
-            }
-
-            return new PhantomJSDriverService(executablePath, PortUtilities.FindFreePort());
+            return new PhantomJSDriverService(driverPath, PortUtilities.FindFreePort());
         }
     }
 }
