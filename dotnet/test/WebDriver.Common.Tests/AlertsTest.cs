@@ -71,6 +71,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldGetTextOfAlertOpenedInSetTimeout()
         {
             driver.Url = alertsPage;
@@ -294,6 +295,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldAllowUsersToAcceptAnAlertInANestedFrame()
         {
             driver.Url = alertsPage;
@@ -311,6 +313,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert()
         {
             driver.Url = alertsPage;
@@ -422,6 +425,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldHandleAlertOnPageLoad()
         {
             driver.Url = alertsPage;
@@ -440,6 +444,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldHandleAlertOnPageLoadUsingGet()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnLoad.html");
@@ -457,6 +462,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Firefox, "Firefox waits too long, may be hangs")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldNotHandleAlertInAnotherWindow()
         {
             driver.Url = alertsPage;
@@ -497,6 +503,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldHandleAlertOnPageUnload()
         {
             driver.Url = alertsPage;
@@ -517,6 +524,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android, "alerts do not pop up when a window is closed")]
         [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldHandleAlertOnWindowClose()
         {
             driver.Url = alertsPage;
@@ -551,6 +559,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.Safari)]
         public void IncludesAlertInUnhandledAlertException()
         {
             driver.Url = alertsPage;
@@ -574,6 +583,7 @@ namespace OpenQA.Selenium
         [NeedsFreshDriver(AfterTest = true)]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Safari)]
         public void CanQuitWhenAnAlertIsPresent()
         {
             driver.Url = alertsPage;
@@ -584,6 +594,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldHandleOnBeforeUnloadAlert()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("onBeforeUnload.html");

@@ -8,6 +8,7 @@ namespace OpenQA.Selenium
     public class DriverDisposalTest : DriverTestFixture
     {
         [Test]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldOpenAndCloseBrowserRepeatedly()
         {
             for (int i = 0; i < 5; i++)
@@ -21,6 +22,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(AfterTest = true)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToStartNewDriverAfterCallingCloseOnOnlyOpenWindow()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
@@ -37,6 +39,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(AfterTest = true)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToCallQuitAfterCallingCloseOnOnlyOpenWindow()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
@@ -52,6 +55,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(AfterTest = true)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToCallDisposeAfterQuit()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
@@ -67,6 +71,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox doesn't shut its server down immediately upon calling Close(), so a subsequent call could succeed.")]
+        [IgnoreBrowser(Browser.Safari)]
         [NeedsFreshDriver(AfterTest = true)]
         public void ShouldNotBeAbleToCallDriverMethodAfterCallingCloseOnOnlyOpenWindow()
         {
@@ -94,6 +99,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(AfterTest = true)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldNotBeAbleToCallDriverMethodAfterCallingQuit()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
@@ -117,6 +123,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(AfterTest = true)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToDisposeOfDriver()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
@@ -127,6 +134,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(AfterTest = true)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToCallDisposeConsecutively()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
@@ -138,6 +146,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(AfterTest = true)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToCallQuitConsecutively()
         {
             driver.Url = simpleTestPage;
