@@ -78,9 +78,18 @@ safaridriver.inject.page.init = function() {
   safaridriver.inject.page.LOG_.info('Sending ' + message);
   message.send(window);
 
-  window.alert = safaridriver.inject.page.wrappedAlert_;
-  window.confirm = safaridriver.inject.page.wrappedConfirm_;
-  window.prompt = safaridriver.inject.page.wrappedPrompt_;
+  wrapDialogFunction('alert', safaridriver.inject.page.wrappedAlert_);
+  wrapDialogFunction('confirm', safaridriver.inject.page.wrappedConfirm_);
+  wrapDialogFunction('prompt', safaridriver.inject.page.wrappedPrompt_);
+
+  function wrapDialogFunction(name, newFn) {
+    var oldFn = window[name];
+    window[name] = newFn;
+    window.constructor.prototype[name] = newFn;
+    window[name].toString = function() {
+      return oldFn.toString();
+    };
+  }
 };
 goog.exportSymbol('init', safaridriver.inject.page.init);
 
