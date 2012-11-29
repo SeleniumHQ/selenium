@@ -38,15 +38,17 @@ module Selenium
           }
         end
 
-        it "context clicks an element" do
-          driver.navigate.to url_for("javascriptPage.html")
-          element = driver.find_element(:id, 'doubleClickField')
+        not_compliant_on :browser => :phantomjs do
+          it "context clicks an element" do
+            driver.navigate.to url_for("javascriptPage.html")
+            element = driver.find_element(:id, 'doubleClickField')
 
-          driver.mouse.context_click element
+            driver.mouse.context_click element
 
-          wait(5).until {
-            element.attribute(:value) == 'ContextClicked'
-          }
+            wait(5).until {
+              element.attribute(:value) == 'ContextClicked'
+            }
+          end
         end
       end
 

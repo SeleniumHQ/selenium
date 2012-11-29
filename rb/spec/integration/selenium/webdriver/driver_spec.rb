@@ -238,9 +238,11 @@ describe "Driver" do
         result.should == [nil, 123, 'abc', true, false]
       end
 
-      it "should be able to pass multiple arguments to async scripts" do
-        result = driver.execute_async_script "arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2
-        result.should == 3
+      not_compliant_on :browser => :phantomjs do
+        it "should be able to pass multiple arguments to async scripts" do
+          result = driver.execute_async_script "arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2
+          result.should == 3
+        end
       end
 
       it "times out if the callback is not invoked" do

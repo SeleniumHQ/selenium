@@ -29,7 +29,7 @@ module Selenium
               headers["Content-Length"] = payload.bytesize.to_s if [:post, :put].include?(verb)
 
               if $DEBUG
-                puts "   >>> #{payload}"
+                puts "   >>> #{url} | #{payload}"
                 puts "     > #{headers.inspect}"
               end
             elsif verb == :post

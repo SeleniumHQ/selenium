@@ -242,7 +242,8 @@ task :test_rb => [
   "//rb:rc-client-integration-test",
  ("//rb:ie-test" if windows?),
   "//rb:chrome-test",
-  "//rb:safari-test"
+  "//rb:safari-test",
+  "//rb:phantomjs-test"
 ].compact
 
 task :test_py => [ :py_prep_for_install_release, "//py:firefox_test:run" ]

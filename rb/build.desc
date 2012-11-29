@@ -198,6 +198,26 @@ ruby_test(name = "opera",
   ]
 )
 
+ruby_library(name = "phantomjs",
+  srcs = [
+    "lib/selenium/webdriver/phantomjs/**/*.rb",
+    "lib/selenium/webdriver/phantomjs.rb"
+  ],
+  deps = [
+    ":common"
+  ]
+)
+
+ruby_test(name = "phantomjs",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/phantomjs/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    ":remote"
+  ]
+)
 ruby_library(name = "remote",
   srcs = [
     "lib/selenium/webdriver/remote/**/*.rb",

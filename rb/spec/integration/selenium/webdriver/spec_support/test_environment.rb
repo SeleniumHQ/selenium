@@ -119,6 +119,8 @@ module Selenium
                        create_iphone_driver
                      when :safari
                        create_safari_driver
+                     when :phantomjs
+                       create_phantomjs_driver
                      else
                        WebDriver::Driver.for driver
                      end
@@ -192,6 +194,15 @@ module Selenium
           WebDriver::Driver.for :chrome,
                                 :native_events => native_events?
                                 # :http_client   => keep_alive_client || http_client
+        end
+
+        def create_phantomjs_driver
+          binary = ENV['phantomjs_binary']
+          if binary
+            WebDriver::PhantomJS.path = binary
+          end
+
+          WebDriver::Driver.for :phantomjs
         end
 
         def create_iphone_driver

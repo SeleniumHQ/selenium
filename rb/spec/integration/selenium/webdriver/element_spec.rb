@@ -157,15 +157,17 @@ describe "Element" do
     body.should eql(xbody)
   end
 
-  it "should know when two elements are not equal" do
-    driver.navigate.to url_for("simpleTest.html")
+  not_compliant_on :browser => :phantomjs do
+    it "should know when two elements are not equal" do
+      driver.navigate.to url_for("simpleTest.html")
 
-    elements = driver.find_elements(:tag_name, 'p')
-    p1 = elements.fetch(0)
-    p2 = elements.fetch(1)
+      elements = driver.find_elements(:tag_name, 'p')
+      p1 = elements.fetch(0)
+      p2 = elements.fetch(1)
 
-    p1.should_not == p2
-    p1.should_not eql(p2)
+      p1.should_not == p2
+      p1.should_not eql(p2)
+    end
   end
 
   it "should return the same #hash for equal elements when found by Driver#find_element" do
