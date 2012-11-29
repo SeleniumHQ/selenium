@@ -7,8 +7,6 @@ module Selenium
         attr_reader :driver
 
         def initialize
-          puts "creating test env :: #{ruby_description}"
-
           @create_driver_error       = nil
           @create_driver_error_count = 0
 
@@ -96,10 +94,6 @@ module Selenium
         end
 
         private
-
-        def ruby_description
-          defined?(RUBY_DESCRIPTION) ? RUBY_DESCRIPTION : "ruby-#{RUBY_VERSION}"
-        end
 
         def root_folder
           @root_folder ||= File.expand_path("../../../../../../../", __FILE__)
