@@ -6,7 +6,7 @@ module Selenium
         STOP_TIMEOUT = 5
 
         def self.get
-          binary = Platform.find_binary("IEDriverServer")
+          binary = IE.driver_path || Platform.find_binary("IEDriverServer")
           if binary
             new(binary)
           else
