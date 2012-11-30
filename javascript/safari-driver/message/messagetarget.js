@@ -28,10 +28,12 @@ goog.require('webdriver.EventEmitter');
  * and original event that delivered the message will be included as arguments.
  * @param {!(SafariEventTarget|EventTarget)} source The object that should be
  *     used as the source of messages.
+ * @param {boolean=} opt_consumeMessages Whether message events should have
+ *     their propagation chain halted when received by this listener.
  * @constructor
  * @extends {webdriver.EventEmitter}
  */
-safaridriver.message.MessageTarget = function(source) {
+safaridriver.message.MessageTarget = function(source, opt_consumeMessages) {
   goog.base(this);
 
   /**
@@ -53,6 +55,12 @@ safaridriver.message.MessageTarget = function(source) {
    * @private
    */
   this.boundOnMessage_ = goog.bind(this.onMessage_, this);
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.consumeMessages_ = !!opt_consumeMessages;
 
   this.source_.addEventListener('message', this.boundOnMessage_, true);
 };
@@ -111,5 +119,8 @@ safaridriver.message.MessageTarget.prototype.onMessage_ = function(e) {
     return;
   }
 
+  if (this.consumeMessages_) {
+    e.stopImmediatePropagation();
+  }
   this.emit(message.getType(), message, e);
 };

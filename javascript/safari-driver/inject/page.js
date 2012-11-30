@@ -66,7 +66,7 @@ safaridriver.inject.page.init = function() {
   safaridriver.inject.page.LOG_.info(
       'Loaded page script for ' + window.location);
 
-  var messageTarget = new safaridriver.message.MessageTarget(window);
+  var messageTarget = new safaridriver.message.MessageTarget(window, true);
   messageTarget.setLogger(safaridriver.inject.page.LOG_);
   messageTarget.on(safaridriver.message.Command.TYPE,
       safaridriver.inject.page.onCommand_);
