@@ -97,6 +97,7 @@ setup(
               'selenium.webdriver.firefox',
               'selenium.webdriver.ie',
               'selenium.webdriver.opera',
+              'selenium.webdriver.phantomjs',
               'selenium.webdriver.remote',
               'selenium.webdriver.support', ],
     package_data={
