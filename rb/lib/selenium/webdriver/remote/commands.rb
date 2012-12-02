@@ -182,4 +182,11 @@ class Selenium::WebDriver::Remote::Bridge
   command :touchMove,                              :post,   "session/:session_id/touch/move"
   command :touchScroll,                            :post,   "session/:session_id/touch/scroll"
   command :touchFlick,                             :post,   "session/:session_id/touch/flick"
+
+  #
+  # logs
+  #
+
+  command :getAvailableLogTypes,                   :get,    "session/:session_id/log/types"
+  command :getLog,                                 :post,   "session/:session_id/log"
 end

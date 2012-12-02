@@ -468,6 +468,23 @@ module Selenium
         end
 
         #
+        # logs
+        #
+
+        def getAvailableLogTypes
+          types = execute :getAvailableLogTypes
+          Array(types).map { |e| e.to_sym }
+        end
+
+        def getLog(type)
+          data = execute :getLog, {}, :type => type.to_s
+
+          Array(data).map do |l|
+            LogEntry.new l.fetch('level'), l.fetch('timestamp'), l.fetch('message')
+          end
+        end
+
+        #
         # element properties
         #
 
