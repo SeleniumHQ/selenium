@@ -32,11 +32,12 @@ class Service(object):
         
         :Args:
          - executable_path : Path to the ChromeDriver
-         - port : Port the service is running on """
+         - port : Port the service is running on
+         - service_args : List of args to pass to the chromedriver service"""
 
         self.port = port
         self.path = executable_path
-        self.service_args= service_args
+        self.service_args = service_args
         if self.port == 0:
             self.port = utils.free_port()
 
@@ -49,8 +50,10 @@ class Service(object):
            or when it can't connect to the service
         """
         try:
-            self.process = subprocess.Popen([self.path, "--port=%d%s" % (self.port, 
-                ' '.join(self.service_args) if self.service_args else '')], stdout=PIPE, stderr=PIPE)
+            self.process = subprocess.Popen([
+              self.path,
+              "--port=%d" % self.port] +
+              self.service_args or [], stdout=PIPE, stderr=PIPE)
         except:
             raise WebDriverException(
                 "ChromeDriver executable needs to be available in the path. \
