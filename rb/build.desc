@@ -11,6 +11,7 @@ rubygem(
     "//rb:ie",
     "//rb:iphone",
     "//rb:opera",
+    "//rb:phantomjs",
     "//rb:remote",
     "//rb:rc-client",
     "//rb:safari"
