@@ -33,7 +33,7 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path="chromedriver", port=0,
                  chrome_options=None, service_args=None,
-                 desired_capabilities=None):
+                 desired_capabilities=None, service_log_path=None):
         """
         Creates a new instance of the chrome driver.
 
@@ -56,7 +56,8 @@ class WebDriver(RemoteWebDriver):
         else:
           desired_capabilities = options.to_capabilities()
 
-        self.service = Service(executable_path, port=port, service_args=service_args)
+        self.service = Service(executable_path, port=port,
+            service_args=service_args, log_path=service_log_path)
         self.service.start()
 
         try:
