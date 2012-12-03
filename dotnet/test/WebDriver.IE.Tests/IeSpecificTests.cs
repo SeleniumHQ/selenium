@@ -10,17 +10,6 @@ namespace OpenQA.Selenium.IE
     public class IeSpecificTests : DriverTestFixture
     {
         [Test]
-        public void ElementXPathClassTest()
-        {
-            //driver.Url = formsPage;
-            //IWebElement other = driver.FindElement(By.Id("wallace"));
-            //IWebElement element = driver.FindElement(By.XPath("//div[@class='gromit']"));
-            //string id = element.GetAttribute("id");
-            //Assert.AreEqual("wallace", id);
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("attributeSelectorBug.html");
-            driver.FindElement(By.XPath("//div[@class='bug']"));
-        }
-        [Test]
         public void ScrollingFrameTest()
         {
             try
