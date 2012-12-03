@@ -9,6 +9,12 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.26.3.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Define document on goog.global for fragments, as the closure library now
+   depends on it. Fixes issue #4802.
+
 v2.26.2.6
 =========
  * Fixed SendKeysCommandHandler to check that the focus is in the HTML display
@@ -57,7 +63,8 @@ v2.26.2.0
 =========
  * Fixed synchronization issues. These issues were always present, but never
    manifested until the IE driver was used with IE 10.
- * Reinstating functionality to run JavaScript on a separate thread on Windows 8.
+ * Reinstating functionality to run JavaScript on a separate thread on Windows
+   8.
 
 v2.26.1.2
 =========
