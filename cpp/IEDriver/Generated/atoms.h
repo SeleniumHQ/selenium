@@ -891,7 +891,8 @@ const wchar_t* const CLICK[] = {
     L"0]in xe)&&xe.execScript&&xe.execScript(\"var \"+we[0]);for(var ye;we.l",
     L"ength&&(ye=we.shift());)!we.length&&r(ve)?xe[ye]=ve:xe=xe[ye]?xe[ye]:x",
     L"e[ye]={};; return this._.apply(null,arguments);}.apply({navigator:type",
-    L"of window!=undefined?window.navigator:null}, arguments);}",
+    L"of window!=undefined?window.navigator:null,document:typeof window!=und",
+    L"efined?window.document:null}, arguments);}",
     NULL
 };
 
@@ -1663,7 +1664,8 @@ const wchar_t* const CLEAR[] = {
     L"=q;!(Nd[0]in Od)&&Od.execScript&&Od.execScript(\"var \"+Nd[0]);for(var",
     L" Pd;Nd.length&&(Pd=Nd.shift());)!Nd.length&&r(Md)?Od[Pd]=Md:Od=Od[Pd]?",
     L"Od[Pd]:Od[Pd]={};; return this._.apply(null,arguments);}.apply({naviga",
-    L"tor:typeof window!=undefined?window.navigator:null}, arguments);}",
+    L"tor:typeof window!=undefined?window.navigator:null,document:typeof win",
+    L"dow!=undefined?window.document:null}, arguments);}",
     NULL
 };
 
@@ -2336,7 +2338,8 @@ const wchar_t* const FIND_ELEMENT[] = {
     L"[0]in Pc)&&Pc.execScript&&Pc.execScript(\"var \"+Oc[0]);for(var Qc;Oc.",
     L"length&&(Qc=Oc.shift());)!Oc.length&&q(Nc)?Pc[Qc]=Nc:Pc=Pc[Qc]?Pc[Qc]:",
     L"Pc[Qc]={};; return this._.apply(null,arguments);}.apply({navigator:typ",
-    L"eof window!=undefined?window.navigator:null}, arguments);}",
+    L"eof window!=undefined?window.navigator:null,document:typeof window!=un",
+    L"defined?window.document:null}, arguments);}",
     NULL
 };
 
@@ -3009,7 +3012,8 @@ const wchar_t* const FIND_ELEMENTS[] = {
     L"[0]in Pc)&&Pc.execScript&&Pc.execScript(\"var \"+Oc[0]);for(var Qc;Oc.",
     L"length&&(Qc=Oc.shift());)!Oc.length&&q(Nc)?Pc[Qc]=Nc:Pc=Pc[Qc]?Pc[Qc]:",
     L"Pc[Qc]={};; return this._.apply(null,arguments);}.apply({navigator:typ",
-    L"eof window!=undefined?window.navigator:null}, arguments);}",
+    L"eof window!=undefined?window.navigator:null,document:typeof window!=un",
+    L"defined?window.document:null}, arguments);}",
     NULL
 };
 
@@ -3453,7 +3457,8 @@ const wchar_t* const GET_ATTRIBUTE[] = {
     L"cript(\"var \"+$b[0]);for(var ac;$b.length&&(ac=$b.shift());)!$b.lengt",
     L"h&&Zb!==i?$[ac]=Zb:$=$[ac]?$[ac]:$[ac]={};; return this._.apply(null,a",
     L"rguments);}.apply({navigator:typeof window!=undefined?window.navigator",
-    L":null}, arguments);}",
+    L":null,document:typeof window!=undefined?window.document:null}, argumen",
+    L"ts);}",
     NULL
 };
 
@@ -3850,7 +3855,8 @@ const wchar_t* const GET_EFFECTIVE_STYLE[] = {
     L"t&&Z.execScript(\"var \"+Y[0]);for(var $;Y.length&&($=Y.shift());)!Y.l",
     L"ength&&xb!==i?Z[$]=xb:Z=Z[$]?Z[$]:Z[$]={};; return this._.apply(null,a",
     L"rguments);}.apply({navigator:typeof window!=undefined?window.navigator",
-    L":null}, arguments);}",
+    L":null,document:typeof window!=undefined?window.document:null}, argumen",
+    L"ts);}",
     NULL
 };
 
@@ -3918,7 +3924,8 @@ const wchar_t* const GET_LOCATION[] = {
     L"[\"_\"],Q=g;!(P[0]in Q)&&Q.execScript&&Q.execScript(\"var \"+P[0]);\nf",
     L"or(var R;P.length&&(R=P.shift());)!P.length&&void 0!==O?Q[R]=O:Q=Q[R]?",
     L"Q[R]:Q[R]={};; return this._.apply(null,arguments);}.apply({navigator:",
-    L"typeof window!=undefined?window.navigator:null}, arguments);}",
+    L"typeof window!=undefined?window.navigator:null,document:typeof window!",
+    L"=undefined?window.document:null}, arguments);}",
     NULL
 };
 
@@ -3959,8 +3966,8 @@ const wchar_t* const GET_SIZE[] = {
     L"}\nvar C=[\"_\"],D=this;!(C[0]in D)&&D.execScript&&D.execScript(\"var ",
     L"\"+C[0]);for(var E;C.length&&(E=C.shift());)!C.length&&void 0!==B?D[E]",
     L"=B:D=D[E]?D[E]:D[E]={};; return this._.apply(null,arguments);}.apply({",
-    L"navigator:typeof window!=undefined?window.navigator:null}, arguments);",
-    L"}",
+    L"navigator:typeof window!=undefined?window.navigator:null,document:type",
+    L"of window!=undefined?window.document:null}, arguments);}",
     NULL
 };
 
@@ -4682,7 +4689,8 @@ const wchar_t* const GET_TEXT[] = {
     L"in qd)&&qd.execScript&&qd.execScript(\"var \"+pd[0]);\nfor(var rd;pd.l",
     L"ength&&(rd=pd.shift());)!pd.length&&r(od)?qd[rd]=od:qd=qd[rd]?qd[rd]:q",
     L"d[rd]={};; return this._.apply(null,arguments);}.apply({navigator:type",
-    L"of window!=undefined?window.navigator:null}, arguments);}",
+    L"of window!=undefined?window.navigator:null,document:typeof window!=und",
+    L"efined?window.document:null}, arguments);}",
     NULL
 };
 
@@ -5281,7 +5289,8 @@ const wchar_t* const IS_DISPLAYED[] = {
     L" $)&&$.execScript&&$.execScript(\"var \"+vc[0]);for(var wc;vc.length&&",
     L"(wc=vc.shift());)!vc.length&&r(uc)?$[wc]=uc:$=$[wc]?$[wc]:$[wc]={};; r",
     L"eturn this._.apply(null,arguments);}.apply({navigator:typeof window!=u",
-    L"ndefined?window.navigator:null}, arguments);}",
+    L"ndefined?window.navigator:null,document:typeof window!=undefined?windo",
+    L"w.document:null}, arguments);}",
     NULL
 };
 
@@ -5602,8 +5611,8 @@ const wchar_t* const IS_ENABLED[] = {
     L" a};var rb=qb,Y=[\"_\"],Z=q;!(Y[0]in Z)&&Z.execScript&&Z.execScript(\"",
     L"var \"+Y[0]);for(var $;Y.length&&($=Y.shift());)!Y.length&&rb!==i?Z[$]",
     L"=rb:Z=Z[$]?Z[$]:Z[$]={};; return this._.apply(null,arguments);}.apply(",
-    L"{navigator:typeof window!=undefined?window.navigator:null}, arguments)",
-    L";}",
+    L"{navigator:typeof window!=undefined?window.navigator:null,document:typ",
+    L"eof window!=undefined?window.document:null}, arguments);}",
     NULL
 };
 
@@ -6034,7 +6043,8 @@ const wchar_t* const IS_SELECTED[] = {
     L"(Xb[0]in $)&&$.execScript&&$.execScript(\"var \"+Xb[0]);for(var Yb;Xb.",
     L"length&&(Yb=Xb.shift());)!Xb.length&&Wb!==i?$[Yb]=Wb:$=$[Yb]?$[Yb]:$[Y",
     L"b]={};; return this._.apply(null,arguments);}.apply({navigator:typeof ",
-    L"window!=undefined?window.navigator:null}, arguments);}",
+    L"window!=undefined?window.navigator:null,document:typeof window!=undefi",
+    L"ned?window.document:null}, arguments);}",
     NULL
 };
 
@@ -6859,7 +6869,8 @@ const wchar_t* const SUBMIT[] = {
     L"ecScript&&Ud.execScript(\"var \"+Td[0]);for(var Vd;Td.length&&(Vd=Td.s",
     L"hift());)!Td.length&&r(Sd)?Ud[Vd]=Sd:Ud=Ud[Vd]?Ud[Vd]:Ud[Vd]={};; retu",
     L"rn this._.apply(null,arguments);}.apply({navigator:typeof window!=unde",
-    L"fined?window.navigator:null}, arguments);}",
+    L"fined?window.navigator:null,document:typeof window!=undefined?window.d",
+    L"ocument:null}, arguments);}",
     NULL
 };
 
