@@ -359,6 +359,45 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  public void testTextOfAnInputFieldShouldBeEmpty() {
+    driver.get(pages.formPage);
+    WebElement input = driver.findElement(By.id("inputWithText"));
+    assertEquals("", input.getText());
+  }
+
+  @Test
+  public void testTextOfATextAreaShouldBeEqalToItsValueProperty() {
+    driver.get(pages.formPage);
+    WebElement area = driver.findElement(By.id("withText"));
+    assertEquals("Example text", area.getAttribute("value"));
+    assertEquals("Example text", area.getText());
+  }
+
+  @Test
+  @Ignore(reason = "Semantics is not defined yet")
+  public void testTextOfATextAreaShouldBeEqalToItsValueEvenAfterTyping() {
+    driver.get(pages.formPage);
+    WebElement area = driver.findElement(By.id("withText"));
+    String oldText = area.getAttribute("value");
+    String newText = "New Text";
+    area.sendKeys(newText);
+    assertEquals(oldText + newText, area.getAttribute("value"));
+    assertEquals(oldText + newText, area.getText());
+  }
+
+  @Test
+  @JavascriptEnabled
+  @Ignore(reason = "Semantics is not defined yet")
+  public void testTextOfATextAreaShouldBeEqalToItsValueEvenAfterChangingTheValue() {
+    driver.get(pages.formPage);
+    WebElement area = driver.findElement(By.id("withText"));
+    String newValue = "New Text";
+    ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1]", area, newValue);
+    assertEquals(newValue, area.getAttribute("value"));
+    assertEquals(newValue, area.getText());
+  }
+
+  @Test
   public void testShouldGetTextWhichIsAValidJSONObject() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("simpleJsonText"));
