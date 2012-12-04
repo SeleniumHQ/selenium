@@ -28,6 +28,12 @@ goog.require('safaridriver.Command');
 
 
 /**
+ * @define {boolean} Whether to assume message targets are always a DOM window.
+ */
+safaridriver.message.ASSUME_DOM_WINDOW = false;
+
+
+/**
  * @define {(string|number)} Compile time constant that may be used to identify
  *     where messages originate from. We permit strings or numbers since the
  *     Selenium build system currently does not support constant string
@@ -246,8 +252,20 @@ safaridriver.message.Message.prototype.isType = function(type) {
  */
 safaridriver.message.Message.prototype.send = function(target) {
   this.setOrigin(safaridriver.message.ORIGIN);
-  if (target.postMessage) {
-    (/** @type {!Window} */target).postMessage(this.data_, '*');
+  if (safaridriver.message.ASSUME_DOM_WINDOW || target.postMessage) {
+    var win = /** @type {!Window} */ (target);
+    var postMessageFn = win.postMessage;
+    if (!goog.isFunction(postMessageFn)) {
+      if (win === window) {
+        postMessageFn = window.constructor.prototype.postMessage;
+      }
+
+      if (!goog.isFunction(postMessageFn)) {
+        throw Error('Unable to send message; postMessage function not ' +
+            'available on target window');
+      }
+    }
+    postMessageFn.call(win, this.data_, '*');
   } else {
     if (safaridriver.message.FORCE_SYNCHRONOUS_PROXY_SEND &&
         target.canLoad) {
@@ -291,7 +309,7 @@ safaridriver.message.Message.setSynchronousMessageResponse = function(
  *     a DOMWindow.
  */
 safaridriver.message.Message.prototype.sendSync = function(target) {
-  if (target.postMessage) {
+  if (safaridriver.message.ASSUME_DOM_WINDOW || target.postMessage) {
     goog.asserts.assert(target === window,
         'Synchrnous messages may only be sent to a window when that ' +
             'window is the same as the current context');
