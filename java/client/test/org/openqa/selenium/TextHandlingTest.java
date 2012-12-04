@@ -374,7 +374,8 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE, SELENESE, IPHONE, ANDROID}, reason = "IE: failed, other: untested")
+  @Ignore(value = {IE, SELENESE, IPHONE, ANDROID, HTMLUNIT},
+          reason = "IE, HTMLUNIT: failed, other: untested")
   public void testTextOfATextAreaShouldBeEqalToItsValueEvenAfterTyping() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
