@@ -16,10 +16,17 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openqa.selenium.internal.BuildInfo;
 
 public class WebDriverException extends RuntimeException {
+  
+  public static final String SESSION_ID = "Session ID";
+  public static final String DRIVER_INFO = "Driver info";
 
+  private Map<String, String> extraInfo = new HashMap<String, String>();
   private String sessionId;
 
   public WebDriverException() {
@@ -47,16 +54,15 @@ public class WebDriverException extends RuntimeException {
     String supportMessage = getSupportUrl() == null ?
         "" : "For documentation on this error, please visit: " + getSupportUrl() + "\n";
 
-    return String.format("%s%s%s\nSystem info: %s\nDriver info: %s",
-        originalMessageString == null ? "" : originalMessageString + "\n",
-        supportMessage,
-        getBuildInformation(),
-        getSystemInformation(),
-        getDriverInformation());
+    return (originalMessageString == null ? "" : originalMessageString + "\n")
+        + supportMessage
+        + getBuildInformation() + "\n"
+        + getSystemInformation()
+        + getAdditionalInformation();
   }
 
   public String getSystemInformation() {
-    return String.format("os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
+    return String.format("System info: os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
         System.getProperty("os.name"),
         System.getProperty("os.arch"),
         System.getProperty("os.version"),
@@ -71,6 +77,10 @@ public class WebDriverException extends RuntimeException {
     return new BuildInfo();
   }
 
+  /**
+   * @deprecated To be removed in 2.28
+   */
+  @Deprecated
   public String getDriverInformation() {
     String driverInformation = "driver.version: " + getDriverName(getStackTrace());
     if (sessionId != null) {
@@ -79,6 +89,10 @@ public class WebDriverException extends RuntimeException {
     return driverInformation;
   }
 
+  /**
+   * @deprecated To be removed in 2.28
+   */
+  @Deprecated
   public void setSessionId(String sessionId) {
     this.sessionId = sessionId;
   }
@@ -93,5 +107,25 @@ public class WebDriverException extends RuntimeException {
     }
 
     return driverName;
+  }
+
+  public void addInfo(String key, String value) {
+    extraInfo.put(key, value);
+  }
+
+  private String getAdditionalInformation() {
+    if (! extraInfo.containsKey(DRIVER_INFO)) {
+      extraInfo.put(DRIVER_INFO, "driver.version: " + getDriverName(getStackTrace()));
+    }
+
+    String result = "";
+    for (Map.Entry<String, String> entry : extraInfo.entrySet()) {
+      if (entry.getValue().startsWith(entry.getKey())) {
+        result += "\n" + entry.getValue();
+      } else {
+        result += "\n" + entry.getKey() + ": " + entry.getValue();
+      }
+    }
+    return result;
   }
 }

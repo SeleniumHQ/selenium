@@ -157,7 +157,6 @@ public class ErrorHandler {
       toThrow = new WebDriverException(message, cause);
     }
 
-    toThrow.setSessionId(response.getSessionId());
     throw toThrow;
   }
 

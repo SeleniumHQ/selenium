@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -528,7 +529,19 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       Thread.currentThread().setName(currentName);
     }
 
-    return errorHandler.throwIfResponseFailed(response, System.currentTimeMillis() - start);
+    try {
+      errorHandler.throwIfResponseFailed(response, System.currentTimeMillis() - start);
+    } catch (WebDriverException ex) {
+      ex.addInfo(WebDriverException.DRIVER_INFO, this.getClass().getName());
+      if (getSessionId() != null) {
+        ex.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
+      }
+      if (getCapabilities() != null) {
+        ex.addInfo("Capabilities", getCapabilities().toString());
+      }
+      Throwables.propagate(ex);
+    }
+    return response;
   }
 
   protected Response execute(String command) {
