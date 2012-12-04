@@ -374,7 +374,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(reason = "Semantics is not defined yet")
+  @Ignore(value = {IE, SELENESE, IPHONE, ANDROID}, reason = "IE: failed, other: untested")
   public void testTextOfATextAreaShouldBeEqalToItsValueEvenAfterTyping() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
@@ -382,19 +382,20 @@ public class TextHandlingTest extends JUnit4TestBase {
     String newText = "New Text";
     area.sendKeys(newText);
     assertEquals(oldText + newText, area.getAttribute("value"));
-    assertEquals(oldText + newText, area.getText());
+    assertEquals(oldText, area.getText());
   }
 
   @Test
   @JavascriptEnabled
-  @Ignore(reason = "Semantics is not defined yet")
+  @Ignore(value = {IE, SELENESE, IPHONE, ANDROID}, reason = "IE: failed, other: untested")
   public void testTextOfATextAreaShouldBeEqalToItsValueEvenAfterChangingTheValue() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
-    String newValue = "New Text";
-    ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1]", area, newValue);
-    assertEquals(newValue, area.getAttribute("value"));
-    assertEquals(newValue, area.getText());
+    String oldText = area.getAttribute("value");
+    String newText = "New Text";
+    ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1]", area, newText);
+    assertEquals(newText, area.getAttribute("value"));
+    assertEquals(oldText, area.getText());
   }
 
   @Test
