@@ -99,6 +99,10 @@
             <option value="foo">Foo</option>
             <option value="bar">Bar</option>
         </select>
+        <select id="selector2" onclick="javascript:updateContent(this)">
+            <option value="foo">Foo</option>
+            <option value="bar">Bar</option>
+        </select>
         <input type="checkbox" id="checkbox" value="checkbox thing" onchange="javascript:updateContent(this)"/>
         <input id="clickField" type="text" onclick="document.getElementById('clickField').value='Clicked';" value="Hello"/>
         <input id="doubleClickField" type="text" onclick="document.getElementById('doubleClickField').value='Clicked';" ondblclick="document.getElementById('doubleClickField').value='DoubleClicked';" oncontextmenu="document.getElementById('doubleClickField').value='ContextClicked'; return false;" value="DoubleHello"/>

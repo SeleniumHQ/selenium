@@ -222,6 +222,25 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = {IPHONE, SELENESE, ANDROID})
+  @Test
+  public void testShouldEmitOnClickEventsWhenSelectingElements() {
+    driver.get(pages.javascriptPage);
+    // Intentionally not looking up the select tag. See selenium r7937 for details.
+    List<WebElement> allOptions = driver.findElements(By.xpath("//select[@id='selector2']//option"));
+
+    WebElement foo = allOptions.get(0);
+    WebElement bar = allOptions.get(1);
+
+    foo.click();
+    assertThat(driver.findElement(By.id("result")).getText(),
+        equalTo("foo"));
+    bar.click();
+    assertThat(driver.findElement(By.id("result")).getText(),
+        equalTo("bar"));
+  }
+
+  @JavascriptEnabled
   @Ignore(value = {SELENESE, IE},
       reason = "IE: Only fires the onchange event when the checkbox loses the focus")
   @Test
