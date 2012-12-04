@@ -441,13 +441,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
           setDomain(sessionId, values.get(1));
           results = "OK," + sessionId;
         } catch (RemoteCommandException rce) {
-          results = "Failed to start new browser session: " + rce.getMessage();
+          results = "Failed to start new browser session: " + rce;
         } catch (InvalidBrowserExecutableException ibex) {
-          results = "Failed to start new browser session: " + ibex.getMessage();
+          results = "Failed to start new browser session: " + ibex;
         } catch (IllegalArgumentException iaex) {
-          results = "Failed to start new browser session: " + iaex.getMessage();
+          results = "Failed to start new browser session: " + iaex;
         } catch (RuntimeException rte) {
-          results = "Failed to start new browser session: " + rte.getMessage();
+          results = "Failed to start new browser session: " + rte;
         }
         // clear out any network traffic captured but never pulled back by the last client (this
         // feature only works with one concurrent browser, similar to PI mode)
