@@ -1,3 +1,27 @@
+v2.27.0
+=======
+ * Changed DesiredCapabilities.Safari() to return DesiredCapabilities instead
+   of ICapabilities. Fixes issue #4865.
+ * Implemented rudimentary path searching for executable-based drivers (such
+   as IE, Chrome, and PhantomJS).
+ * Finally made the .NET PhantomJSDriver public. It still requires a PhantomJS
+   built from the trunk of that project, at least until PhantomJS 1.8 is
+   released in late December.
+ * Implemented touch screen actions for the .NET bindings.
+ * Added ability to add experimental or additional capabilities for which there
+   are not yet type safe options to the .NET InternetExplorerOptions and
+   ChromeOptions classes.
+ * Removed necessity for path to GhostDriver's main.js for the .NET
+   PhantomJSDriverService in favor of a command line switch (GhostDriver is now
+   internal to PhantomJS).
+ * Modified to no longer hang on alerts triggered by onchange of <select>
+   elements or by onsubmit of <form> elements. Fixes issue #3508. Fixes issue
+   #2103.
+ * Turned off use of the Expect-100 header for the HttpWebRequests.
+ * Added various StyleCop changes.
+ * Added support for file uploads to a remote WebDriver server.
+ * Added a missing method to the Actions API.
+
 v2.26.0
 =======
  * Prevent firefox from updating, checking and warning for extension and plugin
