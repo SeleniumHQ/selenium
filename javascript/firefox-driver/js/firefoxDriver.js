@@ -320,7 +320,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
           if (converted[i].__exposedProps__ == undefined) {
             converted[i].__exposedProps__ = {};
           }
-          converted[i].__exposedProps__[keys[key]] = "r";
+          converted[i].__exposedProps__[keys[key]] = "rw";
         }
       }
     }
