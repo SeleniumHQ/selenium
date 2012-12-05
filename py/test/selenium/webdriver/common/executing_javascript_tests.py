@@ -206,10 +206,20 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         text = self.driver.execute_script("return document.alerts.shift()")
 
         self.assertEqual("hello world", text)
-  
+
+    def testCanPassADictionaryAsAParameter(self):
+        self._loadSimplePage() 
+        nums = [1, 2]
+        args = {"bar": "test", "foo": nums}
+
+
+        res = self.driver.execute_script("return arguments[0]['foo'][1]", args);
+
+        self.assertEqual(2, res)
+
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
-    
+
     def _loadSimplePage(self):
         self._loadPage("simpleTest")
 

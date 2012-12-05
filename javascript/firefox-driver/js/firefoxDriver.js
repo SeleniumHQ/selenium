@@ -311,6 +311,19 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   };
 
   var runScript = function() {
+    // Since Firefox 15 we have to populate __exposedProps__ 
+    // when passing objects from chrome to content due to security reasons
+    for (var i = 0; i < converted.length; i++) {
+      if (!Array.isArray(converted[i]) && (typeof converted[i] === 'object')) {
+        var keys = Object.keys(converted[i]);
+        for (var key in keys) {
+          if (converted[i].__exposedProps__ == undefined) {
+            converted[i].__exposedProps__ = {};
+          }
+          converted[i].__exposedProps__[keys[key]] = "r";
+        }
+      }
+    }
     doc.setUserData('webdriver-evaluate-args', converted, null);
     doc.setUserData('webdriver-evaluate-async', isAsync, null);
     doc.setUserData('webdriver-evaluate-script', script, null);
