@@ -366,36 +366,32 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testTextOfATextAreaShouldBeEqalToItsValueProperty() {
+  public void testTextOfATextAreaShouldBeEqualToItsDefaultText() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
-    assertEquals("Example text", area.getAttribute("value"));
     assertEquals("Example text", area.getText());
   }
 
   @Test
   @Ignore(value = {IE, SELENESE, IPHONE, ANDROID, HTMLUNIT},
           reason = "IE, HTMLUNIT: failed, other: untested")
-  public void testTextOfATextAreaShouldBeEqalToItsValueEvenAfterTyping() {
+  public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
-    String oldText = area.getAttribute("value");
-    String newText = "New Text";
-    area.sendKeys(newText);
-    assertEquals(oldText + newText, area.getAttribute("value"));
+    String oldText = area.getText();
+    area.sendKeys("New Text");
     assertEquals(oldText, area.getText());
   }
 
   @Test
   @JavascriptEnabled
-  @Ignore(value = {IE, SELENESE, IPHONE, ANDROID}, reason = "IE: failed, other: untested")
-  public void testTextOfATextAreaShouldBeEqalToItsValueEvenAfterChangingTheValue() {
+  @Ignore(value = {IE, SELENESE, IPHONE, ANDROID, HTMLUNIT},
+          reason = "IE, HTMLUNIT: failed, other: untested")
+  public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
     String oldText = area.getAttribute("value");
-    String newText = "New Text";
-    ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1]", area, newText);
-    assertEquals(newText, area.getAttribute("value"));
+    ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1]", area, "New Text");
     assertEquals(oldText, area.getText());
   }
 
