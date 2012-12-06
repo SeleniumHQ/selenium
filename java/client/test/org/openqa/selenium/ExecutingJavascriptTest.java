@@ -347,7 +347,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  public void testShouldBeAbleToPassABooleanAnAsArgument() {
+  public void testShouldBeAbleToPassABooleanAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
     }

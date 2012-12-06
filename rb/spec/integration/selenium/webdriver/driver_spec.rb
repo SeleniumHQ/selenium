@@ -214,6 +214,16 @@ describe "Driver" do
       driver.execute_script("return arguments[0] == 1 ? 1 : 0;", 1).should == 1
     end
 
+    it "should be able to pass null arguments" do
+      driver.navigate.to url_for("javascriptPage.html")
+      driver.execute_script("return arguments[0];", nil).should == nil
+    end
+
+    it "should be able to pass array arguments" do
+      driver.navigate.to url_for("javascriptPage.html")
+      driver.execute_script("return arguments[0];", [1, '2', 3]).should == [1, '2', 3]
+    end
+
     it "should be able to pass element arguments" do
       driver.navigate.to url_for("javascriptPage.html")
       button = driver.find_element(:id, "plainButton")
