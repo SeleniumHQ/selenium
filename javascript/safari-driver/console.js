@@ -20,7 +20,7 @@
 goog.provide('safaridriver.console');
 
 goog.require('goog.debug.LogManager');
-goog.require('goog.debug.Logger.Level');
+goog.require('goog.debug.Logger');
 goog.require('goog.debug.TextFormatter');
 
 

@@ -24,7 +24,6 @@ goog.provide('safaridriver.message.Message');
 goog.require('bot.json');
 goog.require('goog.asserts');
 goog.require('goog.debug.Logger');
-goog.require('safaridriver.Command');
 
 
 /**
