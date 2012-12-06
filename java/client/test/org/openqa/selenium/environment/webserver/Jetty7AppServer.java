@@ -145,26 +145,26 @@ public class Jetty7AppServer implements AppServer {
   }
 
   public String whereIs(String relativeUrl) {
-    relativeUrl = getCommonPath(relativeUrl);
+    relativeUrl = getMainContextPath(relativeUrl);
     return "http://" + getHostName() + ":" + port + relativeUrl;
   }
 
   public String whereElseIs(String relativeUrl) {
-    relativeUrl = getCommonPath(relativeUrl);
+    relativeUrl = getMainContextPath(relativeUrl);
     return "http://" + getAlternateHostName() + ":" + port + relativeUrl;
   }
 
   public String whereIsSecure(String relativeUrl) {
-    relativeUrl = getCommonPath(relativeUrl);
+    relativeUrl = getMainContextPath(relativeUrl);
     return "https://" + getHostName() + ":" + securePort + relativeUrl;
   }
 
   public String whereIsWithCredentials(String relativeUrl, String user, String pass) {
-    relativeUrl = getCommonPath(relativeUrl);
+    relativeUrl = getMainContextPath(relativeUrl);
     return "http://" + user + ":" + pass + "@" + getHostName() + ":" + port + relativeUrl;
   }
 
-  private String getCommonPath(String relativeUrl) {
+  protected String getMainContextPath(String relativeUrl) {
     if (!relativeUrl.startsWith("/")) {
       relativeUrl = DEFAULT_CONTEXT_PATH + "/" + relativeUrl;
     }
@@ -244,7 +244,7 @@ public class Jetty7AppServer implements AppServer {
     defaultContext.addFilter(filter, path, dispatches);
   }
 
-  private WebAppContext addWebApplication(String contextPath, File rootDir) {
+  protected WebAppContext addWebApplication(String contextPath, File rootDir) {
     return addWebApplication(contextPath, rootDir.getAbsolutePath());
   }
 

@@ -78,7 +78,8 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       throw new RuntimeException(e);
     }
 
-    appServer = new SeleniumAppServer(port);
+    appServer = new SeleniumAppServer();
+    appServer.start();
   }
 
   public SeleniumTestEnvironment(String... extraArgs) {
