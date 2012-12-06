@@ -216,6 +216,11 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         res = self.driver.execute_script("return arguments[0]['foo'][1]", args);
 
         self.assertEqual(2, res)
+    
+    def testCanPassANone(self):
+        self._loadSimplePage() 
+        res = self.driver.execute_script("return arguments[0] === null", None)
+        self.assertTrue(res)
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
