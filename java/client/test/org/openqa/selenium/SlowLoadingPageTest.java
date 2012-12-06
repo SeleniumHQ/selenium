@@ -22,7 +22,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -51,9 +50,8 @@ public class SlowLoadingPageTest extends JUnit4TestBase {
     assertElapsed(3000, now - start);
   }
 
-  @Ignore(value = {IE, IPHONE, SELENESE, OPERA},
+  @Ignore(value = {IPHONE, SELENESE, OPERA},
       reason = "Selenium: refresh is unsupported;" +
-               "IE: fails in IE 6,7,8, works in IE 9;" +
                "Others: untested")
   @Test
   public void testRefreshShouldBlockUntilPageLoads() {
