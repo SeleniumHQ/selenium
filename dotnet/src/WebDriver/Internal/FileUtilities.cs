@@ -119,20 +119,21 @@ namespace OpenQA.Selenium.Internal
         {
             // Look first in the same directory as the executing assembly
             string currentDirectory = GetCurrentDirectory();
+            if (File.Exists(Path.Combine(currentDirectory, fileName)))
+            {
+                return currentDirectory;
+            }
 
             // If it's not in the same directory as the executing assembly,
             // try looking in the system path.
-            if (!File.Exists(Path.Combine(currentDirectory, fileName)))
+            string systemPath = Environment.GetEnvironmentVariable("PATH");
+            string[] directories = systemPath.Split(Path.PathSeparator);
+            foreach (string directory in directories)
             {
-                string systemPath = Environment.GetEnvironmentVariable("PATH");
-                string[] directories = systemPath.Split(Path.PathSeparator);
-                foreach (string directory in directories)
+                if (File.Exists(Path.Combine(directory, fileName)))
                 {
-                    if (File.Exists(Path.Combine(directory, fileName)))
-                    {
-                        currentDirectory = directory;
-                        return currentDirectory;
-                    }
+                    currentDirectory = directory;
+                    return currentDirectory;
                 }
             }
 
