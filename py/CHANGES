@@ -1,5 +1,8 @@
 Selenium 2.27 (yet to be released)
 * Added support for phantomjs / ghostdriver
+* Fix python client, avoid duplicate chrome option items after reusing options class. Fixes Issue 4744.
+* adding colour support to Python. fixes issue 4623
+* Adding log_path/service_log_path as named kwargs for chrome
 
 Selenium 2.26
 * Added location_when_scrolled_into_view - Bug 4357
