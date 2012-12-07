@@ -24,8 +24,13 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.ExternalResource;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.openqa.selenium.Build;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -105,90 +110,110 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
   }
 
-  @Before
-  public void addNecessaryJavascriptCommands() {
-    if (selenium == null || !(selenium instanceof WebDriverBackedSelenium)) {
-      return;
+  @Rule
+  public TestRule traceMethodName = new TestWatcher() {
+    @Override
+    protected void starting(Description description) {
+      super.starting(description);
+      log.info(">>> Starting " + description);
     }
 
-    // We need to be a on page where we can execute JS
-    WebDriver driver = ((WrapsDriver) selenium).getWrappedDriver();
-    driver.get(whereIs("/selenium-server"));
-
-    try {
-      URL scriptUrl =
-          Resources.getResource(getClass(), "/com/thoughtworks/selenium/testHelpers.js");
-      String script = Resources.toString(scriptUrl, Charsets.UTF_8);
-
-      ((JavascriptExecutor) driver).executeScript(script);
-    } catch (IOException e) {
-      fail("Cannot read script: " + Throwables.getStackTraceAsString(e));
+    @Override
+    protected void finished(Description description) {
+      super.finished(description);
+      log.info("<<< Finished " + description);
     }
-  }
+  };
 
-  private String whereIs(String location) {
-    return GlobalTestEnvironment.get().getAppServer().whereIs(location);
-  }
+  public ExternalResource initializeSelenium = new ExternalResource() {
+    @Override
+    protected void before() throws Throwable {
+      selenium = instance.get();
+      if (selenium != null) {
+        return;
+      }
 
-  @Before
-  public void focusOnMainWindow() {
-    if (selenium == null) {
-      return;
+      DesiredCapabilities caps = new DesiredCapabilities();
+      caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, IGNORE);
+      if (Boolean.getBoolean("singlewindow")) {
+        caps.setCapability(SINGLE_WINDOW, true);
+        caps.setCapability(MULTI_WINDOW, "");
+      }
+      if (Boolean.getBoolean("webdriver.debug")) {
+        caps.setCapability("browserSideLog", true);
+      }
+
+      String baseUrl = whereIs("/selenium-server/tests/");
+      caps.setCapability("selenium.server.url", baseUrl);
+
+
+      WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+      if (driver instanceof SeleneseBackedWebDriver) {
+        selenium = ((SeleneseBackedWebDriver) driver).getWrappedSelenium();
+      } else {
+        selenium = new WebDriverBackedSelenium(driver, baseUrl);
+      }
+
+      selenium.setBrowserLogLevel("debug");
+      instance.set(selenium);
     }
-    selenium.windowFocus();
-  }
+  };
 
-  @Before
-  public void returnFocusToMainWindow() {
-    if (selenium == null) {
-      return;
-    }
+  public ExternalResource addNecessaryJavascriptCommands = new ExternalResource() {
+    @Override
+    protected void before() throws Throwable {
+      if (selenium == null || !(selenium instanceof WebDriverBackedSelenium)) {
+        return;
+      }
 
-    try {
-      selenium.selectWindow("");
-    } catch (SeleniumException e) {
-      // TODO(simon): Window switching in Opera is picky.
-      if (Browser.detect() != Browser.opera) {
-        throw e;
+      // We need to be a on page where we can execute JS
+      WebDriver driver = ((WrapsDriver) selenium).getWrappedDriver();
+      driver.get(whereIs("/selenium-server"));
+
+      try {
+        URL scriptUrl =
+            Resources.getResource(getClass(), "/com/thoughtworks/selenium/testHelpers.js");
+        String script = Resources.toString(scriptUrl, Charsets.UTF_8);
+
+        ((JavascriptExecutor) driver).executeScript(script);
+      } catch (IOException e) {
+        fail("Cannot read script: " + Throwables.getStackTraceAsString(e));
       }
     }
-  }
+  };
 
-  @Before
-  public void initializeSelenium() {
-    selenium = instance.get();
-    if (selenium != null) {
-      return;
+  public ExternalResource returnFocusToMainWindow = new ExternalResource() {
+    @Override
+    protected void before() throws Throwable {
+      if (selenium == null) {
+        return;
+      }
+
+      try {
+        selenium.selectWindow("");
+        selenium.windowFocus();
+      } catch (SeleniumException e) {
+        // TODO(simon): Window switching in Opera is picky.
+        if (Browser.detect() != Browser.opera) {
+          throw e;
+        }
+      }
     }
+  };
 
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, IGNORE);
-    if (Boolean.getBoolean("singlewindow")) {
-      caps.setCapability(SINGLE_WINDOW, true);
-      caps.setCapability(MULTI_WINDOW, "");
-    }
-    if (Boolean.getBoolean("webdriver.debug")) {
-      caps.setCapability("browserSideLog", true);
-    }
-
-    String baseUrl = whereIs("/selenium-server/tests/");
-    caps.setCapability("selenium.server.url", baseUrl);
-
-
-    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
-    if (driver instanceof SeleneseBackedWebDriver) {
-      selenium = ((SeleneseBackedWebDriver) driver).getWrappedSelenium();
-    } else {
-      selenium = new WebDriverBackedSelenium(driver, baseUrl);
-    }
-
-    selenium.setBrowserLogLevel("debug");
-    instance.set(selenium);
-  }
+  @Rule
+  public TestRule chain =
+      RuleChain.outerRule(addNecessaryJavascriptCommands)
+               .around(returnFocusToMainWindow)
+               .around(initializeSelenium);
 
   @After
   public void checkVerifications() {
     checkForVerificationErrors();
+  }
+
+  private String whereIs(String location) {
+    return GlobalTestEnvironment.get().getAppServer().whereIs(location);
   }
 
   public static void destroyDriver() {
