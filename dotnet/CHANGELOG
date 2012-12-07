@@ -1,3 +1,11 @@
+v2.27.1
+=======
+ * Corrected FileUtilities.FindFile() to correctly return the current directory
+   if the specified file is located there. This fixes an issue where driver
+   service executables (IEDriverServer.exe and chromedriver.exe) would not be
+   found if placed in the same directory as the WebDriver.dll assembly,
+   breaking previous behavior.
+   
 v2.27.0
 =======
  * Changed DesiredCapabilities.Safari() to return DesiredCapabilities instead
