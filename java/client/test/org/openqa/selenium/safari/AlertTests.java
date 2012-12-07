@@ -26,6 +26,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.UnhandledAlertException;
+import org.openqa.selenium.WebElement;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -110,7 +111,6 @@ public class AlertTests extends SafariTestBase {
       fail("Expected UnhandledAlertException");
     } catch (UnhandledAlertException expected) {
       // Expected exception
-      expected.printStackTrace();
     }
     // Shouldn't throw
     driver.getTitle();
@@ -136,9 +136,7 @@ public class AlertTests extends SafariTestBase {
       driver.findElement(By.id("alert")).click();
       fail("Expected UnhandledAlertException");
     } catch (UnhandledAlertException e) {
-      Alert alert = e.getAlert();
-      assertNotNull(alert);
-      assertEquals("cheese", alert.getText());
+      assertAlertText("cheese", e);
     }
   }
 
@@ -152,9 +150,119 @@ public class AlertTests extends SafariTestBase {
     try {
       driver.getTitle();
     } catch (UnhandledAlertException expected) {
-      assertEquals("hi", expected.getAlert().getText());
+      assertAlertText("hi", expected);
     }
     // Shouldn't throw
     driver.getTitle();
  }
+
+  @Test
+  public void onBeforeUnloadWithNoReturnValueShouldNotTriggerUnexpectedAlertErrors() {
+   driver.get(pages.alertsPage);
+
+   JavascriptExecutor executor = (JavascriptExecutor) driver;
+   assertEquals(0L,
+       executor.executeScript("localStorage.clear(); return localStorage.length"));
+
+   executor.executeScript(
+       "window.onbeforeunload = function() {\n" +
+       "  localStorage.setItem('foo', 'bar');\n" +
+       "};");
+
+    driver.navigate().refresh();
+    assertEquals("onbeforeunload did not run!",
+        "bar", executor.executeScript("return localStorage.getItem('foo');"));
+  }
+
+  @Test
+  public void onBeforeUnloadWithNullReturnDoesNotTriggerAlertError() {
+    driver.get(pages.alertsPage);
+
+    JavascriptExecutor executor = (JavascriptExecutor) driver;
+    assertEquals(0L,
+        executor.executeScript("localStorage.clear(); return localStorage.length"));
+
+    executor.executeScript(
+        "window.onbeforeunload = function() {\n" +
+        "  localStorage.setItem('foo', 'bar');\n" +
+        "  return null;\n" +
+        "};");
+
+    driver.navigate().refresh();
+    assertEquals("onbeforeunload did not run!",
+        "bar", executor.executeScript("return localStorage.getItem('foo');"));
+  }
+
+  @Test
+  public void onBeforeUnloadFromPageLoadShouldTriggerUnexpectedAlertErrors() {
+    driver.get(pages.alertsPage);
+
+    setSimpleOnBeforeUnload("one two three");
+    try {
+      driver.get(pages.alertsPage);
+      fail("Expected UnhandledAlertException");
+    } catch (UnhandledAlertException e) {
+      assertAlertText("one two three", e);
+    }
+  }
+
+  @Test
+  public void onBeforeUnloadFromPageRefreshShouldTriggerUnexpectedAlertErrors() {
+    driver.get(pages.alertsPage);
+
+    setSimpleOnBeforeUnload("one two three");
+    try {
+      driver.navigate().refresh();
+      fail("Expected UnhandledAlertException");
+    } catch (UnhandledAlertException e) {
+      assertAlertText("one two three", e);
+    }
+  }
+
+  @Test
+  public void
+  onBeforeUnloadWithReturnValuesShouldTriggerUnexpectedAlertErrors_uiAction() {
+    driver.get(pages.alertsPage);
+
+    JavascriptExecutor executor = (JavascriptExecutor) driver;
+    WebElement body = (WebElement) executor.executeScript(
+        "window.onbeforeunload = function() { return 'one two three'; };" +
+        "document.body.onclick = function() { window.location.reload(); };" +
+        "return document.body;");
+
+    body.click();
+    try {
+      driver.getTitle();
+      fail("Expected UnhandledAlertException");
+    } catch (UnhandledAlertException e) {
+      assertAlertText("one two three", e);
+    }
+  }
+
+  @Test
+  public void
+  onBeforeUnloadWithReturnValuesShouldTriggerUnexpectedAlertErrors_asyncScript() {
+    driver.get(pages.alertsPage);
+
+    setSimpleOnBeforeUnload("one two three");
+    try {
+      ((JavascriptExecutor) driver).executeAsyncScript(
+          "window.location = arguments[0]", pages.alertsPage);
+      fail("Expected UnhandledAlertException");
+    } catch (UnhandledAlertException e) {
+      assertAlertText("one two three", e);
+    }
+  }
+  
+  private static void assertAlertText(String expectedText, UnhandledAlertException e) {
+    Alert alert = e.getAlert();
+    assertNotNull(alert);
+    assertEquals(expectedText, alert.getText());
+  }
+  
+  private void setSimpleOnBeforeUnload(Object returnValue) {
+    ((JavascriptExecutor) driver).executeScript(
+        "var retVal = arguments[0]; window.onbeforeunload = function() { return retVal; }",
+        returnValue);
+  }
 }

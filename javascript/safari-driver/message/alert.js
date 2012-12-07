@@ -28,12 +28,15 @@ goog.require('safaridriver.message.Message');
  * Message sent to the extension when an alert is intercepted by an injected
  * script.
  * @param {string} message The alert message.
+ * @param {boolean} blocksUiThread Whether the action associated with this
+ *     message will block the UI thread if not blocked.
  * @constructor
  * @extends {safaridriver.message.Message}
  */
-safaridriver.message.Alert = function(message) {
+safaridriver.message.Alert = function(message, blocksUiThread) {
   goog.base(this, safaridriver.message.Alert.TYPE);
   this.setField('message', message);
+  this.setField('blocksUiThread', blocksUiThread);
 };
 goog.inherits(safaridriver.message.Alert, safaridriver.message.Message);
 
@@ -53,16 +56,26 @@ safaridriver.message.Alert.TYPE = 'alert';
  */
 safaridriver.message.Alert.fromData_ = function(data) {
   var message = data['message'];
-  if (!goog.isString(message)) {
+  var blocksUiThread = data['blocksUiThread'];
+  if (!goog.isString(message) || !goog.isBoolean(blocksUiThread)) {
     throw safaridriver.message.throwInvalidMessageError(data);
   }
-  return new safaridriver.message.Alert(message);
+  return new safaridriver.message.Alert(message, blocksUiThread);
 };
 
 
 /** @return {string} The alert message. */
 safaridriver.message.Alert.prototype.getMessage = function() {
   return (/** @type {string} */this.getField('message'));
+};
+
+
+/**
+ * @return {boolean} Whether the action associated with this message will block
+ *     the UI thread if not blocked.
+ */
+safaridriver.message.Alert.prototype.blocksUiThread = function() {
+  return /** @type {boolean} */ (this.getField('blocksUiThread'));
 };
 
 

@@ -254,13 +254,18 @@ safaridriver.inject.Tab.prototype.onAlert_ = function(message, e) {
     safaridriver.message.Message.setSynchronousMessageResponse('1');
   }
 
-  // Abort any pending commands and point users towards the bug for proper
-  // alert handling.
-  var alertText = message.getMessage();
-  goog.object.forEach(this.pendingCommands_, function(cmd) {
-    var response = safaridriver.alert.createResponse(alertText);
-    this.sendResponse_(cmd, response);
-  }, this);
+  if (message.blocksUiThread()) {
+    this.log('Unexpected alert; aborting pending commands');
+
+    // Abort any pending commands and point users towards the bug for proper
+    // alert handling.
+    var alertText = message.getMessage();
+    goog.object.forEach(this.pendingCommands_, function(cmd) {
+      this.log('Aborting ' + cmd);
+      var response = safaridriver.alert.createResponse(alertText);
+      this.sendResponse_(cmd, response);
+    }, this);
+  }
 };
 
 

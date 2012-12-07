@@ -25,7 +25,9 @@ goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('goog.string');
+goog.require('safaridriver.alert');
 goog.require('safaridriver.extension.Tab');
+goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Load');
 goog.require('webdriver.promise');
 
@@ -116,36 +118,8 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
   var tab = session.getCommandTab();
   tab.whenReady(function() {
     var expectLoad = tab.loadsNewPage(uri);
-    if (expectLoad) {
-      tab.once(safaridriver.message.Load.TYPE, onLoad);
-    }
-    safaridriver.extension.commands.sendCommand(session, command).
-        then(onSuccess, onFailure);
-
-    function onLoad() {
-      if (response.isPending()) {
-        safaridriver.extension.commands.LOG_.info(
-            'Page load finished; returning');
-        response.resolve();
-      }
-    }
-
-    function onSuccess() {
-      if (!expectLoad && response.isPending()) {
-        safaridriver.extension.commands.LOG_.info(
-            'Not expecting a new page load; returning');
-        response.resolve();
-      }
-    }
-
-    function onFailure(e) {
-      if (response.isPending()) {
-        safaridriver.extension.commands.LOG_.severe(
-            'Error while loading page; failing', e);
-        tab.removeListener(safaridriver.message.Load.TYPE, onLoad);
-        response.reject(e);
-      }
-    }
+    safaridriver.extension.commands.sendNavigationCommand_(session, command,
+        expectLoad).then(response.resolve, response.reject);
   });
 
   return response.promise;
@@ -161,25 +135,90 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
  */
 safaridriver.extension.commands.refresh = function(session, command) {
   var response = new webdriver.promise.Deferred();
-  var tab = session.getCommandTab();
-  tab.whenReady(function() {
-    tab.once(safaridriver.message.Load.TYPE, onLoad);
-
-    safaridriver.extension.commands.sendCommand(session, command).
-        addErrback(function(e) {
-          if (response.isPending()) {
-            tab.removeListener(safaridriver.message.Load.TYPE, onLoad);
-            response.reject(e);
-          }
-        });
-
-    function onLoad() {
-      if (response.isPending()) {
-        response.resolve();
-      }
-    }
+  session.getCommandTab().whenReady(function() {
+    safaridriver.extension.commands.sendNavigationCommand_(session, command,
+        true).then(response.resolve, response.reject);
   });
   return response.promise;
+};
+
+
+/**
+ * Sends a navigation related command to the tab for execution.
+ * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
+ * @param {boolean} waitForLoad Whether to wait for a load message from the
+ *     tab before considering the command completed.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     the operation has completed.
+ * @private
+ */
+safaridriver.extension.commands.sendNavigationCommand_ = function(session,
+    command, waitForLoad) {
+  var response = new webdriver.promise.Deferred();
+  var tab = session.getCommandTab();
+  if (waitForLoad) {
+    tab.once(safaridriver.message.Load.TYPE, onLoad);
+  }
+  safaridriver.extension.commands.sendCommand(session, command).
+      then(onSuccess, onFailure);
+  return response.promise;
+
+  /** Load message handler that completes the command response. */
+  function onLoad() {
+    tab.removeListener(safaridriver.message.Alert.TYPE, onAlert);
+    if (response.isPending()) {
+      safaridriver.extension.commands.LOG_.info(
+          'Page load finished; returning');
+      tab.removeListener(safaridriver.message.Alert.TYPE, onAlert);
+      response.resolve();
+    }
+  }
+
+  /**
+   * Alert message handler that will fail the command if a UI blocking alert
+   * message is received.
+   * @param {!safaridriver.message.Alert} message The parsed message.
+   * @param {!SafariExtensionMessageEvent} e The message event.
+   */
+  function onAlert(message, e) {
+    if (message.blocksUiThread() && response.isPending()) {
+      tab.removeListener(safaridriver.message.Alert.TYPE, onAlert);
+      tab.removeListener(safaridriver.message.Load.TYPE, onLoad);
+      // Stop propagation so the extension's global alert message handler
+      // does not fire.
+      e.stopPropagation();
+      response.resolve(
+          safaridriver.alert.createResponse(message.getMessage()));
+    }
+  }
+
+  /**
+   * Handler for when the tab responds to navigation command. The receipt of
+   * this response does not indicate that the navigation has completed, so
+   * the command will be left pending.
+   */
+  function onSuccess() {
+    if (!waitForLoad && response.isPending()) {
+      safaridriver.extension.commands.LOG_.info(
+          'Not expecting a new page load; returning');
+      response.resolve();
+    }
+    tab.on(safaridriver.message.Alert.TYPE, onAlert);
+  }
+
+  /**
+   * Handles command failures from the tab.
+   * @param {Error} e The failure reason.
+   */
+  function onFailure(e) {
+    if (response.isPending()) {
+      safaridriver.extension.commands.LOG_.severe(
+          'Error while loading page; failing', e);
+      tab.removeListener(safaridriver.message.Load.TYPE, onLoad);
+      response.reject(e);
+    }
+  }
 };
 
 

@@ -104,7 +104,9 @@ safaridriver.extension.numConnections_ = 0;
 
 
 /**
- * Responds to a message from an injected script.
+ * Responds to a message from an injected script. Note this event listener is
+ * attached to the {@code safari.application} object and will receive messages
+ * <em>after</em> any listeners attached directly to a tab or browser.
  * @param {!SafariExtensionMessageEvent} e The event.
  * @private
  */
@@ -138,7 +140,6 @@ safaridriver.extension.onMessage_ = function(e) {
       // TODO: Fully support alerts. See
       // http://code.google.com/p/selenium/issues/detail?id=3862
       e.message = !!safaridriver.extension.numConnections_;
-      e.stopPropagation();
       break;
   }
 };
