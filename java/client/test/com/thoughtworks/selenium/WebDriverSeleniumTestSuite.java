@@ -27,6 +27,7 @@ import com.thoughtworks.selenium.corebased.TestCheckUncheck;
 import com.thoughtworks.selenium.corebased.TestClick;
 import com.thoughtworks.selenium.corebased.TestCommandError;
 import com.thoughtworks.selenium.corebased.TestComments;
+import com.thoughtworks.selenium.corebased.TestCookie;
 import com.thoughtworks.selenium.corebased.TestCssLocators;
 import com.thoughtworks.selenium.corebased.TestDomainCookie;
 import com.thoughtworks.selenium.corebased.TestEditable;
@@ -135,7 +136,7 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
 //    TestRollup.class,
     TestSelect.class,
     TestSelectMultiLevelFrame.class,
-    TestSelectPopUp.class,
+//    TestSelectPopUp.class,
 //    TestSelectWindow.class,
 //    TestSelectWindowTitle.class,
 //    TestSetSpeed.class,
