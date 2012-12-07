@@ -26,10 +26,10 @@ android driver
 * Adding ghostdriver as a dependency to selenium
 * Fixed calculation of coordinates for elements in frames/iframes where the element is scrolled out of view within the frame. Fixes issue #4800.
 * Avoiding logging the tag name of the element if getting the tag name fails in the IE driver. Fixes issue #4811.
-* JimEvans: Adding new capability "enableElementCacheCleanup" to the IE driver. When set to true, the IE driver will clean the known-element cache of invalid elements after every page load. This is intended to keep memory usage down and improve performance. However, it is an intrusive change, so this capability is provided temporarily to allow disabling this behavior if problems arise. The default of this new capability is "true", meaning this behavior is turned on by default.
+* Adding new capability "enableElementCacheCleanup" to the IE driver. When set to true, the IE driver will clean the known-element cache of invalid elements after every page load. This is intended to keep memory usage down and improve performance. However, it is an intrusive change, so this capability is provided temporarily to allow disabling this behavior if problems arise. The default of this new capability is "true", meaning this behavior is turned on by default.
 * Allowing equal sign in a cookie value. Fixes issue 1543
 * The SafariDriver should try to hide the fact that it overrides window.{alert,confirm,prompt}.
-* AlexeiBarantsev: Returning a simple result (null) after opening a new window instead of the window object (that can't be serialized to JSON). Fixes issue 2035
+* Returning a simple result (null) after opening a new window instead of the window object (that can't be serialized to JSON). Fixes issue 2035
 * better error message reporting when browser launch fails. Fixes Issue 3043
 * Apparently some pages override window.postMessage, which breaks the SafariDriver page script's ability to communicate with the extension, causing comamnds to time out (executeScript, click, sendKeys, etc). We can't fully protect ourselves from this, but at least try.
 * added security options to objects when we move from chrome->content in Firefox
