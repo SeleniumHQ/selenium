@@ -18,93 +18,93 @@
 
 namespace webdriver {
 
-enum CommandType {
-  NoCommand,
-  Status,
-  GetSessionList,
-  NewSession,
-  GetSessionCapabilities,
-  Close,
-  Quit,
-  Get,
-  GoBack,
-  GoForward,
-  Refresh,
-  AddCookie,
-  GetAllCookies,
-  DeleteCookie,
-  DeleteAllCookies,
-  FindElement,
-  FindElements,
-  FindChildElement,
-  FindChildElements,
-  DescribeElement,
-  ClearElement,
-  ClickElement,
-  SendKeysToElement,
-  SubmitElement,
-  GetCurrentWindowHandle,
-  GetWindowHandles,
-  SwitchToWindow,
-  SwitchToFrame,
-  GetActiveElement,
-  GetCurrentUrl,
-  GetPageSource,
-  GetTitle,
-  ExecuteScript,
-  ExecuteAsyncScript,
-  GetElementText,
-  GetElementValue,
-  GetElementTagName,
-  IsElementSelected,
-  IsElementEnabled,
-  IsElementDisplayed,
-  GetElementLocation,
-  GetElementLocationOnceScrolledIntoView,
-  GetElementSize,
-  GetElementAttribute,
-  GetElementValueOfCssProperty,
-  ElementEquals,
-  Screenshot, 
-  ImplicitlyWait,
-  SetAsyncScriptTimeout,
-  SetTimeout,
-  GetOrientation,
-  SetOrientation,
+namespace CommandType {
+  const std::string NoCommand = "noCommand";
+  const std::string Status = "status";
+  const std::string GetSessionList = "getSessionList";
+  const std::string NewSession = "newSession";
+  const std::string GetSessionCapabilities = "getSessionCapabilities";
+  const std::string Close = "close";
+  const std::string Quit = "quit";
+  const std::string Get = "get";
+  const std::string GoBack = "goBack";
+  const std::string GoForward = "goForward";
+  const std::string Refresh = "refresh";
+  const std::string AddCookie = "addCookie";
+  const std::string GetAllCookies = "getAllCookies";
+  const std::string DeleteCookie = "deleteCookie";
+  const std::string DeleteAllCookies = "deleteAllCookies";
+  const std::string FindElement = "findElement";
+  const std::string FindElements = "findElements";
+  const std::string FindChildElement = "findChildElement";
+  const std::string FindChildElements = "findChildElements";
+  const std::string DescribeElement = "describeElement";
+  const std::string ClearElement = "clearElement";
+  const std::string ClickElement = "clickElement";
+  const std::string SendKeysToElement = "sendKeysToElement";
+  const std::string SubmitElement = "submit";
+  const std::string GetCurrentWindowHandle = "getCurrentWindowHandle";
+  const std::string GetWindowHandles = "getWindowHandles";
+  const std::string SwitchToWindow = "switchToWindow";
+  const std::string SwitchToFrame = "switchToFrame";
+  const std::string GetActiveElement = "getActiveElement";
+  const std::string GetCurrentUrl = "getCurrentUrl";
+  const std::string GetPageSource = "getPageSource";
+  const std::string GetTitle = "getTitle";
+  const std::string ExecuteScript = "executeScript";
+  const std::string ExecuteAsyncScript = "executeAsyncScript";
+  const std::string GetElementText = "getElementText";
+  const std::string GetElementValue = "getElementValue";
+  const std::string GetElementTagName = "getElementTagName";
+  const std::string IsElementSelected = "isElementSelected";
+  const std::string IsElementEnabled = "isElementEnabled";
+  const std::string IsElementDisplayed = "isElementDisplayed";
+  const std::string GetElementLocation = "getElementLocation";
+  const std::string GetElementLocationOnceScrolledIntoView = "getElementLocationInView";
+  const std::string GetElementSize = "getElementSize";
+  const std::string GetElementAttribute = "getAttribute";
+  const std::string GetElementValueOfCssProperty = "getValueOfCssProperty";
+  const std::string ElementEquals = "elementEquals";
+  const std::string Screenshot = "screenshot";
+  const std::string ImplicitlyWait = "implicitlyWait";
+  const std::string SetAsyncScriptTimeout = "setAsyncScriptTimeout";
+  const std::string SetTimeout = "setTimeout";
+  const std::string GetOrientation = "getOrientation";
+  const std::string SetOrientation = "setOrientation";
 
-  GetWindowSize,
-  SetWindowSize,
-  GetWindowPosition,
-  SetWindowPosition,
-  MaximizeWindow,
+  const std::string GetWindowSize = "getWindowSize";
+  const std::string SetWindowSize = "setWindowSize";
+  const std::string GetWindowPosition = "getWindowPosition";
+  const std::string SetWindowPosition = "setWindowPosition";
+  const std::string MaximizeWindow = "maximizeWindow";
 
-  AcceptAlert,
-  DismissAlert,
-  GetAlertText,
-  SendKeysToAlert,
+  const std::string AcceptAlert = "acceptAlert";
+  const std::string DismissAlert = "dismissAlert";
+  const std::string GetAlertText = "getAlertText";
+  const std::string SendKeysToAlert = "sendKeysToAlert";
 
-  SendKeysToActiveElement,
-  MouseMoveTo,
-  MouseClick,
-  MouseDoubleClick,
-  MouseButtonDown,
-  MouseButtonUp,
+  const std::string SendKeysToActiveElement = "sendKeysToActiveElement";
+  const std::string MouseMoveTo = "mouseMoveTo";
+  const std::string MouseClick = "mouseClick";
+  const std::string MouseDoubleClick = "mouseDoubleClick";
+  const std::string MouseButtonDown = "mouseButtonDown";
+  const std::string MouseButtonUp = "mouseButtonUp";
 
-  ListAvailableImeEngines,
-  GetActiveImeEngine,
-  IsImeActivated,
-  ActivateImeEngine,
-  DeactivateImeEngine,
+  const std::string ListAvailableImeEngines = "listAvailableImeEngines";
+  const std::string GetActiveImeEngine = "getActiveImeEngine";
+  const std::string IsImeActivated = "isImeActivated";
+  const std::string ActivateImeEngine = "activateImeEngine";
+  const std::string DeactivateImeEngine = "deactivateImeEngine";
 
-  TouchClick,
-  TouchDown,
-  TouchUp,
-  TouchMove,
-  TouchScroll,
-  TouchDoubleClick,
-  TouchLongClick,
-  TouchFlick
-};
+  const std::string TouchClick = "touchClick";
+  const std::string TouchDown = "touchDown";
+  const std::string TouchUp = "touchUp";
+  const std::string TouchMove = "touchMove";
+  const std::string TouchScroll = "touchScroll";
+  const std::string TouchDoubleClick = "touchDoubleClick";
+  const std::string TouchLongClick = "touchLongClick";
+  const std::string TouchFlick = "touchFlick";
+}
 
 }  // namespace webdriver
 

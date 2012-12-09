@@ -12,11 +12,12 @@
 // limitations under the License.
 
 #include "command.h"
+#include "command_types.h"
 #include "logging.h"
 
 namespace webdriver {
 
-Command::Command() : command_type_(0) {
+Command::Command() : command_type_(webdriver::CommandType::NoCommand) {
 }
 
 Command::~Command() {
@@ -41,8 +42,8 @@ void Command::Populate(const std::string& json_command) {
               << "JSON command: '" << json_command << "'";
   }
 
-  this->command_type_ = root.get("command", 0).asInt();
-  if (this->command_type_ != 0) {
+  this->command_type_ = root.get("command", webdriver::CommandType::NoCommand).asString();
+  if (this->command_type_ != webdriver::CommandType::NoCommand) {
     Json::Value locator_parameter_object = root["locator"];
     Json::Value::iterator it = locator_parameter_object.begin();
     Json::Value::iterator end = locator_parameter_object.end();

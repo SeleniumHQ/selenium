@@ -32,7 +32,7 @@ class Command {
   virtual ~Command(void);
   void Populate(const std::string& json_command);
 
-  int command_type(void) const { return this->command_type_; }
+  std::string command_type(void) const { return this->command_type_; }
   LocatorMap locator_parameters(void) const {
     return this->locator_parameters_;
   }
@@ -42,7 +42,7 @@ class Command {
 
  private:
   // The type of command this represents.
-  int command_type_;
+  std::string command_type_;
   // Locator parameters derived from the URL of the command request.
   LocatorMap locator_parameters_;
   // Command parameters passed as JSON in the body of the request.

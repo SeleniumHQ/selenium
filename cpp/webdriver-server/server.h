@@ -55,7 +55,7 @@ class Server {
   virtual void ShutDown(void) = 0;
 
  private:
-  typedef std::map<std::string, int> VerbMap;
+  typedef std::map<std::string, std::string> VerbMap;
   typedef std::map<std::string, VerbMap> UrlMap;
   typedef std::map<std::string, SessionHandle> SessionMap;
 
@@ -65,10 +65,10 @@ class Server {
                   const std::string& log_file);
 
   std::string ListSessions(void);
-  int LookupCommand(const std::string& uri,
-                    const std::string& http_verb,
-                    std::string* session_id,
-                    std::string* locator);
+  std::string LookupCommand(const std::string& uri,
+                            const std::string& http_verb,
+                            std::string* session_id,
+                            std::string* locator);
   std::string DispatchCommand(const std::string& url,
                               const std::string& http_verb,
                               const std::string& command_body);
