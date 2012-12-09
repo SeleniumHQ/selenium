@@ -14,8 +14,8 @@
 	<lib name="guava-11.0.1.jar" scope="COMPILE">
 		<srcroot url="file:///third-party/java/guava-libraries/guava-11.0.1-src.jar"/>
 	</lib>
-	<lib name="htmlunit-2.9.jar" scope="COMPILE">
-		<srcroot url="file:///third-party/java/htmlunit/htmlunit-2.9-sources.jar"/>
+	<lib name="htmlunit-2.11.jar" scope="COMPILE">
+		<srcroot url="file:///third-party/java/htmlunit/htmlunit-2.11-sources.jar"/>
 	</lib>
 	<lib name="jna-3.4.0.jar" scope="COMPILE">
 		<srcroot url="file:///third-party/java/jna/jna-3.4.0-src.jar"/>

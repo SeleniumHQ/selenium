@@ -65,12 +65,14 @@ import com.gargoylesoftware.htmlunit.SgmlPage;
 import com.gargoylesoftware.htmlunit.TopLevelWindow;
 import com.gargoylesoftware.htmlunit.WaitingRefreshHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebClientOptions;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.WebWindowEvent;
 import com.gargoylesoftware.htmlunit.WebWindowListener;
 import com.gargoylesoftware.htmlunit.WebWindowNotFoundException;
-import com.gargoylesoftware.htmlunit.html.BaseFrame;
+import com.gargoylesoftware.htmlunit.html.BaseFrameElement;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.FrameWindow;
@@ -94,7 +96,6 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -159,7 +160,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     });
 
     // Now put us on the home page, like a real browser
-    get(webClient.getHomePage());
+    get(webClient.getOptions().getHomePage());
     gotPage = false;
     resetKeyboardAndMouseState();
   }
@@ -252,23 +253,20 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   private WebClient createWebClient(BrowserVersion version) {
     WebClient client = newWebClient(version);
-    client.setHomePage(WebClient.URL_ABOUT_BLANK.toString());
-    client.setThrowExceptionOnFailingStatusCode(false);
-    client.setPrintContentOnFailingStatusCode(false);
-    client.setJavaScriptEnabled(enableJavascript);
-    client.setRedirectEnabled(true);
-    client.setRefreshHandler(new WaitingRefreshHandler());
-
-    try {
-      client.setUseInsecureSSL(true);
-    } catch (GeneralSecurityException e) {
-      throw new WebDriverException(e);
-    }
+    WebClientOptions options = client.getOptions();
+    options.setHomePage(WebClient.URL_ABOUT_BLANK.toString());
+    options.setThrowExceptionOnFailingStatusCode(false);
+    options.setPrintContentOnFailingStatusCode(false);
+    options.setJavaScriptEnabled(enableJavascript);
+    options.setRedirectEnabled(true);
+    options.setUseInsecureSSL(true);
 
     // Ensure that we've set the proxy if necessary
     if (proxyConfig != null) {
-      client.setProxyConfig(proxyConfig);
+      options.setProxyConfig(proxyConfig);
     }
+
+    client.setRefreshHandler(new WaitingRefreshHandler());
 
     return modifyWebClient(client);
   }
@@ -297,13 +295,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   public void setProxy(String host, int port) {
     proxyConfig = new ProxyConfig(host, port);
-    webClient.setProxyConfig(proxyConfig);
+    webClient.getOptions().setProxyConfig(proxyConfig);
   }
 
   public void setAutoProxy(String autoProxyUrl) {
     proxyConfig = new ProxyConfig();
     proxyConfig.setProxyAutoConfigUrl(autoProxyUrl);
-    webClient.setProxyConfig(proxyConfig);
+    webClient.getOptions().setProxyConfig(proxyConfig);
   }
 
   public Capabilities getCapabilities() {
@@ -743,9 +741,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       throw new IllegalStateException("Unable to locate element by name for " + lastPage());
     }
 
-    List<HtmlElement> allElements = ((HtmlPage) lastPage()).getElementsByName(name);
+    List<DomElement> allElements = ((HtmlPage) lastPage()).getElementsByName(name);
     if (!allElements.isEmpty()) {
-      return newHtmlUnitWebElement(allElements.get(0));
+      return newHtmlUnitWebElement((HtmlElement) allElements.get(0));
     }
 
     throw new NoSuchElementException("Unable to locate element with name: " + name);
@@ -756,7 +754,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       return new ArrayList<WebElement>();
     }
 
-    List<HtmlElement> allElements = ((HtmlPage) lastPage()).getElementsByName(using);
+    List<DomElement> allElements = ((HtmlPage) lastPage()).getElementsByName(using);
     return convertRawHtmlElementsToWebElements(allElements);
   }
 
@@ -861,12 +859,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   public boolean isJavascriptEnabled() {
-    return webClient.isJavaScriptEnabled();
+    return webClient.getOptions().isJavaScriptEnabled();
   }
 
   public void setJavascriptEnabled(boolean enableJavascript) {
     this.enableJavascript = enableJavascript;
-    webClient.setJavaScriptEnabled(enableJavascript);
+    webClient.getOptions().setJavaScriptEnabled(enableJavascript);
   }
 
   private class HtmlUnitTargetLocator implements TargetLocator {
@@ -900,8 +898,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         HtmlUnitWebElement element =
             (HtmlUnitWebElement) HtmlUnitDriver.this.findElementById(nameOrId);
         HtmlElement domElement = element.getElement();
-        if (domElement instanceof BaseFrame) {
-          currentWindow = ((BaseFrame) domElement).getEnclosedWindow();
+        if (domElement instanceof BaseFrameElement) {
+          currentWindow = ((BaseFrameElement) domElement).getEnclosedWindow();
           return HtmlUnitDriver.this;
         }
       } catch (NoSuchElementException ignored) {
@@ -919,11 +917,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       webElement.assertElementNotStale();
 
       HtmlElement domElement = webElement.getElement();
-      if (!(domElement instanceof BaseFrame)) {
+      if (!(domElement instanceof BaseFrameElement)) {
         throw new NoSuchFrameException(webElement.getTagName() + " is not a frame element.");
       }
 
-      currentWindow = ((BaseFrame) domElement).getEnclosedWindow();
+      currentWindow = ((BaseFrameElement) domElement).getEnclosedWindow();
       return HtmlUnitDriver.this;
     }
 
