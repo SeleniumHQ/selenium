@@ -27,16 +27,13 @@ import com.thoughtworks.selenium.corebased.TestCheckUncheck;
 import com.thoughtworks.selenium.corebased.TestClick;
 import com.thoughtworks.selenium.corebased.TestCommandError;
 import com.thoughtworks.selenium.corebased.TestComments;
-import com.thoughtworks.selenium.corebased.TestCookie;
 import com.thoughtworks.selenium.corebased.TestCssLocators;
-import com.thoughtworks.selenium.corebased.TestDomainCookie;
 import com.thoughtworks.selenium.corebased.TestEditable;
 import com.thoughtworks.selenium.corebased.TestElementIndex;
 import com.thoughtworks.selenium.corebased.TestElementOrder;
 import com.thoughtworks.selenium.corebased.TestElementPresent;
 import com.thoughtworks.selenium.corebased.TestErrorChecking;
 import com.thoughtworks.selenium.corebased.TestEval;
-import com.thoughtworks.selenium.corebased.TestEvilClosingWindow;
 import com.thoughtworks.selenium.corebased.TestFailingAssert;
 import com.thoughtworks.selenium.corebased.TestFailingVerifications;
 import com.thoughtworks.selenium.corebased.TestFramesClick;
@@ -61,6 +58,8 @@ import com.thoughtworks.selenium.corebased.TestQuickOpen;
 import com.thoughtworks.selenium.corebased.TestSelect;
 import com.thoughtworks.selenium.corebased.TestSelectMultiLevelFrame;
 import com.thoughtworks.selenium.corebased.TestSelectPopUp;
+import com.thoughtworks.selenium.corebased.TestSelectWindow;
+import com.thoughtworks.selenium.corebased.TestSelectWindowTitle;
 import com.thoughtworks.selenium.corebased.TestStore;
 import com.thoughtworks.selenium.corebased.TestSubmit;
 import com.thoughtworks.selenium.corebased.TestTextWhitespace;
@@ -137,8 +136,8 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
     TestSelect.class,
     TestSelectMultiLevelFrame.class,
     TestSelectPopUp.class,
-//    TestSelectWindow.class,
-//    TestSelectWindowTitle.class,
+    TestSelectWindow.class,
+    TestSelectWindowTitle.class,
 //    TestSetSpeed.class,
     TestStore.class,
     TestSubmit.class,

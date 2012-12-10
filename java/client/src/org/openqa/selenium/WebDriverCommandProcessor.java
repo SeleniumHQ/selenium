@@ -208,6 +208,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getAllButtons", new GetAllButtons());
     seleneseMethods.put("getAllFields", new GetAllFields());
     seleneseMethods.put("getAllLinks", new GetAllLinks());
+    seleneseMethods.put("getAllWindowNames", new GetAllWindowNames());
     seleneseMethods.put("getAllWindowTitles", new GetAllWindowTitles());
     seleneseMethods.put("getAttribute", new GetAttribute(javascriptLibrary, elementFinder));
     seleneseMethods.put("getAttributeFromAllWindows", new GetAttributeFromAllWindows());
