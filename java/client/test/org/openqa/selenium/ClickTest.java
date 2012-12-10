@@ -147,7 +147,7 @@ public class ClickTest extends JUnit4TestBase {
     assertEquals("click", log);
   }
 
-  @Ignore(ALL) //TODO(danielwh): Unignore
+  @Ignore(value = {ANDROID, IPHONE, SAFARI, SELENESE, OPERA_MOBILE}, reason = "Not tested")
   @Test
   public void testShouldClickOnFirstBoundingClientRectWithNonZeroSize() {
     driver.findElement(By.id("twoClientRects")).click();
