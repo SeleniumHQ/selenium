@@ -36,9 +36,10 @@ public class SauceDriver extends RemoteWebDriver {
   private static final String SAUCE_APIKEY_ENV_NAME = "SAUCE_APIKEY";
   private static final String SAUCE_USERNAME_ENV_NAME = "SAUCE_USERNAME";
   private static final String DESIRED_BROWSER_VERSION_ENV_NAME = "SAUCE_BROWSER_VERSION";
+  private static final String SAUCE_DISABLE_VIDEO_ENV_NAME = "SAUCE_DISABLE_VIDEO";
   
   private static final String USE_SAUCE_ENV_NAME = "USE_SAUCE";
-  
+
   // Should be one of the values listed for Platform, e.g. xp, win7, android, ...
   private static final String DESIRED_OS_ENV_NAME = "SAUCE_OS";
   // Optional to override default
@@ -94,6 +95,7 @@ public class SauceDriver extends RemoteWebDriver {
     mungedCapabilities.setCapability("selenium-version", seleniumVersion);
     mungedCapabilities.setCapability("idle-timeout", 180);
     mungedCapabilities.setCapability("disable-popup-handler", true);
+    mungedCapabilities.setCapability("record-video", shouldRecordVideo());
     
     mungedCapabilities.setCapability("prevent-requeue", true);
     
@@ -119,6 +121,10 @@ public class SauceDriver extends RemoteWebDriver {
 
   public static boolean shouldUseSauce() {
     return System.getenv(USE_SAUCE_ENV_NAME) != null;
+  }
+
+  public static boolean shouldRecordVideo() {
+    return ! Boolean.parseBoolean(System.getenv(SAUCE_DISABLE_VIDEO_ENV_NAME));
   }
 
   public static Platform getEffectivePlatform() {
