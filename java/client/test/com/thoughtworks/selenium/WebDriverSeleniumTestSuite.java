@@ -38,6 +38,7 @@ import com.thoughtworks.selenium.corebased.TestFailingAssert;
 import com.thoughtworks.selenium.corebased.TestFailingVerifications;
 import com.thoughtworks.selenium.corebased.TestFramesClick;
 import com.thoughtworks.selenium.corebased.TestFramesOpen;
+import com.thoughtworks.selenium.corebased.TestFramesSpecialTargets;
 import com.thoughtworks.selenium.corebased.TestFunkEventHandling;
 import com.thoughtworks.selenium.corebased.TestGet;
 import com.thoughtworks.selenium.corebased.TestGetTextContent;
@@ -109,7 +110,7 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
 //    TestFramesClickJavascriptHref.class,
 //    TestFramesNested.class,
     TestFramesOpen.class,
-//    TestFramesSpecialTargets.class,
+    TestFramesSpecialTargets.class,
     TestFunkEventHandling.class,
     TestGet.class,
     TestGetTextContent.class,

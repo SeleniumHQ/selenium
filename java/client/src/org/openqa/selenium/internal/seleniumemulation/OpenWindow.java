@@ -16,21 +16,40 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.openqa.selenium.WebDriver;
 
+import com.thoughtworks.selenium.SeleniumException;
+
 public class OpenWindow extends SeleneseCommand<Void> {
+  private final URL baseUrl;
   private final GetEval opener;
 
-  public OpenWindow(GetEval opener) {
+  public OpenWindow(String baseUrl, GetEval opener) {
+    try {
+      this.baseUrl = new URL(baseUrl);
+    } catch (MalformedURLException e) {
+      throw new SeleniumException(e.getMessage(), e);
+    }
     this.opener = opener;
   }
 
   @Override
   protected Void handleSeleneseCommand(final WebDriver driver, final String url,
       final String windowID) {
-    String[] args = {String.format("window.open('%s', '%s'); null;", url, windowID)};
+    try {
+      final String urlToOpen = url.indexOf("://") == -1 ?
+          new URL(baseUrl, url).toString() :
+          url;
 
-    opener.apply(driver, args);
+      String[] args = {String.format("window.open('%s', '%s'); null;", urlToOpen, windowID)};
+
+      opener.apply(driver, args);
+    } catch (MalformedURLException e) {
+      throw new SeleniumException(e.getMessage(), e);
+    }
 
     return null;
   }
