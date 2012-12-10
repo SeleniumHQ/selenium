@@ -49,6 +49,13 @@ namespace OpenQA.Selenium.Support.PageObjects
         public int Priority { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating the <see cref="Type"/> of the custom finder. The custom finder must
+        /// descend from the <see cref="By"/> class, and expose a public constructor that takes a <see cref="String"/>
+        /// argument.
+        /// </summary>
+        public Type CustomFinderType { get; set; }
+
+        /// <summary>
         /// Gets or sets an explicit <see cref="By"/> object to find by.
         /// Setting this property takes precedence over setting the How or Using properties.
         /// </summary>
@@ -135,9 +142,9 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <returns>A value that indicates the relative order of the objects being compared. The return value has these meanings:
         /// <list type="table">
         /// <listheader>Value</listheader><listheader>Meaning</listheader>
-        /// <item><description>Less than zero</description><description>This instance precedes obj in the sort order.</description></item>
-        /// <item><description>Zero</description><description>This instance occurs in the same position in the sort order as obj.</description></item>
-        /// <item><description>Greater than zero</description><description>This instance follows obj in the sort order. </description></item>
+        /// <item><description>Less than zero</description><description>This instance precedes <paramref name="obj"/> in the sort order.</description></item>
+        /// <item><description>Zero</description><description>This instance occurs in the same position in the sort order as <paramref name="obj"/>.</description></item>
+        /// <item><description>Greater than zero</description><description>This instance follows <paramref name="obj"/> in the sort order. </description></item>
         /// </list>
         /// </returns>
         public int CompareTo(object obj)

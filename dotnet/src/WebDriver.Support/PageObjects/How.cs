@@ -61,6 +61,11 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Finds by <see cref="OpenQA.Selenium.By.XPath" />
         /// </summary>
-        XPath
+        XPath,
+
+        /// <summary>
+        /// Finds by a custom <see cref="By"/> implementation.
+        /// </summary>
+        Custom
     }
 }

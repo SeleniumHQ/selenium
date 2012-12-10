@@ -18,6 +18,7 @@
 
 using System;
 using System.Globalization;
+using System.Reflection;
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
@@ -53,6 +54,25 @@ namespace OpenQA.Selenium.Support.PageObjects
                     return By.PartialLinkText(usingValue);
                 case How.XPath:
                     return By.XPath(usingValue);
+                case How.Custom:
+                    if (attribute.CustomFinderType == null)
+                    {
+                        throw new ArgumentException("Cannot use How.Custom without supplying a custom finder type");
+                    }
+
+                    if (!attribute.CustomFinderType.IsSubclassOf(typeof(By)))
+                    {
+                        throw new ArgumentException("Custom finder type must be a descendent of the By class");
+                    }
+
+                    ConstructorInfo ctor = attribute.CustomFinderType.GetConstructor(new Type[] { typeof(string) });
+                    if (ctor == null)
+                    {
+                        throw new ArgumentException("Custom finder type must expose a public constructor with a string argument");
+                    }
+
+                    By finder = ctor.Invoke(new object[] { usingValue }) as By;
+                    return finder;
             }
 
             throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Did not know how to construct How from how {0}, using {1}", how, usingValue));
