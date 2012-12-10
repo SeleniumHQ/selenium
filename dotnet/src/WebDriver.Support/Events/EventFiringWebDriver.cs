@@ -205,7 +205,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         /// <remarks>
         /// If the page has been modified after loading (for example, by JavaScript) 
-        /// there is no guarentee that the returned text is that of the modified page. 
+        /// there is no guarantee that the returned text is that of the modified page. 
         /// Please consult the documentation of the particular driver being used to 
         /// determine whether the returned text reflects the current state of the page 
         /// or the text last sent by the web server. The page source returned is a 
@@ -1390,9 +1390,12 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// Click this element. If this causes a new page to load, this method will block until the page has loaded. At this point, you should discard all references to this element and any further operations performed on this element 
-            /// will have undefined behaviour unless you know that the element and the page will still be present. If this element is not clickable, then this operation is a no-op since it's pretty common for someone to accidentally miss 
-            /// the target when clicking in Real Life
+            /// Click this element. If this causes a new page to load, this method will block until 
+            /// the page has loaded. At this point, you should discard all references to this element 
+            /// and any further operations performed on this element will have undefined behavior unless
+            /// you know that the element and the page will still be present. If this element is not 
+            /// clickable, then this operation is a no-op since it's pretty common for someone to 
+            /// accidentally miss  the target when clicking in Real Life
             /// </summary>
             public void Click()
             {
@@ -1458,7 +1461,7 @@ namespace OpenQA.Selenium.Support.Events
             /// Finds the first element in the page that matches the <see cref="By"/> object
             /// </summary>
             /// <param name="by">By mechanism to find the element</param>
-            /// <returns>IWebElement object so that you can interction that object</returns>
+            /// <returns>IWebElement object so that you can interaction that object</returns>
             public IWebElement FindElement(By by)
             {
                 IWebElement wrappedElement = null;

@@ -80,7 +80,7 @@ namespace OpenQA.Selenium.Support.UI
         /// <param name="timeout">The <see cref="TimeSpan"/> representing the amount of
         /// time to wait for the popup window to appear.</param>
         /// <param name="sleepInterval">The <see cref="TimeSpan"/> representing the
-        /// amout of time to wait between checks of the available window handles.</param>
+        /// amount of time to wait between checks of the available window handles.</param>
         public PopupWindowFinder(IWebDriver driver, TimeSpan timeout, TimeSpan sleepInterval)
         {
             this.driver = driver;

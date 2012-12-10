@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Support.UI
     /// <summary>
     /// A <see cref="LoadableComponent{T}"/> which might not have finished loading when Load() returns. After a
     /// call to Load(), the IsLoaded property should continue to return false until the component has fully
-    /// loaded. Use the HandleErrors() methd to check for error conditions which caused the Load() to fail.
+    /// loaded. Use the HandleErrors() method to check for error conditions which caused the Load() to fail.
     /// <para>
     /// <pre class="code">
     /// new SlowHypotheticalComponent().Load();

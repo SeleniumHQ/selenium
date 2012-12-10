@@ -49,7 +49,7 @@ namespace OpenQA.Selenium.Support.UI
         /// <param name="clock">An object implementing the <see cref="IClock"/> interface used to determine when time has passed.</param>
         /// <param name="driver">The WebDriver instance used to wait.</param>
         /// <param name="timeout">The timeout value indicating how long to wait for the condition.</param>
-        /// <param name="sleepInterval">A <see cref="TimeSpan"/> value indiciating how often to check for the condition to be true.</param>
+        /// <param name="sleepInterval">A <see cref="TimeSpan"/> value indicating how often to check for the condition to be true.</param>
         public WebDriverWait(IClock clock, IWebDriver driver, TimeSpan timeout, TimeSpan sleepInterval)
             : base(driver, clock)
         {

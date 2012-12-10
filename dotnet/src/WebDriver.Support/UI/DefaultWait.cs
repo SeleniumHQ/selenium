@@ -131,7 +131,7 @@ namespace OpenQA.Selenium.Support.UI
         /// <para>
         /// <list type="bullet">
         /// <item>the function returns neither null nor false</item>
-        /// <item>the function throws an unignored exception</item>
+        /// <item>the function throws an exception that is not in the list of ignored exception types</item>
         /// <item>the timeout expires</item>
         /// </list>
         /// </para>
