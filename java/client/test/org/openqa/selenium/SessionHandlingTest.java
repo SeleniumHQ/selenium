@@ -31,6 +31,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
@@ -55,7 +56,7 @@ public class SessionHandlingTest {
   }
 
   @Test
-  @Ignore(CHROME)
+  @Ignore(value = {CHROME, PHANTOMJS})
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     WebDriver driver = new WebDriverBuilder().get();
 
@@ -79,10 +80,11 @@ public class SessionHandlingTest {
   }
 
   @Test(expected = SessionNotFoundException.class)
-  @Ignore(value = {FIREFOX, CHROME, OPERA, HTMLUNIT}, reason =
+  @Ignore(value = {FIREFOX, CHROME, OPERA, HTMLUNIT, PHANTOMJS}, reason =
       "Chrome: throws generic WebDriverException,"
       + "Firefox, HtmlUnit: can perform an operation after closing the last window,"
-      + "Opera: throws Opera-specific exception")
+      + "Opera: throws Opera-specific exception,"
+      + "PhantomJS: throws NoSuchWindowException")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
     driver.close();

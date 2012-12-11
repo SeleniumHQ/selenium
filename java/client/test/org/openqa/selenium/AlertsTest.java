@@ -32,6 +32,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -48,7 +49,7 @@ import org.junit.Test;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-@Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE})
+@Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, PHANTOMJS, SAFARI, SELENESE, OPERA_MOBILE})
 public class AlertsTest extends JUnit4TestBase {
 
   @Before

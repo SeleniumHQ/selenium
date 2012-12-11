@@ -24,6 +24,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
@@ -138,7 +139,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
 
   @Test
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, IE, IPHONE, SAFARI, SELENESE})
+  @Ignore({ANDROID, CHROME, IE, IPHONE, PHANTOMJS, SAFARI, SELENESE})
   public void testShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting() {
     driver.get(pages.dynamicPage);
 

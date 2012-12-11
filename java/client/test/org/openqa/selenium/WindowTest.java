@@ -37,6 +37,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
@@ -93,7 +94,7 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = { SAFARI },
+  @Ignore(value = { SAFARI, PHANTOMJS },
       reason = "Safari: getPosition after setPosition doesn't match up exactly, " +
           "as expected - probably due to nuances in Mac OSX window manager.")
   public void testSetsThePositionOfTheCurrentWindow() throws InterruptedException {
@@ -116,7 +117,7 @@ public class WindowTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME}, reason = "Not yet implemented.")
+  @Ignore(value = {CHROME, PHANTOMJS}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindow() throws InterruptedException {
     if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
@@ -128,7 +129,7 @@ public class WindowTest extends JUnit4TestBase {
     maximize();
   }
 
-  @Ignore(value = {CHROME}, reason = "Not yet implemented.")
+  @Ignore(value = {CHROME, PHANTOMJS}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindowFromFrame() throws InterruptedException {
     if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
@@ -147,7 +148,7 @@ public class WindowTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME}, reason = "Not yet implemented.")
+  @Ignore(value = {CHROME, PHANTOMJS}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindowFromIframe() throws InterruptedException {
     if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
