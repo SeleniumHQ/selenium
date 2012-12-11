@@ -203,9 +203,9 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   @Rule
   public TestRule chain =
-      RuleChain.outerRule(addNecessaryJavascriptCommands)
+      RuleChain.outerRule(initializeSelenium)
                .around(returnFocusToMainWindow)
-               .around(initializeSelenium);
+               .around(addNecessaryJavascriptCommands);
 
   @After
   public void checkVerifications() {
