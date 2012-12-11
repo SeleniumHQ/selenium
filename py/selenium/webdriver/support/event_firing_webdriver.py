@@ -43,6 +43,9 @@ class EventFiringWebDriver(object):
          - event_listener : Instance of a class that subclasses AbstractEventListener and implements it fully or partially
         
         Example:
+
+        .. code-block:: python
+
             from selenium.webdriver import Firefox
             from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
             
