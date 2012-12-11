@@ -90,6 +90,7 @@ class ColorTests(unittest.TestCase):
         assert Color.from_string("green").rgba == "rgba(0, 128, 0, 1)"
         assert Color.from_string("gray").rgba == "rgba(128, 128, 128, 1)"
         assert Color.from_string("aqua").hex == "#00ffff"
+        assert Color.from_string("transparent").rgba == "rgba(0, 0, 0, 0)"
 
     def test_equals(self):
         assert Color.from_string("#f00") == Color.from_string("rgb(255, 0, 0)")
