@@ -38,7 +38,7 @@ public @interface Ignore {
     IPHONE,
     OPERA,
     OPERA_MOBILE,
-	PHANTOMJS,
+    PHANTOMJS,
     REMOTE,
     SAFARI,
     SELENESE,
