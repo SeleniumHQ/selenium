@@ -44,6 +44,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
@@ -55,6 +56,7 @@ import static org.openqa.selenium.testing.drivers.Browser.ie;
 import static org.openqa.selenium.testing.drivers.Browser.ipad;
 import static org.openqa.selenium.testing.drivers.Browser.iphone;
 import static org.openqa.selenium.testing.drivers.Browser.opera;
+import static org.openqa.selenium.testing.drivers.Browser.phantomjs;
 
 /**
  * Class that decides whether a test class or method should be ignored.
@@ -207,6 +209,10 @@ public class TestIgnorance {
       case opera_mobile:
         comparator.addDriver(OPERA_MOBILE);
         comparator.addDriver(REMOTE);
+        break;
+
+      case phantomjs:
+        comparator.addDriver(PHANTOMJS);
         break;
 
       case safari:
