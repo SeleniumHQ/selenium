@@ -1,3 +1,19 @@
+v2.28.0
+=======
+ * Introduced the CustomFinderType property to the .NET FindsByAttribute. This
+   allows use of custom By subclasses in the PageFactory. The custom finder
+   must be a subclass of By, and it must expose a public constructor that takes
+   a string argument. To use a custom finder with the FindsByAttribute, use the
+   following syntax:
+
+       [FindsBy(How = How.Custom, 
+	            Using = "customCriteria", 
+				CustomFinderType = typeof(MyCustomBySubclass))]
+
+   Using How.Custom without specifying a CustomFinderType, or using a
+   CustomFinderType that either does not descend from By or does not have a 
+   proper constructor will throw an exception.
+
 v2.27.1
 =======
  * Corrected FileUtilities.FindFile() to correctly return the current directory
