@@ -69,9 +69,12 @@ Grid:
 
 RC:
   * FIXED: 4668: Fixing ability to open relative URLs in WDBS.
-  * FIXED: 4273: Added getCssCount to the list of the methods supported by WebDriverBackedSelenium.
-  * FIXED: 4055: WDBS implementation of getValue for radio buttons now reflects behaviour of RC.
-  * FIXED: 4784: Processing locators before use in getCssCount anв getXpathCount.
+  * FIXED: 4273: Added getCssCount to the list of the methods
+    supported by WebDriverBackedSelenium.
+  * FIXED: 4055: WDBS implementation of getValue for radio buttons now
+    reflects behaviour of RC.
+  * FIXED: 4784: Processing locators before use in getCssCount anв
+    getXpathCount.
 
 
 v2.26.0
