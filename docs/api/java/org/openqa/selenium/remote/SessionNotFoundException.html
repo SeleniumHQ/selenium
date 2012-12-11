@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>SessionTerminatedException</title>
+<title>SessionNotFoundException</title>
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="SessionTerminatedException";
+        parent.document.title="SessionNotFoundException";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/remote/SessionNotFoundException.html" title="class in org.openqa.selenium.remote"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/remote/SimplePropertyDescriptor.html" title="class in org.openqa.selenium.remote"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/SessionTerminatedException.html" title="class in org.openqa.selenium.remote"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/remote/SessionTerminatedException.html" target="_top">Frames</a></li>
-<li><a href="SessionTerminatedException.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/remote/SessionNotFoundException.html" target="_top">Frames</a></li>
+<li><a href="SessionNotFoundException.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -77,7 +77,7 @@
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="subTitle">org.openqa.selenium.remote</div>
-<h2 title="Class SessionTerminatedException" class="title">Class SessionTerminatedException</h2>
+<h2 title="Class SessionNotFoundException" class="title">Class SessionNotFoundException</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
@@ -96,7 +96,7 @@
 <li><a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">org.openqa.selenium.WebDriverException</a></li>
 <li>
 <ul class="inheritance">
-<li>org.openqa.selenium.remote.SessionTerminatedException</li>
+<li>org.openqa.selenium.remote.SessionNotFoundException</li>
 </ul>
 </li>
 </ul>
@@ -116,14 +116,11 @@
 <dd>java.io.Serializable</dd>
 </dl>
 <hr>
-<div class="block"><strong>Deprecated.</strong>&nbsp;
-<div class="block"><i>To be removed in 2.28, use <a href="../../../../org/openqa/selenium/remote/SessionNotFoundException.html" title="class in org.openqa.selenium.remote"><code>SessionNotFoundException</code></a> instead</i></div>
-</div>
 <br>
-<pre>public class <span class="strong">SessionTerminatedException</span>
+<pre>public class <span class="strong">SessionNotFoundException</span>
 extends <a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
-<div class="block">Indicates that the session was terminated by the server</div>
-<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../serialized-form.html#org.openqa.selenium.remote.SessionTerminatedException">Serialized Form</a></dd></dl>
+<div class="block">Indicates that the session is not found (either terminated or not started).</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../serialized-form.html#org.openqa.selenium.remote.SessionNotFoundException">Serialized Form</a></dd></dl>
 </li>
 </ul>
 </div>
@@ -157,14 +154,10 @@ extends <a href="../../../../org/openqa/selenium/WebDriverException.html" title=
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/remote/SessionTerminatedException.html#SessionTerminatedException()">SessionTerminatedException</a></strong>()</code>
-<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
-&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/remote/SessionNotFoundException.html#SessionNotFoundException()">SessionNotFoundException</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/remote/SessionTerminatedException.html#SessionTerminatedException(java.lang.String)">SessionTerminatedException</a></strong>(java.lang.String&nbsp;message)</code>
-<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
-&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/remote/SessionNotFoundException.html#SessionNotFoundException(java.lang.String)">SessionNotFoundException</a></strong>(java.lang.String&nbsp;message)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -210,24 +203,22 @@ extends <a href="../../../../org/openqa/selenium/WebDriverException.html" title=
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="SessionTerminatedException()">
+<a name="SessionNotFoundException()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>SessionTerminatedException</h4>
-<pre>public&nbsp;SessionTerminatedException()</pre>
-<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<h4>SessionNotFoundException</h4>
+<pre>public&nbsp;SessionNotFoundException()</pre>
 </li>
 </ul>
-<a name="SessionTerminatedException(java.lang.String)">
+<a name="SessionNotFoundException(java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>SessionTerminatedException</h4>
-<pre>public&nbsp;SessionTerminatedException(java.lang.String&nbsp;message)</pre>
-<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<h4>SessionNotFoundException</h4>
+<pre>public&nbsp;SessionNotFoundException(java.lang.String&nbsp;message)</pre>
 </li>
 </ul>
 </li>
@@ -255,12 +246,12 @@ extends <a href="../../../../org/openqa/selenium/WebDriverException.html" title=
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/remote/SessionNotFoundException.html" title="class in org.openqa.selenium.remote"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/remote/SimplePropertyDescriptor.html" title="class in org.openqa.selenium.remote"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/SessionTerminatedException.html" title="class in org.openqa.selenium.remote"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/remote/SessionTerminatedException.html" target="_top">Frames</a></li>
-<li><a href="SessionTerminatedException.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/remote/SessionNotFoundException.html" target="_top">Frames</a></li>
+<li><a href="SessionNotFoundException.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>

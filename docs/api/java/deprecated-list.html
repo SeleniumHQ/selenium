@@ -65,6 +65,7 @@
 <ul>
 <li><a href="#interface">Deprecated Interfaces</a></li>
 <li><a href="#class">Deprecated Classes</a></li>
+<li><a href="#exception">Deprecated Exceptions</a></li>
 <li><a href="#field">Deprecated Fields</a></li>
 <li><a href="#method">Deprecated Methods</a></li>
 </ul>
@@ -110,6 +111,31 @@
 </table>
 </li>
 </ul>
+<a name="exception">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table border="0" cellpadding="3" cellspacing="0" summary="Deprecated Exceptions table, listing deprecated exceptions, and an explanation">
+<caption><span>Deprecated Exceptions</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Exceptions and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/IllegalLocatorException.html" title="class in org.openqa.selenium">org.openqa.selenium.IllegalLocatorException</a>
+<div class="block"><i>Superseded by InvalidSelectorException</i></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/SessionTerminatedException.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.SessionTerminatedException</a>
+<div class="block"><i>To be removed in 2.28, use <a href="org/openqa/selenium/remote/SessionNotFoundException.html" title="class in org.openqa.selenium.remote"><code>SessionNotFoundException</code></a> instead</i></div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
 <a name="field">
 <!--   -->
 </a>
@@ -148,8 +174,18 @@
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/WebDriverException.html#getDriverInformation()">org.openqa.selenium.WebDriverException.getDriverInformation()</a>
+<div class="block"><i>To be removed in 2.28</i></div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setProxyPreferences(org.openqa.selenium.Proxy)">org.openqa.selenium.firefox.FirefoxProfile.setProxyPreferences(Proxy)</a>
 <div class="block"><i>This is now handled by the driver itself.</i></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/WebDriverException.html#setSessionId(java.lang.String)">org.openqa.selenium.WebDriverException.setSessionId(String)</a>
+<div class="block"><i>To be removed in 2.28</i></div>
 </td>
 </tr>
 <tr class="altColor">

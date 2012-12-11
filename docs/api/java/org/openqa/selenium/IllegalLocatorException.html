@@ -59,7 +59,7 @@
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#fields_inherited_from_class_org.openqa.selenium.WebDriverException">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#methods_inherited_from_class_org.openqa.selenium.WebDriverException">Method</a></li>
 </ul>
@@ -116,11 +116,14 @@
 <dd>java.io.Serializable</dd>
 </dl>
 <hr>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>Superseded by InvalidSelectorException</i></div>
+</div>
 <br>
 <pre>public class <span class="strong">IllegalLocatorException</span>
 extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
 <div class="block">Thrown when a By cannot handle the arguments it is given. The most obvious case where this
- excpetion would be thrown is when By.className() is used with a compound class name.</div>
+ exception would be thrown is when By.className() is used with a compound class name.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../serialized-form.html#org.openqa.selenium.IllegalLocatorException">Serialized Form</a></dd></dl>
 </li>
 </ul>
@@ -128,6 +131,21 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field_summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a name="fields_inherited_from_class_org.openqa.selenium.WebDriverException">
+<!--   -->
+</a>
+<h3>Fields inherited from class&nbsp;org.openqa.selenium.<a href="../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></h3>
+<code><a href="../../../org/openqa/selenium/WebDriverException.html#DRIVER_INFO">DRIVER_INFO</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#SESSION_ID">SESSION_ID</a></code></li>
+</ul>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor_summary">
@@ -140,11 +158,15 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../org/openqa/selenium/IllegalLocatorException.html#IllegalLocatorException(java.lang.String)">IllegalLocatorException</a></strong>(java.lang.String&nbsp;message)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../org/openqa/selenium/IllegalLocatorException.html#IllegalLocatorException(java.lang.String)">IllegalLocatorException</a></strong>(java.lang.String&nbsp;message)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><strong><a href="../../../org/openqa/selenium/IllegalLocatorException.html#IllegalLocatorException(java.lang.String, java.lang.Throwable)">IllegalLocatorException</a></strong>(java.lang.String&nbsp;message,
-                       java.lang.Throwable&nbsp;cause)</code>&nbsp;</td>
+                       java.lang.Throwable&nbsp;cause)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -160,7 +182,7 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></h3>
-<code><a href="../../../org/openqa/selenium/WebDriverException.html#getBuildInformation()">getBuildInformation</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getDriverInformation()">getDriverInformation</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getDriverName(java.lang.StackTraceElement[])">getDriverName</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getMessage()">getMessage</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getSupportUrl()">getSupportUrl</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getSystemInformation()">getSystemInformation</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#setSessionId(java.lang.String)">setSessionId</a></code></li>
+<code><a href="../../../org/openqa/selenium/WebDriverException.html#addInfo(java.lang.String, java.lang.String)">addInfo</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getBuildInformation()">getBuildInformation</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getDriverInformation()">getDriverInformation</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getDriverName(java.lang.StackTraceElement[])">getDriverName</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getMessage()">getMessage</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getSupportUrl()">getSupportUrl</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getSystemInformation()">getSystemInformation</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#setSessionId(java.lang.String)">setSessionId</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_java.lang.Throwable">
@@ -197,6 +219,7 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <li class="blockList">
 <h4>IllegalLocatorException</h4>
 <pre>public&nbsp;IllegalLocatorException(java.lang.String&nbsp;message)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="IllegalLocatorException(java.lang.String, java.lang.Throwable)">
@@ -207,6 +230,7 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <h4>IllegalLocatorException</h4>
 <pre>public&nbsp;IllegalLocatorException(java.lang.String&nbsp;message,
                        java.lang.Throwable&nbsp;cause)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -260,7 +284,7 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#fields_inherited_from_class_org.openqa.selenium.WebDriverException">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#methods_inherited_from_class_org.openqa.selenium.WebDriverException">Method</a></li>
 </ul>
