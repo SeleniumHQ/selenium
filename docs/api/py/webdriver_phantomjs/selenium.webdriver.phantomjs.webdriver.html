@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.chrome.webdriver &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.webdriver.phantomjs.webdriver &mdash; Selenium 2.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -27,8 +27,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Selenium 2.0 documentation" href="../index.html" />
     <link rel="up" title="Selenium Documentation" href="../api.html" />
-    <link rel="next" title="selenium.webdriver.firefox.extension_connection" href="../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html" />
-    <link rel="prev" title="selenium.webdriver.chrome.service" href="selenium.webdriver.chrome.service.html" /> 
+    <link rel="next" title="selenium.webdriver.remote.command" href="../webdriver_remote/selenium.webdriver.remote.command.html" />
+    <link rel="prev" title="selenium.webdriver.phantomjs.service" href="selenium.webdriver.phantomjs.service.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,10 +41,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html" title="selenium.webdriver.firefox.extension_connection"
+          <a href="../webdriver_remote/selenium.webdriver.remote.command.html" title="selenium.webdriver.remote.command"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="selenium.webdriver.chrome.service.html" title="selenium.webdriver.chrome.service"
+          <a href="selenium.webdriver.phantomjs.service.html" title="selenium.webdriver.phantomjs.service"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
           <li><a href="../api.html" accesskey="U">Selenium Documentation</a> &raquo;</li> 
@@ -56,16 +56,16 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-selenium.webdriver.chrome.webdriver">
-<span id="selenium-webdriver-chrome-webdriver"></span><h1>selenium.webdriver.chrome.webdriver<a class="headerlink" href="#module-selenium.webdriver.chrome.webdriver" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-selenium.webdriver.phantomjs.webdriver">
+<span id="selenium-webdriver-phantomjs-webdriver"></span><h1>selenium.webdriver.phantomjs.webdriver<a class="headerlink" href="#module-selenium.webdriver.phantomjs.webdriver" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="selenium.webdriver.chrome.webdriver.WebDriver">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.chrome.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>executable_path='chromedriver'</em>, <em>port=0</em>, <em>chrome_options=None</em>, <em>service_args=None</em>, <em>desired_capabilities=None</em>, <em>service_log_path=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controls the ChromeDriver and allows you to drive the browser.</p>
-<p>You will need to download the ChromeDriver executable from
-<a class="reference external" href="http://code.google.com/p/chromedriver/downloads/list">http://code.google.com/p/chromedriver/downloads/list</a></p>
-<p>Creates a new instance of the chrome driver.</p>
-<p>Starts the service and then creates new instance of chrome driver.</p>
+<dt id="selenium.webdriver.phantomjs.webdriver.WebDriver">
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.phantomjs.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>executable_path='phantomjs'</em>, <em>port=0</em>, <em>desired_capabilities={'platform': 'ANY'</em>, <em>'browserName': 'phantomjs'</em>, <em>'version': ''</em>, <em>'javascriptEnabled': True}</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/phantomjs/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.phantomjs.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper to communicate with PhantomJS through Ghostdriver.</p>
+<p>You will need to follow all the directions here:
+<a class="reference external" href="https://github.com/detro/ghostdriver">https://github.com/detro/ghostdriver</a></p>
+<p>Creates a new instance of the PhantomJS / Ghostdriver.</p>
+<p>Starts the service and then creates new instance of the driver.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -75,24 +75,16 @@
 <li>port - port you would like the service to run, if left as 0, a free port will be found.</li>
 <li>desired_capabilities: Dictionary object with non-browser specific
 capabilities only, such as &#8220;proxy&#8221; or &#8220;loggingPref&#8221;.</li>
-<li>chrome_options: this takes an instance of ChromeOptions</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
-<dt id="selenium.webdriver.chrome.webdriver.WebDriver.quit">
-<tt class="descname">quit</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/webdriver.html#WebDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.webdriver.WebDriver.quit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Closes the browser and shuts down the ChromeDriver executable
-that is started when starting the ChromeDriver</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="selenium.webdriver.chrome.webdriver.WebDriver.save_screenshot">
-<tt class="descname">save_screenshot</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/webdriver.html#WebDriver.save_screenshot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.webdriver.WebDriver.save_screenshot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the screenshot of the current window. Returns False if there is
-any IOError, else returns True. Use full paths in your filename.</p>
+<dt id="selenium.webdriver.phantomjs.webdriver.WebDriver.quit">
+<tt class="descname">quit</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/phantomjs/webdriver.html#WebDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.phantomjs.webdriver.WebDriver.quit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the browser and shuts down the PhantomJS executable
+that is started when starting the PhantomJS</p>
 </dd></dl>
 
 </dd></dl>
@@ -106,14 +98,14 @@ any IOError, else returns True. Use full paths in your filename.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="selenium.webdriver.chrome.service.html"
-                        title="previous chapter">selenium.webdriver.chrome.service</a></p>
+  <p class="topless"><a href="selenium.webdriver.phantomjs.service.html"
+                        title="previous chapter">selenium.webdriver.phantomjs.service</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html"
-                        title="next chapter">selenium.webdriver.firefox.extension_connection</a></p>
+  <p class="topless"><a href="../webdriver_remote/selenium.webdriver.remote.command.html"
+                        title="next chapter">selenium.webdriver.remote.command</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="../_sources/webdriver_chrome/selenium.webdriver.chrome.webdriver.txt"
+    <li><a href="../_sources/webdriver_phantomjs/selenium.webdriver.phantomjs.webdriver.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -143,10 +135,10 @@ any IOError, else returns True. Use full paths in your filename.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html" title="selenium.webdriver.firefox.extension_connection"
+          <a href="../webdriver_remote/selenium.webdriver.remote.command.html" title="selenium.webdriver.remote.command"
              >next</a> |</li>
         <li class="right" >
-          <a href="selenium.webdriver.chrome.service.html" title="selenium.webdriver.chrome.service"
+          <a href="selenium.webdriver.phantomjs.service.html" title="selenium.webdriver.phantomjs.service"
              >previous</a> |</li>
         <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
           <li><a href="../api.html" >Selenium Documentation</a> &raquo;</li> 
