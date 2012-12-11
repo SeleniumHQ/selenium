@@ -539,6 +539,10 @@ module CrazyFunJava
                 ant.jvmarg(:line => "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=#{suspend?},address=5005")
               end
 
+              if shorten_log_messages?
+                ant.sysproperty :key => 'webdriver.remote.shorten_log_messages', :value => 'true'
+              end
+
               if (args[:args])
                 ant.jvmarg(:line => args[:args])
               end
@@ -587,6 +591,11 @@ module CrazyFunJava
     def leave_running?
       # we set leaverunning true if the commandline argument is set and it is not 'false'
       !([nil, 'false'].include? ENV['leaverunning'])
+    end
+
+    def shorten_log_messages?
+      # we set shorten_log_messages true if the commandline argument is set and it is not 'false'
+      !([nil, 'false'].include? ENV['shortenlogmessages'])
     end
 
   end

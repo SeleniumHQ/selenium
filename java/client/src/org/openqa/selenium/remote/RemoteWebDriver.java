@@ -568,18 +568,25 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    * @param toLog       any data that might be interesting.
    */
   protected void log(SessionId sessionId, String commandName, Object toLog, When when) {
+    String text = "" + toLog;
+    if (commandName.equals(DriverCommand.EXECUTE_SCRIPT)
+        || commandName.equals(DriverCommand.EXECUTE_ASYNC_SCRIPT)) {
+      if (text.length() > 100 && Boolean.getBoolean("webdriver.remote.shorten_log_messages")) {
+        text = text.substring(0, 100) + "...";
+      }
+    }
     switch(when) {
       case BEFORE:
-        logger.log(level, "Executing: " + commandName + " " + toLog);
+        logger.log(level, "Executing: " + commandName + " " + text);
         break;
       case AFTER:
-        logger.log(level, "Executed: " + toLog);
+        logger.log(level, "Executed: " + text);
         break;
       case EXCEPTION:
-        logger.log(level, "Exception: " + toLog);
+        logger.log(level, "Exception: " + text);
         break;
       default:
-        logger.log(level, toLog.toString());
+        logger.log(level, text);
         break;
     }
   }
