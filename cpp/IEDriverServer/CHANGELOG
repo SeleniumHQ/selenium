@@ -9,6 +9,15 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.28.0.0
+=========
+ * Changed the shared WebDriver C++ server component to use strings in
+   serialized commands instead of integers. Testing does not seem to indicate
+   this will introduce a performance issue, and it makes logs more intelligible
+   when logging the raw JSON of a received command. As far as anyone can
+   determine, the only consumer of this component is the IEDriverServer.exe, so
+   this should be a completely internal change.
+
 v2.27.0.0
 =========
  * Release to coincide with full Selenium release.
