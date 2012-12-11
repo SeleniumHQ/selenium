@@ -149,7 +149,7 @@ java_library(name = "client-combined",
     "//java/client/src/org/openqa/selenium/support",
     "//java/client/src/org/openqa/selenium:webdriver-backed-selenium",
     "//third_party/java/opera-driver",
-    "//third_party/java/phantomjs-driver",
+    "//third_party/java/phantomjs-driver"
   ])
 
 java_library(name = "codecs",

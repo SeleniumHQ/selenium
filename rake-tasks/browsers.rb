@@ -74,7 +74,7 @@ BROWSERS = {
       :file_string => "phantomjs",
       :class => "PhantomJS",
     },
-    :browser_name => "phantomjs",
+    :browser_name => "phantomjs"
   },
   "remote_firefox" => {
     :python => {
