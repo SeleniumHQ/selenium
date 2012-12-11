@@ -1,3 +1,26 @@
+v2.28.0
+=======
+
+WebDriver:
+  * "null" can now be passed to executeScript
+  * .Net: Corrected FileUtilities.FindFile() to correctly return the
+    current directory if the specified file is located there.
+  * .Net: Introduces the Updating the CustomFinderType property to the
+    .NET FindsByAttribute. This allows use of custom By subclasses in
+    the PageFactory. The custom finder must be a subclass of By, and
+    it must expose a public constructor that takes a string argument.
+  * SafariDriver: better attempts to catch native dialogs from user
+    defined onbeforeunload handlers.
+  * Updating HtmlUnit to 2.11
+  * Added the PhantomJS bindings to the release. You'll still need to
+    download PhantomJS itself separately.
+
+RC:
+  * Implemented getAllWindowNames in WebDriverBackedSelenium
+  * Implemented openWindow in WebDriverBackedSelenium to allow opening
+    relative URLs
+
+
 v2.27.0
 =======
 * Adding shift key handling to the synthetic keyboard actions.
@@ -805,3 +828,4 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
+r18261 | david.burns@theautomatedtester.co.uk | 2012-12-05 11:30:23 -0800 (Wed, 05 Dec 2012) | 1 line
