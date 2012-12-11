@@ -202,6 +202,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("doubleClick", new DoubleClick(alertOverride, elementFinder));
     seleneseMethods.put("dragdrop", new DragAndDrop(elementFinder));
     seleneseMethods.put("dragAndDrop", new DragAndDrop(elementFinder));
+    seleneseMethods.put("dragAndDropToObject", new DragAndDropToObject(elementFinder));
     seleneseMethods.put("fireEvent", new FireEvent(elementFinder, javascriptLibrary));
     seleneseMethods.put("focus", new FireNamedEvent(elementFinder, javascriptLibrary, "focus"));
     seleneseMethods.put("getAlert", new GetAlert(alertOverride));
