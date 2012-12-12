@@ -1,3 +1,0 @@
-
-java_library(name = "jackson",
-  deps = [ "*.jar" ])

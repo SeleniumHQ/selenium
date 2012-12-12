@@ -1,3 +1,0 @@
-
-java_library(name = "jopt_simple",
-  deps = [ "*.jar" ])
