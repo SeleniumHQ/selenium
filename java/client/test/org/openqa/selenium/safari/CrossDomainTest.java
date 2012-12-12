@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.TestWaiter.waitFor;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -36,6 +37,8 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.concurrent.Callable;
 
 @NeedsLocalEnvironment(reason = "Uses a local server")
 public class CrossDomainTest extends JUnit4TestBase {
@@ -81,38 +84,16 @@ public class CrossDomainTest extends JUnit4TestBase {
 
   @Test
   public void canSwitchToAFrameFromAnotherDomain() {
-    driver.get(pages.iframePage);
-    WebElement iframe = driver.findElement(By.tagName("iframe"));
-    ((JavascriptExecutor) driver).executeScript("arguments[0].src = arguments[1];", iframe,
-        otherPages.iframePage);
+    setupCrossDomainFrameTest();
 
-    assertEquals(otherPages.iframePage,
-        ((JavascriptExecutor) driver).executeScript("return arguments[0].src", iframe));
-    assertTrue(isTop());
-    driver.switchTo().frame(iframe);
-    assertFalse(isTop());
     assertEquals(otherPages.iframePage, getPageUrl());
-
     driver.switchTo().defaultContent();
     assertEquals(pages.iframePage, getPageUrl());
   }
 
-  private boolean isTop() {
-    return (Boolean) ((JavascriptExecutor) driver).executeScript("return window === window.top");
-  }
-
-  private String getPageUrl() {
-    return (String) ((JavascriptExecutor) driver).executeScript("return window.location.href");
-  }
-
   @Test
   public void cannotCrossDomainsWithExecuteScript() {
-    driver.get(pages.iframePage);
-    WebElement iframe = driver.findElement(By.tagName("iframe"));
-    ((JavascriptExecutor) driver).executeScript("arguments[0].src = arguments[1];", iframe,
-        otherPages.iframePage);
-
-    driver.switchTo().frame(iframe);
+    setupCrossDomainFrameTest();
 
     try {
       ((JavascriptExecutor) driver).executeScript(
@@ -124,5 +105,35 @@ public class CrossDomainTest extends JUnit4TestBase {
     // Make sure we can recover from the above.
     assertEquals("body", ((JavascriptExecutor) driver).executeScript(
         "return window.document.body.tagName.toLowerCase();"));
+  }
+
+  private void setupCrossDomainFrameTest() {
+    driver.get(pages.iframePage);
+
+    WebElement iframe = driver.findElement(By.tagName("iframe"));
+    ((JavascriptExecutor) driver).executeScript(
+        "arguments[0].src = arguments[1];", iframe, otherPages.iframePage);
+
+    assertTrue(isTop());
+    driver.switchTo().frame(iframe);
+    assertFalse(isTop());
+    waitFor(frameLocationToBe(otherPages.iframePage));
+  }
+
+  private boolean isTop() {
+    return (Boolean) ((JavascriptExecutor) driver).executeScript("return window === window.top");
+  }
+
+  private String getPageUrl() {
+    return (String) ((JavascriptExecutor) driver).executeScript("return window.location.href");
+  }
+
+  private Callable<Boolean> frameLocationToBe(final String url) {
+    return new Callable<Boolean>() {
+      @Override
+      public Boolean call() throws Exception {
+        return url.equals(getPageUrl());
+      }
+    };
   }
 }
