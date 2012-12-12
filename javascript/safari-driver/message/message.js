@@ -290,6 +290,19 @@ safaridriver.message.Message.SYNCHRONOUS_MESSAGE_RESPONSE_ATTRIBUTE_ =
 
 
 /**
+ * The custom event type for {@link MessageEvent}s sent synchronously over the
+ * DOM. This is used to avoid firing standard "message" events as much as
+ * possible since the page under test will receive those events as well.
+ * Standard messages will still be sent through window.postMessage when
+ * sending messages to windows belonging to a different domain.
+ * @type {string}
+ * @const
+ */
+safaridriver.message.Message.SYNCHRONOUS_DOM_MESSAGE_EVENT_TYPE =
+    'safaridriver.message';
+
+
+/**
  * @param {string} response The response value.
  */
 safaridriver.message.Message.setSynchronousMessageResponse = function(
@@ -314,7 +327,9 @@ safaridriver.message.Message.prototype.sendSync = function(target) {
             'window is the same as the current context');
 
     var messageEvent = document.createEvent('MessageEvent');
-    messageEvent.initMessageEvent('message', false, false, this.data_,
+    messageEvent.initMessageEvent(
+        safaridriver.message.Message.SYNCHRONOUS_DOM_MESSAGE_EVENT_TYPE,
+        false, false, this.data_,
         // origin is a non-standard property on location.
         window.location['origin'], '0', window, null);
     target.dispatchEvent(messageEvent);

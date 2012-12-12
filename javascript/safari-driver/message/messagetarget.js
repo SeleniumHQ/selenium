@@ -18,6 +18,7 @@ goog.provide('safaridriver.message.MessageTarget');
 goog.require('bot.json');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.message');
+goog.require('safaridriver.message.Message');
 goog.require('webdriver.EventEmitter');
 
 
@@ -63,6 +64,9 @@ safaridriver.message.MessageTarget = function(source, opt_consumeMessages) {
   this.consumeMessages_ = !!opt_consumeMessages;
 
   this.source_.addEventListener('message', this.boundOnMessage_, true);
+  this.source_.addEventListener(
+      safaridriver.message.Message.SYNCHRONOUS_DOM_MESSAGE_EVENT_TYPE,
+      this.boundOnMessage_, true);
 };
 goog.inherits(safaridriver.message.MessageTarget, webdriver.EventEmitter);
 

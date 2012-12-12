@@ -17,9 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.safari;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import org.junit.AfterClass;
@@ -52,6 +54,19 @@ public class CleanSessionTest extends SafariTestBase {
 
     createCleanSession();
     assertNoCookies();
+  }
+
+  @Test
+  public void doesNotLeakInternalMessagesToThePageUnderTest() {
+    driver.get(appServer.whereIs("messages.html"));
+
+    JavascriptExecutor executor = (JavascriptExecutor) driver;
+    executor.executeScript("window.postMessage('hi', '*');");
+
+    long numMessages = (Long) executor.executeScript(
+        "return window.messages.length;");
+
+    assertEquals(1L, numMessages);
   }
 
   private void assertHasCookie(Cookie cookie) {
