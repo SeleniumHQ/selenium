@@ -5,7 +5,7 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/phantomjs-driver/phantomjsdriver-1.0.0-source.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/phantomjs-driver/phantomjsdriver-1.0.0-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

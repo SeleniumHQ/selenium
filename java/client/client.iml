@@ -45,6 +45,7 @@
     <orderEntry type="library" scope="TEST" name="jetty" level="project" />
     <orderEntry type="library" scope="TEST" name="little_proxy" level="project" />
     <orderEntry type="library" scope="TEST" name="slf4j" level="project" />
+    <orderEntry type="library" name="phantomjsdriver" level="project" />
   </component>
 </module>
 
