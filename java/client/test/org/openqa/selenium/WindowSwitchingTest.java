@@ -40,6 +40,7 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.alertToBePresent;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
+import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -360,6 +361,28 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);
     driver.close();
+  }
+  
+  @NeedsFreshDriver
+  @NoDriverAfterTest
+  @Test
+  @Ignore(value = ALL, reason = "All browsers keep active frame after switching windows")
+  public void testShouldFocusOnTheTopMostFrameAfterSwitchingToAWindow() {
+    driver.get(appServer.whereIs("window_switching_tests/page_with_frame.html"));
+
+    int currentWindowHandles = driver.getWindowHandles().size();
+    String mainWindow = driver.getWindowHandle();
+
+    driver.findElement(By.id("a-link-that-opens-a-new-window")).click();
+    assertTrue(waitUntilNewWindowIsOpened(driver, currentWindowHandles));
+
+    driver.switchTo().frame("myframe");
+
+    driver.switchTo().window("newWindow");
+    driver.close();
+    driver.switchTo().window(mainWindow);
+    
+    driver.findElement(By.id("myframe"));
   }
 
   private boolean waitUntilNewWindowIsOpened(final WebDriver driver, final int originalCount) {
