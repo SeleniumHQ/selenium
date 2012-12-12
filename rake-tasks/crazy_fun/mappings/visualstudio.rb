@@ -626,14 +626,19 @@ module CrazyFunVisualC
          target_task.out = full_path
       else
         file desc_path do
-          msbuild! "#{task_name}.compile" do |msb|
-            puts "Compiling: #{task_name} as #{desc_path}"
-            msb.use :net40
-            msb.properties :configuration => :Release, :platform => args[:platform]
-            msb.solution = File.join(dir, args[:project])
-            msb.targets = ["Build"]
-            msb.parameters "/nologo"
-            msb.verbosity = "quiet"
+          begin
+            msbuild! "#{task_name}.compile" do |msb|
+              puts "Compiling: #{task_name} as #{desc_path}"
+              msb.use :net40
+              msb.properties :configuration => :Release, :platform => args[:platform]
+              msb.solution = File.join(dir, args[:project])
+              msb.targets = ["Build"]
+              msb.parameters "/nologo"
+              msb.verbosity = "quiet"
+            end
+          rescue
+              puts "Compilation of #{desc_path} failed."
+              copy_prebuilt(fun, full_path)
           end
         end
 
