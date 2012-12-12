@@ -45,13 +45,18 @@ class GetSessionCapabilitiesCommandHandler : public IECommandHandler {
     capabilities["version"] = version_string;
     capabilities["javascriptEnabled"] = true;
     capabilities["platform"] = "WINDOWS";
-    // TODO(JimEvans): Change this to not hard-code the returned capability
-    // when synthetic events are implemented in the IE driver.
-    // capabilities["nativeEvents"] = executor.enable_native_events();
-    capabilities["nativeEvents"] = true;
+    capabilities["nativeEvents"] = executor.enable_native_events();
     capabilities["cssSelectorsEnabled"] = true;
     capabilities["takesScreenshot"] = true;
     capabilities["handlesAlerts"] = true;
+    capabilities["enablePersistentHover"] = executor.enable_persistent_hover();
+    capabilities["unexpectedAlertBehaviour"] = executor.unexpected_alert_behavior();
+    capabilities["elementScrollBehavior"] = executor.scroll_behavior();
+    capabilities["allowAsynchronousJavaScript"] = executor.allow_asynchronous_javascript();
+    capabilities["ignoreProtectedModeSettings"] = executor.ignore_protected_mode_settings();
+    capabilities["ignoreZoomSetting"] = executor.ignore_zoom_setting();
+    capabilities["initialBrowserUrl"] = executor.initial_browser_url();
+    capabilities["enableElementCacheCleanup"] = executor.enable_element_cache_cleanup();
     response->SetSuccessResponse(capabilities);
   }
 };

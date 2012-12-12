@@ -193,6 +193,9 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->enable_element_cache_cleanup_ = enable_element_cache_cleanup;
   }
 
+  bool enable_persistent_hover(void) const {
+    return this->enable_persistent_hover_;
+  }
   void set_enable_persistent_hover(const bool enable_persistent_hover) {
     this->enable_persistent_hover_ = enable_persistent_hover;
   }
