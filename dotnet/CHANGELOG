@@ -7,8 +7,8 @@ v2.28.0
    following syntax:
 
        [FindsBy(How = How.Custom, 
-	            Using = "customCriteria", 
-				CustomFinderType = typeof(MyCustomBySubclass))]
+                Using = "customCriteria", 
+                CustomFinderType = typeof(MyCustomBySubclass))]
 
    Using How.Custom without specifying a CustomFinderType, or using a
    CustomFinderType that either does not descend from By or does not have a 
