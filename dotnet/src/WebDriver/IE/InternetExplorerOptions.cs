@@ -93,12 +93,14 @@ namespace OpenQA.Selenium.IE
         private const string IgnoreZoomSettingCapability = "ignoreZoomSetting";
         private const string InitialBrowserUrlCapability = "initialBrowserUrl";
         private const string EnableNativeEventsCapability = "nativeEvents";
+        private const string EnablePersistentHoverCapability = "enablePersistentHover";
         private const string ElementScrollBehaviorCapability = "elementScrollBehavior";
         private const string UnexpectedAlertBehaviorCapability = "unexpectedAlertBehaviour";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
         private bool enableNativeEvents = true;
+        private bool enablePersistentHover = true;
         private string initialBrowserUrl = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
         private InternetExplorerUnexpectedAlertBehavior unexpectedAlertBehavior = InternetExplorerUnexpectedAlertBehavior.Default;
@@ -168,6 +170,16 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to enable persistently sending WM_MOUSEMOVE messages
+        /// to the IE window during a mouse hover.
+        /// </summary>
+        public bool EnablePersistentHover
+        {
+            get { return this.enablePersistentHover; }
+            set { this.enablePersistentHover = value; }
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options 
         /// for the Internet Explorer driver.
         /// </summary>
@@ -210,6 +222,7 @@ namespace OpenQA.Selenium.IE
         {
             DesiredCapabilities capabilities = DesiredCapabilities.InternetExplorer();
             capabilities.SetCapability(EnableNativeEventsCapability, this.enableNativeEvents);
+            capabilities.SetCapability(EnablePersistentHoverCapability, this.enablePersistentHover);
             if (this.ignoreProtectedModeSettings)
             {
                 capabilities.SetCapability(IgnoreProtectedModeSettingsCapability, true);
