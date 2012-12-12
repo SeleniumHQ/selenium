@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 public class SeleniumTestEnvironment implements TestEnvironment {
   private CommandLine command;
   private AppServer appServer;
+  private String seleniumServerUrl;
 
   public SeleniumTestEnvironment(int port, String... extraArgs) {
     try {
@@ -71,8 +72,9 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       command.executeAsync();
 
       PortProber.pollPort(port);
+      seleniumServerUrl = "http://localhost:" + port;
 
-      URL status = new URL("http://localhost:" + port + "/wd/hub/status");
+      URL status = new URL(seleniumServerUrl + "/wd/hub/status");
       new UrlChecker().waitUntilAvailable(60, TimeUnit.SECONDS, status);
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -94,7 +96,12 @@ public class SeleniumTestEnvironment implements TestEnvironment {
     return appServer;
   }
 
+  public String getSeleniumServerUrl() {
+    return seleniumServerUrl;
+  }
+
   public void stop() {
+    appServer.stop();
     command.destroy();
   }
 

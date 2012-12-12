@@ -59,6 +59,7 @@ import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIO
 public class InternalSelenseTestBase extends SeleneseTestBase {
   private static final Logger log = Logger.getLogger(InternalSelenseTestBase.class.getName());
   private static final ThreadLocal<Selenium> instance = new ThreadLocal<Selenium>();
+  private static String seleniumServerUrl;
 
   @BeforeClass
   public static void buildJavascriptLibraries() throws IOException {
@@ -107,7 +108,9 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   @BeforeClass
   public static void initializeServer() {
-    GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
+    SeleniumTestEnvironment env
+      = (SeleniumTestEnvironment) GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
+    seleniumServerUrl = env.getSeleniumServerUrl();
   }
 
   @Rule
@@ -144,8 +147,8 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       }
 
       String baseUrl = whereIs("/selenium-server/tests/");
-      caps.setCapability("selenium.server.url", baseUrl);
-
+      caps.setCapability("selenium.base.url", baseUrl);
+      caps.setCapability("selenium.server.url", seleniumServerUrl);
 
       WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
       if (driver instanceof SeleneseBackedWebDriver) {

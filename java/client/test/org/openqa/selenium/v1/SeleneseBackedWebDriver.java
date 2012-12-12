@@ -32,7 +32,7 @@ import java.net.URL;
 public class SeleneseBackedWebDriver extends RemoteWebDriver
     implements TakesScreenshot {
   public SeleneseBackedWebDriver(Capabilities capabilities) throws Exception {
-    super(newCommandExecutor(getSeleniumServerUrl(capabilities), capabilities), capabilities);
+    super(newCommandExecutor(getBaseUrl(capabilities), capabilities), capabilities);
   }
   
   private static CommandExecutor newCommandExecutor(URL remoteAddress, Capabilities capabilities)
@@ -43,6 +43,11 @@ public class SeleneseBackedWebDriver extends RemoteWebDriver
   private static URL getSeleniumServerUrl(Capabilities caps) throws MalformedURLException {
     String serverUrl = (String) caps.getCapability("selenium.server.url");
     return new URL(serverUrl);
+  }
+
+  private static URL getBaseUrl(Capabilities caps) throws MalformedURLException {
+    String baseUrl = (String) caps.getCapability("selenium.base.url");
+    return new URL(baseUrl);
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {
