@@ -366,7 +366,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
-  @Ignore(value = ALL, reason = "All browsers keep active frame after switching windows")
   public void testShouldFocusOnTheTopMostFrameAfterSwitchingToAWindow() {
     driver.get(appServer.whereIs("window_switching_tests/page_with_frame.html"));
 
@@ -382,7 +381,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.close();
     driver.switchTo().window(mainWindow);
     
-    driver.findElement(By.id("myframe"));
+    driver.findElement(By.name("myframe"));
   }
 
   private boolean waitUntilNewWindowIsOpened(final WebDriver driver, final int originalCount) {
