@@ -217,6 +217,10 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
   }
 
   public static void destroyDriver() {
+    if (Boolean.getBoolean("webdriver.singletestsuite.leaverunning")) {
+      return;
+    }
+    
     Selenium selenium = instance.get();
     if (selenium != null) {
       selenium.stop();
