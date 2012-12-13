@@ -36,8 +36,8 @@ public class GlobalTestEnvironment {
     GlobalTestEnvironment.environment = environment;
   }
 
-  public static synchronized TestEnvironment get(
-      Class<? extends TestEnvironment> startThisIfNothingIsAlreadyRunning) {
+  public static synchronized <T extends TestEnvironment> T get(
+      Class<T> startThisIfNothingIsAlreadyRunning) {
     if (environment == null) {
       try {
         environment = startThisIfNothingIsAlreadyRunning.newInstance();
@@ -45,7 +45,7 @@ public class GlobalTestEnvironment {
         throw new RuntimeException(e);
       }
     }
-    return environment;
+    return (T) environment;
   }
 
   public static void stop() {

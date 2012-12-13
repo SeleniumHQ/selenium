@@ -108,8 +108,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   @BeforeClass
   public static void initializeServer() {
-    SeleniumTestEnvironment env
-      = (SeleniumTestEnvironment) GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
+    SeleniumTestEnvironment env = GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
     seleniumServerUrl = env.getSeleniumServerUrl();
   }
 
