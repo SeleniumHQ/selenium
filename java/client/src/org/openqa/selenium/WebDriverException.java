@@ -120,7 +120,7 @@ public class WebDriverException extends RuntimeException {
 
     String result = "";
     for (Map.Entry<String, String> entry : extraInfo.entrySet()) {
-      if (entry.getValue().startsWith(entry.getKey())) {
+      if (entry.getValue() != null && entry.getValue().startsWith(entry.getKey())) {
         result += "\n" + entry.getValue();
       } else {
         result += "\n" + entry.getKey() + ": " + entry.getValue();
