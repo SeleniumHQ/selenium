@@ -229,7 +229,7 @@ safaridriver.extension.commands.sendNavigationCommand_ = function(session,
  */
 safaridriver.extension.commands.implicitlyWait = function(session, command) {
   session.setImplicitWait(
-      (/** @type {number} */command.getParameter('ms')) || 0);
+      /** @type {number} */ (command.getParameter('ms')) || 0);
 };
 
 
@@ -240,7 +240,7 @@ safaridriver.extension.commands.implicitlyWait = function(session, command) {
  */
 safaridriver.extension.commands.setScriptTimeout = function(session, command) {
   session.setScriptTimeout(
-      (/** @type {number} */command.getParameter('ms')) || 0);
+      /** @type {number} */ (command.getParameter('ms')) || 0);
 };
 
 
@@ -328,9 +328,9 @@ safaridriver.extension.commands.sendCommand = function(sessionOrTab, command,
   var timeout = (opt_additionalTimeout || 0) +
       safaridriver.extension.commands.DEFAULT_COMMAND_TIMEOUT_;
   var tab = sessionOrTab instanceof safaridriver.extension.Tab ?
-      (/** @type {!safaridriver.extension.Tab} */sessionOrTab) :
-      (/** @type {!safaridriver.extension.Session} */sessionOrTab).
-          getCommandTab();
+  /** @type {!safaridriver.extension.Tab} */ (sessionOrTab) :
+  /** @type {!safaridriver.extension.Session} */ (sessionOrTab).
+      getCommandTab();
   return tab.send(command, timeout);
 };
 
@@ -344,7 +344,7 @@ safaridriver.extension.commands.sendCommand = function(sessionOrTab, command,
  */
 safaridriver.extension.commands.switchToWindow = function(session, command) {
   var result = new webdriver.promise.Deferred();
-  var name = (/** @type {string} */ command.getParameter('name'));
+  var name = /** @type {string} */ (command.getParameter('name'));
 
   var tab = session.getTab(name);
   if (tab) {
@@ -401,7 +401,7 @@ safaridriver.extension.commands.switchToWindow = function(session, command) {
             });
         currentTab.send(switchToNullContent);
 
-        session.setCommandTab(/** @type {!safaridriver.extension.Tab} */tab);
+        session.setCommandTab(/** @type {!safaridriver.extension.Tab} */ (tab));
         result.resolve();
       });
     } catch (ex) {
@@ -412,7 +412,7 @@ safaridriver.extension.commands.switchToWindow = function(session, command) {
         throw ex;
       }
 
-      session.setCommandTab(/** @type {!safaridriver.extension.Tab} */tab);
+      session.setCommandTab(/** @type {!safaridriver.extension.Tab} */ (tab));
       result.resolve();
     }
   }
@@ -427,7 +427,7 @@ safaridriver.extension.commands.switchToWindow = function(session, command) {
  *     the command response.
  */
 safaridriver.extension.commands.sendWindowCommand = function(session, command) {
-  var handle = (/** @type {string} */command.getParameter('windowHandle'));
+  var handle = /** @type {string} */ (command.getParameter('windowHandle'));
   var tab;
   if (handle === 'current') {
     tab = session.getCommandTab();

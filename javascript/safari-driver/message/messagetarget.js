@@ -78,8 +78,8 @@ goog.inherits(safaridriver.message.MessageTarget, webdriver.EventEmitter);
 safaridriver.message.MessageTarget.prototype.setLogger = function(
     nameOrLogger) {
   this.log_ = goog.isString(nameOrLogger) ?
-      goog.debug.Logger.getLogger((/** @type {string} */nameOrLogger)) :
-      (/** @type {!goog.debug.Logger} */nameOrLogger);
+      goog.debug.Logger.getLogger(/** @type {string} */ (nameOrLogger)) :
+      /** @type {!goog.debug.Logger} */ (nameOrLogger);
 };
 
 

@@ -135,7 +135,7 @@ safaridriver.extension.TabManager.prototype.onOpen_ = function(e) {
   }
 
   // getTab will assign one if the tab is new.
-  var tab = this.getTab((/** @type {!SafariBrowserTab} */e.target));
+  var tab = this.getTab(/** @type {!SafariBrowserTab} */ (e.target));
   this.log_.info('Tab opened: ' + tab.getId());
 };
 
@@ -157,7 +157,7 @@ safaridriver.extension.TabManager.prototype.onClose_ = function(e) {
   }
 
   this.log_.info('Tab closed');
-  this.delete_((/** @type {!SafariBrowserTab} */e.target));
+  this.delete_(/** @type {!SafariBrowserTab} */ (e.target));
 };
 
 
@@ -177,13 +177,13 @@ safaridriver.extension.TabManager.prototype.getTab = function(idOrTab) {
   if (!tab && !isString) {
     this.log_.info('Registering new tab');
     tab = new safaridriver.extension.Tab(
-        (/** @type {!SafariBrowserTab} */idOrTab));
+        /** @type {!SafariBrowserTab} */ (idOrTab));
     this.tabs_.push(tab);
   }
 
   // Closure compiler loses type info on goog.array.find above, so we need to
   // cast.
-  return (/** @type {safaridriver.extension.Tab} */tab);
+  return /** @type {safaridriver.extension.Tab} */ (tab);
 };
 
 

@@ -73,7 +73,7 @@ safaridriver.message.Connect.fromData_ = function(data) {
 
 /** @return {string} The URL for the WebSocket server to connect to. */
 safaridriver.message.Connect.prototype.getUrl = function() {
-  return (/** @type {string} */ this.getField(
+  return /** @type {string} */ (this.getField(
       safaridriver.message.Connect.URL_FIELD_));
 };
 

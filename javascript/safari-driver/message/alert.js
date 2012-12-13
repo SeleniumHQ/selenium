@@ -66,7 +66,7 @@ safaridriver.message.Alert.fromData_ = function(data) {
 
 /** @return {string} The alert message. */
 safaridriver.message.Alert.prototype.getMessage = function() {
-  return (/** @type {string} */this.getField('message'));
+  return /** @type {string} */ (this.getField('message'));
 };
 
 

@@ -87,6 +87,6 @@ safaridriver.inject.onEncode_ = function(message, e) {
   }, []);
 
   var response = new safaridriver.message.Response(
-      message.getId(), (/** @type {!bot.response.ResponseObject} */result));
+      message.getId(), /** @type {!bot.response.ResponseObject} */ (result));
   response.send(e.source);
 };

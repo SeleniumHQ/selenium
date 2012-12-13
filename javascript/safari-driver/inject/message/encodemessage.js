@@ -75,14 +75,14 @@ safaridriver.inject.message.Encode.fromData_ = function(data) {
 
 /** @return {string} This response's ID. */
 safaridriver.inject.message.Encode.prototype.getId = function() {
-  return (/** @type {string} */this.getField(
+  return /** @type {string} */ (this.getField(
       safaridriver.inject.message.Encode.Field_.ID));
 };
 
 
 /** @return {string} The CSS locator of the element to encode. */
 safaridriver.inject.message.Encode.prototype.getLocator = function() {
-  return (/** @type {string} */this.getField(
+  return /** @type {string} */ (this.getField(
       safaridriver.inject.message.Encode.Field_.CSS));
 };
 

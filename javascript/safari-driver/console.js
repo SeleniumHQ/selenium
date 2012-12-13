@@ -52,7 +52,6 @@ safaridriver.console.init = function() {
   goog.debug.LogManager.getRoot().addHandler(function(logRecord) {
     var record = formatter.formatRecord(logRecord);
 
-
     switch (logRecord.getLevel()) {
       case goog.debug.Logger.Level.SHOUT:
         console.group(record);

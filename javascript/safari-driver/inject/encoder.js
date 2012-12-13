@@ -27,6 +27,7 @@ goog.require('bot.inject');
 goog.require('bot.response');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('safaridriver.inject.message.Encode');
@@ -91,9 +92,9 @@ safaridriver.inject.Encoder.getElementCssSelector_ = function(element) {
       tmp += ':nth-child(' + index + ')';
     }
     if (path == '') {
-        path = tmp + path;
+      path = tmp + path;
     } else {
-        path = tmp + ' > ' + path;
+      path = tmp + ' > ' + path;
     }
   }
   return path;
@@ -124,29 +125,29 @@ safaridriver.inject.Encoder.prototype.encode = function(value) {
       return null;
 
     case 'array':
-      return goog.array.map((/** @type {!Array} */value),
+      return goog.array.map(/** @type {!Array} */ (value),
           this.encode, this);
 
     case 'object':
       if (goog.dom.isElement(value)) {
         if (value.ownerDocument !== document) {
-          return this.encodeElement_((/** @type {!Element} */value));
+          return this.encodeElement_(/** @type {!Element} */ (value));
         }
 
         var encoded = {};
         encoded[safaridriver.inject.Encoder.ENCODED_ELEMENT_KEY_] =
             safaridriver.inject.Encoder.getElementCssSelector_(
-                (/** @type {!Element} */value));
+                /** @type {!Element} */ (value));
         return encoded;
       }
 
       // Check for a NodeList.
       if (goog.isArrayLike(value)) {
-        return goog.array.map((/** @type {!goog.array.ArrayLike} */value),
+        return goog.array.map(/** @type {!goog.array.ArrayLike} */ (value),
             this.encode, this);
       }
 
-      return goog.object.map((/** @type {!Object} */value),
+      return goog.object.map(/** @type {!Object} */ (value),
           this.encode, this);
 
     case 'function':
@@ -170,7 +171,7 @@ safaridriver.inject.Encoder.prototype.encodeElement_ = function(element) {
   var css = safaridriver.inject.Encoder.getElementCssSelector_(element);
   var message = new safaridriver.inject.message.Encode(id, css);
   var doc = goog.dom.getOwnerDocument(element);
-  var win = (/** @type {!Window} */goog.dom.getWindow(doc));
+  var win = /** @type {!Window} */ (goog.dom.getWindow(doc));
   message.send(win);
   this.pendingResponses_[id] = webElement;
   return webElement.promise;
@@ -201,11 +202,11 @@ safaridriver.inject.Encoder.prototype.decode = function(value) {
       return null;
 
     case 'array':
-      return goog.array.map((/** @type {!Array} */value),
+      return goog.array.map(/** @type {!Array} */ (value),
           this.decode, this);
 
     case 'object':
-      var obj = (/** @type {!Object} */value);
+      var obj = /** @type {!Object} */ (value);
       var keys = Object.keys(obj);
       if (keys.length == 1 &&
           keys[0] === safaridriver.inject.Encoder.ENCODED_ELEMENT_KEY_) {

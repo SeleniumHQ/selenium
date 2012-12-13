@@ -29,7 +29,6 @@ goog.require('bot.frame');
 goog.require('bot.inject');
 goog.require('bot.inject.cache');
 goog.require('bot.locators');
-goog.require('bot.response');
 goog.require('bot.window');
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
@@ -39,7 +38,6 @@ goog.require('goog.net.cookies');
 goog.require('goog.style');
 goog.require('safaridriver.inject.message.Activate');
 goog.require('webdriver.atoms.element');
-goog.require('webdriver.promise.Deferred');
 
 
 /**
@@ -68,7 +66,7 @@ safaridriver.inject.commands.getCurrentUrl = function() {
  * @param {!safaridriver.Command} command The command object.
  */
 safaridriver.inject.commands.loadUrl = function(command) {
-  window.location.href = (/** @type {string} */command.getParameter('url'));
+  window.location.href = /** @type {string} */ (command.getParameter('url'));
   // No need to send a response. The global page should be listening for the
   // navigate event.
 };
@@ -153,7 +151,7 @@ safaridriver.inject.commands.findElements =
  */
 safaridriver.inject.commands.getActiveElement = function() {
   var getActiveElement = goog.partial(bot.dom.getActiveElement, document);
-  return (/** @type {!bot.response.ResponseObject} */bot.inject.executeScript(
+  return /** @type {!bot.response.ResponseObject} */ (bot.inject.executeScript(
       getActiveElement, []));
 };
 
@@ -205,7 +203,7 @@ safaridriver.inject.commands.deleteCookies = function() {
  * @param {!safaridriver.Command} command The command object.
  */
 safaridriver.inject.commands.deleteCookie = function(command) {
-  goog.net.cookies.remove((/** @type {string} */command.getParameter('name')));
+  goog.net.cookies.remove(/** @type {string} */ (command.getParameter('name')));
 };
 
 
@@ -384,8 +382,8 @@ safaridriver.inject.commands.getWindowPosition = function() {
  */
 safaridriver.inject.commands.setWindowPosition = function(command) {
   var position = new goog.math.Coordinate(
-      (/** @type {number} */ command.getParameter('x')),
-      (/** @type {number} */ command.getParameter('y')));
+      /** @type {number} */ (command.getParameter('x')),
+      /** @type {number} */ (command.getParameter('y')));
   bot.window.setPosition(position);
 };
 
@@ -405,8 +403,8 @@ safaridriver.inject.commands.getWindowSize = function() {
  */
 safaridriver.inject.commands.setWindowSize = function(command) {
   var size = new goog.math.Size(
-      (/** @type {number} */command.getParameter('width')),
-      (/** @type {number} */command.getParameter('height')));
+      /** @type {number} */ (command.getParameter('width')),
+      /** @type {number} */ (command.getParameter('height')));
   bot.window.setSize(size);
 };
 
@@ -449,19 +447,19 @@ safaridriver.inject.commands.switchToFrame = function(command) {
   } else if (goog.isString(id)) {
     safaridriver.inject.commands.LOG_.info(
         'Switching to frame by name or ID: ' + id);
-    frameWindow = bot.frame.findFrameByNameOrId((/** @type {string} */id));
+    frameWindow = bot.frame.findFrameByNameOrId(/** @type {string} */ (id));
   } else if (goog.isNumber(id)) {
     safaridriver.inject.commands.LOG_.info(
         'Switching to frame by index: ' + id);
-    frameWindow = bot.frame.findFrameByIndex((/** @type {number} */id));
+    frameWindow = bot.frame.findFrameByIndex(/** @type {number} */ (id));
   } else {
-    var elementKey = (/** @type {string} */id[bot.inject.ELEMENT_KEY]);
+    var elementKey = /** @type {string} */ (id[bot.inject.ELEMENT_KEY]);
     safaridriver.inject.commands.LOG_.info('Switching to frame by ' +
         'WebElement: ' + elementKey);
     // ID must be a WebElement. Pull it from the cache.
     var frameElement = bot.inject.cache.getElement(elementKey);
     frameWindow = bot.frame.getFrameWindow(
-        (/** @type {!(HTMLIFrameElement|HTMLFrameElement)} */frameElement));
+        /** @type {!(HTMLIFrameElement|HTMLFrameElement)} */ (frameElement));
   }
 
   if (!frameWindow) {

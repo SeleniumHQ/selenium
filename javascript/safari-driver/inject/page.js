@@ -22,11 +22,9 @@ goog.provide('safaridriver.inject.page');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
-goog.require('bot.inject');
 goog.require('bot.response');
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
-goog.require('goog.dom');
 goog.require('safaridriver.console');
 goog.require('safaridriver.inject.Encoder');
 goog.require('safaridriver.inject.message');
@@ -302,7 +300,7 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
  * @private
  */
 safaridriver.inject.page.execute_ = function(fn, args) {
-  args = (/** @type {!Array} */safaridriver.inject.page.encoder_.decode(args));
+  args = /** @type {!Array} */ (safaridriver.inject.page.encoder_.decode(args));
   return fn.apply(window, args);
 };
 
@@ -344,11 +342,11 @@ safaridriver.inject.page.executeScript_ = function(command) {
 safaridriver.inject.page.executeAsyncScript_ = function(command) {
   var response = new webdriver.promise.Deferred();
 
-  var script = (/** @type {string} */command.getParameter('script'));
+  var script = /** @type {string} */ (command.getParameter('script'));
   var scriptFn = new Function(script);
 
   var args = command.getParameter('args');
-  args = (/** @type {!Array} */safaridriver.inject.page.encoder_.decode(args));
+  args = /** @type {!Array} */ (safaridriver.inject.page.encoder_.decode(args));
   // The last argument for an async script is the callback that triggers the
   // response.
   args.push(function(value) {
@@ -367,7 +365,7 @@ safaridriver.inject.page.executeAsyncScript_ = function(command) {
   // var scriptFn = function(callback) {
   //   setTimeout(callback, 0);
   // };
-  var timeout = (/** @type {number} */command.getParameter('timeout'));
+  var timeout = /** @type {number} */ (command.getParameter('timeout'));
   var timeoutId = window.setTimeout(function() {
     if (response.isPending()) {
       response.reject(new bot.Error(bot.ErrorCode.SCRIPT_TIMEOUT,

@@ -61,10 +61,18 @@ safaridriver.message.BaseLoadMessage.prototype.isFrame = function() {
 
 
 /**
+ * @typedef {function(new:safaridriver.message.BaseLoadMessage, boolean=):
+ *     safaridriver.message.BaseLoadMessage}
+ * @private
+ */
+safaridriver.message.BaseLoadMessage.Constructor_;
+
+
+/**
  * Defines a new load message.
  * @param {string} type The type of message.
- * @return {function(new:safaridriver.message.BaseLoadMessage, boolean=):
- *          safaridriver.message.BaseLoadMessage} The new message constructor.
+ * @return {safaridriver.message.BaseLoadMessage.Constructor_} The new message
+ *     constructor.
  */
 safaridriver.message.BaseLoadMessage.defineLoadMessageType = function(type) {
   /**
@@ -94,7 +102,8 @@ safaridriver.message.BaseLoadMessage.defineLoadMessageType = function(type) {
   }
 
   safaridriver.message.registerMessageType(type, fromData);
-  return loadCtor;
+  return /** @type {safaridriver.message.BaseLoadMessage.Constructor_} */ (
+      loadCtor);
 };
 
 

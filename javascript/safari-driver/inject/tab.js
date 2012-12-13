@@ -358,7 +358,7 @@ safaridriver.inject.Tab.prototype.onLoad_ = function(message, e) {
       // Tell the frame that has just finished loading that it was our last
       // activate frame and should reactivate itself.
       var reactivate = new safaridriver.inject.message.ReactivateFrame();
-      reactivate.send((/** @type {!Window} */e.source));
+      reactivate.send(/** @type {!Window} */ (e.source));
 
       // While we've reactivated the frame, we need to wait for it to
       // acknowledge the message (see #onReactivateFrame_) before calling
@@ -411,7 +411,7 @@ safaridriver.inject.Tab.prototype.onExtensionCommand_ = function(message) {
         this.whenReady(goog.bind(this.executeQueuedCommands_, this));
       }
     } else {
-      message.send((/** @type {!Window} */this.activeFrame_));
+      message.send(/** @type {!Window} */ (this.activeFrame_));
     }
   }
 };
@@ -425,7 +425,7 @@ safaridriver.inject.Tab.prototype.executeQueuedCommands_ = function() {
   goog.object.forEach(this.queuedCommands_, function(command) {
     delete this.queuedCommands_[command.getId()];
     var message = new safaridriver.message.Command(command);
-    message.send((/** @type {!Window} */this.activeFrame_));
+    message.send(/** @type {!Window} */ (this.activeFrame_));
   }, this);
 };
 

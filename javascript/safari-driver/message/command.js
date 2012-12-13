@@ -82,10 +82,17 @@ safaridriver.message.BaseCommandMessage.prototype.send = function(opt_proxy) {
 
 
 /**
+ * @typedef {function(new:safaridriver.message.BaseCommandMessage,
+ *     !safaridriver.Command): safaridriver.message.BaseCommandMessage}
+ * @private
+ */
+safaridriver.message.BaseCommandMessage.Constructor_;
+
+
+/**
  * Defines a new command message.
  * @param {string} type The type of message.
- * @return {function(new:safaridriver.message.BaseCommandMessage,
- *     !safaridriver.Command): safaridriver.message.BaseCommandMessage} The new
+ * @return {safaridriver.message.BaseCommandMessage.Constructor_} The new
  *     message constructor.
  */
 safaridriver.message.BaseCommandMessage.defineCommandMessageType = function(
@@ -123,7 +130,8 @@ safaridriver.message.BaseCommandMessage.defineCommandMessageType = function(
   }
 
   safaridriver.message.registerMessageType(type, fromData);
-  return cmdCtor;
+  return /** @type {safaridriver.message.BaseCommandMessage.Constructor_} */ (
+      cmdCtor);
 };
 
 
@@ -199,7 +207,7 @@ safaridriver.message.Response.fromData_ = function(data) {
  * @return {string} This response's ID.
  */
 safaridriver.message.Response.prototype.getId = function() {
-  return (/** @type {string} */this.getField(
+  return /** @type {string} */ (this.getField(
       safaridriver.message.Response.Field_.ID));
 };
 
@@ -209,7 +217,7 @@ safaridriver.message.Response.prototype.getId = function() {
  *     message.
  */
 safaridriver.message.Response.prototype.getResponse = function() {
-  return (/** @type {!bot.response.ResponseObject} */this.getField(
+  return /** @type {!bot.response.ResponseObject} */ (this.getField(
       safaridriver.message.Response.Field_.RESPONSE));
 };
 

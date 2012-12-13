@@ -120,7 +120,7 @@ safaridriver.message.fromEvent = function(event) {
 
   var message = factory(data);
 
-  var origin = (/** @type {(string|number)} */
+  var origin = /** @type {(string|number)} */ (
       data[safaridriver.message.Message.Field.ORIGIN]);
   message.setOrigin(origin);
   return message;
@@ -167,7 +167,7 @@ safaridriver.message.Message.Field = {
  * @private
  */
 safaridriver.message.Message.fromData_ = function(data) {
-  var type = (/** @type {string} */ data[
+  var type = /** @type {string} */ (data[
       safaridriver.message.Message.Field.TYPE]);
   return new safaridriver.message.Message(type);
 };
@@ -208,7 +208,7 @@ safaridriver.message.Message.prototype.setOrigin = function(origin) {
  * @return {(string|number)} This message's origin.
  */
 safaridriver.message.Message.prototype.getOrigin = function() {
-  return (/** @type {(string|number)} */this.getField(
+  return /** @type {(string|number)} */ (this.getField(
       safaridriver.message.Message.Field.ORIGIN));
 };
 
@@ -226,7 +226,7 @@ safaridriver.message.Message.prototype.isSameOrigin = function() {
  * @return {string} This message's type.
  */
 safaridriver.message.Message.prototype.getType = function() {
-  return (/** @type {string} */this.getField(
+  return /** @type {string} */ (this.getField(
       safaridriver.message.Message.Field.TYPE));
 };
 
@@ -256,7 +256,7 @@ safaridriver.message.Message.prototype.send = function(target) {
     var postMessageFn = win.postMessage;
     if (!goog.isFunction(postMessageFn)) {
       if (win === window) {
-        postMessageFn = window.constructor.prototype.postMessage;
+        postMessageFn = window.constructor.prototype['postMessage'];
       }
 
       if (!goog.isFunction(postMessageFn)) {
@@ -269,11 +269,11 @@ safaridriver.message.Message.prototype.send = function(target) {
     if (safaridriver.message.FORCE_SYNCHRONOUS_PROXY_SEND &&
         target.canLoad) {
       return this.sendSync(
-          (/** @type {!SafariContentBrowserTabProxy} */target));
+          /** @type {!SafariContentBrowserTabProxy} */ (target));
     }
 
-    (/** @type {!(SafariContentBrowserTabProxy|SafariWebPageProxy)} */
-        target).dispatchMessage(this.getType(), this.data_);
+    (/** @type {!(SafariContentBrowserTabProxy|SafariWebPageProxy)} */ (
+        target)).dispatchMessage(this.getType(), this.data_);
   }
 };
 
