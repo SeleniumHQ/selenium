@@ -141,9 +141,9 @@ public class TestSession {
 
   public boolean isOrphaned() {
     final long elapsedSinceCreation = timeSource.currentTimeInMillis() - sessionCreatedAt;
+
     // The session needs to have been open for at least the time interval and we need to have not
-    // seen any new
-    // commands during that time frame.
+    // seen any new commands during that time frame.
     return slot.getProtocol().isSelenium()
            && elapsedSinceCreation > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED
            && sessionCreatedAt == lastActivity;
