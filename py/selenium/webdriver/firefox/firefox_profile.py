@@ -100,10 +100,12 @@ class FirefoxProfile(object):
         self.default_preferences = copy.deepcopy(
             FirefoxProfile.DEFAULT_PREFERENCES)
         self.profile_dir = profile_directory
+        self.tempfolder = None
         if self.profile_dir is None:
             self.profile_dir = self._create_tempfolder()
         else:
-            newprof = os.path.join(tempfile.mkdtemp(),
+            self.tempfolder = tempfile.mkdtemp()
+            newprof = os.path.join(self.tempfolder,
                 "webdriver-py-profilecopy")
             shutil.copytree(self.profile_dir, newprof,
                 ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock"))
