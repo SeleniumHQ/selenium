@@ -14,6 +14,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -33,6 +35,7 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
+import java.security.spec.DSAParameterSpec;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -158,9 +161,27 @@ public class KeyStoreManager {
     }
 
 
+    BigInteger p = new BigInteger(
+            "fd7f53811d75122952df4a9c2eece4e7f611b7523cef4400c31e3f80b6512669"
+          + "455d402251fb593d8d58fabfc5f5ba30f6cb9b556cd7813b801d346ff26660b7"
+          + "6b9950a5a49f9fe8047b1022c24fbba9d7feb7c61bf83b57e7c6a8a6150f04fb"
+          + "83f6d3c51ec3023554135a169132f675f3ae2b61d72aeff22203199dd14801c7", 16);
+    BigInteger q = new BigInteger("9760508f15230bccb292b982a2eb840bf0581cf5", 16);
+    BigInteger g = new BigInteger(
+            "f7e1a085d69b3ddecbbcab5c36b857b97994afbbfa3aea82f9574c0b3d078267"
+          + "5159578ebad4594fe67107108180b449167123e84c281613b7cf09328cc8a6e1"
+          + "3c167a8b547c8d28e0a3ae1e2bb3a675916ea37f0bfa213562f1fb627a01243b"
+          + "cca4f1bea8519089a883dfe15ae59f06928b665e807b552564014c3bfecf492a", 16);
+
+    DSAParameterSpec dsaParameterSpec = new DSAParameterSpec(p, q, g);
 
     _rsaKpg.initialize(1024, _sr);
-    _dsaKpg.initialize(1024, _sr);
+    try {
+		_dsaKpg.initialize(dsaParameterSpec, _sr);
+	} catch (InvalidAlgorithmParameterException e) {
+	    e.printStackTrace();
+		_dsaKpg.initialize(1024, _sr);
+	}
 
 
     try
