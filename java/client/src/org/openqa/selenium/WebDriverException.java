@@ -92,7 +92,7 @@ public class WebDriverException extends RuntimeException {
     extraInfo.put(key, value);
   }
 
-  private String getAdditionalInformation() {
+  public String getAdditionalInformation() {
     if (! extraInfo.containsKey(DRIVER_INFO)) {
       extraInfo.put(DRIVER_INFO, "driver.version: " + getDriverName(getStackTrace()));
     }

@@ -288,7 +288,7 @@ public class BeanToJsonConverterTest {
     JSONObject json = new JSONObject(raw);
     assertTrue(raw, json.has("buildInformation"));
     assertTrue(raw, json.has("systemInformation"));
-    assertTrue(raw, json.has("driverInformation"));
+    assertTrue(raw, json.has("additionalInformation"));
 
     assertTrue(raw, json.has("message"));
     assertThat(json.getString("message"), containsString("foo bar baz!\n"));
