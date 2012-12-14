@@ -27,7 +27,6 @@ public class WebDriverException extends RuntimeException {
   public static final String DRIVER_INFO = "Driver info";
 
   private Map<String, String> extraInfo = new HashMap<String, String>();
-  private String sessionId;
 
   public WebDriverException() {
     super();
@@ -75,26 +74,6 @@ public class WebDriverException extends RuntimeException {
 
   public BuildInfo getBuildInformation() {
     return new BuildInfo();
-  }
-
-  /**
-   * @deprecated To be removed in 2.28
-   */
-  @Deprecated
-  public String getDriverInformation() {
-    String driverInformation = "driver.version: " + getDriverName(getStackTrace());
-    if (sessionId != null) {
-      driverInformation += "\nSession ID: " + sessionId;
-    }
-    return driverInformation;
-  }
-
-  /**
-   * @deprecated To be removed in 2.28
-   */
-  @Deprecated
-  public void setSessionId(String sessionId) {
-    this.sessionId = sessionId;
   }
 
   public static String getDriverName(StackTraceElement[] stackTraceElements) {

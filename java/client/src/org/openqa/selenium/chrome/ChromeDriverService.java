@@ -83,17 +83,6 @@ public class ChromeDriverService extends DriverService {
     private File logFile;
 
     /**
-     * A synonym for {@link #usingDriverExecutable(File)}.
-     *
-     * @param file The executable to use.
-     * @return A self reference.
-     * @deprecated Use {@link #usingDriverExecutable(File)} instead
-     */
-    public Builder usingChromeDriverExecutable(File file) {
-      return usingDriverExecutable(file);
-    }
-
-    /**
      * Sets which driver executable the builder will use.
      *
      * @param file The executable to use.
