@@ -25,9 +25,11 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.TestWaiter;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebElement;
 
+import com.google.common.base.Joiner;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -175,6 +177,36 @@ public class AlertTests extends SafariTestBase {
   }
 
   @Test
+  public void
+  onBeforeUnloadWithNoReturnValueShouldNotTriggerUnexpectedAlertErrors_firedBetweenCommands()
+      throws InterruptedException {
+   driver.get(pages.alertsPage);
+
+   JavascriptExecutor executor = (JavascriptExecutor) driver;
+   assertEquals(0L,
+       executor.executeScript("localStorage.clear(); return localStorage.length"));
+
+   executor.executeScript(
+       Joiner.on("\n").join(
+           "window.onbeforeunload = function() {",
+           "  localStorage.setItem('foo', 'bar');",
+           "};",
+           "var newUrl = arguments[0];",
+           "window.setTimeout(function() {",
+           "  window.location.href = newUrl;",
+           "}, 500);"),
+       pages.iframePage);
+
+    // Yes, we need to use a dirty sleep here. We want to ensure the page
+    // reloads and triggers onbeforeunload without any WebDriver commands.
+    Thread.sleep(1500);
+
+    assertEquals(pages.iframePage, driver.getCurrentUrl());
+    assertEquals("onbeforeunload did not run!",
+        "bar", executor.executeScript("return localStorage.getItem('foo');"));
+  }
+
+  @Test
   public void onBeforeUnloadWithNullReturnDoesNotTriggerAlertError() {
     driver.get(pages.alertsPage);
 
@@ -253,7 +285,7 @@ public class AlertTests extends SafariTestBase {
       assertAlertText("one two three", e);
     }
   }
-  
+
   private static void assertAlertText(String expectedText, UnhandledAlertException e) {
     Alert alert = e.getAlert();
     assertNotNull(alert);

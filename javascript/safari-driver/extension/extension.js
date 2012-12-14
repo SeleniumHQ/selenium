@@ -132,7 +132,10 @@ safaridriver.extension.onMessage_ = function(e) {
     case safaridriver.message.Alert.TYPE:
       goog.asserts.assert(e.name === 'canLoad',
           'Received an async alert message');
-      if (!safaridriver.extension.session_.isExecutingCommand()) {
+      if (message.blocksUiThread() &&
+          !safaridriver.extension.session_.isExecutingCommand()) {
+        safaridriver.extension.LOG_.warning(
+            'Saving unhandled alert text: ' + message.getMessage());
         safaridriver.extension.session_.setUnhandledAlertText(
             message.getMessage());
       }
