@@ -387,12 +387,6 @@ WebElement.getElementLocationOnceScrolledIntoView = function(
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
-  if (!bot.dom.isShown(element,/*ignoreOpacity=*/true)) {
-    respond.value = undefined;
-    respond.send();
-    return;
-  }
-
   var theDoc = element.ownerDocument;
   theDoc.body.focus();
   var elementLocation = Utils.getLocationOnceScrolledIntoView(element);

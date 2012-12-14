@@ -45,6 +45,7 @@ import org.openqa.selenium.testing.ParallelSuite;
     ClickScrollingTest.class,
     ClickTest.class,
     CookieImplementationTest.class,
+    CoordinatesTest.class,
     CorrectEventFiringTest.class,
     DragAndDropTest.class,
     ElementAttributeTest.class,
