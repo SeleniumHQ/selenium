@@ -1,6 +1,7 @@
 package cybervillains.ca;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.jcajce.provider.config.ConfigurableProvider;
 import org.openqa.selenium.security.CertificateGenerator;
 import org.openqa.selenium.security.KeyAndCert;
 
@@ -24,6 +25,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -39,6 +41,8 @@ import java.security.spec.DSAParameterSpec;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.crypto.spec.DHParameterSpec;
 
 /**
  * This is the main entry point into the Cybervillains CA.
@@ -100,7 +104,23 @@ public class KeyStoreManager {
     this.root = root;
     this.certificateRevocationList = certificateRevocationList;
 
-    Security.insertProviderAt(new BouncyCastleProvider(), 2);
+    ConfigurableProvider bcProv = new BouncyCastleProvider();
+    DHParameterSpec  dhSpec = new DHParameterSpec(
+            new BigInteger("f7e1a085d69b3ddecbbcab5c36b857b97994afbbfa3aea82f95"
+                + "74c0b3d0782675159578ebad4594fe67107108180b449167123e84c28161"
+                + "3b7cf09328cc8a6e13c167a8b547c8d28e0a3ae1e2bb3a675916ea37f0bf"
+                + "a213562f1fb627a01243bcca4f1bea8519089a883dfe15ae59f06928b665"
+                + "e807b552564014c3bfecf492a", 16),
+            new BigInteger("fd7f53811d75122952df4a9c2eece4e7f611b7523cef4400c31"
+                + "e3f80b6512669455d402251fb593d8d58fabfc5f5ba30f6cb9b556cd7813"
+                + "b801d346ff26660b76b9950a5a49f9fe8047b1022c24fbba9d7feb7c61bf"
+                + "83b57e7c6a8a6150f04fb83f6d3c51ec3023554135a169132f675f3ae2b6"
+                + "1d72aeff22203199dd14801c7", 16),
+            512);
+
+    bcProv.setParameter(ConfigurableProvider.DH_DEFAULT_PARAMS, dhSpec);
+
+    Security.insertProviderAt((Provider) bcProv, 2);
 
     SecureRandom _sr = new SecureRandom();
 
@@ -177,12 +197,11 @@ public class KeyStoreManager {
 
     _rsaKpg.initialize(1024, _sr);
     try {
-		_dsaKpg.initialize(dsaParameterSpec, _sr);
-	} catch (InvalidAlgorithmParameterException e) {
-	    e.printStackTrace();
-		_dsaKpg.initialize(1024, _sr);
-	}
-
+        _dsaKpg.initialize(dsaParameterSpec, _sr);
+    } catch (InvalidAlgorithmParameterException e) {
+        e.printStackTrace();
+        _dsaKpg.initialize(1024, _sr);
+    }
 
     try
     {
