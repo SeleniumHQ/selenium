@@ -159,10 +159,10 @@
 		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-1.1-source.jar!/"/>
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-1.1.jar!/"/>
 	</lib>
-	<lib name="phantomjsdriver-1.0.0.jar" scope="COMPILE">
-		<srcroot url="jar://$MODULE_DIR$/third_party/java/phantomjs-driver/phantomjsdriver-1.0.0-source.jar!/"/>
-		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/phantomjs-driver/phantomjsdriver-1.0.0-source.jar!/"/>
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/phantomjs-driver/phantomjsdriver-1.0.0.jar!/"/>
+	<lib name="phantomjsdriver-1.0.1.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/phantomjs-driver/phantomjsdriver-1.0.1-source.jar!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/phantomjs-driver/phantomjsdriver-1.0.1-source.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/phantomjs-driver/phantomjsdriver-1.0.1.jar!/"/>
 	</lib>
 	<lib name="jmock-junit4-2.5.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-junit4-2.5.1.jar!/"/>
