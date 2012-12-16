@@ -21,6 +21,15 @@
     <ClCompile Include="native_events.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="native_mouse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="native_ime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="native_keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="native_events.h">
@@ -39,6 +48,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="nsINativeEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="native_mouse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="native_ime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="native_keyboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nsINativeMouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

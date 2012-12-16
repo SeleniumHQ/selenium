@@ -92,7 +92,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\gecko-10\win32\include;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\imehandler\common</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>XP_WIN;XP_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GECKO_100_COMPATIBILITY;XP_WIN;XP_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -132,7 +132,7 @@
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\third_party\gecko-10\win32\include;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\imehandler\common</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>XP_WIN;XP_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GECKO_100_COMPATIBILITY;XP_WIN;XP_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <WarningLevel>Level3</WarningLevel>
