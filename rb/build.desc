@@ -20,7 +20,7 @@ rubygem(
     { "multi_json"   : "~> 1.0"   },
     { "rubyzip"      : ">= 0"     },
     { "childprocess" : ">= 0.2.5" },
-    { "libwebsocket" : "~> 0.1.3" }
+    { "websocket"    : "~> 1.0.4" }
   ],
   devdeps = [
     { "rspec"       : "~> 2.0"   },

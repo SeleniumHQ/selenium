@@ -1,4 +1,4 @@
-require 'libwebsocket'
+require 'websocket'
 
 module Selenium
   module WebDriver

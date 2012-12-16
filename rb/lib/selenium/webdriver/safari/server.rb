@@ -6,7 +6,6 @@ module Selenium
         def initialize(port, command_timeout)
           @port  = port
           @command_timeout = command_timeout
-          @frame = LibWebSocket::Frame.new
         end
 
         def start
@@ -22,13 +21,15 @@ module Selenium
           json = WebDriver.json_dump(command)
           puts ">>> #{json}" if $DEBUG
 
-          frame = LibWebSocket::Frame.new(json).to_s
+          frame = WebSocket::Frame::Outgoing::Server.new(:version => @version, :data => json, :type => :text)
 
-          @ws.write frame
+          @ws.write frame.to_s
           @ws.flush
         end
 
         def receive
+          @frame ||= WebSocket::Frame::Incoming::Server.new(:version => @version)
+
           until msg = @frame.next
             end_time = Time.now + @command_timeout
 
@@ -44,12 +45,12 @@ module Selenium
               retry
             end
 
-            @frame.append(data)
+            @frame << data
           end
 
           puts "<<< #{msg}" if $DEBUG
 
-          WebDriver.json_load msg
+          WebDriver.json_load msg.to_s
         end
 
         def ws_uri
@@ -107,29 +108,32 @@ window.onload = function() {
 
         def process_handshake
           @ws = @server.accept
-          hs  = LibWebSocket::OpeningHandshake::Server.new
+          hs  = WebSocket::Handshake::Server.new
 
           req = ''
-          until hs.done?
+          until hs.finished?
             data = @ws.getc || next
-            req << data.chr
 
-            unless hs.parse(data.chr)
-              if req.include? "favicon.ico"
-                @ws.close
-                process_handshake
-                return
-              else
-                raise Error::WebDriverError, "#{hs.error}: #{req}"
-              end
+            req << data.chr
+            hs << data
+          end
+
+          unless hs.valid?
+            if req.include? "favicon.ico"
+              @ws.close
+              process_handshake
+              return
+            else
+              raise Error::WebDriverError, "#{hs.error}: #{req}"
             end
           end
 
           @ws.write(hs.to_s)
           @ws.flush
 
-          puts "handshake complete" if $DEBUG
+          puts "handshake complete, v#{hs.version}" if $DEBUG
           @server.close
+          @version = hs.version
         end
       end
 
