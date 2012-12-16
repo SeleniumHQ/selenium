@@ -303,7 +303,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  public void testShouldCorrectlyIdentifyThatAnElementHasWidth() {
+  public void testShouldCorrectlyIdentifyThatAnElementHasWidthAndHeight() {
     driver.get(pages.xhtmlTestPage);
 
     WebElement shrinko = driver.findElement(By.id("linkId"));

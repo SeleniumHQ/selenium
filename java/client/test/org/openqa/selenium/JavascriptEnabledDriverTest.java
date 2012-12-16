@@ -122,18 +122,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Test
-  public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
-    driver.get(pages.xhtmlTestPage);
-
-    WebElement element = driver.findElement(By.id("username"));
-    Dimension size = element.getSize();
-
-    assertThat(size.getWidth() > 0, is(true));
-    assertThat(size.getHeight() > 0, is(true));
-  }
-
-  @JavascriptEnabled
   @Ignore(value = {IPHONE},
           reason = "iPhone: sendKeys not implemented correctly")
   @Test
