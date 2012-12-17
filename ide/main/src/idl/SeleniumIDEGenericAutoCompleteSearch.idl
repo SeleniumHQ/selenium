@@ -1,4 +1,3 @@
-#include "nsISupportsArray.idl"
 #include "nsIAutoCompleteSearch.idl"
 
 interface nsISupportsString;
