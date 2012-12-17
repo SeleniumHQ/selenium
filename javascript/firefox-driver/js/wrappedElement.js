@@ -363,7 +363,7 @@ WebElement.getElementSize = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
 
-  var box = Utils.getLocationOnceScrolledIntoView(element);
+  var box = Utils.getLocation(element);
 
   respond.value = {
     width: Math.round(box.width),

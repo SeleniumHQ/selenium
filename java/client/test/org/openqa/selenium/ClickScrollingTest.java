@@ -220,6 +220,14 @@ public class ClickScrollingTest extends JUnit4TestBase {
     }
   }
   
+  @Test
+  public void testShouldNotScrollWhenGettinElementSize() {
+    driver.get(appServer.whereIs("scroll3.html"));
+    long scrollTop = getScrollTop();
+    driver.findElement(By.id("button1")).getSize();
+    assertEquals(scrollTop, getScrollTop());
+  }
+
   private long getScrollTop() {
     return (Long)((JavascriptExecutor)driver).executeScript("return document.body.scrollTop;");
   }
