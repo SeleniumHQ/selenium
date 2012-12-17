@@ -636,7 +636,7 @@ class WebDriver(object):
            execute_async_script call before throwing an error.
 
         :Args:
-         - time_to_wait: The amount of time to wait
+         - time_to_wait: The amount of time to wait (in seconds)
 
         :Usage:
             driver.set_script_timeout(30)
