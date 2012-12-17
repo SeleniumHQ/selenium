@@ -63,6 +63,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -73,6 +74,7 @@ public class CertificateGenerator {
   private static final String CLIENT_AUTH = KEY_PURPOSE_BASE + ".2";
   private static final String BOUNCY_CASTLE = "BC";
   private static char[] SIGNING_PASSWORD = "password".toCharArray();
+  private static final AtomicLong serialSeed = new AtomicLong(new Date().getTime()/1000);
 
   private final KeyAndCert caCert;
 
@@ -111,7 +113,7 @@ public class CertificateGenerator {
               new ByteArrayInputStream(keypair.getPublic().getEncoded())).readObject());
 
       X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(x500issuer,
-                                       BigInteger.valueOf(new Date().getTime()/1000),
+                                       BigInteger.valueOf(serialSeed.getAndIncrement()),
                                        begin,
                                        end, x500subject, keypair.getPublic());
       builder.addExtension(X509Extension.basicConstraints, true, new BasicConstraints(false));
