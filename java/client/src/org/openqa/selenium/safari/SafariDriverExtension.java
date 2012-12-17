@@ -18,16 +18,21 @@ limitations under the License.
 package org.openqa.selenium.safari;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.io.Files.copy;
+import static com.google.common.io.Files.write;
+
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.TemporaryFilesystem;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
-
-import org.openqa.selenium.Platform;
+import com.google.common.collect.Maps;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -88,6 +93,17 @@ class SafariDriverExtension {
       "</dict>",
       "</plist>");
 
+  private final Runtime runtime;
+  private final Backup backup;
+
+  private UninstallThread uninstallThread;
+  private File installedExtension;
+
+  SafariDriverExtension() {
+    runtime = Runtime.getRuntime();
+    backup = new Backup();
+  }
+
   /**
    * @return Safari's application data directory for the current platform.
    * @throws IllegalStateException If the current platform is unsupported.
@@ -127,11 +143,16 @@ class SafariDriverExtension {
    * Installs the SafariDriver extension, if available.
    *
    * <p><strong>Warning:</strong> This method will uninstall all currently
-   * installed extensions.
+   * installed extensions. They will be restored when {@link #uninstall()} is
+   * called.
    *
    * @throws IOException If an I/O error occurs.
    */
-  public void install() throws IOException {
+  public synchronized void install() throws IOException {
+    if (uninstallThread != null) {
+      return;  // Already installed.
+    }
+
     String extensionPath = System.getProperty(EXTENSION_LOCATION_PROPERTY);
     if (Strings.isNullOrEmpty(extensionPath)) {
       return;  // No extension specified; nothing to do.
@@ -148,10 +169,76 @@ class SafariDriverExtension {
     logger.info(String.format("Installing %s defined extension: %s",
         EXTENSION_LOCATION_PROPERTY, extensionSrc.getAbsolutePath()));
 
-    File extensionDest = new File(getInstallDirectory(), "WebDriver.safariextz");
-    Files.copy(extensionSrc, extensionDest);
+    installedExtension= new File(getInstallDirectory(), "WebDriver.safariextz");
+    if (installedExtension.exists()) {
+      backup.backup(installedExtension);
+    }
+    copy(extensionSrc, installedExtension);
 
     File extensionPlist = new File(getInstallDirectory(), "Extensions.plist");
-    Files.write(EXTENSION_PLIST_LINES, extensionPlist, Charsets.UTF_8);
+    if (extensionPlist.exists()) {
+      backup.backup(extensionPlist);
+    }
+    write(EXTENSION_PLIST_LINES, extensionPlist, Charsets.UTF_8);
+
+    uninstallThread = new UninstallThread();
+    runtime.addShutdownHook(uninstallThread);
+  }
+
+  /**
+   * Un-installs the SafariDriver extension if previously installed by this
+   * instance.
+   *
+   * @throws IOException If an I/O error occurs.
+   */
+  public synchronized void uninstall() throws IOException {
+    if (uninstallThread != null) {
+      try {
+        runtime.removeShutdownHook(uninstallThread);
+      } catch (IllegalStateException shutdownInProgress) {
+        // Do nothing.
+      }
+      uninstallThread = null;
+
+      installedExtension.delete();
+      backup.restoreAll();
+    }
+  }
+  
+  private static class Backup {
+
+    private final TemporaryFilesystem filesystem = TemporaryFilesystem.getDefaultTmpFS();
+    private final Map<File, File> backups = Maps.newHashMap();
+    
+    private File backupDir;
+
+    File backup(File file) throws IOException {
+      if (backupDir == null) {
+        backupDir = filesystem.createTempDir("SafariBackups", "webdriver");
+      }
+      File backup = new File(backupDir, file.getName());
+      copy(file, backup);
+      backups.put(file, backup);
+      return backup;
+    }
+
+    void restoreAll() throws IOException {
+      for (Map.Entry<File, File> entry : backups.entrySet()) {
+        File originalLocation = entry.getKey();
+        File backup = entry.getValue();
+        copy(backup, originalLocation);
+      }
+    }
+  }
+  
+  private class UninstallThread extends Thread {
+    @Override
+    public void run() {
+      try {
+        uninstall();
+      } catch (IOException e) {
+        throw new WebDriverException("Unable to uninstall extension", e);
+      }
+    }
   }
 }

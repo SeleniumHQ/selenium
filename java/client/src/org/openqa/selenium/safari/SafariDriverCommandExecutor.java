@@ -19,10 +19,6 @@ package org.openqa.selenium.safari;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Stopwatch;
-import com.google.common.io.Files;
-
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
@@ -34,6 +30,10 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
+
+import com.google.common.base.Charsets;
+import com.google.common.base.Stopwatch;
+import com.google.common.io.Files;
 
 import java.io.File;
 import java.io.IOException;
@@ -133,6 +133,12 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     }
     server.stop();
     connection = null;
+
+    try {
+      extension.uninstall();
+    } catch (IOException e) {
+      throw new WebDriverException("Unable to uninstall extension", e);
+    }
   }
 
   public Response execute(Command command) {
