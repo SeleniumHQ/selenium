@@ -195,10 +195,11 @@ namespace OpenQA.Selenium.IE
         {
             if (capabilityName == IgnoreProtectedModeSettingsCapability ||
                 capabilityName == IgnoreZoomSettingCapability ||
-                capabilityName == InitialBrowserUrlCapability ||
                 capabilityName == EnableNativeEventsCapability ||
+                capabilityName == InitialBrowserUrlCapability ||
                 capabilityName == ElementScrollBehaviorCapability ||
-                capabilityName == UnexpectedAlertBehaviorCapability)
+                capabilityName == UnexpectedAlertBehaviorCapability ||
+                capabilityName == EnablePersistentHoverCapability)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
