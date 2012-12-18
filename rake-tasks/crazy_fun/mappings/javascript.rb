@@ -216,14 +216,14 @@ module Javascript
     end
 
     def calc_deps(src_files, js_files)
-      all_js = js_files.collect {|f| File.expand_path(f)}
-      all_js.uniq!
+      all_js = js_files
       all_js += Dir['third_party/closure/goog/**/*.js']
+      all_js = all_js.collect {|f| File.expand_path(f)}
       all_deps = build_deps_from_files(all_js)
 
       search_hash = build_deps_hash(all_deps)
 
-      result_list = ["third_party/closure/goog/base.js"]
+      result_list = [File.expand_path("third_party/closure/goog/base.js")]
       seen_list = []
       src_files.each do |input_file|
         seen_list.push(input_file)

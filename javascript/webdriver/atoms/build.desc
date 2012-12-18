@@ -1,5 +1,8 @@
 js_deps(name = "deps",
-  srcs = [ "./**/*.js" ],
+  srcs = [
+    "*.js",
+    "*/*.js",
+  ],
   deps = [
     "//javascript/atoms:deps",
     "//javascript/webdriver:key_lib",

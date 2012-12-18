@@ -1,6 +1,7 @@
 js_binary(name = "clientbin",
   srcs = [
-    "./**/*.js",
+    "*.js",
+    "*/*.js",
   ],
   deps = [
     "//javascript/atoms:deps",

@@ -38,7 +38,8 @@ js_deps(name = "deps",
     "html5/*.js",
   ],
   deps = [
-    "//third_party/js/wgxpath:wgxpath"
+    "//third_party/js/wgxpath:wgxpath",
+    "//third_party/closure",
   ])
 
 js_test(name = "test",

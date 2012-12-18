@@ -6,7 +6,8 @@ js_library(name = "base_lib",
     "stacktrace.js",
   ],
   deps = [
-    "//javascript/atoms:error_lib"
+    "//javascript/atoms:error_lib",
+    "//third_party/closure",
   ])
 
 js_library(name = "key_lib",
