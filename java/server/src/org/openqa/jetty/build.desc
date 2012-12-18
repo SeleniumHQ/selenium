@@ -1,7 +1,10 @@
 
 java_library(name = "jetty",
   srcs = [
-    "**/*.java"
+    "*.java",
+    "*/*.java",
+    "*/*/*.java",
+    "*/*/*/*.java",
   ],
   embedded = [
     "http/mime.properties",
