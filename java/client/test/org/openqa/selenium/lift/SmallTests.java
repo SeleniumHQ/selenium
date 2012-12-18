@@ -1,5 +1,6 @@
 /*
-Copyright 2011 Selenium committers
+Copyright 2012 Software Freedom Conservancy
+Copyright 2011-2012 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,15 +17,17 @@ limitations under the License.
 package org.openqa.selenium.lift;
 
 import org.openqa.selenium.lift.find.XPathFinderTest;
+import org.openqa.selenium.lift.match.DisplayedMatcherTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    HamcrestWebdriverTestCaseTest.class,
-    TestContextTest.class,
-    WebDriverTestContextTest.class,
-    XPathFinderTest.class
+  DisplayedMatcherTest.class,
+  HamcrestWebdriverTestCaseTest.class,
+  TestContextTest.class,
+  WebDriverTestContextTest.class,
+  XPathFinderTest.class
 })
 public class SmallTests {}

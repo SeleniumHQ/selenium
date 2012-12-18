@@ -43,7 +43,10 @@ public class Matchers {
   }
 
   public static org.hamcrest.Matcher<org.openqa.selenium.WebElement> value(Object value) {
-    return org.openqa.selenium.lift.match.ValueMatcher.value(value);
+	return org.openqa.selenium.lift.match.ValueMatcher.value(value);
   }
 
+  public static org.hamcrest.Matcher<org.openqa.selenium.WebElement> displayed() {
+    return org.openqa.selenium.lift.match.DisplayedMatcher.displayed();
+  }
 }
