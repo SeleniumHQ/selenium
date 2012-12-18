@@ -20,6 +20,7 @@ import java.io.File;
 
 import org.openqa.selenium.environment.webserver.Jetty7AppServer;
 import org.openqa.selenium.testing.InProject;
+import org.seleniumhq.jetty7.webapp.WebAppContext;
 
 public class SeleniumAppServer extends Jetty7AppServer {
 
@@ -27,7 +28,8 @@ public class SeleniumAppServer extends Jetty7AppServer {
 
   public SeleniumAppServer() {
     super();
-    addWebApplication(RC_CONTEXT_PATH, findRootOfRcTestPages());
+    WebAppContext rcWebApp = addWebApplication(RC_CONTEXT_PATH, findRootOfRcTestPages());
+    addServlet(rcWebApp, "Cached Content", "/cachedContentTest", CachedContentServlet.class);
   }
 
   protected File findRootOfRcTestPages() {

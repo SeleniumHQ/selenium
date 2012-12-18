@@ -336,7 +336,6 @@ public class SeleniumServer implements SslCertificateGenerator {
     context.addHandler(new SingleTestSuiteResourceHandler());
     postResultsHandler = new SeleniumHTMLRunnerResultsHandler();
     context.addHandler(postResultsHandler);
-    context.addHandler(new CachedContentTestHandler());
     server.addContext(context);
 
     // Both the selenium and webdriver contexts must be able to share sessions
