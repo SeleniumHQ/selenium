@@ -59,8 +59,6 @@ public class AndroidWebElement implements WebElement,
   private final String elementId;
   private AndroidCoordinates coordinates;
   private FindByImpl findsBy;
-  private Object syncObject = new Object();
-  private volatile boolean done;
 
   private static final String LOCATOR_ID = "id";
   private static final String LOCATOR_LINK_TEXT = "linkText";
@@ -202,7 +200,8 @@ public class AndroidWebElement implements WebElement,
   }
 
   public String getTagName() {
-    return (String) driver.executeScript("return arguments[0].tagName", this);
+    String tagName = (String) driver.executeScript("return arguments[0].tagName", this);
+    return tagName.toLowerCase();
 
   }
 
@@ -348,21 +347,6 @@ public class AndroidWebElement implements WebElement,
           + "with " + strategy + ": " + locator);
     }
     return el;
-  }
-
-  /**
-   * Normalizes output texts. Users expects the same text no matter which browser they use.
-   *
-   * @return normalized text
-   */
-  private String normalize(String text) {
-    final String nbsp = new String(new char[]{(char) 160});
-    return text.replaceAll("\\s+(" + nbsp + ")+\\s+", "$1")
-        .replace((char) 160, ' ')
-        .replaceAll(
-            "\n+", "\n")
-        .replaceAll("\r|\t", "")
-        .trim();
   }
 
   public void dragAndDropBy(int moveRightBy, int moveDownBy) {
