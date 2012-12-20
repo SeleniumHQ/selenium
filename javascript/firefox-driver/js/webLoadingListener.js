@@ -118,7 +118,7 @@ PatientListener.prototype.onStateChange = function(webProgress, request, flags) 
 
 
 function ImpatientListener(browser, onComplete, opt_window) {
-  this.broser = browser;
+  this.browser = browser;
   this.browserProgress = browser.webProgress;
   this.active = true;
   this.onComplete = onComplete;
