@@ -346,23 +346,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("greeting")).getText(), equalTo("Success!"));
   }
 
-  @NoDriverAfterTest
-  @Ignore({IPHONE})
-  @Test
-  public void testClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown() {
-    driver.get(pages.simpleTestPage);
-    try {
-      driver.close();
-    } catch (Exception e) {
-      StringWriter sw = new StringWriter();
-      PrintWriter pw = new PrintWriter(sw);
-      e.printStackTrace(pw);
-      pw.flush();
-      pw.close();
-      fail("This is not expected. " + sw);
-    }
-  }
-
   @Ignore(ANDROID)
   @Test
   public void testShouldBeAbleToFindElementsInIframesByXPath() {
