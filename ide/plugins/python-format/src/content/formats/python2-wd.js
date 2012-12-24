@@ -406,7 +406,13 @@ WDAPI.Element.prototype.submit = function() {
 };
 
 WDAPI.Element.prototype.select = function(label) {
-  return "Select(" + this.ref + ").select_by_visible_text(" + xlateArgument(label) + ")";
+  if (selectLocator.type == 'index') {
+    return "Select(" + this.ref + ").select_by_index(" + selectLocator.string + ")";
+  }
+  if (selectLocator.type == 'value') {
+    return "Select(" + this.ref + ").select_by_value(" + xlateArgument(selectLocator.string) + ")";
+  }
+  return "Select(" + this.ref + ").select_by_visible_text(" + xlateArgument(selectLocator.string) + ")";
 };
 
 WDAPI.ElementList = function(ref) {

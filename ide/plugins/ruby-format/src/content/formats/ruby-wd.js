@@ -389,7 +389,13 @@ WDAPI.Element.prototype.submit = function() {
 };
 
 WDAPI.Element.prototype.select = function(label) {
-  return "Selenium::WebDriver::Support::Select.new(" + this.ref + ").select_by(:text, " + xlateArgument(label) + ")";
+  if (selectLocator.type == 'index') {
+    return "Selenium::WebDriver::Support::Select.new(" + this.ref + ").select_by(:index, " + selectLocator.string + ")";
+  }
+  if (selectLocator.type == 'value') {
+    return "Selenium::WebDriver::Support::Select.new(" + this.ref + ").select_by(:value, " + xlateArgument(selectLocator.string) + ")";
+  }
+  return "Selenium::WebDriver::Support::Select.new(" + this.ref + ").select_by(:text, " + xlateArgument(selectLocator.string) + ")";
 };
 
 WDAPI.ElementList = function(ref) {

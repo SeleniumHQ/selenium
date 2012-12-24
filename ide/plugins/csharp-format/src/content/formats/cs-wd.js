@@ -399,7 +399,13 @@ WDAPI.Element.prototype.submit = function() {
 };
 
 WDAPI.Element.prototype.select = function(label) {
-  return "new SelectElement(" + this.ref + ").SelectByText(" + xlateArgument(label) + ")";
+  if (selectLocator.type == 'index') {
+    return "new SelectElement(" + this.ref + ").SelectByIndex(" + selectLocator.string + ")";
+  }
+  if (selectLocator.type == 'value') {
+    return "new SelectElement(" + this.ref + ").SelectByValue(" + xlateArgument(selectLocator.string) + ")";
+  }
+  return "new Select(" + this.ref + ").SelectByText(" + xlateArgument(selectLocator.string) + ")";
 };
 
 WDAPI.ElementList = function(ref) {

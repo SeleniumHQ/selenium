@@ -392,8 +392,14 @@ WDAPI.Element.prototype.submit = function() {
   return this.ref + ".submit()";
 };
 
-WDAPI.Element.prototype.select = function(label) {
-  return "new Select(" + this.ref + ").selectByVisibleText(" + xlateArgument(label) + ")";
+WDAPI.Element.prototype.select = function(selectLocator) {
+  if (selectLocator.type == 'index') {
+    return "new Select(" + this.ref + ").selectByIndex(" + selectLocator.string + ")";
+  }
+  if (selectLocator.type == 'value') {
+    return "new Select(" + this.ref + ").selectByValue(" + xlateArgument(selectLocator.string) + ")";
+  }
+  return "new Select(" + this.ref + ").selectByVisibleText(" + xlateArgument(selectLocator.string) + ")";
 };
 
 WDAPI.ElementList = function(ref) {

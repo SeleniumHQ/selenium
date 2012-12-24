@@ -765,7 +765,7 @@ SeleniumWebDriverAdaptor.prototype.uncheck = function(elementLocator) {
 SeleniumWebDriverAdaptor.prototype.select = function(elementLocator, label) {
   var locator = this._elementLocator(this.rawArgs[0]);
   var driver = new WDAPI.Driver();
-  return driver.findElement(locator.type, locator.string).select(this.rawArgs[1].substring("label=".length, this.rawArgs[1].length));
+  return driver.findElement(locator.type, locator.string).select(this._selectLocator(this.rawArgs[1]));
 };
 
 //SeleniumWebDriverAdaptor.prototype.isSomethingSelected = function(elementLocator) {
