@@ -179,10 +179,6 @@ safaridriver.inject.Tab.prototype.setActive = function(active) {
 safaridriver.inject.Tab.prototype.init = function() {
   this.log('Loaded injected script for: ' + window.location);
 
-  if ('about:blank' !== window.location.href) {
-    this.installPageScript_();
-  }
-
   var tab = this;
   tab.on(safaridriver.inject.message.Activate.TYPE, tab.onActivate_, tab).
       on(safaridriver.message.Alert.TYPE, tab.onAlert_, tab).
@@ -235,6 +231,10 @@ safaridriver.inject.Tab.prototype.init = function() {
       message.sendSync(safari.self.tab);
     }
   }, true);
+
+  if ('about:blank' !== window.location.href) {
+    this.installPageScript_();
+  }
 };
 
 

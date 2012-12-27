@@ -253,18 +253,18 @@ safaridriver.message.Message.prototype.send = function(target) {
   this.setOrigin(safaridriver.message.ORIGIN);
   if (safaridriver.message.ASSUME_DOM_WINDOW || target.postMessage) {
     var win = /** @type {!Window} */ (target);
-    var postMessageFn = win.postMessage;
-    if (!goog.isFunction(postMessageFn)) {
-      if (win === window) {
-        postMessageFn = window.constructor.prototype['postMessage'];
-      }
-
-      if (!goog.isFunction(postMessageFn)) {
+    if (win === window) {
+      // Avoid using the default postMessage when communicating over the DOM
+      // as there may be conflicts on the page (e.g. the page under test
+      // changed the definition of postMessage).
+      this.sendSync(win);
+    } else {
+      if (!goog.isFunction(win.postMessage)) {
         throw Error('Unable to send message; postMessage function not ' +
             'available on target window');
       }
+      win.postMessage(this.data_, '*');
     }
-    postMessageFn.call(win, this.data_, '*');
   } else {
     if (safaridriver.message.FORCE_SYNCHRONOUS_PROXY_SEND &&
         target.canLoad) {
@@ -321,9 +321,10 @@ safaridriver.message.Message.setSynchronousMessageResponse = function(
  *     a DOMWindow.
  */
 safaridriver.message.Message.prototype.sendSync = function(target) {
+  this.setOrigin(safaridriver.message.ORIGIN);
   if (safaridriver.message.ASSUME_DOM_WINDOW || target.postMessage) {
     goog.asserts.assert(target === window,
-        'Synchrnous messages may only be sent to a window when that ' +
+        'Synchronous messages may only be sent to a window when that ' +
             'window is the same as the current context');
 
     var messageEvent = document.createEvent('MessageEvent');

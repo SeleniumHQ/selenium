@@ -55,6 +55,16 @@ public class CleanSessionTest extends SafariTestBase {
     createCleanSession();
     assertNoCookies();
   }
+  
+  @Test
+  public void isResilientToPagesRedefiningPostMessage() {
+    driver.get(appServer.whereIs("messages.html"));
+
+    JavascriptExecutor executor = (JavascriptExecutor) driver;
+    executor.executeScript("window.postMessage = function() {};");
+
+    // If the above actually returns, then we are good to go.
+  }
 
   @Test
   public void doesNotLeakInternalMessagesToThePageUnderTest() {
