@@ -24,6 +24,7 @@ goog.provide('safaridriver.message.Message');
 goog.require('bot.json');
 goog.require('goog.asserts');
 goog.require('goog.debug.Logger');
+goog.require('safaridriver.dom');
 
 
 /**
@@ -307,7 +308,7 @@ safaridriver.message.Message.SYNCHRONOUS_DOM_MESSAGE_EVENT_TYPE =
  */
 safaridriver.message.Message.setSynchronousMessageResponse = function(
     response) {
-  document.documentElement.setAttribute(
+  safaridriver.dom.call(document.documentElement, 'setAttribute',
       safaridriver.message.Message.SYNCHRONOUS_MESSAGE_RESPONSE_ATTRIBUTE_,
       response);
 };
@@ -327,22 +328,26 @@ safaridriver.message.Message.prototype.sendSync = function(target) {
         'Synchronous messages may only be sent to a window when that ' +
             'window is the same as the current context');
 
-    var messageEvent = document.createEvent('MessageEvent');
+    var messageEvent = /** @type {!Event} */ (safaridriver.dom.call(
+        document, 'createEvent', 'MessageEvent'));
     messageEvent.initMessageEvent(
         safaridriver.message.Message.SYNCHRONOUS_DOM_MESSAGE_EVENT_TYPE,
         false, false, this.data_,
         // origin is a non-standard property on location.
         window.location['origin'], '0', window, null);
-    target.dispatchEvent(messageEvent);
+    safaridriver.dom.call(
+        /** @type {!Window} */ (target), 'dispatchEvent', messageEvent);
 
-    var response = document.documentElement.getAttribute(
+    var response = safaridriver.dom.call(document.documentElement,
+        'getAttribute',
         safaridriver.message.Message.SYNCHRONOUS_MESSAGE_RESPONSE_ATTRIBUTE_);
-    document.documentElement.removeAttribute(
+    safaridriver.dom.call(document.documentElement, 'removeAttribute',
         safaridriver.message.Message.SYNCHRONOUS_MESSAGE_RESPONSE_ATTRIBUTE_);
     return response;
   } else {
     // Create a beforeload event, which is required by the canLoad function.
-    var stubEvent = document.createEvent('Events');
+    var stubEvent = /** @type {!Event} */ (safaridriver.dom.call(
+        document, 'createEvent', 'Events'));
     stubEvent.initEvent('beforeload', false, false);
     return target.canLoad(stubEvent, this.data_);
     // TODO(jleyba): Do something more intelligent with the response.

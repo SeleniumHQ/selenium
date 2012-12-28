@@ -57,13 +57,37 @@ public class CleanSessionTest extends SafariTestBase {
   }
   
   @Test
-  public void isResilientToPagesRedefiningPostMessage() {
+  public void isResilientToPagesRedefiningDependentDomFunctions() {
+    runFunctionRedefinitionTest("window.dispatchEvent = function() {};");
+    runFunctionRedefinitionTest("window.postMessage = function() {};");
+    runFunctionRedefinitionTest("document.createEvent = function() {};");
+    runFunctionRedefinitionTest("document.documentElement.setAttribute = function() {};");
+    runFunctionRedefinitionTest("document.documentElement.getAttribute = function() {};");
+    runFunctionRedefinitionTest("document.documentElement.removeAttribute = function() {};");
+  }
+  
+  private void runFunctionRedefinitionTest(String script) {
     driver.get(appServer.whereIs("messages.html"));
 
     JavascriptExecutor executor = (JavascriptExecutor) driver;
-    executor.executeScript("window.postMessage = function() {};");
+    executor.executeScript(script);
 
     // If the above actually returns, then we are good to go.
+  }
+
+  @Test
+  public void executeAsyncScriptIsResilientToPagesRedefiningSetTimeout() {
+    driver.get(appServer.whereIs("messages.html"));
+
+    JavascriptExecutor executor = (JavascriptExecutor) driver;
+    executor.executeScript("setTimeout = function() {}");
+
+    long result = (Long) executor.executeAsyncScript(
+        "var callback = arguments[arguments.length - 1];" +
+        "window.constructor.prototype.setTimeout.call(window, function() {" +
+            "callback(123);\n}, 0);");
+
+    assertEquals(123L, result);
   }
 
   @Test

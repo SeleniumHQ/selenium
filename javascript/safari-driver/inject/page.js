@@ -79,7 +79,7 @@ safaridriver.inject.page.init = function() {
   wrapDialogFunction('alert', safaridriver.inject.page.wrappedAlert_);
   wrapDialogFunction('confirm', safaridriver.inject.page.wrappedConfirm_);
   wrapDialogFunction('prompt', safaridriver.inject.page.wrappedPrompt_);
-  window.addEventListener('beforeunload',
+  safaridriver.dom.call(window, 'addEventListener', 'beforeunload',
       safaridriver.inject.page.onBeforeUnload_, true);
 
   function wrapDialogFunction(name, newFn) {
@@ -350,7 +350,7 @@ safaridriver.inject.page.executeAsyncScript_ = function(command) {
   // The last argument for an async script is the callback that triggers the
   // response.
   args.push(function(value) {
-    window.clearTimeout(timeoutId);
+    safaridriver.dom.call(window, 'clearTimeout', timeoutId);
     if (response.isPending()) {
       response.resolve(value);
     }
@@ -366,7 +366,7 @@ safaridriver.inject.page.executeAsyncScript_ = function(command) {
   //   setTimeout(callback, 0);
   // };
   var timeout = /** @type {number} */ (command.getParameter('timeout'));
-  var timeoutId = window.setTimeout(function() {
+  var timeoutId = safaridriver.dom.call(window, 'setTimeout', function() {
     if (response.isPending()) {
       response.reject(new bot.Error(bot.ErrorCode.SCRIPT_TIMEOUT,
           'Timed out waiting for an asynchronous script result after ' +
