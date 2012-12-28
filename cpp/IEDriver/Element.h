@@ -69,9 +69,10 @@ class Element {
   bool IsHiddenByOverflow();
   bool GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>* frame_locations);
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
-  int GetParentDocument(IHTMLWindow2* parent_window,
-                        IHTMLDocument2** parent_doc);
+  int GetDocumentFromWindow(IHTMLWindow2* parent_window,
+                            IHTMLDocument2** parent_doc);
   bool IsInline(void);
+  bool GetDocumentDimensions(IHTMLDocument2* document, int* width, int* height);
   static bool Element::RectHasNonZeroDimensions(const CComPtr<IHTMLRect> rect);
 
   std::string element_id_;

@@ -555,8 +555,9 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
   CComPtr<IHTMLWindow2> parent_window;
   hr = owner_doc_window->get_parent(&parent_window);
   if (parent_window && !owner_doc_window.IsEqualObject(parent_window)) {
+    LOG(DEBUG) << "Element is in a frame.";
     CComPtr<IHTMLDocument2> parent_doc;
-    status_code = this->GetParentDocument(parent_window, &parent_doc);
+    status_code = this->GetDocumentFromWindow(parent_window, &parent_doc);
 
     CComPtr<IHTMLFramesCollection2> frames;
     hr = parent_doc->get_frames(&frames);
@@ -578,7 +579,7 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
       }
 
       CComPtr<IHTMLDocument2> frame_doc;
-      hr = frame_window->get_document(&frame_doc);
+      status_code = this->GetDocumentFromWindow(frame_window, &frame_doc);
 
       if (frame_doc.IsEqualObject(owner_doc)) {
         // The document in this frame *is* this element's owner
@@ -586,27 +587,98 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
         // containing window (which is itself an HTML element, either
         // a frame or an iframe). Then get the x and y coordinates of
         // that frame element.
+        // N.B. We must use JavaScript here, as directly using
+        // IHTMLWindow4.get_frameElement() returns E_NOINTERFACE under
+        // some circumstances.
+        LOG(DEBUG) << "Located host frame. Attempting to get hosting element";
         std::wstring script_source = L"(function(){ return function() { return arguments[0].frameElement };})();";
         Script script_wrapper(frame_doc, script_source, 1);
         CComVariant window_variant(frame_window);
         script_wrapper.AddArgument(window_variant);
-        script_wrapper.Execute();
-        CComQIPtr<IHTMLElement> frame_element(script_wrapper.result().pdispVal);
-
-        // Wrap the element so we can find its location. Note that
-        // GetLocation() may recursively call into this method.
-        Element element_wrapper(frame_element, this->containing_window_handle_);
-        LocationInfo frame_location = {};
-        bool frame_requires_frame_scroll = false;
-        status_code = element_wrapper.GetLocation(&frame_location,
-                                                  frame_locations);
+        status_code = script_wrapper.Execute();
+        CComPtr<IHTMLFrameBase> frame_base;
         if (status_code == SUCCESS) {
-          location->x = frame_location.x;
-          location->y = frame_location.y;
-          location->width = frame_location.width;
-          location->height = frame_location.height;
+          hr = script_wrapper.result().pdispVal->QueryInterface<IHTMLFrameBase>(&frame_base);
+          if (FAILED(hr)) {
+            LOG(WARN) << "Found the frame element, but could not QueryInterface to IHTMLFrameBase.";
+          }
+        } else {
+          // Can't get the frameElement property, likely because the frames are from different
+          // domains. So start at the parent document, and use getElementsByTagName to retrieve
+          // all of the iframe elements (if there are no iframe elements, get the frame elements)
+          // **** BIG HUGE ASSUMPTION!!! ****
+          // The index of the frame from the document.frames collection will correspond to the 
+          // index into the collection of iframe/frame elements returned by getElementsByTagName.
+          LOG(WARN) << "Attempting to get frameElement via JavaScript failed. "
+                    << "This usually means the frame is in a different domain than the parent frame. "
+                    << "Browser security against cross-site scripting attacks will not allow this. "
+                    << "Attempting alternative method.";
+          long collection_count = 0;
+          CComPtr<IDispatch> element_dispatch;
+          CComQIPtr<IHTMLDocument3> doc(parent_doc);
+          if (doc) {
+            LOG(DEBUG) << "Looking for <iframe> elements in parent document.";
+            CComPtr<IHTMLElementCollection> iframe_collection;
+            hr = doc->getElementsByTagName(L"iframe", &iframe_collection);
+            hr = iframe_collection->get_length(&collection_count);
+            if (collection_count != 0) {
+              if (collection_count > index.lVal) {
+                LOG(DEBUG) << "Found <iframe> elements in parent document, retrieving element" << index.lVal << ".";
+                hr = iframe_collection->item(index, index, &element_dispatch);
+                hr = element_dispatch->QueryInterface<IHTMLFrameBase>(&frame_base);
+              }
+            } else {
+              LOG(DEBUG) << "No <iframe> elements, looking for <frame> elements in parent document.";
+              CComPtr<IHTMLElementCollection> frame_collection;
+              hr = doc->getElementsByTagName(L"frame", &frame_collection);
+              hr = frame_collection->get_length(&collection_count);
+              if (collection_count > index.lVal) {
+                LOG(DEBUG) << "Found <frame> elements in parent document, retrieving element" << index.lVal << ".";
+                hr = frame_collection->item(index, index, &element_dispatch);
+                hr = element_dispatch->QueryInterface<IHTMLFrameBase>(&frame_base);
+              }
+            }
+          } else {
+            LOG(WARN) << "QueryInterface of parent document to IHTMLDocument3 failed.";
+          }
         }
-        return true;
+
+        if (frame_base) {
+          LOG(DEBUG) << "Successfully found frame hosting element";
+          int frame_doc_height = 0, frame_doc_width = 0;
+          bool doc_dimensions_success = this->GetDocumentDimensions(
+              frame_doc,
+              &frame_doc_width, 
+              &frame_doc_height);
+
+          // Wrap the element so we can find its location. Note that
+          // GetLocation() may recursively call into this method.
+          CComQIPtr<IHTMLElement> frame_element(frame_base);
+          Element element_wrapper(frame_element, this->containing_window_handle_);
+          LocationInfo frame_location = {};
+          status_code = element_wrapper.GetLocation(&frame_location,
+                                                    frame_locations);
+          if (status_code == SUCCESS) {
+            // Take into account the presence of scrollbars in the frame.
+            long frame_element_width = frame_location.width;
+            long frame_element_height = frame_location.height;
+            if (doc_dimensions_success) {
+              if (frame_doc_height > frame_element_height) {
+                int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
+                frame_element_height -= horizontal_scrollbar_height;
+              }
+              if (frame_doc_width > frame_element_width) {
+                int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
+                frame_element_width -= vertical_scrollbar_width;
+              }
+            }
+            location->x = frame_location.x;
+            location->y = frame_location.y;
+            location->width = frame_element_width;
+            location->height = frame_element_height;
+          }
+          return true;
+        }
       }
     }
   }
@@ -704,8 +776,8 @@ int Element::GetContainingDocument(const bool use_dom_node,
   return SUCCESS;
 }
 
-int Element::GetParentDocument(IHTMLWindow2* parent_window,
-                               IHTMLDocument2** parent_doc) {
+int Element::GetDocumentFromWindow(IHTMLWindow2* parent_window,
+                                   IHTMLDocument2** parent_doc) {
   LOG(TRACE) << "Entering Element::GetParentDocument";
 
   HRESULT hr = parent_window->get_document(parent_doc);
@@ -868,6 +940,59 @@ bool Element::IsAttachedToDom() {
     }
   }
   return false;
+}
+
+bool Element::GetDocumentDimensions(IHTMLDocument2* document, int* width, int* height) {
+  LOG(TRACE) << "Entering Element::GetDocumentDimensions";
+  CComVariant document_height;
+  CComVariant document_width;
+
+  CComQIPtr<IHTMLDocument5> html_document5(document);
+  if (!html_document5) {
+    LOG(WARN) << L"Unable to cast document to IHTMLDocument5. IE6 or greater is required.";
+    return false;
+  }
+
+  CComBSTR compatibility_mode;
+  html_document5->get_compatMode(&compatibility_mode);
+
+  // In non-standards-compliant mode, the BODY element represents the canvas.
+  // In standards-compliant mode, the HTML element represents the canvas.
+  CComPtr<IHTMLElement> canvas_element;
+  if (compatibility_mode == L"BackCompat") {
+    document->get_body(&canvas_element);
+    if (!canvas_element) {
+      LOG(WARN) << "Unable to get canvas element from document in compatibility mode";
+      return false;
+    }
+  } else {
+    CComQIPtr<IHTMLDocument3> html_document3(document);
+    if (!html_document3) {
+      LOG(WARN) << L"Unable to get IHTMLDocument3 handle from document.";
+      return false;
+    }
+
+    // The root node should be the HTML element.
+    html_document3->get_documentElement(&canvas_element);
+    if (!canvas_element) {
+      LOG(WARN) << L"Could not retrieve document element.";
+      return false;
+    }
+
+    CComQIPtr<IHTMLHtmlElement> html_element(canvas_element);
+    if (!html_element) {
+      LOG(WARN) << L"Document element is not the HTML element.";
+      return false;
+    }
+  }
+
+  canvas_element->getAttribute(CComBSTR("scrollHeight"),
+                                0,
+                                &document_height);
+  canvas_element->getAttribute(CComBSTR("scrollWidth"), 0, &document_width);
+  *height = document_height.intVal;
+  *width = document_width.intVal;
+  return true;
 }
 
 } // namespace webdriver
