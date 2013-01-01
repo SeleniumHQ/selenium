@@ -5,7 +5,7 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-dep-4.11-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-4.11-src.jar!/" />
     </SOURCES>
   </library>
 </component>
