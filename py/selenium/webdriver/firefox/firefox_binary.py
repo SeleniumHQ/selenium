@@ -28,11 +28,15 @@ class FirefoxBinary(object):
 
     def __init__(self, firefox_path=None):
         self._start_cmd = firefox_path
+        self.command_line = None
         if self._start_cmd is None:
             self._start_cmd = self._get_firefox_start_cmd()
         # Rather than modifying the environment of the calling Python process
         # copy it and modify as needed.
         self._firefox_env = os.environ.copy()
+
+    def add_command_line_options(self, *args):
+        self.command_line = args
 
     def launch_browser(self, profile):
         """Launches the browser for the given profile name.
@@ -57,14 +61,19 @@ class FirefoxBinary(object):
         self._firefox_env["MOZ_CRASHREPORTER_DISABLE"] = "1"
         self._firefox_env["MOZ_NO_REMOTE"] = "1"
         self._firefox_env["NO_EM_RESTART"] = "1"
-        
+
         if platform.system().lower() == 'linux':
             self._modify_link_library_path()
-        
-        Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=STDOUT,
+        command = [self._start_cmd, "-silent"]
+        if self.command_line is not None:
+            for cli in self.command_line:
+                command.append(cli)
+
+        Popen(command, stdout=PIPE, stderr=STDOUT,
               env=self._firefox_env).communicate()
+        command[1] = '-foreground'
         self.process = Popen(
-            [self._start_cmd, "-foreground"], stdout=PIPE, stderr=STDOUT,
+            command, stdout=PIPE, stderr=STDOUT,
             env=self._firefox_env)
 
     def _get_firefox_output(self):
