@@ -41,6 +41,9 @@ Webdriver.support
 .. autosummary::
    :toctree: webdriver_support
 
+   selenium.webdriver.support.abstract_event_listener
+   selenium.webdriver.support.color
+   selenium.webdriver.support.event_firing_webdriver
    selenium.webdriver.support.expected_conditions
    selenium.webdriver.support.select
    selenium.webdriver.support.wait
