@@ -114,12 +114,6 @@ safaridriver.message.MessageTarget.prototype.onMessage_ = function(e) {
   try {
     var message = safaridriver.message.fromEvent(e);
   } catch (ex) {
-    var name = e.name ? e.name + ': ' : '';
-    this.log(
-        'Unable to parse message: ' + name +
-            bot.json.stringify(e.message || e.data),
-        goog.debug.Logger.Level.SEVERE,
-        ex);
     return;
   }
 

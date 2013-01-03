@@ -16,10 +16,18 @@
 /** @fileoverview Defines the safaridriver.Command class. */
 
 goog.provide('safaridriver.Command');
+goog.provide('safaridriver.CommandHandler');
 
 goog.require('bot.json');
 goog.require('webdriver.Command');
 
+
+/**
+ * @typedef {(function(!safaridriver.Command, !Object)|
+ *           function(!safaridriver.Command)|
+ *           function())}
+ */
+safaridriver.CommandHandler;
 
 
 /**
