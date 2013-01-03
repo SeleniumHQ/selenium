@@ -20,7 +20,7 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class DeleteCookie extends CookieHandler {
+public class DeleteCookie extends WebDriverHandler {
 
   public DeleteCookie(Session session) {
     super(session);
