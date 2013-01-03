@@ -226,7 +226,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     if ("firefox".equals(browserName)) {
-      return BrowserVersion.FIREFOX_3_6;
+      if (browserVersion != null
+          && (browserVersion.equals("3") || browserVersion.startsWith("3."))) {
+        return BrowserVersion.FIREFOX_3_6;
+      }
+      return BrowserVersion.FIREFOX_10;
     }
 
     if ("internet explorer".equals(browserName)) {
@@ -248,7 +252,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       }
     }
 
-    return BrowserVersion.FIREFOX_3_6;
+    return BrowserVersion.FIREFOX_10;
   }
 
   private WebClient createWebClient(BrowserVersion version) {
