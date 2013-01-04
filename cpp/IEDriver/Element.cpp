@@ -228,9 +228,10 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
   std::vector<LocationInfo> frame_locations;
   result = this->GetLocation(&element_location, &frame_locations);
   LocationInfo click_location = this->GetClickPoint(element_location);
+  bool document_contains_frames = frame_locations.size() != 0;
 
   if (result != SUCCESS ||
-      !this->IsLocationInViewPort(click_location) ||
+      !this->IsLocationInViewPort(click_location, document_contains_frames) ||
       this->IsHiddenByOverflow() ||
       !this->IsLocationVisibleInFrames(click_location, frame_locations)) {
     // Scroll the element into view
@@ -253,7 +254,7 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
     }
 
     click_location = this->GetClickPoint(element_location);
-    if (!this->IsLocationInViewPort(click_location)) {
+    if (!this->IsLocationInViewPort(click_location, document_contains_frames)) {
       LOG(WARN) << "Scrolled element is not in view";
       status_code = EELEMENTCLICKPOINTNOTSCROLLED;
     }
@@ -696,7 +697,7 @@ LocationInfo Element::GetClickPoint(const LocationInfo location) {
   return click_location;
 }
 
-bool Element::IsLocationInViewPort(const LocationInfo location) {
+bool Element::IsLocationInViewPort(const LocationInfo location, const bool document_contains_frames) {
   LOG(TRACE) << "Entering Element::IsLocationInViewPort";
 
   WINDOWINFO window_info;
@@ -708,9 +709,24 @@ bool Element::IsLocationInViewPort(const LocationInfo location) {
   long window_width = window_info.rcClient.right - window_info.rcClient.left;
   long window_height = window_info.rcClient.bottom - window_info.rcClient.top;
 
-  long window_x_border = window_info.cxWindowBorders;
-  long window_y_border = window_info.cyWindowBorders;
-  LOG(DEBUG) << "x border: " << window_x_border << ", y border: " << window_y_border;
+  if (!document_contains_frames) {
+    // ASSUMPTION! IE **always** draws a vertical scroll bar, even if it's not
+    // required. This means the viewport width is always smaller than the window
+    // width by at least the width of the vertical scroll bar.
+    int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
+    window_width -= vertical_scrollbar_width;
+
+    // Horizontal scrollbar will only appear if the document is wider than the
+    // viewport.
+    CComPtr<IHTMLDocument2> doc;
+    this->GetContainingDocument(false, &doc);
+    LocationInfo document_info;
+    DocumentHost::GetDocumentDimensions(doc, &document_info);
+    if (document_info.width > window_width) {
+      int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
+      window_height -= horizontal_scrollbar_height;
+    }
+  }
 
   // Hurrah! Now we know what the visible area of the viewport is
   // Is the element visible in the X axis?

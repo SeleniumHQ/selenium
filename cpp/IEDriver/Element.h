@@ -51,7 +51,6 @@ class Element {
   int ExecuteAsyncAtom(const std::wstring& sync_event_name,
                        ASYNCEXECPROC execute_proc,
                        std::string* error_msg);
-  bool HasOnlySingleTextChildNode(void);
 
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }
@@ -59,7 +58,7 @@ class Element {
  private:
   int GetLocation(LocationInfo* location, std::vector<LocationInfo>* frame_locations);
   LocationInfo GetClickPoint(const LocationInfo location);
-  bool IsLocationInViewPort(const LocationInfo location);
+  bool IsLocationInViewPort(const LocationInfo location, const bool document_contains_frames);
   bool IsLocationVisibleInFrames(const LocationInfo location, const std::vector<LocationInfo> frame_locations);
   bool IsHiddenByOverflow();
   bool GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>* frame_locations);
