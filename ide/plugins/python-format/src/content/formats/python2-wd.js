@@ -215,7 +215,7 @@ this.options = {
           '        self.driver.implicitly_wait(30)\n' +
           '        self.base_url = "${baseURL}"\n' +
           '        self.verificationErrors = []\n' +
-          '        self.accept_next_alert = true\n' +
+          '        self.accept_next_alert = True\n' +
           '    \n' +
           '    def ${methodName}(self):\n' +
           '        ${receiver} = self.driver\n',
@@ -358,7 +358,7 @@ WDAPI.Driver.prototype.getAlert = function() {
 };
 
 WDAPI.Driver.prototype.chooseOkOnNextConfirmation = function() {
-  return "self.accept_next_alert = true";
+  return "self.accept_next_alert = True";
 };
 
 WDAPI.Driver.prototype.chooseCancelOnNextConfirmation = function() {
