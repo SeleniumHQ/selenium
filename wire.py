@@ -1479,9 +1479,14 @@ location for correctly generating native events.''').
       Get('Get available log types.').
       SetReturnType('{Array.<string>}', 'The list of available [#Log_Type log types].'))
 
+  resources.append(
+      SessionResource('/session/:sessionId/application_cache/status').
+      Get('Get the status of the html5 application cache.').
+      SetReturnType('{number}', 'Status code for application cache: {UNCACHED = 0, IDLE = 1, '
+                    'CHECKING = 2, DOWNLOADING = 3, UPDATE_READY = 4, OBSOLETE = 5}'))
 
   logging.info('Generating %s', wiki_path)
-  f = open(wiki_path, 'w')
+  f = open(wiki_path, 'wb')
   try:
     f.write('''#summary A description of the protocol used by WebDriver to \
 communicate with remote instances
