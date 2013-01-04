@@ -152,7 +152,7 @@ LRESULT IECommandExecutor::OnClose(UINT uMsg,
                                    LPARAM lParam,
                                    BOOL& bHandled) {
   LOG(TRACE) << "Entering IECommandExecutor::OnClose";
-  this->managed_elements_.clear();
+  this->managed_elements_.Clear();
   this->DestroyWindow();
   return 0;
 }
@@ -344,28 +344,7 @@ LRESULT IECommandExecutor::OnRefreshManagedElements(UINT uMsg,
                                                     LPARAM lParam,
                                                     BOOL& bHandled) {
   if (this->enable_element_cache_cleanup_) {
-    // Logic explanation: We can't just remove the elements from the 
-    // managed elements map, within the loop as that would invalidate
-    // the iterator. So we add the keys to a vector, and use the vector
-    // to remove the elements from the map.
-    std::vector<std::string> bad_elements;
-    ElementMap::const_iterator managed_iterator = this->managed_elements_.begin();
-    ElementMap::const_iterator last_managed_element = this->managed_elements_.end();
-    for(; managed_iterator != last_managed_element; ++managed_iterator) {
-      if (!managed_iterator->second->IsAttachedToDom()) {
-        bad_elements.push_back(managed_iterator->first);
-      }
-    }
-
-    LOG(DEBUG) << "Refreshing managed element cache. Found "
-               << bad_elements.size()
-               << " to remove from cache.";
-  
-    std::vector<std::string>::const_iterator id_iterator = bad_elements.begin();
-    std::vector<std::string>::const_iterator last_id = bad_elements.end();
-    for (; id_iterator != last_id; ++id_iterator) {
-      this->RemoveManagedElement(*id_iterator);
-    }
+    this->managed_elements_.ClearCache();
   }
   return 0;
 }
@@ -611,69 +590,25 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
 int IECommandExecutor::GetManagedElement(const std::string& element_id,
                                          ElementHandle* element_wrapper) const {
   LOG(TRACE) << "Entering IECommandExecutor::GetManagedElement";
-
-  ElementMap::const_iterator found_iterator = this->managed_elements_.find(element_id);
-  if (found_iterator == this->managed_elements_.end()) {
-    LOG(DEBUG) << "Unable to find managed element with id " << element_id;
-    return ENOSUCHELEMENT;
-  }
-
-  *element_wrapper = found_iterator->second;
-  return SUCCESS;
+  return this->managed_elements_.GetManagedElement(element_id, element_wrapper);
 }
 
 void IECommandExecutor::AddManagedElement(IHTMLElement* element,
                                           ElementHandle* element_wrapper) {
   LOG(TRACE) << "Entering IECommandExecutor::AddManagedElement";
-
-  // TODO: This method needs much work. If we are already managing a
-  // given element, we don't want to assign it a new ID, but to find
-  // out if we're managing it already, we need to compare to all of 
-  // the elements already in our map, which means iterating through
-  // the map. For long-running tests, this means the addition of a
-  // new managed element may take longer and longer as we have no
-  // good algorithm for removing dead elements from the map.
-  bool element_already_managed = false;
-  ElementMap::iterator it = this->managed_elements_.begin();
-  for (; it != this->managed_elements_.end(); ++it) {
-    if (it->second->element() == element) {
-      *element_wrapper = it->second;
-      element_already_managed = true;
-      break;
-    }
-  }
-
-  if (!element_already_managed) {
-    LOG(DEBUG) << "Element is not yet managed";
-    BrowserHandle current_browser;
-    this->GetCurrentBrowser(&current_browser);
-    ElementHandle new_wrapper(new Element(element,
-                                          current_browser->GetWindowHandle()));
-    this->managed_elements_[new_wrapper->element_id()] = new_wrapper;
-    *element_wrapper = new_wrapper;
-  } else {
-    LOG(DEBUG) << "Element is already managed";
-  }
+  BrowserHandle current_browser;
+  this->GetCurrentBrowser(&current_browser);
+  this->managed_elements_.AddManagedElement(current_browser, element, element_wrapper);
 }
 
 void IECommandExecutor::RemoveManagedElement(const std::string& element_id) {
   LOG(TRACE) << "Entering IECommandExecutor::RemoveManagedElement";
-
-  ElementMap::iterator found_iterator = this->managed_elements_.find(element_id);
-  if (found_iterator != this->managed_elements_.end()) {
-    this->managed_elements_.erase(element_id);
-  } else {
-    LOG(DEBUG) << "Unable to find element to remove with id " << element_id;
-  }
+  this->managed_elements_.RemoveManagedElement(element_id);
 }
 
 void IECommandExecutor::ListManagedElements() {
   LOG(TRACE) << "Entering IECommandExecutor::ListManagedElements";
-
-  ElementMap::iterator it = this->managed_elements_.begin();
-  for (; it != this->managed_elements_.end(); ++it) {
-    LOG(DEBUG) << "Managed element: " << it->first;
-  }
+  this->managed_elements_.ListManagedElements();
 }
 
 int IECommandExecutor::GetElementFindMethod(const std::string& mechanism,

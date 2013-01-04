@@ -229,6 +229,7 @@
     <ClCompile Include="DocumentHost.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="ElementFinder.cpp" />
+    <ClCompile Include="ElementRepository.cpp" />
     <ClCompile Include="HtmlDialog.cpp" />
     <ClCompile Include="IECommandExecutor.cpp" />
     <ClCompile Include="IECommandHandler.cpp" />
@@ -257,6 +258,7 @@
     <ClInclude Include="DocumentHost.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="ElementFinder.h" />
+    <ClInclude Include="ElementRepository.h" />
     <ClInclude Include="HtmlDialog.h" />
     <ClInclude Include="IECommandExecutor.h" />
     <ClInclude Include="IECommandHandler.h" />

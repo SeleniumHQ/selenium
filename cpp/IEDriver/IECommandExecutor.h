@@ -27,6 +27,7 @@
 #include "IECommandHandler.h"
 #include "Element.h"
 #include "ElementFinder.h"
+#include "ElementRepository.h"
 #include "HtmlDialog.h"
 #include "messages.h"
 #include "response.h"
@@ -233,7 +234,6 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   void set_mouse_state(VARIANT state) { this->mouse_state_ = state; }
 
  private:
-  typedef std::tr1::unordered_map<std::string, ElementHandle> ElementMap;
   typedef std::tr1::unordered_map<std::string, BrowserHandle> BrowserMap;
   typedef std::map<std::string, std::wstring> ElementFindMethodMap;
   typedef std::map<std::string, CommandHandlerHandle> CommandHandlerMap;
@@ -246,7 +246,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   void PopulateElementFinderMethods(void);
 
   BrowserMap managed_browsers_;
-  ElementMap managed_elements_;
+  // ElementMap managed_elements_;
+  ElementRepository managed_elements_;
   ElementFindMethodMap element_find_methods_;
 
   BrowserFactory factory_;

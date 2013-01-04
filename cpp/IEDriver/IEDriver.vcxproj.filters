@@ -65,6 +65,9 @@
     <ClCompile Include="Alert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ElementRepository.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Browser.h">
@@ -302,6 +305,9 @@
       <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
     <ClInclude Include="Alert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ElementRepository.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
