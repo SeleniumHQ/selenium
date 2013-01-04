@@ -1,7 +1,9 @@
 
 java_test(name = "test",
   srcs = [
-    "**/*.java",
+    "*.java",
+    "find/*.java",
+    "match/*.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/lift",
