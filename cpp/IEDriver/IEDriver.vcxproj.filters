@@ -310,6 +310,9 @@
     <ClInclude Include="ElementRepository.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LocationInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="IEDriver.def">

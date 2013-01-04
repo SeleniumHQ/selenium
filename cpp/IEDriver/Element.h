@@ -17,19 +17,13 @@
 #include <string>
 #include <vector>
 #include "json.h"
+#include "LocationInfo.h"
 
 namespace webdriver {
 
 enum ELEMENT_SCROLL_BEHAVIOR {
   TOP,
   BOTTOM
-};
-
-struct LocationInfo {
-  long x;
-  long y;
-  long width;
-  long height;
 };
 
 typedef unsigned int (__stdcall *ASYNCEXECPROC)(void*);
@@ -57,6 +51,7 @@ class Element {
   int ExecuteAsyncAtom(const std::wstring& sync_event_name,
                        ASYNCEXECPROC execute_proc,
                        std::string* error_msg);
+  bool HasOnlySingleTextChildNode(void);
 
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }

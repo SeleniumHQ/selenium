@@ -102,14 +102,11 @@ class ScreenshotCommandHandler : public IECommandHandler {
     CComPtr<IHTMLDocument2> document;
     browser->GetDocument(&document);
 
-    int image_height(0);
-    int image_width(0);
-    HRESULT hr = this->GetDocumentDimensions(document,
-                                             &image_width,
-                                             &image_height);
-    if (FAILED(hr)) {
-      LOGHR(DEBUG, hr) << "Unable to get document dimensions";
-      return hr;
+    LocationInfo document_info;
+    bool result = DocumentHost::GetDocumentDimensions(document, &document_info);
+    if (!result) {
+      LOG(DEBUG) << "Unable to get document dimensions";
+      return E_FAIL;
     }
 
     int chrome_width(0);
@@ -119,8 +116,8 @@ class ScreenshotCommandHandler : public IECommandHandler {
                                      &chrome_width,
                                      &chrome_height);
 
-    max_width = image_width + chrome_width;
-    max_height = image_height + chrome_height;
+    max_width = document_info.width + chrome_width;
+    max_height = document_info.height + chrome_height;
 
     // For some reason, this technique does not allow the user to resize
     // the browser window to greater than 65536 x 65536. This is pretty
@@ -128,13 +125,13 @@ class ScreenshotCommandHandler : public IECommandHandler {
     if (max_height > 65536) {
       LOG(WARN) << L"Height greater than 65536 pixels. Truncating screenshot height to 65536.";
       max_height = 65536;
-      image_height = max_height - chrome_height;
+      document_info.height = max_height - chrome_height;
     }
 
     if (max_width > 65536) {
       LOG(WARN) << L"Width greater than 65536 pixels. Truncating screenshot width to 65536.";
       max_width = 65536;
-      image_width = max_width - chrome_width;
+      document_info.width = max_width - chrome_width;
     }
 
     long original_width = browser->GetWidth();
@@ -156,7 +153,9 @@ class ScreenshotCommandHandler : public IECommandHandler {
     browser->SetHeight(max_height);
 
     // Capture the window's canvas to a DIB.
-    BOOL created = this->image_->Create(image_width, image_height, /*numbers of bits per pixel = */ 32);
+    BOOL created = this->image_->Create(document_info.width,
+                                        document_info.height,
+                                        /*numbers of bits per pixel = */ 32);
     if (!created) {
       LOG(WARN) << "Unable to create image";
     }
@@ -180,7 +179,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     }
 
     this->image_->ReleaseDC();
-    return hr;
+    return S_OK;
   }
 
   bool IsSameColour() {

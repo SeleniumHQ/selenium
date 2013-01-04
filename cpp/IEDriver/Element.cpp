@@ -645,11 +645,10 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
 
         if (frame_base) {
           LOG(DEBUG) << "Successfully found frame hosting element";
-          int frame_doc_height = 0, frame_doc_width = 0;
-          bool doc_dimensions_success = this->GetDocumentDimensions(
+          LocationInfo frame_doc_info;
+          bool doc_dimensions_success = DocumentHost::GetDocumentDimensions(
               frame_doc,
-              &frame_doc_width, 
-              &frame_doc_height);
+              &frame_doc_info);
 
           // Wrap the element so we can find its location. Note that
           // GetLocation() may recursively call into this method.
@@ -663,11 +662,11 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
             long frame_element_width = frame_location.width;
             long frame_element_height = frame_location.height;
             if (doc_dimensions_success) {
-              if (frame_doc_height > frame_element_height) {
+              if (frame_doc_info.height > frame_element_height) {
                 int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
                 frame_element_height -= horizontal_scrollbar_height;
               }
-              if (frame_doc_width > frame_element_width) {
+              if (frame_doc_info.width > frame_element_width) {
                 int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
                 frame_element_width -= vertical_scrollbar_width;
               }

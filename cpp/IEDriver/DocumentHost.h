@@ -18,6 +18,7 @@
 #include <memory>
 #include "BrowserFactory.h"
 #include "ErrorCodes.h"
+#include "LocationInfo.h"
 #include "Script.h"
 
 #define EELEMENTCLICKPOINTNOTSCROLLED 100
@@ -53,6 +54,10 @@ class DocumentHost {
 
   std::string GetCurrentUrl(void);
   std::string GetPageSource(void);
+
+  static int GetDocumentMode(IHTMLDocument2* doc);
+  static bool IsStandardsMode(IHTMLDocument2* doc);
+  static bool GetDocumentDimensions(IHTMLDocument2* doc, LocationInfo* info);
 
   void GetCookies(std::map<std::string, std::string>* cookies);
   int AddCookie(const std::string& cookie);
