@@ -54,19 +54,3 @@ class WebDriver(RemoteWebDriver):
     def quit(self):
         RemoteWebDriver.quit(self)
         self.iedriver.stop()
-
-    def save_screenshot(self, filename):
-        """
-        Gets the screenshot of the current window. Returns False if there is
-        any IOError, else returns True. Use full paths in your filename.
-        """
-        png = RemoteWebDriver.execute(self, Command.SCREENSHOT)['value']
-        try:
-            f = open(filename, 'wb')
-            f.write(base64.decodestring(png))
-            f.close()
-        except IOError:
-            return False
-        finally:
-            del png
-        return True
