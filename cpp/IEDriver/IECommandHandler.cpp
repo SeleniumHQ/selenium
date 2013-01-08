@@ -77,4 +77,15 @@ int IECommandHandler::GetElement(const IECommandExecutor& executor,
   return EOBSOLETEELEMENT;
 }
 
+Json::Value IECommandHandler::RecreateJsonParameterObject(const ParametersMap& command_parameters) {
+  Json::Value result;
+  ParametersMap::const_iterator param_iterator = command_parameters.begin();
+  for (; param_iterator != command_parameters.end(); ++param_iterator) {
+    std::string key = param_iterator->first;
+    Json::Value value = param_iterator->second;
+    result[key] = value;
+  }
+  return result;
+}
+
 } // namespace webdriver

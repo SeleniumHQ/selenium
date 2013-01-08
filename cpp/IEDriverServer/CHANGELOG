@@ -9,6 +9,18 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.28.0.3
+=========
+ * Introduced the "requireWindowFocus" capability into the IE driver. When used
+   in conjunction with the "nativeEvents" capability, the driver will attempt 
+   to bring the current IE window to the foreground before executing a mouse
+   or keyboard event. Also, when the requireWindowFocus capability is set to
+   true, advanced user interactions will now use the Windows SendInput() API to
+   execute the interactions. To enable this behavior, set the value of the
+   requiresWindowFocus capability to "true" when creating an instance of the IE
+   driver. The default for this new capability is "false". This functionality
+   is currently considered extremely experimental; use at your own risk.
+
 v2.28.0.2
 =========
  * Changed view port calculations to allow for always-present vertical scroll

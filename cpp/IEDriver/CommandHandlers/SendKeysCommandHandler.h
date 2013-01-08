@@ -63,12 +63,7 @@ class SendKeysCommandHandler : public IECommandHandler {
     } else {
       std::string element_id = id_parameter_iterator->second;
 
-      std::wstring keys = L"";
       Json::Value key_array = value_parameter_iterator->second;
-      for (unsigned int i = 0; i < key_array.size(); ++i ) {
-        std::string key(key_array[i].asString());
-        keys.append(CA2W(key.c_str(), CP_UTF8));
-      }
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
@@ -99,7 +94,7 @@ class SendKeysCommandHandler : public IECommandHandler {
         CComQIPtr<IHTMLElement> element(element_wrapper->element());
 
         LocationInfo location = {};
-        element_wrapper->GetLocationOnceScrolledIntoView(executor.scroll_behavior(), &location);
+        element_wrapper->GetLocationOnceScrolledIntoView(executor.input_manager()->scroll_behavior(), &location);
 
         CComQIPtr<IHTMLInputFileElement> file(element);
         CComQIPtr<IHTMLInputElement> input(element);
@@ -111,6 +106,12 @@ class SendKeysCommandHandler : public IECommandHandler {
         bool is_file_element = (file != NULL) ||
                                (input != NULL && element_type == L"file");
         if (is_file_element) {
+          std::wstring keys = L"";
+          for (unsigned int i = 0; i < key_array.size(); ++i ) {
+            std::string key(key_array[i].asString());
+            keys.append(CA2W(key.c_str(), CP_UTF8));
+          }
+
           DWORD ie_process_id;
           ::GetWindowThreadProcessId(window_handle, &ie_process_id);
           HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
@@ -137,29 +138,15 @@ class SendKeysCommandHandler : public IECommandHandler {
 
         this->VerifyPageHasFocus(browser_wrapper->GetTopLevelWindowHandle(), browser_wrapper->window_handle());
         this->WaitUntilElementFocused(element);
-        if (executor.enable_native_events()) {
-          sendKeys(window_handle, keys.c_str(), executor.speed());
-          releaseModifierKeys(window_handle, executor.speed());
-        } else {
-          std::wstring script_source = L"(function() { return function(){" + 
-                                       atoms::asString(atoms::INPUTS) + 
-                                       L"; return webdriver.atoms.inputs.sendKeys(arguments[0], arguments[1], arguments[2]);" + 
-                                       L"};})();";
-
-          CComPtr<IHTMLDocument2> doc;
-          browser_wrapper->GetDocument(&doc);
-          Script script_wrapper(doc, script_source, 3);
-          script_wrapper.AddArgument(element_wrapper);
-          script_wrapper.AddArgument(executor.keyboard_state());
-          script_wrapper.AddArgument(keys);
-          status_code = script_wrapper.Execute();
-          if (status_code == SUCCESS) {
-            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-            mutable_executor.set_keyboard_state(script_wrapper.result());
-          } else {
-            LOG(WARN) << "Failed to execute js to send keys";
-          }
-        }
+        std::string null_character = CW2A(L"\uE000", CP_UTF8);
+        Json::Value value = this->RecreateJsonParameterObject(command_parameters);
+        value["value"].append(null_character);
+        value["action"] = "keys";
+        Json::UInt index = 0;
+        Json::Value actions(Json::arrayValue);
+        actions[index] = value;
+        status_code = executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
+        //status_code = executor.input_manager()->SendKeystrokes(browser_wrapper, key_array, true);
         response->SetSuccessResponse(Json::Value::null);
         return;
       } else {

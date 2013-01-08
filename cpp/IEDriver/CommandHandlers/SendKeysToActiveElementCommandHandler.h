@@ -39,40 +39,19 @@ class SendKeysToActiveElementCommandHandler : public IECommandHandler {
       response->SetErrorResponse(400, "Missing parameter: value");
       return;
     } else {
-      std::wstring keys = L"";
-      Json::Value key_array = value_parameter_iterator->second;
-      for (unsigned int i = 0; i < key_array.size(); ++i ) {
-        std::string key(key_array[i].asString());
-        keys.append(CA2W(key.c_str(), CP_UTF8));
-      }
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
       if (status_code != SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
-      if (executor.enable_native_events()) {
-        HWND window_handle = browser_wrapper->GetWindowHandle();
-        sendKeys(window_handle, keys.c_str(), executor.speed());
-      } else {
-          std::wstring script_source = L"(function() { return function(){" + 
-                                       atoms::asString(atoms::INPUTS) + 
-                                       L"; return webdriver.atoms.inputs.sendKeys(arguments[0], arguments[1], arguments[2]);" + 
-                                       L"};})();";
-
-          CComPtr<IHTMLDocument2> doc;
-          browser_wrapper->GetDocument(&doc);
-          Script script_wrapper(doc, script_source, 3);
-          
-          script_wrapper.AddNullArgument();
-          script_wrapper.AddArgument(executor.keyboard_state());
-          script_wrapper.AddArgument(keys);
-          int status_code = script_wrapper.Execute();
-          if (status_code == SUCCESS) {
-            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-            mutable_executor.set_keyboard_state(script_wrapper.result());
-          }
-      }
+      IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+      Json::Value value = this->RecreateJsonParameterObject(command_parameters);
+      value["action"] = "keys";
+      Json::UInt index = 0;
+      Json::Value actions(Json::arrayValue);
+      actions[index] = value;
+      mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
       response->SetSuccessResponse(Json::Value::null);
     }
   }

@@ -55,7 +55,7 @@ class ClickElementCommandHandler : public IECommandHandler {
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
       if (status_code == SUCCESS) {
-        if (executor.enable_native_events()) {
+        if (executor.input_manager()->enable_native_events()) {
           if (this->IsOptionElement(element_wrapper)) {
             std::string option_click_error = "";
             if (executor.allow_asynchronous_javascript()) {
@@ -74,7 +74,10 @@ class ClickElementCommandHandler : public IECommandHandler {
               return;
             }
           } else {
-            status_code = element_wrapper->Click(executor.scroll_behavior());
+            if (executor.input_manager()->require_window_focus()) {
+              executor.input_manager()->SetFocusToBrowser(browser_wrapper);
+            }
+            status_code = element_wrapper->Click(executor.input_manager()->scroll_behavior());
             browser_wrapper->set_wait_required(true);
             if (status_code != SUCCESS) {
               if (status_code == EELEMENTCLICKPOINTNOTSCROLLED) {
@@ -97,7 +100,7 @@ class ClickElementCommandHandler : public IECommandHandler {
           browser_wrapper->GetDocument(&doc);
           Script script_wrapper(doc, script_source, 2);
           script_wrapper.AddArgument(element_wrapper);
-          script_wrapper.AddArgument(executor.mouse_state());
+          script_wrapper.AddArgument(executor.input_manager()->mouse_state());
           status_code = script_wrapper.Execute();
           if (status_code != SUCCESS) {
             // This is a hack. We should change this when we can get proper error
@@ -108,7 +111,7 @@ class ClickElementCommandHandler : public IECommandHandler {
             return;
           } else {
             IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-            mutable_executor.set_mouse_state(script_wrapper.result());
+            mutable_executor.input_manager()->set_mouse_state(script_wrapper.result());
           }
         }
       } else {

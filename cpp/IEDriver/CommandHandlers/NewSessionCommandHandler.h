@@ -25,8 +25,9 @@
 #define INITIAL_BROWSER_URL_CAPABILITY "initialBrowserUrl"
 #define ELEMENT_SCROLL_BEHAVIOR_CAPABILITY "elementScrollBehavior"
 #define UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY "unexpectedAlertBehaviour"
-#define ENABLE_PERSISTENT_HOVER "enablePersistentHover"
-#define ENABLE_ELEMENT_CACHE_CLEANUP "enableElementCacheCleanup"
+#define ENABLE_PERSISTENT_HOVER_CAPABILITY "enablePersistentHover"
+#define ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY "enableElementCacheCleanup"
+#define REQUIRE_WINDOW_FOCUS_CAPABILITY "requireWindowFocus"
 
 namespace webdriver {
 
@@ -51,17 +52,25 @@ class NewSessionCommandHandler : public IECommandHandler {
       Json::Value ignore_zoom_setting = it->second.get(IGNORE_ZOOM_SETTING_CAPABILITY, false);
       mutable_executor.set_ignore_zoom_setting(ignore_zoom_setting.asBool());
       Json::Value enable_native_events = it->second.get(NATIVE_EVENTS_CAPABILITY, true);
-      mutable_executor.set_enable_native_events(enable_native_events.asBool());
+      mutable_executor.input_manager()->set_enable_native_events(enable_native_events.asBool());
       Json::Value initial_url = it->second.get(INITIAL_BROWSER_URL_CAPABILITY, "");
       mutable_executor.set_initial_browser_url(initial_url.asString());
       Json::Value scroll_behavior = it->second.get(ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, 0);
-      mutable_executor.set_scroll_behavior(static_cast<ELEMENT_SCROLL_BEHAVIOR>(scroll_behavior.asInt()));
+      mutable_executor.input_manager()->set_scroll_behavior(static_cast<ELEMENT_SCROLL_BEHAVIOR>(scroll_behavior.asInt()));
       Json::Value unexpected_alert_behavior = it->second.get(UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY, DISMISS_UNEXPECTED_ALERTS);
       mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
-      Json::Value enable_persistent_hover = it->second.get(ENABLE_PERSISTENT_HOVER, true);
-      mutable_executor.set_enable_persistent_hover(enable_persistent_hover.asBool());
-      Json::Value enable_element_cache_cleanup = it->second.get(ENABLE_ELEMENT_CACHE_CLEANUP, true);
+      Json::Value enable_element_cache_cleanup = it->second.get(ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY, true);
       mutable_executor.set_enable_element_cache_cleanup(enable_element_cache_cleanup.asBool());
+      Json::Value require_window_focus = it->second.get(REQUIRE_WINDOW_FOCUS_CAPABILITY, false);
+      mutable_executor.input_manager()->set_require_window_focus(require_window_focus.asBool());
+      Json::Value enable_persistent_hover = it->second.get(ENABLE_PERSISTENT_HOVER_CAPABILITY, true);
+      if (require_window_focus.asBool() || !enable_native_events.asBool()) {
+        // Setting "require_window_focus" implies SendInput() API, and does not therefore require
+        // persistent hover. Likewise, not using native events requires no persistent hover either.
+        mutable_executor.set_enable_persistent_hover(false);
+      } else {
+        mutable_executor.set_enable_persistent_hover(enable_persistent_hover.asBool());
+      }
     }
     std::string create_browser_error_message = "";
     int result_code = mutable_executor.CreateNewBrowser(&create_browser_error_message);

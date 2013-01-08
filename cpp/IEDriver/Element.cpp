@@ -957,56 +957,113 @@ bool Element::IsAttachedToDom() {
   return false;
 }
 
-bool Element::GetDocumentDimensions(IHTMLDocument2* document, int* width, int* height) {
-  LOG(TRACE) << "Entering Element::GetDocumentDimensions";
-  CComVariant document_height;
-  CComVariant document_width;
-
-  CComQIPtr<IHTMLDocument5> html_document5(document);
-  if (!html_document5) {
-    LOG(WARN) << L"Unable to cast document to IHTMLDocument5. IE6 or greater is required.";
+bool Element::HasOnlySingleTextNodeChild() {
+  CComPtr<IHTMLDOMNode> element_node;
+  HRESULT hr = this->element_.QueryInterface<IHTMLDOMNode>(&element_node);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "QueryInterface for IHTMLDOMNode on element failed.";
     return false;
   }
 
-  CComBSTR compatibility_mode;
-  html_document5->get_compatMode(&compatibility_mode);
-
-  // In non-standards-compliant mode, the BODY element represents the canvas.
-  // In standards-compliant mode, the HTML element represents the canvas.
-  CComPtr<IHTMLElement> canvas_element;
-  if (compatibility_mode == L"BackCompat") {
-    document->get_body(&canvas_element);
-    if (!canvas_element) {
-      LOG(WARN) << "Unable to get canvas element from document in compatibility mode";
-      return false;
-    }
-  } else {
-    CComQIPtr<IHTMLDocument3> html_document3(document);
-    if (!html_document3) {
-      LOG(WARN) << L"Unable to get IHTMLDocument3 handle from document.";
-      return false;
-    }
-
-    // The root node should be the HTML element.
-    html_document3->get_documentElement(&canvas_element);
-    if (!canvas_element) {
-      LOG(WARN) << L"Could not retrieve document element.";
-      return false;
-    }
-
-    CComQIPtr<IHTMLHtmlElement> html_element(canvas_element);
-    if (!html_element) {
-      LOG(WARN) << L"Document element is not the HTML element.";
-      return false;
-    }
+  CComPtr<IDispatch> child_nodes_dispatch;
+  hr = element_node->get_childNodes(&child_nodes_dispatch);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Call to get_childNodes on element failed.";
+    return false;
   }
 
-  canvas_element->getAttribute(CComBSTR("scrollHeight"),
-                                0,
-                                &document_height);
-  canvas_element->getAttribute(CComBSTR("scrollWidth"), 0, &document_width);
-  *height = document_height.intVal;
-  *width = document_width.intVal;
+  CComPtr<IHTMLDOMChildrenCollection> child_nodes;
+  hr = child_nodes_dispatch.QueryInterface<IHTMLDOMChildrenCollection>(&child_nodes);
+
+  long length = 0;
+  hr = child_nodes->get_length(&length);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Call to get_length on child nodes collection failed.";
+    return false;
+  }
+
+  if (length > 1) {
+    CComPtr<IDispatch> child_dispatch;
+    hr = child_nodes->item(0, &child_dispatch);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Call to item(0) on child nodes collection failed.";
+      return false;
+    }
+
+    CComPtr<IHTMLDOMNode> child_node;
+    hr = child_dispatch.QueryInterface<IHTMLDOMNode>(&child_node);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "QueryInterface for IHTMLDOMNode on child node failed.";
+      return false;
+    }
+
+    long node_type = 0;
+    hr = child_node->get_nodeType(&node_type);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Call to get_nodeType on child node failed.";
+      return false;
+    }
+
+    if (node_type == 3) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Element::GetTextBoundaries(LocationInfo* text_info) {
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+  CComPtr<IHTMLElement> body_element;
+  HRESULT hr = doc->get_body(&body_element);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Call to get_body on document failed.";
+    return false;
+  }
+
+  CComPtr<IHTMLBodyElement> body;
+  hr = body_element.QueryInterface<IHTMLBodyElement>(&body);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "QueryInterface for IHTMLBodyElement on body element failed.";
+    return false;
+  }
+
+  CComPtr<IHTMLTxtRange> range;
+  hr = body->createTextRange(&range);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Call to createTextRange on body failed.";
+    return false;
+  }
+
+  hr = range->moveToElementText(this->element_);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Call to moveToElementText on range failed.";
+    return false;
+  }
+
+  CComPtr<IHTMLTextRangeMetrics> range_metrics;
+  hr = range.QueryInterface<IHTMLTextRangeMetrics>(&range_metrics);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "QueryInterface for IHTMLTextRangeMetrics on range failed.";
+    return false;
+  }
+
+  long height = 0;
+  hr = range_metrics->get_boundingHeight(&height);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Call to get_boundingHeight on range metrics failed.";
+    return false;
+  }
+
+  long width = 0;
+  hr = range_metrics->get_boundingWidth(&width);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Call to get_boundingWidth on range metrics failed.";
+    return false;
+  }
+
+  text_info->height = height;
+  text_info->width = width;
   return true;
 }
 

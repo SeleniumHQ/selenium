@@ -52,7 +52,7 @@ class GetElementLocationOnceScrolledIntoViewCommandHandler : public IECommandHan
       status_code = this->GetElement(executor, element_id, &element_wrapper);
       if (status_code == SUCCESS) {
         LocationInfo location = {};
-        status_code = element_wrapper->GetLocationOnceScrolledIntoView(executor.scroll_behavior(),
+        status_code = element_wrapper->GetLocationOnceScrolledIntoView(executor.input_manager()->scroll_behavior(),
                                                                        &location);
         if (status_code == SUCCESS) {
           CComPtr<IHTMLDocument2> doc;

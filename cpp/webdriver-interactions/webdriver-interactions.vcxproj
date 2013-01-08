@@ -166,6 +166,7 @@
     <ClInclude Include="interaction_utils.h" />
     <ClInclude Include="interactions.h" />
     <ClInclude Include="interactions_common.h" />
+    <ClInclude Include="keycodes.h" />
     <ClInclude Include="logging.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

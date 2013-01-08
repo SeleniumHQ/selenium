@@ -43,6 +43,10 @@ class Element {
   int GetAttributeValue(const std::string& attribute_name,
                         std::string* attribute_value,
                         bool* value_is_null);
+
+  bool HasOnlySingleTextNodeChild(void);
+  bool GetTextBoundaries(LocationInfo* text_info);
+
   int IsDisplayed(bool* result);
   bool IsEnabled(void);
   bool IsSelected(void);
@@ -66,7 +70,6 @@ class Element {
   int GetDocumentFromWindow(IHTMLWindow2* parent_window,
                             IHTMLDocument2** parent_doc);
   bool IsInline(void);
-  bool GetDocumentDimensions(IHTMLDocument2* document, int* width, int* height);
   static bool Element::RectHasNonZeroDimensions(const CComPtr<IHTMLRect> rect);
 
   std::string element_id_;

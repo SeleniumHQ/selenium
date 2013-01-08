@@ -64,7 +64,7 @@ class SubmitElementCommandHandler : public IECommandHandler {
 
           if (_wcsicmp(L"submit", type.c_str()) == 0 ||
               _wcsicmp(L"image", type.c_str()) == 0) {
-            element_wrapper->Click(executor.scroll_behavior());
+            element_wrapper->Click(executor.input_manager()->scroll_behavior());
             handled_with_native_events = true;
           }
         }

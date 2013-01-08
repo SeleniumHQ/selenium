@@ -25,7 +25,7 @@ namespace webdriver {
 class ElementRepository {
  public:
   ElementRepository(void);
-  ~ElementRepository(void);
+  virtual ~ElementRepository(void);
   int GetManagedElement(const std::string& element_id,
                         ElementHandle* element_wrapper) const;
   void AddManagedElement(BrowserHandle current_browser,

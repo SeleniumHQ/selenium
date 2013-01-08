@@ -50,5 +50,8 @@
     <ClInclude Include="event_firing_thread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="keycodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

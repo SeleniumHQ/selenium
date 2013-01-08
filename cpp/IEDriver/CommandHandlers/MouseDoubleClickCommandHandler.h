@@ -40,28 +40,12 @@ class MouseDoubleClickCommandHandler : public IECommandHandler {
       response->SetErrorResponse(status_code, "Unable to get browser");
       return;
     }
-
-    if (executor.enable_native_events()) {
-      HWND browser_window_handle = browser_wrapper->GetWindowHandle();
-      doubleClickAt(browser_window_handle, executor.last_known_mouse_x(), executor.last_known_mouse_y());
-    } else {
-      std::wstring script_source = L"(function() { return function(){" + 
-                                   atoms::asString(atoms::INPUTS) + 
-                                   L"; return webdriver.atoms.inputs.doubleClick(arguments[0]);" + 
-                                   L"};})();";
-
-      CComPtr<IHTMLDocument2> doc;
-      browser_wrapper->GetDocument(&doc);
-      Script script_wrapper(doc, script_source, 1);
-      script_wrapper.AddArgument(executor.mouse_state());
-      status_code = script_wrapper.Execute();
-      if (status_code == SUCCESS) {
-        IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-        mutable_executor.set_mouse_state(script_wrapper.result());
-      } else {
-        LOG(WARN) << "Unable to execute js to double click";
-      }
-    }
+    Json::Value value = this->RecreateJsonParameterObject(command_parameters);
+    value["action"] = "doubleclick";
+    Json::UInt index = 0;
+    Json::Value actions(Json::arrayValue);
+    actions[index] = value;
+    executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
     response->SetSuccessResponse(Json::Value::null);
   }
 };

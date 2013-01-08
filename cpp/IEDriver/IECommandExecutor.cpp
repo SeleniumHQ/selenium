@@ -120,7 +120,6 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->initial_browser_url_ = "";
   this->ignore_protected_mode_settings_ = false;
   this->ignore_zoom_setting_ = false;
-  this->enable_native_events_ = true;
   this->enable_element_cache_cleanup_ = true;
   this->enable_persistent_hover_ = true;
   this->unexpected_alert_behavior_ = IGNORE_UNEXPECTED_ALERTS;
@@ -128,16 +127,9 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->implicit_wait_timeout_ = 0;
   this->async_script_timeout_ = -1;
   this->page_load_timeout_ = -1;
-  this->last_known_mouse_x_ = 0;
-  this->last_known_mouse_y_ = 0;
 
-  CComVariant keyboard_state;
-  keyboard_state.vt = VT_NULL;
-  this->keyboard_state_ = keyboard_state;
-
-  CComVariant mouse_state;
-  mouse_state.vt = VT_NULL;
-  this->mouse_state_ = mouse_state;
+  this->input_manager_ = new InputManager();
+  this->input_manager_->Initialize(&this->managed_elements_);
 
   // Only execute atoms on a separate thread for IE 9 or below.
   // Attempting this on IE 10 crashes unpredictably at the moment
@@ -153,6 +145,7 @@ LRESULT IECommandExecutor::OnClose(UINT uMsg,
                                    BOOL& bHandled) {
   LOG(TRACE) << "Entering IECommandExecutor::OnClose";
   this->managed_elements_.Clear();
+  delete this->input_manager_;
   this->DestroyWindow();
   return 0;
 }

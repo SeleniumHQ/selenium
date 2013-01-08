@@ -43,6 +43,7 @@ class IECommandHandler : public CommandHandler<IECommandExecutor> {
   int GetElement(const IECommandExecutor& executor,
                  const std::string& element_id,
                  ElementHandle* element_wrapper);
+  Json::Value RecreateJsonParameterObject(const ParametersMap& command_parameters);
 };
 
 typedef std::tr1::shared_ptr<IECommandHandler> CommandHandlerHandle;
