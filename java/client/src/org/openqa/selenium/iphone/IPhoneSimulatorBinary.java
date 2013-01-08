@@ -26,10 +26,14 @@ import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.internal.CircularOutputStream;
 
+import com.google.common.io.Resources;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
 
 /**
  * Handles launching the iWebDriver app on the iPhone Simulator in a subprocess.
@@ -71,10 +75,12 @@ public class IPhoneSimulatorBinary {
     String filename = "ios-sim";
     File parentDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "libs");
     try {
-      FileHandler.copyResource(parentDir, IPhoneSimulatorBinary.class, filename);
-      File file = new File(parentDir, filename);
-      FileHandler.makeExecutable(file);
-      return file.getAbsolutePath();
+      File destination = new File(parentDir, filename);
+      FileOutputStream outputStream = new FileOutputStream(destination);
+      URL resource = Resources.getResource(IPhoneSimulatorBinary.class.getPackage().getName().replace('.', '/') + '/' + filename);
+      Resources.copy(resource, outputStream);
+      FileHandler.makeExecutable(destination);
+      return destination.getAbsolutePath();
     } catch (IOException e) {
       throw new WebDriverException(e);
     }

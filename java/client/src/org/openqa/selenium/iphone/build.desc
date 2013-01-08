@@ -6,13 +6,10 @@ java_library(name = "iphone",
     "//third_party/java/commons-exec",
   ],
   embedded = [
-    ":mac"
+    "//third_party/objc/iphonesim:iphonesim-binary",
   ])
 
-folder(name = "mac",
-  deps = [
-    "//third_party/objc/iphonesim:iphonesim-binary"
-  ],
-  outs = [
-    "mac/ios-sim",
-  ])
+java_binary(name = "bin",
+  deps = [":iphone"],
+  main_class = "org.openqa.selenium.iphone.IPhoneSimulatorBinary"
+)

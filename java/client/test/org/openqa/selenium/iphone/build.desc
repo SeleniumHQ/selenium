@@ -22,8 +22,8 @@ java_test(name = "test",
     "//third_party/java/commons-exec",
     "//third_party/java/junit",
   ],
-  resources = [
-    {"//third_party/objc/iphonesim:iphonesim-binary" : "mac/ios-sim"},
+  embedded = [
+    "//third_party/objc/iphonesim:iphonesim-binary",
   ])
 
 java_test(name = "test_deployed",
