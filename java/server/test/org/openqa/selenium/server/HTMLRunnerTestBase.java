@@ -59,7 +59,7 @@ public abstract class HTMLRunnerTestBase implements HTMLResultsListener {
     launcher = new HTMLLauncher(server);
     server.start();
     browserURL = "http://localhost:" + server.getPort();
-    String testURL = browserURL + "/selenium-server/tests/" + suiteName;
+    String testURL = browserURL + "/selenium-server/org/openqa/selenium/tests/" + suiteName;
     int timeout = 60 * 15; // fifteen minutes
     String result =
         launcher.runHTMLSuite(browser, browserURL, testURL, output, timeout, multiWindow);

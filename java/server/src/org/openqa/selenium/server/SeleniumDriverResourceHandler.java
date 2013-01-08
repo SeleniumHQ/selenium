@@ -153,9 +153,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         handleBrowserResponse(req, res, sessionId, logging, jsState,
             justLoaded, retrying, closing);
       } else if (-1 != req.getRequestURL().indexOf(
-          "selenium-server/core/scripts/user-extensions.js")
-          ||
-          -1 != req.getRequestURL().indexOf("selenium-server/tests/html/tw.jpg")) {
+          "selenium-server/core/scripts/user-extensions.js")) {
         // ignore failure to find these items...
       } else {
         log.fine("Not handling: " + req.getRequestURL() + "?" + req.getQuery());

@@ -406,7 +406,7 @@ public class SeleniumServer implements SslCertificateGenerator {
     constraint.addRole("user");
     constraint.setAuthenticate(true);
 
-    context.addSecurityConstraint("/tests/html/basicAuth/*", constraint);
+    context.addSecurityConstraint("/org/openqa/selenium/tests/html/basicAuth/*", constraint);
     HashUserRealm realm = new HashUserRealm("MyRealm");
     realm.put("alice", "foo");
     realm.addUserToRole("alice", "user");

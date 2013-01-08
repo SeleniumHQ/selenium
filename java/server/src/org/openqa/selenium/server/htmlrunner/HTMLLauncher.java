@@ -188,10 +188,10 @@ public class HTMLLauncher implements HTMLResultsListener {
         browser.startsWith("*iehta") || browser.startsWith("*iexplore")) {
       suiteURL =
           "http://localhost:" + remoteControl.getConfiguration().getPortDriversShouldContact() +
-              "/selenium-server/tests/" + suiteFile.getName();
+              "/selenium-server/org/openqa/selenium/tests/" + suiteFile.getName();
     } else {
       suiteURL =
-          Urls.toProtocolHostAndPort(browserURL) + "/selenium-server/tests/" + suiteFile.getName();
+          Urls.toProtocolHostAndPort(browserURL) + "/selenium-server/org/openqa/selenium/tests/" + suiteFile.getName();
     }
     return runHTMLSuite(browser, browserURL, suiteURL, outputFile, timeoutInSeconds, multiWindow,
         "info");

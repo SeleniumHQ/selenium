@@ -1,7 +1,7 @@
 
 java_binary(name = "server-with-tests",
   main_class = "org.openqa.grid.selenium.GridLauncher",
-  resources = [
+  embedded = [
     "tests",
   ],
   deps = [
