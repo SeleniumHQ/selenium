@@ -96,13 +96,11 @@ namespace OpenQA.Selenium.IE
         private const string EnablePersistentHoverCapability = "enablePersistentHover";
         private const string ElementScrollBehaviorCapability = "elementScrollBehavior";
         private const string UnexpectedAlertBehaviorCapability = "unexpectedAlertBehaviour";
-        private const string RequireWindowFocusCapability = "requireWindowFocus";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
         private bool enableNativeEvents = true;
         private bool enablePersistentHover = true;
-        private bool requireWindowFocus = true;
         private string initialBrowserUrl = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
         private InternetExplorerUnexpectedAlertBehavior unexpectedAlertBehavior = InternetExplorerUnexpectedAlertBehavior.Default;
@@ -133,16 +131,6 @@ namespace OpenQA.Selenium.IE
         {
             get { return this.enableNativeEvents; }
             set { this.enableNativeEvents = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the driver will attempt to bring the IE window to the
-        /// foreground before interacting with it.
-        /// </summary>
-        public bool RequireWindowFocus
-        {
-            get { return this.requireWindowFocus; }
-            set { this.requireWindowFocus = value; }
         }
 
         /// <summary>
@@ -211,8 +199,7 @@ namespace OpenQA.Selenium.IE
                 capabilityName == InitialBrowserUrlCapability ||
                 capabilityName == ElementScrollBehaviorCapability ||
                 capabilityName == UnexpectedAlertBehaviorCapability ||
-                capabilityName == EnablePersistentHoverCapability ||
-                capabilityName == RequireWindowFocusCapability)
+                capabilityName == EnablePersistentHoverCapability)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
@@ -236,7 +223,6 @@ namespace OpenQA.Selenium.IE
         {
             DesiredCapabilities capabilities = DesiredCapabilities.InternetExplorer();
             capabilities.SetCapability(EnableNativeEventsCapability, this.enableNativeEvents);
-            capabilities.SetCapability(RequireWindowFocusCapability, this.requireWindowFocus);
             capabilities.SetCapability(EnablePersistentHoverCapability, this.enablePersistentHover);
             if (this.ignoreProtectedModeSettings)
             {
