@@ -92,7 +92,7 @@ public class DisplayHelpServlet extends HttpServlet {
     final Properties p = new Properties();
 
     InputStream stream =
-        Thread.currentThread().getContextClassLoader().getResourceAsStream("VERSION.txt");
+        Thread.currentThread().getContextClassLoader().getResourceAsStream("/org/openqa/selenium/server/VERSION.txt");
     if (stream == null) {
       log.severe("Couldn't determine version number");
       return;

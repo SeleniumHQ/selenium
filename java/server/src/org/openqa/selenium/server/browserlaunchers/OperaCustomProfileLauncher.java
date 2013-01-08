@@ -141,7 +141,8 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
   private File makeCustomProfile() throws IOException {
     customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
-    ResourceExtractor.extractResourcePath(getClass(), "/opera", customProfileDir);
+    ResourceExtractor.extractResourcePath(getClass(), "/org/openqa/selenium/server/opera",
+        customProfileDir);
 
     if (simple) return customProfileDir;
 

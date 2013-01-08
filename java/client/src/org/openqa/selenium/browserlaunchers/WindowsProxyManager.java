@@ -570,7 +570,7 @@ public class WindowsProxyManager {
     }
     try {
       FileHandler.copyResource(customProxyPACDir, WindowsProxyManager.class,
-          "hudsuckr/hudsuckr.exe");
+          "/org/openqa/selenium/server/hudsuckr/hudsuckr.exe");
     } catch (IOException e) {
       throw new RuntimeException("Bug extracting hudsuckr", e);
     }

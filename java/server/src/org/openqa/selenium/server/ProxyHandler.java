@@ -634,7 +634,7 @@ public class ProxyHandler extends AbstractHttpHandler {
       root.delete();
       root.mkdirs();
 
-      ResourceExtractor.extractResourcePath(getClass(), "/sslSupport", root);
+      ResourceExtractor.extractResourcePath(getClass(), "/org/openqa/selenium/server/sslSupport", root);
 
 
       KeyStoreManager mgr =

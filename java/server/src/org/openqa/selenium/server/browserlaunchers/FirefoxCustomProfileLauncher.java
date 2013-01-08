@@ -117,7 +117,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     if (firefoxProfileTemplate != null) {
       LauncherUtils.copyDirectory(firefoxProfileTemplate, customProfileDir);
     }
-    ResourceExtractor.extractResourcePath(getClass(), "/customProfileDirCUSTFF", customProfileDir);
+    ResourceExtractor.extractResourcePath(getClass(), "/org/openqa/selenium/server/customProfileDirCUSTFF", customProfileDir);
 
     // Make sure that cert8.db of firefoxProfileTemplate is stored into customProfileDir
     if (firefoxProfileTemplate != null) {
