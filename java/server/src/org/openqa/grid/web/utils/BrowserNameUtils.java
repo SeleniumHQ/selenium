@@ -114,13 +114,14 @@ public class BrowserNameUtils {
    */
   public static String getConsoleIconPath(DesiredCapabilities cap, Registry registry) {
     String name = consoleIconName(cap, registry);
+    String path = "org/openqa/grid/images/";
     InputStream in =
         Thread.currentThread().getContextClassLoader()
-            .getResourceAsStream("images/" + name + ".png");
+            .getResourceAsStream(path + name + ".png");
     if (in == null) {
       return null;
     } else {
-      return "/grid/resources/images/" + name + ".png";
+      return "/grid/resources/" + path + name + ".png";
     }
 
   }

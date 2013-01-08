@@ -4,7 +4,7 @@ java_library(name = "grid",
     "internal/**/*.java",
     "web/**/*.java",
   ],
-  resources = [
+  embedded = [
     "images/",
   ],
   deps = [
