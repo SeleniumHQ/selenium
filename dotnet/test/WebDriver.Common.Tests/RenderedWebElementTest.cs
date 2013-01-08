@@ -117,12 +117,16 @@ namespace OpenQA.Selenium
             Assert.IsTrue(isShown, "The element and the enclosing map should be considered shown.");
         }
 
-        //[Test]
-        //[Category("Javascript")]
+        [Test]
+        [Category("Javascript")]
         //[Ignore]
         public void CanClickOnSuckerFishMenuItem()
         {
             driver.Url = javascriptPage;
+
+            // Move to a different element to make sure the mouse is not over the
+            // element with id 'item1' (from a previous test).
+            new Actions(driver).MoveToElement(driver.FindElement(By.Id("dynamo"))).Build().Perform();
 
             IWebElement element = driver.FindElement(By.Id("menu1"));
             if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
@@ -131,11 +135,17 @@ namespace OpenQA.Selenium
             }
 
             IWebElement target = driver.FindElement(By.Id("item1"));
-            Assert.IsTrue(target.Displayed);
+            Assert.AreEqual(string.Empty, target.Text);
+            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
+            new Actions(driver).MoveToElement(element).Build().Perform();
+
+            // Intentionally wait to make sure hover persists.
+            System.Threading.Thread.Sleep(2000);
+
             target.Click();
 
-            String text = driver.FindElement(By.Id("result")).Text;
-            Assert.IsTrue(text.Contains("item 1"));
+            IWebElement result = driver.FindElement(By.Id("result"));
+            WaitFor(() => { return result.Text.Contains("item 1"); });
         }
 
         [Test]
