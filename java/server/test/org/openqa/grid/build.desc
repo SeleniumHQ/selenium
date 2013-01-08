@@ -4,8 +4,9 @@ java_test(name = "test",
     "internal/**/*.java",
     "plugin/**/*.java",
   ],
-  resources = [
-    "internal/configuration/*.yml",
+  embedded = [
+    "internal/configuration/grid_configuration_test1.yml",
+    "internal/configuration/grid_configuration_test2.yml",
   ],
   deps = [
     "//java/server/src/org/openqa/grid",
