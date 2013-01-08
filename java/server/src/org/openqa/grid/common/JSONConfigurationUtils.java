@@ -39,7 +39,8 @@ public class JSONConfigurationUtils {
    * @throws JSONException
    */
   public static JSONObject loadJSON(String resource) {
-    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+        JSONConfigurationUtils.class.getPackage().getName().replace('.', '/') + '/' + resource);
 
     if (in == null) {
       try {

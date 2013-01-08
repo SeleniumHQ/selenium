@@ -1,8 +1,8 @@
 
 java_library(name = "common",
   srcs = [ "**/*.java" ],
-  resources = [
-    "defaults/",
+  embedded = [
+    "defaults",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/net",
