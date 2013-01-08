@@ -83,7 +83,7 @@ class visibility_of(object):
     def __init__(self, element):
         self.element = element
 
-    def __call__(self, ignored):    
+    def __call__(self, ignored):
         return _element_if_visible(self.element)
 
 def _element_if_visible(element):
@@ -110,12 +110,12 @@ class text_to_be_present_in_element(object):
         self.locator = locator
         self.text = text_
 
-    def __call__(self, driver):     
+    def __call__(self, driver):
         try :
             element_text = _find_element(driver, self.locator).text
             return self.text in element_text
         except StaleElementReferenceException:
-            return False        
+            return False
 
 class text_to_be_present_in_element_value(object):
     """
@@ -161,7 +161,7 @@ class invisibility_of_element_located(object):
     def __init__(self, locator):
         self.locator = locator
 
-    def __call__(self, driver):    
+    def __call__(self, driver):
         try:
             return not _find_element(driver, self.locator).is_displayed()
         except (NoSuchElementException, StaleElementReferenceException):
@@ -178,7 +178,7 @@ class element_to_be_clickable(object):
     def __init__(self, locator):
         self.locator = locator
 
-    def __call__(self, driver):    
+    def __call__(self, driver):
         element = visibility_of_element_located(self.locator)(driver)
         if element and element.is_enabled():
             return element
@@ -229,7 +229,7 @@ class element_selection_state_to_be(object):
         self.element = element
         self.is_selected = is_selected
 
-    def __call__(self, ignored):     
+    def __call__(self, ignored):
         return self.element.is_selected() == self.is_selected
 
 class element_located_selection_state_to_be(object):
@@ -242,7 +242,7 @@ class element_located_selection_state_to_be(object):
         self.locator = locator
         self.is_selected = is_selected
 
-    def __call__(self, driver):    
+    def __call__(self, driver):
         try:
             element = _find_element(driver, self.locator)
             return element.is_selected() == self.is_selected
@@ -263,7 +263,7 @@ class alert_is_present(object):
             return False
 
 def _find_element(driver, by):
-    """ Looks up an element. Logs and re-raises WebDriverException if thrown. 
+    """ Looks up an element. Logs and re-raises WebDriverException if thrown.
     Method exists to gather data for
     http://code.google.com/p/selenium/issues/detail?id=1800
     """
@@ -272,7 +272,7 @@ def _find_element(driver, by):
     except NoSuchElementException as e:
         raise e
     except WebDriverException as e:
-        raise e  
+        raise e
 
 
 def _find_elements(driver, by):

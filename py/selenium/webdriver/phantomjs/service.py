@@ -27,10 +27,10 @@ class Service(object):
     def __init__(self, executable_path, port=0, service_args=None):
         """
         Creates a new instance of the Service
-        
+
         :Args:
          - executable_path : Path to PhantomJS binary
-         - port : Port the service is running on 
+         - port : Port the service is running on
          - service_args : A List of other command line options to pass to PhantomJS
         """
 
@@ -47,8 +47,8 @@ class Service(object):
 
     def start(self):
         """
-        Starts PhantomJS with GhostDriver. 
-        
+        Starts PhantomJS with GhostDriver.
+
         :Exceptions:
          - WebDriverException : Raised either when it can't start the service
            or when it can't connect to the service
@@ -64,7 +64,7 @@ class Service(object):
             time.sleep(1)
             if count == 30:
                  raise WebDriverException("Can not connect to GhostDriver")
-                
+
     @property
     def service_url(self):
         """
@@ -73,7 +73,7 @@ class Service(object):
         return "http://localhost:%d/wd/hub" % self.port
 
     def stop(self):
-        """ 
+        """
         Cleans up the process
         """
         if self._log:

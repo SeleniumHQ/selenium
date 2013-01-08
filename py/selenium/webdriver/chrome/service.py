@@ -29,7 +29,7 @@ class Service(object):
     def __init__(self, executable_path, port=0, service_args=None, log_path=None):
         """
         Creates a new instance of the Service
-        
+
         :Args:
          - executable_path : Path to the ChromeDriver
          - port : Port the service is running on
@@ -46,8 +46,8 @@ class Service(object):
 
     def start(self):
         """
-        Starts the ChromeDriver Service. 
-        
+        Starts the ChromeDriver Service.
+
         :Exceptions:
          - WebDriverException : Raised either when it can't start the service
            or when it can't connect to the service
@@ -68,7 +68,7 @@ class Service(object):
             time.sleep(1)
             if count == 30:
                  raise WebDriverException("Can not connect to the ChromeDriver")
-                
+
     @property
     def service_url(self):
         """
@@ -77,7 +77,7 @@ class Service(object):
         return "http://localhost:%d" % self.port
 
     def stop(self):
-        """ 
+        """
         Tells the ChromeDriver to stop and cleans up the process
         """
         #If its dead dont worry
@@ -90,10 +90,10 @@ class Service(object):
         count = 0
         while utils.is_connectable(self.port):
             if count == 30:
-               break 
+               break
             count += 1
             time.sleep(1)
-        
+
         #Tell the Server to properly die in case
         try:
             if self.process:

@@ -52,7 +52,7 @@ class WebDriver(RemoteWebDriver):
                 desired_capabilities=desired_capabilities)
         except:
             self.quit()
-            raise 
+            raise
 
     def quit(self):
         """
