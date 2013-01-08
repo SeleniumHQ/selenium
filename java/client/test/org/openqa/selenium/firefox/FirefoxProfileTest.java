@@ -151,7 +151,7 @@ public class FirefoxProfileTest {
   @Test
   public void shouldInstallExtensionUsingClasspath() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
-    profile.addExtension(FirefoxProfileTest.class, "/resource/firebug-1.5.0-fx.xpi");
+    profile.addExtension(FirefoxProfileTest.class, "/org/openqa/selenium/testing/drivers/firebug-1.5.0-fx.xpi");
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
     assertTrue(extensionDir.exists());

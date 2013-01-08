@@ -14,8 +14,8 @@ java_library(name = "drivers",
     "WebDriverBuilder.java",
     "*Supplier.java",
   ],
-  resources = [
-    {"//third_party/firebug" : "resource/firebug-1.5.0-fx.xpi"}
+  embedded = [
+    "//third_party/firebug",
   ],
   deps = [
     ":browser",
