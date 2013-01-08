@@ -59,7 +59,7 @@ public class LauncherUtils {
     if (customProfileDir.exists()) {
       LauncherUtils.recursivelyDeleteDir(customProfileDir);
     }
-    customProfileDir.mkdir();
+    customProfileDir.mkdirs();
     return customProfileDir;
   }
 
