@@ -77,10 +77,14 @@ public class IPhoneSimulatorBinary {
     try {
       File destination = new File(parentDir, filename);
       FileOutputStream outputStream = new FileOutputStream(destination);
-      URL resource = Resources.getResource(IPhoneSimulatorBinary.class.getPackage().getName().replace('.', '/') + '/' + filename);
-      Resources.copy(resource, outputStream);
-      FileHandler.makeExecutable(destination);
-      return destination.getAbsolutePath();
+      try {
+        URL resource = Resources.getResource(IPhoneSimulatorBinary.class.getPackage().getName().replace('.', '/') + '/' + filename);
+        Resources.copy(resource, outputStream);
+        FileHandler.makeExecutable(destination);
+        return destination.getAbsolutePath();
+      } finally {
+        outputStream.close();
+      }
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
