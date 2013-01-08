@@ -295,60 +295,6 @@ class ScreenshotCommandHandler : public IECommandHandler {
     *height = window_rect.bottom - window_rect.top;
   }
 
-  HRESULT GetDocumentDimensions(IHTMLDocument2* document,
-                                int* width,
-                                int* height) {
-    CComVariant document_height;
-    CComVariant document_width;
-
-    CComQIPtr<IHTMLDocument5> html_document5(document);
-    if (!html_document5) {
-      LOG(WARN) << L"Unable to cast document to IHTMLDocument5. IE6 or greater is required.";
-      return E_FAIL;
-    }
-
-    CComBSTR compatibility_mode;
-    html_document5->get_compatMode(&compatibility_mode);
-
-    // In non-standards-compliant mode, the BODY element represents the canvas.
-    // In standards-compliant mode, the HTML element represents the canvas.
-    CComPtr<IHTMLElement> canvas_element;
-    if (compatibility_mode == L"BackCompat") {
-      document->get_body(&canvas_element);
-      if (!canvas_element) {
-        LOG(WARN) << "Unable to get canvas element from document in compatibility mode";
-        return E_FAIL;
-      }
-    } else {
-      CComQIPtr<IHTMLDocument3> html_document3(document);
-      if (!html_document3) {
-        LOG(WARN) << L"Unable to get IHTMLDocument3 handle from document.";
-        return E_FAIL;
-      }
-
-      // The root node should be the HTML element.
-      html_document3->get_documentElement(&canvas_element);
-      if (!canvas_element) {
-        LOG(WARN) << L"Could not retrieve document element.";
-        return E_FAIL;
-      }
-
-      CComQIPtr<IHTMLHtmlElement> html_element(canvas_element);
-      if (!html_element) {
-        LOG(WARN) << L"Document element is not the HTML element.";
-        return E_FAIL;
-      }
-    }
-
-    canvas_element->getAttribute(CComBSTR("scrollHeight"),
-                                 0,
-                                 &document_height);
-    canvas_element->getAttribute(CComBSTR("scrollWidth"), 0, &document_width);
-    *height = document_height.intVal;
-    *width = document_width.intVal;
-    return S_OK;
-  }
-
   void InstallWindowsHook() {
     HINSTANCE instance_handle = _AtlBaseModule.GetModuleInstance();
     HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(::GetProcAddress(instance_handle,

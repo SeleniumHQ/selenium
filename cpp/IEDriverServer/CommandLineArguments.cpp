@@ -31,6 +31,7 @@ std::string CommandLineArguments::GetValue(std::string arg_name,
 }
 
 void CommandLineArguments::ParseArguments(int argc, _TCHAR* argv[]) {
+  this->is_help_requested_ = false;
   std::map<std::string, std::string> args;
   for (int i = 1; i < argc; ++i) {
     std::wstring raw_arg(argv[i]);
@@ -49,6 +50,9 @@ void CommandLineArguments::ParseArguments(int argc, _TCHAR* argv[]) {
     // coerce all argument names to lowercase, making argument names
     // case-insensitive.
     std::transform(arg_name.begin(), arg_name.end(), arg_name.begin(), tolower);
+    if (arg_name == "?" || arg_name == "h" || arg_name == "help") {
+      this->is_help_requested_ = true;
+    }
     this->args_map_[arg_name] = arg_value;
   }
 }
@@ -62,4 +66,3 @@ int CommandLineArguments::GetSwitchDelimiterLength(std::wstring arg) {
 
   return 0;
 }
-

@@ -28,11 +28,13 @@ class CommandLineArguments {
 
   std::string GetValue(std::string arg_name,
                        std::string default_value);
+  bool is_help_requested (void) const { return this->is_help_requested_; }
 
  private:
   void ParseArguments(int argc, _TCHAR* argv[]);
   int GetSwitchDelimiterLength(std::wstring arg);
 
+  bool is_help_requested_;
   std::map<std::string, std::string> args_map_;
 };
 
