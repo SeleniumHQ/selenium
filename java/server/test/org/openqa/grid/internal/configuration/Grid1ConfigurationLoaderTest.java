@@ -30,8 +30,8 @@ public class Grid1ConfigurationLoaderTest {
   @Test
   public void loadGrid1Config() {
     GridHubConfiguration config = new GridHubConfiguration();
-    config.loadFromGridYml(this.getClass().getPackage().getName().replace('.', '/') +
-        "/grid_configuration_test1.yml");
+    String res = this.getClass().getPackage().getName().replace('.', '/')+"/grid_configuration_test1.yml";
+    config.loadFromGridYml(res);
 
     // The values in the config file are in seconds, but we use milliseconds
     // internally, so make sure they get converted.
@@ -41,14 +41,13 @@ public class Grid1ConfigurationLoaderTest {
     Assert.assertEquals(300000, config.getTimeout());
     Assert.assertEquals(180000, config.getCleanupCycle());
     Assert.assertEquals("*firefox", config.getGrid1Mapping().get("Firefox on OS X"));
-
   }
 
   @Test
   public void loadCustomMapping() {
     GridHubConfiguration config = new GridHubConfiguration();
     config.loadFromGridYml(this.getClass().getPackage().getName().replace('.', '/') +
-        "grid_configuration_test2.yml");
+        "/grid_configuration_test2.yml");
 
     Assert.assertEquals("*firefox", config.getGrid1Mapping().get("Firefox 4; MacOS X: 10.6.7"));
     Assert.assertEquals("*iexplorecustom",
