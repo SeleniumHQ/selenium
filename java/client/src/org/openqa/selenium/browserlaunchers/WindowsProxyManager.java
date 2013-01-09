@@ -564,7 +564,7 @@ public class WindowsProxyManager {
   }
 
   private File extractHudsuckr() {
-    File hudsuckr = new File(customProxyPACDir, "hudsuckr/hudsuckr.exe");
+    File hudsuckr = new File(customProxyPACDir, "hudsuckr.exe");
     if (hudsuckr.exists()) {
       return hudsuckr;
     }
