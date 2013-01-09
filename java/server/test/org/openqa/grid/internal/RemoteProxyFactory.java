@@ -61,8 +61,10 @@ public class RemoteProxyFactory {
    * @return
    */
   public static RemoteProxy getNewBasicRemoteProxy(Map<String, Object> cap, String url,
-      Registry registry) {
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-host","localhost");
+                                                   Registry registry) {
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-host", "localhost",
+                                                        "-" + RegistrationRequest.HUB_HOST,
+                                                        "localhost");
     req.getCapabilities().clear();
     req.addDesiredCapability(cap);
     req.getConfiguration().put(RegistrationRequest.REMOTE_HOST, url);
@@ -82,7 +84,9 @@ public class RemoteProxyFactory {
   public static RemoteProxy getNewBasicRemoteProxy(List<Map<String, Object>> caps, String url,
       Registry registry) {
 
-    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-host","localhost");
+    RegistrationRequest req = RegistrationRequest.build("-role", "webdriver","-host","localhost",
+                                                        "-" + RegistrationRequest.HUB_HOST,
+                                                        "localhost");
     req.getCapabilities().clear();
     for (Map<String, Object> c : caps) {
       req.addDesiredCapability(c);

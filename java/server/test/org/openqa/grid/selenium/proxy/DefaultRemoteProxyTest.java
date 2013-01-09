@@ -28,6 +28,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.grid.common.RegistrationRequest.ID;
 
 
 public class DefaultRemoteProxyTest {
@@ -35,6 +36,7 @@ public class DefaultRemoteProxyTest {
   @Test(expected = IllegalArgumentException.class)
   public void invalidNodePollingValue() {
     Map<String, Object> config = new HashMap<String, Object>();
+    config.put(ID, "abc");
     config.put(RegistrationRequest.NODE_POLLING, "abc");
 
     RegistrationRequest req = new RegistrationRequest();
@@ -46,6 +48,7 @@ public class DefaultRemoteProxyTest {
   @Test(expected = IllegalArgumentException.class)
   public void invalidUnregisterIfStillDownValue() {
     Map<String, Object> config = new HashMap<String, Object>();
+    config.put(ID, "abc");
     config.put(RegistrationRequest.NODE_POLLING, 100);
     config.put(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER, "abc");
 
@@ -60,6 +63,7 @@ public class DefaultRemoteProxyTest {
     Registry registry = Registry.newInstance();
     registry.getConfiguration().getAllParams().put(RegistrationRequest.TIME_OUT, 1);
     RegistrationRequest req = RegistrationRequest.build("-role", "webdriver", "-A", "valueA");
+    req.getConfiguration().put(ID, "abc");
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, DefaultRemoteProxy.class.getName());
 
     BaseRemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
