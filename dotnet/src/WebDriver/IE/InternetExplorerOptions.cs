@@ -96,10 +96,12 @@ namespace OpenQA.Selenium.IE
         private const string EnablePersistentHoverCapability = "enablePersistentHover";
         private const string ElementScrollBehaviorCapability = "elementScrollBehavior";
         private const string UnexpectedAlertBehaviorCapability = "unexpectedAlertBehaviour";
+        private const string RequireWindowFocusCapability = "requireWindowFocus";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
         private bool enableNativeEvents = true;
+        private bool requireWindowFocus;
         private bool enablePersistentHover = true;
         private string initialBrowserUrl = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
@@ -131,6 +133,15 @@ namespace OpenQA.Selenium.IE
         {
             get { return this.enableNativeEvents; }
             set { this.enableNativeEvents = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to require the browser window to have focus before interacting with elements.
+        /// </summary>
+        public bool RequireWindowFocus
+        {
+            get { return this.requireWindowFocus; }
+            set { this.requireWindowFocus = value; }
         }
 
         /// <summary>
@@ -199,7 +210,8 @@ namespace OpenQA.Selenium.IE
                 capabilityName == InitialBrowserUrlCapability ||
                 capabilityName == ElementScrollBehaviorCapability ||
                 capabilityName == UnexpectedAlertBehaviorCapability ||
-                capabilityName == EnablePersistentHoverCapability)
+                capabilityName == EnablePersistentHoverCapability ||
+                capabilityName == RequireWindowFocusCapability)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
