@@ -24,7 +24,7 @@ using System.Text;
 namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Representations of pressable keys that are not text keys for sending to the browser.
+    /// Representations of keys able to be pressed that are not text keys for sending to the browser.
     /// </summary>
     public static class Keys
     {

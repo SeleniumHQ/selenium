@@ -66,7 +66,7 @@ namespace OpenQA.Selenium.Chrome
 
         #region Constructors
         /// <summary>
-        /// Initializes a new instance of the ChromeDriver class.
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class.
         /// </summary>
         public ChromeDriver()
             : this(new ChromeOptions())
@@ -74,7 +74,17 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Initializes a new instance of the ChromeDriver class using the specified path to the directory containing ChromeDriver.exe.
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified options.
+        /// </summary>
+        /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
+        public ChromeDriver(ChromeOptions options)
+            : this(ChromeDriverService.CreateDefaultService(), options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified path 
+        /// to the directory containing ChromeDriver.exe.
         /// </summary>
         /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
         public ChromeDriver(string chromeDriverDirectory)
@@ -83,26 +93,19 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Initializes a new instance of the ChromeDriver class using the specified options.
-        /// </summary>
-        /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
-        public ChromeDriver(ChromeOptions options)
-            : this(ChromeDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60))
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the ChromeDriver class using the specified path to the directory containing ChromeDriver.exe and options.
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified path
+        /// to the directory containing ChromeDriver.exe and options.
         /// </summary>
         /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
         /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
         public ChromeDriver(string chromeDriverDirectory, ChromeOptions options)
-            : this(chromeDriverDirectory, options, TimeSpan.FromSeconds(60))
+            : this(chromeDriverDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the ChromeDriver class using the specified path to the directory containing ChromeDriver.exe, command timeout, and options.
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified path
+        /// to the directory containing ChromeDriver.exe, options, and command timeout.
         /// </summary>
         /// <param name="chromeDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
         /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
@@ -113,12 +116,23 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Initializes a new instance of the ChromeDriver class using the specified <see cref="ChromeDriverService"/>.
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified 
+        /// <see cref="ChromeDriverService"/> and options.
+        /// </summary>
+        /// <param name="service">The <see cref="ChromeDriverService"/> to use.</param>
+        /// <param name="options">The <see cref="ChromeOptions"/> used to initialize the driver.</param>
+        public ChromeDriver(ChromeDriverService service, ChromeOptions options)
+            : this(service, options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified <see cref="ChromeDriverService"/>.
         /// </summary>
         /// <param name="service">The <see cref="ChromeDriverService"/> to use.</param>
         /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        public ChromeDriver(DriverService service, ChromeOptions options, TimeSpan commandTimeout)
+        public ChromeDriver(ChromeDriverService service, ChromeOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
         {
         }

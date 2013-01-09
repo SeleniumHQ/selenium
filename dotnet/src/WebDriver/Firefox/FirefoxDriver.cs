@@ -144,7 +144,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
         /// to be used in starting Firefox.</param>
         public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile)
-            : this(binary, profile, TimeSpan.FromSeconds(60))
+            : this(binary, profile, RemoteWebDriver.DefaultCommandTimeout)
         {
         }
 
@@ -227,7 +227,7 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// In derived classes, the <see cref="PrepareEnvironment"/> method prepares the environment for test execution.
         /// </summary>
-        protected void PrepareEnvironment()
+        protected virtual void PrepareEnvironment()
         {
             // Does nothing, but provides a hook for subclasses to do "stuff"
         }

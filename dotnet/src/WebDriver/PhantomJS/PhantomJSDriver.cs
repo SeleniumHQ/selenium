@@ -68,7 +68,7 @@ namespace OpenQA.Selenium.PhantomJS
     public class PhantomJSDriver : RemoteWebDriver, ITakesScreenshot
     {
         /// <summary>
-        /// Initializes a new instance of the PhantomJSDriver class.
+        /// Initializes a new instance of the <see cref="PhantomJSDriver"/> class.
         /// </summary>
         public PhantomJSDriver()
             : this(new PhantomJSOptions())
@@ -76,7 +76,7 @@ namespace OpenQA.Selenium.PhantomJS
         }
 
         /// <summary>
-        /// Initializes a new instance of the PhantomJSDriver class with the desired options.
+        /// Initializes a new instance of the <see cref="PhantomJSDriver"/> class with the desired options.
         /// </summary>
         /// <param name="options">The <see cref="PhantomJSOptions"/> used to initialize the driver.</param>
         public PhantomJSDriver(PhantomJSOptions options)
@@ -85,7 +85,8 @@ namespace OpenQA.Selenium.PhantomJS
         }
 
         /// <summary>
-        /// Initializes a new instance of the PhantomJSDriver class using the specified path to the directory containing PhantomJS.exe.
+        /// Initializes a new instance of the <see cref="PhantomJSDriver"/> class using the specified path
+        /// to the directory containing PhantomJS.exe.
         /// </summary>
         /// <param name="phantomJSDriverServerDirectory">The full path to the directory containing PhantomJS.exe.</param>
         public PhantomJSDriver(string phantomJSDriverServerDirectory)
@@ -94,17 +95,19 @@ namespace OpenQA.Selenium.PhantomJS
         }
 
         /// <summary>
-        /// Initializes a new instance of the PhantomJSDriver class using the specified path to the directory containing IEDriverServer.exe and command timeout.
+        /// Initializes a new instance of the <see cref="PhantomJSDriver"/> class using the specified path
+        /// to the directory containing PhantomJS.exe and options.
         /// </summary>
         /// <param name="phantomJSDriverServerDirectory">The full path to the directory containing PhantomJS.exe.</param>
         /// <param name="options">The <see cref="PhantomJSOptions"/> used to initialize the driver.</param>
         public PhantomJSDriver(string phantomJSDriverServerDirectory, PhantomJSOptions options)
-            : this(phantomJSDriverServerDirectory, options, TimeSpan.FromSeconds(60))
+            : this(phantomJSDriverServerDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the PhantomJSDriver class using the specified path to the directory containing IEDriverServer.exe and command timeout.
+        /// Initializes a new instance of the <see cref="PhantomJSDriver"/> class using the specified path
+        /// to the directory containing PhantomJS.exe, options, and command timeout.
         /// </summary>
         /// <param name="phantomJSDriverServerDirectory">The full path to the directory containing PhantomJS.exe.</param>
         /// <param name="options">The <see cref="PhantomJSOptions"/> used to initialize the driver.</param>
@@ -115,12 +118,23 @@ namespace OpenQA.Selenium.PhantomJS
         }
 
         /// <summary>
-        /// Initializes a new instance of the PhantomJSDriver class using the specified <see cref="DriverService"/>.
+        /// Initializes a new instance of the <see cref="PhantomJSDriver"/> class using the specified 
+        /// <see cref="PhantomJSDriverService"/> and options.
         /// </summary>
-        /// <param name="service">The <see cref="DriverService"/> to use.</param>
+        /// <param name="service">The <see cref="PhantomJSDriverService"/> to use.</param>
+        /// <param name="options">The <see cref="PhantomJSOptions"/> used to initialize the driver.</param>
+        public PhantomJSDriver(PhantomJSDriverService service, PhantomJSOptions options)
+            : this(service, options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the PhantomJSDriver class using the specified <see cref="PhantomJSDriverService"/>.
+        /// </summary>
+        /// <param name="service">The <see cref="PhantomJSDriverService"/> to use.</param>
         /// <param name="options">The <see cref="PhantomJSOptions"/> used to initialize the driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        public PhantomJSDriver(DriverService service, PhantomJSOptions options, TimeSpan commandTimeout)
+        public PhantomJSDriver(PhantomJSDriverService service, PhantomJSOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout, false), options.ToCapabilities())
         {
         }

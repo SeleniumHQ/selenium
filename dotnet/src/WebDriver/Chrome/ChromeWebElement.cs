@@ -42,44 +42,5 @@ namespace OpenQA.Selenium.Chrome
         {
         }
         #endregion
-
-        #region Overrides
-        /// <summary>
-        /// Returns the HashCode of the Element
-        /// </summary>
-        /// <returns>Hash code of the element</returns>
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        /// <summary>
-        /// Compares current element against another
-        /// </summary>
-        /// <param name="obj">element to compare against</param>
-        /// <returns>A value indicating whether they are the same</returns>
-        public override bool Equals(object obj)
-        {
-            IWebElement other = obj as IWebElement;
-            if (other == null)
-            {
-                return false;
-            }
-
-            IWrapsElement elementWrapper = other as IWrapsElement;
-            if (elementWrapper != null)
-            {
-                other = elementWrapper.WrappedElement;
-            }
-
-            ChromeWebElement otherChromeWebElement = other as ChromeWebElement;
-            if (otherChromeWebElement == null)
-            {
-                return false;
-            }
-
-            return Id.Equals(otherChromeWebElement.Id);
-        }
-        #endregion
     }
 }

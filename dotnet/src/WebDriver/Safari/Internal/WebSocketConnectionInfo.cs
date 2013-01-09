@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Safari.Internal
         }
 
         /// <summary>
-        /// Gets the subprotocol of the connection.
+        /// Gets the sub-protocol of the connection.
         /// </summary>
         public string SubProtocol { get; private set; }
 

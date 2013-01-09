@@ -25,7 +25,7 @@ using OpenQA.Selenium;
 namespace OpenQA.Selenium.Internal
 {
     /// <summary>
-    /// Defines the interface through which the user finds elements by their cascading stylesheet (CSS) selector.
+    /// Defines the interface through which the user finds elements by their cascading style sheet (CSS) selector.
     /// </summary>
     public interface IFindsByCssSelector
     {

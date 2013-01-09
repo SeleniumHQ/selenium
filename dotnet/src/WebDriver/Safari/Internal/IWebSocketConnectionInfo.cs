@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Safari.Internal
     public interface IWebSocketConnectionInfo
     {
         /// <summary>
-        /// Gets the subprotocol of the connection.
+        /// Gets the sub-protocol of the connection.
         /// </summary>
         string SubProtocol { get; }
 

@@ -49,7 +49,7 @@ namespace OpenQA.Selenium.PhantomJS
         /// </summary>
         /// <param name="parent">Driver in use.</param>
         /// <param name="id">ID of the element.</param>
-        internal PhantomJSWebElement(PhantomJSDriver parent, string id)
+        public PhantomJSWebElement(PhantomJSDriver parent, string id)
             : base(parent, id)
         {
         }

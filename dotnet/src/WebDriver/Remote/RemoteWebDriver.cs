@@ -62,6 +62,11 @@ namespace OpenQA.Selenium.Remote
     /// </example>
     public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IHasInputDevices, IHasCapabilities, IAllowsFileDetection
     {
+        /// <summary>
+        /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
+        /// </summary>
+        protected static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(60);
+
         #region Private members
         private ICommandExecutor executor;
         private ICapabilities capabilities;
@@ -101,7 +106,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities)
-            : this(remoteAddress, desiredCapabilities, TimeSpan.FromSeconds(60))
+            : this(remoteAddress, desiredCapabilities, RemoteWebDriver.DefaultCommandTimeout)
         {
         }
 

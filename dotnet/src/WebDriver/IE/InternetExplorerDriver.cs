@@ -76,16 +76,18 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class with the desired options.
+        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class with the desired 
+        /// options.
         /// </summary>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         public InternetExplorerDriver(InternetExplorerOptions options)
-            : this(InternetExplorerDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60))
+            : this(InternetExplorerDriverService.CreateDefaultService(), options)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class using the specified path to the directory containing IEDriverServer.exe.
+        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified path 
+        /// to the directory containing IEDriverServer.exe.
         /// </summary>
         /// <param name="internetExplorerDriverServerDirectory">The full path to the directory containing IEDriverServer.exe.</param>
         public InternetExplorerDriver(string internetExplorerDriverServerDirectory)
@@ -94,17 +96,19 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class using the specified path to the directory containing IEDriverServer.exe and command timeout.
+        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified path
+        /// to the directory containing IEDriverServer.exe and options.
         /// </summary>
         /// <param name="internetExplorerDriverServerDirectory">The full path to the directory containing IEDriverServer.exe.</param>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         public InternetExplorerDriver(string internetExplorerDriverServerDirectory, InternetExplorerOptions options)
-            : this(internetExplorerDriverServerDirectory, options, TimeSpan.FromSeconds(60))
+            : this(InternetExplorerDriverService.CreateDefaultService(internetExplorerDriverServerDirectory), options)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class using the specified path to the directory containing IEDriverServer.exe and command timeout.
+        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified path
+        /// to the directory containing IEDriverServer.exe, options, and command timeout.
         /// </summary>
         /// <param name="internetExplorerDriverServerDirectory">The full path to the directory containing IEDriverServer.exe.</param>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
@@ -115,12 +119,24 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Initializes a new instance of the InternetExplorerDriver class using the specified <see cref="DriverService"/>.
+        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified 
+        /// <see cref="InternetExplorerDriverService"/> and options.
         /// </summary>
         /// <param name="service">The <see cref="DriverService"/> to use.</param>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
+        public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options)
+            : this(service, options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class using the specified
+        /// <see cref="DriverService"/>, <see cref="InternetExplorerOptions"/>, and command timeout.
+        /// </summary>
+        /// <param name="service">The <see cref="InternetExplorerDriverService"/> to use.</param>
+        /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        public InternetExplorerDriver(DriverService service, InternetExplorerOptions options, TimeSpan commandTimeout)
+        public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
         {
         }

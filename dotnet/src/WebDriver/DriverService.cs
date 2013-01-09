@@ -166,7 +166,7 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="executableName">The file name of the executable to find.</param>
         /// <param name="downloadUrl">A URL at which the driver service executable may be downloaded.</param>
-        /// <returns>The directory containing the driver service exectuable.</returns>
+        /// <returns>The directory containing the driver service executable.</returns>
         /// <exception cref="DriverServiceNotFoundException">
         /// If the specified driver service executable does not exist in the current directory or in a directory on the system path.
         /// </exception>
