@@ -18,11 +18,14 @@ limitations under the License.
 
 
 import org.junit.Test;
+import org.openqa.grid.common.exception.GridException;
 
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ActiveTestSessionsTest {
 
@@ -71,11 +74,17 @@ public class ActiveTestSessionsTest {
   }
 
   @Test
-  public void testGetTeraminatedSession() throws Exception {
+  public void testGetTerminatedSession() throws Exception {
     TestSession testSession = createTestSession();
     activeTestSessions.add(testSession);
     activeTestSessions.remove( testSession, SessionTerminationReason.ORPHAN);
-    assertNull(activeTestSessions.getExistingSession(testSession.getExternalKey()));
+    try {
+      activeTestSessions.getExistingSession(testSession.getExternalKey());
+      fail("should have thrown a session has been orphaned.");
+    }  catch (GridException e){
+      assertTrue(e.getMessage().contains(SessionTerminationReason.ORPHAN.toString()));
+    }
+
   }
 
   @Test
