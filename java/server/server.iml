@@ -26,6 +26,24 @@
     <orderEntry type="library" scope="TEST" name="easymock" level="project" />
     <orderEntry type="library" scope="TEST" name="hamcrest" level="project" />
     <orderEntry type="library" scope="TEST" name="jmock" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../build/java/server/src/org/openqa/grid/common/common.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../build/java/server/src/org/openqa/selenium/server/server-nodeps.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 
