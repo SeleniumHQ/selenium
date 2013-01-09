@@ -309,9 +309,11 @@ public class SelfRegisteringRemote {
       URL api = new URL(tmp);
       HttpHost host = new HttpHost(api.getHost(), api.getPort());
 
-      BasicHttpRequest r =
-          new BasicHttpRequest("GET", api.toExternalForm() + "?id="
-              + node.getConfiguration().get(RegistrationRequest.REMOTE_HOST));
+      String id = (String) node.getConfiguration().get(RegistrationRequest.ID);
+      if (id == null) {
+        id = (String) node.getConfiguration().get(RegistrationRequest.REMOTE_HOST);
+      }
+      BasicHttpRequest r = new BasicHttpRequest("GET", api.toExternalForm() + "?id=" + id);
 
       HttpResponse response = client.execute(host, r);
       if (response.getStatusLine().getStatusCode() != 200) {
