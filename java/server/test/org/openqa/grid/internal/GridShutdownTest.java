@@ -36,9 +36,6 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 
 public class GridShutdownTest {
 
-
-  // TODO freynaud test failing. Not part of the suite. Check if 
-  // it was ok before.
   @Test(timeout = 5000)
   public void shutdown() throws InterruptedException {
 
@@ -72,7 +69,7 @@ public class GridShutdownTest {
     }
     Thread.sleep(500);
     latch.await();
-    assertEquals(before + 5, getCurrentThreadCount());
+    assertEquals(before + numRequests(), getCurrentThreadCount());
     registry.stop();
     for (Thread thread : threads) {
         thread.join();
