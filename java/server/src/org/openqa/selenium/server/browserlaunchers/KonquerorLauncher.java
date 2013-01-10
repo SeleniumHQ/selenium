@@ -29,11 +29,12 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class KonquerorLauncher extends AbstractBrowserLauncher {
-  private static final String KONQUEROR_PROFILE_SRC_LOCATION =
-    "/org/openqa/selenium/server/konqueror";
+  private static final String KONQUEROR_PROFILE_SRC_LOCATION = "/konqueror";
 
   private static final String KONQUEROR_PROFILE_DEST_LOCATION = System.getProperty("user.home") +
       "/.kde/share/config";
+
+  private static final String DEFAULT_KONQUEROR_LOCATION = "/usr/bin/konqueror";
 
   private CommandLine process;
 

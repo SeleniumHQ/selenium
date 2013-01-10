@@ -564,13 +564,13 @@ public class WindowsProxyManager {
   }
 
   private File extractHudsuckr() {
-    File hudsuckr = new File(customProxyPACDir, "hudsuckr.exe");
+    File hudsuckr = new File(customProxyPACDir, "hudsuckr/hudsuckr.exe");
     if (hudsuckr.exists()) {
       return hudsuckr;
     }
     try {
       FileHandler.copyResource(customProxyPACDir, WindowsProxyManager.class,
-          "/org/openqa/selenium/server/hudsuckr/hudsuckr.exe");
+          "hudsuckr/hudsuckr.exe");
     } catch (IOException e) {
       throw new RuntimeException("Bug extracting hudsuckr", e);
     }

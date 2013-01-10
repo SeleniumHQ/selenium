@@ -177,7 +177,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
   }
 
   protected void extractProfileFromJar() throws IOException {
-    ResourceExtractor.extractResourcePath(getClass(), "/org/openqa/selenium/server/customProfileDirCUSTFFCHROME",
+    ResourceExtractor.extractResourcePath(getClass(), "/customProfileDirCUSTFFCHROME",
         customProfileDir);
   }
 
