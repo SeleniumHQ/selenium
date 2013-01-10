@@ -1,0 +1,259 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NSubstitute</name>
+    </assembly>
+    <members>
+        <member name="T:NSubstitute.Arg">
+            <summary>
+            Argument matchers used for specifying calls to substitutes.
+            </summary>
+        </member>
+        <member name="M:NSubstitute.Arg.Any``1">
+            <summary>
+            Match any argument value compatible with type <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Arg.Is``1(``0)">
+            <summary>
+            Match argument that is equal to <paramref name="value"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Arg.Is``1(System.Linq.Expressions.Expression{System.Predicate{``0}})">
+            <summary>
+            Match argument that satisfies <paramref name="predicate"/>. 
+            If the <paramref name="predicate"/> throws an exception for an argument it will be treated as non-matching.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="predicate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Arg.Invoke">
+            <summary>
+            Invoke any <see cref="T:System.Action"/> argument as soon as a matching call is made to the substitute.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Arg.Invoke``1(``0)">
+            <summary>
+            Invoke any <see cref="T:System.Action`1"/> argument with specified argument as soon as a matching call is made to the substitute.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="arg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Arg.Invoke``2(``0,``1)">
+            <summary>
+            Invoke any <see cref="T:System.Action`2"/> argument with specified arguments as soon as a matching call is made to the substitute.
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <typeparam name="T2"></typeparam>
+            <param name="arg1"></param>
+            <param name="arg2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Arg.Invoke``3(``0,``1,``2)">
+            <summary>
+            Invoke any <see cref="T:System.Action`3"/> argument with specified arguments as soon as a matching call is made to the substitute.
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <typeparam name="T2"></typeparam>
+            <typeparam name="T3"></typeparam>
+            <param name="arg1"></param>
+            <param name="arg2"></param>
+            <param name="arg3"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Arg.Invoke``4(``0,``1,``2,``3)">
+            <summary>
+            Invoke any <see cref="T:System.Action`4"/> argument with specified arguments as soon as a matching call is made to the substitute.
+            </summary>
+            <typeparam name="T1"></typeparam>
+            <typeparam name="T2"></typeparam>
+            <typeparam name="T3"></typeparam>
+            <typeparam name="T4"></typeparam>
+            <param name="arg1"></param>
+            <param name="arg2"></param>
+            <param name="arg3"></param>
+            <param name="arg4"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Arg.InvokeDelegate``1(System.Object[])">
+            <summary>
+            Invoke any <typeparamref name="TDelegate"/> argument with specified arguments as soon as a matching call is made to the substitute.
+            </summary>
+            <typeparam name="TDelegate"></typeparam>
+            <param name="arguments">Arguments to pass to delegate.</param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Arg.Do``1(System.Action{``0})">
+            <summary>
+            Capture any argument compatible with type <typeparamref name="T"/> and use it to call the <paramref name="useArgument"/> function 
+            as soon as a matching call is made to the substitute.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="useArgument"></param>
+            <returns></returns>
+        </member>
+        <member name="T:NSubstitute.IArgumentMatcher">
+            <summary>
+            Provides a specification for arguments for use with <see ctype="Arg.Matches (IArgumentMatcher)" />.
+            Can additionally implement <see ctype="IDescribeNonMatches" /> to give descriptions when arguments do not match.
+            </summary>
+        </member>
+        <member name="M:NSubstitute.IArgumentMatcher.IsSatisfiedBy(System.Object)">
+            <summary>
+            Checks whether the <paramref name="argument"/> satisfies the condition of the matcher.
+            If this throws an exception the argument will be treated as non-matching.
+            </summary>
+            <param name="argument"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.IDescribeNonMatches.DescribeFor(System.Object)">
+            <summary>
+            Describes how the <paramref name="argument"/> does not match the condition specified by this class, or <see cref="F:System.String.Empty"/>
+            if a detailed description can not be provided for the argument.
+            </summary>
+            <param name="argument"></param>
+            <returns>Description of the non-match, or <see cref="F:System.String.Empty"/> if no description can be provided.</returns>
+        </member>
+        <member name="M:NSubstitute.Core.Extensions.Zip``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2})">
+            <summary>
+            Combines two enumerables into a new enumerable using the given selector.
+            </summary>
+            <typeparam name="TFirst"></typeparam>
+            <typeparam name="TSecond"></typeparam>
+            <typeparam name="TResult"></typeparam>
+            <param name="first"></param>
+            <param name="second"></param>
+            <param name="selector"></param>
+            <returns></returns>
+            <remarks>
+            This implementation was sanity-checked against the 
+            <a href="http://msmvps.com/blogs/jon_skeet/archive/2011/01/14/reimplementing-linq-to-objects-part-35-zip.aspx">Edulinq implementation</a> and
+            <a href="http://blogs.msdn.com/b/ericlippert/archive/2009/05/07/zip-me-up.aspx">Eric Lippert's implementation</a>.
+            </remarks>
+        </member>
+        <member name="M:NSubstitute.Core.Extensions.IsCompatibleWith(System.Object,System.Type)">
+            <summary>
+            Checks if the instance can be used when a <paramref name="type"/> is expected.
+            </summary>
+            <param name="instance"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Core.Extensions.Join(System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Join the <paramref name="strings"/> using <paramref name="seperator"/>.
+            </summary>
+            <param name="strings"></param>
+            <param name="seperator"></param>
+            <returns></returns>
+        </member>
+        <member name="T:NSubstitute.Core.RobustThreadLocal`1">
+            <summary>
+            Delegates to ThreadLocal&lt;T&gt;, but wraps Value property access in try/catch to swallow ObjectDisposedExceptions.
+            These can occur if the Value property is accessed from the finalizer thread. Because we can't detect this, we'll
+            just swallow the exception (the finalizer thread won't be using any of the values from thread local storage anyway).
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:NSubstitute.IArgumentMatcher`1">
+            <summary>
+            Provides a specification for arguments for use with <see ctype="Arg.Matches &lt; T &gt;(IArgumentMatcher)" />.
+            Can additionally implement <see ctype="IDescribeNonMatches" /> to give descriptions when arguments do not match.
+            </summary>
+            <typeparam name="T">Matches arguments of type <typeparamref name="T"/> or compatible type.</typeparam>
+        </member>
+        <member name="M:NSubstitute.IArgumentMatcher`1.IsSatisfiedBy(`0)">
+            <summary>
+            Checks whether the <paramref name="argument"/> satisfies the condition of the matcher.
+            If this throws an exception the argument will be treated as non-matching.
+            </summary>
+            <param name="argument"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Raise.EventWith``1(System.Object,``0)">
+            <summary>
+            Raise an event for an <c>EventHandler&lt;TEventArgs&gt;</c> event with the provided <paramref name="sender"/> and <paramref name="eventArgs"/>.
+            </summary>
+        </member>
+        <member name="M:NSubstitute.Raise.EventWith``1(``0)">
+            <summary>
+            Raise an event for an <c>EventHandler&lt;TEventArgs&gt;</c> event with the substitute as the sender and the provided <paramref name="eventArgs" />.
+            </summary>
+        </member>
+        <member name="M:NSubstitute.Raise.EventWith``1">
+            <summary>
+            Raise an event for an <c>EventHandler&lt;EventArgsT&gt;</c> event with the substitute as the sender
+            and with a default instance of <typeparamref name="TEventArgs" />.
+            </summary>
+        </member>
+        <member name="M:NSubstitute.Raise.Event">
+            <summary>
+            Raise an event for an <c>EventHandler</c> or <c>EventHandler&lt;EventArgs&gt;</c> event with the substitute
+            as the sender and with empty <c>EventArgs</c>.
+            </summary>
+        </member>
+        <member name="M:NSubstitute.Raise.Event``1(System.Object[])">
+            <summary>
+            Raise an event of type <typeparamref name="THandler" /> with the provided arguments. If no arguments are provided
+            NSubstitute will try and provide reasonble defaults.
+            </summary>
+        </member>
+        <member name="T:NSubstitute.Substitute">
+            <summary>
+            Create a substitute for one or more types. For example: <c>Substitute.For&lt;ISomeType&gt;()</c> 
+            </summary>
+        </member>
+        <member name="M:NSubstitute.Substitute.For``1(System.Object[])">
+            <summary>
+            Substitute for an interface or class.
+            <para>Be careful when specifying a class, as all non-virtual members will actually be executed. Only virtual members 
+            can be recorded or have return values specified.</para>
+            </summary>
+            <typeparam name="T">The type of interface or class to substitute.</typeparam>
+            <param name="constructorArguments">Arguments required to construct a class being substituted. Not required for interfaces or classes with default constructors.</param>
+            <returns>A substitute for the interface or class.</returns>
+        </member>
+        <member name="M:NSubstitute.Substitute.For``2(System.Object[])">
+            <summary>
+            <para>Substitute for multiple interfaces or a class that implements an interface. At most one class can be specified.</para>
+            <para>Be careful when specifying a class, as all non-virtual members will actually be executed. Only virtual members 
+            can be recorded or have return values specified.</para>
+            </summary>
+            <typeparam name="T1">The type of interface or class to substitute.</typeparam>
+            <typeparam name="T2">An additional interface or class (maximum of one class) the substitute should implement.</typeparam>
+            <param name="constructorArguments">Arguments required to construct a class being substituted. Not required for interfaces or classes with default constructors.</param>
+            <returns>A substitute of type T1, that also implements T2.</returns>
+        </member>
+        <member name="M:NSubstitute.Substitute.For``3(System.Object[])">
+            <summary>
+            <para>Substitute for multiple interfaces or a class that implements multiple interfaces. At most one class can be specified.</para>
+            If additional interfaces are required use the <see cref="M:For(System.Type[], System.Object[])" /> overload.
+            <para>Be careful when specifying a class, as all non-virtual members will actually be executed. Only virtual members 
+            can be recorded or have return values specified.</para>
+            </summary>
+            <typeparam name="T1">The type of interface or class to substitute.</typeparam>
+            <typeparam name="T2">An additional interface or class (maximum of one class) the substitute should implement.</typeparam>
+            <typeparam name="T3">An additional interface or class (maximum of one class) the substitute should implement.</typeparam>
+            <param name="constructorArguments">Arguments required to construct a class being substituted. Not required for interfaces or classes with default constructors.</param>
+            <returns>A substitute of type T1, that also implements T2 and T3.</returns>
+        </member>
+        <member name="M:NSubstitute.Substitute.For(System.Type[],System.Object[])">
+            <summary>
+            <para>Substitute for multiple interfaces or a class that implements multiple interfaces. At most one class can be specified.</para>
+            <para>Be careful when specifying a class, as all non-virtual members will actually be executed. Only virtual members 
+            can be recorded or have return values specified.</para>
+            </summary>
+            <param name="typesToProxy">The types of interfaces or a type of class and multiple interfaces the substitute should implement.</param>
+            <param name="constructorArguments">Arguments required to construct a class being substituted. Not required for interfaces or classes with default constructors.</param>
+            <returns>A substitute implementing the specified types.</returns>
+        </member>
+    </members>
+</doc>
