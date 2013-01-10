@@ -400,67 +400,71 @@ void IECommandExecutor::DispatchCommand() {
     response.SetErrorResponse(501, "Command not implemented");
   } else {
     BrowserHandle browser;
-    int status_code = this->GetCurrentBrowser(&browser);
-    if (status_code == SUCCESS) {
-      bool alert_is_active = false;
-      HWND alert_handle = browser->GetActiveDialogWindowHandle();
-      if (alert_handle != NULL) {
-        // Found a window handle, make sure it's an actual alert,
-        // and not a showModalDialog() window.
-        vector<char> window_class_name(34);
-        ::GetClassNameA(alert_handle, &window_class_name[0], 34);
-        if (strcmp(ALERT_WINDOW_CLASS, &window_class_name[0]) == 0) {
-          alert_is_active = true;
+    int status_code = SUCCESS;
+    if (this->current_command_.command_type() != webdriver::CommandType::NewSession) {
+      // There should never be a modal dialog or alert to check for if the command
+      // is the "newSession" command.
+      status_code = this->GetCurrentBrowser(&browser);
+      if (status_code == SUCCESS) {
+        bool alert_is_active = false;
+        HWND alert_handle = browser->GetActiveDialogWindowHandle();
+        if (alert_handle != NULL) {
+          // Found a window handle, make sure it's an actual alert,
+          // and not a showModalDialog() window.
+          vector<char> window_class_name(34);
+          ::GetClassNameA(alert_handle, &window_class_name[0], 34);
+          if (strcmp(ALERT_WINDOW_CLASS, &window_class_name[0]) == 0) {
+            alert_is_active = true;
+          } else {
+            LOG(WARN) << "Found alert handle does not have a window class consistent with an alert";
+          }
         } else {
-          LOG(WARN) << "Found alert handle does not have a window class consistent with an alert";
+          LOG(DEBUG) << "No alert handle is found";
         }
-      } else {
-        LOG(DEBUG) << "No alert handle is found";
-      }
-      if (alert_is_active) {
-        Alert dialog(browser, alert_handle);
-        std::string command_type = this->current_command_.command_type();
-        if (command_type == webdriver::CommandType::GetAlertText ||
-            command_type == webdriver::CommandType::SendKeysToAlert ||
-            command_type == webdriver::CommandType::AcceptAlert ||
-            command_type == webdriver::CommandType::DismissAlert) {
-          LOG(DEBUG) << "Alert is detected, and the sent command is valid";
-        } else {
-          LOG(DEBUG) << "Unexpected alert is detected, and the sent command is invalid when an alert is present";
-          std::string alert_text = dialog.GetText();
-          if (this->unexpected_alert_behavior_ == ACCEPT_UNEXPECTED_ALERTS) {
-            LOG(DEBUG) << "Automatically accepting the alert";
-            dialog.Accept();
-          } else if (this->unexpected_alert_behavior_ == DISMISS_UNEXPECTED_ALERTS || command_type == webdriver::CommandType::Quit) {
-            // If a quit command was issued, we should not ignore an unhandled
-            // alert, even if the alert behavior is set to "ignore".
-            LOG(DEBUG) << "Automatically dismissing the alert";
-            if (dialog.is_standard_alert()) {
-              dialog.Dismiss();
-            } else {
-              // The dialog was non-standard. The most common case of this is
-              // an onBeforeUnload dialog, which must be accepted to continue.
+        if (alert_is_active) {
+          Alert dialog(browser, alert_handle);
+          std::string command_type = this->current_command_.command_type();
+          if (command_type == webdriver::CommandType::GetAlertText ||
+              command_type == webdriver::CommandType::SendKeysToAlert ||
+              command_type == webdriver::CommandType::AcceptAlert ||
+              command_type == webdriver::CommandType::DismissAlert) {
+            LOG(DEBUG) << "Alert is detected, and the sent command is valid";
+          } else {
+            LOG(DEBUG) << "Unexpected alert is detected, and the sent command is invalid when an alert is present";
+            std::string alert_text = dialog.GetText();
+            if (this->unexpected_alert_behavior_ == ACCEPT_UNEXPECTED_ALERTS) {
+              LOG(DEBUG) << "Automatically accepting the alert";
               dialog.Accept();
+            } else if (this->unexpected_alert_behavior_ == DISMISS_UNEXPECTED_ALERTS || command_type == webdriver::CommandType::Quit) {
+              // If a quit command was issued, we should not ignore an unhandled
+              // alert, even if the alert behavior is set to "ignore".
+              LOG(DEBUG) << "Automatically dismissing the alert";
+              if (dialog.is_standard_alert()) {
+                dialog.Dismiss();
+              } else {
+                // The dialog was non-standard. The most common case of this is
+                // an onBeforeUnload dialog, which must be accepted to continue.
+                dialog.Accept();
+              }
+            }
+            if (command_type != webdriver::CommandType::Quit) {
+              // To keep pace with what Firefox does, we'll return the text of the
+              // alert in the error response.
+              Json::Value response_value;
+              response_value["message"] = "Modal dialog present";
+              response_value["alert"]["text"] = alert_text;
+              response.SetResponse(EMODALDIALOGOPENED, response_value);
+              this->serialized_response_ = response.Serialize();
+              return;
+            } else {
+              LOG(DEBUG) << "Quit command was issued. Continuing with command after automatically closing alert.";
             }
           }
-          if (command_type != webdriver::CommandType::Quit) {
-            // To keep pace with what Firefox does, we'll return the text of the
-            // alert in the error response.
-            Json::Value response_value;
-            response_value["message"] = "Modal dialog present";
-            response_value["alert"]["text"] = alert_text;
-            response.SetResponse(EMODALDIALOGOPENED, response_value);
-            this->serialized_response_ = response.Serialize();
-            return;
-          } else {
-            LOG(DEBUG) << "Quit command was issued. Continuing with command after automatically closing alert.";
-          }
         }
+      } else {
+        LOG(WARN) << "Unable to find current browser";
       }
-    } else {
-      LOG(WARN) << "Unable to find current browser";
     }
-
 	  CommandHandlerHandle command_handler = found_iterator->second;
     command_handler->Execute(*this, this->current_command_, &response);
 
@@ -474,7 +478,9 @@ void IECommandExecutor::DispatchCommand() {
         ::PostMessage(this->m_hWnd, WD_WAIT, NULL, NULL);
       }
     } else {
-      LOG(WARN) << "Unable to get current browser";
+      if (this->current_command_.command_type() != webdriver::CommandType::Quit) {
+        LOG(WARN) << "Unable to get current browser";
+      }
     }
   }
 

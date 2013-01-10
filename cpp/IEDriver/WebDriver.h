@@ -28,7 +28,8 @@ EXPORT webdriver::Server* StartServer(int port);
 EXPORT webdriver::Server* StartServerEx(int port,
                                         const std::string& host,
                                         const std::string& log_level,
-                                        const std::string& log_file);
+                                        const std::string& log_file,
+                                        const std::string& version);
 EXPORT void StopServer(webdriver::Server* myserver);
 EXPORT int GetServerSessionCount();
 EXPORT bool ServerIsRunning();

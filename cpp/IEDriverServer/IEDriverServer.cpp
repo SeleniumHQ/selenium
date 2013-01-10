@@ -22,7 +22,7 @@
 
 // TODO(JimEvans): Change the prototypes of these functions in the
 // IEDriver project to match the prototype specified here.
-typedef void* (__cdecl *STARTSERVEREXPROC)(int, const std::string&, const std::string&, const std::string&);
+typedef void* (__cdecl *STARTSERVEREXPROC)(int, const std::string&, const std::string&, const std::string&, const std::string&);
 typedef void (__cdecl *STOPSERVERPROC)(void);
 
 #define ERR_DLL_EXTRACT_FAIL 1
@@ -228,10 +228,12 @@ int _tmain(int argc, _TCHAR* argv[]) {
   std::string log_file = args.GetValue(LOGFILE_COMMAND_LINE_ARG, "");
   bool silent = args.GetValue(SILENT_COMMAND_LINE_ARG,
       BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE).size() == 0;
+  std::string executable_version = GetExecutableVersion();
   void* server_value = start_server_ex_proc(port,
                                             host_address,
                                             log_level,
-                                            log_file);
+                                            log_file,
+                                            executable_version);
   if (server_value == NULL) {
     std::cout << L"Failed to start the server with: "
               << L"port = '" << port << "', "
@@ -244,7 +246,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
     std::cout << "Started InternetExplorerDriver server"
               << " (" << GetProcessArchitectureDescription() << ")"
               << std::endl;
-    std::cout << GetExecutableVersion()
+    std::cout << executable_version
               << std::endl;
     std::cout << "Listening on port " << port << std::endl;
     if (host_address.size() > 0) {

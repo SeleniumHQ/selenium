@@ -19,8 +19,9 @@ namespace webdriver {
 IEServer::IEServer(int port,
                    const std::string& host,
                    const std::string& log_level,
-                   const std::string& log_file) : Server(port, host, log_level, log_file) {
-
+                   const std::string& log_file,
+                   const std::string& version) : Server(port, host, log_level, log_file) {
+  this->version_ = version;
 }
 
 IEServer::~IEServer(void) {
@@ -63,7 +64,7 @@ std::string IEServer::GetStatus() {
   }
 
   Json::Value build;
-  build["version"] = "2.21.0";
+  build["version"] = this->version_;
 
   Json::Value os;
   os["arch"] = arch;
