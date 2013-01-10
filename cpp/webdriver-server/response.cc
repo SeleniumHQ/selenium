@@ -16,12 +16,13 @@
 
 namespace webdriver {
 
-Response::Response(void) : status_code_(0), session_id_("") {
+Response::Response(void) : status_code_(0), session_id_(""), value_(Json::Value::null) {
 }
 
 Response::Response(const std::string& session_id) {
   this->session_id_ = session_id;
   this->status_code_ = 0;
+  this->value_ = Json::Value::null;
 }
 
 Response::~Response(void) {

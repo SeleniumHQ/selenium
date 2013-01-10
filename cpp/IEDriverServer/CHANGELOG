@@ -9,6 +9,15 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.28.0.4
+=========
+ * Initialized value_ member of Response to Json::Value::null upon creation.
+ * Suppressed warnings written to console during browser startup and shutdown.
+ * Updated to correctly return the current version in the JSON response for the
+   /status end point of the JSON wire protocol.
+ * Added usage info to IEDriverServer.exe when using /? /h or /help. Also
+   removed dead code from ScreenshotCommandHandler.
+
 v2.28.0.3
 =========
  * Introduced the "requireWindowFocus" capability into the IE driver. When used
