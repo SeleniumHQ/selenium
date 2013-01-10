@@ -16,6 +16,8 @@
 
 package org.openqa.selenium.internal.selenesedriver;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
@@ -95,7 +97,7 @@ class ScriptExecutor {
     Response response = new JsonToBeanConverter()
         .convert(Response.class, result);
     new ErrorHandler()
-        .throwIfResponseFailed(response, stopWatch.elapsedMillis());
+        .throwIfResponseFailed(response, stopWatch.elapsed(MILLISECONDS));
     return (T) response.getValue();
   }
 }

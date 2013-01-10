@@ -105,7 +105,7 @@ class SafariDriverCommandExecutor implements CommandExecutor {
       stop();
       throw new WebDriverException(String.format(
           "Failed to connect to SafariDriver after %d ms",
-          stopwatch.elapsedMillis()));
+          stopwatch.elapsed(TimeUnit.MILLISECONDS)));
     }
   }
 
