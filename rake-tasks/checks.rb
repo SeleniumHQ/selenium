@@ -145,19 +145,6 @@ def AndroidSDK?
   $androidSDK
 end
 
-# Not everyone is using a command-line subversion client.
-def svn?
-  present?('svn')
-end
-
-def svn_revision
-  @svn_revision ||= (
-    output = if File.directory?(".svn") && svn?
-              `svn info`
-             elsif File.directory?(".git") && present?("git")
-               `git svn info`
-             end
-
-    output.to_s[/Revision: (\d+)/, 1] || 'unknown'
-  )
+def vcs_revision
+  @vcs_revision ||= `git rev-parse --short HEAD`
 end
