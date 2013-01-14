@@ -646,7 +646,7 @@ class WebDriver(object):
 
     def set_page_load_timeout(self, time_to_wait):
         """
-        Set the amount of time to wait for a page load to complete 
+        Set the amount of time to wait for a page load to complete
            before throwing an error.
 
         :Args:
@@ -667,7 +667,7 @@ class WebDriver(object):
         """
         if isinstance(by, tuple) or isinstance(value, int) or value==None:
             raise InvalidSelectorException("Invalid locator values passed in")
-            
+
         return self.execute(Command.FIND_ELEMENT,
                              {'using': by, 'value': value})['value']
 
