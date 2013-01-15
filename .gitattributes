@@ -12,4 +12,3 @@
 *.sln    text merge=union eol=crlf
 
 *.docx   diff=astextplain
-*.DOCX   diff=astextplain
