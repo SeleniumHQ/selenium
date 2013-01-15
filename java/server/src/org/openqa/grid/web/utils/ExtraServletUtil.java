@@ -27,7 +27,7 @@ public class ExtraServletUtil {
 
   /**
    * Reflexion to create the servlet based on the class name. Returns null if the class cannot be
-   * instanciated.
+   * instantiated.
    * 
    * @param className
    * @return Class object for passed className argument, or <i/null</i> if no
@@ -37,7 +37,7 @@ public class ExtraServletUtil {
     try {
       return Class.forName(className).asSubclass(Servlet.class);
     } catch (ClassNotFoundException e) {
-      log.warning("The specified class : " + className + " cannot be instanciated " +
+      log.warning("The specified class : " + className + " cannot be instantiated " +
           e.getMessage());
     }
     return null;

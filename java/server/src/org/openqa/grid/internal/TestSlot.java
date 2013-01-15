@@ -69,7 +69,7 @@ public class TestSlot {
     CapabilityMatcher c = proxy.getCapabilityHelper();
     if (c == null) {
       throw new InvalidParameterException("the proxy needs to have a valid "
-          + "capabilityMatcher to support have some testslots attached to it");
+          + "capabilityMatcher to support have some test slots attached to it");
     }
     matcher = proxy.getCapabilityHelper();
     this.capabilities = capabilities;
@@ -88,7 +88,7 @@ public class TestSlot {
 
   /**
    * Try to get a new session for the test slot for the desired capability. To define if the
-   * testslot can host the desired capabilites, {@link CapabilityMatcher#matches(Map, Map)} is
+   * test slot can host the desired capabilities, {@link CapabilityMatcher#matches(Map, Map)} is
    * invoked.
    * <p/>
    * Use {@link RemoteProxy#setCapabilityHelper(CapabilityMatcher)} on the proxy histing the test
@@ -140,7 +140,7 @@ public class TestSlot {
 
   /**
    * @param desiredCapabilities capabilities for the new session
-   * @return true if the desired capabilties matches for the
+   * @return true if the desired capabilities matches for the
    *         {@link RemoteProxy#getCapabilityHelper()}
    */
   boolean matches(Map<String, Object> desiredCapabilities) {
@@ -158,7 +158,7 @@ public class TestSlot {
 
   /**
    * Starts the release process for the TestSlot. Once the release process has started, the clients
-   * can't access the testslot any more, but the slot can't be reserved for another test until
+   * can't access the test slot any more, but the slot can't be reserved for another test until
    * finishReleaseProcess is called.
    * <p/>
    * That gives time to run exactly once the cleanup operation needed using @see

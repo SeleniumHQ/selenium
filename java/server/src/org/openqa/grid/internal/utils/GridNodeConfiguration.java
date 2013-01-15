@@ -65,7 +65,7 @@ public class GridNodeConfiguration {
 
   /**
    * how long can a session be idle before being considered timed out. Working together with cleanup
-   * cycle. Worst case scenario, a session can be idle for timout + cleanup cycle before the timeout
+   * cycle. Worst case scenario, a session can be idle for timeout + cleanup cycle before the timeout
    * is detected
    */
   public static final String TIME_OUT = "timeout";
@@ -150,7 +150,7 @@ public class GridNodeConfiguration {
     for (String capabilityPair : s) {
       if (capabilityPair.split("=").length != 2) {
         throw new GridConfigurationException("-browser format is key1=value1,key2=value2 " +
-            capabilityPair + " deosn't follow that format.");
+            capabilityPair + " doesn't follow that format.");
       }
       String key = capabilityPair.split("=")[0];
       String value = capabilityPair.split("=")[1];

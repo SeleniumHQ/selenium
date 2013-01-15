@@ -64,7 +64,7 @@ public class GridHubConfiguration {
   private int newSessionWaitTimeout;
 
   /**
-   * list of extra serlvets this hub will display. Allows to present custom view of the hub for
+   * list of extra servlets this hub will display. Allows to present custom view of the hub for
    * monitoring and management purpose
    */
   private List<String> servlets = new ArrayList<String>();
@@ -92,8 +92,7 @@ public class GridHubConfiguration {
   private boolean throwOnCapabilityNotPresent = true;
 
   /**
-   * The filename to use for logging. Default value is <code>null</code> and indicates logging to
-   * STDOUT.
+   * The filename to use for logging. Default value is <code>null</code> and indicates logging to STDOUT.
    */
   private String logFilename;
 

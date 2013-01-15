@@ -41,7 +41,7 @@ public class GridLauncher {
     if (helper.isParamPresent("-help") || helper.isParamPresent("-h")){
       String separator = "\n----------------------------------\n";
       RemoteControlLauncher.usage(separator+"To use as a standalone server"+separator);
-      GridDocHelper.printHelp(separator+"To use in a grid environement :"+separator,false);
+      GridDocHelper.printHelp(separator+"To use in a grid environment :"+separator,false);
       return;
     }
     

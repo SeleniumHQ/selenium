@@ -45,7 +45,7 @@ class NewSessionRequestQueue {
 
 
   /**
-   * Adds a requesthandler to this queue
+   * Adds a request handler to this queue.
    * @param request the RequestHandler to add
    */
   public synchronized void add(RequestHandler request) {
@@ -101,9 +101,9 @@ class NewSessionRequestQueue {
   }
 
   /**
-   * Provides the desiredcapabilities of all the items in this queue.
+   * Provides the desired capabilities of all the items in this queue.
    *
-   * @return An Iteerable of unmodifyable maps.
+   * @return An Iterable of unmodifiable maps.
    */
   public synchronized Iterable<DesiredCapabilities> getDesiredCapabilities() {
     List<DesiredCapabilities> result = new ArrayList<DesiredCapabilities>();

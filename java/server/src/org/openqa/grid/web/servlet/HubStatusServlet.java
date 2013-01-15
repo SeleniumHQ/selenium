@@ -35,7 +35,7 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.Registry;
 
 /**
- * API to query the hub config remotly.
+ * API to query the hub config remotely.
  * 
  * use the API by sending a GET to grid/api/hub/
  * with the content of the request in JSON,specifying the 
@@ -49,7 +49,7 @@ import org.openqa.grid.internal.Registry;
  *      ]
  * }
  * 
- * if no param is specfied, all params known to the hub are returned.
+ * if no param is specified, all params known to the hub are returned.
  * 
  * {"configuration": []  }
  *

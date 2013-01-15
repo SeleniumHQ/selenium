@@ -192,7 +192,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
   }
 
   /**
-   * the SeleniumBasedRequest this hanlder is processing.
+   * the SeleniumBasedRequest this handler is processing.
    */
   public SeleniumBasedRequest getRequest() {
     return request;
@@ -238,7 +238,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
 
   /**
    * return the session from the server ( = opaque handle used by the server to determine where to
-   * route session-specific commands fro mthe JSON wire protocol ). will be null until the request
+   * route session-specific commands from the JSON wire protocol ). will be null until the request
    * has been processed.
    */
   public ExternalSessionKey getServerSession() {

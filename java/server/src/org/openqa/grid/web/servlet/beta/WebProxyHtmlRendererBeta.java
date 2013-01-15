@@ -229,10 +229,8 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
       } else if (o instanceof Platform) {
         return (Platform) o;
       } else {
-        throw new GridException("Cannot cast " + o + " to Paltform");
+        throw new GridException("Cannot cast " + o + " to org.openqa.selenium.Platform");
       }
     }
   }
-
-
 }

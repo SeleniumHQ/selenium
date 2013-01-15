@@ -108,7 +108,7 @@ public class Registry {
   }
 
   /**
-   * how long a session can remains in the newSession queue before being quicked out
+   * How long a session can remain in the newSession queue before being evicted.
    *
    * @return the new session wait timeout
    */
@@ -123,7 +123,7 @@ public class Registry {
   /**
    * Ends this test session for the hub, releasing the resources in the hub / registry. It does not
    * release anything on the remote. The resources are released in a separate thread, so the call
-   * returns immediatly. It allows release with long duration not to block the test while the hub is
+   * returns immediately. It allows release with long duration not to block the test while the hub is
    * releasing the resource.
    *
    * @param session The session to terminate
@@ -185,7 +185,7 @@ public class Registry {
   }
 
   /**
-   * releasing the testslot, WITHOUT running any listener.
+   * Releases the test slot, WITHOUT running any listener.
    */
   public void forceRelease(TestSlot testSlot, SessionTerminationReason reason) {
     if (testSlot.getSession() == null) {

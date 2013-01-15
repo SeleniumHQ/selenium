@@ -500,7 +500,7 @@ public class RegistrationRequest {
     for (String capabilityPair : s) {
       if (capabilityPair.split("=").length != 2) {
         throw new GridConfigurationException("-browser format is key1=value1,key2=value2 "
-            + capabilityPair + " deosn't follow that format.");
+            + capabilityPair + " doesn't follow that format.");
       }
       String key = capabilityPair.split("=")[0];
       String value = capabilityPair.split("=")[1];

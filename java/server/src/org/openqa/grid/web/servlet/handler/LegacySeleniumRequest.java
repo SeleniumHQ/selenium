@@ -82,7 +82,7 @@ public class LegacySeleniumRequest extends SeleniumBasedRequest {
         String envt = piece.replace("1=", "");
         Map<String, Object> cap = new HashMap<String, Object>();
         // TODO freynaud : more splitting, like trying to guess the
-        // plateform or version ?
+        // platform or version ?
 
         // We don't want to process Grid 1.0 environment names because
         // they use an explicit mapping
