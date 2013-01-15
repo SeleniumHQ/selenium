@@ -59,6 +59,12 @@ maven/*/src
 maven/*/target
 java/client/build/
 java/server/build/
+*.pyc
+dist/
+py/selenium/webdriver/firefox/amd64/
+py/selenium/webdriver/firefox/webdriver.xpi
+py/selenium/webdriver/firefox/x86/
+selenium.egg-info/
 
 *.user
 *.cache
