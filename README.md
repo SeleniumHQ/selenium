@@ -1,3 +1,17 @@
+# Selenium git repositories
+
+The authorative master repository of selenium is at [](https://code.google.com/p/selenium/). It is mirrored on
+github, which may be found at [](https://github.com/SeleniumHQ/selenium).
+
+# Pull requests
+
+We accept pull requests from github. When making the pull request, please indicate that
+you have filled in the [CLA](https://spreadsheets.google.com/spreadsheet/viewform?hl=en_US&formkey=dFFjXzBzM1VwekFlOWFWMjFFRjJMRFE6MQ#gid=0)
+
+Merging pull requests cannot be done with the Github gui. The email sent from github can be used on
+your local repository or you can use the "power git checkout" at the bottom of [](http://maven.apache.org/developers/conventions/git.html).
+
+
 [Selenium 2.0](http://code.google.com/p/selenium/) builds with
 **its own build technology** called
 [CrazyFun](http://code.google.com/p/selenium/wiki/CrazyFunBuild) - that's
