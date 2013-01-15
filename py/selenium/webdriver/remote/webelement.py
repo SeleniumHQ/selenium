@@ -193,7 +193,10 @@ class WebElement(object):
     @property
     def location(self):
         """ Returns the location of the element in the renderable canvas"""
-        return self._execute(Command.GET_ELEMENT_LOCATION)['value']
+        old_loc = self._execute(Command.GET_ELEMENT_LOCATION)['value']
+        new_loc = {"x": old_loc['x'],
+                   "y": old_loc['y']}
+        return new_loc
 
     @property
     def parent(self):
