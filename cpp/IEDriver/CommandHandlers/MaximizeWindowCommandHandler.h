@@ -37,7 +37,7 @@ class MaximizeWindowCommandHandler : public IECommandHandler {
       response->SetErrorResponse(400, "Missing parameter in URL: windowHandle");
       return;
     } else {
-      int status_code = SUCCESS;
+      int status_code = WD_SUCCESS;
       std::string window_id = id_parameter_iterator->second;
 
       BrowserHandle browser_wrapper;
@@ -46,7 +46,7 @@ class MaximizeWindowCommandHandler : public IECommandHandler {
       } else {
         status_code = executor.GetManagedBrowser(window_id, &browser_wrapper);
       }
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Error retrieving window with handle " + window_id);
         return;
       }

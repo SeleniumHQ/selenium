@@ -33,7 +33,7 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
 
   BrowserHandle browser;
   int status_code = executor.GetCurrentBrowser(&browser);
-  if (status_code == SUCCESS) {
+  if (status_code == WD_SUCCESS) {
     if (mechanism == L"css") {
       return this->FindElementByCssSelector(executor,
                                             parent_wrapper,
@@ -51,7 +51,7 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
 
       Script criteria_wrapper(doc, criteria_object_script, 0);
       status_code = criteria_wrapper.Execute();
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         CComVariant criteria_object;
         HRESULT hr = ::VariantCopy(&criteria_object,
                                    &criteria_wrapper.result());
@@ -70,7 +70,7 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
         }
 
         status_code = script_wrapper.Execute();
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           if (script_wrapper.ResultIsElement()) {
             script_wrapper.ConvertResultToJsonValue(executor, found_element);
           } else {
@@ -115,7 +115,7 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
 
   BrowserHandle browser;
   int status_code = executor.GetCurrentBrowser(&browser);
-  if (status_code == SUCCESS) {
+  if (status_code == WD_SUCCESS) {
     if (mechanism == L"css") {
       return this->FindElementsByCssSelector(executor,
                                              parent_wrapper,
@@ -130,7 +130,7 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
 
       Script criteria_wrapper(doc, criteria_object_script, 0);
       status_code = criteria_wrapper.Execute();
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         CComVariant criteria_object;
         HRESULT hr = ::VariantCopy(&criteria_object,
                                    &criteria_wrapper.result());
@@ -149,7 +149,7 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
         }
 
         status_code = script_wrapper.Execute();
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           if (script_wrapper.ResultIsArray() || 
               script_wrapper.ResultIsElementCollection()) {
             script_wrapper.ConvertResultToJsonValue(executor, found_elements);
@@ -194,7 +194,7 @@ int ElementFinder::FindElementByCssSelector(const IECommandExecutor& executor,
 
   BrowserHandle browser;
   result = executor.GetCurrentBrowser(&browser);
-  if (result != SUCCESS) {
+  if (result != WD_SUCCESS) {
     LOG(WARN) << "Unable to get browser";
     return result;
   }
@@ -220,7 +220,7 @@ int ElementFinder::FindElementByCssSelector(const IECommandExecutor& executor,
   }
   result = script_wrapper.Execute();
 
-  if (result == SUCCESS) {
+  if (result == WD_SUCCESS) {
     if (!script_wrapper.ResultIsElement()) {
       LOG(WARN) << "Found result is not element";
       result = ENOSUCHELEMENT;
@@ -246,7 +246,7 @@ int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor,
 
   BrowserHandle browser;
   result = executor.GetCurrentBrowser(&browser);
-  if (result != SUCCESS) {
+  if (result != WD_SUCCESS) {
     LOG(WARN) << "Unable to get browser";
     return result;
   }
@@ -274,7 +274,7 @@ int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor,
   }
 
   result = script_wrapper.Execute();
-  if (result == SUCCESS) {
+  if (result == WD_SUCCESS) {
 
     CComVariant snapshot = script_wrapper.result();
 
@@ -282,7 +282,7 @@ int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor,
     Script get_element_count_script_wrapper(doc, get_element_count_script, 1);
     get_element_count_script_wrapper.AddArgument(snapshot);
     result = get_element_count_script_wrapper.Execute();
-    if (result == SUCCESS) {
+    if (result == WD_SUCCESS) {
       if (!get_element_count_script_wrapper.ResultIsInteger()) {
         LOG(WARN) << "Found elements count is not integer";
         result = EUNEXPECTEDJSERROR;
@@ -294,7 +294,7 @@ int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor,
           get_element_script_wrapper.AddArgument(snapshot);
           get_element_script_wrapper.AddArgument(i);
           result = get_element_script_wrapper.Execute();
-          if (result == SUCCESS) {
+          if (result == WD_SUCCESS) {
             Json::Value json_element;
             get_element_script_wrapper.ConvertResultToJsonValue(executor,
                                                             &json_element);

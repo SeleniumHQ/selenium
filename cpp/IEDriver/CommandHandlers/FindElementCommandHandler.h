@@ -52,14 +52,14 @@ class FindElementCommandHandler : public IECommandHandler {
         end += 1 * CLOCKS_PER_SEC;
       }
 
-      int status_code = SUCCESS;
+      int status_code = WD_SUCCESS;
       Json::Value found_element;
       do {
         status_code = executor.LocateElement(ElementHandle(),
                                              mechanism,
                                              value,
                                              &found_element);
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           response->SetSuccessResponse(found_element);
           return;
         }

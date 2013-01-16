@@ -42,17 +42,17 @@ class IsElementDisplayedCommandHandler : public IECommandHandler {
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
 
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         bool result;
         status_code = element_wrapper->IsDisplayed(&result);
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           response->SetSuccessResponse(result);
         } else {
           response->SetErrorResponse(status_code,

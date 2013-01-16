@@ -49,7 +49,7 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
@@ -60,14 +60,14 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
       status_code = this->PopulateArgumentArray(executor,
                                                 script_wrapper,
                                                 json_args);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Error setting arguments for script");
         return;
       }
 
       status_code = script_wrapper.Execute();
 
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "JavaScript error");
         return;
       } else {
@@ -82,11 +82,11 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
   int PopulateArgumentArray(const IECommandExecutor& executor,
                             Script& script_wrapper,
                             Json::Value json_args) {
-    int status_code = SUCCESS;
+    int status_code = WD_SUCCESS;
     for (UINT arg_index = 0; arg_index < json_args.size(); ++arg_index) {
       Json::Value arg = json_args[arg_index];
       status_code = this->AddArgument(executor, script_wrapper, arg);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         break;
       }
     }
@@ -97,7 +97,7 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
   int AddArgument(const IECommandExecutor& executor,
                   Script& script_wrapper,
                   Json::Value arg) {
-    int status_code = SUCCESS;
+    int status_code = WD_SUCCESS;
     if (arg.isString()) {
       std::string value = arg.asString();
       script_wrapper.AddArgument(value);
@@ -120,7 +120,7 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
 
         ElementHandle element_wrapper;
         status_code = this->GetElement(executor, element_id, &element_wrapper);
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           script_wrapper.AddArgument(element_wrapper);
         }
       } else {
@@ -134,7 +134,7 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
   int WalkArray(const IECommandExecutor& executor,
                 Script& script_wrapper,
                 Json::Value array_value) {
-    int status_code = SUCCESS;
+    int status_code = WD_SUCCESS;
     Json::UInt array_size = array_value.size();
     std::wstring array_script = L"(function(){ return function() { return [";
     for (Json::UInt index = 0; index < array_size; ++index) {
@@ -158,16 +158,16 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
       status_code = this->AddArgument(executor,
                                       array_script_wrapper,
                                       array_value[index]);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         break;
       }
     }
     
-    if (status_code == SUCCESS) {
+    if (status_code == WD_SUCCESS) {
       status_code = array_script_wrapper.Execute();
     }
 
-    if (status_code == SUCCESS) {
+    if (status_code == WD_SUCCESS) {
       script_wrapper.AddArgument(array_script_wrapper.result());
     }
 
@@ -177,7 +177,7 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
   int WalkObject(const IECommandExecutor& executor,
                  Script& script_wrapper,
                  Json::Value object_value) {
-    int status_code = SUCCESS;
+    int status_code = WD_SUCCESS;
     Json::Value::iterator it = object_value.begin();
     int counter = 0;
     std::string object_script = "(function(){ return function() { return {";
@@ -204,16 +204,16 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
       status_code = this->AddArgument(executor,
                                       object_script_wrapper,
                                       object_value[it.memberName()]);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         break;
       }
     }
 
-    if (status_code == SUCCESS) {
+    if (status_code == WD_SUCCESS) {
       status_code = object_script_wrapper.Execute();
     }
 
-    if (status_code == SUCCESS) {
+    if (status_code == WD_SUCCESS) {
       script_wrapper.AddArgument(object_script_wrapper.result());
     }
     return status_code;

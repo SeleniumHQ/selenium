@@ -52,14 +52,14 @@ class FindElementsCommandHandler : public IECommandHandler {
         end += 1 * CLOCKS_PER_SEC;
       }
 
-      int status_code = SUCCESS;
+      int status_code = WD_SUCCESS;
       Json::Value found_elements(Json::arrayValue);
       do {
         status_code = executor.LocateElements(ElementHandle(),
                                               mechanism,
                                               value,
                                               &found_elements);
-        if (status_code == SUCCESS && found_elements.size() > 0) {
+        if (status_code == WD_SUCCESS && found_elements.size() > 0) {
           response->SetSuccessResponse(found_elements);
           return;
         }
@@ -79,7 +79,7 @@ class FindElementsCommandHandler : public IECommandHandler {
       } while (clock() < end);
 
       // This code is executed when no elements where found and no errors occurred.
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         response->SetSuccessResponse(found_elements);
         return;
       }

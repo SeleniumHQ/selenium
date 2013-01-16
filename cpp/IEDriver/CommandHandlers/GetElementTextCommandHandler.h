@@ -43,14 +43,14 @@ class GetElementTextCommandHandler : public IECommandHandler {
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
 
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         // The atom is just the definition of an anonymous
         // function: "function() {...}"; Wrap it in another function so
         // we can invoke it with our arguments without polluting the
@@ -65,7 +65,7 @@ class GetElementTextCommandHandler : public IECommandHandler {
         script_wrapper.AddArgument(element_wrapper->element());
         status_code = script_wrapper.Execute();
 
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           std::string text = "";
           bool is_null = script_wrapper.ConvertResultToString(&text);
           response->SetSuccessResponse(text);

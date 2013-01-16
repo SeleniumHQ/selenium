@@ -35,7 +35,7 @@ class DeleteAllCookiesCommandHandler : public IECommandHandler {
                        Response* response) {
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to get browser");
       return;
     }
@@ -46,7 +46,7 @@ class DeleteAllCookiesCommandHandler : public IECommandHandler {
     for (; it != cookies.end(); ++it) {
       std::string cookie_name = it->first;
       status_code = browser_wrapper->DeleteCookie(cookie_name);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,
                                    "Unable to delete cookie with name '" + cookie_name + "'");
         return;

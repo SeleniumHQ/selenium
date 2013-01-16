@@ -42,12 +42,12 @@ class DeleteCookieCommandHandler : public IECommandHandler {
     std::string cookie_name = name_parameter_iterator->second;
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to get browser");
       return;
     }
     status_code = browser_wrapper->DeleteCookie(cookie_name);
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to delete cookie");
       return;
     }

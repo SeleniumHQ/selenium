@@ -42,7 +42,7 @@ class QuitCommandHandler : public IECommandHandler {
          ++it) {
       BrowserHandle browser_wrapper;
       int status_code = executor.GetManagedBrowser(*it, &browser_wrapper);
-      if (status_code == SUCCESS && !browser_wrapper->is_closing()) {
+      if (status_code == WD_SUCCESS && !browser_wrapper->is_closing()) {
         browser_wrapper->Close();
       }
     }

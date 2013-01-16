@@ -47,7 +47,7 @@ class SwitchToWindowCommandHandler : public IECommandHandler {
         BrowserHandle browser_wrapper;
         int get_handle_loop_status_code = executor.GetManagedBrowser(handle_list[i],
                                                                      &browser_wrapper);
-        if (get_handle_loop_status_code == SUCCESS) {
+        if (get_handle_loop_status_code == WD_SUCCESS) {
           std::string browser_name = browser_wrapper->GetWindowName();
           if (browser_name == desired_name) {
             found_browser_handle = handle_list[i];
@@ -69,7 +69,7 @@ class SwitchToWindowCommandHandler : public IECommandHandler {
         // Reset the path to the focused frame before switching window context.
         BrowserHandle current_browser;
         int status_code = executor.GetCurrentBrowser(&current_browser);
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           current_browser->SetFocusedFrameByElement(NULL);
         }
 

@@ -36,7 +36,7 @@ class GetCurrentUrlCommandHandler : public IECommandHandler {
                        Response* response) {
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to get browser");
       return;
     }

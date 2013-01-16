@@ -223,7 +223,7 @@ int Script::Execute() {
 
   if (temp_function.vt != VT_DISPATCH) {
     LOG(DEBUG) << "No return value that we care about";
-    return SUCCESS;
+    return WD_SUCCESS;
   }
 
   // Grab the "call" method out of the returned function
@@ -269,7 +269,7 @@ int Script::Execute() {
   }
 
   call_parameters.rgvarg = vargs;
-  int return_code = SUCCESS;
+  int return_code = WD_SUCCESS;
   EXCEPINFO exception;
   memset(&exception, 0, sizeof exception);
   hr = temp_function.pdispVal->Invoke(call_member_id,
@@ -322,7 +322,7 @@ int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
                                      Json::Value* value) {
   LOG(TRACE) << "Entering Script::ConvertResultToJsonValue";
 
-  int status_code = SUCCESS;
+  int status_code = WD_SUCCESS;
   if (this->ResultIsString()) { 
     std::string string_value = "";
     if (this->result_.bstrVal) {
@@ -487,7 +487,7 @@ int Script::GetPropertyNameList(std::wstring* property_names) {
   get_names_script_wrapper.AddArgument(this->result_);
   int get_names_result = get_names_script_wrapper.Execute();
 
-  if (get_names_result != SUCCESS) {
+  if (get_names_result != WD_SUCCESS) {
     LOG(WARN) << "Unable to get property name list, script execution returned error code";
     return get_names_result;
   }
@@ -499,7 +499,7 @@ int Script::GetPropertyNameList(std::wstring* property_names) {
   }
 
   *property_names = get_names_script_wrapper.result().bstrVal;
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int Script::GetPropertyValue(const IECommandExecutor& executor,
@@ -514,13 +514,13 @@ int Script::GetPropertyValue(const IECommandExecutor& executor,
   get_value_script_wrapper.AddArgument(this->result_);
   get_value_script_wrapper.AddArgument(property_name);
   int get_value_result = get_value_script_wrapper.Execute();
-  if (get_value_result != SUCCESS) {
+  if (get_value_result != WD_SUCCESS) {
     LOG(WARN) << "Unable to get property value, script execution returned error code";
     return get_value_result;
   }
 
   int property_value_status = get_value_script_wrapper.ConvertResultToJsonValue(executor, property_value);
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int Script::GetArrayLength(long* length) {
@@ -535,7 +535,7 @@ int Script::GetArrayLength(long* length) {
   get_length_script_wrapper.AddArgument(this->result_);
   int length_result = get_length_script_wrapper.Execute();
 
-  if (length_result != SUCCESS) {
+  if (length_result != WD_SUCCESS) {
     LOG(WARN) << "Unable to get array length, script execution returned error code";
     return length_result;
   }
@@ -548,7 +548,7 @@ int Script::GetArrayLength(long* length) {
   }
 
   *length = get_length_script_wrapper.result().lVal;
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int Script::GetArrayItem(const IECommandExecutor& executor,
@@ -563,13 +563,13 @@ int Script::GetArrayItem(const IECommandExecutor& executor,
   get_array_item_script_wrapper.AddArgument(this->result_);
   get_array_item_script_wrapper.AddArgument(index);
   int get_item_result = get_array_item_script_wrapper.Execute();
-  if (get_item_result != SUCCESS) {
+  if (get_item_result != WD_SUCCESS) {
     LOG(WARN) << "Unable to get array item, script execution returned error";
     return get_item_result;
   }
 
   int array_item_status = get_array_item_script_wrapper.ConvertResultToJsonValue(executor, item);
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 bool Script::CreateAnonymousFunction(VARIANT* result) {

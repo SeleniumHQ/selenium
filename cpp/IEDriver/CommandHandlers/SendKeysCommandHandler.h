@@ -67,7 +67,7 @@ class SendKeysCommandHandler : public IECommandHandler {
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
@@ -76,10 +76,10 @@ class SendKeysCommandHandler : public IECommandHandler {
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
 
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         bool displayed;
         status_code = element_wrapper->IsDisplayed(&displayed);
-        if (status_code != SUCCESS || !displayed) {
+        if (status_code != WD_SUCCESS || !displayed) {
           response->SetErrorResponse(EELEMENTNOTDISPLAYED,
                                      "Element is not displayed");
           return;

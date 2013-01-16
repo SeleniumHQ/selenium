@@ -34,7 +34,7 @@ int ElementRepository::GetManagedElement(const std::string& element_id,
   }
 
   *element_wrapper = found_iterator->second;
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 void ElementRepository::AddManagedElement(BrowserHandle current_browser,

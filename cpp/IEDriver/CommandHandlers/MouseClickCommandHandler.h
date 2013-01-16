@@ -42,7 +42,7 @@ class MouseClickCommandHandler : public IECommandHandler {
       int button = button_parameter_iterator->second.asInt();
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,
                                    "Unable to get current browser");
         return;

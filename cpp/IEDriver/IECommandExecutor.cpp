@@ -218,7 +218,7 @@ LRESULT IECommandExecutor::OnWait(UINT uMsg,
 
   BrowserHandle browser;
   int status_code = this->GetCurrentBrowser(&browser);
-  if (status_code == SUCCESS && !browser->is_closing()) {
+  if (status_code == WD_SUCCESS && !browser->is_closing()) {
     if (this->page_load_timeout_ >= 0 && this->wait_timeout_ < clock()) {
       Response timeout_response;
       timeout_response.SetErrorResponse(ETIMEOUT, "Timed out waiting for page to load.");
@@ -400,12 +400,12 @@ void IECommandExecutor::DispatchCommand() {
     response.SetErrorResponse(501, "Command not implemented");
   } else {
     BrowserHandle browser;
-    int status_code = SUCCESS;
+    int status_code = WD_SUCCESS;
     if (this->current_command_.command_type() != webdriver::CommandType::NewSession) {
       // There should never be a modal dialog or alert to check for if the command
       // is the "newSession" command.
       status_code = this->GetCurrentBrowser(&browser);
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         bool alert_is_active = false;
         HWND alert_handle = browser->GetActiveDialogWindowHandle();
         if (alert_handle != NULL) {
@@ -469,7 +469,7 @@ void IECommandExecutor::DispatchCommand() {
     command_handler->Execute(*this, this->current_command_, &response);
 
     status_code = this->GetCurrentBrowser(&browser);
-    if (status_code == SUCCESS) {
+    if (status_code == WD_SUCCESS) {
       this->is_waiting_ = browser->wait_required();
       if (this->is_waiting_) {
         if (this->page_load_timeout_ >= 0) {
@@ -513,7 +513,7 @@ int IECommandExecutor::GetManagedBrowser(const std::string& browser_id,
   }
 
   *browser_wrapper = found_iterator->second;
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 void IECommandExecutor::GetManagedBrowserHandles(std::vector<std::string>* managed_browser_handles) const {
@@ -583,7 +583,7 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
                                     this->m_hWnd));
 
   this->AddManagedBrowser(wrapper);
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int IECommandExecutor::GetManagedElement(const std::string& element_id,
@@ -622,7 +622,7 @@ int IECommandExecutor::GetElementFindMethod(const std::string& mechanism,
   }
 
   *translation = found_iterator->second;
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int IECommandExecutor::LocateElement(const ElementHandle parent_wrapper,
@@ -634,7 +634,7 @@ int IECommandExecutor::LocateElement(const ElementHandle parent_wrapper,
   std::wstring mechanism_translation = L"";
   int status_code = this->GetElementFindMethod(mechanism,
                                                &mechanism_translation);
-  if (status_code != SUCCESS) {
+  if (status_code != WD_SUCCESS) {
     LOG(WARN) << "Unable to determine mechanism translation for " << mechanism;
     return status_code;
   }
@@ -656,7 +656,7 @@ int IECommandExecutor::LocateElements(const ElementHandle parent_wrapper,
   std::wstring mechanism_translation = L"";
   int status_code = this->GetElementFindMethod(mechanism,
                                                &mechanism_translation);
-  if (status_code != SUCCESS) {
+  if (status_code != WD_SUCCESS) {
     LOG(WARN) << "Unable to determine mechanism translation for " << mechanism;
     return status_code;
   }

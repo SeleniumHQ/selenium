@@ -66,7 +66,7 @@ Json::Value Element::ConvertToJson() {
 int Element::IsDisplayed(bool* result) {
   LOG(TRACE) << "Entering Element::IsDisplayed";
 
-  int status_code = SUCCESS;
+  int status_code = WD_SUCCESS;
 
   // The atom is just the definition of an anonymous
   // function: "function() {...}"; Wrap it in another function so we can
@@ -83,7 +83,7 @@ int Element::IsDisplayed(bool* result) {
   script_wrapper.AddArgument(true);
   status_code = script_wrapper.Execute();
 
-  if (status_code == SUCCESS) {
+  if (status_code == WD_SUCCESS) {
     *result = script_wrapper.result().boolVal == VARIANT_TRUE;
   } else {
     LOG(WARN) << "Failed to determine is element displayed";
@@ -120,7 +120,7 @@ bool Element::IsEnabled() {
   script_wrapper.AddArgument(this->element_);
   int status_code = script_wrapper.Execute();
 
-  if (status_code == SUCCESS) {
+  if (status_code == WD_SUCCESS) {
     result = script_wrapper.result().boolVal == VARIANT_TRUE;
   } else {
     LOG(WARN) << "Failed to determine is element enabled";
@@ -135,7 +135,7 @@ int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
   LocationInfo location = {};
   int status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior, &location);
 
-  if (status_code == SUCCESS) {
+  if (status_code == WD_SUCCESS) {
     LocationInfo click_location = GetClickPoint(location);
 
     // Create a mouse move, mouse down, mouse up OS event
@@ -145,7 +145,7 @@ int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
                                  location.y,
                                  click_location.x,
                                  click_location.y);
-    if (result != SUCCESS) {
+    if (result != WD_SUCCESS) {
       LOG(WARN) << "Unable to move mouse, mouseMoveTo returned non-zero value";
       return static_cast<int>(result);
     }
@@ -154,7 +154,7 @@ int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
                      click_location.x,
                      click_location.y,
                      MOUSEBUTTON_LEFT);
-    if (result != SUCCESS) {
+    if (result != WD_SUCCESS) {
       LOG(WARN) << "Unable to click at by mouse, clickAt returned non-zero value";
       return static_cast<int>(result);
     }
@@ -173,7 +173,7 @@ int Element::GetAttributeValue(const std::string& attribute_name,
   LOG(TRACE) << "Entering Element::GetAttributeValue";
 
   std::wstring wide_attribute_name = CA2W(attribute_name.c_str(), CP_UTF8);
-  int status_code = SUCCESS;
+  int status_code = WD_SUCCESS;
 
   // The atom is just the definition of an anonymous
   // function: "function() {...}"; Wrap it in another function so we can
@@ -190,20 +190,20 @@ int Element::GetAttributeValue(const std::string& attribute_name,
   status_code = script_wrapper.Execute();
   
   CComVariant value_variant;
-  if (status_code == SUCCESS) {
+  if (status_code == WD_SUCCESS) {
     *value_is_null = !script_wrapper.ConvertResultToString(attribute_value);
   } else {
     LOG(WARN) << "Failed to determine element attribute";
   }
 
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scroll,
                                              LocationInfo* location) {
   LOG(TRACE) << "Entering Element::GetLocationOnceScrolledIntoView";
 
-  int status_code = SUCCESS;
+  int status_code = WD_SUCCESS;
   CComPtr<IHTMLDOMNode2> node;
   HRESULT hr = this->element_->QueryInterface(&node);
 
@@ -214,7 +214,7 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
 
   bool displayed;
   int result = this->IsDisplayed(&displayed);
-  if (result != SUCCESS) {
+  if (result != WD_SUCCESS) {
     LOG(WARN) << "Unable to determine element is displayed";
     return result;
   } 
@@ -230,7 +230,7 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
   LocationInfo click_location = this->GetClickPoint(element_location);
   bool document_contains_frames = frame_locations.size() != 0;
 
-  if (result != SUCCESS ||
+  if (result != WD_SUCCESS ||
       !this->IsLocationInViewPort(click_location, document_contains_frames) ||
       this->IsHiddenByOverflow() ||
       !this->IsLocationVisibleInFrames(click_location, frame_locations)) {
@@ -248,7 +248,7 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
 
     std::vector<LocationInfo> scrolled_frame_locations;
     result = this->GetLocation(&element_location, &scrolled_frame_locations);
-    if (result != SUCCESS) {
+    if (result != WD_SUCCESS) {
       LOG(WARN) << "Unable to get location of scrolled to element";
       return result;
     }
@@ -319,7 +319,7 @@ bool Element::IsHiddenByOverflow() {
   Script script_wrapper(doc, script_source, 1);
   script_wrapper.AddArgument(this->element_);
   int status_code = script_wrapper.Execute();
-  if (status_code == SUCCESS) {
+  if (status_code == WD_SUCCESS) {
     isOverflow = script_wrapper.result().boolVal == VARIANT_TRUE;
   } else {
     LOG(WARN) << "Unable to determine is element hidden by overflow";
@@ -358,7 +358,7 @@ bool Element::IsSelected() {
   script_wrapper.AddArgument(this->element_);
   int status_code = script_wrapper.Execute();
 
-  if (status_code == SUCCESS && script_wrapper.ResultIsBoolean()) {
+  if (status_code == WD_SUCCESS && script_wrapper.ResultIsBoolean()) {
     selected = script_wrapper.result().boolVal == VARIANT_TRUE;
   } else {
     LOG(WARN) << "Unable to determine is element selected";
@@ -443,7 +443,7 @@ int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* fram
           Element childElement(child, this->containing_window_handle_);
           std::vector<LocationInfo> child_frame_locations;
           int result = childElement.GetLocation(location, &child_frame_locations);
-          if (result == SUCCESS) {
+          if (result == WD_SUCCESS) {
             return result;
           }
         }
@@ -490,7 +490,7 @@ int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* fram
   location->width = w;
   location->height = h;
 
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 bool Element::IsInline() {
@@ -535,7 +535,7 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
 
   CComPtr<IHTMLDocument2> owner_doc;
   int status_code = this->GetContainingDocument(true, &owner_doc);
-  if (status_code != SUCCESS) {
+  if (status_code != WD_SUCCESS) {
     LOG(WARN) << "Unable to get containing document";
     return false;
   }
@@ -598,7 +598,7 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
         script_wrapper.AddArgument(window_variant);
         status_code = script_wrapper.Execute();
         CComPtr<IHTMLFrameBase> frame_base;
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           hr = script_wrapper.result().pdispVal->QueryInterface<IHTMLFrameBase>(&frame_base);
           if (FAILED(hr)) {
             LOG(WARN) << "Found the frame element, but could not QueryInterface to IHTMLFrameBase.";
@@ -658,7 +658,7 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
           LocationInfo frame_location = {};
           status_code = element_wrapper.GetLocation(&frame_location,
                                                     frame_locations);
-          if (status_code == SUCCESS) {
+          if (status_code == WD_SUCCESS) {
             // Take into account the presence of scrollbars in the frame.
             long frame_element_width = frame_location.width;
             long frame_element_height = frame_location.height;
@@ -788,7 +788,7 @@ int Element::GetContainingDocument(const bool use_dom_node,
     return ENOSUCHDOCUMENT;
   }
 
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int Element::GetDocumentFromWindow(IHTMLWindow2* parent_window,
@@ -828,7 +828,7 @@ int Element::GetDocumentFromWindow(IHTMLWindow2* parent_window,
       return ENOSUCHDOCUMENT;
     }
   }
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC execute_proc, std::string* error_msg) {
@@ -899,7 +899,7 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
     // verify the success or failure of the called function, so we have to
     // assume we just succeeded.
     LOG(DEBUG) << "Marshaling element to stream to send to thread";
-    int status_code = SUCCESS;
+    int status_code = WD_SUCCESS;
     LPSTREAM element_stream;
     hr = ::CoMarshalInterThreadInterfaceInStream(IID_IDispatch, this->element_, &element_stream);
     if (FAILED(hr)) {

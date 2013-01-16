@@ -107,7 +107,7 @@ int DocumentHost::SetFocusedFrameByElement(IHTMLElement* frame_element) {
   HRESULT hr = S_OK;
   if (!frame_element) {
     this->focused_frame_window_ = NULL;
-    return SUCCESS;
+    return WD_SUCCESS;
   }
 
   CComQIPtr<IHTMLFrameBase2> frame_base(frame_element);
@@ -124,7 +124,7 @@ int DocumentHost::SetFocusedFrameByElement(IHTMLElement* frame_element) {
   }
 
   this->focused_frame_window_ = interim_result;
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int DocumentHost::SetFocusedFrameByName(const std::string& frame_name) {
@@ -168,7 +168,7 @@ int DocumentHost::SetFocusedFrameByName(const std::string& frame_name) {
   }
 
   this->focused_frame_window_ = interim_result;
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int DocumentHost::SetFocusedFrameByIndex(const int frame_index) {
@@ -212,7 +212,7 @@ int DocumentHost::SetFocusedFrameByIndex(const int frame_index) {
   }
 
   this->focused_frame_window_ = interim_result;
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 void DocumentHost::GetCookies(std::map<std::string, std::string>* cookies) {
@@ -273,7 +273,7 @@ int DocumentHost::AddCookie(const std::string& cookie) {
     return EUNHANDLEDERROR;
   }
 
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int DocumentHost::DeleteCookie(const std::string& cookie_name) {

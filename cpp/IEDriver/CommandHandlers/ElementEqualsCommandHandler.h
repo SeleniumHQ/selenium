@@ -48,20 +48,20 @@ protected:
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
 
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
-      if (status_code == SUCCESS)
+      if (status_code == WD_SUCCESS)
       {
         ElementHandle other_element_wrapper;
         status_code = this->GetElement(executor,
                                        other_element_id,
                                        &other_element_wrapper);
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           response->SetSuccessResponse((element_wrapper->element() == other_element_wrapper->element()));
           return;
         } else {

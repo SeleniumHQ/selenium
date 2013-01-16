@@ -46,7 +46,7 @@ class SetWindowSizeCommandHandler : public IECommandHandler {
       response->SetErrorResponse(400, "Missing parameter: y");
       return;
     } else {
-      int status_code = SUCCESS;
+      int status_code = WD_SUCCESS;
       int width = width_parameter_iterator->second.asInt();
       int height = height_parameter_iterator->second.asInt();
       std::string window_id = id_parameter_iterator->second;
@@ -57,7 +57,7 @@ class SetWindowSizeCommandHandler : public IECommandHandler {
       } else {
         status_code = executor.GetManagedBrowser(window_id, &browser_wrapper);
       }
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Error retrieving window with handle " + window_id);
         return;
       }

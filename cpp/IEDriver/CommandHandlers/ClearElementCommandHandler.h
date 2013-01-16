@@ -40,19 +40,19 @@ class ClearElementCommandHandler : public IECommandHandler {
       return;
     } else {
       std::wstring text = L"";
-      int status_code = SUCCESS;
+      int status_code = WD_SUCCESS;
       std::string element_id = id_parameter_iterator->second;
 
       BrowserHandle browser_wrapper;
       status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
 
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
-      if (status_code == SUCCESS)
+      if (status_code == WD_SUCCESS)
       {
         // The atom is just the definition of an anonymous
         // function: "function() {...}"; Wrap it in another function so we can
@@ -66,7 +66,7 @@ class ClearElementCommandHandler : public IECommandHandler {
         Script script_wrapper(doc, script_source, 1);
         script_wrapper.AddArgument(element_wrapper);
         status_code = script_wrapper.Execute();
-        if (status_code != SUCCESS) {
+        if (status_code != WD_SUCCESS) {
           // Assume that a JavaScript error returned by the atom is that
           // the element is either invisible, disabled, or read-only.
           // This may be a bad assumption, but we currently have no way

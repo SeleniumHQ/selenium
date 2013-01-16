@@ -120,7 +120,7 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     ::ReleaseMutex(mutex_handle);
     ::CloseHandle(mutex_handle);
   }
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 bool InputManager::SetFocusToBrowser(BrowserHandle browser_wrapper) {
@@ -204,14 +204,14 @@ int InputManager::MouseClick(BrowserHandle browser_wrapper, int button) {
 
     script_wrapper.AddArgument(this->mouse_state_);
     int status_code = script_wrapper.Execute();
-    if (status_code == SUCCESS) {
+    if (status_code == WD_SUCCESS) {
       this->mouse_state_ = script_wrapper.result();
     } else {
       LOG(WARN) << "Unable to execute js to perform mouse click";
       return status_code;
     }
   }
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int InputManager::MouseButtonDown(BrowserHandle browser_wrapper) {
@@ -241,14 +241,14 @@ int InputManager::MouseButtonDown(BrowserHandle browser_wrapper) {
     Script script_wrapper(doc, script_source, 1);
     script_wrapper.AddArgument(this->mouse_state_);
     int status_code = script_wrapper.Execute();
-    if (status_code == SUCCESS) {
+    if (status_code == WD_SUCCESS) {
       this->mouse_state_ = script_wrapper.result();
     } else {
       LOG(WARN) << "Unable to execute js to perform mouse button down";
       return status_code;
     }
   }
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int InputManager::MouseButtonUp(BrowserHandle browser_wrapper) {
@@ -278,14 +278,14 @@ int InputManager::MouseButtonUp(BrowserHandle browser_wrapper) {
     Script script_wrapper(doc, script_source, 1);
     script_wrapper.AddArgument(this->mouse_state_);
     int status_code = script_wrapper.Execute();
-    if (status_code == SUCCESS) {
+    if (status_code == WD_SUCCESS) {
       this->mouse_state_ = script_wrapper.result();
     } else {
       LOG(WARN) << "Unable to execute js to perform mouse button up";
       return status_code;
     }
   }
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int InputManager::MouseDoubleClick(BrowserHandle browser_wrapper) {
@@ -314,24 +314,24 @@ int InputManager::MouseDoubleClick(BrowserHandle browser_wrapper) {
     Script script_wrapper(doc, script_source, 1);
     script_wrapper.AddArgument(this->mouse_state_);
     int status_code = script_wrapper.Execute();
-    if (status_code == SUCCESS) {
+    if (status_code == WD_SUCCESS) {
       this->mouse_state_ = script_wrapper.result();
     } else {
       LOG(WARN) << "Unable to execute js to double click";
       return status_code;
     }
   }
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element_id, bool offset_specified, int x_offset, int y_offset) {
   LOG(TRACE) << "Entering InputManager::MouseMoveTo";
-  int status_code = SUCCESS;    
+  int status_code = WD_SUCCESS;    
   bool element_specified = element_id.size() != 0;
   ElementHandle target_element;
   if (element_specified) {
     status_code = this->element_map_->GetManagedElement(element_id, &target_element);
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       return status_code;
     }
   }
@@ -350,7 +350,7 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
       // point (the center of the element) is not within the viewport. However,
       // we might still be able to move to whatever portion of the element *is*
       // visible in the viewport, so we have to have an extra check.
-      if (status_code != SUCCESS && element_location.width == 0 && element_location.height == 0) {
+      if (status_code != WD_SUCCESS && element_location.width == 0 && element_location.height == 0) {
         LOG(WARN) << "Unable to get location after scrolling or element sizes are zero";
         return status_code;
       }
@@ -430,7 +430,7 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
 
     script_wrapper.AddArgument(this->mouse_state_);
     status_code = script_wrapper.Execute();
-    if (status_code == SUCCESS) {
+    if (status_code == WD_SUCCESS) {
       this->mouse_state_ = script_wrapper.result();
     } else {
       LOG(WARN) << "Unable to execute js to mouse move";
@@ -441,7 +441,7 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
 
 int InputManager::SendKeystrokes(BrowserHandle browser_wrapper, Json::Value keystroke_array, bool auto_release_modifier_keys) {
   LOG(TRACE) << "Entering InputManager::SendKeystrokes";
-  int status_code = SUCCESS;
+  int status_code = WD_SUCCESS;
   std::wstring keys = L"";
   for (unsigned int i = 0; i < keystroke_array.size(); ++i ) {
     std::string key(keystroke_array[i].asString());
@@ -477,7 +477,7 @@ int InputManager::SendKeystrokes(BrowserHandle browser_wrapper, Json::Value keys
     script_wrapper.AddArgument(this->keyboard_state());
     script_wrapper.AddArgument(keys);
     status_code = script_wrapper.Execute();
-    if (status_code == SUCCESS) {
+    if (status_code == WD_SUCCESS) {
       this->set_keyboard_state(script_wrapper.result());
     } else {
       LOG(WARN) << "Unable to execute js to send keystrokes";

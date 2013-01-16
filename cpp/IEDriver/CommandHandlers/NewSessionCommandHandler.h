@@ -74,7 +74,7 @@ class NewSessionCommandHandler : public IECommandHandler {
     }
     std::string create_browser_error_message = "";
     int result_code = mutable_executor.CreateNewBrowser(&create_browser_error_message);
-    if (result_code != SUCCESS) {
+    if (result_code != WD_SUCCESS) {
       // The browser was not created successfully, therefore the
       // session must be marked as invalid so the server can
       // properly shut it down.

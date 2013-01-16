@@ -40,7 +40,7 @@ class GoToUrlCommandHandler : public IECommandHandler {
     } else {
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
@@ -48,7 +48,7 @@ class GoToUrlCommandHandler : public IECommandHandler {
       // TODO: check result for error
       std::string url = url_parameter_iterator->second.asString();
       status_code = browser_wrapper->NavigateToUrl(url);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Failed to navigate to "
                                                     + url
                                                     + ". This usually means that a call to the COM method IWebBrowser2::Navigate2() failed.");

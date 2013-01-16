@@ -43,18 +43,18 @@ class GetElementLocationOnceScrolledIntoViewCommandHandler : public IECommandHan
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
 
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         LocationInfo location = {};
         status_code = element_wrapper->GetLocationOnceScrolledIntoView(executor.input_manager()->scroll_behavior(),
                                                                        &location);
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           CComPtr<IHTMLDocument2> doc;
           browser_wrapper->GetDocument(&doc);
           bool browser_appears_before_ie8 = executor.browser_version() < 8 || DocumentHost::GetDocumentMode(doc) <= 7;

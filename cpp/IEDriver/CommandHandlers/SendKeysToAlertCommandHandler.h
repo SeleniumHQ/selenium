@@ -44,7 +44,7 @@ class SendKeysToAlertCommandHandler : public IECommandHandler {
 
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to get browser");
       return;
     }
@@ -56,7 +56,7 @@ class SendKeysToAlertCommandHandler : public IECommandHandler {
     } else {
       Alert dialog(browser_wrapper, alert_handle);
       status_code = dialog.SendKeys(text_parameter_iterator->second.asString());
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,
                                    "Modal dialog did not have a text box - maybe it was an alert");
         return;

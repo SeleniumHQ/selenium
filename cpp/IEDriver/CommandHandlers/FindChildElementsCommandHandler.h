@@ -56,7 +56,7 @@ class FindChildElementsCommandHandler : public IECommandHandler {
                                          element_id,
                                          &parent_element_wrapper);
 
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         Json::Value found_elements(Json::arrayValue);
 
         int timeout = executor.implicit_wait_timeout();
@@ -70,7 +70,7 @@ class FindChildElementsCommandHandler : public IECommandHandler {
                                                 mechanism,
                                                 value,
                                                 &found_elements);
-          if (status_code == SUCCESS && found_elements.size() > 0) {
+          if (status_code == WD_SUCCESS && found_elements.size() > 0) {
             response->SetSuccessResponse(found_elements);
             return;
           }
@@ -90,7 +90,7 @@ class FindChildElementsCommandHandler : public IECommandHandler {
         } while (clock() < end);
 
         // This code is executed when no elements where found and no errors occurred.
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           response->SetSuccessResponse(found_elements);
           return;
         }

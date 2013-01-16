@@ -36,7 +36,7 @@ class AcceptAlertCommandHandler : public IECommandHandler {
                        Response* response) {
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to get current browser");
       return;
     }
@@ -48,7 +48,7 @@ class AcceptAlertCommandHandler : public IECommandHandler {
     } else {
       Alert dialog(browser_wrapper, alert_handle);
       status_code = dialog.Accept();
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,
                                    "Could not find OK button");
       }

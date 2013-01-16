@@ -45,11 +45,11 @@ class MouseMoveToCommandHandler : public IECommandHandler {
                                  "Missing parameters: element, xoffset, yoffset");
       return;
     } else {
-      int status_code = SUCCESS;
+      int status_code = WD_SUCCESS;
       IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
       BrowserHandle browser_wrapper;
       status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,
                                     "Unable to get browser");
         return;

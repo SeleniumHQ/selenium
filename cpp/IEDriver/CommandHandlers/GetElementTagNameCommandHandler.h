@@ -41,7 +41,7 @@ class GetElementTagNameCommandHandler : public IECommandHandler {
       std::string element_id = id_parameter_iterator->second;
       ElementHandle element_wrapper;
       int status_code = this->GetElement(executor, element_id, &element_wrapper);
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         std::string return_value = element_wrapper->GetTagName();
         response->SetSuccessResponse(return_value);
         return;

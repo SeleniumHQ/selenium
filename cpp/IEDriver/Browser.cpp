@@ -279,7 +279,7 @@ int Browser::NavigateToUrl(const std::string& url) {
   }
 
   this->set_wait_required(true);
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int Browser::NavigateBack() {
@@ -298,7 +298,7 @@ int Browser::NavigateBack() {
   }
 
   this->set_wait_required(true);
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 unsigned int WINAPI Browser::GoBackThreadProc(LPVOID param) {
@@ -328,7 +328,7 @@ int Browser::NavigateForward() {
   }
 
   this->set_wait_required(true);
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 unsigned int WINAPI Browser::GoForwardThreadProc(LPVOID param) {
@@ -351,7 +351,7 @@ int Browser::Refresh() {
   }
 
   this->set_wait_required(true);
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 HWND Browser::GetTopLevelWindowHandle() {

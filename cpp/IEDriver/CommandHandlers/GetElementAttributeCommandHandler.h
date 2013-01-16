@@ -47,20 +47,20 @@ class GetElementAttributeCommandHandler : public IECommandHandler {
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
 
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         std::string value = "";
         bool is_null;
         status_code = element_wrapper->GetAttributeValue(name,
                                                          &value,
                                                          &is_null);
-        if (status_code != SUCCESS) {
+        if (status_code != WD_SUCCESS) {
           response->SetErrorResponse(status_code, "Unable to get attribute");
           return;
         } else {

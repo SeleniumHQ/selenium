@@ -35,7 +35,7 @@ class DismissAlertCommandHandler : public AcceptAlertCommandHandler {
                        Response* response) {
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to get browser");
       return;
     }
@@ -47,7 +47,7 @@ class DismissAlertCommandHandler : public AcceptAlertCommandHandler {
     } else {
       Alert dialog(browser_wrapper, alert_handle);
       status_code = dialog.Dismiss();
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,
                                    "Could not find Cancel button");
       }

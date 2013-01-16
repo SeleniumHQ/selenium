@@ -42,14 +42,14 @@ class GetElementLocationCommandHandler : public IECommandHandler {
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
 
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         // The atom is just the definition of an anonymous
         // function: "function() {...}"; Wrap it in another function so
         // we can invoke it with our arguments without polluting the
@@ -71,7 +71,7 @@ class GetElementLocationCommandHandler : public IECommandHandler {
         script_wrapper.AddArgument(element_wrapper);
         status_code = script_wrapper.Execute();
 
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           script_wrapper.ConvertResultToJsonValue(executor, &location_array);
 
           Json::UInt index = 0;

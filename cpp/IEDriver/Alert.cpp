@@ -50,7 +50,7 @@ int Alert::Accept() {
     LOG(DEBUG) << "Closing alert using SendMessage";
     int status_code = this->ClickAlertButton(button_info);
   }
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int Alert::Dismiss() {
@@ -65,7 +65,7 @@ int Alert::Dismiss() {
     LOG(DEBUG) << "Closing alert using SendMessage";
     int status_code = this->ClickAlertButton(button_info);
   }
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 int Alert::SendKeys(std::string keys) {
@@ -94,7 +94,7 @@ int Alert::SendKeys(std::string keys) {
                   NULL,
                   reinterpret_cast<LPARAM>(text.c_str()));
   }
-  return SUCCESS;
+  return WD_SUCCESS;
 }
 
 std::string Alert::GetText() {
@@ -152,8 +152,8 @@ int Alert::ClickAlertButton(DialogButtonInfo button_info) {
   // TODO(JimEvans): Check for the following error conditions:
   // 1. Alert window still present (::IsWindow(this->alert_handle_) == TRUE)
   // 2. Browser still busy (this->browser_->IsBusy() == true)
-  // and return an appropriate non-SUCCESS error code.
-  return SUCCESS;
+  // and return an appropriate non-WD_SUCCESS error code.
+  return WD_SUCCESS;
 }
 
 Alert::DialogButtonInfo Alert::GetDialogButton(BUTTON_TYPE button_type) {

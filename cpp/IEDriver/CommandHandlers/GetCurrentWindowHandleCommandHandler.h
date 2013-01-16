@@ -36,7 +36,7 @@ class GetCurrentWindowHandleCommandHandler : public IECommandHandler {
     std::string current_handle = executor.current_browser_id();
     BrowserHandle browser;
     int status_code = executor.GetManagedBrowser(current_handle, &browser);
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(ENOSUCHWINDOW, "Window is closed");
     } else {
       response->SetSuccessResponse(current_handle);

@@ -91,13 +91,13 @@ class AddCookieCommandHandler : public IECommandHandler {
 
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to get current browser");
       return;
     }
 
     status_code = browser_wrapper->AddCookie(cookie_string);
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to add cookie to page");
       return;
     }

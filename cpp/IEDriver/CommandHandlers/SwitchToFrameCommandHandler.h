@@ -43,7 +43,7 @@ class SwitchToFrameCommandHandler : public IECommandHandler {
     }
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "Unable to get browser");
       return;
     }
@@ -61,7 +61,7 @@ class SwitchToFrameCommandHandler : public IECommandHandler {
         status_code = this->GetElement(executor,
                                        frame_element_id,
                                        &frame_element_wrapper);
-        if (status_code == SUCCESS) {
+        if (status_code == WD_SUCCESS) {
           status_code = browser_wrapper->SetFocusedFrameByElement(frame_element_wrapper->element());
         }
       }
@@ -73,7 +73,7 @@ class SwitchToFrameCommandHandler : public IECommandHandler {
       status_code = browser_wrapper->SetFocusedFrameByIndex(frame_index);
     }
 
-    if (status_code != SUCCESS) {
+    if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code, "No frame found");
     } else {
       response->SetSuccessResponse(Json::Value::null);

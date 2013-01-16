@@ -108,7 +108,7 @@ class ExecuteAsyncScriptCommandHandler : public ExecuteScriptCommandHandler {
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
@@ -119,7 +119,7 @@ class ExecuteAsyncScriptCommandHandler : public ExecuteScriptCommandHandler {
       status_code = this->PopulateArgumentArray(executor,
                                                 async_script_wrapper,
                                                 json_args);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,
                                    "Error setting arguments for script");
         return;
@@ -127,7 +127,7 @@ class ExecuteAsyncScriptCommandHandler : public ExecuteScriptCommandHandler {
 
       status_code = async_script_wrapper.Execute();
 
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code,
                                    "JavaScript error in async script.");
         return;
@@ -136,7 +136,7 @@ class ExecuteAsyncScriptCommandHandler : public ExecuteScriptCommandHandler {
         while (true) {
           Json::Value polling_result;
           status_code = polling_script_wrapper.Execute();
-          if (status_code != SUCCESS) {
+          if (status_code != WD_SUCCESS) {
             // Assume that if the polling script errors, it's because
             // of a page reload. Note that experience shows this to
             // happen most frequently when a refresh occurs, since

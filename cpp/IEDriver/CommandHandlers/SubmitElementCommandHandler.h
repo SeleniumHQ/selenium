@@ -45,14 +45,14 @@ class SubmitElementCommandHandler : public IECommandHandler {
 
       BrowserHandle browser_wrapper;
       int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != SUCCESS) {
+      if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get browser");
         return;
       }
 
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
-      if (status_code == SUCCESS) {
+      if (status_code == WD_SUCCESS) {
         // Use native events if we can. If not, use the automation atom.
         bool handled_with_native_events = false;
         CComQIPtr<IHTMLInputElement> input(element_wrapper->element());
@@ -83,7 +83,7 @@ class SubmitElementCommandHandler : public IECommandHandler {
             status_code = ExecuteSubmitAtom(doc, element_variant);
           }
 
-          if (status_code != SUCCESS) {
+          if (status_code != WD_SUCCESS) {
             response->SetErrorResponse(status_code,
                                         "Error submitting when not using native events. " + submit_error);
             return;
@@ -160,7 +160,7 @@ class SubmitElementCommandHandler : public IECommandHandler {
     while ((bRet = ::GetMessage(&msg, NULL, 0, 0)) != 0) {
       if (msg.message == WD_EXECUTE_ASYNC_SCRIPT) {
         LOG(DEBUG) << "Received execution message. Unmarshaling element from stream.";
-        int status_code = SUCCESS;
+        int status_code = WD_SUCCESS;
         CComPtr<IDispatch> dispatch;
         LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
         hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IDispatch, reinterpret_cast<void**>(&dispatch));
