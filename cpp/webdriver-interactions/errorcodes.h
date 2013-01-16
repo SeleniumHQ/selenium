@@ -1,6 +1,6 @@
 #pragma once
 
-#define SUCCESS 0
+#define WD_SUCCESS 0
 
 #define EINDEXOUTOFBOUNDS    1
 #define ENOCOLLECTION        2

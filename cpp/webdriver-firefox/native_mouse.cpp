@@ -63,7 +63,7 @@ NS_IMETHODIMP nsNativeMouse::MouseMove(nsISupports *aNode, PRInt32 startX, PRInt
 
   WD_RESULT res = mouseMoveTo(windowHandle, 100, startX, startY, endX, endY);
 
-  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
+  return res == WD_SUCCESS ? NS_OK : NS_ERROR_FAILURE;
 }
 
 /* void click (in nsISupports aNode, in long x, in long y, in long button); */
@@ -82,9 +82,9 @@ NS_IMETHODIMP nsNativeMouse::Click(nsISupports *aNode, PRInt32 x, PRInt32 y, PRI
   LOG(DEBUG) << "Calling clickAt: " << x << ", " << y;
   WD_RESULT res = clickAt(windowHandle, x, y, button);
 
-  LOG(DEBUG) << "Result was: " << (res == SUCCESS ? "ok" : "fail");
+  LOG(DEBUG) << "Result was: " << (res == WD_SUCCESS ? "ok" : "fail");
 
-  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
+  return res == WD_SUCCESS ? NS_OK : NS_ERROR_FAILURE;
 }
 
 /* void doubleClick (in nsISupports aNode, in long x, in long y, in long button); */
@@ -103,9 +103,9 @@ NS_IMETHODIMP nsNativeMouse::DoubleClick(nsISupports *aNode, PRInt32 x, PRInt32 
   LOG(DEBUG) << "Calling doubleClickAt: " << x << ", " << y;
   WD_RESULT res = doubleClickAt(windowHandle, x, y);
 
-  LOG(DEBUG) << "Result was: " << (res == SUCCESS ? "ok" : "fail");
+  LOG(DEBUG) << "Result was: " << (res == WD_SUCCESS ? "ok" : "fail");
 
-  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
+  return res == WD_SUCCESS ? NS_OK : NS_ERROR_FAILURE;
 }
 
 /* void mousePress(in nsISupports aNode, in long x, in long y, in long button); */
@@ -124,9 +124,9 @@ NS_IMETHODIMP nsNativeMouse::MousePress(nsISupports *aNode, PRInt32 x, PRInt32 y
   LOG(DEBUG) << "Calling mouseDownAt at: " << x << ", " << y << " with button: " << button;
   WD_RESULT res = mouseDownAt(windowHandle, x, y, button);
 
-  LOG(DEBUG) << "Result was: " << (res == SUCCESS ? "ok" : "fail");
+  LOG(DEBUG) << "Result was: " << (res == WD_SUCCESS ? "ok" : "fail");
 
-  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
+  return res == WD_SUCCESS ? NS_OK : NS_ERROR_FAILURE;
 }
 
 
@@ -146,7 +146,7 @@ NS_IMETHODIMP nsNativeMouse::MouseRelease(nsISupports *aNode, PRInt32 x, PRInt32
   LOG(DEBUG) << "Calling mouseUpAt: " << x << ", " << y << " with button: " << button;
   WD_RESULT res = mouseUpAt(windowHandle, x, y, button);
 
-  LOG(DEBUG) << "Result was: " << (res == SUCCESS ? "ok" : "fail");
+  LOG(DEBUG) << "Result was: " << (res == WD_SUCCESS ? "ok" : "fail");
 
-  return res == SUCCESS ? NS_OK : NS_ERROR_FAILURE;
+  return res == WD_SUCCESS ? NS_OK : NS_ERROR_FAILURE;
 }
