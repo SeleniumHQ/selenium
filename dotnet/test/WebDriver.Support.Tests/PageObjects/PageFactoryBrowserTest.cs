@@ -1,7 +1,10 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
+using System.Collections.ObjectModel;
+using System;
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
@@ -77,6 +80,16 @@ namespace OpenQA.Selenium.Support.PageObjects
             Assert.AreEqual("Item 1", item.Text);
         }
 
+        [Test]
+        public void ShouldFindMultipleElements()
+        {
+            driver.Url = xhtmlTestPage;
+            var page = new PageFactoryBrowserTest.LinksPage();
+            PageFactory.InitElements(driver, page);
+            Assert.AreEqual(12, page.AllLinks.Count);
+            Assert.AreEqual("Open new window", page.AllLinks[0].Text.Trim());
+        }
+
         #region Page classes for tests
         #pragma warning disable 649 //We set fields through reflection, so expect an always-null warning
 
@@ -90,6 +103,12 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             [FindsBy(How=How.Id, Using="menu1")]
             public IWebElement MenuLink;
+        }
+
+        private class LinksPage
+        {
+            [FindsBy(How=How.TagName, Using="a")]
+            public IList<IWebElement> AllLinks;
         }
 
         #pragma warning restore 649

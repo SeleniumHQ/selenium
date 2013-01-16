@@ -24,7 +24,7 @@ using OpenQA.Selenium.Internal;
 namespace OpenQA.Selenium.Support.PageObjects
 {
     /// <summary>
-    /// Provides comparison of proxied web elements.
+    /// Provides comparison of web elements that have been wrapped by a proxy.
     /// </summary>
     public class WebElementProxyComparer
     {

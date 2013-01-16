@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using NMock2;
 using NUnit.Framework;
 
@@ -33,6 +35,15 @@ namespace OpenQA.Selenium.Support.PageObjects
             Assert.Null(page.formElement);
 
             PageFactory.InitElements(mockDriver, page);
+            Assert.NotNull(page.formElement);
+        }
+
+        [Test]
+        public void ElementShouldBeAbleToUseGenericVersionOfInitElements()
+        {
+            IWebDriver driver = mocks.NewMock<IWebDriver>();
+            var page = PageFactory.InitElements<GenericFactoryPage>(driver);
+            Assert.IsInstanceOf<GenericFactoryPage>(page);
             Assert.NotNull(page.formElement);
         }
         
@@ -212,6 +223,30 @@ namespace OpenQA.Selenium.Support.PageObjects
         public void UsingCustomByWithInvalidCtor()
         {
             var page = new InvalidCtorCustomByPage();
+            PageFactory.InitElements(mockDriver, page);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "is not IWebElement or IList<IWebElement>", MatchType = MessageMatch.Contains)]
+        public void ThrowsIfElementTypeIsInvalid()
+        {
+            var page = new InvalidElementTypePage();
+            PageFactory.InitElements(mockDriver, page);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "is not IWebElement or IList<IWebElement>", MatchType = MessageMatch.Contains)]
+        public void ThrowsIfElementCollectionTypeIsInvalid()
+        {
+            var page = new InvalidCollectionTypePage();
+            PageFactory.InitElements(mockDriver, page);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "is not IWebElement or IList<IWebElement>", MatchType = MessageMatch.Contains)]
+        public void ThrowsIfConcreteCollectionTypeIsUsed()
+        {
+            var page = new ConcreteCollectionTypePage();
             PageFactory.InitElements(mockDriver, page);
         }
 
@@ -420,6 +455,36 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             [FindsBy(How = How.Custom, Using = "custom", CustomFinderType = typeof(CustomByNoCtor))]
             public IWebElement customFoundElement;
+        }
+
+        private class GenericFactoryPage
+        {
+            private IWebDriver driver;
+            public GenericFactoryPage(IWebDriver driver)
+            {
+                this.driver = driver;
+            }
+
+            [FindsBy(How = How.Name, Using = "someForm")]
+            public IWebElement formElement;
+        }
+
+        private class InvalidElementTypePage
+        {
+            [FindsBy(How = How.Name, Using = "someForm")]
+            public string myElement;
+        }
+
+        private class InvalidCollectionTypePage
+        {
+            [FindsBy(How = How.Name, Using = "someForm")]
+            public List<string> myElement;
+        }
+
+        private class ConcreteCollectionTypePage
+        {
+            [FindsBy(How = How.Name, Using = "someForm")]
+            public ReadOnlyCollection<IWebElement> myElement;
         }
 
         #pragma warning restore 649
