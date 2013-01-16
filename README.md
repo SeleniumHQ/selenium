@@ -9,7 +9,7 @@ We accept pull requests from GitHub. When making the pull request, please indica
 you have filled in the [CLA](https://spreadsheets.google.com/spreadsheet/viewform?hl=en_US&formkey=dFFjXzBzM1VwekFlOWFWMjFFRjJMRFE6MQ#gid=0)
 
 Merging pull requests cannot be done with the GitHub GUI. The email sent from GitHub can be used on
-your local repository or you can use the "power git checkout" at the bottom of http://maven.apache.org/developers/conventions/git.html.
+your local repository or you can use the ["power git checkout"](http://maven.apache.org/developers/conventions/git.html#power-git_checkout).
 
 
 [Selenium 2.0](http://code.google.com/p/selenium/) builds with
