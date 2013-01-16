@@ -18,17 +18,14 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-public class XPathLookupException extends WebDriverException {
-  public XPathLookupException() {
-    super();
-  }
+/**
+ * @deprecated Use InvalidSelectorException instead
+ */
+@Deprecated
+public class XPathLookupException extends InvalidSelectorException {
 
   public XPathLookupException(String message) {
     super(message);
-  }
-
-  public XPathLookupException(Throwable cause) {
-    super(cause);
   }
 
   public XPathLookupException(String message, Throwable cause) {
