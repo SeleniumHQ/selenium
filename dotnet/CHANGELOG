@@ -1,3 +1,9 @@
+v2.29.1
+=======
+ * Rebuilt to get embedded Firefox extension with correct version. The
+   extension in 2.29.0 had a version of "2.28" instead of "2.29". This has now
+   been corrected.
+
 v2.29.0
 =======
  * Implemented use with lists for the FindsByAttribute in the .NET bindings.
