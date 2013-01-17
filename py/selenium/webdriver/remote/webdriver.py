@@ -38,10 +38,11 @@ class WebDriver(object):
      - error_handler - errorhandler.ErrorHandler object used to verify that the server did not return an error.
      - session_id - The session ID to send with every command.
      - capabilities - A dictionary of capabilities of the underlying browser for this instance's session.
+     - proxy - A selenium.webdriver.common.proxy.Proxy object, to specify a proxy for the browser to use.
     """
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
-        desired_capabilities=None, browser_profile=None):
+        desired_capabilities=None, browser_profile=None, proxy=None):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -54,6 +55,8 @@ class WebDriver(object):
             raise WebDriverException("Desired Capabilities can't be None")
         if not isinstance(desired_capabilities, dict):
             raise WebDriverException("Desired Capabilities must be a dictionary")
+        if proxy is not None:
+            proxy.add_to_capabilities(desired_capabilities)
         self.command_executor = command_executor
         if type(self.command_executor) is str or type(self.command_executor) is unicode:
             self.command_executor = RemoteConnection(command_executor)
