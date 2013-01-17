@@ -62,7 +62,7 @@
   }
   
   // If we didn't set a status above, go ahead and use a generic now.
-  if (status_ == SUCCESS) {
+  if (status_ == WD_SUCCESS) {
     status_ = EUNHANDLEDERROR;
   }
 
@@ -155,7 +155,7 @@
 }
 
 - (int)errorStatusCode {
-  if (status_ == SUCCESS) {
+  if (status_ == WD_SUCCESS) {
     return 200;
   } else if (status_ > 399 && status_ < 500) {
     return status_;
@@ -167,11 +167,11 @@
 #pragma mark Properties
 
 - (BOOL)isError {
-  return status_ != SUCCESS;
+  return status_ != WD_SUCCESS;
 }
 
 - (void)setIsError:(BOOL)newIsError {
-  [self setStatus:(newIsError ? EUNHANDLEDERROR : SUCCESS)];
+  [self setStatus:(newIsError ? EUNHANDLEDERROR : WD_SUCCESS)];
 }
 
 - (int)status {
