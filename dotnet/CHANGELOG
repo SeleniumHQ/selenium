@@ -1,3 +1,16 @@
+v2.29.0
+=======
+ * Implemented use with lists for the FindsByAttribute in the .NET bindings.
+   Note that fields and properties decorated with the FindsBy attribute must be
+   either IWebElement or IList<IWebElement>.
+ * Exposed RequireWindowFocus option for Internet Explorer driver in .NET
+   bindings. This is still an experimental feature, and should be used with
+   extreme care.
+ * Added guard for EnablePersistentHoverCapability in .NET
+   InternetExplorerOptions.AddAdditionalCapability().
+ * Added type safe ability via InternetExplorerOptions to enable/disable the
+   persistent hover capability in the .NET bindings for the IE driver.
+
 v2.28.0
 =======
  * Introduced the CustomFinderType property to the .NET FindsByAttribute. This
