@@ -1,7 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright 2008-2010 WebDriver committers
-# Copyright 2008-2010 Google Inc.
+# Copyright 2008-2013 Software freedom conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,6 +49,7 @@ class WebDriver(RemoteWebDriver):
             self,
             command_executor='http://localhost:%d' % self.port,
             desired_capabilities=DesiredCapabilities.INTERNETEXPLORER)
+        self._is_remote = False
 
     def quit(self):
         RemoteWebDriver.quit(self)

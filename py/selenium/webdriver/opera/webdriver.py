@@ -1,7 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright 2011 Webdriver_name committers
-# Copyright 2011 Google Inc.
+# Copyright 2011-2013 Sofware freedom conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -54,6 +53,7 @@ class WebDriver(RemoteWebDriver):
         RemoteWebDriver.__init__(self,
             command_executor=self.service.service_url,
             desired_capabilities=desired_capabilities)
+        self._is_remote = False
 
     def quit(self):
         """

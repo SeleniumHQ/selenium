@@ -1,5 +1,4 @@
-# Copyright 2008-2011 WebDriver committers
-# Copyright 2008-2011 Google Inc.
+# Copyright 2008-2013 Software freedom conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -60,6 +59,7 @@ class WebDriver(object):
         self.command_executor = command_executor
         if type(self.command_executor) is str or type(self.command_executor) is unicode:
             self.command_executor = RemoteConnection(command_executor)
+        self._is_remote = True
         self.session_id = None
         self.capabilities = {}
         self.error_handler = ErrorHandler()
