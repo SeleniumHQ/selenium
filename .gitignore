@@ -16,6 +16,7 @@ support/build
 iphone/lib/buildtime-src/cocoahttpserver/build/CocoaHTTPServerLibrary.build/Release-iphonesimulator/CocoaHTTPServer.build
 iphone/lib/buildtime-src/build/
 iphone/build/
+iphone/src/objc/atoms.h
 /build/
 android/client/bin/
 android/server/bin/
