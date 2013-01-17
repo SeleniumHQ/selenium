@@ -203,6 +203,7 @@
 <li type="circle">org.hamcrest.TypeSafeMatcher&lt;T&gt;
 <ul>
 <li type="circle">org.openqa.selenium.lift.match.<a href="org/openqa/selenium/lift/match/AttributeMatcher.html" title="class in org.openqa.selenium.lift.match"><span class="strong">AttributeMatcher</span></a></li>
+<li type="circle">org.openqa.selenium.lift.match.<a href="org/openqa/selenium/lift/match/DisplayedMatcher.html" title="class in org.openqa.selenium.lift.match"><span class="strong">DisplayedMatcher</span></a></li>
 <li type="circle">org.openqa.selenium.lift.match.<a href="org/openqa/selenium/lift/match/SelectionMatcher.html" title="class in org.openqa.selenium.lift.match"><span class="strong">SelectionMatcher</span></a></li>
 <li type="circle">org.openqa.selenium.lift.match.<a href="org/openqa/selenium/lift/match/TextMatcher.html" title="class in org.openqa.selenium.lift.match"><span class="strong">TextMatcher</span></a></li>
 <li type="circle">org.openqa.selenium.lift.match.<a href="org/openqa/selenium/lift/match/ValueMatcher.html" title="class in org.openqa.selenium.lift.match"><span class="strong">ValueMatcher</span></a></li>
@@ -459,7 +460,6 @@
 <ul>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/ElementNotVisibleException.html" title="class in org.openqa.selenium"><span class="strong">ElementNotVisibleException</span></a></li>
 <li type="circle">org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/ErrorHandler.UnknownServerException.html" title="class in org.openqa.selenium.remote"><span class="strong">ErrorHandler.UnknownServerException</span></a></li>
-<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/IllegalLocatorException.html" title="class in org.openqa.selenium"><span class="strong">IllegalLocatorException</span></a></li>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/ImeActivationFailedException.html" title="class in org.openqa.selenium"><span class="strong">ImeActivationFailedException</span></a></li>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/ImeNotAvailableException.html" title="class in org.openqa.selenium"><span class="strong">ImeNotAvailableException</span></a></li>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/InvalidCookieDomainException.html" title="class in org.openqa.selenium"><span class="strong">InvalidCookieDomainException</span></a></li>
@@ -473,7 +473,11 @@
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/NoAlertPresentException.html" title="class in org.openqa.selenium"><span class="strong">NoAlertPresentException</span></a></li>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/NoSuchElementException.html" title="class in org.openqa.selenium"><span class="strong">NoSuchElementException</span></a>
 <ul>
-<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/InvalidSelectorException.html" title="class in org.openqa.selenium"><span class="strong">InvalidSelectorException</span></a></li>
+<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/InvalidSelectorException.html" title="class in org.openqa.selenium"><span class="strong">InvalidSelectorException</span></a>
+<ul>
+<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/XPathLookupException.html" title="class in org.openqa.selenium"><span class="strong">XPathLookupException</span></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/NoSuchFrameException.html" title="class in org.openqa.selenium"><span class="strong">NoSuchFrameException</span></a></li>
@@ -483,7 +487,6 @@
 <li type="circle">org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/ScreenshotException.html" title="class in org.openqa.selenium.remote"><span class="strong">ScreenshotException</span></a></li>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/SessionNotCreatedException.html" title="class in org.openqa.selenium"><span class="strong">SessionNotCreatedException</span></a></li>
 <li type="circle">org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/SessionNotFoundException.html" title="class in org.openqa.selenium.remote"><span class="strong">SessionNotFoundException</span></a></li>
-<li type="circle">org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/SessionTerminatedException.html" title="class in org.openqa.selenium.remote"><span class="strong">SessionTerminatedException</span></a></li>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/StaleElementReferenceException.html" title="class in org.openqa.selenium"><span class="strong">StaleElementReferenceException</span></a></li>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/TimeoutException.html" title="class in org.openqa.selenium"><span class="strong">TimeoutException</span></a></li>
 <li type="circle">org.openqa.selenium.firefox.<a href="org/openqa/selenium/firefox/UnableToCreateProfileException.html" title="class in org.openqa.selenium.firefox"><span class="strong">UnableToCreateProfileException</span></a></li>
@@ -493,7 +496,6 @@
 <li type="circle">org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/UnreachableBrowserException.html" title="class in org.openqa.selenium.remote"><span class="strong">UnreachableBrowserException</span></a></li>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/UnsupportedCommandException.html" title="class in org.openqa.selenium"><span class="strong">UnsupportedCommandException</span></a></li>
 <li type="circle">org.openqa.selenium.os.<a href="org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os"><span class="strong">WindowsRegistryException</span></a></li>
-<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/XPathLookupException.html" title="class in org.openqa.selenium"><span class="strong">XPathLookupException</span></a></li>
 </ul>
 </li>
 </ul>
@@ -794,9 +796,9 @@
 <h2 title="Annotation Type Hierarchy">Annotation Type Hierarchy</h2>
 <ul>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium"><span class="strong">Beta</span></a> (implements java.lang.annotation.Annotation)</li>
-<li type="circle">org.openqa.selenium.support.<a href="org/openqa/selenium/support/FindBys.html" title="annotation in org.openqa.selenium.support"><span class="strong">FindBys</span></a> (implements java.lang.annotation.Annotation)</li>
-<li type="circle">org.openqa.selenium.support.<a href="org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support"><span class="strong">FindBy</span></a> (implements java.lang.annotation.Annotation)</li>
 <li type="circle">org.openqa.selenium.support.<a href="org/openqa/selenium/support/CacheLookup.html" title="annotation in org.openqa.selenium.support"><span class="strong">CacheLookup</span></a> (implements java.lang.annotation.Annotation)</li>
+<li type="circle">org.openqa.selenium.support.<a href="org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support"><span class="strong">FindBy</span></a> (implements java.lang.annotation.Annotation)</li>
+<li type="circle">org.openqa.selenium.support.<a href="org/openqa/selenium/support/FindBys.html" title="annotation in org.openqa.selenium.support"><span class="strong">FindBys</span></a> (implements java.lang.annotation.Annotation)</li>
 </ul>
 <h2 title="Enum Hierarchy">Enum Hierarchy</h2>
 <ul>
@@ -804,18 +806,18 @@
 <ul>
 <li type="circle">java.lang.Enum&lt;E&gt; (implements java.lang.Comparable&lt;T&gt;, java.io.Serializable)
 <ul>
-<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/UnexpectedAlertBehaviour.html" title="enum in org.openqa.selenium"><span class="strong">UnexpectedAlertBehaviour</span></a></li>
-<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/ScreenOrientation.html" title="enum in org.openqa.selenium"><span class="strong">ScreenOrientation</span></a></li>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/Proxy.ProxyType.html" title="enum in org.openqa.selenium"><span class="strong">Proxy.ProxyType</span></a></li>
-<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium"><span class="strong">Platform</span></a></li>
-<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium"><span class="strong">Keys</span></a> (implements java.lang.CharSequence)</li>
+<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/ScreenOrientation.html" title="enum in org.openqa.selenium"><span class="strong">ScreenOrientation</span></a></li>
 <li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/Architecture.html" title="enum in org.openqa.selenium"><span class="strong">Architecture</span></a></li>
-<li type="circle">org.openqa.selenium.android.library.<a href="org/openqa/selenium/android/library/AndroidAtoms.html" title="enum in org.openqa.selenium.android.library"><span class="strong">AndroidAtoms</span></a></li>
-<li type="circle">org.openqa.selenium.html5.<a href="org/openqa/selenium/html5/AppCacheStatus.html" title="enum in org.openqa.selenium.html5"><span class="strong">AppCacheStatus</span></a></li>
+<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/UnexpectedAlertBehaviour.html" title="enum in org.openqa.selenium"><span class="strong">UnexpectedAlertBehaviour</span></a></li>
+<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium"><span class="strong">Keys</span></a> (implements java.lang.CharSequence)</li>
+<li type="circle">org.openqa.selenium.<a href="org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium"><span class="strong">Platform</span></a></li>
+<li type="circle">org.openqa.selenium.logging.profiler.<a href="org/openqa/selenium/logging/profiler/EventType.html" title="enum in org.openqa.selenium.logging.profiler"><span class="strong">EventType</span></a></li>
 <li type="circle">org.openqa.selenium.ie.<a href="org/openqa/selenium/ie/InternetExplorerDriverLogLevel.html" title="enum in org.openqa.selenium.ie"><span class="strong">InternetExplorerDriverLogLevel</span></a></li>
 <li type="circle">org.openqa.selenium.iphone.<a href="org/openqa/selenium/iphone/IPhoneDriver.STORAGE_TYPE.html" title="enum in org.openqa.selenium.iphone"><span class="strong">IPhoneDriver.STORAGE_TYPE</span></a></li>
-<li type="circle">org.openqa.selenium.logging.profiler.<a href="org/openqa/selenium/logging/profiler/EventType.html" title="enum in org.openqa.selenium.logging.profiler"><span class="strong">EventType</span></a></li>
 <li type="circle">org.openqa.selenium.remote.<a href="org/openqa/selenium/remote/RemoteWebDriver.When.html" title="enum in org.openqa.selenium.remote"><span class="strong">RemoteWebDriver.When</span></a></li>
+<li type="circle">org.openqa.selenium.html5.<a href="org/openqa/selenium/html5/AppCacheStatus.html" title="enum in org.openqa.selenium.html5"><span class="strong">AppCacheStatus</span></a></li>
+<li type="circle">org.openqa.selenium.android.library.<a href="org/openqa/selenium/android/library/AndroidAtoms.html" title="enum in org.openqa.selenium.android.library"><span class="strong">AndroidAtoms</span></a></li>
 <li type="circle">org.openqa.selenium.support.<a href="org/openqa/selenium/support/How.html" title="enum in org.openqa.selenium.support"><span class="strong">How</span></a></li>
 <li type="circle">org.openqa.selenium.support.<a href="org/openqa/selenium/support/Colors.html" title="enum in org.openqa.selenium.support"><span class="strong">Colors</span></a></li>
 </ul>

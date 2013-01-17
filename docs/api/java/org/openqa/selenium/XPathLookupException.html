@@ -61,7 +61,7 @@
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#fields_inherited_from_class_org.openqa.selenium.WebDriverException">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#methods_inherited_from_class_org.openqa.selenium.WebDriverException">Method</a></li>
+<li><a href="#methods_inherited_from_class_org.openqa.selenium.InvalidSelectorException">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
@@ -96,7 +96,22 @@
 <li><a href="../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">org.openqa.selenium.WebDriverException</a></li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../org/openqa/selenium/NotFoundException.html" title="class in org.openqa.selenium">org.openqa.selenium.NotFoundException</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="../../../org/openqa/selenium/NoSuchElementException.html" title="class in org.openqa.selenium">org.openqa.selenium.NoSuchElementException</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="../../../org/openqa/selenium/InvalidSelectorException.html" title="class in org.openqa.selenium">org.openqa.selenium.InvalidSelectorException</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.XPathLookupException</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -116,9 +131,13 @@
 <dd>java.io.Serializable</dd>
 </dl>
 <hr>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>Use InvalidSelectorException instead</i></div>
+</div>
 <br>
-<pre>public class <span class="strong">XPathLookupException</span>
-extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
+<pre>@Deprecated
+public class <span class="strong">XPathLookupException</span>
+extends <a href="../../../org/openqa/selenium/InvalidSelectorException.html" title="class in org.openqa.selenium">InvalidSelectorException</a></pre>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../serialized-form.html#org.openqa.selenium.XPathLookupException">Serialized Form</a></dd></dl>
 </li>
 </ul>
@@ -153,17 +172,15 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../org/openqa/selenium/XPathLookupException.html#XPathLookupException()">XPathLookupException</a></strong>()</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../org/openqa/selenium/XPathLookupException.html#XPathLookupException(java.lang.String)">XPathLookupException</a></strong>(java.lang.String&nbsp;message)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../org/openqa/selenium/XPathLookupException.html#XPathLookupException(java.lang.String)">XPathLookupException</a></strong>(java.lang.String&nbsp;message)</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
 <td class="colOne"><code><strong><a href="../../../org/openqa/selenium/XPathLookupException.html#XPathLookupException(java.lang.String, java.lang.Throwable)">XPathLookupException</a></strong>(java.lang.String&nbsp;message,
-                    java.lang.Throwable&nbsp;cause)</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../org/openqa/selenium/XPathLookupException.html#XPathLookupException(java.lang.Throwable)">XPathLookupException</a></strong>(java.lang.Throwable&nbsp;cause)</code>&nbsp;</td>
+                    java.lang.Throwable&nbsp;cause)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -175,11 +192,18 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 </a>
 <h3>Method Summary</h3>
 <ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.openqa.selenium.InvalidSelectorException">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../../../org/openqa/selenium/InvalidSelectorException.html" title="class in org.openqa.selenium">InvalidSelectorException</a></h3>
+<code><a href="../../../org/openqa/selenium/InvalidSelectorException.html#getSupportUrl()">getSupportUrl</a></code></li>
+</ul>
+<ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_org.openqa.selenium.WebDriverException">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></h3>
-<code><a href="../../../org/openqa/selenium/WebDriverException.html#addInfo(java.lang.String, java.lang.String)">addInfo</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getBuildInformation()">getBuildInformation</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getDriverInformation()">getDriverInformation</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getDriverName(java.lang.StackTraceElement[])">getDriverName</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getMessage()">getMessage</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getSupportUrl()">getSupportUrl</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getSystemInformation()">getSystemInformation</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#setSessionId(java.lang.String)">setSessionId</a></code></li>
+<code><a href="../../../org/openqa/selenium/WebDriverException.html#addInfo(java.lang.String, java.lang.String)">addInfo</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getAdditionalInformation()">getAdditionalInformation</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getBuildInformation()">getBuildInformation</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getDriverName(java.lang.StackTraceElement[])">getDriverName</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getMessage()">getMessage</a>, <a href="../../../org/openqa/selenium/WebDriverException.html#getSystemInformation()">getSystemInformation</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods_inherited_from_class_java.lang.Throwable">
@@ -209,15 +233,6 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="XPathLookupException()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>XPathLookupException</h4>
-<pre>public&nbsp;XPathLookupException()</pre>
-</li>
-</ul>
 <a name="XPathLookupException(java.lang.String)">
 <!--   -->
 </a>
@@ -225,15 +240,7 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <li class="blockList">
 <h4>XPathLookupException</h4>
 <pre>public&nbsp;XPathLookupException(java.lang.String&nbsp;message)</pre>
-</li>
-</ul>
-<a name="XPathLookupException(java.lang.Throwable)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>XPathLookupException</h4>
-<pre>public&nbsp;XPathLookupException(java.lang.Throwable&nbsp;cause)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="XPathLookupException(java.lang.String, java.lang.Throwable)">
@@ -244,6 +251,7 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <h4>XPathLookupException</h4>
 <pre>public&nbsp;XPathLookupException(java.lang.String&nbsp;message,
                     java.lang.Throwable&nbsp;cause)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -299,7 +307,7 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#fields_inherited_from_class_org.openqa.selenium.WebDriverException">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#methods_inherited_from_class_org.openqa.selenium.WebDriverException">Method</a></li>
+<li><a href="#methods_inherited_from_class_org.openqa.selenium.InvalidSelectorException">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
