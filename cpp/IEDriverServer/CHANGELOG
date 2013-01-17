@@ -9,6 +9,17 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.29.0.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Dampened excessive noise in IE driver logging.
+ * Modified to initialize value_ member of Response to Json::Value::null upon
+   creation.
+ * Updated IEDriverServer.exe to correctly return the current version in the 
+   JSON response for the /status end point of the JSON wire protocol.
+ * Added usage info to IEDriverServer.exe when using /? /h or /help.
+ * Removed dead code from ScreenshotCommandHandler.
+
 v2.28.0.4
 =========
  * Initialized value_ member of Response to Json::Value::null upon creation.
