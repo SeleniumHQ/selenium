@@ -1,3 +1,7 @@
+Selenium 2.29
+* Allow subclassing of driver and have the ability to send_keys Issue 4877, 5017
+* Simplifying save_screenshot and allow phantomjs to take screenshots
+
 Selenium 2.28
 * "null" can now be passed to executeScript
 * Add transparent and extended colour keywords to color support module. Fixes issue 4866 
