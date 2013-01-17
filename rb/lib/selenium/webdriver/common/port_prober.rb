@@ -19,12 +19,15 @@ module Selenium
         port
       end
 
+      IGNORED_ERRORS = [Errno::EADDRNOTAVAIL]
+      IGNORED_ERRORS << Errno::EBADF if Platform.cygwin?
+
       def self.free?(port)
         Platform.interfaces.each do |host|
           begin
             TCPServer.new(host, port).close
-          rescue Errno::EADDRNOTAVAIL
-            $stderr.puts "port prober could not bind to #{host}:#{port}" if $DEBUG
+          rescue *IGNORED_ERRORS => ex
+            $stderr.puts "port prober could not bind to #{host}:#{port} (#{ex.message})" if $DEBUG
             # ignored - some machines appear unable to bind to some of their interfaces
           end
         end

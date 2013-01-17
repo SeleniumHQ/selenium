@@ -185,8 +185,8 @@ LRESULT IECommandExecutor::OnGetResponseLength(UINT uMsg,
                                                WPARAM wParam,
                                                LPARAM lParam,
                                                BOOL& bHandled) {
-  LOG(TRACE) << "Entering IECommandExecutor::OnGetResponseLength";
-
+  // Not logging trace entering IECommandExecutor::OnGetResponseLength,
+  // because it is polled repeatedly for a non-zero return value.
   size_t response_length = 0;
   if (!this->is_waiting_) {
     response_length = this->serialized_response_.size();

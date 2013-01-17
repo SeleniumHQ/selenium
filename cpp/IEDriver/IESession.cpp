@@ -144,6 +144,7 @@ bool IESession::ExecuteCommand(const std::string& serialized_command,
                                                        WD_GET_RESPONSE_LENGTH,
                                                        NULL,
                                                        NULL));
+  LOG(TRACE) << "Beginning wait for response length to be not zero";
   while (response_length == 0) {
     // Sleep a short time to prevent thread starvation on single-core machines.
     ::Sleep(10);
@@ -152,6 +153,7 @@ bool IESession::ExecuteCommand(const std::string& serialized_command,
                                                      NULL,
                                                      NULL));
   }
+  LOG(TRACE) << "Found non-zero response length";
 
   // Must add one to the length to handle the terminating character.
   std::vector<char> response_buffer(response_length + 1);
