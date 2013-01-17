@@ -129,7 +129,7 @@
 
 -(id) verifyResult:(NSDictionary*)resultDict {
   int status = [(NSNumber*) [resultDict objectForKey:@"status"] intValue];
-  if (status != SUCCESS) {
+  if (status != WD_SUCCESS) {
     NSDictionary* value = (NSDictionary*) [resultDict objectForKey:@"value"];
     NSString* message = (NSString*) [value objectForKey:@"message"];
     @throw [NSException webDriverExceptionWithMessage:message
