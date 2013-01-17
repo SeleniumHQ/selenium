@@ -748,8 +748,9 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     // of the element
     if (transform && transform !== "none") {
       var locOfElement = goog.style.getClientPosition(e);
-      if ((locOfElement.x) >= 0 && 
-          (locOfElement.y) >= 0){
+      var sizeOfElement = bot.dom.getElementSize(e);
+      if ((locOfElement.x + (sizeOfElement.width/2)) >= 0 && 
+          (locOfElement.y + (sizeOfElement.height/2)) >= 0){
         return true;
       } else {
         return false;

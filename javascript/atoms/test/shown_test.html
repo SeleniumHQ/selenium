@@ -392,6 +392,13 @@
       var negativePercentage = findElement({id: "negative-percentage-transform"});
       assertTrue(isShown(negativePercentage));
     }
+    function testElementWithNegativeTransformInParentsDontHideChildrenUnlessMiddleIsntVisible() {
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(9)) {
+       return;
+      }
+      var negativeParentButItemShown = findElement({id: "click"});
+      assertTrue(isShown(negativeParentButItemShown));
+    }
   </script>
 
   <style type="text/css">
@@ -576,5 +583,9 @@
 <div id='hidden-transformX'>will never be shown<div id='child-of-hidden-transformX'>I am a hidden child</div></div>
 <div id='zero-transform'>I have a zero transform</div>
 <div id='negative-percentage-transform'>I have a negative percentage transform</div>
+<div style="display:-webkit-flex;display:-o-flex;display:flex;-webkit-transform: translate3d(-100px, 0, 0);-ms-transform: translate3d(-100px, 0, 0);-o-transform:translate3d(-100px, 0,0); transform: translate3d(-100px, 0,0)">
+    <div style="width:200px">first</div>
+      <a href='http://www.google.com' id="click">second</a>
+</div>
 </body>
 </html>
