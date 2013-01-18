@@ -51,6 +51,6 @@ public class LocalFileDetector implements FileDetector {
 
     log.fine("Detected local file: " + toUpload.exists());
 
-    return toUpload.exists() ? toUpload : null;
+    return toUpload.exists() && toUpload.isFile() ? toUpload : null;
   }
 }
