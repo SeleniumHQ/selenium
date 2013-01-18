@@ -1,0 +1,27 @@
+/* Start KO-KR locale-specific CSS */
+body
+{
+	font-family:Malgun Gothic, Segoe UI, Verdana;
+	font-size:0.75em; /*9pt*/
+}
+pre
+{
+  font-family:Courier, "Courier New", Consolas, Monospace, 돋움체;
+}
+span.tt
+{
+  font-family:Courier, "Courier New", Consolas, Monospace, 돋움체;
+}
+div.libCScode pre
+{
+	font-family:Monospace, Courier New, Courier, 돋움체;
+}
+pre.ideCScode
+{
+	font-family:Monospace, Courier New, Courier, 돋움체;
+}
+SPAN.code
+{
+	font-family:Monospace, Courier New, Courier, 돋움체;
+}
+/* End locale-specific CSS */

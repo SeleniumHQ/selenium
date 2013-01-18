@@ -3,14 +3,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 
-<head>
+<head runat="server">
 <title>WebDriver - Table of Content</title>
-<link rel="stylesheet" href="TOC.css">
+<link rel="stylesheet" href="TOC.css" />
 <link rel="shortcut icon" href="favicon.ico"/>
 <script type="text/javascript" src="TOC.js"></script>
 </head>
 
-<body onload="javascript: Initialize();" onresize="javascript: ResizeTree();">
+<body onload="javascript: Initialize('.aspx');" onresize="javascript: ResizeTree();">
 <form id="IndexForm" runat="server">
 
 <div id="TOCDiv" class="TOCDiv">
@@ -42,6 +42,9 @@ Keyword Index
         src="Index.gif" height="16" width="16" alt="Index" />
     <img class="TOCLink" onclick="javascript: ShowHideSearch(true);"
         src="Search.gif" height="16" width="16" alt="Search" />
+    <a href="#" title="Click to obtain a direct link to the displayed topic"
+        style="margin-left: 10px; vertical-align: top;"
+        onclick="javascript: ShowDirectLink();">Direct Link</a>
 </div>
 
 <div class="Tree" id="divSearchResults" style="display: none;"
@@ -75,8 +78,8 @@ This page uses an IFRAME but your browser does not support it.
 // System  : Sandcastle Help File Builder
 // File    : Index.aspx
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 04/10/2008
-// Note    : Copyright 2007-2008, Eric Woodruff, All rights reserved
+// Updated : 02/18/2012
+// Note    : Copyright 2007-2012, Eric Woodruff, All rights reserved
 // Compiler: Microsoft C#
 //
 // This file contains the code used to display the index page for a website
@@ -93,6 +96,7 @@ This page uses an IFRAME but your browser does not support it.
 // Version     Date     Who  Comments
 // ============================================================================
 // 1.5.0.0  06/21/2007  EFW  Created the code
+// 1.9.4.0  02/18/2012  EFW  Merged code from tom103 to show direct link
 //=============================================================================
 
 protected void Page_Load(object sender, EventArgs e)

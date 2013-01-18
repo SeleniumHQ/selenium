@@ -2,8 +2,8 @@
 // System  : Sandcastle Help File Builder
 // File    : TOC.js
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 01/03/2011
-// Note    : Copyright 2006-2011, Eric Woodruff, All rights reserved
+// Updated : 07/25/2012
+// Note    : Copyright 2006-2012, Eric Woodruff, All rights reserved
 // Compiler: JavaScript
 //
 // This file contains the methods necessary to implement a simple tree view
@@ -26,19 +26,25 @@
 // 1.6.0.7  04/01/2008  EFW  Merged changes from Ferdinand Prantl to add a
 //                           website keyword index.  Added support for "topic"
 //                           query string option.
+// 1.9.4.0  02/21/2012  EFW  Merged code from Thomas Levesque to show direct
+//                           link and support other page types like PHP.
+// 1.9.5.0  07/25/2012  EFW  Made changes to support IE 10.
 //=============================================================================
 
-// IE flag
+// IE and Chrome flags
 var isIE = (navigator.userAgent.indexOf("MSIE") >= 0);
+var isIE10OrLater = /MSIE 1\d\./.test(navigator.userAgent);
 var isChrome = (navigator.userAgent.indexOf("Chrome") >= 0);
+
+// Page extension
+var pageExtension = ".aspx";
 
 // Minimum width of the TOC div
 var minWidth = 100;
 
 // Elements and sizing info
-var divTOC, divSizer, topicContent, divNavOpts, divSearchOpts, divSearchResults,
-    divIndexOpts, divIndexResults, divTree, docBody, maxWidth, offset,
-    txtSearchText, chkSortByTitle;
+var divTOC, divSizer, topicContent, divNavOpts, divSearchOpts, divSearchResults, divIndexOpts, divIndexResults,
+    divTree, docBody, maxWidth, offset, txtSearchText, chkSortByTitle;
 
 // Last node selected
 var lastNode, lastSearchNode, lastIndexNode;
@@ -48,8 +54,9 @@ var currentIndexPage = 0;
 
 //============================================================================
 
-// Initialize the tree view and resize the content
-function Initialize()
+// Initialize the tree view and resize the content.  Pass it the page extension to use (i.e. ".aspx")
+// for loading TOC element, index keywords, searching, etc.
+function Initialize(extension)
 {
     docBody = document.getElementsByTagName("body")[0];
     divTOC = document.getElementById("TOCDiv");
@@ -64,13 +71,18 @@ function Initialize()
     txtSearchText = document.getElementById("txtSearchText");
     chkSortByTitle = document.getElementById("chkSortByTitle");
 
+    // Set the page extension if specified
+    if(typeof(extension) != "undefined" && extension != "")
+        pageExtension = extension;
+
     // The sizes are bit off in FireFox
     if(!isIE)
-        divNavOpts.style.width = divSearchOpts.style.width =
-            divIndexOpts.style.width = 292;
+        divNavOpts.style.width = divSearchOpts.style.width = divIndexOpts.style.width = 292;
 
     ResizeTree();
     SyncTOC();
+
+    topicContent.onload = SyncTOC;
 
     // Use an alternate default page if a topic is specified in
     // the query string.
@@ -104,6 +116,7 @@ function SyncTOC()
         base = base.replace("file://", "file:///");
 
     url = GetCurrentUrl();
+
     if(url == "")
         return false;
 
@@ -119,8 +132,7 @@ function SyncTOC()
         {
             href = anchors[idx].href;
 
-            if(href.substring(0, 7) != 'http://' &&
-              href.substring(0, 8) != 'https://' &&
+            if(href.substring(0, 7) != 'http://' && href.substring(0, 8) != 'https://' &&
               href.substring(0, 7) != 'file://')
                 href = base + href;
 
@@ -202,23 +214,19 @@ function GetCurrentUrl()
     }
     catch(e)
     {
-        // If this happens the user probably navigated to another frameset
-        // that didn't make itself the topmost frameset and we don't have
-        // control of the other frame anymore.  In that case, just reload
-        // our index page.
+        // If this happens the user probably navigated to another frameset that didn't make itself the topmost
+        // frameset and we don't have control of the other frame anymore.  In that case, just reload our index
+        // page.
         base = window.location.href;
         base = base.substr(0, base.lastIndexOf("/") + 1);
 
-        // Chrome is too secure and won't let you access frame URLs when
-        // running from the file system unless you run Chrome with the
-        // "--disable-web-security" command line option.
+        // Chrome is too secure and won't let you access frame URLs when running from the file system unless
+        // you run Chrome with the "--disable-web-security" command line option.
         if(isChrome && base.substr(0, 5) == "file:")
         {
-            alert("Chrome security prevents access to file-based frame " +
-                "URLs.  As such, the TOC will not work with Index.html.  " +
-                "Either run this website on a web server, run Chrome with " +
-                "the '--disable-web-security' command line option, or use " +
-                "FireFox or Internet Explorer.");
+            alert("Chrome security prevents access to file-based frame URLs.  As such, the TOC will not work " +
+                "with Index.html.  Either run this website on a web server, run Chrome with the " +
+                "'--disable-web-security' command line option, or use FireFox or Internet Explorer.");
 
             return "";
         }
@@ -229,7 +237,7 @@ function GetCurrentUrl()
         if(base.substr(0, 5) == "file:")
             top.location.href = base + "Index.html";
         else
-            top.location.href = base + "Index.aspx";
+            top.location.href = base + "index" + pageExtension; // Use lowercase on name for case-sensitive servers
     }
 
     return url;
@@ -242,8 +250,7 @@ function ExpandOrCollapseAll(expandNodes)
     var childNodes, child, div, link, img;
 
     for(divIdx = 0; divIdx < divs.length; divIdx++)
-        if(divs[divIdx].className == "Hidden" ||
-          divs[divIdx].className == "Visible")
+        if(divs[divIdx].className == "Hidden" || divs[divIdx].className == "Visible")
         {
             childNodes = divs[divIdx].parentNode.childNodes;
 
@@ -380,8 +387,7 @@ function GetXmlHttpRequest()
 {
     var xmlHttp = null;
 
-    // If IE7, Mozilla, Safari, etc., use the native object.
-    // Otherwise, use the ActiveX control for IE5.x and IE6.
+    // If IE7, Mozilla, Safari, etc., use the native object.  Otherwise, use the ActiveX control for IE5.x and IE6.
     if(window.XMLHttpRequest)
         xmlHttp = new XMLHttpRequest();
     else
@@ -391,8 +397,7 @@ function GetXmlHttpRequest()
     return xmlHttp;
 }
 
-// Perform an AJAX-style request for the contents of a node and put the
-// contents into the empty div.
+// Perform an AJAX-style request for the contents of a node and put the contents into the empty div
 function FillNode(div, expandChildren)
 {
     var xmlHttp = GetXmlHttpRequest(), now = new Date();
@@ -406,8 +411,7 @@ function FillNode(div, expandChildren)
     div.innerHTML = "Loading...";
 
     // Add a unique hash to ensure it doesn't use cached results
-    xmlHttp.open("GET", "FillNode.aspx?Id=" + div.id + "&hash=" +
-        now.getTime(), true);
+    xmlHttp.open("GET", "FillNode" + pageExtension + "?Id=" + div.id + "&hash=" + now.getTime(), true);
 
     xmlHttp.onreadystatechange = function()
     {
@@ -468,13 +472,13 @@ function ResizeTree()
 // Resize the content div
 function ResizeContent()
 {
-    if(isIE)
+    // IE 10 sizes the frame like FireFox and Chrome
+    if(isIE && !isIE10OrLater)
         maxWidth = docBody.clientWidth - 1;
     else
         maxWidth = docBody.clientWidth - 4;
 
-    topicContent.style.width = maxWidth - (divSizer.offsetLeft +
-        divSizer.offsetWidth);
+    topicContent.style.width = maxWidth - (divSizer.offsetLeft + divSizer.offsetWidth);
     maxWidth -= minWidth;
 }
 
@@ -486,13 +490,11 @@ function OnMouseDown(event)
     // Make sure the splitter is at the top of the z-index
     divSizer.style.zIndex = 5000;
 
-    // The content is in an IFRAME which steals mouse events so
-    // hide it while resizing.
+    // The content is in an IFRAME which steals mouse events so hide it while resizing
     topicContent.style.display = "none";
 
     if(isIE)
-        x = window.event.clientX + document.documentElement.scrollLeft +
-            document.body.scrollLeft;
+        x = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
     else
         x = event.clientX + window.scrollX;
 
@@ -526,25 +528,21 @@ function OnMouseMove(event)
 
     // Get cursor position with respect to the page
     if(isIE)
-        x = window.event.clientX + document.documentElement.scrollLeft +
-            document.body.scrollLeft;
+        x = window.event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
     else
         x = event.clientX + window.scrollX;
 
     left = offset + x;
 
     // Adjusts the width of the TOC divs
-    pos = (event.clientX > maxWidth) ? maxWidth :
-        (event.clientX < minWidth) ? minWidth : event.clientX;
+    pos = (event.clientX > maxWidth) ? maxWidth : (event.clientX < minWidth) ? minWidth : event.clientX;
 
-    divTOC.style.width = divSearchResults.style.width =
-        divIndexResults.style.width = divTree.style.width = pos;
+    divTOC.style.width = divSearchResults.style.width = divIndexResults.style.width = divTree.style.width = pos;
 
     if(!isIE)
         pos -= 8;
 
-    divNavOpts.style.width = divSearchOpts.style.width =
-        divIndexOpts.style.width = pos;
+    divNavOpts.style.width = divSearchOpts.style.width = divIndexOpts.style.width = pos;
 
     // Resize the content div to fit in the remaining space
     ResizeContent();
@@ -611,7 +609,7 @@ function PerformSearch()
     divSearchResults.innerHTML = "<span class=\"PaddedText\">Searching...</span>";
 
     // Add a unique hash to ensure it doesn't use cached results
-    xmlHttp.open("GET", "SearchHelp.aspx?Keywords=" + txtSearchText.value +
+    xmlHttp.open("GET", "SearchHelp" + pageExtension + "?Keywords=" + txtSearchText.value +
         "&SortByTitle=" + (chkSortByTitle.checked ? "true" : "false") +
         "&hash=" + now.getTime(), true);
 
@@ -680,11 +678,10 @@ function PopulateIndex(startIndex)
         return;
     }
 
-    divIndexResults.innerHTML = "<span class=\"PaddedText\">Loading " +
-        "keyword index...</span>";
+    divIndexResults.innerHTML = "<span class=\"PaddedText\">Loading keyword index...</span>";
 
     // Add a unique hash to ensure it doesn't use cached results
-    xmlHttp.open("GET", "LoadIndexKeywords.aspx?StartIndex=" + startIndex +
+    xmlHttp.open("GET", "LoadIndexKeywords" + pageExtension + "?StartIndex=" + startIndex +
       "&hash=" + now.getTime(), true);
 
     xmlHttp.onreadystatechange = function()
@@ -740,4 +737,21 @@ function ChangeIndexPage(direction)
     PopulateIndex(currentIndexPage + direction);
 
     return false;
+}
+
+// Show a direct link to the currently displayed topic
+function ShowDirectLink()
+{
+    var url = GetCurrentUrl();
+    var base = window.location.href;
+
+    if(base.indexOf("?") > 0)
+        base = base.substr(0, base.indexOf("?") + 1);
+
+    base = base.substr(0, base.lastIndexOf("/") + 1);
+
+    var relative = url.substr(base.length);
+
+    // Using prompt lets the user copy it from the text box
+    prompt("Direct link", base + "?topic=" + relative);
 }

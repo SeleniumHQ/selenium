@@ -5,8 +5,8 @@
 // System  : Sandcastle Help File Builder
 // File    : SearchHelp.aspx
 // Author  : Eric Woodruff  (Eric@EWoodruff.us)
-// Updated : 07/03/2007
-// Note    : Copyright 2007, Eric Woodruff, All rights reserved
+// Updated : 04/27/2012
+// Note    : Copyright 2007-2012, Eric Woodruff, All rights reserved
 // Compiler: Microsoft C#
 //
 // This file contains the code used to search for keywords within the help
@@ -21,20 +21,22 @@
 // Version     Date     Who  Comments
 // ============================================================================
 // 1.5.0.0  06/24/2007  EFW  Created the code
+// 1.9.4.0  02/17/2012  EFW  Switched to JSON serialization to support websites
+//                           that use something other than ASP.NET such as PHP.
 //=============================================================================
 
 private class Ranking
 {
     public string Filename, PageTitle;
     public int Rank;
-    
+
     public Ranking(string file, string title, int rank)
     {
         Filename = file;
         PageTitle = title;
         Rank = rank;
     }
-}    
+}
 
 /// <summary>
 /// Render the search results
@@ -42,11 +44,12 @@ private class Ranking
 /// <param name="writer">The writer to which the results are written</param>
 protected override void Render(HtmlTextWriter writer)
 {
-    FileStream fs = null;
-    BinaryFormatter bf;
+    JavaScriptSerializer jss = new JavaScriptSerializer();
     string searchText, ftiFile;
     char letter;
     bool sortByTitle = false;
+
+    jss.MaxJsonLength = Int32.MaxValue;
 
     // The keywords for which to search should be passed in the query string
     searchText = this.Request.QueryString["Keywords"];
@@ -67,42 +70,34 @@ protected override void Render(HtmlTextWriter writer)
     Dictionary<string, List<long>> ftiWords, wordDictionary =
         new Dictionary<string,List<long>>();
 
-    try
+    // Load the file index
+    using(StreamReader sr = new StreamReader(Server.MapPath("fti/FTI_Files.json")))
     {
-        // Load the file index
-        fs = new FileStream(Server.MapPath("fti/FTI_Files.bin"), FileMode.Open,
-            FileAccess.Read);
-        bf = new BinaryFormatter();
-        fileList = (List<string>)bf.Deserialize(fs);
-        fs.Close();
+        fileList = jss.Deserialize<List<string>>(sr.ReadToEnd());
+    }
 
-        // Load the required word index files
-        foreach(string word in keywords)
+    // Load the required word index files
+    foreach(string word in keywords)
+    {
+        letter = word[0];
+
+        if(!letters.Contains(letter))
         {
-            letter = word[0];
-            
-            if(!letters.Contains(letter))
+            letters.Add(letter);
+            ftiFile = Server.MapPath(String.Format(CultureInfo.InvariantCulture,
+                "fti/FTI_{0}.json", (int)letter));
+
+            if(File.Exists(ftiFile))
             {
-                letters.Add(letter);
-                ftiFile = Server.MapPath(String.Format(
-                    CultureInfo.InvariantCulture, "fti/FTI_{0}.bin", (int)letter));
-
-                if(File.Exists(ftiFile))
+                using(StreamReader sr = new StreamReader(ftiFile))
                 {
-                    fs = new FileStream(ftiFile, FileMode.Open, FileAccess.Read);
-                    ftiWords = (Dictionary<string, List<long>>)bf.Deserialize(fs);
-                    fs.Close();
-
-                    foreach(string ftiWord in ftiWords.Keys)
-                        wordDictionary.Add(ftiWord, ftiWords[ftiWord]);
+                    ftiWords = jss.Deserialize<Dictionary<string, List<long>>>(sr.ReadToEnd());
                 }
+
+                foreach(string ftiWord in ftiWords.Keys)
+                    wordDictionary.Add(ftiWord, ftiWords[ftiWord]);
             }
         }
-    }
-    finally
-    {
-        if(fs != null && fs.CanRead)
-            fs.Close();
     }
 
     // Perform the search and return the results as a block of HTML
@@ -216,14 +211,13 @@ private string Search(List<string> keywords, List<string> fileInfo,
     }
 
     // Sort by rank in descending order or by page title in ascending order
-    rankings.Sort(
-        delegate(Ranking x, Ranking y)
-        {
-            if(!sortByTitle)
-                return y.Rank - x.Rank;
+    rankings.Sort(delegate (Ranking x, Ranking y)
+    {
+        if(!sortByTitle)
+            return y.Rank - x.Rank;
 
-            return x.PageTitle.CompareTo(y.PageTitle);
-        });
+        return x.PageTitle.CompareTo(y.PageTitle);
+    });
 
     // Format the file list and return the results
     foreach(Ranking r in rankings)

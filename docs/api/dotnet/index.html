@@ -8,7 +8,7 @@
 <script type="text/javascript" src="TOC.js"></script>
 </head>
 
-<body onload="javascript: Initialize();" onresize="javascript: ResizeTree();">
+<body onload="javascript: Initialize('.aspx');" onresize="javascript: ResizeTree();">
 <form id="IndexForm" runat="server">
 
 <div id="TOCDiv" class="TOCDiv">
@@ -36,6 +36,9 @@ Keyword Index
         src="ExpandAll.bmp" height="16" width="16" alt="Expand all "/>
     <img class="TOCLink" onclick="javascript: ExpandOrCollapseAll(false);"
         src="CollapseAll.bmp" height="16" width="16" alt="Collapse all" />
+    <a href="#" title="Click to obtain a direct link to the displayed topic"
+        style="margin-left: 10px; vertical-align: top;"
+        onclick="javascript: ShowDirectLink();">Direct Link</a>
 </div>
 
 <div class="Tree" id="divSearchResults" style="display: none;"
@@ -108,6 +111,17 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_By_XPath.htm" target="TopicContent">XPath Method </a>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Operators_T_OpenQA_Selenium_By.htm" target="TopicContent">By Operators</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_By_op_Equality.htm" target="TopicContent">Equality Operator </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_By_op_Inequality.htm" target="TopicContent">Inequality Operator </a>
 </div>
 </div>
 </div>
@@ -190,6 +204,25 @@ Keyword Index
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_DefaultFileDetector.htm" target="TopicContent">DefaultFileDetector Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_DefaultFileDetector.htm" target="TopicContent">DefaultFileDetector Members</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_DefaultFileDetector__ctor.htm" target="TopicContent">DefaultFileDetector Constructor </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_DefaultFileDetector.htm" target="TopicContent">DefaultFileDetector Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_DefaultFileDetector_IsFile.htm" target="TopicContent">IsFile Method </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_DriverService.htm" target="TopicContent">DriverService Class</a>
 <div class="Hidden">
 <div class="TreeItem">
@@ -213,6 +246,9 @@ Keyword Index
 </div>
 </div>
 <div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_DriverService_FindDriverServiceExecutable.htm" target="TopicContent">FindDriverServiceExecutable Method </a>
+</div>
+<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_DriverService_Start.htm" target="TopicContent">Start Method </a>
 </div>
 </div>
@@ -221,13 +257,22 @@ Keyword Index
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_DriverService.htm" target="TopicContent">DriverService Properties</a>
 <div class="Hidden">
 <div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_DriverService_CommandLineArguments.htm" target="TopicContent">CommandLineArguments Property </a>
+</div>
+<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_DriverService_DriverServiceExecutableName.htm" target="TopicContent">DriverServiceExecutableName Property </a>
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_DriverService_IsRunning.htm" target="TopicContent">IsRunning Property </a>
 </div>
 <div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_DriverService_Port.htm" target="TopicContent">Port Property </a>
+</div>
+<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_DriverService_ServiceUrl.htm" target="TopicContent">ServiceUrl Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_DriverService_SuppressInitialDiagnosticInformation.htm" target="TopicContent">SuppressInitialDiagnosticInformation Property </a>
 </div>
 </div>
 </div>
@@ -262,6 +307,9 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_DriverServiceNotFoundException.htm" target="TopicContent">DriverServiceNotFoundException Properties</a>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_DriverServiceNotFoundException.htm" target="TopicContent">DriverServiceNotFoundException Events</a>
+</div>
 </div>
 </div>
 <div class="TreeNode">
@@ -293,6 +341,9 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_ElementNotVisibleException.htm" target="TopicContent">ElementNotVisibleException Properties</a>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_ElementNotVisibleException.htm" target="TopicContent">ElementNotVisibleException Events</a>
+</div>
 </div>
 </div>
 <div class="TreeNode">
@@ -320,6 +371,22 @@ Keyword Index
 <div class="Hidden">
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IAlert_Text.htm" target="TopicContent">Text Property </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_IAllowsFileDetection.htm" target="TopicContent">IAllowsFileDetection Interface</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_IAllowsFileDetection.htm" target="TopicContent">IAllowsFileDetection Members</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_IAllowsFileDetection.htm" target="TopicContent">IAllowsFileDetection Properties</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IAllowsFileDetection_FileDetector.htm" target="TopicContent">FileDetector Property </a>
 </div>
 </div>
 </div>
@@ -398,6 +465,22 @@ Keyword Index
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_IFileDetector.htm" target="TopicContent">IFileDetector Interface</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_IFileDetector.htm" target="TopicContent">IFileDetector Members</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_IFileDetector.htm" target="TopicContent">IFileDetector Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IFileDetector_IsFile.htm" target="TopicContent">IsFile Method </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_IHasCapabilities.htm" target="TopicContent">IHasCapabilities Interface</a>
 <div class="Hidden">
 <div class="TreeItem">
@@ -427,6 +510,22 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IHasInputDevices_Mouse.htm" target="TopicContent">Mouse Property </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_IHasTouchScreen.htm" target="TopicContent">IHasTouchScreen Interface</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_IHasTouchScreen.htm" target="TopicContent">IHasTouchScreen Members</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_IHasTouchScreen.htm" target="TopicContent">IHasTouchScreen Properties</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IHasTouchScreen_TouchScreen.htm" target="TopicContent">TouchScreen Property </a>
 </div>
 </div>
 </div>
@@ -501,6 +600,9 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_IllegalLocatorException.htm" target="TopicContent">IllegalLocatorException Properties</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_IllegalLocatorException.htm" target="TopicContent">IllegalLocatorException Events</a>
 </div>
 </div>
 </div>
@@ -624,6 +726,9 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_InvalidCookieDomainException.htm" target="TopicContent">InvalidCookieDomainException Properties</a>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_InvalidCookieDomainException.htm" target="TopicContent">InvalidCookieDomainException Events</a>
+</div>
 </div>
 </div>
 <div class="TreeNode">
@@ -655,6 +760,9 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_InvalidElementStateException.htm" target="TopicContent">InvalidElementStateException Properties</a>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_InvalidElementStateException.htm" target="TopicContent">InvalidElementStateException Events</a>
+</div>
 </div>
 </div>
 <div class="TreeNode">
@@ -685,6 +793,9 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_InvalidSelectorException.htm" target="TopicContent">InvalidSelectorException Properties</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_InvalidSelectorException.htm" target="TopicContent">InvalidSelectorException Events</a>
 </div>
 </div>
 </div>
@@ -818,7 +929,63 @@ Keyword Index
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITimeouts_ImplicitlyWait.htm" target="TopicContent">ImplicitlyWait Method </a>
 </div>
 <div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITimeouts_SetPageLoadTimeout.htm" target="TopicContent">SetPageLoadTimeout Method </a>
+</div>
+<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITimeouts_SetScriptTimeout.htm" target="TopicContent">SetScriptTimeout Method </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_ITouchScreen.htm" target="TopicContent">ITouchScreen Interface</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_ITouchScreen.htm" target="TopicContent">ITouchScreen Members</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_ITouchScreen.htm" target="TopicContent">ITouchScreen Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITouchScreen_DoubleTap.htm" target="TopicContent">DoubleTap Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITouchScreen_Down.htm" target="TopicContent">Down Method </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_ITouchScreen_Flick.htm" target="TopicContent">Flick Method </a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITouchScreen_Flick_1.htm" target="TopicContent">Flick Method (Int32, Int32)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITouchScreen_Flick.htm" target="TopicContent">Flick Method (ICoordinates, Int32, Int32, Int32)</a>
+</div>
+</div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITouchScreen_LongPress.htm" target="TopicContent">LongPress Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITouchScreen_Move.htm" target="TopicContent">Move Method </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_ITouchScreen_Scroll.htm" target="TopicContent">Scroll Method </a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITouchScreen_Scroll_1.htm" target="TopicContent">Scroll Method (Int32, Int32)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITouchScreen_Scroll.htm" target="TopicContent">Scroll Method (ICoordinates, Int32, Int32)</a>
+</div>
+</div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITouchScreen_SingleTap.htm" target="TopicContent">SingleTap Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_ITouchScreen_Up.htm" target="TopicContent">Up Method </a>
 </div>
 </div>
 </div>
@@ -1187,6 +1354,9 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_NoAlertPresentException.htm" target="TopicContent">NoAlertPresentException Properties</a>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_NoAlertPresentException.htm" target="TopicContent">NoAlertPresentException Events</a>
+</div>
 </div>
 </div>
 <div class="TreeNode">
@@ -1217,6 +1387,9 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_NoSuchElementException.htm" target="TopicContent">NoSuchElementException Properties</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_NoSuchElementException.htm" target="TopicContent">NoSuchElementException Events</a>
 </div>
 </div>
 </div>
@@ -1249,6 +1422,9 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_NoSuchFrameException.htm" target="TopicContent">NoSuchFrameException Properties</a>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_NoSuchFrameException.htm" target="TopicContent">NoSuchFrameException Events</a>
+</div>
 </div>
 </div>
 <div class="TreeNode">
@@ -1280,6 +1456,9 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_NoSuchWindowException.htm" target="TopicContent">NoSuchWindowException Properties</a>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_NoSuchWindowException.htm" target="TopicContent">NoSuchWindowException Events</a>
+</div>
 </div>
 </div>
 <div class="TreeNode">
@@ -1310,6 +1489,9 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_NotFoundException.htm" target="TopicContent">NotFoundException Properties</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_NotFoundException.htm" target="TopicContent">NotFoundException Events</a>
 </div>
 </div>
 </div>
@@ -1468,6 +1650,9 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_StaleElementReferenceException.htm" target="TopicContent">StaleElementReferenceException Properties</a>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_StaleElementReferenceException.htm" target="TopicContent">StaleElementReferenceException Events</a>
+</div>
 </div>
 </div>
 <div class="TreeNode">
@@ -1499,6 +1684,9 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_UnableToSetCookieException.htm" target="TopicContent">UnableToSetCookieException Properties</a>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_UnableToSetCookieException.htm" target="TopicContent">UnableToSetCookieException Events</a>
+</div>
 </div>
 </div>
 <div class="TreeNode">
@@ -1522,13 +1710,29 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_UnhandledAlertException__ctor_3.htm" target="TopicContent">UnhandledAlertException Constructor (String, Exception)</a>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_UnhandledAlertException__ctor_4.htm" target="TopicContent">UnhandledAlertException Constructor (String, String)</a>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_UnhandledAlertException.htm" target="TopicContent">UnhandledAlertException Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_UnhandledAlertException_GetObjectData.htm" target="TopicContent">GetObjectData Method </a>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_UnhandledAlertException.htm" target="TopicContent">UnhandledAlertException Properties</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_UnhandledAlertException_Alert.htm" target="TopicContent">Alert Property </a>
+</div>
 </div>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Methods_T_OpenQA_Selenium_UnhandledAlertException.htm" target="TopicContent">UnhandledAlertException Methods</a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_UnhandledAlertException.htm" target="TopicContent">UnhandledAlertException Properties</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_UnhandledAlertException.htm" target="TopicContent">UnhandledAlertException Events</a>
 </div>
 </div>
 </div>
@@ -1561,10 +1765,47 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_WebDriverException.htm" target="TopicContent">WebDriverException Properties</a>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_WebDriverException.htm" target="TopicContent">WebDriverException Events</a>
+</div>
 </div>
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/T_OpenQA_Selenium_WebDriverResult.htm" target="TopicContent">WebDriverResult Enumeration</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_WebDriverTimeoutException.htm" target="TopicContent">WebDriverTimeoutException Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_WebDriverTimeoutException.htm" target="TopicContent">WebDriverTimeoutException Members</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_WebDriverTimeoutException__ctor.htm" target="TopicContent">WebDriverTimeoutException Constructor </a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_WebDriverTimeoutException__ctor.htm" target="TopicContent">WebDriverTimeoutException Constructor </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_WebDriverTimeoutException__ctor_2.htm" target="TopicContent">WebDriverTimeoutException Constructor (String)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_WebDriverTimeoutException__ctor_1.htm" target="TopicContent">WebDriverTimeoutException Constructor (SerializationInfo, StreamingContext)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_WebDriverTimeoutException__ctor_3.htm" target="TopicContent">WebDriverTimeoutException Constructor (String, Exception)</a>
+</div>
+</div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Methods_T_OpenQA_Selenium_WebDriverTimeoutException.htm" target="TopicContent">WebDriverTimeoutException Methods</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_WebDriverTimeoutException.htm" target="TopicContent">WebDriverTimeoutException Properties</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_WebDriverTimeoutException.htm" target="TopicContent">WebDriverTimeoutException Events</a>
+</div>
+</div>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_XPathLookupException.htm" target="TopicContent">XPathLookupException Class</a>
@@ -1594,6 +1835,9 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_XPathLookupException.htm" target="TopicContent">XPathLookupException Properties</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_XPathLookupException.htm" target="TopicContent">XPathLookupException Events</a>
 </div>
 </div>
 </div>
@@ -1626,15 +1870,6 @@ Keyword Index
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Android_AndroidDriver.htm" target="TopicContent">AndroidDriver Methods</a>
 <div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Android_AndroidDriver_Dispose.htm" target="TopicContent">Dispose Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Android_AndroidDriver_FindElement.htm" target="TopicContent">FindElement Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Android_AndroidDriver_FindElements.htm" target="TopicContent">FindElements Method </a>
-</div>
-<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Android_AndroidDriver_GetScreenshot.htm" target="TopicContent">GetScreenshot Method </a>
 </div>
 </div>
@@ -1644,6 +1879,9 @@ Keyword Index
 <div class="Hidden">
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Android_AndroidDriver_Orientation.htm" target="TopicContent">Orientation Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Android_AndroidDriver_TouchScreen.htm" target="TopicContent">TouchScreen Property </a>
 </div>
 </div>
 </div>
@@ -1667,16 +1905,22 @@ Keyword Index
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor.htm" target="TopicContent">ChromeDriver Constructor </a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_2.htm" target="TopicContent">ChromeDriver Constructor (String)</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_4.htm" target="TopicContent">ChromeDriver Constructor (String)</a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_1.htm" target="TopicContent">ChromeDriver Constructor (ChromeOptions)</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_3.htm" target="TopicContent">ChromeDriver Constructor (ChromeOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_3.htm" target="TopicContent">ChromeDriver Constructor (String, ChromeOptions)</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_5.htm" target="TopicContent">ChromeDriver Constructor (String, ChromeOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_4.htm" target="TopicContent">ChromeDriver Constructor (String, ChromeOptions, TimeSpan)</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_1.htm" target="TopicContent">ChromeDriver Constructor (ChromeDriverService, ChromeOptions)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_6.htm" target="TopicContent">ChromeDriver Constructor (String, ChromeOptions, TimeSpan)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_2.htm" target="TopicContent">ChromeDriver Constructor (ChromeDriverService, ChromeOptions, TimeSpan)</a>
 </div>
 </div>
 </div>
@@ -1691,15 +1935,6 @@ Keyword Index
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Chrome_ChromeDriver.htm" target="TopicContent">ChromeDriver Methods</a>
 <div class="Hidden">
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Chrome_ChromeDriver_Dispose.htm" target="TopicContent">Dispose Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Chrome_ChromeDriver_FindElement.htm" target="TopicContent">FindElement Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Chrome_ChromeDriver_FindElements.htm" target="TopicContent">FindElements Method </a>
-</div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeDriver_GetScreenshot.htm" target="TopicContent">GetScreenshot Method </a>
 </div>
@@ -1732,8 +1967,13 @@ Keyword Index
 </div>
 </div>
 </div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm" target="TopicContent">ChromeDriverService Properties</a>
+<div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_Chrome_ChromeDriverService.htm" target="TopicContent">ChromeDriverService Properties</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Chrome_ChromeDriverService_LogPath.htm" target="TopicContent">LogPath Property </a>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1757,6 +1997,9 @@ Keyword Index
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Chrome_ChromeOptions.htm" target="TopicContent">ChromeOptions Methods</a>
 <div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeOptions_AddAdditionalCapability.htm" target="TopicContent">AddAdditionalCapability Method </a>
+</div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeOptions_AddArgument.htm" target="TopicContent">AddArgument Method </a>
 </div>
@@ -1812,22 +2055,8 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeWebElement__ctor.htm" target="TopicContent">ChromeWebElement Constructor </a>
 </div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Chrome_ChromeWebElement.htm" target="TopicContent">ChromeWebElement Methods</a>
-<div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeWebElement_Equals.htm" target="TopicContent">Equals Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Chrome_ChromeWebElement_FindElement.htm" target="TopicContent">FindElement Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Chrome_ChromeWebElement_FindElements.htm" target="TopicContent">FindElements Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Chrome_ChromeWebElement_GetHashCode.htm" target="TopicContent">GetHashCode Method </a>
-</div>
-</div>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Methods_T_OpenQA_Selenium_Chrome_ChromeWebElement.htm" target="TopicContent">ChromeWebElement Methods</a>
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_Chrome_ChromeWebElement.htm" target="TopicContent">ChromeWebElement Properties</a>
@@ -1957,15 +2186,6 @@ Keyword Index
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Firefox_FirefoxDriver_CreateElement.htm" target="TopicContent">CreateElement Method </a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Firefox_FirefoxDriver_Dispose.htm" target="TopicContent">Dispose Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Firefox_FirefoxDriver_FindElement.htm" target="TopicContent">FindElement Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Firefox_FirefoxDriver_FindElements.htm" target="TopicContent">FindElements Method </a>
-</div>
-<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Firefox_FirefoxDriver_GetScreenshot.htm" target="TopicContent">GetScreenshot Method </a>
 </div>
 <div class="TreeItem">
@@ -2081,9 +2301,6 @@ Keyword Index
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Firefox_FirefoxProfile_EnableNativeEvents.htm" target="TopicContent">EnableNativeEvents Property </a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Firefox_FirefoxProfile_IsRunning.htm" target="TopicContent">IsRunning Property </a>
-</div>
-<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Firefox_FirefoxProfile_Port.htm" target="TopicContent">Port Property </a>
 </div>
 <div class="TreeItem">
@@ -2136,12 +2353,6 @@ Keyword Index
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Firefox_FirefoxWebElement_Equals.htm" target="TopicContent">Equals Method </a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Firefox_FirefoxWebElement_FindElement.htm" target="TopicContent">FindElement Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Firefox_FirefoxWebElement_FindElements.htm" target="TopicContent">FindElements Method </a>
-</div>
-<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Firefox_FirefoxWebElement_GetHashCode.htm" target="TopicContent">GetHashCode Method </a>
 </div>
 </div>
@@ -2169,25 +2380,22 @@ Keyword Index
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor.htm" target="TopicContent">InternetExplorerDriver Constructor </a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_2.htm" target="TopicContent">InternetExplorerDriver Constructor (Int32)</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_4.htm" target="TopicContent">InternetExplorerDriver Constructor (String)</a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_5.htm" target="TopicContent">InternetExplorerDriver Constructor (String)</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_3.htm" target="TopicContent">InternetExplorerDriver Constructor (InternetExplorerOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_1.htm" target="TopicContent">InternetExplorerDriver Constructor (InternetExplorerOptions)</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_5.htm" target="TopicContent">InternetExplorerDriver Constructor (String, InternetExplorerOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_3.htm" target="TopicContent">InternetExplorerDriver Constructor (Int32, InternetExplorerOptions)</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_1.htm" target="TopicContent">InternetExplorerDriver Constructor (InternetExplorerDriverService, InternetExplorerOptions)</a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_6.htm" target="TopicContent">InternetExplorerDriver Constructor (String, InternetExplorerOptions)</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_6.htm" target="TopicContent">InternetExplorerDriver Constructor (String, InternetExplorerOptions, TimeSpan)</a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_4.htm" target="TopicContent">InternetExplorerDriver Constructor (Int32, InternetExplorerOptions, TimeSpan)</a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_7.htm" target="TopicContent">InternetExplorerDriver Constructor (String, InternetExplorerOptions, TimeSpan)</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver__ctor_2.htm" target="TopicContent">InternetExplorerDriver Constructor (InternetExplorerDriverService, InternetExplorerOptions, TimeSpan)</a>
 </div>
 </div>
 </div>
@@ -2195,22 +2403,7 @@ Keyword Index
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_IE_InternetExplorerDriver.htm" target="TopicContent">InternetExplorerDriver Methods</a>
 <div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriver_Dispose.htm" target="TopicContent">Dispose Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriver_FindElement.htm" target="TopicContent">FindElement Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_IE_InternetExplorerDriver_FindElements.htm" target="TopicContent">FindElements Method </a>
-</div>
-<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver_GetScreenshot.htm" target="TopicContent">GetScreenshot Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver_StartClient.htm" target="TopicContent">StartClient Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerDriver_StopClient.htm" target="TopicContent">StopClient Method </a>
 </div>
 </div>
 </div>
@@ -2218,6 +2411,9 @@ Keyword Index
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_IE_InternetExplorerDriver.htm" target="TopicContent">InternetExplorerDriver Properties</a>
 </div>
 </div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/T_OpenQA_Selenium_IE_InternetExplorerDriverLogLevel.htm" target="TopicContent">InternetExplorerDriverLogLevel Enumeration</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_IE_InternetExplorerDriverService.htm" target="TopicContent">InternetExplorerDriverService Class</a>
@@ -2241,10 +2437,27 @@ Keyword Index
 </div>
 </div>
 </div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_IE_InternetExplorerDriverService.htm" target="TopicContent">InternetExplorerDriverService Properties</a>
+<div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_IE_InternetExplorerDriverService.htm" target="TopicContent">InternetExplorerDriverService Properties</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerDriverService_Host.htm" target="TopicContent">Host Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerDriverService_LibraryExtractionPath.htm" target="TopicContent">LibraryExtractionPath Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerDriverService_LogFile.htm" target="TopicContent">LogFile Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerDriverService_LoggingLevel.htm" target="TopicContent">LoggingLevel Property </a>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/T_OpenQA_Selenium_IE_InternetExplorerElementScrollBehavior.htm" target="TopicContent">InternetExplorerElementScrollBehavior Enumeration</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_IE_InternetExplorerOptions.htm" target="TopicContent">InternetExplorerOptions Class</a>
@@ -2259,6 +2472,9 @@ Keyword Index
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_IE_InternetExplorerOptions.htm" target="TopicContent">InternetExplorerOptions Methods</a>
 <div class="Hidden">
 <div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerOptions_AddAdditionalCapability.htm" target="TopicContent">AddAdditionalCapability Method </a>
+</div>
+<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerOptions_ToCapabilities.htm" target="TopicContent">ToCapabilities Method </a>
 </div>
 </div>
@@ -2267,14 +2483,35 @@ Keyword Index
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_IE_InternetExplorerOptions.htm" target="TopicContent">InternetExplorerOptions Properties</a>
 <div class="Hidden">
 <div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_ElementScrollBehavior.htm" target="TopicContent">ElementScrollBehavior Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_EnableNativeEvents.htm" target="TopicContent">EnableNativeEvents Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_EnablePersistentHover.htm" target="TopicContent">EnablePersistentHover Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_IgnoreZoomLevel.htm" target="TopicContent">IgnoreZoomLevel Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_InitialBrowserUrl.htm" target="TopicContent">InitialBrowserUrl Property </a>
+</div>
+<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_IntroduceInstabilityByIgnoringProtectedModeSettings.htm" target="TopicContent">IntroduceInstabilityByIgnoringProtectedModeSettings Property </a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_UseInternalServer.htm" target="TopicContent">UseInternalServer Property </a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_RequireWindowFocus.htm" target="TopicContent">RequireWindowFocus Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_UnexpectedAlertBehavior.htm" target="TopicContent">UnexpectedAlertBehavior Property </a>
 </div>
 </div>
 </div>
 </div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/T_OpenQA_Selenium_IE_InternetExplorerUnexpectedAlertBehavior.htm" target="TopicContent">InternetExplorerUnexpectedAlertBehavior Enumeration</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_IE_InternetExplorerWebElement.htm" target="TopicContent">InternetExplorerWebElement Class</a>
@@ -2285,16 +2522,8 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_IE_InternetExplorerWebElement__ctor.htm" target="TopicContent">InternetExplorerWebElement Constructor </a>
 </div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_IE_InternetExplorerWebElement.htm" target="TopicContent">InternetExplorerWebElement Methods</a>
-<div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_IE_InternetExplorerWebElement_FindElement.htm" target="TopicContent">FindElement Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_IE_InternetExplorerWebElement_FindElements.htm" target="TopicContent">FindElements Method </a>
-</div>
-</div>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Methods_T_OpenQA_Selenium_IE_InternetExplorerWebElement.htm" target="TopicContent">InternetExplorerWebElement Methods</a>
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_IE_InternetExplorerWebElement.htm" target="TopicContent">InternetExplorerWebElement Properties</a>
@@ -2346,8 +2575,16 @@ Keyword Index
 </div>
 </div>
 </div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_Interactions_Actions_ContextClick.htm" target="TopicContent">ContextClick Method </a>
+<div class="Hidden">
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_Actions_ContextClick.htm" target="TopicContent">ContextClick Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_Actions_ContextClick_1.htm" target="TopicContent">ContextClick Method (IWebElement)</a>
+</div>
+</div>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_Interactions_Actions_DoubleClick.htm" target="TopicContent">DoubleClick Method </a>
@@ -2365,6 +2602,9 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_Actions_DragAndDropToOffset.htm" target="TopicContent">DragAndDropToOffset Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_Actions_GetLocatableFromElement.htm" target="TopicContent">GetLocatableFromElement Method </a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_Interactions_Actions_KeyDown.htm" target="TopicContent">KeyDown Method </a>
@@ -2442,6 +2682,62 @@ Keyword Index
 <div class="Hidden">
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_IAction_Perform.htm" target="TopicContent">Perform Method </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Interactions_TouchActions.htm" target="TopicContent">TouchActions Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_Interactions_TouchActions.htm" target="TopicContent">TouchActions Members</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_TouchActions__ctor.htm" target="TopicContent">TouchActions Constructor </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Interactions_TouchActions.htm" target="TopicContent">TouchActions Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_TouchActions_DoubleTap.htm" target="TopicContent">DoubleTap Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_TouchActions_Down.htm" target="TopicContent">Down Method </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_Interactions_TouchActions_Flick.htm" target="TopicContent">Flick Method </a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_TouchActions_Flick_1.htm" target="TopicContent">Flick Method (Int32, Int32)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_TouchActions_Flick.htm" target="TopicContent">Flick Method (IWebElement, Int32, Int32, Int32)</a>
+</div>
+</div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_TouchActions_LongPress.htm" target="TopicContent">LongPress Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_TouchActions_Move.htm" target="TopicContent">Move Method </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_Interactions_TouchActions_Scroll.htm" target="TopicContent">Scroll Method </a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_TouchActions_Scroll_1.htm" target="TopicContent">Scroll Method (Int32, Int32)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_TouchActions_Scroll.htm" target="TopicContent">Scroll Method (IWebElement, Int32, Int32)</a>
+</div>
+</div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_TouchActions_SingleTap.htm" target="TopicContent">SingleTap Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Interactions_TouchActions_Up.htm" target="TopicContent">Up Method </a>
 </div>
 </div>
 </div>
@@ -2742,6 +3038,122 @@ Keyword Index
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/N_OpenQA_Selenium_PhantomJS.htm" target="TopicContent">OpenQA.Selenium.PhantomJS Namespace</a>
+<div class="Hidden">
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_PhantomJS_PhantomJSDriver.htm" target="TopicContent">PhantomJSDriver Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_PhantomJS_PhantomJSDriver.htm" target="TopicContent">PhantomJSDriver Members</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor.htm" target="TopicContent">PhantomJSDriver Constructor </a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor.htm" target="TopicContent">PhantomJSDriver Constructor </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_4.htm" target="TopicContent">PhantomJSDriver Constructor (String)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_3.htm" target="TopicContent">PhantomJSDriver Constructor (PhantomJSOptions)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_5.htm" target="TopicContent">PhantomJSDriver Constructor (String, PhantomJSOptions)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_1.htm" target="TopicContent">PhantomJSDriver Constructor (PhantomJSDriverService, PhantomJSOptions)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_6.htm" target="TopicContent">PhantomJSDriver Constructor (String, PhantomJSOptions, TimeSpan)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_2.htm" target="TopicContent">PhantomJSDriver Constructor (PhantomJSDriverService, PhantomJSOptions, TimeSpan)</a>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_PhantomJS_PhantomJSDriver.htm" target="TopicContent">PhantomJSDriver Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSDriver_GetScreenshot.htm" target="TopicContent">GetScreenshot Method </a>
+</div>
+</div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_PhantomJS_PhantomJSDriver.htm" target="TopicContent">PhantomJSDriver Properties</a>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_PhantomJS_PhantomJSDriverService.htm" target="TopicContent">PhantomJSDriverService Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_PhantomJS_PhantomJSDriverService.htm" target="TopicContent">PhantomJSDriverService Members</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_PhantomJS_PhantomJSDriverService.htm" target="TopicContent">PhantomJSDriverService Methods</a>
+<div class="Hidden">
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_PhantomJS_PhantomJSDriverService_CreateDefaultService.htm" target="TopicContent">CreateDefaultService Method </a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSDriverService_CreateDefaultService.htm" target="TopicContent">CreateDefaultService Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSDriverService_CreateDefaultService_1.htm" target="TopicContent">CreateDefaultService Method (String)</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_PhantomJS_PhantomJSDriverService.htm" target="TopicContent">PhantomJSDriverService Properties</a>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_PhantomJS_PhantomJSOptions.htm" target="TopicContent">PhantomJSOptions Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_PhantomJS_PhantomJSOptions.htm" target="TopicContent">PhantomJSOptions Members</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSOptions__ctor.htm" target="TopicContent">PhantomJSOptions Constructor </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_PhantomJS_PhantomJSOptions.htm" target="TopicContent">PhantomJSOptions Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSOptions_AddAdditionalCapability.htm" target="TopicContent">AddAdditionalCapability Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSOptions_ToCapabilities.htm" target="TopicContent">ToCapabilities Method </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_PhantomJS_PhantomJSWebElement.htm" target="TopicContent">PhantomJSWebElement Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_PhantomJS_PhantomJSWebElement.htm" target="TopicContent">PhantomJSWebElement Members</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_PhantomJS_PhantomJSWebElement__ctor.htm" target="TopicContent">PhantomJSWebElement Constructor </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Methods_T_OpenQA_Selenium_PhantomJS_PhantomJSWebElement.htm" target="TopicContent">PhantomJSWebElement Methods</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_PhantomJS_PhantomJSWebElement.htm" target="TopicContent">PhantomJSWebElement Properties</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/N_OpenQA_Selenium_Remote.htm" target="TopicContent">OpenQA.Selenium.Remote Namespace</a>
 <div class="Hidden">
 <div class="TreeNode">
@@ -2965,6 +3377,9 @@ Keyword Index
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_Opera.htm" target="TopicContent">Opera Method </a>
 </div>
 <div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_PhantomJS.htm" target="TopicContent">PhantomJS Method </a>
+</div>
+<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_Safari.htm" target="TopicContent">Safari Method </a>
 </div>
 <div class="TreeItem">
@@ -3181,6 +3596,9 @@ Keyword Index
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_SetOrientation.htm" target="TopicContent">SetOrientation Field</a>
 </div>
 <div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_SetTimeout.htm" target="TopicContent">SetTimeout Field</a>
+</div>
+<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_SetWindowPosition.htm" target="TopicContent">SetWindowPosition Field</a>
 </div>
 <div class="TreeItem">
@@ -3197,6 +3615,33 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_SwitchToWindow.htm" target="TopicContent">SwitchToWindow Field</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_TouchDoubleTap.htm" target="TopicContent">TouchDoubleTap Field</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_TouchFlick.htm" target="TopicContent">TouchFlick Field</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_TouchLongPress.htm" target="TopicContent">TouchLongPress Field</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_TouchMove.htm" target="TopicContent">TouchMove Field</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_TouchPress.htm" target="TopicContent">TouchPress Field</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_TouchRelease.htm" target="TopicContent">TouchRelease Field</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_TouchScroll.htm" target="TopicContent">TouchScroll Field</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_TouchSingleTap.htm" target="TopicContent">TouchSingleTap Field</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_DriverCommand_UploadFile.htm" target="TopicContent">UploadFile Field</a>
 </div>
 </div>
 </div>
@@ -3258,6 +3703,81 @@ Keyword Index
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Remote_LocalFileDetector.htm" target="TopicContent">LocalFileDetector Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_Remote_LocalFileDetector.htm" target="TopicContent">LocalFileDetector Members</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_LocalFileDetector__ctor.htm" target="TopicContent">LocalFileDetector Constructor </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Remote_LocalFileDetector.htm" target="TopicContent">LocalFileDetector Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_LocalFileDetector_IsFile.htm" target="TopicContent">IsFile Method </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Remote_RemoteTouchScreen.htm" target="TopicContent">RemoteTouchScreen Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_Remote_RemoteTouchScreen.htm" target="TopicContent">RemoteTouchScreen Members</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_RemoteTouchScreen__ctor.htm" target="TopicContent">RemoteTouchScreen Constructor </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Remote_RemoteTouchScreen.htm" target="TopicContent">RemoteTouchScreen Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_RemoteTouchScreen_DoubleTap.htm" target="TopicContent">DoubleTap Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_RemoteTouchScreen_Down.htm" target="TopicContent">Down Method </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_Remote_RemoteTouchScreen_Flick.htm" target="TopicContent">Flick Method </a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_RemoteTouchScreen_Flick_1.htm" target="TopicContent">Flick Method (Int32, Int32)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_RemoteTouchScreen_Flick.htm" target="TopicContent">Flick Method (ICoordinates, Int32, Int32, Int32)</a>
+</div>
+</div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_RemoteTouchScreen_LongPress.htm" target="TopicContent">LongPress Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_RemoteTouchScreen_Move.htm" target="TopicContent">Move Method </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_Remote_RemoteTouchScreen_Scroll.htm" target="TopicContent">Scroll Method </a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_RemoteTouchScreen_Scroll_1.htm" target="TopicContent">Scroll Method (Int32, Int32)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_RemoteTouchScreen_Scroll.htm" target="TopicContent">Scroll Method (ICoordinates, Int32, Int32)</a>
+</div>
+</div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_RemoteTouchScreen_SingleTap.htm" target="TopicContent">SingleTap Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_RemoteTouchScreen_Up.htm" target="TopicContent">Up Method </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Remote_RemoteWebDriver.htm" target="TopicContent">RemoteWebDriver Class</a>
 <div class="Hidden">
 <div class="TreeItem">
@@ -3277,6 +3797,14 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Remote_RemoteWebDriver__ctor_3.htm" target="TopicContent">RemoteWebDriver Constructor (Uri, ICapabilities, TimeSpan)</a>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Fields_T_OpenQA_Selenium_Remote_RemoteWebDriver.htm" target="TopicContent">RemoteWebDriver Fields</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/F_OpenQA_Selenium_Remote_RemoteWebDriver_DefaultCommandTimeout.htm" target="TopicContent">DefaultCommandTimeout Field</a>
 </div>
 </div>
 </div>
@@ -3413,6 +3941,9 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_CurrentWindowHandle.htm" target="TopicContent">CurrentWindowHandle Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_FileDetector.htm" target="TopicContent">FileDetector Property </a>
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_Keyboard.htm" target="TopicContent">Keyboard Property </a>
@@ -3734,6 +4265,34 @@ Keyword Index
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Safari_SafariCommandMessage.htm" target="TopicContent">SafariCommandMessage Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_Safari_SafariCommandMessage.htm" target="TopicContent">SafariCommandMessage Members</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Safari_SafariCommandMessage__ctor.htm" target="TopicContent">SafariCommandMessage Constructor </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Methods_T_OpenQA_Selenium_Safari_SafariCommandMessage.htm" target="TopicContent">SafariCommandMessage Methods</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_Safari_SafariCommandMessage.htm" target="TopicContent">SafariCommandMessage Properties</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Safari_SafariCommandMessage_Command.htm" target="TopicContent">Command Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Safari_SafariCommandMessage_MessageOrigin.htm" target="TopicContent">MessageOrigin Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Safari_SafariCommandMessage_MessageType.htm" target="TopicContent">MessageType Property </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Safari_SafariDriver.htm" target="TopicContent">SafariDriver Class</a>
 <div class="Hidden">
 <div class="TreeItem">
@@ -3745,15 +4304,6 @@ Keyword Index
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Safari_SafariDriver.htm" target="TopicContent">SafariDriver Methods</a>
 <div class="Hidden">
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Safari_SafariDriver_Dispose.htm" target="TopicContent">Dispose Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Safari_SafariDriver_FindElement.htm" target="TopicContent">FindElement Method </a>
-</div>
-<div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_OpenQA_Selenium_Safari_SafariDriver_FindElements.htm" target="TopicContent">FindElements Method </a>
-</div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Safari_SafariDriver_StartClient.htm" target="TopicContent">StartClient Method </a>
 </div>
@@ -3773,8 +4323,16 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_Safari_SafariDriverCommandExecutor.htm" target="TopicContent">SafariDriverCommandExecutor Members</a>
 </div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_Safari_SafariDriverCommandExecutor__ctor.htm" target="TopicContent">SafariDriverCommandExecutor Constructor </a>
+<div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor__ctor.htm" target="TopicContent">SafariDriverCommandExecutor Constructor </a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor__ctor.htm" target="TopicContent">SafariDriverCommandExecutor Constructor (Int32)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor__ctor_1.htm" target="TopicContent">SafariDriverCommandExecutor Constructor (Int32, String)</a>
+</div>
+</div>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Safari_SafariDriverCommandExecutor.htm" target="TopicContent">SafariDriverCommandExecutor Methods</a>
@@ -3872,27 +4430,36 @@ Keyword Index
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Safari_SafariResponse.htm" target="TopicContent">SafariResponse Class</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Safari_SafariResponseMessage.htm" target="TopicContent">SafariResponseMessage Class</a>
 <div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_Safari_SafariResponse.htm" target="TopicContent">SafariResponse Members</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_Safari_SafariResponseMessage.htm" target="TopicContent">SafariResponseMessage Members</a>
 </div>
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Safari_SafariResponse__ctor.htm" target="TopicContent">SafariResponse Constructor </a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Safari_SafariResponseMessage__ctor.htm" target="TopicContent">SafariResponseMessage Constructor </a>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Safari_SafariResponse.htm" target="TopicContent">SafariResponse Methods</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Safari_SafariResponseMessage.htm" target="TopicContent">SafariResponseMessage Methods</a>
 <div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Safari_SafariResponse_FromJson.htm" target="TopicContent">FromJson Method </a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Safari_SafariResponseMessage_FromJson.htm" target="TopicContent">FromJson Method </a>
 </div>
 </div>
 </div>
 <div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_Safari_SafariResponse.htm" target="TopicContent">SafariResponse Properties</a>
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_Safari_SafariResponseMessage.htm" target="TopicContent">SafariResponseMessage Properties</a>
 <div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Safari_SafariResponse_Id.htm" target="TopicContent">Id Property </a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Safari_SafariResponseMessage_Id.htm" target="TopicContent">Id Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Safari_SafariResponseMessage_MessageOrigin.htm" target="TopicContent">MessageOrigin Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Safari_SafariResponseMessage_MessageType.htm" target="TopicContent">MessageType Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Safari_SafariResponseMessage_Response.htm" target="TopicContent">Response Property </a>
 </div>
 </div>
 </div>
@@ -4022,6 +4589,9 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_Safari_Internal_HandshakeException.htm" target="TopicContent">HandshakeException Properties</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_Safari_Internal_HandshakeException.htm" target="TopicContent">HandshakeException Events</a>
 </div>
 </div>
 </div>
@@ -4626,6 +5196,9 @@ Keyword Index
 </div>
 </div>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_Safari_Internal_WebSocketException.htm" target="TopicContent">WebSocketException Events</a>
+</div>
 </div>
 </div>
 <div class="TreeNode">
@@ -5091,6 +5664,34 @@ Keyword Index
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/N_OpenQA_Selenium_Support_PageObjects.htm" target="TopicContent">OpenQA.Selenium.Support.PageObjects Namespace</a>
 <div class="Hidden">
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Support_PageObjects_ByChained.htm" target="TopicContent">ByChained Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_Support_PageObjects_ByChained.htm" target="TopicContent">ByChained Members</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_ByChained__ctor.htm" target="TopicContent">ByChained Constructor </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Support_PageObjects_ByChained.htm" target="TopicContent">ByChained Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_ByChained_FindElement.htm" target="TopicContent">FindElement Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_ByChained_FindElements.htm" target="TopicContent">FindElements Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_ByChained_ToString.htm" target="TopicContent">ToString Method </a>
+</div>
+</div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_Support_PageObjects_ByChained.htm" target="TopicContent">ByChained Properties</a>
+</div>
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Support_PageObjects_CacheLookupAttribute.htm" target="TopicContent">CacheLookupAttribute Class</a>
 <div class="Hidden">
 <div class="TreeItem">
@@ -5116,14 +5717,48 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_FindsByAttribute__ctor.htm" target="TopicContent">FindsByAttribute Constructor </a>
 </div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm" target="TopicContent">FindsByAttribute Methods</a>
+<div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Methods_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm" target="TopicContent">FindsByAttribute Methods</a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_CompareTo.htm" target="TopicContent">CompareTo Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_Equals.htm" target="TopicContent">Equals Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_GetHashCode.htm" target="TopicContent">GetHashCode Method </a>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Operators_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm" target="TopicContent">FindsByAttribute Operators</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_op_Equality.htm" target="TopicContent">Equality Operator </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_op_GreaterThan.htm" target="TopicContent">GreaterThan Operator </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_op_Inequality.htm" target="TopicContent">Inequality Operator </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_op_LessThan.htm" target="TopicContent">LessThan Operator </a>
+</div>
+</div>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_Support_PageObjects_FindsByAttribute.htm" target="TopicContent">FindsByAttribute Properties</a>
 <div class="Hidden">
 <div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_CustomFinderType.htm" target="TopicContent">CustomFinderType Property </a>
+</div>
+<div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_How.htm" target="TopicContent">How Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_Priority.htm" target="TopicContent">Priority Property </a>
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Support_PageObjects_FindsByAttribute_Using.htm" target="TopicContent">Using Property </a>
@@ -5144,8 +5779,16 @@ Keyword Index
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm" target="TopicContent">PageFactory Methods</a>
 <div class="Hidden">
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements.htm" target="TopicContent">InitElements Method </a>
+<div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements.htm" target="TopicContent">InitElements Method </a>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements__1.htm" target="TopicContent">InitElements(T) Method (IWebDriver)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements.htm" target="TopicContent">InitElements Method (ISearchContext, Object)</a>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -5278,6 +5921,22 @@ Keyword Index
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Support_UI_ILoadableComponent.htm" target="TopicContent">ILoadableComponent Interface</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_Support_UI_ILoadableComponent.htm" target="TopicContent">ILoadableComponent Members</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Support_UI_ILoadableComponent.htm" target="TopicContent">ILoadableComponent Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_ILoadableComponent_Load.htm" target="TopicContent">Load Method </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Support_UI_IWait_1.htm" target="TopicContent">IWait(TSource) Interface</a>
 <div class="Hidden">
 <div class="TreeItem">
@@ -5307,6 +5966,82 @@ Keyword Index
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Support_UI_IWait_1_Timeout.htm" target="TopicContent">Timeout Property </a>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Support_UI_LoadableComponent_1.htm" target="TopicContent">LoadableComponent(T) Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_Support_UI_LoadableComponent_1.htm" target="TopicContent">LoadableComponent(T) Members</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_LoadableComponent_1__ctor.htm" target="TopicContent">LoadableComponent(T) Constructor </a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Support_UI_LoadableComponent_1.htm" target="TopicContent">LoadableComponent(T) Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_LoadableComponent_1_EvaluateLoadedStatus.htm" target="TopicContent">EvaluateLoadedStatus Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_LoadableComponent_1_ExecuteLoad.htm" target="TopicContent">ExecuteLoad Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_LoadableComponent_1_HandleLoadError.htm" target="TopicContent">HandleLoadError Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_LoadableComponent_1_Load.htm" target="TopicContent">Load Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_LoadableComponent_1_TryLoad.htm" target="TopicContent">TryLoad Method </a>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_Support_UI_LoadableComponent_1.htm" target="TopicContent">LoadableComponent(T) Properties</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Support_UI_LoadableComponent_1_IsLoaded.htm" target="TopicContent">IsLoaded Property </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Support_UI_LoadableComponent_1_UnableToLoadMessage.htm" target="TopicContent">UnableToLoadMessage Property </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Support_UI_LoadableComponentException.htm" target="TopicContent">LoadableComponentException Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_Support_UI_LoadableComponentException.htm" target="TopicContent">LoadableComponentException Members</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_Support_UI_LoadableComponentException__ctor.htm" target="TopicContent">LoadableComponentException Constructor </a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_LoadableComponentException__ctor.htm" target="TopicContent">LoadableComponentException Constructor </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_LoadableComponentException__ctor_2.htm" target="TopicContent">LoadableComponentException Constructor (String)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_LoadableComponentException__ctor_1.htm" target="TopicContent">LoadableComponentException Constructor (SerializationInfo, StreamingContext)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_LoadableComponentException__ctor_3.htm" target="TopicContent">LoadableComponentException Constructor (String, Exception)</a>
+</div>
+</div>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Methods_T_OpenQA_Selenium_Support_UI_LoadableComponentException.htm" target="TopicContent">LoadableComponentException Methods</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_Support_UI_LoadableComponentException.htm" target="TopicContent">LoadableComponentException Properties</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_Support_UI_LoadableComponentException.htm" target="TopicContent">LoadableComponentException Events</a>
 </div>
 </div>
 </div>
@@ -5398,6 +6133,44 @@ Keyword Index
 </div>
 </div>
 <div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Support_UI_SlowLoadableComponent_1.htm" target="TopicContent">SlowLoadableComponent(T) Class</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/AllMembers_T_OpenQA_Selenium_Support_UI_SlowLoadableComponent_1.htm" target="TopicContent">SlowLoadableComponent(T) Members</a>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Overload_OpenQA_Selenium_Support_UI_SlowLoadableComponent_1__ctor.htm" target="TopicContent">SlowLoadableComponent(T) Constructor </a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_SlowLoadableComponent_1__ctor.htm" target="TopicContent">SlowLoadableComponent(T) Constructor (TimeSpan)</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_SlowLoadableComponent_1__ctor_1.htm" target="TopicContent">SlowLoadableComponent(T) Constructor (TimeSpan, IClock)</a>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_OpenQA_Selenium_Support_UI_SlowLoadableComponent_1.htm" target="TopicContent">SlowLoadableComponent(T) Methods</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_SlowLoadableComponent_1_HandleErrors.htm" target="TopicContent">HandleErrors Method </a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/M_OpenQA_Selenium_Support_UI_SlowLoadableComponent_1_Load.htm" target="TopicContent">Load Method </a>
+</div>
+</div>
+</div>
+<div class="TreeNode">
+<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_OpenQA_Selenium_Support_UI_SlowLoadableComponent_1.htm" target="TopicContent">SlowLoadableComponent(T) Properties</a>
+<div class="Hidden">
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/P_OpenQA_Selenium_Support_UI_SlowLoadableComponent_1_SleepInterval.htm" target="TopicContent">SleepInterval Property </a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/T_OpenQA_Selenium_Support_UI_SystemClock.htm" target="TopicContent">SystemClock Class</a>
 <div class="Hidden">
 <div class="TreeItem">
@@ -5458,6 +6231,9 @@ Keyword Index
 </div>
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm" target="TopicContent">UnexpectedTagNameException Properties</a>
+</div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_OpenQA_Selenium_Support_UI_UnexpectedTagNameException.htm" target="TopicContent">UnexpectedTagNameException Events</a>
 </div>
 </div>
 </div>
@@ -6642,6 +7418,9 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Properties_T_Selenium_SeleniumException.htm" target="TopicContent">SeleniumException Properties</a>
 </div>
+<div class="TreeItem">
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Events_T_Selenium_SeleniumException.htm" target="TopicContent">SeleniumException Events</a>
+</div>
 </div>
 </div>
 <div class="TreeNode">
@@ -6664,13 +7443,8 @@ Keyword Index
 <div class="TreeItem">
 <img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Fields_T_Selenium_WebDriverBackedSelenium.htm" target="TopicContent">WebDriverBackedSelenium Fields</a>
 </div>
-<div class="TreeNode">
-<img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Methods_T_Selenium_WebDriverBackedSelenium.htm" target="TopicContent">WebDriverBackedSelenium Methods</a>
-<div class="Hidden">
 <div class="TreeItem">
-<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Overload_Selenium_WebDriverBackedSelenium_Start.htm" target="TopicContent">Start Method </a>
-</div>
-</div>
+<img src="Item.gif"/><a class="UnselectedNode" onclick="javascript: return SelectNode(this);" href="html/Methods_T_Selenium_WebDriverBackedSelenium.htm" target="TopicContent">WebDriverBackedSelenium Methods</a>
 </div>
 <div class="TreeNode">
 <img class="TreeNodeImg" onclick="javascript: Toggle(this);" src="Collapsed.gif"/><a class="UnselectedNode" onclick="javascript: return Expand(this);" href="html/Properties_T_Selenium_WebDriverBackedSelenium.htm" target="TopicContent">WebDriverBackedSelenium Properties</a>

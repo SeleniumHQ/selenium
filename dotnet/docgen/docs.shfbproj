@@ -8,7 +8,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5eb412cf-43cf-4f45-ad86-eae23cf68111}</ProjectGuid>
-    <SHFBSchemaVersion>1.9.3.0</SHFBSchemaVersion>
+    <SHFBSchemaVersion>1.9.5.0</SHFBSchemaVersion>
     <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual
          Studio adds them anyway -->
     <AssemblyName>Documentation</AssemblyName>
@@ -19,17 +19,30 @@
     <HtmlHelpName>WebDriver</HtmlHelpName>
     <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
     <VisibleItems>InheritedMembers, InheritedFrameworkMembers, Protected</VisibleItems>
-    <FrameworkVersion>.NET 3.5</FrameworkVersion>
-    <PresentationStyle>vs2005</PresentationStyle>
+    <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
+    <PresentationStyle>VS2010</PresentationStyle>
     <DocumentationSources>
     </DocumentationSources>
     <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, TypeParameter, AutoDocumentDispose</MissingTags>
-    <CopyrightText>Copyright &amp;#169%3b 2011 WebDriver Committers</CopyrightText>
+    <CopyrightText>Copyright &amp;#169%3b 2013 Software Freedom Conservancy</CopyrightText>
     <HelpTitle>WebDriver</HelpTitle>
     <FeedbackEMailLinkText>WebDriver Users Google Group</FeedbackEMailLinkText>
     <FeedbackEMailAddress>webdriver%40googlegroups.com</FeedbackEMailAddress>
     <ProjectLinkType>Local</ProjectLinkType>
     <NamingMethod>MemberName</NamingMethod>
+    <SyntaxFilters>Standard</SyntaxFilters>
+    <SdkLinkTarget>Blank</SdkLinkTarget>
+    <RootNamespaceContainer>False</RootNamespaceContainer>
+    <Preliminary>False</Preliminary>
+    <Language>en-US</Language>
+    <ContentPlacement>AboveNamespaces</ContentPlacement>
+    <PlugInConfigurations />
+    <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
+    <IndentHtml>False</IndentHtml>
+    <KeepLogFile>True</KeepLogFile>
+    <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
+    <CppCommentsFixup>False</CppCommentsFixup>
+    <CleanIntermediates>True</CleanIntermediates>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in
        order for Visual Studio to perform the build.  The others are optional
