@@ -127,13 +127,23 @@ namespace OpenQA.Selenium.Internal
             // If it's not in the same directory as the executing assembly,
             // try looking in the system path.
             string systemPath = Environment.GetEnvironmentVariable("PATH");
-            string[] directories = systemPath.Split(Path.PathSeparator);
-            foreach (string directory in directories)
+            if (!string.IsNullOrEmpty(systemPath))
             {
-                if (File.Exists(Path.Combine(directory, fileName)))
+                string expandedPath = Environment.ExpandEnvironmentVariables(systemPath);
+                string[] directories = expandedPath.Split(Path.PathSeparator);
+                foreach (string directory in directories)
                 {
-                    currentDirectory = directory;
-                    return currentDirectory;
+                    // N.B., if the directory in the path contains an invalid character,
+                    // we will skip that directory, meaning no error will be thrown. This
+                    // may be confusing to the user, so we might want to revisit this.
+                    if (directory.IndexOfAny(Path.GetInvalidPathChars()) < 0)
+                    {
+                        if (File.Exists(Path.Combine(directory, fileName)))
+                        {
+                            currentDirectory = directory;
+                            return currentDirectory;
+                        }
+                    }
                 }
             }
 
