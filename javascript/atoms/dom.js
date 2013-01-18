@@ -691,8 +691,9 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     // Zero-sized elements should still be considered to have positive size
     // if they have a child element or text node with positive size.
     return goog.array.some(e.childNodes, function(n) {
-      return n.nodeType == goog.dom.NodeType.TEXT ||
-             (bot.dom.isElement(n) && positiveSize(n));
+      return (n.nodeType == goog.dom.NodeType.TEXT &&
+              bot.dom.getEffectiveStyle(e, 'overflow') != 'hidden') ||
+              (bot.dom.isElement(n) && positiveSize(n));
     });
   }
   if (!positiveSize(elem)) {
