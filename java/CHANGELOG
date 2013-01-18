@@ -2,8 +2,38 @@ v2.29.0
 =======
 
 WebDriver:
-  * Added support for Firefox 18.
-  * more details will be added....
+  * Firefox 18 support.
+  * IEDriver supports "requireWindowFocus" desired capability. When
+    using this and native events, the IE driver will demand focus and
+    user interactions will use SendInput() for simulating user
+    interactions. Note that this will mean you MUST NOT use the
+    machine running IE for anything else as the tests are running.
+  * Use the "webdriver.remote.shorten_log_messages" system property to
+    reduce the verboseness of ouput from executeScript and
+    executeAsyncScript when using the RemoteWebDriver.
+  * Switching HtmlUnitDriver default from FIREFOX_3_6 to FIREFOX_10
+  * SafariDriverExtension should restore Safari's previous settings on
+    shutdown.
+  * Bundled version of PhantomJSDriver bumped to 1.0.1
+  * Updated the version of guava-libraries used to 14.
+  * Updated HtmlUnit to 2.11
+  * Deprecated XPathLookupException in favour of
+    InvalidSelectorException
+  * FIXED: 3602: Changing IE view port calculations to allow for
+    always-present vertical scroll bar, and to test for horizontal
+    scroll bar and adjust as required by page content.
+  * FIXED: 4576: self registering proxy now check for user specified
+    proxy id.
+  * FIXED: 5010: icons in chrome newtab now correctly identified as
+    being shown.
+
+RC:
+  * FIXED: 4818: Make sure that each generated SSL cert has a unique
+    ID associated with it.
+
+Project:
+  * Moved to git. Most obvious in revision number in our exceptions.
+
 
 v2.28.0
 =======
@@ -856,4 +886,3 @@ Grid:
   * Track when a session has become orphaned.  I.e., when the client sends no
     commands after the initial session creation.  This almost always indicates
     the client is no longer connected and the session is unusable immediately.
-r18261 | david.burns@theautomatedtester.co.uk | 2012-12-05 11:30:23 -0800 (Wed, 05 Dec 2012) | 1 line
