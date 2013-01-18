@@ -210,6 +210,7 @@ options.header =
     "import org.junit.Test;\n" +
     "import static org.junit.Assert.*;\n" +
     "import java.util.regex.Pattern;\n" +
+    "import static org.apache.commons.lang3.StringUtils.join;\n" +
     "\n" +
     "public class ${className} {\n" + 
     indents(1) + "private Selenium selenium;\n" +
