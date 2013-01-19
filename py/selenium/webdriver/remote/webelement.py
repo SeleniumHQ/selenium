@@ -275,7 +275,7 @@ class LocalFileDetector(object):
             return None
 
         try:
-          if os.path.exists(file_path):
+          if os.path.isfile(file_path):
               return file_path
         except:
           pass
