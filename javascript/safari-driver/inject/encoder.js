@@ -22,7 +22,6 @@ goog.provide('safaridriver.inject.Encoder');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
-goog.require('bot.dom');
 goog.require('bot.inject');
 goog.require('bot.response');
 goog.require('goog.array');
@@ -37,8 +36,7 @@ goog.require('webdriver.promise');
 
 
 /**
- * @param {!safaridriver.message.MessageTarget} messageTarget The message
- *     target to use.
+ * @param {!webdriver.EventEmitter} messageTarget The message target to use.
  * @constructor
  */
 safaridriver.inject.Encoder = function(messageTarget) {
@@ -78,8 +76,7 @@ safaridriver.inject.Encoder.ENCODED_ELEMENT_KEY_ =
  */
 safaridriver.inject.Encoder.getElementCssSelector_ = function(element) {
   var path = '';
-  for (var current = element; current;
-       current = bot.dom.getParentElement(current)) {
+  for (var current = element; current; current = current.parentElement) {
     var index = 1;
     for (var sibling = current.previousSibling; sibling;
          sibling = sibling.previousSibling) {
@@ -189,7 +186,7 @@ safaridriver.inject.Encoder.prototype.encodeElement_ = function(element) {
  * @throws {Error} If the value is an invalid type, or an array or object with
  *     cyclical references.
  */
-safaridriver.inject.Encoder.prototype.decode = function(value) {
+safaridriver.inject.Encoder.decode = function(value) {
   var type = goog.typeOf(value);
   switch (type) {
     case 'boolean':
@@ -203,7 +200,7 @@ safaridriver.inject.Encoder.prototype.decode = function(value) {
 
     case 'array':
       return goog.array.map(/** @type {!Array} */ (value),
-          this.decode, this);
+          safaridriver.inject.Encoder.decode);
 
     case 'object':
       var obj = /** @type {!Object} */ (value);
@@ -218,7 +215,7 @@ safaridriver.inject.Encoder.prototype.decode = function(value) {
         }
         return element;
       }
-      return goog.object.map(obj, this.decode, this);
+      return goog.object.map(obj, safaridriver.inject.Encoder.decode);
 
     case 'function':
     default:
@@ -246,7 +243,7 @@ safaridriver.inject.Encoder.prototype.onResponse_ = function(message) {
   var response = message.getResponse();
   try {
     bot.response.checkResponse(response);
-    var value = this.decode(response['value']);
+    var value = safaridriver.inject.Encoder.decode(response['value']);
     promise.resolve(value);
   } catch (ex) {
     promise.reject(ex);

@@ -43,52 +43,47 @@ safaridriver.extension.commands.LOG_ = goog.debug.Logger.getLogger(
 
 /**
  * Retrieves a session's capabilities.
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
  * @return {!Object.<*>} The session capabilities.
  */
-safaridriver.extension.commands.describeSession = function(command, session) {
+safaridriver.extension.commands.describeSession = function(session) {
   return session.getCapabilities();
 };
 
 
 /**
  * Closes the tab the given session is currently focused on.
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
  */
-safaridriver.extension.commands.closeTab = function(command, session) {
+safaridriver.extension.commands.closeTab = function(session) {
   session.getCommandTab().getBrowserTab().close();
 };
 
 
 /**
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
  * @return {string} The handle for the tab the session is currently focused on.
  */
-safaridriver.extension.commands.getWindowHandle = function(command, session) {
+safaridriver.extension.commands.getWindowHandle = function(session) {
   return session.getCommandTab().getId();
 };
 
 
 /**
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
  * @return {!Array.<string>} A list of IDs for the open tabs.
  */
-safaridriver.extension.commands.getWindowHandles = function(command, session) {
+safaridriver.extension.commands.getWindowHandles = function(session) {
   return session.getTabIds();
 };
 
 
 /**
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
  * @return {!webdriver.promise.Promise} A promise that will resolve to a
  *     screenshot of the focused tab as a base64 encoded PNG.
  */
-safaridriver.extension.commands.takeScreenshot = function(command, session) {
+safaridriver.extension.commands.takeScreenshot = function(session) {
   var response = new webdriver.promise.Deferred();
   session.getCommandTab().visibleContentsAsDataURL(function(dataUrl) {
     response.resolve(dataUrl.substring('data:image/png;base64,'.length));
@@ -99,12 +94,12 @@ safaridriver.extension.commands.takeScreenshot = function(command, session) {
 
 /**
  * Loads a new page in the provided session.
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when
  *     the operation has completed.
  */
-safaridriver.extension.commands.loadUrl = function(command, session) {
+safaridriver.extension.commands.loadUrl = function(session, command) {
   var url = command.getParameter('url');
   if (!url) {
     throw Error('Invalid command: missing "url" parameter');
@@ -123,7 +118,7 @@ safaridriver.extension.commands.loadUrl = function(command, session) {
   var tab = session.getCommandTab();
   tab.whenReady(function() {
     var expectLoad = tab.loadsNewPage(uri);
-    safaridriver.extension.commands.sendNavigationCommand_(command, session,
+    safaridriver.extension.commands.sendNavigationCommand_(session, command,
         expectLoad).then(response.resolve, response.reject);
   });
 
@@ -133,15 +128,15 @@ safaridriver.extension.commands.loadUrl = function(command, session) {
 
 /**
  * Reloads the session's current page.
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when
  *     the operation has completed.
  */
-safaridriver.extension.commands.refresh = function(command, session) {
+safaridriver.extension.commands.refresh = function(session, command) {
   var response = new webdriver.promise.Deferred();
   session.getCommandTab().whenReady(function() {
-    safaridriver.extension.commands.sendNavigationCommand_(command, session,
+    safaridriver.extension.commands.sendNavigationCommand_(session, command,
         true).then(response.resolve, response.reject);
   });
   return response.promise;
@@ -150,8 +145,8 @@ safaridriver.extension.commands.refresh = function(command, session) {
 
 /**
  * Sends a navigation related command to the tab for execution.
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
  * @param {boolean} waitForLoad Whether to wait for a load message from the
  *     tab before considering the command completed.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when
@@ -159,13 +154,13 @@ safaridriver.extension.commands.refresh = function(command, session) {
  * @private
  */
 safaridriver.extension.commands.sendNavigationCommand_ = function(
-    command, session, waitForLoad) {
+    session, command, waitForLoad) {
   var response = new webdriver.promise.Deferred();
   var tab = session.getCommandTab();
   if (waitForLoad) {
     tab.once(safaridriver.message.Load.TYPE, onLoad);
   }
-  safaridriver.extension.commands.sendCommand(command, session).
+  safaridriver.extension.commands.sendCommand(session, command).
       then(onSuccess, onFailure);
   return response.promise;
 
@@ -229,10 +224,10 @@ safaridriver.extension.commands.sendNavigationCommand_ = function(
 
 /**
  * Updates the implicit wait setting for the given session.
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
  */
-safaridriver.extension.commands.implicitlyWait = function(command, session) {
+safaridriver.extension.commands.implicitlyWait = function(session, command) {
   session.setImplicitWait(
       /** @type {number} */ (command.getParameter('ms')) || 0);
 };
@@ -240,10 +235,10 @@ safaridriver.extension.commands.implicitlyWait = function(command, session) {
 
 /**
  * Updates the async script timeout setting for the given session.
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
  */
-safaridriver.extension.commands.setScriptTimeout = function(command, session) {
+safaridriver.extension.commands.setScriptTimeout = function(session, command) {
   session.setScriptTimeout(
       /** @type {number} */ (command.getParameter('ms')) || 0);
 };
@@ -257,12 +252,12 @@ safaridriver.extension.commands.setScriptTimeout = function(command, session) {
  * When searching for multiple elements, the driver should poll the page until
  * at least one element has been found or this timeout has expired.
  *
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     operation has completed.
  */
-safaridriver.extension.commands.findElement = function(command, session) {
+safaridriver.extension.commands.findElement = function(session, command) {
   var started;
   var result = new webdriver.promise.Deferred();
   session.getCommandTab().whenReady(findElement);
@@ -272,7 +267,7 @@ safaridriver.extension.commands.findElement = function(command, session) {
     if (!goog.isDef(started)) {
       started = goog.now();
     }
-    return safaridriver.extension.commands.sendCommand(command, session).
+    return safaridriver.extension.commands.sendCommand(session, command).
         then(checkResponse);
   }
 
@@ -317,11 +312,11 @@ safaridriver.extension.commands.DEFAULT_COMMAND_TIMEOUT_ = 30000;
 
 /**
  * Sends a command to the provided session's current tab.
- * @param {!safaridriver.Command} command The command object.
  * @param {!(safaridriver.extension.Session|safaridriver.extension.Tab)}
- *     sessionOrTab Either the session or tab to send the command to. If given a
+    *     sessionOrTab Either the session or tab to send the command to. If given a
  *     session, the command will be sent to the tab the session is currently
  *     focused on.
+ * @param {!safaridriver.Command} command The command object.
  * @param {number=} opt_additionalTimeout An optional amount of time, in
  *     milliseconds, to wait for a command response. This timeout is added to
  *     the default timeout applied to all commands.
@@ -329,7 +324,7 @@ safaridriver.extension.commands.DEFAULT_COMMAND_TIMEOUT_ = 30000;
  *     the command response.
  */
 safaridriver.extension.commands.sendCommand = function(
-    command, sessionOrTab, opt_additionalTimeout) {
+    sessionOrTab, command, opt_additionalTimeout) {
   var timeout = (opt_additionalTimeout || 0) +
       safaridriver.extension.commands.DEFAULT_COMMAND_TIMEOUT_;
   var tab = sessionOrTab instanceof safaridriver.extension.Tab ?
@@ -342,12 +337,12 @@ safaridriver.extension.commands.sendCommand = function(
 
 /**
  * Changes focus to another window.
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     operation has completed.
  */
-safaridriver.extension.commands.switchToWindow = function(command, session) {
+safaridriver.extension.commands.switchToWindow = function(session, command) {
   var result = new webdriver.promise.Deferred();
   var name = /** @type {string} */ (command.getParameter('name'));
 
@@ -367,7 +362,7 @@ safaridriver.extension.commands.switchToWindow = function(command, session) {
       // Hopefully, this will never happen.
       return null;
     }
-    return safaridriver.extension.commands.sendCommand(command, tab).
+    return safaridriver.extension.commands.sendCommand(tab, command).
         then(bot.response.checkResponse).
         then(function(responseObj) {
           return responseObj['value'];
@@ -426,12 +421,12 @@ safaridriver.extension.commands.switchToWindow = function(command, session) {
 
 /**
  * Sends a command that should target the currently selected window.
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
  *     the command response.
  */
-safaridriver.extension.commands.sendWindowCommand = function(command, session) {
+safaridriver.extension.commands.sendWindowCommand = function(session, command) {
   var handle = /** @type {string} */ (command.getParameter('windowHandle'));
   var tab;
   if (handle === 'current') {
@@ -440,24 +435,24 @@ safaridriver.extension.commands.sendWindowCommand = function(command, session) {
     throw new bot.Error(bot.ErrorCode.NO_SUCH_WINDOW,
         'No such window: ' + handle);
   }
-  return safaridriver.extension.commands.sendCommand(command, tab);
+  return safaridriver.extension.commands.sendCommand(tab, command);
 };
 
 
 /**
  * Sends a script-based command to the currently selected window.
- * @param {!safaridriver.Command} command The command object.
  * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with
  *     the command response.
  */
-safaridriver.extension.commands.executeAsyncScript = function(
-    command, session) {
+safaridriver.extension.commands.executeAsyncScript = function(session,
+                                                              command) {
   // The async timeout is saved on the session, so embed it in the command to
   // be sent to the injected script.
   var timeout = session.getScriptTimeout();
   command.setParameter('timeout', timeout);
-  return safaridriver.extension.commands.sendCommand(command, session, timeout);
+  return safaridriver.extension.commands.sendCommand(session, command, timeout);
 };
 
 

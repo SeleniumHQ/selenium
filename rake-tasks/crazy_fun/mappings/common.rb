@@ -151,7 +151,11 @@ class Tasks
         end
       end
 
-      cp_r out, out_dir
+      if out.is_a? Array
+        out.each{|o| cp_r o, out_dir}
+      else
+        cp_r out, out_dir
+      end
     end
   end
 

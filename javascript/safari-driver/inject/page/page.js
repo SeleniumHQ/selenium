@@ -26,16 +26,17 @@ goog.require('bot.response');
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.console');
+goog.require('safaridriver.dom');
+goog.require('safaridriver.inject.CommandRegistry');
 goog.require('safaridriver.inject.Encoder');
 goog.require('safaridriver.inject.message');
+goog.require('safaridriver.inject.page.modules');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.MessageTarget');
 goog.require('safaridriver.message.Response');
-goog.require('webdriver.CommandName');
-goog.require('webdriver.atoms.element');
 goog.require('webdriver.promise');
 
 
@@ -50,9 +51,8 @@ safaridriver.inject.page.LOG_ = goog.debug.Logger.getLogger(
 
 /**
  * @type {!safaridriver.inject.Encoder}
- * @private
  */
-safaridriver.inject.page.encoder_;
+safaridriver.inject.page.encoder;
 
 
 /**
@@ -61,6 +61,8 @@ safaridriver.inject.page.encoder_;
  */
 safaridriver.inject.page.init = function() {
   safaridriver.console.init();
+  safaridriver.inject.page.modules.init();
+
   safaridriver.inject.page.LOG_.info(
       'Loaded page script for ' + window.location);
 
@@ -69,7 +71,7 @@ safaridriver.inject.page.init = function() {
   messageTarget.on(safaridriver.message.Command.TYPE,
       safaridriver.inject.page.onCommand_);
 
-  safaridriver.inject.page.encoder_ =
+  safaridriver.inject.page.encoder =
       new safaridriver.inject.Encoder(messageTarget);
 
   var message = new safaridriver.message.Load(window !== window.top);
@@ -248,7 +250,7 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
   // When the response is resolved, we want to wrap it up in a message and
   // send it back to the injected script. This does all that.
   response.then(function(value) {
-    var encodedValue = safaridriver.inject.page.encoder_.encode(value);
+    var encodedValue = safaridriver.inject.page.encoder.encode(value);
     // If the command result contains any DOM elements from another
     // document, the encoded value will contain promises that will resolve
     // once the owner documents have encoded the elements. Therefore, we
@@ -263,32 +265,9 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
         responseMessage.send(window);
       });
 
-  var handlerFn;
-  switch (command.getName()) {
-    case webdriver.CommandName.EXECUTE_ASYNC_SCRIPT:
-      handlerFn = safaridriver.inject.page.executeAsyncScript_;
-      break;
-
-    case webdriver.CommandName.EXECUTE_SCRIPT:
-      handlerFn = safaridriver.inject.page.executeScript_;
-      break;
-
-    case webdriver.CommandName.SEND_KEYS_TO_ELEMENT:
-      handlerFn = safaridriver.inject.page.sendKeysToElement_;
-      break;
-  }
-
-  if (!handlerFn) {
-    response.reject(Error('Unknown command: ' + command.getName()));
-    return;
-  }
-
-  try {
-    webdriver.promise.asap(handlerFn(command),
-        response.resolve, response.reject);
-  } catch (ex) {
-    response.reject(ex);
-  }
+  safaridriver.inject.CommandRegistry.getInstance()
+      .execute(command, goog.global)
+      .then(response.resolve, response.reject);
 };
 
 
@@ -297,82 +276,8 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
  * @param {!Array.<*>} args Function arguments.
  * @return {*} The function result.
  * @throws {Error} If unable to decode the function arguments.
- * @private
  */
-safaridriver.inject.page.execute_ = function(fn, args) {
-  args = /** @type {!Array} */ (safaridriver.inject.page.encoder_.decode(args));
+safaridriver.inject.page.execute = function(fn, args) {
+  args = /** @type {!Array} */ (safaridriver.inject.Encoder.decode(args));
   return fn.apply(window, args);
-};
-
-
-/**
- * @param {!safaridriver.Command} command The command to execute.
- * @private
- */
-safaridriver.inject.page.sendKeysToElement_ = function(command) {
-  safaridriver.inject.page.execute_(webdriver.atoms.element.type, [
-    command.getParameter('id'),
-    command.getParameter('value')
-  ]);
-};
-
-
-/**
- * Handles an executeScript command.
- * @param {!safaridriver.Command} command The command to execute.
- * @return {*} The script result.
- * @private
- */
-safaridriver.inject.page.executeScript_ = function(command) {
-  // TODO: clean-up bot.inject.executeScript so it doesn't pull in so many
-  // extra dependencies.
-  var fn = new Function(command.getParameter('script'));
-  var args = (/** @type {!Array.<*>} */command.getParameter('args'));
-  return safaridriver.inject.page.execute_(fn, args);
-};
-
-
-/**
- * Handles an executeAsyncScript command.
- * @param {!safaridriver.Command} command The command to execute.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with
- *     the script result.
- * @private
- */
-safaridriver.inject.page.executeAsyncScript_ = function(command) {
-  var response = new webdriver.promise.Deferred();
-
-  var script = /** @type {string} */ (command.getParameter('script'));
-  var scriptFn = new Function(script);
-
-  var args = command.getParameter('args');
-  args = /** @type {!Array} */ (safaridriver.inject.page.encoder_.decode(args));
-  // The last argument for an async script is the callback that triggers the
-  // response.
-  args.push(function(value) {
-    safaridriver.dom.call(window, 'clearTimeout', timeoutId);
-    if (response.isPending()) {
-      response.resolve(value);
-    }
-  });
-
-  var startTime = goog.now();
-  scriptFn.apply(window, args);
-
-  // Register our timeout *after* the function has been invoked. This will
-  // ensure we don't timeout on a function that invokes its callback after a
-  // 0-based timeout:
-  // var scriptFn = function(callback) {
-  //   setTimeout(callback, 0);
-  // };
-  var timeout = /** @type {number} */ (command.getParameter('timeout'));
-  var timeoutId = safaridriver.dom.call(window, 'setTimeout', function() {
-    if (response.isPending()) {
-      response.reject(new bot.Error(bot.ErrorCode.SCRIPT_TIMEOUT,
-          'Timed out waiting for an asynchronous script result after ' +
-              (goog.now() - startTime) + ' ms'));
-    }
-  }, Math.max(0, timeout));
-
-  return response.promise;
 };

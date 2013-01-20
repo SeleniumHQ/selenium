@@ -22,7 +22,6 @@ goog.require('goog.debug.Logger');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('safaridriver.Command');
-goog.require('safaridriver.CommandRegistry');
 goog.require('safaridriver.alert');
 goog.require('safaridriver.extension.commands');
 goog.require('safaridriver.message.Command');
@@ -76,91 +75,101 @@ safaridriver.extension.Server = function(session) {
 goog.inherits(safaridriver.extension.Server, goog.Disposable);
 
 
+/**
+ * @typedef {(function(!safaridriver.extension.Session, !safaridriver.Command)|
+ *            function(!safaridriver.extension.Session))}
+ */
+safaridriver.extension.Server.CommandHandler;
+
+
+/**
+ * Maps command names to their handler functions.
+ * @type {!Object.<webdriver.CommandName,
+ *                 safaridriver.extension.Server.CommandHandler>}
+ * @const
+ * @private
+ */
+safaridriver.extension.Server.COMMAND_MAP_ = {};
 goog.scope(function() {
 var CommandName = webdriver.CommandName;
 var commands = safaridriver.extension.commands;
+var map = safaridriver.extension.Server.COMMAND_MAP_;
 
-safaridriver.CommandRegistry.getInstance()
-    // By the time a server is accepting commands, it has already allocated a
-    // session, so we can treat NEW_SESSION the same as we do DESCRIBE_SESSION.
-    .defineCommand(CommandName.NEW_SESSION, commands.describeSession)
-    .defineCommand(CommandName.DESCRIBE_SESSION, commands.describeSession)
+// By the time a server is accepting commands, it has already allocated a
+// session, so we can treat NEW_SESSION the same as we do DESCRIBE_SESSION.
+map[CommandName.NEW_SESSION] = commands.describeSession;
+map[CommandName.DESCRIBE_SESSION] = commands.describeSession;
 
-    // We can't shutdown Safari from an extension, but we can quietly handle
-    // the command so we don't return an unknown command error.
-    .defineCommand(CommandName.QUIT, goog.nullFunction)
+// We can't shutdown Safari from an extension, but we can quietly handle the
+// command so we don't return an unknown command error.
+map[CommandName.QUIT] = goog.nullFunction;
 
-    .defineCommand(CommandName.CLOSE, commands.closeTab)
-    .defineCommand(CommandName.GET_CURRENT_WINDOW_HANDLE,
-        commands.getWindowHandle)
-    .defineCommand(CommandName.GET_WINDOW_HANDLES, commands.getWindowHandles)
-    .defineCommand(CommandName.GET_CURRENT_URL, commands.sendCommand)
-    .defineCommand(CommandName.GET_TITLE, commands.sendCommand)
-    .defineCommand(CommandName.GET_PAGE_SOURCE, commands.sendCommand)
+map[CommandName.CLOSE] = commands.closeTab;
+map[CommandName.GET_CURRENT_WINDOW_HANDLE] = commands.getWindowHandle;
+map[CommandName.GET_WINDOW_HANDLES] = commands.getWindowHandles;
+map[CommandName.GET_CURRENT_URL] = commands.sendCommand;
+map[CommandName.GET_TITLE] = commands.sendCommand;
+map[CommandName.GET_PAGE_SOURCE] = commands.sendCommand;
 
-    .defineCommand(CommandName.GET, commands.loadUrl)
-    .defineCommand(CommandName.REFRESH, commands.refresh)
-    .defineCommand(CommandName.GO_BACK, commands.sendCommand)
-    .defineCommand(CommandName.GO_FORWARD, commands.sendCommand)
+map[CommandName.GET] = commands.loadUrl;
+map[CommandName.REFRESH] = commands.refresh;
+map[CommandName.GO_BACK] = commands.sendCommand;
+map[CommandName.GO_FORWARD] = commands.sendCommand;
+map[CommandName.GO_BACK] = commands.sendCommand;
 
-    .defineCommand(CommandName.ADD_COOKIE, commands.sendCommand)
-    .defineCommand(CommandName.GET_ALL_COOKIES, commands.sendCommand)
-    .defineCommand(CommandName.DELETE_ALL_COOKIES, commands.sendCommand)
-    .defineCommand(CommandName.DELETE_COOKIE, commands.sendCommand)
+map[CommandName.ADD_COOKIE] = commands.sendCommand;
+map[CommandName.GET_ALL_COOKIES] = commands.sendCommand;
+map[CommandName.DELETE_ALL_COOKIES] = commands.sendCommand;
+map[CommandName.DELETE_COOKIE] = commands.sendCommand;
 
-    .defineCommand(CommandName.IMPLICITLY_WAIT, commands.implicitlyWait)
-    .defineCommand(CommandName.FIND_ELEMENT, commands.findElement)
-    .defineCommand(CommandName.FIND_ELEMENTS, commands.findElement)
-    .defineCommand(CommandName.FIND_CHILD_ELEMENT, commands.findElement)
-    .defineCommand(CommandName.FIND_CHILD_ELEMENTS, commands.findElement)
-    .defineCommand(CommandName.GET_ACTIVE_ELEMENT, commands.sendCommand)
+map[CommandName.IMPLICITLY_WAIT] = commands.implicitlyWait;
+map[CommandName.FIND_ELEMENT] = commands.findElement;
+map[CommandName.FIND_ELEMENTS] = commands.findElement;
+map[CommandName.FIND_CHILD_ELEMENT] = commands.findElement;
+map[CommandName.FIND_CHILD_ELEMENTS] = commands.findElement;
+map[CommandName.GET_ACTIVE_ELEMENT] = commands.sendCommand;
 
-    .defineCommand(CommandName.CLEAR_ELEMENT, commands.sendCommand)
-    .defineCommand(CommandName.CLICK_ELEMENT, commands.sendCommand)
-    .defineCommand(CommandName.SUBMIT_ELEMENT, commands.sendCommand)
-    .defineCommand(CommandName.GET_ELEMENT_TEXT, commands.sendCommand)
-    .defineCommand(CommandName.GET_ELEMENT_TAG_NAME, commands.sendCommand)
-    .defineCommand(CommandName.IS_ELEMENT_SELECTED, commands.sendCommand)
-    .defineCommand(CommandName.IS_ELEMENT_ENABLED, commands.sendCommand)
-    .defineCommand(CommandName.IS_ELEMENT_DISPLAYED, commands.sendCommand)
-    .defineCommand(CommandName.GET_ELEMENT_LOCATION, commands.sendCommand)
-    .defineCommand(CommandName.GET_ELEMENT_LOCATION_IN_VIEW,
-        commands.sendCommand)
-    .defineCommand(CommandName.GET_ELEMENT_SIZE, commands.sendCommand)
-    .defineCommand(CommandName.GET_ELEMENT_ATTRIBUTE, commands.sendCommand)
-    .defineCommand(CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-        commands.sendCommand)
-    .defineCommand(CommandName.ELEMENT_EQUALS, commands.sendCommand)
-    .defineCommand(CommandName.SEND_KEYS_TO_ELEMENT, commands.sendCommand)
+map[CommandName.CLEAR_ELEMENT] = commands.sendCommand;
+map[CommandName.CLICK_ELEMENT] = commands.sendCommand;
+map[CommandName.SUBMIT_ELEMENT] = commands.sendCommand;
+map[CommandName.GET_ELEMENT_TEXT] = commands.sendCommand;
+map[CommandName.GET_ELEMENT_TAG_NAME] = commands.sendCommand;
+map[CommandName.IS_ELEMENT_SELECTED] = commands.sendCommand;
+map[CommandName.IS_ELEMENT_ENABLED] = commands.sendCommand;
+map[CommandName.IS_ELEMENT_DISPLAYED] = commands.sendCommand;
+map[CommandName.GET_ELEMENT_LOCATION] = commands.sendCommand;
+map[CommandName.GET_ELEMENT_LOCATION_IN_VIEW] = commands.sendCommand;
+map[CommandName.GET_ELEMENT_SIZE] = commands.sendCommand;
+map[CommandName.GET_ELEMENT_ATTRIBUTE] = commands.sendCommand;
+map[CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY] = commands.sendCommand;
+map[CommandName.ELEMENT_EQUALS] = commands.sendCommand;
+map[CommandName.SEND_KEYS_TO_ELEMENT] = commands.sendCommand;
 
-    .defineCommand(CommandName.CLICK, commands.sendCommand)
-    .defineCommand(CommandName.DOUBLE_CLICK, commands.sendCommand)
-    .defineCommand(CommandName.MOUSE_DOWN, commands.sendCommand)
-    .defineCommand(CommandName.MOUSE_UP, commands.sendCommand)
-    .defineCommand(CommandName.MOVE_TO, commands.sendCommand)
-    .defineCommand(CommandName.SEND_KEYS_TO_ACTIVE_ELEMENT,
-        commands.sendCommand)
+map[CommandName.CLICK] = commands.sendCommand;
+map[CommandName.DOUBLE_CLICK] = commands.sendCommand;
+map[CommandName.MOUSE_DOWN] = commands.sendCommand;
+map[CommandName.MOUSE_UP] = commands.sendCommand;
+map[CommandName.MOVE_TO] = commands.sendCommand;
+map[CommandName.SEND_KEYS_TO_ACTIVE_ELEMENT] = commands.sendCommand;
 
-    .defineCommand(CommandName.SWITCH_TO_FRAME, commands.sendCommand)
-    .defineCommand(CommandName.SWITCH_TO_WINDOW, commands.switchToWindow)
-    .defineCommand(CommandName.SET_WINDOW_SIZE, commands.sendWindowCommand)
-    .defineCommand(CommandName.SET_WINDOW_POSITION, commands.sendWindowCommand)
-    .defineCommand(CommandName.GET_WINDOW_SIZE, commands.sendWindowCommand)
-    .defineCommand(CommandName.GET_WINDOW_POSITION, commands.sendWindowCommand)
-    .defineCommand(CommandName.MAXIMIZE_WINDOW, commands.sendWindowCommand)
+map[CommandName.SWITCH_TO_FRAME] = commands.sendCommand;
+map[CommandName.SWITCH_TO_WINDOW] = commands.switchToWindow;
+map[CommandName.SET_WINDOW_SIZE] = commands.sendWindowCommand;
+map[CommandName.SET_WINDOW_POSITION] = commands.sendWindowCommand;
+map[CommandName.GET_WINDOW_SIZE] = commands.sendWindowCommand;
+map[CommandName.GET_WINDOW_POSITION] = commands.sendWindowCommand;
+map[CommandName.MAXIMIZE_WINDOW] = commands.sendWindowCommand;
 
-    .defineCommand(CommandName.EXECUTE_SCRIPT, commands.sendCommand)
-    .defineCommand(CommandName.EXECUTE_ASYNC_SCRIPT,
-        commands.executeAsyncScript)
-    .defineCommand(CommandName.SET_SCRIPT_TIMEOUT, commands.setScriptTimeout)
+map[CommandName.EXECUTE_SCRIPT] = commands.sendCommand;
+map[CommandName.EXECUTE_ASYNC_SCRIPT] = commands.executeAsyncScript;
+map[CommandName.SET_SCRIPT_TIMEOUT] = commands.setScriptTimeout;
 
-    .defineCommand(CommandName.SCREENSHOT, commands.takeScreenshot)
+map[CommandName.SCREENSHOT] = commands.takeScreenshot;
 
-    .defineCommand(CommandName.ACCEPT_ALERT, commands.handleNoAlertsPresent)
-    .defineCommand(CommandName.DISMISS_ALERT, commands.handleNoAlertsPresent)
-    .defineCommand(CommandName.GET_ALERT_TEXT, commands.handleNoAlertsPresent)
-    .defineCommand(CommandName.SET_ALERT_TEXT, commands.handleNoAlertsPresent)
-    ;
+map[CommandName.ACCEPT_ALERT] = commands.handleNoAlertsPresent;
+map[CommandName.DISMISS_ALERT] = commands.handleNoAlertsPresent;
+map[CommandName.GET_ALERT_TEXT] = commands.handleNoAlertsPresent;
+map[CommandName.SET_ALERT_TEXT] = commands.handleNoAlertsPresent;
 });  // goog.scope
 
 
@@ -268,11 +277,18 @@ safaridriver.extension.Server.prototype.execute = function(
   // safaridriver.extension.driver (via the extension builder REPL).
   command = new safaridriver.Command(goog.string.getRandomString(),
       command.getName(), command.getParameters());
+  var handler = safaridriver.extension.Server.COMMAND_MAP_[command.getName()];
+  if (!handler) {
+    this.logMessage_('Unknown command: ' + command.getName(),
+        goog.debug.Logger.Level.SEVERE);
+    return webdriver.promise.rejected(bot.response.createErrorResponse(
+        Error('Unknown command: ' + command.getName())));
+  }
 
   this.logMessage_('Scheduling command: ' + command.getName(),
       goog.debug.Logger.Level.FINER);
   var description = this.session_.getId() + '::' + command.getName();
-  var fn = goog.bind(this.executeCommand_, this, command);
+  var fn = goog.bind(this.executeCommand_, this, command, handler);
   var result = webdriver.promise.Application.getInstance().
       schedule(description, fn).
       then(bot.response.createResponse, bot.response.createErrorResponse).
@@ -294,10 +310,13 @@ safaridriver.extension.Server.prototype.execute = function(
 
 /**
  * @param {!safaridriver.Command} command The command to execute.
+ * @param {safaridriver.extension.Server.CommandHandler} handler The command
+ *     handler.
  * @return {*} The command result.
  * @private
  */
-safaridriver.extension.Server.prototype.executeCommand_ = function(command) {
+safaridriver.extension.Server.prototype.executeCommand_ = function(
+    command, handler) {
   this.logMessage_('Executing command: ' + command.getName());
 
   var alertText = this.session_.getUnhandledAlertText();
@@ -307,9 +326,7 @@ safaridriver.extension.Server.prototype.executeCommand_ = function(command) {
   }
 
   this.session_.setCurrentCommand(command);
-
-  var registry = safaridriver.CommandRegistry.getInstance();
-  return registry.execute(command, this.session_);
+  return handler(this.session_, command);
 };
 
 
@@ -319,8 +336,8 @@ safaridriver.extension.Server.prototype.executeCommand_ = function(command) {
  *     Defaults to INFO.
  * @private
  */
-safaridriver.extension.Server.prototype.logMessage_ = function(message,
-    opt_level) {
+safaridriver.extension.Server.prototype.logMessage_ = function(
+    message, opt_level) {
   this.log_.log(opt_level || goog.debug.Logger.Level.INFO,
       '[' + this.session_.getId() + '] ' + message);
 };

@@ -23,6 +23,7 @@ goog.require('bot.inject');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.console');
 goog.require('safaridriver.inject.Tab');
+goog.require('safaridriver.inject.commands.module');
 goog.require('safaridriver.inject.message');
 goog.require('safaridriver.inject.message.Encode');
 goog.require('safaridriver.message');
@@ -40,6 +41,7 @@ safaridriver.inject.LOG = goog.debug.Logger.getLogger('safaridriver.inject');
 /** Initializes this injected script. */
 safaridriver.inject.init = function() {
   safaridriver.console.init();
+  safaridriver.inject.commands.module.init();
 
   var tab = safaridriver.inject.Tab.getInstance();
   tab.init();

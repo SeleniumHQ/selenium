@@ -20,6 +20,7 @@
 
 goog.provide('safaridriver.extension');
 
+goog.require('bot.response');
 goog.require('goog.asserts');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
@@ -30,6 +31,7 @@ goog.require('safaridriver.extension.TabManager');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Connect');
+goog.require('safaridriver.message.LoadModule');
 goog.require('webdriver.Session');
 goog.require('webdriver.WebDriver');
 
@@ -112,7 +114,8 @@ safaridriver.extension.numConnections_ = 0;
  */
 safaridriver.extension.onMessage_ = function(e) {
   var message = safaridriver.message.fromEvent(e);
-  switch (message.getType()) {
+  var type = message.getType();
+  switch (type) {
     case safaridriver.message.Connect.TYPE:
       var url = /** @type {!safaridriver.message.Connect} */ (message).getUrl();
       var server = safaridriver.extension.createSessionServer_();
@@ -130,8 +133,7 @@ safaridriver.extension.onMessage_ = function(e) {
       break;
 
     case safaridriver.message.Alert.TYPE:
-      goog.asserts.assert(e.name === 'canLoad',
-          'Received an async alert message');
+      checkIsSynchronous();
       if (message.blocksUiThread() &&
           !safaridriver.extension.session_.isExecutingCommand()) {
         safaridriver.extension.LOG_.warning(
@@ -144,6 +146,16 @@ safaridriver.extension.onMessage_ = function(e) {
       // http://code.google.com/p/selenium/issues/detail?id=3862
       e.message = !!safaridriver.extension.numConnections_;
       break;
+
+    case safaridriver.message.LoadModule.TYPE:
+      checkIsSynchronous();
+      e.message = safaridriver.extension.loadModule_(message.getModuleId());
+      break;
+  }
+
+  function checkIsSynchronous() {
+    goog.asserts.assert(e.name === 'canLoad',
+        'Expected a synchronous message for type %s', type);
   }
 };
 
@@ -157,3 +169,27 @@ safaridriver.extension.onMessage_ = function(e) {
 safaridriver.extension.createSessionServer_ = function() {
   return new safaridriver.extension.Server(safaridriver.extension.session_);
 };
+
+
+/**
+ * @param {string} moduleId The module to load.
+ * @return {!bot.response.ResponseObject} The response.
+ * @private
+ */
+safaridriver.extension.loadModule_ = function(moduleId) {
+  var module = safaridriver.extension.modules_[moduleId];
+  if (module) {
+    return bot.response.createResponse(module.toString());
+  }
+  return bot.response.createErrorResponse(
+      Error('Internal error: module ' + moduleId + ' not found'));
+};
+
+
+/**
+ * Object hash for compiled modules for lazy loading from the injected script.
+ * @type {!Object.<function()>}
+ * @private
+ */
+safaridriver.extension.modules_ = {};
+goog.exportSymbol('MODULES', safaridriver.extension.modules_);

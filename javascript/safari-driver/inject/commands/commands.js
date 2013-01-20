@@ -36,6 +36,7 @@ goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.net.cookies');
 goog.require('goog.style');
+goog.require('safaridriver.inject.CommandRegistry');
 goog.require('safaridriver.inject.message.Activate');
 goog.require('webdriver.atoms.element');
 
@@ -106,7 +107,7 @@ safaridriver.inject.commands.getPageSource = function() {
 /**
  * Defines an element locating command.
  * @param {function(!Object, (Document|Element)=):
- *     (Element|!goog.array.ArrayLike.<Element>)} locatorFn The locator function
+    *     (Element|!goog.array.ArrayLike.<Element>)} locatorFn The locator function
  *     that should be used.
  * @return {function(!safaridriver.Command): !bot.response.ResponseObject} The
  *     locator command function.
@@ -168,7 +169,7 @@ safaridriver.inject.commands.addCookie = function(command) {
   // to be in seconds since "right now".
   var maxAge = cookie['expiry'];
   if (goog.isNumber(maxAge)) {
-    maxAge = new Date(maxAge) - goog.now();
+    maxAge = new Date(maxAge - goog.now());
   }
 
   // TODO: check whether cookie['domain'] is valid.
@@ -208,24 +209,6 @@ safaridriver.inject.commands.deleteCookie = function(command) {
 
 
 /**
- * Ensures the provided command's element is encoded as a WebElement JSON
- * object, as defined by the WebDriver wire protocol.
- * @param {!safaridriver.Command} command The command to modify.
- * @return {!safaridriver.Command} The modified command.
- * @private
- */
-safaridriver.inject.commands.prepareElementCommand_ = function(command) {
-  var element = command.getParameter('id');
-  if (goog.isDef(element) && !goog.isObject(element)) {
-    command.setParameter('id', {
-      'ELEMENT': element
-    });
-  }
-  return command;
-};
-
-
-/**
  * Creates a command that targets a specific DOM element.
  * @param {!Function} handlerFn The actual handler function. The first parameter
  *     should be the Element to target.
@@ -237,7 +220,7 @@ safaridriver.inject.commands.prepareElementCommand_ = function(command) {
 safaridriver.inject.commands.elementCommand_ = function(handlerFn, var_args) {
   var keys = goog.array.slice(arguments, 1);
   return function(command) {
-    command = safaridriver.inject.commands.prepareElementCommand_(command);
+    command = safaridriver.inject.commands.util.prepareElementCommand(command);
     var element = command.getParameter('id');
 
     var args = goog.array.concat(element, goog.array.map(keys, function(key) {
@@ -320,8 +303,8 @@ safaridriver.inject.commands.getElementText =
  */
 safaridriver.inject.commands.getElementTagName =
     safaridriver.inject.commands.elementCommand_(function(el) {
-  return el.tagName;
-});
+      return el.tagName;
+    });
 
 
 /**
@@ -354,8 +337,8 @@ safaridriver.inject.commands.isElementSelected =
  */
 safaridriver.inject.commands.elementEquals =
     safaridriver.inject.commands.elementCommand_(function(a, b) {
-  return a === b;
-}, 'other');
+      return a === b;
+    }, 'other');
 
 
 /**
@@ -426,7 +409,7 @@ safaridriver.inject.commands.maximizeWindow = function() {
  * @throws {Error} If there is an error while sending the command to the page.
  */
 safaridriver.inject.commands.executeInPage = function(command, tab) {
-  command = safaridriver.inject.commands.prepareElementCommand_(command);
+  command = safaridriver.inject.commands.util.prepareElementCommand(command);
   return tab.executeInPage(command);
 };
 
@@ -474,3 +457,52 @@ safaridriver.inject.commands.switchToFrame = function(command) {
   var message = new safaridriver.inject.message.Activate(command);
   message.send(frameWindow);
 };
+
+
+goog.scope(function() {
+var CommandName = webdriver.CommandName;
+var commands = safaridriver.inject.commands;
+
+// Commands that should be defined for every frame.
+safaridriver.inject.CommandRegistry.getInstance()
+    .defineModule(safaridriver.inject.commands.module.ID, goog.object.create(
+        CommandName.ADD_COOKIE, commands.addCookie,
+        CommandName.CLEAR_ELEMENT, commands.clearElement,
+        CommandName.CLICK_ELEMENT, commands.clickElement,
+        CommandName.DELETE_ALL_COOKIES, commands.deleteCookies,
+        CommandName.DELETE_COOKIE, commands.deleteCookie,
+        CommandName.ELEMENT_EQUALS, commands.elementEquals,
+        CommandName.FIND_CHILD_ELEMENT, commands.findElement,
+        CommandName.FIND_CHILD_ELEMENTS, commands.findElements,
+        CommandName.FIND_ELEMENT, commands.findElement,
+        CommandName.FIND_ELEMENTS, commands.findElements,
+        CommandName.GET, commands.loadUrl,
+        CommandName.GET_ACTIVE_ELEMENT, commands.getActiveElement,
+        CommandName.GET_ALL_COOKIES, commands.getCookies,
+        CommandName.GET_CURRENT_URL, commands.getCurrentUrl,
+        CommandName.GET_ELEMENT_ATTRIBUTE, commands.getElementAttribute,
+        CommandName.GET_ELEMENT_LOCATION, commands.getElementLocation,
+        CommandName.GET_ELEMENT_LOCATION_IN_VIEW, commands.getLocationInView,
+        CommandName.GET_ELEMENT_SIZE, commands.getElementSize,
+        CommandName.GET_ELEMENT_TAG_NAME, commands.getElementTagName,
+        CommandName.GET_ELEMENT_TEXT, commands.getElementText,
+        CommandName.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, commands.getCssValue,
+        CommandName.GET_PAGE_SOURCE, commands.getPageSource,
+        CommandName.GET_TITLE, commands.getTitle,
+        CommandName.GET_WINDOW_POSITION, commands.getWindowPosition,
+        CommandName.GET_WINDOW_SIZE, commands.getWindowSize,
+        CommandName.GO_BACK, commands.unsupportedHistoryNavigation,
+        CommandName.GO_FORWARD, commands.unsupportedHistoryNavigation,
+        CommandName.IS_ELEMENT_DISPLAYED, commands.isElementDisplayed,
+        CommandName.IS_ELEMENT_ENABLED, commands.isElementEnabled,
+        CommandName.IS_ELEMENT_SELECTED, commands.isElementSelected,
+        CommandName.MAXIMIZE_WINDOW, commands.maximizeWindow,
+        CommandName.REFRESH, commands.reloadPage,
+        CommandName.SET_WINDOW_POSITION, commands.setWindowPosition,
+        CommandName.SET_WINDOW_SIZE, commands.setWindowSize,
+        CommandName.SUBMIT_ELEMENT, commands.submitElement,
+        CommandName.SWITCH_TO_FRAME, commands.switchToFrame,
+        // The extension handles window switches. It sends the command to this
+        // injected script only as a means of retrieving the window name.
+        CommandName.SWITCH_TO_WINDOW, commands.getWindowName));
+});  // goog.scope

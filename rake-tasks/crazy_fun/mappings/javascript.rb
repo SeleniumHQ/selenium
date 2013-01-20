@@ -62,6 +62,35 @@ class JavascriptMappings
     fun.add_mapping("js_binary", Javascript::AddDependencies.new)
     fun.add_mapping("js_binary", Javascript::Compile.new)
 
+    #
+    # Arguments:
+    #   name: A unique name for this module.
+    #   deps: A list of dependent js_module or js_library targets.
+    fun.add_mapping("js_module", Javascript::CheckPreconditions.new)
+    fun.add_mapping("js_module", Javascript::CheckModuleDeps.new)
+
+    # Runs the Closure compiler over a set of JavaScript files, producing a
+    # set of interconnected module files.
+    #
+    # Arguments:
+    #   name: The base name of the binary. This will be used as a common prefix
+    #       for the generated modules.
+    #   modules: A list of dependent js_module targets.
+    #   defines: A list of symbols to define with the compiler. Each symbol
+    #       should be of the form "$key=$value" and is equivalent to including
+    #       the flag "--define=$key=$value".
+    #   externs: A list of files to include as externs.
+    #   flags: A list of flags to pass to the Closure compiler.
+    #   no_format: If specified, the output will not be pretty printed (the
+    #       value of this argument is irrelevant). If not specified, the
+    #       binary will be compiled using the flag "--formatting=PRETTY_PRINT".
+    #
+    # Outputs:
+    #   A compiled file for each js_module dependency. Each output file will
+    #   be named $name_$module.js, where $name is the |name| of this target,
+    #   and $module is the |name| of the dependent js_module.
+    fun.add_mapping("js_module_binary", Javascript::CompileModules.new)
+
     # Runs the Closure compiler over a set of JavaScript files to produce a
     # single script which can be easily injected into any page.
     #
@@ -474,6 +503,175 @@ module Javascript
             pathelement :path =>  "third_party/closure/bin/compiler-20120917.jar"
           end
           arg :line => cmd
+        end
+      end
+    end
+  end
+
+  class JsModule < BaseJs
+    # Hash of module task name to module info hash:
+    #   :name - module name
+    #   :srcs - list of raw srcs in the module
+    #   :deps - list of transitive dependencies
+    #   :module_deps - list of dependent modules
+    @@MODULE_INFO = {}
+  end
+
+  class CheckModuleDeps < JsModule
+    def handle(fun, dir, args)
+      module_name = task_name(dir, args[:name])
+      task module_name do
+        raise StandardError, ":name must be set" if args[:name].nil?
+        raise StandardError, ":srcs must be set" if args[:srcs].nil?
+
+        puts "Checking dependencies for: #{module_name}"
+
+        task = Rake::Task[module_name]
+        deps = build_deps(task, task, []).uniq.collect{|dep| File.expand_path(dep)}
+
+        srcs = args[:srcs].collect{|src| Dir[File.join(dir, src)]}
+        srcs = srcs.flatten.collect{|src| File.expand_path(src)}
+
+        module_deps = args[:module_deps] || []
+        module_deps = module_deps.collect{|mod| task_name(dir, mod)}
+
+        @@MODULE_INFO[module_name] = {
+            :name => module_name.to_s.sub(/.*(:|\/)/, ""),
+            :srcs => srcs,
+            :deps => calc_deps(srcs, deps),
+            :module_deps => module_deps
+        }
+
+        # If we get here without errors, all module dependencies are present.
+      end
+
+      task = Rake::Task[module_name]
+      add_dependencies(task, dir, args[:deps])
+      add_dependencies(task, dir, args[:module_deps])
+      add_dependencies(task, dir, args[:srcs])
+    end
+  end
+
+  class CompileModules < JsModule
+    def check_preconditions(args)
+      raise StandardError, ":name must be set" if args[:name].nil?
+      raise StandardError, ":modules must be set" if args[:modules].nil?
+    end
+
+    def declare_task(dir, args)
+      task_name = task_name(dir, args[:name])
+      folder = "build/#{dir}/#{args[:name]}"
+
+      desc "Compile and optimize modules in #{folder}"
+      task task_name
+
+      task = Rake::Task[task_name]
+      task.out = folder
+      add_dependencies(task, dir, args[:modules])
+    end
+
+    def resolve_module_deps(name, result_list, seen_list)
+      if !@@MODULE_INFO[name]
+        raise StandardError, "Unable to find js_module #{name}"
+      end
+
+      dep = @@MODULE_INFO[name]
+      if seen_list.index(dep) == nil
+        seen_list.push(dep)
+        dep[:module_deps].each do |sub_dep|
+          resolve_module_deps(sub_dep, result_list, seen_list)
+        end
+        result_list.push(dep)
+      end
+    end
+
+    def collect_module_info(dir, modules)
+      modules.collect! do |mod|
+        name = task_name(dir, mod)
+        if name.index(/.*:\w+$/).nil?
+          name = "#{name}:#{name.sub(/.*\//, "")}"
+        end
+
+        info = @@MODULE_INFO[name]
+        raise StandardError, "Unable to find js_module #{name}" if info.nil?
+        info
+      end
+
+      #modules.sort! do |x, y|
+      #  x[:deps].count <=> y[:deps].count
+      #end
+      #
+      result_list = []
+      seen_list = []
+      modules.each do |info|
+        seen_list.push(info)
+        info[:module_deps].each do |dep|
+          resolve_module_deps(dep, result_list, seen_list)
+        end
+        result_list.push(info)
+      end
+      result_list.uniq!
+      raise StandardError, "Unable to identify root module" unless
+          result_list[0][:module_deps].empty?
+      result_list
+    end
+
+    def handle(fun, dir, args)
+      check_preconditions(args)
+      declare_task(dir, args)
+
+      task_name = task_name(dir, args[:name])
+      task task_name do
+        folder = "build/#{dir}/#{args[:name]}"
+
+        puts "Preparing: #{task_name} as #{folder}"
+
+        module_info = collect_module_info(dir, args[:modules])
+        srcs = (args[:srcs] || []).collect do |src|
+          File.expand_path(File.join(dir, src))
+        end
+        deps = []
+        module_info.each do |info|
+          srcs.concat(info[:srcs])
+          deps.concat(info[:deps])
+        end
+        srcs.uniq!
+        deps.uniq!
+
+        js_files = calc_deps(srcs, deps)
+
+        flags = args[:flags] || []
+        flags.push("--module_output_path_prefix='#{folder}/#{args[:name]}_'")
+
+        num_files = 0
+        module_info.each do |info|
+          indices = info[:srcs].collect do |src|
+            js_files.index(src)
+          end
+          module_file_count = (indices.max + 1) - num_files
+          module_deps = info[:module_deps].collect do |dep|
+            @@MODULE_INFO[dep][:name]
+          end
+          module_deps = module_deps.empty? ? "" : ":#{module_deps.join(",")}"
+          flags.push("--module=#{info[:name]}:#{module_file_count}#{module_deps}")
+          num_files += module_file_count
+        end
+
+        js_files.each do |file|
+          flags.push("--js=\"#{file}\"")
+        end
+
+        (args[:externs] || []).each do |file|
+          flags.push("--externs=\"#{File.expand_path(File.join(dir, file))}\"")
+        end
+
+        mkdir_p Platform.path_for folder
+
+        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
+          classpath do
+            pathelement :path =>  "third_party/closure/bin/compiler-20120917.jar"
+          end
+          arg :line => flags.join(" ")
         end
       end
     end
