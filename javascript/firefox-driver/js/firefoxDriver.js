@@ -313,14 +313,16 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   var runScript = function() {
     // Since Firefox 15 we have to populate __exposedProps__ 
     // when passing objects from chrome to content due to security reasons
-    for (var i = 0; i < converted.length; i++) {
-      if (goog.typeOf(converted[i]) === "object") {
-        var keys = Object.keys(converted[i]);
-        for (var key in keys) {
-          if (converted[i].__exposedProps__ == undefined) {
-            converted[i].__exposedProps__ = {};
+    if (bot.userAgent.isProductVersion(4)) {
+      for (var i = 0; i < converted.length; i++) {
+        if (goog.typeOf(converted[i]) === "object") {
+          var keys = Object.keys(converted[i]);
+          for (var key in keys) {
+            if (converted[i].__exposedProps__ == undefined) {
+              converted[i].__exposedProps__ = {};
+            }
+            converted[i].__exposedProps__[keys[key]] = "rw";
           }
-          converted[i].__exposedProps__[keys[key]] = "rw";
         }
       }
     }
