@@ -1,3 +1,17 @@
+2.29.0 (2013-01-21)
+===================
+
+Firefox:
+  * Firefox 18 support (for native events).
+IE:
+  * New 'requireWindowFocus' desired capability.
+  * IE view port calculation take scroll bars into account (#3602)
+Safari:
+  * Replace 'libwebsocket' with 'websocket' gem. This should ensure
+    support with recent Safari.
+Other:
+  * Fix Cygwin issue in PortProber/Firefox::Bianry (#4963)
+
 2.27.2 (2012-12-11)
 ===================
 
