@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Remote::Http::Common
   
-    &mdash; Documentation by YARD 0.8.1
+    &mdash; Documentation by YARD 0.8.3
   
 </title>
 
@@ -378,7 +378,6 @@
     <h2>Instance Attribute Details</h2>
     
       
-      <span id="server_url=-instance_method"></span>
       <span id="server_url-instance_method"></span>
       <div class="method_details first">
   <h3 class="signature first" id="server_url=-instance_method">
@@ -425,7 +424,6 @@
     
       
       <span id="timeout=-instance_method"></span>
-      <span id="timeout-instance_method"></span>
       <div class="method_details ">
   <h3 class="signature " id="timeout-instance_method">
   
@@ -540,7 +538,7 @@
     <span class='id identifier rubyid_headers'>headers</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Content-Length</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_payload'>payload</span><span class='period'>.</span><span class='id identifier rubyid_bytesize'>bytesize</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='kw'>if</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='symbol'>:put</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='rparen'>)</span>
 
     <span class='kw'>if</span> <span class='gvar'>$DEBUG</span>
-      <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>   &gt;&gt;&gt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_payload'>payload</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+      <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>   &gt;&gt;&gt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_url'>url</span><span class='rbrace'>}</span><span class='tstring_content'> | </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_payload'>payload</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
       <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>     &gt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_headers'>headers</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>end</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_verb'>verb</span> <span class='op'>==</span> <span class='symbol'>:post</span>
@@ -603,9 +601,9 @@
 </div>
 
     <div id="footer">
-  Generated on Thu Jul 19 12:32:30 2012 by
+  Generated on Mon Jan 21 19:22:51 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.1 (ruby-1.9.3).
+  0.8.3 (ruby-1.9.3).
 </div>
 
   </body>

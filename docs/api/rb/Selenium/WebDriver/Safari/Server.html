@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Safari::Server
   
-    &mdash; Documentation by YARD 0.8.1
+    &mdash; Documentation by YARD 0.8.3
   
 </title>
 
@@ -408,8 +408,7 @@ window.onload = function() {
 6
 7
 8
-9
-10</pre>
+9</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 6</span>
@@ -417,7 +416,6 @@ window.onload = function() {
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_command_timeout'>command_timeout</span><span class='rparen'>)</span>
   <span class='ivar'>@port</span>  <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span>
   <span class='ivar'>@command_timeout</span> <span class='op'>=</span> <span class='id identifier rubyid_command_timeout'>command_timeout</span>
-  <span class='ivar'>@frame</span> <span class='op'>=</span> <span class='const'>LibWebSocket</span><span class='op'>::</span><span class='const'>Frame</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -446,7 +444,6 @@ window.onload = function() {
       <pre class="lines">
 
 
-108
 109
 110
 111
@@ -471,36 +468,43 @@ window.onload = function() {
 130
 131
 132
-133</pre>
+133
+134
+135
+136
+137</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 108</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_process_handshake'>process_handshake</span>
   <span class='ivar'>@ws</span> <span class='op'>=</span> <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_accept'>accept</span>
-  <span class='id identifier rubyid_hs'>hs</span>  <span class='op'>=</span> <span class='const'>LibWebSocket</span><span class='op'>::</span><span class='const'>OpeningHandshake</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+  <span class='id identifier rubyid_hs'>hs</span>  <span class='op'>=</span> <span class='const'>WebSocket</span><span class='op'>::</span><span class='const'>Handshake</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
 
   <span class='id identifier rubyid_req'>req</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span>
-  <span class='kw'>until</span> <span class='id identifier rubyid_hs'>hs</span><span class='period'>.</span><span class='id identifier rubyid_done?'>done?</span>
+  <span class='kw'>until</span> <span class='id identifier rubyid_hs'>hs</span><span class='period'>.</span><span class='id identifier rubyid_finished?'>finished?</span>
     <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_getc'>getc</span> <span class='op'>||</span> <span class='kw'>next</span>
-    <span class='id identifier rubyid_req'>req</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_chr'>chr</span>
 
-    <span class='kw'>unless</span> <span class='id identifier rubyid_hs'>hs</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_chr'>chr</span><span class='rparen'>)</span>
-      <span class='kw'>if</span> <span class='id identifier rubyid_req'>req</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>favicon.ico</span><span class='tstring_end'>&quot;</span></span>
-        <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
-        <span class='id identifier rubyid_process_handshake'>process_handshake</span>
-        <span class='kw'>return</span>
-      <span class='kw'>else</span>
-        <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_hs'>hs</span><span class='period'>.</span><span class='id identifier rubyid_error'>error</span><span class='rbrace'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_req'>req</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
-      <span class='kw'>end</span>
+    <span class='id identifier rubyid_req'>req</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_chr'>chr</span>
+    <span class='id identifier rubyid_hs'>hs</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_data'>data</span>
+  <span class='kw'>end</span>
+
+  <span class='kw'>unless</span> <span class='id identifier rubyid_hs'>hs</span><span class='period'>.</span><span class='id identifier rubyid_valid?'>valid?</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_req'>req</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>favicon.ico</span><span class='tstring_end'>&quot;</span></span>
+      <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
+      <span class='id identifier rubyid_process_handshake'>process_handshake</span>
+      <span class='kw'>return</span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_hs'>hs</span><span class='period'>.</span><span class='id identifier rubyid_error'>error</span><span class='rbrace'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_req'>req</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 
   <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_write'>write</span><span class='lparen'>(</span><span class='id identifier rubyid_hs'>hs</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span>
   <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_flush'>flush</span>
 
-  <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>handshake complete</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='gvar'>$DEBUG</span>
+  <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>handshake complete, v</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_hs'>hs</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='gvar'>$DEBUG</span>
   <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
+  <span class='ivar'>@version</span> <span class='op'>=</span> <span class='id identifier rubyid_hs'>hs</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -522,7 +526,6 @@ window.onload = function() {
       <pre class="lines">
 
 
-93
 94
 95
 96
@@ -535,10 +538,11 @@ window.onload = function() {
 103
 104
 105
-106</pre>
+106
+107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 93</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 94</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_process_initial_http_request'>process_initial_http_request</span>
   <span class='id identifier rubyid_http'>http</span> <span class='op'>=</span> <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_accept'>accept</span>
@@ -574,6 +578,7 @@ window.onload = function() {
       <pre class="lines">
 
 
+30
 31
 32
 33
@@ -596,12 +601,15 @@ window.onload = function() {
 50
 51
 52
-53</pre>
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_receive'>receive</span>
+  <span class='ivar'>@frame</span> <span class='op'>||=</span> <span class='const'>WebSocket</span><span class='op'>::</span><span class='const'>Frame</span><span class='op'>::</span><span class='const'>Incoming</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:version</span> <span class='op'>=&gt;</span> <span class='ivar'>@version</span><span class='rparen'>)</span>
+
   <span class='kw'>until</span> <span class='id identifier rubyid_msg'>msg</span> <span class='op'>=</span> <span class='ivar'>@frame</span><span class='period'>.</span><span class='id identifier rubyid_next'>next</span>
     <span class='id identifier rubyid_end_time'>end_time</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span> <span class='op'>+</span> <span class='ivar'>@command_timeout</span>
 
@@ -617,12 +625,12 @@ window.onload = function() {
       <span class='kw'>retry</span>
     <span class='kw'>end</span>
 
-    <span class='ivar'>@frame</span><span class='period'>.</span><span class='id identifier rubyid_append'>append</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
+    <span class='ivar'>@frame</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_data'>data</span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;&lt;&lt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_msg'>msg</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='gvar'>$DEBUG</span>
 
-  <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_json_load'>json_load</span> <span class='id identifier rubyid_msg'>msg</span>
+  <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_json_load'>json_load</span> <span class='id identifier rubyid_msg'>msg</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -644,6 +652,7 @@ window.onload = function() {
       <pre class="lines">
 
 
+20
 21
 22
 23
@@ -651,19 +660,18 @@ window.onload = function() {
 25
 26
 27
-28
-29</pre>
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 20</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_json'>json</span> <span class='op'>=</span> <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_json_dump'>json_dump</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&gt;&gt;&gt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_json'>json</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='gvar'>$DEBUG</span>
 
-  <span class='id identifier rubyid_frame'>frame</span> <span class='op'>=</span> <span class='const'>LibWebSocket</span><span class='op'>::</span><span class='const'>Frame</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_json'>json</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
+  <span class='id identifier rubyid_frame'>frame</span> <span class='op'>=</span> <span class='const'>WebSocket</span><span class='op'>::</span><span class='const'>Frame</span><span class='op'>::</span><span class='const'>Outgoing</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:version</span> <span class='op'>=&gt;</span> <span class='ivar'>@version</span><span class='comma'>,</span> <span class='symbol'>:data</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_json'>json</span><span class='comma'>,</span> <span class='symbol'>:type</span> <span class='op'>=&gt;</span> <span class='symbol'>:text</span><span class='rparen'>)</span>
 
-  <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_write'>write</span> <span class='id identifier rubyid_frame'>frame</span>
+  <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_write'>write</span> <span class='id identifier rubyid_frame'>frame</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
   <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_flush'>flush</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -686,12 +694,12 @@ window.onload = function() {
       <pre class="lines">
 
 
+11
 12
-13
-14</pre>
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 11</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
   <span class='ivar'>@server</span> <span class='op'>=</span> <span class='const'>TCPServer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='rparen'>)</span>
@@ -716,13 +724,13 @@ window.onload = function() {
       <pre class="lines">
 
 
+15
 16
 17
-18
-19</pre>
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span> <span class='kw'>if</span> <span class='ivar'>@server</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_closed?'>closed?</span>
@@ -748,12 +756,12 @@ window.onload = function() {
       <pre class="lines">
 
 
-59
 60
-61</pre>
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_uri'>uri</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -778,14 +786,14 @@ window.onload = function() {
       <pre class="lines">
 
 
-63
 64
 65
 66
-67</pre>
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wait_for_connection'>wait_for_connection</span>
   <span class='comment'># TODO: timeouts / non-blocking accept
@@ -812,12 +820,12 @@ window.onload = function() {
       <pre class="lines">
 
 
-55
 56
-57</pre>
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/server.rb', line 56</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ws_uri'>ws_uri</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ws://</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='rbrace'>}</span><span class='tstring_content'>/wd</span><span class='tstring_end'>&quot;</span></span>
@@ -832,9 +840,9 @@ window.onload = function() {
 </div>
 
     <div id="footer">
-  Generated on Thu Jul 19 12:32:27 2012 by
+  Generated on Mon Jan 21 19:22:52 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.1 (ruby-1.9.3).
+  0.8.3 (ruby-1.9.3).
 </div>
 
   </body>

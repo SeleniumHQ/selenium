@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Platform
   
-    &mdash; Documentation by YARD 0.8.1
+    &mdash; Documentation by YARD 0.8.3
   
 </title>
 
@@ -1193,7 +1193,7 @@
   <span class='kw'>ensure</span>
     <span class='const'>Socket</span><span class='period'>.</span><span class='id identifier rubyid_do_not_reverse_lookup'>do_not_reverse_lookup</span> <span class='op'>=</span> <span class='id identifier rubyid_orig'>orig</span>
   <span class='kw'>end</span>
-<span class='kw'>rescue</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ENETUNREACH</span>
+<span class='kw'>rescue</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ENETUNREACH</span><span class='comma'>,</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>EHOSTUNREACH</span>
   <span class='comment'># no external ip
 </span><span class='kw'>end</span></pre>
     </td>
@@ -1810,9 +1810,9 @@
 </div>
 
     <div id="footer">
-  Generated on Thu Jul 19 12:32:24 2012 by
+  Generated on Mon Jan 21 19:22:43 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.1 (ruby-1.9.3).
+  0.8.3 (ruby-1.9.3).
 </div>
 
   </body>

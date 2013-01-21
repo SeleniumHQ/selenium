@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::IE::Server
   
-    &mdash; Documentation by YARD 0.8.1
+    &mdash; Documentation by YARD 0.8.3
   
 </title>
 
@@ -456,7 +456,6 @@
     
       
       <span id="log_file=-instance_method"></span>
-      <span id="log_file-instance_method"></span>
       <div class="method_details first">
   <h3 class="signature first" id="log_file-instance_method">
   
@@ -502,7 +501,6 @@
     
       
       <span id="log_level=-instance_method"></span>
-      <span id="log_level-instance_method"></span>
       <div class="method_details ">
   <h3 class="signature " id="log_level-instance_method">
   
@@ -595,7 +593,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/server.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span>
-  <span class='id identifier rubyid_binary'>binary</span> <span class='op'>=</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_find_binary'>find_binary</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>IEDriverServer</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_binary'>binary</span> <span class='op'>=</span> <span class='const'>IE</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span> <span class='op'>||</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_find_binary'>find_binary</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>IEDriverServer</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_binary'>binary</span>
     <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_binary'>binary</span><span class='rparen'>)</span>
   <span class='kw'>else</span>
@@ -879,9 +877,9 @@
 </div>
 
     <div id="footer">
-  Generated on Thu Jul 19 12:32:25 2012 by
+  Generated on Mon Jan 21 19:22:50 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.1 (ruby-1.9.3).
+  0.8.3 (ruby-1.9.3).
 </div>
 
   </body>

@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Firefox::Binary
   
-    &mdash; Documentation by YARD 0.8.1
+    &mdash; Documentation by YARD 0.8.3
   
 </title>
 
@@ -365,10 +365,6 @@
       <pre class="lines">
 
 
-101
-102
-103
-104
 105
 106
 107
@@ -384,10 +380,14 @@
 117
 118
 119
-120</pre>
+120
+121
+122
+123
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 101</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 105</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_path'>path</span>
   <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='kw'>case</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_os'>os</span>
@@ -449,13 +449,13 @@
       <pre class="lines">
 
 
-96
-97
-98
-99</pre>
+100
+101
+102
+103</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 96</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 100</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_path='>path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
@@ -500,16 +500,16 @@
       <pre class="lines">
 
 
-34
-35
-36
-37
 38
 39
-40</pre>
+40
+41
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='ivar'>@process</span>
@@ -566,13 +566,21 @@
 29
 30
 31
-32</pre>
+32
+33
+34
+35
+36</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 17</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start_with'>start_with</span><span class='lparen'>(</span><span class='id identifier rubyid_profile'>profile</span><span class='comma'>,</span> <span class='id identifier rubyid_profile_path'>profile_path</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_profile_path'>profile_path</span> <span class='op'>=</span> <span class='id identifier rubyid_profile_path'>profile_path</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\\</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_windows?'>windows?</span>
+  <span class='kw'>if</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_cygwin?'>cygwin?</span>
+    <span class='id identifier rubyid_profile_path'>profile_path</span> <span class='op'>=</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_cygwin_path'>cygwin_path</span><span class='lparen'>(</span><span class='id identifier rubyid_profile_path'>profile_path</span><span class='comma'>,</span> <span class='symbol'>:windows</span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='rparen'>)</span>
+  <span class='kw'>elsif</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_windows?'>windows?</span>
+    <span class='id identifier rubyid_profile_path'>profile_path</span> <span class='op'>=</span> <span class='id identifier rubyid_profile_path'>profile_path</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\\</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 
   <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>XRE_CONSOLE_LOG</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>           <span class='op'>=</span> <span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_log_file'>log_file</span> <span class='kw'>if</span> <span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_log_file'>log_file</span>
   <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>XRE_PROFILE_PATH</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>          <span class='op'>=</span> <span class='id identifier rubyid_profile_path'>profile_path</span>
@@ -620,12 +628,12 @@
       <pre class="lines">
 
 
-42
-43
-44</pre>
+46
+47
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/binary.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wait'>wait</span>
   <span class='ivar'>@process</span><span class='period'>.</span><span class='id identifier rubyid_poll_for_exit'>poll_for_exit</span><span class='lparen'>(</span><span class='const'>WAIT_TIMEOUT</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='ivar'>@process</span>
@@ -640,9 +648,9 @@
 </div>
 
     <div id="footer">
-  Generated on Thu Jul 19 12:32:28 2012 by
+  Generated on Mon Jan 21 19:22:49 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.1 (ruby-1.9.3).
+  0.8.3 (ruby-1.9.3).
 </div>
 
   </body>

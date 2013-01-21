@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::SocketPoller
   
-    &mdash; Documentation by YARD 0.8.1
+    &mdash; Documentation by YARD 0.8.3
   
 </title>
 
@@ -193,28 +193,6 @@ otherwise.</p>
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#listening%3F-instance_method" title="#listening? (instance method)">- (Boolean) <strong>listening?</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -385,72 +363,14 @@ otherwise.</p>
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="listening?-instance_method">
-  
-    - (<tt>Boolean</tt>) <strong>listening?</strong> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-50
-51
-52
-53
-54
-55</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_poller.rb', line 50</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_listening?'>listening?</span>
-  <span class='const'>TCPSocket</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@host</span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
-  <span class='kw'>true</span>
-<span class='kw'>rescue</span> <span class='op'>*</span><span class='const'>NOT_CONNECTED_ERRORS</span>
-  <span class='kw'>false</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
     <div id="footer">
-  Generated on Thu Jul 19 12:32:31 2012 by
+  Generated on Mon Jan 21 19:22:48 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.1 (ruby-1.9.3).
+  0.8.3 (ruby-1.9.3).
 </div>
 
   </body>

@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Remote::Bridge
   
-    &mdash; Documentation by YARD 0.8.1
+    &mdash; Documentation by YARD 0.8.3
   
 </title>
 
@@ -120,7 +120,7 @@
 
 </div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
-  <p class="children"><span class='object_link'><a href="../Android/Bridge.html" title="Selenium::WebDriver::Android::Bridge (class)">Android::Bridge</a></span>, <span class='object_link'><a href="../Chrome/Bridge.html" title="Selenium::WebDriver::Chrome::Bridge (class)">Chrome::Bridge</a></span>, <span class='object_link'><a href="../Firefox/Bridge.html" title="Selenium::WebDriver::Firefox::Bridge (class)">Firefox::Bridge</a></span>, <span class='object_link'><a href="../IE/Bridge.html" title="Selenium::WebDriver::IE::Bridge (class)">IE::Bridge</a></span>, <span class='object_link'><a href="../IPhone/Bridge.html" title="Selenium::WebDriver::IPhone::Bridge (class)">IPhone::Bridge</a></span>, <span class='object_link'><a href="../Opera/Bridge.html" title="Selenium::WebDriver::Opera::Bridge (class)">Opera::Bridge</a></span>, <span class='object_link'><a href="../Safari/Bridge.html" title="Selenium::WebDriver::Safari::Bridge (class)">Safari::Bridge</a></span></p>
+  <p class="children"><span class='object_link'><a href="../Android/Bridge.html" title="Selenium::WebDriver::Android::Bridge (class)">Android::Bridge</a></span>, <span class='object_link'><a href="../Chrome/Bridge.html" title="Selenium::WebDriver::Chrome::Bridge (class)">Chrome::Bridge</a></span>, <span class='object_link'><a href="../Firefox/Bridge.html" title="Selenium::WebDriver::Firefox::Bridge (class)">Firefox::Bridge</a></span>, <span class='object_link'><a href="../IE/Bridge.html" title="Selenium::WebDriver::IE::Bridge (class)">IE::Bridge</a></span>, <span class='object_link'><a href="../IPhone/Bridge.html" title="Selenium::WebDriver::IPhone::Bridge (class)">IPhone::Bridge</a></span>, <span class='object_link'><a href="../Opera/Bridge.html" title="Selenium::WebDriver::Opera::Bridge (class)">Opera::Bridge</a></span>, <span class='object_link'><a href="../PhantomJS/Bridge.html" title="Selenium::WebDriver::PhantomJS::Bridge (class)">PhantomJS::Bridge</a></span>, <span class='object_link'><a href="../Safari/Bridge.html" title="Selenium::WebDriver::Safari::Bridge (class)">Safari::Bridge</a></span></p>
 </div>
 
   <h2>Constant Summary</h2>
@@ -911,6 +911,30 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#getAvailableLogTypes-instance_method" title="#getAvailableLogTypes (instance method)">- (Object) <strong>getAvailableLogTypes</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>logs.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#getCapabilities-instance_method" title="#getCapabilities (instance method)">- (Object) <strong>getCapabilities</strong> </a>
     
 
@@ -1224,6 +1248,28 @@
   <span class="summary_signature">
     
       <a href="#getLocation-instance_method" title="#getLocation (instance method)">- (Object) <strong>getLocation</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getLog-instance_method" title="#getLog (instance method)">- (Object) <strong>getLog</strong>(type) </a>
     
 
     
@@ -2587,7 +2633,6 @@
     
       
       <span id=""></span>
-      <span id="capabilities-instance_method"></span>
       <div class="method_details first">
   <h3 class="signature first" id="capabilities-instance_method">
   
@@ -2633,7 +2678,6 @@
     
       
       <span id="context=-instance_method"></span>
-      <span id="context-instance_method"></span>
       <div class="method_details ">
   <h3 class="signature " id="context-instance_method">
   
@@ -2679,7 +2723,6 @@
     
       
       <span id="file_detector=-instance_method"></span>
-      <span id="file_detector-instance_method"></span>
       <div class="method_details ">
   <h3 class="signature " id="file_detector-instance_method">
   
@@ -2725,7 +2768,6 @@
     
       
       <span id="http=-instance_method"></span>
-      <span id="http-instance_method"></span>
       <div class="method_details ">
   <h3 class="signature " id="http-instance_method">
   
@@ -3658,16 +3700,16 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-523
-524
-525
-526
-527
-528
-529</pre>
+540
+541
+542
+543
+544
+545
+546</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 523</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 540</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_elementEquals'>elementEquals</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span>
@@ -3809,18 +3851,18 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-540
-541
-542
-543
-544
-545
-546
-547
-548</pre>
+557
+558
+559
+560
+561
+562
+563
+564
+565</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 540</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 557</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_element_by'>find_element_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_parent'>parent</span>
@@ -3864,18 +3906,18 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-550
-551
-552
-553
-554
-555
-556
-557
-558</pre>
+567
+568
+569
+570
+571
+572
+573
+574
+575</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 550</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 567</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_elements_by'>find_elements_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_parent'>parent</span>
@@ -3968,12 +4010,12 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-535
-536
-537</pre>
+552
+553
+554</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 535</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 552</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getActiveElement'>getActiveElement</span>
   <span class='const'>Element</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_element_id_from'>element_id_from</span><span class='lparen'>(</span><span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:getActiveElement</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -4108,6 +4150,53 @@ remainder will become required method arguments.</p>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getAllCookies'>getAllCookies</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getCookies</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="getAvailableLogTypes-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getAvailableLogTypes</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>logs</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+474
+475
+476
+477</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 474</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_getAvailableLogTypes'>getAvailableLogTypes</span>
+  <span class='id identifier rubyid_types'>types</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getAvailableLogTypes</span>
+  <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_types'>types</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -4271,12 +4360,12 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-478
-479
-480</pre>
+495
+496
+497</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 478</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 495</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementAttribute'>getElementAttribute</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementAttribute</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='symbol'>:name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_name'>name</span>
@@ -4314,14 +4403,14 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-490
-491
-492
-493
-494</pre>
+507
+508
+509
+510
+511</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 490</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 507</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementLocation'>getElementLocation</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementLocation</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -4361,14 +4450,14 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-496
-497
-498
-499
-500</pre>
+513
+514
+515
+516
+517</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 496</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 513</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementLocationOnceScrolledIntoView'>getElementLocationOnceScrolledIntoView</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementLocationOnceScrolledIntoView</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -4408,14 +4497,14 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-502
-503
-504
-505
-506</pre>
+519
+520
+521
+522
+523</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 502</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 519</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementSize'>getElementSize</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementSize</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -4457,12 +4546,12 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-474
-475
-476</pre>
+491
+492
+493</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 474</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 491</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementTagName'>getElementTagName</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementTagName</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -4500,12 +4589,12 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-486
-487
-488</pre>
+503
+504
+505</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 486</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 503</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementText'>getElementText</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementText</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -4543,12 +4632,12 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-482
-483
-484</pre>
+499
+500
+501</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 482</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 499</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementValue'>getElementValue</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementValue</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -4586,12 +4675,12 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-519
-520
-521</pre>
+536
+537
+538</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 519</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 536</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_getElementValueOfCssProperty'>getElementValueOfCssProperty</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_prop'>prop</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getElementValueOfCssProperty</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='symbol'>:property_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_prop'>prop</span>
@@ -4771,6 +4860,57 @@ remainder will become required method arguments.</p>
 <span class='kw'>def</span> <span class='id identifier rubyid_getLocation'>getLocation</span>
   <span class='id identifier rubyid_obj'>obj</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:getLocation</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span> <span class='comment'># android returns null
 </span>  <span class='const'>Location</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='id identifier rubyid_obj'>obj</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>latitude</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_obj'>obj</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>longitude</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_obj'>obj</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>altitude</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="getLog-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getLog</strong>(type) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+479
+480
+481
+482
+483
+484
+485</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 479</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_getLog'>getLog</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:getLog</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:type</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
+
+  <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_l'>l</span><span class='op'>|</span>
+    <span class='const'>LogEntry</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='id identifier rubyid_l'>l</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>level</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_l'>l</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_l'>l</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>message</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -5376,12 +5516,12 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-516
-517
-518</pre>
+533
+534
+535</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 516</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 533</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_isElementDisplayed'>isElementDisplayed</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:isElementDisplayed</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -5419,12 +5559,12 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-508
-509
-510</pre>
+525
+526
+527</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 508</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 525</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_isElementEnabled'>isElementEnabled</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:isElementEnabled</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -5462,12 +5602,12 @@ remainder will become required method arguments.</p>
       <pre class="lines">
 
 
-512
-513
-514</pre>
+529
+530
+531</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 512</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 529</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_isElementSelected'>isElementSelected</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:isElementSelected</span><span class='comma'>,</span> <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_element'>element</span>
@@ -7092,9 +7232,9 @@ remainder will become required method arguments.</p>
 </div>
 
     <div id="footer">
-  Generated on Thu Jul 19 12:32:28 2012 by
+  Generated on Mon Jan 21 19:22:51 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.1 (ruby-1.9.3).
+  0.8.3 (ruby-1.9.3).
 </div>
 
   </body>

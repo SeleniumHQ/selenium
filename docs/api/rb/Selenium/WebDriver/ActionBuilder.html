@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::ActionBuilder
   
-    &mdash; Documentation by YARD 0.8.1
+    &mdash; Documentation by YARD 0.8.3
   
 </title>
 
@@ -199,7 +199,7 @@ available on Driver instances that support the user interaction API.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#context_click-instance_method" title="#context_click (instance method)">- (ActionBuilder) <strong>context_click</strong>(element) </a>
+      <a href="#context_click-instance_method" title="#context_click (instance method)">- (ActionBuilder) <strong>context_click</strong>(element = nil) </a>
     
 
     
@@ -767,7 +767,7 @@ equivalent to:</p>
       <div class="method_details ">
   <h3 class="signature " id="context_click-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>context_click</strong>(element) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>context_click</strong>(element = nil) 
   
 
   
@@ -807,6 +807,8 @@ move_to to the location of the element.</p>
       
         <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
@@ -851,7 +853,7 @@ move_to to the location of the element.</p>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 282</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_context_click'>context_click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_context_click'>context_click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:context_click</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
   <span class='kw'>self</span>
 <span class='kw'>end</span></pre>
@@ -2074,9 +2076,9 @@ switching elements should work.</p>
 </div>
 
     <div id="footer">
-  Generated on Thu Jul 19 12:32:31 2012 by
+  Generated on Mon Jan 21 19:22:45 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.1 (ruby-1.9.3).
+  0.8.3 (ruby-1.9.3).
 </div>
 
   </body>
