@@ -117,6 +117,7 @@
                                 <unjar src="../../build/java/client/src/org/openqa/selenium/client-combined-nodeps.jar" dest="target/classes">
                                     <patternset>
                                         <include name="**/seleniumemulation/selenium_atoms/*.js" />
+                                        <include name="**/seleniumemulation/scripts/*.js" />
                                     </patternset>
                                 </unjar>
                             </tasks>
