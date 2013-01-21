@@ -2,7 +2,7 @@ require File.expand_path(__FILE__ + '/../../spec_helper')
 
 describe "Window Selection" do
   it "selects and close popup windows" do
-    page.open "http://localhost:4444/selenium-server/tests/html/test_select_window.html"
+    page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/test_select_window.html"
     page.click "popupPage", :wait_for => :popup, :window => "myPopupWindow", :select => true
 
     page.location.should =~ %r{/tests/html/test_select_window_popup.html}
@@ -25,7 +25,7 @@ describe "Window Selection" do
   end
 
   it "select an anonymous window (one that isn't assigned to a variable)" do
-    page.open "http://localhost:4444/selenium-server/tests/html/test_select_window.html"
+    page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/test_select_window.html"
     page.click "popupAnonymous", :wait_for => :popup, :window => "anonymouspopup", :select => true
 
     page.location.should =~ %r{/tests/html/test_select_window_popup.html}
@@ -35,7 +35,7 @@ describe "Window Selection" do
   end
 
   it "handles an onclick close handler" do
-    page.open "http://localhost:4444/selenium-server/tests/html/test_select_window.html"
+    page.open "http://localhost:4444/selenium-server/org/openqa/selenium/tests/html/test_select_window.html"
     page.click "popupAnonymous", :wait_for => :popup, :window => "anonymouspopup", :select => true
 
     page.location.should =~ %r{/tests/html/test_select_window_popup.html}
