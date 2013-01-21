@@ -12,4 +12,7 @@ java_library(name = "safari",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
     "//third_party/java/netty",
+  ],
+  embedded = [
+    "//javascript/safari-driver/prebuilt:SafariDriver",
   ])
