@@ -21,6 +21,7 @@ public class Response {
   private volatile Object value;
   private volatile String sessionId;
   private volatile int status;
+  private volatile String state;
 
   public Response() {
   }
@@ -35,6 +36,14 @@ public class Response {
 
   public void setStatus(int status) {
     this.status = status;
+  }
+
+  public String getState() {
+    return state;
+  }
+
+  public void setState(String state) {
+    this.state = state;
   }
 
   public void setValue(Object value) {

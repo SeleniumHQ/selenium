@@ -115,7 +115,9 @@ class SafariDriverConnection {
       }
     } catch (Exception e) {
       response = new Response(command.getSessionId());
-      response.setStatus(new ErrorCodes().toStatusCode(e));
+      ErrorCodes errorCodes = new ErrorCodes();
+      response.setStatus(errorCodes.toStatusCode(e));
+      response.setState(errorCodes.toState(response.getStatus()));
       response.setValue(new WebDriverException("Invalid response", e));
     }
 

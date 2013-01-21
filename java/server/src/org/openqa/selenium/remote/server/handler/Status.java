@@ -41,6 +41,7 @@ public class Status implements RestishHandler {
 
   public ResultType handle() throws Exception {
     response.setStatus(ErrorCodes.SUCCESS);
+    response.setState(ErrorCodes.SUCCESS_STRING);
 
     BuildInfo buildInfo = new BuildInfo();
 

@@ -93,6 +93,7 @@ public class CrossDomainRpcRenderer implements Renderer {
 
     Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);
+    response.setState(ErrorCodes.SUCCESS_STRING);
     response.setValue(null);
     response.setSessionId(sessionId != null ? sessionId : "");
     return response;

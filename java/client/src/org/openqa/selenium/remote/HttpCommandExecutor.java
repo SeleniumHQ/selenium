@@ -73,6 +73,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   private final URL remoteServer;
   private final Map<String, CommandInfo> nameToUrl;
   private final HttpClient client;
+  private final ErrorCodes errorCodes = new ErrorCodes();
 
   private static HttpClientFactory httpClientFactory;
 
@@ -503,6 +504,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         response.setValue(((String) response.getValue()).replace("\r\n", "\n"));
       }
     }
+
+    response.setState(errorCodes.toState(response.getStatus()));
     return response;
   }
 

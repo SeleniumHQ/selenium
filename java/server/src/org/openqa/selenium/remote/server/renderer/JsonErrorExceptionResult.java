@@ -53,6 +53,7 @@ public class JsonErrorExceptionResult extends ErrorJsonResult {
 
     Response res = new Response();
     res.setStatus(errorCodes.toStatusCode(thrown));
+    res.setState(errorCodes.toState(res.getStatus()));
     String sessionId = HttpCommandExecutor.getSessionId(request.getUri());
     res.setSessionId(sessionId != null ? sessionId : "");
 

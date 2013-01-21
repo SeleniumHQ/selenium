@@ -146,6 +146,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
       }
     }
     response.setStatus(errorCodes.toStatusCode(toUse));
+    response.setState(errorCodes.toState(response.getStatus()));
 
     // It's like a lesson in inefficiency
     Object raw =

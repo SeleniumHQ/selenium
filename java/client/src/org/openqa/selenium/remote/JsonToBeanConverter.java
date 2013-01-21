@@ -265,6 +265,9 @@ public class JsonToBeanConverter {
       Class<?> type = write.getParameterTypes()[0];
 
       try {
+        if (JSONObject.NULL.equals(value)) {
+          value = null;
+        }
         write.invoke(t, convert(type, value, depth + 1));
       } catch (IllegalAccessException e) {
         throw propertyWriteException(property, value, type, e);
