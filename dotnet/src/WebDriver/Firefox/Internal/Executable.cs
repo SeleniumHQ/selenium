@@ -138,7 +138,16 @@ namespace OpenQA.Selenium.Firefox.Internal
             string binary = string.Empty;
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
             {
-                RegistryKey mozillaKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Mozilla\Mozilla Firefox");
+                // Look first in HKEY_LOCAL_MACHINE, then in HKEY_CURRENT_USER
+                // if it's not found there. If it's still not found, look in
+                // the default install location (C:\Program Files\Mozilla Firefox).
+                string firefoxRegistryKey = @"SOFTWARE\Mozilla\Mozilla Firefox";
+                RegistryKey mozillaKey = Registry.LocalMachine.OpenSubKey(firefoxRegistryKey);
+                if (mozillaKey != null)
+                {
+                    mozillaKey = Registry.CurrentUser.OpenSubKey(firefoxRegistryKey);
+                }
+
                 if (mozillaKey != null)
                 {
                     binary = GetExecutablePathUsingRegistry(mozillaKey);
