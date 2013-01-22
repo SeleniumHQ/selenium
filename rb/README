@@ -9,7 +9,7 @@ gem install selenium-webdriver
 = LINKS
 
 * http://rubygems.org/gems/selenium-webdriver
-* http://selenium.googlecode.com/svn/trunk/docs/api/rb/index.html
+* http://selenium.googlecode.com/git/docs/api/rb/index.html
 * http://code.google.com/p/selenium/wiki/RubyBindings
 * http://code.google.com/p/selenium/issues/list
 
