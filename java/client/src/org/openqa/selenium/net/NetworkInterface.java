@@ -29,98 +29,99 @@ import java.util.logging.Logger;
 
 public class NetworkInterface {
 
-    private final String name;
-    private final Iterable<INetAddress> inetAddresses;
-    private boolean isLoopback;
+  private final String name;
+  private final Iterable<INetAddress> inetAddresses;
+  private boolean isLoopback;
 
-    public NetworkInterface(java.net.NetworkInterface networkInterface) {
-        this(networkInterface.getName(), asIterableAddr(networkInterface.getInetAddresses()));
-        try {
-            // Issue 1181 : determine wheter this NetworkInterface instance is loopback
-            // from java.net.NetworkInterface API
-            this.isLoopback = networkInterface.isLoopback();
-        } catch (SocketException ex) {
-            Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
-            // If an SocketException is caught, determine wheter this NetworkInterface
-            // instance is loopack from computation from its inetAddresses
-            this.isLoopback = isLoopBackFromINetAddresses(asIterableAddr(networkInterface.getInetAddresses()));
-        }
+  public NetworkInterface(java.net.NetworkInterface networkInterface) {
+    this(networkInterface.getName(), asIterableAddr(networkInterface.getInetAddresses()));
+    try {
+      // Issue 1181 : determine wheter this NetworkInterface instance is loopback
+      // from java.net.NetworkInterface API
+      this.isLoopback = networkInterface.isLoopback();
+    } catch (SocketException ex) {
+      Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
+      // If an SocketException is caught, determine wheter this NetworkInterface
+      // instance is loopack from computation from its inetAddresses
+      this.isLoopback =
+          isLoopBackFromINetAddresses(asIterableAddr(networkInterface.getInetAddresses()));
     }
+  }
 
-    NetworkInterface(String name, Iterable<INetAddress> inetAddresses) {
-        this.name = name;
-        this.inetAddresses = inetAddresses;
-    }
+  NetworkInterface(String name, Iterable<INetAddress> inetAddresses) {
+    this.name = name;
+    this.inetAddresses = inetAddresses;
+  }
 
-    public boolean isIp4AddressBindingOnly() {
-        return getIp6Address() == null;
-    }
+  public boolean isIp4AddressBindingOnly() {
+    return getIp6Address() == null;
+  }
 
-    public boolean isLoopBack() {
-        return isLoopback;
-    }
+  public boolean isLoopBack() {
+    return isLoopback;
+  }
 
-    public final boolean isLoopBackFromINetAddresses(Iterable<INetAddress> inetAddresses) {
-        // Let's hope there's no such thing as network interfaces with mixed addresses ;)
-        Iterator<INetAddress> iterator = inetAddresses.iterator();
-        return iterator.hasNext() && iterator.next().isLoopbackAddress();
-    }
+  public final boolean isLoopBackFromINetAddresses(Iterable<INetAddress> inetAddresses) {
+    // Let's hope there's no such thing as network interfaces with mixed addresses ;)
+    Iterator<INetAddress> iterator = inetAddresses.iterator();
+    return iterator.hasNext() && iterator.next().isLoopbackAddress();
+  }
 
-    public INetAddress getIp4LoopbackOnly() {
-        // Goes by the wildly unscientific assumption that if there are more than one set of
-        // loopback addresses, firefox will bind to the last one we get.
-        // An alternate theory if this fails is that firefox prefers 127.0.0.1
-        // Most "normal" boxes don't have multiple addresses so we'll just refine this
-        // algorithm until it works.
-        // See NetworkUtilsTest#testOpenSuseBoxIssue1181
-        INetAddress lastFound = null;
-        // Issue 1181
-        if (!isLoopback) {
-            return lastFound;
-        }
-        for (INetAddress inetAddress : inetAddresses) {
-            if (inetAddress.isLoopbackAddress() && inetAddress.isIPv4Address()) {
-                lastFound = inetAddress;
-            }
-        }
-        return lastFound;
+  public INetAddress getIp4LoopbackOnly() {
+    // Goes by the wildly unscientific assumption that if there are more than one set of
+    // loopback addresses, firefox will bind to the last one we get.
+    // An alternate theory if this fails is that firefox prefers 127.0.0.1
+    // Most "normal" boxes don't have multiple addresses so we'll just refine this
+    // algorithm until it works.
+    // See NetworkUtilsTest#testOpenSuseBoxIssue1181
+    INetAddress lastFound = null;
+    // Issue 1181
+    if (!isLoopback) {
+      return lastFound;
     }
+    for (INetAddress inetAddress : inetAddresses) {
+      if (inetAddress.isLoopbackAddress() && inetAddress.isIPv4Address()) {
+        lastFound = inetAddress;
+      }
+    }
+    return lastFound;
+  }
 
-    public INetAddress getIp4NonLoopBackOnly() {
-        for (INetAddress inetAddress : inetAddresses) {
-            if (!inetAddress.isLoopbackAddress() && inetAddress.isIPv4Address()) {
-                return inetAddress;
-            }
-        }
-        return null;
+  public INetAddress getIp4NonLoopBackOnly() {
+    for (INetAddress inetAddress : inetAddresses) {
+      if (!inetAddress.isLoopbackAddress() && inetAddress.isIPv4Address()) {
+        return inetAddress;
+      }
     }
+    return null;
+  }
 
-    public INetAddress getIp6Address() {
-        for (INetAddress inetAddress : inetAddresses) {
-            if (inetAddress.isIPv6Address()) {
-                return inetAddress;
-            }
-        }
-        return null;
+  public INetAddress getIp6Address() {
+    for (INetAddress inetAddress : inetAddresses) {
+      if (inetAddress.isIPv6Address()) {
+        return inetAddress;
+      }
     }
+    return null;
+  }
 
-    NetworkInterface(String name, INetAddress... inetAddresses) {
-        this(name, Arrays.asList(inetAddresses));
-    }
+  NetworkInterface(String name, INetAddress... inetAddresses) {
+    this(name, Arrays.asList(inetAddresses));
+  }
 
-    public Iterable<INetAddress> getInetAddresses() {
-        return inetAddresses;
-    }
+  public Iterable<INetAddress> getInetAddresses() {
+    return inetAddresses;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    static Iterable<INetAddress> asIterableAddr(Enumeration<InetAddress> tEnumeration) {
-        List<INetAddress> result = new ArrayList<INetAddress>();
-        while (tEnumeration.hasMoreElements()) {
-            result.add(new INetAddress(tEnumeration.nextElement()));
-        }
-        return Collections.unmodifiableList(result);
+  static Iterable<INetAddress> asIterableAddr(Enumeration<InetAddress> tEnumeration) {
+    List<INetAddress> result = new ArrayList<INetAddress>();
+    while (tEnumeration.hasMoreElements()) {
+      result.add(new INetAddress(tEnumeration.nextElement()));
     }
+    return Collections.unmodifiableList(result);
+  }
 }
