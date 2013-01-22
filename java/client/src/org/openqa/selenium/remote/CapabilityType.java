@@ -43,7 +43,10 @@ public interface CapabilityType {
 
   String ENABLE_PROFILING_CAPABILITY = "webdriver.logging.profiler.enabled";
 
-  // Only applies to Internet Explorer
+  /**
+   * Moved InternetExplorer specific CapabilityTypes into InternetExplorerDriver.java for consistency
+   */
+  @Deprecated
   String ENABLE_PERSISTENT_HOVERING = "enablePersistentHover";
 
   interface ForSeleniumServer {
