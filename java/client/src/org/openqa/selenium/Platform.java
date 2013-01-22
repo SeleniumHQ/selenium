@@ -146,18 +146,35 @@ public enum Platform {
   }
 
   /**
-   * Extracts platforms based on system properties in Java and a heuristic to determine the most
-   * likely operating system.  If not able to determine the operating system, it will default to
+   * Extracts platforms based on system properties in Java and uses a heuristic to determine the
+   * most likely operating system.  If unable to determine the operating system, it will default to
    * UNIX.
    *
    * @param osName the operating system name to determine the platform of
    * @return the most likely platform based on given operating system name
    */
   public static Platform extractFromSysProperty(String osName) {
+    return extractFromSysProperty(osName, System.getProperty("os.version"));
+  }
+
+  /**
+   * Extracts platforms based on system properties in Java and uses a heuristic to determine the
+   * most likely operating system.  If unable to determine the operating system, it will default to
+   * UNIX.
+   *
+   * @param osName the operating system name to determine the platform of
+   * @param osVersion the operating system version to determine the platform of
+   * @return the most likely platform based on given operating system name and version
+   */
+  public static Platform extractFromSysProperty(String osName, String osVersion) {
     osName = osName.toLowerCase();
     // os.name for android is linux
     if ("dalvik".equalsIgnoreCase(System.getProperty("java.vm.name"))) {
       return Platform.ANDROID;
+    }
+    // Windows 8 can't be detected by osName alone
+    if (osVersion.equals("6.2") && osName.startsWith("windows nt")) {
+        return WIN8;
     }
     Platform mostLikely = UNIX;
     String previousMatch = null;
