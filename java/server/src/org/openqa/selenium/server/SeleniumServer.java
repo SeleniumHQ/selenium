@@ -589,9 +589,9 @@ public class SeleniumServer implements SslCertificateGenerator {
     final String result;
     try {
       String suiteFilePath = getRequiredSystemProperty("htmlSuite.suiteFilePath");
-      File suiteFile = new File(suiteFilePath);
+      File suiteFile = new File(suiteFilePath).getCanonicalFile();
       if (!suiteFile.exists()) {
-        RemoteControlLauncher.usage("Can't find HTML Suite file:" + suiteFile.getAbsolutePath());
+        RemoteControlLauncher.usage("Can't find HTML Suite file:" + suiteFile);
         System.exit(1);
       }
       addNewStaticContent(suiteFile.getParentFile());
