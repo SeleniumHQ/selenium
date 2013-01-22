@@ -123,7 +123,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA, CHROME, SELENESE, HTMLUNIT, OPERA_MOBILE})
+  @Ignore({OPERA, CHROME, SELENESE, OPERA_MOBILE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -156,7 +156,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA, CHROME, SELENESE, HTMLUNIT, OPERA_MOBILE})
+  @Ignore({OPERA, CHROME, SELENESE, OPERA_MOBILE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);

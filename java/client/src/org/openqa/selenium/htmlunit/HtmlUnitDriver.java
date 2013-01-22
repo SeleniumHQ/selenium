@@ -648,6 +648,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected Page lastPage() {
+    if (currentWindow == null || currentWindow.isClosed()) {
+      throw new NoSuchWindowException("The current window was closed");
+    }
     return currentWindow.getEnclosedPage();
   }
 
