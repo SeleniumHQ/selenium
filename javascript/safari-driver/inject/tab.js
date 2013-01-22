@@ -39,6 +39,7 @@ goog.require('safaridriver.inject.message');
 goog.require('safaridriver.inject.message.Activate');
 goog.require('safaridriver.inject.message.ActivateFrame');
 goog.require('safaridriver.inject.message.ReactivateFrame');
+goog.require('safaridriver.inject.util');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Command');
@@ -571,22 +572,20 @@ safaridriver.inject.Tab.prototype.installPageScript_ = function(opt_dom) {
     this.log('Installing page script');
     this.installedPageScript_ = new webdriver.promise.Deferred();
 
-    var loadMessage = new safaridriver.message.LoadModule('page_base');
-    var response = /** @type {bot.response.ResponseObject} */ (
-        loadMessage.sendSync(safari.self.tab));
-    bot.response.checkResponse(response);
+    safaridriver.inject.util.loadModule('page_base', safari.self.tab).
+        addCallback(function(src) {
+          var dom = opt_dom || goog.dom.getDomHelper();
+          var script = dom.createElement('script');
+          script.type = 'application/javascript';
+          script.textContent = '(' + src + ').call({});';
 
-    var dom = opt_dom || goog.dom.getDomHelper();
-    var script = dom.createElement('script');
-    script.type = 'application/javascript';
-    script.textContent = '(' + response['value'] + ').call({});';
+          var docEl = dom.getDocument().documentElement;
+          goog.dom.appendChild(docEl, script);
 
-    var docEl = dom.getDocument().documentElement;
-    goog.dom.appendChild(docEl, script);
-
-    this.installedPageScript_.addBoth(function() {
-      goog.dom.removeNode(script);
-    });
+          this.installedPageScript_.addBoth(function() {
+            goog.dom.removeNode(script);
+          });
+        }, this);
   }
   return this.installedPageScript_.promise;
 };

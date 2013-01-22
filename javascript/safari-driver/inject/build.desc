@@ -17,11 +17,19 @@ js_library(
     ])
 
 js_library(
-    name = "commandregistry",
-    srcs = ["commandregistry.js"],
+    name = "util",
+    srcs = ["util.js"],
     deps = [
         "//javascript/atoms:all_js",
         "//javascript/safari-driver/message:message",
+        "//javascript/webdriver:base_lib",
+    ])
+
+js_library(
+    name = "commandregistry",
+    srcs = ["commandregistry.js"],
+    deps = [
+        ":util",
         "//javascript/webdriver:base_lib",
     ])
 
@@ -39,6 +47,7 @@ js_module(
     deps = [
         ":commandregistry",
         ":encoder",
+        ":util",
         "//javascript/atoms:all_js",
         "//javascript/safari-driver:common_lib",
         "//javascript/safari-driver/message:connect",

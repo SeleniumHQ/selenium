@@ -177,10 +177,12 @@ safaridriver.extension.createSessionServer_ = function() {
  * @private
  */
 safaridriver.extension.loadModule_ = function(moduleId) {
-  var module = safaridriver.extension.modules_[moduleId];
-  if (module) {
-    return bot.response.createResponse(module.toString());
+  safaridriver.extension.LOG_.info('Loading module(' + moduleId + ')');
+  var moduleFn = safaridriver.extension.modules_[moduleId];
+  if (moduleFn) {
+    return bot.response.createResponse(moduleFn.toString());
   }
+  safaridriver.extension.LOG_.warning('module not found: ' + moduleId);
   return bot.response.createErrorResponse(
       Error('Internal error: module ' + moduleId + ' not found'));
 };

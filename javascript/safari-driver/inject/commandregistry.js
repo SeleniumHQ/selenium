@@ -19,12 +19,11 @@
 
 goog.provide('safaridriver.inject.CommandRegistry');
 
-goog.require('bot.response');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.debug.Logger');
-goog.require('safaridriver.message.LoadModule');
-goog.require('webdriver.promise.Deferred');
+goog.require('safaridriver.inject.util');
+goog.require('webdriver.promise');
 
 
 /**
@@ -143,7 +142,7 @@ safaridriver.inject.CommandRegistry.prototype.declareModule = function(
  * Defines a previously declared command module.
  * @param {string} moduleId The module ID.
  * @param {!Object.<!webdriver.CommandName, !safaridriver.CommandHandler>}
-    *     spec The command handler specification for this module.
+ *     spec The command handler specification for this module.
  * @return {!safaridriver.inject.CommandRegistry} A self reference.
  * @throws {Error} If the provided module specification does not define a
  *     handler for every command this module was declared to contain.
@@ -197,38 +196,40 @@ safaridriver.inject.CommandRegistry.prototype.defineCommand = function(
  */
 safaridriver.inject.CommandRegistry.prototype.execute = function(
     command, contextObject) {
-  var module = this.commandNameToModuleId_[command.getName()];
-  if (module) {
-    this.loadModule_(module);
-  }
+  var commandNameToHandlerMap = this.commandNameToHandler_;
 
-  var deferred = new webdriver.promise.Deferred();
-  var handler = this.commandNameToHandler_[command.getName()];
-  if (handler) {
-    try {
-      webdriver.promise.when(handler(command, contextObject),
-          deferred.resolve, deferred.reject);
-    } catch (ex) {
-      deferred.reject(ex);
+  var executeCommand = function() {
+    var handler = commandNameToHandlerMap[command.getName()];
+    if (handler) {
+      return webdriver.promise.when(handler(command, contextObject));
+    } else {
+      throw Error('Unknown command: ' + command);
     }
+  };
+
+  var moduleId = this.commandNameToModuleId_[command.getName()];
+  if (moduleId) {
+    return this.loadModule_(moduleId).then(executeCommand);
   } else {
-    deferred.reject(Error('Unknown command: ' + command));
+    return executeCommand();
   }
-  return deferred.promise;
 };
 
 
 /**
  * @param {string} moduleId The module ID.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *    the module has been loaded.
  * @private
  */
 safaridriver.inject.CommandRegistry.prototype.loadModule_ = function(moduleId) {
-  if (!this.loadedModules_[moduleId]) {
-    var message = new safaridriver.message.LoadModule(moduleId);
-    var response = /** @type {bot.response.ResponseObject} */ (
-        message.sendSync(this.messageTarget_));
-    var module = bot.response.checkResponse(response)['value'];
-    this.evalModuleFn_(module);
-    this.loadedModules_[moduleId] = true;
+  if (this.loadedModules_[moduleId]) {
+    return webdriver.promise.resolved();
   }
+
+  return safaridriver.inject.util.loadModule(moduleId, this.messageTarget_).
+      addCallback(function(src) {
+        this.evalModuleFn_(src);
+        this.loadedModules_[moduleId] = true;
+      }, this);
 };
