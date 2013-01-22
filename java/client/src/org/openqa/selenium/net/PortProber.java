@@ -83,27 +83,33 @@ public class PortProber {
    * @return a random port number
    */
   private static int createAcceptablePort() {
-    synchronized (random) {
+      synchronized (random) {
 
-      final int FIRST_PORT;
-      final int LAST_PORT;
-      if (ephemeralRangeDetector.getHighestEphemeralPort() < 32768){
-        FIRST_PORT = ephemeralRangeDetector.getHighestEphemeralPort() + 1;
-        LAST_PORT = 65535;
-      } else {
-        FIRST_PORT = 1024;
-        LAST_PORT = ephemeralRangeDetector.getLowestEphemeralPort() - 1;
+
+          final int FIRST_PORT;
+          final int LAST_PORT;
+
+          int free_above = 65535 - ephemeralRangeDetector.getHighestEphemeralPort();
+          int free_below = Math.max(0, ephemeralRangeDetector.getLowestEphemeralPort() - 1024);
+
+          if (free_above > free_below) {
+              FIRST_PORT = ephemeralRangeDetector.getHighestEphemeralPort();
+              LAST_PORT = 65535;
+          } else {
+              FIRST_PORT = 1024;
+              LAST_PORT = ephemeralRangeDetector.getLowestEphemeralPort();
+          }
+
+          if (FIRST_PORT == LAST_PORT) {
+              return FIRST_PORT;
+          }
+          if (FIRST_PORT > LAST_PORT) {
+              throw new UnsupportedOperationException("Could not find ephemeral port to use");
+          }
+          final int randomInt = random.nextInt();
+          final int portWithoutOffset = Math.abs(randomInt % (LAST_PORT - FIRST_PORT + 1));
+          return portWithoutOffset + FIRST_PORT;
       }
-      if (FIRST_PORT == LAST_PORT) {
-        return FIRST_PORT;
-      }
-      if (FIRST_PORT > LAST_PORT) {
-        throw new UnsupportedOperationException("Could not find ephemeral port to use");
-      }
-      final int randomInt = random.nextInt();
-      final int portWithoutOffset = Math.abs(randomInt % (LAST_PORT - FIRST_PORT + 1));
-      return portWithoutOffset + FIRST_PORT;
-    }
   }
 
   private static int checkPortIsFree(int port) {
