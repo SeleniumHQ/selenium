@@ -143,7 +143,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 // the default install location (C:\Program Files\Mozilla Firefox).
                 string firefoxRegistryKey = @"SOFTWARE\Mozilla\Mozilla Firefox";
                 RegistryKey mozillaKey = Registry.LocalMachine.OpenSubKey(firefoxRegistryKey);
-                if (mozillaKey != null)
+                if (mozillaKey == null)
                 {
                     mozillaKey = Registry.CurrentUser.OpenSubKey(firefoxRegistryKey);
                 }
