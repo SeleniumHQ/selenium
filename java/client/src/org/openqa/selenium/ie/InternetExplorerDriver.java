@@ -40,6 +40,8 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
    */
   public final static String INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS =
       "ignoreProtectedModeSettings";
+  public final static String ENABLE_PERSISTENT_HOVERING = "enablePersistentHover";
+  public final static String REQUIRE_WINDOW_FOCUS = "requireWindowFocus";
 
   private WindowsProxyManager proxyManager;
 
