@@ -26,8 +26,8 @@ java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 .idea/vcs.xml
 .idea/misc.xml
 .idea/workspace.xml
-.idea/projectCodeStyle.xml
-.idea/*
+.idea/dictionaries/
+.idea/scopes/
 out
 cpp/IEDriver/sizzle.h
 third_party/gecko-2/linux
