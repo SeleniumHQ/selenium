@@ -1,35 +1,50 @@
 /*
-Copyright 2007-2010 Selenium committers
+ Copyright 2007-2010 WebDriver committers
+ Copyright 2007-2010 Google Inc.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
  */
-
 package org.openqa.selenium.net;
 
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class NetworkInterface {
+
     private final String name;
     private final Iterable<INetAddress> inetAddresses;
+    private boolean isLoopback;
 
     public NetworkInterface(java.net.NetworkInterface networkInterface) {
         this(networkInterface.getName(), asIterableAddr(networkInterface.getInetAddresses()));
+        try {
+            // Issue 1181 : determine wheter this NetworkInterface instance is loopback
+            // from java.net.NetworkInterface API
+            this.isLoopback = networkInterface.isLoopback();
+        } catch (SocketException ex) {
+            Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
+            // If an SocketException is caught, determine wheter this NetworkInterface
+            // instance is loopack from computation from its inetAddresses
+            this.isLoopback = isLoopBackFromINetAddresses(asIterableAddr(networkInterface.getInetAddresses()));
+        }
     }
 
     NetworkInterface(String name, Iterable<INetAddress> inetAddresses) {
@@ -42,11 +57,14 @@ public class NetworkInterface {
     }
 
     public boolean isLoopBack() {
+        return isLoopback;
+    }
+
+    public final boolean isLoopBackFromINetAddresses(Iterable<INetAddress> inetAddresses) {
         // Let's hope there's no such thing as network interfaces with mixed addresses ;)
         Iterator<INetAddress> iterator = inetAddresses.iterator();
         return iterator.hasNext() && iterator.next().isLoopbackAddress();
     }
-
 
     public INetAddress getIp4LoopbackOnly() {
         // Goes by the wildly unscientific assumption that if there are more than one set of
@@ -56,6 +74,10 @@ public class NetworkInterface {
         // algorithm until it works.
         // See NetworkUtilsTest#testOpenSuseBoxIssue1181
         INetAddress lastFound = null;
+        // Issue 1181
+        if (!isLoopback) {
+            return lastFound;
+        }
         for (INetAddress inetAddress : inetAddresses) {
             if (inetAddress.isLoopbackAddress() && inetAddress.isIPv4Address()) {
                 lastFound = inetAddress;
