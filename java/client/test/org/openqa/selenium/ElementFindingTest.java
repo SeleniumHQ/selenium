@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.junit.Test;
+import org.openqa.selenium.remote.RemoteWebDriver.When;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -29,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -549,6 +551,23 @@ public class ElementFindingTest extends JUnit4TestBase {
     WebElement child = parent.findElement(By.cssSelector("div"));
 
     assertEquals("child", child.getAttribute("id"));
+  }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = {IE}, reason = "IE supports only short version option[selected]")
+  public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingCssSelector() {
+    driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected.html"));
+    WebElement element = driver.findElement(By.cssSelector("option[selected='selected']"));
+    assertEquals("two", element.getAttribute("value"));
+  }
+
+  @JavascriptEnabled
+  @Test
+  public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelector() {
+    driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected.html"));
+    WebElement element = driver.findElement(By.cssSelector("option[selected]"));
+    assertEquals("two", element.getAttribute("value"));
   }
 
   // TODO(danielwh): Add extensive CSS selector tests
