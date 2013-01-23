@@ -85,6 +85,10 @@ class FindChildElementCommandHandler : public IECommandHandler {
               "Unknown finder mechanism: " + mechanism);
             return;
           }
+          if (status_code == ENOSUCHWINDOW) {
+            response->SetErrorResponse(status_code, "Unable to find element on closed window");
+            return;
+          }
           // Release the thread so that the browser doesn't starve.
           ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
         } while (clock() < end);

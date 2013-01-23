@@ -74,8 +74,12 @@ class FindElementsCommandHandler : public IECommandHandler {
             "Unknown finder mechanism: " + mechanism);
           return;
         }
-          // Release the thread so that the browser doesn't starve.
-          ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
+        if (status_code == ENOSUCHWINDOW) {
+          response->SetErrorResponse(status_code, "Unable to find elements on closed window");
+          return;
+        }
+        // Release the thread so that the browser doesn't starve.
+        ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
       } while (clock() < end);
 
       // This code is executed when no elements where found and no errors occurred.
