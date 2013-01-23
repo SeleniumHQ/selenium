@@ -75,3 +75,4 @@ obj/
 *.sdf
 Generated/
 ipch/
+/iedriver.log
