@@ -25,6 +25,7 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,6 +72,19 @@ public class WindowsUtilsUnitTest {
     if (!WindowsUtils.thisIsWindows()) return;
     if (!isXpOrHigher()) return;
     assertFalse("taskkill should be found", "taskkill".equals(WindowsUtils.findTaskKill()));
+  }
+
+  private void tryKill(String[] cmd) throws Exception {
+    CommandLine cl = new CommandLine(cmd);
+    cl.executeAsync();
+    WindowsUtils.kill(cmd);
+    assertFalse("Should be able to kill " + Arrays.toString(cmd), cl.isRunning());
+  }
+
+  @Test
+  public void testKill() throws Exception {
+    tryKill(new String[]{"sleep.exe", "10"});
+    tryKill(new String[]{"sleep", "10"});
   }
 
   @Test
