@@ -36,6 +36,7 @@ require 'rake-tasks/iphone'
 require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
+require 'rake-tasks/ci'
 
 require 'rake-tasks/gecko_sdks'
 
