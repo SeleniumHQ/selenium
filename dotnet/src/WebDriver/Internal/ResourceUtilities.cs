@@ -52,18 +52,7 @@ namespace OpenQA.Selenium.Internal
         public static Stream GetResourceStream(string fileName, string resourceId)
         {
             Stream resourceStream = null;
-            Assembly executingAssembly = Assembly.GetCallingAssembly();
-            string currentDirectory = executingAssembly.Location;
-
-            // If we're shadow copying, fiddle with 
-            // the codebase instead 
-            if (AppDomain.CurrentDomain.ShadowCopyFiles)
-            {
-                Uri uri = new Uri(executingAssembly.CodeBase);
-                currentDirectory = uri.LocalPath;
-            }
-
-            string resourceFilePath = Path.Combine(Path.GetDirectoryName(currentDirectory), Path.GetFileName(fileName));
+            string resourceFilePath = Path.Combine(FileUtilities.GetCurrentDirectory(), Path.GetFileName(fileName));
             if (File.Exists(resourceFilePath))
             {
                 resourceStream = new FileStream(resourceFilePath, FileMode.Open, FileAccess.Read);
@@ -79,6 +68,7 @@ namespace OpenQA.Selenium.Internal
                     throw new WebDriverException("The file specified does not exist, and you have specified no internal resource ID");
                 }
 
+                Assembly executingAssembly = Assembly.GetCallingAssembly();
                 resourceStream = executingAssembly.GetManifestResourceStream(resourceId);
             }
 

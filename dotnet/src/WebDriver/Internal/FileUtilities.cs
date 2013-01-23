@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -29,6 +30,8 @@ namespace OpenQA.Selenium.Internal
     /// </summary>
     internal static class FileUtilities
     {
+        private static Random tempFileGenerator = new Random();
+
         /// <summary>
         /// Recursively copies a directory.
         /// </summary>
@@ -169,6 +172,19 @@ namespace OpenQA.Selenium.Internal
             }
 
             return currentDirectory;
+        }
+
+        /// <summary>
+        /// Generates the full path to a random directory name in the temporary directory, following a naming pattern..
+        /// </summary>
+        /// <param name="directoryPattern">The pattern to use in creating the directory name, following standard
+        /// .NET string replacement tokens.</param>
+        /// <returns>The full path to the random directory name in the temporary directory.</returns>
+        public static string GenerateRandomTempDirectoryName(string directoryPattern)
+        {
+            string randomNumber = tempFileGenerator.Next().ToString(CultureInfo.InvariantCulture);
+            string directoryName = string.Format(CultureInfo.InvariantCulture, directoryPattern, randomNumber);
+            return Path.Combine(Path.GetTempPath(), directoryName);
         }
     }
 }

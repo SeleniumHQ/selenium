@@ -41,8 +41,6 @@ namespace OpenQA.Selenium.Firefox
         #endregion
 
         #region Private members
-        private static Random tempFileGenerator = new Random();
-
         private int profilePort;
         private string profileDir;
         private string sourceProfileDir;
@@ -145,9 +143,7 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>The constructed <see cref="FirefoxProfile"/>.</returns>
         public static FirefoxProfile FromBase64String(string base64)
         {
-            string randomNumber = tempFileGenerator.Next().ToString(CultureInfo.InvariantCulture);
-            string directoryName = string.Format(CultureInfo.InvariantCulture, "webdriver{0}.duplicated", randomNumber);
-            string destinationDirectory = Path.Combine(Path.GetTempPath(), directoryName);
+            string destinationDirectory = FileUtilities.GenerateRandomTempDirectoryName("webdriver{0}.duplicated");
             byte[] zipContent = Convert.FromBase64String(base64);
             using (MemoryStream zipStream = new MemoryStream(zipContent))
             {
@@ -338,10 +334,7 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>A random directory name for the profile.</returns>
         private static string GenerateProfileDirectoryName()
         {
-            string randomNumber = tempFileGenerator.Next().ToString(CultureInfo.InvariantCulture);
-            string directoryName = string.Format(CultureInfo.InvariantCulture, "anonymous{0}.webdriver-profile", randomNumber);
-            string directoryPath = Path.Combine(Path.GetTempPath(), directoryName);
-            return directoryPath;
+            return FileUtilities.GenerateRandomTempDirectoryName("anonymous{0}.webdriver-profile");
         }
 
         /// <summary>

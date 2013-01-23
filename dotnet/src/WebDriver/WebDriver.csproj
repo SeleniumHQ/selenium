@@ -106,6 +106,8 @@
     <Compile Include="PhantomJS\PhantomJSWebElement.cs" />
     <Compile Include="Remote\LocalFileDetector.cs" />
     <Compile Include="Remote\RemoteTouchScreen.cs" />
+    <Compile Include="Safari\SafariDriverExtension.cs" />
+    <Compile Include="Safari\SafariOptions.cs" />
     <Compile Include="WebDriverTimeoutException.cs" />
     <Compile Include="IE\InternetExplorerDriverLogLevel.cs" />
     <Compile Include="IE\InternetExplorerOptions.cs" />
@@ -341,6 +343,13 @@ if exist $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi (
   echo WARN: No Firefox extension found at $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi
 )
 
-</PostBuildEvent>
+if exist $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz (
+  echo Copying Safari extension from $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz
+  copy /y $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz $(TargetDir) &gt; NUL
+) else (
+  echo Copying Safari extension from prebuilt location $(SolutionDir)javascript\safari-driver\prebuilt\SafariDriver.safariextz
+  copy /y $(SolutionDir)javascript\safari-driver\prebuilt\SafariDriver.safariextz $(TargetDir) &gt; NUL
+)
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>

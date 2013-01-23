@@ -25,6 +25,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Safari
@@ -34,31 +35,30 @@ namespace OpenQA.Selenium.Safari
     /// </summary>
     public class SafariDriverCommandExecutor : ICommandExecutor, IDisposable
     {
-        private static Random tempFileGenerator = new Random();
         private string temporaryDirectoryPath;
         private string safariExecutableLocation;
         private Process safariProcess;
         private SafariDriverServer server;
         private SafariDriverConnection connection;
+        private SafariDriverExtension extension;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariDriverCommandExecutor"/> class.
         /// </summary>
-        /// <param name="port">The port on which the executor communicates with the extension.</param>
-        public SafariDriverCommandExecutor(int port)
-            : this(port, GetDefaultSafariLocation())
+        /// <param name="options">The <see cref="SafariOptions"/> used to create the command executor.</param>
+        public SafariDriverCommandExecutor(SafariOptions options)
         {
-        }
+            this.server = new SafariDriverServer(options.Port);
+            if (string.IsNullOrEmpty(options.SafariLocation))
+            {
+                this.safariExecutableLocation = GetDefaultSafariLocation();
+            }
+            else
+            {
+                this.safariExecutableLocation = options.SafariLocation;
+            }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SafariDriverCommandExecutor"/> class.
-        /// </summary>
-        /// <param name="port">The port on which the executor communicates with the extension.</param>
-        /// <param name="safariLocation">The location of the Safari executable</param>
-        public SafariDriverCommandExecutor(int port, string safariLocation)
-        {
-            this.server = new SafariDriverServer(port);
-            this.safariExecutableLocation = safariLocation;
+            this.extension = new SafariDriverExtension(options.CustomExtensionPath, options.SkipExtensionInstallation);
         }
 
         /// <summary>
@@ -67,6 +67,7 @@ namespace OpenQA.Selenium.Safari
         public void Start()
         {
             this.server.Start();
+            this.extension.Install();
             string connectFileName = this.PrepareConnectFile();
             this.LaunchSafariProcess(connectFileName);
             this.connection = this.server.WaitForConnection(TimeSpan.FromSeconds(45));
@@ -107,6 +108,7 @@ namespace OpenQA.Selenium.Safari
                 if (this.safariProcess != null)
                 {
                     this.CloseSafariProcess();
+                    this.extension.Uninstall();
                     this.safariProcess.Dispose();
                 }
 
@@ -160,8 +162,7 @@ namespace OpenQA.Selenium.Safari
 
         private string PrepareConnectFile()
         {
-            string randomNumber = tempFileGenerator.Next().ToString(CultureInfo.InvariantCulture);
-            string directoryName = string.Format(CultureInfo.InvariantCulture, "SafariDriver", randomNumber);
+            string directoryName = FileUtilities.GenerateRandomTempDirectoryName("SafariDriverConnect{0}");
             this.temporaryDirectoryPath = Path.Combine(Path.GetTempPath(), directoryName);
             string tempFileName = Path.Combine(this.temporaryDirectoryPath, "connect.html");
             string contents = string.Format(CultureInfo.InvariantCulture, "<!DOCTYPE html><script>window.location = '{0}';</script>", this.server.ServerUri.ToString());

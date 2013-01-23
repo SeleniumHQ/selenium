@@ -8,6 +8,7 @@
       <Value>mozillazine</Value>
       <Value>onone</Value>
       <Value>wd</Value>
+      <Value>safariextz</Value>
     </CollectionProperty>
   </GlobalSettings>
   <Analyzers>

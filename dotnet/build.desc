@@ -14,7 +14,8 @@ dotnet_library(name = "dotnet",
   resources = [
     {"//javascript/firefox-driver:webdriver" : "WebDriver.FirefoxExt.zip"},
     {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
-    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
+    {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"},
+	{"javascript/safari-driver/prebuilt/SafariDriver.safariextz" : "WebDriver.SafariExtension"}
   ],
   keyfile = "WebDriver.snk",
   framework_ver = "net40",
