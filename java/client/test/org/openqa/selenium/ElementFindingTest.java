@@ -570,6 +570,14 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertEquals("two", element.getAttribute("value"));
   }
 
+  @JavascriptEnabled
+  @Test
+  public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelectorOnHtml4Page() {
+    driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected_html4.html"));
+    WebElement element = driver.findElement(By.cssSelector("option[selected]"));
+    assertEquals("two", element.getAttribute("value"));
+  }
+
   // TODO(danielwh): Add extensive CSS selector tests
   @Ignore(value = {ANDROID, OPERA, SELENESE, OPERA_MOBILE}, reason = "Just not working")
   @Test
