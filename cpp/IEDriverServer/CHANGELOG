@@ -9,6 +9,13 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.29.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Modified findElement implementations to fail without waiting for the
+   implicit wait timeout to expire if finding on a closed window. Fixes issue
+   #5057.
+
 v2.29.0.0
 =========
  * Updates to JavaScript automation atoms.
