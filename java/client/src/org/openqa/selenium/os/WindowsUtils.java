@@ -75,7 +75,7 @@ public class WindowsUtils {
    * Kill processes by name
    */
   public static void killByName(String name) {
-    executeCommand("taskkill", "/f", "/im", name);
+    executeCommand("taskkill", "/f", "/t", "/im", name);
   }
 
   /**
