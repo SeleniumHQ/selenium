@@ -190,6 +190,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     if (capabilities.getCapability(CapabilityType.PROXY) != null) {
       Proxy proxy = Proxies.extractProxy(capabilities);
       String fullProxy = proxy.getHttpProxy();
+      String pacfile = proxy.getProxyAutoconfigUrl();
       if (fullProxy != null) {
         int index = fullProxy.indexOf(":");
         if (index != -1) {
@@ -199,7 +200,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         } else {
           setProxy(fullProxy, 0);
         }
-      }
+      } else if(pacfile != null && !pacfile.equals("")) {
+        setAutoProxy(pacfile);
+      } 
     }
   }
 
