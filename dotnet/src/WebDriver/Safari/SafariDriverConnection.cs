@@ -81,6 +81,13 @@ namespace OpenQA.Selenium.Safari
                     response = this.GetQueuedResponse();
                     if (response != null)
                     {
+                        if (response.Value is string)
+                        {
+                            // First, collapse all \r\n pairs to \n, then replace all \n with
+                            // System.Environment.NewLine. This ensures the consistency of 
+                            // the values.
+                            response.Value = ((string)response.Value).Replace("\r\n", "\n").Replace("\n", System.Environment.NewLine);
+                        }
                         break;
                     }
                 }

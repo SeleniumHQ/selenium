@@ -166,6 +166,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.Firefox, "Window demands focus to work.")]
+        [IgnoreBrowser(Browser.Safari, "Window demands focus to work.")]
         public void ChangeEventIsFiredAppropriatelyWhenFocusIsLost()
         {
             driver.Url = javascriptPage;
@@ -236,6 +237,9 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [NeedsFreshDriver(AfterTest = true)]
+        [IgnoreBrowser(Browser.Safari, "Safari: issue 3693")]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.IPhone)]
         public void ShouldBeAbleToClickALinkThatClosesAWindow()
         {
             driver.Url = javascriptPage;

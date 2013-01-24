@@ -84,6 +84,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Safari)]
         [NeedsFreshDriver(BeforeTest = true)]
         public void ShouldDoNothingIfThereIsNothingToGoBackTo()
         {
@@ -102,6 +103,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToNavigateBackInTheBrowserHistory()
         {
             driver.Url = formsPage;
@@ -116,6 +119,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes()
         {
             driver.Url = xhtmlTestPage;
@@ -130,6 +134,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldBeAbleToNavigateForwardsInTheBrowserHistory()
         {
             driver.Url = formsPage;
@@ -178,6 +184,7 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IE, "Browser does, in fact, hang in this case.")]
         [IgnoreBrowser(Browser.IPhone, "Untested user-agent")]
+        [IgnoreBrowser(Browser.Safari, "Untested user-agent")]
         public void ShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
         {
             driver.Url = documentWrite;
@@ -193,6 +200,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IPhone, "Not implemented for browser")]
         [IgnoreBrowser(Browser.PhantomJS, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
+        [IgnoreBrowser(Browser.Safari, "See issue 687, comment 41")]
         public void ShouldTimeoutIfAPageTakesTooLongToLoad()
         {
             driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(2));

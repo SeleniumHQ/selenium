@@ -158,7 +158,11 @@ namespace OpenQA.Selenium.Remote
                                 }
                             }
 
-                            bool secure = bool.Parse(cookie["secure"].ToString());
+                            bool secure = false;
+                            if (cookie.ContainsKey("secure") && cookie["secure"] != null)
+                            {
+                                secure = bool.Parse(cookie["secure"].ToString());
+                            }
                             toReturn.Add(new ReturnedCookie(name, value, domain, path, expires, secure, new Uri(this.driver.Url)));
                         }
                     }

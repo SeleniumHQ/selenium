@@ -94,6 +94,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.PhantomJS)]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Safari)]
         public void ShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting()
         {
             driver.Url = dynamicPage;

@@ -331,6 +331,7 @@ namespace OpenQA.Selenium
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
         [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
+        [IgnoreBrowser(Browser.Safari, "Does not yet support file uploads")]
         public void UploadingFileShouldFireOnChangeEvent()
         {
             driver.Url = formsPage;

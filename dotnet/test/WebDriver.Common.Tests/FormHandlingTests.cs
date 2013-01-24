@@ -121,6 +121,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
+        [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
+        [IgnoreBrowser(Browser.Safari, "Does not yet support file uploads")]
         public void ShouldBeAbleToAlterTheContentsOfAFileUploadInputElement()
         {
             driver.Url = formsPage;
@@ -140,6 +143,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
+        [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
+        [IgnoreBrowser(Browser.Safari, "Does not yet support file uploads")]
         public void ShouldBeAbleToUploadTheSameFileTwice()
         {
             System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");

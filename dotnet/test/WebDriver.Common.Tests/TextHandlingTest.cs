@@ -4,6 +4,7 @@ using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System.Text.RegularExpressions;
+using NUnit.Framework.Constraints;
 
 namespace OpenQA.Selenium
 {
@@ -88,7 +89,7 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldNotCollapseANonBreakingSpaces()
         {
-            driver.Url = (simpleTestPage);
+            driver.Url = simpleTestPage;
             IWebElement element = driver.FindElement(By.Id("nbspandspaces"));
             string text = element.Text;
 
@@ -96,11 +97,40 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldNotTrimNonBreakingSpacesAtTheEndOfALineInTheMiddleOfText()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
+            string text = element.Text;
+            string expectedStart = "These lines  " + System.Environment.NewLine;
+            Assert.That(text, Is.StringStarting(expectedStart));
+        }
+
+        [Test]
+        public void ShouldNotTrimNonBreakingSpacesAtTheStartOfALineInTheMiddleOfText()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
+            string text = element.Text;
+            string expectedContent = System.Environment.NewLine + "  have";
+            Assert.That(text, Is.StringContaining(expectedContent));
+        }
+
+        [Test]
+        public void ShouldNotTrimTrailingNonBreakingSpacesInMultilineText()
+        {
+            driver.Url = simpleTestPage;
+            IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
+            string text = element.Text;
+            string expectedEnd = "trailing NBSPs  ";
+            Assert.That(text, Is.StringEnding(expectedEnd));
+        }
+
+        [Test]
         public void HavingInlineElementsShouldNotAffectHowTextIsReturned()
         {
             driver.Url = (simpleTestPage);
             string text = driver.FindElement(By.Id("inline")).Text;
-
             Assert.AreEqual(text, "This line has text within elements that are meant to be displayed inline");
         }
 
@@ -113,16 +143,19 @@ namespace OpenQA.Selenium
             Assert.AreEqual(text, "An inline element");
         }
 
-        //[Test]
-        //public void ShouldRetainTheFormatingOfTextWithinAPreElement()
-        //{
-        //    driver.Url = simpleTestPage;
-        //    string text = driver.FindElement(By.Id("preformatted")).Text;
+        [Test]
+        public void ShouldRetainTheFormatingOfTextWithinAPreElement()
+        {
+            driver.Url = simpleTestPage;
+            string text = driver.FindElement(By.Id("div-with-pre")).Text;
 
-        //    Assert.AreEqual(text, "This section has a\npreformatted\n   text block\n" +
-        //            "  within in\n" +
-        //            "        ");
-        //}
+            Assert.AreEqual("before pre" + System.Environment.NewLine + 
+                "   This section has a preformatted" + System.Environment.NewLine +
+                "    text block    " + System.Environment.NewLine +
+                "  split in four lines" + System.Environment.NewLine +
+                "         " + System.Environment.NewLine +
+                "after pre", text);
+        }
 
         [Test]
         public void ShouldBeAbleToSetMoreThanOneLineOfTextInATextArea()
@@ -198,9 +231,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "Difference in DOM rendering engines. Firefox places new line characters for paragraph elements only after the element.")]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE, "Difference in DOM rendering engines. IE preserves trailing space on first line")]
         public void ShouldHandleNestedBlockLevelElements()
         {
             driver.Url = (simpleTestPage);
@@ -264,6 +295,51 @@ namespace OpenQA.Selenium
 
             Assert.IsTrue(text.Contains("some text"));
             Assert.IsFalse(text.Contains("some more text"));
+        }
+
+        [Test]
+        public void TextOfAnInputFieldShouldBeEmpty()
+        {
+            driver.Url = formsPage;
+            IWebElement input = driver.FindElement(By.Id("inputWithText"));
+            Assert.AreEqual(string.Empty, input.Text);
+        }
+
+        [Test]
+        public void TextOfATextAreaShouldBeEqualToItsDefaultText()
+        {
+            driver.Url = formsPage;
+            IWebElement area = driver.FindElement(By.Id("withText"));
+            Assert.AreEqual("Example text", area.Text);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "Fails on IE")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Fails on IE")]
+        [IgnoreBrowser(Browser.Android, "untested")]
+        [IgnoreBrowser(Browser.IPhone, "untested")]
+        public void TextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping()
+        {
+            driver.Url = formsPage;
+            IWebElement area = driver.FindElement(By.Id("withText"));
+            string oldText = area.Text;
+            area.SendKeys("New Text");
+            Assert.AreEqual(oldText, area.Text);
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.IE, "Fails on IE")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Fails on IE")]
+        [IgnoreBrowser(Browser.Android, "untested")]
+        [IgnoreBrowser(Browser.IPhone, "untested")]
+        public void TextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue()
+        {
+            driver.Url = formsPage;
+            IWebElement area = driver.FindElement(By.Id("withText"));
+            string oldText = area.GetAttribute("value");
+            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].value = arguments[1]", area, "New Text");
+            Assert.AreEqual(oldText, area.Text);
         }
 
         [Test]

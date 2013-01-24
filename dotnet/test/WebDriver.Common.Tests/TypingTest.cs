@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 namespace OpenQA.Selenium
 {
@@ -482,6 +483,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
+        [IgnoreBrowser(Browser.Safari, "Issue 4221")]
         public void ShiftSelectionDeletes()
         {
             driver.Url = javascriptPage;
@@ -637,6 +639,10 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Firefox-specific test. IE does not report key press event.")]
         [IgnoreBrowser(Browser.Chrome, "firefox-specific")]
         [IgnoreBrowser(Browser.PhantomJS, "firefox-specific")]
+        [IgnoreBrowser(Browser.Safari, "firefox-specific")]
+        [IgnoreBrowser(Browser.Opera, "firefox-specific")]
+        [IgnoreBrowser(Browser.IPhone, "firefox-specific")]
+        [IgnoreBrowser(Browser.Android, "firefox-specific")]
         public void GenerateKeyPressEventEvenWhenElementPreventsDefault()
         {
             driver.Url = javascriptPage;
@@ -651,9 +657,12 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.IE, "IFrame content not updating in IE page.")]
-        [IgnoreBrowser(Browser.Chrome, "See crbug 20773")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
+        [IgnoreBrowser(Browser.Safari, "Cannot type on contentEditable with synthetic events")]
+        [IgnoreBrowser(Browser.PhantomJS, "Cannot type on contentEditable with synthetic events")]
+        [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
+        [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
+        [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
         {
             driver.Url = richTextPage;
@@ -666,13 +675,16 @@ namespace OpenQA.Selenium
             IWebElement trusted = driver.FindElement(By.Id("istrusted"));
             IWebElement id = driver.FindElement(By.Id("tagId"));
 
-            Assert.AreEqual(trusted.Text, "[true]");
-            Assert.AreEqual(id.Text, "[frameHtml]");
+            Assert.That(trusted.Text, Is.EqualTo("[true]").Or.EqualTo("[n/a]").Or.EqualTo("[]"));
+            Assert.That(id.Text, Is.EqualTo("[frameHtml]").Or.EqualTo("[theBody]"));
         }
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
+        [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
+        [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
+        [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {
             driver.Url = richTextPage;
@@ -692,6 +704,33 @@ namespace OpenQA.Selenium
             element.SendKeys(Keys.Left + Keys.Left + "F" + Keys.Delete + Keys.End + "ee!");
 
             Assert.AreEqual(element.Text, "Fishee!");
+        }
+
+        [Test]
+        public void ShouldBeAbleToTypeOnAnEmailInputField()
+        {
+            driver.Url = formsPage;
+            IWebElement email = driver.FindElement(By.Id("email"));
+            email.SendKeys("foobar");
+            Assert.AreEqual("foobar", email.GetAttribute("value"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
+        [IgnoreBrowser(Browser.Safari, "Cannot type on contentEditable with synthetic events")]
+        [IgnoreBrowser(Browser.PhantomJS, "Cannot type on contentEditable with synthetic events")]
+        [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
+        [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
+        [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
+        public void testShouldBeAbleToTypeIntoEmptyContentEditableElement()
+        {
+            driver.Url = readOnlyPage;
+            IWebElement editable = driver.FindElement(By.Id("content-editable"));
+
+            editable.Clear();
+            editable.SendKeys("cheese"); // requires focus on OS X
+
+            Assert.AreEqual("cheese", editable.Text);
         }
     }
 }

@@ -86,7 +86,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Represents getting all cookies command
         /// </summary>
-        public static readonly string GetAllCookies = "getAllCookies";
+        public static readonly string GetAllCookies = "getCookies";
 
         /// <summary>
         /// Represents deleting a cookie command
@@ -316,7 +316,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Represents the SetAsyncScriptTimeout command
         /// </summary>
-        public static readonly string SetAsyncScriptTimeout = "setAsyncScriptTimeout";
+        public static readonly string SetAsyncScriptTimeout = "setScriptTimeout";
 
         /// <summary>
         /// Represents the SetTimeout command
