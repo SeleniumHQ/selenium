@@ -100,9 +100,12 @@ public class SauceDriver extends RemoteWebDriver {
     mungedCapabilities.setCapability("record-video", shouldRecordVideo());
     mungedCapabilities.setCapability("build", System.getenv(SAUCE_BUILD_ENV_NAME));
 
-    String[] tags = {System.getenv(SAUCE_NATIVE_ENV_NAME)};
-    mungedCapabilities.setCapability("tags", tags);
 
+    String nativeEvents = System.getenv(SAUCE_NATIVE_ENV_NAME);
+    if (nativeEvents != null) {
+        String[] tags = {nativeEvents};
+        mungedCapabilities.setCapability("tags", tags);
+    }
     mungedCapabilities.setCapability("prevent-requeue", true);
 
     if (!Strings.isNullOrEmpty(browserVersion)) {
