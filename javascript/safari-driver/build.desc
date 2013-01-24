@@ -12,6 +12,56 @@ js_library(
         "//javascript/webdriver:base_lib",
     ])
 
+# Binary that may be used by a language binding to establish a connection
+# with the driver when loaded in the browser.
+js_binary(
+    name = "client",
+    srcs = [
+        "client.js",
+        "deps.js",
+        "message/connect.js",
+    ],
+    deps = [
+        "//javascript/atoms:all_js",
+        "//javascript/safari-driver:common_lib",
+    ],
+    externs = [
+        "externs/common.js",
+        "externs/webcontent.js",
+    ],
+    flags = [
+        "--define=goog.userAgent.ASSUME_WEBKIT=true",
+        "--define=goog.userAgent.product.ASSUME_SAFARI=true",
+        "--define=safaridriver.message.FORCE_SYNCHRONOUS_PROXY_SEND=true",
+
+        "--jscomp_error=accessControls",
+        "--jscomp_error=ambiguousFunctionDecl",
+        "--jscomp_error=checkRegExp",
+        "--jscomp_error=checkVars",
+        "--jscomp_error=constantProperty",
+        "--jscomp_error=deprecated",
+        "--jscomp_error=duplicateMessage",
+        "--jscomp_error=es5Strict",
+        "--jscomp_error=externsValidation",
+        "--jscomp_error=fileoverviewTags",
+        "--jscomp_error=globalThis",
+        "--jscomp_error=invalidCasts",
+        "--jscomp_error=missingProperties",
+        "--jscomp_error=nonStandardJsDocs",
+        "--jscomp_error=strictModuleDepCheck",
+        "--jscomp_error=typeInvalidation",
+        "--jscomp_error=undefinedVars",
+        "--jscomp_error=unknownDefines",
+        "--jscomp_error=uselessCode",
+        "--jscomp_error=visibility",
+
+        "--jscomp_warning=checkTypes",
+
+        "--output_wrapper='%output%;window.onload = init;'",
+        "--third_party=false",
+
+        "--create_name_map_files=true"
+    ])
 
 # The global extension script.
 js_binary(

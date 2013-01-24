@@ -228,6 +228,15 @@ safaridriver.extension.Server.prototype.onDispose = function(fn) {
 
 
 /**
+ * Set of URLs that {@link safaridriver.extension.Server} instances are
+ * connected to.
+ * @type {!Object}
+ * @private
+ */
+safaridriver.extension.Server.connectedUrls_ = {};
+
+
+/**
  * Connects to a server.
  * @param {string} url URL to connect to.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when
@@ -243,6 +252,11 @@ safaridriver.extension.Server.prototype.connect = function(url) {
     throw Error('This server has already connected!');
   }
 
+  if (safaridriver.extension.Server.connectedUrls_[url]) {
+    throw Error('Another instance is already connected to ' + url);
+  }
+  safaridriver.extension.Server.connectedUrls_[url] = true;
+
   this.logMessage_('Connecting to ' + url);
   this.webSocket_ = new WebSocket(url);
 
@@ -252,7 +266,7 @@ safaridriver.extension.Server.prototype.connect = function(url) {
   // will execute before the browser creates the resource and makes any calls
   // to these callbacks.
   this.webSocket_.onopen = goog.bind(this.onOpen_, this);
-  this.webSocket_.onclose = goog.bind(this.onClose_, this);
+  this.webSocket_.onclose = goog.bind(this.onClose_, this, url);
   this.webSocket_.onmessage = goog.bind(this.onMessage_, this);
   this.webSocket_.onerror = goog.bind(this.onError_, this);
 
@@ -359,9 +373,11 @@ safaridriver.extension.Server.prototype.onOpen_ = function() {
  * Called when an attempt to open the WebSocket fails or there is a connection
  * failure after a successful connection has been established. Triggers the
  * disposable of this server.
+ * @param {string} url The URL the WebSocket was connected to.
  * @private
  */
-safaridriver.extension.Server.prototype.onClose_ = function() {
+safaridriver.extension.Server.prototype.onClose_ = function(url) {
+  safaridriver.extension.Server.connectedUrls_[url] = false;
   this.logMessage_('WebSocket connection was closed.',
       goog.debug.Logger.Level.WARNING);
   if (!this.isDisposed()) {

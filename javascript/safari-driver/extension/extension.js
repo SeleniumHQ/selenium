@@ -113,11 +113,20 @@ safaridriver.extension.numConnections_ = 0;
  * @private
  */
 safaridriver.extension.onMessage_ = function(e) {
+  var isSynchronous = e.name === 'canLoad';
   var message = safaridriver.message.fromEvent(e);
   var type = message.getType();
   switch (type) {
     case safaridriver.message.Connect.TYPE:
       var url = /** @type {!safaridriver.message.Connect} */ (message).getUrl();
+
+      // If the message was sent synchronously, acknowledge the request. The
+      // message will be async if this extension is being used with an older
+      // version of the SafariDriver client.
+      if (isSynchronous) {
+        e.message = true;
+      }
+
       var server = safaridriver.extension.createSessionServer_();
       server.connect(url).
           then(function() {
@@ -154,7 +163,7 @@ safaridriver.extension.onMessage_ = function(e) {
   }
 
   function checkIsSynchronous() {
-    goog.asserts.assert(e.name === 'canLoad',
+    goog.asserts.assert(isSynchronous,
         'Expected a synchronous message for type %s', type);
   }
 };

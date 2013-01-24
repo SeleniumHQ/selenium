@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.safari;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.io.Resources;
+
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelFutureListener;
@@ -34,6 +34,8 @@ import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.jboss.netty.handler.codec.http.HttpVersion;
+import org.jboss.netty.handler.codec.http.QueryStringDecoder;
+import org.jboss.netty.handler.codec.http.QueryStringEncoder;
 import org.jboss.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import org.jboss.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import org.jboss.netty.handler.codec.http.websocketx.PongWebSocketFrame;
@@ -42,10 +44,14 @@ import org.jboss.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.jboss.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import org.jboss.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Simple handler for the SafariDriver. Will initiate WebSocket connections,
@@ -56,24 +62,9 @@ class SafariDriverChannelHandler extends SimpleChannelUpstreamHandler {
   
   private final Logger log = Logger.getLogger(SafariDriverChannelHandler.class.getName());
 
-  // TODO: To ensure the message stays in sync, this script should be compiled
-  // using the //javascript/safari-driver source and saved as a resource in
-  // the JAR. This woud also allow this logic to be shared with the other
-  // language bindings.
-  private static final String CONNECT_TEMPLATE = Joiner.on("\n").join(
-      "<!DOCTYPE html>",
-      "<h2>SafariDriver requesting connection at ws://localhost:%d</h2>",
-      "<script>",
-      "// Must wait for onload so the injected script is loaded by the",
-      "// SafariDriver extension",
-      "window.onload = function() {",
-      "  window.postMessage({",
-      "    'type': 'connect',",
-      "    'origin': 'webdriver',",
-      "    'url': 'ws://localhost:%d'",
-      "  }, '*');",
-      "};",
-      "</script>");
+  private static final String CLIENT_RESOURCE_PATH = String.format(
+      "/%s/client.js",
+      SafariDriverChannelHandler.class.getPackage().getName().replace('.', '/'));
 
   private final BlockingQueue<SafariDriverConnection> connectionQueue;
   private final UUID id;
@@ -128,16 +119,36 @@ class SafariDriverChannelHandler extends SimpleChannelUpstreamHandler {
     sendResponse(ctx, request, response);
   }
 
-  private void handleMainPageRequest(ChannelHandlerContext ctx, HttpRequest request) {
-    HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1,
-        HttpResponseStatus.OK);
-    response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "text/html; charset=UTF-8");
+  private void handleMainPageRequest(ChannelHandlerContext ctx, HttpRequest request)
+      throws IOException {
+    String url = String.format("ws://localhost:%d", port);
+    QueryStringDecoder queryString = new QueryStringDecoder(request.getUri());
 
-    String content = String.format(CONNECT_TEMPLATE, port, port);
+    HttpResponse response;
+    List<String> urls = queryString.getParameters().get("url");
+    if (urls == null || urls.isEmpty() || !url.equals(urls.iterator().next())) {
+      response = new DefaultHttpResponse(
+          HttpVersion.HTTP_1_1, HttpResponseStatus.FOUND);
 
-    response.setContent(ChannelBuffers.copiedBuffer(content, Charsets.UTF_8));
-    response.setHeader(HttpHeaders.Names.CONTENT_LENGTH,
-        response.getContent().readableBytes());
+      QueryStringEncoder encoder = new QueryStringEncoder("/connect.html");
+      encoder.addParam("url", url);
+      response.addHeader("Location", encoder.toString());
+
+    } else {
+      response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+      response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "text/html; charset=UTF-8");
+
+      URL clientLibUrl = getClass().getResource(CLIENT_RESOURCE_PATH);
+      String content =
+          "<!DOCTYPE html>\n<script>"
+          + Resources.toString(clientLibUrl, Charsets.UTF_8)
+          + "</script>";
+
+      response.setContent(ChannelBuffers.copiedBuffer(content, Charsets.UTF_8));
+      response.setHeader(HttpHeaders.Names.CONTENT_LENGTH,
+                         response.getContent().readableBytes());
+    }
+
     sendResponse(ctx, request, response);
   }
 

@@ -67,7 +67,8 @@ safaridriver.inject.onConnect_ = function(message, e) {
   safaridriver.inject.LOG.info(
       'Content page has requested a WebDriver client connection to ' +
           message.getUrl());
-  message.sendSync(safari.self.tab);
+  var response = message.sendSync(safari.self.tab);
+  safaridriver.message.Message.sendSyncResponse(response);
 };
 
 
