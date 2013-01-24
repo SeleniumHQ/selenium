@@ -37,7 +37,7 @@ public class SauceDriver extends RemoteWebDriver {
   private static final String SAUCE_USERNAME_ENV_NAME = "SAUCE_USERNAME";
   private static final String DESIRED_BROWSER_VERSION_ENV_NAME = "SAUCE_BROWSER_VERSION";
   private static final String SAUCE_DISABLE_VIDEO_ENV_NAME = "SAUCE_DISABLE_VIDEO";
-  private static final String SAUCE_BUILD_ENV_NAME = "BUILD_NUMBER";
+  private static final String SAUCE_BUILD_ENV_NAME = "SAUCE_BUILD_NUMBER";
   
   private static final String USE_SAUCE_ENV_NAME = "USE_SAUCE";
 
