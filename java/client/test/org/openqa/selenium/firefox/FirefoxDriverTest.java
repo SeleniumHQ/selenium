@@ -45,6 +45,7 @@ import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.io.File;
 import java.io.IOException;
@@ -487,7 +488,12 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       return;
     }
 
-    int numThreads = 2;
+    int numThreads;
+    if (!SauceDriver.shouldUseSauce()) {
+      numThreads = 6;
+    } else {
+      numThreads = 2;
+    }
     final int numRoundsPerThread = 5;
     WebDriver[] drivers = new WebDriver[numThreads];
     List<Worker> workers = new ArrayList<Worker>(numThreads);
