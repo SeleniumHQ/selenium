@@ -38,7 +38,8 @@ public class SauceDriver extends RemoteWebDriver {
   private static final String DESIRED_BROWSER_VERSION_ENV_NAME = "SAUCE_BROWSER_VERSION";
   private static final String SAUCE_DISABLE_VIDEO_ENV_NAME = "SAUCE_DISABLE_VIDEO";
   private static final String SAUCE_BUILD_ENV_NAME = "SAUCE_BUILD_NUMBER";
-  
+  private static final String SAUCE_NATIVE_ENV_NAME = "native_events";
+
   private static final String USE_SAUCE_ENV_NAME = "USE_SAUCE";
 
   // Should be one of the values listed for Platform, e.g. xp, win7, android, ...
@@ -68,7 +69,7 @@ public class SauceDriver extends RemoteWebDriver {
   private static String getSeleniumVersion() {
     return getNonNullEnv(SELENIUM_VERSION_ENV_NAME);
   }
-  
+
   private static String getNonNullEnv(String propertyName) {
     String value = System.getenv(propertyName);
     Preconditions.checkNotNull(value);
@@ -98,14 +99,17 @@ public class SauceDriver extends RemoteWebDriver {
     mungedCapabilities.setCapability("disable-popup-handler", true);
     mungedCapabilities.setCapability("record-video", shouldRecordVideo());
     mungedCapabilities.setCapability("build", System.getenv(SAUCE_BUILD_ENV_NAME));
-    
+
+    String[] tags = {System.getenv(SAUCE_NATIVE_ENV_NAME)};
+    mungedCapabilities.setCapability("tags", tags);
+
     mungedCapabilities.setCapability("prevent-requeue", true);
-    
+
     if (!Strings.isNullOrEmpty(browserVersion)) {
       mungedCapabilities.setVersion(browserVersion);
     }
     mungedCapabilities.setPlatform(platform);
-    
+
     String jobName = System.getenv(SAUCE_JOB_NAME_ENV_NAME);
     if (jobName != null) {
       mungedCapabilities.setCapability("name", jobName);
