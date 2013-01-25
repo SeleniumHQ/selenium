@@ -21,7 +21,7 @@ limitations under the License.
   goog.require('safaridriver.inject.Encoder');
 </script>
 <script>
-  function testGetElementXPath() {
+  function testGetElementCssSelector() {
     var a1 = document.querySelector('div.a');
     assertEquals('a.1', a1.innerHTML);
 
@@ -43,6 +43,12 @@ limitations under the License.
         'html > body:nth-child(2) > div:nth-child(3) > div > div:nth-child(4)',
         css);
     assertEquals(b2, document.querySelector(css));
+
+    var text = document.getElementById('text_field');
+    css = safaridriver.inject.Encoder.getElementCssSelector_(text);
+    assertEquals(
+        'html > body:nth-child(2) > div:nth-child(4) > form > input', css);
+    assertEquals(text, document.querySelector(css));
   }
 </script>
 <body>
@@ -55,5 +61,10 @@ limitations under the License.
     <p>also not b</p>
     <div class="b">b.2</div>
   </div>
+</div>
+<div>
+  <form>
+    <input id="text_field" type="text">
+  </form>
 </div>
 </body>
