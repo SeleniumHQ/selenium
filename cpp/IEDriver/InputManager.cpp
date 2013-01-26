@@ -464,18 +464,22 @@ int InputManager::SendKeystrokes(BrowserHandle browser_wrapper, Json::Value keys
     }
   } else {
     LOG(DEBUG) << "Using synthetic events for sending keys";
-    std::wstring script_source = L"(function() { return function(){" + 
-                                  atoms::asString(atoms::INPUTS) + 
-                                  L"; return webdriver.atoms.inputs.sendKeys(arguments[0], arguments[1], arguments[2]);" + 
-                                  L"};})();";
+    std::wstring script_source =
+        L"(function() { return function(){" + 
+        atoms::asString(atoms::INPUTS) + 
+        L"; return webdriver.atoms.inputs.sendKeys(" +
+        L"arguments[0], arguments[1], arguments[2], arguments[3]);" + 
+        L"};})();";
+    bool persist_modifier_keys = !auto_release_modifier_keys;
 
     CComPtr<IHTMLDocument2> doc;
     browser_wrapper->GetDocument(&doc);
     Script script_wrapper(doc, script_source, 3);
           
     script_wrapper.AddNullArgument();
-    script_wrapper.AddArgument(this->keyboard_state());
     script_wrapper.AddArgument(keys);
+    script_wrapper.AddArgument(this->keyboard_state());
+    script_wrapper.AddArgument(persist_modifier_keys);
     status_code = script_wrapper.Execute();
     if (status_code == WD_SUCCESS) {
       this->set_keyboard_state(script_wrapper.result());

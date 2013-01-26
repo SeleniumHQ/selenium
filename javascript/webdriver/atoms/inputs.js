@@ -32,23 +32,25 @@ goog.require('webdriver.atoms.element');
 /**
  * Send keyboard input to a particular element.
  *
- * @param {Element} element The element to send the keyboard input to.
+ * @param {Element} element The element to send the keyboard input to, or
+ *     {@code null} to use the document's active element.
+ * @param {!Array.<string>} keys The keys to type on the element.
  * @param {Array.<!bot.Keyboard.Key>=} opt_state The keyboard to use, or
  *     construct one.
- * @param {...(string|!Array.<string>)} var_args What to type.
+ * @param {boolean=} opt_persistModifiers Whether modifier keys should remain
+ *     pressed when this function ends.
  * @return {Array.<!bot.Keyboard.Key>} The keyboard state.
  */
-webdriver.atoms.inputs.sendKeys = function(element, opt_state, var_args) {
+webdriver.atoms.inputs.sendKeys = function(
+    element, keys, opt_state, opt_persistModifiers) {
   var keyboard = new bot.Keyboard(opt_state);
-  var to_type = goog.array.slice(arguments, 2);
-  var flattened = goog.array.flatten(to_type);
   if (!element) {
     element = bot.dom.getActiveElement(document);
   }
   if (!element) {
     throw Error('No element to send keys to');
   }
-  webdriver.atoms.element.type(element, flattened, keyboard);
+  webdriver.atoms.element.type(element, keys, keyboard, opt_persistModifiers);
 
   return keyboard.getState();
 };

@@ -428,6 +428,30 @@
         opt_fn();
       }
     }
+
+    function testPersistentModifiers() {
+      var keyboard = new bot.Keyboard();
+      var persitModifierKeys = true;
+
+      var textBox = document.getElementById('textbox');
+      textBox.value = '';
+      bot.action.type(textBox, ['abcd', SHIFT, 'ef'], keyboard,
+                      persitModifierKeys);
+
+      assertEquals('abcdEF', textBox.value);
+      assertFalse(keyboard.isPressed(ALT));
+      assertFalse(keyboard.isPressed(CONTROL));
+      assertFalse(keyboard.isPressed(META));
+      assertTrue(keyboard.isPressed(SHIFT));
+
+      bot.action.type(textBox, [LEFT, 'ghi', SHIFT, 'j'], keyboard,
+                      persitModifierKeys);
+      assertEquals('abcdEGHIj', textBox.value);
+      assertFalse(keyboard.isPressed(ALT));
+      assertFalse(keyboard.isPressed(CONTROL));
+      assertFalse(keyboard.isPressed(META));
+      assertFalse(keyboard.isPressed(SHIFT));
+    }
   </script>
 </head>
 <body>

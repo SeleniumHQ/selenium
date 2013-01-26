@@ -127,13 +127,17 @@ bot.action.focusOnElement = function(element) {
  *                           bot.Keyboard.Key.SHIFT, 'cd']);
  *
  * @param {!Element} element The element receiving the event.
- * @param {(string|!bot.Keyboard.Key|!Array.<(string|!bot.Keyboard.Key)>)}
- *    values Value or values to type on the element.
+ * @param {(string|!bot.Keyboard.Key|
+ *          !Array.<(string|!bot.Keyboard.Key)>)} values Value or values to
+ *     type on the element.
  * @param {bot.Keyboard=} opt_keyboard Keyboard to use; if not provided,
- *    constructs one.
+ *     constructs one.
+ * @param {boolean=} opt_persistModifiers Whether modifier keys should remain
+ *     pressed when this function ends.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
-bot.action.type = function(element, values, opt_keyboard) {
+bot.action.type = function(
+    element, values, opt_keyboard, opt_persistModifiers) {
   bot.action.checkShown_(element);
   bot.action.checkInteractable_(element);
   var keyboard = opt_keyboard || new bot.Keyboard();
@@ -171,12 +175,14 @@ bot.action.type = function(element, values, opt_keyboard) {
     typeValue(values);
   }
 
-  // Release all the modifier keys.
-  goog.array.forEach(bot.Keyboard.MODIFIERS, function(key) {
-    if (keyboard.isPressed(key)) {
-      keyboard.releaseKey(key);
-    }
-  });
+  if (!opt_persistModifiers) {
+    // Release all the modifier keys.
+    goog.array.forEach(bot.Keyboard.MODIFIERS, function(key) {
+      if (keyboard.isPressed(key)) {
+        keyboard.releaseKey(key);
+      }
+    });
+  }
 };
 
 

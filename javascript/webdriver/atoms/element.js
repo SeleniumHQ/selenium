@@ -260,15 +260,29 @@ webdriver.atoms.element.getText = function(element) {
  * @param {!Array.<string>} keys The keys to type on the element.
  * @param {bot.Keyboard=} opt_keyboard Keyboard to use; if not provided,
  *    constructs one.
+ * @param {boolean=} opt_persistModifiers Whether modifier keys should remain
+ *     pressed when this function ends.
  * @see bot.action.type
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
  */
-webdriver.atoms.element.type = function(element, keys, opt_keyboard) {
-  // Convert to bot.Keyboard.Key values.
-  /** @type {!Array.<!Array.<(string|!bot.Keyboard.Key)>>} */
+webdriver.atoms.element.type = function(
+    element, keys, opt_keyboard, opt_persistModifiers) {
+  var persistModifierKeys = !!opt_persistModifiers;
+  function createSequenceRecord() {
+    return {persist: persistModifierKeys, keys: []};
+  }
+
+  /**
+   * @type {!Array.<{persist: boolean,
+   *                 keys: !Array.<(string|!bot.Keyboard.Key)>}>}
+   */
   var convertedSequences = [];
-  /** @type {!Array.<(string|!bot.Keyboard.Key)>} */
-  var current = [];
+
+  /**
+   * @type {{persist: boolean,
+   *         keys: !Array.<(string|!bot.Keyboard.Key)>}}
+   */
+  var current = createSequenceRecord();
   convertedSequences.push(current);
 
   goog.array.forEach(keys, function(sequence) {
@@ -278,10 +292,17 @@ webdriver.atoms.element.type = function(element, keys, opt_keyboard) {
         // goog.isNull uses ==, which accepts undefined.
         if (webdriverKey === null) {
           // bot.action.type does not support a "null" key, so we have to
-          // terminate the entire sequence to release modifier keys.
-          convertedSequences.push(current = []);
+          // terminate the entire sequence to release modifier keys. If
+          // we currently allow modifier key state to persist across key
+          // sequences, we need to inject a dummy sequence that does not
+          // persist state so every modifier key gets released.
+          convertedSequences.push(current = createSequenceRecord());
+          if (persistModifierKeys) {
+            current.persist = false;
+            convertedSequences.push(current = createSequenceRecord());
+          }
         } else if (goog.isDef(webdriverKey)) {
-          current.push(webdriverKey);
+          current.keys.push(webdriverKey);
         } else {
           throw Error('Unsupported WebDriver key: \\u' +
               key.charCodeAt(0).toString(16));
@@ -290,16 +311,16 @@ webdriver.atoms.element.type = function(element, keys, opt_keyboard) {
         // Handle common aliases.
         switch (key) {
           case '\n':
-            current.push(bot.Keyboard.Keys.ENTER);
+            current.keys.push(bot.Keyboard.Keys.ENTER);
             break;
           case '\t':
-            current.push(bot.Keyboard.Keys.TAB);
+            current.keys.push(bot.Keyboard.Keys.TAB);
             break;
           case '\b':
-            current.push(bot.Keyboard.Keys.BACKSPACE);
+            current.keys.push(bot.Keyboard.Keys.BACKSPACE);
             break;
           default:
-            current.push(key);
+            current.keys.push(key);
             break;
         }
       }
@@ -307,7 +328,8 @@ webdriver.atoms.element.type = function(element, keys, opt_keyboard) {
   });
 
   goog.array.forEach(convertedSequences, function(sequence) {
-    bot.action.type(element, sequence, opt_keyboard);
+    bot.action.type(element, sequence.keys, opt_keyboard,
+        sequence.persist);
   });
 
   function isWebDriverKey(c) {

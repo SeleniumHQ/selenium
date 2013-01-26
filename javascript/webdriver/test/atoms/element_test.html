@@ -209,6 +209,27 @@ limitations under the License.
       webdriver.atoms.element.type(el, ['hello\n\nworld']);
       assertEquals('hello' + newLine + newLine + 'world', el.value);
     }
+
+    function testCanUseNullKeyToReleaseModifiers_modifiersNotPersisted() {
+      var el = document.getElementById('textarea');
+      el.value = '';
+      webdriver.atoms.element.type(
+          el, ['abc', webdriver.Key.SHIFT, 'def', webdriver.Key.NULL, 'ghi']);
+      assertEquals('abcDEFghi', el.value);
+    }
+
+    function testCanUseNullKeyToReleaseModifiers_modifiersPersisted() {
+      var keyboard = new bot.Keyboard();
+      var el = document.getElementById('textarea');
+      el.value = '';
+      webdriver.atoms.element.type(
+          el, ['abc', webdriver.Key.SHIFT, 'def'], keyboard, true);
+      assertEquals('abcDEF', el.value);
+
+      webdriver.atoms.element.type(
+          el, ['ghi', webdriver.Key.NULL, 'jkl'], keyboard, true);
+      assertEquals('abcDEFGHIjkl', el.value);
+    }
   </script>
 </head>
 <body id="body" class="c" style="" name="body">
