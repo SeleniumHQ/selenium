@@ -65,23 +65,29 @@ goog.require('webdriver.promise');
  *     known session or a promise that will be resolved to a session.
  * @param {!webdriver.CommandExecutor} executor The executor to use when
  *     sending commands to the browser.
+ * @param {webdriver.promise.ControlFlow=} opt_flow The flow to
+ *     schedule commands through. Defaults to the active flow object.
  * @constructor
  */
-webdriver.WebDriver = function(session, executor) {
+webdriver.WebDriver = function(session, executor, opt_flow) {
 
   /**
-   * The browser session this driver is controlling.
    * @type {!(webdriver.Session|webdriver.promise.Promise)}
    * @private
    */
   this.session_ = session;
 
   /**
-   * Object used to execute individual commands.
    * @type {!webdriver.CommandExecutor}
    * @private
    */
   this.executor_ = executor;
+
+  /**
+   * @type {!webdriver.promise.ControlFlow}
+   * @private
+   */
+  this.flow_ = opt_flow || webdriver.promise.controlFlow();
 };
 
 
@@ -130,14 +136,13 @@ webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
  */
 webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
   var fn = goog.bind(executor.execute, executor, command);
-  var session = webdriver.promise.Application.getInstance().schedule(
-      description, function() {
-        return webdriver.promise.checkedNodeCall(fn).then(function(response) {
-          bot.response.checkResponse(response);
-          return new webdriver.Session(response['sessionId'],
-              response['value']);
-        });
-      });
+  var session = webdriver.promise.controlFlow().execute(function() {
+    return webdriver.promise.checkedNodeCall(fn).then(function(response) {
+      bot.response.checkResponse(response);
+      return new webdriver.Session(response['sessionId'],
+          response['value']);
+    });
+  }, description);
   return new webdriver.WebDriver(session, executor);
 };
 
@@ -223,6 +228,15 @@ webdriver.WebDriver.fromWireValue_ = function(driver, value) {
 
 
 /**
+ * @return {!webdriver.promise.ControlFlow} The control flow used by this
+ *     instance.
+ */
+webdriver.WebDriver.prototype.controlFlow = function() {
+  return this.flow_;
+};
+
+
+/**
  * Schedules a {@code webdriver.Command} to be executed by this driver's
  * {@code webdriver.CommandExecutor}.
  * @param {!webdriver.Command} command The command to schedule.
@@ -236,8 +250,8 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
   checkHasNotQuit();
   command.setParameter('sessionId', this.session_);
 
-  var app = webdriver.promise.Application.getInstance();
-  return app.schedule(description, function() {
+  var flow = this.flow_;
+  return flow.execute(function() {
     // A call to WebDriver.quit() may have been scheduled in the same event
     // loop as this |command|, which would prevent us from detecting that the
     // driver has quit above.  Therefore, we need to make another quick check.
@@ -251,7 +265,7 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
           return webdriver.promise.checkedNodeCall(
               goog.bind(self.executor_.execute, self.executor_, command));
         });
-  }).then(function(response) {
+  }, description).then(function(response) {
     try {
       bot.response.checkResponse(response);
     } catch (ex) {
@@ -489,13 +503,12 @@ webdriver.WebDriver.prototype.executeAsyncScript = function(script, var_args) {
  */
 webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
   var args = goog.array.slice(arguments, 2);
-  var app = webdriver.promise.Application.getInstance();
-  return app.schedule('WebDriver.call(' + (fn.name || 'function') + ')',
-      function() {
-        return webdriver.promise.fullyResolved(args).then(function(args) {
-          return fn.apply(opt_scope, args);
-        });
-      });
+  var flow = this.flow_;
+  return flow.execute(function() {
+    return webdriver.promise.fullyResolved(args).then(function(args) {
+      return fn.apply(opt_scope, args);
+    });
+  }, 'WebDriver.call(' + (fn.name || 'function') + ')');
 };
 
 
@@ -511,11 +524,7 @@ webdriver.WebDriver.prototype.call = function(fn, opt_scope, var_args) {
  *     wait condition has been satisfied.
  */
 webdriver.WebDriver.prototype.wait = function(fn, timeout, opt_message) {
-  var fnName = fn.name || '<anonymous function>';
-  var suffix = opt_message ? ' (' + opt_message + ')' : '';
-  return webdriver.promise.Application.getInstance().scheduleWait(
-      'WebDriver.wait(' + fnName + ')' + suffix,
-      fn, timeout, opt_message);
+  return this.flow_.wait(fn, timeout, opt_message);
 };
 
 
@@ -526,8 +535,7 @@ webdriver.WebDriver.prototype.wait = function(fn, timeout, opt_message) {
  *     sleep has finished.
  */
 webdriver.WebDriver.prototype.sleep = function(ms) {
-  return webdriver.promise.Application.getInstance().
-      scheduleTimeout('WebDriver.sleep(' + ms + ')', ms);
+  return this.flow_.timeout(ms, 'WebDriver.sleep(' + ms + ')');
 };
 
 

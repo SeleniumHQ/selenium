@@ -28,7 +28,7 @@
 goog.provide('webdriver.testing.TestCase');
 
 goog.require('goog.testing.TestCase');
-goog.require('webdriver.promise.Application');
+goog.require('webdriver.promise.ControlFlow');
 /** @suppress {extraRequire} Imported for user convenience. */
 goog.require('webdriver.testing.asserts');
 
@@ -36,7 +36,7 @@ goog.require('webdriver.testing.asserts');
 
 /**
  * Constructs a test case that synchronizes each test case with the singleton
- * {@code webdriver.promise.Application}.
+ * {@code webdriver.promise.ControlFlow}.
  *
  * @param {string=} opt_name The name of the test case, defaults to
  *     'Untitled Test Case'.
@@ -66,7 +66,7 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
 
   var self = this;
   var hadError = false;
-  var app = webdriver.promise.Application.getInstance();
+  var app = webdriver.promise.controlFlow();
 
   this.runSingleTest_(test, onError).then(function() {
     hadError || self.doSuccess(test);
@@ -93,7 +93,7 @@ webdriver.testing.TestCase.prototype.logError = function(name, opt_e) {
     } else {
       // In case someone calls this function directly, make sure we have a
       // properly annotated error.
-      webdriver.promise.Application.getInstance().annotateError(opt_e);
+      webdriver.promise.controlFlow().annotateError(opt_e);
       errMsg = opt_e.toString();
       stack = opt_e.stack.substring(errMsg.length + 1);
     }
@@ -142,18 +142,18 @@ webdriver.testing.TestCase.prototype.logError = function(name, opt_e) {
  * @private
  */
 webdriver.testing.TestCase.prototype.runSingleTest_ = function(test, onError) {
-  var app = webdriver.promise.Application.getInstance();
-  app.clearHistory();
+  var flow = webdriver.promise.controlFlow();
+  flow.clearHistory();
 
-  return schedule(test.name + '.setUp()', this.setUp)().
-      addCallback(schedule(test.name + '()', test.ref)).
+  return execute(test.name + '.setUp()', this.setUp)().
+      addCallback(execute(test.name + '()', test.ref)).
       addErrback(onError).
-      addCallback(schedule(test.name + '.tearDown()', this.tearDown)).
+      addCallback(execute(test.name + '.tearDown()', this.tearDown)).
       addErrback(onError);
 
-  function schedule(description, fn) {
+  function execute(description, fn) {
     return function() {
-      return app.schedule(description, goog.bind(fn, test.scope));
+      return flow.execute(goog.bind(fn, test.scope), description);
     }
   }
 };

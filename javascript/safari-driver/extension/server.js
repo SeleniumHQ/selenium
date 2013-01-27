@@ -303,8 +303,8 @@ safaridriver.extension.Server.prototype.execute = function(
       goog.debug.Logger.Level.FINER);
   var description = this.session_.getId() + '::' + command.getName();
   var fn = goog.bind(this.executeCommand_, this, command, handler);
-  var result = webdriver.promise.Application.getInstance().
-      schedule(description, fn).
+  var flow = webdriver.promise.controlFlow();
+  var result = flow.execute(fn, description).
       then(bot.response.createResponse, bot.response.createErrorResponse).
       addBoth(function(response) {
         this.session_.setCurrentCommand(null);

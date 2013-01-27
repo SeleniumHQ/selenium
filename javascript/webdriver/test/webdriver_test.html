@@ -31,11 +31,11 @@ limitations under the License.
     goog.require('webdriver.WebDriver');
     goog.require('webdriver.Session');
     goog.require('webdriver.promise');
-    goog.require('webdriver.promise.Application');
+    goog.require('webdriver.promise.ControlFlow');
     goog.require('webdriver.promise.Deferred');
     goog.require('webdriver.promise.Promise');
-    goog.require('webdriver.test.AppTester');
     goog.require('webdriver.test.testutil');
+    goog.require('webdriver.testing.promise.FlowTester');
   </script>
 </head>
 <body>
@@ -58,20 +58,20 @@ limitations under the License.
 
   var clock;
   var driver;
+  var flowTester;
   var mockControl;
-  var appTester;
   var verifyAll;
 
   function setUp() {
     clock = webdriver.test.testutil.createMockClock();
-    appTester = new webdriver.test.AppTester(clock);
+    flowTester = new webdriver.testing.promise.FlowTester(clock, goog.global);
     mockControl = new goog.testing.MockControl();
     verifyAll = callbackHelper(goog.bind(mockControl.$verifyAll, mockControl));
   }
 
 
   function tearDown() {
-    appTester.$tearDown();
+    flowTester.dispose();
     verifyAll.assertCalled('Never verified mocks');
     clock.uninstall();
     mockControl.$tearDown();
@@ -113,10 +113,11 @@ limitations under the License.
     var helper = new TestHelper();
 
     helper.execute = function() {
-      appTester.$runApplication(null, function(e) {
-        verifyAll();
-        (opt_errback || goog.nullFunction)(e);
-      });
+      flowTester.run();
+      verifyAll();
+      if (opt_errback) {
+        opt_errback(flowTester.getFailure());
+      }
     };
 
     return helper;
@@ -127,10 +128,11 @@ limitations under the License.
     var helper = new TestHelper();
 
     helper.execute = function() {
-      appTester.$runApplication(function() {
-        verifyAll();
-        (opt_callback || goog.nullFunction)();
-      });
+      flowTester.run();
+      verifyAll();
+      if (opt_callback) {
+        opt_callback();
+      }
     };
 
     return helper;
@@ -910,7 +912,7 @@ limitations under the License.
           assertEquals(3, value);
         });
 
-    appTester.$turnEventLoop();
+    flowTester.turnEventLoop();
     add.assertNotCalled();
 
     promisedArg.resolve(2);
@@ -1037,11 +1039,11 @@ limitations under the License.
     driver.call(stepOne);
     driver.call(stepTwo);
 
-    appTester.$turnEventLoop();
+    flowTester.turnEventLoop();
     stepOne.assertCalled();
     stepTwo.assertNotCalled();
 
-    appTester.$turnEventLoop();
+    flowTester.turnEventLoop();
     stepOne.assertCalled();
     stepTwo.assertNotCalled();
 

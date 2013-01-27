@@ -120,8 +120,8 @@ webdriver.testing.asserts.typeOf_ = function(value) {
 
 /**
  * Asserts that a matcher accepts a given value. If the value is rejected by
- * the matcher, an unhandled promise will be reported to the global
- * {@link webdriver.promise.Application}.
+ * the matcher, an unhandled promise will be reported to the active.
+ * {@link webdriver.promise.ControlFlow}.
  *
  * @param {*} failureMessageOrActualValue Either a failure message or the value
  *     to apply to the given matcher.

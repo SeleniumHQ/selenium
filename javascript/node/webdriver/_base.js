@@ -65,6 +65,7 @@ var CLOSURE = vm.createContext({
     return true;
   }
 });
+CLOSURE.window = CLOSURE;
 
 
 loadScript(CLOSURE_BASE_FILE_PATH);

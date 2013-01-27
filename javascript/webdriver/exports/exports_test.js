@@ -241,27 +241,26 @@ function checkPromise() {
   assertFunction('webdriver.promise', 'fullyResolved');
   assertFunction('webdriver.promise', 'checkedNodeCall');
 
-  assertFunction('webdriver.promise', 'Application');
-  assertFunction('webdriver.promise.Application', 'getInstance');
-  assertObject('webdriver.promise.Application', 'EventType');
-  assert.equal('idle', webdriver.promise.Application.EventType.IDLE,
-      'Should be "idle", is ' + webdriver.promise.Application.EventType.IDLE);
+  assertFunction('webdriver.promise', 'ControlFlow');
+  assertFunction('webdriver.promise.ControlFlow', 'getInstance');
+  assertObject('webdriver.promise.ControlFlow', 'EventType');
+  assert.equal('idle', webdriver.promise.ControlFlow.EventType.IDLE,
+      'Should be "idle", is ' + webdriver.promise.ControlFlow.EventType.IDLE);
   assert.equal('scheduleTask',
-      webdriver.promise.Application.EventType.SCHEDULE_TASK,
+      webdriver.promise.ControlFlow.EventType.SCHEDULE_TASK,
       'Should be "scheduleTask", is ' +
-          webdriver.promise.Application.EventType.SCHEDULE_TASK);
+          webdriver.promise.ControlFlow.EventType.SCHEDULE_TASK);
   assert.equal('uncaughtException',
-      webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
+      webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION,
       'Should be "uncaughtException", is ' +
-          webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION);
+          webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION);
 
-  assert.ok(webdriver.promise.Application.getInstance() instanceof
-      webdriver.EventEmitter, 'Application not an EventEmitter!');
-  assertFunction('webdriver.promise.Application.getInstance()', 'schedule');
-  assertFunction('webdriver.promise.Application.getInstance()', 'schedule');
-  assertFunction('webdriver.promise.Application.getInstance()',
-      'scheduleTimeout');
-  assertFunction('webdriver.promise.Application.getInstance()', 'scheduleWait');
+  assert.ok(webdriver.promise.controlFlow() instanceof
+      webdriver.EventEmitter, 'ControlFlow not an EventEmitter!');
+  assertFunction('webdriver.promise.controlFlow()', 'execute');
+  assertFunction('webdriver.promise.controlFlow()', 'timeout');
+  assertFunction('webdriver.promise.controlFlow()', 'wait');
+  assertFunction('webdriver.promise.controlFlow()', 'await');
 
   assertFunction('webdriver.promise', 'Promise');
   assertFunction('webdriver.promise.Promise.prototype', 'then');

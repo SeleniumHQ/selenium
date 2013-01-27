@@ -34,10 +34,9 @@ node.http.parseUrl_ = function(url) {
 };
 
 
-
 /**
  * HTTP client for use with NodeJS.
- * @param {!string} url URL for the WebDriver server to send commands
+ * @param {string} url URL for the WebDriver server to send commands
  *     to.
  * @constructor
  * @implements {webdriver.http.Client}
@@ -122,7 +121,17 @@ node.http.HttpClient.sendRequest_ = function(options, callback, opt_data) {
   });
 
   request.on('error', function(e) {
-    callback(new Error('Unable to send request: ' + e.message));
+    if (e.code === 'ECONNRESET') {
+      setTimeout(function() {
+        node.http.HttpClient.sendRequest_(options, callback, opt_data);
+      }, 15);
+    } else {
+      var message = e.message;
+      if (e.code) {
+        message = e.code + ' ' + message;
+      }
+      callback(new Error(message));
+    }
   });
 
   if (opt_data) {

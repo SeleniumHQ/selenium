@@ -3,6 +3,7 @@ js_library(
   srcs = [
     "builder.js",
     "http/http.js",
+    "http/util.js",
   ],
   deps = [
     "//javascript/webdriver:webdriver_lib",
@@ -10,7 +11,7 @@ js_library(
 
 
 node_module(
-  name = "webdriver",
+  name = "selenium-webdriver",
   srcs = [ "webdriver/*.js" ],
   deps = [
     ":node_lib",

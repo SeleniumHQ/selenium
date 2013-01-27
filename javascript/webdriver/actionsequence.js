@@ -82,12 +82,11 @@ webdriver.ActionSequence.prototype.perform = function() {
   // executed.
   var actions = goog.array.clone(this.actions_);
   var driver = this.driver_;
-  return webdriver.promise.Application.getInstance().schedule(
-      'ActionSequence.perform', function() {
-        goog.array.forEach(actions, function(action) {
-          driver.schedule(action.command, action.description);
-        });
-      });
+  return driver.controlFlow().execute(function() {
+    goog.array.forEach(actions, function(action) {
+      driver.schedule(action.command, action.description);
+    });
+  }, 'ActionSequence.perform');
 };
 
 
@@ -345,8 +344,8 @@ webdriver.ActionSequence.prototype.keyUp = function(key) {
  * Simulates typing multiple keys. Each modifier key encountered in the
  * sequence will not be released until it is encountered again. All key events
  * will be targetted at the currently focused element.
- * @param {...(string|!webdriver.Key|!Array.<(string|!webdriver.Key)>)}
- *     var_args The keys to type.
+ * @param {...(string|!webdriver.Key|!Array.<(string|!webdriver.Key)>)} var_args
+ *     The keys to type.
  * @return {!webdriver.ActionSequence} A self reference.
  * @throws {Error} If the key is not a valid modifier key.
  */

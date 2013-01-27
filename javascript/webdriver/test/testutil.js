@@ -195,15 +195,12 @@ webdriver.test.testutil.callbackHelper = function(opt_fn) {
     message.push(
         'Expected to be called ' + n + ' times.',
         '  was called ' + calls.length + ' times:');
-    message = goog.array.concat(message,
-        goog.array.map(calls, function(call, i) {
-          var e = call.getError();
-          if (e) {
-            throw e;
-          }
-          return goog.string.repeat(' ', 4) + 'args(call #' + i + '): ' +
-              goog.json.serialize(call.getArguments());
-        }));
+    goog.array.forEach(calls, function(call) {
+      var e = call.getError();
+      if (e) {
+        throw e;
+      }
+    });
     return opt_noJoin ? message : message.join('\n');
   };
 
@@ -234,6 +231,7 @@ webdriver.test.testutil.callbackPair = function(opt_callback, opt_errback) {
     errback: webdriver.test.testutil.callbackHelper(opt_errback)
   };
 
+  /** @param {string=} opt_message Optional failure message. */
   pair.assertEither = function(opt_message) {
     if (!pair.callback.getCallCount() &&
         !pair.errback.getCallCount()) {
@@ -243,31 +241,25 @@ webdriver.test.testutil.callbackPair = function(opt_callback, opt_errback) {
     }
   };
 
+  /** @param {string=} opt_message Optional failure message. */
   pair.assertNeither = function(opt_message) {
-    var message = [opt_message || 'Unexpected callback results:'];
-    if (pair.callback.getCallCount()) {
-      message = goog.array.concat(message,
-          pair.callback.getExpectedCallCountMessage(0,
-              'Did not expect callback to be called.', true));
-    }
-    if (pair.errback.getCallCount()) {
-      message = goog.array.concat(message,
-          pair.errback.getExpectedCallCountMessage(0,
-              'Did not expect errback to be called.', true));
-    }
-    if (message.length > 1) {
-      fail(message.join('\n  -- '));
-    }
+    var message = (opt_message || '') + 'Did not expect callback or errback';
+    pair.callback.assertNotCalled(message);
+    pair.errback.assertNotCalled(message);
   };
 
-  pair.assertCallback = function(opt_message, opt_count) {
-    assertCalls(pair.callback, 'callback', pair.errback, 'errback',
-        opt_message, opt_count);
+  /** @param {string=} opt_message Optional failure message. */
+  pair.assertCallback = function(opt_message) {
+    var message = opt_message ? (opt_message + ': ') : '';
+    pair.errback.assertNotCalled(message + 'Expected callback, not errback');
+    pair.callback.assertCalled(message + 'Callback not called');
   };
 
-  pair.assertErrback = function(opt_message, opt_count) {
-    assertCalls(pair.errback, 'errback', pair.callback, 'callback',
-        opt_message, opt_count);
+  /** @param {string=} opt_message Optional failure message. */
+  pair.assertErrback = function(opt_message) {
+    var message = opt_message ? (opt_message + ': ') : '';
+    pair.callback.assertNotCalled(message + 'Expected errback, not callback');
+    pair.errback.assertCalled(message + 'Errback not called');
   };
 
   pair.reset = function() {
@@ -276,27 +268,6 @@ webdriver.test.testutil.callbackPair = function(opt_callback, opt_errback) {
   };
 
   return pair;
-
-  function assertCalls(expectedFn, expectedName, unexpectedFn, unexpectedName,
-                       opt_message, opt_count) {
-    var count = opt_count || 1;
-    var message = [opt_message || 'Unexpected callback results:'];
-    if (expectedFn.getCallCount() != count) {
-      message = goog.array.concat(message,
-          expectedFn.getExpectedCallCountMessage(count,
-              'Unexpected call pattern for ' + expectedName, true));
-    }
-
-    if (unexpectedFn.getCallCount()) {
-      message = goog.array.concat(message,
-          unexpectedFn.getExpectedCallCountMessage(0,
-          'Expected ' + unexpectedName + ' to never be called', true));
-    }
-
-    if (message.length > 1) {
-      fail(message.join('\n  -- '));
-    }
-  }
 };
 
 

@@ -19,9 +19,9 @@ var webdriver = require(process.env['SELENIUM_DEV_MODE'] === '1' ?
     '../../build/javascript/node/webdriver'),
     optparse = require('./optparse');
 
-var app = webdriver.promise.Application.getInstance();
-app.on(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION, function(e) {
-  console.error('Uncaught exception!\n' + app.annotateError(e));
+var flow = webdriver.promise.controlFlow();
+flow.on(webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION, function(e) {
+  console.error('Uncaught exception!\n' + flow.annotateError(e));
 });
 
 

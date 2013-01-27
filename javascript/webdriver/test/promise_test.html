@@ -37,22 +37,27 @@ var assertIsPromise = webdriver.test.testutil.assertIsPromise,
     throwStubError = webdriver.test.testutil.throwStubError,
     STUB_ERROR = webdriver.test.testutil.STUB_ERROR;
 
-var clock, uncaughtException;
+var app, clock, uncaughtException;
 
 function setUp() {
   clock = webdriver.test.testutil.createMockClock();
   uncaughtException = callbackHelper();
-  webdriver.promise.Application.
-      getInstance().
-      on(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION,
+
+  app = webdriver.promise.controlFlow();
+  app.on(webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION,
          uncaughtException);
+
+  // The application timer defaults to a protected copies of the native
+  // timing functions. Reset it to use |window|, which has been modified
+  // by the MockClock above.
+  app.timer = window;
 }
 
 
 function tearDown() {
   webdriver.test.testutil.consumeTimeouts();
   clock.dispose();
-  webdriver.promise.Application.getInstance().reset();
+  app.reset();
   uncaughtException.assertNotCalled();
 }
 
@@ -322,9 +327,8 @@ function testFiresUncaughtExceptionEventIfRejectionNeverHandled() {
   });
 
   // so tearDown() doesn't throw
-  var app = webdriver.promise.Application.getInstance();
   app.reset();
-  app.on(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION, handler);
+  app.on(webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION, handler);
   clock.tick();
   handler.assertCalled();
 }
@@ -706,15 +710,13 @@ function testFullyResolved_rejectsIfArrayPromiseRejects() {
   var nestedPromise = webdriver.promise.rejected(e);
   var promise = webdriver.promise.resolved([true, nestedPromise]);
 
-  var callback, errback;
-  webdriver.promise.fullyResolved(promise).then(
-      callback = callbackHelper(),
-      errback = callbackHelper(function(error) {
-        assertEquals(e, error);
-      }));
+  var pair = callbackPair(null, function(error) {
+    assertEquals(e, error);
+  });
+  webdriver.promise.fullyResolved(promise).then(pair.callback, pair.errback);
 
-  callback.assertNotCalled();
-  errback.assertCalled();
+  clock.tick();
+  pair.assertErrback();
 }
 
 
@@ -726,15 +728,13 @@ function testFullyResolved_rejectsOnFirstArrayRejection() {
     webdriver.promise.rejected(e2)
   ]);
 
-  var callback, errback;
-  webdriver.promise.fullyResolved(promise).then(
-      callback = callbackHelper(),
-      errback = callbackHelper(function(error) {
-        assertEquals(e1, error);
-      }));
+  var pair = callbackPair(null, function(error) {
+    assertEquals(e1, error);
+  });
+  webdriver.promise.fullyResolved(promise).then(pair.callback, pair.errback);
 
-  callback.assertNotCalled();
-  errback.assertCalled();
+  clock.tick();
+  pair.assertErrback();
 }
 
 
@@ -746,15 +746,15 @@ function testFullyResolved_rejectsIfNestedArrayPromiseRejects() {
     ])
   ]);
 
-  var callback, errback;
-  webdriver.promise.fullyResolved(promise).then(
-      callback = callbackHelper(),
-      errback = callbackHelper(function(error) {
-        assertEquals(e, error);
-      }));
+  var pair = callbackPair(null, function(error) {
+    assertEquals(e, error);
+  });
+  webdriver.promise.fullyResolved(promise).then(pair.callback, pair.errback);
 
-  callback.assertNotCalled();
-  errback.assertCalled();
+  clock.tick();
+  clock.tick();
+  clock.tick();
+  pair.assertErrback();
 }
 
 
@@ -850,15 +850,13 @@ function testFullyResolved_rejectsIfHashPromiseRejects() {
       'a': webdriver.promise.rejected(e)
   });
 
-  var callback, errback;
-  webdriver.promise.fullyResolved(promise).then(
-      callback = callbackHelper(),
-      errback = callbackHelper(function(error) {
-        assertEquals(e, error);
-      }));
-  
-  callback.assertNotCalled();
-  errback.assertCalled();
+  var pair = callbackPair(null, function(error) {
+    assertEquals(e, error);
+  });
+  webdriver.promise.fullyResolved(promise).then(pair.callback, pair.errback);
+
+  clock.tick();
+  pair.assertErrback();
 }
 
 function testFullyResolved_rejectsIfNestedHashPromiseRejects() {
@@ -867,15 +865,13 @@ function testFullyResolved_rejectsIfNestedHashPromiseRejects() {
       'a': {'b': webdriver.promise.rejected(e)}
   });
 
-  var callback, errback;
-  webdriver.promise.fullyResolved(promise).then(
-      callback = callbackHelper(),
-      errback = callbackHelper(function(error) {
-        assertEquals(e, error);
-      }));
+  var pair = callbackPair(null, function(error) {
+    assertEquals(e, error);
+  });
+  webdriver.promise.fullyResolved(promise).then(pair.callback, pair.errback);
 
-  callback.assertNotCalled();
-  errback.assertCalled();
+  clock.tick();
+  pair.assertErrback();
 }
 
 
@@ -1228,9 +1224,8 @@ function testIsStillConsideredUnHandledIfNoCallbacksWereGivenOnCallsToThen() {
   });
 
   // so tearDown() doesn't throw
-  var app = webdriver.promise.Application.getInstance();
   app.reset();
-  app.on(webdriver.promise.Application.EventType.UNCAUGHT_EXCEPTION, handler);
+  app.on(webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION, handler);
   clock.tick();
   handler.assertCalled();
 }
@@ -1241,6 +1236,36 @@ function testResolvedReturnsInputValueIfItIsAPromise() {
   assertEquals(input, output);
 }
 
+
+function testADeferredsParentControlFlowIsActiveForCallbacks() {
+  var flow = new webdriver.promise.ControlFlow();
+  var d = new webdriver.promise.Deferred(null, flow);
+  d.resolve();
+
+  var flow2 = new webdriver.promise.ControlFlow();
+  var d2 = new webdriver.promise.Deferred(null, flow2);
+  d2.resolve();
+
+  assertIsFlow(webdriver.promise.defaultFlow_)();
+
+  var callbacks = callbackPair();
+  d.then(assertIsFlow(flow)).
+      then(assertIsFlow(flow)).
+      then(function() {
+        return d2.then(assertIsFlow(flow2));
+      }).
+      then(assertIsFlow(flow)).
+      then(callbacks.callback, callbacks.errback);
+
+  callbacks.assertCallback();
+  assertIsFlow(webdriver.promise.defaultFlow_)();
+
+  function assertIsFlow(flow) {
+    return function() {
+      assertEquals(flow, webdriver.promise.controlFlow());
+    };
+  }
+}
 </script>
 </body>
 </html>
