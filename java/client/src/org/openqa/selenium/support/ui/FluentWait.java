@@ -176,6 +176,10 @@ public class FluentWait<T> implements Wait<T> {
       public Boolean apply(T input) {
         return isTrue.apply(input);
       }
+
+      public String toString() {
+        return isTrue.toString();
+      }
     });
   }
 
