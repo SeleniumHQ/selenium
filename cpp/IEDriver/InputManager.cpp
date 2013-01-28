@@ -104,7 +104,9 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
       this->MouseDoubleClick(browser_wrapper);
     } else if (action_name == "keys") {
       if (action.isMember("value")) {
-        this->SendKeystrokes(browser_wrapper, action.get("value", Json::Value(Json::arrayValue)), false);
+        Json::Value keystroke_array = action.get("value", Json::Value(Json::arrayValue));
+        bool auto_release_modifiers = action.get("releaseModifiers", false).asBool();
+        this->SendKeystrokes(browser_wrapper, keystroke_array, auto_release_modifiers);
       }
     }
   }

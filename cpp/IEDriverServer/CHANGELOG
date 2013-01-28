@@ -9,6 +9,13 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.29.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Modified method for checking whether modifier keys should be automatically
+   released when calling sendKeys, either from an element or from the actions
+   class.
+
 v2.29.0.1
 =========
  * Updates to JavaScript automation atoms.

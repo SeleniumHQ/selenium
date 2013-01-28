@@ -138,15 +138,13 @@ class SendKeysCommandHandler : public IECommandHandler {
 
         this->VerifyPageHasFocus(browser_wrapper->GetTopLevelWindowHandle(), browser_wrapper->window_handle());
         this->WaitUntilElementFocused(element);
-        std::string null_character = CW2A(L"\uE000", CP_UTF8);
         Json::Value value = this->RecreateJsonParameterObject(command_parameters);
-        value["value"].append(null_character);
         value["action"] = "keys";
+        value["releaseModifiers"] = true;
         Json::UInt index = 0;
         Json::Value actions(Json::arrayValue);
         actions[index] = value;
         status_code = executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
-        //status_code = executor.input_manager()->SendKeystrokes(browser_wrapper, key_array, true);
         response->SetSuccessResponse(Json::Value::null);
         return;
       } else {
