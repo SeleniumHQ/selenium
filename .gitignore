@@ -20,7 +20,6 @@ iphone/src/objc/atoms.h
 /build/
 android/client/bin/
 android/server/bin/
-android/gen/org/openqa/selenium/android/app/Manifest.java
 cpp/IEDriver/IEReturnTypes.h
 java/org/openqa/selenium/ie/IeReturnTypes.java
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
@@ -67,6 +66,7 @@ py/selenium/webdriver/firefox/amd64/
 py/selenium/webdriver/firefox/webdriver.xpi
 py/selenium/webdriver/firefox/x86/
 selenium.egg-info/
+
 *.user
 *.cache
 obj/
