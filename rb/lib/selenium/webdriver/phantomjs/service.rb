@@ -8,34 +8,50 @@ module Selenium
 
       class Service
         START_TIMEOUT = 20
-        STOP_TIMEOUT  = 5
-        DEFAULT_PORT  = 8910
-        MISSING_TEXT  = "Unable to find phantomjs executable."
+        STOP_TIMEOUT = 5
+        DEFAULT_PORT = 8910
+        MISSING_TEXT = "Unable to find phantomjs executable."
 
         attr_reader :uri
 
         def self.executable_path
-          @executable_path ||= (
+          @executable_path ||= begin
             path = PhantomJS.path
             path or raise Error::WebDriverError, MISSING_TEXT
             Platform.assert_executable path
 
             path
-          )
+          end
         end
 
-        def self.default_service
-          new executable_path, PortProber.above(DEFAULT_PORT)
+        def self.default_service options={}
+          new executable_path, options
         end
 
-        def initialize(executable_path, port)
-          @uri           = URI.parse "http://#{Platform.localhost}:#{port}"
+        def initialize(executable_path, options)
+          @port = options[:port]
+          @port ||= PortProber.above(DEFAULT_PORT)
+
+          @debugger = options[:debugger]
+
+          @debugger_port = options[:debugger_port]
+          @debugger_port ||= PortProber.above(port + 1) if debugger
+
+          @uri = URI.parse "http://#{Platform.localhost}:#{port}"
+
           server_command = [executable_path, "--webdriver=#{port}"]
+          server_command << "--remote-debugger-port=#{debugger_port}" if debugger
 
           @process       = ChildProcess.build(*server_command)
           @socket_poller = SocketPoller.new Platform.localhost, port, START_TIMEOUT
 
-          @process.io.inherit! if $DEBUG == true
+          @process.io.inherit! if $DEBUG
+        end
+
+        attr_reader :debugger, :debugger_port, :port
+
+        def debugger_uri
+          URI("http://#{Platform.localhost}:#{debugger_port}")
         end
 
         def start
