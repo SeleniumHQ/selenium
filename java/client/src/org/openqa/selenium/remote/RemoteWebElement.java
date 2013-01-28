@@ -319,6 +319,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     return new Dimension(width, height);
   }
 
+  @Deprecated
   public Point getLocationOnScreenOnceScrolledIntoView() {
     Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
                                 ImmutableMap.of("id", getId()));
@@ -332,16 +333,46 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   public Coordinates getCoordinates() {
     return new Coordinates() {
 
+      /**
+       * @deprecated To be removed in 2.31. Use {@link #onScreen()} instead
+       */
+      @Deprecated
       public Point getLocationOnScreen() {
-        return getLocationOnScreenOnceScrolledIntoView();
+        return onScreen();
       }
 
+      /**
+       * @deprecated To be removed in 2.31. Use {@link #inViewPort()} instead
+       */
+      @Deprecated
       public Point getLocationInViewPort() {
+        return inViewPort();
+      }
+
+      /**
+       * @deprecated To be removed in 2.31. Use {@link #onPage()} instead
+       */
+      @Deprecated
+      public Point getLocationInDOM() {
+        return onPage();
+      }
+
+      public Point onScreen() {
         throw new UnsupportedOperationException("Not supported yet.");
       }
 
-      public Point getLocationInDOM() {
-        throw new UnsupportedOperationException("Not supported yet.");
+      public Point inViewPort() {
+        Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
+            ImmutableMap.of("id", getId()));
+
+        @SuppressWarnings("unchecked")
+        Map<String, Number> mapped = (Map<String, Number>) response.getValue();
+
+        return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
+      }
+
+      public Point onPage() {
+        return getLocation();
       }
 
       public Object getAuxiliary() {

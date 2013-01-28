@@ -932,15 +932,39 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public Coordinates getCoordinates() {
     return new Coordinates() {
 
+      /**
+       * @deprecated To be removed in 2.31. Use {@link #onScreen()} instead
+       */
+      @Deprecated
       public Point getLocationOnScreen() {
         throw new UnsupportedOperationException("Not displayed, no screen location.");
       }
 
+      /**
+       * @deprecated To be removed in 2.31. Use {@link #inViewPort()} instead
+       */
+      @Deprecated
       public Point getLocationInViewPort() {
         return getLocation();
       }
 
+      /**
+       * @deprecated To be removed in 2.31. Use {@link #onPage()} instead
+       */
+      @Deprecated
       public Point getLocationInDOM() {
+        return getLocation();
+      }
+
+      public Point onScreen() {
+        throw new UnsupportedOperationException("Not displayed, no screen location.");
+      }
+
+      public Point inViewPort() {
+        return getLocation();
+      }
+
+      public Point onPage() {
         return getLocation();
       }
 

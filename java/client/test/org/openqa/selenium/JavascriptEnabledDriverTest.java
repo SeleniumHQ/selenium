@@ -264,7 +264,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
       return;
     }
 
-    Point point = ((Locatable) element).getLocationOnScreenOnceScrolledIntoView();
+    Point point = ((Locatable) element).getCoordinates().inViewPort();
 
     assertTrue(String.format("Non-positive X coordinates: %d", point.getX()),
                point.getX() > 1);

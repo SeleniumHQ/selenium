@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.internal;
 
+import org.openqa.selenium.Point;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 public interface Locatable {
@@ -24,8 +25,10 @@ public interface Locatable {
    * should cause the element to be scrolled into view.
    * 
    * @return The top lefthand corner location on the screen, or null if the element is not visible
+   * @deprecated To be removed in 2.31. Use {@link #getCoordinates()} instead
    */
-  org.openqa.selenium.Point getLocationOnScreenOnceScrolledIntoView();
+  @Deprecated
+  Point getLocationOnScreenOnceScrolledIntoView();
 
   Coordinates getCoordinates();
 }

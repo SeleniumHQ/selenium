@@ -28,7 +28,7 @@ public class GetElementLocationInView extends WebElementHandler {
 
   public ResultType call() throws Exception {
     Locatable element = (Locatable) getElement();
-    response.setValue(element.getLocationOnScreenOnceScrolledIntoView());
+    response.setValue(element.getCoordinates().inViewPort());
 
     return ResultType.SUCCESS;
   }

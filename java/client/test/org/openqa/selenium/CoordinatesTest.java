@@ -43,48 +43,48 @@ public class CoordinatesTest extends JUnit4TestBase {
   @Test
   public void testShouldGetCoordinatesOfAnElementInViewPort() {
     driver.get(appServer.whereIs("coordinates_tests/simple_page.html"));
-    assertThat(getLocationOnScreen(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationInViewPort(By.id("box")), is(new Point(10, 10)));
   }
 
   @Test
   @Ignore(IE)
   public void testShouldGetCoordinatesOfAnEmptyElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_empty_element.html"));
-    assertThat(getLocationOnScreen(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationInViewPort(By.id("box")), is(new Point(10, 10)));
   }
 
   @Test
   public void testShouldGetCoordinatesOfATransparentElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_transparent_element.html"));
-    assertThat(getLocationOnScreen(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationInViewPort(By.id("box")), is(new Point(10, 10)));
   }
 
   @Test
   @Ignore(IE)
   public void testShouldGetCoordinatesOfAHiddenElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_hidden_element.html"));
-    assertThat(getLocationOnScreen(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationInViewPort(By.id("box")), is(new Point(10, 10)));
   }
 
   @Test
   @Ignore(IE)
   public void testShouldGetCoordinatesOfAnInvisibleElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_invisible_element.html"));
-    assertThat(getLocationOnScreen(By.id("box")), is(new Point(0, 0)));
+    assertThat(getLocationInViewPort(By.id("box")), is(new Point(0, 0)));
   }
 
   @Test
   public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_element_out_of_view.html"));
     int windowHeight = driver.manage().window().getSize().getHeight();
-    Point location = getLocationOnScreen(By.id("box"));
+    Point location = getLocationInViewPort(By.id("box"));
     assertThat(location.getX(), is(10));
     assertThat(location.getY(), greaterThanOrEqualTo(0));
     assertThat(location.getY(), lessThanOrEqualTo(windowHeight - 100));
   }
 
-  private Point getLocationOnScreen(By locator) {
+  private Point getLocationInViewPort(By locator) {
     WebElement element = driver.findElement(locator);
-    return ((Locatable) element).getCoordinates().getLocationOnScreen();
+    return ((Locatable) element).getCoordinates().inViewPort();
   }
 }

@@ -438,8 +438,12 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return driver;
     }
 
+    /**
+     * @deprecated To be removed in 2.31. Use {@link #getCoordinates()} instead
+     */
+    @Deprecated
     public Point getLocationOnScreenOnceScrolledIntoView() {
-      return ((Locatable) underlyingElement).getLocationOnScreenOnceScrolledIntoView();
+      return ((Locatable) underlyingElement).getCoordinates().inViewPort();
     }
 
     public Coordinates getCoordinates() {

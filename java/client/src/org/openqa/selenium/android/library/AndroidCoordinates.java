@@ -29,15 +29,39 @@ class AndroidCoordinates implements Coordinates {
     this.point = pointOfLocationOfElement;
   }
 
+  /**
+   * @deprecated To be removed in 2.31. Use {@link #onScreen()} instead
+   */
+  @Deprecated
   public Point getLocationOnScreen() {
     return point;
   }
 
+  /**
+   * @deprecated To be removed in 2.31. Use {@link #inViewPort()} instead
+   */
+  @Deprecated
   public Point getLocationInViewPort() {
     return point;
   }
 
+  /**
+   * @deprecated To be removed in 2.31. Use {@link #onPage()} instead
+   */
+  @Deprecated
   public Point getLocationInDOM() {
+    return point;
+  }
+
+  public Point onScreen() {
+    return point;
+  }
+
+  public Point inViewPort() {
+    return point;
+  }
+
+  public Point onPage() {
     return point;
   }
 
