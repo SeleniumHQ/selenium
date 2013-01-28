@@ -51,20 +51,14 @@ def setup_python3():
 
     return tmp_src
 
-if sys.version_info >= (3,):
-    src_root = setup_python3()
-else:
-    src_root = "."
-
-setup(
-    cmdclass={'install': install},
-    name='selenium',
-    version="2.29.0",
-    description='Python bindings for Selenium',
-    long_description=open(join(abspath(dirname(__file__)), "py", "README")).read(),
-    url='http://code.google.com/p/selenium/',
-    src_root=src_root,
-    classifiers=['Development Status :: 5 - Production/Stable',
+setup_args = {
+    'cmdclass':{'install': install},
+    'name':'selenium',
+    'version':"2.29.0",
+    'description':'Python bindings for Selenium',
+    'long_description':open(join(abspath(dirname(__file__)), "py", "README")).read(),
+    'url':'http://code.google.com/p/selenium/',
+    'classifiers':['Development Status :: 5 - Production/Stable',
                      'Intended Audience :: Developers',
                      'License :: OSI Approved :: Apache Software License',
                      'Operating System :: POSIX',
@@ -73,14 +67,14 @@ setup(
                      'Topic :: Software Development :: Testing',
                      'Topic :: Software Development :: Libraries',
                      'Programming Language :: Python'],
-    package_dir={
+    'package_dir':{
         'selenium': 'py/selenium',
         'selenium.common': 'py/selenium/common',
         'selenium.test': 'py/test',
         'selenium.test.selenium': 'py/test/selenium',
         'selenium.webdriver': 'py/selenium/webdriver',
     },
-    packages=['selenium',
+    'packages':['selenium',
               'selenium.common',
               'selenium.test',
  	          'selenium.test.selenium',
@@ -100,12 +94,18 @@ setup(
               'selenium.webdriver.phantomjs',
               'selenium.webdriver.remote',
               'selenium.webdriver.support', ],
-    package_data={
+    'package_data':{
         'selenium.webdriver.firefox': ['*.xpi'],
     },
-    data_files=[('selenium/webdriver/firefox/x86', ['py/selenium/webdriver/firefox/x86/x_ignore_nofocus.so']),
+    'data_files':[('selenium/webdriver/firefox/x86', ['py/selenium/webdriver/firefox/x86/x_ignore_nofocus.so']),
             ('selenium/webdriver/firefox/amd64', ['py/selenium/webdriver/firefox/amd64/x_ignore_nofocus.so'])],
-    include_package_data=True,
-    zip_safe=False,
+    'include_package_data':True,
+    'zip_safe':False
+}
 
-)
+# src_root is only a pythong 3 thing? yet Selenium doesn't really support it?
+# leaving this in for now...
+if sys.version_info >= (3,):
+    setup_args['src_root'] = setup_python3()
+
+setup(**setup_args)
