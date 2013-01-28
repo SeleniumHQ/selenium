@@ -23,7 +23,7 @@ import java.util.Properties;
 
 
 public class GridDocHelper {
-  private static Properties gridProperties = load("defaults/GridParameters.properties");
+  private static Properties gridProperties = load("org/openqa/grid/common/defaults/GridParameters.properties");
 
   public static void printHelp(String msg) {
     printHelpInConsole(gridProperties, msg, true);
@@ -100,10 +100,10 @@ public class GridDocHelper {
         p.load(in);
         return p;
       } catch (IOException e) {
-        throw new RuntimeException("bug." + resource + " cannot be loaded.");
+        throw new RuntimeException(resource + " cannot be loaded.");
       }
     } else {
-      throw new RuntimeException("bug." + resource + " cannot be loaded.");
+      throw new RuntimeException(resource + " cannot be loaded.");
     }
   }
 
