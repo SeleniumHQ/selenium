@@ -95,14 +95,13 @@ namespace OpenQA.Selenium.Firefox.Internal
 
                     // TODO (JimEvans): Get a better url algorithm.
                     this.executor = new HttpCommandExecutor(new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}/hub/", this.host, portToUse)), this.timeout);
+                    this.ConnectToBrowser(this.process.TimeoutInMilliseconds);
                 }
                 finally
                 {
                     lockObject.UnlockObject();
                 }
             }
-
-            this.ConnectToBrowser(this.process.TimeoutInMilliseconds);
         }
 
         /// <summary>
