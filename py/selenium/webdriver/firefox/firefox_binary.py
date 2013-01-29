@@ -110,7 +110,7 @@ class FirefoxBinary(object):
                 key = OpenKey(HKEY_LOCAL_MACHINE, path)
                 command = QueryValue(key, "")
                 break
-            except WindowsError:
+            except OSError:
                 pass
         else:
             return ""

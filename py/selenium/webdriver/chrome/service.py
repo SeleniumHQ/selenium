@@ -99,6 +99,6 @@ class Service(object):
             if self.process:
                 self.process.kill()
                 self.process.wait()
-        except WindowsError:
+        except OSError:
             # kill may not be available under windows environment
             pass
