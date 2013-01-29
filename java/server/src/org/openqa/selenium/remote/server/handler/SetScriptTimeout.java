@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -32,7 +33,11 @@ public class SetScriptTimeout extends WebDriverHandler implements JsonParameters
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    millis = ((Number) allParameters.get("ms")).longValue();
+    try {
+      millis = ((Number) allParameters.get("ms")).longValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-numeric) timeout value passed: " + allParameters.get("ms"), ex);
+    }
   }
 
   public ResultType call() throws Exception {
