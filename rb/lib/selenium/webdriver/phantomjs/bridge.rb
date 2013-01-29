@@ -17,7 +17,7 @@ module Selenium
             url = @service.uri
           end
 
-          caps = Remote::Capabilities.phantomjs
+          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.phantomjs }
 
           remote_opts = {
             :url                  => url,
