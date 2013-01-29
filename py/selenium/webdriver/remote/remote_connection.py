@@ -24,6 +24,7 @@ import utils
 
 LOGGER = logging.getLogger(__name__)
 
+
 class Request(urllib2.Request):
     """
     Extends the urllib2.Request to support all HTTP request types.
@@ -135,7 +136,7 @@ class RemoteConnection(object):
                 if parsed_url.username:
                     auth = parsed_url.username
                     if parsed_url.password:
-                      auth += ':%s' % parsed_url.password
+                        auth += ':%s' % parsed_url.password
                     netloc = '%s@%s' % (auth, netloc)
                 remote_server_addr = urlparse.urlunparse(
                     (parsed_url.scheme, netloc, parsed_url.path,
@@ -222,7 +223,7 @@ class RemoteConnection(object):
             Command.SET_SPEED: ('POST', '/session/$sessionId/speed'),
             Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY:
                 ('GET',  '/session/$sessionId/element/$id/css/$propertyName'),
-            Command.IMPLICIT_WAIT: 
+            Command.IMPLICIT_WAIT:
                 ('POST', '/session/$sessionId/timeouts/implicit_wait'),
             Command.EXECUTE_ASYNC_SCRIPT: ('POST','/session/$sessionId/execute_async'),
             Command.SET_SCRIPT_TIMEOUT:
@@ -353,20 +354,25 @@ class RemoteConnection(object):
         LOGGER.debug('%s %s %s' % (method, url, data))
 
         parsed_url = urlparse.urlparse(url)
-        auth = None
         password_manager = None
         if parsed_url.username:
             netloc = parsed_url.hostname
             if parsed_url.port:
                 netloc += ":%s" % parsed_url.port
-            cleaned_url = urlparse.urlunparse((parsed_url.scheme, netloc, parsed_url.path,
-                parsed_url.params, parsed_url.query, parsed_url.fragment))
+            cleaned_url = urlparse.urlunparse((parsed_url.scheme,
+                                               netloc,
+                                               parsed_url.path,
+                                               parsed_url.params,
+                                               parsed_url.query,
+                                               parsed_url.fragment))
             password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
-            password_manager.add_password(None, "%s://%s" % (parsed_url.scheme, netloc), parsed_url.username, parsed_url.password)
+            password_manager.add_password(None,
+                                          "%s://%s" % (parsed_url.scheme, netloc),
+                                          parsed_url.username,
+                                          parsed_url.password)
             request = Request(cleaned_url, data=data, method=method)
         else:
             request = Request(url, data=data, method=method)
-
 
         request.add_header('Accept', 'application/json')
         request.add_header('Content-Type', 'application/json;charset=UTF-8')
