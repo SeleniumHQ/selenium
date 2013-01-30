@@ -96,7 +96,7 @@ class ActiveTestSessions {
   public TestSession getExistingSession(ExternalSessionKey externalkey) {
     TestSession sessionByExternalKey = findSessionByExternalKey(externalkey);
     if (sessionByExternalKey == null) {
-      SessionTerminationReason sessionTerminationReason = reasons.get(externalkey);
+      SessionTerminationReason sessionTerminationReason = externalkey != null ? reasons.get(externalkey) : null;
       String keyId = externalkey != null ? externalkey.getKey() : "(null externalkey)";
       if (sessionTerminationReason != null) {
           String msg = "Session [" + keyId + "] was terminated due to " + sessionTerminationReason;
