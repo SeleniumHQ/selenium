@@ -276,6 +276,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     execute(DriverCommand.GET, ImmutableMap.of("url", url));
   }
 
+  public RemoteStatus getRemoteStatus() {
+    Response response = execute(DriverCommand.STATUS);
+    return new RemoteStatus((Map<String, Object>) response.getValue());
+  }
+
   public String getTitle() {
     Response response = execute(DriverCommand.GET_TITLE);
     Object value = response.getValue();
