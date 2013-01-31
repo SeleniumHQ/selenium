@@ -97,6 +97,7 @@ public class SauceDriver extends RemoteWebDriver {
     mungedCapabilities.setCapability("selenium-version", seleniumVersion);
     mungedCapabilities.setCapability("idle-timeout", 180);
     mungedCapabilities.setCapability("disable-popup-handler", true);
+    mungedCapabilities.setCapability("restricted-public-info", false);
     mungedCapabilities.setCapability("record-video", shouldRecordVideo());
     mungedCapabilities.setCapability("build", System.getenv(SAUCE_BUILD_ENV_NAME));
 
