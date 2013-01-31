@@ -1,6 +1,6 @@
 /*
-Copyright 2012 Software Freedom Conservancy
-Copyright 2012 Opera Software ASA
+Copyright 2012-2013 Software Freedom Conservancy
+Copyright 2012-2013 Opera Software ASA
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,6 +41,15 @@ public enum Architecture {
   X64("amd64", "ia64", "x86_64"),
 
   ARM("arm"),
+
+  MIPS32("mips32") {
+    @Override
+    public int getDataModel() {
+      return 32;
+    }
+  },
+
+  MIPS64("mips64"),
 
   // Meta architecture
 
