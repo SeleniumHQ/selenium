@@ -83,6 +83,22 @@ public class CoordinatesTest extends JUnit4TestBase {
     assertThat(location.getY(), lessThanOrEqualTo(windowHeight - 100));
   }
 
+  @Test
+  public void testShouldGetCoordinatesOfAnElementInAFrame() {
+    driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
+    driver.switchTo().frame("ifr");
+    WebElement box = driver.findElement(By.id("box"));
+    assertThat(box.getLocation(), is(new Point(10, 10)));
+  }
+
+  @Test
+  @Ignore(value = {IE}, reason = "IE: ignores frame border")
+  public void testShouldGetCoordinatesInViewPortOfAnElementInAFrame() {
+    driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
+    driver.switchTo().frame("ifr");
+    assertThat(getLocationInViewPort(By.id("box")), is(new Point(25, 25)));
+  }
+
   private Point getLocationInViewPort(By locator) {
     WebElement element = driver.findElement(locator);
     return ((Locatable) element).getCoordinates().inViewPort();

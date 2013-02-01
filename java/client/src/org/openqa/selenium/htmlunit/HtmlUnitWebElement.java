@@ -925,6 +925,10 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return parent;
   }
 
+  /**
+   * @deprecated To be removed in 2.31. Use {@link #getCoordinates()} instead
+   */
+  @Deprecated
   public Point getLocationOnScreenOnceScrolledIntoView() {
     return getLocation();
   }

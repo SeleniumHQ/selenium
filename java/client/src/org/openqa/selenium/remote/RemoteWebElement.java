@@ -319,15 +319,12 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     return new Dimension(width, height);
   }
 
+  /**
+   * @deprecated To be removed in 2.31. Use {@link #getCoordinates()} instead
+   */
   @Deprecated
   public Point getLocationOnScreenOnceScrolledIntoView() {
-    Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
-                                ImmutableMap.of("id", getId()));
-
-    @SuppressWarnings("unchecked")
-    Map<String, Number> mapped = (Map<String, Number>) response.getValue();
-
-    return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
+    return getCoordinates().inViewPort();
   }
 
   public Coordinates getCoordinates() {

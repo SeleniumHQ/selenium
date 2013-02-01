@@ -819,7 +819,7 @@ Utils.getLocationOnceScrolledIntoView = function(element, opt_onlyFirstRect) {
     element.scrollIntoView();
   }
 
-  return Utils.getLocation(element, opt_onlyFirstRect);
+  return Utils.getLocationRelativeToWindowHandle(element, opt_onlyFirstRect);
 };
 
 
