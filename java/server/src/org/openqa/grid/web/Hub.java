@@ -38,6 +38,7 @@ import org.openqa.grid.web.servlet.ConsoleServlet;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
 import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
+import org.openqa.grid.web.servlet.GridCapabilitiesServlet;
 import org.openqa.grid.web.servlet.HubStatusServlet;
 import org.openqa.grid.web.servlet.LifecycleServlet;
 import org.openqa.grid.web.servlet.ProxyStatusServlet;
@@ -150,6 +151,7 @@ public class Hub {
       root.addServlet(org.openqa.grid.web.servlet.beta.ConsoleServlet.class.getName(),
                       "/grid/beta/console/*");
       root.addServlet(RegistrationServlet.class.getName(), "/grid/register/*");
+      root.addServlet(GridCapabilitiesServlet.class.getName(), "/grid/capabilities");
       // TODO remove at some point. Here for backward compatibility of
       // tests etc.
       root.addServlet(DriverServlet.class.getName(), "/grid/driver/*");
