@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <title>shown_test2.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot');
+    goog.require('bot.dom');
+    goog.require('bot.locators');
+    goog.require('bot.userAgent');
+    goog.require('goog.dom');
+    goog.require('goog.style');
+    goog.require('goog.testing.ExpectedFailures');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.platform');
+  </script>
+
+  <style>
+    #box{
+      border: 1px solid black;
+    }
+    #box ul{
+      height: 250px;
+      overflow: hidden;
+    }
+    #box ul > li{
+      height: 50px;
+    }
+    #box ul > li > a{
+      height: 26px;
+    }
+  </style>
+  <script type="text/javascript">
+    var isShown = bot.dom.isShown;
+    var findElement = bot.locators.findElement;
+    var expectedFailures;
+
+    function setUp() {
+      expectedFailures = new goog.testing.ExpectedFailures();
+    }
+
+
+    function tearDown() {
+      expectedFailures.handleTearDown();
+      goog.style.setStyle(document.body, 'overflow', 'auto');
+    }
+
+    function testThatElementIsShownWithZIndex() {
+      assertTrue(isShown(findElement({id: "bug5109"})))
+    }
+  </script>
+
+  <style type="text/css">
+  </style>
+</head>
+  <body>
+  <div style="
+    position:relative;
+    width:300px;
+    height:300px;
+    background-image:url(http://lurkmore.so/images/b/be/%D0%92%D0%B7%D1%8F%D1%82%D1%8C_%D0%B8_%D1%83%D0%B5%D0%B1%D0%B0%D1%82%D1%8C.jpg);
+    background-position:center;
+    ">
+
+    <a id="bug5109" style="
+      display:block;
+      position:relative;
+      width:100px;
+      height:100px;
+      left:-60px;
+      top:-66px;
+      background-image:url(http://lurkmore.so/images/8/8f/BoromirOriginal.jpg);
+      background-position:center;
+      " href="http://lurkmore.to/%D0%A4%D0%B0%D0%B9%D0%BB:BoromirOriginal.jpg"></a>
+
+    </div>
+  </body>
+</html>
