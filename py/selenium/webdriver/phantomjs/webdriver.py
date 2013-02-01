@@ -31,7 +31,8 @@ class WebDriver(RemoteWebDriver):
     """
 
     def __init__(self, executable_path="phantomjs",
-                 port=0, desired_capabilities=DesiredCapabilities.PHANTOMJS):
+                 port=0, desired_capabilities=DesiredCapabilities.PHANTOMJS,
+                 service_log_path=None):
         """
         Creates a new instance of the PhantomJS / Ghostdriver.
 
@@ -42,8 +43,9 @@ class WebDriver(RemoteWebDriver):
          - port - port you would like the service to run, if left as 0, a free port will be found.
          - desired_capabilities: Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
+         - service_log_path: Path for phantomjs service to log to.
         """
-        self.service = Service(executable_path, port=port)
+        self.service = Service(executable_path, port=port, log_path=service_log_path)
         self.service.start()
 
         try:

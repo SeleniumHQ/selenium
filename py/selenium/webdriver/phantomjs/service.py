@@ -24,7 +24,7 @@ class Service(object):
     Object that manages the starting and stopping of PhantomJS / Ghostdriver
     """
 
-    def __init__(self, executable_path, port=0, service_args=None):
+    def __init__(self, executable_path, port=0, service_args=None, log_path=None):
         """
         Creates a new instance of the Service
 
@@ -32,6 +32,7 @@ class Service(object):
          - executable_path : Path to PhantomJS binary
          - port : Port the service is running on
          - service_args : A List of other command line options to pass to PhantomJS
+         - log_path: Path for PhantomJS service to log to
         """
 
         self.port = port
@@ -43,7 +44,9 @@ class Service(object):
             self.service_args = []
         self.service_args.insert(0, self.path)
         self.service_args.append("--webdriver=%d" % self.port)
-        self._log = open("ghostdriver.log", 'w')
+        if not log_path:
+            log_path = "ghostdriver.log"
+        self._log = open(log_path, 'w')
 
     def start(self):
         """
