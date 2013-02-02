@@ -145,4 +145,11 @@ public class LegacySeleniumRequest extends SeleniumBasedRequest {
 
   }
 
+  @Override
+  public String getBody() {
+    // TODO Auto-generated method stub
+    String postBody = super.getBody();
+    return !(postBody == null || postBody.equals("")) ? postBody : getQueryString();
+  }
+
 }
