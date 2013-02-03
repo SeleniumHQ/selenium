@@ -34,8 +34,8 @@ fxdriver.events.buildCoordinates = function(parameters, doc) {
   fxdriver.logging.info(parameters);
   var element = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
 
-  var x = parameters['xoffset'] || null;
-  var y = parameters['yoffset'] || null;
+  var x = ('xoffset' in parameters ) ? parameters['xoffset'] : null;
+  var y = ('yoffset' in parameters ) ? parameters['yoffset'] : null;
 
   // An element was specified, but not an offset within the element.
   // In this case, the default behaivour is to use the middle of the

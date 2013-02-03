@@ -400,6 +400,29 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, SELENESE},
+      reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Test
+  public void testMovingMouseToRelativeZeroElementOffset() {
+    if (!hasInputDevices() || !TestUtilities.isNativeEventsEnabled(driver)) {
+      System.out.println(
+          String.format("Skipping move to offset test: native events %s has input devices: %s",
+            TestUtilities.isNativeEventsEnabled(driver), hasInputDevices()));
+      return;
+    }
+
+    driver.get(pages.mouseTrackerPage);
+
+    WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
+    new Actions(driver).moveToElement(trackerDiv, 0, 0).build()
+        .perform();
+
+    WebElement reporter = driver.findElement(By.id("status"));
+
+    waitFor(fuzzyMatchingOfCoordinates(reporter, 0, 0));
+  }
+
+  @JavascriptEnabled
   @NeedsFreshDriver
   @Ignore(value = {CHROME, HTMLUNIT, SELENESE}, reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
