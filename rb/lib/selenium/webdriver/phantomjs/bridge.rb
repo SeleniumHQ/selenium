@@ -5,28 +5,26 @@ module Selenium
       # @api private
       class Bridge < Remote::Bridge
 
-        def initialize(opts = {})
-          http_client = opts.delete(:http_client)
+        def initialize(options = {})
+          remote_options = {}
 
-          if opts.has_key?(:url)
-            url = opts.delete(:url)
+          remote_options[:desired_capabilities] = Remote::Capabilities.phantomjs
+          remote_options[:http_client] = options.delete(:http_client) if options.has_key? :http_client
+
+          if options.has_key?(:url)
+            remote_options[:url] = options.delete(:url)
           else
-            @service = Service.default_service
+            service_options = {}
+            service_options[:debugger] = options.delete(:debugger) if options.has_key? :debugger
+            service_options[:debugger_port] = options.delete(:debugger_port) if options.has_key? :debugger_port
+
+            @service = Service.default_service service_options
             @service.start
 
-            url = @service.uri
+            remote_options[:url] = @service.uri
           end
 
-          caps = Remote::Capabilities.phantomjs
-
-          remote_opts = {
-            :url                  => url,
-            :desired_capabilities => caps
-          }
-
-          remote_opts.merge!(:http_client => http_client) if http_client
-
-          super(remote_opts)
+          super remote_options
         end
 
         def browser
