@@ -539,7 +539,9 @@ std::string Server::LookupCommand(const std::string& uri,
       VerbMap::const_iterator verb_iterator = it->second.find(http_verb);
       if (verb_iterator != it->second.end()) {
         value = verb_iterator->second;
-        std::string param = this->ConstructLocatorParamJson(value, locator_param_names, locator_param_values, session_id);
+        std::string param = this->ConstructLocatorParameterJson(locator_param_names,
+                                                                locator_param_values,
+                                                                session_id);
         locator->append(param);
         break;
       } else {
@@ -556,10 +558,9 @@ std::string Server::LookupCommand(const std::string& uri,
   return value;
 }
 
-std::string Server::ConstructLocatorParamJson(const std::string& value,
-                                              std::vector<std::string> locator_param_names,
-                                              std::vector<std::string> locator_param_values,
-                                              std::string* session_id) {
+std::string Server::ConstructLocatorParameterJson(std::vector<std::string> locator_param_names,
+                                                  std::vector<std::string> locator_param_values,
+                                                  std::string* session_id) {
   std::string param = "{";
   size_t param_count = locator_param_names.size();
   for (unsigned int i = 0; i < param_count; i++) {

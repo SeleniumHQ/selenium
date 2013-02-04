@@ -89,10 +89,9 @@ class Server {
                       const std::string& url_template,
                       std::vector<std::string>* locator_param_names,
                       std::vector<std::string>* locator_param_values);
-  std::string ConstructLocatorParamJson(const std::string& value,
-                                        std::vector<std::string> locator_param_names,
-                                        std::vector<std::string> locator_param_values,
-                                        std::string* session_id);
+  std::string ConstructLocatorParameterJson(std::vector<std::string> locator_param_names,
+                                            std::vector<std::string> locator_param_values,
+                                            std::string* session_id);
   void SendHttpOk(mg_connection* connection,
                   const mg_request_info* request_info,
                   const std::string& body,
