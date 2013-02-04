@@ -99,6 +99,15 @@ public class CoordinatesTest extends JUnit4TestBase {
     assertThat(getLocationInViewPort(By.id("box")), is(new Point(25, 25)));
   }
 
+  @Test
+  @Ignore(value = {IE}, reason = "IE: ignores frame border")
+  public void testShouldGetCoordinatesInViewPortOfAnElementInANestedFrame() {
+    driver.get(appServer.whereIs("coordinates_tests/element_in_nested_frame.html"));
+    driver.switchTo().frame("ifr");
+    driver.switchTo().frame("ifr");
+    assertThat(getLocationInViewPort(By.id("box")), is(new Point(40, 40)));
+  }
+
   private Point getLocationInViewPort(By locator) {
     WebElement element = driver.findElement(locator);
     return ((Locatable) element).getCoordinates().inViewPort();
