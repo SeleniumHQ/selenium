@@ -36,7 +36,9 @@ import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -47,7 +49,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, PHANTOMJS, SAFARI, SELENESE, OPERA_MOBILE})
 public class AlertsTest extends JUnit4TestBase {
@@ -341,8 +342,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, IE, CHROME}, reason = "FF waits too long, may be hangs out." +
-      "Android currently does not store the source of the alert. IE8: Not confirmed working.")
+  @Ignore(value = {CHROME, FIREFOX})
   @Test
   public void testShouldNotHandleAlertInAnotherWindow() {
     String mainWindow = driver.getWindowHandle();
@@ -355,9 +355,9 @@ public class AlertsTest extends JUnit4TestBase {
       onloadWindow = allWindows.iterator().next();
 
       try {
-        waitFor(alertToBePresent(driver), 5, TimeUnit.SECONDS);
+        new WebDriverWait(driver, 5).until(alertIsPresent());
         fail("Expected exception");
-      } catch (NoAlertPresentException expected) {
+      } catch (TimeoutException expected) {
         // Expected
       }
 
