@@ -94,10 +94,10 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder
         .append("<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'></script>");
 
-    builder.append("<script src='/grid/resources/images/console-beta.js'></script>");
+    builder.append("<script src='/grid/resources/org/openqa/grid/images/console-beta.js'></script>");
 
     builder
-        .append("<link href='/grid/resources/images/console-beta.css' rel='stylesheet' type='text/css' />");
+        .append("<link href='/grid/resources/org/openqa/grid/images/console-beta.css' rel='stylesheet' type='text/css' />");
 
 
     if (refresh != -1) {
