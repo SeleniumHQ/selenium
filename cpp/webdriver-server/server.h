@@ -53,11 +53,14 @@ class Server {
   virtual SessionHandle InitializeSession(void) = 0;
   virtual std::string GetStatus(void) = 0;
   virtual void ShutDown(void) = 0;
+  void AddCommand(const std::string& url,
+                  const std::string& http_verb,
+                  const std::string& command_name);
 
  private:
+  typedef std::map<std::string, SessionHandle> SessionMap;
   typedef std::map<std::string, std::string> VerbMap;
   typedef std::map<std::string, VerbMap> UrlMap;
-  typedef std::map<std::string, SessionHandle> SessionMap;
 
   void Initialize(const int port,
                   const std::string& host,
@@ -82,7 +85,14 @@ class Server {
                            const struct mg_request_info* request_info,
                            const std::string& serialized_response);
   void PopulateCommandRepository(void);
-
+  bool IsCommandMatch(const std::string& uri,
+                      const std::string& url_template,
+                      std::vector<std::string>* locator_param_names,
+                      std::vector<std::string>* locator_param_values);
+  std::string ConstructLocatorParamJson(const std::string& value,
+                                        std::vector<std::string> locator_param_names,
+                                        std::vector<std::string> locator_param_values,
+                                        std::string* session_id);
   void SendHttpOk(mg_connection* connection,
                   const mg_request_info* request_info,
                   const std::string& body,
