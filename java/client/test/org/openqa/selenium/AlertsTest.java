@@ -239,21 +239,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore({ANDROID, CHROME})
-  @Test
-  public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert() {
-    driver.findElement(By.id("alert")).click();
-    try {
-      driver.getTitle();
-      fail("Expected UnhandledAlertException");
-    } catch (UnhandledAlertException e) {
-      // this is expected
-    }
-
-    // But the next call should be good.
-    assertEquals("Testing Alerts", driver.getTitle());
-  }
-
   @JavascriptEnabled
   @Test
   public void testSwitchingToMissingAlertThrows() throws Exception {
