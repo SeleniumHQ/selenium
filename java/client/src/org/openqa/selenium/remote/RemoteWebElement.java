@@ -129,13 +129,23 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public boolean isSelected() {
-    return (Boolean) execute(DriverCommand.IS_ELEMENT_SELECTED, ImmutableMap.of("id", id))
+    Object value = execute(DriverCommand.IS_ELEMENT_SELECTED, ImmutableMap.of("id", id))
         .getValue();
+    try {
+      return (Boolean) value;
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Returned value cannot be converted to Boolean: " + value, ex);
+    }
   }
 
   public boolean isEnabled() {
-    return (Boolean) execute(DriverCommand.IS_ELEMENT_ENABLED, ImmutableMap.of("id", id))
+    Object value = execute(DriverCommand.IS_ELEMENT_ENABLED, ImmutableMap.of("id", id))
         .getValue();
+    try {
+      return (Boolean) value;
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Returned value cannot be converted to Boolean: " + value, ex);
+    }
   }
 
   public String getText() {
@@ -161,7 +171,13 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
                                 ImmutableMap.of("id", id, "using", using, "value", value));
 
-    WebElement element = (WebElement) response.getValue();
+    Object responseValue = response.getValue();
+    WebElement element;
+    try {
+      element = (WebElement) responseValue;
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Returned value cannot be converted to WebElement: " + value, ex);
+    }
     parent.setFoundBy(this, element, using, value);
     return element;
   }
@@ -170,7 +186,13 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   protected List<WebElement> findElements(String using, String value) {
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
                                 ImmutableMap.of("id", id, "using", using, "value", value));
-    List<WebElement> allElements = (List<WebElement>) response.getValue();
+    Object responseValue = response.getValue();
+    List<WebElement> allElements;
+    try {
+      allElements = (List<WebElement>) responseValue;
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Returned value cannot be converted to List<WebElement>: " + responseValue, ex);
+    }
     for (WebElement element : allElements) {
       parent.setFoundBy(this, element, using, value);
     }
@@ -295,9 +317,13 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public boolean isDisplayed() {
-    Response response =
-        execute(DriverCommand.IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", id));
-    return (Boolean) response.getValue();
+    Object value = execute(DriverCommand.IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", id))
+        .getValue();
+    try {
+      return (Boolean) value;
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Returned value cannot be converted to Boolean: " + value, ex);
+    }
   }
 
   @SuppressWarnings({"unchecked"})

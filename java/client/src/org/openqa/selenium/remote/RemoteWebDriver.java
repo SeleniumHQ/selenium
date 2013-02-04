@@ -306,7 +306,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     Response response = execute(DriverCommand.FIND_ELEMENT,
         ImmutableMap.of("using", by, "value", using));
-    WebElement element = (WebElement) response.getValue();
+    Object value = response.getValue();
+    WebElement element;
+    try {
+      element = (WebElement) value;
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Returned value cannot be converted to WebElement: " + value, ex);
+    }
     setFoundBy(this, element, by, using);
     return element;
   }
@@ -325,7 +331,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     Response response = execute(DriverCommand.FIND_ELEMENTS,
         ImmutableMap.of("using", by, "value", using));
-    List<WebElement> allElements = (List<WebElement>) response.getValue();
+    Object value = response.getValue();
+    List<WebElement> allElements;
+    try {
+      allElements = (List<WebElement>) value;
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Returned value cannot be converted to List<WebElement>: " + value, ex);
+    }
     for (WebElement element : allElements) {
       setFoundBy(this, element, by, using);
     }
@@ -418,9 +430,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   @SuppressWarnings({"unchecked"})
   public Set<String> getWindowHandles() {
     Response response = execute(DriverCommand.GET_WINDOW_HANDLES);
-    List<String> returnedValues = (List<String>) response.getValue();
-
-    return new LinkedHashSet<String>(returnedValues);
+    Object value = response.getValue();
+    try {
+      List<String> returnedValues = (List<String>) value;
+      return new LinkedHashSet<String>(returnedValues);
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Returned value cannot be converted to List<String>: " + value, ex);
+    }
   }
 
   public String getWindowHandle() {
