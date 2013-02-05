@@ -312,30 +312,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
-        [IgnoreBrowser(Browser.Safari)]
-        public void ShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert()
-        {
-            driver.Url = alertsPage;
-
-            driver.FindElement(By.Id("alert")).Click();
-
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
-            try
-            {
-                string title = driver.Title;
-                Assert.Fail("Expected exception");
-            }
-            catch (UnhandledAlertException)
-            {
-                // this is an expected exception
-            }
-
-            // but the next call should be good.
-            Assert.AreEqual("Testing Alerts", driver.Title);
-        }
-
-        [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
@@ -350,6 +326,42 @@ namespace OpenQA.Selenium
             driver.Url = alertsPage;
 
             AlertToBePresent();
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.Chrome, "Issue 2764")]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Remote)]
+        [IgnoreBrowser(Browser.Safari)]
+        public void SwitchingToMissingAlertInAClosedWindowThrows()
+        {
+            string mainWindow = driver.CurrentWindowHandle;
+            try
+            {
+                driver.FindElement(By.Id("open-new-window")).Click();
+                WaitFor(WindowHandleCountToBe(2));
+                driver.SwitchTo().Window("newwindow").Close();
+
+                try
+                {
+                    AlertToBePresent().Accept();
+                    Assert.Fail("Expected exception");
+                }
+                catch (NoSuchWindowException)
+                {
+                    // Expected
+                }
+
+            }
+            finally
+            {
+                driver.SwitchTo().Window(mainWindow);
+                WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-new-window")), "open new window"));
+            }
         }
 
         [Test]
@@ -592,17 +604,20 @@ namespace OpenQA.Selenium
             EnvironmentManager.Instance.CloseCurrentDriver();
         }
 
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
         [Test]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldHandleOnBeforeUnloadAlert()
         {
-            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("onBeforeUnload.html");
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
             IWebElement element = driver.FindElement(By.Id("navigate"));
             element.Click();
             IAlert alert = WaitFor<IAlert>(AlertToBePresent);
             alert.Dismiss();
-            Assert.IsTrue(driver.Url.Contains("onBeforeUnload.html"));
+            Assert.IsTrue(driver.Url.Contains("pageWithOnBeforeUnloadMessage.html"));
 
             // Can't move forward or even quit the driver
             // until the alert is accepted.
@@ -610,6 +625,30 @@ namespace OpenQA.Selenium
             alert.Accept();
             WaitFor(() => { return driver.Url.Contains(alertsPage); });
             Assert.IsTrue(driver.Url.Contains(alertsPage));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Safari)]
+        public void ShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert()
+        {
+            driver.Url = alertsPage;
+
+            driver.FindElement(By.Id("alert")).Click();
+
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            try
+            {
+                string title = driver.Title;
+                Assert.Fail("Expected exception");
+            }
+            catch (UnhandledAlertException)
+            {
+                // this is an expected exception
+            }
+
+            // but the next call should be good.
+            Assert.AreEqual("Testing Alerts", driver.Title);
         }
 
         private IAlert AlertToBePresent()
