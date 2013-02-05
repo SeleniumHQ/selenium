@@ -30,6 +30,7 @@ namespace OpenQA.Selenium
     public class UnhandledAlertException : WebDriverException
     {
         private IAlert alert;
+        private string alertText;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnhandledAlertException"/> class.
@@ -58,6 +59,7 @@ namespace OpenQA.Selenium
         public UnhandledAlertException(string message, string alertText)
             : base(message)
         {
+            this.alertText = alertText;
             this.alert = new UnhandledAlert(alertText);
         }
 
@@ -89,9 +91,18 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the <see cref="IAlert"/> that has not been handled.
         /// </summary>
+        [Obsolete("Use the AlertText property to get the alert of an already dismised alert, or use SwitchTo().Alert() to handle an unhandled alert.")]
         public IAlert Alert
         {
             get { return this.alert; }
+        }
+        
+        /// <summary>
+        /// Gets the text of the unhandled alert.
+        /// </summary>
+        public string AlertText
+        {
+            get { return this.alertText; }
         }
 
         /// <summary>

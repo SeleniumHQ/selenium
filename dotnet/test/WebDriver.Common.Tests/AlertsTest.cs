@@ -572,7 +572,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Safari)]
-        public void IncludesAlertInUnhandledAlertException()
+        public void IncludesAlertTextInUnhandledAlertException()
         {
             driver.Url = alertsPage;
 
@@ -585,9 +585,7 @@ namespace OpenQA.Selenium
             }
             catch (UnhandledAlertException e)
             {
-                IAlert alert = e.Alert;
-                Assert.NotNull(alert);
-                Assert.AreEqual("cheese", alert.Text);
+                Assert.AreEqual("cheese", e.AlertText);
             }
         }
 
