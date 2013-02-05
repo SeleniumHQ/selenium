@@ -37,9 +37,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -354,9 +352,9 @@ public class AlertsTest extends JUnit4TestBase {
       onloadWindow = waitFor(newWindowIsOpened(driver, currentWindowHandles));
 
       try {
-        new WebDriverWait(driver, 5).until(alertIsPresent());
+        waitFor(alertToBePresent(driver));
         fail("Expected exception");
-      } catch (TimeoutException expected) {
+      } catch (AssertionError expected) {
         // Expected
       }
 
