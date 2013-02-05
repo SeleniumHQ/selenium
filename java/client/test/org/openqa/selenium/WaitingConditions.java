@@ -1,5 +1,6 @@
 /*
-Copyright 2010 Selenium committers
+Copyright 2012-2013 Software Freedom Conservancy
+Copyright 2010-2013 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +17,8 @@ limitations under the License.
 
 
 package org.openqa.selenium;
+
+import static org.junit.Assert.fail;
 
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -230,8 +233,7 @@ public class WaitingConditions {
     };
   }
 
-  public static Callable<Set<String>> windowHandleCountToBe(final WebDriver driver,
-                                                            final int count) {
+  public static Callable<Set<String>> windowHandleCountToBe(final WebDriver driver, final int count) {
     return new Callable<Set<String>>() {
       public Set<String> call() throws Exception {
         Set<String> handles = driver.getWindowHandles();
@@ -242,6 +244,43 @@ public class WaitingConditions {
         return null;
       }
     };
+  }
+
+  public static Callable<Set<String>> windowHandleCountToBeGreaterThan(final WebDriver driver, final int count) {
+    return new Callable<Set<String>>() {
+      public Set<String> call() throws Exception {
+        Set<String> handles = driver.getWindowHandles();
+
+        if (handles.size() > count) {
+          return handles;
+        }
+        return null;
+      }
+    };
+  }
+
+  public static Callable<String> newWindowIsOpened(final WebDriver driver, final Set<String> originalHandles) {
+    return new Callable<String>() {
+      public String call() throws Exception {
+        Set<String> currentWindowHandles = driver.getWindowHandles();
+        if (currentWindowHandles.size() > originalHandles.size()) {
+          sleepBecauseOfIssue2764();
+          currentWindowHandles.removeAll(originalHandles);
+          return currentWindowHandles.iterator().next();
+        } else {
+          return null;
+        }
+      }
+    };
+    
+  }
+
+  private static void sleepBecauseOfIssue2764() {
+    try {
+      Thread.sleep(200);
+    } catch (InterruptedException e) {
+      fail("Interrupted");
+    }
   }
 
   public static Callable<Alert> alertToBePresent(final WebDriver driver) {
