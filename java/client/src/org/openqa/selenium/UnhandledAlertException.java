@@ -34,9 +34,18 @@ public class UnhandledAlertException extends WebDriverException {
     this.alertText = alertText;
   }
 
-  /*
-   * Returns null if alert text could not be retrieved.
+  /**
+   * Returns the text of the unhandled alert.
    */
+  public String getAlertText() {
+    return alertText;
+  }
+  
+  /**
+   * Returns null if alert text could not be retrieved.
+   * @deprecated To be removed in 2.31, use {@link #getAlertText()} instead.
+   */
+  @Deprecated
   public Alert getAlert() {
     return new LocallyStoredAlert(alertText);
   }
