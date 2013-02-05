@@ -92,6 +92,7 @@
     <Compile Include="CookieImplementationTest.cs" />
     <Compile Include="CookieTest.cs" />
     <Compile Include="AtomsInjectionTest.cs" />
+    <Compile Include="CoordinatesTest.cs" />
     <Compile Include="DesiredCapabililtiesTest.cs" />
     <Compile Include="DriverDisposalTest.cs" />
     <Compile Include="ElementSelectingTest.cs" />

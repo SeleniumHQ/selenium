@@ -344,6 +344,18 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
     long end_x = start_x;
     long end_y = start_y;
     if (element_specified) {
+      bool displayed;
+      status_code = target_element->IsDisplayed(&displayed);
+      if (status_code != WD_SUCCESS) {
+        LOG(WARN) << "Unable to determine element is displayed";
+        return status_code;
+      } 
+
+      if (!displayed) {
+        LOG(WARN) << "Element is not displayed";
+        return EELEMENTNOTDISPLAYED;
+      }
+
       LocationInfo element_location;
       status_code = target_element->GetLocationOnceScrolledIntoView(this->scroll_behavior_,
                                                                     &element_location);

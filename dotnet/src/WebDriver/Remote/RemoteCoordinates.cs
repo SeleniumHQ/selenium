@@ -45,7 +45,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public System.Drawing.Point LocationOnScreen
         {
-            get { return this.element.LocationOnScreenOnceScrolledIntoView; }
+            get { throw new NotImplementedException(); }
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public System.Drawing.Point LocationInViewport
         {
-            get { throw new NotImplementedException(); }
+            get { return this.element.LocationOnScreenOnceScrolledIntoView; }
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public System.Drawing.Point LocationInDom
         {
-            get { throw new NotImplementedException(); }
+            get { return this.element.Location; }
         }
 
         /// <summary>

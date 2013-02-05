@@ -132,8 +132,20 @@ bool Element::IsEnabled() {
 int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
   LOG(TRACE) << "Entering Element::Click";
 
+  bool displayed;
+  int status_code = this->IsDisplayed(&displayed);
+  if (status_code != WD_SUCCESS) {
+    LOG(WARN) << "Unable to determine element is displayed";
+    return status_code;
+  } 
+
+  if (!displayed) {
+    LOG(WARN) << "Element is not displayed";
+    return EELEMENTNOTDISPLAYED;
+  }
+
   LocationInfo location = {};
-  int status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior, &location);
+  status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior, &location);
 
   if (status_code == WD_SUCCESS) {
     LocationInfo click_location = GetClickPoint(location);
@@ -212,21 +224,9 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
     return ENOSUCHELEMENT;
   }
 
-  bool displayed;
-  int result = this->IsDisplayed(&displayed);
-  if (result != WD_SUCCESS) {
-    LOG(WARN) << "Unable to determine element is displayed";
-    return result;
-  } 
-
-  if (!displayed) {
-    LOG(WARN) << "Element is not displayed";
-    return EELEMENTNOTDISPLAYED;
-  }
-
   LocationInfo element_location = {};
   std::vector<LocationInfo> frame_locations;
-  result = this->GetLocation(&element_location, &frame_locations);
+  int result = this->GetLocation(&element_location, &frame_locations);
   LocationInfo click_location = this->GetClickPoint(element_location);
   bool document_contains_frames = frame_locations.size() != 0;
 
@@ -449,8 +449,6 @@ int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* fram
         }
       }
     }
-
-    return EELEMENTNOTDISPLAYED;
   }
 
   long top = 0, bottom = 0, left = 0, right = 0;
@@ -655,9 +653,25 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
           // GetLocation() may recursively call into this method.
           CComQIPtr<IHTMLElement> frame_element(frame_base);
           Element element_wrapper(frame_element, this->containing_window_handle_);
+          CComPtr<IHTMLStyle> style;
+          frame_element->get_style(&style);
+
           LocationInfo frame_location = {};
           status_code = element_wrapper.GetLocation(&frame_location,
                                                     frame_locations);
+
+          // Take the border of the frame element into account.
+          // N.B. We don't have to do this for non-frame elements,
+          // because the border is part of the hit-test region. For
+          // finding offsets to get absolute position of elements 
+          // within frames, the origin of the frame document is offset
+          // by the border width.
+          CComQIPtr<IHTMLElement2> border_width_element(frame_element);
+          long left_border_width = 0;
+          border_width_element->get_clientLeft(&left_border_width);
+          long top_border_width = 0;
+          border_width_element->get_clientTop(&top_border_width);
+
           if (status_code == WD_SUCCESS) {
             // Take into account the presence of scrollbars in the frame.
             long frame_element_width = frame_location.width;
@@ -672,8 +686,8 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
                 frame_element_width -= vertical_scrollbar_width;
               }
             }
-            location->x = frame_location.x;
-            location->y = frame_location.y;
+            location->x = frame_location.x + left_border_width;
+            location->y = frame_location.y + top_border_width;
             location->width = frame_element_width;
             location->height = frame_element_height;
           }
