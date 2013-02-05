@@ -153,7 +153,9 @@ HWND HtmlDialog::GetActiveDialogWindowHandle() {
   DialogWindowInfo info;
   info.hwndOwner = this->GetTopLevelWindowHandle();
   info.hwndDialog = NULL;
-  ::EnumWindows(&HtmlDialog::FindChildDialogWindow, reinterpret_cast<LPARAM>(&info));
+  if (info.hwndOwner != NULL) {
+    ::EnumWindows(&HtmlDialog::FindChildDialogWindow, reinterpret_cast<LPARAM>(&info));
+  }
   return info.hwndDialog;
 }
 

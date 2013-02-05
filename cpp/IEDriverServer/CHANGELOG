@@ -9,6 +9,14 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.29.0.3
+=========
+ * Updates to JavaScript automation atoms.
+ * Removed checking for element visibility and non-zero size from method used
+   for scrolling elements into view and getting their location.
+ * Fixed unexpected occurrences of UnhandledAlertException after closing modal
+   dialogs created using showModalDialog().
+
 v2.29.0.2
 =========
  * Updates to JavaScript automation atoms.
