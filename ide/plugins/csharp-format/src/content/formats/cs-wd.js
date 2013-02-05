@@ -266,12 +266,13 @@ this.options = {
           "        private string CloseAlertAndGetItsText() {\n" +
           "            try {\n" +
           "                IAlert alert = driver.SwitchTo().Alert();\n" +
+          "                string alertText = alert.Text;\n" +
           "                if (acceptNextAlert) {\n" +
           "                    alert.Accept();\n" +
           "                } else {\n" +
           "                    alert.Dismiss();\n" +
           "                }\n" +
-          "                return alert.Text;\n" +
+          "                return alertText;\n" +
           "            } finally {\n" +
           "                acceptNextAlert = true;\n" +
           "            }\n" +

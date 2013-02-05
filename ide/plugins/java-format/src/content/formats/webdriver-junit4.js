@@ -245,12 +245,13 @@ options.footer =
         indents(1) + "private String closeAlertAndGetItsText() {\n" +
         indents(2) + "try {\n" +
         indents(3) + "Alert alert = driver.switchTo().alert();\n" +
+        indents(3) + "String alertText = alert.getText();\n" +
         indents(3) + "if (acceptNextAlert) {\n" +
         indents(4) + "alert.accept();\n" +
         indents(3) + "} else {\n" +
         indents(4) + "alert.dismiss();\n" +
         indents(3) + "}\n" +
-        indents(3) + "return alert.getText();\n" +
+        indents(3) + "return alertText;\n" +
         indents(2) + "} finally {\n" +
         indents(3) + "acceptNextAlert = true;\n" +
         indents(2) + "}\n" +

@@ -229,11 +229,12 @@ this.options = {
           '    def close_alert_and_get_its_text(self):\n' +
           '        try:\n' +
           '            alert = self.driver.switch_to_alert()\n' +
+          '            alert_text = alert.text\n' +
           '            if self.accept_next_alert:\n' +
           '                alert.accept()\n' +
           '            else:\n' +
           '                alert.dismiss()\n' +
-          '            return alert.text\n' +
+          '            return alert_text\n' +
           '        finally: self.accept_next_alert = True\n' +
           '    \n' +
           '    def tearDown(self):\n' +

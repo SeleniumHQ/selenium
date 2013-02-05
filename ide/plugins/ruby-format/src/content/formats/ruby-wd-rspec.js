@@ -257,12 +257,13 @@ this.options = {
           "  \n" +
           "  def close_alert_and_get_its_text(how, what)\n" +
           "    alert = @driver.switch_to().alert()\n" +
+          "    alert_text = alert.text\n" +
           "    if (@accept_next_alert) then\n" +
           "      alert.accept()\n" +
           "    else\n" +
           "      alert.dismiss()\n" +
           "    end\n" +
-          "    alert.text\n" +
+          "    alert_text\n" +
           "  ensure\n" +
           "    @accept_next_alert = true\n" +
           "  end\n" +
