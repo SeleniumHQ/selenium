@@ -52,6 +52,12 @@ class Alert {
     ISBUTTONMATCHPROC match_proc;
   };
 
+  struct TextLabelFindInfo {
+    HWND label_handle;
+    int control_id_found;
+    int excluded_control_id;
+  };
+
   enum BUTTON_TYPE {
     OK,
     CANCEL

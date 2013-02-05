@@ -232,7 +232,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.IE, "Issue number 4594")]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.Safari)]
@@ -491,6 +490,7 @@ namespace OpenQA.Selenium
 
                 try
                 {
+                    IWebElement el = driver.FindElement(By.Id("open-page-with-onunload-alert"));
                     WaitFor<IAlert>(AlertToBePresent, TimeSpan.FromSeconds(5));
                     Assert.Fail("Expected exception");
                 }
