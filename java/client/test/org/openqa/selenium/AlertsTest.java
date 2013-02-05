@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -351,12 +352,14 @@ public class AlertsTest extends JUnit4TestBase {
       driver.findElement(By.id("open-window-with-onload-alert")).click();
       onloadWindow = waitFor(newWindowIsOpened(driver, currentWindowHandles));
 
+      boolean gotException = false;
       try {
         waitFor(alertToBePresent(driver));
-        fail("Expected exception");
       } catch (AssertionError expected) {
         // Expected
+        gotException = true;
       }
+      assertTrue(gotException);
 
     } finally {
       driver.switchTo().window(onloadWindow);
