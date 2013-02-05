@@ -275,6 +275,21 @@ public class WaitingConditions {
     
   }
 
+  public static Callable<WebDriver> windowToBeSwitchedToWithName(
+      final WebDriver driver, final String windowName) {
+    return new Callable<WebDriver>() {
+
+      public WebDriver call() throws Exception {
+        return driver.switchTo().window(windowName);
+      }
+
+      @Override
+      public String toString() {
+        return String.format("window with name %s to exist", windowName);
+      }
+    };
+  }
+
   private static void sleepBecauseOfIssue2764() {
     try {
       Thread.sleep(200);

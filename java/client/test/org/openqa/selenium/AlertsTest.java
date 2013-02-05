@@ -26,6 +26,7 @@ import static org.openqa.selenium.WaitingConditions.alertToBePresent;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
+import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -252,14 +253,15 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, IE}, issues = {2764, 2834})
+  @Ignore(value = {CHROME}, issues = {2764})
   @Test
   public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-new-window")).click();
       waitFor(windowHandleCountToBe(driver, 2));
-      driver.switchTo().window("newwindow").close();
+      waitFor(windowToBeSwitchedToWithName(driver, "newwindow"));
+      driver.close();
 
       try {
         alertToBePresent(driver).call();
@@ -386,7 +388,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, ANDROID, CHROME}, reason = "IE crashes. On Android, alerts do not pop up" +
+  @Ignore(value = {ANDROID, CHROME}, reason = "On Android, alerts do not pop up" +
       " when a window is closed.")
   @Test
   public void testShouldHandleAlertOnWindowClose() {
@@ -400,7 +402,8 @@ public class AlertsTest extends JUnit4TestBase {
     try {
       driver.findElement(By.id("open-window-with-onclose-alert")).click();
       waitFor(windowHandleCountToBe(driver, 2));
-      driver.switchTo().window("onclose").close();
+      waitFor(windowToBeSwitchedToWithName(driver, "onclose"));
+      driver.close();
 
       Alert alert = waitFor(alertToBePresent(driver));
       String value = alert.getText();
