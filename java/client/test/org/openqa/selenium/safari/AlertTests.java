@@ -18,14 +18,11 @@ limitations under the License.
 package org.openqa.selenium.safari;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.TestWaiter;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebElement;
 
@@ -287,9 +284,7 @@ public class AlertTests extends SafariTestBase {
   }
 
   private static void assertAlertText(String expectedText, UnhandledAlertException e) {
-    Alert alert = e.getAlert();
-    assertNotNull(alert);
-    assertEquals(expectedText, alert.getText());
+    assertEquals(expectedText, e.getAlertText());
   }
   
   private void setSimpleOnBeforeUnload(Object returnValue) {

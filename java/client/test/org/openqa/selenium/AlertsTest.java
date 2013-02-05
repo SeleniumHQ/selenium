@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -423,9 +422,7 @@ public class AlertsTest extends JUnit4TestBase {
       driver.getTitle();
       fail("Expected UnhandledAlertException");
     } catch (UnhandledAlertException e) {
-      Alert alert = e.getAlert();
-      assertNotNull(alert);
-      assertEquals("cheese", alert.getText());
+      assertEquals("cheese", e.getAlertText());
     }
   }
 

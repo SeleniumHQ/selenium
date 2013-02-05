@@ -381,7 +381,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Test
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, SELENESE})
   @NeedsLocalEnvironment(reason = "Relies on timing")
-  public void includesAlertInUnhandledAlertException() {
+  public void includesAlertTextInUnhandledAlertException() {
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
     String alertText = "Look! An alert!";
     try {
@@ -390,9 +390,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
           + "'); }, 50);");
       fail("Expected UnhandledAlertException");
     } catch (UnhandledAlertException e) {
-      Alert alert = e.getAlert();
-      assertNotNull(alert);
-      assertEquals(alertText, alert.getText());
+      assertEquals(alertText, e.getAlertText());
     }
   }
 
