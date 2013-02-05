@@ -341,7 +341,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, FIREFOX})
+  @Ignore(value = {CHROME, FIREFOX, IE}, reason = "IE: fails in versions 6 and 7")
   @Test
   public void testShouldNotHandleAlertInAnotherWindow() {
     String mainWindow = driver.getWindowHandle();
