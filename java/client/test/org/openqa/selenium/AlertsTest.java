@@ -206,7 +206,9 @@ public class AlertsTest extends JUnit4TestBase {
     try {
       alert.getText();
     } catch (NoAlertPresentException expected) {
+      return;
     }
+    fail("Expected NoAlertPresentException");
   }
 
   @Ignore(ANDROID)
@@ -414,7 +416,7 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SELENESE})
   @Test
-  public void testIncludesAlertInUnhandledAlertException() {
+  public void testIncludesAlertTextInUnhandledAlertException() {
     driver.findElement(By.id("alert")).click();
     waitFor(alertToBePresent(driver));
     try {

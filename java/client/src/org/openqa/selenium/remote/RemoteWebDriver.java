@@ -845,16 +845,14 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public Alert alert() {
-      Response response = execute(DriverCommand.GET_ALERT_TEXT);
-      return new RemoteAlert((String) response.getValue());
+      execute(DriverCommand.GET_ALERT_TEXT);
+      return new RemoteAlert();
     }
   }
 
   private class RemoteAlert implements Alert {
-    private final String text;
 
-    public RemoteAlert(String text) {
-      this.text = text;
+    public RemoteAlert() {
     }
 
     public void dismiss() {
@@ -866,7 +864,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public String getText() {
-      return text;
+      return (String) execute(DriverCommand.GET_ALERT_TEXT).getValue();
     }
 
     public void sendKeys(String keysToSend) {
