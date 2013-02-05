@@ -24,6 +24,7 @@ import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.alertToBePresent;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -346,13 +347,11 @@ public class AlertsTest extends JUnit4TestBase {
   @Test
   public void testShouldNotHandleAlertInAnotherWindow() {
     String mainWindow = driver.getWindowHandle();
+    Set<String> currentWindowHandles = driver.getWindowHandles();
     String onloadWindow = null;
     try {
       driver.findElement(By.id("open-window-with-onload-alert")).click();
-      Set<String> allWindows = driver.getWindowHandles();
-      allWindows.remove(mainWindow);
-      assertEquals(1, allWindows.size());
-      onloadWindow = allWindows.iterator().next();
+      onloadWindow = waitFor(newWindowIsOpened(driver, currentWindowHandles));
 
       try {
         new WebDriverWait(driver, 5).until(alertIsPresent());
