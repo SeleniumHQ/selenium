@@ -163,6 +163,7 @@ namespace OpenQA.Selenium.Remote
                             {
                                 secure = bool.Parse(cookie["secure"].ToString());
                             }
+
                             toReturn.Add(new ReturnedCookie(name, value, domain, path, expires, secure, new Uri(this.driver.Url)));
                         }
                     }

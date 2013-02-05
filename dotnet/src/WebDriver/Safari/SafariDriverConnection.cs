@@ -88,6 +88,7 @@ namespace OpenQA.Selenium.Safari
                             // the values.
                             response.Value = ((string)response.Value).Replace("\r\n", "\n").Replace("\n", System.Environment.NewLine);
                         }
+
                         break;
                     }
                 }
