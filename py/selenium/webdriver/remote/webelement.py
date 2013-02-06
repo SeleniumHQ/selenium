@@ -16,7 +16,7 @@
 """WebElement implementation."""
 import os
 import zipfile
-from StringIO import StringIO
+from io import StringIO
 import base64
 
 
@@ -65,7 +65,7 @@ class WebElement(object):
         if resp['value'] is None:
             attributeValue = None
         else:
-            attributeValue = unicode(resp['value'])
+            attributeValue = resp['value']
             if type(resp['value']) is bool:
                 attributeValue = attributeValue.lower()
 

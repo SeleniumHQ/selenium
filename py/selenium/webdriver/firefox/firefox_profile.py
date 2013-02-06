@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import with_statement
+from __future__ import unicode_literals
 
 import base64
 import copy
@@ -327,9 +328,9 @@ class FirefoxProfile(object):
             returns a dictionary of details about the addon
             - addon_path : path to the addon directory
             Returns:
-            {'id': u'rainbow@colors.org', # id of the addon
-            'version': u'1.4', # version of the addon
-            'name': u'Rainbow', # name of the addon
+            {'id': 'rainbow@colors.org', # id of the addon
+            'version': '1.4', # version of the addon
+            'name': 'Rainbow', # name of the addon
             'unpack': False } # whether to unpack the addon
         """
 
