@@ -14,6 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 import subprocess
 from subprocess import PIPE
 import time
@@ -26,7 +27,8 @@ class Service(object):
     Object that manages the starting and stopping of the ChromeDriver
     """
 
-    def __init__(self, executable_path, port=0, service_args=None, log_path=None):
+    def __init__(self, executable_path, port=0, service_args=None,
+                 log_path=None, env=None):
         """
         Creates a new instance of the Service
 
@@ -43,6 +45,7 @@ class Service(object):
           self.service_args.append('--log-path=%s' % log_path)
         if self.port == 0:
             self.port = utils.free_port()
+        self.env = env
 
     def start(self):
         """
@@ -52,11 +55,12 @@ class Service(object):
          - WebDriverException : Raised either when it can't start the service
            or when it can't connect to the service
         """
+        env = self.env or os.environ
         try:
             self.process = subprocess.Popen([
               self.path,
               "--port=%d" % self.port] +
-              self.service_args, stdout=PIPE, stderr=PIPE)
+              self.service_args, env=env, stdout=PIPE, stderr=PIPE)
         except:
             raise WebDriverException(
                 "ChromeDriver executable needs to be available in the path. \
