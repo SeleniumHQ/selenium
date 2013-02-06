@@ -174,25 +174,12 @@ class ClickElementCommandHandler : public IECommandHandler {
         LOG(DEBUG) << "Received execution message. Unmarshaling element from stream";
         int status_code = WD_SUCCESS;
         CComPtr<IDispatch> dispatch;
-        LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
+        LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(msg.lParam);
         hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IDispatch, reinterpret_cast<void**>(&dispatch));
         LOG(DEBUG) << "Element unmarshaled from stream, executing JavaScript on worker thread";
         if (SUCCEEDED(hr) && dispatch != NULL) {
           CComVariant element(dispatch);
           status_code = ExecuteClickAtom(doc, element);
-          // The atom is just the definition of an anonymous
-          // function: "function() {...}"; Wrap it in another function so we can
-          // invoke it with our arguments without polluting the current namespace.
-          //std::wstring script_source = L"(function() { return (";
-          //script_source += atoms::asString(atoms::CLICK);
-          //script_source += L")})();";
-
-          //Script script_wrapper(doc, script_source, 1);
-          //script_wrapper.AddArgument(element);
-          //status_code = script_wrapper.Execute();
-
-          //// Require a short sleep here to let the browser update the DOM.
-          //::Sleep(100);
         } else {
           status_code = EUNEXPECTEDJSERROR;
         }

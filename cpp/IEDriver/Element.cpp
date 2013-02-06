@@ -851,8 +851,8 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
 
     // Marshal the document and the element to click to streams for use in another thread.
     LOG(DEBUG) << "Marshaling document to stream to send to new thread";
-    LPSTREAM stream;
-    HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLDocument2, doc, &stream);
+    LPSTREAM document_stream;
+    HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IHTMLDocument2, doc, &document_stream);
     if (FAILED(hr)) {
       LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for document failed";
       *error_msg = "Couldn't marshal the IHTMLDocument2 interface to a stream. This is an internal COM error.";
@@ -893,7 +893,7 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
     HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
                                                     0,
                                                     execute_proc,
-                                                    (void *)stream,
+                                                    reinterpret_cast<void*>(document_stream),
                                                     0,
                                                     &thread_id));
     LOG(DEBUG) << "Waiting for new thread to be ready for messages";
@@ -925,7 +925,7 @@ int Element::ExecuteAsyncAtom(const std::wstring& sync_event_name, ASYNCEXECPROC
       // Try to let the thread complete within a short amount of time
       // to have a hope of synchronization.
       LOG(DEBUG) << "Posting thread message";
-      DWORD post_message_result = ::PostThreadMessage(thread_id, WD_EXECUTE_ASYNC_SCRIPT, NULL, reinterpret_cast<LPARAM>(&element_stream));
+      DWORD post_message_result = ::PostThreadMessage(thread_id, WD_EXECUTE_ASYNC_SCRIPT, NULL, reinterpret_cast<LPARAM>(element_stream));
       DWORD wait_result = ::WaitForSingleObject(thread_handle, 100);
       if (wait_result == WAIT_OBJECT_0) {
         LOG(DEBUG) << "Thread exited successfully";

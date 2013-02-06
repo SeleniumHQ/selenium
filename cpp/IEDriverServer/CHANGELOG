@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.29.1.0
+=========
+ * Updated to use correct parameter in message loop for executing asynchronous
+   JavaScript. Fixes issue #5137.
+
 v2.29.0.4
 =========
  * Allowed the IE driver to get the text of a prompt() dialog window. Fixes
