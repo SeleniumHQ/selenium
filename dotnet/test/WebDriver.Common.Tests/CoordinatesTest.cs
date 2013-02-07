@@ -39,6 +39,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Invisible elements report position of [0, 0] in IE")]
         public void ShouldGetCoordinatesOfAnInvisibleElement()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_invisible_element.html");
