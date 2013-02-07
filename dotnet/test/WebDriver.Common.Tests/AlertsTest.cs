@@ -620,6 +620,7 @@ namespace OpenQA.Selenium
             // Can't move forward or even quit the driver
             // until the alert is accepted.
             element.Click();
+            alert = WaitFor<IAlert>(AlertToBePresent);
             alert.Accept();
             WaitFor(() => { return driver.Url.Contains(alertsPage); });
             Assert.IsTrue(driver.Url.Contains(alertsPage));

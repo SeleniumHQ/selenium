@@ -91,17 +91,29 @@ class ClickElementCommandHandler : public IECommandHandler {
             }
           }
         } else {
-          std::wstring script_source = L"(function() { return function(){" + 
-                                       atoms::asString(atoms::INPUTS) + 
-                                       L"; return webdriver.atoms.inputs.click(arguments[0], arguments[1]);" + 
-                                       L"};})();";
+          bool displayed;
+          status_code = element_wrapper->IsDisplayed(&displayed);
+          if (status_code != WD_SUCCESS) {
+            response->SetErrorResponse(status_code, "Unable to determine element is displayed");
+            return;
+          } 
 
-          CComPtr<IHTMLDocument2> doc;
-          browser_wrapper->GetDocument(&doc);
-          Script script_wrapper(doc, script_source, 2);
-          script_wrapper.AddArgument(element_wrapper);
-          script_wrapper.AddArgument(executor.input_manager()->mouse_state());
-          status_code = script_wrapper.Execute();
+          if (!displayed) {
+            response->SetErrorResponse(EELEMENTNOTDISPLAYED, "Element is not displayed");
+            return;
+          }
+          std::string option_click_error = "";
+          if (executor.allow_asynchronous_javascript()) {
+            status_code = element_wrapper->ExecuteAsyncAtom(
+                CLICK_OPTION_EVENT_NAME,
+                &ClickElementCommandHandler::SyntheticEventClickThreadProc,
+                &option_click_error);
+          } else {
+            CComPtr<IHTMLDocument2> doc;
+            browser_wrapper->GetDocument(&doc);
+            CComVariant element_variant(element_wrapper->element());
+            status_code = ExecuteSyntheticEventClickAtom(doc, element_variant);
+          }
           if (status_code != WD_SUCCESS) {
             // This is a hack. We should change this when we can get proper error
             // codes back from the atoms. We'll assume the script failed because
@@ -109,10 +121,8 @@ class ClickElementCommandHandler : public IECommandHandler {
             response->SetErrorResponse(EELEMENTNOTDISPLAYED, 
                 "Received a JavaScript error attempting to click on the element using synthetic events. We are assuming this is because the element isn't displayed, but it may be due to other problems with executing JavaScript.");
             return;
-          } else {
-            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-            mutable_executor.input_manager()->set_mouse_state(script_wrapper.result());
           }
+          browser_wrapper->set_wait_required(true);
         }
       } else {
         response->SetErrorResponse(status_code, "Element is no longer valid");
@@ -127,6 +137,21 @@ class ClickElementCommandHandler : public IECommandHandler {
   bool IsOptionElement(ElementHandle element_wrapper) {
     CComQIPtr<IHTMLOptionElement> option(element_wrapper->element());
     return option != NULL;
+  }
+
+  static int ExecuteSyntheticEventClickAtom(IHTMLDocument2* doc, VARIANT element_variant) {
+    // The atom is just the definition of an anonymous
+    // function: "function() {...}"; Wrap it in another function so we can
+    // invoke it with our arguments without polluting the current namespace.
+    std::wstring script_source = L"(function() { return function(){" + 
+      atoms::asString(atoms::INPUTS) + 
+      L"; return webdriver.atoms.inputs.click(arguments[0]);" + 
+      L"};})();";
+
+    Script script_wrapper(doc, script_source, 1);
+    script_wrapper.AddArgument(element_variant);
+    int status_code = script_wrapper.Execute();
+    return status_code;
   }
 
   static int ExecuteClickAtom(IHTMLDocument2* doc, VARIANT element_variant) {
@@ -144,6 +169,51 @@ class ClickElementCommandHandler : public IECommandHandler {
     // Require a short sleep here to let the browser update the DOM.
     ::Sleep(100);
     return status_code;
+  }
+
+  static unsigned int WINAPI SyntheticEventClickThreadProc(LPVOID param) {
+    BOOL bRet; 
+    MSG msg;
+    LOG(DEBUG) << "Initializing message pump on new thread";
+    ::PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
+
+    LOG(DEBUG) << "Initializing COM on new thread";
+    HRESULT hr = ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+
+    LOG(DEBUG) << "Unmarshaling document from stream";
+    CComPtr<IHTMLDocument2> doc;
+    LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
+    hr = ::CoGetInterfaceAndReleaseStream(message_payload,
+                                          IID_IHTMLDocument2,
+                                          reinterpret_cast<void**>(&doc));
+
+    LOG(DEBUG) << "Signaling parent thread that the worker thread is ready for messages";
+    HANDLE event_handle = ::OpenEvent(EVENT_MODIFY_STATE, FALSE, CLICK_OPTION_EVENT_NAME);
+    if (event_handle != NULL) {
+      ::SetEvent(event_handle);
+      ::CloseHandle(event_handle);
+    }
+
+    while ((bRet = ::GetMessage(&msg, NULL, 0, 0)) != 0) {
+      if (msg.message == WD_EXECUTE_ASYNC_SCRIPT) {
+        LOG(DEBUG) << "Received execution message. Unmarshaling element from stream";
+        int status_code = WD_SUCCESS;
+        CComPtr<IDispatch> dispatch;
+        LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(msg.lParam);
+        hr = ::CoGetInterfaceAndReleaseStream(message_payload, IID_IDispatch, reinterpret_cast<void**>(&dispatch));
+        LOG(DEBUG) << "Element unmarshaled from stream, executing JavaScript on worker thread";
+        if (SUCCEEDED(hr) && dispatch != NULL) {
+          CComVariant element(dispatch);
+          status_code = ExecuteSyntheticEventClickAtom(doc, element);
+        } else {
+          status_code = EUNEXPECTEDJSERROR;
+        }
+        ::CoUninitialize();
+        return status_code;
+      }
+    }
+
+    return 0;
   }
 
   static unsigned int WINAPI ClickOptionThreadProc(LPVOID param) {
