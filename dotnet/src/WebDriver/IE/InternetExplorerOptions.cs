@@ -236,6 +236,12 @@ namespace OpenQA.Selenium.IE
             DesiredCapabilities capabilities = DesiredCapabilities.InternetExplorer();
             capabilities.SetCapability(EnableNativeEventsCapability, this.enableNativeEvents);
             capabilities.SetCapability(EnablePersistentHoverCapability, this.enablePersistentHover);
+
+            if (this.requireWindowFocus)
+            {
+                capabilities.SetCapability(RequireWindowFocusCapability, true);
+            }
+
             if (this.ignoreProtectedModeSettings)
             {
                 capabilities.SetCapability(IgnoreProtectedModeSettingsCapability, true);
