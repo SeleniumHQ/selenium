@@ -166,7 +166,14 @@ namespace OpenQA.Selenium.Firefox
 
             foreach (string environmentVar in this.extraEnv.Keys)
             {
-                builder.StartInfo.EnvironmentVariables.Add(environmentVar, this.extraEnv[environmentVar]);
+                if (builder.StartInfo.EnvironmentVariables.ContainsKey(environmentVar))
+                {
+                    builder.StartInfo.EnvironmentVariables[environmentVar] = this.extraEnv[environmentVar];
+                }
+                else
+                {
+                    builder.StartInfo.EnvironmentVariables.Add(environmentVar, this.extraEnv[environmentVar]);
+                }
             }
 
             this.BinaryExecutable.SetLibraryPath(builder);
