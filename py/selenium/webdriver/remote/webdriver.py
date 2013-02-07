@@ -15,10 +15,10 @@
 The WebDriver implementation.
 """
 import base64
-from command import Command
-from webelement import WebElement
-from remote_connection import RemoteConnection
-from errorhandler import ErrorHandler
+from .command import Command
+from .webelement import WebElement
+from .remote_connection import RemoteConnection
+from .errorhandler import ErrorHandler
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By

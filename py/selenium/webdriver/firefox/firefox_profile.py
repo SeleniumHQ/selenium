@@ -22,7 +22,14 @@ import re
 import shutil
 import tempfile
 import zipfile
-from cStringIO import StringIO
+
+try:
+    from io import BytesIO
+except ImportError:
+    from cStringIO import StringIO as BytesIO
+    bytes = str
+    str = unicode
+
 from xml.dom import minidom
 from distutils import dir_util
 from selenium.webdriver.common.proxy import ProxyType
@@ -125,9 +132,9 @@ class FirefoxProfile(object):
             clean_value = 'true'
         elif value is False:
             clean_value = 'false'
-        elif isinstance(value, str):
-            clean_value = '"%s"' % value
-        elif isinstance(value, unicode):
+        elif isinstance(value, bytes):
+            clean_value = '"%s"' % value.decode('utf-8')
+        elif isinstance(value, str): # unicode
             clean_value = '"%s"' % value
         else:
             clean_value = str(int(value))
@@ -162,6 +169,12 @@ class FirefoxProfile(object):
         Sets the port that WebDriver will be running on
         """
         if not isinstance(port, int):
+            raise WebDriverException("Port needs to be an integer")
+        try:
+            port = int(port)
+            if port < 1 or port > :
+                raise WebDriverException("Port number cannot be negative")
+        except (ValueError, TypeError) as e:
             raise WebDriverException("Port needs to be an integer")
         self._port = port
         self.set_preference("webdriver_firefox_port", self._port)

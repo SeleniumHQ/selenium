@@ -20,7 +20,7 @@ from io import StringIO
 import base64
 
 
-from command import Command
+from .command import Command
 from selenium.common.exceptions import WebDriverException 
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
