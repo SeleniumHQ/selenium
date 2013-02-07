@@ -469,6 +469,9 @@ int InputManager::SendKeystrokes(BrowserHandle browser_wrapper, Json::Value keys
         wchar_t character = keys[char_index];
         this->AddKeyboardInput(window_handle, character);
       }
+      if (auto_release_modifier_keys) {
+        this->AddKeyboardInput(window_handle, WD_KEY_NULL);
+      }
     } else {
       LOG(DEBUG) << "Using SendMessage method for sending keys";
       sendKeys(window_handle, keys.c_str(), 0);
