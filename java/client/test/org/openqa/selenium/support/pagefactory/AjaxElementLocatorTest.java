@@ -32,6 +32,8 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AjaxElementLocatorTest extends MockTestBase {
   private FakeClock clock = new FakeClock();
@@ -58,6 +60,28 @@ public class AjaxElementLocatorTest extends MockTestBase {
     WebElement returnedElement = locator.findElement();
 
     assertEquals(element, returnedElement);
+  }
+
+  @Test
+  public void shouldContinueAttemptingToFindElements() throws Exception {
+    Field f = Page.class.getDeclaredField("first");
+    final WebDriver driver = mock(WebDriver.class);
+    final By by = new ByIdOrName("first");
+    final WebElement element = mock(WebElement.class);
+    final List<WebElement> elementList = new ArrayList<WebElement>();
+    elementList.add(element);
+
+    checking(new Expectations() {{
+      exactly(1).of(driver).findElements(by);
+      will(throwException(new NoSuchElementException("bar")));
+      exactly(1).of(driver).findElements(by);
+      will(returnValue(elementList));
+    }});
+
+    ElementLocator locator = newLocator(driver, f);
+    List<WebElement> returnedList = locator.findElements();
+
+    assertEquals(element, returnedList.get(0));
   }
 
   @Test

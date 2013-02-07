@@ -24,6 +24,7 @@ import org.openqa.selenium.support.ui.SlowLoadableComponent;
 import org.openqa.selenium.support.ui.SystemClock;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * An element locator that will wait for the specified number of seconds for an element to appear,
@@ -65,6 +66,23 @@ public class AjaxElementLocator extends DefaultElementLocator {
     SlowLoadingElement loadingElement = new SlowLoadingElement(clock, timeOutInSeconds);
     try {
       return loadingElement.get().getElement();
+    } catch (NoSuchElementError e) {
+      throw new NoSuchElementException(
+          String.format("Timed out after %d seconds. %s", timeOutInSeconds, e.getMessage()),
+          e.getCause());
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * Will poll the interface on a regular basis until at least one element is present.
+   */
+  @Override
+  public List<WebElement> findElements() {
+    SlowLoadingElementList list = new SlowLoadingElementList(clock, timeOutInSeconds);
+    try {
+      return list.get().getElements();
     } catch (NoSuchElementError e) {
       throw new NoSuchElementException(
           String.format("Timed out after %d seconds. %s", timeOutInSeconds, e.getMessage()),
@@ -139,9 +157,56 @@ public class AjaxElementLocator extends DefaultElementLocator {
     }
   }
 
+  private class SlowLoadingElementList extends SlowLoadableComponent<SlowLoadingElementList> {
+    private NoSuchElementException lastException;
+    private List<WebElement> elements;
+
+    public SlowLoadingElementList(Clock clock, int timeOutInSeconds) {
+      super(clock, timeOutInSeconds);
+    }
+
+    @Override
+    protected void load() {
+      // Does nothing
+    }
+
+    @Override
+    protected long sleepFor() {
+      return AjaxElementLocator.this.sleepFor();
+    }
+
+    @Override
+    protected void isLoaded() throws Error {
+      try {
+        elements = AjaxElementLocator.super.findElements();
+        if (elements.size() == 0) {
+          throw new NoSuchElementException("Unable to locate the element");
+        }
+        for (WebElement element : elements) {
+          if (!isElementUsable(element)) {
+            throw new NoSuchElementException("Element is not usable");
+          }
+        }
+      } catch (NoSuchElementException e) {
+        lastException = e;
+        // Should use JUnit's AssertionError, but it may not be present
+        throw new NoSuchElementError("Unable to locate the element", e);
+      }
+    }
+
+    public NoSuchElementException getLastException() {
+      return lastException;
+    }
+
+    public List<WebElement> getElements() {
+      return elements;
+    }
+  }
+
   private static class NoSuchElementError extends Error {
     private NoSuchElementError(String message, Throwable throwable) {
       super(message, throwable);
     }
   }
+
 }
