@@ -63,7 +63,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
 
   protected void process(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    response.setContentType("text/html");
+    response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.setStatus(200);
     JSONObject res;
@@ -165,7 +165,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
   private List<String> getExtraMethodsRequested(JSONObject request) {
     List<String> res = new ArrayList<String>();
 
-    for (Iterator iterator = request.keys(); iterator.hasNext();) {
+    for (Iterator<?> iterator = request.keys(); iterator.hasNext();) {
       String key = (String) iterator.next();
       if (!"id".equals(key)) {
         res.add(key);

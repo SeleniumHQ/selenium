@@ -59,7 +59,7 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
 
   protected void process(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    response.setContentType("text/html");
+    response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.setStatus(200);
     JSONObject res;
