@@ -48,7 +48,7 @@ namespace OpenQA.Selenium.Safari.Internal
         public WebSocketServer(int port, string location)
         {
             var uri = new Uri(location);
-            this.Port = uri.Port > 0 ? uri.Port : port;
+            this.Port = port > 0 ? port : uri.Port;
             this.Location = location;
             this.scheme = uri.Scheme;
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
