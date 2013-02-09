@@ -400,8 +400,20 @@
       assertTrue(isShown(negativeParentButItemShown));
     }
     function testElementWithZeroHeightAndWidthIsNotVisible() {
-      var zeroHeighWidth= findElement({id: "bug5022"});
+      var zeroHeighWidth = findElement({id: "bug5022"});
       assertFalse(isShown(zeroHeighWidth));
+    }
+    function testChildOfAnElementWithZeroHeightAndWidthAndOverflowHiddenIsNotVisible() {
+      var child = findElement({id: "bug5140-1-child"});
+      assertFalse(isShown(child));
+    }
+    function testFarShiftedChildOfAnElementWitOverflowHiddenIsNotVisible() {
+      var child = findElement({id: "bug5140-2-child"});
+      assertFalse(isShown(child));
+    }
+    function testNotFarShiftedChildOfAnElementWitOverflowHiddenIsVisible() {
+      var child = findElement({id: "bug5140-3-child"});
+      assertTrue(isShown(child));
     }
   </script>
 
@@ -592,5 +604,8 @@
       <a href='http://www.google.com' id="click">second</a>
 </div>
 <div id='bug5022' style="overflow:hidden; height:0; width:0;">This is a zero height/width div and overflow hidden</div>
+<div id='bug5140-1' style="overflow:hidden; height:0; width:0;"><div id='bug5140-1-child' style="height:25px; width:25px;">.</div></div>
+<div id='bug5140-2' style="overflow:hidden; height:50px; width:50px;"><div id='bug5140-2-child' style="height:25px; width:25px; margin:50px; background-color:red;">.</div></div>
+<div id='bug5140-3' style="overflow:hidden; height:50px; width:50px;"><div id='bug5140-3-child' style="height:25px; width:25px; margin:49px; background-color:red;">.</div></div>
 </body>
 </html>
