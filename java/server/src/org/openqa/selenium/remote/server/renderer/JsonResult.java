@@ -16,6 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.renderer;
 
+import java.nio.ByteBuffer;
+
 import com.google.common.base.Charsets;
 
 import org.openqa.selenium.remote.BeanToJsonConverter;
@@ -41,7 +43,9 @@ public class JsonResult implements Renderer {
     Object result = request.getAttribute(propertyName);
 
     String json = new BeanToJsonConverter().convert(result);
-    byte[] data = Charsets.UTF_8.encode(json).array();
+    ByteBuffer bb = Charsets.UTF_8.encode(json);
+    byte[] data = new byte[bb.remaining()];
+    bb.get(data);
 
     response.setContentType("application/json");
     response.setEncoding(Charsets.UTF_8);
