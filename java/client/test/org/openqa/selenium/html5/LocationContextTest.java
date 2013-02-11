@@ -20,14 +20,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-import java.util.logging.Logger;
-
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeTrue;
 
 public class LocationContextTest  extends JUnit4TestBase {
-  private static final Logger logger = Logger.getLogger(LocationContextTest.class.getName());
 
   @Before
   public void hasLocationContext() {

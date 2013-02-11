@@ -46,7 +46,7 @@ public class ManifestServlet extends HttpServlet {
     } catch (IOException e) {
       throw new ServletException("Failed to read cache-manifest file: " + manifestPath);
     } finally {
-      Closeables.closeQuietly(is);
+      Closeables.close(is, true);
     }
 
     response.setContentType("text/cache-manifest");

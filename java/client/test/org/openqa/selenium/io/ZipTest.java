@@ -175,7 +175,7 @@ public class ZipTest {
     }
     FileOutputStream fos = new FileOutputStream(file);
     fos.write("".getBytes());
-    Closeables.closeQuietly(fos);
+    Closeables.close(fos, true);
 
     assertTrue(file.exists());
   }

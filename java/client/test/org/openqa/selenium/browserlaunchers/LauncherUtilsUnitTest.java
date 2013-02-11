@@ -442,7 +442,7 @@ public class LauncherUtilsUnitTest {
 
   private String getFileContent(String path) {
     File f = new File(path);
-    FileInputStream input;
+    FileInputStream input = null;
     try {
       input = new FileInputStream(f);
       byte buf[] = new byte[2048];
@@ -450,6 +450,14 @@ public class LauncherUtilsUnitTest {
       return new String(buf, 0, len);
     } catch (Exception e) {
       throw new RuntimeException(e);
+    } finally {
+      if (input != null) {
+        try {
+          input.close();
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+      }
     }
   }
 }

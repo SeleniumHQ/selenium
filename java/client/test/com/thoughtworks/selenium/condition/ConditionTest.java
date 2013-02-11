@@ -135,7 +135,6 @@ public class ConditionTest {
   @Test
   public void testCanLateNotifyOfSeleniumExceptionAfterTimeout() throws Exception {
     long start = System.currentTimeMillis();
-    final int[] time = new int[1];
     JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 5000);
     try {
       conditionRunner1.waitFor(new Condition() {

@@ -52,7 +52,6 @@ public class ClickTest extends JUnit4TestBase {
   @After
   public void tearDown() throws Exception {
     driver.switchTo().defaultContent();
-    System.out.println(driver.manage().window().getSize());
   }
 
   @Test

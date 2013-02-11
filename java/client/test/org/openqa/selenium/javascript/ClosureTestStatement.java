@@ -52,7 +52,7 @@ public class ClosureTestStatement extends Statement {
     }
     
     while (!getBoolean(executor, Query.IS_FINISHED)) {
-      long elapsedTime = stopwatch.elapsedTime(TimeUnit.SECONDS);
+      long elapsedTime = stopwatch.elapsed(TimeUnit.SECONDS);
       if (timeoutSeconds > 0 && elapsedTime > timeoutSeconds) {
         throw new JavaScriptAssertionError("Tests timed out after " + elapsedTime + " s");
       }

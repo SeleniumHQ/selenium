@@ -30,7 +30,7 @@ public class Utf8Servlet extends HttpServlet {
           request.getPathInfo() + ", servlet path: " + request.getServletPath() +
           " and context path: " + request.getContextPath());
     } finally {
-      Closeables.closeQuietly(is);
+      Closeables.close(is, true);
     }
 
     response.setContentType("text/html; charset=UTF-8");
