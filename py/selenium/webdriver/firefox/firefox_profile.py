@@ -172,8 +172,8 @@ class FirefoxProfile(object):
             raise WebDriverException("Port needs to be an integer")
         try:
             port = int(port)
-            if port < 1 or port > :
-                raise WebDriverException("Port number cannot be negative")
+            if port < 1 or port > 65535:
+                raise WebDriverException("Port number must be in the range 1..65535")
         except (ValueError, TypeError) as e:
             raise WebDriverException("Port needs to be an integer")
         self._port = port
