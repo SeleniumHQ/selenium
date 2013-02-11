@@ -149,12 +149,23 @@ describe "Selenium::WebDriver::TargetLocator" do
 
         text.should == "cheese"
       end
+
+      it "raises when calling #text on a closed alert" do
+        driver.navigate.to url_for("alerts.html")
+        driver.find_element(:id => "alert").click
+
+        alert = wait_for_alert
+        alert.accept
+
+        expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoAlertPresentError)
+      end
+
     end
 
     not_compliant_on :browser => [:ie, :opera, :iphone, :safari, :phantomjs] do
       it "raises NoAlertOpenError if no alert is present" do
         lambda { driver.switch_to.alert }.should raise_error(
-          Selenium::WebDriver::Error::NoAlertOpenError, /alert|modal dialog/i)
+          Selenium::WebDriver::Error::NoAlertPresentError, /alert|modal dialog/i)
       end
     end
 
