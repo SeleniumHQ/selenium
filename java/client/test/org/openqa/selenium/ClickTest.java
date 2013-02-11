@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +32,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -50,6 +53,7 @@ public class ClickTest extends JUnit4TestBase {
   @After
   public void tearDown() throws Exception {
     driver.switchTo().defaultContent();
+    System.out.println(driver.manage().window().getSize());
   }
 
   @Test
@@ -180,10 +184,17 @@ public class ClickTest extends JUnit4TestBase {
   @Test
   public void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);
-    int windowHandlesBefore = driver.getWindowHandles().size();
+    String current = driver.getWindowHandle();
+    Set<String> currentWindowHandles = driver.getWindowHandles();
 
-    driver.findElement(By.id("new-window")).click();
-    waitFor(windowHandleCountToBe(driver, windowHandlesBefore + 1));
+    try {
+      driver.findElement(By.id("new-window")).click();
+      String newWindowHandle = waitFor(newWindowIsOpened(driver, currentWindowHandles));
+      driver.switchTo().window(newWindowHandle);
+      driver.close();
+    } finally {
+      driver.switchTo().window(current);
+    }
   }
 
   @Ignore
