@@ -106,26 +106,36 @@ namespace OpenQA.Selenium.Remote
                 string payload = commandToExecute.ParametersAsJsonString;
                 byte[] data = Encoding.UTF8.GetBytes(payload);
                 request.ContentType = ContentTypeHeader;
-                System.IO.Stream requestStream = request.GetRequestStream();
+                Stream requestStream = request.GetRequestStream();
                 requestStream.Write(data, 0, data.Length);
                 requestStream.Close();
             }
 
-            return CreateResponse(request);
+            return this.CreateResponse(request);
         }
 
-        private static Response CreateResponse(WebRequest request)
+        private Response CreateResponse(WebRequest request)
         {
             Response commandResponse = new Response();
 
             HttpWebResponse webResponse = null;
             try
             {
-                webResponse = (HttpWebResponse)request.GetResponse();
+                webResponse = request.GetResponse() as HttpWebResponse;
             }
             catch (WebException ex)
             {
-                webResponse = (HttpWebResponse)ex.Response;
+                webResponse = ex.Response as HttpWebResponse;
+                if (ex.Status == WebExceptionStatus.Timeout)
+                {
+                    string timeoutMessage = "The HTTP request to the remote WebDriver server for URL {0} timed out after {1} seconds.";
+                    throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, timeoutMessage, request.RequestUri.AbsoluteUri, this.serverResponseTimeout.TotalSeconds), ex);
+                }
+                else if (ex.Response == null)
+                {
+                    string nullResponseMessage = "A exception with a null response was thrown sending an HTTP request to the remote WebDriver server for URL {0}. The status of the exception was {1}, and the message was: {2}";
+                    throw new WebDriverException(string.Format(nullResponseMessage, request.RequestUri.AbsoluteUri, ex.Status, ex.Message), ex);
+                }
             }
 
             if (webResponse == null)
