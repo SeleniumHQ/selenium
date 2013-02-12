@@ -23,7 +23,7 @@ from selenium.webdriver.common.by import By
 
 def not_available_on_remote(func):
     def testMethod(self):
-        print self.driver
+        print(self.driver)
         if type(self.driver) == 'remote':
             return lambda x: None
         else:
@@ -89,7 +89,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
         for select in [singleSelectValues1]:
             sel = Select(self.driver.find_element(By.NAME, select['name']))
             for x in range(len(select['values'])):
-                print select['values'][x]
+                print(select['values'][x])
                 sel.select_by_visible_text(select['values'][x])
                 self.assertEqual(sel.first_selected_option.text, select['values'][x])
 
@@ -99,7 +99,7 @@ class WebDriverSelectSupportTests(unittest.TestCase):
         for select in [singleSelectValuesWithSpaces]:
             sel = Select(self.driver.find_element(By.NAME, select['name']))
             for x in range(len(select['values'])):
-                print select['values'][x]
+                print(select['values'][x])
                 sel.select_by_visible_text(select['values'][x])
                 self.assertEqual(sel.first_selected_option.text, select['values'][x])
 

@@ -117,7 +117,7 @@ def main(argv=None):
 
     server = SimpleWebServer(opts.port)
     server.start()
-    print "Server started on port %s, hit CTRL-C to quit" % opts.port
+    print("Server started on port %s, hit CTRL-C to quit" % opts.port)
     try:
         while 1:
             sleep(0.1)
