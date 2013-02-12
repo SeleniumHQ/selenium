@@ -20,7 +20,10 @@ import os
 import unittest
 import zipfile
 
-from cStringIO import StringIO
+try:
+    from io import BytesIO
+except ImportError:
+    from cStringIO import StringIO as BytesIO
 from selenium import webdriver
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
@@ -59,7 +62,7 @@ class TestFirefoxProfile:
 
         encoded = profile.encoded
         decoded = base64.decodestring(encoded)
-        fp = StringIO(decoded)
+        fp = BytesIO(decoded)
         zip = zipfile.ZipFile(fp, "r")
         for entry in zip.namelist():
             if entry.endswith("user.js"):
@@ -83,7 +86,7 @@ class TestFirefoxProfile:
 
         encoded = profile.encoded
         decoded = base64.decodestring(encoded)
-        fp = StringIO(decoded)
+        fp = BytesIO(decoded)
         zip = zipfile.ZipFile(fp, "r")
         for entry in zip.namelist():
             if entry.endswith("user.js"):

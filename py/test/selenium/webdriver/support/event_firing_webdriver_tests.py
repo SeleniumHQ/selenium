@@ -15,7 +15,10 @@
 # limitations under the License.
 
 import unittest
-from cStringIO import StringIO
+try:
+    from io import BytesIO
+except ImportError:
+    from cStringIO import StringIO as BytesIO
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -26,7 +29,7 @@ from selenium.webdriver.support.events import EventFiringWebDriver, \
 class EventFiringWebDriverTests(unittest.TestCase):
 
     def setup_method(self, method):
-        self.log = StringIO()
+        self.log = BytesIO()
         
     def test_should_fire_navigation_events(self):
         log = self.log 
