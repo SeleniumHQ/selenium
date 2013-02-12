@@ -15,10 +15,10 @@ limitations under the License.
 """
 
 import unittest
-import test_ajax_jsf
-import test_default_server
-import test_google
-import test_i18n
+from . import test_ajax_jsf
+from . import test_default_server
+from . import test_google
+from . import test_i18n
 import sys
 
 def suite():
