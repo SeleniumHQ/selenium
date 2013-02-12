@@ -24,7 +24,6 @@ try:
     from urllib import request as urllib_request
 except ImportError:
     import urllib as urllib_request
-
 try:
     from http.server import BaseHTTPRequestHandler, HTTPServer
 except ImportError:
