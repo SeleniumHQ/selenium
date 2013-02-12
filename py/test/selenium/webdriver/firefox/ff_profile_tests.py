@@ -79,7 +79,7 @@ class TestFirefoxProfile:
         self.driver.quit()
 
         profile = webdriver.FirefoxProfile()
-        profile.set_preference("sample.preference.2", u"hi there")
+        profile.set_preference('sample.preference.2', 'hi there')
         profile.update_preferences()
 
         assert '"hi there"' == profile.default_preferences["sample.preference.2"]
