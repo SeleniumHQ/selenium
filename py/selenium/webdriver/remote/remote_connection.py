@@ -378,9 +378,9 @@ class RemoteConnection(object):
                                           "%s://%s" % (parsed_url.scheme, netloc),
                                           parsed_url.username,
                                           parsed_url.password)
-            request = Request(cleaned_url, data=data, method=method)
+            request = Request(cleaned_url, data=data.encode('utf-8'), method=method)
         else:
-            request = Request(url, data=data, method=method)
+            request = Request(url, data=data.encode('utf-8'), method=method)
 
         request.add_header('Accept', 'application/json')
         request.add_header('Content-Type', 'application/json;charset=UTF-8')
@@ -396,8 +396,8 @@ class RemoteConnection(object):
         try:
             if response.code > 399 and response.code < 500:
                 return {'status': response.code, 'value': response.read()}
-            body = response.read().replace('\x00', '').strip()
-            content_type = response.info().getheader('Content-Type') or []
+            body = response.read().decode('utf-8').replace('\x00', '').strip()
+            content_type = response.info()['Content-Type'] or []
             if 'application/json' in content_type:
                 data = utils.load_json(body.strip())
                 assert type(data) is dict, (
