@@ -51,9 +51,9 @@ class EventFiringWebDriver(object):
             
             class MyListener(AbstractEventListener):
                 def before_navigate_to(self, url, driver):
-                    print "Before navigate to %s" % url
+                    print("Before navigate to %s" % url)
                 def after_navigate_to(self, url, driver):
-                    print "After navigate to %s" % url
+                    print("After navigate to %s" % url)
             
             driver = Firefox()
             ef_driver = EventFiringWebDriver(driver, MyListener())
