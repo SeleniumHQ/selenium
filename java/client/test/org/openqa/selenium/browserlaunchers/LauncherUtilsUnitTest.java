@@ -18,20 +18,23 @@ limitations under the License.
 
 package org.openqa.selenium.browserlaunchers;
 
+import com.google.common.base.Throwables;
+import com.google.common.io.Files;
+
+import org.junit.Test;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.AVOIDING_PROXY;
 import static org.openqa.selenium.remote.CapabilityType.ForSeleniumServer.ONLY_PROXYING_SELENIUM_TRAFFIC;
-
-import org.junit.Test;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class LauncherUtilsUnitTest {
 
@@ -441,23 +444,10 @@ public class LauncherUtilsUnitTest {
   }
 
   private String getFileContent(String path) {
-    File f = new File(path);
-    FileInputStream input = null;
     try {
-      input = new FileInputStream(f);
-      byte buf[] = new byte[2048];
-      int len = input.read(buf);
-      return new String(buf, 0, len);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    } finally {
-      if (input != null) {
-        try {
-          input.close();
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-      }
+      return Files.toString(new File(path), Charset.defaultCharset());
+    } catch (IOException e) {
+      throw Throwables.propagate(e);
     }
   }
 }
