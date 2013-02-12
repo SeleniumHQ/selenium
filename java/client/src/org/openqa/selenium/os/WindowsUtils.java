@@ -109,7 +109,7 @@ public class WindowsUtils {
      * quote (\"?)
      */
     // TODO We should be careful, in case Windows has ~1-ified the executable name as well
-    pattern.append("\"?.*?\\\\");
+    pattern.append("(\"?.*?\\\\)?");
     String execName = executable.getName();
     pattern.append(execName);
     if (!execName.endsWith(".exe")) {
