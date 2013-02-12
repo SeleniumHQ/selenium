@@ -37,7 +37,7 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         result = self.driver.execute_script("return document.getElementsByName('checky').length")
 
         self.assertTrue(type(result) == int)
-        self.assertTrue(long(result) > 1)
+        self.assertTrue(int(result) > 1)
   
 
     #@Ignore(SELENESE)
@@ -87,11 +87,11 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         self.assertTrue(type(result) == list)
         self.assertTrue(expectedResult, result)
   
-    def testPassingAndReturningALongShouldReturnAWholeNumber(self): 
+    def testPassingAndReturningAnIntShouldReturnAWholeNumber(self): 
         self._loadPage("javascriptPage")
-        expectedResult = 1L
+        expectedResult = 1
         result = self.driver.execute_script("return arguments[0]", expectedResult)
-        self.assertTrue((type(result) == int or type(result) == long))
+        self.assertTrue((type(result) == int))
         self.assertEqual(expectedResult, result)
   
 
@@ -151,7 +151,7 @@ class ExecutingJavaScriptTests(unittest.TestCase):
     def testShouldBeAbleToPassAnArrayAsArgument(self): 
         self._loadPage("javascriptPage")
         array = ["zero", 1, True, 3.14159]
-        length = long(self.driver.execute_script("return arguments[0].length", array))
+        length = int(self.driver.execute_script("return arguments[0].length", array))
         self.assertEqual(len(array), length)
   
 
@@ -161,7 +161,7 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         collection.append("Cheddar")
         collection.append("Brie")
         collection.append(7)
-        length = long(self.driver.execute_script("return arguments[0].length", collection))
+        length = int(self.driver.execute_script("return arguments[0].length", collection))
         self.assertEqual(len(collection), length)
 
         collection = []
@@ -169,7 +169,7 @@ class ExecutingJavaScriptTests(unittest.TestCase):
         collection.append("Stilton")
         collection.append("Stilton")
         collection.append(True)
-        length = long(self.driver.execute_script("return arguments[0].length", collection))
+        length = int(self.driver.execute_script("return arguments[0].length", collection))
         self.assertEqual(len(collection), length)
   
     def testShouldThrowAnExceptionIfAnArgumentIsNotValid(self): 
