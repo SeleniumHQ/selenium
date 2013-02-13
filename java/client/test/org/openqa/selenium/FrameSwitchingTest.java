@@ -436,7 +436,12 @@ public class FrameSwitchingTest extends JUnit4TestBase {
         input.sendKeys("rand" + new Random().nextInt());
         submit.click();
       } finally {
-        assertEquals(baseUrl + "bug4876_iframe.html", driver.getCurrentUrl());
+        String url = driver.getCurrentUrl();
+        // IE6 and Chrome add "?"-symbol to the end of the URL
+        if (url.endsWith("?")) {
+          url = url.substring(0, url.length()-1);
+        }
+        assertEquals(baseUrl + "bug4876_iframe.html", url);
       }
     }
   }
