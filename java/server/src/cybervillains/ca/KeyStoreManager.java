@@ -105,20 +105,42 @@ public class KeyStoreManager {
     this.certificateRevocationList = certificateRevocationList;
 
     ConfigurableProvider bcProv = new BouncyCastleProvider();
-    DHParameterSpec  dhSpec = new DHParameterSpec(
-            new BigInteger("f7e1a085d69b3ddecbbcab5c36b857b97994afbbfa3aea82f95"
-                + "74c0b3d0782675159578ebad4594fe67107108180b449167123e84c28161"
-                + "3b7cf09328cc8a6e13c167a8b547c8d28e0a3ae1e2bb3a675916ea37f0bf"
-                + "a213562f1fb627a01243bcca4f1bea8519089a883dfe15ae59f06928b665"
-                + "e807b552564014c3bfecf492a", 16),
-            new BigInteger("fd7f53811d75122952df4a9c2eece4e7f611b7523cef4400c31"
-                + "e3f80b6512669455d402251fb593d8d58fabfc5f5ba30f6cb9b556cd7813"
-                + "b801d346ff26660b76b9950a5a49f9fe8047b1022c24fbba9d7feb7c61bf"
-                + "83b57e7c6a8a6150f04fb83f6d3c51ec3023554135a169132f675f3ae2b6"
-                + "1d72aeff22203199dd14801c7", 16),
-            512);
 
-    bcProv.setParameter(ConfigurableProvider.DH_DEFAULT_PARAMS, dhSpec);
+    DHParameterSpec dhSpec512 = new DHParameterSpec(
+        new BigInteger("fca682ce8e12caba26efccf7110e526db078b05edecbcd1eb4a208f"
+            + "3ae1617ae01f35b91a47e6df63413c5e12ed0899bcd132acd50d99151bdc43ee"
+            + "737592e17", 16),
+        new BigInteger("678471b27a9cf44ee91a49c5147db1a9aaf244f05a434d6486931d2"
+            + "d14271b9e35030b71fd73da179069b32e2935630e1c2062354d0da20a6c416e5"
+            + "0be794ca4", 16),
+        384);
+
+    DHParameterSpec dhSpec768 = new DHParameterSpec(
+        new BigInteger("e9e642599d355f37c97ffd3567120b8e25c9cd43e927b3a9670fbec"
+            + "5d890141922d2c3b3ad2480093799869d1e846aab49fab0ad26d2ce6a22219d4"
+            + "70bce7d777d4a21fbe9c270b57f607002f3cef8393694cf45ee3688c11a8c56a"
+            + "b127a3daf", 16),
+        new BigInteger("30470ad5a005fb14ce2d9dcd87e38bc7d1b1c5facbaecbe95f190aa"
+            + "7a31d23c4dbbcbe06174544401a5b2c020965d8c2bd2171d3668445771f74ba0"
+            + "84d2029d83c1c158547f3a9f1a2715be23d51ae4d3e5a1f6a7064f316933a346"
+            + "d3f529252", 16),
+        384);
+
+    DHParameterSpec dhSpec1024 = new DHParameterSpec(
+        new BigInteger("f7e1a085d69b3ddecbbcab5c36b857b97994afbbfa3aea82f9574c0"
+            + "b3d0782675159578ebad4594fe67107108180b449167123e84c281613b7cf093"
+            + "28cc8a6e13c167a8b547c8d28e0a3ae1e2bb3a675916ea37f0bfa213562f1fb6"
+            + "27a01243bcca4f1bea8519089a883dfe15ae59f06928b665e807b552564014c3"
+            + "bfecf492a", 16),
+        new BigInteger("fd7f53811d75122952df4a9c2eece4e7f611b7523cef4400c31e3f8"
+            + "0b6512669455d402251fb593d8d58fabfc5f5ba30f6cb9b556cd7813b801d346"
+            + "ff26660b76b9950a5a49f9fe8047b1022c24fbba9d7feb7c61bf83b57e7c6a8a"
+            + "6150f04fb83f6d3c51ec3023554135a169132f675f3ae2b61d72aeff22203199"
+            + "dd14801c7", 16),
+        512);
+
+    bcProv.setParameter(ConfigurableProvider.DH_DEFAULT_PARAMS,
+        new DHParameterSpec[] { dhSpec512, dhSpec768, dhSpec1024 });
 
     Security.insertProviderAt((Provider) bcProv, 2);
 
