@@ -820,14 +820,25 @@ goog.inherits(webdriver.promise.ControlFlow, webdriver.EventEmitter);
  */
 webdriver.promise.ControlFlow.defaultTimer = (function() {
   // The default timer functions may be defined as free variables for the
-  // current context. Also, we need to bind the timer functions so we do
-  // not get "TypeError: Illegal invocation" errors.
+  // current context, so do not reference them using "window" or
+  // "goog.global".  Also, we must invoke them in a closure, and not using
+  // bind(), so we do not get "TypeError: Illegal invocation" (WebKit) or
+  // "Invalid calling object" (IE) errors.
   return {
-    clearInterval: goog.bind(clearInterval, null),
-    clearTimeout: goog.bind(clearTimeout, null),
-    setInterval: goog.bind(setInterval, null),
-    setTimeout: goog.bind(setTimeout, null)
+    clearInterval: wrap(clearInterval),
+    clearTimeout: wrap(clearTimeout),
+    setInterval: wrap(setInterval),
+    setTimeout: wrap(setTimeout)
   };
+
+  function wrap(fn) {
+    return function() {
+      // Cannot use .call() or .apply() since we do not know which variable
+      // the function is bound to, and using the wrong one will generate
+      // an error.
+      return fn(arguments[0], arguments[1]);
+    };
+  }
 })();
 
 
