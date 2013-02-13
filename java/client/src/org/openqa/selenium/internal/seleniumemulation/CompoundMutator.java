@@ -58,12 +58,15 @@ public class CompoundMutator implements ScriptMutator {
     addMutator(new FunctionDeclaration("selenium.page",
         "if (!selenium.browserbot) { selenium.browserbot = {} }; return selenium.browserbot;"));
     addMutator(new FunctionDeclaration("selenium.browserbot.getCurrentWindow", "return window;"));
+    addMutator(new FunctionDeclaration("selenium.browserbot.getUserWindow", "return window;"));
     addMutator(new FunctionDeclaration("selenium.page().getCurrentWindow", "return window;"));
     addMutator(new FunctionDeclaration("selenium.browserbot.getDocument", "return document;"));
     addMutator(new FunctionDeclaration("selenium.page().getDocument", "return document;"));
 
     JavascriptLibrary library = new JavascriptLibrary();
 
+    addMutator(new SeleniumMutator("selenium.getText",
+        library.getSeleniumScript("getText.js")));
     addMutator(new SeleniumMutator("selenium.isElementPresent",
         library.getSeleniumScript("isElementPresent.js")));
     addMutator(new SeleniumMutator("selenium.isTextPresent",
