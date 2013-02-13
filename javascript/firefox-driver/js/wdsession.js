@@ -188,13 +188,25 @@ wdSession.prototype.getWindow = function() {
   try {
     // if there is a set frame, try to get its window
     if (this.frame_) {
-      win = this.frame_.get().contentWindow;
-    } else if (this.window_) {
-      win = this.window_.get();
+      var frame = this.frame_.get()
+      if (frame) {
+        win = frame.contentWindow;
+      }
     }
   } catch (ex) {
     fxdriver.logging.error(ex);
     // ignore exception and try other way
+  }
+
+  if (!win) {
+    try {
+      if (this.window_) {
+        win = this.window_.get();
+      }
+    } catch (ex) {
+      fxdriver.logging.error(ex);
+      // ignore exception and try other way
+    }
   }
 
   if (!win || !win.document) {
