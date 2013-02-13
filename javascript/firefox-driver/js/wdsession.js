@@ -82,6 +82,13 @@ wdSession.prototype.window_ = null;
 
 
 /**
+ * The frame containing the content window this session is currently focused on.
+ * @private
+ */
+wdSession.prototype.frame_ = null;
+
+
+/**
  * The current user input speed setting for this session.
  * @type {number}
  * @private
@@ -179,7 +186,10 @@ wdSession.prototype.getChromeWindow = function() {
 wdSession.prototype.getWindow = function() {
   var win;
   try {
-    if (this.window_) {
+    // if there is a set frame, try to get its window
+    if (this.frame_) {
+      win = this.frame_.get().contentWindow;
+    } else if (this.window_) {
       win = this.window_.get();
     }
   } catch (ex) {
@@ -188,8 +198,10 @@ wdSession.prototype.getWindow = function() {
   }
 
   if (!win || !win.document) {
-    // Uh-oh, we lost our DOM! Try to recover by changing focus to the
-    // main content window.
+    // Uh-oh, we lost our DOM! Try to recover by changing focus to the main
+    // content window. Note: this will cause problems in case the lost DOM
+    // was under a frame.
+    fxdriver.logging.error("Lost DOM in window " + win);
     win = this.chromeWindow_.getBrowser().contentWindow;
     this.setWindow(win);
   }
@@ -220,6 +232,8 @@ wdSession.prototype.setChromeWindow = function(win) {
  * @param {nsIDOMWindow} win The new window.
  */
 wdSession.prototype.setWindow = function(win) {
+  // reset the frame if the window is being set directly
+  this.frame_ = null;
   this.window_ = Components.utils.getWeakReference(win);
 
   // Our other means of testing for window unloads rely on window.closed, which
@@ -242,6 +256,16 @@ wdSession.prototype.setWindow = function(win) {
   win.addEventListener('unload',
                         handler,
                         /*useCapture=*/true);
+};
+
+
+/**
+ * Set this session's current frame.
+ * Setting the frame by its element was chosen, since weak references to the window can be unreferenced.
+ * @param frameElement The frame element.
+ */
+wdSession.prototype.setFrame = function(frameElement) {
+  this.frame_ = Components.utils.getWeakReference(frameElement);
 };
 
 

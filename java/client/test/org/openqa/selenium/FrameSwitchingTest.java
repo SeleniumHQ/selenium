@@ -17,14 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.Random;
+
 import org.junit.After;
 import org.junit.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -38,7 +39,6 @@ import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
@@ -421,6 +421,26 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertTrue((Boolean) executor.executeScript("return window == window.top"));
     driver.switchTo().frame("third");
     assertTrue((Boolean) executor.executeScript("return window != window.top"));
+  }
+
+  @Test
+  public void testShouldNotSwitchMagicallyToTheTopWindow() {
+    String baseUrl = appServer.whereIs("frame_switching_tests/");
+    driver.get(baseUrl + "bug4876.html");
+    driver.switchTo().frame(0);
+    waitFor(elementToExist(driver, "inputText"));
+
+    for (int i = 0; i < 20; i++) {
+      try {
+        WebElement input = driver.findElement(By.id("inputText"));
+        WebElement submit = driver.findElement(By.id("submitButton"));
+        input.clear();
+        input.sendKeys("rand" + new Random().nextInt());
+        submit.click();
+      } finally {
+        assertEquals(baseUrl + "bug4876_iframe.html", driver.getCurrentUrl());
+      }
+    }
   }
 
   private void assertFrameNotPresent(WebDriver driver, String locator) {
