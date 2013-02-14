@@ -12,7 +12,10 @@ js_library(
 
 node_module(
   name = "selenium-webdriver",
-  srcs = [ "selenium-webdriver/*.js" ],
+  srcs = [
+    "selenium-webdriver/*.js",
+    "selenium-webdriver/package.json",
+  ],
   deps = [
     ":node_lib",
     "//javascript/webdriver:webdriver_lib",
