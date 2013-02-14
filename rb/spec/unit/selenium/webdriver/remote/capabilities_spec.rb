@@ -105,6 +105,10 @@ module Selenium
           caps = Capabilities.new(:browser_name => "firefox", :custom_capability => true)
           caps.should == Capabilities.json_create(caps.as_json)
         end
+
+        it 'does not camel case the :firefox_binary capability' do
+          Capabilities.new(:firefox_binary => "/foo/bar").as_json.should include('firefox_binary')
+        end
       end
     end
   end

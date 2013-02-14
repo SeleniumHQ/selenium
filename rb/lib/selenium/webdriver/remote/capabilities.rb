@@ -219,8 +219,8 @@ module Selenium
               hash['firefox_profile'] = value.as_json['zip'] if value
             when :proxy
               hash['proxy'] = value.as_json if value
-            when String
-              hash[key] = value
+            when String, :firefox_binary
+              hash[key.to_s] = value
             when Symbol
               hash[camel_case(key.to_s)] = value
             else
