@@ -1,0 +1,5 @@
+v2.29.0
+=======
+
+* Initial release for npm:
+  npm install selenium-webdriver

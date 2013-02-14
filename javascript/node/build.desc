@@ -13,6 +13,7 @@ js_library(
 node_module(
   name = "selenium-webdriver",
   srcs = [
+    "selenium-webdriver/CHANGELOG",
     "selenium-webdriver/*.js",
     "selenium-webdriver/package.json",
   ],

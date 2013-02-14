@@ -196,8 +196,10 @@ function processSrcs(filePaths, outputDirPath) {
 
     var contents = fs.readFileSync(filePath, 'utf8');
 
-    if (path.basename(filePath) !== '_base.js' &&
-        path.basename(filePath) !== 'package.json') {
+    var basename = path.basename(filePath);
+    if (basename !== 'CHANGELOG' &&
+        basename !== '_base.js' &&
+        basename !== 'package.json') {
       vm.runInContext(contents, closure, filePath);
     }
 
