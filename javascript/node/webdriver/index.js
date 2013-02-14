@@ -24,6 +24,9 @@ exports.ActionSequence = base.require('webdriver.ActionSequence');
 exports.Builder = base.require('node.Builder');
 exports.Button = base.require('webdriver.Button');
 exports.By = base.require('webdriver.Locator.Strategy');
+exports.Command = base.require('webdriver.Command');
+exports.CommandName = base.require('webdriver.CommandName');
+exports.EventEmitter = base.require('webdriver.EventEmitter');
 exports.Session = base.require('webdriver.Session');
 exports.WebDriver = base.require('webdriver.WebDriver');
 exports.WebElement = base.require('webdriver.WebElement');
@@ -32,10 +35,33 @@ exports.__defineGetter__('Key', function() {
   return base.require('webdriver.Key');
 });
 
-var submodules =
-    ['command', 'error', 'events', 'http', 'promise', 'stacktrace'];
-submodules.forEach(function(submodule) {
-  exports.__defineGetter__(submodule, function() {
-    return require('./' + submodule);
+
+var submodules = {
+  command: {
+    Command: base.require('webdriver.Command'),
+    CommandName: base.require('webdriver.CommandName')
+  },
+  error: {
+    Error: base.require('bot.Error'),
+    ErrorCode: base.require('bot.ErrorCode')
+  },
+  events: {
+    EventEmitter: base.require('webdriver.EventEmitter')
+  },
+  http: {
+    Executor: base.require('webdriver.http.Executor'),
+    Request: base.require('webdriver.http.Request'),
+    Response: base.require('webdriver.http.Response'),
+    HttpClient: base.require('node.http.HttpClient')
+  },
+  promise: base.exportPublicApi('webdriver.promise'),
+  stacktrace: base.exportPublicApi('webdriver.stacktrace')
+};
+
+
+Object.keys(submodules).forEach(function(key) {
+  exports.__defineGetter__(key, function() {
+    return submodules[key];
   });
 });
+
