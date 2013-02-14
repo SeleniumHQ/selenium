@@ -54,7 +54,7 @@ node.http.HttpClient = function(url) {
    */
   this.options_ = {
     host: parsedUrl.hostname,
-    path: parsedUrl.pathname || '/',
+    path: parsedUrl.pathname,
     port: parsedUrl.port
   };
 };
@@ -70,11 +70,18 @@ node.http.HttpClient.prototype.send = function(httpRequest, callback) {
     httpRequest.headers['Content-Type'] = 'application/json;charset=UTF-8';
   }
 
+  var path = this.options_.path;
+  if (path.lastIndexOf('/', 0) === 0 && httpRequest.path[0] === '/') {
+    path += httpRequest.path.substring(1);
+  } else {
+    path += httpRequest.path;
+  }
+
   node.http.HttpClient.sendRequest_({
     method: httpRequest.method,
     host: this.options_.host,
     port: this.options_.port,
-    path: this.options_.path + httpRequest.path,
+    path: path,
     headers: httpRequest.headers
   }, callback, data);
 };
@@ -105,7 +112,7 @@ node.http.HttpClient.sendRequest_ = function(options, callback, opt_data) {
         path: location.pathname + (location.search || ''),
         port: location.port,
         headers: {
-          'Accept': 'application/json'
+          'Accept': 'application/json; charset=utf-8'
         }
       }, callback);
       return;

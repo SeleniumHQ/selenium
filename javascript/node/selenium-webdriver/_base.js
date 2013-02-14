@@ -67,7 +67,7 @@ var closure = vm.createContext({
     loadScript(src);
     return true;
   },
-  CLOSURE_NO_DEPS: true
+  CLOSURE_NO_DEPS: !isDevMode()
 });
 
 loadScript(CLOSURE_BASE_FILE_PATH);

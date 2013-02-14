@@ -22,6 +22,7 @@ goog.provide('node.http.util');
 goog.require('bot.response');
 goog.require('node.http.HttpClient');
 goog.require('webdriver.http.Executor');
+goog.require('webdriver.http.Request');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.promise');
@@ -67,4 +68,26 @@ node.http.util.waitForServer = function(url, timeout) {
         then(function() { return true; },
              function() { return false; });
   }, timeout, 'Timed out waiting for the WebDriver server at ' + url);
+};
+
+
+/**
+ * Polls a URL with GET requests until it returns a 2xx response or the
+ * timeout expires.
+ * @param {string} url The URL to poll.
+ * @param {number} timeout How long to wait, in milliseconds.
+ * @return {!webdriver.promise.Promise} A promise that will resolve when the
+ *     URL responds with 2xx.
+ */
+node.http.util.waitForUrl = function(url, timeout) {
+  var client = new node.http.HttpClient(url);
+  var request = new webdriver.http.Request('GET', '');
+  var sendRequest = client.send.bind(client, request);
+
+  return webdriver.promise.controlFlow().wait(function() {
+      return webdriver.promise.checkedNodeCall(sendRequest).
+          then(function(response) {
+            return response.status > 199 && response.status < 300;
+          });
+  }, timeout, 'Timed out waiting for the URL to return 2xx: ' + url);
 };
