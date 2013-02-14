@@ -172,18 +172,21 @@ function processLibraryFiles(filePaths, contentRoots) {
 function processSrcs(filePaths, outputDirPath) {
   var symbols = {};
   var currentFile;
+
+  function requireSymbol(symbol) {
+    assert.ok(!!PROVIDERS[symbol],
+        'Missing provider for ' + symbol + ' (in ' + currentFile + ')');
+    symbols[symbol] = 1;
+    return {};
+  }
+
   var closure = vm.createContext({
     exports: {},
     require: function(module) {
       assert.strictEqual('./_base', module, 'You may only import "./_base"');
       return {
-        require: function(namespace) {
-          assert.ok(!!PROVIDERS[namespace],
-              'Missing provider for ' + namespace +
-                  ' (in ' + currentFile + ')');
-          symbols[namespace] = 1;
-          return {};
-        }
+        require: requireSymbol,
+        exportPublicApi: requireSymbol
       };
     }
   });
@@ -221,7 +224,7 @@ function copyLibraries(outputDirPath, symbols) {
   var seenFiles = {};
   symbols.forEach(resolveDeps);
 
-  var depsPath = path.join(googDirPath, 'deps.js');
+  var depsPath = path.join(outputDirPath, 'lib', 'deps.js');
   fs.writeFileSync(depsPath, depsFileContents.join('\n') + '\n', 'utf8');
 
   function resolveDeps(symbol) {

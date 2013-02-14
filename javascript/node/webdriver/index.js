@@ -52,7 +52,8 @@ var submodules = {
     Executor: base.require('webdriver.http.Executor'),
     Request: base.require('webdriver.http.Request'),
     Response: base.require('webdriver.http.Response'),
-    HttpClient: base.require('node.http.HttpClient')
+    HttpClient: base.require('node.http.HttpClient'),
+    util: base.require('node.http.util')
   },
   promise: base.exportPublicApi('webdriver.promise'),
   stacktrace: base.exportPublicApi('webdriver.stacktrace')
