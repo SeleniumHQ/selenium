@@ -19,7 +19,7 @@ from __future__ import unicode_literals
 __docformat__ = "restructuredtext en"
 
 try:
-    import http.client
+    import http.client as http_client
 except ImportError:
     import httplib as http_client
 
@@ -206,7 +206,7 @@ class selenium(object):
         self.sessionId = None
 
     def do_command(self, verb, args):
-        conn = httplib.HTTPConnection(self.host, self.port)
+        conn = http_client.HTTPConnection(self.host, self.port)
         try:
             body = 'cmd=' + urllib_parse.quote_plus(unicode(verb).encode('utf-8'))
             for i in range(len(args)):
