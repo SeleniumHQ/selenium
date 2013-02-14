@@ -48,11 +48,11 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
         """GET method handler."""
         try:
             path = self.path[1:].split('?')[0]
-            html = open(os.path.join(HTML_ROOT, path))
+            html = open(os.path.join(HTML_ROOT, path), 'r', encoding='latin-1')
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            self.wfile.write(html.read())
+            self.wfile.write(html.read().encode('utf-8'))
             html.close()
         except IOError:
             self.send_error(404, 'File Not Found: %s' % path)
