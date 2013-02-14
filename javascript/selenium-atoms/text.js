@@ -24,7 +24,6 @@ goog.provide('core.text');
 
 goog.require('bot.dom');
 goog.require('bot.userAgent');
-goog.require('core.locators');
 goog.require('core.patternMatcher');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
@@ -145,6 +144,12 @@ core.text.normalizeSpaces_ = function(text) {
  * @return {string} The text content of the located element.
  */
 core.text.getText = function(locator) {
+  // There's a circular dependency here:
+  // core.text -> core.locators -> core.LocatorStrategies -> core.text.
+  // Do not require core.locators in this file as it is required by
+  // core.LocatorStrategies.  The chain must start with LocatorStrategies to
+  // ensure the "link=" strategy is defined everywhere core is expected to be
+  // used.
   var element = core.locators.findElement(locator);
 
   var text = '';
@@ -215,4 +220,3 @@ core.text.linkLocator = function(locator, opt_doc) {
   }
   return null;
 };
-core.locators.addStrategy('link', core.text.linkLocator);

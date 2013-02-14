@@ -21,6 +21,8 @@
 
 goog.provide('core.patternMatcher');
 
+goog.require('core.Error');
+
 
 
 /**

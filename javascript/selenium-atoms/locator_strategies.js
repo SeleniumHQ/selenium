@@ -25,6 +25,7 @@ goog.require('bot.inject.cache');
 goog.require('bot.locators');
 goog.require('core.Error');
 goog.require('core.filters');
+goog.require('core.text');
 goog.require('goog.string');
 
 
@@ -217,6 +218,7 @@ core.LocatorStrategies['dom'] = core.LocatorStrategies.dom_;
 core.LocatorStrategies['id'] = core.LocatorStrategies.id_;
 core.LocatorStrategies['identifier'] = core.LocatorStrategies.identifier_;
 core.LocatorStrategies['implicit'] = core.LocatorStrategies.implicit_;
+core.LocatorStrategies['link'] = core.text.linkLocator;
 core.LocatorStrategies['name'] = core.LocatorStrategies.name_;
 core.LocatorStrategies['stored'] = core.LocatorStrategies.stored_;
 core.LocatorStrategies['xpath'] = core.LocatorStrategies.xpath_;

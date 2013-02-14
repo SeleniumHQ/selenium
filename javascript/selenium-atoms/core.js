@@ -21,8 +21,8 @@ limitations under the License.
 
 goog.provide('core.Error');
 
-
 goog.require('goog.debug.Error');
+
 
 /**
  * Error extension that indicates that the something has gone awry in Selenium
