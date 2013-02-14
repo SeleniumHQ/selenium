@@ -145,7 +145,7 @@ webdriver.testing.promise.FlowTester.prototype.isDisposed = function() {
  */
 webdriver.testing.promise.FlowTester.prototype.dispose = function() {
   if (!this.isDisposed_) {
-    this.allFlows_.forEach(function(record) {
+    goog.array.forEach(this.allFlows_, function(record) {
       record.flow.reset();
     });
     webdriver.promise.setDefaultFlow(this.originalFlow_);
