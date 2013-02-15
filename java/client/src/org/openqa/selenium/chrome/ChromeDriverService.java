@@ -45,6 +45,12 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_EXE_PROPERTY = "webdriver.chrome.driver";
 
   /**
+   * System property that defines the location of the log that will be written by
+   * the {@link #createDefaultService() default service}.
+   */
+  public final static String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
+
+  /**
    *
    * @param executable The chromedriver executable.
    * @param port Which port to start the chromedriver on.
@@ -80,7 +86,8 @@ public class ChromeDriverService extends DriverService {
     private int port = 0;
     private File exe = null;
     private ImmutableMap<String, String> environment = ImmutableMap.of();
-    private File logFile;
+    String chromeLogFile = System.getProperty(CHROME_DRIVER_LOG_PROPERTY);
+    private File logFile = chromeLogFile == null ? null : new File(chromeLogFile);
 
     /**
      * Sets which driver executable the builder will use.
