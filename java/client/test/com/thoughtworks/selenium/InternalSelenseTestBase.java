@@ -49,6 +49,7 @@ import org.openqa.selenium.v1.SeleniumTestEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import static com.thoughtworks.selenium.BrowserConfigurationOptions.MULTI_WINDOW;
@@ -61,9 +62,11 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
   private static final ThreadLocal<Selenium> instance = new ThreadLocal<Selenium>();
   private static String seleniumServerUrl;
 
+  private static final AtomicBoolean mustBuild = new AtomicBoolean(true);
+
   @BeforeClass
   public static void buildJavascriptLibraries() throws IOException {
-    if (!DevMode.isInDevMode()) {
+    if (!DevMode.isInDevMode() || !mustBuild.compareAndSet(true, false)) {
       return;
     }
 

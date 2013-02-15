@@ -6,6 +6,7 @@
         goog.require('bot.locators');
         goog.require('core.locators');
         goog.require('core.text');
+        goog.require('core.text.getText');
         goog.require('goog.testing.jsunit');
     </script>
 
@@ -36,21 +37,19 @@
         function testCanObtainTextDirectlyFromAnElement() {
           var element = bot.locators.findElement({id: 'text1'});
 
-          assertEquals('Text1', core.text.getText(element));
+          assertEquals('Text1', core.text.getElementText(element));
         }
 
         function testHandlesNbspInTextProperly() {
           var element = bot.locators.findElement({id: 'theSpan'});
 
-          var text = core.text.getText(element);
-
-          assertEquals('this is the span', core.text.getText(element));
+          assertEquals('this is the span', core.text.getElementText(element));
         }
 
         function testCollapsesMultipleNbspsProperly() {
           var element = bot.locators.findElement({id: 'spaces'});
 
-          var text = core.text.getText(element);
+          var text = core.text.getElementText(element);
 
           assertEquals('1 space|2 space|3 space|1 nbsp|2  nbsp|3   nbsp|2  space_nbsp|2  nbsp_space|3   space_nbsp_space|3   nbsp_space_nbsp', text);
         }

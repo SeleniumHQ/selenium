@@ -1465,7 +1465,7 @@ Selenium.prototype.getText = function(locator) {
    * @return string the text of the element
    */
     var element = this.browserbot.findElement(locator);
-    return core.text.getText(element);
+    return core.text.getElementText(element);
 };
 
 Selenium.prototype.doHighlight = function(locator) {

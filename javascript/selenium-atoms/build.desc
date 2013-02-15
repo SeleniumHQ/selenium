@@ -52,7 +52,7 @@ js_fragment(name = "getAttribute",
   srcs = [":deps"])
 
 js_fragment(name = "getText",
-  module = "core.text",
+  module = "core.text.getText",
   function = "core.text.getText",
   srcs = [":deps"])
 
