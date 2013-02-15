@@ -668,6 +668,7 @@ FirefoxDriver.prototype.switchToFrame = function(respond, parameters) {
       // focused on. Setting the window through the contentWindow may cause the
       // window to be prematurely de-referenced. In order to solve that, we set
       // frame element and not the window (if there is one).
+      respond.session.setWindow(newWindow);
       respond.session.setFrame(newWindow.frameElement);
     } else {
       respond.session.setWindow(newWindow);
