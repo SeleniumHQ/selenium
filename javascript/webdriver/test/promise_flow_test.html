@@ -1459,7 +1459,7 @@ limitations under the License.
   function testWaiting_failsIfConditionHasUnhandledRejection() {
     var callbacks = callbackPair(null, assertIsStubError);
     scheduleWait(function() {
-      webdriver.promise.rejected(STUB_ERROR);
+      webdriver.promise.controlFlow().execute(throwStubError);
     }, 0, 'goes boom').then(callbacks.callback, callbacks.errback);
     schedule('post wait');
     run();
@@ -1757,8 +1757,8 @@ limitations under the License.
     d.reject(STUB_ERROR);
     clock.tick(1);
     assertFlowHistory('one');
-    turn();
-    assertIsStubError(flowTester.getFailure());
+    run(null, assertIsStubError);
+    assertFlowHistory('one');
 
     function turn(opt_minusN) {
       var n = webdriver.promise.ControlFlow.EVENT_LOOP_FREQUENCY;
@@ -2087,17 +2087,35 @@ limitations under the License.
     });
 
     flowTester.run();
-    flowTester.verifySuccess(defaultFlow);
-    assertEquals(err, flowTester.getFailure(newFlow));
+    assertEquals(err, flowTester.getFailure(defaultFlow));
+    flowTester.verifySuccess(newFlow);  // Error was transferred to new flow.
   }
 
-  function testDoesNotResolveFrameIfThereArePendingRejections() {
-    var err = Error();
-    var result = webdriver.promise.controlFlow().execute(function() {
-      webdriver.promise.rejected(err);
+  function testFailsIfErrbackThrows() {
+    webdriver.promise.rejected('').then(null, throwStubError);
+    run(null, assertIsStubError);
+  }
+
+  function testFailsIfCallbackReturnsRejectedPromise() {
+    webdriver.promise.resolved().then(function() {
+      return webdriver.promise.rejected(STUB_ERROR);
     });
-    flowTester.turnEventLoop();
-    assertTrue(result.isPending());
+    run(null, assertIsStubError);
+  }
+
+  function testAbortsFrameIfTaskFails() {
+    webdriver.promise.resolved().then(function() {
+      webdriver.promise.controlFlow().execute(throwStubError);
+    });
+    run(null, assertIsStubError);
+  }
+
+  function testAbortsFramePromisedChainedFromTaskIsNotHandled() {
+    webdriver.promise.resolved().then(function() {
+      webdriver.promise.controlFlow().execute(goog.nullFunction).
+          then(throwStubError);
+    });
+    run(null, assertIsStubError);
   }
 </script>
 </body>

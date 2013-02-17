@@ -1152,7 +1152,7 @@ webdriver.promise.ControlFlow.prototype.wait = function(
 
     function pollCondition() {
       var result = self.runInNewFrame_(condition, true);
-      return webdriver.promise.when(result, function(value) {
+      webdriver.promise.asap(result, function(value) {
         var elapsed = goog.now() - startTime;
         if (!!value) {
           waitFrame.isWaiting = false;
@@ -1462,7 +1462,6 @@ webdriver.promise.ControlFlow.prototype.runInNewFrame_ = function(
       this.activeFrame_ = newFrame;
     }
 
-    var pendingRejections = this.pendingRejections_;
     try {
       this.schedulingFrame_ = newFrame;
       webdriver.promise.pushFlow_(this);
@@ -1473,11 +1472,9 @@ webdriver.promise.ControlFlow.prototype.runInNewFrame_ = function(
     }
     newFrame.lockFrame();
 
-    // If there was nothing scheduled in the new frame, and there are no
-    // potentially unhandled rejections, we can discard the frame and return
-    // immediately.
-    if (!newFrame.children_.length &&
-        pendingRejections >= this.pendingRejections_) {
+    // If there was nothing scheduled in the new frame we can discard the
+    // frame and return immediately.
+    if (!newFrame.children_.length) {
       removeNewFrame();
       return result;
     }
