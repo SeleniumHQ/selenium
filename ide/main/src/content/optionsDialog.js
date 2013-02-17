@@ -380,12 +380,15 @@ function showPluginInfo() {
   var pluginInfo = this.plugins.findPlugin(pluginId);
 
   document.getElementById("plugin-name").value = pluginInfo.name;
-  var content = '';
-  content = content + '<description>' + pluginInfo.description + '</description>';
-  content = content + '<separator class="thin"/><description>Version ' + pluginInfo.version + '</description>';
-
-  content = content + '<separator class="thin"/>' + '<description>Created By ' + pluginInfo.creator + '</description>';
-
+  var content = '<description>' + pluginInfo.description + '</description>';
+  content += '<separator class="thin"/><description>Version ' + pluginInfo.version + '</description>';
+  content += '<separator class="thin"/>' + '<description>Created By ' + pluginInfo.creator + '</description>';
+  pluginInfo.developers.forEach(function (developer) {
+    content += '<description>Developed by ' + developer.name + '</description>';
+  });
+  if (pluginInfo.homepageURL && pluginInfo.homepageURL.length > 0) {
+    content += '<label class="text-link" href="' + pluginInfo.homepageURL + '" value="Visit website" />';
+  }
   var infoBox = document.getElementById("plugin-info");
   var xml = '<vbox id="plugin-info" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">' + content + '</vbox>';
   var parser = new DOMParser();

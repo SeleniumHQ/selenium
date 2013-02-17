@@ -49,6 +49,7 @@ limitations under the License.
       <tab label="&options.formats.label;"/>
       <tab label="Plugins"/>
       <tab label="Locator Builders"/>
+      <tab label="WebDriver"/>
     </tabs>
     <tabpanels id="general" flex="1">
       <tabpanel id="generalTab" orient="vertical">
@@ -116,7 +117,7 @@ limitations under the License.
           </splitter>
           <vbox flex="1" width="300">
             <label id="plugin-name"/>
-            <box id="plugin-info"/>
+            <vbox id="plugin-info"/>
             <box id="plugin-config"/>
           </vbox>
         </hbox>
@@ -133,9 +134,22 @@ limitations under the License.
             <label id="locatorBuilder-name"/>
             <box id="locatorBuilder-info"/>
             <box id="locatorBuilder-config"/>
-            <box id="locatorBuilder-help"><description>Drag and drop the locator builders on the left to change their order</description></box>
+            <box id="locatorBuilder-help">
+              <description>Drag and drop the locator builders on the left to change their order</description>
+            </box>
           </vbox>
         </hbox>
+      </tabpanel>
+      <tabpanel orient="vertical" id="webDriverPanel">
+        <description class="tip"></description>
+        <checkbox id="executeUsingWebDriver" label="Enable WebDriver Playback"/>
+        <description class="tip">Changes to this option will be applied after an Selenium IDE restart</description>
+        <description class="tip">WebDriver playback is still an experimental feature and may not be very stable. Please use it for testing Selenium IDE to provide us feedback.</description>
+        <hbox>
+          <textbox id="webDriverBrowserString" multiline="false" flex="1"/>
+        </hbox>
+        <description class="tip">Browser choices: android, chrome, firefox, htmlunit, internet explorer, iPhone, iPad, opera</description>
+        <label class="text-link" href="http://blog.reallysimplethoughts.com/?p=561" value="How to use WebDriver playback?" />
       </tabpanel>
     </tabpanels>
   </tabbox>
