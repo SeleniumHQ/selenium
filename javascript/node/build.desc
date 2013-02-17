@@ -14,6 +14,7 @@ node_module(
   name = "selenium-webdriver",
   srcs = [
     "selenium-webdriver/CHANGELOG",
+    "selenium-webdriver/README.md",
     "selenium-webdriver/*.js",
     "selenium-webdriver/package.json",
   ],

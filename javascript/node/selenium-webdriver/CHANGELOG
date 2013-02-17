@@ -1,3 +1,8 @@
+v2.29.1
+=======
+* Fixed a bug that could lead to an infinite loop.
+* Added a README.md
+
 v2.29.0
 =======
 

@@ -1,6 +1,6 @@
 {
     "name": "selenium-webdriver",
-    "version": "2.29.0",
+    "version": "2.29.1",
     "description": "The official WebDriver JavaScript bindings from the Selenium project",
     "keywords": [
     	"automation",
