@@ -1,6 +1,6 @@
 {
     "name": "selenium-webdriver",
-    "version": "2.29.1",
+    "version": "2.30.0",
     "description": "The official WebDriver JavaScript bindings from the Selenium project",
     "keywords": [
     	"automation",
@@ -10,7 +10,9 @@
     	"webdriverjs"
     ],
     "homepage": "https://code.google.com/p/selenium/",
-    "bugs": "https://code.google.com/p/selenium/issues/list",
+    "bugs": {
+        "url": "https://code.google.com/p/selenium/issues/list"
+    },
     "main": "./index",
     "repository": {
     	"type": "git",
