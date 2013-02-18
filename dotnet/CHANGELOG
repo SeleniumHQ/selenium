@@ -1,3 +1,31 @@
+v2.30.0
+=======
+ * Now using ILMerge for WebDriver.Support.dll. The support library will no
+   longer require an explicit dependency on Castle.Core in its NuGet package.
+   Fixes issue #5177.
+ * Updated .NET dependencies. Json.NET to 4.5r11; Castle.Core to 3.2.0.
+ * Added more diagnostics for failed HTTP requests in .NET bindings. This is an
+   attempt to help diagnose the root cause of issue #3719. Please note that it
+   makes no effort whatsoever to "fix" the issue. This is simply hoping to 
+   provide more information for those who have run into that issue, and see if
+   all occurrances have the same root cause.
+ * Corrected reversed logic in port assignment for .NET SafariDriver's
+   WebSocket server. Fixes issue #5141.
+ * Only adding environment variables for Firefox process if they do not already
+   exist.
+ * Properly passing requireWindowFocus capability when set in .NET bindings.
+   Previously, this capability could be set in InternetExplorerOptions, but
+   it was not being passed through to the driver session.
+ * Deprecated Alert property of UnhandledAlertException in favor of AlertText
+   property.
+ * Made connection to Firefox extension locked by socket lock in .NET. Fixes
+   issue #5089.
+ * Updated .NET bindings to use embedded Safari extension. Separate extension
+   build and installation no longer required.
+ * Updated registry search for Firefox executable in the .NET bindings.
+ * Fixed .NET FileUtilities.FindFile() to expand environment variables and
+   search for invalid characters in PATH directories. Fixes issue #5032.
+
 v2.29.1
 =======
  * Rebuilt to get embedded Firefox extension with correct version. The
