@@ -280,8 +280,7 @@ module CrazyFunDotNet
       unless args[:merge_refs].nil?
         params = ["/t:library",
                  "/xmldocs",
-                 "/align:512",
-				 "/internalize"]
+                 "/align:512"]
         if framework_ver == "net35"
           params << "/v2"
         else
@@ -299,6 +298,17 @@ module CrazyFunDotNet
         target = exec task_name do |cmd|
           puts "Merging: #{task_name} as #{desc_path}"
           FileUtils.mkdir_p output_dir
+          if args[:exclude_merge_types].nil?
+            params << "/internalize"
+          else
+            exclude_types_file = File.join(unmerged_dir, "#{args[:out]}.mergeexclude.txt")
+            f = File.open(exclude_types_file, 'w')
+            args[:exclude_merge_types].each do |exclude_type|
+              f.write exclude_type + "\n"
+            end
+            f.close
+            params << "/internalize:#{exclude_types_file.gsub('/', Platform.dir_separator)}"
+          end
           cmd.command = "third_party/dotnet/ilmerge/ILMerge.exe"
           cmd.parameters = params.join " "
         end
