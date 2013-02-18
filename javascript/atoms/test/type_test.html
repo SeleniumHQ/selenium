@@ -12,6 +12,7 @@
     goog.require('goog.events.EventType');
     goog.require('goog.events.KeyCodes');
     goog.require('goog.testing.AsyncTestCase');
+    goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
   </script>
@@ -46,6 +47,17 @@
         goog.events.listen(input, 'propertychange', incrInputCount);
         goog.events.listen(input, 'textInput', incrTextInputCount);
       }
+    }
+
+    var expectedFailures;
+
+    function setUp() {
+      expectedFailures = new goog.testing.ExpectedFailures();
+    }
+
+
+    function tearDown() {
+      expectedFailures.handleTearDown();
     }
 
     /**
@@ -189,7 +201,7 @@
 
   function testShiftNavigation() {
       // This test will fail on GECKO <= 10 because of irregularities with
-      // the KEYPRESS event. This needs to be investigated, and fixed in 
+      // the KEYPRESS event. This needs to be investigated, and fixed in
       // the atoms.
       if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(11)) {
         return;
@@ -215,7 +227,7 @@
 
     function testShiftDelete() {
       // This test will fail on GECKO <= 10 because of irregularities with
-      // the KEYPRESS event. This needs to be investigated, and fixed in 
+      // the KEYPRESS event. This needs to be investigated, and fixed in
       // the atoms.
       if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(11)) {
         return;
@@ -446,11 +458,19 @@
 
       bot.action.type(textBox, [LEFT, 'ghi', SHIFT, 'j'], keyboard,
                       persitModifierKeys);
-      assertEquals('abcdEGHIj', textBox.value);
-      assertFalse(keyboard.isPressed(ALT));
-      assertFalse(keyboard.isPressed(CONTROL));
-      assertFalse(keyboard.isPressed(META));
-      assertFalse(keyboard.isPressed(SHIFT));
+
+      expectedFailures.expectFailureFor(
+          goog.userAgent.GECKO &&
+              bot.userAgent.isProductVersion(10) &&
+              !bot.userAgent.isProductVersion(17),
+          'Selection is not updated on LEFT while shift is pressed');
+      expectedFailures.run(function() {
+        assertEquals('abcdEGHIj', textBox.value);
+        assertFalse(keyboard.isPressed(ALT));
+        assertFalse(keyboard.isPressed(CONTROL));
+        assertFalse(keyboard.isPressed(META));
+        assertFalse(keyboard.isPressed(SHIFT));
+      });
     }
   </script>
 </head>
