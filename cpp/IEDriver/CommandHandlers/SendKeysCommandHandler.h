@@ -133,6 +133,7 @@ class SendKeysCommandHandler : public IECommandHandler {
           element->click();
           // We're now blocked until the dialog closes.
           ::CloseHandle(thread_handle);
+          response->SetSuccessResponse(Json::Value::null);
           return;
         }
 

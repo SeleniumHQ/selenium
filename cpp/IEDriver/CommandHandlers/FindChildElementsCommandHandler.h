@@ -96,11 +96,11 @@ class FindChildElementsCommandHandler : public IECommandHandler {
         // This code is executed when no elements where found and no errors occurred.
         if (status_code == WD_SUCCESS) {
           response->SetSuccessResponse(found_elements);
-          return;
+        } else {
+          response->SetErrorResponse(status_code, "Finding elements returned an unexpected error");
         }
       } else {
         response->SetErrorResponse(status_code, "Element is no longer valid");
-        return;
       }
     }
   }
