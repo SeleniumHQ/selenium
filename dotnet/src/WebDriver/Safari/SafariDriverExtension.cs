@@ -182,7 +182,7 @@ namespace OpenQA.Selenium.Safari
                 "</plist>"
             };
 
-            string propertyListContent = string.Join("\n", propertyListLines);
+            string propertyListContent = string.Join("\n", propertyListLines.ToArray());
             string propertyListFile = Path.Combine(GetSafariExtensionsDirectory(), "Extensions.plist");
             if (File.Exists(propertyListFile))
             {
