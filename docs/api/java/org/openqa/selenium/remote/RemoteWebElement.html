@@ -302,7 +302,9 @@ implements <a href="../../../../org/openqa/selenium/WebElement.html" title="inte
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteWebElement.html#getLocationOnScreenOnceScrolledIntoView()">getLocationOnScreenOnceScrolledIntoView</a></strong>()</code>
-<div class="block">Use this to discover where on the screen an element is so that we can click it.</div>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>To be removed in 2.31. Use <a href="../../../../org/openqa/selenium/remote/RemoteWebElement.html#getCoordinates()"><code>getCoordinates()</code></a> instead</i></div>
+</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -1098,7 +1100,9 @@ implements <a href="../../../../org/openqa/selenium/WebElement.html" title="inte
 <ul class="blockList">
 <li class="blockList">
 <h4>getLocationOnScreenOnceScrolledIntoView</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;getLocationOnScreenOnceScrolledIntoView()</pre>
+<pre>@Deprecated
+public&nbsp;<a href="../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;getLocationOnScreenOnceScrolledIntoView()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>To be removed in 2.31. Use <a href="../../../../org/openqa/selenium/remote/RemoteWebElement.html#getCoordinates()"><code>getCoordinates()</code></a> instead</i></div>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/internal/Locatable.html#getLocationOnScreenOnceScrolledIntoView()">Locatable</a></code></strong></div>
 <div class="block">Use this to discover where on the screen an element is so that we can click it. This method
  should cause the element to be scrolled into view.</div>

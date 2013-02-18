@@ -176,7 +176,17 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../org/openqa/selenium/Alert.html" title="interface in org.openqa.selenium">Alert</a></code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/UnhandledAlertException.html#getAlert()">getAlert</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/UnhandledAlertException.html#getAlert()">getAlert</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>To be removed in 2.31, use <a href="../../../org/openqa/selenium/UnhandledAlertException.html#getAlertText()"><code>getAlertText()</code></a> instead.</i></div>
+</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/UnhandledAlertException.html#getAlertText()">getAlertText</a></strong>()</code>
+<div class="block">Returns the text of the unhandled alert.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -241,13 +251,26 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="getAlertText()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAlertText</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getAlertText()</pre>
+<div class="block">Returns the text of the unhandled alert.</div>
+</li>
+</ul>
 <a name="getAlert()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getAlert</h4>
-<pre>public&nbsp;<a href="../../../org/openqa/selenium/Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;getAlert()</pre>
+<pre>@Deprecated
+public&nbsp;<a href="../../../org/openqa/selenium/Alert.html" title="interface in org.openqa.selenium">Alert</a>&nbsp;getAlert()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>To be removed in 2.31, use <a href="../../../org/openqa/selenium/UnhandledAlertException.html#getAlertText()"><code>getAlertText()</code></a> instead.</i></div>
+<div class="block">Returns null if alert text could not be retrieved.</div>
 </li>
 </ul>
 </li>

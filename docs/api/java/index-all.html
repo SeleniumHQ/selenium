@@ -985,6 +985,11 @@
 <div class="block">System property that defines the location of the chromedriver executable that will be used by
  the <a href="./org/openqa/selenium/chrome/ChromeDriverService.html#createDefaultService()"><code>default service</code></a>.</div>
 </dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/chrome/ChromeDriverService.html#CHROME_DRIVER_LOG_PROPERTY">CHROME_DRIVER_LOG_PROPERTY</a></span> - Static variable in class org.openqa.selenium.chrome.<a href="./org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a></dt>
+<dd>
+<div class="block">System property that defines the location of the log that will be written by
+ the <a href="./org/openqa/selenium/chrome/ChromeDriverService.html#createDefaultService()"><code>default service</code></a>.</div>
+</dd>
 <dt><a href="./org/openqa/selenium/android/library/ChromeClientWrapper.html" title="class in org.openqa.selenium.android.library"><span class="strong">ChromeClientWrapper</span></a> - Class in <a href="./org/openqa/selenium/android/library/package-summary.html">org.openqa.selenium.android.library</a></dt>
 <dd>
 <div class="block">This class wraps a chrome client that must have the *same* API as
@@ -2038,8 +2043,12 @@
 <dd>
 <div class="block">Enables logging for the given log type at the specified level and above.</div>
 </dd>
-<dt><span class="strong"><a href="./org/openqa/selenium/remote/CapabilityType.html#ENABLE_PERSISTENT_HOVERING">ENABLE_PERSISTENT_HOVERING</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote">CapabilityType</a></dt>
+<dt><span class="strong"><a href="./org/openqa/selenium/ie/InternetExplorerDriver.html#ENABLE_PERSISTENT_HOVERING">ENABLE_PERSISTENT_HOVERING</a></span> - Static variable in class org.openqa.selenium.ie.<a href="./org/openqa/selenium/ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/CapabilityType.html#ENABLE_PERSISTENT_HOVERING">ENABLE_PERSISTENT_HOVERING</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote">CapabilityType</a></dt>
+<dd>
+<div class="block"><span class="strong">Deprecated.</span></div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/CapabilityType.html#ENABLE_PROFILING_CAPABILITY">ENABLE_PROFILING_CAPABILITY</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote">CapabilityType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/internal/Base64Encoder.html#encode(byte[])">encode(byte[])</a></span> - Method in class org.openqa.selenium.internal.<a href="./org/openqa/selenium/internal/Base64Encoder.html" title="class in org.openqa.selenium.internal">Base64Encoder</a></dt>
@@ -2249,8 +2258,13 @@
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/Platform.html#extractFromSysProperty(java.lang.String)">extractFromSysProperty(String)</a></span> - Static method in enum org.openqa.selenium.<a href="./org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></dt>
 <dd>
-<div class="block">Extracts platforms based on system properties in Java and a heuristic to determine the most
- likely operating system.</div>
+<div class="block">Extracts platforms based on system properties in Java and uses a heuristic to determine the
+ most likely operating system.</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/Platform.html#extractFromSysProperty(java.lang.String, java.lang.String)">extractFromSysProperty(String, String)</a></span> - Static method in enum org.openqa.selenium.<a href="./org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></dt>
+<dd>
+<div class="block">Extracts platforms based on system properties in Java and uses a heuristic to determine the
+ most likely operating system.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/browserlaunchers/LauncherUtils.html#extractHTAFile(java.io.File, int, java.lang.String, java.lang.String)">extractHTAFile(File, int, String, String)</a></span> - Static method in class org.openqa.selenium.browserlaunchers.<a href="./org/openqa/selenium/browserlaunchers/LauncherUtils.html" title="class in org.openqa.selenium.browserlaunchers">LauncherUtils</a></dt>
 <dd>&nbsp;</dd>
@@ -2525,6 +2539,10 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/support/events/EventFiringWebDriver.html#findElements(org.openqa.selenium.By)">findElements(By)</a></span> - Method in class org.openqa.selenium.support.events.<a href="./org/openqa/selenium/support/events/EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">EventFiringWebDriver</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#findElements()">findElements()</a></span> - Method in class org.openqa.selenium.support.pagefactory.<a href="./org/openqa/selenium/support/pagefactory/AjaxElementLocator.html" title="class in org.openqa.selenium.support.pagefactory">AjaxElementLocator</a></dt>
+<dd>
+<div class="block">Find the element list.</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/support/pagefactory/ByChained.html#findElements(org.openqa.selenium.SearchContext)">findElements(SearchContext)</a></span> - Method in class org.openqa.selenium.support.pagefactory.<a href="./org/openqa/selenium/support/pagefactory/ByChained.html" title="class in org.openqa.selenium.support.pagefactory">ByChained</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/support/pagefactory/DefaultElementLocator.html#findElements()">findElements()</a></span> - Method in class org.openqa.selenium.support.pagefactory.<a href="./org/openqa/selenium/support/pagefactory/DefaultElementLocator.html" title="class in org.openqa.selenium.support.pagefactory">DefaultElementLocator</a></dt>
@@ -2988,7 +3006,15 @@
  there were no alerts.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/UnhandledAlertException.html#getAlert()">getAlert()</a></span> - Method in exception org.openqa.selenium.<a href="./org/openqa/selenium/UnhandledAlertException.html" title="class in org.openqa.selenium">UnhandledAlertException</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block"><span class="strong">Deprecated.</span>
+<div class="block"><i>To be removed in 2.31, use <a href="./org/openqa/selenium/UnhandledAlertException.html#getAlertText()"><code>UnhandledAlertException.getAlertText()</code></a> instead.</i></div>
+</div>
+</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/UnhandledAlertException.html#getAlertText()">getAlertText()</a></span> - Method in exception org.openqa.selenium.<a href="./org/openqa/selenium/UnhandledAlertException.html" title="class in org.openqa.selenium">UnhandledAlertException</a></dt>
+<dd>
+<div class="block">Returns the text of the unhandled alert.</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/logging/LogEntries.html#getAll()">getAll()</a></span> - Method in class org.openqa.selenium.logging.<a href="./org/openqa/selenium/logging/LogEntries.html" title="class in org.openqa.selenium.logging">LogEntries</a></dt>
 <dd>
 <div class="block">Get the list of all log entries.</div>
@@ -3105,7 +3131,11 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/internal/BuildInfo.html#getBuildRevision()">getBuildRevision()</a></span> - Method in class org.openqa.selenium.internal.<a href="./org/openqa/selenium/internal/BuildInfo.html" title="class in org.openqa.selenium.internal">BuildInfo</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteStatus.html#getBuildRevision()">getBuildRevision()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteStatus.html" title="class in org.openqa.selenium.remote">RemoteStatus</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/internal/BuildInfo.html#getBuildTime()">getBuildTime()</a></span> - Method in class org.openqa.selenium.internal.<a href="./org/openqa/selenium/internal/BuildInfo.html" title="class in org.openqa.selenium.internal">BuildInfo</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteStatus.html#getBuildTime()">getBuildTime()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteStatus.html" title="class in org.openqa.selenium.remote">RemoteStatus</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/HasCapabilities.html#getCapabilities()">getCapabilities()</a></span> - Method in interface org.openqa.selenium.<a href="./org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></dt>
 <dd>&nbsp;</dd>
@@ -3516,21 +3546,47 @@
 <div class="block">Where on the page is the top left-hand corner of the rendered element?</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/interactions/internal/Coordinates.html#getLocationInDOM()">getLocationInDOM()</a></span> - Method in interface org.openqa.selenium.interactions.internal.<a href="./org/openqa/selenium/interactions/internal/Coordinates.html" title="interface in org.openqa.selenium.interactions.internal">Coordinates</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block"><span class="strong">Deprecated.</span>
+<div class="block"><i>To be removed in 2.31. Use <a href="./org/openqa/selenium/interactions/internal/Coordinates.html#onPage()"><code>Coordinates.onPage()</code></a> instead</i></div>
+</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/interactions/internal/Coordinates.html#getLocationInViewPort()">getLocationInViewPort()</a></span> - Method in interface org.openqa.selenium.interactions.internal.<a href="./org/openqa/selenium/interactions/internal/Coordinates.html" title="interface in org.openqa.selenium.interactions.internal">Coordinates</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block"><span class="strong">Deprecated.</span>
+<div class="block"><i>To be removed in 2.31. Use <a href="./org/openqa/selenium/interactions/internal/Coordinates.html#inViewPort()"><code>Coordinates.inViewPort()</code></a> instead</i></div>
+</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/interactions/internal/Coordinates.html#getLocationOnScreen()">getLocationOnScreen()</a></span> - Method in interface org.openqa.selenium.interactions.internal.<a href="./org/openqa/selenium/interactions/internal/Coordinates.html" title="interface in org.openqa.selenium.interactions.internal">Coordinates</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block"><span class="strong">Deprecated.</span>
+<div class="block"><i>To be removed in 2.31. Use <a href="./org/openqa/selenium/interactions/internal/Coordinates.html#onScreen()"><code>Coordinates.onScreen()</code></a> instead</i></div>
+</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/android/library/AndroidWebElement.html#getLocationOnScreenOnceScrolledIntoView()">getLocationOnScreenOnceScrolledIntoView()</a></span> - Method in class org.openqa.selenium.android.library.<a href="./org/openqa/selenium/android/library/AndroidWebElement.html" title="class in org.openqa.selenium.android.library">AndroidWebElement</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block"><span class="strong">Deprecated.</span>
+<div class="block"><i>To be removed in 2.31. Use <a href="./org/openqa/selenium/android/library/AndroidWebElement.html#getCoordinates()"><code>AndroidWebElement.getCoordinates()</code></a> instead</i></div>
+</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html#getLocationOnScreenOnceScrolledIntoView()">getLocationOnScreenOnceScrolledIntoView()</a></span> - Method in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitWebElement</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block"><span class="strong">Deprecated.</span>
+<div class="block"><i>To be removed in 2.31. Use <a href="./org/openqa/selenium/htmlunit/HtmlUnitWebElement.html#getCoordinates()"><code>HtmlUnitWebElement.getCoordinates()</code></a> instead</i></div>
+</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/internal/Locatable.html#getLocationOnScreenOnceScrolledIntoView()">getLocationOnScreenOnceScrolledIntoView()</a></span> - Method in interface org.openqa.selenium.internal.<a href="./org/openqa/selenium/internal/Locatable.html" title="interface in org.openqa.selenium.internal">Locatable</a></dt>
 <dd>
-<div class="block">Use this to discover where on the screen an element is so that we can click it.</div>
+<div class="block"><span class="strong">Deprecated.</span>
+<div class="block"><i>To be removed in 2.31. Use <a href="./org/openqa/selenium/internal/Locatable.html#getCoordinates()"><code>Locatable.getCoordinates()</code></a> instead</i></div>
+</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteWebElement.html#getLocationOnScreenOnceScrolledIntoView()">getLocationOnScreenOnceScrolledIntoView()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteWebElement.html" title="class in org.openqa.selenium.remote">RemoteWebElement</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block"><span class="strong">Deprecated.</span>
+<div class="block"><i>To be removed in 2.31. Use <a href="./org/openqa/selenium/remote/RemoteWebElement.html#getCoordinates()"><code>RemoteWebElement.getCoordinates()</code></a> instead</i></div>
+</div>
+</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/DefaultSelenium.html#getLog()">getLog()</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">DefaultSelenium</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/Selenium.html#getLog()">getLog()</a></span> - Method in interface com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/Selenium.html" title="interface in com.thoughtworks.selenium">Selenium</a></dt>
@@ -3644,6 +3700,12 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/Rotatable.html#getOrientation()">getOrientation()</a></span> - Method in interface org.openqa.selenium.<a href="./org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteStatus.html#getOsArch()">getOsArch()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteStatus.html" title="class in org.openqa.selenium.remote">RemoteStatus</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteStatus.html#getOsName()">getOsName()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteStatus.html" title="class in org.openqa.selenium.remote">RemoteStatus</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteStatus.html#getOsVersion()">getOsVersion()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteStatus.html" title="class in org.openqa.selenium.remote">RemoteStatus</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/HttpCommandProcessor.html#getOutputStreamWriter(java.net.HttpURLConnection)">getOutputStreamWriter(HttpURLConnection)</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/HttpCommandProcessor.html" title="class in com.thoughtworks.selenium">HttpCommandProcessor</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/android/library/AndroidWebDriver.html#getPageSource()">getPageSource()</a></span> - Method in class org.openqa.selenium.android.library.<a href="./org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library">AndroidWebDriver</a></dt>
@@ -3723,6 +3785,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/internal/BuildInfo.html#getReleaseLabel()">getReleaseLabel()</a></span> - Method in class org.openqa.selenium.internal.<a href="./org/openqa/selenium/internal/BuildInfo.html" title="class in org.openqa.selenium.internal">BuildInfo</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteStatus.html#getReleaseLabel()">getReleaseLabel()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteStatus.html" title="class in org.openqa.selenium.remote">RemoteStatus</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/CommandProcessor.html#getRemoteControlServerLocation()">getRemoteControlServerLocation()</a></span> - Method in interface com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/CommandProcessor.html" title="interface in com.thoughtworks.selenium">CommandProcessor</a></dt>
 <dd>
 <div class="block">The URL that the RemoteControl instance is allegedly running on</div>
@@ -3730,6 +3794,8 @@
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/HttpCommandProcessor.html#getRemoteControlServerLocation()">getRemoteControlServerLocation()</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/HttpCommandProcessor.html" title="class in com.thoughtworks.selenium">HttpCommandProcessor</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/WebDriverCommandProcessor.html#getRemoteControlServerLocation()">getRemoteControlServerLocation()</a></span> - Method in class org.openqa.selenium.<a href="./org/openqa/selenium/WebDriverCommandProcessor.html" title="class in org.openqa.selenium">WebDriverCommandProcessor</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteWebDriver.html#getRemoteStatus()">getRemoteStatus()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./com/thoughtworks/selenium/HttpCommandProcessor.html#getResponseCode(java.net.HttpURLConnection)">getResponseCode(HttpURLConnection)</a></span> - Method in class com.thoughtworks.selenium.<a href="./com/thoughtworks/selenium/HttpCommandProcessor.html" title="class in com.thoughtworks.selenium">HttpCommandProcessor</a></dt>
 <dd>&nbsp;</dd>
@@ -3882,6 +3948,8 @@
 <dd>
 <div class="block">Gets the SSL tunnel proxy.</div>
 </dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/Response.html#getState()">getState()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/android/AndroidDriver.html#getStatus()">getStatus()</a></span> - Method in class org.openqa.selenium.android.<a href="./org/openqa/selenium/android/AndroidDriver.html" title="class in org.openqa.selenium.android">AndroidDriver</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/android/library/AndroidWebDriver.html#getStatus()">getStatus()</a></span> - Method in class org.openqa.selenium.android.library.<a href="./org/openqa/selenium/android/library/AndroidWebDriver.html" title="class in org.openqa.selenium.android.library">AndroidWebDriver</a></dt>
@@ -4543,6 +4611,11 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html#INVALIDXPATHERROR">INVALIDXPATHERROR</a></span> - Static variable in class org.openqa.selenium.htmlunit.<a href="./org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/interactions/internal/Coordinates.html#inViewPort()">inViewPort()</a></span> - Method in interface org.openqa.selenium.interactions.internal.<a href="./org/openqa/selenium/interactions/internal/Coordinates.html" title="interface in org.openqa.selenium.interactions.internal">Coordinates</a></dt>
+<dd>
+<div class="block">Gets coordinates on the element relative to the top-left corner of OS-window being used
+ to display the content.</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/support/ui/ExpectedConditions.html#invisibilityOfElementLocated(org.openqa.selenium.By)">invisibilityOfElementLocated(By)</a></span> - Static method in class org.openqa.selenium.support.ui.<a href="./org/openqa/selenium/support/ui/ExpectedConditions.html" title="class in org.openqa.selenium.support.ui">ExpectedConditions</a></dt>
 <dd>
 <div class="block">An expectation for checking that an element is either invisible or not
@@ -4771,6 +4844,8 @@
 <dt><span class="strong"><a href="./org/openqa/selenium/net/NetworkInterface.html#isLoopBack()">isLoopBack()</a></span> - Method in class org.openqa.selenium.net.<a href="./org/openqa/selenium/net/NetworkInterface.html" title="class in org.openqa.selenium.net">NetworkInterface</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/net/INetAddress.html#isLoopbackAddress()">isLoopbackAddress()</a></span> - Method in class org.openqa.selenium.net.<a href="./org/openqa/selenium/net/INetAddress.html" title="class in org.openqa.selenium.net">INetAddress</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/net/NetworkInterface.html#isLoopBackFromINetAddresses(java.lang.Iterable)">isLoopBackFromINetAddresses(Iterable&lt;INetAddress&gt;)</a></span> - Method in class org.openqa.selenium.net.<a href="./org/openqa/selenium/net/NetworkInterface.html" title="class in org.openqa.selenium.net">NetworkInterface</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/ErrorCodes.html#isMappableError(java.lang.Throwable)">isMappableError(Throwable)</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">ErrorCodes</a></dt>
 <dd>
@@ -5825,6 +5900,10 @@
 <dd>
 <div class="block"><strong>Internal method.</div>
 </dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/interactions/internal/Coordinates.html#onPage()">onPage()</a></span> - Method in interface org.openqa.selenium.interactions.internal.<a href="./org/openqa/selenium/interactions/internal/Coordinates.html" title="interface in org.openqa.selenium.interactions.internal">Coordinates</a></dt>
+<dd>
+<div class="block">Gets coordinates on the element relative to the top-left corner of the page.</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/android/library/WebDriverViewClient.html#onPageFinished(android.webkit.WebView, java.lang.String)">onPageFinished(WebView, String)</a></span> - Method in class org.openqa.selenium.android.library.<a href="./org/openqa/selenium/android/library/WebDriverViewClient.html" title="class in org.openqa.selenium.android.library">WebDriverViewClient</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/android/library/WebDriverViewClient.html#onPageStarted(android.webkit.WebView, java.lang.String)">onPageStarted(WebView, String)</a></span> - Method in class org.openqa.selenium.android.library.<a href="./org/openqa/selenium/android/library/WebDriverViewClient.html" title="class in org.openqa.selenium.android.library">WebDriverViewClient</a></dt>
@@ -5851,6 +5930,10 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/android/library/DefaultChromeClient.html#onRequestFocus(android.webkit.WebView)">onRequestFocus(WebView)</a></span> - Method in class org.openqa.selenium.android.library.<a href="./org/openqa/selenium/android/library/DefaultChromeClient.html" title="class in org.openqa.selenium.android.library">DefaultChromeClient</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/interactions/internal/Coordinates.html#onScreen()">onScreen()</a></span> - Method in interface org.openqa.selenium.interactions.internal.<a href="./org/openqa/selenium/interactions/internal/Coordinates.html" title="interface in org.openqa.selenium.interactions.internal">Coordinates</a></dt>
+<dd>
+<div class="block">Gets coordinates on the element relative to the top-left corner of the monitor (screen).</div>
+</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/android/library/DefaultChromeClient.html#onShowCustomView(android.view.View, android.webkit.WebChromeClient.CustomViewCallback)">onShowCustomView(View, WebChromeClient.CustomViewCallback)</a></span> - Method in class org.openqa.selenium.android.library.<a href="./org/openqa/selenium/android/library/DefaultChromeClient.html" title="class in org.openqa.selenium.android.library">DefaultChromeClient</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/android/library/DefaultChromeClient.html#onShowCustomView(android.view.View, int, android.webkit.WebChromeClient.CustomViewCallback)">onShowCustomView(View, int, WebChromeClient.CustomViewCallback)</a></span> - Method in class org.openqa.selenium.android.library.<a href="./org/openqa/selenium/android/library/DefaultChromeClient.html" title="class in org.openqa.selenium.android.library">DefaultChromeClient</a></dt>
@@ -6349,6 +6432,10 @@
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/html5/RemoteSessionStorage.html#RemoteSessionStorage(org.openqa.selenium.remote.ExecuteMethod)">RemoteSessionStorage(ExecuteMethod)</a></span> - Constructor for class org.openqa.selenium.remote.html5.<a href="./org/openqa/selenium/remote/html5/RemoteSessionStorage.html" title="class in org.openqa.selenium.remote.html5">RemoteSessionStorage</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="./org/openqa/selenium/remote/RemoteStatus.html" title="class in org.openqa.selenium.remote"><span class="strong">RemoteStatus</span></a> - Class in <a href="./org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteStatus.html#RemoteStatus(java.util.Map)">RemoteStatus(Map&lt;String, Object&gt;)</a></span> - Constructor for class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteStatus.html" title="class in org.openqa.selenium.remote">RemoteStatus</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/remote/RemoteTouchScreen.html" title="class in org.openqa.selenium.remote"><span class="strong">RemoteTouchScreen</span></a> - Class in <a href="./org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteTouchScreen.html#RemoteTouchScreen(org.openqa.selenium.remote.ExecuteMethod)">RemoteTouchScreen(ExecuteMethod)</a></span> - Constructor for class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteTouchScreen.html" title="class in org.openqa.selenium.remote">RemoteTouchScreen</a></dt>
@@ -6427,6 +6514,8 @@
  locator.</div>
 </dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/android/library/ViewAdapter.html#requestFocus(int)">requestFocus(int)</a></span> - Method in class org.openqa.selenium.android.library.<a href="./org/openqa/selenium/android/library/ViewAdapter.html" title="class in org.openqa.selenium.android.library">ViewAdapter</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/ie/InternetExplorerDriver.html#REQUIRE_WINDOW_FOCUS">REQUIRE_WINDOW_FOCUS</a></span> - Static variable in class org.openqa.selenium.ie.<a href="./org/openqa/selenium/ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="./org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote"><span class="strong">Response</span></a> - Class in <a href="./org/openqa/selenium/remote/package-summary.html">org.openqa.selenium.remote</a></dt>
 <dd>&nbsp;</dd>
@@ -7233,6 +7322,8 @@
 <dd>
 <div class="block">Specify which proxy to use for SSL connections.</div>
 </dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/Response.html#setState(java.lang.String)">setState(String)</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/Response.html#setStatus(int)">setStatus(int)</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/io/TemporaryFilesystem.html#setTemporaryDirectory(java.io.File)">setTemporaryDirectory(File)</a></span> - Static method in class org.openqa.selenium.io.<a href="./org/openqa/selenium/io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a></dt>
@@ -7633,6 +7724,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/ErrorCodes.html#SUCCESS">SUCCESS</a></span> - Static variable in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">ErrorCodes</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/ErrorCodes.html#SUCCESS_STRING">SUCCESS_STRING</a></span> - Static variable in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">ErrorCodes</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_ALERTS">SUPPORTS_ALERTS</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote">CapabilityType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_APPLICATION_CACHE">SUPPORTS_APPLICATION_CACHE</a></span> - Static variable in interface org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote">CapabilityType</a></dt>
@@ -7904,6 +7997,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/browserlaunchers/DoNotUseProxyPac.ProxyUrlVia.html#toProxy(java.lang.String)">toProxy(String)</a></span> - Method in class org.openqa.selenium.browserlaunchers.<a href="./org/openqa/selenium/browserlaunchers/DoNotUseProxyPac.ProxyUrlVia.html" title="class in org.openqa.selenium.browserlaunchers">DoNotUseProxyPac.ProxyUrlVia</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/ErrorCodes.html#toState(int)">toState(int)</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">ErrorCodes</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/ErrorCodes.html#toStatusCode(java.lang.Throwable)">toStatusCode(Throwable)</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">ErrorCodes</a></dt>
 <dd>
 <div class="block">Converts a thrown error into the corresponding status code.</div>
@@ -7967,6 +8062,8 @@
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/Command.html#toString()">toString()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/DesiredCapabilities.html#toString()">toString()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteStatus.html#toString()">toString()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteStatus.html" title="class in org.openqa.selenium.remote">RemoteStatus</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="strong"><a href="./org/openqa/selenium/remote/RemoteWebDriver.html#toString()">toString()</a></span> - Method in class org.openqa.selenium.remote.<a href="./org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></dt>
 <dd>&nbsp;</dd>

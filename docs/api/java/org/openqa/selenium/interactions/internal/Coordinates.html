@@ -112,15 +112,46 @@
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#getLocationInDOM()">getLocationInDOM</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#getLocationInDOM()">getLocationInDOM</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>To be removed in 2.31. Use <a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#onPage()"><code>onPage()</code></a> instead</i></div>
+</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#getLocationInViewPort()">getLocationInViewPort</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#getLocationInViewPort()">getLocationInViewPort</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>To be removed in 2.31. Use <a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#inViewPort()"><code>inViewPort()</code></a> instead</i></div>
+</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#getLocationOnScreen()">getLocationOnScreen</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#getLocationOnScreen()">getLocationOnScreen</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>To be removed in 2.31. Use <a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#onScreen()"><code>onScreen()</code></a> instead</i></div>
+</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#inViewPort()">inViewPort</a></strong>()</code>
+<div class="block">Gets coordinates on the element relative to the top-left corner of OS-window being used
+ to display the content.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#onPage()">onPage</a></strong>()</code>
+<div class="block">Gets coordinates on the element relative to the top-left corner of the page.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#onScreen()">onScreen</a></strong>()</code>
+<div class="block">Gets coordinates on the element relative to the top-left corner of the monitor (screen).</div>
+</td>
 </tr>
 </table>
 </li>
@@ -143,7 +174,9 @@
 <ul class="blockList">
 <li class="blockList">
 <h4>getLocationOnScreen</h4>
-<pre><a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;getLocationOnScreen()</pre>
+<pre>@Deprecated
+<a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;getLocationOnScreen()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>To be removed in 2.31. Use <a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#onScreen()"><code>onScreen()</code></a> instead</i></div>
 </li>
 </ul>
 <a name="getLocationInViewPort()">
@@ -152,7 +185,9 @@
 <ul class="blockList">
 <li class="blockList">
 <h4>getLocationInViewPort</h4>
-<pre><a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;getLocationInViewPort()</pre>
+<pre>@Deprecated
+<a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;getLocationInViewPort()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>To be removed in 2.31. Use <a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#inViewPort()"><code>inViewPort()</code></a> instead</i></div>
 </li>
 </ul>
 <a name="getLocationInDOM()">
@@ -161,7 +196,50 @@
 <ul class="blockList">
 <li class="blockList">
 <h4>getLocationInDOM</h4>
-<pre><a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;getLocationInDOM()</pre>
+<pre>@Deprecated
+<a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;getLocationInDOM()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>To be removed in 2.31. Use <a href="../../../../../org/openqa/selenium/interactions/internal/Coordinates.html#onPage()"><code>onPage()</code></a> instead</i></div>
+</li>
+</ul>
+<a name="onScreen()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onScreen</h4>
+<pre><a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;onScreen()</pre>
+<div class="block">Gets coordinates on the element relative to the top-left corner of the monitor (screen).
+ This method automatically scrolls the page and/or frames to make element visible in viewport
+ before calculating its coordinates.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>coordinates on the element relative to the top-left corner of the monitor (screen).</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>ElementNotVisibleException</code> - if the element can't be scrolled into view.</dd></dl>
+</li>
+</ul>
+<a name="inViewPort()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>inViewPort</h4>
+<pre><a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;inViewPort()</pre>
+<div class="block">Gets coordinates on the element relative to the top-left corner of OS-window being used
+ to display the content. Usually it is the browser window's viewport. This method automatically
+ scrolls the page and/or frames to make element visible in viewport before calculating its coordinates.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>coordinates on the element relative to the top-left corner of the browser window's viewport.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code>ElementNotVisibleException</code> - if the element can't be scrolled into view.</dd></dl>
+</li>
+</ul>
+<a name="onPage()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onPage</h4>
+<pre><a href="../../../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;onPage()</pre>
+<div class="block">Gets coordinates on the element relative to the top-left corner of the page.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>coordinates on the element relative to the top-left corner of the the page.</dd></dl>
 </li>
 </ul>
 <a name="getAuxiliary()">

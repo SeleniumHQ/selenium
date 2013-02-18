@@ -207,26 +207,30 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/ErrorCodes.html#SUCCESS">SUCCESS</a></strong></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/ErrorCodes.html#SUCCESS_STRING">SUCCESS_STRING</a></strong></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/ErrorCodes.html#TIMEOUT">TIMEOUT</a></strong></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/ErrorCodes.html#UNABLE_TO_SET_COOKIE">UNABLE_TO_SET_COOKIE</a></strong></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/ErrorCodes.html#UNEXPECTED_ALERT_PRESENT">UNEXPECTED_ALERT_PRESENT</a></strong></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/ErrorCodes.html#UNHANDLED_ERROR">UNHANDLED_ERROR</a></strong></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/ErrorCodes.html#UNKNOWN_COMMAND">UNKNOWN_COMMAND</a></strong></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/ErrorCodes.html#XPATH_LOOKUP_ERROR">XPATH_LOOKUP_ERROR</a></strong></code>&nbsp;</td>
 </tr>
@@ -275,6 +279,10 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/ErrorCodes.html#toState(int)">toState</a></strong>(int&nbsp;status)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/ErrorCodes.html#toStatusCode(java.lang.Throwable)">toStatusCode</a></strong>(java.lang.Throwable&nbsp;thrown)</code>
 <div class="block">Converts a thrown error into the corresponding status code.</div>
@@ -302,6 +310,17 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Field Detail</h3>
+<a name="SUCCESS_STRING">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>SUCCESS_STRING</h4>
+<pre><a href="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
+public static final&nbsp;java.lang.String SUCCESS_STRING</pre>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.remote.ErrorCodes.SUCCESS_STRING">Constant Field Values</a></dd></dl>
+</li>
+</ul>
 <a name="SUCCESS">
 <!--   -->
 </a>
@@ -646,13 +665,23 @@ extends java.lang.Object</pre>
 <a name="isMappableError(java.lang.Throwable)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>isMappableError</h4>
 <pre>public&nbsp;boolean&nbsp;isMappableError(java.lang.Throwable&nbsp;thrown)</pre>
 <div class="block">Tests if the <code>thrown</code> error can be mapped to one of WebDriver's well defined error codes.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>thrown</code> - The error to test.</dd>
 <dt><span class="strong">Returns:</span></dt><dd>Whether the error can be mapped to a status code.</dd></dl>
+</li>
+</ul>
+<a name="toState(int)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>toState</h4>
+<pre><a href="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
+public&nbsp;java.lang.String&nbsp;toState(int&nbsp;status)</pre>
 </li>
 </ul>
 </li>

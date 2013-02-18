@@ -181,45 +181,53 @@ extends java.lang.Enum&lt;<a href="../../../org/openqa/selenium/Platform.html" t
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#extractFromSysProperty(java.lang.String)">extractFromSysProperty</a></strong>(java.lang.String&nbsp;osName)</code>
-<div class="block">Extracts platforms based on system properties in Java and a heuristic to determine the most
- likely operating system.</div>
+<div class="block">Extracts platforms based on system properties in Java and uses a heuristic to determine the
+ most likely operating system.</div>
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#extractFromSysProperty(java.lang.String, java.lang.String)">extractFromSysProperty</a></strong>(java.lang.String&nbsp;osName,
+                      java.lang.String&nbsp;osVersion)</code>
+<div class="block">Extracts platforms based on system properties in Java and uses a heuristic to determine the
+ most likely operating system.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#getCurrent()">getCurrent</a></strong>()</code>
 <div class="block">Get current platform (not necessarily the same as operating system).</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#getMajorVersion()">getMajorVersion</a></strong>()</code>
 <div class="block">Returns the major version of this platform.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#getMinorVersion()">getMinorVersion</a></strong>()</code>
 <div class="block">Returns the minor version of this platform.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#getPartOfOsName()">getPartOfOsName</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#is(org.openqa.selenium.Platform)">is</a></strong>(<a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;compareWith)</code>
 <div class="block">Heuristic for comparing two platforms.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#valueOf(java.lang.String)">valueOf</a></strong>(java.lang.String&nbsp;name)</code>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>[]</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/Platform.html#values()">values</a></strong>()</code>
 <div class="block">Returns an array containing the constants of this enum type, in
@@ -415,11 +423,26 @@ with the specified name</dd>
 <li class="blockList">
 <h4>extractFromSysProperty</h4>
 <pre>public static&nbsp;<a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;extractFromSysProperty(java.lang.String&nbsp;osName)</pre>
-<div class="block">Extracts platforms based on system properties in Java and a heuristic to determine the most
- likely operating system.  If not able to determine the operating system, it will default to
+<div class="block">Extracts platforms based on system properties in Java and uses a heuristic to determine the
+ most likely operating system.  If unable to determine the operating system, it will default to
  UNIX.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>osName</code> - the operating system name to determine the platform of</dd>
 <dt><span class="strong">Returns:</span></dt><dd>the most likely platform based on given operating system name</dd></dl>
+</li>
+</ul>
+<a name="extractFromSysProperty(java.lang.String, java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>extractFromSysProperty</h4>
+<pre>public static&nbsp;<a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;extractFromSysProperty(java.lang.String&nbsp;osName,
+                              java.lang.String&nbsp;osVersion)</pre>
+<div class="block">Extracts platforms based on system properties in Java and uses a heuristic to determine the
+ most likely operating system.  If unable to determine the operating system, it will default to
+ UNIX.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>osName</code> - the operating system name to determine the platform of</dd><dd><code>osVersion</code> - the operating system version to determine the platform of</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the most likely platform based on given operating system name and version</dd></dl>
 </li>
 </ul>
 <a name="is(org.openqa.selenium.Platform)">

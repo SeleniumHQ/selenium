@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>NetworkInterface</title>
+<title>RemoteStatus</title>
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="NetworkInterface";
+        parent.document.title="RemoteStatus";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/net/LinuxEphemeralPortRangeDetector.html" title="class in org.openqa.selenium.net"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/net/NetworkInterfaceProvider.html" title="interface in org.openqa.selenium.net"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/RemoteLogs.html" title="class in org.openqa.selenium.remote"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/RemoteTouchScreen.html" title="class in org.openqa.selenium.remote"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/net/NetworkInterface.html" target="_top">Frames</a></li>
-<li><a href="NetworkInterface.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/remote/RemoteStatus.html" target="_top">Frames</a></li>
+<li><a href="RemoteStatus.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -76,15 +76,15 @@
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">org.openqa.selenium.net</div>
-<h2 title="Class NetworkInterface" class="title">Class NetworkInterface</h2>
+<div class="subTitle">org.openqa.selenium.remote</div>
+<h2 title="Class RemoteStatus" class="title">Class RemoteStatus</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>org.openqa.selenium.net.NetworkInterface</li>
+<li>org.openqa.selenium.remote.RemoteStatus</li>
 </ul>
 </li>
 </ul>
@@ -93,7 +93,7 @@
 <li class="blockList">
 <hr>
 <br>
-<pre>public class <span class="strong">NetworkInterface</span>
+<pre>public class <span class="strong">RemoteStatus</span>
 extends java.lang.Object</pre>
 </li>
 </ul>
@@ -113,7 +113,7 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/net/NetworkInterface.html#NetworkInterface(java.net.NetworkInterface)">NetworkInterface</a></strong>(java.net.NetworkInterface&nbsp;networkInterface)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteStatus.html#RemoteStatus(java.util.Map)">RemoteStatus</a></strong>(java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;status)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -131,36 +131,32 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>java.lang.Iterable&lt;<a href="../../../../org/openqa/selenium/net/INetAddress.html" title="class in org.openqa.selenium.net">INetAddress</a>&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/net/NetworkInterface.html#getInetAddresses()">getInetAddresses</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteStatus.html#getBuildRevision()">getBuildRevision</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/net/INetAddress.html" title="class in org.openqa.selenium.net">INetAddress</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/net/NetworkInterface.html#getIp4LoopbackOnly()">getIp4LoopbackOnly</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/net/INetAddress.html" title="class in org.openqa.selenium.net">INetAddress</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/net/NetworkInterface.html#getIp4NonLoopBackOnly()">getIp4NonLoopBackOnly</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/net/INetAddress.html" title="class in org.openqa.selenium.net">INetAddress</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/net/NetworkInterface.html#getIp6Address()">getIp6Address</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteStatus.html#getBuildTime()">getBuildTime</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/net/NetworkInterface.html#getName()">getName</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteStatus.html#getOsArch()">getOsArch</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/net/NetworkInterface.html#isIp4AddressBindingOnly()">isIp4AddressBindingOnly</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteStatus.html#getOsName()">getOsName</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/net/NetworkInterface.html#isLoopBack()">isLoopBack</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteStatus.html#getOsVersion()">getOsVersion</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/net/NetworkInterface.html#isLoopBackFromINetAddresses(java.lang.Iterable)">isLoopBackFromINetAddresses</a></strong>(java.lang.Iterable&lt;<a href="../../../../org/openqa/selenium/net/INetAddress.html" title="class in org.openqa.selenium.net">INetAddress</a>&gt;&nbsp;inetAddresses)</code>&nbsp;</td>
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteStatus.html#getReleaseLabel()">getReleaseLabel</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteStatus.html#toString()">toString</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -168,7 +164,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, wait, wait, wait</code></li>
 </ul>
 </li>
 </ul>
@@ -184,13 +180,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="NetworkInterface(java.net.NetworkInterface)">
+<a name="RemoteStatus(java.util.Map)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>NetworkInterface</h4>
-<pre>public&nbsp;NetworkInterface(java.net.NetworkInterface&nbsp;networkInterface)</pre>
+<h4>RemoteStatus</h4>
+<pre>public&nbsp;RemoteStatus(java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;status)</pre>
 </li>
 </ul>
 </li>
@@ -201,76 +197,77 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="isIp4AddressBindingOnly()">
+<a name="getReleaseLabel()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>isIp4AddressBindingOnly</h4>
-<pre>public&nbsp;boolean&nbsp;isIp4AddressBindingOnly()</pre>
+<h4>getReleaseLabel</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getReleaseLabel()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>The release label.</dd></dl>
 </li>
 </ul>
-<a name="isLoopBack()">
+<a name="getBuildRevision()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>isLoopBack</h4>
-<pre>public&nbsp;boolean&nbsp;isLoopBack()</pre>
+<h4>getBuildRevision</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getBuildRevision()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>The build revision.</dd></dl>
 </li>
 </ul>
-<a name="isLoopBackFromINetAddresses(java.lang.Iterable)">
+<a name="getBuildTime()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>isLoopBackFromINetAddresses</h4>
-<pre>public final&nbsp;boolean&nbsp;isLoopBackFromINetAddresses(java.lang.Iterable&lt;<a href="../../../../org/openqa/selenium/net/INetAddress.html" title="class in org.openqa.selenium.net">INetAddress</a>&gt;&nbsp;inetAddresses)</pre>
+<h4>getBuildTime</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getBuildTime()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>The build time.</dd></dl>
 </li>
 </ul>
-<a name="getIp4LoopbackOnly()">
+<a name="getOsArch()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getIp4LoopbackOnly</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/net/INetAddress.html" title="class in org.openqa.selenium.net">INetAddress</a>&nbsp;getIp4LoopbackOnly()</pre>
+<h4>getOsArch</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getOsArch()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>The operating system architecture.</dd></dl>
 </li>
 </ul>
-<a name="getIp4NonLoopBackOnly()">
+<a name="getOsName()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getIp4NonLoopBackOnly</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/net/INetAddress.html" title="class in org.openqa.selenium.net">INetAddress</a>&nbsp;getIp4NonLoopBackOnly()</pre>
+<h4>getOsName</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getOsName()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>The operating system name.</dd></dl>
 </li>
 </ul>
-<a name="getIp6Address()">
+<a name="getOsVersion()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getIp6Address</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/net/INetAddress.html" title="class in org.openqa.selenium.net">INetAddress</a>&nbsp;getIp6Address()</pre>
+<h4>getOsVersion</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getOsVersion()</pre>
+<dl><dt><span class="strong">Returns:</span></dt><dd>The operating system version.</dd></dl>
 </li>
 </ul>
-<a name="getInetAddresses()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getInetAddresses</h4>
-<pre>public&nbsp;java.lang.Iterable&lt;<a href="../../../../org/openqa/selenium/net/INetAddress.html" title="class in org.openqa.selenium.net">INetAddress</a>&gt;&nbsp;getInetAddresses()</pre>
-</li>
-</ul>
-<a name="getName()">
+<a name="toString()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>getName</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getName()</pre>
+<h4>toString</h4>
+<pre>public&nbsp;java.lang.String&nbsp;toString()</pre>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -298,12 +295,12 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/net/LinuxEphemeralPortRangeDetector.html" title="class in org.openqa.selenium.net"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/net/NetworkInterfaceProvider.html" title="interface in org.openqa.selenium.net"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/RemoteLogs.html" title="class in org.openqa.selenium.remote"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/remote/RemoteTouchScreen.html" title="class in org.openqa.selenium.remote"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/net/NetworkInterface.html" target="_top">Frames</a></li>
-<li><a href="NetworkInterface.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/remote/RemoteStatus.html" target="_top">Frames</a></li>
+<li><a href="RemoteStatus.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
