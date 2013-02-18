@@ -16,6 +16,12 @@
 # limitations under the License.
 
 
+try:
+    bytes
+except NameError:
+    bytes = str
+    str = unicode
+
 import unittest
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -27,7 +33,7 @@ class ExecutingJavaScriptTests(unittest.TestCase):
 
         result = self.driver.execute_script("return document.title")
 
-        self.assertTrue(type(result) == unicode or type(result) == str,
+        self.assertTrue(type(result) == bytes or type(result) == str,
             "The type of the result is " + str(type(result)))
         self.assertEqual("XHTML Test Page", result)
   
