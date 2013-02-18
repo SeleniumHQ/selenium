@@ -165,14 +165,12 @@ function testCanResolveOnlyOnce_resolved() {
 
 function testCanResolveOnlyOnce_rejected() {
   var deferred = new webdriver.promise.Deferred();
-  deferred.reject(1);
+  deferred.reject(STUB_ERROR);
   assertThrows(deferred.resolve);
   assertThrows(deferred.reject);
 
   var callback;
-  deferred.then(null, callback = callbackHelper(function(value) {
-    assertEquals(1, value);
-  }));
+  deferred.then(null, callback = callbackHelper(assertIsStubError));
   callback.assertCalled();
 }
 
@@ -198,14 +196,12 @@ function testOnlyGoesDownListenerPath_rejected() {
 
 
 function testCatchingAndSuppressingRejectionErrors() {
-  var errback = callbackHelper(function(error) {
-    assertEquals('foo', error);
-  });
+  var errback = callbackHelper(assertIsStubError);
   var callback = callbackHelper(function() {
     assertUndefined(arguments[0]);
   });
 
-  webdriver.promise.rejected('foo').
+  webdriver.promise.rejected(STUB_ERROR).
       addErrback(errback).
       addCallback(callback);
   errback.assertCalled();
@@ -214,15 +210,16 @@ function testCatchingAndSuppressingRejectionErrors() {
 
 
 function testThrowingNewRejectionErrors() {
-  var errback1 = callbackHelper(goog.partial(assertEquals, 'foo'));
+  var errback1 = callbackHelper(assertIsStubError);
+  var error2 = Error('hi');
   var errback2 = callbackHelper(function(error) {
-    assertEquals('hi', error.message);
+    assertEquals(error2, error);
   });
 
-  webdriver.promise.rejected('foo').
+  webdriver.promise.rejected(STUB_ERROR).
       addErrback(function(error) {
         errback1(error);
-        throw new Error('hi');
+        throw error2;
       }).
       addErrback(errback2);
   errback1.assertCalled();
@@ -296,9 +293,7 @@ function testWhen_WaitsForValueToBeResolvedBeforeInvokingCallback() {
 
 
 function testWhen_canCancelReturnedPromise() {
-  var callbacks = callbackPair(null, function(e) {
-    assertEquals('cancelled', e);
-  });
+  var callbacks = callbackPair(null, assertIsStubError);
 
   var promiseLike = {
     then: function(cb, eb) {
@@ -311,7 +306,7 @@ function testWhen_canCancelReturnedPromise() {
       callbacks.callback, callbacks.errback);
 
   assertTrue(promise.isPending());
-  promise.cancel('cancelled');
+  promise.cancel(STUB_ERROR);
   callbacks.assertErrback();
 
   // The following should have no effect.
@@ -321,10 +316,8 @@ function testWhen_canCancelReturnedPromise() {
 
 
 function testFiresUncaughtExceptionEventIfRejectionNeverHandled() {
-  webdriver.promise.rejected('ouch');
-  var handler = callbackHelper(function(value) {
-    assertEquals('ouch', value);
-  });
+  webdriver.promise.rejected(STUB_ERROR);
+  var handler = callbackHelper(assertIsStubError);
 
   // so tearDown() doesn't throw
   app.reset();
@@ -450,13 +443,11 @@ function testRejectingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
   var callback1, errback1, callback2;
 
   d1.then(callback1 = callbackHelper(),
-          errback1 = callbackHelper(function(value) {
-            assertEquals(4, value);
-          }));
+          errback1 = callbackHelper(assertIsStubError));
 
   var d2promise = d2.then(callback2 = callbackHelper(function(value) {
     assertEquals(2, value);
-    return value * 2;
+    return STUB_ERROR;
   }));
 
   callback1.assertNotCalled();
@@ -478,9 +469,7 @@ function testRejectingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
 function testRejectingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
   var d = new webdriver.promise.Deferred(), callback, errback;
   d.then(callback = callbackHelper(),
-         errback = callbackHelper(function(value) {
-           assertEquals(4, value);
-         }));
+         errback = callbackHelper(assertIsStubError));
 
   var otherPromise = {
     then: function(callback) {
@@ -495,7 +484,7 @@ function testRejectingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
   callback.assertNotCalled();
   errback.assertNotCalled();
 
-  otherPromise.resolve(4);
+  otherPromise.resolve(STUB_ERROR);
   callback.assertNotCalled();
   errback.assertCalled();
 }
@@ -1085,13 +1074,13 @@ function testCancel_invokesTheCancellerFunctionIfOneWasProvided() {
 
 
 function testCancel_canChangeRejectionReasonWithTruthyCancellerReturnValue() {
-  var pair = callbackPair(null, goog.partial(assertEquals, 'hello'));
+  var pair = callbackPair(null, assertIsStubError);
   var callback = callbackHelper(function() {
-    return 'hello';
+    return STUB_ERROR;
   });
   var d = new webdriver.promise.Deferred(callback);
   d.then(pair.callback, pair.errback);
-  d.cancel(STUB_ERROR);
+  d.cancel();
   pair.assertErrback();
   callback.assertCalled();
 }
@@ -1218,10 +1207,8 @@ function testThenReturnsOwnPromiseIfNoCallbacksWereGiven() {
 
 
 function testIsStillConsideredUnHandledIfNoCallbacksWereGivenOnCallsToThen() {
-  webdriver.promise.rejected('ouch').then();
-  var handler = callbackHelper(function(value) {
-    assertEquals('ouch', value);
-  });
+  webdriver.promise.rejected(STUB_ERROR).then();
+  var handler = callbackHelper(assertIsStubError);
 
   // so tearDown() doesn't throw
   app.reset();
@@ -1265,6 +1252,29 @@ function testADeferredsParentControlFlowIsActiveForCallbacks() {
       assertEquals(flow, webdriver.promise.controlFlow());
     };
   }
+}
+
+
+function testConvertsRejectionValuesToErrors() {
+  var callbacks = callbackPair(null, function(value) {
+    assertTrue(value instanceof Error);
+    assertEquals('foo', value.message);
+  });
+  webdriver.promise.rejected('foo').
+      then(callbacks.callback, callbacks.errback);
+  callbacks.assertErrback();
+}
+
+
+function testConvertsRejectionValuesToErrors_deferredValues() {
+  var callbacks = callbackPair(null, function(value) {
+    assertTrue(value instanceof Error);
+    assertEquals('foo', value.message);
+  });
+  var val = webdriver.promise.resolved('foo');
+  webdriver.promise.rejected(val).
+      then(callbacks.callback, callbacks.errback);
+  callbacks.assertErrback();
 }
 </script>
 </body>

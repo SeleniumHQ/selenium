@@ -77,8 +77,9 @@ webdriver.promise.Promise = function() {
 /**
  * Cancels the computation of this promise's value, rejecting the promise in the
  * process.
- * @param {*} reason The reason this promise is being cancelled. While typically
- *     an {@code Error}, any type is permissible.
+ * @param {*} reason The reason this promise is being cancelled. If not an
+ *     {@code Error}, one will be created using the value's string
+ *     representation.
  */
 webdriver.promise.Promise.prototype.cancel = function(reason) {
   throw new TypeError('Unimplemented function: "cancel"');
@@ -99,9 +100,8 @@ webdriver.promise.Promise.prototype.isPending = function() {
  *     successfully resolved. The function should expect a single argument: the
  *     promise's resolved value.
  * @param {Function=} opt_errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the failure
- *     reason. While this argument is typically an {@code Error}, any type is
- *     permissible.
+ *     rejected. The function should expect a single argument: the
+ *     {@code Error} that caused the promise to be rejected.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
  */
@@ -135,9 +135,8 @@ webdriver.promise.Promise.prototype.addCallback = function(callback, opt_self) {
  * Dojo Deferred API.
  *
  * @param {Function} errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the failure
- *     reason. While this argument is typically an {@code Error}, any type is
- *     permissible.
+ *     rejected. The function should expect a single argument: the
+ *     {@code Error} that caused the promise to be rejected.
  * @param {!Object=} opt_self The object which |this| should refer to when the
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
@@ -176,9 +175,8 @@ webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
  *     successfully resolved. The function should expect a single argument: the
  *     promise's resolved value.
  * @param {Function} errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the failure
- *     reason. While this argument is typically an {@code Error}, any type is
- *     permissible.
+ *     rejected. The function should expect a single argument: the
+ *     {@code Error} that caused the promise to be rejected.
  * @param {!Object=} opt_self The object which |this| should refer to when the
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
@@ -271,6 +269,12 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   function notifyAll(newState, newValue) {
     if (!isPending()) {
       throw new Error('This Deferred has already been resolved.');
+    }
+
+    if (newState == webdriver.promise.Deferred.State_.REJECTED &&
+        !webdriver.promise.isError_(newValue) &&
+        !webdriver.promise.isPromise(newValue)) {
+      newValue = Error(newValue);
     }
 
     state = newState;
@@ -397,15 +401,15 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   /**
    * Cancels the computation of this promise's value and flags the promise as a
    * rejected value.
-   * @param {*} reason The reason for cancelling this promise.
+   * @param {*=} opt_reason The reason for cancelling this promise.
    */
-  function cancel(reason) {
+  function cancel(opt_reason) {
     if (!isPending()) {
       throw Error('This Deferred has already been resolved.');
     }
 
     if (opt_canceller) {
-      reason = opt_canceller(reason) || reason;
+      opt_reason = opt_canceller(opt_reason) || opt_reason;
     }
 
     // Only reject this promise if it is still pending after calling its
@@ -415,7 +419,7 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
     // another. Once the cancellation request reaches the root deferred, the
     // subsequent rejection will trickle back down.
     if (isPending()) {
-      reject(reason);
+      reject(opt_reason);
     }
   }
 
@@ -460,6 +464,23 @@ webdriver.promise.Deferred.State_ = {
   REJECTED: -1,
   PENDING: 0,
   RESOLVED: 1
+};
+
+
+/**
+ * Tests if a value is an Error-like object. This is more than an straight
+ * instanceof check since the value may originate from another context.
+ * @param {*} value The value to test.
+ * @return {boolean} Whether the value is an error.
+ * @private
+ */
+webdriver.promise.isError_ = function(value) {
+  return value instanceof Error ||
+      goog.isObject(value) &&
+      (Object.prototype.toString.call(value) === '[object Error]' ||
+       // A special test for goog.testing.JsUnitException.
+       value.isJsUnitException);
+
 };
 
 
@@ -523,13 +544,13 @@ webdriver.promise.resolved = function(opt_value) {
 
 /**
  * Creates a promise that has been rejected with the given reason.
- * @param {*} reason The rejection reason; may be any value, but is usually an
+ * @param {*=} opt_reason The rejection reason; may be any value, but is usually an
  *     Error or a string.
  * @return {!webdriver.promise.Promise} The rejected promise.
  */
-webdriver.promise.rejected = function(reason) {
+webdriver.promise.rejected = function(opt_reason) {
   var deferred = new webdriver.promise.Deferred();
-  deferred.reject(reason);
+  deferred.reject(opt_reason);
   return deferred.promise;
 };
 
@@ -1042,7 +1063,7 @@ webdriver.promise.ControlFlow.prototype.annotateError = function(e) {
   if (history.length) {
     e = webdriver.stacktrace.format(e);
 
-    /** @type {!Error} */(e).stack += [
+    /** @type {!Error} */(e).stack = (e.stack || e.stackTrace || '') + [
       '\n==== async task ====\n',
       history.join('\n==== async task ====\n')
     ].join('');
@@ -1399,12 +1420,8 @@ webdriver.promise.ControlFlow.prototype.resolveFrame_ = function(frame) {
  * @private
  */
 webdriver.promise.ControlFlow.prototype.abortFrame_ = function(error) {
-  // Annotate the error value if it is Error-like.  We cannot use an instanceof
-  // check because in Node the value may come from a different context than
-  // this script so instanceof Error would fail.
-  if (goog.isObject(error) &&
-      goog.isString(error['message']) &&
-      goog.isString(error['stack'])) {
+  // Annotate the error value if it is Error-like.
+  if (webdriver.promise.isError_(error)) {
     this.annotateError((/** @type {!Error} */error));
   }
   this.numAbortedFrames_++;

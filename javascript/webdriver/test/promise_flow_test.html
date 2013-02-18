@@ -1769,10 +1769,12 @@ limitations under the License.
 
 
   function testEventLoopWaitsOnPendingPromiseRejections_multipleRejections() {
+    var once = Error('once');
+    var twice = Error('twice');
     var onError = new goog.testing.FunctionMock('onError',
         goog.testing.Mock.LOOSE);
-    onError('once');
-    onError('twice');
+    onError(once);
+    onError(twice);
     onError.$replay();
 
     flow.on(
@@ -1784,8 +1786,8 @@ limitations under the License.
     turn();
     assertFlowHistory('one');
     turn(-1);
-    webdriver.promise.rejected('once');
-    webdriver.promise.rejected('twice');
+    webdriver.promise.rejected(once);
+    webdriver.promise.rejected(twice);
     clock.tick(1);
     assertFlowHistory('one');
     turn();
