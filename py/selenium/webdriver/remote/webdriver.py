@@ -15,16 +15,21 @@
 The WebDriver implementation.
 """
 import base64
-from command import Command
-from webelement import WebElement
-from remote_connection import RemoteConnection
-from errorhandler import ErrorHandler
+from .command import Command
+from .webelement import WebElement
+from .remote_connection import RemoteConnection
+from .errorhandler import ErrorHandler
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
+try:
+    bytes
+except NameError: # Python 2.x compatibility
+    bytes = str
+    str = unicode
 
 class WebDriver(object):
     """
@@ -57,7 +62,7 @@ class WebDriver(object):
         if proxy is not None:
             proxy.add_to_capabilities(desired_capabilities)
         self.command_executor = command_executor
-        if type(self.command_executor) is str or type(self.command_executor) is unicode:
+        if type(self.command_executor) is bytes or type(self.command_executor) is str:
             self.command_executor = RemoteConnection(command_executor)
         self._is_remote = True
         self.session_id = None

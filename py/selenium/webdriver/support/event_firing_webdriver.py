@@ -51,9 +51,9 @@ class EventFiringWebDriver(object):
             
             class MyListener(AbstractEventListener):
                 def before_navigate_to(self, url, driver):
-                    print "Before navigate to %s" % url
+                    print("Before navigate to %s" % url)
                 def after_navigate_to(self, url, driver):
-                    print "After navigate to %s" % url
+                    print("After navigate to %s" % url)
             
             driver = Firefox()
             ef_driver = EventFiringWebDriver(driver, MyListener())
@@ -152,7 +152,7 @@ class EventFiringWebDriver(object):
         getattr(self._listener, "before_%s" % l_call)(*l_args)
         try:
             result = getattr(self._driver, d_call)(*d_args)
-        except Exception, e:
+        except Exception as e:
             self._listener.on_exception(e, self._driver)
             raise e
         getattr(self._listener, "after_%s" % l_call)(*l_args)
@@ -174,7 +174,7 @@ class EventFiringWebDriver(object):
         else:
             try:
                 object.__setattr__(self._driver, item, value)
-            except Exception, e:
+            except Exception as e:
                 self._listener.on_exception(e, self._driver)
                 raise e
             
@@ -184,7 +184,7 @@ class EventFiringWebDriver(object):
             try:
                 result = attrib(*args)
                 return _wrap_elements(result, self)
-            except Exception, e:
+            except Exception as e:
                 self._listener.on_exception(e, self._driver)
                 raise e
                 
@@ -193,7 +193,7 @@ class EventFiringWebDriver(object):
                 attrib = getattr(self._driver, name)
                 if not callable(attrib):
                     return attrib
-            except Exception, e:
+            except Exception as e:
                 self._listener.on_exception(e, self._driver)
                 raise e
             return _wrap
@@ -287,7 +287,7 @@ class EventFiringWebElement(object):
         getattr(self._listener, "before_%s" % l_call)(*l_args)
         try:
             result = getattr(self._webelement, d_call)(*d_args)
-        except Exception, e:
+        except Exception as e:
             self._listener.on_exception(e, self._driver)
             raise e
         getattr(self._listener, "after_%s" % l_call)(*l_args)
@@ -299,7 +299,7 @@ class EventFiringWebElement(object):
         else:
             try:
                 object.__setattr__(self._webelement, item, value)
-            except Exception, e:
+            except Exception as e:
                 self._listener.on_exception(e, self._driver)
                 raise e
             
@@ -309,7 +309,7 @@ class EventFiringWebElement(object):
                 try:
                     result = attrib(*args)
                     return _wrap_elements(result, self._ef_driver)
-                except Exception, e:
+                except Exception as e:
                     self._listener.on_exception(e, self._driver)
                     raise e
                 
@@ -318,7 +318,7 @@ class EventFiringWebElement(object):
                 attrib = getattr(self._webelement, name)
                 if not callable(attrib):
                     return attrib
-            except Exception, e:
+            except Exception as e:
                 self._listener.on_exception(e, self._driver)
                 raise e
             return _wrap
