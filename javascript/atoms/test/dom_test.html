@@ -40,7 +40,7 @@
     assertEquals(1000, inViewLocation.y + goog.dom.getDocumentScroll().y);
   }
 
-  function testGetInViewLocationwithNegativeOffsetX() {
+  function testGetInViewLocationWithNegativeOffsetX() {
     if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
       // Scroll offsets are not reliable on mobile viewports.
       return;
@@ -61,7 +61,7 @@
         goog.dom.getDocumentScroll().x);
   }
 
-  function testGetInViewLocationwithNegativeOffsetY() {
+  function testGetInViewLocationWithNegativeOffsetY() {
     if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
       // Scroll offsets are not reliable on mobile viewports.
       return;
