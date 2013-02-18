@@ -9,6 +9,14 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.30.0.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Fixed incorrect JSON return values for findElements when an error occurs.
+   This is a "best-faith" effort at resolving reports of NullPointerExceptions
+   in Java. If future occurrances of the symptoms are found, please open a new
+   issue. Fixes issue #3800.
+
 v2.29.1.2
 =========
  * Fixed auto-release of modifier keys when using element.SendKeys with 
