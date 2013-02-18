@@ -68,8 +68,8 @@ class TestFirefoxProfile:
             if entry.endswith("user.js"):
                 user_js = zip.read(entry)
                 for line in user_js.splitlines():
-                    if line.startswith('user_pref("sample.preference",'):
-                        assert True == line.endswith('"hi there");')
+                    if line.startswith(b'user_pref("sample.preference",'):
+                        assert True == line.endswith(b'"hi there");')
             # there should be only one user.js
             break
         fp.close()
@@ -89,11 +89,11 @@ class TestFirefoxProfile:
         fp = BytesIO(decoded)
         zip = zipfile.ZipFile(fp, "r")
         for entry in zip.namelist():
-            if entry.endswith("user.js"):
+            if entry.endswith('user.js'):
                 user_js = zip.read(entry)
                 for line in user_js.splitlines():
-                    if line.startswith('user_pref("sample.preference.2",'):
-                        assert True == line.endswith('"hi there");')
+                    if line.startswith(b'user_pref("sample.preference.2",'):
+                        assert True == line.endswith(b'"hi there");')
             # there should be only one user.js
             break
         fp.close()
