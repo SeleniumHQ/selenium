@@ -1,3 +1,47 @@
+v2.30.0
+=======
+
+WebDriver:
+  * Fixing a bug introduced by a change in how we get already logged
+    messages from the console service in firefox. This allows us to
+    function with firefox 19
+  * FIXED: 1181: Improved loopback detection
+  * FIXED: 1627: Implementing ability to use auto proxy in
+    HtmlUnitDriver.
+  * FIXED: 3652: moveToElement with offset should consider 0 as a
+    valid value, not as "undefined".
+  * FIXED: 3868: Better ephemeral port range selection.
+  * FIXED: 4107: Added prebuilt version of the SafariDriver extension
+    to the client jar.
+  * FIXED: 4821: WebDriverBackedSelenium works when added to project
+    via maven.
+  * FIXED: 4940, 5075: Added iceweasel to list of firefox variants.
+  * FIXED: 5022: Text node with overflow:hidden and height/width 0 to
+    not be visible since we cant see them.
+  * FIXED: 5030: Only send files to upload, not directories.
+  * FIXED: 5079: FluentWait.until(Predicate) method does not propagate
+    predicate message.
+  * FIXED: 5109: We should show elements visible if there is a pixel
+    visible.
+  * Semi-private change: Changes in the Coordinate class.
+
+JS:
+  * Update WebDriverJS to support parallel flows.  This change renames
+   several low-level classes and functions in the promise module:
+    
+      promise.Application                                 -> promise.ControlFlow
+        #schedule(string, function)                       ->   #execute(function, [string])
+        #scheduleTimeout(string, number)                  ->   #timeout(number, [string])
+        #scheduleWait(string, function, number, [string]) ->   #wait(function, number, [string])
+   
+    The old schedule* functions are still present, but will print a
+    warning message if called. They will be removed in 2.31.
+
+RC:
+  * Added ability to use relative path to an -htmlSuite file.
+  * FIXED: 5113: Implementing GET requests support for RC protocol.
+
+
 v2.29.0
 =======
 
