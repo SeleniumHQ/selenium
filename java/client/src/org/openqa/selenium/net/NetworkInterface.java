@@ -36,13 +36,13 @@ public class NetworkInterface {
   public NetworkInterface(java.net.NetworkInterface networkInterface) {
     this(networkInterface.getName(), asIterableAddr(networkInterface.getInetAddresses()));
     try {
-      // Issue 1181 : determine wheter this NetworkInterface instance is loopback
+      // Issue 1181 : determine whether this NetworkInterface instance is loopback
       // from java.net.NetworkInterface API
       this.isLoopback = networkInterface.isLoopback();
     } catch (SocketException ex) {
       Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
-      // If an SocketException is caught, determine wheter this NetworkInterface
-      // instance is loopack from computation from its inetAddresses
+      // If an SocketException is caught, determine whether this NetworkInterface
+      // instance is loopback from computation from its inetAddresses
       this.isLoopback =
           isLoopBackFromINetAddresses(asIterableAddr(networkInterface.getInetAddresses()));
     }
@@ -51,6 +51,11 @@ public class NetworkInterface {
   NetworkInterface(String name, Iterable<INetAddress> inetAddresses) {
     this.name = name;
     this.inetAddresses = inetAddresses;
+  }
+
+  NetworkInterface(String name, INetAddress... inetAddresses) {
+    this(name, Arrays.asList(inetAddresses));
+    this.isLoopback = isLoopBackFromINetAddresses(Arrays.asList(inetAddresses));
   }
 
   public boolean isIp4AddressBindingOnly() {
@@ -103,10 +108,6 @@ public class NetworkInterface {
       }
     }
     return null;
-  }
-
-  NetworkInterface(String name, INetAddress... inetAddresses) {
-    this(name, Arrays.asList(inetAddresses));
   }
 
   public Iterable<INetAddress> getInetAddresses() {
