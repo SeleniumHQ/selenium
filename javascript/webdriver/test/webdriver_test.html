@@ -1221,7 +1221,7 @@ limitations under the License.
         new webdriver.WebElement({}, {'ELEMENT': 'foo'}));
   }
 
-  function testWebElement_elementResolvesBeforeCallbacksOnWireValueTrigger() {
+  function testWebElement_resolvesWhenIdResolvesToElementJsonObjectResolvesBeforeCallbacksOnWireValueTrigger() {
     var id = new webdriver.promise.Deferred();
 
     var callback, idCallback;
@@ -1253,14 +1253,12 @@ limitations under the License.
 
     webdriver.promise.when(element,
         callback = callbackHelper(),
-        errback = callbackHelper(function(err) {
-          assertEquals('foo', err);
-        }));
+        errback = callbackHelper(assertIsStubError));
 
     callback.assertNotCalled();
     errback.assertNotCalled();
 
-    id.reject('foo');
+    id.reject(STUB_ERROR);
 
     callback.assertNotCalled();
     errback.assertCalled();

@@ -200,11 +200,12 @@ limitations under the License.
   }
 
   function testErrorFromTestFnAndTearDown() {
+    var e1 = Error(), e2 = Error();
     mockTestCase.setUp();
-    mockTestCase.testFn().$does(function() { throw 'error1' });
-    mockOnError('error1');
-    mockTestCase.tearDown().$does(function() { throw 'error2' });
-    mockOnError('error2');
+    mockTestCase.testFn().$does(function() { throw e1; });
+    mockOnError(e1);
+    mockTestCase.tearDown().$does(function() { throw e2; });
+    mockOnError(e2);
     mockOnComplete(IGNORE_ARGUMENT);
     control.$replayAll();
 
