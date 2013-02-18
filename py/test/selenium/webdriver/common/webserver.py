@@ -20,7 +20,11 @@ import logging
 import os
 import socket
 import threading
-import urllib
+try:
+    from urllib import request as urllib_request
+except ImportError:
+    import urllib as urllib_request
+
 try:
     from http.server import BaseHTTPRequestHandler, HTTPServer
 except ImportError:
@@ -95,7 +99,7 @@ class SimpleWebServer(object):
         self.stop_serving = True
         try:
             # This is to force stop the server loop
-            urllib.URLopener().open("http://localhost:%d" % self.port)
+            urllib_request.URLopener().open("http://localhost:%d" % self.port)
         except Exception:
             pass
         LOGGER.info("Shutting down the webserver")
