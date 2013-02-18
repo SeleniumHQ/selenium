@@ -71,7 +71,7 @@ node.http.HttpClient.prototype.send = function(httpRequest, callback) {
   }
 
   var path = this.options_.path;
-  if (path.lastIndexOf('/', 0) === 0 && httpRequest.path[0] === '/') {
+  if (path[path.length - 1] === '/' && httpRequest.path[0] === '/') {
     path += httpRequest.path.substring(1);
   } else {
     path += httpRequest.path;
