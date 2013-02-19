@@ -20,6 +20,7 @@ import logging
 import os
 import socket
 import threading
+from io import open
 try:
     from urllib import request as urllib_request
 except ImportError:
