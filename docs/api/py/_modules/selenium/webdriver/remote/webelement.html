@@ -49,8 +49,7 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.remote.webelement</h1><div class="highlight"><pre>
-<span class="c"># Copyright 2008-2009 WebDriver committers</span>
-<span class="c"># Copyright 2008-2009 Google Inc.</span>
+<span class="c"># Copyright 2008-2013 Software freedom conservancy</span>
 <span class="c">#</span>
 <span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c"># you may not use this file except in compliance with the License.</span>
@@ -190,12 +189,9 @@
 </div>
 <div class="viewcode-block" id="WebElement.send_keys"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.send_keys">[docs]</a>    <span class="k">def</span> <span class="nf">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Simulates typing into the element.&quot;&quot;&quot;</span>
-         <span class="c"># transfer file to another machine only if remote driver is used</span>
-         <span class="c"># the same behaviour as for java binding</span>
-        <span class="n">parent_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">__class__</span>
-        <span class="n">fqcn</span> <span class="o">=</span> <span class="n">parent_class</span><span class="o">.</span><span class="n">__module__</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">parent_class</span><span class="o">.</span><span class="n">__name__</span>
-        <span class="n">is_remote</span> <span class="o">=</span> <span class="n">fqcn</span> <span class="o">==</span> <span class="s">&quot;selenium.webdriver.remote.webdriver.WebDriver&quot;</span>
-        <span class="k">if</span> <span class="n">is_remote</span><span class="p">:</span>
+        <span class="c"># transfer file to another machine only if remote driver is used</span>
+        <span class="c"># the same behaviour as for java binding</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">_is_remote</span><span class="p">:</span>
             <span class="n">local_file</span> <span class="o">=</span> <span class="n">LocalFileDetector</span><span class="o">.</span><span class="n">is_local_file</span><span class="p">(</span><span class="o">*</span><span class="n">value</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">local_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload</span><span class="p">(</span><span class="n">local_file</span><span class="p">)</span>
@@ -244,7 +240,10 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebElement.location"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.location">[docs]</a>    <span class="k">def</span> <span class="nf">location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the location of the element in the renderable canvas&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_LOCATION</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">old_loc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_LOCATION</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">new_loc</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;x&quot;</span><span class="p">:</span> <span class="n">old_loc</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">],</span>
+                   <span class="s">&quot;y&quot;</span><span class="p">:</span> <span class="n">old_loc</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]}</span>
+        <span class="k">return</span> <span class="n">new_loc</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebElement.parent"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement.parent">[docs]</a>    <span class="k">def</span> <span class="nf">parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -327,7 +326,7 @@
             <span class="k">return</span> <span class="bp">None</span>
 
         <span class="k">try</span><span class="p">:</span>
-          <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+          <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
               <span class="k">return</span> <span class="n">file_path</span>
         <span class="k">except</span><span class="p">:</span>
           <span class="k">pass</span>

@@ -65,6 +65,7 @@ dist/
 py/selenium/webdriver/firefox/amd64/
 py/selenium/webdriver/firefox/webdriver.xpi
 py/selenium/webdriver/firefox/x86/
+py/docs/build/
 selenium.egg-info/
 
 *.user

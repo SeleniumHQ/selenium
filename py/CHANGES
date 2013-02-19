@@ -1,3 +1,8 @@
+Selenium 2.30
+* Allow env to be specified for the chromedriver service
+* Allow log path to be specified for phantomjs driver service.
+* Bug Fixes: 4608 4940 4974 5034 5075
+
 Selenium 2.29
 * Allow subclassing of driver and have the ability to send_keys Issue 4877, 5017
 * Simplifying save_screenshot and allow phantomjs to take screenshots

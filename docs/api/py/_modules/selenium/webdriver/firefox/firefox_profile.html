@@ -137,7 +137,6 @@
         <span class="s">&quot;webdriver_enable_native_events&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
         <span class="s">&quot;webdriver_assume_untrusted_issuer&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
         <span class="s">&quot;dom.max_script_run_time&quot;</span><span class="p">:</span> <span class="s">&quot;30&quot;</span><span class="p">,</span>
-        <span class="s">&quot;devtools.chrome.enabled&quot;</span><span class="p">:</span> <span class="s">&quot;true&quot;</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">profile_directory</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -152,10 +151,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">default_preferences</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span>
             <span class="n">FirefoxProfile</span><span class="o">.</span><span class="n">DEFAULT_PREFERENCES</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="o">=</span> <span class="n">profile_directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tempfolder</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_tempfolder</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">newprof</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tempfolder</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
+            <span class="n">newprof</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tempfolder</span><span class="p">,</span>
                 <span class="s">&quot;webdriver-py-profilecopy&quot;</span><span class="p">)</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile_dir</span><span class="p">,</span> <span class="n">newprof</span><span class="p">,</span>
                 <span class="n">ignore</span><span class="o">=</span><span class="n">shutil</span><span class="o">.</span><span class="n">ignore_patterns</span><span class="p">(</span><span class="s">&quot;parent.lock&quot;</span><span class="p">,</span> <span class="s">&quot;lock&quot;</span><span class="p">,</span> <span class="s">&quot;.parentlock&quot;</span><span class="p">))</span>

@@ -134,7 +134,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="n">element</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignored</span><span class="p">):</span>    
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignored</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_element_if_visible</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
 </div>
 <span class="k">def</span> <span class="nf">_element_if_visible</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
@@ -161,12 +161,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">locator</span> <span class="o">=</span> <span class="n">locator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text_</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>     
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span> <span class="p">:</span>
             <span class="n">element_text</span> <span class="o">=</span> <span class="n">_find_element</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="ow">in</span> <span class="n">element_text</span>
         <span class="k">except</span> <span class="n">StaleElementReferenceException</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>        
+            <span class="k">return</span> <span class="bp">False</span>
 </div>
 <div class="viewcode-block" id="text_to_be_present_in_element_value"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.text_to_be_present_in_element_value">[docs]</a><span class="k">class</span> <span class="nc">text_to_be_present_in_element_value</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -212,7 +212,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">locator</span> <span class="o">=</span> <span class="n">locator</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>    
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="ow">not</span> <span class="n">_find_element</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">locator</span><span class="p">)</span><span class="o">.</span><span class="n">is_displayed</span><span class="p">()</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">StaleElementReferenceException</span><span class="p">):</span>
@@ -229,7 +229,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">locator</span> <span class="o">=</span> <span class="n">locator</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>    
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
         <span class="n">element</span> <span class="o">=</span> <span class="n">visibility_of_element_located</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">locator</span><span class="p">)(</span><span class="n">driver</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">element</span> <span class="ow">and</span> <span class="n">element</span><span class="o">.</span><span class="n">is_enabled</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">element</span>
@@ -280,7 +280,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="n">element</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_selected</span> <span class="o">=</span> <span class="n">is_selected</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignored</span><span class="p">):</span>     
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignored</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_selected</span>
 </div>
 <div class="viewcode-block" id="element_located_selection_state_to_be"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.expected_conditions.html#selenium.webdriver.support.expected_conditions.element_located_selection_state_to_be">[docs]</a><span class="k">class</span> <span class="nc">element_located_selection_state_to_be</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -293,7 +293,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">locator</span> <span class="o">=</span> <span class="n">locator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_selected</span> <span class="o">=</span> <span class="n">is_selected</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>    
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">element</span> <span class="o">=</span> <span class="n">_find_element</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">locator</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">element</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_selected</span>
@@ -314,7 +314,7 @@
             <span class="k">return</span> <span class="bp">False</span>
 </div>
 <span class="k">def</span> <span class="nf">_find_element</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">by</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Looks up an element. Logs and re-raises WebDriverException if thrown. </span>
+    <span class="sd">&quot;&quot;&quot; Looks up an element. Logs and re-raises WebDriverException if thrown.</span>
 <span class="sd">    Method exists to gather data for</span>
 <span class="sd">    http://code.google.com/p/selenium/issues/detail?id=1800</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -323,7 +323,7 @@
     <span class="k">except</span> <span class="n">NoSuchElementException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">e</span>
     <span class="k">except</span> <span class="n">WebDriverException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">e</span>  
+        <span class="k">raise</span> <span class="n">e</span>
 
 
 <span class="k">def</span> <span class="nf">_find_elements</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">by</span><span class="p">):</span>

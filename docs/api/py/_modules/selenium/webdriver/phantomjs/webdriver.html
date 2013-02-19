@@ -51,7 +51,7 @@
   <h1>Source code for selenium.webdriver.phantomjs.webdriver</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/python</span>
 <span class="c">#</span>
-<span class="c"># Copyright 2012 Software freedom conservancy</span>
+<span class="c"># Copyright 2012-2013 Software freedom conservancy</span>
 <span class="c">#</span>
 <span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c"># you may not use this file except in compliance with the License.</span>
@@ -82,7 +82,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="s">&quot;phantomjs&quot;</span><span class="p">,</span>
-                 <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">PHANTOMJS</span><span class="p">):</span>
+                 <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">PHANTOMJS</span><span class="p">,</span>
+                 <span class="n">service_log_path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new instance of the PhantomJS / Ghostdriver.</span>
 
@@ -93,8 +94,9 @@
 <span class="sd">         - port - port you would like the service to run, if left as 0, a free port will be found.</span>
 <span class="sd">         - desired_capabilities: Dictionary object with non-browser specific</span>
 <span class="sd">           capabilities only, such as &quot;proxy&quot; or &quot;loggingPref&quot;.</span>
+<span class="sd">         - service_log_path: Path for phantomjs service to log to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">log_path</span><span class="o">=</span><span class="n">service_log_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -103,7 +105,9 @@
                 <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">desired_capabilities</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
-            <span class="k">raise</span> 
+            <span class="k">raise</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="bp">False</span>
 
 <div class="viewcode-block" id="WebDriver.quit"><a class="viewcode-back" href="../../../../webdriver_phantomjs/selenium.webdriver.phantomjs.webdriver.html#selenium.webdriver.phantomjs.webdriver.WebDriver.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

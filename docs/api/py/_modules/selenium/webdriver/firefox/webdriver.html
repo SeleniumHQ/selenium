@@ -49,8 +49,7 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.firefox.webdriver</h1><div class="highlight"><pre>
-<span class="c"># Copyright 2008-2011 WebDriver committers</span>
-<span class="c"># Copyright 2008-2011 Google Inc.</span>
+<span class="c"># Copyright 2008-2013 Software freedom conservancy</span>
 <span class="c">#</span>
 <span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c"># you may not use this file except in compliance with the License.</span>
@@ -109,6 +108,7 @@
             <span class="n">command_executor</span><span class="o">=</span><span class="n">ExtensionConnection</span><span class="p">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="p">,</span> <span class="n">timeout</span><span class="p">),</span>
             <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="bp">False</span>
 
 <div class="viewcode-block" id="WebDriver.create_web_element"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.create_web_element">[docs]</a>    <span class="k">def</span> <span class="nf">create_web_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Override from RemoteWebDriver to use firefox.WebElement.&quot;&quot;&quot;</span>
@@ -125,28 +125,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">tempfolder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">tempfolder</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">print</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebDriver.firefox_profile"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.firefox_profile">[docs]</a>    <span class="k">def</span> <span class="nf">firefox_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span>
-</div>
-<div class="viewcode-block" id="WebDriver.save_screenshot"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.save_screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">save_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets the screenshot of the current window. Returns False if there is</span>
-<span class="sd">        any IOError, else returns True. Use full paths in your filename.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">png</span> <span class="o">=</span> <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Command</span><span class="o">.</span><span class="n">SCREENSHOT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">decodestring</span><span class="p">(</span><span class="n">png</span><span class="p">))</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">png</span>
-        <span class="k">return</span> <span class="bp">True</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">profile</span></div></div>
 </pre></div>
 
           </div>

@@ -79,12 +79,16 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firefox_path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="o">=</span> <span class="n">firefox_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_firefox_start_cmd</span><span class="p">()</span>
         <span class="c"># Rather than modifying the environment of the calling Python process</span>
         <span class="c"># copy it and modify as needed.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
+<div class="viewcode-block" id="FirefoxBinary.add_command_line_options"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.add_command_line_options">[docs]</a>    <span class="k">def</span> <span class="nf">add_command_line_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span> <span class="o">=</span> <span class="n">args</span>
+</div>
 <div class="viewcode-block" id="FirefoxBinary.launch_browser"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.launch_browser">[docs]</a>    <span class="k">def</span> <span class="nf">launch_browser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Launches the browser for the given profile name.</span>
 <span class="sd">        It is assumed the profile already exists.</span>
@@ -108,14 +112,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">[</span><span class="s">&quot;MOZ_CRASHREPORTER_DISABLE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">[</span><span class="s">&quot;MOZ_NO_REMOTE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">[</span><span class="s">&quot;NO_EM_RESTART&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
-        
+
         <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;linux&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_modify_link_library_path</span><span class="p">()</span>
-        
-        <span class="n">Popen</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-silent&quot;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-silent&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cli</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span><span class="p">:</span>
+                <span class="n">command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
+
+        <span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
               <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">)</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+        <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;-foreground&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span>
-            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="p">,</span> <span class="s">&quot;-foreground&quot;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
+            <span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
             <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_firefox_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -152,7 +161,7 @@
                 <span class="n">key</span> <span class="o">=</span> <span class="n">OpenKey</span><span class="p">(</span><span class="n">HKEY_LOCAL_MACHINE</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
                 <span class="n">command</span> <span class="o">=</span> <span class="n">QueryValue</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
-            <span class="k">except</span> <span class="ne">WindowsError</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
                 <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&quot;&quot;</span>
@@ -170,11 +179,14 @@
         <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;Java&#39;</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">_name</span> <span class="o">==</span> <span class="s">&#39;nt&#39;</span><span class="p">:</span>
             <span class="n">start_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_windows_location</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c"># Maybe iceweasel (Debian) is another candidate...</span>
-            <span class="k">for</span> <span class="n">ffname</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;firefox2&quot;</span><span class="p">,</span> <span class="s">&quot;firefox&quot;</span><span class="p">,</span> <span class="s">&quot;firefox-3.0&quot;</span><span class="p">,</span> <span class="s">&quot;firefox-4.0&quot;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">ffname</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;firefox&quot;</span><span class="p">,</span> <span class="s">&quot;iceweasel&quot;</span><span class="p">]:</span>
                 <span class="n">start_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="n">ffname</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">start_cmd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                     <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># couldn&#39;t find firefox on the system path</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;Could not find firefox in your system PATH.&quot;</span> <span class="o">+</span> 
+                    <span class="s">&quot; Please specify the firefox binary location or install firefox&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">start_cmd</span>
 
     <span class="k">def</span> <span class="nf">_default_windows_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

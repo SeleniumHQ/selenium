@@ -75,14 +75,15 @@
 <span class="sd">    Object that manages the starting and stopping of PhantomJS / Ghostdriver</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">service_args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">service_args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new instance of the Service</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Args:</span>
 <span class="sd">         - executable_path : Path to PhantomJS binary</span>
-<span class="sd">         - port : Port the service is running on </span>
+<span class="sd">         - port : Port the service is running on</span>
 <span class="sd">         - service_args : A List of other command line options to pass to PhantomJS</span>
+<span class="sd">         - log_path: Path for PhantomJS service to log to</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
@@ -94,12 +95,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;--webdriver=</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;ghostdriver.log&quot;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">log_path</span><span class="p">:</span>
+            <span class="n">log_path</span> <span class="o">=</span> <span class="s">&quot;ghostdriver.log&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Service.start"><a class="viewcode-back" href="../../../../webdriver_phantomjs/selenium.webdriver.phantomjs.service.html#selenium.webdriver.phantomjs.service.Service.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Starts PhantomJS with GhostDriver. </span>
-<span class="sd">        </span>
+<span class="sd">        Starts PhantomJS with GhostDriver.</span>
+
 <span class="sd">        :Exceptions:</span>
 <span class="sd">         - WebDriverException : Raised either when it can&#39;t start the service</span>
 <span class="sd">           or when it can&#39;t connect to the service</span>
@@ -115,7 +118,7 @@
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">30</span><span class="p">:</span>
                  <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Can not connect to GhostDriver&quot;</span><span class="p">)</span>
-                </div>
+</div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Service.service_url"><a class="viewcode-back" href="../../../../webdriver_phantomjs/selenium.webdriver.phantomjs.service.html#selenium.webdriver.phantomjs.service.Service.service_url">[docs]</a>    <span class="k">def</span> <span class="nf">service_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -124,7 +127,7 @@
         <span class="k">return</span> <span class="s">&quot;http://localhost:</span><span class="si">%d</span><span class="s">/wd/hub&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span>
 </div>
 <div class="viewcode-block" id="Service.stop"><a class="viewcode-back" href="../../../../webdriver_phantomjs/selenium.webdriver.phantomjs.service.html#selenium.webdriver.phantomjs.service.Service.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; </span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cleans up the process</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">:</span>
@@ -139,7 +142,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">WindowsError</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
             <span class="c"># kill may not be available under windows environment</span>
             <span class="k">pass</span></div></div>
 </pre></div>

@@ -49,8 +49,7 @@
           <div class="body">
             
   <h1>Source code for selenium.webdriver.remote.webdriver</h1><div class="highlight"><pre>
-<span class="c"># Copyright 2008-2011 WebDriver committers</span>
-<span class="c"># Copyright 2008-2011 Google Inc.</span>
+<span class="c"># Copyright 2008-2013 Software freedom conservancy</span>
 <span class="c">#</span>
 <span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c"># you may not use this file except in compliance with the License.</span>
@@ -89,10 +88,11 @@
 <span class="sd">     - error_handler - errorhandler.ErrorHandler object used to verify that the server did not return an error.</span>
 <span class="sd">     - session_id - The session ID to send with every command.</span>
 <span class="sd">     - capabilities - A dictionary of capabilities of the underlying browser for this instance&#39;s session.</span>
+<span class="sd">     - proxy - A selenium.webdriver.common.proxy.Proxy object, to specify a proxy for the browser to use.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_executor</span><span class="o">=</span><span class="s">&#39;http://127.0.0.1:4444/wd/hub&#39;</span><span class="p">,</span>
-        <span class="n">desired_capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">browser_profile</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">desired_capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">browser_profile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">proxy</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new driver that will issue commands using the wire protocol.</span>
 
@@ -105,9 +105,12 @@
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Desired Capabilities can&#39;t be None&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Desired Capabilities must be a dictionary&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">proxy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">proxy</span><span class="o">.</span><span class="n">add_to_capabilities</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span> <span class="o">=</span> <span class="n">command_executor</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">unicode</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span> <span class="o">=</span> <span class="n">RemoteConnection</span><span class="p">(</span><span class="n">command_executor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error_handler</span> <span class="o">=</span> <span class="n">ErrorHandler</span><span class="p">()</span>
@@ -687,7 +690,7 @@
 <span class="sd">           execute_async_script call before throwing an error.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - time_to_wait: The amount of time to wait</span>
+<span class="sd">         - time_to_wait: The amount of time to wait (in seconds)</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.set_script_timeout(30)</span>
@@ -697,7 +700,7 @@
 </div>
 <div class="viewcode-block" id="WebDriver.set_page_load_timeout"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.set_page_load_timeout">[docs]</a>    <span class="k">def</span> <span class="nf">set_page_load_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_to_wait</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the amount of time to wait for a page load to complete </span>
+<span class="sd">        Set the amount of time to wait for a page load to complete</span>
 <span class="sd">           before throwing an error.</span>
 
 <span class="sd">        :Args:</span>
@@ -718,7 +721,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">value</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InvalidSelectorException</span><span class="p">(</span><span class="s">&quot;Invalid locator values passed in&quot;</span><span class="p">)</span>
-            
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENT</span><span class="p">,</span>
                              <span class="p">{</span><span class="s">&#39;using&#39;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
@@ -853,7 +856,23 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebDriver.application_cache"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.application_cache">[docs]</a>    <span class="k">def</span> <span class="nf">application_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a ApplicationCache Object to interact with the browser app cache&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ApplicationCache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ApplicationCache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="WebDriver.save_screenshot"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.save_screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">save_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the screenshot of the current window. Returns False if there is</span>
+<span class="sd">        any IOError, else returns True. Use full paths in your filename.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">png</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SCREENSHOT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">decodestring</span><span class="p">(</span><span class="n">png</span><span class="p">))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">png</span>
+        <span class="k">return</span> <span class="bp">True</span></div></div>
 </pre></div>
 
           </div>

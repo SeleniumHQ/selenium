@@ -51,8 +51,7 @@
   <h1>Source code for selenium.webdriver.ie.webdriver</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/python</span>
 <span class="c">#</span>
-<span class="c"># Copyright 2008-2010 WebDriver committers</span>
-<span class="c"># Copyright 2008-2010 Google Inc.</span>
+<span class="c"># Copyright 2008-2013 Software freedom conservancy</span>
 <span class="c">#</span>
 <span class="c"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c"># you may not use this file except in compliance with the License.</span>
@@ -101,26 +100,11 @@
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">command_executor</span><span class="o">=</span><span class="s">&#39;http://localhost:</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
             <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">INTERNETEXPLORER</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_remote</span> <span class="o">=</span> <span class="bp">False</span>
 
 <div class="viewcode-block" id="WebDriver.quit"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-</div>
-<div class="viewcode-block" id="WebDriver.save_screenshot"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.save_screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">save_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets the screenshot of the current window. Returns False if there is</span>
-<span class="sd">        any IOError, else returns True. Use full paths in your filename.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">png</span> <span class="o">=</span> <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Command</span><span class="o">.</span><span class="n">SCREENSHOT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">decodestring</span><span class="p">(</span><span class="n">png</span><span class="p">))</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">png</span>
-        <span class="k">return</span> <span class="bp">True</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>

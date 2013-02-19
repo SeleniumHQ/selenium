@@ -61,7 +61,7 @@
 <p>The WebDriver implementation.</p>
 <dl class="class">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>command_executor='http://127.0.0.1:4444/wd/hub'</em>, <em>desired_capabilities=None</em>, <em>browser_profile=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.webdriver.</tt><tt class="descname">WebDriver</tt><big>(</big><em>command_executor='http://127.0.0.1:4444/wd/hub'</em>, <em>desired_capabilities=None</em>, <em>browser_profile=None</em>, <em>proxy=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Controls a browser by sending commands to a remote server.
 This server is expected to be running the WebDriver wire protocol as defined
 here: <a class="reference external" href="http://code.google.com/p/selenium/wiki/JsonWireProtocol">http://code.google.com/p/selenium/wiki/JsonWireProtocol</a></p>
@@ -74,6 +74,7 @@ here: <a class="reference external" href="http://code.google.com/p/selenium/wiki
 <li>error_handler - errorhandler.ErrorHandler object used to verify that the server did not return an error.</li>
 <li>session_id - The session ID to send with every command.</li>
 <li>capabilities - A dictionary of capabilities of the underlying browser for this instance&#8217;s session.</li>
+<li>proxy - A selenium.webdriver.common.proxy.Proxy object, to specify a proxy for the browser to use.</li>
 </ul>
 </td>
 </tr>
@@ -861,10 +862,17 @@ execute_async_script, see set_script_timeout.</dd>
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.save_screenshot">
+<tt class="descname">save_screenshot</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.save_screenshot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.save_screenshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the screenshot of the current window. Returns False if there is
+any IOError, else returns True. Use full paths in your filename.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.set_page_load_timeout">
 <tt class="descname">set_page_load_timeout</tt><big>(</big><em>time_to_wait</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.set_page_load_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.set_page_load_timeout" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
-<dt>Set the amount of time to wait for a page load to complete </dt>
+<dt>Set the amount of time to wait for a page load to complete</dt>
 <dd>before throwing an error.</dd>
 </dl>
 <table class="docutils field-list" frame="void" rules="none">
@@ -895,7 +903,7 @@ execute_async_script, see set_script_timeout.</dd>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
-<li>time_to_wait: The amount of time to wait</li>
+<li>time_to_wait: The amount of time to wait (in seconds)</li>
 </ul>
 </td>
 </tr>
