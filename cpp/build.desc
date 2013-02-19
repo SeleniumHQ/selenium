@@ -5,24 +5,31 @@ visualc_library(name = "firefox_dll",
   out = "Win32/Release/webdriver-firefox.dll"
 )
 
-visualc_library(name = "firefox10_dll",
+visualc_library(name = "firefoxprevious_esr_dll",
   platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox-10.vcxproj",
+  project = "webdriver-firefox/webdriver-firefox-esr-previous.vcxproj",
   file_deps = "third_party/gecko-10/win32",
-  out = "Win32/Release/webdriver-firefox-10.dll"
+  out = "Win32/Release/webdriver-firefox-esr-previous.dll"
+)
+
+visualc_library(name = "firefoxlatest_esr_dll",
+  platform = "Win32",
+  project = "webdriver-firefox/webdriver-firefox-esr-latest.vcxproj",
+  file_deps = "third_party/gecko-10/win32",
+  out = "Win32/Release/webdriver-firefox-esr-latest.dll"
 )
 
 visualc_library(name = "firefoxprevious_dll",
   platform = "Win32",
   project = "webdriver-firefox/webdriver-firefox-previous.vcxproj",
-  file_deps = "third_party/gecko-17/win32",
+  file_deps = "third_party/gecko-18/win32",
   out = "Win32/Release/webdriver-firefox-previous.dll"
 )
 
 visualc_library(name = "firefoxlatest_dll",
   platform = "Win32",
   project = "webdriver-firefox/webdriver-firefox-latest.vcxproj",
-  file_deps = "third_party/gecko-18/win32",
+  file_deps = "third_party/gecko-19/win32",
   out = "Win32/Release/webdriver-firefox-latest.dll"
 )
 
@@ -49,7 +56,7 @@ mozilla_lib(name = "webdriver_firefox_ff3",
 
 # Firefox 10 is an ESR release. We probably want to allow an overlap when the
 # next ESR release is made.
-mozilla_lib(name = "webdriver_firefox_10",
+mozilla_lib(name = "webdriver_firefox_esr_previous",
   srcs = [ 
     "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
@@ -57,13 +64,29 @@ mozilla_lib(name = "webdriver_firefox_10",
   arch = "i386",
   geckoversion="10")
 
-mozilla_lib(name = "webdriver_firefox_10_64",
+mozilla_lib(name = "webdriver_firefox_esr_previous_64",
   srcs = [ 
     "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
   geckoversion="10")
+
+mozilla_lib(name = "webdriver_firefox_esr_latest",
+  srcs = [ 
+    "webdriver-interactions/*_linux*.cpp",
+    "webdriver-interactions/interactions_common.*",
+    "webdriver-firefox/*.cpp"],
+  arch = "i386",
+  geckoversion="17")
+
+mozilla_lib(name = "webdriver_firefox_esr_latest_64",
+  srcs = [ 
+    "webdriver-interactions/*_linux*.cpp",
+    "webdriver-interactions/interactions_common.*",
+    "webdriver-firefox/*.cpp"],
+  arch = "amd64",
+  geckoversion="17")
 
 
 mozilla_lib(name = "webdriver_firefox_previous",
@@ -71,28 +94,28 @@ mozilla_lib(name = "webdriver_firefox_previous",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "i386",
-  geckoversion="17")
+  geckoversion="18")
 
 mozilla_lib(name = "webdriver_firefox_previous_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
-  geckoversion="17")
+  geckoversion="18")
 
 mozilla_lib(name = "webdriver_firefox_latest",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "i386",
-  geckoversion="18")
+  geckoversion="19")
 
 mozilla_lib(name = "webdriver_firefox_latest_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
-  geckoversion="18")
+  geckoversion="19")
 
 gcc_library(name = "noblur",
   srcs = [ "linux-specific/*.c" ],

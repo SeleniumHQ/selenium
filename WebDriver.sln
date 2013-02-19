@@ -76,6 +76,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-10", "cpp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.PhantomJS.Tests", "dotnet\test\WebDriver.PhantomJS.Tests\WebDriver.PhantomJS.Tests.csproj", "{2329720E-A694-4A6F-B4E6-EDEA911298E0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-esr-previous", "cpp\webdriver-firefox\webdriver-firefox-esr-previous.vcxproj", "{D137A27D-8324-4024-97FC-D2D29E3EFE60}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-esr-latest", "cpp\webdriver-firefox\webdriver-firefox-esr-latest.vcxproj", "{15097CC6-2D02-450E-93CF-3F4822EE64E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -474,6 +478,38 @@ Global
 		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Release|Win32.ActiveCfg = Release|Any CPU
 		{2329720E-A694-4A6F-B4E6-EDEA911298E0}.Release|x64.ActiveCfg = Release|Any CPU
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Debug|.NET.ActiveCfg = Debug|x64
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Debug|Win32.Build.0 = Debug|Win32
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Debug|x64.ActiveCfg = Debug|x64
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Debug|x64.Build.0 = Debug|x64
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Release|.NET.ActiveCfg = Release|x64
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Release|Any CPU.ActiveCfg = Release|x64
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Release|Mixed Platforms.Build.0 = Release|x64
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Release|Win32.ActiveCfg = Release|Win32
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Release|Win32.Build.0 = Release|Win32
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Release|x64.ActiveCfg = Release|x64
+		{D137A27D-8324-4024-97FC-D2D29E3EFE60}.Release|x64.Build.0 = Release|x64
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Debug|.NET.ActiveCfg = Debug|x64
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Debug|Win32.Build.0 = Debug|Win32
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Debug|x64.ActiveCfg = Debug|x64
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Debug|x64.Build.0 = Debug|x64
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Release|.NET.ActiveCfg = Release|x64
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Release|Any CPU.ActiveCfg = Release|x64
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Release|Mixed Platforms.Build.0 = Release|x64
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Release|Win32.ActiveCfg = Release|Win32
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Release|Win32.Build.0 = Release|Win32
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Release|x64.ActiveCfg = Release|x64
+		{15097CC6-2D02-450E-93CF-3F4822EE64E7}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
