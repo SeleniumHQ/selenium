@@ -38,10 +38,21 @@ import java.util.Map;
 public class InternetExplorerDriverService extends DriverService {
 
   /**
-   * System property that defines the location of the IEDriverServer executable that will be used by
-   * the {@link #createDefaultService() default service}.
+   * System property that defines the location of the IEDriverServer executable
+   * that will be used by the {@link #createDefaultService() default service}.
    */
   public static final String IE_DRIVER_EXE_PROPERTY = "webdriver.ie.driver";
+
+  /**
+   * System property that defines the location of the file where IEDriverServer
+   * should write log messages to.
+   */
+  public static final String IE_DRIVER_LOGFILE_PROPERTY = "webdriver.ie.driver.logfile";
+
+  /**
+   * System property that defines the detalization level the IEDriverServer logs.
+   */
+  public static final String IE_DRIVER_LOGLEVEL_PROPERTY = "webdriver.ie.driver.loglevel";
 
   /**
    *
@@ -166,6 +177,18 @@ public class InternetExplorerDriverService extends DriverService {
         exe = findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
             "http://code.google.com/p/selenium/wiki/InternetExplorerDriver",
             "http://code.google.com/p/selenium/downloads/list");
+      }
+      if (logFile == null) {
+        String logFilePath = System.getProperty(IE_DRIVER_LOGFILE_PROPERTY);
+        if (logFilePath != null) {
+          logFile = new File(logFilePath);
+        }
+      }
+      if (logLevel == null) {
+        String level = System.getProperty(IE_DRIVER_LOGLEVEL_PROPERTY);
+        if (level != null) {
+          logLevel = InternetExplorerDriverLogLevel.valueOf(level);
+        }
       }
 
       try {
