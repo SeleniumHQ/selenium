@@ -17,15 +17,17 @@
  * @fileoverview Various HTTP utilities.
  */
 
-goog.provide('node.http.util');
+var base = require('../_base'),
+    HttpClient = require('./index').HttpClient,
+    checkResponse = base.require('bot.response').checkResponse,
+    Executor = base.require('webdriver.http.Executor'),
+    HttpRequest = base.require('webdriver.http.Request'),
+    Command = base.require('webdriver.Command'),
+    CommandName = base.require('webdriver.CommandName'),
+    promise = base.require('webdriver.promise');
 
-goog.require('bot.response');
-goog.require('node.http.HttpClient');
-goog.require('webdriver.http.Executor');
-goog.require('webdriver.http.Request');
-goog.require('webdriver.Command');
-goog.require('webdriver.CommandName');
-goog.require('webdriver.promise');
+
+// PUBLIC API
 
 
 /**
@@ -34,17 +36,17 @@ goog.require('webdriver.promise');
  * @return {!webdriver.promise.Promise.<!Object>} A promise that resolves with
  *     a hash of the server status.
  */
-node.http.util.getStatus = function(url) {
-  var deferredStatus = webdriver.promise.defer();
-  var client = new node.http.HttpClient(url);
-  var executor = new webdriver.http.Executor(client);
-  var command = new webdriver.Command(webdriver.CommandName.GET_SERVER_STATUS);
+exports.getStatus = function(url) {
+  var deferredStatus = promise.defer();
+  var client = new HttpClient(url);
+  var executor = new Executor(client);
+  var command = new Command(CommandName.GET_SERVER_STATUS);
   executor.execute(command, function(err, responseObj) {
     if (err) {
       deferredStatus.reject(err);
     } else {
       try {
-        bot.response.checkResponse(responseObj);
+        checkResponse(responseObj);
         deferredStatus.resolve(responseObj['value']);
       } catch (ex) {
         deferredStatus.reject(ex);
@@ -62,9 +64,9 @@ node.http.util.getStatus = function(url) {
  * @return {!webdriver.promise.Promise} A promise that will resolve when the
  *     server is ready.
  */
-node.http.util.waitForServer = function(url, timeout) {
-  return webdriver.promise.controlFlow().wait(function() {
-    return node.http.util.getStatus(url).
+exports.waitForServer = function(url, timeout) {
+  return promise.controlFlow().wait(function() {
+    return exports.getStatus(url).
         then(function() { return true; },
              function() { return false; });
   }, timeout, 'Timed out waiting for the WebDriver server at ' + url);
@@ -79,13 +81,13 @@ node.http.util.waitForServer = function(url, timeout) {
  * @return {!webdriver.promise.Promise} A promise that will resolve when the
  *     URL responds with 2xx.
  */
-node.http.util.waitForUrl = function(url, timeout) {
-  var client = new node.http.HttpClient(url);
-  var request = new webdriver.http.Request('GET', '');
+exports.waitForUrl = function(url, timeout) {
+  var client = new HttpClient(url);
+  var request = new HttpRequest('GET', '');
   var sendRequest = client.send.bind(client, request);
 
-  return webdriver.promise.controlFlow().wait(function() {
-      return webdriver.promise.checkedNodeCall(sendRequest).
+  return promise.controlFlow().wait(function() {
+      return promise.checkedNodeCall(sendRequest).
           then(function(response) {
             return response.status > 199 && response.status < 300;
           });

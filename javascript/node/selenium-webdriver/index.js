@@ -21,7 +21,7 @@
 var base = require('./_base');
 
 exports.ActionSequence = base.require('webdriver.ActionSequence');
-exports.Builder = base.require('node.Builder');
+exports.Builder = require('./builder').Builder;
 exports.Button = base.require('webdriver.Button');
 exports.By = base.require('webdriver.Locator.Strategy');
 exports.Command = base.require('webdriver.Command');
@@ -48,13 +48,7 @@ var submodules = {
   events: {
     EventEmitter: base.require('webdriver.EventEmitter')
   },
-  http: {
-    Executor: base.require('webdriver.http.Executor'),
-    Request: base.require('webdriver.http.Request'),
-    Response: base.require('webdriver.http.Response'),
-    HttpClient: base.require('node.http.HttpClient'),
-    util: base.require('node.http.util')
-  },
+  http: require('./http'),
   promise: base.exportPublicApi('webdriver.promise'),
   stacktrace: base.exportPublicApi('webdriver.stacktrace')
 };

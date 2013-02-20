@@ -165,51 +165,24 @@ function processLibraryFiles(filePaths, contentRoots) {
 
 
 /**
- * @param {!Array.<string>} filePaths The src file paths.
+ * @param {string} srcDir Path to the main source directory.
  * @param {string} outputDirPath Path to the directory to copy src files to.
- * @return {!Array.<string>} The list of all required symbols.
  */
-function processSrcs(filePaths, outputDirPath) {
-  var symbols = {};
-  var currentFile;
-
-  function requireSymbol(symbol) {
-    assert.ok(!!PROVIDERS[symbol],
-        'Missing provider for ' + symbol + ' (in ' + currentFile + ')');
-    symbols[symbol] = 1;
-    return {};
-  }
-
-  var closure = vm.createContext({
-    exports: {},
-    require: function(module) {
-      assert.strictEqual('./_base', module, 'You may only import "./_base"');
-      return {
-        require: requireSymbol,
-        exportPublicApi: requireSymbol
-      };
-    }
-  });
-
+function copySrcs(srcDir, outputDirPath) {
+  var filePaths = fs.readdirSync(srcDir);
   filePaths.forEach(function(filePath) {
-    currentFile = filePath;
-
-    var contents = fs.readFileSync(filePath, 'utf8');
-
-    var basename = path.basename(filePath);
-    if (/\.js$/.test(basename) && basename !== '_base.js') {
-      vm.runInContext(contents, closure, filePath);
+    filePath = path.join(srcDir, filePath);
+    if (fs.statSync(filePath).isDirectory()) {
+      copySrcs(filePath, path.join(outputDirPath, path.basename(filePath)));
+    } else {
+      var dest = path.join(outputDirPath, path.basename(filePath));
+      copyFile(filePath, dest);
     }
-
-    var dest = path.join(outputDirPath, path.basename(filePath));
-    fs.writeFileSync(dest, contents, 'utf8');
   });
-
-  return Object.keys(symbols);
 }
 
 
-function copyLibraries(outputDirPath, symbols) {
+function copyLibraries(outputDirPath, filePaths) {
   // Always copy over Closure base.
   var base = PROVIDERS['goog'];
   var googDirPath = path.join(outputDirPath, 'lib', CONTENT_MAP[base]);
@@ -223,6 +196,12 @@ function copyLibraries(outputDirPath, symbols) {
 
   var seenSymbols = {};
   var seenFiles = {};
+  var symbols = [];
+  filePaths.filter(function(path) {
+    return !fs.statSync(path).isDirectory();
+  }).forEach(function(path) {
+    symbols = symbols.concat(FILE_INFO[path].requires);
+  });
   symbols.forEach(resolveDeps);
 
   var depsPath = path.join(outputDirPath, 'lib', 'deps.js');
@@ -311,9 +290,9 @@ function main() {
   var parser = new optparse.OptionParser().
       path('output', { help: 'Path to the output directory' }).
       path('src', {
-        help: 'Path to a module source file that should be copied to the ' +
-            'main output directory',
-        list: true
+        help: 'Path to the module source directory. The entire contents of ' +
+            'this directory will be copied recursively to the main output ' +
+            'directory.'
       }).
       path('lib', {
         help: 'Path to a library file that should be copied to the lib/ ' +
@@ -345,8 +324,8 @@ function main() {
 
   processLibraryFiles(options.lib, options.root);
 
-  var requiredSymbols = processSrcs(options.src, options.output);
-  copyLibraries(options.output, requiredSymbols);
+  copySrcs(options.src, options.output);
+  copyLibraries(options.output, options.lib);
   copyResources(options.output, options.resource);
 }
 

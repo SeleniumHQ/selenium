@@ -18,7 +18,7 @@ var path = require('path');
 var projectRootDir = path.join(__dirname, '..', '..', '..');
 
 var modulePath = path.join('javascript', 'node');
-if (process.env['SELENIUM_DEV_MODE'] !== '1') {
+if (process.env['SELENIUM_TEST_PROD'] === '1') {
   modulePath = path.join('build', modulePath);
 }
 modulePath = path.join(projectRootDir, modulePath);

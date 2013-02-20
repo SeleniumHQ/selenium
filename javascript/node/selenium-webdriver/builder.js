@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-goog.provide('node.Builder');
+var base = require('./_base'),
+    HttpClient = require('./http').HttpClient;
 
-goog.require('node.http.HttpClient');
-goog.require('webdriver.AbstractBuilder');
-goog.require('webdriver.WebDriver');
-goog.require('webdriver.http.Executor');
+var goog = base.require('goog'),
+    AbstractBuilder = base.require('webdriver.AbstractBuilder'),
+    WebDriver = base.require('webdriver.WebDriver'),
+    HttpExecutor = base.require('webdriver.http.Executor');
 
 
 
@@ -25,23 +26,29 @@ goog.require('webdriver.http.Executor');
  * @constructor
  * @extends {webdriver.AbstractBuilder}
  */
-node.Builder = function() {
+var Builder = function() {
   goog.base(this);
 };
-goog.inherits(node.Builder, webdriver.AbstractBuilder);
+goog.inherits(Builder, AbstractBuilder);
 
 
 
 /**
  * @override
  */
-node.Builder.prototype.build = function() {
-  var client = new node.http.HttpClient(this.getServerUrl());
-  var executor = new webdriver.http.Executor(client);
+Builder.prototype.build = function() {
+  var client = new HttpClient(this.getServerUrl());
+  var executor = new HttpExecutor(client);
 
   if (this.getSession()) {
-    return webdriver.WebDriver.attachToSession(executor, this.getSession());
+    return WebDriver.attachToSession(executor, this.getSession());
   } else {
-    return webdriver.WebDriver.createSession(executor, this.getCapabilities());
+    return WebDriver.createSession(executor, this.getCapabilities());
   }
 };
+
+
+// PUBLIC API
+
+
+exports.Builder = Builder;

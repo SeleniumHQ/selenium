@@ -1,25 +1,7 @@
-js_library(
-  name = "node_lib",
-  srcs = [
-    "builder.js",
-    "http/http.js",
-    "http/util.js",
-  ],
-  deps = [
-    "//javascript/webdriver:webdriver_lib",
-  ])
-
-
 node_module(
   name = "selenium-webdriver",
-  srcs = [
-    "selenium-webdriver/CHANGELOG",
-    "selenium-webdriver/README.md",
-    "selenium-webdriver/*.js",
-    "selenium-webdriver/package.json",
-  ],
+  srcdir = "selenium-webdriver",
   deps = [
-    ":node_lib",
     "//javascript/webdriver:webdriver_lib",
   ],
   content_roots = [

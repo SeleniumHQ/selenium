@@ -1200,12 +1200,10 @@ module Javascript
         task task_name do
           puts "Preparing: #{task_name} as #{folder_name}"
 
-          srcs = args[:srcs].collect {|src| Dir[File.join(dir, src)]}
-          srcs = srcs.flatten.collect {|src| File.expand_path(src)}
+          srcdir = File.join(dir, args[:srcdir])
 
           deps = build_deps(folder_name, Rake::Task[task_name], []).uniq
           deps = deps.flatten.collect {|dep| File.expand_path(dep)}
-          deps = deps.reject {|dep| srcs.include? dep }
 
           roots = args[:content_roots].collect {|root| File.join(Dir.pwd, root)}
 
@@ -1223,7 +1221,7 @@ module Javascript
               " --lib=" << deps.join(" --lib=") <<
               " --lib=third_party/closure/goog" <<
               " --root=" << roots.join(" --root=") <<
-              " --src=" << srcs.join(" --src=") <<
+              " --src=" << srcdir <<
               resources.join("")
 
           sh cmd

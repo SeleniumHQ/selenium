@@ -17,34 +17,23 @@
  * NodeJS.
  */
 
-goog.provide('node.http');
-goog.provide('node.http.HttpClient');
+var http = require('http'),
+    url = require('url');
 
-goog.require('webdriver.http.Response');
-
-
-/**
- * Parses a URL with Node's native "url" module.
- * @param {string} url The URL to parse.
- * @return {!Object} The parsed URL.
- * @private
- */
-node.http.parseUrl_ = function(url) {
-  return require('url').parse(url);
-};
+var base = require('../_base'),
+    HttpResponse = base.require('webdriver.http.Response');
 
 
 /**
  * HTTP client for use with NodeJS.
- * @param {string} url URL for the WebDriver server to send commands
- *     to.
+ * @param {string} serverUrl URL for the WebDriver server to send commands to.
  * @constructor
  * @implements {webdriver.http.Client}
  */
-node.http.HttpClient = function(url) {
-  var parsedUrl = node.http.parseUrl_(url);
+var HttpClient = function(serverUrl) {
+  var parsedUrl = url.parse(serverUrl);
   if (!parsedUrl.hostname) {
-    throw new Error('Invalid server URL: ' + url);
+    throw new Error('Invalid server URL: ' + serverUrl);
   }
 
   /**
@@ -61,7 +50,7 @@ node.http.HttpClient = function(url) {
 
 
 /** @override */
-node.http.HttpClient.prototype.send = function(httpRequest, callback) {
+HttpClient.prototype.send = function(httpRequest, callback) {
   var data;
   httpRequest.headers['Content-Length'] = 0;
   if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
@@ -77,7 +66,7 @@ node.http.HttpClient.prototype.send = function(httpRequest, callback) {
     path += httpRequest.path;
   }
 
-  node.http.HttpClient.sendRequest_({
+  sendRequest({
     method: httpRequest.method,
     host: this.options_.host,
     port: this.options_.port,
@@ -93,12 +82,11 @@ node.http.HttpClient.prototype.send = function(httpRequest, callback) {
  * @param {function(Error, !webdriver.http.Response=)} callback The function to
  *     invoke with the server's response.
  * @param {string=} opt_data The data to send with the request.
- * @private
  */
-node.http.HttpClient.sendRequest_ = function(options, callback, opt_data) {
-  var request = require('http').request(options, function(response) {
+var sendRequest = function(options, callback, opt_data) {
+  var request = http.request(options, function(response) {
     if (response.statusCode == 302 || response.statusCode == 303) {
-      var location = node.http.parseUrl_(response.headers['location']);
+      var location = url.parse(response.headers['location']);
 
       if (!location.hostname) {
         location.hostname = options.host;
@@ -106,7 +94,7 @@ node.http.HttpClient.sendRequest_ = function(options, callback, opt_data) {
       }
 
       request.abort();
-      node.http.HttpClient.sendRequest_({
+      sendRequest({
         method: 'GET',
         host: location.hostname,
         path: location.pathname + (location.search || ''),
@@ -119,9 +107,9 @@ node.http.HttpClient.sendRequest_ = function(options, callback, opt_data) {
     }
 
     var body = [];
-    response.on('data', goog.bind(body.push, body));
+    response.on('data', body.push.bind(body));
     response.on('end', function() {
-      var resp = new webdriver.http.Response(response.statusCode,
+      var resp = new HttpResponse(response.statusCode,
           response.headers, body.join('').replace(/\0/g, ''));
       callback(null, resp);
     });
@@ -130,7 +118,7 @@ node.http.HttpClient.sendRequest_ = function(options, callback, opt_data) {
   request.on('error', function(e) {
     if (e.code === 'ECONNRESET') {
       setTimeout(function() {
-        node.http.HttpClient.sendRequest_(options, callback, opt_data);
+        sendRequest(options, callback, opt_data);
       }, 15);
     } else {
       var message = e.message;
@@ -147,3 +135,13 @@ node.http.HttpClient.sendRequest_ = function(options, callback, opt_data) {
 
   request.end();
 };
+
+
+// PUBLIC API
+
+
+exports.Executor = base.require('webdriver.http.Executor');
+exports.Request = base.require('webdriver.http.Request');
+exports.Response = base.require('webdriver.http.Response');
+exports.HttpClient = HttpClient;
+exports.util = require('./util');
