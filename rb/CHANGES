@@ -1,3 +1,15 @@
+2.30.0 (2013-02-20)
+===================
+
+Firefox:
+  * Firefox 19 support (for synthesized events)
+Remote:
+  * Pass along firefox_binary correctly (#5152)
+Safari:
+  * Don't overwrite Driver#browser
+Other
+  * Alert#text should raise on closed alert.
+
 2.29.0 (2013-01-21)
 ===================
 
