@@ -74,7 +74,7 @@ namespace Selenium.Internal.SeleniumEmulation
         private void CheckForConditionUntilTimeout(object intervalInMilliseconds)
         {
             long sleepInterval = (long)intervalInMilliseconds;
-            if (!this.Until())
+            while (!this.Until())
             {
                 Thread.Sleep(TimeSpan.FromMilliseconds(sleepInterval));
             }
