@@ -114,6 +114,24 @@ namespace OpenQA.Selenium.Remote
             return this.CreateResponse(request);
         }
 
+        private static string GetTextOfWebResponse(HttpWebResponse webResponse)
+        {
+            // StreamReader.Close also closes the underlying stream.
+            Stream responseStream = webResponse.GetResponseStream();
+            StreamReader responseStreamReader = new StreamReader(responseStream, Encoding.UTF8);
+            string responseString = responseStreamReader.ReadToEnd();
+            responseStreamReader.Close();
+
+            // The response string from the Java remote server has trailing null
+            // characters. This is due to the fix for issue 288.
+            if (responseString.IndexOf('\0') >= 0)
+            {
+                responseString = responseString.Substring(0, responseString.IndexOf('\0'));
+            }
+
+            return responseString;
+        }
+
         private Response CreateResponse(WebRequest request)
         {
             Response commandResponse = new Response();
@@ -134,7 +152,7 @@ namespace OpenQA.Selenium.Remote
                 else if (ex.Response == null)
                 {
                     string nullResponseMessage = "A exception with a null response was thrown sending an HTTP request to the remote WebDriver server for URL {0}. The status of the exception was {1}, and the message was: {2}";
-                    throw new WebDriverException(string.Format(nullResponseMessage, request.RequestUri.AbsoluteUri, ex.Status, ex.Message), ex);
+                    throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, nullResponseMessage, request.RequestUri.AbsoluteUri, ex.Status, ex.Message), ex);
                 }
             }
 
@@ -198,23 +216,5 @@ namespace OpenQA.Selenium.Remote
         }
 
         #endregion
-
-        private static string GetTextOfWebResponse(HttpWebResponse webResponse)
-        {
-            // StreamReader.Close also closes the underlying stream.
-            Stream responseStream = webResponse.GetResponseStream();
-            StreamReader responseStreamReader = new StreamReader(responseStream, Encoding.UTF8);
-            string responseString = responseStreamReader.ReadToEnd();
-            responseStreamReader.Close();
-
-            // The response string from the Java remote server has trailing null
-            // characters. This is due to the fix for issue 288.
-            if (responseString.IndexOf('\0') >= 0)
-            {
-                responseString = responseString.Substring(0, responseString.IndexOf('\0'));
-            }
-
-            return responseString;
-        }
     }
 }
