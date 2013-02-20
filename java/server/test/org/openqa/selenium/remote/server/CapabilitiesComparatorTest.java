@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.number.OrderingComparison.greaterThan;
 import static org.hamcrest.number.OrderingComparison.lessThan;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.remote.server.CapabilitiesComparator.getBestMatch;
 
@@ -82,32 +81,6 @@ public class CapabilitiesComparatorTest {
 
     assertGreaterThan(c1, c2);
     assertGreaterThan(c1, c3);
-  }
-
-  @Test
-  public void shouldMatchByVersion_assumingAllOtherPropertiesAreTheSame_emptyVersion() {
-    comparator = compareBy(capabilities("firefox", "", Platform.ANY, true));
-
-    Capabilities c1 = capabilities("firefox", "", Platform.ANY, true);
-    Capabilities c2 = capabilities("firefox", "6", Platform.ANY, true);
-    Capabilities c3 = capabilities("firefox", null, Platform.ANY, true);
-
-    assertGreaterThan(c1, c2);
-    assertGreaterThan(c1, c3);
-  }
-
-  @Test
-  public void shouldMatchByVersion_assumingAllOtherPropertiesAreTheSame_nullVersion() {
-    comparator = compareBy(capabilities("firefox", null, Platform.ANY, true));
-
-    Capabilities c1 = capabilities("firefox", null, Platform.ANY, true);
-    Capabilities c2 = capabilities("firefox", "", Platform.ANY, true);
-    Capabilities c3 = capabilities("firefox", "6", Platform.ANY, true);
-
-    assertEquals(0, comparator.compare(c1, c2));
-    assertEquals(0, comparator.compare(c2, c1));
-    assertEquals(0, comparator.compare(c1, c3));
-    assertEquals(0, comparator.compare(c3, c1));
   }
 
   @Test
@@ -368,6 +341,38 @@ public class CapabilitiesComparatorTest {
 
     assertThat(getBestMatch(anyChrome, allCaps, Platform.UNIX), equalTo(chromeWindows));
     assertThat(getBestMatch(anyChrome, reversedCaps, Platform.UNIX), equalTo(chromeVista));
+  }
+
+  @Test
+  public void filtersByVersionStringIfNonEmpty() {
+    Capabilities anyChrome = DesiredCapabilities.chrome();
+    Capabilities chromeBeta = new DesiredCapabilities(anyChrome) {{ setVersion("beta"); }};
+    Capabilities chromeDev = new DesiredCapabilities(anyChrome) {{ setVersion("dev"); }};
+
+    List<Capabilities> allCaps = newArrayList(anyChrome, chromeBeta, chromeDev);
+
+    assertThat(getBestMatch(anyChrome, allCaps), equalTo(anyChrome));
+    assertThat(getBestMatch(chromeBeta, allCaps), equalTo(chromeBeta));
+    assertThat(getBestMatch(chromeDev, allCaps), equalTo(chromeDev));
+  }
+
+  @Test
+  public void ignoresVersionStringIfEmpty() {
+    Capabilities anyChrome = DesiredCapabilities.chrome();
+    Capabilities chromeNoVersion = new DesiredCapabilities() {{
+      setBrowserName("chrome");
+      setPlatform(Platform.UNIX);
+    }};
+    Capabilities chromeEmptyVersion = new DesiredCapabilities(chromeNoVersion) {{
+      setVersion("");
+    }};
+
+    List<Capabilities> allCaps = newArrayList(anyChrome, chromeNoVersion);
+
+    assertThat(getBestMatch(chromeEmptyVersion, allCaps, Platform.UNIX), equalTo(chromeNoVersion));
+    assertThat(getBestMatch(chromeNoVersion, allCaps, Platform.UNIX), equalTo(chromeNoVersion));
+    // Unix does not match windows.
+    assertThat(getBestMatch(anyChrome, allCaps, Platform.WINDOWS), equalTo(anyChrome));
   }
 
   private void assertGreaterThan(Capabilities a, Capabilities b) {

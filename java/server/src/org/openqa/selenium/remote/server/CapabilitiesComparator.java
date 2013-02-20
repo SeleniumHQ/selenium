@@ -17,6 +17,7 @@ limitations under the License.
 package org.openqa.selenium.remote.server;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
@@ -49,7 +50,7 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
   private final Comparator<Capabilities> compareWith;
 
   public CapabilitiesComparator(final Capabilities desiredCapabilities,
-      final Platform currentPlatform) {
+                                final Platform currentPlatform) {
     final CapabilityScorer<String> browserNameScorer = CapabilityScorer.scoreAgainst(
         desiredCapabilities.getBrowserName());
     Comparator<Capabilities> byBrowserName = new Comparator<Capabilities>() {
@@ -59,7 +60,7 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
       }
     };
 
-    final CapabilityScorer<String> versionScorer = CapabilityScorer.scoreAgainst(
+    final CapabilityScorer<String> versionScorer = new VersionScorer(
         desiredCapabilities.getVersion());
     Comparator<Capabilities> byVersion = new Comparator<Capabilities>() {
       public int compare(Capabilities c1, Capabilities c2) {
@@ -199,6 +200,24 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
       }
 
       return value.is(scoreAgainst) || scoreAgainst.is(value) ? 1 : -1;
+    }
+  }
+
+  private static class VersionScorer extends CapabilityScorer<String> {
+
+    public VersionScorer(String against) {
+      super(Strings.nullToEmpty(against).trim());
+    }
+
+    @Override
+    public int score(String other) {
+      other = Strings.nullToEmpty(other).trim();
+      if (other.isEmpty() || scoreAgainst.isEmpty()) {
+        return 0;
+      } else if (other.equals(scoreAgainst)) {
+        return 1;
+      }
+      return -1;
     }
   }
 }
