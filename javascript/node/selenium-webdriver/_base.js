@@ -34,6 +34,17 @@ var fs = require('fs'),
 
 
 /**
+ * If this script was loaded from the Selenium project repo, it will operate in
+ * development, adjusting how it loads Closure-based dependencies.
+ * @type {boolean}
+ */
+var devMode = (function() {
+  var buildDescFile = path.join(__dirname, '..', 'build.desc');
+  return fs.existsSync(buildDescFile);
+})();
+
+
+/**
  * @type {string} Path to Closure's base file, relative to this module.
  * @const
  */
@@ -74,11 +85,6 @@ loadScript(CLOSURE_BASE_FILE_PATH);
 loadScript(DEPS_FILE_PATH);
 
 
-if (isDevMode()) {
-  exports.closure = closure;
-}
-
-
 /**
  * Loads a symbol by name from the protected Closure context.
  * @param {string} symbol The symbol to load.
@@ -89,7 +95,45 @@ function closureRequire(symbol) {
   closure.goog.require(symbol);
   return closure.goog.getObjectByName(symbol);
 };
-exports.require = closureRequire;
+
+
+/** @return {string} Path to the closure library's base script. */
+function computeClosureBasePath() {
+  var relativePath = isDevMode() ?
+      '../../../third_party/closure/goog/base.js' :
+      './lib/goog/base.js';
+  return path.join(__dirname, relativePath);
+}
+
+
+/** @return {string} Path to the deps file used to locate closure resources. */
+function computeDepsPath() {
+  var relativePath = isDevMode() ?
+      '../../../javascript/deps.js' :
+      './lib/deps.js';
+  return path.join(__dirname, relativePath);
+}
+
+
+/** @return {boolean} Whether this script was loaded in dev mode. */
+function isDevMode() {
+  return devMode;
+}
+exports.isDevMode = isDevMode;
+
+
+/**
+ * Synchronously loads a script into the protected Closure context.
+ * @param {string} src Path to the file to load.
+ */
+function loadScript(src) {
+  src = path.normalize(src);
+  var contents = fs.readFileSync(src, 'utf8');
+  vm.runInContext(contents, closure, src);
+}
+
+
+// PUBLIC API
 
 
 /**
@@ -119,42 +163,8 @@ exports.exportPublicApi = function(symbol) {
 };
 
 
-/** @return {string} Path to the closure library's base script. */
-function computeClosureBasePath() {
-  var relativePath = isDevMode() ?
-      '../../../third_party/closure/goog/base.js' :
-      './lib/goog/base.js';
-  return path.join(__dirname, relativePath);
+if (isDevMode()) {
+  exports.closure = closure;
 }
-
-
-/** @return {string} Path to the deps file used to locate closure resources. */
-function computeDepsPath() {
-  var relativePath = isDevMode() ?
-      '../../../javascript/deps.js' :
-      './lib/deps.js';
-  return path.join(__dirname, relativePath);
-}
-
-
-/**
- * Checks for the SELENIUM_DEV_MODE environment variable. If set, scripts
- * will be loaded relative to this script's location in the Selenium project's
- * repository.
- * @return {boolean} Whether this script was loaded in dev mode.
- */
-function isDevMode() {
-  return process.env['SELENIUM_DEV_MODE'] === '1';
-}
-
-
-/**
- * Synchronously loads a script into the protected Closure context.
- * @param {string} src Path to the file to load.
- */
-function loadScript(src) {
-  src = path.normalize(src);
-  var contents = fs.readFileSync(src, 'utf8');
-  vm.runInContext(contents, closure, src);
-}
-
+exports.isDevMode = isDevMode;
+exports.require = closureRequire;
