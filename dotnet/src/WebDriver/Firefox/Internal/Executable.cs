@@ -24,6 +24,7 @@ using System.IO;
 using System.Security.Permissions;
 using System.Text;
 using Microsoft.Win32;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
@@ -33,7 +34,7 @@ namespace OpenQA.Selenium.Firefox.Internal
     internal class Executable
     {
         #region Private members
-        private readonly string binaryInDefaultLocationForPlatform = LocateFirefoxBinaryFromPlatform();
+        private readonly string binaryInDefaultLocationForPlatform;
         private string binaryLocation;
         #endregion
 
@@ -57,15 +58,19 @@ namespace OpenQA.Selenium.Firefox.Internal
                     "Specified firefox binary location does not exist or is not a real file: " +
                     userSpecifiedBinaryPath);
             }
-
+            else
+            {
+                this.binaryInDefaultLocationForPlatform = LocateFirefoxBinaryFromPlatform();
+            }
+            
             if (this.binaryInDefaultLocationForPlatform != null && File.Exists(this.binaryInDefaultLocationForPlatform))
             {
                 this.binaryLocation = this.binaryInDefaultLocationForPlatform;
                 return;
             }
 
-            throw new WebDriverException("Cannot find firefox binary in PATH. " +
-                "Make sure firefox is installed. OS appears to be: " + Platform.CurrentPlatform);
+            throw new WebDriverException("Cannot find Firefox binary in PATH or default install locations. " +
+                "Make sure Firefox is installed. OS appears to be: " + Platform.CurrentPlatform);
         }
         #endregion
 
@@ -154,46 +159,31 @@ namespace OpenQA.Selenium.Firefox.Internal
                 }
                 else
                 {
-                    string relativePath = Path.Combine("Mozilla Firefox", "Firefox.exe");
+                    // NOTE: Can't use Environment.SpecialFolder.ProgramFilesX86, because .NET 3.5
+                    // doesn't have that member of the enum.
+                    string[] windowsDefaultInstallLocations = new string[]
+                    {
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Mozilla Firefox"),
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) + " (x86)", "Mozilla Firefox")
+                    };
 
-                    // We try and guess common locations where FireFox might be installed
-                    string tempPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), relativePath);
-                    if (File.Exists(tempPath))
-                    {
-                        binary = tempPath;
-                    }
-                    else
-                    {
-                        tempPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) + " (x86)", relativePath);
-                        if (File.Exists(tempPath))
-                        {
-                            binary = tempPath;
-                        }
-                    }
+                    binary = GetExecutablePathUsingDefaultInstallLocations(windowsDefaultInstallLocations, "Firefox.exe");
                 }
             }
             else
             {
-                // Mac Search Paths
-                string[] paths = new string[]
+                string[] macDefaultInstallLocations = new string[]
                 {
-                    "/Applications/Firefox.app/Contents/MacOS/firefox-bin",
-                    string.Concat("/Users/", Environment.UserName, "/Applications/Firefox.app/Contents/MacOS/firefox-bin")
+                    "/Applications/Firefox.app/Contents/MacOS",
+                    string.Format(CultureInfo.InvariantCulture, "/Users/{0}/Applications/Firefox.app/Contents/MacOS", Environment.UserName)
                 };
 
-                foreach (string path in paths)
-                {
-                    FileInfo firefoxBinary = new FileInfo(path);
-                    if (firefoxBinary.Exists)
-                    {
-                        binary = firefoxBinary.FullName;
-                        break;
-                    }
-                }
+                binary = GetExecutablePathUsingDefaultInstallLocations(macDefaultInstallLocations, "firefox-bin");
 
                 if (string.IsNullOrEmpty(binary))
                 {
-                    // Use "which firefox" for non-Windows OS.
+                    // Use "which firefox" for non-Windows OS, and non-Mac OS where
+                    // Firefox is installed in a non-default location.
                     using (Process proc = new Process())
                     {
                         proc.StartInfo.FileName = "which";
@@ -208,7 +198,14 @@ namespace OpenQA.Selenium.Firefox.Internal
                 }
             }
 
-            return binary != null && File.Exists(binary) ? binary : FindBinary(new string[] { "firefox3", "firefox2", "firefox" });
+            if (binary != null && File.Exists(binary))
+            {
+                return binary;
+            }
+
+            // Didn't find binary in any of the default install locations, so look
+            // at directories on the user's PATH environment variable.
+            return FindBinary(new string[] { "firefox3", "firefox" });
         }
 
         private static string GetExecutablePathUsingRegistry(RegistryKey mozillaKey)
@@ -234,6 +231,20 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
 
             return path;
+        }
+
+        private static string GetExecutablePathUsingDefaultInstallLocations(string[] defaultInstallLocations, string exeName)
+        {
+            foreach (string defaultInstallLocation in defaultInstallLocations)
+            {
+                string fullPath = Path.Combine(defaultInstallLocation, exeName);
+                if (File.Exists(fullPath))
+                {
+                    return fullPath;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -280,25 +291,18 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// <returns>The first binary found matching that name.</returns>
         private static string FindBinary(string[] binaryNames)
         {
-            string[] paths = Environment.GetEnvironmentVariable("PATH").Split(new char[] { Path.PathSeparator }, StringSplitOptions.None);
             foreach (string binaryName in binaryNames)
             {
-                foreach (string path in paths)
+                string exe = binaryName;
+                if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
                 {
-                    string file = Path.Combine(path, binaryName);
-                    if (File.Exists(file))
-                    {
-                        return file;
-                    }
+                    exe += ".exe";
+                }
 
-                    if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
-                    {
-                        string exe = Path.Combine(path, binaryName + ".exe");
-                        if (File.Exists(exe))
-                        {
-                            return exe;
-                        }
-                    }
+                string path = FileUtilities.FindFile(exe);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    return Path.Combine(path, exe);
                 }
             }
 
