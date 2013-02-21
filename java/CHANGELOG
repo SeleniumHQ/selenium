@@ -39,6 +39,7 @@ JS:
 
 RC:
   * Added ability to use relative path to an -htmlSuite file.
+  * FIXED: 3498: Proxy based browsers are back to normal on HTTPS
   * FIXED: 5113: Implementing GET requests support for RC protocol.
 
 
