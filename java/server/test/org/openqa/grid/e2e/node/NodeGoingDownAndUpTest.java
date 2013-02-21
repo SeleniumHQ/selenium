@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
+import java.util.concurrent.Callable;
+
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -26,10 +28,11 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import static org.openqa.selenium.TestWaiter.waitFor;
 
 @Test(groups = {"slow", "firefox"})
 public class NodeGoingDownAndUpTest {
@@ -59,26 +62,38 @@ public class NodeGoingDownAndUpTest {
   @Test
   public void markdown() throws Exception {
     // should be up
-    Thread.sleep(300);
     for (RemoteProxy proxy : registry.getAllProxies()) {
-      Assert.assertFalse(((DefaultRemoteProxy) proxy).isDown());
+      waitFor(isUp((DefaultRemoteProxy) proxy));
     }
     // killing the nodes
     remote.stopRemoteServer();
-    Thread.sleep(300);
     // should be down
     for (RemoteProxy proxy : registry.getAllProxies()) {
-      Assert.assertTrue(((DefaultRemoteProxy) proxy).isDown());
+      waitFor(isDown((DefaultRemoteProxy) proxy));
     }
     // and back up
     remote.startRemoteServer();
-    Thread.sleep(300);
     // should be down
     for (RemoteProxy proxy : registry.getAllProxies()) {
-      Assert.assertFalse(((DefaultRemoteProxy) proxy).isDown());
+      waitFor(isUp((DefaultRemoteProxy) proxy));
     }
   }
 
+  private Callable<Boolean> isUp(final DefaultRemoteProxy proxy) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        return ! proxy.isDown();
+      }
+    };
+  }
+
+  private Callable<Boolean> isDown(final DefaultRemoteProxy proxy) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        return proxy.isDown();
+      }
+    };
+  }
 
   @AfterClass(alwaysRun = false)
   public void stop() throws Exception {

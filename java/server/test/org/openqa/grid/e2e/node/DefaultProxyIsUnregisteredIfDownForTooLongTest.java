@@ -60,7 +60,7 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
     Assert.assertTrue(hub.getRegistry().getAllProxies().size() == 1);
     Thread.sleep(2500);
     // and finally removed after time > UNREGISTER_IF_STILL_DOWN_AFTER
-    Assert.assertTrue(hub.getRegistry().getAllProxies().size() == 0);
+    RegistryTestHelper.waitForNode(hub.getRegistry(), 0);
   }
 
   @AfterClass
