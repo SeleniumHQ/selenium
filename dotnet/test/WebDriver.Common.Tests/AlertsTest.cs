@@ -344,6 +344,7 @@ namespace OpenQA.Selenium
                 driver.FindElement(By.Id("open-new-window")).Click();
                 WaitFor(WindowHandleCountToBe(2));
                 driver.SwitchTo().Window("newwindow").Close();
+                WaitFor(WindowHandleCountToBe(1));
 
                 try
                 {
@@ -520,7 +521,8 @@ namespace OpenQA.Selenium
         {
             driver.Url = alertsPage;
 
-            driver.FindElement(By.Id("open-page-with-onunload-alert")).Click();
+            IWebElement element = WaitFor<IWebElement>(ElementToBePresent(By.Id("open-page-with-onunload-alert")));
+            element.Click();
             driver.Navigate().Back();
 
             IAlert alert = WaitFor<IAlert>(AlertToBePresent);
@@ -528,7 +530,8 @@ namespace OpenQA.Selenium
             alert.Accept();
 
             Assert.AreEqual("onunload", value);
-            WaitFor(ElementTextToEqual(driver.FindElement(By.Id("open-page-with-onunload-alert")), "open new page"));
+            element = WaitFor<IWebElement>(ElementToBePresent(By.Id("open-page-with-onunload-alert")));
+            WaitFor(ElementTextToEqual(element, "open new page"));
         }
 
         [Test]
@@ -653,6 +656,23 @@ namespace OpenQA.Selenium
         private IAlert AlertToBePresent()
         {
             return driver.SwitchTo().Alert();
+        }
+
+        private Func<IWebElement> ElementToBePresent(By locator)
+        {
+            return () =>
+                {
+                    IWebElement foundElement = null;
+                    try
+                    {
+                        foundElement = driver.FindElement(By.Id("open-page-with-onunload-alert"));
+                    }
+                    catch (NoSuchElementException)
+                    {
+                    }
+
+                    return foundElement;
+                };
         }
 
         private Func<bool> ElementTextToEqual(IWebElement element, string text)
