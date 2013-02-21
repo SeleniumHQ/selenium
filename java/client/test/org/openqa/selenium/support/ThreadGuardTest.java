@@ -56,7 +56,7 @@ public class ThreadGuardTest {
   }
 
   @Test
-  public void testInterfacesProxiedProeprly() throws Exception {
+  public void testInterfacesProxiedProperly() throws Exception {
     WebDriver actual = new PermissiveStubDriver();
     final WebDriver webdriver = ThreadGuard.protect(actual);
     HasTouchScreen hasTouchScreen = (HasTouchScreen) webdriver;
