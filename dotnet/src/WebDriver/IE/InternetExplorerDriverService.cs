@@ -110,7 +110,7 @@ namespace OpenQA.Selenium.IE
 
                 if (!string.IsNullOrEmpty(this.libraryExtractionPath))
                 {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -extraction-path={0}", this.libraryExtractionPath));
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -extract-path={0}", this.libraryExtractionPath));
                 }
 
                 if (this.loggingLevel != InternetExplorerDriverLogLevel.Fatal)
