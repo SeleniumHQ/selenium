@@ -13,7 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-require('./_bootstrap').init(module);
+'use strict';
+
+require('./lib/_bootstrap')(module);
 
 var assert = require('assert'),
     http = require('http'),
@@ -105,24 +107,39 @@ describe('webdriver.http.util', function() {
   describe('#waitForServer', function() {
     it('resolves when server is ready', function(done) {
       status = 1;
-      setTimeout(function() { status = 0; }, 100);
-      util.waitForServer(baseUrl, 200).
+      setTimeout(function() { status = 0; }, 50);
+      util.waitForServer(baseUrl, 100).
           then(function() {}).  // done needs no argument to pass.
           addBoth(done);
     });
 
     it('should fail if server does not become ready', function(done) {
       status = 1;
-      util.waitForServer(baseUrl, 100).
+      util.waitForServer(baseUrl, 50).
           then(function() { done('Expected to time out'); },
                function() { done(); });
+    });
+
+    it('can cancel wait', function(done) {
+      status = 1;
+      var err = Error('cancelled!');
+      var isReady =  util.waitForServer(baseUrl, 200).
+          then(function() { done('Did not expect to succeed'); }).
+          then(null, function(e) {
+            assert.equal(err, e);
+          }).
+          then(function() { done(); }, done);
+
+      setTimeout(function() {
+        isReady.cancel(err);
+      }, 50);
     });
   });
 
   describe('#waitForUrl', function() {
     it('succeeds when URL returns 2xx', function(done) {
       responseCode = 404;
-      setTimeout(function() { responseCode = 200; }, 100);
+      setTimeout(function() { responseCode = 200; }, 50);
 
       util.waitForUrl(baseUrl, 200).
           then(function() {}).  // done needs no argument to pass.
@@ -132,7 +149,7 @@ describe('webdriver.http.util', function() {
     it('fails if URL always returns 4xx', function(done) {
       responseCode = 404;
 
-      util.waitForUrl(baseUrl, 100).
+      util.waitForUrl(baseUrl, 50).
           then(function() { done('Expected to time out'); },
                function() { done(); });
     });
@@ -141,10 +158,25 @@ describe('webdriver.http.util', function() {
       killServer(function(e) {
         if (e) return done(e);
 
-      util.waitForUrl(baseUrl, 100).
+      util.waitForUrl(baseUrl, 50).
           then(function() { done('Expected to time out'); },
                function() { done(); });
       });
+    });
+
+    it('can cancel wait', function(done) {
+      responseCode = 404;
+      var err = Error('cancelled!');
+      var isReady =  util.waitForUrl(baseUrl, 200).
+          then(function() { done('Did not expect to succeed'); }).
+          then(null, function(e) {
+            assert.equal(err, e);
+          }).
+          then(function() { done(); }, done);
+
+      setTimeout(function() {
+        isReady.cancel(err);
+      }, 50);
     });
   });
 });

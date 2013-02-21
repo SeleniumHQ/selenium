@@ -13,9 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 var path = require('path');
 
-var projectRootDir = path.join(__dirname, '..', '..', '..');
+var projectRootDir = path.join(__dirname, '../../../..');
 
 var modulePath = path.join('javascript', 'node');
 if (process.env['SELENIUM_TEST_PROD'] === '1') {
@@ -23,15 +25,19 @@ if (process.env['SELENIUM_TEST_PROD'] === '1') {
 }
 modulePath = path.join(projectRootDir, modulePath);
 
+
+// PUBLIC API
+
+
 /**
  * Updates the search path for the given module to load the selenium-webdriver
- * module based on the current environment. If running in dev mode, as
- * indicated by {@code process.env.SELENIUM_DEV_MODE === '1'},
- * selenium-webdriver will be loaded from the project's source directory.
- * Otherwise, it will be loaded from the build outputs directory.
+ * module based on the current environment. By default, loads the module from
+ * the current Selenium client's source tree. If the
+ * {@code process.env.SELENIUM_TEST_PROD === '1'}, selenium-webdriver will be
+ * loaded from the build outputs directory.
  *
  * @param {!Module} module The module to update.
  */
-exports.init = function(module) {
+module.exports = function(module) {
   module.paths.unshift(modulePath);
 };

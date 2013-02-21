@@ -27,6 +27,29 @@ var base = require('../_base'),
     promise = base.require('webdriver.promise');
 
 
+
+/**
+ * Queries a WebDriver server for its current status.
+ * @param {string} url Base URL of the server to query.
+ * @param {function(Error, *=)} callback The function to call with the
+ *     response.
+ */
+function getStatus(url, callback) {
+  var client = new HttpClient(url);
+  var executor = new Executor(client);
+  var command = new Command(CommandName.GET_SERVER_STATUS);
+  executor.execute(command, function(err, responseObj) {
+    if (err) return callback(err);
+    try {
+      checkResponse(responseObj);
+    } catch (ex) {
+      return callback(ex);
+    }
+    callback(null, responseObj['value']);
+  });
+}
+
+
 // PUBLIC API
 
 
@@ -37,23 +60,7 @@ var base = require('../_base'),
  *     a hash of the server status.
  */
 exports.getStatus = function(url) {
-  var deferredStatus = promise.defer();
-  var client = new HttpClient(url);
-  var executor = new Executor(client);
-  var command = new Command(CommandName.GET_SERVER_STATUS);
-  executor.execute(command, function(err, responseObj) {
-    if (err) {
-      deferredStatus.reject(err);
-    } else {
-      try {
-        checkResponse(responseObj);
-        deferredStatus.resolve(responseObj['value']);
-      } catch (ex) {
-        deferredStatus.reject(ex);
-      }
-    }
-  });
-  return deferredStatus.promise;
+  return promise.checkedNodeCall(getStatus.bind(null, url));
 };
 
 
@@ -65,11 +72,27 @@ exports.getStatus = function(url) {
  *     server is ready.
  */
 exports.waitForServer = function(url, timeout) {
-  return promise.controlFlow().wait(function() {
-    return exports.getStatus(url).
-        then(function() { return true; },
-             function() { return false; });
-  }, timeout, 'Timed out waiting for the WebDriver server at ' + url);
+  var ready = promise.defer(),
+      start = Date.now(),
+      checkServerStatus = getStatus.bind(null, url, onResponse);
+  checkServerStatus();
+  return ready.promise;
+
+  function onResponse(err) {
+    if (!ready.isPending()) return;
+    if (!err) return ready.resolve();
+
+    if (Date.now() - start > timeout) {
+      ready.reject(
+          Error('Timed out waiting for the WebDriver server at ' + url));
+    } else {
+      setTimeout(function() {
+        if (ready.isPending()) {
+          checkServerStatus();
+        }
+      }, 50);
+    }
+  }
 };
 
 
@@ -82,14 +105,29 @@ exports.waitForServer = function(url, timeout) {
  *     URL responds with 2xx.
  */
 exports.waitForUrl = function(url, timeout) {
-  var client = new HttpClient(url);
-  var request = new HttpRequest('GET', '');
-  var sendRequest = client.send.bind(client, request);
+  var client = new HttpClient(url),
+      request = new HttpRequest('GET', ''),
+      testUrl = client.send.bind(client, request, onResponse),
+      ready = promise.defer(),
+      start = Date.now();
+  testUrl();
+  return ready.promise;
 
-  return promise.controlFlow().wait(function() {
-      return promise.checkedNodeCall(sendRequest).
-          then(function(response) {
-            return response.status > 199 && response.status < 300;
-          });
-  }, timeout, 'Timed out waiting for the URL to return 2xx: ' + url);
+  function onResponse(err, response) {
+    if (!ready.isPending()) return;
+    if (!err && response.status > 199 && response.status < 300) {
+      return ready.resolve();
+    }
+
+    if (Date.now() - start > timeout) {
+      ready.reject(Error(
+          'Timed out waiting for the URL to return 2xx: ' + url));
+    } else {
+      setTimeout(function() {
+        if (ready.isPending()) {
+          testUrl();
+        }
+      }, 50);
+    }
+  }
 };
