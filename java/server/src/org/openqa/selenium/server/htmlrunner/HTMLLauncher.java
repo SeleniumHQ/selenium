@@ -34,6 +34,7 @@ import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -183,15 +184,16 @@ public class HTMLLauncher implements HTMLResultsListener {
     remoteControl.addNewStaticContent(suiteFile.getParentFile());
 
     // DGF this is a hack, but I can't find a better place to put it
+    String urlEncodedSuiteFilename = URLEncoder.encode(suiteFile.getName(), "UTF-8");
     String suiteURL;
     if (browser.startsWith("*chrome") || browser.startsWith("*firefox") ||
         browser.startsWith("*iehta") || browser.startsWith("*iexplore")) {
       suiteURL =
           "http://localhost:" + remoteControl.getConfiguration().getPortDriversShouldContact() +
-              "/selenium-server/tests/" + suiteFile.getName();
+              "/selenium-server/tests/" + urlEncodedSuiteFilename;
     } else {
       suiteURL =
-          Urls.toProtocolHostAndPort(browserURL) + "/selenium-server/tests/" + suiteFile.getName();
+          Urls.toProtocolHostAndPort(browserURL) + "/selenium-server/tests/" + urlEncodedSuiteFilename;
     }
     return runHTMLSuite(browser, browserURL, suiteURL, outputFile, timeoutInSeconds, multiWindow,
         "info");
