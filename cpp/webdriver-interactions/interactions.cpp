@@ -872,7 +872,7 @@ LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY,
   return 0;
 }
 
-BOOL_TYPE pending_input_events()
+bool pending_input_events()
 {
   return false;
 }

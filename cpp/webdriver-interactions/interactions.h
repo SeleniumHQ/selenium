@@ -28,11 +28,9 @@ limitations under the License.
 #ifdef _MSC_VER
 #define EXPORT __declspec(dllexport)
 #define WD_RESULT LRESULT
-#define BOOL_TYPE boolean
 #else
 #define EXPORT
 #define WD_RESULT int
-#define BOOL_TYPE bool
 #endif
 
 #define WINDOW_HANDLE void*
@@ -56,9 +54,9 @@ extern "C" {
 // Keyboard interactions
 EXPORT void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey);
 EXPORT void releaseModifierKeys(WINDOW_HANDLE windowHandle, int timePerKey);
-EXPORT BOOL_TYPE pending_input_events();
+EXPORT bool pending_input_events();
 EXPORT void stopPersistentEventFiring();
-EXPORT void setEnablePersistentHover(BOOL_TYPE enablePersistentHover);
+EXPORT void setEnablePersistentHover(bool enablePersistentHover);
 
 // Mouse interactions
 EXPORT WD_RESULT clickAt(WINDOW_HANDLE directInputTo, long x, long y, long button);
