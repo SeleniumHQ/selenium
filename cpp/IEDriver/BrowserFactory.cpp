@@ -481,10 +481,17 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
     return TRUE;
   } else {
     // If the window style has the WS_DISABLED bit set or the 
-    // WS_VISIBLE bit unset, it can't  be handled via the UI, 
-    // and must not be a visible dialog.
-    if ((::GetWindowLong(hwnd, GWL_STYLE) & WS_DISABLED) != 0 ||
-        (::GetWindowLong(hwnd, GWL_STYLE) & WS_VISIBLE) == 0) {
+    // WS_VISIBLE bit unset, it can't be handled via the UI, 
+    // and must not be a visible dialog. Furthermore, if the
+    // window style does not display a caption bar, it's not a
+    // dialog displayed by the browser, but likely by an add-on
+    // (like an antivirus toolbar). Note that checking the caption
+    // window style is a hack, and may begin to fail if IE ever
+    // changes the style of its alert windows.
+    long window_long_style = ::GetWindowLong(hwnd, GWL_STYLE);
+    if ((window_long_style & WS_DISABLED) != 0 ||
+        (window_long_style & WS_VISIBLE) == 0 ||
+        (window_long_style & WS_CAPTION) == 0) {
       return TRUE;
     }
     DWORD process_id = NULL;
