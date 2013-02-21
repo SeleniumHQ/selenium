@@ -431,7 +431,11 @@ public class ServletHttpResponse implements HttpServletResponse
     }
 
     /* ------------------------------------------------------------ */
-    public void sendRedirect(String url) 
+    public void sendRedirect(String url) throws IOException {
+      sendRedirect(url, HttpResponse.__302_Moved_Temporarily);
+    }
+
+    public void sendRedirect(String url, int status) 
         throws IOException
     {
         if (url==null)
