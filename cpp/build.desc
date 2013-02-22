@@ -183,6 +183,7 @@ js_fragment_header(name = "atoms",
     "//javascript/webdriver/atoms:is_displayed:ie",
     "//javascript/webdriver/atoms:is_enabled:ie",
     "//javascript/webdriver/atoms:is_selected:ie",
+    "//javascript/webdriver/atoms:is_in_parent_overflow:ie",
     "//javascript/webdriver/atoms:submit:ie",
     "//javascript/webdriver/atoms:inputs"
   ],
