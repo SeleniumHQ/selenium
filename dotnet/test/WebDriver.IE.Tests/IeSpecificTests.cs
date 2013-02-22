@@ -134,6 +134,8 @@ namespace OpenQA.Selenium.IE
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll.html");
             driver.FindElement(By.Id("line8")).Click();
             Assert.AreEqual("line8", driver.FindElement(By.Id("clicked")).Text);
+            driver.FindElement(By.Id("line1")).Click();
+            Assert.AreEqual("line1", driver.FindElement(By.Id("clicked")).Text);
         }
 
         [Test]
