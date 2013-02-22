@@ -166,6 +166,22 @@ namespace OpenQA.Selenium.Firefox
 
         #region Properties
         /// <summary>
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
+        /// sequences of keystrokes representing file paths and names. 
+        /// </summary>
+        /// <remarks>The Firefox driver does not allow a file detector to be set,
+        /// as the server component of the Firefox driver only allows uploads from
+        /// the local computer environment. Attempting to set this property has no
+        /// effect, but does not throw an exception. If you  are attempting to run 
+        /// the Firefox driver remotely, use <see cref="RemoteWebDriver"/> in 
+        /// conjunction with a standalone WebDriver server.</remarks>
+        public override IFileDetector FileDetector
+        {
+            get { return base.FileDetector; }
+            set { }
+        }
+
+        /// <summary>
         /// Gets the FirefoxBinary and its details for subclasses
         /// </summary>
         protected FirefoxBinary Binary

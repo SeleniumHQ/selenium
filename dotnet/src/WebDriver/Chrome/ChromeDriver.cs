@@ -138,6 +138,22 @@ namespace OpenQA.Selenium.Chrome
         }
         #endregion
 
+        /// <summary>
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
+        /// sequences of keystrokes representing file paths and names. 
+        /// </summary>
+        /// <remarks>The Chrome driver does not allow a file detector to be set,
+        /// as the server component of the Chrome driver (ChromeDriver.exe) only 
+        /// allows uploads from the local computer environment. Attempting to set
+        /// this property has no effect, but does not throw an exception. If you 
+        /// are attempting to run the Chrome driver remotely, use <see cref="RemoteWebDriver"/>
+        /// in conjunction with a standalone WebDriver server.</remarks>
+        public override IFileDetector FileDetector
+        {
+            get { return base.FileDetector; }
+            set { }
+        }
+
         #region ITakesScreenshot Members
         /// <summary>
         /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.

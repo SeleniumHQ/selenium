@@ -271,7 +271,7 @@ namespace OpenQA.Selenium.Remote
         /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
         /// sequences of keystrokes representing file paths and names. 
         /// </summary>
-        public IFileDetector FileDetector
+        public virtual IFileDetector FileDetector
         {
             get
             {

@@ -83,6 +83,22 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
+        /// sequences of keystrokes representing file paths and names. 
+        /// </summary>
+        /// <remarks>The Safari driver does not allow a file detector to be set,
+        /// as the server component of the Safari driver (the Safari extension) only 
+        /// allows uploads from the local computer environment. Attempting to set
+        /// this property has no effect, but does not throw an exception. If you 
+        /// are attempting to run the Safari driver remotely, use <see cref="RemoteWebDriver"/>
+        /// in conjunction with a standalone WebDriver server.</remarks>
+        public override IFileDetector FileDetector
+        {
+            get { return base.FileDetector; }
+            set { }
+        }
+
+        /// <summary>
         /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
         /// </summary>
         /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
