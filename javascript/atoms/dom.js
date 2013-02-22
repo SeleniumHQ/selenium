@@ -764,6 +764,64 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   return isTransformHiding(elem);
 };
 
+/**
+* Checks whether the element is currently scrolled into the parent's overflow
+* region, such that the offset given, relative to the top-left corner of the
+* element, is currently in the overflow region.
+*
+* @param {!Element} element The element to check.
+* @param {!goog.math.Coordinate=} opt_coords Coordinate in the element,
+*     relative to the top-left corner of the element, to check. If none are
+*     specified, checks that the center of the element is in in the overflow.
+* @return {boolean} Whether the coordinates specified, relative to the element,
+*     are scrolled in the parent overflow.
+*/
+bot.dom.isInParentOverflow = function (element, opt_coords) {
+  var parent = goog.style.getOffsetParent(element);
+  var parentNode = goog.userAgent.GECKO || goog.userAgent.IE ||
+      goog.userAgent.OPERA ? bot.dom.getParentElement(element) : parent;
+
+  // Gecko will skip the BODY tag when calling getOffsetParent. However, the
+  // combination of the overflow values on the BODY _and_ HTML tags determine
+  // whether scroll bars are shown, so we need to guarantee that both values
+  // are checked.
+  if ((goog.userAgent.GECKO || goog.userAgent.IE || goog.userAgent.OPERA) &&
+      bot.dom.isElement(parentNode, goog.dom.TagName.BODY)) {
+    parent = parentNode;
+  }
+
+  if (parent && (bot.dom.getEffectiveStyle(parent, 'overflow') == 'scroll' ||
+                 bot.dom.getEffectiveStyle(parent, 'overflow') == 'auto')) {
+    var sizeOfParent = bot.dom.getElementSize(parent);
+    var locOfParent = goog.style.getClientPosition(parent);
+    var locOfElement = goog.style.getClientPosition(element);
+    var offsetX, offsetY;
+    if (opt_coords) {
+      offsetX = opt_coords.x;
+      offsetY = opt_coords.y;
+    } else {
+      var sizeOfElement = bot.dom.getElementSize(element);
+      offsetX = sizeOfElement.width / 2;
+      offsetY = sizeOfElement.height / 2;
+    }
+    var elementPointX = locOfElement.x + offsetX;
+    var elementPointY = locOfElement.y + offsetY;
+    if (elementPointX >= locOfParent.x + sizeOfParent.width) {
+      return true;
+    }
+    if (elementPointX <= locOfParent.x) {
+      return true;
+    }
+    if (elementPointY >= locOfParent.y + sizeOfParent.height) {
+      return true;
+    }
+    if (elementPointY <= locOfParent.y) {
+      return true;
+    }
+    return bot.dom.isInParentOverflow(parent);
+  }
+  return false;
+};
 
 /**
  * Trims leading and trailing whitespace from strings, leaving non-breaking

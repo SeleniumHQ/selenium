@@ -90,6 +90,11 @@ js_fragment(name = "get_location_in_view",
   function = "bot.dom.getLocationInView",
   deps = [ "//javascript/atoms:all_js" ])
 
+js_fragment(name = "is_in_parent_overflow",
+  module = "bot.dom",
+  function = "bot.dom.isInParentOverflow",
+  deps = [ "//javascript/atoms:all_js" ])
+
 # TODO(simon): I'm not convinced this is right
 js_fragment(name = "get_size",
   module = "goog.style",
