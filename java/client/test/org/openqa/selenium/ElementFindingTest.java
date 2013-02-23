@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.junit.Test;
-import org.openqa.selenium.remote.RemoteWebDriver.When;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
