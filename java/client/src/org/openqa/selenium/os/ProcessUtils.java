@@ -19,8 +19,10 @@ limitations under the License.
 package org.openqa.selenium.os;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.io.IOUtils;
 
+import com.google.common.io.Closeables;
+
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
@@ -135,9 +137,12 @@ public class ProcessUtils {
   }
 
   private static void closeAllStreamsAndDestroyProcess(Process process) {
-    IOUtils.closeQuietly(process.getInputStream());
-    IOUtils.closeQuietly(process.getErrorStream());
-    IOUtils.closeQuietly(process.getOutputStream());
+    try {
+      Closeables.close(process.getInputStream(), true);
+      Closeables.close(process.getErrorStream(), true);
+      Closeables.close(process.getOutputStream(), true);
+    } catch (IOException ignored) {
+    }
     process.destroy();
   }
 

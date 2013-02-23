@@ -5,6 +5,7 @@ java_library(name = "security",
     "KeyAndCert.java",
   ],
   deps = [
-   "//third_party/java/bouncycastle",
+    "//java/client/src/org/openqa/selenium/io",
+    "//third_party/java/bouncycastle",
     "//third_party/java/guava-libraries",
   ])
