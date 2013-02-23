@@ -55,6 +55,7 @@
                                         <include name="org/openqa/selenium/interactions/**/*.java" />
                                         <include name="org/openqa/selenium/internal/*.java" />
                                         <include name="org/openqa/selenium/security/*.java" />
+                                        <include name="org/openqa/selenium/remote/BrowserType.java" />
                                         <include name="org/openqa/selenium/remote/CapabilityType.java" />
                                         <include name="org/openqa/selenium/remote/DesiredCapabilities.java" />
                                     </fileset>
