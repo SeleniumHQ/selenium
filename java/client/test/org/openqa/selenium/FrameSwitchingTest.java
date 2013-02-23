@@ -35,6 +35,7 @@ import static org.junit.Assert.fail;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
+import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -378,7 +379,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE, PHANTOMJS})
   @JavascriptEnabled
   @Test
-  public void testShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs() {
+  public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs() {
     driver.get(pages.deletingFrame);
 
     driver.switchTo().frame("iframe1");
@@ -399,6 +400,24 @@ public class FrameSwitchingTest extends JUnit4TestBase {
       waitFor(elementToExist(driver, "checkbox"));
     } catch (WebDriverException web) {
       fail("Could not find element after switching frame");
+    }
+  }
+
+  @Ignore(ALL)
+  @JavascriptEnabled
+  @Test
+  public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
+    driver.get(pages.deletingFrame);
+
+    driver.switchTo().frame("iframe1");
+
+    WebElement killIframe = driver.findElement(By.id("killIframe"));
+    killIframe.click();
+    
+    try {
+      driver.findElement(By.id("killIframe")).click();
+      fail("NoSuchFrameException should be thrown");
+    } catch (NoSuchFrameException expected) {
     }
   }
 
