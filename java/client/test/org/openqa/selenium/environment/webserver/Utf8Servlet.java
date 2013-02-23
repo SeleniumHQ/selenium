@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
+import org.openqa.selenium.io.IOUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;

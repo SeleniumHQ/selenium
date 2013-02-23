@@ -18,9 +18,9 @@ package org.openqa.selenium.firefox.internal;
 
 import com.google.common.io.Resources;
 
-import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
