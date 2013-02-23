@@ -80,6 +80,7 @@ import com.gargoylesoftware.htmlunit.html.FrameWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.javascript.host.Location;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLCollection;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 import net.sourceforge.htmlunit.corejs.javascript.Context;
@@ -588,6 +589,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       }
       return map;
     }
+    
+    if (value instanceof Location) {
+      return convertLocationtoMap((Location) value);
+    }
 
     if (value instanceof NativeArray) {
       final NativeArray array = (NativeArray) value;
@@ -626,6 +631,20 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     return value;
+  }
+
+  private Map<String, Object> convertLocationtoMap(Location location) {
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("href", location.getHref());
+    map.put("protocol", location.getProtocol());
+    map.put("host", location.getHost());
+    map.put("hostname", location.getHostname());
+    map.put("port", location.getPort());
+    map.put("pathname", location.getPathname());
+    map.put("search", location.getSearch());
+    map.put("hash", location.getHash());
+    map.put("href", location.getHref());
+    return map;
   }
 
   private List<Object> parseJavascriptResultsList(JavaScriptResultsCollection array) {
