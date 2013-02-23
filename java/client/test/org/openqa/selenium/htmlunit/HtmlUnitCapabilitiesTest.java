@@ -21,6 +21,7 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.junit.Assert.assertEquals;
@@ -34,19 +35,19 @@ public class HtmlUnitCapabilitiesTest {
   @Test
   public void configurationViaDirectCapabilities() {
     DesiredCapabilities ie7Capabilities =
-        new DesiredCapabilities("internet explorer", "7", Platform.ANY);
+        new DesiredCapabilities(BrowserType.IE, "7", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(ie7Capabilities),
         BrowserVersion.INTERNET_EXPLORER_7);
 
     DesiredCapabilities ieCapabilities =
-        new DesiredCapabilities("internet explorer", "", Platform.ANY);
+        new DesiredCapabilities(BrowserType.IE, "", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(ieCapabilities),
         BrowserVersion.INTERNET_EXPLORER_8);
 
     DesiredCapabilities firefoxCapabilities =
-        new DesiredCapabilities("firefox", "", Platform.ANY);
+        new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(firefoxCapabilities),
         BrowserVersion.FIREFOX_10);
@@ -55,7 +56,7 @@ public class HtmlUnitCapabilitiesTest {
   @Test
   public void configurationOfFirefoxViaRemote() {
     DesiredCapabilities firefoxCapabilities =
-        new DesiredCapabilities("htmlunit", "firefox", Platform.ANY);
+        new DesiredCapabilities(BrowserType.HTMLUNIT, "firefox", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(firefoxCapabilities),
         BrowserVersion.FIREFOX_10);
@@ -64,13 +65,13 @@ public class HtmlUnitCapabilitiesTest {
   @Test
   public void configurationOfIEViaRemote() {
     DesiredCapabilities ieCapabilities =
-        new DesiredCapabilities("htmlunit", "internet explorer", Platform.ANY);
+        new DesiredCapabilities(BrowserType.HTMLUNIT, "internet explorer", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(ieCapabilities),
         BrowserVersion.INTERNET_EXPLORER_8);
 
     DesiredCapabilities ie7Capabilities =
-        new DesiredCapabilities("htmlunit", "internet explorer-7", Platform.ANY);
+        new DesiredCapabilities(BrowserType.HTMLUNIT, "internet explorer-7", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(ie7Capabilities),
         BrowserVersion.INTERNET_EXPLORER_7);

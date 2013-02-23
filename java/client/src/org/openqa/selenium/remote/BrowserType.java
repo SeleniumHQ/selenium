@@ -18,9 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote;
 
 /**
- * 
  * All the browsers supported by selenium
- *
  */
 public interface BrowserType {
   String FIREFOX = "firefox";
@@ -38,4 +36,11 @@ public interface BrowserType {
   String KONQUEROR = "konqueror";
   String MOCK = "mock";
   String IE_HTA="iehta";
+
+  String ANDROID = "android";
+  String HTMLUNIT = "htmlunit";
+  String IE = "internet explorer";
+  String IPHONE = "iPhone"; 
+  String IPAD = "iPad"; 
+  String PHANTOMJS = "phantomjs"; 
 }

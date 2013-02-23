@@ -83,6 +83,7 @@ import org.openqa.selenium.internal.selenesedriver.SubmitElement;
 import org.openqa.selenium.internal.selenesedriver.SwitchToFrame;
 import org.openqa.selenium.internal.selenesedriver.TakeScreenshot;
 import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -205,16 +206,16 @@ public class SeleneseCommandExecutor implements CommandExecutor {
       return browser;
     }
 
-    if (DesiredCapabilities.firefox().getBrowserName().equals(browser)) {
+    if (BrowserType.FIREFOX.equals(browser)) {
       return "*chrome";
     }
 
-    if ("safari".equals(browser)) {
+    if (BrowserType.SAFARI.equals(browser)) {
       String path = findSafari();
       return "*safari " + path;
     }
 
-    if (DesiredCapabilities.chrome().getBrowserName().equals(browser)) {
+    if (BrowserType.CHROME.equals(browser)) {
       return "*googlechrome /Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
     }
 

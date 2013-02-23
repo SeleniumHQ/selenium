@@ -20,6 +20,8 @@ import com.google.common.collect.Maps;
 
 import android.os.Build;
 
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.GetSessionCapabilities;
@@ -41,9 +43,9 @@ public class GetCapabilities extends GetSessionCapabilities {
     Map<String, Object> caps = Maps.newHashMap();
     caps.putAll(capabilities);
     caps.put(CapabilityType.TAKES_SCREENSHOT, true);
-    caps.put(CapabilityType.BROWSER_NAME, "android");
+    caps.put(CapabilityType.BROWSER_NAME, BrowserType.ANDROID);
     caps.put(CapabilityType.ROTATABLE, true);
-    caps.put(CapabilityType.PLATFORM, "android");
+    caps.put(CapabilityType.PLATFORM, Platform.ANDROID);
     caps.put(CapabilityType.SUPPORTS_ALERTS, true);
     caps.put(CapabilityType.SUPPORTS_JAVASCRIPT, true);
     caps.put(CapabilityType.VERSION, Build.VERSION.SDK);

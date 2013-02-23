@@ -37,6 +37,7 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
@@ -83,7 +84,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
   @Test(timeOut = 1000)
   public void firefoxOnWebDriver() throws MalformedURLException {
     Map<String, Object> ff = new HashMap<String, Object>();
-    ff.put(CapabilityType.BROWSER_NAME, "firefox");
+    ff.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     ff.put(CapabilityType.VERSION, "7");
     RequestHandler newSessionRequest = new MockedRequestHandler(getNewRequest(ff));
     newSessionRequest.process();
@@ -92,7 +93,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
         newSessionRequest.getSession().getRequestedCapabilities().get(FirefoxDriver.BINARY));
 
     Map<String, Object> ff2 = new HashMap<String, Object>();
-    ff2.put(CapabilityType.BROWSER_NAME, "firefox");
+    ff2.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     ff2.put(CapabilityType.VERSION, "3");
     RequestHandler newSessionRequest2 = new MockedRequestHandler(getNewRequest(ff2));
     newSessionRequest2.process();

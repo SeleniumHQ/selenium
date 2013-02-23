@@ -22,6 +22,7 @@ import static org.openqa.grid.common.RegistrationRequest.PLATFORM;
 import static org.openqa.grid.common.RegistrationRequest.VERSION;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
 import org.junit.Assert;
@@ -99,12 +100,12 @@ public class DefaultCapabilityMatcherTest {
     DefaultCapabilityMatcher matcher = new DefaultCapabilityMatcher();
 
     Map<String, Object> requested = new HashMap<String, Object>();
-    requested.put(CapabilityType.BROWSER_NAME, "firefox");
+    requested.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     requested.put(CapabilityType.PLATFORM, null);
     requested.put(CapabilityType.VERSION, "");
 
     Map<String, Object> node = new HashMap<String, Object>();
-    node.put(CapabilityType.BROWSER_NAME, "firefox");
+    node.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     node.put(CapabilityType.PLATFORM, Platform.LINUX);
     node.put(CapabilityType.VERSION, "3.6");
 

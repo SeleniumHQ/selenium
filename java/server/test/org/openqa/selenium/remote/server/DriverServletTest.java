@@ -25,6 +25,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.testing.FakeHttpServletRequest;
@@ -155,8 +157,8 @@ public class DriverServletTest {
             .put("path", "/session")
             .put("data", new JSONObject()
                 .put("desiredCapabilities", new JSONObject()
-                    .put("browserName", "firefox")
-                    .put("version", true))));
+                    .put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX)
+                    .put(CapabilityType.VERSION, true))));
 
     mockery.assertIsSatisfied();
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
@@ -169,8 +171,8 @@ public class DriverServletTest {
 
     JSONObject value = jsonResponse.getJSONObject("value");
     assertEquals(2, Iterators.size(value.keys()));
-    assertEquals("firefox", value.getString("browserName"));
-    assertTrue(value.getBoolean("version"));
+    assertEquals(BrowserType.FIREFOX, value.getString(CapabilityType.BROWSER_NAME));
+    assertTrue(value.getBoolean(CapabilityType.VERSION));
   }
 
   private SessionId createSession() throws IOException, ServletException {

@@ -22,6 +22,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.junit.Assert.assertEquals;
@@ -102,7 +103,7 @@ public class DriverFactoryTest {
     factory.registerDriver(DesiredCapabilities.opera(), Opera.class);
 
     DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-    desiredCapabilities.setBrowserName("internet explorer");
+    desiredCapabilities.setBrowserName(BrowserType.IE);
     desiredCapabilities.setVersion("");
     desiredCapabilities.setJavascriptEnabled(true);
     desiredCapabilities.setPlatform(Platform.ANY);

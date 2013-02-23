@@ -26,6 +26,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -68,7 +69,7 @@ public class RegistrationRequestTest {
     req.setConfiguration(config);
 
     for (int i = 0; i < 5; i++) {
-      DesiredCapabilities cap = new DesiredCapabilities("firefox", "" + i, Platform.LINUX);
+      DesiredCapabilities cap = new DesiredCapabilities(BrowserType.FIREFOX, "" + i, Platform.LINUX);
       req.addDesiredCapability(cap);
     }
 

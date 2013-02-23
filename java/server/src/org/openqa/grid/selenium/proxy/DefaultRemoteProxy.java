@@ -38,6 +38,7 @@ import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.selenium.utils.WebProxyHtmlRenderer;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.IOException;
@@ -246,7 +247,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   public void beforeSession(TestSession session) {
     if (session.getSlot().getProtocol() == SeleniumProtocol.WebDriver) {
       Map<String, Object> cap = session.getRequestedCapabilities();
-      if ("firefox".equals(cap.get(CapabilityType.BROWSER_NAME))) {
+      if (BrowserType.FIREFOX.equals(cap.get(CapabilityType.BROWSER_NAME))) {
         if (session.getSlot().getCapabilities().get(FirefoxDriver.BINARY) != null
             && cap.get(FirefoxDriver.BINARY) == null) {
           session.getRequestedCapabilities().put(FirefoxDriver.BINARY,

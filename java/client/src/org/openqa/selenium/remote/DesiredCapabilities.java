@@ -176,46 +176,46 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public static DesiredCapabilities android() {
-    return new DesiredCapabilities("android", "", Platform.ANDROID);
+    return new DesiredCapabilities(BrowserType.ANDROID, "", Platform.ANDROID);
   }
 
   public static DesiredCapabilities chrome() {
-    return new DesiredCapabilities("chrome", "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.CHROME, "", Platform.ANY);
   }
 
   public static DesiredCapabilities firefox() {
-    return new DesiredCapabilities("firefox", "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
   }
 
   public static DesiredCapabilities htmlUnit() {
-    return new DesiredCapabilities("htmlunit", "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
   }
 
   public static DesiredCapabilities internetExplorer() {
     DesiredCapabilities capabilities = new DesiredCapabilities(
-        "internet explorer", "", Platform.WINDOWS);
+        BrowserType.IE, "", Platform.WINDOWS);
     capabilities.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
     return capabilities;
   }
 
   public static DesiredCapabilities iphone() {
-    return new DesiredCapabilities("iPhone", "", Platform.MAC);
+    return new DesiredCapabilities(BrowserType.IPHONE, "", Platform.MAC);
   }
 
   public static DesiredCapabilities ipad() {
-    return new DesiredCapabilities("iPad", "", Platform.MAC);
+    return new DesiredCapabilities(BrowserType.IPAD, "", Platform.MAC);
   }
 
   public static DesiredCapabilities opera() {
-    return new DesiredCapabilities("opera", "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.OPERA, "", Platform.ANY);
   }
 
   public static DesiredCapabilities safari() {
-    return new DesiredCapabilities("safari", "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.SAFARI, "", Platform.ANY);
   }
 
   public static DesiredCapabilities phantomjs() {
-    return new DesiredCapabilities("phantomjs", "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.PHANTOMJS, "", Platform.ANY);
   }
 
   @Override

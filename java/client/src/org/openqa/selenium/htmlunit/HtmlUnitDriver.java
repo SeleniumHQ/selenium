@@ -52,6 +52,7 @@ import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -223,12 +224,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     // This is for backwards compatibility - in case there are users who are trying to
     // configure the HtmlUnitDriver by using the c'tor with capabilities.
-    if (!"htmlunit".equals(capabilities.getBrowserName())) {
+    if (!BrowserType.HTMLUNIT.equals(capabilities.getBrowserName())) {
       browserName = capabilities.getBrowserName();
       browserVersion = capabilities.getVersion();
     }
 
-    if ("firefox".equals(browserName)) {
+    if (BrowserType.FIREFOX.equals(browserName)) {
       if (browserVersion != null
           && (browserVersion.equals("3") || browserVersion.startsWith("3."))) {
         return BrowserVersion.FIREFOX_3_6;
@@ -236,7 +237,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       return BrowserVersion.FIREFOX_10;
     }
 
-    if ("internet explorer".equals(browserName)) {
+    if (BrowserType.IE.equals(browserName)) {
       // Try and convert the version
       try {
         int version = Integer.parseInt(browserVersion);

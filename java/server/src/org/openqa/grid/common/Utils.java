@@ -25,10 +25,10 @@ public class Utils {
     if (BrowserType.FIREFOX.equals(webDriverBrowserName)) {
       return "*firefox";
     }
-    if ("internet explorer".equals(webDriverBrowserName)) {
+    if (BrowserType.IE.equals(webDriverBrowserName)) {
       return "*iexplore";
     }
-    if ("chrome".equals(webDriverBrowserName)) {
+    if (BrowserType.CHROME.equals(webDriverBrowserName)) {
       return "*googlechrome";
     }
     return webDriverBrowserName;
