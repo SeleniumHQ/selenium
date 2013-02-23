@@ -18,8 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium.io;
 
-import com.google.common.io.Closeables;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -175,7 +173,7 @@ public class ZipTest {
     }
     FileOutputStream fos = new FileOutputStream(file);
     fos.write("".getBytes());
-    Closeables.close(fos, true);
+    fos.close();
 
     assertTrue(file.exists());
   }

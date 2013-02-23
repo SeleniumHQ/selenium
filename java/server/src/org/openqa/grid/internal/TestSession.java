@@ -54,9 +54,9 @@ import org.openqa.grid.web.servlet.handler.RequestType;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
+import org.openqa.selenium.io.IOUtils;
 
 import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
 
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
@@ -393,7 +393,7 @@ public class TestSession {
     try {
       return ByteStreams.toByteArray(in);
     } finally {
-      Closeables.closeQuietly(in);
+      IOUtils.closeQuietly(in);
     }
   }
 

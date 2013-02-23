@@ -1,12 +1,14 @@
 package org.openqa.selenium.environment.webserver;
 
 import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +32,7 @@ public class Utf8Servlet extends HttpServlet {
           request.getPathInfo() + ", servlet path: " + request.getServletPath() +
           " and context path: " + request.getContextPath());
     } finally {
-      Closeables.close(is, true);
+      IOUtils.closeQuietly(is);
     }
 
     response.setContentType("text/html; charset=UTF-8");

@@ -19,7 +19,6 @@ limitations under the License.
 package org.openqa.selenium.environment.webserver;
 
 import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -29,6 +28,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 
 public class ManifestServlet extends HttpServlet {
   @Override
@@ -46,7 +47,7 @@ public class ManifestServlet extends HttpServlet {
     } catch (IOException e) {
       throw new ServletException("Failed to read cache-manifest file: " + manifestPath);
     } finally {
-      Closeables.close(is, true);
+      IOUtils.closeQuietly(is);
     }
 
     response.setContentType("text/cache-manifest");

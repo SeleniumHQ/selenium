@@ -18,7 +18,6 @@ package org.openqa.selenium.firefox;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
-import com.google.common.io.Closeables;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.Beta;
@@ -29,6 +28,7 @@ import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
 import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 
@@ -112,7 +112,7 @@ public class FirefoxProfile {
     // so for now will always be set to false.
     loadNoFocusLib = false;
 
-    Closeables.closeQuietly(defaultsReader);
+    IOUtils.closeQuietly(defaultsReader);
   }
 
   /**
@@ -326,7 +326,7 @@ public class FirefoxProfile {
     } catch (IOException e) {
       throw new WebDriverException(e);
     } finally {
-      Closeables.closeQuietly(writer);
+      IOUtils.closeQuietly(writer);
     }
   }
 

@@ -19,10 +19,10 @@ limitations under the License.
 package org.openqa.selenium.browserlaunchers;
 
 import com.google.common.base.Throwables;
-import com.google.common.io.Closeables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.net.Urls;
 
 import java.io.BufferedReader;
@@ -194,7 +194,7 @@ public class LauncherUtils {
     } catch (IOException e) {
       throw new RuntimeException(e);
     } finally {
-      Closeables.closeQuietly(reader);
+      IOUtils.closeQuietly(reader);
     }
   }
 

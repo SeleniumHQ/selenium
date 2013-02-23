@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.security;
 
 import com.google.common.base.Throwables;
-import com.google.common.io.Closeables;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -42,6 +41,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.openqa.selenium.io.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -184,7 +184,7 @@ public class CertificateGenerator {
     } catch (IOException e) {
       throw Throwables.propagate(e);
     } finally {
-      Closeables.closeQuietly(is);
+      IOUtils.closeQuietly(is);
     }
 
   }

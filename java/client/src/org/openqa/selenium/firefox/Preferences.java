@@ -22,12 +22,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.io.CharStreams;
-import com.google.common.io.Closeables;
 import com.google.common.io.LineReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.remote.JsonException;
 
 import java.io.File;
@@ -77,7 +77,7 @@ class Preferences {
     } catch (IOException e) {
       throw new WebDriverException(e);
     } finally {
-      Closeables.closeQuietly(reader);
+      IOUtils.closeQuietly(reader);
     }
   }
 
@@ -88,7 +88,7 @@ class Preferences {
     } catch (IOException e) {
       throw new WebDriverException(e);
     } finally {
-      Closeables.closeQuietly(reader);
+      IOUtils.closeQuietly(reader);
     }
   }
 
