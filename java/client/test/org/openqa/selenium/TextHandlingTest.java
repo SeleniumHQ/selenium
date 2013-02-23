@@ -249,7 +249,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo(""));
   }
 
-  @Ignore({HTMLUNIT, SELENESE})
+  @Ignore(SELENESE)
   @Test
   public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
     if (TestUtilities.isOldIe(driver)) {
