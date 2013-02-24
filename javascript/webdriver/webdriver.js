@@ -1399,7 +1399,7 @@ webdriver.Key.chord = function(var_args) {
  * @extends {webdriver.promise.Deferred}
  */
 webdriver.WebElement = function(driver, id) {
-  webdriver.promise.Deferred.call(this);
+  webdriver.promise.Deferred.call(this, null, driver.controlFlow());
 
   /**
    * The parent WebDriver instance for this element.
@@ -1896,7 +1896,7 @@ webdriver.WebElement.prototype.getInnerHtml = function() {
  * @extends {webdriver.promise.Deferred}
  */
 webdriver.Alert = function(driver, text) {
-  goog.base(this);
+  goog.base(this, null, driver.controlFlow());
 
   /**
    * @type {!webdriver.WebDriver}
