@@ -178,7 +178,7 @@ public class HttpCommandProcessor implements CommandProcessor {
         wr.flush();
         responsecode = getResponseCode(uc);
         if (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
-          pathToServlet = uc.getRequestProperty("Location");
+          pathToServlet = uc.getHeaderField("Location");
         } else if (responsecode != HttpURLConnection.HTTP_OK) {
           throwAssertionFailureExceptionOrError(uc.getResponseMessage());
         } else {
