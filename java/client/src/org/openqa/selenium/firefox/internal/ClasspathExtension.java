@@ -16,11 +16,11 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
+import com.google.common.io.Closeables;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -58,7 +58,7 @@ public class ClasspathExtension implements Extension {
       stream = new FileOutputStream(extractedXpi);
       Resources.copy(resourceUrl, stream);
     } finally {
-      IOUtils.closeQuietly(stream);
+      Closeables.close(stream, false);
     }
     new FileExtension(extractedXpi).writeTo(extensionsDir);
   }

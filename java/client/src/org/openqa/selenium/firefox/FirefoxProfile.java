@@ -112,7 +112,11 @@ public class FirefoxProfile {
     // so for now will always be set to false.
     loadNoFocusLib = false;
 
-    IOUtils.closeQuietly(defaultsReader);
+    try {
+      defaultsReader.close();
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    }
   }
 
   /**

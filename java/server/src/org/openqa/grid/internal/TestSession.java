@@ -28,7 +28,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -381,11 +380,7 @@ public class TestSession {
     } catch (IOException e) {
       throw new ClientGoneException(e);
     } finally {
-      try {
-        out.close();
-      } catch (IOException e) {
-        log.log(Level.SEVERE, "Problem closing response's output stream.", e);
-      }
+      IOUtils.closeQuietly(out);
     }
   }
 
@@ -393,7 +388,7 @@ public class TestSession {
     try {
       return ByteStreams.toByteArray(in);
     } finally {
-      IOUtils.closeQuietly(in);
+      in.close();
     }
   }
 

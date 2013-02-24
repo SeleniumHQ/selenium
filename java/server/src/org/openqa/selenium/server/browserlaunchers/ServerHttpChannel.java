@@ -26,7 +26,6 @@ import com.thoughtworks.selenium.CommandProcessor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.selenium.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -176,14 +175,18 @@ public class ServerHttpChannel implements Runnable {
       out.write(toSend);
       out.flush();
     } finally {
-      IOUtils.closeQuietly(out);
+      out.close();
     }
   }
 
   public String read() throws IOException {
     InputStream input = connection.getInputStream();
-    byte[] bytes = ByteStreams.toByteArray(input);
-    IOUtils.closeQuietly(input);
+    byte[] bytes = null;
+    try {
+      bytes = ByteStreams.toByteArray(input);
+    } finally {
+      input.close();
+    }
     connection.disconnect();
     connection = null;
     return new String(bytes, Charsets.UTF_8);

@@ -20,6 +20,8 @@ package org.openqa.selenium.io;
 
 import org.openqa.selenium.internal.Base64Encoder;
 
+import com.google.common.io.Closeables;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,7 +50,7 @@ public class Zip {
       fos = new FileOutputStream(output);
       zip(inputDir, fos);
     } finally {
-      IOUtils.closeQuietly(fos);
+      Closeables.close(fos, false);
     }
   }
 
@@ -59,7 +61,7 @@ public class Zip {
       zip(inputDir, bos);
       return new Base64Encoder().encode(bos.toByteArray());
     } finally {
-      IOUtils.closeQuietly(bos);
+      bos.close();
     }
   }
 
@@ -73,8 +75,8 @@ public class Zip {
       addToZip(baseDir.getAbsolutePath(), zos, fileToCompress);
       return new Base64Encoder().encode(bos.toByteArray());
     } finally {
-      IOUtils.closeQuietly(zos);
-      IOUtils.closeQuietly(bos);
+      zos.close();
+      bos.close();
     }
 
   }
@@ -85,7 +87,7 @@ public class Zip {
       zos = new ZipOutputStream(writeTo);
       addToZip(inputDir.getAbsolutePath(), zos, inputDir);
     } finally {
-      IOUtils.closeQuietly(zos);
+      Closeables.close(zos, false);
     }
   }
 
@@ -120,7 +122,7 @@ public class Zip {
       bis = new ByteArrayInputStream(bytes);
       unzip(bis, outputDir);
     } finally {
-      IOUtils.closeQuietly(bis);
+      Closeables.close(bis, false);
     }
   }
 
@@ -131,7 +133,7 @@ public class Zip {
       fis = new FileInputStream(source);
       unzip(fis, outputDir);
     } finally {
-      IOUtils.closeQuietly(fis);
+      Closeables.close(fis, false);
     }
   }
 
@@ -150,7 +152,7 @@ public class Zip {
         unzipFile(outputDir, zis, entry.getName());
       }
     } finally {
-      IOUtils.closeQuietly(zis);
+      zis.close();
     }
   }
 
