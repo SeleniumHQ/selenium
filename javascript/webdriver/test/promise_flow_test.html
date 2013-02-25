@@ -111,21 +111,20 @@ limitations under the License.
   }
 
 
-  /** @see {@link webdriver.testing.promise.FlowTester#run}. */
-  function run(opt_callback, opt_errback) {
-    if (goog.isFunction(opt_callback) && goog.isFunction(opt_errback)) {
-      fail('You may only expect success or failure, not both!');
-    }
-
+  function runAndExpectSuccess(opt_callback) {
     flowTester.run();
+    flowTester.verifySuccess();
+    if (opt_callback) {
+      opt_callback();
+    }
+  }
 
+
+  function runAndExpectFailure(opt_errback) {
+    flowTester.run();
+    flowTester.verifyFailure();
     if (opt_errback) {
       opt_errback(flowTester.getFailure());
-    } else {
-      flowTester.verifySuccess();
-      if (opt_callback) {
-        opt_callback();
-      }
     }
   }
 
@@ -535,7 +534,9 @@ limitations under the License.
     assertEquals(root, flow.activeFrame_);
     assertArrayEquals([task2], root.children_);
 
-    assertUndefined(flow.runInNewFrame_(goog.nullFunction));
+    var pair = callbackPair(assertUndefined);
+    flow.runInNewFrame_(goog.nullFunction, pair.callback, pair.errback);
+    pair.assertCallback();
     assertEquals(root, flow.activeFrame_);
     assertArrayEquals([task2], root.children_);
   }
@@ -555,7 +556,7 @@ limitations under the License.
     assertArrayEquals([task2], root.children_);
 
     var pair = callbackPair(null, assertIsStubError);
-    flow.runInNewFrame_(throwStubError).then(pair.callback, pair.errback);
+    flow.runInNewFrame_(throwStubError, pair.callback, pair.errback);
     pair.assertErrback();
     assertEquals(root, flow.activeFrame_);
     assertArrayEquals([task2], root.children_);
@@ -579,7 +580,7 @@ limitations under the License.
     flow.runInNewFrame_(function() {
       flow.execute(goog.nullFunction);
       throw STUB_ERROR;
-    }).then(pair.callback, pair.errback);
+    }, pair.callback, pair.errback);
     pair.assertErrback();
     assertEquals(root, flow.activeFrame_);
     assertArrayEquals([task2], root.children_);
@@ -587,7 +588,9 @@ limitations under the License.
 
 
   function testRunInNewFrame_whenThereIsNoCurrentActiveFrame_noopFunc() {
-    assertUndefined(flow.runInNewFrame_(goog.nullFunction));
+    var pair = callbackPair(assertUndefined);
+    flow.runInNewFrame_(goog.nullFunction, pair.callback, pair.errback);
+    pair.assertCallback();
     assertNull(flow.activeFrame_);
     assertEquals('[]', flow.getSchedule());
   }
@@ -595,7 +598,7 @@ limitations under the License.
 
   function testRunInNewFrame_whenThereIsNoCurrentActiveFrame_funcThrows() {
     var pair = callbackPair(null, assertIsStubError);
-    flow.runInNewFrame_(throwStubError).then(pair.callback, pair.errback);
+    flow.runInNewFrame_(throwStubError, pair.callback, pair.errback);
     pair.assertErrback();
     assertNull(flow.activeFrame_);
     assertEquals('[]', flow.getSchedule());
@@ -608,7 +611,7 @@ limitations under the License.
     flow.runInNewFrame_(function() {
       flow.execute('task3', goog.nullFunction);
       throwStubError();
-    }).then(pair.callback, pair.errback);
+    }, pair.callback, pair.errback);
     pair.assertErrback();
     assertNull(flow.activeFrame_);
     assertEquals('[]', flow.getSchedule());
@@ -616,31 +619,26 @@ limitations under the License.
 
 
   function testRunInNewFrame_returnsPrimitiveFunctionResultImmediately() {
-    assertEquals(23, flow.runInNewFrame_(function() {
+    var pair = callbackPair(goog.partial(assertEquals, 23));
+    flow.runInNewFrame_(function() {
       return 23;
-    }));
+    }, pair.callback, pair.errback);
+    pair.assertCallback();
   }
 
 
   function testRunInNewFrame_updatesSchedulingFrameForContextOfFunction() {
     var root = flow.activeFrame_ = createFrame();
 
-    var error;
+    var pair = callbackPair();
     flow.runInNewFrame_(function() {
-      try {
-        assertNotNull(flow.activeFrame_);
-        assertNotNull(flow.schedulingFrame_);
-        assertNotEquals(root, flow.schedulingFrame_);
-        assertArrayEquals([flow.schedulingFrame_], root.children_);
-        assertEquals(root, flow.schedulingFrame_.getParent());
-      } catch (ex) {
-        error = ex;
-      }
-    });
-
-    if (error) {
-      throw error;
-    }
+      assertNotNull(flow.activeFrame_);
+      assertNotNull(flow.schedulingFrame_);
+      assertNotEquals(root, flow.schedulingFrame_);
+      assertArrayEquals([flow.schedulingFrame_], root.children_);
+      assertEquals(root, flow.schedulingFrame_.getParent());
+    }, pair.callback, pair.errback);
+    pair.assertCallback();
 
     assertEquals('Did not restore active frame', root, flow.activeFrame_);
   }
@@ -662,7 +660,7 @@ limitations under the License.
     var pair = callbackPair();
     flow.runInNewFrame_(function() {
       schedule('task3');
-    }).then(pair.callback, pair.errback);
+    }, pair.callback, pair.errback);
 
     pair.assertNeither('active frame not resolved yet');
     assertEquals(root, flow.activeFrame_);
@@ -691,8 +689,8 @@ limitations under the License.
       schedule('task3');
       flow.runInNewFrame_(function() {
         schedule('task4');
-      }).then(pair2.callback, pair2.errback);
-    }).then(pair1.callback, pair1.errback);
+      }, pair2.callback, pair2.errback);
+    }, pair1.callback, pair1.errback);
 
     pair1.assertNeither();
     pair2.assertNeither();
@@ -711,7 +709,7 @@ limitations under the License.
 
   function testScheduling_aSimpleFunction() {
     schedule('go');
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('go');
   }
 
@@ -720,7 +718,7 @@ limitations under the License.
     schedule('a');
     schedule('b');
     schedule('c');
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c');
   }
 
@@ -738,7 +736,7 @@ limitations under the License.
 
     d.resolve(123);
     callback.assertCalled('Callback should have been called!');
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a');
   }
 
@@ -754,7 +752,7 @@ limitations under the License.
     turnEventLoop(); assertFlowHistory('a');  // Task 'a' is still running.
 
     d.resolve(123);
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b');
   }
 
@@ -775,7 +773,7 @@ limitations under the License.
 
     d2.resolve('fluffy bunny');
 
-    run();
+    runAndExpectSuccess();
     callback.assertCalled('d2 has been resolved');
     assertFlowHistory('a');
   }
@@ -792,7 +790,7 @@ limitations under the License.
     turnEventLoop();
     assertEquals(1, count);
 
-    run();
+    runAndExpectSuccess();
   }
 
 
@@ -809,7 +807,7 @@ limitations under the License.
     turnEventLoop();
     assertEquals(2, count);
 
-    run();
+    runAndExpectSuccess();
   }
 
 
@@ -819,7 +817,7 @@ limitations under the License.
       schedule('b');
       schedule('c');
     });
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c');
   }
 
@@ -830,7 +828,7 @@ limitations under the License.
     });
     schedule('b');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'c', 'b');
   }
 
@@ -847,7 +845,7 @@ limitations under the License.
     });
     schedule('b');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'c', 'e', 'g', 'f', 'd', 'b');
   }
 
@@ -863,7 +861,7 @@ limitations under the License.
         });
     schedule('e');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c', 'd', 'e');
   }
 
@@ -879,7 +877,7 @@ limitations under the License.
         });
     schedule('e');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c', 'd', 'e');
   }
 
@@ -890,7 +888,7 @@ limitations under the License.
     });
     schedule('a');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('b', 'a');
   }
 
@@ -902,7 +900,7 @@ limitations under the License.
     a.then(function() { schedule('d'); });
     schedule('e');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'd', 'c', 'e');
   }
 
@@ -915,7 +913,7 @@ limitations under the License.
     d.then(function() { schedule('c'); });
 
     d.resolve();
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c');
   }
 
@@ -943,7 +941,7 @@ limitations under the License.
     });
     schedule('j');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c', 'd', 'e', 'g', 'f', 'h', 'i', 'j');
   }
 
@@ -952,7 +950,7 @@ limitations under the License.
     var callbacks = callbackPair(null, assertIsStubError);
     scheduleAction('function that throws', throwStubError).
         then(callbacks.callback, callbacks.errback);
-    run(callbacks.assertErrback);
+    runAndExpectSuccess(callbacks.assertErrback);
   }
 
 
@@ -961,7 +959,7 @@ limitations under the License.
     scheduleAction('function that throws', throwStubError).
         then(callbacks.callback).
         then(null, callbacks.errback);
-    run(callbacks.assertErrback);
+    runAndExpectSuccess(callbacks.assertErrback);
   }
 
 
@@ -975,28 +973,28 @@ limitations under the License.
         }).
         then(null, errback = callbackHelper(assertIsStubError));
 
-    run();
+    runAndExpectSuccess();
     errback.assertCalled();
   }
 
 
   function testErrorHandling_abortsIfOnlyTaskThrowsAnError() {
     scheduleAction('function that throws', throwStubError);
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
   }
 
 
   function testErrorHandling_abortsIfOnlyTaskReturnsAnUnhandledRejection() {
     var rejected = webdriver.promise.rejected(STUB_ERROR);
     scheduleAction('function that throws', function() { return rejected; });
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
   }
 
 
   function testErrorHandling_abortsIfThereIsAnUnhandledRejection() {
     webdriver.promise.rejected(STUB_ERROR);
     schedule('this should not run');
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
     assertFlowHistory();
   }
 
@@ -1007,7 +1005,7 @@ limitations under the License.
     scheduleAction('c', throwStubError);
     schedule('d');  // Should never execute.
 
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
     assertFlowHistory('a', 'b', 'c');
   }
 
@@ -1017,7 +1015,7 @@ limitations under the License.
       scheduleAction('inner task', throwStubError);
     });
     schedule('this should not run');
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
     assertFlowHistory('outer task', 'inner task');
   }
 
@@ -1031,7 +1029,7 @@ limitations under the License.
       });
     });
 
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
     assertFlowHistory('a', 'b', 'c');
   }
 
@@ -1045,7 +1043,7 @@ limitations under the License.
             return webdriver.promise.rejected('rejected 2');
           });
     });
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
   }
 
 
@@ -1061,7 +1059,7 @@ limitations under the License.
     }).then(callback = callbackHelper());
 
     callback.assertNotCalled();
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
   }
 
 
@@ -1072,7 +1070,7 @@ limitations under the License.
           return scheduleAction('b', throwStubError);
         }).
         addErrback(errback = callbackHelper(assertIsStubError));
-    run();
+    runAndExpectSuccess();
     errback.assertCalled();
   }
 
@@ -1087,7 +1085,7 @@ limitations under the License.
       });
     }).addErrback(errback = callbackHelper(assertIsStubError));
     schedule('d');
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c', 'd');
     errback.assertCalled();
   }
@@ -1100,7 +1098,7 @@ limitations under the License.
     });
     schedule('should never run');
 
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
     assertFlowHistory('a', 'sub-tasks');
   }
 
@@ -1111,7 +1109,7 @@ limitations under the License.
     });
     schedule('should never run');
 
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
     assertFlowHistory('a', 'sub-tasks')
   }
 
@@ -1125,7 +1123,7 @@ limitations under the License.
     }).then(pair.callback, pair.errback);
     schedule('d');
 
-    run();
+    runAndExpectSuccess();
     pair.assertErrback();
     assertFlowHistory('a', 'd');
   }
@@ -1140,7 +1138,7 @@ limitations under the License.
     }).then(pair.callback, pair.errback);
     schedule('e');
 
-    run();
+    runAndExpectSuccess();
     pair.assertErrback();
     assertFlowHistory('a', 'b', 'c', 'e');
   }
@@ -1158,7 +1156,7 @@ limitations under the License.
     schedulePush('foo').
         then(goog.partial(schedulePush, 'bar')).
         addBoth(goog.partial(schedulePush, 'baz'));
-    run(assertingMessages('foo', 'bar', 'baz'));
+    runAndExpectSuccess(assertingMessages('foo', 'bar', 'baz'));
     assertFlowHistory('foo', 'bar', 'baz');
   }
 
@@ -1178,7 +1176,7 @@ limitations under the License.
       throw new Error('ouch');
     }).then(goog.partial(schedulePush, 'bar')).
        addBoth(goog.partial(schedulePush, 'baz'));
-    run(assertingMessages('foo', 'baz'));
+    runAndExpectSuccess(assertingMessages('foo', 'baz'));
   }
 
 
@@ -1203,7 +1201,7 @@ limitations under the License.
           assertIsStubError(e);
           return schedulePush('baz');
         });
-    run(assertingMessages('foo', 'bar', 'baz'));
+    runAndExpectSuccess(assertingMessages('foo', 'bar', 'baz'));
   }
 
 
@@ -1215,7 +1213,7 @@ limitations under the License.
     });
     schedule('e');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c', 'd', 'e');
   }
 
@@ -1229,7 +1227,7 @@ limitations under the License.
     });
     schedule('f');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c', 'd', 'e', 'f');
   }
 
@@ -1242,7 +1240,7 @@ limitations under the License.
     });
     schedule('e');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c', 'd', 'e');
   }
 
@@ -1257,7 +1255,7 @@ limitations under the License.
     });
     schedule('f');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c', 'd', 'e', 'f');
   }
 
@@ -1276,7 +1274,7 @@ limitations under the License.
     });
     schedule('i');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i');
   }
 
@@ -1289,13 +1287,13 @@ limitations under the License.
     turnEventLoop();
     schedule('b');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'b');
   }
 
   function testWaiting_onAConditionThatIsAlwaysTrue() {
     scheduleWait(function() { return true;}, 0, 'waiting on true');
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('0: waiting on true');
   }
 
@@ -1312,7 +1310,7 @@ limitations under the License.
     clock.tick(100);
     assertEquals(3, count);
 
-    run();
+    runAndExpectSuccess();
   }
 
 
@@ -1332,7 +1330,7 @@ limitations under the License.
     turnEventLoop();
 
     d.resolve(123);
-    run();
+    runAndExpectSuccess();
   }
 
 
@@ -1347,7 +1345,7 @@ limitations under the License.
     clock.tick(100);
     assertEquals(3, count);
 
-    run();
+    runAndExpectSuccess();
   }
 
 
@@ -1389,7 +1387,7 @@ limitations under the License.
         '1: counting to 3', 'increment count',
         '2: counting to 3', 'increment count');
 
-    run();
+    runAndExpectSuccess();
     assertEquals(3, count);
     assertFlowHistory(
         '0: counting to 3', 'increment count',
@@ -1407,7 +1405,7 @@ limitations under the License.
     }, 200, 'counting to 3');
     schedule('post wait');
 
-    run();
+    runAndExpectSuccess();
     assertEquals(3, count);
     assertFlowHistory(
         '0: counting to 3', 'sub task',
@@ -1426,7 +1424,7 @@ limitations under the License.
     }, 200, 'waiting to go boom').then(pair.callback, pair.errback);
     schedule('post wait');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory(
         '0: waiting to go boom', 'boom',
         'post wait');
@@ -1438,7 +1436,7 @@ limitations under the License.
     scheduleWait(throwStubError, 0, 'goes boom').
         then(callbacks.callback, callbacks.errback);
     schedule('post wait');
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('0: goes boom', 'post wait');
     callbacks.assertErrback();
   }
@@ -1450,7 +1448,7 @@ limitations under the License.
       return webdriver.promise.rejected(STUB_ERROR);
     }, 0, 'goes boom').then(callbacks.callback, callbacks.errback);
     schedule('post wait');
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('0: goes boom', 'post wait');
     callbacks.assertErrback();
   }
@@ -1462,7 +1460,7 @@ limitations under the License.
       webdriver.promise.controlFlow().execute(throwStubError);
     }, 0, 'goes boom').then(callbacks.callback, callbacks.errback);
     schedule('post wait');
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('0: goes boom', 'post wait');
     callbacks.assertErrback();
   }
@@ -1489,7 +1487,7 @@ limitations under the License.
     clock.tick(100);  // Advance clock for next polling pass.
     assertEquals(1, count);
 
-    run();
+    runAndExpectSuccess();
     assertEquals(2, count);
     assertFlowHistory(
         '0: waiting', 'maybe throw',
@@ -1521,7 +1519,7 @@ limitations under the License.
     clock.tick(100);  // Advance clock for next polling pass.
     assertEquals(2, count);
 
-    run();
+    runAndExpectSuccess();
     assertEquals(4, count);
     assertFlowHistory(
         '0: counting to 3', 'increment count',
@@ -1553,7 +1551,7 @@ limitations under the License.
         '2: counting to 3');
     assertEquals(3, count);
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory(
         '0: counting to 3',
         '1: counting to 3',
@@ -1564,7 +1562,7 @@ limitations under the License.
 
   function testWaiting_timesOut_zeroTimeout() {
     scheduleWait(function() { return false; }, 0, 'always false');
-    run(null, goog.nullFunction);
+    runAndExpectFailure(goog.nullFunction);
   }
 
   function testWaiting_timesOut_nonZeroTimeout() {
@@ -1577,7 +1575,7 @@ limitations under the License.
     clock.tick(100);  // Poll 2 more times.
     assertEquals(2, count);
 
-    run(null, function() {
+    runAndExpectFailure(function() {
       assertFlowHistory('0: counting to 3', '1: counting to 3');
       assertEquals(2, count);
     });
@@ -1590,7 +1588,7 @@ limitations under the License.
       return webdriver.promise.rejected(STUB_ERROR);
     }, 100, 'counting to 3');
 
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
   }
 
 
@@ -1602,15 +1600,14 @@ limitations under the License.
     pair.assertNeither('Wait not expected to be done yet');
     turnEventLoop();
     pair.assertCallback('Wait callback not called!');
-    run();
+    runAndExpectSuccess();
   }
 
 
   function testWaiting_errbacks() {
     scheduleWait(function() { return false; }, 0, 'always false');
 
-    flowTester.run();
-    flowTester.verifyFailure();
+    runAndExpectFailure();
   }
 
 
@@ -1622,7 +1619,7 @@ limitations under the License.
     schedule('c');
     scheduleWait(function() { return true; }, 0, 'wait 3');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', '0: wait 1', 'b', '0: wait 2', 'c', '0: wait 3');
   }
 
@@ -1640,7 +1637,7 @@ limitations under the License.
     schedule('c');
     scheduleWait(function() { return true; }, 0, 'wait 4');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory(
         'a', '0: wait 1', 'd', '0: wait 2', 'e', 'b', '0: wait 3', 'c',
         '0: wait 4');
@@ -1655,7 +1652,7 @@ limitations under the License.
     });
     schedule('b');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'sub-tasks', 'c', 'd', 'b');
   }
 
@@ -1672,7 +1669,7 @@ limitations under the License.
     });
     schedule('f');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory(
         'a', 'sub-tasks', 'b', 'sub-sub-tasks', 'c', 'd', 'e', 'f');
   }
@@ -1685,7 +1682,7 @@ limitations under the License.
     });
     schedule('b');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'sub-tasks', 'c', 'b');
   }
 
@@ -1699,7 +1696,7 @@ limitations under the License.
         }));
     schedule('b');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'sub-tasks','b');
     callback.assertCalled();
   }
@@ -1712,7 +1709,7 @@ limitations under the License.
     });
     schedule('should never execute');
 
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
     assertFlowHistory('a', 'sub-tasks', 'sub-task that fails');
   }
 
@@ -1724,7 +1721,7 @@ limitations under the License.
     });
     schedule('should never execute');
 
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
     assertFlowHistory('a', 'sub-tasks');
   }
 
@@ -1738,7 +1735,7 @@ limitations under the License.
     }).then(callbacks.callback, callbacks.errback);
     schedule('b');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'sub-tasks', 'b');
     callbacks.assertErrback();
   }
@@ -1757,7 +1754,7 @@ limitations under the License.
     d.reject(STUB_ERROR);
     clock.tick(1);
     assertFlowHistory('one');
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
     assertFlowHistory('one');
 
     function turn(opt_minusN) {
@@ -1815,7 +1812,7 @@ limitations under the License.
         }).
         then(chainPair.callback, chainPair.errback);
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('boom');
     chainPair.assertErrback('chain errback not invoked');
     deferredPair.assertErrback('deferred errback not invoked');
@@ -1836,7 +1833,7 @@ limitations under the License.
         }).
         then(chainPair.callback, chainPair.errback);
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('a', 'boom');
     chainPair.assertErrback('chain errback not invoked');
     deferredPair.assertErrback('deferred errback not invoked');
@@ -1854,7 +1851,7 @@ limitations under the License.
         });
     schedulePush('e');
 
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('__start__', 'b', 'e');
     webdriver.test.testutil.assertMessages('a', 'c', 'b', 'd', 'e');
   }
@@ -1884,7 +1881,7 @@ limitations under the License.
       assertEquals(1, flowHistory.length);
       assertFrame('three', flowHistory[0]);
     });
-    run();
+    runAndExpectSuccess();
     assertEquals(0, webdriver.promise.controlFlow().getHistory().length);
   }
 
@@ -1901,7 +1898,7 @@ limitations under the License.
       assertEquals(1, flowHistory.length);
       assertFrame('one', flowHistory[0]);
     });
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('one', 'two');
     assertEquals(0, webdriver.promise.controlFlow().getHistory().length);
   }
@@ -1918,7 +1915,7 @@ limitations under the License.
       assertFrame('two', flowHistory[1]);
       assertFrame('one', flowHistory[2]);
     });
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('one', 'two', 'three');
     assertEquals(0, webdriver.promise.controlFlow().getHistory().length);
   }
@@ -1937,7 +1934,7 @@ limitations under the License.
         assertFrame('one', flowHistory[1]);
       });
     });
-    run();
+    runAndExpectSuccess();
     assertFlowHistory('one', 'two', 'three', 'post error');
     assertEquals(0, webdriver.promise.controlFlow().getHistory().length);
   }
@@ -1957,7 +1954,7 @@ limitations under the License.
       });
     });
 
-    run();
+    runAndExpectSuccess();
     assertFlowIs(defaultFlow);
   }
 
@@ -1972,7 +1969,7 @@ limitations under the License.
       assertFlowIs(newFlow);
     });
 
-    run();
+    runAndExpectSuccess();
   }
 
   function testDeferredFactoriesCreateForActiveFlow() {
@@ -2006,7 +2003,7 @@ limitations under the License.
       assertFlowIs(newFlow);
     });
 
-    run();
+    runAndExpectSuccess();
   }
 
   function testFlowsSynchronizeWithThemselvesNotEachOther() {
@@ -2020,7 +2017,7 @@ limitations under the License.
       schedulePush('d', 'd');
     });
 
-    run();
+    runAndExpectSuccess();
     webdriver.test.testutil.assertMessages('a', 'c', 'd', 'b');
   }
 
@@ -2061,55 +2058,51 @@ limitations under the License.
       schedulePush('d', 'd');
     });
 
-    run();
+    runAndExpectSuccess();
     webdriver.test.testutil.assertMessages('a', 'c', 'b', 'e', 'd');
   }
 
   function testFramesWaitToCompleteForPendingRejections() {
-    var err = Error();
-
     webdriver.promise.controlFlow().execute(function() {
-      webdriver.promise.rejected(err);
+      webdriver.promise.rejected(STUB_ERROR);
     });
 
-    flowTester.run();
-    assertEquals(err, flowTester.getFailure());
+    runAndExpectFailure(assertIsStubError);
   }
 
   function testSynchronizeErrorsPropagateToOuterFlow() {
-    var err = Error();
     var defaultFlow = webdriver.promise.controlFlow();
 
     var newFlow;
     webdriver.promise.createFlow(function(flow) {
       newFlow = flow;
       return defaultFlow.execute(function() {
-        webdriver.promise.rejected(err);
+        webdriver.promise.rejected(STUB_ERROR);
       });
     });
 
     flowTester.run();
-    assertEquals(err, flowTester.getFailure(defaultFlow));
+    assertIsStubError(flowTester.getFailure(defaultFlow));
     flowTester.verifySuccess(newFlow);  // Error was transferred to new flow.
   }
 
   function testFailsIfErrbackThrows() {
     webdriver.promise.rejected('').then(null, throwStubError);
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
   }
 
   function testFailsIfCallbackReturnsRejectedPromise() {
     webdriver.promise.resolved().then(function() {
       return webdriver.promise.rejected(STUB_ERROR);
     });
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
   }
 
   function testAbortsFrameIfTaskFails() {
     webdriver.promise.resolved().then(function() {
       webdriver.promise.controlFlow().execute(throwStubError);
     });
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
   }
 
   function testAbortsFramePromisedChainedFromTaskIsNotHandled() {
@@ -2117,7 +2110,25 @@ limitations under the License.
       webdriver.promise.controlFlow().execute(goog.nullFunction).
           then(throwStubError);
     });
-    run(null, assertIsStubError);
+    runAndExpectFailure(assertIsStubError);
+  }
+
+  function testPropagatesUnhandledAsapListenerError() {
+    webdriver.promise.resolved().then(function() {
+      webdriver.promise.resolved().asap(throwStubError);
+    });
+    runAndExpectFailure(assertIsStubError);
+  }
+
+  function testTrapsChainedUnhandledRejectionsWithinAFrame() {
+    var pair = callbackPair(null, assertIsStubError);
+    webdriver.promise.resolved().then(function() {
+      webdriver.promise.controlFlow().execute(goog.nullFunction).
+          then(throwStubError);
+    }).asap(pair.callback, pair.errback);
+
+    runAndExpectSuccess();
+    pair.assertErrback();
   }
 </script>
 </body>

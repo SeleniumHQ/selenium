@@ -1276,6 +1276,90 @@ function testConvertsRejectionValuesToErrors_deferredValues() {
       then(callbacks.callback, callbacks.errback);
   callbacks.assertErrback();
 }
+
+
+function testAsapCallbacks_primitiveValue() {
+  var pair = callbackPair(goog.partial(assertEquals, 23));
+  webdriver.promise.resolved(23).asap(pair.callback, pair.errback);
+  pair.assertCallback();
+}
+
+
+function testAsapCallback_promisedValue() {
+  var pair = callbackPair(goog.partial(assertEquals, 23));
+  var promise = webdriver.promise.defer();
+  promise.asap(pair.callback, pair.errback);
+  pair.assertNeither();
+  promise.resolve(23);
+  pair.assertCallback();
+}
+
+
+function testAsapErrbacks_primitiveValue() {
+  var pair = callbackPair(null, assertIsStubError);
+  webdriver.promise.rejected(STUB_ERROR).asap(pair.callback, pair.errback);
+  pair.assertErrback();
+}
+
+
+function testAsapErrbacks_promisedValue() {
+  var pair = callbackPair(null, assertIsStubError);
+  var promise = webdriver.promise.defer();
+  promise.asap(pair.callback, pair.errback);
+  pair.assertNeither();
+  promise.reject(STUB_ERROR);
+  pair.assertErrback();
+}
+
+
+function testFiresUncaughtExceptionIfAsapListenerDoesNotHaveAnErrback() {
+  var handler = callbackHelper(assertIsStubError);
+  webdriver.promise.rejected(STUB_ERROR).asap(goog.nullFunction);
+
+  // so tearDown() doesn't throw
+  app.reset();
+  app.on('uncaughtException', handler);
+  clock.tick();
+  handler.assertCalled();
+}
+
+
+function testFiresUncaughtExceptionIfAsapListenerThrows_callback() {
+  var handler = callbackHelper(assertIsStubError);
+  webdriver.promise.resolved().asap(throwStubError, fail);
+
+  // so tearDown() doesn't throw
+  app.reset();
+  app.on('uncaughtException', handler);
+  clock.tick();
+  handler.assertCalled();
+}
+
+
+function testFiresUncaughtExceptionIfAsapListenerThrows_errback() {
+  var handler = callbackHelper(assertIsStubError);
+  webdriver.promise.rejected().asap(fail, throwStubError);
+
+  // so tearDown() doesn't throw
+  app.reset();
+  app.on('uncaughtException', handler);
+  clock.tick();
+  handler.assertCalled();
+}
+
+
+function testFiresUncaughtExceptionIfAsapListenerReturnsRejectedPromise() {
+  var handler = callbackHelper(assertIsStubError);
+  webdriver.promise.resolved().asap(function() {
+    return webdriver.promise.rejected(STUB_ERROR);
+  });
+
+  // so tearDown() doesn't throw
+  app.reset();
+  app.on('uncaughtException', handler);
+  clock.tick();
+  handler.assertCalled();
+}
 </script>
 </body>
 </html>
