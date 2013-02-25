@@ -377,7 +377,6 @@ public class BeanToJsonConverterTest {
     assertEquals("foo", object.get("message"));
     assertEquals(17, object.get("timestamp"));
     assertEquals("OFF", object.get("level"));
-    
   }
 
   @Test
