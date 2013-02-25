@@ -227,7 +227,7 @@
     }
 
     function testZeroSizedDivIsShownIfDescendantHasSize() {
-      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
        return;
       }
       var element = goog.dom.createDom('div', {id:"ZeroSizedDiv", style: 'width:0;height:0'},
@@ -414,14 +414,6 @@
     function testNotFarShiftedChildOfAnElementWitOverflowHiddenIsVisible() {
       var child = findElement({id: "bug5140-3-child"});
       assertTrue(isShown(child));
-    }
-
-    function testZeroSizedDivIsNotShownIfDescendantHasEmptyText() {
-      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
-       return;
-      }
-      var element = findElement({id: 'bug5220-invisible'});
-      assertFalse(isShown(element));
     }
   </script>
 
@@ -615,7 +607,5 @@
 <div id='bug5140-1' style="overflow:hidden; height:0; width:0;"><div id='bug5140-1-child' style="height:25px; width:25px;">.</div></div>
 <div id='bug5140-2' style="overflow:hidden; height:50px; width:50px;"><div id='bug5140-2-child' style="height:25px; width:25px; margin:50px; background-color:red;">.</div></div>
 <div id='bug5140-3' style="overflow:hidden; height:50px; width:50px;"><div id='bug5140-3-child' style="height:25px; width:25px; margin:49px; background-color:red;">.</div></div>
-<div id='bug5220-invisible' style="height:0; width:0;"><a href="#">   
-   </a></div>
 </body>
 </html>

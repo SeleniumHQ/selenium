@@ -692,7 +692,6 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     // if they have a child element or text node with positive size.
     return goog.array.some(e.childNodes, function(n) {
       return (n.nodeType == goog.dom.NodeType.TEXT &&
-              bot.dom.trimExcludingNonBreakingSpaceCharacters_(n.nodeValue) != '' &&
               bot.dom.getEffectiveStyle(e, 'overflow') != 'hidden') ||
               (bot.dom.isElement(n) && positiveSize(n));
     });
