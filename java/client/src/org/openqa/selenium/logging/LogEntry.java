@@ -19,12 +19,8 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
-import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -32,8 +28,11 @@ import java.util.logging.Level;
  */
 public class LogEntry {
 
-  private static final SimpleDateFormat DATE_FORMAT =
-      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+  private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT =
+      new ThreadLocal<SimpleDateFormat>();
+  private static final String DATE_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ssZ";
+//  private static final SimpleDateFormat DATE_FORMAT =
+//      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
   private final Level level;
   private final long timestamp;
@@ -80,16 +79,17 @@ public class LogEntry {
   @Override
   public String toString() {
     return String.format("[%s] [%s] %s",
-                         DATE_FORMAT.format(new Date(timestamp)), level, message);
+        getDateFormat().format(new Date(timestamp)), level, message);
   }
 
-  @SuppressWarnings("unused")
-  public JSONObject toJson() {
-    Map<String, Object> map = new HashMap<String, Object>();
-    map.put("timestamp", timestamp);
-    map.put("level", level);
-    map.put("message", message);
-    return new JSONObject(map);
+  private SimpleDateFormat getDateFormat() {
+    SimpleDateFormat format = DATE_FORMAT.get();
+    if (format == null) {
+      format = new SimpleDateFormat(DATE_FORMAT_STRING);
+      DATE_FORMAT.set(format);
+    }
+
+    return format;
   }
 
 }
