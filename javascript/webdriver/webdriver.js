@@ -1437,7 +1437,7 @@ webdriver.WebElement = function(driver, id) {
 
   // This WebElement should not be resolved until its ID has been
   // fully resolved.
-  this.id_.asap(resolve, reject);
+  this.id_.then(resolve, reject);
 };
 goog.inherits(webdriver.WebElement, webdriver.promise.Deferred);
 
@@ -1919,7 +1919,7 @@ webdriver.Alert = function(driver, text) {
   this.text_ = webdriver.promise.when(text);
 
   // Make sure this instance is resolved when its displayed text is.
-  this.text_.asap(resolve, reject);
+  this.text_.then(resolve, reject);
 };
 goog.inherits(webdriver.Alert, webdriver.promise.Deferred);
 

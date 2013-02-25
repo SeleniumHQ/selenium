@@ -2113,19 +2113,12 @@ limitations under the License.
     runAndExpectFailure(assertIsStubError);
   }
 
-  function testPropagatesUnhandledAsapListenerError() {
-    webdriver.promise.resolved().then(function() {
-      webdriver.promise.resolved().asap(throwStubError);
-    });
-    runAndExpectFailure(assertIsStubError);
-  }
-
   function testTrapsChainedUnhandledRejectionsWithinAFrame() {
     var pair = callbackPair(null, assertIsStubError);
     webdriver.promise.resolved().then(function() {
       webdriver.promise.controlFlow().execute(goog.nullFunction).
           then(throwStubError);
-    }).asap(pair.callback, pair.errback);
+    }).then(pair.callback, pair.errback);
 
     runAndExpectSuccess();
     pair.assertErrback();

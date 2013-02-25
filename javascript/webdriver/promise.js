@@ -112,23 +112,6 @@ webdriver.promise.Promise.prototype.then = function(
 
 
 /**
- * Registers listeners for when this instance is resolved. This function must
- * be overridden by subtypes. Unlike {@link #then()}, this function <em>will
- * not</em> allocate a new promise to represent the listener's result.
- * @param {Function=} opt_callback The function to call if this promise is
- *     successfully resolved. The function should expect a single argument: the
- *     promise's resolved value.
- * @param {Function=} opt_errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the
- *     {@code Error} that caused the promise to be rejected.
- */
-webdriver.promise.Promise.prototype.asap = function(
-    opt_callback, opt_errback) {
-  throw TypeError('Unimplemented function: "asap"');
-};
-
-
-/**
  * Registers a function to be invoked when this promise is successfully
  * resolved. This function is provided for backwards compatibility with the
  * Dojo Deferred API.
@@ -352,53 +335,6 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   var promise = new webdriver.promise.Promise();
 
   /**
-   * Registers a pair of callbacks to be notified when this instance has been
-   * resolved.
-   * @param {Function=} opt_callback The callback.
-   * @param {Function=} opt_errback The errback.
-   * @param {webdriver.promise.Deferred=} opt_deferred A new deferred object
-   *     representing the listener result. If omitted, any failures will be
-   *     treated as an unhandled promise rejection and will propagate to the
-   *     parent ControlFlow's current frame.
-   */
-   function listen(opt_callback, opt_errback, opt_deferred) {
-    if (!opt_callback && !opt_errback) {
-      return;  // Nothing to do.
-    }
-
-    // The moment a listener is registered, we consider this deferred to be
-    // handled; the callback must handle any rejection errors.
-    handled = true;
-    if (pendingRejectionKey) {
-      flow.pendingRejections_ -= 1;
-      flow.timer.clearTimeout(pendingRejectionKey);
-    }
-
-    var listener = {
-      callback: opt_callback,
-      errback: opt_errback,
-      resolve: opt_deferred ? opt_deferred.resolve : goog.nullFunction,
-      reject: opt_deferred ? opt_deferred.reject : propagateError
-    };
-
-    if (state == webdriver.promise.Deferred.State_.PENDING) {
-      listeners.push(listener);
-    } else {
-      notify(listener);
-    }
-  }
-
-  /**
-   * Registers a callback on this Deferred.
-   * @param {Function=} opt_callback The callback.
-   * @param {Function=} opt_errback The errback.
-   * @see webdriver.promise.Promise#then
-   */
-  function asap(opt_callback, opt_errback) {
-    listen(opt_callback, opt_errback);
-  }
-
-  /**
    * Registers a callback on this Deferred.
    * @param {Function=} opt_callback The callback.
    * @param {Function=} opt_errback The errback.
@@ -412,9 +348,29 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
       return promise;
     }
 
-    var deferredResult = new webdriver.promise.Deferred(cancel, flow);
-    listen(opt_callback, opt_errback, deferredResult);
-    return deferredResult.promise;
+    // The moment a listener is registered, we consider this deferred to be
+    // handled; the callback must handle any rejection errors.
+    handled = true;
+    if (pendingRejectionKey) {
+      flow.pendingRejections_ -= 1;
+      flow.timer.clearTimeout(pendingRejectionKey);
+    }
+
+    var deferred = new webdriver.promise.Deferred(cancel, flow);
+    var listener = {
+      callback: opt_callback,
+      errback: opt_errback,
+      resolve: deferred.resolve,
+      reject: deferred.reject
+    };
+
+    if (state == webdriver.promise.Deferred.State_.PENDING) {
+      listeners.push(listener);
+    } else {
+      notify(listener);
+    }
+
+    return deferred.promise;
   }
 
   var self = this;
@@ -428,7 +384,7 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   function resolve(opt_value) {
     if (webdriver.promise.isPromise(opt_value) && opt_value !== self) {
       if (opt_value instanceof webdriver.promise.Deferred) {
-        opt_value.asap(
+        opt_value.then(
             goog.partial(notifyAll, webdriver.promise.Deferred.State_.RESOLVED),
             goog.partial(notifyAll,
                 webdriver.promise.Deferred.State_.REJECTED));
@@ -449,7 +405,7 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   function reject(opt_error) {
     if (webdriver.promise.isPromise(opt_error) && opt_error !== self) {
       if (opt_error instanceof webdriver.promise.Deferred) {
-        opt_error.asap(
+        opt_error.then(
             goog.partial(notifyAll, webdriver.promise.Deferred.State_.REJECTED),
             goog.partial(notifyAll,
                 webdriver.promise.Deferred.State_.REJECTED));
@@ -487,7 +443,6 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   }
 
   this.promise = promise;
-  this.promise.asap = this.asap = asap;
   this.promise.then = this.then = then;
   this.promise.cancel = this.cancel = cancel;
   this.promise.isPending = this.isPending = isPending;
@@ -496,7 +451,6 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
 
   // Export symbols necessary for the contract on this object to work in
   // compiled mode.
-  goog.exportProperty(this, 'asap', this.asap);
   goog.exportProperty(this, 'then', this.then);
   goog.exportProperty(this, 'cancel', cancel);
   goog.exportProperty(this, 'resolve', resolve);
@@ -692,10 +646,7 @@ webdriver.promise.when = function(value, opt_callback, opt_errback) {
  *     rejected.
  */
 webdriver.promise.asap = function(value, callback, opt_errback) {
-  if (value instanceof webdriver.promise.Promise) {
-    value.asap(callback, opt_errback);
-
-  } else if (webdriver.promise.isPromise(value)) {
+  if (webdriver.promise.isPromise(value)) {
     value.then(callback, opt_errback);
 
   // Maybe a Dojo-like deferred object?
@@ -801,7 +752,7 @@ webdriver.promise.fullyResolveKeys_ = function(obj) {
       return;
     }
 
-    webdriver.promise.fullyResolved(partialValue).asap(
+    webdriver.promise.fullyResolved(partialValue).then(
         function(resolvedValue) {
           if (deferred.isPending()) {
             obj[key] = resolvedValue;
@@ -1561,7 +1512,7 @@ webdriver.promise.ControlFlow.prototype.runInNewFrame_ = function(
       return;
     }
 
-    newFrame.asap(function() {
+    newFrame.then(function() {
       webdriver.promise.asap(result, callback, errback);
     }, function(e) {
       if (result instanceof webdriver.promise.Promise && result.isPending()) {
