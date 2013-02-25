@@ -15,7 +15,7 @@ visualc_library(name = "firefoxprevious_esr_dll",
 visualc_library(name = "firefoxlatest_esr_dll",
   platform = "Win32",
   project = "webdriver-firefox/webdriver-firefox-esr-latest.vcxproj",
-  file_deps = "third_party/gecko-10/win32",
+  file_deps = "third_party/gecko-17/win32",
   out = "Win32/Release/webdriver-firefox-esr-latest.dll"
 )
 
