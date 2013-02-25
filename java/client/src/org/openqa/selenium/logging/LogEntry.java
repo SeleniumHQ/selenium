@@ -21,8 +21,8 @@ package org.openqa.selenium.logging;
 
 import org.json.JSONObject;
 
-import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
