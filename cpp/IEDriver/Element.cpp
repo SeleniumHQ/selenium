@@ -704,15 +704,17 @@ LocationInfo Element::GetClickPoint(const LocationInfo location) {
 bool Element::IsLocationInViewPort(const LocationInfo location, const bool document_contains_frames) {
   LOG(TRACE) << "Entering Element::IsLocationInViewPort";
 
-  PWINDOWINFO window_info = NULL;
-  BOOL get_window_info_result = ::GetWindowInfo(this->containing_window_handle_, window_info);
-  if (!get_window_info_result || window_info == NULL) {
-    LOG(WARN) << "Cannot determine size of window, call to GetWindowInfo API failed";
+  WINDOWINFO window_info;
+  window_info.cbSize = sizeof(WINDOWINFO);
+  BOOL get_window_info_result = ::GetWindowInfo(this->containing_window_handle_, &window_info);
+  if (get_window_info_result == FALSE) {
+    DWORD error_code = ::GetLastError();
+    LOG(WARN) << "Cannot determine size of window, call to GetWindowInfo API failed with error code " << error_code;
     return false;
   }
 
-  long window_width = window_info->rcClient.right - window_info->rcClient.left;
-  long window_height = window_info->rcClient.bottom - window_info->rcClient.top;
+  long window_width = window_info.rcClient.right - window_info.rcClient.left;
+  long window_height = window_info.rcClient.bottom - window_info.rcClient.top;
 
   if (!document_contains_frames) {
     // ASSUMPTION! IE **always** draws a vertical scroll bar, even if it's not
