@@ -744,7 +744,20 @@ webdriver.promise.fullyResolveKeys_ = function(obj) {
   var numResolved = 0;
   var deferred = new webdriver.promise.Deferred();
 
-  var forEachKey = isArray ? goog.array.forEach : goog.object.forEach;
+  // In pre-IE9, goog.array.forEach will not iterate properly over arrays
+  // containing undefined values because "index in array" returns false
+  // when array[index] === undefined (even for x = [undefined, 1]). To get
+  // around this, we need to use our own forEach implementation.
+  // DO NOT REMOVE THIS UNTIL WE NO LONGER SUPPORT IE8. This cannot be
+  // reproduced in IE9 by changing the browser/document modes, it requires an
+  // actual pre-IE9 browser.  Yay, IE!
+  var forEachKey = !isArray ? goog.object.forEach : function(arr, fn) {
+    var n = arr.length;
+    for (var i = 0; i < n; ++i) {
+      fn.call(null, arr[i], i, arr);
+    }
+  };
+
   forEachKey(obj, function(partialValue, key) {
     var type = goog.typeOf(partialValue);
     if (type != 'array' && type != 'object') {
