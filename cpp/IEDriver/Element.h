@@ -14,6 +14,7 @@
 #ifndef WEBDRIVER_IE_ELEMENT_H_
 #define WEBDRIVER_IE_ELEMENT_H_
 
+#include <memory>
 #include <string>
 #include <vector>
 #include "json.h"

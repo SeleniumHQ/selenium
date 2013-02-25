@@ -15,6 +15,7 @@
 #define WEBDRIVER_IE_COMMANDHANDLER_H_
 
 #include <map>
+#include <memory>
 #include <string>
 #include "json.h"
 #include "command_handler.h"

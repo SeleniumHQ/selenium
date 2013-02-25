@@ -308,7 +308,9 @@ unsigned int WINAPI Browser::GoBackThreadProc(LPVOID param) {
   hr = ::CoGetInterfaceAndReleaseStream(message_payload,
                                         IID_IWebBrowser2,
                                         reinterpret_cast<void**>(&browser));
-  hr = browser->GoBack();
+  if (browser != NULL) {
+    hr = browser->GoBack();
+  }
   return 0;
 }
 
@@ -338,7 +340,9 @@ unsigned int WINAPI Browser::GoForwardThreadProc(LPVOID param) {
   hr = ::CoGetInterfaceAndReleaseStream(message_payload,
                                         IID_IWebBrowser2,
                                         reinterpret_cast<void**>(&browser));
-  hr = browser->GoForward();
+  if (browser != NULL) {
+    hr = browser->GoForward();
+  }
   return 0;
 }
 

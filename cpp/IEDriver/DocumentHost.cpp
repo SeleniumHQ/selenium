@@ -26,7 +26,17 @@ DocumentHost::DocumentHost(HWND hwnd, HWND executor_handle) {
   UUID guid;
   RPC_WSTR guid_string = NULL;
   RPC_STATUS status = ::UuidCreate(&guid);
+  if (status != RPC_S_OK) {
+    // If we encounter an error, not bloody much we can do about it.
+    // Just log it and continue.
+    LOG(WARN) << "UuidCreate returned a status other then RPC_S_OK: " << status;
+  }
   status = ::UuidToString(&guid, &guid_string);
+  if (status != RPC_S_OK) {
+    // If we encounter an error, not bloody much we can do about it.
+    // Just log it and continue.
+    LOG(WARN) << "UuidToString returned a status other then RPC_S_OK: " << status;
+  }
 
   // RPC_WSTR is currently typedef'd in RpcDce.h (pulled in by rpc.h)
   // as unsigned short*. It needs to be typedef'd as wchar_t* 

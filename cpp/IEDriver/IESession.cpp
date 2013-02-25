@@ -66,17 +66,19 @@ void IESession::Initialize(void* init_params) {
     ::CloseHandle(thread_handle);
   }
 
-  int* int_param = reinterpret_cast<int*>(init_params);
-  int port = *int_param;
-  ::SendMessage(executor_window_handle,
-                WD_INIT,
-                static_cast<WPARAM>(port),
-                NULL);
+  std::string session_id = "";
+  if (executor_window_handle != NULL) {
+    int* int_param = reinterpret_cast<int*>(init_params);
+    int port = *int_param;
+    ::SendMessage(executor_window_handle,
+                  WD_INIT,
+                  static_cast<WPARAM>(port),
+                  NULL);
 
-  vector<TCHAR> window_text_buffer(37);
-  ::GetWindowText(executor_window_handle, &window_text_buffer[0], 37);
-  std::string session_id = CW2A(&window_text_buffer[0], CP_UTF8);
-
+    vector<TCHAR> window_text_buffer(37);
+    ::GetWindowText(executor_window_handle, &window_text_buffer[0], 37);
+    session_id = CW2A(&window_text_buffer[0], CP_UTF8);
+  }
   if (mutex != NULL) {
     LOG(DEBUG) << "Releasing session initialization mutex";
     ::ReleaseMutex(mutex);

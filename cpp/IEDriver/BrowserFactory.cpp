@@ -79,14 +79,14 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
       if (FAILED(launch_result)) {
         size_t launch_msg_count = _scprintf(IELAUNCHURL_ERROR_MESSAGE,
                                             launch_result,
-                                            initial_url);
+                                            initial_url.c_str());
         vector<char> launch_result_msg(launch_msg_count + 1);
         _snprintf_s(&launch_result_msg[0],
                     sizeof(launch_result_msg),
                     launch_msg_count + 1,
                     IELAUNCHURL_ERROR_MESSAGE,
                     launch_result,
-                    initial_url);
+                    initial_url.c_str());
         launch_error = &launch_result_msg[0];
         *error_message = launch_error;
       }
@@ -364,8 +364,9 @@ IWebBrowser2* BrowserFactory::CreateBrowser() {
                      context,
                      IID_IWebBrowser2,
                      reinterpret_cast<void**>(&browser));
-  browser->put_Visible(VARIANT_TRUE);
-
+  if (browser != NULL) {
+    browser->put_Visible(VARIANT_TRUE);
+  }
   if (this->windows_major_version_ >= 6) {
     // Only Windows Vista and above have mandatory integrity levels.
     this->ResetThreadIntegrityLevel();
@@ -408,7 +409,17 @@ void BrowserFactory::SetThreadIntegrityLevel() {
 
   HANDLE thread_handle = ::GetCurrentThread();
   result = ::SetThreadToken(&thread_handle, thread_token);
+  if (!result) {
+    // If we encounter an error, not bloody much we can do about it.
+    // Just log it and continue.
+    LOG(WARN) << "SetThreadToken returned FALSE";
+  }
   result = ::ImpersonateLoggedOnUser(thread_token);
+  if (!result) {
+    // If we encounter an error, not bloody much we can do about it.
+    // Just log it and continue.
+    LOG(WARN) << "ImpersonateLoggedOnUser returned FALSE";
+  }
 
   result = ::CloseHandle(thread_token);
   result = ::CloseHandle(process_token);
@@ -622,7 +633,7 @@ void BrowserFactory::GetIEVersion() {
     WORD code_page;
     } *lpTranslate;
 
-  DWORD dummy;
+  DWORD dummy = 0;
   DWORD length = ::GetFileVersionInfoSize(this->ie_executable_location_.c_str(),
                                           &dummy);
   if (length == 0) {
@@ -636,7 +647,7 @@ void BrowserFactory::GetIEVersion() {
   }
   std::vector<BYTE> version_buffer(length);
   ::GetFileVersionInfo(this->ie_executable_location_.c_str(),
-                       dummy,
+                       0, /* ignored */
                        length,
                        &version_buffer[0]);
 

@@ -101,7 +101,10 @@ class SendKeysCommandHandler : public IECommandHandler {
         CComBSTR element_type;
         if (input) {
           input->get_type(&element_type);
-          element_type.ToLower();
+          HRESULT hr = element_type.ToLower();
+          if (FAILED(hr)) {
+            LOGHR(WARN, hr) << "Failed converting type attribute of <input> element to lowercase using ToLower() method of BSTR";
+          }
         }
         bool is_file_element = (file != NULL) ||
                                (input != NULL && element_type == L"file");

@@ -38,7 +38,17 @@ Element::Element(IHTMLElement* element, HWND containing_window_handle) {
   UUID guid;
   RPC_WSTR guid_string = NULL;
   RPC_STATUS status = ::UuidCreate(&guid);
+  if (status != RPC_S_OK) {
+    // If we encounter an error, not bloody much we can do about it.
+    // Just log it and continue.
+    LOG(WARN) << "UuidCreate returned a status other then RPC_S_OK: " << status;
+  }
   status = ::UuidToString(&guid, &guid_string);
+  if (status != RPC_S_OK) {
+    // If we encounter an error, not bloody much we can do about it.
+    // Just log it and continue.
+    LOG(WARN) << "UuidToString returned a status other then RPC_S_OK: " << status;
+  }
 
   // RPC_WSTR is currently typedef'd in RpcDce.h (pulled in by rpc.h)
   // as unsigned short*. It needs to be typedef'd as wchar_t* 
@@ -97,7 +107,10 @@ std::string Element::GetTagName() {
 
   CComBSTR tag_name_bstr;
   this->element_->get_tagName(&tag_name_bstr);
-  tag_name_bstr.ToLower();
+  HRESULT hr = tag_name_bstr.ToLower();
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Failed converting BSTR to lower-case with .ToLower() method";
+  }
   std::string tag_name = CW2A(tag_name_bstr, CP_UTF8);
   return tag_name;
 }
@@ -592,8 +605,9 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
           CComQIPtr<IHTMLDocument3> doc(parent_doc);
           if (doc) {
             LOG(DEBUG) << "Looking for <iframe> elements in parent document.";
+            BSTR iframe_tag_name = L"iframe";
             CComPtr<IHTMLElementCollection> iframe_collection;
-            hr = doc->getElementsByTagName(L"iframe", &iframe_collection);
+            hr = doc->getElementsByTagName(iframe_tag_name, &iframe_collection);
             hr = iframe_collection->get_length(&collection_count);
             if (collection_count != 0) {
               if (collection_count > index.lVal) {
@@ -603,8 +617,9 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
               }
             } else {
               LOG(DEBUG) << "No <iframe> elements, looking for <frame> elements in parent document.";
+              BSTR frame_tag_name = L"iframe";
               CComPtr<IHTMLElementCollection> frame_collection;
-              hr = doc->getElementsByTagName(L"frame", &frame_collection);
+              hr = doc->getElementsByTagName(frame_tag_name, &frame_collection);
               hr = frame_collection->get_length(&collection_count);
               if (collection_count > index.lVal) {
                 LOG(DEBUG) << "Found <frame> elements in parent document, retrieving element" << index.lVal << ".";
@@ -689,14 +704,15 @@ LocationInfo Element::GetClickPoint(const LocationInfo location) {
 bool Element::IsLocationInViewPort(const LocationInfo location, const bool document_contains_frames) {
   LOG(TRACE) << "Entering Element::IsLocationInViewPort";
 
-  WINDOWINFO window_info;
-  if (!::GetWindowInfo(this->containing_window_handle_, &window_info)) {
+  PWINDOWINFO window_info = NULL;
+  BOOL get_window_info_result = ::GetWindowInfo(this->containing_window_handle_, window_info);
+  if (!get_window_info_result || window_info == NULL) {
     LOG(WARN) << "Cannot determine size of window, call to GetWindowInfo API failed";
     return false;
   }
 
-  long window_width = window_info.rcClient.right - window_info.rcClient.left;
-  long window_height = window_info.rcClient.bottom - window_info.rcClient.top;
+  long window_width = window_info->rcClient.right - window_info->rcClient.left;
+  long window_height = window_info->rcClient.bottom - window_info->rcClient.top;
 
   if (!document_contains_frames) {
     // ASSUMPTION! IE **always** draws a vertical scroll bar, even if it's not

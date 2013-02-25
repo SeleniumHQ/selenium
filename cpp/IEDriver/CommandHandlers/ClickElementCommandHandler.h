@@ -182,8 +182,8 @@ class ClickElementCommandHandler : public IECommandHandler {
 
     LOG(DEBUG) << "Unmarshaling document from stream";
     CComPtr<IHTMLDocument2> doc;
-    LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
-    hr = ::CoGetInterfaceAndReleaseStream(message_payload,
+    LPSTREAM initializer_payload = reinterpret_cast<LPSTREAM>(param);
+    hr = ::CoGetInterfaceAndReleaseStream(initializer_payload,
                                           IID_IHTMLDocument2,
                                           reinterpret_cast<void**>(&doc));
 
@@ -227,8 +227,8 @@ class ClickElementCommandHandler : public IECommandHandler {
 
     LOG(DEBUG) << "Unmarshaling document from stream";
     CComPtr<IHTMLDocument2> doc;
-    LPSTREAM message_payload = reinterpret_cast<LPSTREAM>(param);
-    hr = ::CoGetInterfaceAndReleaseStream(message_payload,
+    LPSTREAM initial_payload = reinterpret_cast<LPSTREAM>(param);
+    hr = ::CoGetInterfaceAndReleaseStream(initial_payload,
                                           IID_IHTMLDocument2,
                                           reinterpret_cast<void**>(&doc));
 
