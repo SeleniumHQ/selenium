@@ -49,6 +49,11 @@ limitations under the License.
     assertEquals(
         'html > body:nth-child(2) > div:nth-child(4) > form > input', css);
     assertEquals(text, document.querySelector(css));
+
+    var namespaced = document.getElementById('namespaced');
+    css = safaridriver.inject.Encoder.getElementCssSelector_(namespaced);
+    assertEquals('html > body:nth-child(2) > foo\\:bar:nth-child(5)', css);
+    assertEquals(namespaced, document.querySelector(css));
   }
 </script>
 <body>
@@ -67,4 +72,5 @@ limitations under the License.
     <input id="text_field" type="text">
   </form>
 </div>
+<foo:bar id="namespaced">a</foo:bar>
 </body>

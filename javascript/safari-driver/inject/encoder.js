@@ -84,7 +84,7 @@ safaridriver.inject.Encoder.getElementCssSelector_ = function(element) {
         index++;
       }
     }
-    var tmp = current.tagName.toLowerCase();
+    var tmp = current.tagName.toLowerCase().replace(/:/g, '\\:');
     if (index > 1) {
       tmp += ':nth-child(' + index + ')';
     }
