@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <title>Testing Javascript</title>
@@ -6,15 +7,15 @@
         var seen = {};
 
         function updateContent(input) {
-            document.getElementById('result').innerHTML = "<p>" + input.value + "</p>";
+            document.getElementById('resultParagraph').innerHTML = input.value;
         }
 
         function displayMessage(message) {
-            document.getElementById('result').innerHTML = "<p>" + message + "</p>";
+            document.getElementById('resultParagraph').innerHTML = message;
         }
 
         function appendMessage(message) {
-            document.getElementById('result').innerHTML += message + " ";
+            document.getElementById('resultParagraph').innerHTML += message + " ";
         }
 
         function register(message) {
@@ -81,7 +82,7 @@
 
 <div id="resultContainer" height="30">&nbsp;
   <div id="result" style="width:300;height:60">
-    <p>&nbsp;</p>
+    <p id="resultParagraph">&nbsp;</p>
   </div>
 
 </div>
