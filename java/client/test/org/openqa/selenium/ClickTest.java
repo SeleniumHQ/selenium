@@ -35,7 +35,7 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -268,16 +268,19 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME, FIREFOX, OPERA, OPERA_MOBILE, ANDROID, IPHONE, SELENESE}, reason
-      = "Chrome: element is no clickable, Opera: failed, "
-      + "Firefox: failed with native events, other: not tested")
+  @Ignore(value = {CHROME, IE, OPERA, OPERA_MOBILE, ANDROID, IPHONE, SELENESE}, reason
+      = "Chrome: element is no clickable, Opera, IE: failed, others: not tested")
   public void testCanClickAnImageMapArea() {
     driver.get(appServer.whereIs("click_tests/google_map.html"));
-    driver.findElements(By.tagName("area")).get(0).click();
+    driver.findElement(By.id("rectG")).click();
     waitFor(WaitingConditions.pageTitleToBe(driver, "Target Page 1"));
 
     driver.get(appServer.whereIs("click_tests/google_map.html"));
-    driver.findElements(By.tagName("area")).get(1).click();
+    driver.findElement(By.id("circleO")).click();
     waitFor(WaitingConditions.pageTitleToBe(driver, "Target Page 2"));
+
+    driver.get(appServer.whereIs("click_tests/google_map.html"));
+    driver.findElement(By.id("polyLE")).click();
+    waitFor(WaitingConditions.pageTitleToBe(driver, "Target Page 3"));
   }
 }

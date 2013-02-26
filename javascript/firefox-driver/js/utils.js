@@ -716,6 +716,53 @@ Utils.getLocation = function(element, opt_onlyFirstRect) {
 
     // Firefox 3.5
     if (clientRect['width']) {
+      if ('area' == element.tagName.toLowerCase()) {
+        // TODO: implement coordinates specified in percents
+        var coords = element.coords.split(',');
+        if (element.shape == 'rect') {
+          var leftX = Number(coords[0]);
+          var topY = Number(coords[1]);
+          var rightX = Number(coords[2]);
+          var bottomY = Number(coords[3]);
+          return {
+            x: clientRect.left + leftX,
+            y: clientRect.top + topY,
+            width: rightX - leftX,
+            height: bottomY - topY
+          };
+        } else if (element.shape == 'circle') {
+          var centerX = Number(coords[0]);
+          var centerY = Number(coords[1]);
+          var radius = Number(coords[2]);
+          return {
+            x: clientRect.left + centerX - radius,
+            y: clientRect.top + centerY - radius,
+            width: 2*radius,
+            height: 2*radius
+          };
+        } else if (element.shape == 'poly') {
+          var minX = Number(coords[0]);
+          var minY = Number(coords[1]);
+          var maxX = minX;
+          var maxY = minY;
+          for (i = 0; i < coords.length / 2; i++) {
+            var xi = Number(coords[i*2]);
+            var yi = Number(coords[i*2 + 1]);
+            minX = Math.min(minX, xi);
+            minY = Math.min(minY, yi);
+            maxX = Math.max(maxX, xi);
+            maxY = Math.max(maxY, yi);
+          }
+
+          return {
+            x: clientRect.left + minX,
+            y: clientRect.top + minY,
+            width: maxX - minX,
+            height: maxY - minY
+          };
+        }
+      }
+      
       return {
         x: clientRect.left,
         y: clientRect.top,
