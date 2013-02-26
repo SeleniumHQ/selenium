@@ -592,7 +592,39 @@ end
 file "cpp/iedriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
   cp "build/third_party/js/sizzle/sizzle.h", "cpp/iedriver/sizzle.h"
 end
+
 task :sizzle_header => [ "cpp/iedriver/sizzle.h" ]
+
+task :ios_driver => [
+  "//javascript/atoms:getVisibleText:ios",
+  "//javascript/atoms:isShown:ios",
+  "//javascript/atoms:click:ios",
+  "//javascript/atoms:back:ios",
+  "//javascript/atoms:forward:ios",
+  "//javascript/atoms:submit:ios",
+  "//javascript/atoms:refresh:ios",
+  "//javascript/atoms:xpath:ios",
+  "//javascript/atoms:xpaths:ios",
+  "//javascript/atoms:type:ios",
+  "//javascript/atoms:getAttribute:ios",
+  "//javascript/atoms:clear:ios",
+  "//javascript/atoms:isSelected:ios",
+  "//javascript/atoms:isEnabled:ios",
+  "//javascript/atoms:stringify:ios",
+  "//javascript/atoms:linkText:ios",
+  "//javascript/atoms:linkTexts:ios",
+  "//javascript/atoms:partialLinkText:ios",
+  "//javascript/atoms:partialLinkTexts:ios",
+  "//javascript/atoms:getLocationInView:ios",
+  "//javascript/atoms:getInteractableSize:ios",
+  "//javascript/atoms:scrollIntoView:ios",
+  "//javascript/atoms:getPageOffset:ios",
+  "//javascript/atoms:getFramedPageOffset:ios",
+  "//javascript/atoms:getPosition:ios",
+  "//javascript/atoms:getViewPortSize:ios",
+  "//javascript/atoms:getEffectiveStyle:ios",
+  "//javascript/atoms:setCursorAtTheEnd:ios"
+]
 
 file "build/javascript/deps.js" => FileList[
     "third_party/closure/goog/**/*.js",
