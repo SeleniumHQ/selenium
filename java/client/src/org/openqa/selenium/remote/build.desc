@@ -1,4 +1,12 @@
 
+java_library(name = "api",
+  srcs = [
+    "Command.java",
+    "CommandExecutor.java",
+    "Response.java",
+    "SessionId.java",
+  ])
+
 java_library(name = "base",
   srcs = [
     "CapabilityType.java",
@@ -14,22 +22,19 @@ java_library(name = "base",
 java_library(name = "common",
   srcs = [
     "BeanToJsonConverter.java",
-    "Command.java",
     "DriverCommand.java",
     "ErrorCodes.java",
     "ErrorHandler.java",
     "JsonException.java",
     "JsonToBeanConverter.java",
     "PropertyMunger.java",
-    "Response.java",
     "ScreenshotException.java",
-    "SessionId.java",
     "SessionNotFoundException.java",
     "SimplePropertyDescriptor.java",
   ],
   deps = [
+    ":api",
     ":base",
-
     "//java/client/src/org/openqa/selenium/interactions",
     "//java/client/src/org/openqa/selenium/browserlaunchers:proxies",
     "//third_party/java/guava-libraries",
@@ -45,7 +50,6 @@ java_library(name = "remote",
     "AddTakesScreenshot.java",
     "Augmenter.java",
     "AugmenterProvider.java",
-    "CommandExecutor.java",
     "CoordinatesUtils.java",
     "ExecuteMethod.java",
     "FileDetector.java",
