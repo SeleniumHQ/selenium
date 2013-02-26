@@ -16,8 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,6 +49,6 @@ public class Command {
 
   @Override
   public String toString() {
-    return "[" + sessionId + ", " + name + " " + new JSONObject(parameters).toString() + "]";
+    return "[" + sessionId + ", " + name + " " + parameters + "]";
   }
 }
