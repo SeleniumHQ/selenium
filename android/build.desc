@@ -12,6 +12,7 @@ java_library(name = "server",
   deps = [
     "//java/client/src/org/openqa/selenium/android:android_library",
     "//java/client/src/org/openqa/selenium/browserlaunchers:proxies",
+    "//java/client/src/org/openqa/selenium/remote:api",
     "//java/client/src/org/openqa/selenium/remote:base",
     "//java/client/src/org/openqa/selenium/remote:common",
     "//java/client/src/org/openqa/selenium/remote:remote",
