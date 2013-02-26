@@ -51,6 +51,11 @@ public class LogLevelMapping {
   }
   
   public static Level toLevel(String logLevelName) {
+    if (logLevelName == null || "".equals(logLevelName)) {
+      // Default the log level to info.
+      return Level.INFO;
+    }
+
     if (logLevelName.equals(DEBUG)) {
       return Level.FINE;
     }
