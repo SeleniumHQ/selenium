@@ -11,7 +11,7 @@ public class CommandInfo {
   private final String url;
   private final HttpVerb verb;
 
-  CommandInfo(String url, HttpVerb verb) {
+  public CommandInfo(String url, HttpVerb verb) {
     this.url = url;
     this.verb = verb;
   }
