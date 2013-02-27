@@ -31,10 +31,14 @@ fxdriver.screenshot.grab = function(window) {
     canvas.style.display = 'none';
     documentElement.appendChild(canvas);
   }
-  var width =
-      Math.max(documentElement.scrollWidth, document.body.scrollWidth);
-  var height =
-      Math.max(documentElement.scrollHeight, document.body.scrollHeight);
+  var width = documentElement.scrollWidth;
+  if (document.body && document.body.scrollWidth > width) {
+    width = document.body.scrollWidth;
+  }
+  var height = documentElement.scrollHeight;
+  if (document.body && document.body.scrollHeight > height) {
+    height = document.body.scrollHeight;
+  }
   canvas.width = width;
   canvas.height = height;
   var context = canvas.getContext('2d');
