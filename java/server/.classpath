@@ -26,6 +26,6 @@
 	<classpathentry kind="lib" path="/third-party/java/bouncycastle/bcpkix-jdk15on-1.48.jar"  sourcepath="/third-party/java/bouncycastle/bcpkix-jdk15on-1.48-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.14.jar" sourcepath="/third-party/java/webbit/webbit-0.4.14-src.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/netty/netty-3.5.7.Final.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-14.0-rc1.jar" sourcepath="/third-party/java/guava-libraries/guava-14.0-rc1-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-14.0.jar" sourcepath="/third-party/java/guava-libraries/guava-14.0-sources.jar"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
