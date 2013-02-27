@@ -62,14 +62,12 @@ public class RemoteLogs implements Logs {
   }
 
   private LogEntries getRemoteEntries(String logType) {
-    System.out.println("Getting log " + logType);
     Object raw = executeMethod.execute(DriverCommand.GET_LOG, ImmutableMap.of(TYPE_KEY, logType));
     @SuppressWarnings("unchecked")
     List<Map<String, Object>> rawList = (List<Map<String, Object>>) raw;
     List<LogEntry> remoteEntries = Lists.newArrayListWithCapacity(rawList.size());
 
     for (Map<String, Object> obj : rawList) {
-      System.out.println(obj);
       remoteEntries.add(new LogEntry(LogLevelMapping.toLevel((String)obj.get(LEVEL)),
           (Long) obj.get(TIMESTAMP),
           (String) obj.get(MESSAGE)));

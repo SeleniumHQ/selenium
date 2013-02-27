@@ -21,7 +21,11 @@ package org.openqa.selenium.logging;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
+
+import org.json.JSONObject;
 
 /**
  * Represents a single log statement.
@@ -90,6 +94,14 @@ public class LogEntry {
     }
 
     return format;
+  }
+  
+  public JSONObject toJson() {
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("timestamp", timestamp);
+    map.put("level", level);
+    map.put("message", message);
+    return new JSONObject(map);
   }
 
 }
