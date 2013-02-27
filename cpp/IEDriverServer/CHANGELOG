@@ -9,6 +9,21 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.30.2.3
+=========
+ * Introduced "browserAttachTimeout" capability. This allows the user to set a
+   capability to control how long the IE driver will attempt to locate an IE
+   browser window belonging to the iexplore.exe process launched by the driver.
+   This is to overcome the bug reported by some users that the IELaunchURL
+   Windows API reports the incorrect process ID for the launched iexplore.exe
+   process. In this case, there is nothing the IE driver can do about the
+   problem as the bug is inside IE itself. However, this will allow a user
+   to exit the offending situation early, and attempt to recover. The 
+   capability expects an integer value, representing the number of milliseconds
+   the driver will contininue to look for the newly-launched IE window. Setting
+   the capability to 0 (which is its default value) will cause the IE driver to
+   wait indefinitely. Fixes issue #4541.
+
 v2.30.2.2
 =========
  * Fixed issues found via static code analysis.

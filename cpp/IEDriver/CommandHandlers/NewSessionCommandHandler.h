@@ -28,6 +28,7 @@
 #define ENABLE_PERSISTENT_HOVER_CAPABILITY "enablePersistentHover"
 #define ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY "enableElementCacheCleanup"
 #define REQUIRE_WINDOW_FOCUS_CAPABILITY "requireWindowFocus"
+#define BROWSER_ATTACH_TIMEOUT_CAPABILITY "browserAttachTimeout"
 
 namespace webdriver {
 
@@ -53,6 +54,8 @@ class NewSessionCommandHandler : public IECommandHandler {
       mutable_executor.set_ignore_zoom_setting(ignore_zoom_setting.asBool());
       Json::Value enable_native_events = it->second.get(NATIVE_EVENTS_CAPABILITY, true);
       mutable_executor.input_manager()->set_enable_native_events(enable_native_events.asBool());
+      Json::Value browser_attach_timeout = it->second.get(BROWSER_ATTACH_TIMEOUT_CAPABILITY, 0);
+      mutable_executor.set_browser_attach_timeout(browser_attach_timeout.asInt());
       Json::Value initial_url = it->second.get(INITIAL_BROWSER_URL_CAPABILITY, "");
       mutable_executor.set_initial_browser_url(initial_url.asString());
       Json::Value scroll_behavior = it->second.get(ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, 0);

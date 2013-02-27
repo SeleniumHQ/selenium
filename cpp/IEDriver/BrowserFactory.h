@@ -47,6 +47,7 @@
 #define CREATEPROCESS_ERROR_MESSAGE L"CreateProcess() failed for command line '%s'"
 #define NULL_PROCESS_ID_ERROR_MESSAGE " successfully launched Internet Explorer, but did not return a valid process ID."
 #define PROTECTED_MODE_SETTING_ERROR_MESSAGE "Protected Mode settings are not the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones."
+#define ATTACH_TIMEOUT_ERROR_MESSAGE "Could not find an Internet Explorer window belonging to the process with ID %d within %d milliseconds."
 
 #define ZONE_MY_COMPUTER L"0"
 #define ZONE_LOCAL_INTRANET L"1"
@@ -74,6 +75,7 @@ class BrowserFactory {
                              std::string* error_message);
   IWebBrowser2* CreateBrowser();
   bool AttachToBrowser(ProcessWindowInfo* procWinInfo,
+                       const int timeout_in_milliseconds,
                        const bool ignore_zoom_setting,
                        std::string* error_message);
   bool GetDocumentFromWindowHandle(HWND window_handle,

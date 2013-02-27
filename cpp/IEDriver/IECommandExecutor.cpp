@@ -127,6 +127,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->implicit_wait_timeout_ = 0;
   this->async_script_timeout_ = -1;
   this->page_load_timeout_ = -1;
+  this->browser_attach_timeout_ = 0;
 
   this->input_manager_ = new InputManager();
   this->input_manager_->Initialize(&this->managed_elements_);
@@ -563,6 +564,7 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   process_window_info.hwndBrowser = NULL;
   process_window_info.pBrowser = NULL;
   bool attached = this->factory_.AttachToBrowser(&process_window_info,
+                                                 this->browser_attach_timeout_,
                                                  this->ignore_zoom_setting_,
                                                  error_message);
   if (!attached) { 

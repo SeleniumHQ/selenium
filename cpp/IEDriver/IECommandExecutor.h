@@ -147,6 +147,11 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->page_load_timeout_ = timeout;
   }
 
+  int browser_attach_timeout(void) const { return this->browser_attach_timeout_; }
+  void set_browser_attach_timeout(const int timeout) {
+    this->browser_attach_timeout_ = timeout;
+  }
+
   bool is_valid(void) const { return this->is_valid_; }
   void set_is_valid(const bool session_is_valid) {
     this->is_valid_ = session_is_valid; 
@@ -236,6 +241,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   std::string session_id_;
   int port_;
+  int browser_attach_timeout_;
   bool ignore_protected_mode_settings_;
   bool enable_native_events_;
   bool enable_persistent_hover_;

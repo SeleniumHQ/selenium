@@ -12,8 +12,10 @@
 // limitations under the License.
 
 #include "BrowserFactory.h"
+#include <ctime>
 #include <iostream>
 #include "logging.h"
+#include "psapi.h"
 
 namespace webdriver {
 
@@ -73,6 +75,7 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
       // guarantee a new session. Simply using CoCreateInstance to 
       // create the browser will merge sessions, making separate cookie
       // handling impossible.
+      LOG(DEBUG) << "Starting IE using the IELaunchURL API";
       HRESULT launch_result = ::IELaunchURL(wide_initial_url.c_str(),
                                             &proc_info,
                                             NULL);
@@ -82,7 +85,7 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
                                             initial_url.c_str());
         vector<char> launch_result_msg(launch_msg_count + 1);
         _snprintf_s(&launch_result_msg[0],
-                    sizeof(launch_result_msg),
+                    launch_result_msg.size(),
                     launch_msg_count + 1,
                     IELAUNCHURL_ERROR_MESSAGE,
                     launch_result,
@@ -91,6 +94,7 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
         *error_message = launch_error;
       }
     } else {
+      LOG(DEBUG) << "Starting IE using the CreateProcess API";
       launch_api = "The CreateProcess() API";
       std::wstring executable_and_url = this->ie_executable_location_ +
                                         L" " + wide_initial_url;
@@ -114,7 +118,7 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
                                                command_line);
         vector<wchar_t> create_proc_result_msg(create_proc_msg_count + 1);
         _snwprintf_s(&create_proc_result_msg[0],
-                     sizeof(create_proc_result_msg),
+                     create_proc_result_msg.size(),
                      create_proc_msg_count,
                      CREATEPROCESS_ERROR_MESSAGE,
                      command_line);
@@ -136,6 +140,15 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
       if (launch_error.size() == 0) {
         *error_message = launch_api + NULL_PROCESS_ID_ERROR_MESSAGE;
       }
+    } else {
+      ::WaitForInputIdle(proc_info.hProcess, 2000);
+      LOG(DEBUG) << "IE launched successfully with process ID " << process_id;
+      vector<wchar_t> image_buffer(MAX_PATH);
+      int buffer_count = ::GetProcessImageFileName(proc_info.hProcess, &image_buffer[0], MAX_PATH);
+      std::wstring full_image_path = &image_buffer[0];
+      size_t last_delimiter = full_image_path.find_last_of('\\');
+      std::string image_name = CW2A(full_image_path.substr(last_delimiter + 1, buffer_count - last_delimiter).c_str(), CP_UTF8);
+      LOG(DEBUG) << "Process with ID " << process_id << " is executing " << image_name;
     }
 
     if (proc_info.hThread != NULL) {
@@ -191,17 +204,36 @@ bool BrowserFactory::GetDocumentFromWindowHandle(HWND window_handle,
 }
 
 bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
-                                     bool ignore_zoom_setting,
+                                     const int timeout_in_milliseconds,
+                                     const bool ignore_zoom_setting,
                                      std::string* error_message) {
   LOG(TRACE) << "Entering BrowserFactory::AttachToBrowser";
+  clock_t end = clock() + (timeout_in_milliseconds / 1000 * CLOCKS_PER_SEC);
   while (process_window_info->hwndBrowser == NULL) {
-    // TODO: create a timeout for this. We shouldn't need it, since
-    // we got a valid process ID, but we should bulletproof it.
+    if (timeout_in_milliseconds > 0 && (clock() > end)) {
+      break;
+    }
     ::EnumWindows(&BrowserFactory::FindBrowserWindow,
                   reinterpret_cast<LPARAM>(process_window_info));
     if (process_window_info->hwndBrowser == NULL) {
       ::Sleep(250);
     }
+  }
+
+  if (process_window_info->hwndBrowser == NULL) {
+    int attach_fail_msg_count = _scprintf(ATTACH_TIMEOUT_ERROR_MESSAGE,
+                                          process_window_info->dwProcessId,
+                                          timeout_in_milliseconds);
+    vector<char> attach_fail_msg_buffer(attach_fail_msg_count + 1);
+    _snprintf_s(&attach_fail_msg_buffer[0],
+                attach_fail_msg_buffer.size(),
+                attach_fail_msg_count,
+                ATTACH_TIMEOUT_ERROR_MESSAGE,
+                process_window_info->dwProcessId,
+                timeout_in_milliseconds);
+    std::string attach_fail_msg = &attach_fail_msg_buffer[0];
+    *error_message = attach_fail_msg;
+    return false;
   }
 
   CComPtr<IHTMLDocument2> document;
