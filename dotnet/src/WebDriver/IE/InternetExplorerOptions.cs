@@ -97,12 +97,14 @@ namespace OpenQA.Selenium.IE
         private const string ElementScrollBehaviorCapability = "elementScrollBehavior";
         private const string UnexpectedAlertBehaviorCapability = "unexpectedAlertBehaviour";
         private const string RequireWindowFocusCapability = "requireWindowFocus";
+        private const string BrowserAttachTimeoutCapability = "browserAttachTimeout";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
         private bool enableNativeEvents = true;
         private bool requireWindowFocus;
         private bool enablePersistentHover = true;
+        private TimeSpan browserAttachTimeout = TimeSpan.MinValue;
         private string initialBrowserUrl = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
         private InternetExplorerUnexpectedAlertBehavior unexpectedAlertBehavior = InternetExplorerUnexpectedAlertBehavior.Default;
@@ -191,6 +193,16 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets the amount of time the driver will attempt to look for a newly launched instance
+        /// of Internet Explorer.
+        /// </summary>
+        public TimeSpan BrowserAttachTimeout
+        {
+            get { return this.browserAttachTimeout; }
+            set { this.browserAttachTimeout = value; }
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options 
         /// for the Internet Explorer driver.
         /// </summary>
@@ -211,7 +223,8 @@ namespace OpenQA.Selenium.IE
                 capabilityName == ElementScrollBehaviorCapability ||
                 capabilityName == UnexpectedAlertBehaviorCapability ||
                 capabilityName == EnablePersistentHoverCapability ||
-                capabilityName == RequireWindowFocusCapability)
+                capabilityName == RequireWindowFocusCapability ||
+                capabilityName == BrowserAttachTimeoutCapability)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
@@ -277,6 +290,11 @@ namespace OpenQA.Selenium.IE
                 }
 
                 capabilities.SetCapability(UnexpectedAlertBehaviorCapability, unexpectedAlertBehaviorSetting);
+            }
+
+            if (this.browserAttachTimeout != TimeSpan.MinValue)
+            {
+                capabilities.SetCapability(BrowserAttachTimeoutCapability, Convert.ToInt32(this.browserAttachTimeout.TotalMilliseconds));
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
