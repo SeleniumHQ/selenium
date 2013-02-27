@@ -28,4 +28,4 @@ from common.action_chains import ActionChains
 from common.touch_actions import TouchActions
 from common.proxy import Proxy
 
-__version__ = '2.30.0'
+__version__ = '2.31.0'

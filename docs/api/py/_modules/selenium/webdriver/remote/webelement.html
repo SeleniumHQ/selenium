@@ -254,7 +254,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span>
 </div>
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="n">element</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">==</span> <span class="n">element</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">ELEMENT_EQUALS</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;other&#39;</span><span class="p">:</span> <span class="n">element</span><span class="o">.</span><span class="n">id</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 
     <span class="c"># Private Methods</span>
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
