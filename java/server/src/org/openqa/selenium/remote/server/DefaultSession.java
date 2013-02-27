@@ -150,8 +150,10 @@ public class DefaultSession implements Session {
 
   public void close() {
     executor.shutdown();
-    tempFs.deleteTemporaryFiles();
-    tempFs.deleteBaseDir();
+    if (tempFs != null) {
+      tempFs.deleteTemporaryFiles();
+      tempFs.deleteBaseDir();
+    }
   }
 
 
