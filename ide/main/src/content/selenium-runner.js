@@ -152,6 +152,11 @@ objectExtend(IDETestLoop.prototype, {
   commandComplete: function(result) {
     this._checkExpectedFailure(result);
     if (result.failed) {
+      //TODO Samit: Remove this workaround and try to connect to selenium server before starting test
+      if (result.failureMessage.t && result.failureMessage.t === 'RemoteConnectError') {
+        result.failureMessage = result.failureMessage.m;  //unwrap message
+        setState(Debugger.PAUSED);
+      }
       LOG.error(result.failureMessage);
       testCase.debugContext.failed = true;
       testCase.debugContext.currentCommand().result = 'failed';

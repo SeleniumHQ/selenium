@@ -389,7 +389,7 @@ AssertHandler.prototype.execute = function(seleniumApi, command) {
     result.terminationCondition = function() {
       if (!deferred.isPending()) {
         var pResult = deferred.value()[0];
-        if (result.isRejected()) {
+        if (deferred.isRejected()) {
           throw pResult;
         }
         if (!pResult.isTrue) {

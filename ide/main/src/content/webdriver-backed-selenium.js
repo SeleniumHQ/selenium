@@ -213,16 +213,17 @@ WebdriverBackedSelenium.prototype.startNewSession = function() {
 //  return this.startNewWebdriverSession('firefox').pipe(function() {
   return this.startNewWebdriverSession(this.webDriverBrowserString).pipe(function() {
     return self.startNewBrowserSession({});
-  }, function () {
+  }, function (msg) {
     //TODO failed to connect
-    alert('Failed to start new session');
+//    alert('Failed to start new session');
+    return msg;
   });
 };
 
 WebdriverBackedSelenium.prototype.startNewWebdriverSession = function(browserName) {
   var self = this;
   return new Deferred(function(deferred) {
-    LOG.info('Connecting to Selenium Server');
+    LOG.debug('Connecting to Selenium Server');
     httpPost('http://localhost:4444/wd/hub/session',
         JSON.stringify({
           'desiredCapabilities': {'browserName': browserName}
@@ -232,8 +233,7 @@ WebdriverBackedSelenium.prototype.startNewWebdriverSession = function(browserNam
             self.webdriverSID = self.webdriverResponse.sessionId;
             deferred.resolve(self.webdriverSID);
           } else {
-            LOG.error('Could not connect to Selenium Server. Have you started the Selenium Server yet?');
-            deferred.reject('Could not connect to Selenium Server');
+            deferred.reject({message: {t: 'RemoteConnectError', m: 'Could not connect to Selenium Server. Have you started the Selenium Server yet?'}});
           }
         });
   });
@@ -304,7 +304,6 @@ WebdriverBackedSelenium.prototype.webDriverCommand = function(url, opts, args) {
           deferred.resolve();
         }
       } else {
-//        LOG.error('Could not connect to Selenium Server. Have you started the Selenium Server yet?');
         if (response) {
           deferred.reject(result.value.message);
         } else {
@@ -340,13 +339,13 @@ function httpPost(url, data, headers, callback) {
             callback(httpRequest.responseText, false, httpRequest.status);
         } else {
           //TODO eliminate alert and signal the failure
-          alert('There was a problem with the request.\nUrl: ' + url + '\nHttp Status: ' + httpRequest.status + "\nResponse: " + httpRequest.responseText);
+//          alert('There was a problem with the request.\nUrl: ' + url + '\nHttp Status: ' + httpRequest.status + "\nResponse: " + httpRequest.responseText);
+          LOG.debug('Error: There was a problem with the request.\nUrl: ' + url + '\nHttp Status: ' + httpRequest.status + "\nResponse: " + httpRequest.responseText);
           callback(null, false, httpRequest.status);
         }
       }
     } catch(e) {
       //TODO eliminate alert and signal the failure
-//      alert('Caught Exception in httpPost: ' + e.description);
       alert('Caught Exception in httpPost: ' + e);
       throw e;
     }
