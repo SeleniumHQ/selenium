@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Utility class for converting between JSON and Java Objects.
@@ -226,7 +225,6 @@ public class BeanToJsonConverter {
     }
 
     try {
-      Logger.getLogger("bully").info(String.valueOf(toConvert));
       return mapObject(toConvert, maxDepth - 1, toConvert instanceof Cookie);
     } catch (Exception e) {
       throw new WebDriverException(e);
@@ -246,7 +244,6 @@ public class BeanToJsonConverter {
   }
 
   private Object mapObject(Object toConvert, int maxDepth, boolean skipNulls) throws Exception {
-    Logger.getLogger("bully").info("maxDepth: " + maxDepth);
     if (maxDepth < 1) {
       return null;
     }
