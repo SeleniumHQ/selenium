@@ -435,7 +435,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       List<String> returnedValues = (List<String>) value;
       return new LinkedHashSet<String>(returnedValues);
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Returned value cannot be converted to List<String>: " + value, ex);
+      throw new WebDriverException(
+          "Returned value cannot be converted to List<String>: " + value, ex);
     }
   }
 
@@ -519,10 +520,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     long start = System.currentTimeMillis();
     String currentName = Thread.currentThread().getName();
-    Thread.currentThread().setName("Forwarding " + driverCommand + " on session " + sessionId +
-                                   " to remote");
+    Thread.currentThread().setName(
+        String.format("Forwarding %s on session %s to remote", driverCommand, sessionId));
     try {
-
       log(sessionId, command.getName(), command, When.BEFORE);
       response = executor.execute(command);
       log(sessionId, command.getName(), command, When.AFTER);

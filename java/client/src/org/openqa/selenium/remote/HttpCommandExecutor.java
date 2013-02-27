@@ -269,8 +269,9 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       if (QUIT.equals(command.getName())) {
         return new Response();
       }
-      if (! NEW_SESSION.equals(command.getName()))
-      throw new SessionNotFoundException("Session ID is null");
+      if (!NEW_SESSION.equals(command.getName())) {
+        throw new SessionNotFoundException("Session ID is null");
+      }
     }
 
     CommandInfo info = nameToUrl.get(command.getName());
