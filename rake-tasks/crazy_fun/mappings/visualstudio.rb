@@ -104,7 +104,53 @@ module CrazyFunVisualStudio
 end
 
 module CrazyFunDotNet
-  class DotNetLibrary < Tasks
+  class DotNetTasks < Tasks
+    def get_reference_assemblies_dir()
+      @reference_assemblies_dir ||= (
+        program_files_dir = find_environment_variable(['ProgramFiles(x86)', 'programfiles(x86)', 'PROGRAMFILES(X86)'], "C:/Program Files (x86)")
+        unless File.exists? program_files_dir
+          program_files_dir = find_environment_variable(['ProgramFiles', 'programfiles', 'PROGRAMFILES'], "C:/Program Files")
+        end
+        File.join(program_files_dir, 'Reference Assemblies', 'Microsoft', 'Framework')
+      )
+    end
+
+    def get_framework_dir()
+      @framework_dir ||= (
+        windows_dir = find_environment_variable(['WinDir', 'windir', 'WINDIR'], "C:/Windows")
+        File.join(windows_dir, 'Microsoft.NET', 'Framework')
+      )
+    end
+
+	def get_reference_assemblies_version_dir(version)
+      if version == "net35"
+        return File.join(get_reference_assemblies_dir(), "v3.5").to_s
+      end
+      return File.join(get_reference_assemblies_dir(), '.NETFramework', "v4.0").to_s
+	end
+
+    def resolve_framework_reference(ref, version)
+      if version == "net35"
+        assembly = File.join(get_reference_assemblies_version_dir(version), ref)
+        unless File.exists? assembly
+          assembly = File.join(get_framework_dir(), "v2.0.50727", ref)
+        end
+
+        return assembly.to_s
+      end
+      return File.join(get_reference_assemblies_version_dir(version), ref).to_s
+    end
+
+    def find_environment_variable(possible_vars, fallback)
+      var_name = possible_vars.find { |e| ENV[e] }
+      if var_name.nil?
+        return fallback
+      end
+      return ENV[var_name]
+    end
+  end
+
+  class DotNetLibrary < DotNetTasks
     def handle(fun, dir, args)
       base_dir = "build/dotnet"
       framework_ver = "net40"
@@ -209,43 +255,6 @@ module CrazyFunDotNet
       return references
     end
 
-    def get_reference_assemblies_dir()
-      @reference_assemblies_dir ||= (
-        program_files_dir = find_environment_variable(['ProgramFiles(x86)', 'programfiles(x86)', 'PROGRAMFILES(X86)'], "C:/Program Files (x86)")
-        unless File.exists? program_files_dir
-          program_files_dir = find_environment_variable(['ProgramFiles', 'programfiles', 'PROGRAMFILES'], "C:/Program Files")
-        end
-        File.join(program_files_dir, 'Reference Assemblies', 'Microsoft', 'Framework')
-      )
-    end
-
-    def get_framework_dir()
-      @framework_dir ||= (
-        windows_dir = find_environment_variable(['WinDir', 'windir', 'WINDIR'], "C:/Windows")
-        File.join(windows_dir, 'Microsoft.NET', 'Framework')
-      )
-    end
-
-    def resolve_framework_reference(ref, version)
-      if version == "net35"
-        assembly = File.join(get_reference_assemblies_dir(), "v3.5", ref)
-        unless File.exists? assembly
-          assembly = File.join(get_framework_dir(), "v2.0.50727", ref)
-        end
-
-        return assembly.to_s
-      end
-      return File.join(get_reference_assemblies_dir(), '.NETFramework', "v4.0", ref).to_s
-    end
-
-    def find_environment_variable(possible_vars, fallback)
-      var_name = possible_vars.find { |e| ENV[e] }
-      if var_name.nil?
-        return fallback
-      end
-      return ENV[var_name]
-    end
-
     def resolve_buildable_targets(target_candidates)
       buildable_targets = []
       unless target_candidates.nil?
@@ -259,7 +268,7 @@ module CrazyFunDotNet
     end
   end
   
-  class MergeAssemblies < Tasks
+  class MergeAssemblies < DotNetTasks
     def handle(fun, dir, args)
       base_dir = "build/dotnet"
       framework_ver = "net40"
@@ -284,7 +293,8 @@ module CrazyFunDotNet
         if framework_ver == "net35"
           params << "/v2"
         else
-          params << "/v4"
+		  mscorlib_location = get_reference_assemblies_version_dir("net40").gsub('/', Platform.dir_separator)
+          params << "/targetplatform:v4,\"#{mscorlib_location}\""
         end
         params << "/keyfile:#{args[:keyfile]}" unless args[:keyfile].nil?
         params << "/out:#{full_path.gsub('/', Platform.dir_separator)}"
