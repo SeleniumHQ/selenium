@@ -216,7 +216,8 @@ ruby_test(name = "phantomjs",
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
-    ":remote"
+    ":remote",
+    ":phantomjs"
   ]
 )
 ruby_library(name = "remote",
@@ -283,14 +284,15 @@ ruby_test(name = "unit",
   ],
   include = ["rb/spec/unit", "build/rb/lib"],
   deps = [
+    ":android",
     ":chrome",
     ":common",
     ":firefox",
     ":ie",
     ":iphone",
-    ":android",
     ":remote",
-    ":support"
+    ":phantomjs",
+    ":support",
   ]
 )
 
