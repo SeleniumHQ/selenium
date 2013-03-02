@@ -15,13 +15,20 @@
 
 'use strict';
 
-var path = require('path');
+var assert = require('assert'),
+    fs = require('fs'),
+    path = require('path');
 
 var projectRootDir = path.join(__dirname, '../../../..');
 
 var modulePath = path.join('javascript', 'node');
 if (process.env['SELENIUM_TEST_PROD'] === '1') {
   modulePath = path.join('build', modulePath);
+  assert.ok(fs.existsSync(path.join(modulePath, 'selenium-webdriver')),
+      'Running with SELENIUM_TEST_PROD=1, but cannot find\n' +
+      'selenium-webdriver in build directory. Please run\n  ' +
+      (process.platform === 'win32' ? 'go.bat' : 'go') +
+      ' //javascript/node:selenium-webdriver');
 }
 modulePath = path.join(projectRootDir, modulePath);
 
