@@ -1,6 +1,9 @@
-## v2.31.0-dev
+## v2.31.0
 
-* WebElements now belong to the same flow as their parent driver.
+* Added a class for controlling the standalone Selenium server (server
+available separately)
+* Added a portprober for finding free ports
+* FIXED: WebElements now belong to the same flow as their parent driver.
 
 ## v2.30.0
 
