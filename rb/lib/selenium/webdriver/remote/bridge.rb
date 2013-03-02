@@ -76,7 +76,8 @@ module Selenium
           [
             DriverExtensions::HasInputDevices,
             DriverExtensions::UploadsFiles,
-            DriverExtensions::TakesScreenshot
+            DriverExtensions::TakesScreenshot,
+            DriverExtensions::HasSessionId
           ]
         end
 
