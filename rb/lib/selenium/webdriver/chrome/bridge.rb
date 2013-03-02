@@ -53,6 +53,7 @@ module Selenium
         private
 
         def create_capabilities(opts)
+          caps                        = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
           args                        = opts.delete(:args) || opts.delete(:switches)
           native_events               = opts.delete(:native_events)
           verbose                     = opts.delete(:verbose)
@@ -65,7 +66,7 @@ module Selenium
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
-          chrome_options = {}
+          chrome_options = caps['chromeOptions'] || {}
 
           if args
             unless args.kind_of? Array
@@ -89,7 +90,6 @@ module Selenium
           chrome_options['detach']                   = detach.nil? || !!detach
           chrome_options['noWebsiteTestingDefaults'] = true if no_website_testing_defaults
 
-          caps = Remote::Capabilities.chrome
           caps['chromeOptions'] = chrome_options
           caps['proxy'] = proxy if proxy
 

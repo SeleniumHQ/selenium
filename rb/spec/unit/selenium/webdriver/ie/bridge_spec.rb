@@ -56,6 +56,34 @@ module Selenium
           )
         end
 
+        it 'takes desired capabilities' do
+          custom_caps = Remote::Capabilities.new
+          custom_caps['ignoreProtectedModeSettings'] = true
+
+          http.should_receive(:call).with do |_, _, payload|
+            payload[:desiredCapabilities]['ignoreProtectedModeSettings'].should be_true
+            resp
+          end
+
+          Bridge.new(:http_client => http, :desired_capabilities => custom_caps)
+        end
+
+        it 'can override desired capabilities through direct arguments' do
+          custom_caps = Remote::Capabilities.new
+          custom_caps['ignoreProtectedModeSettings'] = false
+
+          http.should_receive(:call).with do |_, _, payload|
+            payload[:desiredCapabilities]['ignoreProtectedModeSettings'].should be_true
+            resp
+          end
+
+          Bridge.new(
+            :http_client => http,
+            :desired_capabilities => custom_caps,
+            :introduce_flakiness_by_ignoring_security_domains => true
+          )
+        end
+
       end
 
     end

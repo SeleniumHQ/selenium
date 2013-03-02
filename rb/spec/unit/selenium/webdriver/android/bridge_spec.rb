@@ -23,6 +23,18 @@ module Selenium
           Remote::Http::Default.should_receive(:new).and_return http
           Bridge.new
         end
+
+        it 'takes desired capabilities' do
+          custom_caps = Remote::Capabilities.new
+          custom_caps['foo'] = 'bar'
+
+          http.should_receive(:call).with do |_, _, payload|
+            payload[:desiredCapabilities]['foo'].should == 'bar'
+            resp
+          end
+
+          Bridge.new(:http_client => http, :desired_capabilities => custom_caps)
+        end
       end
 
     end # IPhone

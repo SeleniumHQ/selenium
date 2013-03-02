@@ -24,29 +24,26 @@ module Selenium
           )
         end
 
-        def self.default_service
-          new executable_path, PortProber.above(DEFAULT_PORT)
+        def self.default_service(port = nil)
+          new executable_path, port || PortProber.above(DEFAULT_PORT)
         end
 
         def initialize(executable_path, port)
-          @uri           = URI.parse "http://#{Platform.localhost}:#{port}"
-          server_command = [executable_path, "--webdriver=#{port}"]
-
-          @process       = ChildProcess.build(*server_command)
-          @socket_poller = SocketPoller.new Platform.localhost, port, START_TIMEOUT
-
-          if $DEBUG == true
-            @process.io.inherit!
-          elsif Platform.jruby?
-            # apparently we need to read the output for phantomjs to work on jruby
-            @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
-          end
+          @uri        = URI.parse "http://#{Platform.localhost}:#{port}"
+          @executable = executable_path
         end
 
-        def start
+        def start(args = [])
+          if @process && @process.alive?
+            raise "already started: #{@uri.inspect} #{@executable.inspect}"
+          end
+
+          @process = create_process(args)
           @process.start
 
-          unless @socket_poller.connected?
+          socket_poller = SocketPoller.new Platform.localhost, @uri.port, START_TIMEOUT
+
+          unless socket_poller.connected?
             raise Error::WebDriverError, "unable to connect to phantomjs @ #{@uri} after #{START_TIMEOUT} seconds"
           end
 
@@ -67,9 +64,27 @@ module Selenium
         rescue ChildProcess::TimeoutError
           # ok, force quit
           @process.stop STOP_TIMEOUT
-        end
-      end # Service
 
+          if Platform.jruby? && !$DEBUG
+            @process.io.close rescue nil
+          end
+        end
+
+        def create_process(args)
+          server_command = [@executable, "--webdriver=#{@uri.port}", *args]
+          process = ChildProcess.build(*server_command.compact)
+
+          if $DEBUG == true
+            process.io.inherit!
+          elsif Platform.jruby?
+            # apparently we need to read the output for phantomjs to work on jruby
+            process.io.stdout = process.io.stderr = File.new(Platform.null_device, 'w')
+          end
+
+          process
+        end
+
+      end # Service
     end # PhantomJS
   end # WebDriver
 end # Service
