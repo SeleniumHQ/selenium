@@ -35,7 +35,12 @@ module Selenium
           @process       = ChildProcess.build(*server_command)
           @socket_poller = SocketPoller.new Platform.localhost, port, START_TIMEOUT
 
-          @process.io.inherit! if $DEBUG == true
+          if $DEBUG == true
+            @process.io.inherit!
+          elsif Platform.jruby?
+            # apparently we need to read the output for phantomjs to work on jruby
+            @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
+          end
         end
 
         def start
