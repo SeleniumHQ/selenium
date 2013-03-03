@@ -21,6 +21,7 @@ var fs = require('fs'),
     http = require('http'),
     path = require('path'),
     promise = require('selenium-webdriver').promise,
+    string = require('selenium-webdriver/_base').require('goog.string'),
     portprober = require('selenium-webdriver/net/portprober'),
     url = require('url');
 
@@ -28,6 +29,7 @@ var inproject = require('./inproject');
 
 
 var WEB_ROOT = '/common/src/web';
+var JS_ROOT = '/javascript';
 
 var baseDirectory = inproject.locate('.'),
     server = http.createServer(onRequest).on('connection', function(stream) {
@@ -103,6 +105,15 @@ var Pages = (function() {
 })();
 
 
+var Path = {
+  BASIC_AUTH: path.join(WEB_ROOT, 'basicAuth'),
+  MANIFEST: path.join(WEB_ROOT, 'manifest'),
+  REDIRECT: path.join(WEB_ROOT, 'redirect'),
+  PAGE: path.join(WEB_ROOT, 'page'),
+  UPLOAD: path.join(WEB_ROOT, 'upload')
+};
+
+
 /**
  * HTTP request handler.
  * @param {!http.ServerRequest} request The request object.
@@ -114,17 +125,28 @@ function onRequest(request, response) {
     return response.end();
   }
 
-  var pathname = url.parse(request.url).pathname;
+  var pathname = path.resolve(url.parse(request.url).pathname);
   if (pathname === '/favicon.ico') {
     response.writeHead(204);
     return response.end();
   }
 
-  if (pathname === path.join(WEB_ROOT, 'redirect')) {
-    response.writeHead(303, {
-      Location: Pages.resultPage
-    });
-    return response.end();
+  switch (pathname) {
+    case Path.BASIC_AUTH: return sendBasicAuth(response);
+    case Path.MANIFEST: return sendManifest(response);
+    case Path.PAGE: return sendInifinitePage(request, response);
+    case Path.REDIRECT: return redirectToResultPage(response);
+    case Path.UPLOAD: return sendUpload(response);
+  }
+
+  if (string.startsWith(pathname, Path.PAGE + '/')) {
+    return sendInifinitePage(request, response);
+  }
+
+  if ((string.startsWith(pathname, WEB_ROOT) ||
+       string.startsWith(pathname, JS_ROOT)) &&
+      string.endsWith(pathname, '.appcache')) {
+    return sendManifest(response);
   }
 
   try {
@@ -151,6 +173,39 @@ function onRequest(request, response) {
     sendSimpleError(response, 404, pathname);
   });
 };
+
+
+function redirectToResultPage(response) {
+  response.writeHead(303, {
+    Location: Pages.resultPage
+  });
+  return response.end();
+}
+
+
+function sendInifinitePage(request, response) {
+  setTimeout(function() {
+    var pathname = url.parse(request.url).pathname;
+    var lastIndex = pathname.lastIndexOf('/');
+    var pageNumber =
+        (lastIndex == -1 ? 'Unknown' : pathname.substring(lastIndex + 1));
+    var body = [
+      '<!DOCTYPE html>',
+      '<title>Page', pageNumber, '</title>',
+      'Page number <span id="pageNumber">', pageNumber, '</span>',
+      '<p><a href="../xhtmlTest.html" target="_top">top</a>'
+    ].join('');
+    response.writeHead(200, {
+      'Content-Length': Buffer.byteLength(body, 'utf8'),
+      'Content-Type': 'text/html; charset=utf-8'
+    });
+    response.end(body);
+  }, 500);
+}
+
+
+function sendDelayedResponse(request, response) {
+}
 
 
 /**

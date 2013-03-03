@@ -45,8 +45,7 @@ function buildServer() {
 function Server() {
   RemoteServer.call(this, {
     jar: SERVER_JAR_PATH,
-    port: 0,
-    stdio: ['ignore', process.stdout, process.stderr]
+    port: 0
   });
 }
 util.inherits(Server, RemoteServer);
