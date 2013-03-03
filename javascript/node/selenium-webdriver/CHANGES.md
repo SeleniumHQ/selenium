@@ -1,5 +1,6 @@
 ## v2.31.0
 
+* Added an example script.
 * Added a class for controlling the standalone Selenium server (server
 available separately)
 * Added a portprober for finding free ports
