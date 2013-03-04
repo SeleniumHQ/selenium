@@ -13,10 +13,43 @@ java_library(name = "server_core",
   srcs = [
     "DriverServlet.java",
     "JsonHttpRemoteConfig.java",
+    "xdrpc/*.java",
   ],
   deps = [
+    ":jee-http-api",
     ":server_very_core",
     "//java/server/src/org/openqa/selenium/remote/server/resource",
+    "//third_party/java/servlet-api",
+  ])
+
+java_library(name = "http-api",
+  srcs = [
+    "HttpRequest.java",
+    "HttpResponse.java",
+    "HttpStatusCodes.java",
+  ])
+
+java_library(name = "jee-http-api",
+  srcs = [
+    "JeeServletHttpRequest.java",
+    "JeeServletHttpResponse.java",
+  ],
+  deps = [
+    ":http-api",
+    "//java/client/src/org/openqa/selenium:webdriver-api",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/servlet-api",
+  ])
+
+java_library(name = "webbit-http-api",
+  srcs = [
+    "WebbitHttpRequest.java",
+    "WebbitHttpResponse.java",
+  ],
+  deps = [
+    ":http-api",
+    "//third_party/java/guava-libraries",
+    "//third_party/java/webbit",
   ])
 
 java_library(name = "server_very_core",
@@ -26,26 +59,19 @@ java_library(name = "server_very_core",
     "DefaultDriverSessions.java",
     "DriverFactory.java",
     "DriverSessions.java",
-    "HttpRequest.java",
-    "HttpResponse.java",
-    "HttpStatusCodes.java",
     "KnownElements.java",
-    "JeeServletHttpRequest.java",
-    "JeeServletHttpResponse.java",
     "JsonParametersAware.java",
     "MimeType.java",
     "Session.java",
     "DefaultSession.java",
     "SessionCleaner.java",
     "SnapshotScreenListener.java",
-    "WebbitHttpRequest.java",
-    "WebbitHttpResponse.java",
     "handler/**/*.java",
     "renderer/*.java",
     "rest/*.java",
-    "xdrpc/*.java",
   ],
   deps = [
+    ":http-api",
     "//java/client/src/org/openqa/selenium:base",
     "//java/client/src/org/openqa/selenium:codecs",
     "//java/client/src/org/openqa/selenium:webdriver-api",
@@ -55,6 +81,4 @@ java_library(name = "server_very_core",
     "//java/server/src/org/openqa/selenium/remote/server/log",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
-    "//third_party/java/servlet-api",
-    "//third_party/java/webbit",
   ])
