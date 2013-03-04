@@ -12,6 +12,7 @@ java_library(name = "base",
     "CapabilityType.java",
     "DesiredCapabilities.java",
     "BrowserType.java",
+    "UnreachableBrowserException.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/logging:api",
@@ -41,6 +42,9 @@ java_library(name = "common",
     "//third_party/java/json",
   ])
 
+java_library(name = "http-session-id",
+  srcs = [ "HttpSessionId.java" ])
+
 java_library(name = "remote",
   srcs = [
     "AddFindsByCss.java",
@@ -65,7 +69,6 @@ java_library(name = "remote",
     "RemoteWebDriver.java",
     "RemoteWebElement.java",
     "RemoteTouchScreen.java",
-    "UnreachableBrowserException.java",
     "UselessFileDetector.java",
     "html5/AddApplicationCache.java",
     "html5/AddBrowserConnection.java",
@@ -84,6 +87,7 @@ java_library(name = "remote",
   ],
   deps = [
     ":common",
+    ":http-session-id",
     "//java/client/src/org/openqa/selenium/logging",
     "//java/client/src/org/openqa/selenium/net",
     "//java/client/src/org/openqa/selenium/io",

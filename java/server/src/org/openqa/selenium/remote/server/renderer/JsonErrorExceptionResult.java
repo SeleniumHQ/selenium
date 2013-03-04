@@ -16,16 +16,15 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.renderer;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.HttpCommandExecutor;
+import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class JsonErrorExceptionResult extends ErrorJsonResult {
   private final ErrorCodes errorCodes;
@@ -54,7 +53,7 @@ public class JsonErrorExceptionResult extends ErrorJsonResult {
     Response res = new Response();
     res.setStatus(errorCodes.toStatusCode(thrown));
     res.setState(errorCodes.toState(res.getStatus()));
-    String sessionId = HttpCommandExecutor.getSessionId(request.getUri());
+    String sessionId = HttpSessionId.getSessionId(request.getUri());
     res.setSessionId(sessionId != null ? sessionId : "");
 
     if (thrown != null) {

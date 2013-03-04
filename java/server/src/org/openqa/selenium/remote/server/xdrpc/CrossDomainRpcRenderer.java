@@ -20,7 +20,7 @@ import com.google.common.base.Charsets;
 
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.HttpCommandExecutor;
+import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.HttpResponse;
@@ -89,7 +89,7 @@ public class CrossDomainRpcRenderer implements Renderer {
   }
 
   private Response createEmtpySuccessResponse(HttpRequest request) {
-    String sessionId = HttpCommandExecutor.getSessionId(request.getUri());
+    String sessionId = HttpSessionId.getSessionId(request.getUri());
 
     Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);

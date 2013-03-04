@@ -460,7 +460,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
       HttpHost finalHost = (HttpHost) context.getAttribute(HTTP_TARGET_HOST);
       String uri = finalHost.toURI();
-      String sessionId = getSessionId(uri);
+      String sessionId = HttpSessionId.getSessionId(uri);
       if (sessionId != null) {
         response.setSessionId(sessionId);
       }
@@ -491,21 +491,6 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
     response.setState(errorCodes.toState(response.getStatus()));
     return response;
-  }
-
-  public static String getSessionId(String uri) {
-    int sessionIndex = uri.indexOf("/session/");
-    if (sessionIndex != -1) {
-      sessionIndex += "/session/".length();
-      int nextSlash = uri.indexOf("/", sessionIndex);
-      if (nextSlash != -1) {
-        return uri.substring(sessionIndex, nextSlash);
-      } else {
-        return uri.substring(sessionIndex);
-      }
-
-    }
-    return null;
   }
 
   private static CommandInfo get(String url) {

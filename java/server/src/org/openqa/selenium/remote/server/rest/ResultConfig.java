@@ -23,7 +23,7 @@ import com.google.common.collect.Multimap;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.HttpCommandExecutor;
+import org.openqa.selenium.remote.HttpSessionId;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.SessionId;
@@ -179,7 +179,7 @@ public class ResultConfig {
 
   public void handle(String pathInfo, final HttpRequest request,
       final HttpResponse response) throws Exception {
-    String sessionId = HttpCommandExecutor.getSessionId(request.getUri());
+    String sessionId = HttpSessionId.getSessionId(request.getUri());
     
     SessionId sessId = sessionId != null ? new SessionId(sessionId) : null;
 

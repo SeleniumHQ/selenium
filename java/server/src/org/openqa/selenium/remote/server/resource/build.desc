@@ -3,7 +3,7 @@ java_library(name = "resource",
     "StaticResource.java",
   ],
   deps = [
-    "//java/server/src/org/openqa/selenium/remote/server:server_very_core",
+    "//java/server/src/org/openqa/selenium/remote/server:restish",
   ],
   embedded = [
     ":client",
