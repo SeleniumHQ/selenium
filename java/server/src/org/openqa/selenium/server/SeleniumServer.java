@@ -17,20 +17,8 @@
 
 package org.openqa.selenium.server;
 
-import static java.lang.String.format;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.BindException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Properties;
-
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openqa.jetty.http.HashUserRealm;
 import org.openqa.jetty.http.HttpContext;
 import org.openqa.jetty.http.SecurityConstraint;
@@ -52,6 +40,20 @@ import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
 import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
 import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.server.log.LoggingOptions;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.BindException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Properties;
+
+import static java.lang.String.format;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive remote Selenium commands
@@ -269,11 +271,29 @@ public class SeleniumServer implements SslCertificateGenerator {
     this.configuration = configuration;
     debugMode = configuration.isDebugMode();
     jettyThreads = configuration.getJettyThreads();
-    LOGGER = LoggingManager.configureLogging(configuration.getLoggingOptions(), debugMode);
+    LOGGER = configureLogging(configuration.getLoggingOptions(), debugMode);
     logStartupInfo();
     sanitizeProxyConfiguration();
     createJettyServer(slowResources);
     configuration.setSeleniumServer(this);
+  }
+
+  public static synchronized Log configureLogging(LoggingOptions options,
+                                                   boolean debugMode) {
+    final Log seleniumServerJettyLogger;
+
+    if (options.dontTouchLogging()) {
+      return LogFactory.getLog("org.openqa.selenium.server.SeleniumServer");
+    }
+
+    LoggingManager.configureLogging(options, debugMode);
+
+    seleniumServerJettyLogger = LogFactory.getLog("org.openqa.selenium.server.SeleniumServer");
+    if (null != options.getLogOutFile()) {
+      seleniumServerJettyLogger.info("Writing debug logs to " + options.getLogOutFile());
+    }
+
+    return seleniumServerJettyLogger;
   }
 
   public void boot() throws Exception {

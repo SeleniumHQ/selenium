@@ -36,6 +36,7 @@ import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.WindowClosedException;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.server.log.LoggingOptions;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
 
@@ -68,9 +69,9 @@ public class MockPIFrameUnitTest {
     LOGGER.info("Starting " + name.getMethodName());
   }
 
-  private RemoteControlConfiguration configureLogging() throws Exception {
+  private LoggingOptions configureLogging() throws Exception {
     // SeleniumServer.setDebugMode(true);
-    RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+    LoggingOptions configuration = new LoggingOptions();
     File target = new File("target");
     if (target.exists() && target.isDirectory()) {
       configuration.setLogOutFile(new File(target, "mockpiframe.log"));
@@ -92,7 +93,7 @@ public class MockPIFrameUnitTest {
   @After
   public void tearDown() {
     server.stop();
-    LoggingManager.configureLogging(new RemoteControlConfiguration(), false);
+    LoggingManager.configureLogging(new LoggingOptions(), false);
     DummyBrowserLauncher.clearSessionId();
     InjectionHelper.setFailOnError(true);
   }

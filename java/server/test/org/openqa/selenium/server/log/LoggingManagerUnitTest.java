@@ -30,14 +30,14 @@ public class LoggingManagerUnitTest {
 
   @Test
   public void checkInit() {
-    RemoteControlConfiguration remoteControlConfiguration = new RemoteControlConfiguration();
+    LoggingOptions remoteControlConfiguration = new LoggingOptions();
     LoggingManager.configureLogging(remoteControlConfiguration, true);
     assertNotNull(LoggingManager.perSessionLogHandler());
   }
 
   @Test
   public void testWithDontTouchLogging() {
-    RemoteControlConfiguration remoteControlConfiguration = new RemoteControlConfiguration();
+    LoggingOptions remoteControlConfiguration = new LoggingOptions();
     remoteControlConfiguration.setDontTouchLogging(true);
     LoggingManager.configureLogging(remoteControlConfiguration, true);
     assertNotNull(LoggingManager.perSessionLogHandler());

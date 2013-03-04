@@ -18,9 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium.server.log;
 
-import org.apache.commons.logging.Log;
-import org.openqa.jetty.log.LogFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,13 +43,12 @@ public class LoggingManager {
   private static PerSessionLogHandler perSessionLogHandler = new NoOpSessionLogHandler();
 
 
-  public static synchronized Log configureLogging(LoggingOptions options,
+  public static synchronized void configureLogging(LoggingOptions options,
       boolean debugMode) {
-    final Log seleniumServerJettyLogger;
     final Logger currentLogger;
 
     if (options.dontTouchLogging()) {
-      return LogFactory.getLog("org.openqa.selenium.server.SeleniumServer");
+      return;
     }
 
     currentLogger = Logger.getLogger("");
@@ -63,14 +59,6 @@ public class LoggingManager {
     if (debugMode) {
       currentLogger.setLevel(Level.FINE);
     }
-
-    seleniumServerJettyLogger = LogFactory.getLog("org.openqa.selenium.server.SeleniumServer");
-    if (null != options.getLogOutFile()) {
-      addNewSeleniumFileHandler(currentLogger, options);
-      seleniumServerJettyLogger.info("Writing debug logs to " + options.getLogOutFile());
-    }
-
-    return seleniumServerJettyLogger;
   }
 
   public static synchronized ShortTermMemoryHandler shortTermMemoryHandler() {
