@@ -1,3 +1,17 @@
+v2.31.2
+=======
+ * Fixed .NET WebDriverBackedSelenium NuGet packaging. Package was lacking
+   dependencies on other Selenium NuGet packages.
+ * Entirely removed the dependency on Castle.Core.dll for .NET support library.
+   Using the Castle DynamicProxy has been nothing but a thorn in the side of us
+   of WebDriver.Support.dll. This change implements hard-coded "proxy" objects
+   the .NET PageFactory implementation. Hopefully, this will resolve the issues
+   the PageFactory for everyone. Nevertheless, there is every possibility that
+   will entirely break the PageFactory in some unforseen way for some subset of
+   users, despite the fact that all of the tests (unit tests, and browser-based
+   tests) pass. If that is the case, feel free to file issues, if the issues
+   include code samples that reproduce the problem. Fixes issue #5221.
+
 v2.31.1
 =======
  * Fixing assemblies merged with ILMerge on .NET 4.0 when built on a machine
