@@ -20,6 +20,7 @@ iphone/src/objc/atoms.h
 /build/
 android/client/bin/
 android/server/bin/
+android/gen/org/openqa/selenium/android/app/Manifest.java
 cpp/IEDriver/IEReturnTypes.h
 java/org/openqa/selenium/ie/IeReturnTypes.java
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
