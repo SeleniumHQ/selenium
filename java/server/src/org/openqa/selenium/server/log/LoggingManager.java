@@ -20,7 +20,6 @@ package org.openqa.selenium.server.log;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
-import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,28 +46,28 @@ public class LoggingManager {
   private static PerSessionLogHandler perSessionLogHandler = new NoOpSessionLogHandler();
 
 
-  public static synchronized Log configureLogging(RemoteControlConfiguration configuration,
+  public static synchronized Log configureLogging(LoggingOptions options,
       boolean debugMode) {
     final Log seleniumServerJettyLogger;
     final Logger currentLogger;
 
-    if (configuration.dontTouchLogging()) {
+    if (options.dontTouchLogging()) {
       return LogFactory.getLog("org.openqa.selenium.server.SeleniumServer");
     }
 
     currentLogger = Logger.getLogger("");
     resetLoggerToOriginalState();
     overrideSimpleFormatterWithTerseOneForConsoleHandler(currentLogger, debugMode);
-    addInMemoryLogger(currentLogger, configuration);
-    addPerSessionLogger(currentLogger, configuration, debugMode);
+    addInMemoryLogger(currentLogger, options);
+    addPerSessionLogger(currentLogger, options, debugMode);
     if (debugMode) {
       currentLogger.setLevel(Level.FINE);
     }
 
     seleniumServerJettyLogger = LogFactory.getLog("org.openqa.selenium.server.SeleniumServer");
-    if (null != configuration.getLogOutFile()) {
-      addNewSeleniumFileHandler(currentLogger, configuration);
-      seleniumServerJettyLogger.info("Writing debug logs to " + configuration.getLogOutFile());
+    if (null != options.getLogOutFile()) {
+      addNewSeleniumFileHandler(currentLogger, options);
+      seleniumServerJettyLogger.info("Writing debug logs to " + options.getLogOutFile());
     }
 
     return seleniumServerJettyLogger;
@@ -86,33 +85,33 @@ public class LoggingManager {
     return perSessionLogHandler;
   }
 
-  private static void addInMemoryLogger(Logger logger, RemoteControlConfiguration configuration) {
+  private static void addInMemoryLogger(Logger logger, LoggingOptions options) {
     shortTermMemoryHandler = new ShortTermMemoryHandler(
-        configuration.shortTermMemoryLoggerCapacity(), Level.INFO, new TerseFormatter(true));
+        options.shortTermMemoryLoggerCapacity(), Level.INFO, new TerseFormatter(true));
     logger.addHandler(shortTermMemoryHandler);
   }
 
   private static void addPerSessionLogger(Logger logger,
-      RemoteControlConfiguration configuration, boolean debugMode) {
+      LoggingOptions options, boolean debugMode) {
     if (debugMode) {
       perSessionLogHandler =
-          new DefaultPerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
-              Level.FINE, new TerseFormatter(true), configuration.isCaptureOfLogsOnQuitEnabled());
+          new DefaultPerSessionLogHandler(options.shortTermMemoryLoggerCapacity(),
+              Level.FINE, new TerseFormatter(true), options.isCaptureOfLogsOnQuitEnabled());
     } else {
       perSessionLogHandler =
-          new DefaultPerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
-              Level.INFO, new TerseFormatter(true), configuration.isCaptureOfLogsOnQuitEnabled());
+          new DefaultPerSessionLogHandler(options.shortTermMemoryLoggerCapacity(),
+              Level.INFO, new TerseFormatter(true), options.isCaptureOfLogsOnQuitEnabled());
     }
     logger.addHandler(perSessionLogHandler);
   }
 
   private static File addNewSeleniumFileHandler(Logger currentLogger,
-      RemoteControlConfiguration configuration) {
+      LoggingOptions options) {
     try {
       FileHandler fileHandler;
       final File logFile;
 
-      logFile = configuration.getLogOutFile();
+      logFile = options.getLogOutFile();
       fileHandler = seleniumFileHandlers.get(logFile);
       if (fileHandler == null) {
         fileHandler = registerNewSeleniumFileHandler(logFile);

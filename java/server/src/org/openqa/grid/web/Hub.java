@@ -17,19 +17,6 @@ limitations under the License.
 
 package org.openqa.grid.web;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.Servlet;
-
 import com.google.common.collect.Maps;
 
 import org.openqa.grid.internal.Registry;
@@ -45,12 +32,25 @@ import org.openqa.grid.web.servlet.RegistrationServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.servlet.TestSessionStatusServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.server.log.LoggingOptions;
+import org.openqa.selenium.server.log.TerseFormatter;
 import org.seleniumhq.jetty7.server.Server;
 import org.seleniumhq.jetty7.server.bio.SocketConnector;
 import org.seleniumhq.jetty7.servlet.ServletContextHandler;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.log.TerseFormatter;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.Servlet;
 
 /**
  * Jetty server. Main entry point for everything about the grid. <p/> Except for unit tests, this
@@ -90,7 +90,7 @@ public class Hub {
 
     String logFilename =
         config.getLogFilename() == null
-        ? RemoteControlConfiguration.getDefaultLogOutFile()
+        ? LoggingOptions.getDefaultLogOutFile()
         : config.getLogFilename();
     if (logFilename != null) {
       try {

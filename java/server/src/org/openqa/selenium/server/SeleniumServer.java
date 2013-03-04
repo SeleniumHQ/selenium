@@ -269,7 +269,7 @@ public class SeleniumServer implements SslCertificateGenerator {
     this.configuration = configuration;
     debugMode = configuration.isDebugMode();
     jettyThreads = configuration.getJettyThreads();
-    LOGGER = LoggingManager.configureLogging(configuration, debugMode);
+    LOGGER = LoggingManager.configureLogging(configuration.getLoggingOptions(), debugMode);
     logStartupInfo();
     sanitizeProxyConfiguration();
     createJettyServer(slowResources);
