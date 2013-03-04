@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.server.log;
+package org.openqa.selenium.remote.server.log;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;

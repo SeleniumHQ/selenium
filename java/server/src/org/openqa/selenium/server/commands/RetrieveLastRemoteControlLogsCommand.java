@@ -18,7 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.server.commands;
 
-import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.LoggingManager;
 
 /**
  * Retrieve the last N remote control logs.

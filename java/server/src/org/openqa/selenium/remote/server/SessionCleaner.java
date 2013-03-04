@@ -20,8 +20,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
-import org.openqa.selenium.server.log.LoggingManager;
-import org.openqa.selenium.server.log.PerSessionLogHandler;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import java.util.logging.Logger;

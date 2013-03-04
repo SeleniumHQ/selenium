@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.server.log;
+package org.openqa.selenium.remote.server.log;
 
 import org.openqa.selenium.remote.SessionId;
 

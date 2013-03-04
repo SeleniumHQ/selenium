@@ -29,10 +29,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.openqa.selenium.server.log.LoggingManager;
-import org.openqa.selenium.server.log.LoggingOptions;
-import org.openqa.selenium.server.log.StdOutHandler;
-import org.openqa.selenium.server.log.TerseFormatter;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.LoggingOptions;
+import org.openqa.selenium.remote.server.log.StdOutHandler;
+import org.openqa.selenium.remote.server.log.TerseFormatter;
 import org.openqa.selenium.testworker.TrackableRunnable;
 import org.openqa.selenium.testworker.TrackableThread;
 

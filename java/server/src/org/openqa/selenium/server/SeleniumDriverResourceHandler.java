@@ -38,7 +38,7 @@ import org.openqa.selenium.server.commands.CaptureScreenshotToStringCommand;
 import org.openqa.selenium.server.commands.RetrieveLastRemoteControlLogsCommand;
 import org.openqa.selenium.server.commands.SeleniumCoreCommand;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
-import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.http.HttpConnection;
@@ -49,7 +49,7 @@ import org.openqa.jetty.http.HttpResponse;
 import org.openqa.jetty.http.handler.ResourceHandler;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.jetty.util.StringUtil;
-import org.openqa.selenium.server.log.PerSessionLogHandler;
+import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;

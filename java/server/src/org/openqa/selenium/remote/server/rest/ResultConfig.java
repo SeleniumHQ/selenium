@@ -37,8 +37,8 @@ import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
-import org.openqa.selenium.server.log.LoggingManager;
-import org.openqa.selenium.server.log.PerSessionLogHandler;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 
 import java.io.BufferedReader;
 import java.lang.reflect.Constructor;

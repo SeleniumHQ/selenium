@@ -39,8 +39,8 @@ import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
 import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
-import org.openqa.selenium.server.log.LoggingManager;
-import org.openqa.selenium.server.log.LoggingOptions;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.LoggingOptions;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

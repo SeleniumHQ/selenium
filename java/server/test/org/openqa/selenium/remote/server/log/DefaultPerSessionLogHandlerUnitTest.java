@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.server.log;
+package org.openqa.selenium.remote.server.log;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 /**
- * {@link org.openqa.selenium.server.log.PerSessionLogHandler} unit test class.
+ * {@link org.openqa.selenium.remote.server.log.PerSessionLogHandler} unit test class.
  */
 public class DefaultPerSessionLogHandlerUnitTest {
 

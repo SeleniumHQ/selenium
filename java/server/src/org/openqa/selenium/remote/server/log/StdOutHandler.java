@@ -16,28 +16,32 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.server.log;
+package org.openqa.selenium.remote.server.log;
 
-import java.util.logging.Filter;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import java.util.logging.StreamHandler;
 
 /**
- * java.util.logging Filter providing finer grain control over what is logged, beyond the control
- * provided by log levels.
- * <p>
- * This filter will log all log records whose level is equal or lower than a maximum level.
+ * java.util.logging Log RestishHandler logging everything to standard output.
  */
-public class MaxLevelFilter implements Filter {
+public class StdOutHandler extends StreamHandler {
 
-  private final Level maxLevel;
+  /*
+   * DGF - would be nice to subclass ConsoleHandler, if it weren't for java bug 4827381
+   * 
+   * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4827381
+   */
 
-  public MaxLevelFilter(Level maxLevel) {
-    this.maxLevel = maxLevel;
+  public StdOutHandler() {
+    super();
+    setOutputStream(System.out);
   }
 
-  public boolean isLoggable(LogRecord record) {
-    return record.getLevel().intValue() <= maxLevel.intValue();
+
+  @Override
+  public synchronized void publish(LogRecord record) {
+    super.publish(record);
+    flush();
   }
 
 }

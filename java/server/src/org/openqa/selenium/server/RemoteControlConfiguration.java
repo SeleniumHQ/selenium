@@ -21,7 +21,7 @@ package org.openqa.selenium.server;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.server.log.LoggingOptions;
+import org.openqa.selenium.remote.server.log.LoggingOptions;
 
 import java.io.File;
 

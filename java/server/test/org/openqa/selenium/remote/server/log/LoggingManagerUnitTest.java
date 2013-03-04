@@ -16,10 +16,9 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.server.log;
+package org.openqa.selenium.remote.server.log;
 
 import org.junit.Test;
-import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import static org.junit.Assert.assertNotNull;
 

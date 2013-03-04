@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 
-package org.openqa.selenium.server.log;
+package org.openqa.selenium.remote.server.log;
 
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * {@link org.openqa.selenium.server.log.ShortTermMemoryHandler} unit test class.
+ * {@link org.openqa.selenium.remote.server.log.ShortTermMemoryHandler} unit test class.
  */
 public class ShortTermMemoryHandlerUnitTest {
 

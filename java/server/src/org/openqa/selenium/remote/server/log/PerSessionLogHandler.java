@@ -1,4 +1,4 @@
-package org.openqa.selenium.server.log;
+package org.openqa.selenium.remote.server.log;
 
 /*
 Copyright 2007-2011 Selenium committers
