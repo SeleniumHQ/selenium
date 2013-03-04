@@ -40,8 +40,8 @@ require 'rake-tasks/ci'
 
 require 'rake-tasks/gecko_sdks'
 
-$DEBUG = orig_verbose != :default ? true : false
-if (ENV['debug'] == 'true') 
+$DEBUG = orig_verbose == true
+if (ENV['debug'] == 'true')
   $DEBUG = true
 end
 verbose($DEBUG)
@@ -517,7 +517,7 @@ task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :
 
         mkdir_p x86 unless File.exists?(x86)
         mkdir_p amd64 unless File.exists?(amd64)
-    
+
         cp "cpp/prebuilt/i386/libnoblur.so", x86+"x_ignore_nofocus.so", :verbose => true
         cp "cpp/prebuilt/amd64/libnoblur64.so", amd64+"x_ignore_nofocus.so", :verbose => true
 
@@ -665,7 +665,7 @@ task :push_release => [:release] do
 
   print "Enter your googlecode username:"
   googlecode_username = STDIN.gets.chomp
-  print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):" 
+  print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):"
   googlecode_password = STDIN.gets.chomp
 
   [
@@ -728,8 +728,6 @@ end
 
 at_exit do
   if File.exist?(".git") && !Platform.windows?
-    sh "sh .git-fixfiles"
+    sh "sh .git-fixfiles" rescue nil
   end
 end
-
-

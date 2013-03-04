@@ -65,7 +65,6 @@ class RubyMappings
       args[:include] = Array(args[:include])
       args[:include] << "#{dir}/spec"
 
-      args[:command] = args[:command] || "rspec"
       args[:require] = Array(args[:require])
 
       # move?
@@ -102,10 +101,15 @@ class RubyMappings
         ENV['WD_SPEC_DRIVER'] = args[:name]
         ENV['CI_REPORTS']     = "build/test_logs"
 
+        # hack to work around gem bin dir not being available anymore
+        require 'tempfile'
+        executable = Tempfile.new('selenium-rspec')
+        executable.puts "require 'rspec/autorun'"
+        executable.close
+
         ruby :include => args[:include],
              :require => args[:require],
-             :command => args[:command],
-             :args    => %w[--format CI::Reporter::RSpec --format s --color] + (!!ENV['example'] ? ['--example', ENV['example']] : []),
+             :args    => [executable.path, "--format", "CI::Reporter::RSpec", "--format", "s", "--color"] + (!!ENV['example'] ? ['--example', ENV['example']] : []),
              :debug   => !!ENV['log'],
              :files   => args[:srcs]
       end
@@ -119,7 +123,9 @@ class RubyMappings
         rack.jar
         webmock.jar
         websocket.jar
-      ].map { |jar| File.join("third_party/jruby", jar) }
+        rspec.jar
+        ci_reporter.jar
+      ].map { |jar| File.join("./third_party/jruby/gems", jar) }
 
       args[:require] ||= []
       args[:require] += jars

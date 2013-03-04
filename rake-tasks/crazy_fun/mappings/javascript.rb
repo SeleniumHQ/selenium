@@ -254,7 +254,7 @@ module Javascript
 
       result_list = [File.expand_path("third_party/closure/goog/base.js")]
       seen_list = []
-      src_files.each do |input_file|
+      Array(src_files).each do |input_file|
         seen_list.push(input_file)
         IO.read(input_file).each_line do |line|
           data = @@REQ_REGEX.match(line)

@@ -1,10 +1,6 @@
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/crazy_fun/mappings/java'
-
-if Platform.jruby?
-  require 'third_party/jruby/childprocess.jar'
-  require 'childprocess'
-end
+require 'childprocess'
 
 begin
   require 'psych'
