@@ -70,17 +70,6 @@ dotnet_library(name = "support",
     "System.Xml.dll",
     ":dotnet"
   ],
-  merge_refs = [
-    "third_party/dotnet/Castle.Core.3.2.0/net40/Castle.Core.dll"
-  ],
-  exclude_merge_types = [
-    "Castle.DynamicProxy.AbstractInvocation",
-	"Castle.DynamicProxy.IInterceptor",
-	"Castle.DynamicProxy.IInvocation",
-	"Castle.DynamicProxy.IProxyBuilder",
-	"Castle.DynamicProxy.IProxyTargetAccessor",
-	"Castle.DynamicProxy.Internal.CompositionInvocation"
-  ],
   keyfile = "WebDriver.snk",
   framework_ver = "net40",
   out = "WebDriver.Support.dll"
@@ -95,17 +84,6 @@ dotnet_library(name = "support35",
     "System.Drawing.dll",
     "System.Xml.dll",
     ":dotnet35"
-  ],
-  merge_refs = [
-    "third_party/dotnet/Castle.Core.3.2.0/net35/Castle.Core.dll"
-  ],
-  exclude_merge_types = [
-    "Castle.DynamicProxy.AbstractInvocation",
-	"Castle.DynamicProxy.IInterceptor",
-	"Castle.DynamicProxy.IInvocation",
-	"Castle.DynamicProxy.IProxyBuilder",
-	"Castle.DynamicProxy.IProxyTargetAccessor",
-	"Castle.DynamicProxy.Internal.CompositionInvocation"
   ],
   framework_ver = "net35",
   keyfile = "WebDriver.snk",
