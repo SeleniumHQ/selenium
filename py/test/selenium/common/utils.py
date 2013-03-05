@@ -1,9 +1,10 @@
 import os
 import socket
 import time
-import urllib
 import subprocess
 import signal
+
+from selenium.vendor import requests
 
 
 SERVER_ADDR = "localhost"
@@ -30,10 +31,11 @@ def start_server(module):
 def wait_for_server(url, timeout):
     start = time.time()
     while time.time() - start < timeout:
+        attempt_timeout = min(timeout, max(timeout / 5.0, 1))
         try:
-            urllib.urlopen(url)
+            requests.get(url, timeout=attempt_timeout)
             return 1
-        except IOError:
+        except requests.ConnectionError:
             time.sleep(0.2)
 
     return 0

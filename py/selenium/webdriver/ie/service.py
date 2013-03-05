@@ -18,6 +18,7 @@ import subprocess
 from subprocess import PIPE
 import time
 from selenium.common.exceptions import WebDriverException
+from selenium.vendor import requests
 from selenium.webdriver.common import utils
 
 class Service(object):
@@ -28,7 +29,7 @@ class Service(object):
     def __init__(self, executable_path, port=0, host=None, log_level=None, log_file=None):
         """
         Creates a new instance of the Service
-        
+
         :Args:
          - executable_path : Path to the IEDriver
          - port : Port the service is running on
@@ -48,8 +49,8 @@ class Service(object):
 
     def start(self):
         """
-        Starts the IEDriver Service. 
-        
+        Starts the IEDriver Service.
+
         :Exceptions:
          - WebDriverException : Raised either when it can't start the service
            or when it can't connect to the service
@@ -76,10 +77,10 @@ class Service(object):
             count += 1
             time.sleep(1)
             if count == 30:
-                 raise WebDriverException("Can not connect to the IEDriver")
-                
+                raise WebDriverException("Can not connect to the IEDriver")
+
     def stop(self):
-        """ 
+        """
         Tells the IEDriver to stop and cleans up the process
         """
         #If its dead dont worry
@@ -87,15 +88,14 @@ class Service(object):
             return
 
         #Tell the Server to die!
-        import urllib2
-        urllib2.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
+        requests.get("http://127.0.0.1:%d/shutdown" % self.port)
         count = 0
         while utils.is_connectable(self.port):
             if count == 30:
-               break 
+                break
             count += 1
             time.sleep(1)
-        
+
         #Tell the Server to properly die in case
         try:
             if self.process:

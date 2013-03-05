@@ -14,6 +14,8 @@
 # limitations under the License.
 import socket
 
+from selenium.vendor import requests
+
 
 def free_port():
         free_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -35,12 +37,8 @@ def is_connectable(port):
             return False
 
 def is_url_connectable(port):
-    import urllib2
     try:
-        res = urllib2.urlopen("http://localhost:%s/status" % port)
-        if res.getcode() == 200:
-            return True
-        else:
-            return False
+        r = requests.get("http://localhost:%s/status" % port)
+        return r.status_code == requests.codes.ok
     except:
         return False

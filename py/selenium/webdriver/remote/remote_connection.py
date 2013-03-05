@@ -16,105 +16,13 @@
 import logging
 import socket
 import string
-import urllib2
 import urlparse
 
 from command import Command
+from selenium.vendor import requests
 import utils
 
 LOGGER = logging.getLogger(__name__)
-
-
-class Request(urllib2.Request):
-    """
-    Extends the urllib2.Request to support all HTTP request types.
-    """
-
-    def __init__(self, url, data=None, method=None):
-        """
-        Initialise a new HTTP request.
-
-        :Args:
-         - url - String for the URL to send the request to.
-         - data - Data to send with the request.
-        """
-        if method is None:
-            method = data is not None and 'POST' or 'GET'
-        elif method != 'POST' and method != 'PUT':
-            data = None
-        self._method = method
-        urllib2.Request.__init__(self, url, data=data)
-
-    def get_method(self):
-        """
-        Returns the HTTP method used by this request.
-        """
-        return self._method
-
-
-class Response(object):
-    """
-    Represents an HTTP response.
-    """
-
-    def __init__(self, fp, code, headers, url):
-        """
-        Initialise a new Response.
-
-        :Args:
-         - fp - The response body file object.
-         - code - The HTTP status code returned by the server.
-         - headers - A dictionary of headers returned by the server.
-         - url - URL of the retrieved resource represented by this Response.
-        """
-        self.fp = fp
-        self.read = fp.read
-        self.code = code
-        self.headers = headers
-        self.url = url
-
-    def close(self):
-        """
-        Close the response body file object.
-        """
-        self.read = None
-        self.fp = None
-
-    def info(self):
-        """
-        Returns the response headers.
-        """
-        return self.headers
-
-    def geturl(self):
-        """
-        Returns the URL for the resource returned in this response.
-        """
-        return self.url
-
-
-class HttpErrorHandler(urllib2.HTTPDefaultErrorHandler):
-    """
-    A custom HTTP error handler.
-
-    Used to return Response objects instead of raising an HTTPError exception.
-    """
-
-    def http_error_default(self, req, fp, code, msg, headers):
-        """
-        Default HTTP error handler.
-
-        :Args:
-         - req - The original Request object.
-         - fp - The response body file object.
-         - code - The HTTP status code returned by the server.
-         - msg - The HTTP status message returned by the server.
-         - headers - The response headers.
-
-        :Returns:
-          A new Response object.
-        """
-        return Response(fp, code, headers, req.get_full_url())
 
 
 class RemoteConnection(object):
@@ -317,7 +225,7 @@ class RemoteConnection(object):
             Command.CLEAR_SESSION_STORAGE:
                 ('DELETE', '/session/$sessionId/session_storage'),
             Command.GET_SESSION_STORAGE_SIZE:
-                ('GET','/session/$sessionId/session_storage/size'),
+                ('GET', '/session/$sessionId/session_storage/size'),
             }
 
     def execute(self, command, params):
@@ -344,65 +252,61 @@ class RemoteConnection(object):
         Send an HTTP request to the remote server.
 
         :Args:
-         - method - A string for the HTTP method to send the request with.
          - url - The URL to send the request to.
-         - body - The message body to send.
+         - data - The message body to send.
+         - method - A string for the HTTP method to send the request with.
 
         :Returns:
           A dictionary with the server's parsed JSON response.
         """
         LOGGER.debug('%s %s %s' % (method, url, data))
 
+        auth = None
         parsed_url = urlparse.urlparse(url)
-        password_manager = None
         if parsed_url.username:
+            # remove auth stuff from url
+            auth = (parsed_url.username, parsed_url.password)
             netloc = parsed_url.hostname
             if parsed_url.port:
                 netloc += ":%s" % parsed_url.port
-            cleaned_url = urlparse.urlunparse((parsed_url.scheme,
-                                               netloc,
-                                               parsed_url.path,
-                                               parsed_url.params,
-                                               parsed_url.query,
-                                               parsed_url.fragment))
-            password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
-            password_manager.add_password(None,
-                                          "%s://%s" % (parsed_url.scheme, netloc),
-                                          parsed_url.username,
-                                          parsed_url.password)
-            request = Request(cleaned_url, data=data, method=method)
-        else:
-            request = Request(url, data=data, method=method)
+            url = urlparse.urlunparse((
+                parsed_url.scheme,
+                netloc,
+                parsed_url.path,
+                parsed_url.params,
+                parsed_url.query,
+                parsed_url.fragment,
+            ))
 
-        request.add_header('Accept', 'application/json')
-        request.add_header('Content-Type', 'application/json;charset=UTF-8')
+        if method not in ('POST', 'PUT'):
+            # request data doesn't make sense in other requests, and appears to
+            # cause selenium to hang indefinitely.
+            data = None
+        response = requests.request(
+            method,
+            url,
+            data=data,
+            auth=auth,
+            headers={
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8',
+            },
+        )
 
-        if password_manager:
-            opener = urllib2.build_opener(urllib2.HTTPRedirectHandler(),
-                                          HttpErrorHandler(),
-                                          urllib2.HTTPBasicAuthHandler(password_manager))
-        else:
-            opener = urllib2.build_opener(urllib2.HTTPRedirectHandler(),
-                                          HttpErrorHandler())
-        response = opener.open(request)
-        try:
-            if response.code > 399 and response.code < 500:
-                return {'status': response.code, 'value': response.read()}
-            body = response.read().replace('\x00', '').strip()
-            content_type = response.info().getheader('Content-Type') or []
-            if 'application/json' in content_type:
-                data = utils.load_json(body.strip())
-                assert type(data) is dict, (
-                    'Invalid server response body: %s' % body)
-                assert 'status' in data, (
-                    'Invalid server response; no status: %s' % body)
-                # Some of the drivers incorrectly return a response
-                # with no 'value' field when they should return null.
-                if 'value' not in data:
-                    data['value'] = None
-                return data
-            elif 'image/png' in content_type:
-                data = {'status': 0, 'value': body.strip()}
-                return data
-        finally:
-            response.close()
+        if response.status_code > 399 and response.status_code < 500:
+            return {'status': response.status_code, 'value': response.text}
+        content_type = response.headers.get('content-type') or ''
+        if 'application/json' in content_type:
+            data = response.json()
+            assert type(data) is dict, (
+                'Invalid server response body: %r' % (data,))
+            assert 'status' in data, (
+                'Invalid server response; no status: %r' % (data,))
+            # Some of the drivers incorrectly return a response
+            # with no 'value' field when they should return null.
+            if 'value' not in data:
+                data['value'] = None
+            return data
+        elif 'image/png' in content_type:
+            data = {'status': 0, 'value': response.content}
+            return data

@@ -20,8 +20,9 @@ import logging
 import os
 import socket
 import threading
-import urllib
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+
+from selenium.vendor import requests
 
 def updir():
     dirname = os.path.dirname
@@ -92,7 +93,7 @@ class SimpleWebServer(object):
         self.stop_serving = True
         try:
             # This is to force stop the server loop
-            urllib.URLopener().open("http://localhost:%d" % self.port)
+            requests.get("http://localhost:%d" % self.port)
         except Exception:
             pass
         LOGGER.info("Shutting down the webserver")

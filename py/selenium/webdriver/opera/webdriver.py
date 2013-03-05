@@ -14,8 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import base64
-import httplib
 import os
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.command import Command
@@ -25,7 +23,7 @@ from service import Service
 class WebDriver(RemoteWebDriver):
     """
     Controls the OperaDriver and allows you to drive the browser.
-    
+
     """
 
     def __init__(self, executable_path=None, port=0,
@@ -62,7 +60,5 @@ class WebDriver(RemoteWebDriver):
         """
         try:
             RemoteWebDriver.quit(self)
-        except httplib.BadStatusLine:
-            pass
         finally:
             self.service.stop()

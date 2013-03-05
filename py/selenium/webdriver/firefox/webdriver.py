@@ -13,14 +13,11 @@
 # limitations under the License.
 
 
-import base64
-import httplib
 import shutil
 import sys
-import urllib2
 from firefox_binary import FirefoxBinary
 from selenium.common.exceptions import ErrorInResponseException
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities 
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.extension_connection import ExtensionConnection
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.remote.command import Command
@@ -40,7 +37,7 @@ class WebDriver(RemoteWebDriver):
 
         if self.profile is None:
             self.profile = FirefoxProfile()
-       
+
         self.profile.native_events_enabled = self.NATIVE_EVENTS_ALLOWED and self.profile.native_events_enabled
 
         if self.binary is None:
@@ -65,12 +62,7 @@ class WebDriver(RemoteWebDriver):
 
     def quit(self):
         """Quits the driver and close every associated window."""
-        try:
-            RemoteWebDriver.quit(self)
-        except httplib.BadStatusLine:
-            # Happens if Firefox shutsdown before we've read the response from
-            # the socket.
-            pass
+        RemoteWebDriver.quit(self)
         self.binary.kill()
         try:
             shutil.rmtree(self.profile.path)

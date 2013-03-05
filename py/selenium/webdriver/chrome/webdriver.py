@@ -14,8 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import base64
-import httplib
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
@@ -65,7 +63,7 @@ class WebDriver(RemoteWebDriver):
                 desired_capabilities=desired_capabilities)
         except:
             self.quit()
-            raise 
+            raise
         self._is_remote = False
 
     def quit(self):
