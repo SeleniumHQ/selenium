@@ -1,7 +1,7 @@
 default:
   android:
     # Path to the android sdk
-    androidsdkpath : "../android_sdk/"
+    androidsdkpath : "../../android-sdk/"
     # Target id. To get a list of all targets do "./android list targets".
     # We want whatever matches the latest android 4.0 (IceCreamSandwich, currently API level 15)
     #
