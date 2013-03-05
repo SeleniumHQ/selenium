@@ -329,7 +329,10 @@ public class TestSession {
                                       + pathSpec);
     }
     String end = path.substring(pathSpec.length());
-    String ok = remoteURL + end + "?" + request.getQueryString();
+    String ok = remoteURL + end;
+    if (request.getQueryString() != null) {
+      ok += "?" + request.getQueryString();
+    }
     String uri = new URL(remoteURL, ok).toExternalForm();
 
     InputStream body = null;
