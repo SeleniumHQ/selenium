@@ -23,6 +23,8 @@ import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.SlowLoadableComponent;
 import org.openqa.selenium.support.ui.SystemClock;
 
+import com.google.common.collect.Lists;
+
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -84,9 +86,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
     try {
       return list.get().getElements();
     } catch (NoSuchElementError e) {
-      throw new NoSuchElementException(
-          String.format("Timed out after %d seconds. %s", timeOutInSeconds, e.getMessage()),
-          e.getCause());
+      return Lists.newArrayList();
     }
   }
 
