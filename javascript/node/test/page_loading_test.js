@@ -22,29 +22,32 @@ var assert = require('assert'),
 
 var test = require('./lib/testbase'),
     Browser = test.Browser,
-    browsers = test.browsers,
     Pages = test.Pages;
 
 
-describe('Page loading', function() {
+test.suite(function(env) {
+  var assertTitleIs = env.assertTitleIs,
+      browsers = env.browsers,
+      waitForTitleToBe = env.waitForTitleToBe;
+
   var driver;
-  beforeEach(function() { driver = test.driver; });
+  beforeEach(function() { driver = env.driver; });
 
   test.it('should wait for document to be loaded', function() {
     driver.get(Pages.simpleTestPage);
-    test.assertTitleIs('Hello WebDriver');
+    assertTitleIs('Hello WebDriver');
   });
 
   test.it('should follow redirects sent in the http response headers',
       function() {
     driver.get(Pages.redirectPage);
-    test.assertTitleIs('We Arrive Here');
+    assertTitleIs('We Arrive Here');
   });
 
   test.ignore(browsers(Browser.ANDROID)).it('should follow meta redirects',
       function() {
     driver.get(Pages.metaRedirectPage);
-    test.assertTitleIs('We Arrive Here');
+    assertTitleIs('We Arrive Here');
   });
 
   test.it('should be able to get a fragment on the current page', function() {
@@ -74,10 +77,10 @@ describe('Page loading', function() {
     driver.get(Pages.formPage);
 
     driver.findElement(By.id('imageButton')).click();
-    test.waitForTitleToBe('We Arrive Here');
+    waitForTitleToBe('We Arrive Here');
 
     driver.navigate().back();
-    test.assertTitleIs('We Leave From Here');
+    assertTitleIs('We Leave From Here');
   });
 
   test.ignore(browsers(Browser.SAFARI)).
@@ -85,10 +88,10 @@ describe('Page loading', function() {
     driver.get(Pages.xhtmlTestPage);
 
     driver.findElement(By.name('sameWindow')).click();
-    test.waitForTitleToBe('This page has iframes');
+    waitForTitleToBe('This page has iframes');
 
     driver.navigate().back();
-    test.assertTitleIs('XHTML Test Page');
+    assertTitleIs('XHTML Test Page');
   });
 
   test.ignore(browsers(Browser.ANDROID, Browser.SAFARI)).
@@ -96,13 +99,13 @@ describe('Page loading', function() {
     driver.get(Pages.formPage);
 
     driver.findElement(By.id('imageButton')).click();
-    test.waitForTitleToBe('We Arrive Here');
+    waitForTitleToBe('We Arrive Here');
 
     driver.navigate().back();
-    test.waitForTitleToBe('We Leave From Here');
+    waitForTitleToBe('We Leave From Here');
 
     driver.navigate().forward();
-    test.waitForTitleToBe('We Arrive Here');
+    waitForTitleToBe('We Arrive Here');
   });
 
   test.it('should be able to refresh a page', function() {
@@ -110,14 +113,14 @@ describe('Page loading', function() {
 
     driver.navigate().refresh();
 
-    test.assertTitleIs('XHTML Test Page');
+    assertTitleIs('XHTML Test Page');
   });
 
   test.it('should return title of page if set', function() {
     driver.get(Pages.xhtmlTestPage);
-    test.assertTitleIs('XHTML Test Page');
+    assertTitleIs('XHTML Test Page');
 
     driver.get(Pages.simpleTestPage);
-    test.assertTitleIs('Hello WebDriver');
+    assertTitleIs('Hello WebDriver');
   });
 });

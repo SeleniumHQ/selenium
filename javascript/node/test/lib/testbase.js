@@ -20,8 +20,9 @@ require('./_bootstrap')(module);
 var assert = require('assert'),
     webdriver = require('selenium-webdriver'),
     flow = webdriver.promise.controlFlow(),
+    testing = require('selenium-webdriver/testing'),
     fileserver = require('./fileserver'),
-    Server = require('./seleniumserver').Server;
+    seleniumserver = require('./seleniumserver');
 
 
 var Browser = {
@@ -39,170 +40,155 @@ var Browser = {
 };
 
 
-var currentBrowser;
-var server = new Server(), driver;
-
-
-(function() {
-  currentBrowser = process.env['SELENIUM_BROWSER'] || Browser.CHROME;
-  if (currentBrowser === Browser.IOS) {
-    throw Error('Invalid browser name: ' + currentBrowser);
-  }
-
-  for (var name in Browser) {
-    if (Browser[name] === currentBrowser) {
-      return;
+var browsersToTest = (function() {
+  var browsers = process.env['SELENIUM_BROWSER'] || Browser.CHROME;
+  browsers = browsers.split(',');
+  browsers.forEach(function(browser) {
+    if (browser === Browser.IOS) {
+      throw Error('Invalid browser name: ' + browser);
     }
-  }
-  throw Error('Unrecognized browser: ' + currentBrowser);
+
+    for (var name in Browser) {
+      if (Browser[name] === browser) {
+        return;
+      }
+    }
+
+    throw Error('Unrecognized browser: ' + browser);
+  });
+  return browsers;
 })();
 
 
 /**
  * Creates a predicate function that ignores tests for speific browsers.
+ * @param {string} currentBrowser The name of the current browser.
  * @param {...Browser} var_args Names of the browsers to ignore.
  */
-function browsers(var_args) {
-  var browserNames = Array.prototype.slice.apply(arguments, [0]);
+function browsers(currentBrowser, browsersToIgnore) {
   return function() {
     var checkIos =
         currentBrowser === Browser.IPAD || currentBrowser === Browser.IPHONE;
-    return browserNames.indexOf(currentBrowser) != -1 ||
-        (checkIos && browserNames.indexOf(Browser.IOS) != -1);
+    return browsersToIgnore.indexOf(currentBrowser) != -1 ||
+        (checkIos && browsersToIgnore.indexOf(Browser.IOS) != -1);
   };
 }
 
 
 /**
- * Wraps a function so that all passed arguments are ignored.
- * @param {!Function} fn The function to wrap.
- * @return {!Function} The wrapped function.
+ * @param {string} browserName The name to use.
+ * @constructor
  */
-function seal(fn) {
-  return function() {
-    fn();
+function TestEnvironment(browserName) {
+  var driver;
+
+  this.__defineGetter__('driver', function() { return driver; });
+
+  this.browsers = function(var_args) {
+    var browsersToIgnore = Array.prototype.slice.apply(arguments[0]);
+    return browsers(browserName, browsersToIgnore);
   };
-}
 
+  this.createDriver = function() {
+    if (!driver) {
+      driver = new webdriver.Builder().
+          withCapabilities({browserName: browserName}).
+          usingServer(server.address()).
+          build();
+    }
+    return driver;
+  };
 
-function wrapped(globalFn) {
-  return function() {
-    switch (arguments.length) {
-      case 1:
-        globalFn(asyncTestFn(arguments[0]));
-        break;
+  this.refreshDriver = function() {
+    if (driver) {
+      driver.quit();
+      driver = null;
+    }
+    this.createDriver();
+  };
 
-      case 2:
-        globalFn(arguments[0], asyncTestFn(arguments[1]));
-        break;
-
-      default:
-        throw Error('Invalid # arguments: ' + arguments.length);
+  this.dispose = function() {
+    if (driver) {
+      driver.quit();
+      driver = null;
     }
   };
 
-  function asyncTestFn(fn) {
-    return function(done) {
-      this.timeout(0);
-      flow.execute(fn).then(seal(done), done);
-    };
-  }
-}
-
-
-/**
- * Configures a test to be conditionally supressed.
- * @param {function(): boolean} predicateFn A predicate to call to determine
- *     if the test should be suppressed. This function MUST be synchronous.
- * @return {!Object} A wrapped version of exports.it that ignores tests as
- *     indicated by the predicate.
- */
-function ignore(predicateFn) {
-  var it = function(title, fn) {
-    if (predicateFn()) {
-      exports.xit(title, fn);
-    } else {
-      exports.it(title, fn);
-    }
-  };
-
-  it.only = function(title, fn) {
-    if (predicateFn()) {
-      exports.xit(title, fn);
-    } else {
-      exports.it(title, fn);
-    }
-  };
-
-  return {it: it};
-};
-
-
-function createDriver() {
-  if (!driver) {
-    driver = new webdriver.Builder().
-        withCapabilities({browserName: currentBrowser}).
-        usingServer(server.address()).
-        build();
-  }
-}
-
-function refreshDriver() {
-  if (driver) {
-    driver.quit();
-    driver = null;
-  }
-  createDriver();
-}
-
-
-// PUBLIC API
-
-
-exports.after = wrapped(after);
-exports.afterEach = wrapped(afterEach);
-exports.before = wrapped(before);
-exports.beforeEach = wrapped(beforeEach);
-
-exports.it = wrapped(it);
-exports.it.only = exports.iit = wrapped(it.only);
-exports.it.skip = exports.xit = wrapped(it.skip);
-
-exports.ignore = ignore;
-exports.browsers = browsers;
-exports.Browser = Browser;
-
-exports.refreshDriver = refreshDriver;
-exports.Pages = fileserver.Pages;
-exports.whereIs = fileserver.whereIs;
-exports.__defineGetter__('driver', function() { return driver; });
-
-exports.assertTitleIs = function(expected) {
-  driver.getTitle().then(function(title) {
-    assert.equal(expected, title);
-  });
-};
-
-exports.waitForTitleToBe = function(expected) {
-  driver.wait(function() {
-    return driver.getTitle().then(function(title) {
-      return title === expected;
+  this.assertTitleIs = function(expected) {
+    driver.getTitle().then(function(title) {
+      assert.equal(expected, title);
     });
-  }, 5000, 'Waiting for title to be ' + expected);
-};
+  };
+
+  this.waitForTitleToBe = function(expected) {
+    driver.wait(function() {
+      return driver.getTitle().then(function(title) {
+        return title === expected;
+      });
+    }, 5000, 'Waiting for title to be ' + expected);
+  };
+}
+
+
+var inSuite = false;
+
+
+/**
+ * Expands a function to cover each of the target browsers.
+ * @param {f}
+ * @param {function(!TestEnvironment)} fn The top level suite
+ *     function.
+ */
+function suite(fn) {
+  assert.ok(!inSuite, 'You may not nest suite calls');
+  inSuite = true;
+
+  try {
+    browsersToTest.forEach(function(browser) {
+
+      testing.describe('[' + browser + ']', function() {
+        var env = new TestEnvironment(browser);
+
+        testing.beforeEach(function() {
+          env.createDriver();
+        });
+
+        testing.after(function() {
+          env.dispose();
+        });
+
+        fn(env);
+      });
+    });
+  } finally {
+    inSuite = false;
+  }
+}
+
+
+var server = new seleniumserver.Server();
 
 
 // GLOBAL TEST SETUP
 
 
-exports.before(server.start.bind(server, 60 * 1000));
-exports.before(fileserver.start);
-exports.beforeEach(createDriver);
-exports.after(function() {
-  if (driver) {
-    driver.quit();
-    driver = null;
-  }
-});
-exports.after(server.stop.bind(server));
-exports.after(fileserver.stop);
+testing.before(server.start.bind(server, 60 * 1000));
+testing.before(fileserver.start);
+testing.after(server.stop.bind(server));
+testing.after(fileserver.stop);
+
+
+// PUBLIC API
+
+
+exports.suite = suite;
+exports.after = testing.after;
+exports.afterEach = testing.afterEach;
+exports.before = testing.before;
+exports.beforeEach = testing.beforeEach;
+exports.it = testing.it;
+exports.ignore = testing.ignore;
+
+exports.Browser = Browser;
+exports.Pages = fileserver.Pages;
+exports.whereIs = fileserver.whereIs;

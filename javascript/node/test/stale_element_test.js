@@ -23,12 +23,12 @@ var assert = require('assert'),
 
 var test = require('./lib/testbase'),
     Browser = test.Browser,
-    browsers = test.browsers,
     Pages = test.Pages;
 
-describe('', function() {
+
+test.suite(function(env) {
   var driver;
-  beforeEach(function() { driver = test.driver; });
+  beforeEach(function() { driver = env.driver; });
 
   test.it(
       'dynamically removing elements from the DOM trigger a ' +

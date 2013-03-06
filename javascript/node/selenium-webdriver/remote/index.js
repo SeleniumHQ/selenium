@@ -180,11 +180,13 @@ SeleniumServer.prototype.start = function(opt_timeoutMs) {
 
 
 /**
- * Stops the server if it is currently running.
+ * Stops the server if it is currently running. This function will kill the
+ * server immediately. To synchronize with the active control flow, use
+ * {@link #stop}.
  * @return {!webdriver.promise.Promise} A promise that will be resolved when
  *     the server has been stopped.
  */
-SeleniumServer.prototype.stop = function() {
+SeleniumServer.prototype.kill = function() {
   if (!this.address_) {
     return promise.resolved();  // Not currently running.
   }
@@ -205,6 +207,16 @@ SeleniumServer.prototype.stop = function() {
   return this.shutdownHook_;
 };
 
+
+/**
+ * Schedules a task in the current control flow to stop the server if it is
+ * currently running.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     the server has been stopped.
+ */
+SeleniumServer.prototype.stop = function() {
+  return promise.controlFlow().execute(this.kill.bind(this));
+};
 
 // PUBLIC API
 
