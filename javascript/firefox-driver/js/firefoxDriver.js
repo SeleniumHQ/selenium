@@ -361,17 +361,18 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   // Attach the listener to the DOM
   var addListener = function() {
     if (!doc.getUserData('webdriver-evaluate-attached')) {
-      var element = doc.createElement('script');
+      var parentNode = Utils.getMainDocumentElement(doc);
+      var element = Utils.isSVG(doc) ? doc.createElementNS("http://www.w3.org/2000/svg", "script") : doc.createElement('script');
       element.setAttribute('type', 'text/javascript');
-      element.innerHTML = FirefoxDriver.listenerScript;
-      doc.body.appendChild(element);
-      element.parentNode.removeChild(element);
+      element.textContent = FirefoxDriver.listenerScript;
+      parentNode.appendChild(element);
+      parentNode.removeChild(element);
     }
     timer.runWhenTrue(checkScriptLoaded, runScript, 10000, scriptLoadTimeOut);
   };
 
   var checkDocBodyLoaded = function() {
-    return !!doc.body;
+    return !!Utils.getMainDocumentElement(doc);
   };
 
   timer.runWhenTrue(checkDocBodyLoaded, addListener, 10000, docBodyLoadTimeOut);
