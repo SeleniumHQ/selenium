@@ -95,7 +95,7 @@ std::string DocumentHost::GetPageSource() {
 
   CComPtr<IHTMLElement> document_element;
   HRESULT hr = doc3->get_documentElement(&document_element);
-  if (FAILED(hr)) {
+  if (FAILED(hr) || document_element == NULL) {
     LOGHR(WARN, hr) << "Unable to get document element from page, call to IHTMLDocument3::get_documentElement failed";
     return "";
   }
