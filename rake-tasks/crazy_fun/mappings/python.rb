@@ -168,8 +168,9 @@ module Python
       task Tasks.new.task_name(dir, args[:name]) do
         dest = Platform.path_for(args[:dest])
         pip_pkg = "pip install #{args[:packages].join(' ')}"
-        virtualenv = "virtualenv --no-site-packages" + " #{dest}"
-        sh virtualenv, :verbose => true do |ok, res|
+        virtualenv = ["virtualenv", "--no-site-packages", " #{dest}"]
+        virtualenv += ["-p", ENV['pyversion']] if ENV['pyversion']
+        sh virtualenv.join(' '), :verbose => true do |ok, res|
           unless ok
             puts ""
             puts "PYTHON DEPENDENCY ERROR: Virtualenv not found."
