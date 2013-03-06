@@ -38,9 +38,10 @@ import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserOptions;
 import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
-import org.openqa.selenium.server.log.LoggingManager;
-import org.openqa.selenium.server.log.StdOutHandler;
-import org.openqa.selenium.server.log.TerseFormatter;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.LoggingOptions;
+import org.openqa.selenium.remote.server.log.StdOutHandler;
+import org.openqa.selenium.remote.server.log.TerseFormatter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -63,7 +64,7 @@ public class BrowserSessionFactoryUnitTest {
   }
 
   private void configureLogging() throws Exception {
-    LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
+    LoggingManager.configureLogging(new LoggingOptions(), true);
     Logger logger = Logger.getLogger("");
     for (Handler handler : logger.getHandlers()) {
       if (handler instanceof StdOutHandler) {

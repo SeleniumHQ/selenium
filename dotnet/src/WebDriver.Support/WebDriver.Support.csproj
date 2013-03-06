@@ -82,7 +82,8 @@
     <Compile Include="PageObjects\FindsByAttribute.cs" />
     <Compile Include="PageObjects\How.cs" />
     <Compile Include="PageObjects\PageFactory.cs" />
-    <Compile Include="PageObjects\WebElementProxyComparer.cs" />
+    <Compile Include="PageObjects\WebElementListProxy.cs" />
+    <Compile Include="PageObjects\WebElementProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\DefaultWait.cs" />
     <Compile Include="UI\ExpectedConditions.cs">
@@ -105,9 +106,6 @@
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\..\..\third_party\dotnet\Castle.Core.3.2.0\net40\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>

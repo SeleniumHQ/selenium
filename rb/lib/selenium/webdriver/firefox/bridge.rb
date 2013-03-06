@@ -11,7 +11,11 @@ module Selenium
           http_client = opts.delete(:http_client)
           proxy       = opts.delete(:proxy)
 
-          @launcher   = create_launcher(port, profile)
+          caps = opts.delete(:desired_capabilities) do
+            Remote::Capabilities.firefox(:native_events => DEFAULT_ENABLE_NATIVE_EVENTS)
+          end
+
+          @launcher = create_launcher(port, profile)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -19,7 +23,6 @@ module Selenium
 
           @launcher.launch
 
-          caps = Remote::Capabilities.firefox(:native_events => DEFAULT_ENABLE_NATIVE_EVENTS)
           caps.proxy = proxy if proxy
 
           remote_opts = {

@@ -1,3 +1,16 @@
+2.31.0 (2013-03-02)
+===================
+
+Remote:
+  * Expose session_id on the remote driver when used directly (#5240).
+Firefox:
+  * Native events in Firefox 19
+Opera:
+  * Treat UNSPECIFIED proxy type as a nil proxy (#5081).
+Other:
+  * Add ability to pass :desired_capabilities to all the Ruby drivers, not just for :remote.
+    Direct arguments take presendence. (#5078, see also https://github.com/SeleniumHQ/selenium/pull/8, https://github.com/SeleniumHQ/selenium/pull/11)
+
 2.30.0 (2013-02-20)
 ===================
 
@@ -57,7 +70,7 @@ Firefox:
   * FIXED: 4165: WebDriver fails on a machine with no IP address.
 Safari:
   * Fixed SafariDriver to allow calling .quit() consecutively without error.
-  * FIXED: 4676: Unable to fire javascript events into SVG's. 
+  * FIXED: 4676: Unable to fire javascript events into SVG's.
   * FIXED: 3969: SafariDriver should auto-dismiss alerts.
 IE:
   * FIXED: 4535: Hover still does not work perfectly in IE.

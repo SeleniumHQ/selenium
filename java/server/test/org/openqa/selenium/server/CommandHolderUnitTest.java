@@ -28,9 +28,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.openqa.selenium.server.log.LoggingManager;
-import org.openqa.selenium.server.log.StdOutHandler;
-import org.openqa.selenium.server.log.TerseFormatter;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.LoggingOptions;
+import org.openqa.selenium.remote.server.log.StdOutHandler;
+import org.openqa.selenium.remote.server.log.TerseFormatter;
 import org.openqa.selenium.testworker.TrackableRunnable;
 import org.openqa.selenium.testworker.TrackableThread;
 
@@ -61,7 +62,7 @@ public class CommandHolderUnitTest {
   }
 
   private void configureLogging() throws Exception {
-    LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
+    LoggingManager.configureLogging(new LoggingOptions(), true);
     Logger logger = Logger.getLogger("");
     for (Handler handler : logger.getHandlers()) {
       if (handler instanceof StdOutHandler) {
@@ -73,7 +74,7 @@ public class CommandHolderUnitTest {
 
   @After
   public void tearDown() throws Exception {
-    LoggingManager.configureLogging(new RemoteControlConfiguration(), false);
+    LoggingManager.configureLogging(new LoggingOptions(), false);
   }
 
   @Test

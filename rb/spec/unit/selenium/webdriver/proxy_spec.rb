@@ -82,6 +82,10 @@ module Selenium
         proxy.should == other
       end
 
+      it 'deserializes to nil if proxyType is UNSPECIFIED' do
+        Proxy.json_create('proxyType' => 'UNSPECIFIED').should be_nil
+      end
     end
+
   end
 end

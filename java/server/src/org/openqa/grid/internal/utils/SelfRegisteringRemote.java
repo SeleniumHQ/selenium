@@ -36,7 +36,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;

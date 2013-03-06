@@ -21,6 +21,7 @@ package org.openqa.selenium.server;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.server.log.LoggingOptions;
 
 import java.io.File;
 
@@ -67,18 +68,12 @@ public class RemoteControlConfiguration {
   private String dontInjectRegex;
   private File firefoxProfileTemplate;
   private boolean reuseBrowserSessions;
-  private boolean captureLogsOnQuit;
-  private String logOutFileName;
   private String forcedBrowserMode;
   private boolean honorSystemProxy;
   private int timeoutInSeconds;
   private int browserTimeoutInMs;
   private int retryTimeoutInSeconds;
-  /**
-   * useful for situations where Selenium is being invoked programatically and the outside container
-   * wants to own logging
-   */
-  private boolean dontTouchLogging = false;
+  private LoggingOptions loggingOptions;
   private boolean ensureCleanSession;
   private boolean avoidProxy;
   private boolean debugMode;
@@ -91,7 +86,6 @@ public class RemoteControlConfiguration {
 
   public RemoteControlConfiguration() {
     this.port = getDefaultPort();
-    this.logOutFileName = getDefaultLogOutFile();
     this.profilesLocation = null;
     this.proxyInjectionModeArg = false;
     this.portDriversShouldContact = USE_SAME_PORT;
@@ -100,7 +94,7 @@ public class RemoteControlConfiguration {
     this.debugURL = "";
     this.dontInjectRegex = null;
     this.firefoxProfileTemplate = null;
-    this.dontTouchLogging = false;
+    this.loggingOptions = new LoggingOptions();
   }
 
   public int getPort() {
@@ -243,37 +237,27 @@ public class RemoteControlConfiguration {
   }
   
   public void setCaptureLogsOnQuit(boolean captureLogs) {
-    captureLogsOnQuit = captureLogs;
+    loggingOptions.setCaptureLogsOnQuit(captureLogs);
   }
   
   public boolean isCaptureOfLogsOnQuitEnabled() {
-    return captureLogsOnQuit;
+    return loggingOptions.isCaptureOfLogsOnQuitEnabled();
   }
 
   public void setLogOutFileName(String newLogOutFileName) {
-    logOutFileName = newLogOutFileName;
+    loggingOptions.setLogOutFileName(newLogOutFileName);
   }
 
   public String getLogOutFileName() {
-    return logOutFileName;
+    return loggingOptions.getLogOutFileName();
   }
 
   public void setLogOutFile(File newLogOutFile) {
-    logOutFileName = (null == newLogOutFile) ? null : newLogOutFile.getAbsolutePath();
+    loggingOptions.setLogOutFile(newLogOutFile);
   }
 
   public File getLogOutFile() {
-    return (null == logOutFileName) ? null : new File(logOutFileName);
-  }
-
-  public static String getDefaultLogOutFile() {
-    final String logOutFileProperty;
-
-    logOutFileProperty = System.getProperty("selenium.LOGGER");
-    if (null == logOutFileProperty) {
-      return null;
-    }
-    return new File(logOutFileProperty).getAbsolutePath();
+    return loggingOptions.getLogOutFile();
   }
 
   public void setForcedBrowserMode(String newForcedBrowserMode) {
@@ -335,15 +319,15 @@ public class RemoteControlConfiguration {
   }
 
   public boolean dontTouchLogging() {
-    return dontTouchLogging;
+    return loggingOptions.dontTouchLogging();
   }
 
   public void setDontTouchLogging(boolean newValue) {
-    this.dontTouchLogging = newValue;
+    loggingOptions.setDontTouchLogging(newValue);
   }
 
   public int shortTermMemoryLoggerCapacity() {
-    return 30;
+    return loggingOptions.shortTermMemoryLoggerCapacity();
   }
 
 
@@ -420,5 +404,9 @@ public class RemoteControlConfiguration {
     }
 
     caps.setCapability(key, value);
+  }
+
+  public LoggingOptions getLoggingOptions() {
+    return loggingOptions;
   }
 }

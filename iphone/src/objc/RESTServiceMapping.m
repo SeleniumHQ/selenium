@@ -87,7 +87,7 @@
   // Extract requested URI
   if (query != nil) {
     *uri = [request url];
-    *query = [*uri relativeString];
+    *query = [*uri path];
   }
   
   // Extract POST data

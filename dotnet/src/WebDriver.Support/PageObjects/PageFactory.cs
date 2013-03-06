@@ -21,7 +21,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
-using Castle.DynamicProxy;
 using OpenQA.Selenium.Interactions.Internal;
 using OpenQA.Selenium.Internal;
 
@@ -32,8 +31,6 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// </summary>
     public sealed class PageFactory
     {
-        private static ProxyGenerator generator = new ProxyGenerator();
-
         /// <summary>
         /// Prevents a default instance of the PageFactory class from being created.
         /// </summary>
@@ -59,7 +56,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// if a field or property decorated with the <see cref="FindsByAttribute"/> is not of type
         /// <see cref="IWebElement"/> or IList{IWebElement}.
         /// </exception>
-       public static T InitElements<T>(IWebDriver driver)
+        public static T InitElements<T>(IWebDriver driver)
         {
             T page = default(T);
             Type pageClassType = typeof(T);
@@ -105,54 +102,18 @@ namespace OpenQA.Selenium.Support.PageObjects
 
             foreach (var member in members)
             {
-                List<By> bys = new List<By>();
-                bool cache = false;
-                var attributes = Attribute.GetCustomAttributes(member, typeof(FindsByAttribute), true);
-                if (attributes.Length > 0)
+                List<By> bys = CreateLocatorList(member);
+                if (bys.Count > 0)
                 {
-                    Array.Sort(attributes);
-                    foreach (var attribute in attributes)
-                    {
-                        var castedAttribute = (FindsByAttribute)attribute;
-                        if (castedAttribute.Using == null)
-                        {
-                            castedAttribute.Using = member.Name;
-                        }
-
-                        bys.Add(castedAttribute.Finder);
-                    }
-
-                    var cacheAttributeType = typeof(CacheLookupAttribute);
-                    cache = member.GetCustomAttributes(cacheAttributeType, true).Length != 0 || member.DeclaringType.GetCustomAttributes(cacheAttributeType, true).Length != 0;
+                    bool cache = ShouldCacheLookup(member);
                     
                     object proxyObject = null;
-                    IInterceptor interceptor = null;
-                    var options = new ProxyGenerationOptions
-                        {
-                            BaseTypeForInterfaceProxy = typeof(WebElementProxyComparer)
-                        };
-
                     var field = member as FieldInfo;
                     var property = member as PropertyInfo;
                     if (field != null)
                     {
-                        if (field.FieldType == typeof(IList<IWebElement>))
-                        {
-                            interceptor = new ProxiedWebElementCollectionInterceptor(driver, bys, cache);
-                            proxyObject = generator.CreateInterfaceProxyWithoutTarget(
-                                typeof(IList<IWebElement>),
-                                interceptor);
-                        }
-                        else if (field.FieldType == typeof(IWebElement))
-                        {
-                            interceptor = new ProxiedWebElementInterceptor(driver, bys, cache);
-                            proxyObject = generator.CreateInterfaceProxyWithoutTarget(
-                                typeof(IWrapsElement),
-                                new[] { field.FieldType, typeof(ILocatable) },
-                                options,
-                                interceptor);
-                        }
-                        else
+                        proxyObject = CreateProxyObject(field.FieldType, driver, bys, cache);
+                        if (proxyObject == null)
                         {
                             throw new ArgumentException("Type of field '" + field.Name + "' is not IWebElement or IList<IWebElement>");
                         }
@@ -161,23 +122,8 @@ namespace OpenQA.Selenium.Support.PageObjects
                     }
                     else if (property != null)
                     {
-                        if (property.PropertyType == typeof(IList<IWebElement>))
-                        {
-                            interceptor = new ProxiedWebElementCollectionInterceptor(driver, bys, cache);
-                            proxyObject = generator.CreateInterfaceProxyWithoutTarget(
-                                typeof(IList<IWebElement>),
-                                interceptor);
-                        }
-                        else if (property.PropertyType == typeof(IWebElement))
-                        {
-                            interceptor = new ProxiedWebElementInterceptor(driver, bys, cache);
-                            proxyObject = generator.CreateInterfaceProxyWithoutTarget(
-                                typeof(IWrapsElement),
-                                new[] { property.PropertyType, typeof(ILocatable) },
-                                options,
-                                interceptor);
-                        }
-                        else
+                        proxyObject = CreateProxyObject(property.PropertyType, driver, bys, cache);
+                        if (proxyObject == null)
                         {
                             throw new ArgumentException("Type of property '" + property.Name + "' is not IWebElement or IList<IWebElement>");
                         }
@@ -188,204 +134,48 @@ namespace OpenQA.Selenium.Support.PageObjects
             }
         }
 
-        /// <summary>
-        /// Provides an interceptor to assist in creating the Page Object. This class cannot be inherited.
-        /// </summary>
-        private sealed class ProxiedWebElementCollectionInterceptor : IInterceptor, IList<IWebElement>
+        private static List<By> CreateLocatorList(MemberInfo member)
         {
-            private readonly ISearchContext searchContext;
-            private readonly IEnumerable<By> bys;
-            private readonly bool cache;
-            private List<IWebElement> collection = null;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ProxiedWebElementCollectionInterceptor"/> class.
-            /// </summary>
-            /// <param name="searchContext">The driver used to search for elements.</param>
-            /// <param name="bys">The list of methods by which to search for the elements.</param>
-            /// <param name="cache"><see langword="true"/> to cache the lookup to the element; otherwise, <see langword="false"/>.</param>
-            public ProxiedWebElementCollectionInterceptor(ISearchContext searchContext, IEnumerable<By> bys, bool cache)
+            List<By> bys = new List<By>();
+            var attributes = Attribute.GetCustomAttributes(member, typeof(FindsByAttribute), true);
+            if (attributes.Length > 0)
             {
-                this.searchContext = searchContext;
-                this.bys = bys;
-                this.cache = cache;
-            }
-
-            public int Count
-            {
-                get { return this.collection.Count; }
-            }
-
-            public bool IsReadOnly
-            {
-                get { return true; }
-            }
-
-            public IWebElement this[int index]
-            {
-                get
+                Array.Sort(attributes);
+                foreach (var attribute in attributes)
                 {
-                    return this.collection[index];
-                }
-
-                set
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            public bool Contains(IWebElement item)
-            {
-                return this.collection.Contains(item);
-            }
-
-            public void CopyTo(IWebElement[] array, int arrayIndex)
-            {
-                this.collection.CopyTo(array, arrayIndex);
-            }
-
-            public int IndexOf(IWebElement item)
-            {
-                return this.collection.IndexOf(item);
-            }
-
-            public IEnumerator<IWebElement> GetEnumerator()
-            {
-                return this.collection.GetEnumerator();
-            }
-
-            public void Add(IWebElement item)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Clear()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Insert(int index, IWebElement item)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void RemoveAt(int index)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool Remove(IWebElement item)
-            {
-                throw new NotImplementedException();
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return this.collection.GetEnumerator();
-            }
-
-            /// <summary>
-            /// Intercepts calls to methods on the class.
-            /// </summary>
-            /// <param name="invocation">An IInvocation object describing the actual implementation.</param>
-            public void Intercept(IInvocation invocation)
-            {
-                if (invocation == null)
-                {
-                    throw new ArgumentNullException("invocation", "invocation cannot be null");
-                }
-
-                if (!this.cache || this.collection == null)
-                {
-                    this.collection = new List<IWebElement>();
-                    foreach (var by in this.bys)
+                    var castedAttribute = (FindsByAttribute)attribute;
+                    if (castedAttribute.Using == null)
                     {
-                        ReadOnlyCollection<IWebElement> list = this.searchContext.FindElements(by);
-                        this.collection.AddRange(list);
+                        castedAttribute.Using = member.Name;
                     }
-                }
 
-                invocation.ReturnValue = invocation.GetConcreteMethod().Invoke(this.collection, invocation.Arguments);
+                    bys.Add(castedAttribute.Finder);
+                }
             }
+
+            return bys;
         }
 
-        /// <summary>
-        /// Provides an interceptor to assist in creating the Page Object. This class cannot be inherited.
-        /// </summary>
-        private sealed class ProxiedWebElementInterceptor : IInterceptor, IWrapsElement
+        private static bool ShouldCacheLookup(MemberInfo member)
         {
-            private readonly ISearchContext searchContext;
-            private readonly IEnumerable<By> bys;
-            private readonly bool cache;
-            private IWebElement cachedElement;
+            var cacheAttributeType = typeof(CacheLookupAttribute);
+            bool cache = member.GetCustomAttributes(cacheAttributeType, true).Length != 0 || member.DeclaringType.GetCustomAttributes(cacheAttributeType, true).Length != 0;
+            return cache;
+        }
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ProxiedWebElementInterceptor"/> class.
-            /// </summary>
-            /// <param name="searchContext">The driver used to search for element.</param>
-            /// <param name="bys">The list of methods by which to search for the elements.</param>
-            /// <param name="cache"><see langword="true"/> to cache the lookup to the element; otherwise, <see langword="false"/>.</param>
-            public ProxiedWebElementInterceptor(ISearchContext searchContext, IEnumerable<By> bys, bool cache)
+        private static object CreateProxyObject(Type memberType, ISearchContext driver, List<By> bys, bool cache)
+        {
+            object proxyObject = null;
+            if (memberType == typeof(IList<IWebElement>))
             {
-                this.searchContext = searchContext;
-                this.bys = bys;
-                this.cache = cache;
+                proxyObject = new WebElementListProxy(driver, bys, cache);
+            }
+            else if (memberType == typeof(IWebElement))
+            {
+                proxyObject = new WebElementProxy(driver, bys, cache);
             }
 
-            /// <summary>
-            /// Gets the element wrapped by this <see cref="ProxiedWebElementInterceptor"/>.
-            /// </summary>
-            public IWebElement WrappedElement
-            {
-                get
-                {
-                    if (this.cache && this.cachedElement != null)
-                    {
-                        return this.cachedElement;
-                    }
-
-                    string errorString = null;
-                    foreach (var by in this.bys)
-                    {
-                        try
-                        {
-                            this.cachedElement = this.searchContext.FindElement(by);
-                            return this.cachedElement;
-                        }
-                        catch (NoSuchElementException)
-                        {
-                            errorString = (errorString == null ? "Could not find element by: " : errorString + ", or: ") + by;
-                        }
-                    }
-
-                    throw new NoSuchElementException(errorString);
-                }
-            }
-
-            /// <summary>
-            /// Intercepts calls to methods on the class.
-            /// </summary>
-            /// <param name="invocation">An IInvocation object describing the actual implementation.</param>
-            public void Intercept(IInvocation invocation)
-            {
-                if (invocation == null)
-                {
-                    throw new ArgumentNullException("invocation", "invocation cannot be null");
-                }
-
-                if (invocation.Method.Name == "get_WrappedElement")
-                {
-                    invocation.ReturnValue = this.WrappedElement;
-                }
-                else if (invocation.Method.Name == "get_LocationOnScreenOnceScrolledIntoView" || invocation.Method.Name == "get_Coordinates")
-                {
-                    invocation.ReturnValue = invocation.GetConcreteMethod().Invoke(this.WrappedElement as ILocatable, invocation.Arguments);
-                }
-                else
-                {
-                    invocation.ReturnValue = invocation.GetConcreteMethod().Invoke(this.WrappedElement, invocation.Arguments);
-                }
-            }
+            return proxyObject;
         }
     }
 }

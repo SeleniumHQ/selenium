@@ -30,7 +30,7 @@ import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
-import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.util.List;
 import java.util.Set;

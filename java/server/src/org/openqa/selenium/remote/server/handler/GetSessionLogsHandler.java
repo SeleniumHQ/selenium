@@ -21,7 +21,7 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultType;
-import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import com.google.common.collect.ImmutableMap;
 

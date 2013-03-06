@@ -88,6 +88,16 @@ module Selenium
         !!(RUBY_PLATFORM =~ /cygwin/)
       end
 
+      def null_device
+        @null_device ||= (
+          if defined?(File::NULL)
+            File::NULL
+          else
+            Platform.windows? ? 'NUL' : '/dev/null'
+          end
+        )
+      end
+
       def wrap_in_quotes_if_necessary(str)
         windows? && !cygwin? ? %{"#{str}"} : str
       end
@@ -177,15 +187,16 @@ module Selenium
 end # Selenium
 
 if __FILE__ == $0
-  p :engine     => Selenium::WebDriver::Platform.engine,
-    :os         => Selenium::WebDriver::Platform.os,
-    :ruby187?   => Selenium::WebDriver::Platform.ruby187?,
-    :ruby19?    => Selenium::WebDriver::Platform.ruby19?,
-    :jruby?     => Selenium::WebDriver::Platform.jruby?,
-    :windows?   => Selenium::WebDriver::Platform.windows?,
-    :home       => Selenium::WebDriver::Platform.home,
-    :bitsize    => Selenium::WebDriver::Platform.bitsize,
-    :localhost  => Selenium::WebDriver::Platform.localhost,
-    :ip         => Selenium::WebDriver::Platform.ip,
-    :interfaces => Selenium::WebDriver::Platform.interfaces
+  p :engine      => Selenium::WebDriver::Platform.engine,
+    :os          => Selenium::WebDriver::Platform.os,
+    :ruby187?    => Selenium::WebDriver::Platform.ruby187?,
+    :ruby19?     => Selenium::WebDriver::Platform.ruby19?,
+    :jruby?      => Selenium::WebDriver::Platform.jruby?,
+    :windows?    => Selenium::WebDriver::Platform.windows?,
+    :home        => Selenium::WebDriver::Platform.home,
+    :bitsize     => Selenium::WebDriver::Platform.bitsize,
+    :localhost   => Selenium::WebDriver::Platform.localhost,
+    :ip          => Selenium::WebDriver::Platform.ip,
+    :interfaces  => Selenium::WebDriver::Platform.interfaces,
+    :null_device => Selenium::WebDriver::Platform.null_device
 end

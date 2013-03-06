@@ -24,8 +24,8 @@ import org.openqa.selenium.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
-import org.openqa.selenium.server.log.LoggingManager;
-import org.openqa.selenium.server.log.PerSessionLogHandler;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 
 import java.util.Collections;
 import java.util.HashSet;

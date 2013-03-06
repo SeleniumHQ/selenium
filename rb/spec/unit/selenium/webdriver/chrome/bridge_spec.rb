@@ -93,6 +93,30 @@ module Selenium
           caps['chrome.profile'].should == profile_data['zip']
           caps['chrome.extensions'].should == profile_data['extensions']
         end
+
+        it 'takes desired capabilities' do
+          custom_caps = Remote::Capabilities.new
+          custom_caps['chromeOptions'] = {'foo' => 'bar'}
+
+          http.should_receive(:call).with do |_, _, payload|
+            payload[:desiredCapabilities]['chromeOptions'].should include('foo' => 'bar')
+            resp
+          end
+
+          Bridge.new(:http_client => http, :desired_capabilities => custom_caps)
+        end
+
+        it 'lets direct arguments take presedence over capabilities' do
+          custom_caps = Remote::Capabilities.new
+          custom_caps['chromeOptions'] = {'args' => %w[foo bar]}
+
+          http.should_receive(:call).with do |_, _, payload|
+            payload[:desiredCapabilities]['chromeOptions']['args'].should == ['baz']
+            resp
+          end
+
+          Bridge.new(:http_client => http, :desired_capabilities => custom_caps, :args => %w[baz])
+        end
       end
 
     end # Chrome

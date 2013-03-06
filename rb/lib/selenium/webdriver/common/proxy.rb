@@ -101,6 +101,8 @@ module Selenium
 
       class << self
         def json_create(data)
+          return if data['proxyType'] == 'UNSPECIFIED'
+
           proxy = new
 
           proxy.type        = data['proxyType'].downcase.to_sym if data.has_key? 'proxyType'

@@ -1,0 +1,171 @@
+// Copyright 2013 Selenium committers
+// Copyright 2013 Software Freedom Conservancy
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+//     You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview Provides wrappers around the following global functions from
+ * Mocha's BDD interface:
+ *     after
+ *     afterEach
+ *     before
+ *     beforeEach
+ *     it
+ *     it.only
+ *     it.skip
+ *     xit
+ *
+ * The provided wrappers leverage the webdriver.promise.ControlFlow to simplify
+ * writing asynchronous tests:
+ *
+ * var webdriver = require('selenium-webdriver'),
+ *     remote = require('selenium-webdriver/remote'),
+ *     test = require('selenium-webdriver/testing');
+ *
+ * test.describe('Google Search', function() {
+ *   var driver, server;
+ *
+ *   test.before(function() {
+ *     server = new remote.SeleniumServer({
+ *       jar: 'path/to/selenium-server-standalone.jar'
+ *     });
+ *     server.start();
+ *
+ *     driver = new webdriver.Builder().
+ *         withCapabilities({'browserName': 'firefox'}).
+ *         usingServer(server.address()).
+ *         build();
+ *   });
+ *
+ *   test.after(function() {
+ *     driver.quit();
+ *     server.stop();
+ *   });
+ *
+ *   test.it('should append query to title', function() {
+ *     driver.get('http://www.google.com');
+ *     driver.findElement(webdriver.By.name('q')).sendKeys('webdriver');
+ *     driver.findElement(webdriver.By.name('btnG')).click();
+ *     driver.wait(function() {
+ *       return driver.getTitle().then(function(title) {
+ *         return 'webdriver - Google Search' === title;
+ *       });
+ *     }, 1000, 'Waiting for title to update');
+ *   });
+ * });
+ *
+ * You may conditionally suppress a test function using the exported
+ * "ignore" function. If the provided predicate returns true, the attached
+ * test case will be skipped:
+ *
+ *   test.ignore(maybe()).it('is flaky', function() {
+ *     if (Math.random() < 0.5) throw Error();
+ *   });
+ *
+ *   function maybe() { return Math.random() < 0.5; }
+ */
+
+var assert = require('assert');
+
+var flow = require('..').promise.controlFlow();
+
+
+/**
+ * Wraps a function so that all passed arguments are ignored.
+ * @param {!Function} fn The function to wrap.
+ * @return {!Function} The wrapped function.
+ */
+function seal(fn) {
+  return function() {
+    fn();
+  };
+}
+
+
+/**
+ * Wraps a function on Mocha's BDD interface so it runs inside a
+ * webdriver.promise.ControlFlow and waits for the flow to complete before
+ * continuing.
+ * @param {!Function} globalFn The function to wrap.
+ * @return {!Function} The new function.
+ */
+function wrapped(globalFn) {
+  return function() {
+    switch (arguments.length) {
+      case 1:
+        globalFn(asyncTestFn(arguments[0]));
+        break;
+
+      case 2:
+        globalFn(arguments[0], asyncTestFn(arguments[1]));
+        break;
+
+      default:
+        throw Error('Invalid # arguments: ' + arguments.length);
+    }
+  };
+
+  function asyncTestFn(fn) {
+    return function(done) {
+      this.timeout(0);
+      flow.execute(fn).then(seal(done), done);
+    };
+  }
+}
+
+
+/**
+ * Ignores the test chained to this function if the provided predicate returns
+ * true.
+ * @param {function(): boolean} predicateFn A predicate to call to determine
+ *     if the test should be suppressed. This function MUST be synchronous.
+ * @return {!Object} A wrapped version of exports.it that ignores tests as
+ *     indicated by the predicate.
+ */
+function ignore(predicateFn) {
+  var it = function(title, fn) {
+    if (predicateFn()) {
+      exports.xit(title, fn);
+    } else {
+      exports.it(title, fn);
+    }
+  };
+
+  it.only = function(title, fn) {
+    if (predicateFn()) {
+      exports.xit(title, fn);
+    } else {
+      exports.it(title, fn);
+    }
+  };
+
+  return {it: it};
+};
+
+
+// PUBLIC API
+
+
+exports.describe = global.describe;
+exports.xdescribe = global.xdescribe;
+
+exports.after = wrapped(after);
+exports.afterEach = wrapped(afterEach);
+exports.before = wrapped(before);
+exports.beforeEach = wrapped(beforeEach);
+
+exports.it = wrapped(it);
+exports.it.only = exports.iit = wrapped(it.only);
+exports.it.skip = exports.xit = wrapped(it.skip);
+
+exports.ignore = ignore;

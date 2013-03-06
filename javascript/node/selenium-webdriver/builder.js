@@ -18,7 +18,28 @@ var base = require('./_base'),
 var goog = base.require('goog'),
     AbstractBuilder = base.require('webdriver.AbstractBuilder'),
     WebDriver = base.require('webdriver.WebDriver'),
-    HttpExecutor = base.require('webdriver.http.Executor');
+    HttpExecutor = base.require('webdriver.http.Executor'),
+    promise = base.require('webdriver.promise');
+
+
+
+/**
+ * Wraps a promised {@link webdriver.CommandExecutor}, ensuring no commands
+ * are executed until the wrapped executor has been fully built.
+ * @param {!webdriver.promise.Promise.<!webdriver.CommandExecutor>} delegate The
+ *     promised delegate.
+ * @constructor
+ * @implements {webdriver.CommandExecutor}
+ */
+var DeferredExecutor = function(delegate) {
+
+  /** @override */
+  this.execute = function(command, callback) {
+    delegate.then(function(executor) {
+      executor.execute(command, callback);
+    }, callback);
+  };
+};
 
 
 
@@ -37,8 +58,11 @@ goog.inherits(Builder, AbstractBuilder);
  * @override
  */
 Builder.prototype.build = function() {
-  var client = new HttpClient(this.getServerUrl());
-  var executor = new HttpExecutor(client);
+  var serverUrl = this.getServerUrl();
+  var executor = new DeferredExecutor(promise.when(serverUrl, function(url) {
+    var client = new HttpClient(url);
+    return new HttpExecutor(client);
+  }));
 
   if (this.getSession()) {
     return WebDriver.attachToSession(executor, this.getSession());
