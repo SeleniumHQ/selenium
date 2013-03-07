@@ -17,7 +17,7 @@ limitations under the License.
 package org.openqa.selenium.support.pagefactory;
 
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.SlowLoadableComponent;
@@ -44,16 +44,16 @@ public class AjaxElementLocator extends DefaultElementLocator {
   /**
    * Main constructor.
    * 
-   * @param driver The WebDriver to use when locating elements
+   * @param searchContext The context to use when finding the element
    * @param field The field representing this element
    * @param timeOutInSeconds How long to wait for the element to appear. Measured in seconds.
    */
-  public AjaxElementLocator(WebDriver driver, Field field, int timeOutInSeconds) {
-    this(new SystemClock(), driver, field, timeOutInSeconds);
+  public AjaxElementLocator(SearchContext searchContext, Field field, int timeOutInSeconds) {
+    this(new SystemClock(), searchContext, field, timeOutInSeconds);
   }
 
-  public AjaxElementLocator(Clock clock, WebDriver driver, Field field, int timeOutInSeconds) {
-    super(driver, field);
+  public AjaxElementLocator(Clock clock, SearchContext searchContext, Field field, int timeOutInSeconds) {
+    super(searchContext, field);
     this.timeOutInSeconds = timeOutInSeconds;
     this.clock = clock;
   }
@@ -102,7 +102,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
 
   /**
    * By default, elements are considered "found" if they are in the DOM. Override this method in
-   * order to change whether or not you consider the elemet loaded. For example, perhaps you need
+   * order to change whether or not you consider the element loaded. For example, perhaps you need
    * the element to be displayed:
    * 
    * <pre class="code>
