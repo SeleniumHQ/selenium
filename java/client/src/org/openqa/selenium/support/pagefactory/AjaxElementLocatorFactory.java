@@ -16,20 +16,20 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.SearchContext;
 
 import java.lang.reflect.Field;
 
 public class AjaxElementLocatorFactory implements ElementLocatorFactory {
-  private final WebDriver driver;
+  private final SearchContext searchContext;
   private final int timeOutInSeconds;
 
-  public AjaxElementLocatorFactory(WebDriver driver, int timeOutInSeconds) {
-    this.driver = driver;
+  public AjaxElementLocatorFactory(SearchContext searchContext, int timeOutInSeconds) {
+    this.searchContext = searchContext;
     this.timeOutInSeconds = timeOutInSeconds;
   }
 
   public ElementLocator createLocator(Field field) {
-    return new AjaxElementLocator(driver, field, timeOutInSeconds);
+    return new AjaxElementLocator(searchContext, field, timeOutInSeconds);
   }
 }
