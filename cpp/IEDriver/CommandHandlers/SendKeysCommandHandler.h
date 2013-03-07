@@ -91,13 +91,15 @@ class SendKeysCommandHandler : public IECommandHandler {
           return;
         }
 
-        CComQIPtr<IHTMLElement> element(element_wrapper->element());
+        CComPtr<IHTMLElement> element(element_wrapper->element());
 
         LocationInfo location = {};
         element_wrapper->GetLocationOnceScrolledIntoView(executor.input_manager()->scroll_behavior(), &location);
 
-        CComQIPtr<IHTMLInputFileElement> file(element);
-        CComQIPtr<IHTMLInputElement> input(element);
+        CComPtr<IHTMLInputFileElement> file;
+        element->QueryInterface<IHTMLInputFileElement>(&file);
+        CComPtr<IHTMLInputElement> input;
+        element->QueryInterface<IHTMLInputElement>(&input);
         CComBSTR element_type;
         if (input) {
           input->get_type(&element_type);
@@ -288,7 +290,8 @@ class SendKeysCommandHandler : public IECommandHandler {
     bool has_focus = false;
     CComPtr<IDispatch> dispatch;
     element->get_document(&dispatch);
-    CComQIPtr<IHTMLDocument2> document(dispatch);
+    CComPtr<IHTMLDocument2> document;
+    dispatch->QueryInterface<IHTMLDocument2>(&document);
 
     // If the element we want is already the focused element, we're done.
     CComPtr<IHTMLElement> active_element;
@@ -298,7 +301,8 @@ class SendKeysCommandHandler : public IECommandHandler {
       }
     }
 
-    CComQIPtr<IHTMLElement2> element2(element);
+    CComPtr<IHTMLElement2> element2;
+    element->QueryInterface<IHTMLElement2>(&element2);
     element2->focus();
 
     clock_t max_wait = clock() + 1000;
@@ -306,7 +310,8 @@ class SendKeysCommandHandler : public IECommandHandler {
       wait(1);
       CComPtr<IHTMLElement> active_wait_element;
       if (document->get_activeElement(&active_wait_element) == S_OK) {
-        CComQIPtr<IHTMLElement2> active_wait_element2(active_wait_element);
+        CComPtr<IHTMLElement2> active_wait_element2;
+        active_wait_element->QueryInterface<IHTMLElement2>(&active_wait_element2);
         if (element2.IsEqualObject(active_wait_element2)) {
           this->SetInsertionPoint(element);
           has_focus = true;
@@ -324,12 +329,14 @@ class SendKeysCommandHandler : public IECommandHandler {
 
   bool SetInsertionPoint(IHTMLElement* element) {
     CComPtr<IHTMLTxtRange> range;
-    CComQIPtr<IHTMLInputTextElement> input_element(element);
-    if (input_element) {
+    CComPtr<IHTMLInputTextElement> input_element;
+    HRESULT hr = element->QueryInterface<IHTMLInputTextElement>(&input_element);
+    if (SUCCEEDED(hr) && input_element) {
       input_element->createTextRange(&range);
     } else {
-      CComQIPtr<IHTMLTextAreaElement> text_area_element(element);
-      if (text_area_element) {
+      CComPtr<IHTMLTextAreaElement> text_area_element;
+      hr = element->QueryInterface<IHTMLTextAreaElement>(&text_area_element);
+      if (SUCCEEDED(hr) && text_area_element) {
         text_area_element->createTextRange(&range);
       }
     }

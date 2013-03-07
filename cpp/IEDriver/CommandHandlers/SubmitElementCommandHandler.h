@@ -55,7 +55,8 @@ class SubmitElementCommandHandler : public IECommandHandler {
       if (status_code == WD_SUCCESS) {
         // Use native events if we can. If not, use the automation atom.
         bool handled_with_native_events = false;
-        CComQIPtr<IHTMLInputElement> input(element_wrapper->element());
+        CComPtr<IHTMLInputElement> input;
+        element_wrapper->element()->QueryInterface<IHTMLInputElement>(&input);
         if (input) {
           CComBSTR type_name;
           input->get_type(&type_name);
@@ -102,10 +103,10 @@ class SubmitElementCommandHandler : public IECommandHandler {
  private:
   void SubmitElementCommandHandler::FindParentForm(IHTMLElement *element,
                                                    IHTMLFormElement **form_element) {
-    CComQIPtr<IHTMLElement> current(element);
-
+    CComPtr<IHTMLElement> current(element);
     while (current) {
-      CComQIPtr<IHTMLFormElement> form(current);
+      CComPtr<IHTMLFormElement> form;
+      current->QueryInterface<IHTMLFormElement>(&form);
       if (form) {
         *form_element = form.Detach();
         return;

@@ -384,7 +384,8 @@ int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* fram
         CComVariant rect_variant;
         hr = rects->item(&index, &rect_variant);
         if (SUCCEEDED(hr) && rect_variant.pdispVal) {
-          CComQIPtr<IHTMLRect> qi_rect(rect_variant.pdispVal);
+          CComPtr<IHTMLRect> qi_rect;
+          rect_variant.pdispVal->QueryInterface<IHTMLRect>(&qi_rect);
           if (qi_rect) {
             rect = qi_rect;
             if (RectHasNonZeroDimensions(rect)) {
@@ -416,9 +417,10 @@ int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* fram
     LOG(DEBUG) << "Element has client rect with zero dimension, checking children for non-zero dimension client rects";
     CComPtr<IHTMLDOMNode> node;
     element2->QueryInterface(&node);
-    CComPtr<IDispatch> childrenDispatch;
-    node->get_childNodes(&childrenDispatch);
-    CComQIPtr<IHTMLDOMChildrenCollection> children = childrenDispatch;
+    CComPtr<IDispatch> children_dispatch;
+    node->get_childNodes(&children_dispatch);
+    CComPtr<IHTMLDOMChildrenCollection> children;
+    children_dispatch->QueryInterface<IHTMLDOMChildrenCollection>(&children);
     if (!!children) {
       long childrenCount = 0;
       children->get_length(&childrenCount);
@@ -559,7 +561,8 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
       index.lVal = i;
       CComVariant result;
       hr = frames->item(&index, &result);
-      CComQIPtr<IHTMLWindow2> frame_window(result.pdispVal);
+      CComPtr<IHTMLWindow2> frame_window;
+      result.pdispVal->QueryInterface<IHTMLWindow2>(&frame_window);
       if (!frame_window) {
         // Frame is not an HTML frame.
         continue;
@@ -602,7 +605,8 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
                     << "Attempting alternative method.";
           long collection_count = 0;
           CComPtr<IDispatch> element_dispatch;
-          CComQIPtr<IHTMLDocument3> doc(parent_doc);
+          CComPtr<IHTMLDocument3> doc;
+          parent_doc->QueryInterface<IHTMLDocument3>(&doc);
           if (doc) {
             LOG(DEBUG) << "Looking for <iframe> elements in parent document.";
             BSTR iframe_tag_name = L"iframe";
@@ -641,7 +645,8 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
 
           // Wrap the element so we can find its location. Note that
           // GetLocation() may recursively call into this method.
-          CComQIPtr<IHTMLElement> frame_element(frame_base);
+          CComPtr<IHTMLElement> frame_element;
+          frame_base->QueryInterface<IHTMLElement>(&frame_element);
           Element element_wrapper(frame_element, this->containing_window_handle_);
           CComPtr<IHTMLStyle> style;
           frame_element->get_style(&style);
@@ -656,7 +661,8 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
           // finding offsets to get absolute position of elements 
           // within frames, the origin of the frame document is offset
           // by the border width.
-          CComQIPtr<IHTMLElement2> border_width_element(frame_element);
+          CComPtr<IHTMLElement2> border_width_element;
+          frame_element->QueryInterface<IHTMLElement2>(&border_width_element);
           long left_border_width = 0;
           border_width_element->get_clientLeft(&left_border_width);
           long top_border_width = 0;
@@ -807,14 +813,19 @@ int Element::GetDocumentFromWindow(IHTMLWindow2* parent_window,
     if (hr == E_ACCESSDENIED) {
       // Cross-domain documents may throw Access Denied. If so,
       // get the document through the IWebBrowser2 interface.
+      CComPtr<IServiceProvider> service_provider;
+      hr = parent_window->QueryInterface<IServiceProvider>(&service_provider);
+      if (FAILED(hr)) {
+        LOGHR(WARN, hr) << "Unable to get browser, call to IHTMLWindow2::QueryInterface failed for IServiceProvider";
+        return ENOSUCHDOCUMENT;
+      }
       CComPtr<IWebBrowser2> window_browser;
-      CComQIPtr<IServiceProvider> service_provider(parent_window);
       hr = service_provider->QueryService(IID_IWebBrowserApp, &window_browser);
       if (FAILED(hr)) {
         LOGHR(WARN, hr) << "Unable to get browser, call to IServiceProvider::QueryService failed for IID_IWebBrowserApp";
         return ENOSUCHDOCUMENT;
       }
-      CComQIPtr<IDispatch> parent_doc_dispatch;
+      CComPtr<IDispatch> parent_doc_dispatch;
       hr = window_browser->get_Document(&parent_doc_dispatch);
       if (FAILED(hr)) {
         LOGHR(WARN, hr) << "Unable to get document, call to IWebBrowser2::get_Document failed";
@@ -938,7 +949,8 @@ bool Element::IsAttachedToDom() {
   if (this->element_) {
     CComPtr<IHTMLElement> parent(this->element_);
     while (parent) {
-      CComQIPtr<IHTMLHtmlElement> html(parent);
+      CComPtr<IHTMLHtmlElement> html;
+      parent->QueryInterface<IHTMLHtmlElement>(&html);
       if (html) {
         return true;
       }

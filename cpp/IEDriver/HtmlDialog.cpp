@@ -26,14 +26,18 @@ HtmlDialog::~HtmlDialog(void) {
 }
 
 void HtmlDialog::AttachEvents() {
-  CComQIPtr<IDispatch> dispatch(this->window_);
-  CComPtr<IUnknown> unknown(dispatch);
+  CComPtr<IDispatch> dispatch;
+  this->window_->QueryInterface<IDispatch>(&dispatch);
+  CComPtr<IUnknown> unknown;
+  dispatch->QueryInterface<IUnknown>(&unknown);
   HRESULT hr = this->DispEventAdvise(unknown);
 }
 
 void HtmlDialog::DetachEvents() {
-  CComQIPtr<IDispatch> dispatch(this->window_);
-  CComPtr<IUnknown> unknown(dispatch);
+  CComPtr<IDispatch> dispatch;
+  this->window_->QueryInterface<IDispatch>(&dispatch);
+  CComPtr<IUnknown> unknown;
+  dispatch->QueryInterface<IUnknown>(&unknown);
   HRESULT hr = this->DispEventUnadvise(unknown);
 }
 

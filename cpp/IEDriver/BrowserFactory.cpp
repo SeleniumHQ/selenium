@@ -257,7 +257,8 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
     }
     if (SUCCEEDED(hr)) {
       // http://support.microsoft.com/kb/257717
-      CComQIPtr<IServiceProvider> provider(window);
+      CComPtr<IServiceProvider> provider;
+      window->QueryInterface<IServiceProvider>(&provider);
       if (provider) {
         CComPtr<IServiceProvider> child_provider;
         hr = provider->QueryService(SID_STopLevelBrowser,

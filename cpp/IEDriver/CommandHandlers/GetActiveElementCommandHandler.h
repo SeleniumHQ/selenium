@@ -53,9 +53,11 @@ class GetActiveElementCommandHandler : public IECommandHandler {
     // For some contentEditable frames, the <body> element will be the
     // active element. However, to properly have focus, we must explicitly
     // set focus to the element.
-    CComQIPtr<IHTMLBodyElement> body_element(element);
+    CComPtr<IHTMLBodyElement> body_element;
+    HRESULT body_hr = element->QueryInterface<IHTMLBodyElement>(&body_element);
     if (body_element) {
-      CComQIPtr<IHTMLElement2> body_element2(body_element);
+      CComPtr<IHTMLElement2> body_element2;
+      body_element->QueryInterface<IHTMLElement2>(&body_element2);
       body_element2->focus();
     }
 

@@ -135,8 +135,9 @@ class ClickElementCommandHandler : public IECommandHandler {
 
  private:
   bool IsOptionElement(ElementHandle element_wrapper) {
-    CComQIPtr<IHTMLOptionElement> option(element_wrapper->element());
-    return option != NULL;
+    CComPtr<IHTMLOptionElement> option;
+    HRESULT(hr) = element_wrapper->element()->QueryInterface<IHTMLOptionElement>(&option);
+    return SUCCEEDED(hr) && !!option;
   }
 
   static int ExecuteSyntheticEventClickAtom(IHTMLDocument2* doc, VARIANT element_variant) {

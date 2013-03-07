@@ -143,7 +143,8 @@ bool Script::ResultIsElementCollection() {
   LOG(TRACE) << "Entering Script::ResultIsElementCollection";
 
   if (this->result_.vt == VT_DISPATCH) {
-    CComQIPtr<IHTMLElementCollection> is_collection(this->result_.pdispVal);
+    CComPtr<IHTMLElementCollection> is_collection;
+    this->result_.pdispVal->QueryInterface<IHTMLElementCollection>(&is_collection);
     if (is_collection) {
       return true;
     }
@@ -155,7 +156,8 @@ bool Script::ResultIsElement() {
   LOG(TRACE) << "Entering Script::ResultIsElement";
 
   if (this->result_.vt == VT_DISPATCH) {
-    CComQIPtr<IHTMLElement> is_element(this->result_.pdispVal);
+    CComPtr<IHTMLElement> is_element;
+    this->result_.pdispVal->QueryInterface<IHTMLElement>(&is_element);
     if (is_element) {
       return true;
     }
@@ -304,8 +306,9 @@ int Script::Execute() {
 
   // If the script returned an IHTMLElement, we need to copy it to make it valid.
   if(VT_DISPATCH == result.vt) {
-    CComQIPtr<IHTMLElement> element(result.pdispVal);
-    if(element) {
+    CComPtr<IHTMLElement> element;
+    result.pdispVal->QueryInterface<IHTMLElement>(&element);
+    if (element) {
       IHTMLElement* &dom_element = *(reinterpret_cast<IHTMLElement**>(&result.pdispVal));
       hr = element.CopyTo(&dom_element);
     }

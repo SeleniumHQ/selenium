@@ -186,7 +186,8 @@ std::string Browser::GetWindowName() {
     return "";
   }
 
-  CComQIPtr<IHTMLDocument2> doc(dispatch);
+  CComPtr<IHTMLDocument2> doc;
+  dispatch->QueryInterface<IHTMLDocument2>(&doc);
   if (!doc) {
     LOGHR(WARN, hr) << "Have document but cannot cast, IDispatch::QueryInterface call failed";
     return "";
@@ -237,15 +238,19 @@ void Browser::SetHeight(long height) {
 
 void Browser::AttachEvents() {
   LOG(TRACE) << "Entering Browser::AttachEvents";
-  CComQIPtr<IDispatch> dispatch(this->browser_);
-  CComPtr<IUnknown> unknown(dispatch);
+  CComPtr<IDispatch> dispatch;
+  this->browser_->QueryInterface<IDispatch>(&dispatch);
+  CComPtr<IUnknown> unknown;
+  dispatch->QueryInterface<IUnknown>(&unknown);
   HRESULT hr = this->DispEventAdvise(unknown);
 }
 
 void Browser::DetachEvents() {
   LOG(TRACE) << "Entering Browser::DetachEvents";
-  CComQIPtr<IDispatch> dispatch(this->browser_);
-  CComPtr<IUnknown> unknown(dispatch);
+  CComPtr<IDispatch> dispatch;
+  this->browser_->QueryInterface<IDispatch>(&dispatch);
+  CComPtr<IUnknown> unknown;
+  dispatch->QueryInterface<IUnknown>(&unknown);
   HRESULT hr = this->DispEventUnadvise(unknown);
 }
 
@@ -406,7 +411,7 @@ bool Browser::Wait() {
 
   // Waiting for document property != null...
   is_navigating = this->is_navigation_started_;
-  CComQIPtr<IDispatch> document_dispatch;
+  CComPtr<IDispatch> document_dispatch;
   hr = this->browser_->get_Document(&document_dispatch);
   if (is_navigating && FAILED(hr) && !document_dispatch) {
     LOG(DEBUG) << "Get Document failed.";
@@ -470,7 +475,8 @@ bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
         return true;
       }
 
-      CComQIPtr<IHTMLWindow2> window(result.pdispVal);
+      CComPtr<IHTMLWindow2> window;
+      result.pdispVal->QueryInterface<IHTMLWindow2>(&window);
       if (!window) {
         // Frame is not an HTML frame.
         continue;
@@ -511,15 +517,21 @@ bool Browser::GetDocumentFromWindow(IHTMLWindow2* window,
   if (hr == E_ACCESSDENIED) {
     // Cross-domain documents may throw Access Denied. If so,
     // get the document through the IWebBrowser2 interface.
+    CComPtr<IServiceProvider> service_provider;
+    hr = window->QueryInterface<IServiceProvider>(&service_provider);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Unable to get browser, call to IHTMLWindow2::QueryService failed for IServiceProvider";
+      return false;
+    }
+
     CComPtr<IWebBrowser2> window_browser;
-    CComQIPtr<IServiceProvider> service_provider(window);
     hr = service_provider->QueryService(IID_IWebBrowserApp, &window_browser);
     if (FAILED(hr)) {
       LOGHR(WARN, hr) << "Unable to get browser, call to IServiceProvider::QueryService failed for IID_IWebBrowserApp";
       return false;
     }
 
-    CComQIPtr<IDispatch> document_dispatch;
+    CComPtr<IDispatch> document_dispatch;
     hr = window_browser->get_Document(&document_dispatch);
     if (FAILED(hr) || hr == S_FALSE) {
       LOGHR(WARN, hr) << "Unable to get document, call to IWebBrowser2::get_Document failed";
@@ -544,7 +556,7 @@ HWND Browser::GetTabWindowHandle() {
   LOG(TRACE) << "Entering Browser::GetTabWindowHandle";
 
   HWND hwnd = NULL;
-  CComQIPtr<IServiceProvider> service_provider;
+  CComPtr<IServiceProvider> service_provider;
   HRESULT hr = this->browser_->QueryInterface(IID_IServiceProvider,
                                               reinterpret_cast<void**>(&service_provider));
   if (SUCCEEDED(hr)) {

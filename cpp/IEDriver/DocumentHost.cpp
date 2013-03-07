@@ -83,19 +83,15 @@ std::string DocumentHost::GetPageSource() {
   this->GetDocument(&doc);
     
   CComPtr<IHTMLDocument3> doc3;
-  CComQIPtr<IHTMLDocument3> doc_qi_pointer(doc);
-  if (doc_qi_pointer) {
-    doc3 = doc_qi_pointer.Detach();
-  }
-
-  if (!doc3) {
+  HRESULT hr = doc->QueryInterface<IHTMLDocument3>(&doc3);
+  if (FAILED(hr) || !doc3) {
     LOG(WARN) << "Unable to get document object, QueryInterface to IHTMLDocument3 failed";
     return "";
   }
 
   CComPtr<IHTMLElement> document_element;
-  HRESULT hr = doc3->get_documentElement(&document_element);
-  if (FAILED(hr) || document_element == NULL) {
+  hr = doc3->get_documentElement(&document_element);
+  if (FAILED(hr) || !document_element) {
     LOGHR(WARN, hr) << "Unable to get document element from page, call to IHTMLDocument3::get_documentElement failed";
     return "";
   }
@@ -120,13 +116,14 @@ int DocumentHost::SetFocusedFrameByElement(IHTMLElement* frame_element) {
     return WD_SUCCESS;
   }
 
-  CComQIPtr<IHTMLFrameBase2> frame_base(frame_element);
+  CComPtr<IHTMLFrameBase2> frame_base;
+  frame_element->QueryInterface<IHTMLFrameBase2>(&frame_base);
   if (!frame_base) {
     LOG(WARN) << "IHTMLElement is not a FRAME or IFRAME element";
     return ENOSUCHFRAME;
   }
 
-  CComQIPtr<IHTMLWindow2> interim_result;
+  CComPtr<IHTMLWindow2> interim_result;
   hr = frame_base->get_contentWindow(&interim_result);
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Cannot get contentWindow from IHTMLFrameBase2, call to IHTMLFrameBase2::get_contentWindow failed";
@@ -143,10 +140,10 @@ int DocumentHost::SetFocusedFrameByName(const std::string& frame_name) {
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
 
-  CComQIPtr<IHTMLFramesCollection2> frames;
+  CComPtr<IHTMLFramesCollection2> frames;
   HRESULT hr = doc->get_frames(&frames);
 
-  if (frames == NULL) {
+  if (!frames) {
     LOG(WARN) << "No frames in document are set, IHTMLDocument2::get_frames returned NULL";
     return ENOSUCHFRAME;
   }
@@ -171,7 +168,8 @@ int DocumentHost::SetFocusedFrameByName(const std::string& frame_name) {
     return ENOSUCHFRAME;
   }
 
-  CComQIPtr<IHTMLWindow2> interim_result = frame_holder.pdispVal;
+  CComPtr<IHTMLWindow2> interim_result;
+  frame_holder.pdispVal->QueryInterface<IHTMLWindow2>(&interim_result);
   if (!interim_result) {
     LOG(WARN) << "Error retrieving frame, IDispatch cannot be cast to IHTMLWindow2";
     return ENOSUCHFRAME;
@@ -187,10 +185,10 @@ int DocumentHost::SetFocusedFrameByIndex(const int frame_index) {
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
 
-  CComQIPtr<IHTMLFramesCollection2> frames;
+  CComPtr<IHTMLFramesCollection2> frames;
   HRESULT hr = doc->get_frames(&frames);
 
-  if (frames == NULL) {
+  if (!frames) {
     LOG(WARN) << "No frames in document are set, IHTMLDocument2::get_frames returned NULL";
     return ENOSUCHFRAME;
   }
@@ -215,7 +213,8 @@ int DocumentHost::SetFocusedFrameByIndex(const int frame_index) {
     return ENOSUCHFRAME;
   }
 
-  CComQIPtr<IHTMLWindow2> interim_result = frame_holder.pdispVal;
+  CComPtr<IHTMLWindow2> interim_result;
+  frame_holder.pdispVal->QueryInterface<IHTMLWindow2>(&interim_result);
   if (!interim_result) {
     LOG(WARN) << "Error retrieving frame, IDispatch cannot be cast to IHTMLWindow2";
     return ENOSUCHFRAME;
@@ -417,7 +416,8 @@ HWND DocumentHost::FindContentWindowHandle(HWND top_level_window_handle) {
 
 int DocumentHost::GetDocumentMode(IHTMLDocument2* doc) {
   LOG(TRACE) << "Entering DocumentHost::GetDocumentMode";
-  CComQIPtr<IHTMLDocument6> mode_doc(doc);
+  CComPtr<IHTMLDocument6> mode_doc;
+  doc->QueryInterface<IHTMLDocument6>(&mode_doc);
   if (!mode_doc) {
     LOG(DEBUG) << "QueryInterface for IHTMLDocument6 fails, so document mode must be 7 or less.";
     return 5;
@@ -433,7 +433,8 @@ int DocumentHost::GetDocumentMode(IHTMLDocument2* doc) {
 
 bool DocumentHost::IsStandardsMode(IHTMLDocument2* doc) {
   LOG(TRACE) << "Entering DocumentHost::IsStandardsMode";
-  CComQIPtr<IHTMLDocument5> compatibility_mode_doc(doc);
+  CComPtr<IHTMLDocument5> compatibility_mode_doc;
+  doc->QueryInterface<IHTMLDocument5>(&compatibility_mode_doc);
   if (!compatibility_mode_doc) {
     LOG(WARN) << L"Unable to cast document to IHTMLDocument5. IE6 or greater is required.";
     return false;
@@ -466,7 +467,8 @@ bool DocumentHost::GetDocumentDimensions(IHTMLDocument2* doc, LocationInfo* info
       return false;
     }
   } else {
-    CComQIPtr<IHTMLDocument3> document_element_doc(doc);
+    CComPtr<IHTMLDocument3> document_element_doc;
+    doc->QueryInterface<IHTMLDocument3>(&document_element_doc);
     if (!document_element_doc) {
       LOG(WARN) << L"Unable to get IHTMLDocument3 handle from document.";
       return false;
@@ -479,7 +481,8 @@ bool DocumentHost::GetDocumentDimensions(IHTMLDocument2* doc, LocationInfo* info
       return false;
     }
 
-    CComQIPtr<IHTMLHtmlElement> html_element(canvas_element);
+    CComPtr<IHTMLHtmlElement> html_element;
+    canvas_element->QueryInterface<IHTMLHtmlElement>(&html_element);
     if (!html_element) {
       LOG(WARN) << L"Document element is not the HTML element.";
       return false;
