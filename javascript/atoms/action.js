@@ -169,6 +169,23 @@ bot.action.type = function(
     }
   }
 
+  // mobile safari (iPhone / iPad). one cannot 'type' in a date field
+  if (goog.userAgent.WEBKIT && element.type == 'date') {
+    var val = goog.isArray(values)? values = values.join("") : values;
+    if (val.match(/\d\d\d\d-\d\d-\d\d/)) {
+      // The following events get fired on iOS first
+      if (goog.userAgent.MOBILE && goog.userAgent.product.SAFARI) {
+        bot.events.fire(element, bot.events.EventType.TOUCHSTART);
+        bot.events.fire(element, bot.events.EventType.TOUCHEND);
+      }
+      bot.events.fire(element, bot.events.EventType.FOCUS);
+      element.value = val;
+      bot.events.fire(element, bot.events.EventType.CHANGE);
+      bot.events.fire(element, bot.events.EventType.BLUR);
+      return;
+    }
+  }
+
   if (goog.isArray(values)) {
     goog.array.forEach(values, typeValue);
   } else {

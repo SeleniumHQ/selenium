@@ -472,6 +472,12 @@
         assertFalse(keyboard.isPressed(SHIFT));
       });
     }
+
+    function testTypeDate() {
+      var dateInput = document.getElementById("date");
+      bot.action.type(dateInput, "2013-01-01");
+      assertEquals(dateInput.value, "2013-01-01");
+    }
   </script>
 </head>
 <body>
@@ -482,6 +488,7 @@
     <input type="password" id="password"/>
     <input type="email" id="email"/>
     <input type="search" id="search"/>
+    <input type="date" id="date"/>
     <textarea id="textarea"></textarea>
     <input type="text" id="inputCount"/>
     <input type="text" id="textInputCount"/>
