@@ -237,7 +237,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// matching the current criteria, or an empty list if nothing matches.</returns>
         public ReadOnlyCollection<IWebElement> FindElements(By by)
         {
-            return this.FindElements(by);
+            return this.WrappedElement.FindElements(by);
         }
 
         /// <summary>
