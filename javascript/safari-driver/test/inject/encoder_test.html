@@ -14,46 +14,41 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<title>page_test</title>
+<title>encoder_test</title>
 <script src="../test_bootstrap.js"></script>
 <script>
   goog.require('goog.testing.jsunit');
   goog.require('safaridriver.inject.Encoder');
 </script>
 <script>
-  function testGetElementCssSelector() {
-    var a1 = document.querySelector('div.a');
-    assertEquals('a.1', a1.innerHTML);
+  var encoder = new safaridriver.inject.Encoder({on: goog.nullFunction});
 
-    var css = safaridriver.inject.Encoder.getElementCssSelector_(a1);
-    assertEquals('html > body:nth-child(2) > div', css);
-    assertEquals(a1, document.querySelector(css));
 
-    var b1 = document.querySelector('div.b');
-    assertEquals('b.1', b1.innerHTML);
-    css = safaridriver.inject.Encoder.getElementCssSelector_(b1);
-    assertEquals(
-        'html > body:nth-child(2) > div:nth-child(3) > div > div', css);
-    assertEquals(b1, document.querySelector(css));
+  function runEncodingTest(el) {
+    var val = encoder.encode(el);
+    assertEquals(el, safaridriver.inject.Encoder.decode(val));
+    assertFalse(el.hasAttribute('safaridriver-encoding'));
+  }
 
-    var b2 = document.querySelectorAll('div.b')[1];
-    assertEquals('b.2', b2.innerHTML);
-    css = safaridriver.inject.Encoder.getElementCssSelector_(b2);
-    assertEquals(
-        'html > body:nth-child(2) > div:nth-child(3) > div > div:nth-child(4)',
-        css);
-    assertEquals(b2, document.querySelector(css));
 
-    var text = document.getElementById('text_field');
-    css = safaridriver.inject.Encoder.getElementCssSelector_(text);
-    assertEquals(
-        'html > body:nth-child(2) > div:nth-child(4) > form > input', css);
-    assertEquals(text, document.querySelector(css));
+  function testEncodingElements() {
+    runEncodingTest(document.querySelector('div.a'));
+    runEncodingTest(document.querySelector('div.b'));
+    runEncodingTest(document.querySelectorAll('div.b')[1]);
+    runEncodingTest(document.querySelector('#text_field'));
+    runEncodingTest(document.querySelector('#namespaced'));
+    runEncodingTest(document.querySelector('input#out_of_form_input'));
+    runEncodingTest(document.querySelector('form > input'));
+  }
 
-    var namespaced = document.getElementById('namespaced');
-    css = safaridriver.inject.Encoder.getElementCssSelector_(namespaced);
-    assertEquals('html > body:nth-child(2) > foo\\:bar:nth-child(5)', css);
-    assertEquals(namespaced, document.querySelector(css));
+  function testProperlyEncodesElementWhereTheSelectorMayBeAmbiguous() {
+    var val = encoder.encode(document.querySelector('div.a'));
+    var decoded = safaridriver.inject.Encoder.decode(val);
+    assertEquals('a.1', decoded.innerHTML);
+
+    val = encoder.encode(document.querySelectorAll('div.b')[1]);
+    decoded = safaridriver.inject.Encoder.decode(val);
+    assertEquals('b.2', decoded.innerHTML);
   }
 </script>
 <body>
@@ -73,4 +68,12 @@ limitations under the License.
   </form>
 </div>
 <foo:bar id="namespaced">a</foo:bar>
+<div>
+  <form action="javascript:void(0)">
+    <label for="form_input">Form input</label>
+    <input type="text" id="form_input">
+  </form>
+  <label for="out_of_form_input">Formless Input</label>
+  <input type="text" id="out_of_form_input">
+</div>
 </body>

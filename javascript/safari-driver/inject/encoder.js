@@ -69,6 +69,14 @@ safaridriver.inject.Encoder.ENCODED_ELEMENT_KEY_ =
 
 
 /**
+ * @type {string}
+ * @const
+ * @private
+ */
+safaridriver.inject.Encoder.ENCODING_ATTRIBUTE_NAME_ = 'safaridriver-encoding';
+
+
+/**
  * Computes the canonical CSSLocator locator for an element.
  * @param {!Element} element The element to compute a CSS selector for.
  * @return {string} The element's CSS selector.
@@ -94,6 +102,22 @@ safaridriver.inject.Encoder.getElementCssSelector_ = function(element) {
       path = tmp + ' > ' + path;
     }
   }
+
+  // In Safari 5.1.7, canonical CSS selectors will often fail to resolve,
+  // especially when the element is a descendant of a form. Try to work around
+  // this by setting a random attribute we can query. We don't use this
+  // attribute all the time because we want to avoid modifying the DOM whenever
+  // possible.
+  if (element.ownerDocument.querySelector(path) !== element ||
+      path.indexOf('form') != -1) {
+    var str = goog.string.getRandomString();
+    element.setAttribute(
+        safaridriver.inject.Encoder.ENCODING_ATTRIBUTE_NAME_, str)
+    path = element.tagName.toLowerCase() +
+        '[' + safaridriver.inject.Encoder.ENCODING_ATTRIBUTE_NAME_ +
+        '="' + str + '"]';
+  }
+
   return path;
 };
 
@@ -213,6 +237,8 @@ safaridriver.inject.Encoder.decode = function(value) {
           throw new bot.Error(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
               'Unable to locate encoded element: ' + css);
         }
+        element.removeAttribute(
+            safaridriver.inject.Encoder.ENCODING_ATTRIBUTE_NAME_);
         return element;
       }
       return goog.object.map(obj, safaridriver.inject.Encoder.decode);
