@@ -132,11 +132,12 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->input_manager_ = new InputManager();
   this->input_manager_->Initialize(&this->managed_elements_);
 
-  // Only execute atoms on a separate thread for IE 9 or below.
-  // Attempting this on IE 10 crashes unpredictably at the moment
-  // on Windows 8, and no one has a development environment available
-  // to debug the issue.
-  this->allow_asynchronous_javascript_ = this->factory_.browser_version() <= 9;
+  // Only execute atoms on a separate thread for IE 9 or below,
+  // or for IE 10 on Windows 7. Attempting this on IE 10 crashes
+  // unpredictably at the moment on Windows 8, and no one has a
+  // development environment available to debug the issue.
+  this->allow_asynchronous_javascript_ = this->factory_.browser_version() <= 9 || 
+                                         (this->factory_.windows_major_version() <= 6 && this->factory_.windows_minor_version() < 2);
   return 0;
 }
 

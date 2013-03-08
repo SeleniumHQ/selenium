@@ -716,6 +716,7 @@ void BrowserFactory::GetOSVersion() {
   osVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   ::GetVersionEx(&osVersion);
   this->windows_major_version_ = osVersion.dwMajorVersion;
+  this->windows_minor_version_ = osVersion.dwMinorVersion;
 }
 
 bool BrowserFactory::ProtectedModeSettingsAreValid() {

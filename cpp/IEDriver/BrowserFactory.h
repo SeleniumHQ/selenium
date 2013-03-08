@@ -85,7 +85,9 @@ class BrowserFactory {
                         const std::wstring& value_name,
                         std::wstring* value);
 
-  int browser_version(void) const { return ie_major_version_; }
+  int browser_version(void) const { return this->ie_major_version_; }
+  int windows_major_version(void) const { return this->windows_major_version_; }
+  int windows_minor_version(void) const { return this->windows_minor_version_; }
 
   static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
@@ -108,6 +110,7 @@ class BrowserFactory {
 
   int ie_major_version_;
   int windows_major_version_;
+  int windows_minor_version_;
   std::wstring ie_executable_location_;
 };
 
