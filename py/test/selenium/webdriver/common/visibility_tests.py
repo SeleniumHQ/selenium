@@ -67,7 +67,7 @@ class VisibilityTests(unittest.TestCase):
         try:
             element.click()
             self.fail("You should not be able to click on an invisible element")
-        except ElementNotVisibleException, e:
+        except ElementNotVisibleException as e:
             pass
 
     def testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed(self):
@@ -77,7 +77,7 @@ class VisibilityTests(unittest.TestCase):
         try:
             element.click()
             self.fail("You should not be able to click an invisible element")
-        except ElementNotVisibleException,e:
+        except ElementNotVisibleException as e:
             pass
 
     def testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed(self):
@@ -87,7 +87,7 @@ class VisibilityTests(unittest.TestCase):
         try:
             element.click()
             self.fail("You should not be able to click an invisible element")
-        except ElementNotVisibleException,e:
+        except ElementNotVisibleException as e:
             pass
 
     def testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed(self):
@@ -97,7 +97,7 @@ class VisibilityTests(unittest.TestCase):
         try:
             element.send_keys("You don't see me")
             self.fail("You should not be able to send keyboard input to an invisible element")
-        except ElementNotVisibleException,e:
+        except ElementNotVisibleException as e:
             pass
 
         self.assertTrue(element.get_attribute("value") is not "You don't see me")

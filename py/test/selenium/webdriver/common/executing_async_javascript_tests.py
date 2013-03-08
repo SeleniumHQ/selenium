@@ -109,7 +109,7 @@ class ExecutingAsyncJavaScriptTests(unittest.TestCase):
             #Script is expected to be async and explicitly callback, so this should timeout.
             self.driver.execute_async_script("return 1 + 2;")
             self.fail("Should have thrown a TimeOutException!")
-        except TimeoutException,e :
+        except TimeoutException as e :
             pass
     
     def testShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout(self): 
@@ -117,7 +117,7 @@ class ExecutingAsyncJavaScriptTests(unittest.TestCase):
         try: 
             self.driver.execute_async_script("window.setTimeout(function() {}, 0);")
             fail("Should have thrown a TimeOutException!")
-        except TimeoutException, e: 
+        except TimeoutException as e: 
             pass 
   
     def testShouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout(self): 
@@ -134,7 +134,7 @@ class ExecutingAsyncJavaScriptTests(unittest.TestCase):
                 """var callback = arguments[arguments.length - 1];
                 window.setTimeout(callback, 1500);""")
             self.fail("Should have thrown a TimeOutException!")
-        except TimeoutException,e: 
+        except TimeoutException as e: 
             pass
   
     def testShouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError(self): 
@@ -143,7 +143,7 @@ class ExecutingAsyncJavaScriptTests(unittest.TestCase):
         try: 
             self.driver.execute_async_script("window.location = '" + self._pageURL("dynamic") + "';")
             self.fail('Should have throw a WebDriverException')
-        except WebDriverException,expected:
+        except WebDriverException as expected:
             pass
   
     def testShouldCatchErrorsWhenExecutingInitialScript(self): 
@@ -151,7 +151,7 @@ class ExecutingAsyncJavaScriptTests(unittest.TestCase):
         try: 
             self.driver.execute_async_script("throw Error('you should catch this!');")
             self.fail("Should have thrown a WebDriverException")
-        except WebDriverException, expected:
+        except WebDriverException as expected:
             pass
     
     #@Ignore(value = ANDROID, CHROME,

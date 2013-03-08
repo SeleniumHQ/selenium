@@ -25,7 +25,7 @@ from selenium.common.exceptions import NoSuchElementException
 
 def not_available_on_remote(func):
     def testMethod(self):
-        print self.driver
+        print(self.driver)
         if type(self.driver) == 'remote':
             return lambda x: None
         else:
