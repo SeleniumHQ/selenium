@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 import com.google.common.annotations.VisibleForTesting;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Rotatable;
@@ -34,7 +35,6 @@ import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
@@ -214,8 +214,8 @@ public class DefaultSession implements Session {
     public EventFiringWebDriver call() throws Exception {
       WebDriver rawDriver = factory.newInstance(capabilities);
       Capabilities actualCapabilities = capabilities;
-      if (rawDriver instanceof RemoteWebDriver) {
-        actualCapabilities = ((RemoteWebDriver) rawDriver).getCapabilities();
+      if (rawDriver instanceof HasCapabilities) {
+        actualCapabilities = ((HasCapabilities) rawDriver).getCapabilities();
         isAndroid = actualCapabilities.getPlatform().is(Platform.ANDROID);
       }
       describedCapabilities = getDescription(rawDriver, actualCapabilities);
