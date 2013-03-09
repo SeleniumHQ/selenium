@@ -21,8 +21,6 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Closeables;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.os.CommandLine;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,20 +30,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
 import java.util.List;
-
-import static org.openqa.selenium.Platform.WINDOWS;
 
 /**
  * Utility methods for common filesystem activities
  */
 public class FileHandler {
-  private static final Method JDK6_CANEXECUTE = findJdk6CanExecuteMethod();
-  private static final Method JDK6_SETWRITABLE = findJdk6SetWritableMethod();
-  private static final Method JDK6_SETEXECUTABLE = findJdk6SetExecutableMethod();
 
   // TODO(simon): Move to using Zip class
   public static File unzip(InputStream resource) throws IOException {
@@ -115,24 +106,7 @@ public class FileHandler {
       return true;
     }
 
-    if (JDK6_SETWRITABLE != null) {
-      try {
-        return (Boolean) JDK6_SETWRITABLE.invoke(file, true);
-      } catch (IllegalAccessException e) {
-        // Do nothing. We return false in the end
-      } catch (InvocationTargetException e) {
-        // Do nothing. We return false in the end
-      }
-    } else if (!Platform.getCurrent().is(WINDOWS)) {
-      try {
-        CommandLine cmd = new CommandLine("chmod", "+w", file.getAbsolutePath());
-        cmd.execute();
-        return file.canWrite();
-      } catch (WebDriverException e1) {
-        throw new WebDriverException(e1);
-      }
-    }
-    return false;
+    return file.setWritable(true);
   }
 
   public static boolean makeExecutable(File file) throws IOException {
@@ -140,38 +114,11 @@ public class FileHandler {
       return true;
     }
 
-    if (JDK6_SETEXECUTABLE != null) {
-      try {
-        return (Boolean) JDK6_SETEXECUTABLE.invoke(file, true);
-      } catch (IllegalAccessException e) {
-        // Do nothing. We return false in the end
-      } catch (InvocationTargetException e) {
-        // Do nothing. We return false in the end
-      }
-    } else if (!Platform.getCurrent().is(WINDOWS)) {
-      try {
-        CommandLine cmd = new CommandLine("chmod", "+x", file.getAbsolutePath());
-        cmd.execute();
-        return canExecute(file) == Boolean.TRUE;
-      } catch (WebDriverException e1) {
-        throw new WebDriverException(e1);
-      }
-    }
-    return false;
+    return file.setExecutable(true);
   }
 
   public static Boolean canExecute(File file) {
-    if (JDK6_CANEXECUTE != null) {
-      try {
-        return (Boolean) JDK6_CANEXECUTE.invoke(file);
-      } catch (IllegalAccessException e) {
-        // Do nothing. We return false in the end
-      } catch (InvocationTargetException e) {
-        // Do nothing. We return false in the end
-      }
-    }
-    // Nothing sane we can do. Assume "true"
-    return true;
+    return file.canExecute();
   }
 
   public static boolean isZipped(String fileName) {
@@ -249,40 +196,6 @@ public class FileHandler {
     } finally {
       Closeables.close(out, false);
       Closeables.close(in, false);
-    }
-  }
-
-  /**
-   * File.canExecute appears in Java 6. If we find the method, we can use it
-   */
-  private static Method findJdk6CanExecuteMethod() {
-    try {
-      return File.class.getMethod("canExecute");
-    } catch (NoSuchMethodException e) {
-      return null;
-    }
-  }
-
-
-  /**
-   * File.setWritable appears in Java 6. If we find the method, we can use it
-   */
-  private static Method findJdk6SetWritableMethod() {
-    try {
-      return File.class.getMethod("setWritable", Boolean.class);
-    } catch (NoSuchMethodException e) {
-      return null;
-    }
-  }
-
-  /**
-   * File.setWritable appears in Java 6. If we find the method, we can use it
-   */
-  private static Method findJdk6SetExecutableMethod() {
-    try {
-      return File.class.getMethod("setExecutable", Boolean.class);
-    } catch (NoSuchMethodException e) {
-      return null;
     }
   }
 
