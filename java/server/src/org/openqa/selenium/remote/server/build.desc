@@ -98,5 +98,3 @@ java_library(name = "server_very_core",
     "//third_party/java/guava-libraries",
     "//third_party/java/json",
   ])
-
-#     "//java/client/src/org/openqa/selenium/remote",
