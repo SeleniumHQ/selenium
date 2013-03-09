@@ -4,30 +4,21 @@ android_r(name = "r",
   resource = "res",
   out = "gen/org/openqa/selenium/android/app")
 
+# Don't include the src directory: Android's build.xml will build it for us. Madness.
+# We also depend on ":r" without actually building it for the same reason
 java_library(name = "server",
-  srcs = [
-    "gen/**/*.java",
-    "src/java/**/*.java"
-  ],
   deps = [
+    ":r",
     "//java/client/src/org/openqa/selenium/android:android_library",
     "//java/client/src/org/openqa/selenium/browserlaunchers:proxies",
-    "//java/client/src/org/openqa/selenium/remote:api",
-    "//java/client/src/org/openqa/selenium/remote:base",
-    "//java/client/src/org/openqa/selenium/remote:common",
-    "//java/client/src/org/openqa/selenium/remote:remote",
-    "//java/client/src/org/openqa/selenium/io",
-    "//java/client/src/org/openqa/selenium/logging:logging",
-    "//java/server/src/org/openqa/selenium/remote/server:server_core",
-    "//java/server/src/org/openqa/selenium/server:logging",
-    "//third_party/java/android",
+    "//java/server/src/org/openqa/selenium/remote/server:server_very_core",
+    "//java/server/src/org/openqa/selenium/remote/server:webbit-http-api",
     "//third_party/java/webbit:webbit:uber",
-    "//third_party/java/guava-libraries:guava-libraries",
   ])
 
 android_binary(name = "android-server",
   manifest = "AndroidManifest.xml",
   resource_dir = "res",
   deps = [
-    ":server",
+    ":server:project",
   ])
