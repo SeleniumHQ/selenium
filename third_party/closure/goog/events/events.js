@@ -950,7 +950,7 @@ goog.events.handleBrowserEvent_ = function(key, opt_evt) {
     }
 
     var evt = new goog.events.BrowserEvent();
-    evt.init(ieEvent, this);
+    evt.init(ieEvent, /** @type {Node} */(this));
 
     retval = true;
     try {
@@ -1004,7 +1004,7 @@ goog.events.handleBrowserEvent_ = function(key, opt_evt) {
   } // IE
 
   // Caught a non-IE DOM event. 1 additional argument which is the event object
-  var be = new goog.events.BrowserEvent(opt_evt, this);
+  var be = new goog.events.BrowserEvent(opt_evt, /** @type {Node} */(this));
   retval = goog.events.fireListener(listener, be);
   return retval;
 };

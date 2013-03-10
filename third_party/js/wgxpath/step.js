@@ -24,7 +24,7 @@ goog.require('wgxpath.userAgent');
  *     this step ('//' vs '/').
  */
 wgxpath.Step = function(axis, test, opt_predicates, opt_descendants) {
-  var axisCast = /** @type {!wgxpath.Step.Axis_} */ axis;
+  var axisCast = /** @type {!wgxpath.Step.Axis_} */ (axis);
   wgxpath.Expr.call(this, wgxpath.DataType.NODESET);
 
   /**
@@ -425,7 +425,7 @@ wgxpath.Step.Axis = {
           nodeset.add(node.ownerElement);
           return nodeset;
         }
-        var parent = /** @type {!Node} */ node.parentNode;
+        var parent = /** @type {!Node} */ (node.parentNode);
         if (test.matches(parent)) {
           nodeset.add(parent);
         }

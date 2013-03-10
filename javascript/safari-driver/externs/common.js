@@ -54,22 +54,6 @@ console.info = function(msg, var_args) {};
 console.debug = function(msg, var_args) {};
 
 
-/** @type {!Object} */
-var JSON = {};
-
-/**
- * @param {string} value
- * @return {!Object}
- */
-JSON.parse = function(value) {};
-
-/**
- * @param {*} value
- * @return {string}
- */
-JSON.stringify = function(value) {};
-
-
 /**
  * @constructor
  * @extends {SafariEvent}

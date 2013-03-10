@@ -193,7 +193,7 @@ wgxpath.PathExpr.prototype.evaluate = function(ctx) {
       }
     }
   }
-  return /** @type {!wgxpath.NodeSet} */ nodeset;
+  return /** @type {!wgxpath.NodeSet} */ (nodeset);
 };
 
 

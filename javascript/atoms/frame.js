@@ -52,7 +52,7 @@ bot.frame.activeElement = function() {
  */
 bot.frame.getFrameWindow = function(element) {
   if (bot.frame.isFrame_(element)) {
-    var frame = /** @type {HTMLFrameElement|HTMLIFrameElement} */ element;
+    var frame = /** @type {HTMLFrameElement|HTMLIFrameElement} */ (element);
     return goog.dom.getFrameContentWindow(frame);
   }
   throw new bot.Error(bot.ErrorCode.NO_SUCH_FRAME,

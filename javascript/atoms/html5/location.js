@@ -32,11 +32,11 @@ goog.require('bot.html5');
  * @type {GeolocationPositionOptions}
  * @see http://dev.w3.org/geo/api/spec-source.html#position-options
  */
-bot.geolocation.DEFAULT_OPTIONS = /** @type {GeolocationPositionOptions} */ {
+bot.geolocation.DEFAULT_OPTIONS = /** @type {GeolocationPositionOptions} */ ({
   enableHighAccuracy: true,
   maximumAge: Infinity,
   timeout: 5000
-};
+});
 
 
 /**

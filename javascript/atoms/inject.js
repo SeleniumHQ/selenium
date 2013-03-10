@@ -310,7 +310,7 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
 
   fn = bot.inject.recompileFunction_(fn, win);
 
-  args = /** @type {Array.<*>} */bot.inject.unwrapValue_(args, win.document);
+  args = /** @type {Array.<*>} */ (bot.inject.unwrapValue_(args, win.document));
   args.push(goog.partial(sendResponse, bot.ErrorCode.SUCCESS));
 
   if (win.addEventListener) {

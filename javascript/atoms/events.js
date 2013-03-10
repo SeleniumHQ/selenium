@@ -301,13 +301,13 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
 
     // Sets a property of the event object using Object.defineProperty.
     // Some readonly properties of the IE event object can only be set this way.
-    function setEventProperty(prop, value) {
+    var setEventProperty = function(prop, value) {
       Object.defineProperty(event, prop, {
         get: function() {
           return value;
         }
       });
-    }
+    };
 
     // IE has fromElement and toElement properties, no relatedTarget property.
     // IE does not allow fromElement and toElement to be set directly, but

@@ -671,7 +671,7 @@ bot.Device.prototype.submitForm = function(form) {
     if (!bot.dom.isElement(form.submit)) {
       form.submit();
     } else if (!goog.userAgent.IE || bot.userAgent.isEngineVersion(8)) {
-      (/** @type {Function} */ form.constructor.prototype.submit).call(form);
+      /** @type {!Object} */ (form.constructor.prototype).submit.call(form);
     } else {
       var idMasks = bot.locators.findElements({'id': 'submit'}, form);
       var nameMasks = bot.locators.findElements({'name': 'submit'}, form);

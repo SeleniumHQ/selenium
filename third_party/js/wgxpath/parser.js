@@ -70,7 +70,7 @@ wgxpath.Parser.prototype.parseExpr = function() {
     expr = new wgxpath.BinaryExpr(stack.pop(), stack.pop(),
         /** @type {!wgxpath.Expr} */ (expr));
   }
-  return /** @type {!wgxpath.Expr} */ expr;
+  return /** @type {!wgxpath.Expr} */ (expr);
 };
 
 

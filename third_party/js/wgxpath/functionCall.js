@@ -77,7 +77,7 @@ goog.inherits(wgxpath.FunctionCall, wgxpath.Expr);
 wgxpath.FunctionCall.prototype.evaluate = function(ctx) {
   var result = this.func_.evaluate_.apply(null,
       goog.array.concat(ctx, this.args_));
-  return /** @type {!(string|boolean|number|wgxpath.NodeSet)} */ result;
+  return /** @type {!(string|boolean|number|wgxpath.NodeSet)} */ (result);
 };
 
 

@@ -23,7 +23,7 @@ goog.require('wgxpath.Node');
  * @constructor
  */
 wgxpath.BinaryExpr = function(op, left, right) {
-  var opCast = /** @type {!wgxpath.BinaryExpr.Op_} */ op;
+  var opCast = /** @type {!wgxpath.BinaryExpr.Op_} */ (op);
   wgxpath.Expr.call(this, opCast.dataType_);
 
   /**
