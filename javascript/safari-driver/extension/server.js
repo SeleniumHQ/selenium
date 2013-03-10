@@ -364,7 +364,7 @@ safaridriver.extension.Server.prototype.logMessage_ = function(
 safaridriver.extension.Server.prototype.onOpen_ = function() {
   this.logMessage_('WebSocket connection established.');
   if (!this.isDisposed() && this.ready_.isPending()) {
-    this.ready_.resolve();
+    this.ready_.fulfill();
   }
 };
 

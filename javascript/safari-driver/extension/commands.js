@@ -86,7 +86,7 @@ safaridriver.extension.commands.getWindowHandles = function(session) {
 safaridriver.extension.commands.takeScreenshot = function(session) {
   var response = new webdriver.promise.Deferred();
   session.getCommandTab().visibleContentsAsDataURL(function(dataUrl) {
-    response.resolve(dataUrl.substring('data:image/png;base64,'.length));
+    response.fulfill(dataUrl.substring('data:image/png;base64,'.length));
   });
   return response.promise;
 };
@@ -119,7 +119,7 @@ safaridriver.extension.commands.loadUrl = function(session, command) {
   tab.whenReady(function() {
     var expectLoad = tab.loadsNewPage(uri);
     safaridriver.extension.commands.sendNavigationCommand_(session, command,
-        expectLoad).then(response.resolve, response.reject);
+        expectLoad).then(response.fulfill, response.reject);
   });
 
   return response.promise;
@@ -137,7 +137,7 @@ safaridriver.extension.commands.refresh = function(session, command) {
   var response = new webdriver.promise.Deferred();
   session.getCommandTab().whenReady(function() {
     safaridriver.extension.commands.sendNavigationCommand_(session, command,
-        true).then(response.resolve, response.reject);
+        true).then(response.fulfill, response.reject);
   });
   return response.promise;
 };
@@ -171,7 +171,7 @@ safaridriver.extension.commands.sendNavigationCommand_ = function(
       safaridriver.extension.commands.LOG_.info(
           'Page load finished; returning');
       tab.removeListener(safaridriver.message.Alert.TYPE, onAlert);
-      response.resolve();
+      response.fulfill();
     }
   }
 
@@ -188,7 +188,7 @@ safaridriver.extension.commands.sendNavigationCommand_ = function(
       // Stop propagation so the extension's global alert message handler
       // does not fire.
       e.stopPropagation();
-      response.resolve(
+      response.fulfill(
           safaridriver.alert.createResponse(message.getMessage()));
     }
   }
@@ -202,7 +202,7 @@ safaridriver.extension.commands.sendNavigationCommand_ = function(
     if (!waitForLoad && response.isPending()) {
       safaridriver.extension.commands.LOG_.info(
           'Not expecting a new page load; returning');
-      response.resolve();
+      response.fulfill();
     }
     tab.on(safaridriver.message.Alert.TYPE, onAlert);
   }
@@ -275,7 +275,7 @@ safaridriver.extension.commands.findElement = function(session, command) {
     var status = response['status'];
     if (status !== bot.ErrorCode.SUCCESS) {
       // The command failed from an irrecoverable error.
-      result.resolve(response);
+      result.fulfill(response);
       return;
     }
 
@@ -292,7 +292,7 @@ safaridriver.extension.commands.findElement = function(session, command) {
           'Could not find element: ' + JSON.stringify(command.getParameters()));
       result.reject(error);
     } else {
-      result.resolve(response);
+      result.fulfill(response);
     }
   }
 };
@@ -402,7 +402,7 @@ safaridriver.extension.commands.switchToWindow = function(session, command) {
         currentTab.send(switchToNullContent);
 
         session.setCommandTab(/** @type {!safaridriver.extension.Tab} */ (tab));
-        result.resolve();
+        result.fulfill();
       });
     } catch (ex) {
       // If we attempt to retrieve the current tab after it's been closed,
@@ -413,7 +413,7 @@ safaridriver.extension.commands.switchToWindow = function(session, command) {
       }
 
       session.setCommandTab(/** @type {!safaridriver.extension.Tab} */ (tab));
-      result.resolve();
+      result.fulfill();
     }
   }
 };

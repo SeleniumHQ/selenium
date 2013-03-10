@@ -390,7 +390,7 @@ safaridriver.inject.Tab.prototype.onLoad_ = function(message, e) {
       // receive a corresponding unload.
       this.installedPageScript_ &&
       this.installedPageScript_.isPending()) {
-    this.installedPageScript_.resolve();
+    this.installedPageScript_.fulfill();
   }
 };
 
@@ -646,7 +646,7 @@ safaridriver.inject.Tab.prototype.onPageResponse_ = function(message, e) {
   var response = message.getResponse();
   try {
     response['value'] = safaridriver.inject.Encoder.decode(response['value']);
-    promise.resolve(response);
+    promise.fulfill(response);
   } catch (ex) {
     promise.reject(bot.response.createErrorResponse(ex));
   }

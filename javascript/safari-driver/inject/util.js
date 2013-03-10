@@ -44,7 +44,7 @@ safaridriver.inject.util.loadModule = function(moduleId, target) {
         message.sendSync(target));
     try {
       var src = bot.response.checkResponse(response)['value'];
-      d.resolve(src);
+      d.fulfill(src);
     } catch (ex) {
       numAttempts += 1;
       if (numAttempts == 3) {

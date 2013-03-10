@@ -267,7 +267,7 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
 
   safaridriver.inject.CommandRegistry.getInstance()
       .execute(command, goog.global)
-      .then(response.resolve, response.reject);
+      .then(response.fulfill, response.reject);
 };
 
 

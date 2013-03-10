@@ -177,7 +177,7 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
         return webdriver.promise.fullyResolved(obj.toWireValue());
       }
       if (goog.isFunction(obj.toJSON)) {
-        return webdriver.promise.resolved(obj.toJSON());
+        return webdriver.promise.fulfilled(obj.toJSON());
       }
       if (goog.isNumber(obj.nodeType) && goog.isString(obj.nodeName)) {
         throw Error([
@@ -188,11 +188,11 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
           goog.object.map((/** @type {!Object} */obj),
               webdriver.WebDriver.toWireValue_));
     case 'function':
-      return webdriver.promise.resolved('' + obj);
+      return webdriver.promise.fulfilled('' + obj);
     case 'undefined':
-      return webdriver.promise.resolved(null);
+      return webdriver.promise.fulfilled(null);
     default:
-      return webdriver.promise.resolved(obj);
+      return webdriver.promise.fulfilled(obj);
   }
 };
 
@@ -1410,10 +1410,10 @@ webdriver.WebElement = function(driver, id) {
 
   // This class is responsible for resolving itself; delete the resolve and
   // reject methods so they may not be accessed by consumers of this class.
-  var resolve = goog.partial(this.resolve, this);
+  var fulfill = goog.partial(this.fulfill, this);
   var reject = this.reject;
   delete this.promise;
-  delete this.resolve;
+  delete this.fulfill;
   delete this.reject;
 
   /**
@@ -1437,7 +1437,7 @@ webdriver.WebElement = function(driver, id) {
 
   // This WebElement should not be resolved until its ID has been
   // fully resolved.
-  this.id_.then(resolve, reject);
+  this.id_.then(fulfill, reject);
 };
 goog.inherits(webdriver.WebElement, webdriver.promise.Deferred);
 
@@ -1460,7 +1460,7 @@ webdriver.WebElement.ELEMENT_KEY = 'ELEMENT';
  */
 webdriver.WebElement.equals = function(a, b) {
   if (a == b) {
-    return webdriver.promise.resolved(true);
+    return webdriver.promise.fulfilled(true);
   }
   return webdriver.promise.fullyResolved([a.id_, b.id_]).then(function(ids) {
     // If the two element's have the same ID, they should be considered
@@ -1906,10 +1906,10 @@ webdriver.Alert = function(driver, text) {
 
   // This class is responsible for resolving itself; delete the resolve and
   // reject methods so they may not be accessed by consumers of this class.
-  var resolve = goog.partial(this.resolve, this);
+  var fulfill = goog.partial(this.fulfill, this);
   var reject = this.reject;
   delete this.promise;
-  delete this.resolve;
+  delete this.fulfill;
   delete this.reject;
 
   /**
@@ -1919,7 +1919,7 @@ webdriver.Alert = function(driver, text) {
   this.text_ = webdriver.promise.when(text);
 
   // Make sure this instance is resolved when its displayed text is.
-  this.text_.then(resolve, reject);
+  this.text_.then(fulfill, reject);
 };
 goog.inherits(webdriver.Alert, webdriver.promise.Deferred);
 

@@ -252,9 +252,9 @@ limitations under the License.
     assertArrayEquals([frame3], frame2.children_);
     assertArrayEquals([frame2], frame1.children_);
 
-    frame1.resolve = callbackHelper();
-    frame2.resolve = callbackHelper();
-    frame3.resolve = callbackHelper();
+    frame1.fulfill = callbackHelper();
+    frame2.fulfill = callbackHelper();
+    frame3.fulfill = callbackHelper();
 
     var obj = {
       activeFrame_: frame2,
@@ -264,9 +264,9 @@ limitations under the License.
     };
     webdriver.promise.ControlFlow.prototype.resolveFrame_.call(obj, frame3);
     assertEquals(1, obj.trimHistory_.getCallCount());
-    frame3.resolve.assertCalled('frame 3 not resolved');
-    frame2.resolve.assertNotCalled('frame 2 should not be resolved yet');
-    frame1.resolve.assertNotCalled('frame 1 should not be resolved yet');
+    frame3.fulfill.assertCalled('frame 3 not resolved');
+    frame2.fulfill.assertNotCalled('frame 2 should not be resolved yet');
+    frame1.fulfill.assertNotCalled('frame 1 should not be resolved yet');
     assertNull(frame3.getParent());
     assertArrayEquals([], frame2.children_);
     assertArrayEquals([frame2], frame1.children_);
@@ -274,8 +274,8 @@ limitations under the License.
 
     webdriver.promise.ControlFlow.prototype.resolveFrame_.call(obj, frame2);
     assertEquals(2, obj.trimHistory_.getCallCount());
-    frame2.resolve.assertCalled('frame 2 not resolved');
-    frame1.resolve.assertNotCalled('frame 1 should not be resolved yet');
+    frame2.fulfill.assertCalled('frame 2 not resolved');
+    frame1.fulfill.assertNotCalled('frame 1 should not be resolved yet');
     assertNull(frame2.getParent());
     assertArrayEquals([], frame1.children_);
     assertEquals(frame1, obj.activeFrame_);
@@ -283,7 +283,7 @@ limitations under the License.
     obj.commenceShutdown_.assertNotCalled();
     webdriver.promise.ControlFlow.prototype.resolveFrame_.call(obj, frame1);
     assertEquals(3, obj.trimHistory_.getCallCount());
-    frame1.resolve.assertCalled('frame 1 not resolved');
+    frame1.fulfill.assertCalled('frame 1 not resolved');
     obj.commenceShutdown_.assertCalled();
     assertNull(frame1.getParent());
     assertNull(obj.activeFrame_);
@@ -306,10 +306,10 @@ limitations under the License.
         task8 = createTask('task8');
 
     flow.commenceShutdown_ = callbackHelper();
-    root.resolve = callbackHelper();
-    frame1.resolve = callbackHelper();
-    frame2.resolve = callbackHelper();
-    frame3.resolve = callbackHelper();
+    root.fulfill = callbackHelper();
+    frame1.fulfill = callbackHelper();
+    frame2.fulfill = callbackHelper();
+    frame3.fulfill = callbackHelper();
 
     root.addChild(task1);
     root.addChild(frame1);
@@ -343,84 +343,84 @@ limitations under the License.
     assertEquals(task1, flow.getNextTask_());
     assertNull(task1.getParent());
     assertEquals(root, flow.activeFrame_);
-    root.resolve.assertNotCalled();
-    frame1.resolve.assertNotCalled();
-    frame2.resolve.assertNotCalled();
-    frame3.resolve.assertNotCalled();
+    root.fulfill.assertNotCalled();
+    frame1.fulfill.assertNotCalled();
+    frame2.fulfill.assertNotCalled();
+    frame3.fulfill.assertNotCalled();
 
     assertEquals(task2, flow.getNextTask_());
     assertNull(task2.getParent());
     assertEquals(frame1, flow.activeFrame_);
-    root.resolve.assertNotCalled();
-    frame1.resolve.assertNotCalled();
-    frame2.resolve.assertNotCalled();
-    frame3.resolve.assertNotCalled();
+    root.fulfill.assertNotCalled();
+    frame1.fulfill.assertNotCalled();
+    frame2.fulfill.assertNotCalled();
+    frame3.fulfill.assertNotCalled();
 
     assertEquals(task3, flow.getNextTask_());
     assertNull(task3.getParent());
     assertEquals(frame1, flow.activeFrame_);
-    root.resolve.assertNotCalled();
-    frame1.resolve.assertNotCalled();
-    frame2.resolve.assertNotCalled();
-    frame3.resolve.assertNotCalled();
+    root.fulfill.assertNotCalled();
+    frame1.fulfill.assertNotCalled();
+    frame2.fulfill.assertNotCalled();
+    frame3.fulfill.assertNotCalled();
 
     assertNull(flow.getNextTask_());
     assertNull(frame1.getParent());
     assertEquals(root, flow.activeFrame_);
-    root.resolve.assertNotCalled();
-    frame1.resolve.assertCalled();
-    frame2.resolve.assertNotCalled();
-    frame3.resolve.assertNotCalled();
+    root.fulfill.assertNotCalled();
+    frame1.fulfill.assertCalled();
+    frame2.fulfill.assertNotCalled();
+    frame3.fulfill.assertNotCalled();
 
     assertEquals(task4, flow.getNextTask_());
     assertNull(task4.getParent());
     assertEquals(root, flow.activeFrame_);
-    root.resolve.assertNotCalled();
-    frame2.resolve.assertNotCalled();
-    frame3.resolve.assertNotCalled();
+    root.fulfill.assertNotCalled();
+    frame2.fulfill.assertNotCalled();
+    frame3.fulfill.assertNotCalled();
 
     assertEquals(task5, flow.getNextTask_());
     assertNull(task5.getParent());
     assertEquals(root, flow.activeFrame_);
-    root.resolve.assertNotCalled();
-    frame2.resolve.assertNotCalled();
-    frame3.resolve.assertNotCalled();
+    root.fulfill.assertNotCalled();
+    frame2.fulfill.assertNotCalled();
+    frame3.fulfill.assertNotCalled();
 
     assertEquals(task6, flow.getNextTask_());
     assertNull(task6.getParent());
     assertEquals(frame3, flow.activeFrame_);
-    root.resolve.assertNotCalled();
-    frame2.resolve.assertNotCalled();
-    frame3.resolve.assertNotCalled();
+    root.fulfill.assertNotCalled();
+    frame2.fulfill.assertNotCalled();
+    frame3.fulfill.assertNotCalled();
 
     assertNull(flow.getNextTask_());
     assertNull(frame3.getParent());
     assertEquals(frame2, flow.activeFrame_);
-    root.resolve.assertNotCalled();
-    frame2.resolve.assertNotCalled();
-    frame3.resolve.assertCalled('frame3 should have been resolved');
+    root.fulfill.assertNotCalled();
+    frame2.fulfill.assertNotCalled();
+    frame3.fulfill.assertCalled('frame3 should have been resolved');
 
     assertEquals(task7, flow.getNextTask_());
     assertNull(task7.getParent());
     assertEquals(frame2, flow.activeFrame_);
-    root.resolve.assertNotCalled();
-    frame2.resolve.assertNotCalled();
+    root.fulfill.assertNotCalled();
+    frame2.fulfill.assertNotCalled();
 
     assertNull(flow.getNextTask_());
     assertNull(frame2.getParent());
     assertEquals(root, flow.activeFrame_);
-    root.resolve.assertNotCalled();
-    frame2.resolve.assertCalled('frame2 should have been resolved');
+    root.fulfill.assertNotCalled();
+    frame2.fulfill.assertCalled('frame2 should have been resolved');
 
     assertEquals(task8, flow.getNextTask_());
     assertNull(task8.getParent());
     assertEquals(root, flow.activeFrame_);
-    root.resolve.assertNotCalled();
+    root.fulfill.assertNotCalled();
 
     flow.commenceShutdown_.assertNotCalled();
     assertNull(flow.getNextTask_());
     assertNull(flow.activeFrame_);
-    root.resolve.assertCalled('Root should have been resolved');
+    root.fulfill.assertCalled('Root should have been resolved');
     flow.commenceShutdown_.assertCalled();
   }
 
@@ -510,11 +510,11 @@ limitations under the License.
 
     function installResolveHelper(promise) {
       var reject = promise.reject;
-      var pair = callbackPair(promise.resolve, function(e) {
+      var pair = callbackPair(promise.fulfill, function(e) {
         assertIsStubError(e);
         reject(e);
       });
-      promise.resolve = pair.callback;
+      promise.fulfill = pair.callback;
       promise.reject = pair.errback;
       return pair;
     }
@@ -734,7 +734,7 @@ limitations under the License.
     turnEventLoop();
     callback.assertNotCalled('Task has not completed yet!');
 
-    d.resolve(123);
+    d.fulfill(123);
     callback.assertCalled('Callback should have been called!');
     runAndExpectSuccess();
     assertFlowHistory('a');
@@ -751,7 +751,7 @@ limitations under the License.
     turnEventLoop(); assertFlowHistory('a');  // Task 'a' is still running.
     turnEventLoop(); assertFlowHistory('a');  // Task 'a' is still running.
 
-    d.resolve(123);
+    d.fulfill(123);
     runAndExpectSuccess();
     assertFlowHistory('a', 'b');
   }
@@ -768,10 +768,10 @@ limitations under the License.
 
     callback.assertNotCalled('d1 not resolved yet');
 
-    d1.resolve(d2);
+    d1.fulfill(d2);
     callback.assertNotCalled('Should not be called yet; blocked on d2');
 
-    d2.resolve('fluffy bunny');
+    d2.fulfill('fluffy bunny');
 
     runAndExpectSuccess();
     callback.assertCalled('d2 has been resolved');
@@ -912,7 +912,7 @@ limitations under the License.
     schedule('b');
     d.then(function() { schedule('c'); });
 
-    d.resolve();
+    d.fulfill();
     runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c');
   }
@@ -1329,7 +1329,7 @@ limitations under the License.
     turnEventLoop();
     turnEventLoop();
 
-    d.resolve(123);
+    d.fulfill(123);
     runAndExpectSuccess();
   }
 

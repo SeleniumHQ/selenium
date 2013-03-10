@@ -224,7 +224,7 @@ safaridriver.inject.CommandRegistry.prototype.execute = function(
  */
 safaridriver.inject.CommandRegistry.prototype.loadModule_ = function(moduleId) {
   if (this.loadedModules_[moduleId]) {
-    return webdriver.promise.resolved();
+    return webdriver.promise.fulfilled();
   }
 
   return safaridriver.inject.util.loadModule(moduleId, this.messageTarget_).

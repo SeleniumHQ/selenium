@@ -5,6 +5,15 @@
     `selenium-webdriver/example/google_search_test.js` for usage.
 * For Promises/A+ compatibility, backing out the change in 2.30.0 that ensured
     rejections were always Error objects. Rejection reasons are now left as is.
+* Removed deprecated functions originally scheduled for removal in 2.31.0
+    * promise.Application.getInstance()
+    * promise.ControlFlow#schedule()
+    * promise.ControlFlow#scheduleTimeout()
+    * promise.ControlFlow#scheduleWait()
+* Renamed some functions for consistency with Promises/A+ terminology. The
+    original functions have been deprecated and will be removed in 2.34.0:
+    * promise.resolved() -> promise.fulfilled()
+    * promise.Deferred#resolve() -> promise.Deferred#fulfill()
 * FIXED: remote.SeleniumServer#stop now shuts down within the active control
     flow, allowing scripts to finish. Use #kill to shutdown immediately.
 

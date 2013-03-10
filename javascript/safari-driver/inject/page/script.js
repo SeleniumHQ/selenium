@@ -67,7 +67,7 @@ safaridriver.inject.page.script.executeAsyncScript_ = function(command) {
   args.push(function(value) {
     safaridriver.dom.call(window, 'clearTimeout', timeoutId);
     if (response.isPending()) {
-      response.resolve(value);
+      response.fulfill(value);
     }
   });
 

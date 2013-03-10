@@ -313,11 +313,11 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
         listener.callback : listener.errback;
     if (func) {
       flow.runInNewFrame_(goog.partial(func, value),
-          listener.resolve, listener.reject);
+          listener.fulfill, listener.reject);
     } else if (state == webdriver.promise.Deferred.State_.REJECTED) {
       listener.reject(value);
     } else {
-      listener.resolve(value);
+      listener.fulfill(value);
     }
   }
 
@@ -354,7 +354,7 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
     var listener = {
       callback: opt_callback,
       errback: opt_errback,
-      resolve: deferred.resolve,
+      fulfill: deferred.fulfill,
       reject: deferred.reject
     };
 
@@ -375,7 +375,7 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
    * it before resolving.
    * @param {*=} opt_value The resolved value.
    */
-  function resolve(opt_value) {
+  function fulfill(opt_value) {
     if (webdriver.promise.isPromise(opt_value) && opt_value !== self) {
       if (opt_value instanceof webdriver.promise.Deferred) {
         opt_value.then(
@@ -384,7 +384,7 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
                 webdriver.promise.Deferred.State_.REJECTED));
         return;
       }
-      webdriver.promise.asap(opt_value, resolve, reject);
+      webdriver.promise.asap(opt_value, fulfill, reject);
     } else {
       notifyAll(webdriver.promise.Deferred.State_.RESOLVED, opt_value);
     }
@@ -440,14 +440,16 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   this.promise.then = this.then = then;
   this.promise.cancel = this.cancel = cancel;
   this.promise.isPending = this.isPending = isPending;
-  this.resolve = this.callback = resolve;
+  this.fulfill = fulfill;
+  /** @deprecated Use fulfill instead. This will be removed in 2.34.0 */
+  this.resolve = this.callback = fulfill;
   this.reject = this.errback = reject;
 
   // Export symbols necessary for the contract on this object to work in
   // compiled mode.
   goog.exportProperty(this, 'then', this.then);
   goog.exportProperty(this, 'cancel', cancel);
-  goog.exportProperty(this, 'resolve', resolve);
+  goog.exportProperty(this, 'fulfill', fulfill);
   goog.exportProperty(this, 'reject', reject);
   goog.exportProperty(this, 'isPending', isPending);
   goog.exportProperty(this, 'promise', this.promise);
@@ -462,7 +464,7 @@ goog.inherits(webdriver.promise.Deferred, webdriver.promise.Promise);
  * Type definition for a listener registered on a Deferred object.
  * @typedef {{callback:(Function|undefined),
  *            errback:(Function|undefined),
- *            resolve: function(*), reject: function(*)}}
+ *            fulfill: function(*), reject: function(*)}}
  * @private
  */
 webdriver.promise.Deferred.Listener_;
@@ -524,7 +526,7 @@ webdriver.promise.delayed = function(ms) {
   var deferred = new webdriver.promise.Deferred(function() {
     timer.clearTimeout(key);
   });
-  key = timer.setTimeout(deferred.resolve, ms);
+  key = timer.setTimeout(deferred.fulfill, ms);
   return deferred.promise;
 };
 
@@ -545,14 +547,24 @@ webdriver.promise.defer = function(opt_canceller) {
  * @param {*=} opt_value The resolved value.
  * @return {!webdriver.promise.Promise} The resolved promise.
  */
-webdriver.promise.resolved = function(opt_value) {
+webdriver.promise.fulfilled = function(opt_value) {
   if (opt_value instanceof webdriver.promise.Promise) {
     return opt_value;
   }
   var deferred = new webdriver.promise.Deferred();
-  deferred.resolve(opt_value);
+  deferred.fulfill(opt_value);
   return deferred.promise;
 };
+
+
+/**
+ * Creates a promise that has been resolved with the given value.
+ * @param {*=} opt_value The fulfilled promises's value.
+ * @return {!webdriver.promise.Promise} A fulfilled promise.
+ * @deprecated Use webdriver.promise.fulfilled(). This will be removed in
+ *     Selenium 2.34.0.
+ */
+webdriver.promise.resolved = webdriver.promise.fulfilled;
 
 
 /**
@@ -585,7 +597,7 @@ webdriver.promise.checkedNodeCall = function(fn) {
   try {
     fn(function(error, value) {
       if (deferred.isPending()) {
-        error ? deferred.reject(error) : deferred.resolve(value);
+        error ? deferred.reject(error) : deferred.fulfill(value);
       }
     });
   } catch (ex) {
@@ -616,7 +628,7 @@ webdriver.promise.when = function(value, opt_callback, opt_errback) {
   var deferred = new webdriver.promise.Deferred();
 
   webdriver.promise.asap(value,
-      goog.partial(maybeResolve, deferred.resolve),
+      goog.partial(maybeResolve, deferred.fulfill),
       goog.partial(maybeResolve, deferred.reject));
 
   return deferred.then(opt_callback, opt_errback);
@@ -710,14 +722,14 @@ webdriver.promise.fullyResolveValue_ = function(value) {
           goog.isNumber(value.ownerDocument.nodeType)) {
         // DOM node; return early to avoid infinite recursion. Should we
         // only support objects with a certain level of nesting?
-        return webdriver.promise.resolved(value);
+        return webdriver.promise.fulfilled(value);
       }
 
       return webdriver.promise.fullyResolveKeys_(
           /** @type {!Object} */ (value));
 
     default:  // boolean, function, null, number, string, undefined
-      return webdriver.promise.resolved(value);
+      return webdriver.promise.fulfilled(value);
   }
 };
 
@@ -732,7 +744,7 @@ webdriver.promise.fullyResolveKeys_ = function(obj) {
   var isArray = goog.isArray(obj);
   var numKeys = isArray ? obj.length : goog.object.getCount(obj);
   if (!numKeys) {
-    return webdriver.promise.resolved(obj);
+    return webdriver.promise.fulfilled(obj);
   }
 
   var numResolved = 0;
@@ -777,7 +789,7 @@ webdriver.promise.fullyResolveKeys_ = function(obj) {
 
   function maybeResolveValue() {
     if (++numResolved == numKeys && deferred.isPending()) {
-      deferred.resolve(obj);
+      deferred.fulfill(obj);
     }
   }
 };
@@ -1194,7 +1206,7 @@ webdriver.promise.ControlFlow.prototype.wait = function(
         var elapsed = goog.now() - startTime;
         if (!!value) {
           waitFrame.isWaiting = false;
-          waitResult.resolve(value);
+          waitResult.fulfill(value);
         } else if (elapsed >= timeout) {
           waitResult.reject(new Error((opt_message ? opt_message + '\n' : '') +
               'Wait timed out after ' + elapsed + 'ms'));
@@ -1205,86 +1217,6 @@ webdriver.promise.ControlFlow.prototype.wait = function(
     }
   }, opt_message);
 };
-
-
-// Define deprecated functions for backwards compatibility.
-if (goog.DEBUG) {
-  /**
-   * Logs a deprecation message if the console object is defined
-   * for the current context.
-   * @param {string} oldSig The old function signature.
-   * @param {string} newSig The new function signature.
-   * @private
-   */
-  webdriver.promise.logDeprecation_ = function(oldSig, newSig) {
-    if (window.console) {
-      window.console.log(
-          'Using deprecated ' + oldSig + ', use ' + newSig +
-          'instead. This will stop working in Selenium 2.31');
-    }
-  };
-
-
-  webdriver.promise.Application = {};
-  webdriver.promise.Application.getInstance = function() {
-    webdriver.promise.logDeprecation_(
-        'webdriver.promise.Application#getInstance()',
-        'webdriver.promise.controlFlow()');
-    return webdriver.promise.controlFlow();
-  };
-
-
-  /**
-   * Deprecated form of {@link #execute()} for backwards compatibility. Will be
-   * removed in Selenium 2.31.
-   * @param {string} desc Task description.
-   * @param {!Function} fn The function to execute.
-   * @return {!webdriver.promise.Promise} The task result.
-   * @deprecated Use {@link #execute(fn, opt_desc)}.
-   */
-  webdriver.promise.ControlFlow.prototype.schedule = function(desc, fn) {
-    webdriver.promise.logDeprecation_(
-        'webdriver.promise.ControlFlow#schedule(msg, taskFn)',
-        'webdriver.promise.ControlFlow#execute(taskFn, [msg])');
-    return this.execute(fn, desc);
-  };
-
-
-  /**
-   * Deprecated form of {@link #timeout()} for backwards compatibility. Will be
-   * removed in Selenium 2.31.
-   * @param {string} desc Task description.
-   * @param {number} ms How long to timeout.
-   * @return {!webdriver.promise.Promise} The task result.
-   * @deprecated Use {@link #timeout(ms, opt_desc)}.
-   */
-  webdriver.promise.ControlFlow.prototype.scheduleTimeout = function(desc, ms) {
-    webdriver.promise.logDeprecation_(
-        'webdriver.promise.ControlFlow#scheduleTimeout(msg, ms)',
-        'webdriver.promise.ControlFlow#timeout(ms, [msg])');
-    return this.timeout(ms, desc);
-  };
-
-
-  /**
-   * Deprecated form of {@link #wait()} for backwards compatibility. Will be
-   * removed in Selenium 2.31.
-   * @param {string} desc Task description.
-   * @param {!Function} condition The condition to evaluate.
-   * @param {number} timeout How long to wait.
-   * @param {string=} opt_message Optional failure message.
-   * @return {!webdriver.promise.Promise} The task result.
-   * @deprecated Use {@link #wait(condition, timeout, opt_message)}
-   */
-  webdriver.promise.ControlFlow.prototype.scheduleWait = function(
-      desc, condition, timeout, opt_message) {
-    webdriver.promise.logDeprecation_(
-        'webdriver.promise.ControlFlow#scheduleWait(msg, ' +
-            'conditionFn, timeout, [msg])',
-        'webdriver.promise.ControlFlow#wait(conditionFn, timeout, [msg])');
-    return this.wait(condition, timeout, opt_message);
-  };
-}
 
 
 /**
@@ -1371,7 +1303,7 @@ webdriver.promise.ControlFlow.prototype.runEventLoop_ = function() {
   var self = this;
   this.runInNewFrame_(task.execute, function(result) {
     markTaskComplete();
-    task.resolve(result);
+    task.fulfill(result);
   }, function(error) {
     markTaskComplete();
 
@@ -1425,7 +1357,7 @@ webdriver.promise.ControlFlow.prototype.resolveFrame_ = function(frame) {
     frame.getParent().removeChild(frame);
   }
   this.trimHistory_();
-  frame.resolve();
+  frame.fulfill();
 
   if (!this.activeFrame_) {
     this.commenceShutdown_();

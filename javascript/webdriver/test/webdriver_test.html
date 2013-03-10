@@ -919,7 +919,7 @@ limitations under the License.
     flowTester.turnEventLoop();
     add.assertNotCalled();
 
-    promisedArg.resolve(2);
+    promisedArg.fulfill(2);
     add.assertCalled();
     testHelper.execute();
   }
@@ -1051,7 +1051,7 @@ limitations under the License.
     stepOne.assertCalled();
     stepTwo.assertNotCalled();
 
-    d.resolve();
+    d.fulfill();
     testHelper.execute();
     stepTwo.assertCalled();
   }
@@ -1205,7 +1205,7 @@ limitations under the License.
     callback.assertNotCalled();
     idCallback.assertNotCalled();
 
-    id.resolve(resolvedId);
+    id.fulfill(resolvedId);
 
     callback.assertCalled();
     idCallback.assertCalled();
@@ -1241,7 +1241,7 @@ limitations under the License.
     });
 
     assertArrayEquals([], messages);
-    id.resolve('foo');
+    id.fulfill('foo');
     assertArrayEquals([
       'element resolved',
       'wire value resolved'
@@ -2018,7 +2018,7 @@ limitations under the License.
     callback.assertNotCalled();
     textCallback.assertNotCalled();
 
-    text.resolve('foo');
+    text.fulfill('foo');
 
     callback.assertCalled();
     textCallback.assertCalled();

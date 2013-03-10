@@ -80,6 +80,7 @@ var closure = vm.createContext({
   },
   CLOSURE_NO_DEPS: !isDevMode()
 });
+closure.window = closure;
 
 loadScript(CLOSURE_BASE_FILE_PATH);
 loadScript(DEPS_FILE_PATH);

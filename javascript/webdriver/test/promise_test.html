@@ -91,7 +91,7 @@ function testSimpleResolveScenario() {
   deferred.then(callback);
 
   callback.assertNotCalled();
-  deferred.resolve(123);
+  deferred.fulfill(123);
   callback.assertCalled();
 }
 
@@ -102,7 +102,7 @@ function testRegisteringACallbackPostResolution() {
   deferred.then((callback = callbackHelper(function(value) {
     assertEquals(123, value);
   })));
-  deferred.resolve(123);
+  deferred.fulfill(123);
   callback.assertCalled();
 
   deferred.then((callback = callbackHelper(function(value) {
@@ -118,7 +118,7 @@ function testRegisterACallbackViaDeferredPromise() {
   deferred.promise.then((callback = callbackHelper(function(value) {
     assertEquals(123, value);
   })));
-  deferred.resolve(123);
+  deferred.fulfill(123);
   callback.assertCalled();
 
   deferred.promise.then((callback = callbackHelper(function(value) {
@@ -139,7 +139,7 @@ function testTwoStepResolvedChain() {
   assertIsPromise(next);
 
   callback.assertNotCalled();
-  start.resolve(123);
+  start.fulfill(123);
   callback.assertCalled();
 
   next.then((callback = callbackHelper(function(value) {
@@ -151,8 +151,8 @@ function testTwoStepResolvedChain() {
 
 function testCanResolveOnlyOnce_resolved() {
   var deferred = new webdriver.promise.Deferred();
-  deferred.resolve(1);
-  assertThrows(deferred.resolve);
+  deferred.fulfill(1);
+  assertThrows(deferred.fulfill);
   assertThrows(deferred.reject);
 
   var callback;
@@ -166,7 +166,7 @@ function testCanResolveOnlyOnce_resolved() {
 function testCanResolveOnlyOnce_rejected() {
   var deferred = new webdriver.promise.Deferred();
   deferred.reject(STUB_ERROR);
-  assertThrows(deferred.resolve);
+  assertThrows(deferred.fulfill);
   assertThrows(deferred.reject);
 
   var callback;
@@ -252,7 +252,7 @@ function testChainingThen_AllResolved() {
   callbacks[1].assertNotCalled();
   callbacks[2].assertNotCalled();
 
-  deferred.resolve(128);
+  deferred.fulfill(128);
 
   callbacks[0].assertCalled();
   callbacks[1].assertCalled();
@@ -287,7 +287,7 @@ function testWhen_WaitsForValueToBeResolvedBeforeInvokingCallback() {
     assertEquals('hi', value);
   }));
   callback.assertNotCalled();
-  d.resolve('hi');
+  d.fulfill('hi');
   callback.assertCalled();
 }
 
@@ -342,7 +342,7 @@ function testWaitsIfCallbackReturnsAPromiseObject() {
 
   callback1.assertCalled();
   callback2.assertNotCalled();
-  callback1Return.resolve('bye');
+  callback1Return.fulfill('bye');
   callback2.assertCalled();
 }
 
@@ -353,7 +353,7 @@ function testWaitsIfCallbackReturnsAPromiseLikeObject() {
     then: function(callback) {
       this.callback = callback;
     },
-    resolve: function(value) {
+    fulfill: function(value) {
       this.callback(value);
     }
   };
@@ -369,7 +369,7 @@ function testWaitsIfCallbackReturnsAPromiseLikeObject() {
 
   callback1.assertCalled();
   callback2.assertNotCalled();
-  callback1Return.resolve('bye');
+  callback1Return.fulfill('bye');
   callback2.assertCalled();
 }
 
@@ -405,11 +405,11 @@ function testResolvingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
   callback1.assertNotCalled();
   callback2.assertNotCalled();
 
-  d2.resolve(2);
+  d2.fulfill(2);
   callback1.assertNotCalled();
   callback2.assertCalled();
 
-  d1.resolve(d2promise);
+  d1.fulfill(d2promise);
   callback1.assertCalled();
   callback2.assertCalled();
 }
@@ -425,14 +425,14 @@ function testResolvingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
     then: function(callback) {
       this.callback = callback;
     },
-    resolve: function(value) {
+    fulfill: function(value) {
       this.callback(value);
     }
   };
 
   callback.assertNotCalled();
-  d.resolve(otherPromise);
-  otherPromise.resolve(4);
+  d.fulfill(otherPromise);
+  otherPromise.fulfill(4);
   callback.assertCalled();
 }
 
@@ -454,7 +454,7 @@ function testRejectingAPromiseWithAnotherPromiseCreatesAChain_ourPromise() {
   errback1.assertNotCalled();
   callback2.assertNotCalled();
 
-  d2.resolve(2);
+  d2.fulfill(2);
   callback1.assertNotCalled();
   errback1.assertNotCalled();
   callback2.assertCalled();
@@ -475,7 +475,7 @@ function testRejectingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
     then: function(callback) {
       this.callback = callback;
     },
-    resolve: function(value) {
+    fulfill: function(value) {
       this.callback(value);
     }
   };
@@ -484,7 +484,7 @@ function testRejectingAPromiseWithAnotherPromiseCreatesAChain_otherPromise() {
   callback.assertNotCalled();
   errback.assertNotCalled();
 
-  otherPromise.resolve(STUB_ERROR);
+  otherPromise.fulfill(STUB_ERROR);
   callback.assertNotCalled();
   errback.assertCalled();
 }
@@ -504,11 +504,11 @@ function testResolvingADeferredWithAnotherCopiesTheResolvedValue() {
     return 4;
   }));
 
-  d1.resolve(d2);
+  d1.fulfill(d2);
   callback1.assertNotCalled();
   callback2.assertNotCalled();
 
-  d2.resolve(2);
+  d2.fulfill(2);
   callback1.assertCalled();
   callback2.assertCalled();
 }
@@ -522,7 +522,7 @@ function testCanResolveADeferredWithItself() {
   }));
 
   callback.assertNotCalled();
-  deferred.resolve(deferred);
+  deferred.fulfill(deferred);
   callback.assertCalled();
 }
 
@@ -540,11 +540,11 @@ function testResolvingADeferredWithAnotherThatResolvedUponItself() {
     assertEquals(d2, value);
   }));
 
-  d1.resolve(d2);
+  d1.fulfill(d2);
   callback1.assertNotCalled();
   callback2.assertNotCalled();
 
-  d2.resolve(d2);
+  d2.fulfill(d2);
   callback1.assertCalled();
   callback2.assertCalled();
 }
@@ -926,7 +926,7 @@ function testFullyResolved_arrayWithPromisedHash() {
 
 function testFullyResolved_deferredThatResolvesOnItself() {
   var deferred = new webdriver.promise.Deferred();
-  deferred.resolve(deferred);
+  deferred.fulfill(deferred);
 
   var callbacks = callbackPair(function(resolved) {
     assertEquals(deferred, resolved);
@@ -1123,7 +1123,7 @@ function testCancel_cancellerFunctionExplicityResolvesPromise() {
   var d = new webdriver.promise.Deferred(
       canceller = callbackHelper(function(e) {
         assertIsStubError(e);
-        d.resolve(123);
+        d.fulfill(123);
       }));
   d.then(pair.callback, pair.errback);
   d.cancel(STUB_ERROR);
@@ -1156,7 +1156,7 @@ function testCallbackRegistersAnotherListener_callbacksConfiguredPreResolve() {
   d.then(function() {
     messages.push('b');
   });
-  d.resolve();
+  d.fulfill();
   assertArrayEquals(['a', 'c', 'b'], messages);
 }
 
@@ -1227,11 +1227,11 @@ function testResolvedReturnsInputValueIfItIsAPromise() {
 function testADeferredsParentControlFlowIsActiveForCallbacks() {
   var flow = new webdriver.promise.ControlFlow();
   var d = new webdriver.promise.Deferred(null, flow);
-  d.resolve();
+  d.fulfill();
 
   var flow2 = new webdriver.promise.ControlFlow();
   var d2 = new webdriver.promise.Deferred(null, flow2);
-  d2.resolve();
+  d2.fulfill();
 
   assertIsFlow(webdriver.promise.defaultFlow_)();
 

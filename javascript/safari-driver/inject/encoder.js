@@ -270,7 +270,7 @@ safaridriver.inject.Encoder.prototype.onResponse_ = function(message) {
   try {
     bot.response.checkResponse(response);
     var value = safaridriver.inject.Encoder.decode(response['value']);
-    promise.resolve(value);
+    promise.fulfill(value);
   } catch (ex) {
     promise.reject(ex);
   }

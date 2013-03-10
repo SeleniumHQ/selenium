@@ -80,7 +80,7 @@ exports.waitForServer = function(url, timeout) {
 
   function onResponse(err) {
     if (!ready.isPending()) return;
-    if (!err) return ready.resolve();
+    if (!err) return ready.fulfill();
 
     if (Date.now() - start > timeout) {
       ready.reject(
@@ -116,7 +116,7 @@ exports.waitForUrl = function(url, timeout) {
   function onResponse(err, response) {
     if (!ready.isPending()) return;
     if (!err && response.status > 199 && response.status < 300) {
-      return ready.resolve();
+      return ready.fulfill();
     }
 
     if (Date.now() - start > timeout) {

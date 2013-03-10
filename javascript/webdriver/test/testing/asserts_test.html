@@ -54,7 +54,7 @@ limitations under the License.
       webdriver.testing.asserts.applyMatcher(d, equals('foo')).
           then(result.callback, result.errback);
       result.assertNeither();
-      d.resolve('foo');
+      d.fulfill('foo');
       result.assertCallback();
     }
 
@@ -64,7 +64,7 @@ limitations under the License.
       webdriver.testing.asserts.applyMatcher(d, equals('foo')).
           then(result.callback, result.errback);
       result.assertNeither();
-      d.resolve('bar');
+      d.fulfill('bar');
       result.assertErrback();
     }
 

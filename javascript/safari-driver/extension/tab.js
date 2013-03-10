@@ -219,7 +219,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
     cleanUp();
 
     self.log('Received response: ' + message);
-    response.resolve(message.getResponse());
+    response.fulfill(message.getResponse());
   }
 
   // If an unload event is received before a command response, it indicates
@@ -252,7 +252,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
           goog.debug.Logger.Level.WARNING);
       // TODO(jleyba): Is a null success response always the correct action
       // when the window closes before a response is received?
-      response.resolve(bot.response.createResponse(null));
+      response.fulfill(bot.response.createResponse(null));
     }
   }
 };
