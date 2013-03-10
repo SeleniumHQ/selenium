@@ -100,8 +100,8 @@ webdriver.promise.Promise.prototype.isPending = function() {
  *     successfully resolved. The function should expect a single argument: the
  *     promise's resolved value.
  * @param {Function=} opt_errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the
- *     {@code Error} that caused the promise to be rejected.
+ *     rejected. The function should expect a single argument: the rejection
+ *     reason.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
  */
@@ -135,8 +135,8 @@ webdriver.promise.Promise.prototype.addCallback = function(callback, opt_self) {
  * Dojo Deferred API.
  *
  * @param {Function} errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the
- *     {@code Error} that caused the promise to be rejected.
+ *     rejected. The function should expect a single argument: the rejection
+ *     reason.
  * @param {!Object=} opt_self The object which |this| should refer to when the
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
@@ -175,8 +175,8 @@ webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
  *     successfully resolved. The function should expect a single argument: the
  *     promise's resolved value.
  * @param {Function} errback The function to call if this promise is
- *     rejected. The function should expect a single argument: the
- *     {@code Error} that caused the promise to be rejected.
+ *     rejected. The function should expect a single argument: the rejection
+ *     reason.
  * @param {!Object=} opt_self The object which |this| should refer to when the
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
@@ -276,12 +276,6 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   function notifyAll(newState, newValue) {
     if (!isPending()) {
       throw new Error('This Deferred has already been resolved.');
-    }
-
-    if (newState == webdriver.promise.Deferred.State_.REJECTED &&
-        !webdriver.promise.isError_(newValue) &&
-        !webdriver.promise.isPromise(newValue)) {
-      newValue = Error(newValue);
     }
 
     state = newState;
