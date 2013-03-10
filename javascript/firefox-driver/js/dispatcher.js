@@ -407,26 +407,23 @@ Resource = function(path) {
 
   /**
    * The request pattern that this resource is located at.
-   * @type {!string}
+   * @private {!string}
    * @const
-   * @private
    */
   this.path_ = path;
 
   /**
    * The individual path segments for this resource.
-   * @type {Array.<string>}
+   * @private {Array.<string>}
    * @const
-   * @private
    */
   this.pathSegments_ = path.split('/');
 
   /**
    * A map of handler functions, by HTTP method, that can service requests to
    * this resource.
-   * @type {!Object}
+   * @private {!Object}
    * @const
-   * @private
    */
   this.handlers_ = {};
 
@@ -440,8 +437,7 @@ Resource = function(path) {
 
 /**
  * The number of path segments for this resource that are variables.
- * @type {number}
- * @private
+ * @private {number}
  */
 Resource.prototype.numVariablePathSegments_ = 0;
 

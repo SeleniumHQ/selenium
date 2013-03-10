@@ -37,15 +37,13 @@ safaridriver.extension.TabManager = function() {
    * every tab: "[object SafariBrowserTab]". We cannot use a
    * {@link goog.structs.Map} either, because the keys it generates are
    * equally generic.
-   * @type {!Array.<!safaridriver.extension.Tab>}
-   * @private
+   * @private {!Array.<!safaridriver.extension.Tab>}
    */
   this.tabs_ = [];
 
   /**
    * The logger for this class.
-   * @type {!goog.debug.Logger}
-   * @private
+   * @private {!goog.debug.Logger}
    */
   this.log_ = goog.debug.Logger.getLogger('safaridriver.extension.TabManager');
 
@@ -60,8 +58,7 @@ safaridriver.extension.TabManager = function() {
 
 /**
  * The tab that all commands should be routed to.
- * @type {safaridriver.extension.Tab}
- * @private
+ * @private {safaridriver.extension.Tab}
  */
 safaridriver.extension.TabManager.prototype.commandTab_ = null;
 
@@ -93,7 +90,8 @@ safaridriver.extension.TabManager.prototype.init_ = function() {
   }, this);
 
   if (commandTab) {
-    this.setCommandTab(commandTab);
+    this.setCommandTab(
+      /** @type {!safaridriver.extension.Tab} */ (commandTab));
   }
 };
 

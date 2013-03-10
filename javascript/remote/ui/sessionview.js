@@ -37,17 +37,13 @@ goog.require('remote.ui.OpenScriptDialog');
 remote.ui.SessionView = function() {
   goog.base(this);
 
-  /**
-   * @type {!remote.ui.ControlBlock}
-   * @private
-   */
+  /** @private {!remote.ui.ControlBlock} */
   this.controlBlock_ = new remote.ui.ControlBlock();
   this.addChild(this.controlBlock_);
 
   /**
    * A basic confirmation dialog.
-   * @type {!goog.ui.Dialog}
-   * @private
+   * @private {!goog.ui.Dialog}
    */
   this.confirmDialog_ = new goog.ui.Dialog(undefined, true);
 
@@ -59,8 +55,7 @@ remote.ui.SessionView = function() {
 
   /**
    * Button for deleting the session currently in view.
-   * @type {!goog.ui.Button}
-   * @private
+   * @private {!goog.ui.Button}
    */
   this.deleteSessionButton_ = new goog.ui.Button('Delete Session');
 
@@ -72,8 +67,7 @@ remote.ui.SessionView = function() {
 
   /**
    * Button for taking a screenshot using the session currently in view.
-   * @type {!goog.ui.Button}
-   * @private
+   * @private {!goog.ui.Button}
    */
   this.screenshotButton_ = new goog.ui.Button('Take Screenshot');
 
@@ -84,8 +78,7 @@ remote.ui.SessionView = function() {
   /**
    * Tooltip that displays session capabilities. Lazily initialized in
    * {@code #createDom()}.
-   * @type {!remote.ui.JsonTooltip}
-   * @private
+   * @private {!remote.ui.JsonTooltip}
    */
   this.capabilitiesTooltip_ = new remote.ui.JsonTooltip();
   this.capabilitiesTooltip_.setHotSpotPadding(new goog.math.Box(5, 5, 5, 5));
@@ -98,8 +91,7 @@ goog.inherits(remote.ui.SessionView, goog.ui.Component);
 
 /**
  * Element displayed when there is no session to view.
- * @type {Element}
- * @private
+ * @private {Element}
  */
 remote.ui.SessionView.prototype.emptyViewElement_;
 
@@ -107,16 +99,14 @@ remote.ui.SessionView.prototype.emptyViewElement_;
 /**
  * Element that displays the details for a single {@link webdriver.Session};
  * hidden when there is no session to view.
- * @type {Element}
- * @private
+ * @private {Element}
  */
 remote.ui.SessionView.prototype.viewElement_;
 
 
 /**
  * Element that displays the session ID.
- * @type {Element}
- * @private
+ * @private {Element}
  */
 remote.ui.SessionView.prototype.sessionIdSpan_;
 
@@ -125,8 +115,7 @@ remote.ui.SessionView.prototype.sessionIdSpan_;
  * Place holder for the bulk of the view content.
  * TODO(jleyba): Figure out what we want this to be. A REPL for interacting
  * with the session? A view of recent session commands?
- * @type {Element}
- * @private
+ * @private {Element}
  */
 remote.ui.SessionView.prototype.todoBlock_;
 

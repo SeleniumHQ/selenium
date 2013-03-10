@@ -51,7 +51,7 @@ webdriver.atoms.element.isSelected = function(element) {
  * property name.
  *
  * @const
- * @private
+ * @private {!Object.<string, string>}
  */
 webdriver.atoms.element.PROPERTY_ALIASES_ = {
   'class': 'className',
@@ -68,7 +68,7 @@ webdriver.atoms.element.PROPERTY_ALIASES_ = {
  * These must all be lower-case.
  *
  * @const
- * @private
+ * @private {!Array.<string>}
  */
 webdriver.atoms.element.BOOLEAN_PROPERTIES_ = [
   'async',
@@ -340,9 +340,8 @@ webdriver.atoms.element.type = function(
 
 /**
  * Maps JSON wire protocol values to their {@link bot.Keyboard.Key} counterpart.
- * @type {!Object.<bot.Keyboard.Key>}
+ * @private {!Object.<bot.Keyboard.Key>}
  * @const
- * @private
  */
 webdriver.atoms.element.type.JSON_TO_KEY_MAP_ = {};
 goog.scope(function() {

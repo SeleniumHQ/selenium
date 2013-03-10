@@ -49,9 +49,8 @@ bot.locators.strategy;
  * and are specified at:
  * https://code.google.com/p/selenium/wiki/JsonWireProtocol
  *
- * @private
  * @const
- * @type {Object.<string,bot.locators.strategy>}
+ * @private {Object.<string,bot.locators.strategy>}
  */
 bot.locators.STRATEGIES_ = {
   'className': bot.locators.className,

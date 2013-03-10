@@ -34,10 +34,7 @@ safaridriver.extension.Session = function(tabManager) {
   goog.base(this, goog.string.getRandomString(),
       safaridriver.extension.Session.CAPABILITIES);
 
-  /**
-   * @type {!safaridriver.extension.TabManager}
-   * @private
-   */
+  /** @private {!safaridriver.extension.TabManager} */
   this.tabManager_ = tabManager;
 };
 goog.inherits(safaridriver.extension.Session, webdriver.Session);
@@ -63,33 +60,25 @@ safaridriver.extension.Session.CAPABILITIES = {
 
 /**
  * The command currently being executed with this session, if any.
- * @type {safaridriver.Command}
- * @private
+ * @private {safaridriver.Command}
  */
 safaridriver.extension.Session.prototype.currentCommand_ = null;
 
 
 /**
  * The text from an alert that was opened between commands, or null.
- * @type {?string}
- * @private
+ * @private {?string}
  * @see http://code.google.com/p/selenium/issues/detail?id=3862
  * @see http://code.google.com/p/selenium/issues/detail?id=3969
  */
 safaridriver.extension.Session.prototype.unhandledAlertText_ = null;
 
 
-/**
- * @type {number}
- * @private
- */
+/** @private {number} */
 safaridriver.extension.Session.prototype.implicitWait_ = 0;
 
 
-/**
- * @type {number}
- * @private
- */
+/** @private {number} */
 safaridriver.extension.Session.prototype.scriptTimeout_ = 0;
 
 

@@ -68,9 +68,8 @@ webdriver.process.setEnv = function(name, value) {
 
 /**
  * Whether the current environment is using Node's native process object.
- * @type {boolean}
+ * @private {boolean}
  * @const
- * @private
  */
 webdriver.process.IS_NATIVE_PROCESS_ = typeof process !== 'undefined';
 
@@ -114,9 +113,8 @@ webdriver.process.initBrowserProcess_ = function(opt_window) {
  * The global process object to use. Will either be Node's global
  * {@code process} object, or an approximation of it for use in a browser
  * environment.
- * @type {!Object}
+ * @private {!Object}
  * @const
- * @private
  */
 webdriver.process.PROCESS_ = webdriver.process.IS_NATIVE_PROCESS_ ? process :
     webdriver.process.initBrowserProcess_();

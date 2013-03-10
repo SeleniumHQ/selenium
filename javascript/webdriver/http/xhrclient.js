@@ -30,11 +30,7 @@ goog.require('webdriver.http.Response');
  */
 webdriver.http.XhrClient = function(url) {
 
-  /**
-   * URL for the WebDriver server to send commands to.
-   * @type {string}
-   * @private
-   */
+  /** @private {string} */
   this.url_ = url;
 };
 

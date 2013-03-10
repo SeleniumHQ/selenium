@@ -139,9 +139,8 @@ fxdriver.proxy.systemConfig_ = function(prefs, ignored) {
 
 
 /**
- * @type {!Object.<string, Object.<number,
+ * @private {!Object.<string, Object.<number,
  *   function(!nsIPrefBranch, !ProxyConfig)>>}
- * @private
  */
 fxdriver.proxy.TYPES_ = {
   'DIRECT': { value: 0, config: fxdriver.proxy.directConfig_ },

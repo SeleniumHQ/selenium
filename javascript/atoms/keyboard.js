@@ -47,22 +47,13 @@ goog.require('goog.userAgent');
 bot.Keyboard = function(opt_state) {
   goog.base(this);
 
-  /**
-   * @type {boolean}
-   * @private
-   */
+  /** @private {boolean} */
   this.editable_ = bot.dom.isEditable(this.getElement());
 
-  /**
-   * @type {number}
-   * @private
-   */
+  /** @private {number} */
   this.currentPos_ = 0;
 
-  /**
-   * @type {!goog.structs.Set.<!bot.Keyboard.Key>}
-   * @private
-   */
+  /** @private {!goog.structs.Set.<!bot.Keyboard.Key>} */
   this.pressed_ = new goog.structs.Set();
 
   if (opt_state) {
@@ -82,9 +73,8 @@ goog.inherits(bot.Keyboard, bot.Device);
  * Maps characters to (key,boolean) pairs, where the key generates the
  * character and the boolean is true when the shift must be pressed.
  *
- * @type {!Object.<string, {key: !bot.Keyboard.Key, shift: boolean}>}
+ * @private {!Object.<string, {key: !bot.Keyboard.Key, shift: boolean}>}
  * @const
- * @private
  */
 bot.Keyboard.CHAR_TO_KEY_ = {};
 
@@ -339,8 +329,7 @@ bot.Keyboard.MODIFIERS = [
 
 /**
  * Map of modifier to key.
- * @type {!goog.structs.Map.<!bot.Device.Modifier, !bot.Keyboard.Key>}
- * @private
+ * @private {!goog.structs.Map.<!bot.Device.Modifier, !bot.Keyboard.Key>}
  */
 bot.Keyboard.MODIFIER_TO_KEY_MAP_ = (function() {
   var modifiersMap = new goog.structs.Map();
@@ -359,8 +348,7 @@ bot.Keyboard.MODIFIER_TO_KEY_MAP_ = (function() {
 
 /**
  * The reverse map - key to modifier.
- * @type {!goog.structs.Map.<number, !bot.Device.Modifier>}
- * @private
+ * @private {!goog.structs.Map.<number, !bot.Device.Modifier>}
  */
 bot.Keyboard.KEY_TO_MODIFIER_ = (function(modifiersMap) {
   var keyToModifierMap = new goog.structs.Map();
@@ -398,8 +386,7 @@ bot.Keyboard.prototype.setKeyPressed_ = function(key, isPressed) {
  * The value used for newlines in the current browser/OS combination. Although
  * the line endings look platform dependent, they are browser dependent. In
  * particular, Opera uses \r\n on all platforms.
- * @type {string}
- * @private
+ * @private {string}
  * @const
  */
 bot.Keyboard.NEW_LINE_ =
@@ -592,8 +579,7 @@ bot.Keyboard.prototype.getChar_ = function(key) {
  * additional logic to surgically apply the edit.
  *
  * @const
- * @type {boolean}
- * @private
+ * @private {boolean}
  */
 bot.Keyboard.KEYPRESS_EDITS_TEXT_ = goog.userAgent.GECKO &&
     !bot.userAgent.isEngineVersion(12);
@@ -622,9 +608,7 @@ bot.Keyboard.prototype.updateOnCharacter_ = function(key) {
 };
 
 
-/**
- * @private
- */
+/** @private */
 bot.Keyboard.prototype.updateOnEnter_ = function() {
   if (bot.Keyboard.KEYPRESS_EDITS_TEXT_) {
     return;

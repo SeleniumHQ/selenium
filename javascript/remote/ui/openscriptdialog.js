@@ -38,8 +38,7 @@ remote.ui.OpenScriptDialog = function() {
 
   /**
    * Input for the URL to open.
-   * @type {!goog.ui.LabelInput}
-   * @private
+   * @private {!goog.ui.LabelInput}
    */
   this.input_ = new goog.ui.LabelInput('Script URL');
   this.addChild(this.input_);

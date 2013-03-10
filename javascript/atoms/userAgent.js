@@ -82,8 +82,7 @@ bot.userAgent.isProductVersion = function(version) {
  * and returns whether the version of Gecko we are on is the same or higher
  * than the given version. When we are not in a Firefox extension, this is null.
  *
- * @type {(undefined|function((string|number)): boolean)}
- * @private
+ * @private {(undefined|function((string|number)): boolean)}
  */
 bot.userAgent.FIREFOX_EXTENSION_IS_ENGINE_VERSION_;
 
@@ -93,9 +92,7 @@ bot.userAgent.FIREFOX_EXTENSION_IS_ENGINE_VERSION_;
  * and returns whether the version of Firefox we are on is the same or higher
  * than the given version. When we are not in a Firefox extension, this is null.
  *
- * @type {(undefined|function((string|number)): boolean)}
- *
- * @private
+ * @private {(undefined|function((string|number)): boolean)}
  */
 bot.userAgent.FIREFOX_EXTENSION_IS_PRODUCT_VERSION_;
 
@@ -169,8 +166,7 @@ bot.userAgent.MOBILE = bot.userAgent.IOS || goog.userAgent.product.ANDROID;
  * Android Operating System Version.
  *
  * @const
- * @type {string}
- * @private
+ * @private {string}
  */
 bot.userAgent.ANDROID_VERSION_ = (function() {
   if (goog.userAgent.product.ANDROID) {

@@ -28,15 +28,13 @@ Response = function(response, outputStream) {
 
   /**
    * The request this is a response to.
-   * @type {?Request}
-   * @private
+   * @private {?Request}
    */
   this.response_ = response;
 
   /**
    * This response's message body.
-   * @type {string}
-   * @private
+   * @private {string}
    */
   this.body_ = '';
 
@@ -90,8 +88,7 @@ Response.CRLF = '\r\n';
 
 /**
  * This response's HTTP stauts code.
- * @type {number}
- * @private
+ * @private {number}
  */
 Response.prototype.status_ = Response.OK;
 

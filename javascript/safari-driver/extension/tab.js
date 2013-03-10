@@ -46,10 +46,7 @@ safaridriver.extension.Tab = function(browserTab) {
 
   this.setLogger('safaridriver.extension.Tab');
 
-  /**
-   * @type {!SafariBrowserTab}
-   * @private
-   */
+  /** @private {!SafariBrowserTab} */
   this.browserTab_ = browserTab;
 
   browserTab.addEventListener('close', goog.bind(this.dispose, this), false);
@@ -63,15 +60,12 @@ goog.inherits(safaridriver.extension.Tab, safaridriver.Tab);
 
 /**
  * Whether the active frame in this tab is currently loading.
- * @type {boolean}
- * @private
+ * @private {boolean}
  */
 safaridriver.extension.Tab.prototype.frameIsLoading_ = false;
 
 
-/**
- * @private
- */
+/** @private */
 safaridriver.extension.Tab.prototype.onLoad_ = function() {
   this.frameIsLoading_ = false;
   this.notifyReady();

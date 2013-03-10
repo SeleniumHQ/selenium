@@ -140,9 +140,8 @@ core.patternMatcher.Strategy;
 /**
  * Known element location strategies.
  *
- * @private
  * @const
- * @type {Object.<string,core.patternMatcher.Strategy>}
+ * @private {Object.<string,core.patternMatcher.Strategy>}
  */
 core.patternMatcher.KNOWN_STRATEGIES_ = {
   'exact': core.patternMatcher.exact_,

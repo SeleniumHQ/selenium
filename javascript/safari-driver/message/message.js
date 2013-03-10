@@ -43,9 +43,8 @@ safaridriver.message.ORIGIN = 'webdriver';
 
 
 /**
- * @type {!goog.debug.Logger}
+ * @private {!goog.debug.Logger}
  * @const
- * @private
  */
 safaridriver.message.LOG_ = goog.debug.Logger.getLogger(
     'safaridriver.message');
@@ -61,8 +60,7 @@ safaridriver.message.FORCE_SYNCHRONOUS_PROXY_SEND = false;
 /**
  * A map of message type to the factory function that can reconstruct a
  * {@link safaridriver.message.Message} from a JSON record.
- * @type {!Object.<function(!Object.<*>): !safaridriver.message.Message>}
- * @private
+ * @private {!Object.<function(!Object.<*>): !safaridriver.message.Message>}
  */
 safaridriver.message.factoryRegistry_ = {};
 
@@ -140,8 +138,7 @@ safaridriver.message.Message = function(type) {
 
   /**
    * The JSON data associated with this message.
-   * @type {!Object.<*>}
-   * @private
+   * @private {!Object.<*>}
    */
   this.data_ = {};
 

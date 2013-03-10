@@ -48,9 +48,8 @@ safaridriver.message.Connect.TYPE = 'connect';
 
 
 /**
- * @type {string}
+ * @private {string}
  * @const
- * @private
  */
 safaridriver.message.Connect.URL_FIELD_ = 'url';
 

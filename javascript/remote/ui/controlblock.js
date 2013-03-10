@@ -35,17 +35,13 @@ goog.inherits(remote.ui.ControlBlock, goog.ui.Component);
 
 
 /**
- * @type {string}
+ * @private {string}
  * @const
- * @private
  */
 remote.ui.ControlBlock.SEPARATOR_TEXT_ = '\xa0\xa0|\xa0\xa0';
 
 
-/**
- * @type {Array.<!Element>}
- * @private
- */
+/** @private {Array.<!Element>} */
 remote.ui.ControlBlock.prototype.elementsToAdd_ = null;
 
 

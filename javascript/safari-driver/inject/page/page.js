@@ -41,9 +41,8 @@ goog.require('webdriver.promise');
 
 
 /**
- * @type {!goog.debug.Logger}
+ * @private {!goog.debug.Logger}
  * @const
- * @private
  */
 safaridriver.inject.page.LOG_ = goog.debug.Logger.getLogger(
     'safaridriver.inject.page');

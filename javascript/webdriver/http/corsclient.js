@@ -67,10 +67,7 @@ webdriver.http.CorsClient = function(url) {
         'resource sharing');
   }
 
-  /**
-   * @type {string}
-   * @private
-   */
+  /** @private {string} */
   this.url_ = url + webdriver.http.CorsClient.XDRPC_ENDPOINT;
 };
 

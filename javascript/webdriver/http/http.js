@@ -66,8 +66,7 @@ webdriver.http.Executor = function(client) {
 
   /**
    * Client used to communicate with the server.
-   * @type {!webdriver.http.Client}
-   * @private
+   * @private {!webdriver.http.Client}
    */
   this.client_ = client;
 };
@@ -171,9 +170,8 @@ webdriver.http.Executor.parseHttpResponse_ = function(httpResponse) {
 
 /**
  * Maps command names to resource locator.
- * @type {!Object.<{method:string, path:string}>}
+ * @private {!Object.<{method:string, path:string}>}
  * @const
- * @private
  */
 webdriver.http.Executor.COMMAND_MAP_ = (function() {
   return new Builder().

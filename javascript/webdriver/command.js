@@ -31,15 +31,13 @@ webdriver.Command = function(name) {
 
   /**
    * The name of this command.
-   * @type {!webdriver.CommandName}
-   * @private
+   * @private {!webdriver.CommandName}
    */
   this.name_ = name;
 
   /**
    * The parameters to this command.
-   * @type {!Object.<*>}
-   * @private
+   * @private {!Object.<*>}
    */
   this.parameters_ = {};
 };

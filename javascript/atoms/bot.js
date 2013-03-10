@@ -26,8 +26,7 @@ goog.provide('bot');
  * being used for command execution. Note that "window" may not always be
  * defined (for example in firefox extensions)
  *
- * @type {!Window}
- * @private
+ * @private {!Window}
  */
 bot.window_;
 

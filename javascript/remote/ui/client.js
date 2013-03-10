@@ -45,61 +45,34 @@ goog.require('webdriver.promise');
 remote.ui.Client = function(url, executor) {
   goog.base(this);
 
-  /**
-   * @type {!goog.debug.Logger}
-   * @private
-   */
+  /** @private {!goog.debug.Logger} */
   this.log_ = goog.debug.Logger.getLogger('remote.ui.Client');
 
-  /**
-   * @type {!goog.debug.Console}
-   * @private
-   */
+  /** @private {!goog.debug.Console} */
   this.logConsole_ = new goog.debug.Console();
 
   this.logConsole_.setCapturing(true);
 
-  /**
-   * @type {string}
-   * @private
-   */
+  /** @private {string} */
   this.url_ = url;
 
-  /**
-   * @type {!webdriver.CommandExecutor}
-   * @private
-   */
+  /** @private {!webdriver.CommandExecutor} */
   this.executor_ = executor;
 
-  /**
-   * @type {!remote.ui.Banner}
-   * @private
-   */
+  /** @private {!remote.ui.Banner} */
   this.banner_ = new remote.ui.Banner();
 
-  /**
-   * @type {!remote.ui.ServerInfo}
-   * @private
-   */
+  /** @private {!remote.ui.ServerInfo} */
   this.serverInfo_ = new remote.ui.ServerInfo();
 
-  /**
-   * @type {!remote.ui.SessionContainer}
-   * @private
-   */
+  /** @private {!remote.ui.SessionContainer} */
   this.sessionContainer_ = new remote.ui.SessionContainer(
       remote.ui.Client.SUPPORTED_BROWSERS);
 
-  /**
-   * @type {!remote.ui.ScreenshotDialog}
-   * @private
-   */
+  /** @private {!remote.ui.ScreenshotDialog} */
   this.screenshotDialog_ = new remote.ui.ScreenshotDialog();
 
-  /**
-   * @type {!remote.ui.WebDriverScriptButton}
-   * @private
-   */
+  /** @private {!remote.ui.WebDriverScriptButton} */
   this.scriptButton_ = new remote.ui.WebDriverScriptButton();
 
   goog.events.listen(this.sessionContainer_, remote.ui.Event.Type.CREATE,

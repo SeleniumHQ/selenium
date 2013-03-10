@@ -33,35 +33,22 @@ goog.require('webdriver.promise');
  */
 safaridriver.inject.CommandRegistry = function() {
 
-  /**
-   * @type {!goog.debug.Logger}
-   * @private
-   */
+  /** @private {!goog.debug.Logger} */
   this.log_ = goog.debug.Logger.getLogger(
       'safaridriver.inject.CommandRegistry');
 
-  /**
-   * @type {!Object.<!webdriver.CommandName, string>}
-   * @private
-   */
+  /** @private {!Object.<!webdriver.CommandName, string>} */
   this.commandNameToModuleId_ = {};
 
   /**
-   * @type {!Object.<!webdriver.CommandName, safaridriver.CommandHandler>}
-   * @private
+   * @private {!Object.<!webdriver.CommandName, safaridriver.CommandHandler>}
    */
   this.commandNameToHandler_ = {};
 
-  /**
-   * @type {!Object.<!Array.<!webdriver.CommandName>>}
-   * @private
-   */
+  /** @private {!Object.<!Array.<!webdriver.CommandName>>} */
   this.modules_ = {};
 
-  /**
-   * @type {!Object.<boolean>}
-   * @private
-   */
+  /** @private {!Object.<boolean>} */
   this.loadedModules_ = {};
 };
 goog.addSingletonGetter(safaridriver.inject.CommandRegistry);
@@ -69,16 +56,14 @@ goog.addSingletonGetter(safaridriver.inject.CommandRegistry);
 
 /**
  * Message target to send LoadModule messages to.
- * @type {!(SafariContentBrowserTabProxy|Window)}
- * @private
+ * @private {!(SafariContentBrowserTabProxy|Window)}
  */
 safaridriver.inject.CommandRegistry.prototype.messageTarget_;
 
 
 /**
  * Function to call to evaluate the source of a recently loaded module.
- * @type {function(string)}
- * @private
+ * @private {function(string)}
  */
 safaridriver.inject.CommandRegistry.prototype.evalModuleFn_ =
     goog.nullFunction;

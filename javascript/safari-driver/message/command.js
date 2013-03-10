@@ -38,10 +38,7 @@ goog.require('safaridriver.message.Message');
 safaridriver.message.BaseCommandMessage = function(type, command) {
   goog.base(this, type);
 
-  /**
-   * @type {!safaridriver.Command}
-   * @private
-   */
+  /** @private {!safaridriver.Command} */
   this.command_ = command;
 };
 goog.inherits(safaridriver.message.BaseCommandMessage,
@@ -49,9 +46,8 @@ goog.inherits(safaridriver.message.BaseCommandMessage,
 
 
 /**
- * @type {string}
+ * @private {string}
  * @const
- * @private
  */
 safaridriver.message.BaseCommandMessage.COMMAND_FIELD_ = 'command';
 

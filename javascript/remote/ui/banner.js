@@ -36,8 +36,7 @@ goog.inherits(remote.ui.Banner, goog.ui.Component);
 
 /**
  * Key for the {@link goog.events.EventType.RESIZE} event listener.
- * @type {?number}
- * @private
+ * @private {?number}
  */
 remote.ui.Banner.prototype.onResizeKey_ = null;
 

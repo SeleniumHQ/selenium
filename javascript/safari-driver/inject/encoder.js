@@ -41,10 +41,7 @@ goog.require('webdriver.promise');
  */
 safaridriver.inject.Encoder = function(messageTarget) {
 
-  /**
-   * @type {!Object.<!webdriver.promise.Deferred>}
-   * @private
-   */
+  /** @private {!Object.<!webdriver.promise.Deferred>} */
   this.pendingResponses_ = {};
 
   messageTarget.on(safaridriver.message.Response.TYPE,
@@ -60,18 +57,16 @@ safaridriver.inject.Encoder = function(messageTarget) {
  * <p>Note, this constant is very intentionally initialized to a value other
  * than the standard JSON wire protocol key for WebElements.
  *
- * @type {string}
+ * @private {string}
  * @const
- * @private
  */
 safaridriver.inject.Encoder.ENCODED_ELEMENT_KEY_ =
     'ENCODED_' + bot.inject.ELEMENT_KEY;
 
 
 /**
- * @type {string}
+ * @private {string}
  * @const
- * @private
  */
 safaridriver.inject.Encoder.ENCODING_ATTRIBUTE_NAME_ = 'safaridriver-encoding';
 

@@ -49,8 +49,7 @@ var DomMessenger = function(commandProcessor) {
 
   /**
    * The object to use as a command processor.
-   * @type { {execute: function(string, function(string))} }
-   * @private
+   * @private { {execute: function(string, function(string))} }
    */
   this.commandProcessor_ = commandProcessor;
 
@@ -58,8 +57,7 @@ var DomMessenger = function(commandProcessor) {
 
   /**
    * EventListener for {@code COMMAND_EVENT}s.
-   * @type {function(Event)}
-   * @private
+   * @private {function(Event)}
    */
   this.commandEventListener_ = function(e) {
     self.onCommand(e);

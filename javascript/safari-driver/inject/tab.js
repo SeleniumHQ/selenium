@@ -67,32 +67,26 @@ safaridriver.inject.Tab = function() {
   this.setLogger('safaridriver.inject.' +
       (safaridriver.inject.Tab.IS_TOP ? '_Top_' : 'Frame'));
 
-  /**
-   * @type {!safaridriver.inject.Encoder}
-   * @private
-   */
+  /** @private {!safaridriver.inject.Encoder} */
   this.encoder_ = new safaridriver.inject.Encoder(this);
 
   /**
    * Commands that have started execution.
-   * @type {Object.<!safaridriver.Command>}
-   * @private
+   * @private {Object.<!safaridriver.Command>}
    */
   this.pendingCommands_ = {};
 
   /**
    * Commands that are waiting for the active frame to reload before being
    * executed.
-   * @type {!Object.<!safaridriver.Command>}
-   * @private
+   * @private {!Object.<!safaridriver.Command>}
    */
   this.queuedCommands_ = {};
 
   /**
    * Pending responses to commands that have been broadcast to the page script
    * for execution in the current page's JavaScript context.
-   * @type {!Object.<!webdriver.promise.Deferred>}
-   * @private
+   * @private {!Object.<!webdriver.promise.Deferred>}
    */
   this.pendingPageResponses_ = {};
 };
@@ -111,9 +105,8 @@ safaridriver.inject.Tab.IS_TOP = window === window.top;
 /**
  * Whether this script is currently active. Only the top-most frame is
  * considered active upon instantiation.
- * @type {boolean}
+ * @private {boolean}
  * @see {safaridriver.inject.Tab#isActive}
- * @private
  */
 safaridriver.inject.Tab.prototype.isActive_ = safaridriver.inject.Tab.IS_TOP;
 
@@ -122,16 +115,14 @@ safaridriver.inject.Tab.prototype.isActive_ = safaridriver.inject.Tab.IS_TOP;
  * A reference to the frame that should handle commands sent from the global
  * extension. This value will always be {@code null} when {@link #IS_TOP} is
  * false.
- * @type {Window}
- * @private
+ * @private {Window}
  */
 safaridriver.inject.Tab.prototype.activeFrame_ = null;
 
 
 /**
  * Key of the interval used to check whether the active frame has been closed.
- * @type {number}
- * @private
+ * @private {number}
  * @see {#checkFrame_}
  */
 safaridriver.inject.Tab.prototype.frameCheckKey_ = 0;
@@ -140,8 +131,7 @@ safaridriver.inject.Tab.prototype.frameCheckKey_ = 0;
 /**
  * Promise used to track whether the page script has been installed for the
  * current page.
- * @type {webdriver.promise.Deferred}
- * @private
+ * @private {webdriver.promise.Deferred}
  */
 safaridriver.inject.Tab.prototype.installedPageScript_ = null;
 

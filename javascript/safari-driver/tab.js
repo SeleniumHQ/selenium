@@ -31,31 +31,19 @@ safaridriver.Tab = function(source) {
   goog.base(this, source);
   this.setLogger('safaridriver.Tab');
 
-  /**
-   * @type {string}
-   * @private
-   */
+  /** @private {string} */
   this.id_ = goog.string.getRandomString();
 
-  /**
-   * @type {boolean}
-   * @private
-   */
+  /** @private {boolean} */
   this.isReady_ = true;
 
-  /**
-   * @type {!Array.<function()>}
-   * @private
-   */
+  /** @private {!Array.<function()>} */
   this.readyListeners_ = [];
 };
 goog.inherits(safaridriver.Tab, safaridriver.message.MessageTarget);
 
 
-/**
- * @type {?number}
- * @private
- */
+/** @private {?number} */
 safaridriver.Tab.prototype.idleStateWaitKey_ = null;
 
 

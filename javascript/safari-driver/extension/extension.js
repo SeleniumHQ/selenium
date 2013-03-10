@@ -63,9 +63,8 @@ safaridriver.extension.init = function() {
 
 
 /**
- * @type {!goog.debug.Logger}
+ * @private {!goog.debug.Logger}
  * @const
- * @private
  */
 safaridriver.extension.LOG_ = goog.debug.Logger.getLogger(
     'safaridriver.extension');
@@ -74,8 +73,7 @@ safaridriver.extension.LOG_ = goog.debug.Logger.getLogger(
 /**
  * Global tab manager shared by each instance; lazily initialized in
  * {@link safaridriver.extension.init}.
- * @type {!safaridriver.extension.TabManager}
- * @private
+ * @private {!safaridriver.extension.TabManager}
  */
 safaridriver.extension.tabManager_;
 
@@ -83,8 +81,7 @@ safaridriver.extension.tabManager_;
 /**
  * Global session shared by eash clinet; lazily initialized in
  * {@link safaridriver.extension.init}.
- * @type {!safaridriver.extension.Session}
- * @private
+ * @private {!safaridriver.extension.Session}
  */
 safaridriver.extension.session_;
 
@@ -99,8 +96,7 @@ safaridriver.extension.driver;
 
 /**
  * The number of WebDriver client connections active with this extension.
- * @type {number}
- * @private
+ * @private {number}
  */
 safaridriver.extension.numConnections_ = 0;
 
@@ -199,8 +195,7 @@ safaridriver.extension.loadModule_ = function(moduleId) {
 
 /**
  * Object hash for compiled modules for lazy loading from the injected script.
- * @type {!Object.<function()>}
- * @private
+ * @private {!Object.<function()>}
  */
 safaridriver.extension.modules_ = {};
 goog.exportSymbol('MODULES', safaridriver.extension.modules_);

@@ -42,15 +42,13 @@ goog.require('goog.userAgent.product');
 bot.Device = function(opt_modifiersState) {
   /**
    * Element being interacted with.
-   * @type {!Element}
-   * @private
+   * @private {!Element}
    */
   this.element_ = bot.getDocument().documentElement;
 
   /**
    * If the element is an option, this is its parent select element.
-   * @type {Element}
-   * @private
+   * @private {Element}
    */
   this.select_ = null;
 
@@ -482,8 +480,7 @@ bot.Device.prototype.focusOnElement = function() {
  * Whether links must be manually followed when clicking (because firing click
  * events doesn't follow them).
  *
- * @type {boolean}
- * @private
+ * @private {boolean}
  * @const
  */
 bot.Device.ALWAYS_FOLLOWS_LINKS_ON_CLICK_ =
@@ -696,8 +693,7 @@ bot.Device.prototype.submitForm = function(form) {
 
 /**
  * Regular expression for splitting up a URL into components.
- * @type {!RegExp}
- * @private
+ * @private {!RegExp}
  * @const
  */
 bot.Device.URL_REGEXP_ = new RegExp(
@@ -761,8 +757,7 @@ bot.Device.resolveUrl_ = function(base, rel) {
 bot.Device.ModifiersState = function() {
   /**
    * State of the modifier keys.
-   * @type {number}
-   * @private
+   * @private {number}
    */
   this.pressedModifiers_ = 0;
 };

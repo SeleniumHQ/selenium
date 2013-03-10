@@ -48,28 +48,16 @@ goog.require('webdriver.promise');
 safaridriver.extension.Server = function(session) {
   goog.base(this);
 
-  /**
-   * @type {!goog.debug.Logger}
-   * @private
-   */
+  /** @private {!goog.debug.Logger} */
   this.log_ = goog.debug.Logger.getLogger('safaridriver.extension.Server');
 
-  /**
-   * @type {!safaridriver.extension.Session}
-   * @private
-   */
+  /** @private {!safaridriver.extension.Session} */
   this.session_ = session;
 
-  /**
-   * @type {!webdriver.promise.Deferred}
-   * @private
-   */
+  /** @private {!webdriver.promise.Deferred} */
   this.ready_ = new webdriver.promise.Deferred();
 
-  /**
-   * @type {!Array.<function()>}
-   * @private
-   */
+  /** @private {!Array.<function()>} */
   this.disposeCallbacks_ = [];
 };
 goog.inherits(safaridriver.extension.Server, goog.Disposable);
@@ -84,10 +72,9 @@ safaridriver.extension.Server.CommandHandler;
 
 /**
  * Maps command names to their handler functions.
- * @type {!Object.<webdriver.CommandName,
- *                 safaridriver.extension.Server.CommandHandler>}
+ * @private {!Object.<webdriver.CommandName,
+ *                    safaridriver.extension.Server.CommandHandler>}
  * @const
- * @private
  */
 safaridriver.extension.Server.COMMAND_MAP_ = {};
 goog.scope(function() {
@@ -175,8 +162,7 @@ map[CommandName.SET_ALERT_TEXT] = commands.handleNoAlertsPresent;
 
 /**
  * The WebSocket used by this instance, lazily initialized in {@link #connect}.
- * @type {WebSocket}
- * @private
+ * @private {WebSocket}
  */
 safaridriver.extension.Server.prototype.webSocket_ = null;
 
@@ -230,8 +216,7 @@ safaridriver.extension.Server.prototype.onDispose = function(fn) {
 /**
  * Set of URLs that {@link safaridriver.extension.Server} instances are
  * connected to.
- * @type {!Object}
- * @private
+ * @private {!Object}
  */
 safaridriver.extension.Server.connectedUrls_ = {};
 

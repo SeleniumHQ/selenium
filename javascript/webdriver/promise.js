@@ -854,8 +854,7 @@ webdriver.promise.ControlFlow = function(opt_timer) {
    * completed, the previously recorded task is removed from this list. If
    * there are multiple tasks, task N+1 is considered a sub-task of task
    * N.
-   * @type {!Array.<!webdriver.promise.Task_>}
-   * @private
+   * @private {!Array.<!webdriver.promise.Task_>}
    */
   this.history_ = [];
 };
@@ -926,8 +925,7 @@ webdriver.promise.ControlFlow.EVENT_LOOP_FREQUENCY = 10;
 /**
  * Tracks the active execution frame for this instance. Lazily initialized
  * when the first task is scheduled.
- * @type {webdriver.promise.Frame_}
- * @private
+ * @private {webdriver.promise.Frame_}
  */
 webdriver.promise.ControlFlow.prototype.activeFrame_ = null;
 
@@ -938,8 +936,7 @@ webdriver.promise.ControlFlow.prototype.activeFrame_ = null;
  * a function to run in the context of a new frame, this pointer is used to
  * ensure tasks are scheduled within the newly created frame, even though it
  * won't be active yet.
- * @type {webdriver.promise.Frame_}
- * @private
+ * @private {webdriver.promise.Frame_}
  * @see {#runInNewFrame_}
  */
 webdriver.promise.ControlFlow.prototype.schedulingFrame_ = null;
@@ -961,16 +958,14 @@ webdriver.promise.ControlFlow.prototype.schedulingFrame_ = null;
  *   // failure for 1 turn of the event loop.
  *   result.then(goog.nullFunction);
  *
- * @type {?number}
- * @private
+ * @private {?number}
  */
 webdriver.promise.ControlFlow.prototype.shutdownId_ = null;
 
 
 /**
  * Interval ID for this instance's event loop.
- * @type {?number}
- * @private
+ * @private {?number}
  */
 webdriver.promise.ControlFlow.prototype.eventLoopId_ = null;
 
@@ -989,8 +984,7 @@ webdriver.promise.ControlFlow.prototype.eventLoopId_ = null;
  * be reported before a new task is started, ensuring the error is reported to
  * the current task queue.
  *
- * @type {number}
- * @private
+ * @private {number}
  */
 webdriver.promise.ControlFlow.prototype.pendingRejections_ = 0;
 
@@ -998,8 +992,7 @@ webdriver.promise.ControlFlow.prototype.pendingRejections_ = 0;
 /**
  * The number of aborted frames since the last time a task was executed or a
  * frame completed successfully.
- * @type {number}
- * @private
+ * @private {number}
  */
 webdriver.promise.ControlFlow.prototype.numAbortedFrames_ = 0;
 
@@ -1069,9 +1062,8 @@ webdriver.promise.ControlFlow.prototype.trimHistory_ = function() {
 /**
  * Property used to track whether an error has been annotated by
  * {@link webdriver.promise.ControlFlow#annotateError}.
- * @type {string}
+ * @private {string}
  * @const
- * @private
  */
 webdriver.promise.ControlFlow.ANNOTATION_PROPERTY_ =
     'webdriver_promise_error_';
@@ -1558,8 +1550,7 @@ goog.inherits(webdriver.promise.Node_, webdriver.promise.Deferred);
 
 /**
  * This node's parent.
- * @type {webdriver.promise.Node_}
- * @private
+ * @private {webdriver.promise.Node_}
  */
 webdriver.promise.Node_.prototype.parent_ = null;
 
@@ -1610,8 +1601,7 @@ webdriver.promise.Frame_ = function(flow) {
   webdriver.promise.Node_.call(this, flow);
 
   /**
-   * @type {!Array.<!(webdriver.promise.Frame_|webdriver.promise.Task_)>}
-   * @private
+   * @private {!Array.<!(webdriver.promise.Frame_|webdriver.promise.Task_)>}
    */
   this.children_ = [];
 };
@@ -1620,8 +1610,7 @@ goog.inherits(webdriver.promise.Frame_, webdriver.promise.Node_);
 
 /**
  * The task currently being executed within this frame.
- * @type {webdriver.promise.Task_}
- * @private
+ * @private {webdriver.promise.Task_}
  */
 webdriver.promise.Frame_.prototype.pendingTask_ = null;
 
@@ -1642,8 +1631,7 @@ webdriver.promise.Frame_.prototype.pendingTask_ = null;
  *   flow.execute('this should execute last', goog.nullFunction);
  * </pre></code>
  *
- * @type {boolean}
- * @private
+ * @private {boolean}
  */
 webdriver.promise.Frame_.prototype.isActive_ = false;
 
@@ -1656,16 +1644,14 @@ webdriver.promise.Frame_.prototype.isActive_ = false;
  * added represent callbacks on a {@link webdriver.promise.Deferred}, whose
  * tasks must be given priority over previously scheduled tasks.
  *
- * @type {boolean}
- * @private
+ * @private {boolean}
  */
 webdriver.promise.Frame_.prototype.isLocked_ = false;
 
 
 /**
  * A reference to the last node inserted in this frame.
- * @type {webdriver.promise.Node_}
- * @private
+ * @private {webdriver.promise.Node_}
  */
 webdriver.promise.Frame_.prototype.lastInsertedChild_ = null;
 
@@ -1784,16 +1770,10 @@ webdriver.promise.Task_ = function(flow, fn, description, snapshot) {
    */
   this.execute = fn;
 
-  /**
-   * @type {string}
-   * @private
-   */
+  /** @private {string} */
   this.description_ = description;
 
-  /**
-   * @type {!webdriver.stacktrace.Snapshot}
-   * @private
-   */
+  /** @private {!webdriver.stacktrace.Snapshot} */
   this.snapshot_ = snapshot;
 };
 goog.inherits(webdriver.promise.Task_, webdriver.promise.Node_);
@@ -1821,8 +1801,7 @@ webdriver.promise.Task_.prototype.toString = function() {
 
 /**
  * The default flow to use if no others are active.
- * @type {!webdriver.promise.ControlFlow}
- * @private
+ * @private {!webdriver.promise.ControlFlow}
  */
 webdriver.promise.defaultFlow_ = new webdriver.promise.ControlFlow();
 
@@ -1832,8 +1811,7 @@ webdriver.promise.defaultFlow_ = new webdriver.promise.ControlFlow();
  * commands. When there are multiple flows on the stack, the flow at index N
  * represents a callback triggered within a task owned by the flow at index
  * N-1.
- * @type {!Array.<!webdriver.promise.ControlFlow>}
- * @private
+ * @private {!Array.<!webdriver.promise.ControlFlow>}
  */
 webdriver.promise.activeFlows_ = [];
 

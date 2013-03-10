@@ -45,9 +45,8 @@ goog.inherits(safaridriver.message.BaseLoadMessage,
 
 
 /**
- * @type {string}
+ * @private {string}
  * @const
- * @private
  */
 safaridriver.message.BaseLoadMessage.IS_FRAME_FIELD_ = 'isFrame';
 

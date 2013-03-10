@@ -32,8 +32,7 @@ remote.ui.WebDriverScriptButton = function() {
 
   /**
    * Dialog used to load a script for the current session.
-   * @type {!remote.ui.OpenScriptDialog}
-   * @private
+   * @private {!remote.ui.OpenScriptDialog}
    */
   this.openScriptDialog_ = new remote.ui.OpenScriptDialog();
 

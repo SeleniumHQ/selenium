@@ -32,16 +32,10 @@ webdriver.FirefoxDomExecutor = function() {
         'The current environment does not support the FirefoxDomExecutor');
   }
 
-  /**
-   * @type {!Document}
-   * @private
-   */
+  /** @private {!Document} */
   this.doc_ = document;
 
-  /**
-   * @type {!Element}
-   * @private
-   */
+  /** @private {!Element} */
   this.docElement_ = document.documentElement;
 
   this.docElement_.addEventListener(
@@ -87,8 +81,7 @@ webdriver.FirefoxDomExecutor.EventType_ = {
 
 /**
  * The pending command, if any.
- * @type {?{name:string, callback:!Function}}
- * @private
+ * @private {?{name:string, callback:!Function}}
  */
 webdriver.FirefoxDomExecutor.prototype.pendingCommand_ = null;
 

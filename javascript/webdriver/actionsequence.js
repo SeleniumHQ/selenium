@@ -42,15 +42,11 @@ goog.require('webdriver.Key');
  */
 webdriver.ActionSequence = function(driver) {
 
-  /**
-   * @type {!webdriver.WebDriver}
-   * @private
-   */
+  /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 
   /**
-   * @type {!Array.<{description: string, command: !webdriver.Command}>}
-   * @private
+   * @private {!Array.<{description: string, command: !webdriver.Command}>}
    */
   this.actions_ = [];
 };

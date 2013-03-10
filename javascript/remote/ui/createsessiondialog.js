@@ -31,10 +31,7 @@ goog.require('remote.ui.ActionDialog');
 remote.ui.CreateSessionDialog = function(browsers) {
   goog.base(this, 'Create a New Session');
 
-  /**
-   * @type {!Array.<!Object>}
-   * @private
-   */
+  /** @private {!Array.<!Object>} */
   this.browsers_ = goog.array.map(browsers, function(browser) {
     return goog.isString(browser) ? {'browserName': browser} : browser;
   });
@@ -48,8 +45,7 @@ goog.inherits(remote.ui.CreateSessionDialog, remote.ui.ActionDialog);
 /**
  * Select for the new session browser; initialized in
  * {@code createContentDom()}.
- * @type {Element}
- * @private
+ * @private {Element}
  */
 remote.ui.CreateSessionDialog.prototype.browserSelect_ = null;
 

@@ -71,22 +71,13 @@ goog.require('webdriver.promise');
  */
 webdriver.WebDriver = function(session, executor, opt_flow) {
 
-  /**
-   * @type {!(webdriver.Session|webdriver.promise.Promise)}
-   * @private
-   */
+  /** @private {!(webdriver.Session|webdriver.promise.Promise)} */
   this.session_ = session;
 
-  /**
-   * @type {!webdriver.CommandExecutor}
-   * @private
-   */
+  /** @private {!webdriver.CommandExecutor} */
   this.executor_ = executor;
 
-  /**
-   * @type {!webdriver.promise.ControlFlow}
-   * @private
-   */
+  /** @private {!webdriver.promise.ControlFlow} */
   this.flow_ = opt_flow || webdriver.promise.controlFlow();
 };
 
@@ -862,11 +853,7 @@ webdriver.WebDriver.prototype.switchTo = function() {
  */
 webdriver.WebDriver.Navigation = function(driver) {
 
-  /**
-   * The parent driver.
-   * @type {!webdriver.WebDriver}
-   * @private
-   */
+  /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 };
 
@@ -929,11 +916,7 @@ webdriver.WebDriver.Navigation.prototype.refresh = function() {
  */
 webdriver.WebDriver.Options = function(driver) {
 
-  /**
-   * The parent driver.
-   * @type {!webdriver.WebDriver}
-   * @private
-   */
+  /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 };
 
@@ -1084,11 +1067,7 @@ webdriver.WebDriver.Options.prototype.window = function() {
  */
 webdriver.WebDriver.Timeouts = function(driver) {
 
-  /**
-   * The parent driver.
-   * @type {!webdriver.WebDriver}
-   * @private
-   */
+  /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 };
 
@@ -1147,10 +1126,7 @@ webdriver.WebDriver.Timeouts.prototype.setScriptTimeout = function(ms) {
  */
 webdriver.WebDriver.Window = function(driver) {
 
-  /**
-   * @type {!webdriver.WebDriver}
-   * @private
-   */
+  /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 };
 
@@ -1240,11 +1216,7 @@ webdriver.WebDriver.Window.prototype.maximize = function() {
  */
 webdriver.WebDriver.TargetLocator = function(driver) {
 
-  /**
-   * The parent driver.
-   * @type {!webdriver.WebDriver}
-   * @private
-   */
+  /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 };
 
@@ -1403,8 +1375,7 @@ webdriver.WebElement = function(driver, id) {
 
   /**
    * The parent WebDriver instance for this element.
-   * @type {!webdriver.WebDriver}
-   * @private
+   * @private {!webdriver.WebDriver}
    */
   this.driver_ = driver;
 
@@ -1419,8 +1390,7 @@ webdriver.WebElement = function(driver, id) {
   /**
    * A promise that resolves to the JSON representation of this WebElement's
    * ID, as defined by the WebDriver wire protocol.
-   * @type {!webdriver.promise.Promise}
-   * @private
+   * @private {!webdriver.promise.Promise}
    * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
    */
   this.id_ = webdriver.promise.when(id, function(id) {
@@ -1898,10 +1868,7 @@ webdriver.WebElement.prototype.getInnerHtml = function() {
 webdriver.Alert = function(driver, text) {
   goog.base(this, null, driver.controlFlow());
 
-  /**
-   * @type {!webdriver.WebDriver}
-   * @private
-   */
+  /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 
   // This class is responsible for resolving itself; delete the resolve and
@@ -1912,10 +1879,7 @@ webdriver.Alert = function(driver, text) {
   delete this.fulfill;
   delete this.reject;
 
-  /**
-   * @type {!webdriver.promise.Promise}
-   * @private
-   */
+  /** @private {!webdriver.promise.Promise} */
   this.text_ = webdriver.promise.when(text);
 
   // Make sure this instance is resolved when its displayed text is.
@@ -1987,10 +1951,7 @@ webdriver.Alert.prototype.sendKeys = function(text) {
 webdriver.UnhandledAlertError = function(message, alert) {
   goog.base(this, bot.ErrorCode.MODAL_DIALOG_OPENED, message);
 
-  /**
-   * @type {!webdriver.Alert}
-   * @private
-   */
+  /** @private {!webdriver.Alert} */
   this.alert_ = alert;
 };
 goog.inherits(webdriver.UnhandledAlertError, bot.Error);

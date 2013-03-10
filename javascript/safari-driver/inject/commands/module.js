@@ -33,10 +33,7 @@ goog.require('webdriver.CommandName');
 safaridriver.inject.commands.module.ID = 'injected_commands';
 
 
-/**
- * @type {boolean}
- * @private
- */
+/** @private {boolean} */
 safaridriver.inject.commands.module.initialized_ = false;
 
 

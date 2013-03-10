@@ -33,8 +33,7 @@ goog.require('webdriver.promise');
 
 
 /**
- * @type {!goog.debug.Logger}
- * @private
+ * @private {!goog.debug.Logger}
  * @const
  */
 safaridriver.extension.commands.LOG_ = goog.debug.Logger.getLogger(
@@ -303,9 +302,8 @@ safaridriver.extension.commands.findElement = function(session, command) {
  * commands sent to the injected script.  This is set arbitarily high as we
  * should never hit. It is used soley as a means of preventing hanging the
  * client when something breaks inside the driver.
- * @type {number}
+ * @private {number}
  * @const
- * @private
  */
 safaridriver.extension.commands.DEFAULT_COMMAND_TIMEOUT_ = 30000;
 
@@ -313,7 +311,7 @@ safaridriver.extension.commands.DEFAULT_COMMAND_TIMEOUT_ = 30000;
 /**
  * Sends a command to the provided session's current tab.
  * @param {!(safaridriver.extension.Session|safaridriver.extension.Tab)}
-    *     sessionOrTab Either the session or tab to send the command to. If given a
+ *     sessionOrTab Either the session or tab to send the command to. If given a
  *     session, the command will be sent to the tab the session is currently
  *     focused on.
  * @param {!safaridriver.Command} command The command object.

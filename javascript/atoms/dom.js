@@ -140,9 +140,8 @@ bot.dom.isSelected = function(element) {
 /**
  * List of the focusable fields, according to
  * http://www.w3.org/TR/html401/interact/scripts.html#adef-onfocus
- * @type {!Array.<!goog.dom.TagName>}
  * @const
- * @private
+ * @private {!Array.<!goog.dom.TagName>}
  */
 bot.dom.FOCUSABLE_FORM_FIELDS_ = [
   goog.dom.TagName.A,
@@ -195,9 +194,8 @@ bot.dom.getProperty = function(element, propertyName) {
  * Helper for {@link bot.dom.standardizeStyleAttribute_}.
  * If the style attribute ends with a semicolon this will include an empty
  * string at the end of the array
- * @type {!RegExp}
  * @const
- * @private
+ * @private {!RegExp}
  */
 bot.dom.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_ =
     new RegExp('[;]+' +
@@ -294,9 +292,8 @@ bot.dom.getAttribute = function(element, attributeName) {
 /**
  * List of elements that support the "disabled" attribute, as defined by the
  * HTML 4.01 specification.
- * @type {!Array.<goog.dom.TagName>}
  * @const
- * @private
+ * @private {!Array.<goog.dom.TagName>}
  * @see http://www.w3.org/TR/html401/interact/forms.html#h-17.12.1
  */
 bot.dom.DISABLED_ATTRIBUTE_SUPPORTED_ = [
@@ -339,9 +336,8 @@ bot.dom.isEnabled = function(el) {
 
 /**
  * List of input types that create text fields.
- * @type {!Array.<String>}
  * @const
- * @private
+ * @private {!Array.<String>}
  * @see http://www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#attr-input-type
  */
 bot.dom.TEXTUAL_INPUT_TYPES_ = [
@@ -940,8 +936,7 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
 /**
  * Elements with one of these effective "display" styles are treated as inline
  * display boxes and have their visible text appended to the current line.
- * @type {!Array.<string>}
- * @private
+ * @private {!Array.<string>}
  * @const
  */
 bot.dom.INLINE_DISPLAY_BOXES_ = [

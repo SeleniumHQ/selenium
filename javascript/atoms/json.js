@@ -42,10 +42,9 @@ bot.json.NATIVE_JSON = true;
 
 /**
  * Whether the current browser supports the native JSON interface.
- * @type {boolean}
  * @const
  * @see http://caniuse.com/#search=JSON
- * @private
+ * @private {boolean}
  */
 bot.json.SUPPORTS_NATIVE_JSON_ =
     // List WebKit and Opera first since every supported version of these

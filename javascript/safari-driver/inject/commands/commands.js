@@ -42,9 +42,8 @@ goog.require('webdriver.atoms.element');
 
 
 /**
- * @type {!goog.debug.Logger}
+ * @private {!goog.debug.Logger}
  * @const
- * @private
  */
 safaridriver.inject.commands.LOG_ = goog.debug.Logger.getLogger(
     'safaridriver.inject.commands');

@@ -65,8 +65,7 @@ remote.ui.ScreenshotDialog.LOADED_TITLE = 'Screenshot';
 
 /**
  * The dialog's state.
- * @type {number}
- * @private
+ * @private {number}
  */
 remote.ui.ScreenshotDialog.prototype.state_ =
     remote.ui.ScreenshotDialog.State.LOADING;

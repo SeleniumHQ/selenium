@@ -57,37 +57,26 @@ webdriver.testing.promise.FlowTester = function(clock, timer) {
 
   var self = this;
 
-  /**
-   * @type {!webdriver.testing.Clock}
-   * @private
-   */
+  /** @private {!webdriver.testing.Clock} */
   this.clock_ = clock;
 
   /**
-   * @type {!Array.<{isIdle: boolean,
-   *                 errors: !Array.<!Error>,
-   *                 flow: !webdriver.promise.ControlFlow}>}
-   * @private
+   * @private {!Array.<{isIdle: boolean,
+   *                    errors: !Array.<!Error>,
+   *                    flow: !webdriver.promise.ControlFlow}>}
    */
   this.allFlows_ = [];
 
-  /**
-   * @type {!webdriver.promise.ControlFlow}
-   * @private
-   */
+  /** @private {!webdriver.promise.ControlFlow} */
   this.flow_ = createFlow();
 
-  /**
-   * @type {!webdriver.promise.ControlFlow}
-   * @private
-   */
+  /** @private {!webdriver.promise.ControlFlow} */
   this.originalFlow_ = webdriver.promise.controlFlow();
   webdriver.promise.setDefaultFlow(this.flow_);
 
   /**
-   * @type {function(function(!webdriver.promise.ControlFlow)):
-   *            !webdriver.promise.Promise}
-   * @private
+   * @private {function(function(!webdriver.promise.ControlFlow)):
+   *               !webdriver.promise.Promise}
    */
   this.originalCreateFlow_ = webdriver.promise.createFlow;
 
@@ -126,10 +115,7 @@ webdriver.testing.promise.FlowTester = function(clock, timer) {
 };
 
 
-/**
- * @type {boolean}
- * @private
- */
+/** @private {boolean} */
 webdriver.testing.promise.FlowTester.prototype.isDisposed_ = false;
 
 

@@ -19,8 +19,7 @@ goog.provide('fxdriver.prefs');
 /**
  * The preference store.
  *
- * @private
- * @type {!nsIPrefBranch}
+ * @private {!nsIPrefBranch}
  */
 fxdriver.prefs.PREFS_ = Components.classes['@mozilla.org/preferences-service;1']
     .getService(Components.interfaces['nsIPrefBranch']);

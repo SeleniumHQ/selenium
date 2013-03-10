@@ -35,8 +35,7 @@ Request = function(request) {
 
   /**
    * Map of custom request attributes.
-   * @type {Object}
-   * @private
+   * @private {Object}
    */
   this.attributes_ = {};
 };
@@ -59,8 +58,7 @@ Request.Method = {
 
 /**
  * Path to the servlet servicing this request.
- * @type {string}
- * @private
+ * @private {string}
  */
 Request.prototype.prefix_ = '';
 

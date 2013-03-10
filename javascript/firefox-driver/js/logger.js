@@ -209,8 +209,7 @@ fxdriver.logging.configure = function(logging_prefs, enable_profiler) {
 
 /**
  * Component initialization guard.
- * @private
- * @type {!boolean}
+ * @private {!boolean}
  */
 fxdriver.logging.initialized_ = false;
 
@@ -695,8 +694,7 @@ fxdriver.logging.setConsoleListenerToRegistered_ = function() {
  *
  * TODO: Find a better solution that doesn't use a preference.
  *
- * @private
- * @type {string}
+ * @private {string}
  */
 fxdriver.logging.prefNameInitialized_ = 'webdriver.log.init';
 

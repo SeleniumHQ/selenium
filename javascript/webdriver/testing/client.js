@@ -38,16 +38,10 @@ goog.require('goog.net.XmlHttp');
  */
 webdriver.testing.Client = function(opt_win, opt_url) {
 
-  /**
-   * @type {string}
-   * @private
-   */
+  /** @private {string} */
   this.id_ = (opt_win || window).location.pathname;
 
-  /**
-   * @type {string}
-   * @private
-   */
+  /** @private {string} */
   this.url_ = opt_url || webdriver.testing.Client.DEFAULT_URL;
 };
 

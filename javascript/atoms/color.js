@@ -113,7 +113,7 @@ bot.color.isConvertibleColor = function(str) {
  *
  * Used by bot.color.isColorProperty()
  * @const
- * @private
+ * @private {!Array.<string>}
  */
 bot.color.COLOR_PROPERTIES_ = [
   'background-color',
@@ -138,8 +138,7 @@ bot.color.isColorProperty = function(str) {
 
 /**
  * Regular expression for extracting the digits in a hex color triplet.
- * @type {!RegExp}
- * @private
+ * @private {!RegExp}
  * @const
  */
 bot.color.HEX_TRIPLET_RE_ = /#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])/;
@@ -179,8 +178,7 @@ bot.color.hexToRgb = function(hexColor) {
 
 /**
  * Helper for isValidHexColor_.
- * @type {!RegExp}
- * @private
+ * @private {!RegExp}
  * @const
  */
 bot.color.VALID_HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
@@ -200,8 +198,7 @@ bot.color.isValidHexColor_ = function(str) {
 
 /**
  * Helper for isNormalizedHexColor_.
- * @type {!RegExp}
- * @private
+ * @private {!RegExp}
  * @const
  */
 bot.color.NORMALIZED_HEX_COLOR_RE_ = /^#[0-9a-f]{6}$/;
@@ -223,8 +220,7 @@ bot.color.isNormalizedHexColor_ = function(str) {
 /**
  * Regular expression for matching and capturing RGBA style strings.
  * Helper for parseRgbaColor.
- * @type {!RegExp}
- * @private
+ * @private {!RegExp}
  * @const
  */
 bot.color.RGBA_COLOR_RE_ =
@@ -263,8 +259,7 @@ bot.color.parseRgbaColor = function(str) {
 /**
  * Regular expression for matching and capturing RGB style strings. Helper for
  * parseRgbColor_.
- * @type {!RegExp}
- * @private
+ * @private {!RegExp}
  * @const
  */
 bot.color.RGB_COLOR_RE_ =

@@ -47,16 +47,10 @@ goog.require('webdriver.promise.Promise');
 webdriver.testing.Window = function(driver, handle) {
   webdriver.promise.Promise.call(this);
 
-  /**
-   * @type {!webdriver.WebDriver}
-   * @private
-   */
+  /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 
-  /**
-   * @type {!webdriver.promise.Promise}
-   * @private
-   */
+  /** @private {!webdriver.promise.Promise} */
   this.handle_ = webdriver.promise.when(handle);
 };
 goog.inherits(webdriver.testing.Window, webdriver.promise.Promise);
@@ -73,8 +67,7 @@ webdriver.testing.Window.DEFAULT_OPEN_TIMEOUT = 2000;
 /**
  * Window running this script. Lazily initialized the first time it is requested
  * from {@link webdriver.testing.Window.findWindow}.
- * @type {webdriver.testing.Window}
- * @private
+ * @private {webdriver.testing.Window}
  */
 webdriver.testing.Window.currentWindow_ = null;
 

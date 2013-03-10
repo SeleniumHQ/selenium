@@ -30,8 +30,7 @@ remote.ui.FieldSet = function(legend) {
 
   /**
    * Legend text.
-   * @type {string}
-   * @private
+   * @private {string}
    */
   this.legend_ = legend;
 };

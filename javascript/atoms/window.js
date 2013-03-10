@@ -35,8 +35,7 @@ goog.require('goog.userAgent');
  * minus 1, but becomes the total number of pages on a subsequent back() call.
  *
  * @const
- * @type {boolean}
- * @private
+ * @private {boolean}
  */
 bot.window.HISTORY_LENGTH_INCLUDES_NEW_PAGE_ = !goog.userAgent.IE &&
     !goog.userAgent.OPERA;
@@ -49,8 +48,7 @@ bot.window.HISTORY_LENGTH_INCLUDES_NEW_PAGE_ = !goog.userAgent.IE &&
  * https://bugs.webkit.org/show_bug.cgi?id=24472
  *
  * @const
- * @type {boolean}
- * @private
+ * @private {boolean}
  */
 bot.window.HISTORY_LENGTH_INCLUDES_FORWARD_PAGES_ = !goog.userAgent.OPERA &&
     (!goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533'));

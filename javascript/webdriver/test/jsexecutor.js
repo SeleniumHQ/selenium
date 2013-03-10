@@ -41,10 +41,9 @@ webdriver.test.JsExecutor.prototype.execute = function(command, callback) {
 
 /**
  * Maps command names to the functions which execute them.
- * @type {!Object.<function(!Object,
- *                          function(Error, !bot.response.ResponseObject=))>}
+ * @private {!Object.<function(
+ *     !Object, function(Error, !bot.response.ResponseObject=))>}
  * @const
- * @private
  */
 webdriver.test.JsExecutor.COMMAND_MAP_ = (function() {
   var map = {};

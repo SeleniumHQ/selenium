@@ -41,8 +41,7 @@ webdriver.AbstractBuilder = function() {
    * value of the {@link webdriver.AbstractBuilder.SERVER_URL_ENV} environment
    * variable, but may be overridden using
    * {@link webdriver.AbstractBuilder#usingServer}.
-   * @type {string}
-   * @private
+   * @private {string}
    */
   this.serverUrl_ = webdriver.process.getEnv(
       webdriver.AbstractBuilder.SERVER_URL_ENV,
@@ -54,16 +53,14 @@ webdriver.AbstractBuilder = function() {
    * {@link webdriver.AbstractBuilder.SESSION_ID_ENV} environment variable, but
    * may be overridden using
    * {@link webdriver.AbstractBuilder#usingSession}.
-   * @type {string}
-   * @private
+   * @private {string}
    */
   this.sessionId_ =
       webdriver.process.getEnv(webdriver.AbstractBuilder.SESSION_ID_ENV);
 
   /**
    * The desired capabilities to use when creating a new session.
-   * @type {!Object.<*>}
-   * @private
+   * @private {!Object.<*>}
    */
   this.capabilities_ = {};
 };

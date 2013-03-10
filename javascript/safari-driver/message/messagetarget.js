@@ -37,30 +37,20 @@ goog.require('webdriver.EventEmitter');
 safaridriver.message.MessageTarget = function(source, opt_consumeMessages) {
   goog.base(this);
 
-  /**
-   * @type {!(SafariEventTarget|EventTarget)}
-   * @private
-   */
+  /** @private {!(SafariEventTarget|EventTarget)} */
   this.source_ = source;
 
-  /**
-   * @type {!goog.debug.Logger}
-   * @private
-   */
+  /** @private {!goog.debug.Logger} */
   this.log_ = goog.debug.Logger.getLogger(
       'safaridriver.message.MessageTarget');
 
   /**
-   * @type {function(this: safaridriver.message.MessageTarget,
-   *                 !(SafariExtensionMessageEvent|MessageEvent))}
-   * @private
+   * @private {function(this: safaridriver.message.MessageTarget,
+   *                    !(SafariExtensionMessageEvent|MessageEvent))}
    */
   this.boundOnMessage_ = goog.bind(this.onMessage_, this);
 
-  /**
-   * @type {boolean}
-   * @private
-   */
+  /** @private {boolean} */
   this.consumeMessages_ = !!opt_consumeMessages;
 
   this.source_.addEventListener('message', this.boundOnMessage_, true);

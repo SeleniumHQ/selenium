@@ -34,10 +34,7 @@ safaridriver.inject.page.modules.Id = {
 };
 
 
-/**
- * @type {boolean}
- * @private
- */
+/** @private {boolean} */
 safaridriver.inject.page.modules.initialized_ = false;
 
 

@@ -100,9 +100,8 @@ goog.inherits(bot.Error, Error);
 
 /**
  * A map of error codes to error names.
- * @type {!Object.<string>}
  * @const
- * @private
+ * @private {!Object.<string>}
  */
 bot.Error.NAMES_ = goog.object.create(
     bot.ErrorCode.NO_SUCH_ELEMENT, 'NoSuchElementError',

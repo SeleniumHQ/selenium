@@ -49,35 +49,22 @@ goog.require('goog.userAgent');
 bot.Mouse = function(opt_state, opt_modifiersState) {
   goog.base(this, opt_modifiersState);
 
-  /**
-   * @type {?bot.Mouse.Button}
-   * @private
-   */
+  /** @private {?bot.Mouse.Button} */
   this.buttonPressed_ = null;
 
-  /**
-   * @type {Element}
-   * @private
-   */
+  /** @private {Element} */
   this.elementPressed_ = null;
 
-  /**
-   * @type {!goog.math.Coordinate}
-   * @private
-   */
+  /** @private {!goog.math.Coordinate} */
   this.clientXY_ = new goog.math.Coordinate(0, 0);
 
-  /**
-   * @type {boolean}
-   * @private
-   */
+  /** @private {boolean} */
   this.nextClickIsDoubleClick_ = false;
 
   /**
    * Whether this Mouse has ever explicitly interacted with any element.
    *
-   * @type {boolean}
-   * @private
+   * @private {boolean}
    */
   this.hasEverInteracted_ = false;
 
@@ -134,8 +121,7 @@ bot.Mouse.Button = {
 /**
  * Index to indicate no button pressed in bot.Mouse.MOUSE_BUTTON_VALUE_MAP_.
  *
- * @type {number}
- * @private
+ * @private {number}
  * @const
  */
 bot.Mouse.NO_BUTTON_VALUE_INDEX_ = 3;
@@ -151,8 +137,7 @@ bot.Mouse.NO_BUTTON_VALUE_INDEX_ = 3;
  * WEBKIT/IE9    0 1 2 X   0 1 2 X    0 1 2 0    0 1 2 0    X X 2 X
  * GECKO/OPERA   0 1 2 X   0 1 2 X    0 0 0 0    0 0 0 0    X X 2 X
  *
- * @type {!Object.<bot.events.EventType, !Array.<?number>>}
- * @private
+ * @private {!Object.<bot.events.EventType, !Array.<?number>>}
  * @const
  */
 bot.Mouse.MOUSE_BUTTON_VALUE_MAP_ = (function() {
@@ -203,8 +188,7 @@ bot.Mouse.MOUSE_BUTTON_VALUE_MAP_ = (function() {
 
 /**
  * Maps mouse events to corresponding MSPointer event.
- * @type {!Object.<bot.events.EventType, bot.events.EventType>}
- * @private
+ * @private {!Object.<bot.events.EventType, bot.events.EventType>}
  */
 bot.Mouse.MOUSE_EVENT_MAP_ = {
   mousedown: bot.events.EventType.MSPOINTERDOWN,

@@ -43,46 +43,28 @@ goog.require('goog.style');
 bot.Touchscreen = function() {
   goog.base(this);
 
-  /**
-   * @type {!goog.math.Coordinate}
-   * @private
-   */
+  /** @private {!goog.math.Coordinate} */
   this.clientXY_ = new goog.math.Coordinate(0, 0);
 
-  /**
-   * @type {!goog.math.Coordinate}
-   * @private
-   */
+  /** @private {!goog.math.Coordinate} */
   this.clientXY2_ = new goog.math.Coordinate(0, 0);
 };
 goog.inherits(bot.Touchscreen, bot.Device);
 
 
-/**
- * @type {boolean}
- * @private
- */
+/** @private {boolean} */
 bot.Touchscreen.prototype.hasMovedAfterPress_ = false;
 
 
-/**
- * @type {number}
- * @private
- */
+/** @private {number} */
 bot.Touchscreen.prototype.touchIdentifier_ = 0;
 
 
-/**
- * @type {number}
- * @private
- */
+/** @private {number} */
 bot.Touchscreen.prototype.touchIdentifier2_ = 0;
 
 
-/**
- * @type {number}
- * @private
- */
+/** @private {number} */
 bot.Touchscreen.prototype.touchCounter_ = 1;
 
 

@@ -35,15 +35,13 @@ remote.ui.JsonTooltip = function() {
 
   /**
    * The content body for this tooltip.
-   * @type {!Element}
-   * @private
+   * @private {!Element}
    */
   this.bodyElement_ = dom.createElement(goog.dom.TagName.PRE);
 
   /**
    * The close button for this tooltip.
-   * @type {!Element}
-   * @private
+   * @private {!Element}
    */
   this.closeButton_ = dom.createDom(goog.dom.TagName.BUTTON, null, 'Close');
   goog.events.listen(this.closeButton_, goog.events.EventType.CLICK,

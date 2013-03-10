@@ -39,8 +39,7 @@ wdSessionStoreService = function() {
 
   /**
    * Map of active sessions.
-   * @type {Object}
-   * @private
+   * @private {Object}
    */
   this.sessions_ = {};
 };
@@ -138,9 +137,8 @@ wdSessionStoreService.prototype.extractCapabilitySetting_ = function(name,
 
 /**
  * Read-only capabilities for FirefoxDriver and their default values.
- * @type {!Object.<string, boolean>}
+ * @private {!Object.<string, boolean>}
  * @const
- * @private
  */
 wdSessionStoreService.READ_ONLY_CAPABILITIES_ = {
   'javascriptEnabled': true,
@@ -269,8 +267,7 @@ function wdSessionStoreServiceFactory() {
 
 /**
  * The singleton instance for this component.
- * @type {?wdSessionStoreService}
- * @private
+ * @private {?wdSessionStoreService}
  */
 wdSessionStoreServiceFactory.prototype.instance_ = null;
 
@@ -299,8 +296,7 @@ function wdSessionStoreServiceModule() {
 
 /**
  * Whether this module has already been registered.
- * @type {!boolean}
- * @private
+ * @private {!boolean}
  */
 wdSessionStoreServiceModule.prototype.hasRegistered_ = false;
 

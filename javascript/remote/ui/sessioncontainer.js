@@ -45,59 +45,49 @@ remote.ui.SessionContainer = function(browsers) {
 
   /**
    * Tabbar widget for selecting individual sessions.
-   * @type {!goog.ui.TabBar}
-   * @private
+   * @private {!goog.ui.TabBar}
    */
   this.tabBar_ = new goog.ui.TabBar(goog.ui.TabBar.Location.START, null);
 
   /**
    * Widget for viewing details on an individual session.
-   * @type {!remote.ui.SessionView}
-   * @private
+   * @private {!remote.ui.SessionView}
    */
   this.view_ = new remote.ui.SessionView();
 
   /**
    * Dialog for creating a new session.
-   * @type {!remote.ui.CreateSessionDialog}
-   * @private
+   * @private {!remote.ui.CreateSessionDialog}
    */
   this.createSessionDialog_ = new remote.ui.CreateSessionDialog(browsers);
 
   /**
    * Button that opens the {@link remote.ui.CreateSessionDialog}.
-   * @type {!Element}
-   * @private
+   * @private {!Element}
    */
   this.createButton_ = this.getDomHelper().createDom(
       goog.dom.TagName.BUTTON, null, 'Create Session');
 
   /**
    * Button that refreshes the list of sessions.
-   * @type {!Element}
-   * @private
+   * @private {!Element}
    */
   this.refreshButton_ = this.getDomHelper().createDom(
       goog.dom.TagName.BUTTON, null, 'Refresh Sessions');
 
-  /**
-   * @type {!remote.ui.ControlBlock}
-   * @private
-   */
+  /** @private {!remote.ui.ControlBlock} */
   this.controlBlock_ = new remote.ui.ControlBlock();
 
   /**
    * Tracks any tabs for pending new sessions that are descendants of this
    * component.
-   * @type {!Array.<!goog.ui.Tab>}
-   * @private
+   * @private {!Array.<!goog.ui.Tab>}
    */
   this.pendingTabs_ = [];
 
   /**
    * Key for the interval that updates the content of the pending session tabs.
-   * @type {number}
-   * @private
+   * @private {number}
    */
   this.updateKey_ = setInterval(goog.bind(this.updatePendingTabs_, this), 300);
 
@@ -407,8 +397,7 @@ remote.ui.SessionContainer.SessionTab_ = function(session) {
 
   /**
    * The session for this tab.
-   * @type {!webdriver.Session}
-   * @private
+   * @private {!webdriver.Session}
    */
   this.session_ = session;
 };

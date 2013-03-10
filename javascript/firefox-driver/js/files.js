@@ -89,10 +89,7 @@ fxdriver.files.getLocalFile_ = function(path) {
  * @constructor
  */
 fxdriver.files.File = function(nsIFile) {
-  /**
-   * @type {!nsIFile}
-   * @private
-   **/
+  /** @private {!nsIFile} */
   this.nsIFile_ = nsIFile;
 };
 
@@ -103,8 +100,7 @@ fxdriver.files.File = function(nsIFile) {
  * See https://developer.mozilla.org/en/PR_Open#Parameters
  *
  * @const
- * @private
- * @type {number}
+ * @private {number}
  */
 fxdriver.files.APPEND_MODE_ = 0x02 | 0x10;
 
@@ -114,8 +110,7 @@ fxdriver.files.APPEND_MODE_ = 0x02 | 0x10;
  * See https://developer.mozilla.org/en/PR_Open#Parameters
  *
  * @const
- * @private
- * @type {number}
+ * @private {number}
  */
 fxdriver.files.READ_MODE_ = 0x01;
 

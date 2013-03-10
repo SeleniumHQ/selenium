@@ -35,10 +35,7 @@ goog.require('webdriver.testing.TestCase');
 webdriver.testing.jsunit.TestRunner = function() {
   goog.base(this);
 
-  /**
-   * @type {!webdriver.testing.Client}
-   * @private
-   */
+  /** @private {!webdriver.testing.Client} */
   this.client_ = new webdriver.testing.Client();
 };
 goog.inherits(webdriver.testing.jsunit.TestRunner, goog.testing.TestRunner);
@@ -46,8 +43,7 @@ goog.inherits(webdriver.testing.jsunit.TestRunner, goog.testing.TestRunner);
 
 /**
  * Element created in the document to add test results to.
- * @type {Element}
- * @private
+ * @private {Element}
  */
 webdriver.testing.jsunit.TestRunner.prototype.logEl_ = null;
 
@@ -55,8 +51,7 @@ webdriver.testing.jsunit.TestRunner.prototype.logEl_ = null;
 /**
  * DOM element used to stored screenshots. Screenshots are stored in the DOM to
  * avoid exhausting JS stack-space.
- * @type {Element}
- * @private
+ * @private {Element}
  */
 webdriver.testing.jsunit.TestRunner.prototype.screenshotCacheEl_ = null;
 

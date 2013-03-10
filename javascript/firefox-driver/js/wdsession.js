@@ -57,8 +57,7 @@ wdSession.CONTRACT_ID = '@googlecode.com/webdriver/wdsession;1';
 
 /**
  * This session's ID.
- * @type {?string}
- * @private
+ * @private {?string}
  */
 wdSession.prototype.id_ = null;
 
@@ -67,16 +66,14 @@ wdSession.prototype.id_ = null;
  * The main chrome window that this is session is currently focused on. All
  * command's for this session will be directed at the current window, which
  * may be inside a [I]FRAME, within this window.
- * @type {?ChromeWindow}
- * @private
+ * @private {?ChromeWindow}
  */
 wdSession.prototype.chromeWindow_ = null;
 
 
 /**
  * The content window this session is currently focused on.
- * @type {?nsIDOMWindow}
- * @private
+ * @private {?nsIDOMWindow}
  */
 wdSession.prototype.window_ = null;
 
@@ -90,8 +87,7 @@ wdSession.prototype.frame_ = null;
 
 /**
  * The current user input speed setting for this session.
- * @type {number}
- * @private
+ * @private {number}
  */
 wdSession.prototype.inputSpeed_ = 1;
 
@@ -104,16 +100,14 @@ wdSession.prototype.inputSpeed_ = 1;
  * When searching for multiple elements, the driver will wait up to this amount
  * of time for at least one element to be located before returning an empty
  * list.
- * @type {number}
- * @private
+ * @private {number}
  */
 wdSession.prototype.implicitWait_ = 0;
 
 /**
  * The amount of time in milliseconds to wait for a page to load before timing
  * out. A value less than 0 means that waits will be indefinite.
- * @type {number}
- * @private
+ * @private {number}
  */
 wdSession.prototype.pageLoadTimeout_ = -1;
 
@@ -137,8 +131,7 @@ wdSession.prototype.mousePosition_ = {
  * asynchronous scripts to finish executing. If set to 0, then the timeout will
  * not fire until the next event loop after the script is executed. This will
  * give scripts that employ a 0-based setTimeout to finish.
- * @type {number}
- * @private
+ * @private {number}
  */
 wdSession.prototype.scriptTimeout_ = 0;
 
@@ -445,8 +438,7 @@ function wdSessionModule() {
 
 /**
  * Whether this module has already been registered.
- * @type {!boolean}
- * @private
+ * @private {!boolean}
  */
 wdSessionModule.prototype.hasRegistered_ = false;
 

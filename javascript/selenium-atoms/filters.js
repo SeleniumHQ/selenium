@@ -77,9 +77,8 @@ core.filters.Strategy;
 /**
  * Known element list filtering strategies.
  *
- * @private
  * @const
- * @type {!Object.<string,core.filters.Strategy>}
+ * @private {!Object.<string,core.filters.Strategy>}
  */
 core.filters.Filters_ = {
   'index': core.filters.index_,

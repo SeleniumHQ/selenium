@@ -38,8 +38,7 @@ var HttpClient = function(serverUrl) {
 
   /**
    * Base options for each request.
-   * @type {!Object}
-   * @private
+   * @private {!Object}
    */
   this.options_ = {
     host: parsedUrl.hostname,
