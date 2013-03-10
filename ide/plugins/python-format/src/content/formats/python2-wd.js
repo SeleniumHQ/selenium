@@ -226,6 +226,11 @@ this.options = {
           '        except NoSuchElementException, e: return False\n' +
           '        return True\n' +
           '    \n' +
+          '    def is_alert_present(self):\n' +
+          '        try: self.driver.switch_to_alert()\n' +
+          '        except NoAlertPresentException, e: return False\n' +
+          '        return True\n' +
+          '    \n' +
           '    def close_alert_and_get_its_text(self):\n' +
           '        try:\n' +
           '            alert = self.driver.switch_to_alert()\n' +
@@ -438,4 +443,8 @@ WDAPI.Utils = function() {
 
 WDAPI.Utils.isElementPresent = function(how, what) {
   return "self.is_element_present(" + WDAPI.Driver.searchContextArgs(how, what) + ")";
+};
+
+WDAPI.Utils.isAlertPresent = function() {
+  return "self.is_alert_present()";
 };

@@ -242,6 +242,15 @@ options.footer =
         indents(2) + "}\n" +
         indents(1) + "}\n" +
         indents(0) + "\n" +
+        indents(1) + "private boolean isAlertPresent() {\n" +
+        indents(2) + "try {\n" +
+        indents(3) + "driver.switchTo().alert();\n" +
+        indents(3) + "return true;\n" +
+        indents(2) + "} catch (NoAlertPresentException e) {\n" +
+        indents(3) + "return false;\n" +
+        indents(2) + "}\n" +
+        indents(1) + "}\n" +
+        indents(0) + "\n" +
         indents(1) + "private String closeAlertAndGetItsText() {\n" +
         indents(2) + "try {\n" +
         indents(3) + "Alert alert = driver.switchTo().alert();\n" +
@@ -424,4 +433,8 @@ WDAPI.Utils = function() {
 
 WDAPI.Utils.isElementPresent = function(how, what) {
   return "isElementPresent(" + WDAPI.Driver.searchContext(how, what) + ")";
+};
+
+WDAPI.Utils.isAlertPresent = function() {
+  return "isAlertPresent()";
 };

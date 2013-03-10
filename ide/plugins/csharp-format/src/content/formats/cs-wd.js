@@ -263,6 +263,19 @@ this.options = {
           "            }\n" +
           "        }\n" +
           '        \n' +
+          "        private bool IsAlertPresent()\n" +
+          "        {\n" +
+          "            try\n" +
+          "            {\n" +
+          "                driver.SwitchTo().Alert();\n" +
+          "                return true;\n" +
+          "            }\n" +
+          "            catch (NoAlertPresentException)\n" +
+          "            {\n" +
+          "                return false;\n" +
+          "            }\n" +
+          "        }\n" +
+          '        \n' +
           "        private string CloseAlertAndGetItsText() {\n" +
           "            try {\n" +
           "                IAlert alert = driver.SwitchTo().Alert();\n" +
@@ -430,4 +443,8 @@ WDAPI.Utils = function() {
 
 WDAPI.Utils.isElementPresent = function(how, what) {
   return "IsElementPresent(" + WDAPI.Driver.searchContext(how, what) + ")";
+};
+
+WDAPI.Utils.isAlertPresent = function() {
+  return "IsAlertPresent()";
 };

@@ -232,6 +232,13 @@ this.options = {
           "    false\n" +
           "  end\n" +
           "  \n" +
+          "  def alert_present?()\n" +
+          "    @driver.switch_to.alert\n" +
+          "    true\n" +
+          "  rescue Selenium::WebDriver::Error::NoAlertPresentError\n" +
+          "    false\n" +
+          "  end\n" +
+          "  \n" +
           "  def verify(&blk)\n" +
           "    yield\n" +
           "  rescue Test::Unit::AssertionFailedError => ex\n" +
@@ -421,4 +428,8 @@ WDAPI.Utils = function() {
 
 WDAPI.Utils.isElementPresent = function(how, what) {
   return "element_present?(:" + how + ", " + xlateArgument(what) + ")";
+};
+
+WDAPI.Utils.isAlertPresent = function() {
+  return "alert_present?";
 };

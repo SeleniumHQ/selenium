@@ -671,9 +671,17 @@ SeleniumWebDriverAdaptor.prototype.getAlert = function() {
   return driver.getAlert();
 };
 
+SeleniumWebDriverAdaptor.prototype.isAlertPresent = function() {
+  return WDAPI.Utils.isAlertPresent();
+};
+
 SeleniumWebDriverAdaptor.prototype.getConfirmation = function() {
   var driver = new WDAPI.Driver();
   return driver.getAlert();
+};
+
+SeleniumWebDriverAdaptor.prototype.isConfirmationPresent = function() {
+  return WDAPI.Utils.isAlertPresent();
 };
 
 SeleniumWebDriverAdaptor.prototype.chooseOkOnNextConfirmation = function() {
