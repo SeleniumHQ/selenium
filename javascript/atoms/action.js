@@ -632,7 +632,11 @@ bot.action.LegacyDevice_.findAncestorForm = function(element) {
  */
 bot.action.scrollIntoView = function(element, opt_coords) {
   if (!bot.dom.isScrolledIntoView(element, opt_coords)) {
-    element.scrollIntoView();
+    // Some elements may not have a scrollIntoView function - for example,
+    // elements under an SVG element. Call those only if they exist.
+    if (typeof element.scrollIntoView == 'function') {
+      element.scrollIntoView();
+    }
     // In Opera 10, scrollIntoView only scrolls the element into the viewport of
     // its immediate parent window, so we explicitly scroll the ancestor frames
     // into view of their respective windows. Note that scrolling the top frame
