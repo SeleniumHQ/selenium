@@ -181,7 +181,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 IPInterfaceProperties properties = adapter.GetIPProperties();
                 foreach (IPAddressInformation uniCast in properties.UnicastAddresses)
                 {
-                    if (IPAddress.IsLoopback(uniCast.Address))
+                    if (uniCast.Address.AddressFamily == AddressFamily.InterNetwork && IPAddress.IsLoopback(uniCast.Address))
                     {
                         endpoints.Add(new IPEndPoint(uniCast.Address, port));
                     }
@@ -219,6 +219,11 @@ namespace OpenQA.Selenium.Firefox.Internal
 
                 IPEndPoint hostEndPoint = new IPEndPoint(endPointAddress, port);
                 this.addresses.Add(hostEndPoint);
+            }
+
+            if (this.addresses.Count == 0)
+            {
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Could not find any IPv4 addresses for host '{0}'", this.host));
             }
         }
 
