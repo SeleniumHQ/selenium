@@ -172,14 +172,15 @@ bot.action.type = function(
   // mobile safari (iPhone / iPad). one cannot 'type' in a date field
   if (goog.userAgent.WEBKIT && element.type == 'date') {
     var val = goog.isArray(values)? values = values.join("") : values;
-    if (val.match(/\d\d\d\d-\d\d-\d\d/)) {
+    var datePattern = /\d{4}-\d{2}-\d{2}/;
+    if (val.match(datePattern)) {
       // The following events get fired on iOS first
       if (goog.userAgent.MOBILE && goog.userAgent.product.SAFARI) {
         bot.events.fire(element, bot.events.EventType.TOUCHSTART);
         bot.events.fire(element, bot.events.EventType.TOUCHEND);
       }
       bot.events.fire(element, bot.events.EventType.FOCUS);
-      element.value = val;
+      element.value = val.match(datePattern)[0];
       bot.events.fire(element, bot.events.EventType.CHANGE);
       bot.events.fire(element, bot.events.EventType.BLUR);
       return;
