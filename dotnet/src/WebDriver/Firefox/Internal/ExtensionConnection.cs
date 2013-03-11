@@ -82,7 +82,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             using (ILock lockObject = new SocketLock(this.profile.Port - 1))
             {
-                lockObject.LockObject(this.process.TimeoutInMilliseconds);
+                lockObject.LockObject(this.process.Timeout);
                 try
                 {
                     int portToUse = DetermineNextFreePort(this.host, this.profile.Port);
@@ -95,7 +95,7 @@ namespace OpenQA.Selenium.Firefox.Internal
 
                     // TODO (JimEvans): Get a better url algorithm.
                     this.executor = new HttpCommandExecutor(new Uri(string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}/hub/", this.host, portToUse)), this.timeout);
-                    this.ConnectToBrowser(this.process.TimeoutInMilliseconds);
+                    this.ConnectToBrowser(this.process.Timeout);
                 }
                 finally
                 {
@@ -227,13 +227,13 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
         }
 
-        private void ConnectToBrowser(long timeToWaitInMilliSeconds)
+        private void ConnectToBrowser(TimeSpan timeToWait)
         {
             // Attempt to connect to the browser extension on a Socket.
             // A successful connection means the browser is running and
             // the extension has been properly initialized.
             Socket extensionSocket = null;
-            DateTime waitUntil = DateTime.Now.AddMilliseconds(timeToWaitInMilliSeconds);
+            DateTime waitUntil = DateTime.Now.AddMilliseconds(timeToWait.TotalMilliseconds);
             try
             {
                 while (!IsSocketConnected(extensionSocket) && waitUntil > DateTime.Now)
@@ -259,12 +259,12 @@ namespace OpenQA.Selenium.Firefox.Internal
                 {
                     if (extensionSocket == null || extensionSocket.RemoteEndPoint == null)
                     {
-                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Failed to start up socket within {0}", timeToWaitInMilliSeconds));
+                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Failed to start up socket within {0} ms", timeToWait.TotalMilliseconds));
                     }
                     else
                     {
                         IPEndPoint endPoint = (IPEndPoint)extensionSocket.RemoteEndPoint;
-                        string formattedError = string.Format(CultureInfo.InvariantCulture, "Unable to connect to host {0} on port {1} after {2} ms", endPoint.Address.ToString(), endPoint.Port.ToString(CultureInfo.InvariantCulture), timeToWaitInMilliSeconds);
+                        string formattedError = string.Format(CultureInfo.InvariantCulture, "Unable to connect to host {0} on port {1} after {2} ms", endPoint.Address.ToString(), endPoint.Port.ToString(CultureInfo.InvariantCulture), timeToWait.TotalMilliseconds);
                         throw new WebDriverException(formattedError);
                     }
                 }

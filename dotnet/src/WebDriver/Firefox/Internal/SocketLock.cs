@@ -58,9 +58,9 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// <summary>
         /// Locks the mutex port.
         /// </summary>
-        /// <param name="timeoutInMilliseconds">The amount of time (in milliseconds) to wait for 
+        /// <param name="timeout">The <see cref="TimeSpan"/> describing the amount of time to wait for 
         /// the mutex port to become available.</param>
-        public void LockObject(long timeoutInMilliseconds)
+        public void LockObject(TimeSpan timeout)
         {
             IPHostEntry hostEntry = Dns.GetHostEntry("localhost");
 
@@ -78,7 +78,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             IPEndPoint address = new IPEndPoint(endPointAddress, this.lockPort);
 
             // Calculate the 'exit time' for our wait loop.
-            DateTime maxWait = DateTime.Now.AddMilliseconds(timeoutInMilliseconds);
+            DateTime maxWait = DateTime.Now.Add(timeout);
 
             // Attempt to acquire the lock until something goes wrong or we run out of time.
             do
@@ -103,7 +103,18 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
             while (DateTime.Now < maxWait);
 
-            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to bind to locking port {0} within {1} ms", this.lockPort, timeoutInMilliseconds));
+            throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Unable to bind to locking port {0} within {1} ms", this.lockPort, timeout.TotalMilliseconds));
+        }
+
+        /// <summary>
+        /// Locks the mutex port.
+        /// </summary>
+        /// <param name="timeoutInMilliseconds">The amount of time (in milliseconds) to wait for 
+        /// the mutex port to become available.</param>
+        [Obsolete("Timeouts should be expressed as a TimeSpan. Use the LockObject overload taking a TimeSpan parameter instead")]
+        public void LockObject(long timeoutInMilliseconds)
+        {
+            this.LockObject(TimeSpan.FromMilliseconds(timeoutInMilliseconds));
         }
 
         /// <summary>

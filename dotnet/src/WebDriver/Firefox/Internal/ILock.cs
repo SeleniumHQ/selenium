@@ -33,7 +33,15 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// </summary>
         /// <param name="timeoutInMilliseconds">The amount of time (in milliseconds) to wait for 
         /// the mutex port to become available.</param>
+        [Obsolete("Timeouts should be expressed as a TimeSpan. Use the LockObject overload taking a TimeSpan parameter instead")]
         void LockObject(long timeoutInMilliseconds);
+
+        /// <summary>
+        /// Locks the mutex port.
+        /// </summary>
+        /// <param name="timeout">The <see cref="TimeSpan"/> describing the amount of time to wait for 
+        /// the mutex port to become available.</param>
+        void LockObject(TimeSpan timeout);
 
         /// <summary>
         /// Unlocks the mutex port.

@@ -44,7 +44,7 @@ namespace OpenQA.Selenium.Firefox
         private Dictionary<string, string> extraEnv = new Dictionary<string, string>();
         private Executable executable;
         private Process process;
-        private long timeoutInMilliseconds = 45000;
+        private TimeSpan timeout = TimeSpan.FromSeconds(45);
         private StreamReader stream; 
         #endregion
 
@@ -69,12 +69,22 @@ namespace OpenQA.Selenium.Firefox
 
         #region Public properties
         /// <summary>
-        /// Gets or sets the timeout (in milliseconds) to wait for command execution.
+        /// Gets or sets the timeout (in milliseconds) to wait for ommand execution.
         /// </summary>
+        [Obsolete("Timeouts should be expressed as a TimeSpan. Use the Timeout property instead")]
         public long TimeoutInMilliseconds
         {
-            get { return this.timeoutInMilliseconds; }
-            set { this.timeoutInMilliseconds = value; }
+            get { return Convert.ToInt64(this.Timeout.TotalMilliseconds); }
+            set { this.Timeout = TimeSpan.FromMilliseconds(value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the timeout to wait for Firefox to be availale for ccommand execution.
+        /// </summary>
+        public TimeSpan Timeout
+        {
+            get { return this.timeout; }
+            set { this.timeout = value; }
         }
 
         /// <summary>
