@@ -388,7 +388,7 @@ WebElement.getElementLocationOnceScrolledIntoView = function(
                                    respond.session.getDocument());
 
   var theDoc = element.ownerDocument;
-  theDoc.body.focus();
+  Utils.getMainDocumentElement(theDoc).focus();
   var elementLocation = Utils.getLocationOnceScrolledIntoView(element);
 
   respond.value = {
