@@ -66,6 +66,7 @@ public class Pages {
   public String slowIframes;
   public String slowLoadingAlertPage;
   public String svgPage;
+  public String svgTestPage;
   public String tables;
   public String underscorePage;
   public String unicodeLtrPage;
@@ -123,6 +124,7 @@ public class Pages {
     slowIframes = appServer.whereIs("slow_loading_iframes.html");
     slowLoadingAlertPage = appServer.whereIs("slowLoadingAlert.html");
     svgPage = appServer.whereIs("svgPiechart.xhtml");
+    svgTestPage = appServer.whereIs("svgTest.svg");
     tables = appServer.whereIs("tables.html");
     underscorePage = appServer.whereIs("underscore.html");
     unicodeLtrPage = appServer.whereIs("utf8/unicode_ltr.html");
