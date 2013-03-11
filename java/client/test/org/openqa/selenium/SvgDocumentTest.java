@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.junit.Test;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
@@ -40,6 +41,16 @@ public class SvgDocumentTest extends JUnit4TestBase {
     assertEquals("blue", rect.getAttribute("fill"));
     rect.click();
     assertEquals("green", rect.getAttribute("fill"));
+  }
+
+  @Test
+  public void testExecuteScriptInSvgDocument() {
+    driver.get(pages.svgTestPage);
+    WebElement rect = driver.findElement(By.id("rect"));
+
+    assertEquals("blue", rect.getAttribute("fill"));
+    ((JavascriptExecutor) driver).executeScript("document.getElementById('rect').setAttribute('fill', 'yellow');");
+    assertEquals("yellow", rect.getAttribute("fill"));
   }
 
 }
