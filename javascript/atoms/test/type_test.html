@@ -477,6 +477,21 @@
       var dateInput = document.getElementById("date");
       bot.action.type(dateInput, "2013-01-01");
       assertEquals(dateInput.value, "2013-01-01");
+      dateInput.value = "";
+    }
+    function testTypeDateWithTimestamp() {
+      var dateInput = document.getElementById("date");
+      bot.action.type(dateInput, "2013-01-01T12:10:12.000Z");
+      assertEquals(dateInput.value, "2013-01-01");
+      dateInput.value = "";
+    }
+    function testTypeInvalidDate() {
+      var dateInput = document.getElementById("date");
+      dateInput.value = "";
+      bot.action.type(dateInput, "2013-13-01");
+      assertEquals(dateInput.value, "");
+      bot.action.type(dateInput, "February 28, 2013");
+      assertEquals(dateInput.value, "");
     }
   </script>
 </head>
