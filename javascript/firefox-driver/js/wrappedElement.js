@@ -302,7 +302,7 @@ WebElement.submitElement = function(respond, parameters) {
         return;
       }
     } else {
-      throw new WebDriverError(bot.ErrorCode.INVALID_ELEMENT_STATE,
+      throw new WebDriverError(bot.ErrorCode.NO_SUCH_ELEMENT,
           "Element was not in a form so couldn't submit");
     }
   }

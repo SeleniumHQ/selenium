@@ -171,7 +171,11 @@ public class HtmlUnitWebElement implements WrapsDriver,
         element.click();
         return;
       } else if (element instanceof HtmlInput) {
-        submitForm(element.getEnclosingForm());
+        HtmlForm form = element.getEnclosingForm();
+        if (form == null) {
+          throw new NoSuchElementException("Unable to find the containing form");
+        }
+        submitForm(form);
         return;
       }
 

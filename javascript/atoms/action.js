@@ -215,7 +215,7 @@ bot.action.type = function(
 bot.action.submit = function(element) {
   var form = bot.action.LegacyDevice_.findAncestorForm(element);
   if (!form) {
-    throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
+    throw new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT,
                         'Element was not in a form, so could not submit.');
   }
   bot.action.LegacyDevice_.submitForm(element, form);

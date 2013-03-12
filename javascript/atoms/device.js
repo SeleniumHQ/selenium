@@ -652,7 +652,7 @@ bot.Device.isForm_ = function(node) {
 bot.Device.prototype.submitForm = function(form) {
   if (!bot.Device.isForm_(form)) {
     throw new bot.Error(bot.ErrorCode.INVALID_ELEMENT_STATE,
-                        'Element was not in a form, so could not submit.');
+                        'Element is not a form, so could not submit.');
   }
   if (bot.events.fire(form, bot.events.EventType.SUBMIT)) {
     // When a form has an element with an id or name exactly equal to "submit"
