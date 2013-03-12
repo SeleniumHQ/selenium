@@ -947,30 +947,45 @@ bool Element::IsAttachedToDom() {
   // Verify that the element is still valid by walking up the
   // DOM tree until we find no parent or the html tag
   if (this->element_) {
-    CComPtr<IHTMLElement> parent(this->element_);
-    while (parent) {
-      CComPtr<IHTMLHtmlElement> html;
-      parent->QueryInterface<IHTMLHtmlElement>(&html);
-      if (html) {
-        return true;
-      }
+    CComPtr<IHTMLDOMNode2> node;
+    HRESULT hr = this->element_->QueryInterface(&node);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Unable to cast element to IHTMLDomNode2";
+      return false;
+    }
 
-      CComPtr<IHTMLElement> next;
-      HRESULT hr = parent->get_parentElement(&next);
+    CComPtr<IDispatch> dispatch_doc;
+    hr = node->get_ownerDocument(&dispatch_doc);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Unable to locate owning document, call to IHTMLDOMNode2::get_ownerDocument failed";
+      return false;
+    }
+
+    if (dispatch_doc) {
+      CComPtr<IHTMLDocument3> doc;
+      hr = dispatch_doc.QueryInterface<IHTMLDocument3>(&doc);
       if (FAILED(hr)) {
-        LOGHR(WARN, hr) << "Unable to get parent element, call to IHTMLElement::get_parentElement failed";
+        LOGHR(WARN, hr) << "Found document but it's not the expected type (IHTMLDocument3)";
+        return false;
       }
 
-      if (next == NULL) {
-        BSTR tag;
-        hr = parent->get_tagName(&tag);
-        if (FAILED(hr)) {
-          LOG(TRACE) << "Found null parent of element and couldn't get tag name";
-        } else {
-          LOG(TRACE) << "Found null parent of element with tag " << _bstr_t(tag);
-        }
+      CComPtr<IHTMLElement> document_element;
+      hr = doc->get_documentElement(&document_element);
+      if (FAILED(hr)) {
+        LOGHR(WARN, hr) << "Unable to locate document element, call to IHTMLDocument3::get_documentElement failed";
+        return false;
       }
-      parent = next;
+
+      if (document_element) {
+        VARIANT_BOOL contains(VARIANT_FALSE);
+        hr = document_element->contains(this->element_, &contains);
+        if (FAILED(hr)) {
+          LOGHR(WARN, hr) << "Call to IHTMLElement::contains failed";
+          return false;
+        }
+
+        return contains == VARIANT_TRUE;
+      }
     }
   }
   return false;
