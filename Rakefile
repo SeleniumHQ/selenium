@@ -168,6 +168,7 @@ task :test_remote => [
   :test_remote_server
 ]
 task :test_safari => [ "//java/client/test/org/openqa/selenium/safari:test:run" ]
+task :test_phantomjs => [ "//java/client/test/org/openqa/selenium/phantomjs:test:run" ]
 task :test_support => [
   "//java/client/test/org/openqa/selenium/lift:test:run",
   "//java/client/test/org/openqa/selenium/support:SmallTests:run",
