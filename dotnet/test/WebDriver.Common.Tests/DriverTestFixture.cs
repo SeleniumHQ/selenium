@@ -72,6 +72,7 @@ namespace OpenQA.Selenium
         public string booleanAttributes = EnvironmentManager.Instance.UrlBuilder.WhereIs("booleanAttributes.html");
         public string linkedImage = EnvironmentManager.Instance.UrlBuilder.WhereIs("linked_image.html");
         public string xhtmlFormPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("xhtmlFormPage.xhtml");
+        public string svgTestPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("svgTest.svg");
 
         protected IWebDriver driver;
 

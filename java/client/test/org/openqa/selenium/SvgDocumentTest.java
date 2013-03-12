@@ -29,11 +29,12 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-@Ignore(value = {HTMLUNIT, IE, OPERA, OPERA_MOBILE, SELENESE},
+@Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, SELENESE},
         reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
 public class SvgDocumentTest extends JUnit4TestBase {
 
   @Test
+  @Ignore(IE)
   public void testClickOnSvgElement() {
     driver.get(pages.svgTestPage);
     WebElement rect = driver.findElement(By.id("rect"));

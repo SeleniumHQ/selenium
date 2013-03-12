@@ -12,10 +12,7 @@
 <script type="text/javascript">
   function markClick(input) {
     var element = document.getElementById('result');
-    var range = document.createRange();
-    range.selectNodeContents(element);
-    range.deleteContents();
-    element.appendChild(range.createContextualFragment(input));
+    element.innerHTML = input;
   }
 </script>
   <div id="someText">
