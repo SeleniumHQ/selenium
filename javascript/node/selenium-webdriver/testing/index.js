@@ -159,13 +159,13 @@ function ignore(predicateFn) {
 exports.describe = global.describe;
 exports.xdescribe = global.xdescribe;
 
-exports.after = wrapped(after);
-exports.afterEach = wrapped(afterEach);
-exports.before = wrapped(before);
-exports.beforeEach = wrapped(beforeEach);
+exports.after = wrapped(global.after);
+exports.afterEach = wrapped(global.afterEach);
+exports.before = wrapped(global.before);
+exports.beforeEach = wrapped(global.beforeEach);
 
-exports.it = wrapped(it);
-exports.it.only = exports.iit = wrapped(it.only);
-exports.it.skip = exports.xit = wrapped(it.skip);
+exports.it = wrapped(global.it);
+exports.it.only = exports.iit = wrapped(global.it.only);
+exports.it.skip = exports.xit = wrapped(global.xit);
 
 exports.ignore = ignore;

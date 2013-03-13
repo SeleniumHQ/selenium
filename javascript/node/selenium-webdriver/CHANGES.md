@@ -16,6 +16,7 @@
     * promise.Deferred#resolve() -> promise.Deferred#fulfill()
 * FIXED: remote.SeleniumServer#stop now shuts down within the active control
     flow, allowing scripts to finish. Use #kill to shutdown immediately.
+* FIXED: 5321: cookie deletion commands
 
 ## v2.31.0
 

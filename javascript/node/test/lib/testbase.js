@@ -85,7 +85,7 @@ function TestEnvironment(browserName) {
   this.__defineGetter__('driver', function() { return driver; });
 
   this.browsers = function(var_args) {
-    var browsersToIgnore = Array.prototype.slice.apply(arguments[0]);
+    var browsersToIgnore = Array.prototype.slice.apply(arguments, [0]);
     return browsers(browserName, browsersToIgnore);
   };
 

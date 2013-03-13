@@ -933,11 +933,8 @@ webdriver.WebDriver.Options = function(driver) {
  * @return {!webdriver.promise.Promise} A promise that will be resolved when the
  *     cookie has been added to the page.
  */
-webdriver.WebDriver.Options.prototype.addCookie = function(name, value,
-                                                           opt_path,
-                                                           opt_domain,
-                                                           opt_isSecure,
-                                                           opt_expiry) {
+webdriver.WebDriver.Options.prototype.addCookie = function(
+    name, value, opt_path, opt_domain, opt_isSecure, opt_expiry) {
   // We do not allow '=' or ';' in the name.
   if (/[;=]/.test(name)) {
     throw Error('Invalid cookie name "' + name + '"');
@@ -964,7 +961,7 @@ webdriver.WebDriver.Options.prototype.addCookie = function(name, value,
     }
     cookieString += ';expires=' + expiryDate.toUTCString();
     // Convert from milliseconds to seconds.
-    expiry = (/** @type {number} */opt_expiry) / 1000;
+    expiry = Math.floor(/** @type {number} */ (opt_expiry) / 1000);
   }
 
   return this.driver_.schedule(
@@ -988,7 +985,7 @@ webdriver.WebDriver.Options.prototype.addCookie = function(name, value,
  */
 webdriver.WebDriver.Options.prototype.deleteAllCookies = function() {
   return this.driver_.schedule(
-      new webdriver.Command(webdriver.CommandName.ADD_COOKIE),
+      new webdriver.Command(webdriver.CommandName.DELETE_ALL_COOKIES),
       'WebDriver.manage().deleteAllCookies()');
 };
 
@@ -1003,7 +1000,8 @@ webdriver.WebDriver.Options.prototype.deleteAllCookies = function() {
  */
 webdriver.WebDriver.Options.prototype.deleteCookie = function(name) {
   return this.driver_.schedule(
-      new webdriver.Command(webdriver.CommandName.DELETE_COOKIE),
+      new webdriver.Command(webdriver.CommandName.DELETE_COOKIE).
+          setParameter('name', name),
       'WebDriver.manage().deleteCookie(' + name + ')');
 };
 
