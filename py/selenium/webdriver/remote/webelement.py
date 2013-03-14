@@ -140,7 +140,7 @@ class WebElement(object):
         """Simulates typing into the element."""
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
-        if self.parent._is_remote:
+        if self._parent._is_remote:
             local_file = LocalFileDetector.is_local_file(*value)
             if local_file is not None:
                 value = self._upload(local_file)
