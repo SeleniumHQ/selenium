@@ -93,7 +93,7 @@ class SimpleWebServer(object):
         try:
             # This is to force stop the server loop
             urllib.URLopener().open("http://localhost:%d" % self.port)
-        except Exception:
+        except IOError:
             pass
         LOGGER.info("Shutting down the webserver")
         self.thread.join()
