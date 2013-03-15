@@ -16,16 +16,16 @@ def start_server(module):
     url = "http://%s:%d/wd/hub" % (SERVER_ADDR, DEFAULT_PORT)
     try:
         _socket.connect((SERVER_ADDR, DEFAULT_PORT))
-        print ("The remote driver server is already running or something else"
+        print("The remote driver server is already running or something else"
                "is using port %d, continuing..." % DEFAULT_PORT)
     except:
-        print ("Starting the remote driver server")
+        print("Starting the remote driver server")
         module.server_proc = subprocess.Popen(
             "java -jar %s" % SERVER_PATH,
             shell=True)
 
         assert wait_for_server(url, 10), "can't connect"
-        print "Server should be online"
+        print("Server should be online")
 
 def wait_for_server(url, timeout):
     start = time.time()

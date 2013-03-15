@@ -359,7 +359,7 @@ def GetJavaVersion():
   """Returns the string for the current version of Java installed."""
   proc = subprocess.Popen(['java', '-version'], stderr=subprocess.PIPE)
   proc.wait()
-  version_line = proc.stderr.read().splitlines()[0]
+  version_line = proc.stderr.read().splitlines()[0].decode('utf-8')
   return version_regex.search(version_line).group()
 
 
@@ -441,7 +441,7 @@ def Compile(compiler_jar_path, source_paths, out, flags=None):
     logging.error('JavaScript compilation failed.')
     sys.exit(1)
   else:
-    out.write(stdoutdata)
+    out.write(stdoutdata.decode('utf-8'))
 
 
 def main():

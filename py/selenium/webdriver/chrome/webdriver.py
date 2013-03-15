@@ -15,12 +15,11 @@
 # limitations under the License.
 
 import base64
-import httplib
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
-from service import Service
-from options import Options
+from .service import Service
+from .options import Options
 
 class WebDriver(RemoteWebDriver):
     """

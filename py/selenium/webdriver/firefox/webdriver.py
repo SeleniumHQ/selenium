@@ -13,12 +13,15 @@
 # limitations under the License.
 
 
+try:
+    import http.client as http_client
+except ImportError:
+    import httplib as http_client
+
 import base64
-import httplib
 import shutil
 import sys
-import urllib2
-from firefox_binary import FirefoxBinary
+from .firefox_binary import FirefoxBinary
 from selenium.common.exceptions import ErrorInResponseException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities 
 from selenium.webdriver.firefox.extension_connection import ExtensionConnection
@@ -67,7 +70,7 @@ class WebDriver(RemoteWebDriver):
         """Quits the driver and close every associated window."""
         try:
             RemoteWebDriver.quit(self)
-        except httplib.BadStatusLine:
+        except http_client.BadStatusLine:
             # Happens if Firefox shutsdown before we've read the response from
             # the socket.
             pass
@@ -76,8 +79,8 @@ class WebDriver(RemoteWebDriver):
             shutil.rmtree(self.profile.path)
             if self.profile.tempfolder is not None:
                 shutil.rmtree(self.profile.tempfolder)
-        except Exception, e:
-            print str(e)
+        except Exception as e:
+            print(str(e))
 
     @property
     def firefox_profile(self):

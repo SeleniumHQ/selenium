@@ -15,7 +15,10 @@
 # limitations under the License.
 
 import unittest
-from cStringIO import StringIO
+try:
+    from io import BytesIO
+except ImportError:
+    from cStringIO import StringIO as BytesIO
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -26,24 +29,24 @@ from selenium.webdriver.support.events import EventFiringWebDriver, \
 class EventFiringWebDriverTests(unittest.TestCase):
 
     def setup_method(self, method):
-        self.log = StringIO()
+        self.log = BytesIO()
         
     def test_should_fire_navigation_events(self):
         log = self.log 
                 
         class TestListener(AbstractEventListener):
             def before_navigate_to(self, url, driver):
-                log.write("before_navigate_to %s" % url.split("/")[-1])                                
+                log.write(("before_navigate_to %s" % url.split("/")[-1]).encode())
             def after_navigate_to(self, url, driver):
-                log.write("after_navigate_to %s" % url.split("/")[-1])                
+                log.write(("after_navigate_to %s" % url.split("/")[-1]).encode())
             def before_navigate_back(self, driver):
-                log.write("before_navigate_back")            
+                log.write(b"before_navigate_back")
             def after_navigate_back(self, driver):
-                log.write("after_navigate_back")            
+                log.write(b"after_navigate_back")
             def before_navigate_forward(self, driver):
-                log.write("before_navigate_forward")            
+                log.write(b"before_navigate_forward")
             def after_navigate_forward(self, driver):
-                log.write("after_navigate_forward")
+                log.write(b"after_navigate_forward")
             
         ef_driver = EventFiringWebDriver(self.driver, TestListener())            
         ef_driver.get(self._pageURL("formPage"))
@@ -56,37 +59,37 @@ class EventFiringWebDriverTests(unittest.TestCase):
         ef_driver.forward()
         self.assertEqual(ef_driver.title, "We Arrive Here")        
        
-        self.assertEqual("before_navigate_to formPage.html" \
-                + "after_navigate_to formPage.html" \
-                + "before_navigate_back" \
-                + "after_navigate_back" \
-                + "before_navigate_forward" \
-                + "after_navigate_forward", log.getvalue())        
+        self.assertEqual(b"before_navigate_to formPage.html" \
+                + b"after_navigate_to formPage.html" \
+                + b"before_navigate_back" \
+                + b"after_navigate_back" \
+                + b"before_navigate_forward" \
+                + b"after_navigate_forward", log.getvalue())
 
     def test_should_fire_click_event(self):
         log = self.log
         
         class TestListener(AbstractEventListener):            
             def before_click(self, element, driver):
-                log.write("before_click")    
+                log.write(b"before_click")
             def after_click(self, element, driver):
-                log.write("after_click")
+                log.write(b"after_click")
             
         ef_driver = EventFiringWebDriver(self.driver, TestListener())            
         ef_driver.get(self._pageURL("clicks"))        
         ef_driver.find_element(By.ID, "overflowLink").click() 
         self.assertEqual(ef_driver.title, "XHTML Test Page")
         
-        self.assertEqual("before_click" + "after_click", log.getvalue())        
+        self.assertEqual(b"before_click" + b"after_click", log.getvalue())
         
     def test_should_fire_change_value_event(self):
         log = self.log
         
         class TestListener(AbstractEventListener):            
             def before_change_value_of(self, element, driver):
-                log.write("before_change_value_of")    
+                log.write(b"before_change_value_of")
             def after_change_value_of(self, element, driver):
-                log.write("after_change_value_of")
+                log.write(b"after_change_value_of")
             
         ef_driver = EventFiringWebDriver(self.driver, TestListener())            
         ef_driver.get(self._pageURL("readOnlyPage"))                
@@ -99,19 +102,19 @@ class EventFiringWebDriverTests(unittest.TestCase):
         keyReporter.send_keys("abc def")
         self.assertEqual(keyReporter.get_attribute("value"), "abc def")
         
-        self.assertEqual("before_change_value_of" \
-                         + "after_change_value_of" \
-                         + "before_change_value_of" \
-                         + "after_change_value_of", log.getvalue())        
+        self.assertEqual(b"before_change_value_of" \
+                         + b"after_change_value_of" \
+                         + b"before_change_value_of" \
+                         + b"after_change_value_of", log.getvalue())
 
     def test_should_fire_find_event(self):
         log = self.log
         
         class TestListener(AbstractEventListener):            
             def before_find(self, by, value, driver):
-                log.write("before_find by %s %s" % (by, value))    
+                log.write(("before_find by %s %s" % (by, value)).encode())
             def after_find(self, by, value, driver):
-                log.write("after_find by %s %s" % (by, value))    
+                log.write(("after_find by %s %s" % (by, value)).encode())
             
         ef_driver = EventFiringWebDriver(self.driver, TestListener())            
         ef_driver.get(self._pageURL("simpleTest"))        
@@ -127,12 +130,12 @@ class EventFiringWebDriverTests(unittest.TestCase):
         self.assertEqual("frame", elements[0].tag_name.lower())
         self.assertEqual("sixth", elements[0].get_attribute("id"))  
               
-        self.assertEqual("before_find by id oneline" \
-                         + "after_find by id oneline" \
-                         + "before_find by xpath /html/body/p[1]" \
-                         + "after_find by xpath /html/body/p[1]" \
-                         + "before_find by css selector frame#sixth" \
-                         + "after_find by css selector frame#sixth" , log.getvalue())        
+        self.assertEqual(b"before_find by id oneline" \
+                         + b"after_find by id oneline" \
+                         + b"before_find by xpath /html/body/p[1]" \
+                         + b"after_find by xpath /html/body/p[1]" \
+                         + b"before_find by css selector frame#sixth" \
+                         + b"after_find by css selector frame#sixth" , log.getvalue())
     
     def test_should_call_listener_when_an_exception_is_thrown(self):
         log = self.log
@@ -140,7 +143,7 @@ class EventFiringWebDriverTests(unittest.TestCase):
         class TestListener(AbstractEventListener):            
             def on_exception(self, exception, driver):
                 if isinstance(exception, NoSuchElementException):
-                    log.write("NoSuchElementException is thrown")
+                    log.write(b"NoSuchElementException is thrown")
             
         ef_driver = EventFiringWebDriver(self.driver, TestListener())            
         ef_driver.get(self._pageURL("simpleTest"))        
@@ -149,7 +152,7 @@ class EventFiringWebDriverTests(unittest.TestCase):
             self.fail("Expected exception to be propagated")
         except NoSuchElementException:
             pass        
-        self.assertEqual("NoSuchElementException is thrown", log.getvalue())        
+        self.assertEqual(b"NoSuchElementException is thrown", log.getvalue())        
         
     def test_should_unwrap_element_args_when_calling_scripts(self):              
         ef_driver = EventFiringWebDriver(self.driver, AbstractEventListener())            

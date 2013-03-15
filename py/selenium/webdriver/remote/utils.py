@@ -107,6 +107,6 @@ def unzip_to_temp_dir(zip_file_name):
         LOGGER.info("Unzipped file can be found at %s" % tempdir)
         return tempdir
 
-    except IOError, err:
+    except IOError as err:
         LOGGER.error("Error in extracting webdriver.xpi: %s" % err)
         return None

@@ -31,7 +31,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 def not_available_on_remote(func):
     def testMethod(self):
-        print self.driver
+        print(self.driver)
         if type(self.driver) == 'remote':
             return lambda x: None
         else:
@@ -54,9 +54,9 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.presence_of_element_located((By.ID, "box0")))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
-        except Exception, e:
+        except Exception as e:
             self.fail("Expected TimeoutException but got " + str(e))
 
     def testShouldExplicitlyWaituntilAtLeastOneElementIsFoundWhenSearchingForMany(self):
@@ -73,9 +73,9 @@ class WebDriverWaitTest(unittest.TestCase):
         self._loadPage("dynamic")
         try:
             elements = WebDriverWait(self.driver, 0.7).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "redbox")))
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass # we should get a timeout
-        except Exception, e:
+        except Exception as e:
             self.fail("Expected TimeoutException but got " + str(e))
 
     def testShouldWaitOnlyAsLongAsTimeoutSpecifiedWhenImplicitWaitsAreSet(self):
@@ -86,7 +86,7 @@ class WebDriverWaitTest(unittest.TestCase):
             try:
                 WebDriverWait(self.driver, 1).until(EC.presence_of_element_located((By.ID, "box0")))
                 self.fail("Expected TimeoutException to have been thrown")
-            except TimeoutException, e:
+            except TimeoutException as e:
                 pass
             self.assertTrue(time.time() - start < 1.5, 
                 "Expected to take just over 1 second to execute, but took %f" % 
@@ -109,7 +109,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 1, 0.7, ignored_exceptions=ignored).until(throwSERE)
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
 
     def testWaitShouldStillFailIfProduceChildOfIgnoredException(self):
@@ -117,7 +117,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 1, 0.7, ignored_exceptions=ignored).until(throwSERE)
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
 
     def testWaitUntilNotShouldNotFailIfProduceIgnoredException(self):
@@ -133,7 +133,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.title_is("blank"))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
 
 
@@ -145,7 +145,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.title_contains("blanket"))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
     
     def testExpectedConditionVisibilityOfElementLocated(self):
@@ -153,7 +153,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.visibility_of_element_located((By.ID, 'clickToHide')))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.find_element_by_id('clickToShow').click()
         element = WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located((By.ID, 'clickToHide')))
@@ -165,7 +165,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.visibility_of(hidden))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.find_element_by_id('clickToShow').click()
         element = WebDriverWait(self.driver, 5).until(EC.visibility_of(hidden))
@@ -176,7 +176,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.text_to_be_present_in_element((By.ID, 'unwrappable'), 'Expected'))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.execute_script("setTimeout(function(){var el = document.getElementById('unwrappable'); el.textContent = el.innerText = 'Unwrappable Expected text'}, 200)")
         WebDriverWait(self.driver, 1).until(EC.text_to_be_present_in_element((By.ID, 'unwrappable'), 'Expected'))
@@ -187,7 +187,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 1).until(EC.text_to_be_present_in_element_value((By.ID, 'inputRequired'), 'Expected'))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.execute_script("setTimeout(function(){document.getElementById('inputRequired').value = 'Example Expected text'}, 200)")
         WebDriverWait(self.driver, 1).until(EC.text_to_be_present_in_element_value((By.ID, 'inputRequired'), 'Expected'))
@@ -198,7 +198,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 1).until(EC.frame_to_be_available_and_switch_to_it('myFrame'))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.execute_script("setTimeout(function(){var f = document.createElement('iframe'); f.id='myFrame'; f.src = '"+self._pageURL('iframeWithAlert')+"'; document.body.appendChild(f)}, 200)")
         WebDriverWait(self.driver, 1).until(EC.frame_to_be_available_and_switch_to_it('myFrame'))
@@ -211,7 +211,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.execute_script("delayedShowHide(200, false)")
         WebDriverWait(self.driver, 0.7).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
@@ -223,7 +223,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.element_to_be_clickable((By.ID, 'clickToHide')))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.execute_script("delayedShowHide(200, true)")
         WebDriverWait(self.driver, 0.7).until(EC.element_to_be_clickable((By.ID, 'clickToHide')))
@@ -238,7 +238,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.staleness_of(element))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.find_element_by_id('buttonDelete').click()
         self.assertEqual('element', element.text)
@@ -246,7 +246,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             element.text
             self.fail("Expected StaleReferenceException to have been thrown")
-        except StaleElementReferenceException, e:
+        except StaleElementReferenceException as e:
             pass
     
     def testExpectedConditionElementToBeSelected(self):
@@ -255,7 +255,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.element_to_be_selected(element))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.execute_script("setTimeout(function(){document.getElementById('checky').checked = true}, 200)")
         WebDriverWait(self.driver, 0.7).until(EC.element_to_be_selected(element))
@@ -267,7 +267,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.element_located_to_be_selected((By.ID, 'checky')))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.execute_script("setTimeout(function(){document.getElementById('checky').checked = true}, 200)")
         WebDriverWait(self.driver, 0.7).until(EC.element_located_to_be_selected((By.ID, 'checky')))
@@ -281,7 +281,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.element_selection_state_to_be(element, True))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.execute_script("setTimeout(function(){document.getElementById('checky').checked = true}, 200)")
         WebDriverWait(self.driver, 0.7).until(EC.element_selection_state_to_be(element, True))
@@ -295,7 +295,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.element_located_selection_state_to_be((By.ID, 'checky'), True))
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.execute_script("setTimeout(function(){document.getElementById('checky').checked = true}, 200)")
         WebDriverWait(self.driver, 0.7).until(EC.element_located_selection_state_to_be((By.ID, 'checky'), True))
@@ -306,7 +306,7 @@ class WebDriverWaitTest(unittest.TestCase):
         try:
             WebDriverWait(self.driver, 0.7).until(EC.alert_is_present())
             self.fail("Expected TimeoutException to have been thrown")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
         self.driver.execute_script("setTimeout(function(){alert('alerty')}, 200)")
         WebDriverWait(self.driver, 0.7).until(EC.alert_is_present())

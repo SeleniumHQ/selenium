@@ -49,9 +49,8 @@ py_test(
 py_env(
   name = "test_env",
   packages = [
-    "third_party/py/simplejson-2.2.1.tar.gz",
-    "third_party/py/py-1.4.5.zip",
-    "third_party/py/pytest-2.0.3.zip",
+    "third_party/py/py-1.4.13.tar.gz",
+    "third_party/py/pytest-2.3.4.zip",
   ],
   dest = "build/python")
 

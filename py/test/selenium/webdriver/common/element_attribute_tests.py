@@ -253,7 +253,7 @@ class ElementAttributeTests(unittest.TestCase):
     def tesShouldGetUnicodeCharsFromAttribute(self):
         self._loadPage("formPage")
         title = self.driver.find_element_by_id("vsearchGadget").get_attribute("title")
-        self.assertEqual(u"Hvad s\xf8ger du?", title)
+        self.assertEqual('Hvad s\xf8ger du?', title)
         
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)

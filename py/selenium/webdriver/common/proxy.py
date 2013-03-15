@@ -26,19 +26,19 @@ class Proxy(object):
 
     def __init__(self, raw=None):
         if raw is not None:
-            if raw.has_key('proxyType') and raw['proxyType'] is not None:
+            if 'proxyType' in raw and raw['proxyType'] is not None:
                 self.proxy_type = raw['proxyType']
-            if raw.has_key('ftpProxy') and raw['ftpProxy'] is not None:
+            if 'ftpProxy' in raw and raw['ftpProxy'] is not None:
                 self.ftp_proxy = raw['ftpProxy']
-            if raw.has_key('httpProxy') and raw['httpProxy'] is not None:
+            if 'httpProxy' in raw and raw['httpProxy'] is not None:
                 self.http_proxy = raw['httpProxy']
-            if raw.has_key('noProxy') and raw['noProxy'] is not None:
+            if 'noProxy' in raw and raw['noProxy'] is not None:
                 self.no_proxy = raw['noProxy']
-            if raw.has_key('proxyAutoconfigUrl') and raw['proxyAutoconfigUrl'] is not None:
+            if 'proxyAutoconfigUrl' in raw and raw['proxyAutoconfigUrl'] is not None:
                 self.proxy_autoconfig_url = raw['proxyAutoconfigUrl']
-            if raw.has_key('sslProxy') and raw['sslProxy'] is not None:
+            if 'sslProxy' in raw and raw['sslProxy'] is not None:
                 self.sslProxy = raw['sslProxy']
-            if raw.has_key('autodetect') and raw['autodetect'] is not None:
+            if 'autodetect' in raw and raw['autodetect'] is not None:
                 self.auto_detect = raw['autodetect']
 
     @property
