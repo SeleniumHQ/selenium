@@ -62,7 +62,7 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public static readonly string Capability = "chromeOptions";
 
-        private string binaryLocation = string.Empty;
+        private string binaryLocation;
         private List<string> arguments = new List<string>();
         private List<string> extensionFiles = new List<string>();
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
@@ -70,7 +70,7 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Gets or sets the location of the Chrome browser's binary executable file.
         /// </summary>
-        [JsonProperty("binary")]
+        [JsonProperty("binary", NullValueHandling = NullValueHandling.Ignore)]
         public string BinaryLocation
         {
             get { return this.binaryLocation; }
