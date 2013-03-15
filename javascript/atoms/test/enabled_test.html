@@ -47,6 +47,11 @@ function testDisabledShouldBeAnInheritedAttribute() {
   assertDisabled('inherits-disabled-2');
 }
 
+function testDisabledShouldInheritFromFieldsetUnlessInLegend() {
+  assertDisabled('disabled-fieldset-button-g');
+  assertEnabled('legend-button-f');
+}
+
 function testEnabledShouldRespondToDisabledProperty() {
   var element = goog.dom.$('enabled-button-a');
   element.disabled = true;
@@ -79,6 +84,13 @@ function testEnabledShouldRespondToDisabledProperty() {
           <option id="inherits-disabled-2">baz</option>
         </optgroup>
       </select>
+
+      <fieldset id="disabled-fieldset" disabled="disabled">
+        <legend>
+          <button id="legend-button-f" value="Enabled F"></button>
+        </legend>
+        <button id="disabled-fieldset-button-g" value="Enabled G"></button>
+      </fieldset>
     </form>
   </body>
 </html>
