@@ -330,6 +330,29 @@ bot.dom.isEnabled = function(el) {
       goog.dom.TagName.OPTION == tagName) {
     return bot.dom.isEnabled((/**@type{!Element}*/el.parentNode));
   }
+  
+  var fieldset = /**@type {Element}*/ (goog.dom.getAncestor(el, function(e) {
+    return bot.dom.isElement(e, goog.dom.TagName.FIELDSET) && bot.dom.getProperty(e, 'disabled');
+  }));
+  
+  if (fieldset){
+    // Elements inside a disabled fieldset are disabled,
+    // unless descendants of the first legend child of the fieldset
+    var legend = /**@type {Element}*/ (goog.dom.getAncestor(el, function(e) {
+      return bot.dom.isElement(e, goog.dom.TagName.LEGEND) && 
+             e.parentNode == fieldset
+    }));
+    
+    if (legend){
+      //Make sure there are no previous sibling legends
+      var sibling = legend;
+      while (sibling = goog.dom.getPreviousElementSibling(sibling)){
+        if (bot.dom.isElement(sibling, goog.dom.TagName.LEGEND)) return false;
+      }
+    }
+    return !!legend;
+  }
+  
   return true;
 };
 
