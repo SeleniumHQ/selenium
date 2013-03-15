@@ -40,7 +40,12 @@ setup_args = {
                      'Operating System :: MacOS :: MacOS X',
                      'Topic :: Software Development :: Testing',
                      'Topic :: Software Development :: Libraries',
-                     'Programming Language :: Python'],
+                     'Programming Language :: Python',
+                     'Programming Language :: Python :: 2.6',
+                     'Programming Language :: Python :: 2.7',
+                     'Programming Language :: Python :: 3.1',
+                     'Programming Language :: Python :: 3.2',
+                     'Programming Language :: Python :: 3.3'],
     'package_dir':{
         'selenium': 'py/selenium',
         'selenium.common': 'py/selenium/common',
