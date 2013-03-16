@@ -97,7 +97,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window(current);
   }
 
-  @Ignore({OPERA, SELENESE, OPERA_MOBILE})
+  @Ignore({OPERA, CHROME, SELENESE, OPERA_MOBILE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
     driver.get(pages.xhtmlTestPage);
