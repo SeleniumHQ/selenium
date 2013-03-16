@@ -25,7 +25,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -113,7 +112,7 @@ public class ElementSelectingTest extends JUnit4TestBase {
     assertTrue(button.isSelected());
   }
 
-  @Ignore(value = {CHROME, SELENESE, ANDROID}, reason = "Android: opens a dialog.")
+  @Ignore(value = {SELENESE, ANDROID}, reason = "Android: opens a dialog.")
   @Test
   public void testShouldBeAbleToToggleEnabledMultiSelectOption() {
     driver.get(pages.formPage);

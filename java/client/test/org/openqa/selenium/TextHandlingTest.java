@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -121,7 +120,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo("This line has a non-breaking space"));
   }
 
-  @Ignore({CHROME, IPHONE, SELENESE})
+  @Ignore({IPHONE, SELENESE})
   @Test
   public void testShouldNotCollapseANonBreakingSpaces() {
     driver.get(pages.simpleTestPage);
@@ -131,7 +130,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo("This line has a   non-breaking space and spaces"));
   }
 
-  @Ignore({CHROME, IPHONE, SELENESE})
+  @Ignore({IPHONE, SELENESE})
   @Test
   public void testShouldNotTrimNonBreakingSpacesAtTheEndOfALineInTheMiddleOfText() {
     driver.get(pages.simpleTestPage);
@@ -140,7 +139,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, startsWith("These lines  \n"));
   }
 
-  @Ignore({CHROME, IPHONE, SELENESE})
+  @Ignore({IPHONE, SELENESE})
   @Test
   public void testShouldNotTrimNonBreakingSpacesAtTheStartOfALineInTheMiddleOfText() {
     driver.get(pages.simpleTestPage);
@@ -149,7 +148,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, containsString("\n  have"));
   }
 
-  @Ignore({CHROME, IPHONE, SELENESE})
+  @Ignore({IPHONE, SELENESE})
   @Test
   public void testShouldNotTrimTrailingNonBreakingSpacesInMultilineText() {
     driver.get(pages.simpleTestPage);
@@ -176,7 +175,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo("An inline element"));
   }
 
-  @Ignore({SELENESE, IPHONE, ANDROID, CHROME, OPERA})
+  @Ignore({SELENESE, IPHONE, ANDROID, OPERA})
   @Test
   public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
     driver.get(pages.simpleTestPage);
@@ -188,7 +187,7 @@ public class TextHandlingTest extends JUnit4TestBase {
         "         "));
   }
 
-  @Ignore({SELENESE, IPHONE, ANDROID, CHROME, OPERA})
+  @Ignore({SELENESE, IPHONE, ANDROID, OPERA})
   @Test
   public void testShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock() {
     driver.get(pages.simpleTestPage);
@@ -201,9 +200,8 @@ public class TextHandlingTest extends JUnit4TestBase {
         "after pre"));
   }
 
-  @Ignore(value = {SELENESE, IPHONE, CHROME, IE, OPERA, OPERA_MOBILE}, reason =
+  @Ignore(value = {SELENESE, IPHONE, IE, OPERA, OPERA_MOBILE}, reason =
       "iPhone: sendKeys is broken;"
-      + " Chrome: not handling a space character properly."
       + " Opera,IE: inserts \r\n instead of \n.")
   @Test
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {

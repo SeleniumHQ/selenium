@@ -35,7 +35,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -83,7 +82,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(body.getAttribute("style"), equalTo(""));
   }
 
-  @Ignore({CHROME, OPERA, IPHONE, ANDROID, SELENESE})
+  @Ignore({OPERA, IPHONE, ANDROID, SELENESE})
   @Test
   public void testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
     driver.get(pages.formPage);
@@ -338,7 +337,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("hello world", element.getAttribute("value"));
   }
 
-  @Ignore({CHROME, OPERA, IPHONE, ANDROID, SELENESE})
+  @Ignore({OPERA, IPHONE, ANDROID, SELENESE})
   @Test
   public void testShouldReturnNullForNonPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
