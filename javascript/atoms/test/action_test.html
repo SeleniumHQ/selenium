@@ -159,7 +159,7 @@
     }
 
     function testClearingAChildContentEditableArea() {
-      var e = goog.dom.getElement('content-editable');
+      var e = goog.dom.getElement('child-content-editable');
       bot.action.clear(e);
       assertEquals('', bot.dom.getVisibleText(e));
     }
@@ -170,7 +170,7 @@
     }
 
     function testClearingAChildNotContentEditableArea() {
-      var e = goog.dom.getElement('not-content-editable');
+      var e = goog.dom.getElement('child-not-content-editable');
       assertThrows(goog.partial(bot.action.clear, e));
     }
 
