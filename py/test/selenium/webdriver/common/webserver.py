@@ -20,8 +20,15 @@ import logging
 import os
 import socket
 import threading
-import urllib
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from io import open
+try:
+    from urllib import request as urllib_request
+except ImportError:
+    import urllib as urllib_request
+try:
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+except ImportError:
+    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 def updir():
     dirname = os.path.dirname
@@ -45,11 +52,11 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
         """GET method handler."""
         try:
             path = self.path[1:].split('?')[0]
-            html = open(os.path.join(HTML_ROOT, path))
+            html = open(os.path.join(HTML_ROOT, path), 'r', encoding='latin-1')
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            self.wfile.write(html.read())
+            self.wfile.write(html.read().encode('utf-8'))
             html.close()
         except IOError:
             self.send_error(404, 'File Not Found: %s' % path)
@@ -92,7 +99,7 @@ class SimpleWebServer(object):
         self.stop_serving = True
         try:
             # This is to force stop the server loop
-            urllib.URLopener().open("http://localhost:%d" % self.port)
+            urllib_request.URLopener().open("http://localhost:%d" % self.port)
         except IOError:
             pass
         LOGGER.info("Shutting down the webserver")
@@ -117,7 +124,7 @@ def main(argv=None):
 
     server = SimpleWebServer(opts.port)
     server.start()
-    print "Server started on port %s, hit CTRL-C to quit" % opts.port
+    print("Server started on port %s, hit CTRL-C to quit" % opts.port)
     try:
         while 1:
             sleep(0.1)

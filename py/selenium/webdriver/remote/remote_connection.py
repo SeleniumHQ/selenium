@@ -16,18 +16,26 @@
 import logging
 import socket
 import string
-import urllib2
-import urlparse
 
-from command import Command
-import utils
+try:
+    from urllib import request as url_request
+except ImportError:
+    import urllib2 as url_request
+
+try:
+    from urllib import parse
+except ImportError:
+    import urlparse as parse
+
+from .command import Command
+from . import utils
 
 LOGGER = logging.getLogger(__name__)
 
 
-class Request(urllib2.Request):
+class Request(url_request.Request):
     """
-    Extends the urllib2.Request to support all HTTP request types.
+    Extends the url_request.Request to support all HTTP request types.
     """
 
     def __init__(self, url, data=None, method=None):
@@ -43,7 +51,7 @@ class Request(urllib2.Request):
         elif method != 'POST' and method != 'PUT':
             data = None
         self._method = method
-        urllib2.Request.__init__(self, url, data=data)
+        url_request.Request.__init__(self, url, data=data)
 
     def get_method(self):
         """
@@ -93,7 +101,7 @@ class Response(object):
         return self.url
 
 
-class HttpErrorHandler(urllib2.HTTPDefaultErrorHandler):
+class HttpErrorHandler(url_request.HTTPDefaultErrorHandler):
     """
     A custom HTTP error handler.
 
@@ -127,7 +135,7 @@ class RemoteConnection(object):
 
     def __init__(self, remote_server_addr):
         # Attempt to resolve the hostname and get an IP address.
-        parsed_url = urlparse.urlparse(remote_server_addr)
+        parsed_url = parse.urlparse(remote_server_addr)
         if parsed_url.hostname:
             try:
                 netloc = socket.gethostbyname(parsed_url.hostname)
@@ -138,7 +146,7 @@ class RemoteConnection(object):
                     if parsed_url.password:
                         auth += ':%s' % parsed_url.password
                     netloc = '%s@%s' % (auth, netloc)
-                remote_server_addr = urlparse.urlunparse(
+                remote_server_addr = parse.urlunparse(
                     (parsed_url.scheme, netloc, parsed_url.path,
                      parsed_url.params, parsed_url.query, parsed_url.fragment))
             except socket.gaierror:
@@ -353,43 +361,43 @@ class RemoteConnection(object):
         """
         LOGGER.debug('%s %s %s' % (method, url, data))
 
-        parsed_url = urlparse.urlparse(url)
+        parsed_url = parse.urlparse(url)
         password_manager = None
         if parsed_url.username:
             netloc = parsed_url.hostname
             if parsed_url.port:
                 netloc += ":%s" % parsed_url.port
-            cleaned_url = urlparse.urlunparse((parsed_url.scheme,
+            cleaned_url = parse.urlunparse((parsed_url.scheme,
                                                netloc,
                                                parsed_url.path,
                                                parsed_url.params,
                                                parsed_url.query,
                                                parsed_url.fragment))
-            password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
+            password_manager = url_request.HTTPPasswordMgrWithDefaultRealm()
             password_manager.add_password(None,
                                           "%s://%s" % (parsed_url.scheme, netloc),
                                           parsed_url.username,
                                           parsed_url.password)
-            request = Request(cleaned_url, data=data, method=method)
+            request = Request(cleaned_url, data=data.encode('utf-8'), method=method)
         else:
-            request = Request(url, data=data, method=method)
+            request = Request(url, data=data.encode('utf-8'), method=method)
 
         request.add_header('Accept', 'application/json')
         request.add_header('Content-Type', 'application/json;charset=UTF-8')
 
         if password_manager:
-            opener = urllib2.build_opener(urllib2.HTTPRedirectHandler(),
+            opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
                                           HttpErrorHandler(),
-                                          urllib2.HTTPBasicAuthHandler(password_manager))
+                                          url_request.HTTPBasicAuthHandler(password_manager))
         else:
-            opener = urllib2.build_opener(urllib2.HTTPRedirectHandler(),
+            opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
                                           HttpErrorHandler())
         response = opener.open(request)
         try:
             if response.code > 399 and response.code < 500:
                 return {'status': response.code, 'value': response.read()}
-            body = response.read().replace('\x00', '').strip()
-            content_type = response.info().getheader('Content-Type') or []
+            body = response.read().decode('utf-8').replace('\x00', '').strip()
+            content_type = response.info()['Content-Type'] or []
             if 'application/json' in content_type:
                 data = utils.load_json(body.strip())
                 assert type(data) is dict, (

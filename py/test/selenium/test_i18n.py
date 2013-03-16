@@ -15,6 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+from __future__ import unicode_literals
+
 from selenium import selenium
 import unittest
 
@@ -25,10 +27,10 @@ class TestI18n(unittest.TestCase):
         self.selenium.open("http://localhost:4444/selenium-server/tests/html/test_i18n.html")
         
     def test_i18n(self):
-        romance = u"\u00FC\u00F6\u00E4\u00DC\u00D6\u00C4 \u00E7\u00E8\u00E9 \u00BF\u00F1 \u00E8\u00E0\u00F9\u00F2"
-        korean = u"\uC5F4\uC5D0"
-        chinese = u"\u4E2D\u6587"
-        japanese = u"\u307E\u3077"
+        romance = "\u00FC\u00F6\u00E4\u00DC\u00D6\u00C4 \u00E7\u00E8\u00E9 \u00BF\u00F1 \u00E8\u00E0\u00F9\u00F2"
+        korean = "\uC5F4\uC5D0"
+        chinese = "\u4E2D\u6587"
+        japanese = "\u307E\u3077"
         dangerous = "&%?\\+|,%*"
         self.verify_text("romance", romance)
         self.verify_text("korean", korean)

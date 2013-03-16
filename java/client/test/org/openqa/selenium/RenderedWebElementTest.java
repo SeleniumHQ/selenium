@@ -51,7 +51,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, OPERA, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, OPERA, SELENESE})
   @Test
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
@@ -68,7 +68,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, HTMLUNIT, OPERA, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, OPERA, SELENESE})
   @Test
   public void testGetCssValueShouldReturnStandardizedColour() {
     driver.get(pages.colorPage);
@@ -266,7 +266,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, OPERA, OPERA_MOBILE})
+  @Ignore({OPERA, OPERA_MOBILE})
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     assumeTrue(hasInputDevices());
     assumeTrue(TestUtilities.isNativeEventsEnabled(driver));
@@ -424,7 +424,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NeedsFreshDriver
-  @Ignore(value = {CHROME, HTMLUNIT, SELENESE}, reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {HTMLUNIT, SELENESE}, reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMoveRelativeToBody() {
     if (!hasInputDevices() || !TestUtilities.isNativeEventsEnabled(driver)) {

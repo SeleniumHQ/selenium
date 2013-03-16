@@ -37,7 +37,6 @@ import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
@@ -421,7 +420,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME, SELENESE}, reason = "These drivers still return frame title.")
+  @Ignore(value = {SELENESE}, reason = "These drivers still return frame title.")
   @Test
   public void testShouldReturnWindowTitleInAFrameset() {
     driver.get(pages.framesetPage);

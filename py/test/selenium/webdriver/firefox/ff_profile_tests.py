@@ -20,7 +20,10 @@ import os
 import unittest
 import zipfile
 
-from cStringIO import StringIO
+try:
+    from io import BytesIO
+except ImportError:
+    from cStringIO import StringIO as BytesIO
 from selenium import webdriver
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
@@ -59,14 +62,14 @@ class TestFirefoxProfile:
 
         encoded = profile.encoded
         decoded = base64.decodestring(encoded)
-        fp = StringIO(decoded)
+        fp = BytesIO(decoded)
         zip = zipfile.ZipFile(fp, "r")
         for entry in zip.namelist():
             if entry.endswith("user.js"):
                 user_js = zip.read(entry)
                 for line in user_js.splitlines():
-                    if line.startswith('user_pref("sample.preference",'):
-                        assert True == line.endswith('"hi there");')
+                    if line.startswith(b'user_pref("sample.preference",'):
+                        assert True == line.endswith(b'"hi there");')
             # there should be only one user.js
             break
         fp.close()
@@ -76,21 +79,21 @@ class TestFirefoxProfile:
         self.driver.quit()
 
         profile = webdriver.FirefoxProfile()
-        profile.set_preference("sample.preference.2", u"hi there")
+        profile.set_preference('sample.preference.2', 'hi there')
         profile.update_preferences()
 
         assert '"hi there"' == profile.default_preferences["sample.preference.2"]
 
         encoded = profile.encoded
         decoded = base64.decodestring(encoded)
-        fp = StringIO(decoded)
+        fp = BytesIO(decoded)
         zip = zipfile.ZipFile(fp, "r")
         for entry in zip.namelist():
-            if entry.endswith("user.js"):
+            if entry.endswith('user.js'):
                 user_js = zip.read(entry)
                 for line in user_js.splitlines():
-                    if line.startswith('user_pref("sample.preference.2",'):
-                        assert True == line.endswith('"hi there");')
+                    if line.startswith(b'user_pref("sample.preference.2",'):
+                        assert True == line.endswith(b'"hi there");')
             # there should be only one user.js
             break
         fp.close()
@@ -107,28 +110,6 @@ class TestFirefoxProfile:
         self.profile2 = webdriver.FirefoxProfile()
         # Default is true. Should remain so.
         assert self.profile2.default_preferences["webdriver_accept_untrusted_certs"] == 'true'
-
-    def test_sets_http_proxy(self):
-        self.driver.quit()
-
-        profile = webdriver.FirefoxProfile()
-        proxy = Proxy()
-        proxy.http_proxy = 'http://test.hostname:1234'
-        profile.set_proxy(proxy)
-        assert profile.default_preferences["network.proxy.type"] == str(ProxyType.MANUAL['ff_value'])
-        assert profile.default_preferences["network.proxy.http"] == '"test.hostname"'
-        assert profile.default_preferences["network.proxy.http_port"] == '1234'
-
-    def test_sets_ssl_proxy(self):
-        self.driver.quit()
-
-        profile = webdriver.FirefoxProfile()
-        proxy = Proxy()
-        proxy.ssl_proxy = 'https://test.hostname:1234'
-        profile.set_proxy(proxy)
-        assert profile.default_preferences["network.proxy.type"] == str(ProxyType.MANUAL['ff_value'])
-        assert profile.default_preferences["network.proxy.ssl"] == '"test.hostname"'
-        assert profile.default_preferences["network.proxy.ssl_port"] == '1234'
 
     def teardown_method(self, method):
         try:

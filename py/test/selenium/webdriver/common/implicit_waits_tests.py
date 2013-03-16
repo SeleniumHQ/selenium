@@ -22,7 +22,7 @@ from selenium.common.exceptions import NoSuchElementException
 
 def not_available_on_remote(func):
     def testMethod(self):
-        print self.driver
+        print(self.driver)
         if type(self.driver) == 'remote':
             return lambda x: None
         else:
@@ -44,9 +44,9 @@ class ImplicitWaitTest(unittest.TestCase):
         try:
             self.driver.find_element_by_id("box0")
             self.fail("Expected NoSuchElementException to have been thrown")
-        except NoSuchElementException, e:
+        except NoSuchElementException as e:
             pass
-        except Exception, e:
+        except Exception as e:
             self.fail("Expected NoSuchElementException but got " + str(e))
 
     def testShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits(self):
@@ -56,9 +56,9 @@ class ImplicitWaitTest(unittest.TestCase):
         try:
             self.driver.find_element_by_id("box0")
             self.fail("Expected NoSuchElementException to have been thrown")
-        except NoSuchElementException, e:
+        except NoSuchElementException as e:
             pass
-        except Exception, e:
+        except Exception as e:
             self.fail("Expected NoSuchElementException but got " + str(e))
     
     def testShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany(self):

@@ -28,7 +28,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -516,7 +515,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(CHROME)
   @Test
   public void testShouldBeAbleToFindAnElementByCompoundCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -525,7 +523,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(CHROME)
   @Test
   public void testShouldBeAbleToFindElementsByCompoundCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -620,7 +617,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({CHROME, OPERA})
+  @Ignore({OPERA})
   public void findsByLinkTextOnXhtmlPage() {
     if (isOldIe(driver)) {
       // Old IE doesn't render XHTML pages, don't try loading XHTML pages in it

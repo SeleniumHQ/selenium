@@ -140,7 +140,7 @@ class ErrorHandler(object):
                 zeroeth = value['stackTrace'][0]
             except:
                 pass
-            if zeroeth.has_key('methodName'):
+            if 'methodName' in zeroeth:
                 stacktrace = "Method %s threw an error in %s" % \
                     (zeroeth['methodName'],
                     self._value_or_default(zeroeth, 'fileName', '[No file name]'))
@@ -149,4 +149,4 @@ class ErrorHandler(object):
         raise exception_class(message, screen, stacktrace)
 
     def _value_or_default(self, obj, key, default):
-      return obj[key] if obj.has_key(key) else default
+      return obj[key] if key in obj else default

@@ -14,10 +14,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from __future__ import unicode_literals
+
 __docformat__ = "restructuredtext en"
 
-import httplib
-import urllib
+try:
+    import http.client as http_client
+except ImportError:
+    import httplib as http_client
+
+try:
+    import urllib.parse as urllib_parse
+except ImportError:
+    import urllib as urllib_parse
 
 class selenium(object):
     """
@@ -190,19 +199,19 @@ class selenium(object):
         try:
             self.sessionId = result
         except ValueError:
-            raise Exception, result
+            raise Exception(result)
         
     def stop(self):
         self.do_command("testComplete", [])
         self.sessionId = None
 
     def do_command(self, verb, args):
-        conn = httplib.HTTPConnection(self.host, self.port)
+        conn = http_client.HTTPConnection(self.host, self.port)
         try:
-            body = u'cmd=' + urllib.quote_plus(unicode(verb).encode('utf-8'))
+            body = 'cmd=' + urllib_parse.quote_plus(unicode(verb).encode('utf-8'))
             for i in range(len(args)):
                 body += '&' + unicode(i+1) + '=' + \
-                        urllib.quote_plus(unicode(args[i]).encode('utf-8'))
+                        urllib_parse.quote_plus(unicode(args[i]).encode('utf-8'))
             if (None != self.sessionId):
                 body += "&sessionId=" + unicode(self.sessionId)
             headers = {
@@ -214,7 +223,7 @@ class selenium(object):
             response = conn.getresponse()
             data = unicode(response.read(), "UTF-8")
             if (not data.startswith('OK')):
-                raise Exception, data
+                raise Exception(data)
             return data
         finally:
             conn.close()
@@ -263,7 +272,7 @@ class selenium(object):
             return True
         if ("false" == boolstr):
             return False
-        raise ValueError, "result is neither 'true' nor 'false': " + boolstr
+        raise ValueError("result is neither 'true' nor 'false': " + boolstr)
 
     def get_boolean_array(self, verb, args):
         boolarr = self.get_string_array(verb, args)
@@ -274,7 +283,7 @@ class selenium(object):
             if ("false" == boolstr):
                 boolarr[i] = False
                 continue
-            raise ValueError, "result is neither 'true' nor 'false': " + boolarr[i]
+            raise ValueError("result is neither 'true' nor 'false': " + boolarr[i])
         return boolarr
     
     

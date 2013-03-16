@@ -22,7 +22,7 @@ from selenium.common.exceptions import TimeoutException
 
 def not_available_on_remote(func):
     def testMethod(self):
-        print self.driver
+        print(self.driver)
         if type(self.driver) == 'remote':
             return lambda x: None
         else:
@@ -36,7 +36,7 @@ class PageLoadTimeoutTest(unittest.TestCase):
         try:
             self._loadSimplePage()
             self.fail("Expected a timeout on page load")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
 
     def testClickShouldTimeout(self):
@@ -45,7 +45,7 @@ class PageLoadTimeoutTest(unittest.TestCase):
         try:
             self.driver.find_element_by_id("multilinelink").click()
             self.fail("Expected a timeout on page load after clicking")
-        except TimeoutException, e:
+        except TimeoutException as e:
             pass
 
     def _pageURL(self, name):
