@@ -68,13 +68,12 @@ public class JsonToBeanConverterTest {
     assertThat(map, hasEntry("foodstuff", "cheese"));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testCanPopulateAMapThatContainsNull() throws Exception {
     JSONObject toConvert = new JSONObject();
     toConvert.put("foo", JSONObject.NULL);
 
-    Map converted = new JsonToBeanConverter().convert(Map.class, toConvert.toString());
+    Map<?,?> converted = new JsonToBeanConverter().convert(Map.class, toConvert.toString());
     assertEquals(1, converted.size());
     assertTrue(converted.containsKey("foo"));
     assertNull(converted.get("foo"));
@@ -101,15 +100,14 @@ public class JsonToBeanConverterTest {
     assertThat(bean.getValue(), is("time"));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testShouldSetPrimitiveValuesToo() throws Exception {
     JSONObject toConvert = new JSONObject();
     toConvert.put("magicNumber", 3);
 
-    Map map = new JsonToBeanConverter().convert(Map.class, toConvert.toString());
+    Map<?,?> map = new JsonToBeanConverter().convert(Map.class, toConvert.toString());
 
-    assertThat(3L, is(map.get("magicNumber")));
+    assertEquals(3L, map.get("magicNumber"));
   }
 
   @Test
@@ -153,25 +151,23 @@ public class JsonToBeanConverterTest {
     assertFalse(second);
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testShouldUseAMapToRepresentComplexObjects() throws Exception {
     JSONObject toModel = new JSONObject();
     toModel.put("thing", "hairy");
     toModel.put("hairy", "true");
 
-    Map modelled = (Map) new JsonToBeanConverter().convert(Object.class, toModel);
+    Map<?,?> modelled = (Map<?,?>) new JsonToBeanConverter().convert(Object.class, toModel);
     assertEquals(2, modelled.size());
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testShouldConvertAResponseWithAnElementInIt() throws Exception {
     String json =
         "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\",\"error\":false}";
     Response converted = new JsonToBeanConverter().convert(Response.class, json);
 
-    Map value = (Map) converted.getValue();
+    Map<?,?> value = (Map<?,?>) converted.getValue();
     assertEquals("three", value.get("id"));
   }
 
@@ -205,7 +201,6 @@ public class JsonToBeanConverterTest {
     assertThat((Boolean) response.getValue(), is(true));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void testCanHandleValueBeingAnArray() throws Exception {
     String[] value = {"Cheese", "Peas"};
@@ -219,7 +214,7 @@ public class JsonToBeanConverterTest {
     Response converted = new JsonToBeanConverter().convert(Response.class, json);
 
     assertEquals("bar", response.getSessionId());
-    assertEquals(2, ((List) converted.getValue()).size());
+    assertEquals(2, ((List<?>) converted.getValue()).size());
     assertEquals(1512, response.getStatus());
   }
 
@@ -229,19 +224,19 @@ public class JsonToBeanConverterTest {
     Cookie cookie = new Cookie("foo", "bar", "/rooted", date);
 
     String rawJson = new BeanToJsonConverter().convert(Collections.singletonList(cookie));
-    List list = new JsonToBeanConverter().convert(List.class, rawJson);
+    List<?> list = new JsonToBeanConverter().convert(List.class, rawJson);
 
     Object first = list.get(0);
     assertTrue(first instanceof Map);
 
-    Map map = (Map) first;
+    Map<?,?> map = (Map<?,?>) first;
     assertMapEntry(map, "name", "foo");
     assertMapEntry(map, "value", "bar");
     assertMapEntry(map, "path", "/rooted");
     assertMapEntry(map, "expiry", TimeUnit.MILLISECONDS.toSeconds(date.getTime()));
   }
 
-  private void assertMapEntry(Map map, String key, Object expected) {
+  private void assertMapEntry(Map<?,?> map, String key, Object expected) {
     assertTrue("Missing key: " + key, map.containsKey(key));
     assertEquals("Wrong value for key: " + key + ": " + map.get(key).getClass().getName(),
         expected, map.get(key));
@@ -252,8 +247,8 @@ public class JsonToBeanConverterTest {
     Exception e = new Exception();
     String converted = new BeanToJsonConverter().convert(e);
 
-    Map reconstructed = new JsonToBeanConverter().convert(Map.class, converted);
-    List trace = (List) reconstructed.get("stackTrace");
+    Map<?,?> reconstructed = new JsonToBeanConverter().convert(Map.class, converted);
+    List<?> trace = (List<?>) reconstructed.get("stackTrace");
 
     assertTrue(trace.get(0) instanceof Map);
   }
@@ -331,7 +326,7 @@ public class JsonToBeanConverterTest {
     Object convertedOuter = new JsonToBeanConverter().convert(Map.class, jsonStr);
     assertThat(convertedOuter, instanceOf(Map.class));
 
-    Object convertedInner = ((Map) convertedOuter).get("inner");
+    Object convertedInner = ((Map<?,?>) convertedOuter).get("inner");
     assertNotNull(convertedInner);
     assertThat(convertedInner, instanceOf(String.class));
     assertThat(convertedInner.toString(), equalTo(inner.toString()));

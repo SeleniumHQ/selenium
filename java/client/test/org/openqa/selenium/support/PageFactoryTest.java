@@ -231,6 +231,7 @@ public class PageFactoryTest extends MockTestBase {
   public static class UnmarkedListPage {
     private List<WebElement> elements;
     private List<Object> objects;
+    @SuppressWarnings("rawtypes")
     private List untyped;  // This list deliberately left untyped
   }
 

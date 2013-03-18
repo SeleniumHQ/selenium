@@ -37,6 +37,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LocatingElementListHandlerTest extends MockTestBase {
+
+  @SuppressWarnings("unchecked")
   @Test
   public void shouldAlwaysLocateTheElementPerCall() {
     final ElementLocator locator = mock(ElementLocator.class);

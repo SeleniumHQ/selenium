@@ -92,6 +92,7 @@ public class WebElementToJsonConverterTest {
     assertIsWebElementObject(value, "abc123");
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void convertsSimpleCollections() {
     Object converted = CONVERTER.apply(Lists.newArrayList(null, "abc", true, 123, Math.PI));
@@ -101,6 +102,7 @@ public class WebElementToJsonConverterTest {
     assertContentsInOrder(list, null, "abc", true, 123, Math.PI);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void convertsNestedCollections_simpleValues() {
     List<?> innerList = Lists.newArrayList(123, "abc");
@@ -211,7 +213,6 @@ public class WebElementToJsonConverterTest {
     assertIsWebElementObject(map.get("one"), "abc123");
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void convertsAnArray() {
     Object value = CONVERTER.apply(new Object[] {
@@ -219,18 +220,17 @@ public class WebElementToJsonConverterTest {
     });
     
     assertThat(value, instanceOf(Collection.class));
-    assertContentsInOrder(Lists.newArrayList((Collection) value),
+    assertContentsInOrder(Lists.newArrayList((Collection<?>) value),
         "abc123", true, 123, Math.PI);
   }
   
-  @SuppressWarnings("unchecked")
   @Test
   public void convertsAnArrayWithAWebElement() {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("abc123");
     
     Object value = CONVERTER.apply(new Object[] { element });
-    assertContentsInOrder(Lists.newArrayList((Collection) value),
+    assertContentsInOrder(Lists.newArrayList((Collection<?>) value),
         ImmutableMap.of("ELEMENT", "abc123"));
   }
   

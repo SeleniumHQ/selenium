@@ -97,7 +97,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     Object result = executor.executeAsyncScript("arguments[arguments.length - 1]([]);");
     assertNotNull("Expected not to be null!", result);
     assertThat(result, instanceOf(List.class));
-    assertTrue(((List) result).isEmpty());
+    assertTrue(((List<?>) result).isEmpty());
   }
 
   @JavascriptEnabled
@@ -108,7 +108,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     Object result = executor.executeAsyncScript("arguments[arguments.length - 1](new Array());");
     assertNotNull("Expected not to be null!", result);
     assertThat(result, instanceOf(List.class));
-    assertTrue(((List) result).isEmpty());
+    assertTrue(((List<?>) result).isEmpty());
   }
 
   @JavascriptEnabled
@@ -124,7 +124,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertNotNull(result);
     assertThat(result, instanceOf(List.class));
 
-    Iterator results = ((List) result).iterator();
+    Iterator<?> results = ((List<?>) result).iterator();
     assertNull(results.next());
     assertEquals(123, ((Number) results.next()).longValue());
     assertEquals("abc", results.next());
@@ -155,7 +155,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertNotNull(result);
     assertThat(result, instanceOf(List.class));
 
-    List list = (List) result;
+    List<?> list = (List<?>) result;
     assertEquals(2, list.size());
     assertThat(list.get(0), instanceOf(WebElement.class));
     assertThat(list.get(1), instanceOf(WebElement.class));

@@ -67,7 +67,7 @@ public class WebDriverWaitTest extends MockTestBase {
     }});
 
     TickingClock clock = new TickingClock(500);
-    Wait wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
+    Wait<WebDriver> wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
     assertSame(element, wait.until(condition));
   }
 
@@ -84,7 +84,7 @@ public class WebDriverWaitTest extends MockTestBase {
     }});
 
     TickingClock clock = new TickingClock(500);
-    Wait wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
+    Wait<WebDriver> wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
     wait.until(condition);
   }
 
@@ -101,7 +101,7 @@ public class WebDriverWaitTest extends MockTestBase {
     }});
 
     TickingClock clock = new TickingClock(500);
-    Wait wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
+    Wait<WebDriver> wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
     wait.until(condition);
   }
 
