@@ -285,7 +285,7 @@ public class EventFiringWebDriverTest extends MockTestBase {
   @Test
   public void testShouldUnpackListOfElementArgsWhenCallingScripts() {
     final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
-    final List<Object> aList = mock(List.class);
+    final List<?> aList = mock(List.class);
 
     checking(new Expectations() {{
       one(aList).size();
@@ -306,7 +306,7 @@ public class EventFiringWebDriverTest extends MockTestBase {
   @Test
   public void testShouldUnpackMapOfElementArgsWhenCallingScripts() {
     final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
-    final Map<Object, Object> aMap = mock(Map.class);
+    final Map<?,?> aMap = mock(Map.class);
 
     checking(new Expectations() {{
       one(aMap).keySet();

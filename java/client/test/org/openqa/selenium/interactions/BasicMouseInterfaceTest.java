@@ -295,6 +295,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
+  @SuppressWarnings("unchecked")
   private Map<String, Object> getElementSize(WebElement element) {
     return (Map<String, Object>) ((JavascriptExecutor) driver).executeScript(
         "return arguments[0].getBoundingClientRect()", element);

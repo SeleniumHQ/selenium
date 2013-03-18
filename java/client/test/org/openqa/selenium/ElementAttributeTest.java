@@ -280,7 +280,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   // This is a test-case re-creating issue 900.
-  @SuppressWarnings("unchecked")
   @Ignore(SELENESE)
   @Test
   public void testShouldReturnValueOfOnClickAttribute() {

@@ -36,6 +36,7 @@ public class GlobalTestEnvironment {
     GlobalTestEnvironment.environment = environment;
   }
 
+  @SuppressWarnings("unchecked")
   public static synchronized <T extends TestEnvironment> T get(
       Class<T> startThisIfNothingIsAlreadyRunning) {
     if (environment == null) {
