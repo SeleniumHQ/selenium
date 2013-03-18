@@ -25,7 +25,7 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 import java.util.concurrent.Callable;
 
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
