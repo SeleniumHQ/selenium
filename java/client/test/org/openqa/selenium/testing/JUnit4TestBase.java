@@ -36,7 +36,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SeleniumTestRunner.class)

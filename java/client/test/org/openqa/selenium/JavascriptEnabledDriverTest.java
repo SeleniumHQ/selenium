@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.hamcrest.core.CombinableMatcher;
 import org.junit.Test;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.testing.Ignore;
@@ -30,7 +27,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.either;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -143,7 +141,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     waitForTitleChange("We Arrive Here");
 
-    assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
+    assertThat(driver.getTitle(), is("We Arrive Here"));
   }
 
   private void waitForTitleChange(String newTitle) {
@@ -160,7 +158,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     waitForTitleChange("We Arrive Here");
 
-    assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
+    assertThat(driver.getTitle(), is("We Arrive Here"));
   }
 
   @JavascriptEnabled
@@ -227,10 +225,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
                    .or(is("focus change blur focus change blur"))); // What Chrome does
   }
   
-  private static CombinableMatcher.CombinableEitherMatcher<String> either(Matcher<String> matcher) {
-    return Matchers.either(matcher);
-  }
-
   /**
    * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.
    */
