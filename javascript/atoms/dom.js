@@ -331,28 +331,22 @@ bot.dom.isEnabled = function(el) {
     return bot.dom.isEnabled((/**@type{!Element}*/el.parentNode));
   }
   
-  var fieldset = /**@type {Element}*/ (goog.dom.getAncestor(el, function(e) {
-    return bot.dom.isElement(e, goog.dom.TagName.FIELDSET) && bot.dom.getProperty(e, 'disabled');
-  }));
-  
-  if (fieldset){
-    // Elements inside a disabled fieldset are disabled,
-    // unless descendants of the first legend child of the fieldset
-    var legend = /**@type {Element}*/ (goog.dom.getAncestor(el, function(e) {
-      return bot.dom.isElement(e, goog.dom.TagName.LEGEND) && 
-             e.parentNode == fieldset
-    }));
-    
-    if (legend){
-      //Make sure there are no previous sibling legends
-      var sibling = legend;
+  //Is there an ancestor of the current element that is a disabled fieldset and whose child 
+  //is also an ancestor-or-self of the current element but is not the first legend child of the fieldset
+  //If so then the element is disabled 
+  if (goog.dom.getAncestor(el, function(e) {
+    var parent=e.parentNode
+    if (parent && bot.dom.isElement(parent, goog.dom.TagName.FIELDSET) && bot.dom.getProperty(parent, 'disabled')) {
+      if (!bot.dom.isElement(e, goog.dom.TagName.LEGEND)) return true;
+      var sibling=e;
+      //Are there any previous legend siblings? If so then we are not the first and the element is disabled
       while (sibling = goog.dom.getPreviousElementSibling(sibling)){
-        if (bot.dom.isElement(sibling, goog.dom.TagName.LEGEND)) return false;
+        if (bot.dom.isElement(sibling, goog.dom.TagName.LEGEND)) return true; 
       }
     }
-    return !!legend;
-  }
-  
+    return false;
+  }, true) ) return false;
+    
   return true;
 };
 
