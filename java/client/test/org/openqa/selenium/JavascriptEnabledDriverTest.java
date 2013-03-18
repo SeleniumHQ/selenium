@@ -23,7 +23,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -34,6 +33,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -285,22 +285,13 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     driver.findElement(By.id("new_window")).click();
 
     // Depending on the Android emulator platform this can take a while.
-    waitFor(openAndSwitchToWindow("close_me", driver), 30, TimeUnit.SECONDS);
+    waitFor(windowToBeSwitchedToWithName(driver, "close_me"), 30, TimeUnit.SECONDS);
 
     driver.findElement(By.id("close")).click();
 
     driver.switchTo().window(handle);
 
     // If we haven't seen an exception or hung the test has passed
-  }
-
-  private Callable<Boolean> openAndSwitchToWindow(final String name, final WebDriver driver) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
-        driver.switchTo().window(name);
-        return Boolean.TRUE;
-      }
-    };
   }
 
   private void moveFocus() {
