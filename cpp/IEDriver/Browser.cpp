@@ -413,7 +413,7 @@ bool Browser::Wait() {
   is_navigating = this->is_navigation_started_;
   CComPtr<IDispatch> document_dispatch;
   hr = this->browser_->get_Document(&document_dispatch);
-  if (is_navigating && FAILED(hr) && !document_dispatch) {
+  if (is_navigating || FAILED(hr) || !document_dispatch) {
     LOG(DEBUG) << "Get Document failed.";
     return false;
   }
