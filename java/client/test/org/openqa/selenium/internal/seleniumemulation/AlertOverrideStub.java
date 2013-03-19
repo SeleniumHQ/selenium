@@ -19,6 +19,11 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.WebDriver;
 
 public class AlertOverrideStub extends AlertOverride {
+
+  public AlertOverrideStub() {
+    super(true);
+  }
+
   @Override
   public void replaceAlertMethod(WebDriver driver) {
   }
