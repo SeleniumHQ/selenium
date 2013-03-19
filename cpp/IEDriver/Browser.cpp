@@ -155,6 +155,20 @@ std::string Browser::GetTitle() {
   return title_string;
 }
 
+std::string Browser::GetBrowserUrl() {
+  LOG(TRACE) << "Entering Browser::GetBrowserUrl";
+
+  CComBSTR url;
+  HRESULT hr = this->browser_->get_LocationURL(&url);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to get current URL, call to IWebBrowser2::get_LocationURL failed";
+    return "";
+  }
+
+  std::string current_url = CW2A(url, CP_UTF8);
+  return current_url;
+}
+
 HWND Browser::GetWindowHandle() {
   LOG(TRACE) << "Entering Browser::GetWindowHandle";
 
