@@ -9,6 +9,26 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.31.0.1
+=========
+ * Added ability to get current URL from IWebBrowser2 if IHTMLDocument2 fails.
+   Under normal circumstances, the IE driver gets the current URL from the
+   document loaded in the browser. When IE browses to a non-HTML page, such as
+   a PDF file with the Adobe Reader plugin installed, getting the document
+   fails, since there is no "document" in the browser. In that case, fall back
+   to getting the LocationURL property of the IWebBrowser2 interface. It's
+   arguable that this is the wrong thing to do, since the driver is useless
+   without an actual document, but we'll let this work anyway. Fixes issue
+   #5361.
+ * Updated logic in IE driver to correctly wait for the document. Fixes issue
+   #5326.
+ * Submit should throw NoSuchElementException if the target element is not
+   within a form. Implemented in atoms, Firefox and HtmlUnit.
+ * Reinstated execution of JavaScript on separate thread for IE10 on Windows 7.
+ * Removed use of CComQIPtr from IE driver native code. The use of CComQIPtr is
+   not needed, as we are substituting a call to the QueryInterface method
+   instead. This is what CComQIPtr does under the covers anyway.
+
 v2.31.0.0
 =========
  * Release to synchronize with release of Selenium project.
