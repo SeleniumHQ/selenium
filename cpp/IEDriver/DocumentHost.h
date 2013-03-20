@@ -39,6 +39,7 @@ class DocumentHost {
   virtual HWND GetWindowHandle(void) = 0;
   virtual std::string GetWindowName(void) = 0;
   virtual std::string GetTitle(void) = 0;
+  virtual std::string GetBrowserUrl(void) = 0;
   virtual HWND GetActiveDialogWindowHandle(void) = 0;
   virtual HWND GetTopLevelWindowHandle(void) = 0;
 

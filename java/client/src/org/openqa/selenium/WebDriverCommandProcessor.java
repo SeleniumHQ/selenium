@@ -17,6 +17,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
@@ -33,6 +34,14 @@ import java.util.Map;
  * A CommandProcessor which delegates commands down to an underlying webdriver instance.
  */
 public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver {
+
+  /**
+   * Capability key that dictates whether to emulate Selenium's alert handling and override
+   * the native alert functions. Defaults to true.
+   */
+  public static final String ENABLE_ALERT_OVERRIDES_CAPABILITY =
+      "selenium.emulation.overrideAlerts";
+
   private final Map<String, SeleneseCommand<?>> seleneseMethods = Maps.newHashMap();
   private final String baseUrl;
   private final Timer timer;
@@ -170,12 +179,22 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     }
   }
 
+  private boolean enableOverrides() {
+    Optional<Boolean> enableOverrides = Optional.absent();
+    if (driver instanceof HasCapabilities) {
+      Object tmp = ((HasCapabilities) driver).getCapabilities().getCapability(
+          ENABLE_ALERT_OVERRIDES_CAPABILITY);
+      enableOverrides = Optional.fromNullable((Boolean) tmp);
+    }
+    return enableOverrides.or(true);  // Default to true if capability wasn't specified.
+  }
+
   private void setUpMethodMap() {
     JavascriptLibrary javascriptLibrary = new JavascriptLibrary();
     ElementFinder elementFinder = new ElementFinder(javascriptLibrary);
     KeyState keyState = new KeyState();
 
-    AlertOverride alertOverride = new AlertOverride();
+    AlertOverride alertOverride = new AlertOverride(enableOverrides());
     Windows windows = new Windows(driver);
 
     // Note the we use the names used by the CommandProcessor

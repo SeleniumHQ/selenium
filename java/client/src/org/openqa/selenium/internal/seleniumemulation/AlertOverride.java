@@ -21,24 +21,43 @@ import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
+import static com.google.common.base.Preconditions.checkState;
+
 public class AlertOverride {
+
+  private final boolean enableOverrides;
+
+  public AlertOverride(boolean enableOverrides) {
+    this.enableOverrides = enableOverrides;
+  }
+
   public void replaceAlertMethod(WebDriver driver) {
+    if (!enableOverrides) {
+      return;
+    }
+
     ((JavascriptExecutor) driver).executeScript(
         "if (window.__webdriverAlerts) { return; } " +
-            "window.__webdriverAlerts = []; " +
-            "window.alert = function(msg) { window.__webdriverAlerts.push(msg); }; " +
-            "window.__webdriverConfirms = []; " +
-            "window.__webdriverNextConfirm = true; " +
-            "window.confirm = function(msg) { " +
-            "  window.__webdriverConfirms.push(msg); " +
-            "  var res = window.__webdriverNextConfirm; " +
-            "  window.__webdriverNextConfirm = true; " +
-            "  return res; " +
-            "};"
-        );
+        "window.__webdriverAlerts = []; " +
+        "window.alert = function(msg) { window.__webdriverAlerts.push(msg); }; " +
+        "window.__webdriverConfirms = []; " +
+        "window.__webdriverNextConfirm = true; " +
+        "window.confirm = function(msg) { " +
+        "  window.__webdriverConfirms.push(msg); " +
+        "  var res = window.__webdriverNextConfirm; " +
+        "  window.__webdriverNextConfirm = true; " +
+        "  return res; " +
+        "};"
+    );
+  }
+
+  private void checkOverridesEnabled(){
+    checkState(enableOverrides,
+          "Selenium alert overrides have been disabled; please use the underlying WebDriver API");
   }
 
   public String getNextAlert(WebDriver driver) {
+    checkOverridesEnabled();
     String result = (String) ((JavascriptExecutor) driver).executeScript(
         "if (!window.__webdriverAlerts) { return null }; " +
             "var t = window.__webdriverAlerts.shift();" +
@@ -54,12 +73,14 @@ public class AlertOverride {
   }
 
   public boolean isAlertPresent(WebDriver driver) {
+    checkOverridesEnabled();
     return Boolean.TRUE.equals(((JavascriptExecutor) driver).executeScript(
         "return window.__webdriverAlerts && window.__webdriverAlerts.length > 0;"
         ));
   }
 
   public String getNextConfirmation(WebDriver driver) {
+    checkOverridesEnabled();
     String result = (String) ((JavascriptExecutor) driver).executeScript(
         "if (!window.__webdriverConfirms) { return null; } " +
             "return window.__webdriverConfirms.shift();"
@@ -73,6 +94,7 @@ public class AlertOverride {
   }
 
   public boolean isConfirmationPresent(WebDriver driver) {
+    checkOverridesEnabled();
     return Boolean.TRUE.equals(((JavascriptExecutor) driver).executeScript(
         "return window.__webdriverConfirms && window.__webdriverConfirms.length > 0;"
         ));

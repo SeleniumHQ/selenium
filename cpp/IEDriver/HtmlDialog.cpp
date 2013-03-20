@@ -135,6 +135,10 @@ std::string HtmlDialog::GetWindowName() {
   return "";
 }
 
+std::string HtmlDialog::GetBrowserUrl() {
+  return "";
+}
+
 std::string HtmlDialog::GetTitle() {
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);

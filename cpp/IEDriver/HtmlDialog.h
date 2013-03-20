@@ -32,7 +32,7 @@ struct DialogWindowInfo {
 };
 
 class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialog, &DIID_HTMLWindowEvents2>  {
-public:
+ public:
   HtmlDialog(IHTMLWindow2* window, HWND hwnd, HWND session_handle);
   virtual ~HtmlDialog(void);
 
@@ -56,6 +56,7 @@ public:
   HWND GetWindowHandle(void);
   std::string GetWindowName(void);
   std::string GetTitle(void);
+  std::string GetBrowserUrl(void);
   HWND GetActiveDialogWindowHandle(void);
   HWND GetTopLevelWindowHandle(void);
 
@@ -69,7 +70,7 @@ public:
   int NavigateForward(void);
   int Refresh(void);
 
-private:
+ private:
   static BOOL CALLBACK FindChildDialogWindow(HWND hwnd, LPARAM arg);
 
   void AttachEvents(void);

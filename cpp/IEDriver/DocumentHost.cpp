@@ -61,8 +61,9 @@ std::string DocumentHost::GetCurrentUrl() {
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
   if (!doc) {
-    LOG(WARN) << "Unable to get document object, DocumentHost::GetDocument returned NULL";
-    return "";
+    LOG(WARN) << "Unable to get document object, DocumentHost::GetDocument returned NULL. "
+              << "Attempting to get URL from IWebBrowser2 object";
+    return this->GetBrowserUrl();
   }
 
   CComBSTR url;
