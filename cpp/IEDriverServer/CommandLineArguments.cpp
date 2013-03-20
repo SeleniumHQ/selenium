@@ -20,9 +20,9 @@ CommandLineArguments::CommandLineArguments(int argc, _TCHAR* argv[]) {
 CommandLineArguments::~CommandLineArguments(void) {
 }
 
-std::string CommandLineArguments::GetValue(std::string arg_name,
-                                           std::string default_value) {
-  std::map<std::string, std::string>::const_iterator it = 
+std::wstring CommandLineArguments::GetValue(std::wstring arg_name,
+                                           std::wstring default_value) {
+  std::map<std::wstring, std::wstring>::const_iterator it = 
       this->args_map_.find(arg_name);
   if (it != this->args_map_.end()) {
     return it->second;
@@ -38,19 +38,19 @@ void CommandLineArguments::ParseArguments(int argc, _TCHAR* argv[]) {
     int switch_delimiter_length = GetSwitchDelimiterLength(raw_arg);
     std::wstring arg = raw_arg.substr(switch_delimiter_length);
     size_t equal_pos = arg.find(L"=");
-    std::string arg_name = "";
-    std::string arg_value = "";
+    std::wstring arg_name = L"";
+    std::wstring arg_value = L"";
     if (equal_pos != std::string::npos && equal_pos > 0) { 
-      arg_name = CW2A(arg.substr(0, equal_pos).c_str(), CP_UTF8);
-      arg_value = CW2A(arg.substr(equal_pos + 1).c_str(), CP_UTF8);
+      arg_name = arg.substr(0, equal_pos);
+      arg_value = arg.substr(equal_pos + 1);
     } else {
-      arg_name = CW2A(arg.c_str(), CP_UTF8);
+      arg_name = arg.c_str();
     }
 
     // coerce all argument names to lowercase, making argument names
     // case-insensitive.
     std::transform(arg_name.begin(), arg_name.end(), arg_name.begin(), tolower);
-    if (arg_name == "?" || arg_name == "h" || arg_name == "help") {
+    if (arg_name == L"?" || arg_name == L"h" || arg_name == L"help") {
       this->is_help_requested_ = true;
     }
     this->args_map_[arg_name] = arg_value;

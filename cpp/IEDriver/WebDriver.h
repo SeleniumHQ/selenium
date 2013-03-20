@@ -24,16 +24,12 @@ extern "C" {
 
 webdriver::Server* server = NULL;
 
-EXPORT webdriver::Server* StartServer(int port);
-EXPORT webdriver::Server* StartServerEx(int port,
-                                        const std::string& host,
-                                        const std::string& log_level,
-                                        const std::string& log_file,
-                                        const std::string& version);
-EXPORT void StopServer(webdriver::Server* myserver);
-EXPORT int GetServerSessionCount();
-EXPORT bool ServerIsRunning();
-EXPORT int GetServerPort();
+EXPORT webdriver::Server* StartServer(int port,
+                                      const std::wstring& host,
+                                      const std::wstring& log_level,
+                                      const std::wstring& log_file,
+                                      const std::wstring& version);
+EXPORT void StopServer(void);
 
 #ifdef __cplusplus
 }

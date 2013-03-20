@@ -26,8 +26,8 @@ class CommandLineArguments {
   CommandLineArguments(int arg_count, _TCHAR* arg_array[]);
   virtual ~CommandLineArguments(void);
 
-  std::string GetValue(std::string arg_name,
-                       std::string default_value);
+  std::wstring GetValue(std::wstring arg_name,
+                        std::wstring default_value);
   bool is_help_requested (void) const { return this->is_help_requested_; }
 
  private:
@@ -35,7 +35,7 @@ class CommandLineArguments {
   int GetSwitchDelimiterLength(std::wstring arg);
 
   bool is_help_requested_;
-  std::map<std::string, std::string> args_map_;
+  std::map<std::wstring, std::wstring> args_map_;
 };
 
 #endif  // COMMANDLINEARGUMENTS_H_
