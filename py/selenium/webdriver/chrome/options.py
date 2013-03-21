@@ -124,7 +124,8 @@ class Options(object):
 
         chrome_options = self.experimental_options.copy()
         chrome_options["extensions"] = self.extensions
-        chrome_options["binary"] = self.binary_location
+        if self.binary_location:
+            chrome_options["binary"] = self.binary_location
         chrome_options["args"] = self.arguments
 
         chrome["chromeOptions"] = chrome_options
