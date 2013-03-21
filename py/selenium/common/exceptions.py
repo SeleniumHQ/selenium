@@ -65,6 +65,9 @@ class StaleElementReferenceException(WebDriverException):
 class InvalidElementStateException(WebDriverException):
     pass
 
+class UnexpectedAlertPresentException(WebDriverException):
+    pass
+
 class NoAlertPresentException(WebDriverException):
     pass
 
