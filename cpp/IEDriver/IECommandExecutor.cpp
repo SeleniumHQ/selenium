@@ -107,7 +107,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   wchar_t* cast_guid_string = reinterpret_cast<wchar_t*>(guid_string);
   this->SetWindowText(cast_guid_string);
 
-  std::string session_id = CW2A(cast_guid_string, CP_UTF8);
+  std::string session_id = StringUtilities::ToString(cast_guid_string);
   this->session_id_ = session_id;
   this->is_valid_ = true;
 
@@ -642,7 +642,7 @@ int IECommandExecutor::LocateElement(const ElementHandle parent_wrapper,
     return status_code;
   }
 
-  std::wstring wide_criteria = CA2W(criteria.c_str(), CP_UTF8);
+  std::wstring wide_criteria = StringUtilities::ToWString(criteria);
   return this->element_finder().FindElement(*this,
                                             parent_wrapper,
                                             mechanism_translation,
@@ -664,7 +664,7 @@ int IECommandExecutor::LocateElements(const ElementHandle parent_wrapper,
     return status_code;
   }
 
-  std::wstring wide_criteria = CA2W(criteria.c_str(), CP_UTF8);
+  std::wstring wide_criteria = StringUtilities::ToWString(criteria);
   return this->element_finder().FindElements(*this,
                                              parent_wrapper,
                                              mechanism_translation,

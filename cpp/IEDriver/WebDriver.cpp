@@ -19,10 +19,10 @@ webdriver::Server* StartServer(int port,
                                const std::wstring& log_file,
                                const std::wstring& version) {
   if (server == NULL) {
-    std::string converted_host = CW2A(host.c_str(), CP_UTF8);
-    std::string converted_log_level = CW2A(log_level.c_str(), CP_UTF8);
-    std::string converted_log_file = CW2A(log_file.c_str(), CP_UTF8);
-    std::string converted_version = CW2A(version.c_str(), CP_UTF8);
+    std::string converted_host = webdriver::StringUtilities::ToString(host);
+    std::string converted_log_level = webdriver::StringUtilities::ToString(log_level);
+    std::string converted_log_file = webdriver::StringUtilities::ToString(log_file);
+    std::string converted_version = webdriver::StringUtilities::ToString(version);
     server = new webdriver::IEServer(port,
                                      converted_host,
                                      converted_log_level,

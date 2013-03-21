@@ -41,7 +41,7 @@ DocumentHost::DocumentHost(HWND hwnd, HWND executor_handle) {
   // RPC_WSTR is currently typedef'd in RpcDce.h (pulled in by rpc.h)
   // as unsigned short*. It needs to be typedef'd as wchar_t* 
   wchar_t* cast_guid_string = reinterpret_cast<wchar_t*>(guid_string);
-  this->browser_id_ = CW2A(cast_guid_string, CP_UTF8);
+  this->browser_id_ = StringUtilities::ToString(cast_guid_string);
 
   ::RpcStringFree(&guid_string);
 
@@ -73,7 +73,8 @@ std::string DocumentHost::GetCurrentUrl() {
     return "";
   }
 
-  std::string current_url = CW2A(url, CP_UTF8);
+  std::wstring converted_url = url;
+  std::string current_url = StringUtilities::ToString(converted_url);
   return current_url;
 }
 
@@ -104,7 +105,8 @@ std::string DocumentHost::GetPageSource() {
     return "";
   }
 
-  std::string page_source = CW2A(html, CP_UTF8);
+  std::wstring converted_html = html;
+  std::string page_source = StringUtilities::ToString(converted_html);
   return page_source;
 }
 
@@ -157,7 +159,7 @@ int DocumentHost::SetFocusedFrameByName(const std::string& frame_name) {
   }
 
   CComVariant name;
-  CComBSTR name_bstr(CA2W(frame_name.c_str(), CP_UTF8));
+  CComBSTR name_bstr = StringUtilities::ToWString(frame_name).c_str();
   hr = name_bstr.CopyTo(&name);
 
   // Find the frame
@@ -253,8 +255,8 @@ void DocumentHost::GetCookies(std::map<std::string, std::string>* cookies) {
       cookie_string = cookie_string.substr(cookie_delimiter_pos + 2);
     }
     size_t cookie_separator_pos(cookie.find_first_of(L"="));
-    std::string cookie_name(CW2A(cookie.substr(0, cookie_separator_pos).c_str(), CP_UTF8));
-    std::string cookie_value(CW2A(cookie.substr(cookie_separator_pos + 1).c_str(), CP_UTF8));
+    std::string cookie_name(StringUtilities::ToString(cookie.substr(0, cookie_separator_pos)));
+    std::string cookie_value(StringUtilities::ToString(cookie.substr(cookie_separator_pos + 1)));
     cookies->insert(std::pair<std::string, std::string>(cookie_name, cookie_value));
   }
 }
@@ -262,7 +264,7 @@ void DocumentHost::GetCookies(std::map<std::string, std::string>* cookies) {
 int DocumentHost::AddCookie(const std::string& cookie) {
   LOG(TRACE) << "Entering DocumentHost::AddCookie";
 
-  CComBSTR cookie_bstr(CA2W(cookie.c_str(), CP_UTF8));
+  CComBSTR cookie_bstr = StringUtilities::ToWString(cookie.c_str()).c_str();
 
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);

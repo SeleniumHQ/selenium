@@ -88,7 +88,7 @@ int Alert::SendKeys(std::string keys) {
     return EELEMENTNOTDISPLAYED;
   } else {
     LOG(DEBUG) << "Sending keystrokes to alert using SendMessage";
-    std::wstring text = CA2W(keys.c_str(), CP_UTF8);
+    std::wstring text = StringUtilities::ToWString(keys);
     ::SendMessage(text_box_handle,
                   WM_SETTEXT,
                   NULL,
@@ -142,7 +142,7 @@ std::string Alert::GetText() {
     std::vector<wchar_t> text_buffer(text_length + 1);
     ::GetWindowText(info.label_handle, &text_buffer[0], text_length + 1);
     std::wstring alert_text = &text_buffer[0];
-    alert_text_value = CW2A(alert_text.c_str(), CP_UTF8);
+    alert_text_value = StringUtilities::ToString(alert_text);
   }
   return alert_text_value;
 }

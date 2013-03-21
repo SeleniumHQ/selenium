@@ -75,9 +75,9 @@ void IESession::Initialize(void* init_params) {
                   static_cast<WPARAM>(port),
                   NULL);
 
-    vector<TCHAR> window_text_buffer(37);
+    vector<wchar_t> window_text_buffer(37);
     ::GetWindowText(executor_window_handle, &window_text_buffer[0], 37);
-    session_id = CW2A(&window_text_buffer[0], CP_UTF8);
+    session_id = StringUtilities::ToString(&window_text_buffer[0]);
   }
   if (mutex != NULL) {
     LOG(DEBUG) << "Releasing session initialization mutex";

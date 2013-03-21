@@ -151,7 +151,8 @@ std::string Browser::GetTitle() {
     return "";
   }
 
-  std::string title_string = CW2A(title, CP_UTF8);
+  std::wstring converted_title = title;
+  std::string title_string = StringUtilities::ToString(converted_title);
   return title_string;
 }
 
@@ -165,7 +166,8 @@ std::string Browser::GetBrowserUrl() {
     return "";
   }
 
-  std::string current_url = CW2A(url, CP_UTF8);
+  std::wstring converted_url = url;
+  std::string current_url = StringUtilities::ToString(converted_url);
   return current_url;
 }
 
@@ -218,7 +220,8 @@ std::string Browser::GetWindowName() {
   CComBSTR window_name;
   hr = window->get_name(&window_name);
   if (window_name) {
-    name = CW2A(window_name, CP_UTF8);
+    std::wstring converted_window_name = window_name;
+    name = StringUtilities::ToString(converted_window_name);
   } else {
     LOG(WARN) << "Unable to get window name, IHTMLWindow2::get_name failed or returned a NULL value";
   }
@@ -282,7 +285,7 @@ void Browser::Close() {
 int Browser::NavigateToUrl(const std::string& url) {
   LOG(TRACE) << "Entring Browser::NavigateToUrl";
 
-  std::wstring wide_url = CA2W(url.c_str(), CP_UTF8);
+  std::wstring wide_url = StringUtilities::ToWString(url);
   CComVariant url_variant(wide_url.c_str());
   CComVariant dummy;
 

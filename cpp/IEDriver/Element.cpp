@@ -53,7 +53,7 @@ Element::Element(IHTMLElement* element, HWND containing_window_handle) {
   // RPC_WSTR is currently typedef'd in RpcDce.h (pulled in by rpc.h)
   // as unsigned short*. It needs to be typedef'd as wchar_t* 
   wchar_t* cast_guid_string = reinterpret_cast<wchar_t*>(guid_string);
-  this->element_id_ = CW2A(cast_guid_string, CP_UTF8);
+  this->element_id_ = StringUtilities::ToString(cast_guid_string);
 
   ::RpcStringFree(&guid_string);
 
@@ -111,7 +111,8 @@ std::string Element::GetTagName() {
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Failed converting BSTR to lower-case with .ToLower() method";
   }
-  std::string tag_name = CW2A(tag_name_bstr, CP_UTF8);
+  std::wstring converted_tag_name = tag_name_bstr;
+  std::string tag_name = StringUtilities::ToString(converted_tag_name);
   return tag_name;
 }
 
@@ -197,7 +198,7 @@ int Element::GetAttributeValue(const std::string& attribute_name,
                                bool* value_is_null) {
   LOG(TRACE) << "Entering Element::GetAttributeValue";
 
-  std::wstring wide_attribute_name = CA2W(attribute_name.c_str(), CP_UTF8);
+  std::wstring wide_attribute_name = StringUtilities::ToWString(attribute_name);
   int status_code = WD_SUCCESS;
 
   // The atom is just the definition of an anonymous

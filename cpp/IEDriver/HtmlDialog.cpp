@@ -149,7 +149,8 @@ std::string HtmlDialog::GetTitle() {
     return "";
   }
 
-  std::string title_string = CW2A(title, CP_UTF8);
+  std::wstring converted_title = title;
+  std::string title_string = StringUtilities::ToString(converted_title);
   return title_string;
 }
 
