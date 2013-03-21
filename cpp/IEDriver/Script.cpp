@@ -20,7 +20,7 @@ namespace webdriver {
 Script::Script(IHTMLDocument2* document,
                std::string script_source,
                unsigned long argument_count) {
-  std::wstring wide_script = CA2W(script_source.c_str(), CP_UTF8);
+  std::wstring wide_script = StringUtilities::ToWString(script_source);
   this->Initialize(document, wide_script, argument_count);
 }
 
@@ -55,7 +55,7 @@ void Script::Initialize(IHTMLDocument2* document,
 
 void Script::AddArgument(const std::string& argument) {
   LOG(TRACE) << "Entering Script::AddArgument(std::string)";
-  std::wstring wide_argument = CA2W(argument.c_str(), CP_UTF8);
+  std::wstring wide_argument = StringUtilities::ToWString(argument);
   this->AddArgument(wide_argument);
 }
 
@@ -329,7 +329,8 @@ int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
   if (this->ResultIsString()) { 
     std::string string_value = "";
     if (this->result_.bstrVal) {
-      string_value = CW2A(this->result_.bstrVal, CP_UTF8);
+      std::wstring bstr_value = this->result_.bstrVal;
+      string_value = StringUtilities::ToString(bstr_value);
     }
     *value = string_value;
   } else if (this->ResultIsInteger()) {
@@ -385,7 +386,7 @@ int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
         int property_value_status = this->GetPropertyValue(executor,
                                                            property_names[i],
                                                            &property_value_result);
-        std::string name(CW2A(property_names[i].c_str(), CP_UTF8));
+        std::string name = StringUtilities::ToString(property_names[i]);
         result_object[name] = property_value_result;
       }
       *value = result_object;
@@ -420,8 +421,8 @@ bool Script::ConvertResultToString(std::string* value) {
       if (!this->result_.bstrVal) {
         *value = "";
       } else {
-        std::string str_value = CW2A(this->result_.bstrVal, CP_UTF8);
-        *value = str_value;
+        std::wstring str_value = this->result_.bstrVal;
+        *value = StringUtilities::ToString(str_value);
       }
       return true;
   

@@ -114,7 +114,7 @@ class SendKeysCommandHandler : public IECommandHandler {
           std::wstring keys = L"";
           for (unsigned int i = 0; i < key_array.size(); ++i ) {
             std::string key(key_array[i].asString());
-            keys.append(CA2W(key.c_str(), CP_UTF8));
+            keys.append(StringUtilities::ToWString(key));
           }
 
           DWORD ie_process_id;

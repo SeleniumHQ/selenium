@@ -60,7 +60,7 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
     start_info.cb = sizeof(start_info);
     ::ZeroMemory(&proc_info, sizeof(proc_info));
 
-    std::wstring wide_initial_url(CA2W(initial_url.c_str(), CP_UTF8));
+    std::wstring wide_initial_url = StringUtilities::ToWString(initial_url);
 
     FARPROC proc_address = 0;
     HMODULE library_handle = ::LoadLibrary(IEFRAME_LIBRARY_NAME);
@@ -122,7 +122,7 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
                      create_proc_msg_count,
                      CREATEPROCESS_ERROR_MESSAGE,
                      command_line);
-        launch_error = CW2A(&create_proc_result_msg[0], CP_UTF8);
+        launch_error = StringUtilities::ToString(&create_proc_result_msg[0]);
         *error_message = launch_error;
       }
       delete[] command_line;
@@ -147,7 +147,7 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
       int buffer_count = ::GetProcessImageFileName(proc_info.hProcess, &image_buffer[0], MAX_PATH);
       std::wstring full_image_path = &image_buffer[0];
       size_t last_delimiter = full_image_path.find_last_of('\\');
-      std::string image_name = CW2A(full_image_path.substr(last_delimiter + 1, buffer_count - last_delimiter).c_str(), CP_UTF8);
+      std::string image_name = StringUtilities::ToString(full_image_path.substr(last_delimiter + 1, buffer_count - last_delimiter));
       LOG(DEBUG) << "Process with ID " << process_id << " is executing " << image_name;
     }
 

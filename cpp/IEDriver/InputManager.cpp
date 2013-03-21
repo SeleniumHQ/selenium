@@ -459,7 +459,7 @@ int InputManager::SendKeystrokes(BrowserHandle browser_wrapper, Json::Value keys
   std::wstring keys = L"";
   for (unsigned int i = 0; i < keystroke_array.size(); ++i ) {
     std::string key(keystroke_array[i].asString());
-    keys.append(CA2W(key.c_str(), CP_UTF8));
+    keys.append(StringUtilities::ToWString(key));
   }
   if (this->enable_native_events()) {
     HWND window_handle = browser_wrapper->GetWindowHandle();

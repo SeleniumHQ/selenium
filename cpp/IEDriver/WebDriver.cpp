@@ -13,17 +13,21 @@
 
 #include "WebDriver.h"
 
-webdriver::Server* StartServer(int port) {
-  return StartServerEx(port, "", "", "", "");
-}
-
-webdriver::Server* StartServerEx(int port,
-                                 const std::string& host,
-                                 const std::string& log_level,
-                                 const std::string& log_file,
-                                 const std::string& version) {
+webdriver::Server* StartServer(int port,
+                               const std::wstring& host,
+                               const std::wstring& log_level,
+                               const std::wstring& log_file,
+                               const std::wstring& version) {
   if (server == NULL) {
-    server = new webdriver::IEServer(port, host, log_level, log_file, version);
+    std::string converted_host = webdriver::StringUtilities::ToString(host);
+    std::string converted_log_level = webdriver::StringUtilities::ToString(log_level);
+    std::string converted_log_file = webdriver::StringUtilities::ToString(log_file);
+    std::string converted_version = webdriver::StringUtilities::ToString(version);
+    server = new webdriver::IEServer(port,
+                                     converted_host,
+                                     converted_log_level,
+                                     converted_log_file,
+                                     converted_version);
     if (!server->Start()) {
       delete server;
       server = NULL;
@@ -32,30 +36,10 @@ webdriver::Server* StartServerEx(int port,
   return server;
 }
 
-void StopServer(webdriver::Server* myserver) {
+void StopServer() {
   if (server) {
     server->Stop();
     delete server;
     server = NULL;
   }
-}
-
-int GetServerSessionCount() {
-  int session_count(0);
-  if (server != NULL) {
-    session_count = server->session_count();
-  }
-  return session_count;
-}
-
-int GetServerPort() {
-  int server_port(0);
-  if (server != NULL) {
-    server_port = server->port();
-  }
-  return server_port;
-}
-
-bool ServerIsRunning() {
-  return server != NULL;
 }

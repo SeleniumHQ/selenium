@@ -22,7 +22,7 @@
 
 // TODO(JimEvans): Change the prototypes of these functions in the
 // IEDriver project to match the prototype specified here.
-typedef void* (__cdecl *STARTSERVEREXPROC)(int, const std::string&, const std::string&, const std::string&, const std::string&);
+typedef void* (__cdecl *STARTSERVERPROC)(int, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&);
 typedef void (__cdecl *STOPSERVERPROC)(void);
 
 #define ERR_DLL_EXTRACT_FAIL 1
@@ -32,16 +32,16 @@ typedef void (__cdecl *STOPSERVERPROC)(void);
 
 #define RESOURCE_TYPE L"BINARY"
 #define TEMP_FILE_PREFIX L"IEDriver"
-#define START_SERVER_EX_API_NAME "StartServerEx"
+#define START_SERVER_EX_API_NAME "StartServer"
 #define STOP_SERVER_API_NAME "StopServer"
 
-#define PORT_COMMAND_LINE_ARG "port"
-#define HOST_COMMAND_LINE_ARG "host"
-#define LOGLEVEL_COMMAND_LINE_ARG "log-level"
-#define LOGFILE_COMMAND_LINE_ARG "log-file"
-#define SILENT_COMMAND_LINE_ARG "silent"
-#define EXTRACTPATH_COMMAND_LINE_ARG "extract-path"
-#define BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE "value-not-specified"
+#define PORT_COMMAND_LINE_ARG L"port"
+#define HOST_COMMAND_LINE_ARG L"host"
+#define LOGLEVEL_COMMAND_LINE_ARG L"log-level"
+#define LOGFILE_COMMAND_LINE_ARG L"log-file"
+#define SILENT_COMMAND_LINE_ARG L"silent"
+#define EXTRACTPATH_COMMAND_LINE_ARG L"extract-path"
+#define BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE L"value-not-specified"
 
 bool ExtractResource(unsigned short resource_id,
                      const std::wstring& output_file_name) {
@@ -91,8 +91,8 @@ bool ExtractResource(unsigned short resource_id,
   return success;
 }
 
-std::string GetProcessArchitectureDescription() {
-  std::string arch_description = "32-bit";
+std::wstring GetProcessArchitectureDescription() {
+  std::wstring arch_description = L"32-bit";
   SYSTEM_INFO system_info;
   ::GetNativeSystemInfo(&system_info);
   if (system_info.wProcessorArchitecture != 0) {
@@ -100,7 +100,7 @@ std::string GetProcessArchitectureDescription() {
     HANDLE process_handle = ::GetCurrentProcess();
     ::IsWow64Process(process_handle, &is_emulated);
     if (!is_emulated) {
-      arch_description = "64-bit";
+      arch_description = L"64-bit";
     }
     ::CloseHandle(process_handle);
   }
@@ -108,45 +108,45 @@ std::string GetProcessArchitectureDescription() {
   return arch_description;
 }
 
-std::string GetExecutableVersion() {
+std::wstring GetExecutableVersion() {
   struct LANGANDCODEPAGE {
     WORD language;
     WORD code_page;
   } *lang_info;
 
   // get the filename of the executable containing the version resource
-  std::vector<char> file_name_buffer(MAX_PATH + 1);
-  ::GetModuleFileNameA(NULL, &file_name_buffer[0], MAX_PATH);
+  std::vector<wchar_t> file_name_buffer(MAX_PATH + 1);
+  ::GetModuleFileNameW(NULL, &file_name_buffer[0], MAX_PATH);
 
   DWORD dummy;
-  DWORD length = ::GetFileVersionInfoSizeA(&file_name_buffer[0],
+  DWORD length = ::GetFileVersionInfoSizeW(&file_name_buffer[0],
                                            &dummy);
   std::vector<BYTE> version_buffer(length);
-  ::GetFileVersionInfoA(&file_name_buffer[0],
+  ::GetFileVersionInfoW(&file_name_buffer[0],
                        dummy,
                        length,
                        &version_buffer[0]);
 
   UINT page_count;
-  BOOL query_result = ::VerQueryValueA(&version_buffer[0],
-                                      "\\VarFileInfo\\Translation",
+  BOOL query_result = ::VerQueryValueW(&version_buffer[0],
+                                      L"\\VarFileInfo\\Translation",
                                       reinterpret_cast<void**>(&lang_info),
                                       &page_count);
     
-  char sub_block[MAX_PATH];
-  _snprintf_s(sub_block,
+  wchar_t sub_block[MAX_PATH];
+  _snwprintf_s(sub_block,
                MAX_PATH,
                MAX_PATH,
-               "\\StringFileInfo\\%04x%04x\\FileVersion",
+               L"\\StringFileInfo\\%04x%04x\\FileVersion",
                lang_info->language,
                lang_info->code_page);
   LPVOID value = NULL;
   UINT size;
-  query_result = ::VerQueryValueA(&version_buffer[0],
+  query_result = ::VerQueryValueW(&version_buffer[0],
                                  sub_block,
                                  &value,
                                  &size);
-  return static_cast<char*>(value);
+  return static_cast<wchar_t*>(value);
 }
 
 void ShowUsage(void) {
@@ -188,9 +188,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
   std::wstring extraction_path(&temp_path_buffer[0]);
 
-  std::string extraction_path_arg = args.GetValue(EXTRACTPATH_COMMAND_LINE_ARG, "");
+  std::wstring extraction_path_arg = args.GetValue(EXTRACTPATH_COMMAND_LINE_ARG, L"");
   if (extraction_path_arg.size() != 0) {
-    extraction_path = CA2W(extraction_path_arg.c_str(), CP_UTF8);
+    extraction_path = extraction_path_arg;
   }
   
   unsigned int error_code = ::GetTempFileName(extraction_path.c_str(),
@@ -212,7 +212,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
     return ERR_DLL_LOAD_FAIL;
   }
 
-  STARTSERVEREXPROC start_server_ex_proc = reinterpret_cast<STARTSERVEREXPROC>(
+  STARTSERVERPROC start_server_ex_proc = reinterpret_cast<STARTSERVERPROC>(
       ::GetProcAddress(module_handle, START_SERVER_EX_API_NAME));
   STOPSERVERPROC stop_server_proc = reinterpret_cast<STOPSERVERPROC>(
       ::GetProcAddress(module_handle, STOP_SERVER_API_NAME));
@@ -222,52 +222,52 @@ int _tmain(int argc, _TCHAR* argv[]) {
     return ERR_FUNCTION_NOT_FOUND;
   }
 
-  int port = atoi(args.GetValue(PORT_COMMAND_LINE_ARG, "5555").c_str());
-  std::string host_address = args.GetValue(HOST_COMMAND_LINE_ARG, "");
-  std::string log_level = args.GetValue(LOGLEVEL_COMMAND_LINE_ARG, "");
-  std::string log_file = args.GetValue(LOGFILE_COMMAND_LINE_ARG, "");
+  int port = _wtoi(args.GetValue(PORT_COMMAND_LINE_ARG, L"5555").c_str());
+  std::wstring host_address = args.GetValue(HOST_COMMAND_LINE_ARG, L"");
+  std::wstring log_level = args.GetValue(LOGLEVEL_COMMAND_LINE_ARG, L"");
+  std::wstring log_file = args.GetValue(LOGFILE_COMMAND_LINE_ARG, L"");
   bool silent = args.GetValue(SILENT_COMMAND_LINE_ARG,
       BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE).size() == 0;
-  std::string executable_version = GetExecutableVersion();
+  std::wstring executable_version = GetExecutableVersion();
   void* server_value = start_server_ex_proc(port,
                                             host_address,
                                             log_level,
                                             log_file,
                                             executable_version);
   if (server_value == NULL) {
-    std::cout << L"Failed to start the server with: "
-              << L"port = '" << port << "', "
-              << L"host = '" << host_address << "', "
-              << L"log level = '" << log_level << "', "
-              << L"log file = '" << log_file << "'";
+    std::wcout << L"Failed to start the server with: "
+               << L"port = '" << port << "', "
+               << L"host = '" << host_address << "', "
+               << L"log level = '" << log_level << "', "
+               << L"log file = '" << log_file << "'";
     return ERR_SERVER_START;
   }
   if (!silent) {
-    std::cout << "Started InternetExplorerDriver server"
-              << " (" << GetProcessArchitectureDescription() << ")"
-              << std::endl;
-    std::cout << executable_version
-              << std::endl;
-    std::cout << "Listening on port " << port << std::endl;
+    std::wcout << L"Started InternetExplorerDriver server"
+               << L" (" << GetProcessArchitectureDescription() << L")"
+               << std::endl;
+    std::wcout << executable_version
+               << std::endl;
+    std::wcout << L"Listening on port " << port << std::endl;
     if (host_address.size() > 0) {
-      std::cout << "Bound to network adapter with IP address " 
-                << host_address
-                << std::endl;
+      std::wcout << L"Bound to network adapter with IP address " 
+                 << host_address
+                 << std::endl;
     }
     if (log_level.size() > 0) {
-      std::cout << "Log level is set to "
-                << log_level
-                << std::endl;
+      std::wcout << L"Log level is set to "
+                 << log_level
+                 << std::endl;
     }
     if (log_file.size() > 0) {
-      std::cout << "Log file is set to "
-                << log_file
-                << std::endl;
+      std::wcout << L"Log file is set to "
+                 << log_file
+                 << std::endl;
     }
     if (extraction_path_arg.size() > 0) {
-      std::cout << "Library extracted to "
-                << extraction_path_arg
-                << std::endl;
+      std::wcout << L"Library extracted to "
+                 << extraction_path_arg
+                 << std::endl;
     }
   }
 

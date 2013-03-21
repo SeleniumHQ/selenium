@@ -64,7 +64,7 @@ class ExecuteAsyncScriptCommandHandler : public ExecuteScriptCommandHandler {
       _itow_s(timeout_value, &timeout_buffer[0], 12, 10);
       std::wstring timeout = &timeout_buffer[0];
 
-      std::wstring script_body = CA2W(script_parameter_iterator->second.asCString(), CP_UTF8);
+      std::wstring script_body = StringUtilities::ToWString(script_parameter_iterator->second.asString());
 
       std::wstring async_script = L"(function() { return function(){\n";
       async_script += L"document.__$webdriverAsyncExecutor = {\n";
@@ -150,7 +150,7 @@ class ExecuteAsyncScriptCommandHandler : public ExecuteScriptCommandHandler {
           polling_script_wrapper.ConvertResultToJsonValue(executor, &polling_result);
           
           Json::UInt index = 0;
-          std::string narrow_pending_id(CW2A(pending_id.c_str(), CP_UTF8));
+          std::string narrow_pending_id = StringUtilities::ToString(pending_id);
           if (polling_result.isArray() &&
               polling_result.size() == 2 && 
               polling_result[index].isString() && 
