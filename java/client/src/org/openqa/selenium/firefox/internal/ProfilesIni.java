@@ -31,6 +31,9 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Map;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.Platform.MAC;
+
 public class ProfilesIni {
   private Map<String, File> profiles = Maps.newHashMap();
 
@@ -129,22 +132,16 @@ public class ProfilesIni {
 
   protected File locateAppDataDirectory(Platform os) {
     File appData;
-    switch (os) {
-      case WINDOWS:
-      case VISTA:
-      case XP:
-        appData = new File(MessageFormat.format("{0}\\Mozilla\\Firefox", System.getenv("APPDATA")));
-        break;
+    if (os.is(WINDOWS)) {
+      appData = new File(MessageFormat.format("{0}\\Mozilla\\Firefox", System.getenv("APPDATA")));
 
-      case MAC:
-        appData =
-            new File(MessageFormat.format("{0}/Library/Application Support/Firefox",
-                System.getenv("HOME")));
-        break;
+    } else if (os.is(MAC)) {
+      appData =
+          new File(MessageFormat.format("{0}/Library/Application Support/Firefox",
+                                        System.getenv("HOME")));
 
-      default:
-        appData = new File(MessageFormat.format("{0}/.mozilla/firefox", System.getenv("HOME")));
-        break;
+    } else {
+      appData = new File(MessageFormat.format("{0}/.mozilla/firefox", System.getenv("HOME")));
     }
 
     if (!appData.exists()) {

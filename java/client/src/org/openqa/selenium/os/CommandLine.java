@@ -27,6 +27,9 @@ import java.io.File;
 import java.io.OutputStream;
 import java.util.Map;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.Platform.MAC;
+
 public class CommandLine {
 
   private OsProcess process;
@@ -83,17 +86,16 @@ public class CommandLine {
    * @return The platform specific env property name which contains the library path.
    */
   public static String getLibraryPathPropertyName() {
-    switch (Platform.getCurrent()) {
-      case MAC:
-        return "DYLD_LIBRARY_PATH";
+    Platform current = Platform.getCurrent();
 
-      case WINDOWS:
-      case VISTA:
-      case XP:
-        return "PATH";
+    if (current.is(WINDOWS)) {
+      return "PATH";
 
-      default:
-        return "LD_LIBRARY_PATH";
+    } else if (current.is(MAC)) {
+      return "DYLD_LIBRARY_PATH";
+
+    } else {
+      return "LD_LIBRARY_PATH";
     }
   }
 

@@ -30,6 +30,9 @@ import java.io.File;
 import java.io.OutputStream;
 import java.util.Map;
 
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.WINDOWS;
+
 /**
  * Wrapper around our runtime environment requirements. Performs discovery of firefox instances.
  *
@@ -122,22 +125,15 @@ public class Executable {
     if (binary.exists())
       return binary;
 
-    switch (Platform.getCurrent()) {
-      case WINDOWS:
-      case VISTA:
-      case XP:
-        if (!binaryName.endsWith(".exe"))
-          binaryName += ".exe";
-        break;
+    Platform current = Platform.getCurrent();
+    if (current.is(WINDOWS)) {
+      if (!binaryName.endsWith(".exe"))
+        binaryName += ".exe";
 
-      case MAC:
-        if (!binaryName.endsWith(".app"))
-          binaryName += ".app";
-        binaryName += "/Contents/MacOS/firefox-bin";
-        break;
-
-      default:
-        // Fall through
+    } else if (current.is(MAC)) {
+      if (!binaryName.endsWith(".app"))
+        binaryName += ".app";
+      binaryName += "/Contents/MacOS/firefox-bin";
     }
 
     binary = new File(binaryName);
@@ -158,20 +154,13 @@ public class Executable {
   private static File locateFirefoxBinaryFromPlatform() {
     File binary = null;
 
-    switch (Platform.getCurrent()) {
-      case WINDOWS:
-      case VISTA:
-      case XP:
-        binary =
-            findExistingBinary(WindowsUtils.getPathsInProgramFiles("Mozilla Firefox\\firefox.exe"));
-        break;
+    Platform current = Platform.getCurrent();
+    if (current.is(WINDOWS)) {
+      binary =
+          findExistingBinary(WindowsUtils.getPathsInProgramFiles("Mozilla Firefox\\firefox.exe"));
 
-      case MAC:
-        binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox-bin");
-        break;
-
-      default:
-        // Do nothing
+    } else if (current.is(MAC)) {
+      binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox-bin");
     }
 
     if (binary != null && binary.exists()) {
