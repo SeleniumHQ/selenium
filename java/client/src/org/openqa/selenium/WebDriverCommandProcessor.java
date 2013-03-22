@@ -17,7 +17,6 @@ limitations under the License.
 package org.openqa.selenium;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
@@ -35,17 +34,11 @@ import java.util.Map;
  */
 public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver {
 
-  /**
-   * Capability key that dictates whether to emulate Selenium's alert handling and override
-   * the native alert functions. Defaults to true.
-   */
-  public static final String ENABLE_ALERT_OVERRIDES_CAPABILITY =
-      "selenium.emulation.overrideAlerts";
-
   private final Map<String, SeleneseCommand<?>> seleneseMethods = Maps.newHashMap();
   private final String baseUrl;
   private final Timer timer;
   private final CompoundMutator scriptMutator;
+  private boolean enableAlertOverrides = true;
   private Supplier<WebDriver> maker;
   private WebDriver driver;
 
@@ -179,14 +172,13 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     }
   }
 
-  private boolean enableOverrides() {
-    Optional<Boolean> enableOverrides = Optional.absent();
-    if (driver instanceof HasCapabilities) {
-      Object tmp = ((HasCapabilities) driver).getCapabilities().getCapability(
-          ENABLE_ALERT_OVERRIDES_CAPABILITY);
-      enableOverrides = Optional.fromNullable((Boolean) tmp);
-    }
-    return enableOverrides.or(true);  // Default to true if capability wasn't specified.
+  /**
+   * Sets whether to enable emulation of Selenium's alert handling functions or
+   * to preserve WebDriver's alert handling. This has no affect after calling
+   * {@link #start()}.
+   */
+  public void setEnableAlertOverrides(boolean enableAlertOverrides) {
+    this.enableAlertOverrides = enableAlertOverrides;
   }
 
   private void setUpMethodMap() {
@@ -194,7 +186,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     ElementFinder elementFinder = new ElementFinder(javascriptLibrary);
     KeyState keyState = new KeyState();
 
-    AlertOverride alertOverride = new AlertOverride(enableOverrides());
+    AlertOverride alertOverride = new AlertOverride(enableAlertOverrides);
     Windows windows = new Windows(driver);
 
     // Note the we use the names used by the CommandProcessor
