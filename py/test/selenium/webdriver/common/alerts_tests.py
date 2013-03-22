@@ -15,7 +15,10 @@
 
 import pytest
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import ElementNotVisibleException
+from selenium.common.exceptions import InvalidElementStateException
 from selenium.common.exceptions import NoAlertPresentException
 
 import unittest
@@ -28,11 +31,21 @@ class AlertsTest(unittest.TestCase):
         self.driver.execute_script(
             "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }")
         self.driver.find_element(by=By.ID, value="alert").click()
+        try:
+            self.assertEqual(self.driver.find_element_by_id('text').text, "cheese")
+        except Exception, e:
+            # if we're here, likely the alert is displayed
+            # not dismissing it will affect other tests
+            try:
+                self._waitForAlert().dismiss()
+            except Exception:
+                pass
+            raise e
 
     def testShouldAllowUsersToAcceptAnAlertManually(self):
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="alert").click()
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         alert.accept()
         #  If we can perform any action, we're good to go
         self.assertEqual("Testing Alerts", self.driver.title)
@@ -40,7 +53,7 @@ class AlertsTest(unittest.TestCase):
     def testShouldAllowUsersToAcceptAnAlertWithNoTextManually(self):
         self._loadPage("alerts")
         self.driver.find_element(By.ID,"empty-alert").click();
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         alert.accept()
 
         #  If we can perform any action, we're good to go
@@ -54,7 +67,7 @@ class AlertsTest(unittest.TestCase):
         # This is a regression test for a bug where only the first switchTo call would throw,
         # and only if it happens before the alert actually loads.
 
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         try:
             self.assertEqual("Slow", alert.text)
         finally:
@@ -64,7 +77,7 @@ class AlertsTest(unittest.TestCase):
     def testShouldAllowUsersToDismissAnAlertManually(self):
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="alert").click()
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         alert.dismiss()
         #  If we can perform any action, we're good to go
         self.assertEqual("Testing Alerts", self.driver.title)
@@ -72,7 +85,7 @@ class AlertsTest(unittest.TestCase):
     def testShouldAllowAUserToAcceptAPrompt(self):
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="prompt").click()
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         alert.accept()
 
         #  If we can perform any action, we're good to go
@@ -81,7 +94,7 @@ class AlertsTest(unittest.TestCase):
     def testShouldAllowAUserToDismissAPrompt(self):
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="prompt").click()
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         alert.dismiss()
 
         #  If we can perform any action, we're good to go
@@ -90,7 +103,7 @@ class AlertsTest(unittest.TestCase):
     def testShouldAllowAUserToSetTheValueOfAPrompt(self):
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="prompt").click()
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         alert.send_keys("cheese")
         alert.accept()
 
@@ -101,11 +114,13 @@ class AlertsTest(unittest.TestCase):
         self._loadPage("alerts")
         self.driver.find_element(By.ID,"alert").click();
 
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         try:
             alert.send_keys("cheese");
             self.fail("Expected exception");
         except ElementNotVisibleException:
+            pass
+        except InvalidElementStateException:
             pass
         finally:
             alert.accept()
@@ -114,7 +129,7 @@ class AlertsTest(unittest.TestCase):
         self._loadPage("alerts");
         self.driver.find_element(By.ID, "alert").click()
 
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         alert.dismiss()
 
         try:
@@ -128,7 +143,7 @@ class AlertsTest(unittest.TestCase):
         self.driver.switch_to_frame("iframeWithAlert")
         self.driver.find_element_by_id("alertInFrame").click()
 
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         alert.accept()
 
         self.assertEqual("Testing Alerts", self.driver.title)
@@ -140,7 +155,7 @@ class AlertsTest(unittest.TestCase):
 
         self.driver.find_element_by_id("alertInFrame").click()
 
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         alert.accept()
 
         self.assertEqual("Testing Alerts", self.driver.title)
@@ -153,7 +168,7 @@ class AlertsTest(unittest.TestCase):
         self._loadPage("alerts")
         self.driver.find_element(By.ID, "prompt-with-default").click()
 
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         alert.accept()
 
         txt = self.driver.find_element(By.ID, "text").text
@@ -162,7 +177,7 @@ class AlertsTest(unittest.TestCase):
     def testPromptShouldHaveNullValueIfDismissed(self):
         self._loadPage("alerts")
         self.driver.find_element(By.ID, "prompt-with-default").click()
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         alert.dismiss()
 
         self.assertEqual("null", self.driver.find_element(By.ID, "text").text)
@@ -172,11 +187,11 @@ class AlertsTest(unittest.TestCase):
 
         self.driver.find_element(By.ID, "double-prompt").click()
 
-        alert1 = self.driver.switch_to_alert()
+        alert1 = self._waitForAlert()
         alert1.send_keys("brie")
         alert1.accept()
 
-        alert2 = self.driver.switch_to_alert()
+        alert2 = self._waitForAlert()
         alert2.send_keys("cheddar")
         alert2.accept();
 
@@ -185,7 +200,7 @@ class AlertsTest(unittest.TestCase):
     def testShouldHandleAlertOnPageLoad(self):
         self._loadPage("alerts")
         self.driver.find_element(By.ID, "open-page-with-onload-alert").click()
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         value = alert.text
         alert.accept()
 
@@ -194,10 +209,13 @@ class AlertsTest(unittest.TestCase):
     def testShouldAllowTheUserToGetTheTextOfAnAlert(self):
         self._loadPage("alerts")
         self.driver.find_element(by=By.ID, value="alert").click()
-        alert = self.driver.switch_to_alert()
+        alert = self._waitForAlert()
         value = alert.text
         alert.accept()
         self.assertEqual("cheese", value)
+    
+    def _waitForAlert(self):
+        return WebDriverWait(self.driver, 3).until(EC.alert_is_present())
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
@@ -206,4 +224,9 @@ class AlertsTest(unittest.TestCase):
         self._loadPage("simpleTest")
 
     def _loadPage(self, name):
+        try:
+            # just in case a previous test left open an alert
+            self.driver.switch_to_alert().dismiss()
+        except:
+            pass
         self.driver.get(self._pageURL(name))
