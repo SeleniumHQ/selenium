@@ -22,7 +22,8 @@ import com.thoughtworks.selenium.DefaultSelenium;
 
 import org.openqa.selenium.internal.WrapsDriver;
 
-public class WebDriverBackedSelenium extends DefaultSelenium implements WrapsDriver {
+public class WebDriverBackedSelenium extends DefaultSelenium
+    implements HasCapabilities, WrapsDriver {
   public WebDriverBackedSelenium(Supplier<WebDriver> maker, String baseUrl) {
     super(new WebDriverCommandProcessor(baseUrl, maker));
   }
@@ -33,5 +34,15 @@ public class WebDriverBackedSelenium extends DefaultSelenium implements WrapsDri
 
   public WebDriver getWrappedDriver() {
     return ((WrapsDriver) commandProcessor).getWrappedDriver();
+  }
+
+  @Override
+  public Capabilities getCapabilities() {
+    WebDriver driver = getWrappedDriver();
+    if (driver instanceof HasCapabilities) {
+      return ((HasCapabilities) driver).getCapabilities();
+    }
+
+    return null;
   }
 }
