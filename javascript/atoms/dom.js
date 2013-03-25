@@ -330,6 +330,23 @@ bot.dom.isEnabled = function(el) {
       goog.dom.TagName.OPTION == tagName) {
     return bot.dom.isEnabled((/**@type{!Element}*/el.parentNode));
   }
+  
+  //Is there an ancestor of the current element that is a disabled fieldset and whose child 
+  //is also an ancestor-or-self of the current element but is not the first legend child of the fieldset
+  //If so then the element is disabled 
+  if (goog.dom.getAncestor(el, function(e) {
+    var parent=e.parentNode
+    if (parent && bot.dom.isElement(parent, goog.dom.TagName.FIELDSET) && bot.dom.getProperty(parent, 'disabled')) {
+      if (!bot.dom.isElement(e, goog.dom.TagName.LEGEND)) return true;
+      var sibling=e;
+      //Are there any previous legend siblings? If so then we are not the first and the element is disabled
+      while (sibling = goog.dom.getPreviousElementSibling(sibling)){
+        if (bot.dom.isElement(sibling, goog.dom.TagName.LEGEND)) return true; 
+      }
+    }
+    return false;
+  }, true) ) return false;
+    
   return true;
 };
 
