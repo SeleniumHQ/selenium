@@ -94,6 +94,7 @@ class DocumentHost {
 
  private:
   bool IsHtmlPage(IHTMLDocument2* doc);
+  int SetFocusedFrameByIdentifier(VARIANT frame_identifier);
 
   BrowserFactory factory_;
   CComPtr<IHTMLWindow2> focused_frame_window_;

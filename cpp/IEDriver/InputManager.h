@@ -66,10 +66,10 @@ class InputManager {
     this->scroll_behavior_ = scroll_behavior;
   }
 
-  CComVariant keyboard_state(void) const { return this->keyboard_state_; }
+  VARIANT keyboard_state(void) const { return this->keyboard_state_; }
   void set_keyboard_state(VARIANT state) { this->keyboard_state_ = state; }
 
-  CComVariant mouse_state(void) const { return this->mouse_state_; }
+  VARIANT mouse_state(void) const { return this->mouse_state_; }
   void set_mouse_state(VARIANT state) { this->mouse_state_ = state; }
 
   long last_known_mouse_x(void) const { return this->last_known_mouse_x_; }

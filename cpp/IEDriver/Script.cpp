@@ -31,7 +31,7 @@ Script::Script(IHTMLDocument2* document,
 }
 
 Script::~Script(void) {
-  ::SafeArrayDestroy(this->argument_array_);
+  //this->argument_array_.Destroy();
 }
 
 void Script::Initialize(IHTMLDocument2* document,
@@ -44,13 +44,11 @@ void Script::Initialize(IHTMLDocument2* document,
   this->argument_count_ = argument_count;
   this->current_arg_index_ = 0;
 
-  SAFEARRAYBOUND argument_bounds;
-  argument_bounds.lLbound = 0;
-  argument_bounds.cElements = this->argument_count_;
-
-  this->argument_array_ = ::SafeArrayCreate(VT_VARIANT, 1, &argument_bounds);
-
-  ::VariantInit(&this->result_);
+  // Calling vector::resize() is okay here, because the vector
+  // should be empty when Initialize() is called, and the
+  // reallocation of variants shouldn't give us too much of a
+  // negative impact.
+  this->argument_array_.resize(this->argument_count_);
 }
 
 void Script::AddArgument(const std::string& argument) {
@@ -96,9 +94,8 @@ void Script::AddArgument(IHTMLElement* argument) {
 
 void Script::AddArgument(VARIANT argument) {
   LOG(TRACE) << "Entering Script::AddArgument(VARIANT)";
-  HRESULT hr = ::SafeArrayPutElement(this->argument_array_,
-                                     &this->current_arg_index_,
-                                     &argument);
+  CComVariant wrapped_argument(argument);
+  this->argument_array_[this->current_arg_index_] = wrapped_argument;
   ++this->current_arg_index_;
 }
 
@@ -211,7 +208,7 @@ bool Script::ResultIsObject() {
 int Script::Execute() {
   LOG(TRACE) << "Entering Script::Execute";
 
-  VARIANT result;
+  CComVariant result;
 
   if (this->script_engine_host_ == NULL) {
     LOG(WARN) << "Script engine host is NULL";
@@ -241,36 +238,34 @@ int Script::Execute() {
     return EUNEXPECTEDJSERROR;
   }
 
-  DISPPARAMS call_parameters = { 0 };
-  memset(&call_parameters, 0, sizeof call_parameters);
-
-  long lower = 0;
-  ::SafeArrayGetLBound(this->argument_array_, 1, &lower);
-  long upper = 0;
-  ::SafeArrayGetUBound(this->argument_array_, 1, &upper);
-  long nargs = 1 + upper - lower;
-  call_parameters.cArgs = nargs + 1;
-
   CComPtr<IHTMLWindow2> win;
   hr = this->script_engine_host_->get_parentWindow(&win);
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Cannot get parent window, IHTMLDocument2::get_parentWindow failed";
     return EUNEXPECTEDJSERROR;
   }
-  _variant_t* vargs = new _variant_t[nargs + 1];
-  hr = ::VariantCopy(&(vargs[nargs]), &CComVariant(win));
 
-  long index;
-  for (int i = 0; i < nargs; i++) {
-    index = i;
-    CComVariant v;
-    ::SafeArrayGetElement(this->argument_array_,
-                          &index,
-                          reinterpret_cast<void*>(&v));
-    hr = ::VariantCopy(&(vargs[nargs - 1 - i]), &v);
+  // IDispatch::Invoke() expects the arguments to be passed into it
+  // in reverse order. To accomplish this, we create a new variant
+  // array of size n + 1 where n is the number of arguments we have.
+  // we copy each element of arguments_array_ into the new array in
+  // reverse order, and add an extra argument, the window object,
+  // to the end of the array to use as the "this" parameter for the
+  // function invocation.
+  size_t arg_count = this->argument_array_.size();
+  vector<CComVariant> argument_array_copy(arg_count + 1);
+  CComVariant window_variant(win);
+  argument_array_copy[arg_count].Copy(&window_variant);
+
+  for (size_t index = 0; index < arg_count; ++index) {
+    argument_array_copy[arg_count - 1 - index].Copy(&this->argument_array_[index]);
   }
 
-  call_parameters.rgvarg = vargs;
+  DISPPARAMS call_parameters = { 0 };
+  memset(&call_parameters, 0, sizeof call_parameters);
+  call_parameters.cArgs = argument_array_copy.size();
+  call_parameters.rgvarg = &argument_array_copy[0];
+
   int return_code = WD_SUCCESS;
   EXCEPINFO exception;
   memset(&exception, 0, sizeof exception);
@@ -284,8 +279,9 @@ int Script::Execute() {
                                       0);
 
   if (FAILED(hr)) {
+    CComBSTR error_description = L"";
     if (DISP_E_EXCEPTION == hr) {
-      CComBSTR error_description(exception.bstrDescription ? exception.bstrDescription : L"EUNEXPECTEDJSERROR");
+      error_description = exception.bstrDescription ? exception.bstrDescription : L"EUNEXPECTEDJSERROR";
       CComBSTR error_source(exception.bstrSource ? exception.bstrSource : L"EUNEXPECTEDJSERROR");
       LOG(INFO) << "Exception message was: '" << error_description << "'";
       LOG(INFO) << "Exception source was: '" << error_source << "'";
@@ -293,30 +289,13 @@ int Script::Execute() {
       LOGHR(DEBUG, hr) << "Failed to execute anonymous function, no exception information retrieved";
     }
 
-    ::VariantClear(&result);
-    result.vt = VT_USERDEFINED;
-    if (exception.bstrDescription != NULL) {
-      result.bstrVal = ::SysAllocStringByteLen(reinterpret_cast<char*>(exception.bstrDescription),
-                                               ::SysStringByteLen(exception.bstrDescription));
-    } else {
-      result.bstrVal = ::SysAllocStringByteLen(NULL, 0);
-    }
+    result.Clear();
+    result.vt = VT_BSTR;
+    result.bstrVal = error_description;
     return_code = EUNEXPECTEDJSERROR;
   }
 
-  // If the script returned an IHTMLElement, we need to copy it to make it valid.
-  if(VT_DISPATCH == result.vt) {
-    CComPtr<IHTMLElement> element;
-    result.pdispVal->QueryInterface<IHTMLElement>(&element);
-    if (element) {
-      IHTMLElement* &dom_element = *(reinterpret_cast<IHTMLElement**>(&result.pdispVal));
-      hr = element.CopyTo(&dom_element);
-    }
-  }
-
-  this->result_ = result;
-
-  delete[] vargs;
+  this->result_.Copy(&result);
 
   return return_code;
 }
@@ -393,7 +372,8 @@ int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
     } else {
       LOG(INFO) << "Unknown type of dispatch is found in result, assuming IHTMLElement";
       IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-      IHTMLElement* node = reinterpret_cast<IHTMLElement*>(this->result_.pdispVal);
+      CComPtr<IHTMLElement> node;
+      this->result_.pdispVal->QueryInterface<IHTMLElement>(&node);
       ElementHandle element_wrapper;
       mutable_executor.AddManagedElement(node, &element_wrapper);
       *value = element_wrapper->ConvertToJson();
@@ -579,14 +559,14 @@ int Script::GetArrayItem(const IECommandExecutor& executor,
 bool Script::CreateAnonymousFunction(VARIANT* result) {
   LOG(TRACE) << "Entering Script::CreateAnonymousFunction";
 
-  CComBSTR function_eval_script(L"window.document.__webdriver_script_fn = ");
-  HRESULT hr = function_eval_script.Append(this->source_code_.c_str());
-  CComBSTR code(function_eval_script);
+  std::wstring function_eval_script = L"window.document.__webdriver_script_fn = ";
+  function_eval_script.append(this->source_code_.c_str());
+  CComBSTR code(function_eval_script.c_str());
   CComBSTR lang(L"JScript");
   CComVariant exec_script_result;
 
   CComPtr<IHTMLWindow2> window;
-  hr = this->script_engine_host_->get_parentWindow(&window);
+  HRESULT hr = this->script_engine_host_->get_parentWindow(&window);
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Unable to get parent window, call to IHTMLDocument2::get_parentWindow failed";
     return false;

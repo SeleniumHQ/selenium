@@ -255,19 +255,15 @@ void Browser::SetHeight(long height) {
 
 void Browser::AttachEvents() {
   LOG(TRACE) << "Entering Browser::AttachEvents";
-  CComPtr<IDispatch> dispatch;
-  this->browser_->QueryInterface<IDispatch>(&dispatch);
   CComPtr<IUnknown> unknown;
-  dispatch->QueryInterface<IUnknown>(&unknown);
+  this->browser_->QueryInterface<IUnknown>(&unknown);
   HRESULT hr = this->DispEventAdvise(unknown);
 }
 
 void Browser::DetachEvents() {
   LOG(TRACE) << "Entering Browser::DetachEvents";
-  CComPtr<IDispatch> dispatch;
-  this->browser_->QueryInterface<IDispatch>(&dispatch);
   CComPtr<IUnknown> unknown;
-  dispatch->QueryInterface<IUnknown>(&unknown);
+  this->browser_->QueryInterface<IUnknown>(&unknown);
   HRESULT hr = this->DispEventUnadvise(unknown);
 }
 

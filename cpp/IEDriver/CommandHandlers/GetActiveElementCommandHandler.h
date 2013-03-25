@@ -69,10 +69,8 @@ class GetActiveElementCommandHandler : public IECommandHandler {
 
     if (element) {
       IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-      IHTMLElement* dom_element;
-      HRESULT hr = element.CopyTo(&dom_element);
       ElementHandle element_wrapper;
-      mutable_executor.AddManagedElement(dom_element, &element_wrapper);
+      mutable_executor.AddManagedElement(element, &element_wrapper);
       response->SetSuccessResponse(element_wrapper->ConvertToJson());
     } else {
       response->SetErrorResponse(ENOSUCHELEMENT, "An unexpected error occurred getting the active element");

@@ -139,51 +139,20 @@ int DocumentHost::SetFocusedFrameByElement(IHTMLElement* frame_element) {
 
 int DocumentHost::SetFocusedFrameByName(const std::string& frame_name) {
   LOG(TRACE) << "Entering DocumentHost::SetFocusedFrameByName";
-
-  CComPtr<IHTMLDocument2> doc;
-  this->GetDocument(&doc);
-
-  CComPtr<IHTMLFramesCollection2> frames;
-  HRESULT hr = doc->get_frames(&frames);
-
-  if (!frames) {
-    LOG(WARN) << "No frames in document are set, IHTMLDocument2::get_frames returned NULL";
-    return ENOSUCHFRAME;
-  }
-
-  long length = 0;
-  frames->get_length(&length);
-  if (!length) { 
-    LOG(WARN) << "No frames in document are found IHTMLFramesCollection2::get_length returned 0";
-    return ENOSUCHFRAME;
-  }
-
-  CComVariant name;
-  CComBSTR name_bstr = StringUtilities::ToWString(frame_name).c_str();
-  hr = name_bstr.CopyTo(&name);
-
-  // Find the frame
-  CComVariant frame_holder;
-  hr = frames->item(&name, &frame_holder);
-
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Error retrieving frame holder, call to IHTMLFramesCollection2::item failed";
-    return ENOSUCHFRAME;
-  }
-
-  CComPtr<IHTMLWindow2> interim_result;
-  frame_holder.pdispVal->QueryInterface<IHTMLWindow2>(&interim_result);
-  if (!interim_result) {
-    LOG(WARN) << "Error retrieving frame, IDispatch cannot be cast to IHTMLWindow2";
-    return ENOSUCHFRAME;
-  }
-
-  this->focused_frame_window_ = interim_result;
-  return WD_SUCCESS;
+  CComVariant frame_identifier =  StringUtilities::ToWString(frame_name).c_str();
+  return this->SetFocusedFrameByIdentifier(frame_identifier);
 }
 
 int DocumentHost::SetFocusedFrameByIndex(const int frame_index) {
   LOG(TRACE) << "Entering DocumentHost::SetFocusedFrameByIndex";
+  CComVariant frame_identifier;
+  frame_identifier.vt = VT_I4;
+  frame_identifier.lVal = frame_index;
+  return this->SetFocusedFrameByIdentifier(frame_identifier);
+}
+
+int DocumentHost::SetFocusedFrameByIdentifier(VARIANT frame_identifier) {
+  LOG(TRACE) << "Entering DocumentHost::SetFocusedFrameByIdentifier";
 
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
@@ -203,13 +172,9 @@ int DocumentHost::SetFocusedFrameByIndex(const int frame_index) {
     return ENOSUCHFRAME;
   }
 
-  CComVariant index;
-  index.vt = VT_I4;
-  index.lVal = frame_index;
-
   // Find the frame
   CComVariant frame_holder;
-  hr = frames->item(&index, &frame_holder);
+  hr = frames->item(&frame_identifier, &frame_holder);
 
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Error retrieving frame holder, call to IHTMLFramesCollection2::item failed";

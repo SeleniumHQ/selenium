@@ -23,6 +23,7 @@
 #pragma warning (disable: 6387)
 
 #include "Element.h"
+#include <algorithm>
 #include "Browser.h"
 #include "Generated/atoms.h"
 #include "interactions.h"
@@ -106,13 +107,14 @@ std::string Element::GetTagName() {
   LOG(TRACE) << "Entering Element::GetTagName";
 
   CComBSTR tag_name_bstr;
-  this->element_->get_tagName(&tag_name_bstr);
-  HRESULT hr = tag_name_bstr.ToLower();
+  HRESULT hr = this->element_->get_tagName(&tag_name_bstr);
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Failed converting BSTR to lower-case with .ToLower() method";
+    LOGHR(WARN, hr) << "Failed calling IHTMLElement::get_tagName";
+    return "";
   }
   std::wstring converted_tag_name = tag_name_bstr;
   std::string tag_name = StringUtilities::ToString(converted_tag_name);
+  std::transform(tag_name.begin(), tag_name.end(), tag_name.begin(), ::tolower);
   return tag_name;
 }
 
@@ -215,7 +217,6 @@ int Element::GetAttributeValue(const std::string& attribute_name,
   script_wrapper.AddArgument(wide_attribute_name);
   status_code = script_wrapper.Execute();
   
-  CComVariant value_variant;
   if (status_code == WD_SUCCESS) {
     *value_is_null = !script_wrapper.ConvertResultToString(attribute_value);
   } else {
@@ -610,7 +611,7 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
           parent_doc->QueryInterface<IHTMLDocument3>(&doc);
           if (doc) {
             LOG(DEBUG) << "Looking for <iframe> elements in parent document.";
-            BSTR iframe_tag_name = L"iframe";
+            CComBSTR iframe_tag_name = L"iframe";
             CComPtr<IHTMLElementCollection> iframe_collection;
             hr = doc->getElementsByTagName(iframe_tag_name, &iframe_collection);
             hr = iframe_collection->get_length(&collection_count);
@@ -622,7 +623,7 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
               }
             } else {
               LOG(DEBUG) << "No <iframe> elements, looking for <frame> elements in parent document.";
-              BSTR frame_tag_name = L"iframe";
+              CComBSTR frame_tag_name = L"iframe";
               CComPtr<IHTMLElementCollection> frame_collection;
               hr = doc->getElementsByTagName(frame_tag_name, &frame_collection);
               hr = frame_collection->get_length(&collection_count);
@@ -963,12 +964,12 @@ bool Element::IsAttachedToDom() {
       }
 
       if (next == NULL) {
-        BSTR tag;
+        CComBSTR tag;
         hr = parent->get_tagName(&tag);
         if (FAILED(hr)) {
           LOG(TRACE) << "Found null parent of element and couldn't get tag name";
         } else {
-          LOG(TRACE) << "Found null parent of element with tag " << _bstr_t(tag);
+          LOG(TRACE) << "Found null parent of element with tag " << tag;
         }
       }
       parent = next;

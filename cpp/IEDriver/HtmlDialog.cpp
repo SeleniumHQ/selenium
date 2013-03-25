@@ -26,18 +26,14 @@ HtmlDialog::~HtmlDialog(void) {
 }
 
 void HtmlDialog::AttachEvents() {
-  CComPtr<IDispatch> dispatch;
-  this->window_->QueryInterface<IDispatch>(&dispatch);
   CComPtr<IUnknown> unknown;
-  dispatch->QueryInterface<IUnknown>(&unknown);
+  this->window_->QueryInterface<IUnknown>(&unknown);
   HRESULT hr = this->DispEventAdvise(unknown);
 }
 
 void HtmlDialog::DetachEvents() {
-  CComPtr<IDispatch> dispatch;
-  this->window_->QueryInterface<IDispatch>(&dispatch);
   CComPtr<IUnknown> unknown;
-  dispatch->QueryInterface<IUnknown>(&unknown);
+  this->window_->QueryInterface<IUnknown>(&unknown);
   HRESULT hr = this->DispEventUnadvise(unknown);
 }
 
@@ -103,7 +99,7 @@ bool HtmlDialog::Wait() {
     if (child_dialog_handle != NULL) {
       // Check to see if the dialog opened is another HTML dialog. If so,
       // notify the IECommandExecutor that a new window exists.
-      vector<char> window_class_name(34);
+      std::vector<char> window_class_name(34);
       if (::GetClassNameA(child_dialog_handle, &window_class_name[0], 34)) {
         if (strcmp(HTML_DIALOG_WINDOW_CLASS, &window_class_name[0]) == 0) {
           HWND content_window_handle = this->FindContentWindowHandle(child_dialog_handle);
@@ -209,7 +205,7 @@ BOOL CALLBACK HtmlDialog::FindChildDialogWindow(HWND hwnd, LPARAM arg) {
   if (::GetWindow(hwnd, GW_OWNER) != window_info->hwndOwner) {
     return TRUE;
   }
-  vector<char> window_class_name(34);
+  std::vector<char> window_class_name(34);
   if (::GetClassNameA(hwnd, &window_class_name[0], 34) == 0) {
     // No match found. Skip
     return TRUE;

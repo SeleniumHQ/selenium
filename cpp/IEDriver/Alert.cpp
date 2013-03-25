@@ -216,7 +216,7 @@ bool Alert::IsOKButton(HWND button_handle) {
   if (control_id != 0) {
     return control_id == IDOK || control_id == IDYES || control_id == IDRETRY;
   }
-  vector<TCHAR> button_window_class(100);
+  std::vector<wchar_t> button_window_class(100);
   ::GetClassName(button_handle, &button_window_class[0], static_cast<int>(button_window_class.size()));
   if (wcscmp(&button_window_class[0], L"Button") == 0) {
     long window_long = ::GetWindowLong(button_handle, GWL_STYLE);
@@ -230,7 +230,7 @@ bool Alert::IsCancelButton(HWND button_handle) {
   if (control_id != 0) {
     return control_id == IDCANCEL || control_id == IDNO;
   }
-  vector<TCHAR> button_window_class(100);
+  std::vector<wchar_t> button_window_class(100);
   ::GetClassName(button_handle, &button_window_class[0], static_cast<int>(button_window_class.size()));
   if (wcscmp(&button_window_class[0], L"Button") == 0) {
     long window_long = ::GetWindowLong(button_handle, GWL_STYLE);
@@ -254,10 +254,10 @@ BOOL CALLBACK Alert::FindDialogButton(HWND hwnd, LPARAM arg) {
 
 BOOL CALLBACK Alert::FindTextBox(HWND hwnd, LPARAM arg) {
   HWND *dialog_handle = reinterpret_cast<HWND*>(arg);
-  TCHAR child_window_class[100];
-  ::GetClassName(hwnd, child_window_class, 100);
+  std::vector<wchar_t> child_window_class(100);
+  ::GetClassName(hwnd, &child_window_class[0], 100);
 
-  if (wcscmp(child_window_class, L"Edit") == 0) {
+  if (wcscmp(&child_window_class[0], L"Edit") == 0) {
     *dialog_handle = hwnd;
     return FALSE;
   }
@@ -266,10 +266,10 @@ BOOL CALLBACK Alert::FindTextBox(HWND hwnd, LPARAM arg) {
 
 BOOL CALLBACK Alert::FindTextLabel(HWND hwnd, LPARAM arg) {
   TextLabelFindInfo* find_info = reinterpret_cast<TextLabelFindInfo*>(arg);
-  TCHAR child_window_class[100];
-  ::GetClassName(hwnd, child_window_class, 100);
+  std::vector<wchar_t> child_window_class(100);
+  ::GetClassName(hwnd, &child_window_class[0], 100);
 
-  if (wcscmp(child_window_class, L"Static") != 0) {
+  if (wcscmp(&child_window_class[0], L"Static") != 0) {
     return TRUE;
   }
 
@@ -288,10 +288,10 @@ BOOL CALLBACK Alert::FindTextLabel(HWND hwnd, LPARAM arg) {
 
 BOOL CALLBACK Alert::FindDirectUIChild(HWND hwnd, LPARAM arg){
   HWND *dialog_handle = reinterpret_cast<HWND*>(arg);
-  TCHAR child_window_class[100];
-  ::GetClassName(hwnd, child_window_class, 100);
+  std::vector<wchar_t> child_window_class(100);
+  ::GetClassName(hwnd, &child_window_class[0], 100);
 
-  if (wcscmp(child_window_class, L"DirectUIHWND") != 0) {
+  if (wcscmp(&child_window_class[0], L"DirectUIHWND") != 0) {
     return TRUE;
   }
   *dialog_handle = hwnd;

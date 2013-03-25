@@ -214,9 +214,7 @@ int ElementFinder::FindElementByCssSelector(const IECommandExecutor& executor,
   script_wrapper.AddArgument(criteria);
   if (parent_wrapper) {
     CComPtr<IHTMLElement> parent(parent_wrapper->element());
-    IHTMLElement* parent_element_copy;
-    HRESULT hr = parent.CopyTo(&parent_element_copy);
-    script_wrapper.AddArgument(parent_element_copy);
+    script_wrapper.AddArgument(parent);
   }
   result = script_wrapper.Execute();
 
@@ -268,9 +266,7 @@ int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor,
   if (parent_wrapper) {
     // Use a copy for the parent element?
     CComPtr<IHTMLElement> parent(parent_wrapper->element());
-    IHTMLElement* parent_element_copy;
-    HRESULT hr = parent.CopyTo(&parent_element_copy);
-    script_wrapper.AddArgument(parent_element_copy);
+    script_wrapper.AddArgument(parent);
   }
 
   result = script_wrapper.Execute();
