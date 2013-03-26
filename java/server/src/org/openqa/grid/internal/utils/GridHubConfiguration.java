@@ -39,7 +39,7 @@ import static org.openqa.grid.internal.utils.ServerJsonValues.*;
 
 public class GridHubConfiguration {
 
-    /**
+  /**
    * The hub needs to know its hostname in order to write the proper Location header for the request
    * being forwarded. Usually this can be guessed correctly, but in case it cannot it can be passed
    * via this config param.
@@ -92,7 +92,8 @@ public class GridHubConfiguration {
   private boolean throwOnCapabilityNotPresent = true;
 
   /**
-   * The filename to use for logging. Default value is <code>null</code> and indicates logging to STDOUT.
+   * The filename to use for logging. Default value is <code>null</code> and indicates logging to
+   * STDOUT.
    */
   private String logFilename;
 
@@ -116,27 +117,26 @@ public class GridHubConfiguration {
 
   /**
    * builds a grid configuration from the parameters passed command line.
-   * 
-   * @param args
-   * @return A GridHubConfiguration object with options from the grid1 and/or
-   *         grid2 config file(s), plus any command line option overrides.
+   *
+   * @return A GridHubConfiguration object with options from the grid1 and/or grid2 config file(s),
+   *         plus any command line option overrides.
    */
   public static GridHubConfiguration build(String[] args) {
     GridHubConfiguration res = new GridHubConfiguration();
     CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
-    res.args = args;
+    res.setArgs(args);
 
     // is there a grid1 config file to load ?
     if (helper.isParamPresent("-grid1Yml")) {
       String value = helper.getParamValue("-grid1Yml");
-      res.grid1Yml = value;
+      res.setGrid1Yaml(value);
       res.loadFromGridYml(value);
     }
 
     // is there a grid2 config file ?
     if (helper.isParamPresent("-hubConfig")) {
       String value = helper.getParamValue("-hubConfig");
-      res.grid2JSON = value;
+      res.setGrid2JSON(value);
       res.loadFromJSON(value);
     }
 
@@ -147,14 +147,6 @@ public class GridHubConfiguration {
 
   }
 
-  public String getGrid1Yml() {
-    return grid1Yml;
-  }
-
-  public String getGrid2JSON() {
-    return grid2JSON;
-  }
-
   public void loadDefault() {
     loadFromJSON("defaults/DefaultHub.json");
   }
@@ -162,36 +154,36 @@ public class GridHubConfiguration {
   public void loadFromCommandLine(String[] args) {
     CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
 
-
     // storing them all.
     List<String> params = helper.getKeys();
     for (String param : params) {
       String cleanParam = param.replaceFirst("-", "");
       String value = helper.getParamValue(param);
-      allParams.put(cleanParam, value);
+      put(cleanParam, value);
     }
     // handle the core config.
     if (helper.isParamPresent("-host")) {
-      host = helper.getParamValue("-host");
+      setHost(helper.getParamValue("-host"));
     }
     if (helper.isParamPresent("-port")) {
-      port = Integer.parseInt(helper.getParamValue("-port"));
+      setPort(Integer.parseInt(helper.getParamValue("-port")));
     }
     if (helper.isParamPresent("-cleanUpCycle")) {
-      cleanupCycle = Integer.parseInt(helper.getParamValue("-cleanUpCycle"));
+      setCleanupCycle(Integer.parseInt(helper.getParamValue("-cleanUpCycle")));
     }
     if (helper.isParamPresent(CLIENT_TIMEOUT.getAsParam())) {
       setTimeout(Integer.parseInt(helper.getParamValue(CLIENT_TIMEOUT.getAsParam())) * 1000);
     }
     if (helper.isParamPresent(BROWSER_TIMEOUT.getAsParam())) {
-      setBrowserTimeout(Integer.parseInt(helper.getParamValue(BROWSER_TIMEOUT.getAsParam())) * 1000);
+      setBrowserTimeout(
+          Integer.parseInt(helper.getParamValue(BROWSER_TIMEOUT.getAsParam())) * 1000);
     }
     if (helper.isParamPresent("-newSessionWaitTimeout")) {
-      newSessionWaitTimeout = Integer.parseInt(helper.getParamValue("-newSessionWaitTimeout"));
+      setNewSessionWaitTimeout(Integer.parseInt(helper.getParamValue("-newSessionWaitTimeout")));
     }
     if (helper.isParamPresent("-throwOnCapabilityNotPresent")) {
-      throwOnCapabilityNotPresent =
-          Boolean.parseBoolean(helper.getParamValue("-throwOnCapabilityNotPresent"));
+      setThrowOnCapabilityNotPresent(
+          Boolean.parseBoolean(helper.getParamValue("-throwOnCapabilityNotPresent")));
     }
     if (helper.isParamPresent("-prioritizer")) {
       setPrioritizer(helper.getParamValue("-prioritizer"));
@@ -200,13 +192,13 @@ public class GridHubConfiguration {
       setCapabilityMatcher(helper.getParamValue("-capabilityMatcher"));
     }
     if (helper.isParamPresent("-servlets")) {
-      servlets = helper.getParamValues("-servlets");
+      setServlets(helper.getParamValues("-servlets"));
     }
     if (helper.isParamPresent("-log")) {
-      logFilename = helper.getParamValue("-log");
+      setLogFilename(helper.getParamValue("-log"));
     }
     if (helper.isParamPresent("-debug")) {
-      isDebug = true;
+      setIsDebug(true);
     }
 
   }
@@ -247,8 +239,8 @@ public class GridHubConfiguration {
     // Now pull out each of the grid config values.
     Integer poll = (Integer) hub.get("remoteControlPollingIntervalInSeconds");
     if (poll != null) {
-      allParams.put(RegistrationRequest.NODE_POLLING, poll.intValue() * 1000);
-      cleanupCycle = poll.intValue() * 1000;
+      put(RegistrationRequest.NODE_POLLING, poll.intValue() * 1000);
+      setCleanupCycle(poll.intValue() * 1000);
     }
 
     Integer timeout = (Integer) hub.get("sessionMaxIdleTimeInSeconds");
@@ -266,7 +258,7 @@ public class GridHubConfiguration {
       setNewSessionWaitTimeout(newSessionWait.intValue() * 1000);
     }
 
-    allParams.put(RegistrationRequest.MAX_SESSION, 1);
+    put(RegistrationRequest.MAX_SESSION, 1);
   }
 
   /**
@@ -279,23 +271,24 @@ public class GridHubConfiguration {
 
       // handling the core config.
       if (o.has(RegistrationRequest.HOST) && !o.isNull(RegistrationRequest.HOST)) {
-        host = o.getString(RegistrationRequest.HOST);
+        setHost(o.getString(RegistrationRequest.HOST));
       }
       if (o.has(RegistrationRequest.PORT) && !o.isNull(RegistrationRequest.PORT)) {
-        port = o.getInt(RegistrationRequest.PORT);
+        setPort(o.getInt(RegistrationRequest.PORT));
       }
       if (o.has(RegistrationRequest.CLEAN_UP_CYCLE) &&
           !o.isNull(RegistrationRequest.CLEAN_UP_CYCLE)) {
-        cleanupCycle = o.getInt(RegistrationRequest.CLEAN_UP_CYCLE);
+        setCleanupCycle(o.getInt(RegistrationRequest.CLEAN_UP_CYCLE));
       }
       if (o.has(RegistrationRequest.TIME_OUT) && !o.isNull(RegistrationRequest.TIME_OUT)) {
         setTimeout(o.getInt(RegistrationRequest.TIME_OUT));
       }
-      if (o.has(RegistrationRequest.BROWSER_TIME_OUT) && !o.isNull(RegistrationRequest.BROWSER_TIME_OUT)) {
+      if (o.has(RegistrationRequest.BROWSER_TIME_OUT) && !o
+          .isNull(RegistrationRequest.BROWSER_TIME_OUT)) {
         setBrowserTimeout(o.getInt(RegistrationRequest.BROWSER_TIME_OUT));
       }
       if (o.has("newSessionWaitTimeout") && !o.isNull("newSessionWaitTimeout")) {
-        newSessionWaitTimeout = o.getInt("newSessionWaitTimeout");
+        setNewSessionWaitTimeout(o.getInt("newSessionWaitTimeout"));
       }
       if (o.has(RegistrationRequest.SERVLETS) && !o.isNull(RegistrationRequest.SERVLETS)) {
         JSONArray jsservlets = o.getJSONArray(RegistrationRequest.SERVLETS);
@@ -312,11 +305,11 @@ public class GridHubConfiguration {
         setCapabilityMatcher(capabilityMatcherClass);
       }
       if (o.has("throwOnCapabilityNotPresent") && !o.isNull("throwOnCapabilityNotPresent")) {
-        throwOnCapabilityNotPresent = o.getBoolean("throwOnCapabilityNotPresent");
+        setThrowOnCapabilityNotPresent(o.getBoolean("throwOnCapabilityNotPresent"));
       }
 
       // store them all.
-      for (Iterator iterator = o.keys(); iterator.hasNext();) {
+      for (Iterator iterator = o.keys(); iterator.hasNext(); ) {
         String key = (String) iterator.next();
         Object value = o.get(key);
         if (value instanceof JSONArray) {
@@ -325,16 +318,33 @@ public class GridHubConfiguration {
           for (int i = 0; i < a.length(); i++) {
             as.add(a.getString(i));
           }
-          allParams.put(key, as);
+          put(key, as);
         } else {
-          allParams.put(key, o.get(key));
+          put(key, o.get(key));
         }
       }
 
     } catch (Throwable e) {
       throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
-          e);
+                                           e);
     }
+  }
+
+
+  public String getGrid1Yml() {
+    return grid1Yml;
+  }
+
+  public String getGrid2JSON() {
+    return grid2JSON;
+  }
+
+  protected void setGrid1Yaml(String yaml) {
+    this.grid1Yml = yaml;
+  }
+
+  protected void setGrid2JSON(String json) {
+    this.grid2JSON = json;
   }
 
   public String getHost() {
@@ -358,7 +368,7 @@ public class GridHubConfiguration {
   }
 
   public void setBrowserTimeout(int browserTimeout) {
-      put(BROWSER_TIMEOUT, browserTimeout);
+    put(BROWSER_TIMEOUT, browserTimeout);
   }
 
   public int getNewSessionWaitTimeout() {
@@ -377,6 +387,10 @@ public class GridHubConfiguration {
     return isDebug;
   }
 
+  public void setIsDebug(boolean debug) {
+    this.isDebug = debug;
+  }
+
   public Map<String, String> getGrid1Mapping() {
     return grid1Mapping;
   }
@@ -390,7 +404,7 @@ public class GridHubConfiguration {
   }
 
   public boolean isThrowOnCapabilityNotPresent() {
-    return throwOnCapabilityNotPresent;
+    return this.throwOnCapabilityNotPresent;
   }
 
   public void setHost(String host) {
@@ -409,19 +423,28 @@ public class GridHubConfiguration {
     put(CLIENT_TIMEOUT, timeout);
   }
 
-  private void put(JsonKey key, Object value){
-    allParams.put(key.getKey(), value);
+  private void put(JsonKey key, Object value) {
+    getAllParams().put(key.getKey(), value);
   }
+
+  private void put(String key, Object value) {
+    getAllParams().put(key, value);
+  }
+
+  private void setLogFilename(String filename) {
+    this.logFilename = filename;
+  }
+
 
   private <T> T get(JsonKey jsonKey) {
     //noinspection unchecked
-    return (T) allParams.get(jsonKey.getKey());
+    return (T) getAllParams().get(jsonKey.getKey());
   }
 
   private Integer getIntWith0Default(JsonKey jsonKey) {
     //noinspection unchecked
-    final Object o = allParams.get(jsonKey.getKey());
-    if (o instanceof  String){
+    final Object o = getAllParams().get(jsonKey.getKey());
+    if (o instanceof String) {
       return Integer.parseInt((String) o);
     }
     return o != null ? (Integer) o : 0;
@@ -438,13 +461,13 @@ public class GridHubConfiguration {
   public void setPrioritizer(String prioritizerClass) {
     try {
       Class<Prioritizer> p = (Class<Prioritizer>) Class.forName(prioritizerClass);
-      Class<?>[] argsClass = new Class[] {};
+      Class<?>[] argsClass = new Class[]{};
       Constructor<?> c = p.getConstructor(argsClass);
-      Object[] args = new Object[] {};
-      prioritizer = (Prioritizer) c.newInstance(args);
+      Object[] args = new Object[]{};
+      setPrioritizer((Prioritizer) c.newInstance(args));
     } catch (Throwable e) {
       throw new GridConfigurationException("Error creating the prioritize from class " +
-          prioritizerClass + " : " + e.getMessage(), e);
+                                           prioritizerClass + " : " + e.getMessage(), e);
     }
   }
 
@@ -455,13 +478,14 @@ public class GridHubConfiguration {
   public void setCapabilityMatcher(String matcherClass) {
     try {
       Class<CapabilityMatcher> p = (Class<CapabilityMatcher>) Class.forName(matcherClass);
-      Class<?>[] argsClass = new Class[] {};
+      Class<?>[] argsClass = new Class[]{};
       Constructor<?> c = p.getConstructor(argsClass);
-      Object[] args = new Object[] {};
-      matcher = (CapabilityMatcher) c.newInstance(args);
+      Object[] args = new Object[]{};
+
+      setCapabilityMatcher((CapabilityMatcher) c.newInstance(args));
     } catch (Throwable e) {
       throw new GridConfigurationException("Error creating the capability matcher from class " +
-          matcherClass + " : " + e.getMessage(), e);
+                                           matcherClass + " : " + e.getMessage(), e);
     }
   }
 
@@ -477,40 +501,46 @@ public class GridHubConfiguration {
     return args;
   }
 
+  protected void setArgs(String[] args) {
+    this.args = args;
+  }
+
   public String prettyPrint() {
     StringBuilder b = new StringBuilder();
-    b.append("host: ").append(host).append("\n");
-    b.append("port: ").append(port).append("\n");
-    b.append("cleanupCycle: ").append(cleanupCycle).append("\n");
+    b.append("host: ").append(getHost()).append("\n");
+    b.append("port: ").append(getPort()).append("\n");
+    b.append("cleanupCycle: ").append(getCleanupCycle()).append("\n");
     b.append("timeout: ").append(getTimeout()).append("\n");
     b.append("browserTimeout: ").append(getBrowserTimeout()).append("\n");
 
-    b.append("newSessionWaitTimeout: ").append(newSessionWaitTimeout).append("\n");
-    b.append("grid1Mapping: ").append(grid1Mapping).append("\n");
-    b.append("throwOnCapabilityNotPresent: ").append(throwOnCapabilityNotPresent).append("\n");
+    b.append("newSessionWaitTimeout: ").append(getNewSessionWaitTimeout()).append("\n");
+    b.append("grid1Mapping: ").append(getGrid1Mapping()).append("\n");
+    b.append("throwOnCapabilityNotPresent: ").append(isThrowOnCapabilityNotPresent()).append("\n");
 
     b.append("capabilityMatcher: ")
-        .append(matcher == null ? "null" : matcher.getClass().getCanonicalName()).append("\n");
+        .append(getCapabilityMatcher() == null ? "null" : getCapabilityMatcher().getClass()
+            .getCanonicalName()).append(
+        "\n");
     b.append("prioritizer: ")
-        .append(prioritizer == null ? "null" : prioritizer.getClass().getCanonicalName())
+        .append(getPrioritizer() == null ? "null" : getPrioritizer().getClass().getCanonicalName())
         .append("\n");
     b.append("servlets: ");
-    for (String s : servlets) {
+    for (String s : getServlets()) {
       b.append(s.getClass().getCanonicalName()).append(",");
     }
     b.append("\n\n");
     b.append("all params :\n");
     List<String> keys = new ArrayList<String>();
-    keys.addAll(allParams.keySet());
+    keys.addAll(getAllParams().keySet());
     Collections.sort(keys);
     for (String s : keys) {
-      b.append(s.replaceFirst("-", "")).append(":").append(allParams.get(s)).append("\n");
+      b.append(s.replaceFirst("-", "")).append(":").append(getAllParams().get(s)).append("\n");
     }
     return b.toString();
   }
 
   public Map<String, Object> getAllParams() {
-    return allParams;
+    return this.allParams;
   }
 
 }
