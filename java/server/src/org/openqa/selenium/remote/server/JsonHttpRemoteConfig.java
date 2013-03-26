@@ -200,7 +200,7 @@ public class JsonHttpRemoteConfig {
     }
   }
 
-  private UrlMapper getUrlMapper(String method) {
+  protected UrlMapper getUrlMapper(String method) {
     if ("DELETE".equals(method)) {
       return deleteMapper;
     } else if ("GET".equals(method)) {
