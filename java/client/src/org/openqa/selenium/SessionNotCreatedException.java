@@ -26,6 +26,6 @@ public class SessionNotCreatedException extends WebDriverException {
   }
 
   public SessionNotCreatedException(String msg, Throwable cause) {
-    super(message, cause);
+    super(msg, cause);
   }
 }
