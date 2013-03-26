@@ -35,70 +35,77 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
   int status_code = executor.GetCurrentBrowser(&browser);
   if (status_code == WD_SUCCESS) {
     if (mechanism == L"css") {
-      return this->FindElementByCssSelector(executor,
+      if (!this->HasNativeCssSelectorEngine(executor)) {
+        LOG(DEBUG) << "Element location strategy is CSS selectors, but "
+                   << "document does not support CSS selectors. Falling back "
+                   << "to using the Sizzle JavaScript CSS selector engine.";
+        return this->FindElementUsingSizzle(executor,
                                             parent_wrapper,
                                             criteria,
                                             found_element);
-    } else {
-      std::wstring sanitized_criteria = criteria;
-      this->SanitizeCriteria(mechanism, &sanitized_criteria);
-      std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + 
-                                            mechanism + 
-                                            L"\" : \"" +
-                                            sanitized_criteria + L"\" }; };})();";
-      CComPtr<IHTMLDocument2> doc;
-      browser->GetDocument(&doc);
+      }
+    }
 
-      Script criteria_wrapper(doc, criteria_object_script, 0);
-      status_code = criteria_wrapper.Execute();
+    LOG(DEBUG) << L"Using FindElement atom to locate element having "
+               << LOGWSTRING(mechanism.c_str()) << " = "
+               << LOGWSTRING(criteria.c_str());
+    std::wstring sanitized_criteria = criteria;
+    this->SanitizeCriteria(mechanism, &sanitized_criteria);
+    std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + 
+                                          mechanism + 
+                                          L"\" : \"" +
+                                          sanitized_criteria + L"\" }; };})();";
+    CComPtr<IHTMLDocument2> doc;
+    browser->GetDocument(&doc);
+
+    Script criteria_wrapper(doc, criteria_object_script, 0);
+    status_code = criteria_wrapper.Execute();
+    if (status_code == WD_SUCCESS) {
+      CComVariant criteria_object;
+      criteria_object.Copy(&criteria_wrapper.result());
+
+      // The atom is just the definition of an anonymous
+      // function: "function() {...}"; Wrap it in another function so we can
+      // invoke it with our arguments without polluting the current namespace.
+      std::wstring script_source(L"(function() { return (");
+      script_source += atoms::asString(atoms::FIND_ELEMENT);
+      script_source += L")})();";
+
+      Script script_wrapper(doc, script_source, 2);
+      script_wrapper.AddArgument(criteria_object);
+      if (parent_wrapper) {
+        script_wrapper.AddArgument(parent_wrapper->element());
+      }
+
+      status_code = script_wrapper.Execute();
       if (status_code == WD_SUCCESS) {
-        CComVariant criteria_object;
-        HRESULT hr = ::VariantCopy(&criteria_object,
-                                   &criteria_wrapper.result());
-
-        // The atom is just the definition of an anonymous
-        // function: "function() {...}"; Wrap it in another function so we can
-        // invoke it with our arguments without polluting the current namespace.
-        std::wstring script_source(L"(function() { return (");
-        script_source += atoms::asString(atoms::FIND_ELEMENT);
-        script_source += L")})();";
-
-        Script script_wrapper(doc, script_source, 2);
-        script_wrapper.AddArgument(criteria_object);
-        if (parent_wrapper) {
-          script_wrapper.AddArgument(parent_wrapper->element());
-        }
-
-        status_code = script_wrapper.Execute();
-        if (status_code == WD_SUCCESS) {
-          if (script_wrapper.ResultIsElement()) {
-            script_wrapper.ConvertResultToJsonValue(executor, found_element);
-          } else {
-            LOG(WARN) << "Unable to find element by mechanism "
-                      << LOGWSTRING(mechanism.c_str()) << " and criteria " 
-                      << LOGWSTRING(sanitized_criteria.c_str());
-            status_code = ENOSUCHELEMENT;
-          }
+        if (script_wrapper.ResultIsElement()) {
+          script_wrapper.ConvertResultToJsonValue(executor, found_element);
         } else {
-          // An error in the execution of the FindElement atom for XPath is assumed
-          // to be a syntactically invalid XPath.
-          if (mechanism == L"xpath") {
-            LOG(WARN) << "Attempted to find element using invalid xpath: "
-                      << LOGWSTRING(sanitized_criteria.c_str());
-            status_code = EINVALIDSELECTOR;
-          } else {
-            LOG(WARN) << "Unexpected error attempting to find element by mechanism "
-                      << LOGWSTRING(mechanism.c_str()) << " with criteria "
-                      << LOGWSTRING(sanitized_criteria.c_str());
-            status_code = ENOSUCHELEMENT;
-          }
+          LOG(WARN) << "Unable to find element by mechanism "
+                    << LOGWSTRING(mechanism.c_str()) << " and criteria " 
+                    << LOGWSTRING(sanitized_criteria.c_str());
+          status_code = ENOSUCHELEMENT;
         }
       } else {
-        LOG(WARN) << "Unable to create criteria object for mechanism "
-                  << LOGWSTRING(mechanism.c_str()) << " and criteria " 
-                  << LOGWSTRING(sanitized_criteria.c_str());
-        status_code = ENOSUCHELEMENT;
+        // An error in the execution of the FindElement atom for XPath is assumed
+        // to be a syntactically invalid XPath.
+        if (mechanism == L"xpath") {
+          LOG(WARN) << "Attempted to find element using invalid xpath: "
+                    << LOGWSTRING(sanitized_criteria.c_str());
+          status_code = EINVALIDSELECTOR;
+        } else {
+          LOG(WARN) << "Unexpected error attempting to find element by mechanism "
+                    << LOGWSTRING(mechanism.c_str()) << " with criteria "
+                    << LOGWSTRING(sanitized_criteria.c_str());
+          status_code = ENOSUCHELEMENT;
+        }
       }
+    } else {
+      LOG(WARN) << "Unable to create criteria object for mechanism "
+                << LOGWSTRING(mechanism.c_str()) << " and criteria " 
+                << LOGWSTRING(sanitized_criteria.c_str());
+      status_code = ENOSUCHELEMENT;
     }
   } else {
     LOG(WARN) << "Unable to get browser";
@@ -117,66 +124,73 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
   int status_code = executor.GetCurrentBrowser(&browser);
   if (status_code == WD_SUCCESS) {
     if (mechanism == L"css") {
-      return this->FindElementsByCssSelector(executor,
+      if (!this->HasNativeCssSelectorEngine(executor)) {
+        LOG(DEBUG) << "Element location strategy is CSS selectors, but "
+                   << "document does not support CSS selectors. Falling back "
+                   << "to using the Sizzle JavaScript CSS selector engine.";
+        return this->FindElementsUsingSizzle(executor,
                                              parent_wrapper,
                                              criteria,
                                              found_elements);
-    } else {
-      std::wstring sanitized_criteria = criteria;
-      this->SanitizeCriteria(mechanism, &sanitized_criteria);
-      std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + mechanism + L"\" : \"" + sanitized_criteria + L"\" }; };})();";
-      CComPtr<IHTMLDocument2> doc;
-      browser->GetDocument(&doc);
+      }
+    }
 
-      Script criteria_wrapper(doc, criteria_object_script, 0);
-      status_code = criteria_wrapper.Execute();
+    LOG(DEBUG) << L"Using FindElements atom to locate element having "
+               << LOGWSTRING(mechanism.c_str()) << " = "
+               << LOGWSTRING(criteria.c_str());
+    std::wstring sanitized_criteria = criteria;
+    this->SanitizeCriteria(mechanism, &sanitized_criteria);
+    std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + mechanism + L"\" : \"" + sanitized_criteria + L"\" }; };})();";
+    CComPtr<IHTMLDocument2> doc;
+    browser->GetDocument(&doc);
+
+    Script criteria_wrapper(doc, criteria_object_script, 0);
+    status_code = criteria_wrapper.Execute();
+    if (status_code == WD_SUCCESS) {
+      CComVariant criteria_object;
+      criteria_object.Copy(&criteria_wrapper.result());
+
+      // The atom is just the definition of an anonymous
+      // function: "function() {...}"; Wrap it in another function so we can
+      // invoke it with our arguments without polluting the current namespace.
+      std::wstring script_source(L"(function() { return (");
+      script_source += atoms::asString(atoms::FIND_ELEMENTS);
+      script_source += L")})();";
+
+      Script script_wrapper(doc, script_source, 2);
+      script_wrapper.AddArgument(criteria_object);
+      if (parent_wrapper) {
+        script_wrapper.AddArgument(parent_wrapper->element());
+      }
+
+      status_code = script_wrapper.Execute();
       if (status_code == WD_SUCCESS) {
-        CComVariant criteria_object;
-        HRESULT hr = ::VariantCopy(&criteria_object,
-                                   &criteria_wrapper.result());
-
-        // The atom is just the definition of an anonymous
-        // function: "function() {...}"; Wrap it in another function so we can
-        // invoke it with our arguments without polluting the current namespace.
-        std::wstring script_source(L"(function() { return (");
-        script_source += atoms::asString(atoms::FIND_ELEMENTS);
-        script_source += L")})();";
-
-        Script script_wrapper(doc, script_source, 2);
-        script_wrapper.AddArgument(criteria_object);
-        if (parent_wrapper) {
-          script_wrapper.AddArgument(parent_wrapper->element());
-        }
-
-        status_code = script_wrapper.Execute();
-        if (status_code == WD_SUCCESS) {
-          if (script_wrapper.ResultIsArray() || 
-              script_wrapper.ResultIsElementCollection()) {
-            script_wrapper.ConvertResultToJsonValue(executor, found_elements);
-          } else {
-            LOG(WARN) << "Returned value is not an array or element collection";
-            status_code = ENOSUCHELEMENT;
-          }
+        if (script_wrapper.ResultIsArray() || 
+            script_wrapper.ResultIsElementCollection()) {
+          script_wrapper.ConvertResultToJsonValue(executor, found_elements);
         } else {
-          // An error in the execution of the FindElement atom for XPath is assumed
-          // to be a syntactically invalid XPath.
-          if (mechanism == L"xpath") {
-            LOG(WARN) << "Attempted to find elements using invalid xpath: "
-                      << LOGWSTRING(sanitized_criteria.c_str());
-            status_code = EINVALIDSELECTOR;
-          } else {
-            LOG(WARN) << "Unexpected error attempting to find element by mechanism "
-                      << LOGWSTRING(mechanism.c_str()) << " and criteria "
-                      << LOGWSTRING(sanitized_criteria.c_str());
-            status_code = ENOSUCHELEMENT;
-          }
+          LOG(WARN) << "Returned value is not an array or element collection";
+          status_code = ENOSUCHELEMENT;
         }
       } else {
-        LOG(WARN) << "Unable to create criteria object for mechanism "
-                  << LOGWSTRING(mechanism.c_str()) << " and criteria "
-                  << LOGWSTRING(sanitized_criteria.c_str());
-        status_code = ENOSUCHELEMENT;
+        // An error in the execution of the FindElement atom for XPath is assumed
+        // to be a syntactically invalid XPath.
+        if (mechanism == L"xpath") {
+          LOG(WARN) << "Attempted to find elements using invalid xpath: "
+                    << LOGWSTRING(sanitized_criteria.c_str());
+          status_code = EINVALIDSELECTOR;
+        } else {
+          LOG(WARN) << "Unexpected error attempting to find element by mechanism "
+                    << LOGWSTRING(mechanism.c_str()) << " and criteria "
+                    << LOGWSTRING(sanitized_criteria.c_str());
+          status_code = ENOSUCHELEMENT;
+        }
       }
+    } else {
+      LOG(WARN) << "Unable to create criteria object for mechanism "
+                << LOGWSTRING(mechanism.c_str()) << " and criteria "
+                << LOGWSTRING(sanitized_criteria.c_str());
+      status_code = ENOSUCHELEMENT;
     }
   } else {
     LOG(WARN) << "Unable to get browser";
@@ -184,11 +198,11 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
   return status_code;
 }
 
-int ElementFinder::FindElementByCssSelector(const IECommandExecutor& executor,
-                                            const ElementHandle parent_wrapper,
-                                            const std::wstring& criteria,
-                                            Json::Value* found_element) {
-  LOG(TRACE) << "Entering ElementFinder::FindElementByCssSelector";
+int ElementFinder::FindElementUsingSizzle(const IECommandExecutor& executor,
+                                          const ElementHandle parent_wrapper,
+                                          const std::wstring& criteria,
+                                          Json::Value* found_element) {
+  LOG(TRACE) << "Entering ElementFinder::FindElementUsingSizzle";
 
   int result;
 
@@ -234,11 +248,11 @@ int ElementFinder::FindElementByCssSelector(const IECommandExecutor& executor,
   return result;
 }
 
-int ElementFinder::FindElementsByCssSelector(const IECommandExecutor& executor,
-                                             const ElementHandle parent_wrapper,
-                                             const std::wstring& criteria,
-                                             Json::Value* found_elements) {
-  LOG(TRACE) << "Entering ElementFinder::FindElementsByCssSelector";
+int ElementFinder::FindElementsUsingSizzle(const IECommandExecutor& executor,
+                                           const ElementHandle parent_wrapper,
+                                           const std::wstring& criteria,
+                                           Json::Value* found_elements) {
+  LOG(TRACE) << "Entering ElementFinder::FindElementsUsingSizzle";
 
   int result;
 
@@ -320,6 +334,7 @@ void ElementFinder::SanitizeCriteria(const std::wstring& mechanism,
   // marks needs to have those quotes escaped for calling into JavaScript.
   if (mechanism == L"linkText" || 
       mechanism == L"partialLinkText" || 
+      mechanism == L"css" || 
       mechanism == L"xpath") {
     this->ReplaceAllSubstrings(L"\\", L"\\\\", criteria);
     this->ReplaceAllSubstrings(L"\"", L"\\\"", criteria);
@@ -336,6 +351,26 @@ void ElementFinder::ReplaceAllSubstrings(const std::wstring& to_replace,
     str->replace(pos, to_replace.length(), replace_with);
     pos = str->find(to_replace, pos + replace_with.length());
   }
+}
+
+bool ElementFinder::HasNativeCssSelectorEngine(const IECommandExecutor& executor) {
+  LOG(TRACE) << "Entering ElementFinder::HasNativeCssSelectorEngine";
+
+  BrowserHandle browser;
+  executor.GetCurrentBrowser(&browser);
+
+  std::wstring script_source(L"(function() { return function(){");
+  script_source += L"var root = document.documentElement;";
+  script_source += L"if (root['querySelectorAll']) { return true; } ";
+  script_source += L"return false;";
+  script_source += L"};})();";
+
+  CComPtr<IHTMLDocument2> doc;
+  browser->GetDocument(&doc);
+
+  Script script_wrapper(doc, script_source, 0);
+  script_wrapper.Execute();
+  return script_wrapper.result().boolVal == VARIANT_TRUE;
 }
 
 } // namespace webdriver

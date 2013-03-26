@@ -41,18 +41,19 @@ class ElementFinder {
                            Json::Value* found_elements);
 
  private:
-  int FindElementByCssSelector(const IECommandExecutor& executor,
-                               const ElementHandle parent_wrapper,
-                               const std::wstring& criteria,
-                               Json::Value* found_element);
-  int FindElementsByCssSelector(const IECommandExecutor& executor,
-                                const ElementHandle parent_wrapper,
-                                const std::wstring& criteria,
-                                Json::Value* found_elements);
+  int FindElementUsingSizzle(const IECommandExecutor& executor,
+                             const ElementHandle parent_wrapper,
+                             const std::wstring& criteria,
+                             Json::Value* found_element);
+  int FindElementsUsingSizzle(const IECommandExecutor& executor,
+                              const ElementHandle parent_wrapper,
+                              const std::wstring& criteria,
+                              Json::Value* found_elements);
   void SanitizeCriteria(const std::wstring& mechanism, std::wstring* criteria);
   void ReplaceAllSubstrings(const std::wstring& to_replace,
                             const std::wstring& replace_with,
                             std::wstring* str);
+  bool HasNativeCssSelectorEngine(const IECommandExecutor& executor);
 };
 
 } // namespace webdriver
