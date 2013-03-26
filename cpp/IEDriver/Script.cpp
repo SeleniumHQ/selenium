@@ -263,7 +263,7 @@ int Script::Execute() {
 
   DISPPARAMS call_parameters = { 0 };
   memset(&call_parameters, 0, sizeof call_parameters);
-  call_parameters.cArgs = argument_array_copy.size();
+  call_parameters.cArgs = static_cast<unsigned int>(argument_array_copy.size());
   call_parameters.rgvarg = &argument_array_copy[0];
 
   int return_code = WD_SUCCESS;
