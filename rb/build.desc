@@ -133,7 +133,7 @@ ruby_test(name = "firefox",
     "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":firefox"]
+  deps = [":firefox", ":support"]
 )
 
 ruby_library(name = "ie",
