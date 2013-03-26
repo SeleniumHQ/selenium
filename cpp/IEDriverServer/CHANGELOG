@@ -11,6 +11,18 @@ not made generally available on the downloads page.
 
 v2.31.0.1
 =========
+ * Updates to JavaScript automation atoms.
+ * Refactored IE element finder to make clearer when Sizzle is used.
+   Previously, it was not as easy to determine from IEDriverServer.exe logs
+   when Sizzle was being used for finding elements by CSS selector. It is now
+   explicitly called out and logged. Also, automation atoms are being used when
+   Sizzle is not necessary.
+ * Simplified COM object handling code in IE driver. COM objects are now
+   correctly referenced everywhere via smart pointers, and use of some aliased
+   types is now replaced by the C++ primitives.
+
+v2.31.0.1
+=========
  * Added ability to get current URL from IWebBrowser2 if IHTMLDocument2 fails.
    Under normal circumstances, the IE driver gets the current URL from the
    document loaded in the browser. When IE browses to a non-HTML page, such as
