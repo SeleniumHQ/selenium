@@ -17,7 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.safari;
 
-import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -27,13 +26,13 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
  * A WebDriver implementation that controls Safari using a browser extension
  * (consequently, only Safari 5.1+ is supported).
  */
-@Beta
 public class SafariDriver extends RemoteWebDriver
     implements TakesScreenshot {
 
@@ -48,13 +47,39 @@ public class SafariDriver extends RemoteWebDriver
    */
   public static final String CLEAN_SESSION_CAPABILITY = "safari.cleanSession";
 
+  /**
+   * Capability that defines the path to a Safari installations data
+   * directory. If omitted, the default installation location for the current
+   * platform will be used:
+   * <ul>
+   *   <li>OS X: /Users/$USER/Library/Safari
+   *   <li>Windows: %APPDATA%\Apple Computer\Safari
+   * </ul>
+   *
+   * <p>This capability may be set either as a String or File object.
+   */
+  public static final String DATA_DIR_CAPABILITY = "safari.dataDir";
+
   public SafariDriver() {
     this(DesiredCapabilities.safari());
   }
 
   public SafariDriver(Capabilities desiredCapabilities) {
-    super(new SafariDriverCommandExecutor(0, desiredCapabilities.is(CLEAN_SESSION_CAPABILITY)),
+    super(
+        new SafariDriverCommandExecutor(
+            0, desiredCapabilities.is(CLEAN_SESSION_CAPABILITY),
+            new SafariDriverExtension(dataDirOrNull(desiredCapabilities))),
         desiredCapabilities);
+  }
+
+  private static File dataDirOrNull(Capabilities capabilities) {
+    Object cap = capabilities.getCapability(DATA_DIR_CAPABILITY);
+    if (cap instanceof String) {
+      return new File((String) cap);
+    } else if (cap instanceof File) {
+      return (File) cap;
+    }
+    return null;
   }
 
   @Override
@@ -80,6 +105,7 @@ public class SafariDriver extends RemoteWebDriver
     executor.stop();
   }
 
+  @Override
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
     // Get the screenshot as base64.
     String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();

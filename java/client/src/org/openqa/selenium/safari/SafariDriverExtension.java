@@ -113,13 +113,26 @@ class SafariDriverExtension {
 
   private final Runtime runtime;
   private final Backup backup;
+  private final Optional<File> customDataDir;
 
   private UninstallThread uninstallThread;
   private File installedExtension;
 
-  SafariDriverExtension() {
-    runtime = Runtime.getRuntime();
-    backup = new Backup();
+  /**
+   * Installs the driver extension using a non-standard data directory for
+   * the system's Safari installation.
+   *
+   * @param customDataDir Path to the data directory for the Safari
+   *     instance to use.
+   */
+  SafariDriverExtension(File customDataDir) {
+    this(Optional.fromNullable(customDataDir));
+  }
+
+  private SafariDriverExtension(Optional<File> customDataDir) {
+    this.runtime = Runtime.getRuntime();
+    this.backup = new Backup();
+    this.customDataDir = customDataDir;
   }
 
   /**
@@ -138,14 +151,16 @@ class SafariDriverExtension {
   }
 
   /**
+   * @param customDataDir Location of the data directory for a custom Safari
+   *     installation. If omitted, t
    * @return The directory that the SafariDriver extension should be installed
    *     to for the current platform.
    * @throws IllegalStateException If the extension cannot be installed on the
    *     current platform.
    * @throws IOException If an I/O error occurs.
    */
-  private static File getInstallDirectory() throws IOException {
-    File dataDir = getSafariDataDirectory();
+  private static File getInstallDirectory(Optional<File> customDataDir) throws IOException {
+    File dataDir = customDataDir.or(getSafariDataDirectory());
     checkState(dataDir.isDirectory(),
         "The expected Safari data directory does not exist: %s",
         dataDir.getAbsolutePath());
@@ -179,13 +194,14 @@ class SafariDriverExtension {
     InputSupplier<? extends InputStream> extensionSrc =
         getExtensionFromSystemProperties().or(getExtensionResource());
 
-    installedExtension = new File(getInstallDirectory(), "WebDriver.safariextz");
+    File installDirectory = getInstallDirectory(customDataDir);
+    installedExtension = new File(installDirectory, "WebDriver.safariextz");
     if (installedExtension.exists()) {
       backup.backup(installedExtension);
     }
     copy(extensionSrc, installedExtension);
 
-    File extensionPlist = new File(getInstallDirectory(), "Extensions.plist");
+    File extensionPlist = new File(installDirectory, "Extensions.plist");
     if (extensionPlist.exists()) {
       backup.backup(extensionPlist);
     }
