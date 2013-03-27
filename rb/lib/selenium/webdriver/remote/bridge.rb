@@ -69,7 +69,10 @@ module Selenium
         end
 
         def browser
-          @browser ||= @capabilities.browser_name.gsub(" ", "_").to_sym
+          @browser ||= (
+            name = @capabilities.browser_name
+            name ? name.gsub(" ", "_").to_sym : 'unknown'
+          )
         end
 
         def driver_extensions

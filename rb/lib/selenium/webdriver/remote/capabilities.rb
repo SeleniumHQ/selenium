@@ -136,7 +136,7 @@ module Selenium
             caps = new
             caps.browser_name          = data.delete("browserName")
             caps.version               = data.delete("version")
-            caps.platform              = data.delete("platform").downcase.to_sym
+            caps.platform              = data.delete("platform").downcase.to_sym if data.has_key?('platform')
             caps.javascript_enabled    = data.delete("javascriptEnabled")
             caps.css_selectors_enabled = data.delete("cssSelectorsEnabled")
             caps.takes_screenshot      = data.delete("takesScreenshot")
