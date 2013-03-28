@@ -28,6 +28,7 @@ except ImportError:
     import urlparse as parse
 
 from .command import Command
+from .errorhandler import ErrorCode
 from . import utils
 
 LOGGER = logging.getLogger(__name__)
@@ -397,9 +398,17 @@ class RemoteConnection(object):
             if response.code > 399 and response.code < 500:
                 return {'status': response.code, 'value': response.read()}
             body = response.read().decode('utf-8').replace('\x00', '').strip()
-            content_type = response.info()['Content-Type'] or []
-            if 'application/json' in content_type:
-                data = utils.load_json(body.strip())
+            content_type = response.info().getheaders('Content-Type')
+            if not any([x.startswith('image/png') for x in content_type]):
+                try:
+                    data = utils.load_json(body.strip())
+                except ValueError:
+                    if response.code > 199 and response.code < 300:
+                        status = ErrorCode.SUCCESS
+                    else:
+                        status = ErrorCode.UNKNOWN_ERROR
+                    return {'status': status, 'value': body.strip()}
+
                 assert type(data) is dict, (
                     'Invalid server response body: %s' % body)
                 assert 'status' in data, (
@@ -409,7 +418,7 @@ class RemoteConnection(object):
                 if 'value' not in data:
                     data['value'] = None
                 return data
-            elif 'image/png' in content_type:
+            else:
                 data = {'status': 0, 'value': body.strip()}
                 return data
         finally:
