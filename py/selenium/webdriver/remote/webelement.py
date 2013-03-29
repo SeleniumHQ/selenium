@@ -16,7 +16,10 @@
 """WebElement implementation."""
 import os
 import zipfile
-from io import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:  # 3+
+    from io import StringIO
 import base64
 
 
