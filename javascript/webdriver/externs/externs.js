@@ -27,19 +27,3 @@ var process = {};
 
 /** @type {!Object.<string>} */
 process.env = {};
-
-
-/** @type {!Object} */
-var JSON = {};
-
-/**
- * @param {string} value
- * @return {!Object}
- */
-JSON.parse = function(value) {};
-
-/**
- * @param {*} value
- * @return {string}
- */
-JSON.stringify = function(value) {};
