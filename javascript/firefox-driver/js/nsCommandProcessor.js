@@ -471,7 +471,8 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     if (command.name != 'getAlertText' &&
         command.name != 'setAlertValue' &&
         command.name != 'acceptAlert' &&
-        command.name != 'dismissAlert') {
+        command.name != 'dismissAlert' &&
+        command.name != 'executeScript') {
       var modalText = driver.modalOpen;
       var unexpectedAlertBehaviour = fxdriver.modals.getUnexpectedAlertBehaviour();
       switch (unexpectedAlertBehaviour) {
@@ -492,7 +493,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
       fxdriver.logging.error('Sending error from command ' +
         command.name + ' with alertText: ' + modalText);
       response.sendError(new WebDriverError(bot.ErrorCode.MODAL_DIALOG_OPENED,
-          'Modal dialog present', {alert: {text: modalText}}));
+          'Modal dialog present, command: ' + command.name, {alert: {text: modalText}}));
       return;
     }
   }
