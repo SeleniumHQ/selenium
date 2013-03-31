@@ -789,7 +789,7 @@ module Javascript
     MAX_LINE_LENGTH_CPP = 78
     MAX_LINE_LENGTH_JAVA = 100
     MAX_STR_LENGTH_CPP = MAX_LINE_LENGTH_CPP - "    L\"\"\n".length
-    MAX_STR_LENGTH_JAVA = MAX_LINE_LENGTH_JAVA - "     \"\"+\n".length
+    MAX_STR_LENGTH_JAVA = MAX_LINE_LENGTH_JAVA - "       .append\(\"\"\)\n".length
     COPYRIGHT =
           "/*\n" +
           " * Copyright 2011-2012 WebDriver committers\n" +
@@ -858,7 +858,7 @@ module Javascript
         # Don't need the 'L' on each line for UTF8.
         line_format = utf8 ? "    \"%s\"" : "    L\"%s\""
       elsif language == :java
-        line_format = "    \"%s\""
+        line_format = "      .append\(\"%s\"\)"
       end
 
       to_file << "\n"
@@ -866,7 +866,7 @@ module Javascript
       if language == :cpp
         to_file << "const #{atom_type}* const #{atom_name}[] = {\n"
       elsif language == :java
-        to_file << "  #{atom_name}(\n"
+        to_file << "  #{atom_name}(new StringBuilder()\n"
       end
 
       # Make the header file play nicely in a terminal: limit lines to 80
@@ -881,7 +881,6 @@ module Javascript
 
         if (language == :java)
           to_file << line_format % line
-          to_file << " +"
           to_file << "\n"
         elsif (language == :cpp)
           to_file << line_format % line
@@ -892,7 +891,7 @@ module Javascript
       to_file << line_format % contents if contents.length > 0
 
       if language == :java
-        to_file << "\n  ),\n"
+        to_file << "\n    .toString()),\n"
       elsif language == :cpp
         to_file << ",\n    NULL\n};\n"
       end
@@ -985,7 +984,7 @@ module Javascript
         implementation = $1.capitalize
         output_dir = File.dirname(output)
         mkdir_p output_dir unless File.exists?(output_dir)
-        class_name = implementation + "Atom"
+        class_name = implementation + "Atoms"
         output = output_dir + "/" + class_name + ".java"
 
         puts "Preparing #{task_name} as #{output}"
