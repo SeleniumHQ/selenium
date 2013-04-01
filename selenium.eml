@@ -36,8 +36,8 @@
 	<lib name="easymockclassextension-2.4.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/easymock/easymockclassextension-2.4.jar!/"/>
 	</lib>
-	<lib name="htmlunit-core-js-2.11.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.11.jar!/"/>
+	<lib name="htmlunit-core-js-2.12.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-core-js-2.12.jar!/"/>
 	</lib>
 	<lib name="bcprov-jdk15-146.jar" scope="COMPILE">
 		<srcroot url="jar://$MODULE_DIR$/third_party/java/bouncycastle/bcprov-jdk15on-1.48.jar!/"/>
@@ -49,8 +49,8 @@
 		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-repacked-7.6.1-sources.jar!/"/>
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-repacked-7.6.1.jar!/"/>
 	</lib>
-	<lib name="htmlunit-2.9.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.11.jar!/"/>
+	<lib name="htmlunit-2.12.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-2.12.jar!/"/>
 	</lib>
 	<lib name="easymock-2.4.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/easymock/easymock-2.4.jar!/"/>
@@ -145,8 +145,8 @@
 	<lib name="xercesImpl-2.9.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/xml/xercesImpl-2.9.1.jar!/"/>
 	</lib>
-	<lib name="cssparser-0.9.8.jar" scope="COMPILE">
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/cssparser/cssparser-0.9.8.jar!/"/>
+	<lib name="cssparser-0.9.9.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/cssparser/cssparser-0.9.9.jar!/"/>
 	</lib>
 	<lib name="nekohtml-1.9.17.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/nekohtml/nekohtml-1.9.17.jar!/"/>
