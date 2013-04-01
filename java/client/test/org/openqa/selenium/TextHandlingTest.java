@@ -260,7 +260,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo(""));
   }
 
-  @Ignore({SELENESE})
+  @Ignore({SELENESE, HTMLUNIT})
   @Test
   public void testShouldNotTrimSpacesWhenLineWraps() {
     driver.get(pages.simpleTestPage);

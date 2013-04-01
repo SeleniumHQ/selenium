@@ -234,11 +234,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     if (BrowserType.FIREFOX.equals(browserName)) {
-      if (browserVersion != null
-          && (browserVersion.equals("3") || browserVersion.startsWith("3."))) {
-        return BrowserVersion.FIREFOX_3_6;
-      }
-      return BrowserVersion.FIREFOX_10;
+      return BrowserVersion.FIREFOX_17;
+    }
+
+    if (BrowserType.CHROME.equals(browserName)) {
+      return BrowserVersion.CHROME;
     }
 
     if (BrowserType.IE.equals(browserName)) {
@@ -252,6 +252,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
             return BrowserVersion.INTERNET_EXPLORER_7;
           case 8:
             return BrowserVersion.INTERNET_EXPLORER_8;
+          case 9:
+            return BrowserVersion.INTERNET_EXPLORER_9;
           default:
             return BrowserVersion.INTERNET_EXPLORER_8;
         }
@@ -260,7 +262,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       }
     }
 
-    return BrowserVersion.FIREFOX_10;
+    return BrowserVersion.getDefault();
   }
 
   private WebClient createWebClient(BrowserVersion version) {

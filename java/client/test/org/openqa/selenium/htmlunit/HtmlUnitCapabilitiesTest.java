@@ -50,7 +50,7 @@ public class HtmlUnitCapabilitiesTest {
         new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(firefoxCapabilities),
-        BrowserVersion.FIREFOX_10);
+        BrowserVersion.FIREFOX_17);
   }
 
   @Test
@@ -59,7 +59,7 @@ public class HtmlUnitCapabilitiesTest {
         new DesiredCapabilities(BrowserType.HTMLUNIT, "firefox", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(firefoxCapabilities),
-        BrowserVersion.FIREFOX_10);
+        BrowserVersion.FIREFOX_17);
   }
 
   @Test
@@ -75,6 +75,14 @@ public class HtmlUnitCapabilitiesTest {
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(ie7Capabilities),
         BrowserVersion.INTERNET_EXPLORER_7);
+  }
+
+  @Test
+  public void tetsDefautlBrowserVersion() {
+    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
+
+    assertEquals(HtmlUnitDriver.determineBrowserVersion(capabilities),
+        BrowserVersion.getDefault());
   }
 
   @Test
