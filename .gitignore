@@ -80,4 +80,5 @@ obj/
 Generated/
 ipch/
 /iedriver.log
+/phantomjsdriver.log
 .tags
