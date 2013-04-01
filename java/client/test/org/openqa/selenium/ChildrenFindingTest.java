@@ -222,7 +222,18 @@ public class ChildrenFindingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  public void testShouldBeAbleToFindAnElementsByCssSelector() {
+  public void testShouldBeAbleToFindAnElementByCss3Selector() {
+    driver.get(pages.nestedPage);
+    WebElement parent = driver.findElement(By.name("form2"));
+
+    WebElement element = parent.findElement(By.cssSelector("*[name^=\"selecto\"]"));
+
+    assertEquals("2", element.getAttribute("id"));
+  }
+
+  @JavascriptEnabled
+  @Test
+  public void testShouldBeAbleToFindElementsByCssSelector() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.name("form2"));
 
