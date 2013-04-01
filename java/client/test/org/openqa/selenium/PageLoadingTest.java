@@ -272,7 +272,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 5 * 1000);
   }
 
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, PHANTOMJS, SAFARI, SELENESE, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, CHROME, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NeedsLocalEnvironment

@@ -76,6 +76,7 @@ import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -97,6 +98,7 @@ import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -356,6 +358,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       // This should be fine
     } catch (ConnectException e) {
       // This might be expected
+    } catch (SocketTimeoutException e) {
+      throw new TimeoutException(e);
     } catch (Exception e) {
       throw new WebDriverException(e);
     }
@@ -1241,7 +1245,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
-      throw new UnsupportedOperationException("pageLoadTimeout");
+      webClient.getOptions().setTimeout((int) TimeUnit.MILLISECONDS.convert(time, unit));
+      return this;
     }
   }
 
