@@ -1245,7 +1245,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
-      webClient.getOptions().setTimeout((int) TimeUnit.MILLISECONDS.convert(time, unit));
+      int timeout = (int) TimeUnit.MILLISECONDS.convert(time, unit);
+      webClient.getOptions().setTimeout(timeout > 0 ? timeout : 0);
       return this;
     }
   }
