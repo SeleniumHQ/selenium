@@ -148,7 +148,7 @@ Utils.getActiveElement = function(doc) {
 
   // Default to the body
   if (!element) {
-    element = doc.body;
+    element = Utils.getMainDocumentElement(doc);
   }
 
   return element;
@@ -1156,8 +1156,8 @@ Utils.getPageUnloadedIndicator = function(element) {
   var unloadFunction = function() { toReturn.wasUnloaded = true };
   toReturn.callback = unloadFunction;
 
-  element.ownerDocument.body.addEventListener('unload',
-      unloadFunction, false);
+  var mainDocumentElement = Utils.getMainDocumentElement(element.ownerDocument);
+  mainDocumentElement.addEventListener('unload', unloadFunction, false);
 
   // This is a Firefox specific event - See:
   // https://developer.mozilla.org/En/Using_Firefox_1.5_caching
@@ -1171,8 +1171,9 @@ Utils.removePageUnloadEventListener = function(element, pageUnloadData) {
   if (pageUnloadData.callback) {
     // Remove event listeners...
     if (element.ownerDocument) {
-      if (element.ownerDocument.body) {
-        element.ownerDocument.body.removeEventListener('unload',
+      var mainDocumentElement = Utils.getMainDocumentElement(element.ownerDocument);
+      if (mainDocumentElement) {
+        mainDocumentElement.removeEventListener('unload',
             pageUnloadData.callback, false);
       }
       if (element.ownerDocument.defaultView) {
@@ -1206,4 +1207,14 @@ Utils.convertNSIArrayToNative = function(arrayToConvert) {
   }
 
   return returnArray;
+};
+
+Utils.isSVG = function(doc) {
+  return doc.documentElement && doc.documentElement.nodeName == 'svg';
+};
+
+Utils.getMainDocumentElement = function(doc) {
+  if (Utils.isSVG(doc))
+    return doc.documentElement;
+  return doc.body;
 };

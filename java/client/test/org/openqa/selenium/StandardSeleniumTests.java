@@ -77,6 +77,7 @@ import org.openqa.selenium.testing.ParallelSuite;
     SlowLoadingPageTest.class,
     StaleElementReferenceTest.class,
     SvgElementTest.class,
+    SvgDocumentTest.class,
     TagNameTest.class,
     TakesScreenshotTest.class,
     TextHandlingTest.class,
