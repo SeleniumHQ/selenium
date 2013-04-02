@@ -646,31 +646,11 @@ Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
 
 
 Utils.getElementLocation = function(element) {
-  var x = element.offsetLeft;
-  var y = element.offsetTop;
-  var elementParent = element.offsetParent;
-  while (elementParent != null) {
-    if (elementParent.tagName == 'TABLE') {
-      var parentBorder = parseInt(elementParent.border);
-      if (isNaN(parentBorder)) {
-        var parentFrame = elementParent.getAttribute('frame');
-        if (parentFrame != null) {
-          x += 1;
-          y += 1;
-        }
-      } else if (parentBorder > 0) {
-        x += parentBorder;
-        y += parentBorder;
-      }
-    }
-    x += elementParent.offsetLeft;
-    y += elementParent.offsetTop;
-    elementParent = elementParent.offsetParent;
-  }
+  var rect = element.getBoundingClientRect()
 
   var location = new Object();
-  location.x = x;
-  location.y = y;
+  location.x = rect.left;
+  location.y = rect.top;
   return location;
 };
 
