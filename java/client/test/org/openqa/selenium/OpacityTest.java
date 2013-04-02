@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -40,7 +41,7 @@ public class OpacityTest extends JUnit4TestBase {
    *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
    */
   @JavascriptEnabled
-  @Ignore({IE, SELENESE, OPERA, OPERA_MOBILE})
+  @Ignore({IE, HTMLUNIT, SELENESE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);

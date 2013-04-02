@@ -242,8 +242,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, IE},
-      reason = "IE: Only fires the onchange event when the checkbox loses the focus")
+  @Ignore(value = {SELENESE, IE, HTMLUNIT},
+      reason = "IE: Only fires the onchange event when the checkbox loses the focus, "
+             + "HtmlUnit: default mode is IE8 now")
   @Test
   public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
     driver.get(pages.javascriptPage);

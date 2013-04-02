@@ -108,7 +108,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, OPERA, SELENESE})
+  @Ignore({ANDROID, IPHONE, OPERA, SELENESE, HTMLUNIT})
   @Test
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);
