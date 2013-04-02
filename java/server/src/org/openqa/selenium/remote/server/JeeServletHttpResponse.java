@@ -62,6 +62,7 @@ public class JeeServletHttpResponse implements HttpResponse {
   }
 
   public void sendRedirect(String to) {
+    response.setContentLength(0);
     try {
       response.sendRedirect(to);
     } catch (IOException e) {
