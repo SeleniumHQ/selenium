@@ -84,8 +84,8 @@ public class WindowsUtilsUnitTest {
   @Test
   public void testKill() throws Exception {
     if (!WindowsUtils.thisIsWindows()) return;
-    tryKill(new String[]{"sleep.exe", "10"});
-    tryKill(new String[]{"sleep", "10"});
+    tryKill("sleep.exe", "10");
+    tryKill("sleep", "10");
   }
 
   @Test
