@@ -45,6 +45,7 @@ import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.FrameWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlHtml;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.javascript.host.Location;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLCollection;
@@ -995,7 +996,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       Page page = currentWindow.getEnclosedPage();
       if (page instanceof HtmlPage) {
         HtmlElement element = ((HtmlPage) page).getFocusedElement();
-        if (element == null) {
+        if (element == null || element instanceof HtmlHtml) {
           List<? extends HtmlElement> allBodies =
               ((HtmlPage) page).getDocumentElement().getHtmlElementsByTagName("body");
           if (!allBodies.isEmpty()) {
