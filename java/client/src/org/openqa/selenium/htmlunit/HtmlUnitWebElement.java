@@ -43,6 +43,7 @@ import org.openqa.selenium.internal.WrapsElement;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.SgmlPage;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
@@ -146,12 +147,15 @@ public class HtmlUnitWebElement implements WrapsDriver,
       // element not visible either
     }
 
-    //Removed the code of handling HTMLoption deselect and select as it is handled 
-    //in the latest revision 6562 of htmlunit
-   
+    if (element instanceof HtmlButton) {
+      String type = element.getAttribute("type");
+      if (type == DomElement.ATTRIBUTE_NOT_DEFINED || type == DomElement.ATTRIBUTE_VALUE_EMPTY) {
+        element.setAttribute("type", "submit");
+      }
+    }
+
     HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
     mouse.click(getCoordinates());
-    
 
     if (element instanceof HtmlLabel) {
       HtmlElement referencedElement = ((HtmlLabel)element).getReferencedElement();

@@ -24,6 +24,7 @@ import org.openqa.selenium.testing.TestUtilities;
 import java.io.File;
 import java.io.IOException;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.instanceOf;
@@ -326,5 +327,44 @@ public class FormHandlingTest extends JUnit4TestBase {
 
     assertEquals("Tasty cheese", text);
   }
+
+  @Ignore(value = {ANDROID, IPHONE, SAFARI, SELENESE, OPERA_MOBILE}, reason = "untested")
+  @Test
+  public void testCanClickOnASubmitButton() {
+    checkSubmitButton("internal_explicit_submit");
+  }
+
+  @Ignore(value = {ANDROID, IPHONE, SAFARI, SELENESE, OPERA_MOBILE}, reason = "untested")
+  @Test
+  public void testCanClickOnAnImplicitSubmitButton() {
+    checkSubmitButton("internal_implicit_submit");
+  }
+
+  @Ignore(value = {ANDROID, HTMLUNIT, IE, IPHONE, SAFARI, SELENESE, OPERA_MOBILE},
+          reason = "IE, HtmlUnit: failed; Others: untested")
+  @Test
+  public void testCanClickOnAnExternalSubmitButton() {
+    checkSubmitButton("external_explicit_submit");
+  }
+
+  @Ignore(value = {ANDROID, HTMLUNIT, IE, IPHONE, SAFARI, SELENESE, OPERA_MOBILE},
+      reason = "IE, HtmlUnit: failed; Others: untested")
+  @Test
+  public void testCanClickOnAnExternalImplicitSubmitButton() {
+    checkSubmitButton("external_implicit_submit");
+  }
+  
+  private void checkSubmitButton(String buttonId) {
+    driver.get(appServer.whereIs("click_tests/html5_submit_buttons.html"));
+    String name = "Gromit";
+
+    driver.findElement(By.id("name")).sendKeys(name);
+    driver.findElement(By.id(buttonId)).click();
+
+    waitFor(pageTitleToBe(driver, "Submitted Successfully!"));
+
+    assertThat(driver.getCurrentUrl(), containsString("name="+name));
+  }
+  
 
 }
