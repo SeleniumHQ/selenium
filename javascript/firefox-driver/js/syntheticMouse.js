@@ -107,8 +107,9 @@ SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
   // Are we about to be dragged out of the window?
 
   var isOption = bot.dom.isElement(element, goog.dom.TagName.OPTION);
+  var isSVG = Utils.isSVG(element.ownerDocument);
 
-  if (!isOption && !inViewAfterScroll) {
+  if (!isOption && !isSVG && !inViewAfterScroll) {
     return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
         'Element cannot be scrolled into view:' + element);
   }

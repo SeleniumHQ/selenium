@@ -87,7 +87,9 @@ WebElement.clickElement = function(respond, parameters) {
         unwrapped,
         new goog.math.Coordinate(elementHalfWidth, elementHalfHeight));
 
-    if (!inViewAfterScroll) {
+    var isSVG = Utils.isSVG(element.ownerDocument);
+
+    if (!isSVG && !inViewAfterScroll) {
         respond.sendError(
             new WebDriverError(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
                 'Element cannot be scrolled into view:' + element));
@@ -388,7 +390,7 @@ WebElement.getElementLocationOnceScrolledIntoView = function(
                                    respond.session.getDocument());
 
   var theDoc = element.ownerDocument;
-  theDoc.body.focus();
+  Utils.getMainDocumentElement(theDoc).focus();
   var elementLocation = Utils.getLocationOnceScrolledIntoView(element);
 
   respond.value = {

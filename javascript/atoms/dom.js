@@ -1269,8 +1269,8 @@ bot.dom.scrollElementRegionIntoClientView = function(elem, elemRegion) {
   var viewportSize = goog.dom.getDomHelper(doc).getViewportSize();
 
   var region = new goog.math.Rect(
-      elemPageOffset.x + elemRegion.left - doc.body.scrollLeft,
-      elemPageOffset.y + elemRegion.top - doc.body.scrollTop,
+      elemPageOffset.x + elemRegion.left - (doc.body ? doc.body.scrollLeft : 0),
+      elemPageOffset.y + elemRegion.top - (doc.body ? doc.body.scrollTop : 0),
       viewportSize.width - elemRegion.width,
       viewportSize.height - elemRegion.height);
 
