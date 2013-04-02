@@ -25,6 +25,7 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
@@ -52,15 +53,18 @@ public class TestUtilities {
   }
 
   public static boolean isFirefox(WebDriver driver) {
-    return getUserAgent(driver).contains("Firefox");
+    return !(driver instanceof HtmlUnitDriver)
+        && getUserAgent(driver).contains("Firefox");
   }
 
   public static boolean isInternetExplorer(WebDriver driver) {
-    return getUserAgent(driver).contains("MSIE");
+    return !(driver instanceof HtmlUnitDriver)
+        && getUserAgent(driver).contains("MSIE");
   }
 
   public static boolean isIe6(WebDriver driver) {
-    return getUserAgent(driver).contains("MSIE 6");
+    return isInternetExplorer(driver)
+        && getUserAgent(driver).contains("MSIE 6");
   }
 
   public static boolean isOldIe(WebDriver driver) {
@@ -74,15 +78,18 @@ public class TestUtilities {
   }
 
   public  static boolean isFirefox30(WebDriver driver) {
-    return getUserAgent(driver).contains("Firefox/3.0.");
+    return isFirefox(driver)
+        && getUserAgent(driver).contains("Firefox/3.0.");
   }
 
   public static boolean isFirefox35(WebDriver driver) {
-    return getUserAgent(driver).contains("Firefox/3.5.");
+    return isFirefox(driver)
+        && getUserAgent(driver).contains("Firefox/3.5.");
   }
 
   public static boolean isFirefox9(WebDriver driver) {
-    return getUserAgent(driver).contains("Firefox/9.0");
+    return isFirefox(driver)
+        && getUserAgent(driver).contains("Firefox/9.0");
   }
   
   /**
