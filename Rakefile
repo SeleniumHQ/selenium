@@ -1,7 +1,5 @@
 $LOAD_PATH.unshift File.expand_path(".")
 
-# A minor change to check diffs being sent from GoogleCode.
-
 require 'rake'
 require 'rake-tasks/files'
 require 'net/telnet'
