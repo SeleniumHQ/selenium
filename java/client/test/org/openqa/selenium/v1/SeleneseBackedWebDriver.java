@@ -29,6 +29,10 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * @deprecated
+ */
+@Deprecated
 public class SeleneseBackedWebDriver extends RemoteWebDriver
     implements TakesScreenshot {
   public SeleneseBackedWebDriver(Capabilities capabilities) throws Exception {

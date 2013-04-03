@@ -95,6 +95,10 @@ import java.io.File;
 import java.net.URL;
 import java.util.Map;
 
+/**
+ * @deprecated
+ */
+@Deprecated
 public class SeleneseCommandExecutor implements CommandExecutor {
   private final ErrorCodes errorCodes;
   private final Selenium instance;
