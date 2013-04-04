@@ -729,20 +729,11 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   // style overflow:hidden AND the element's location is not within the fixed
   // size of the parent
   function isOverflowHiding(e) {
-    var parent = goog.style.getOffsetParent(e);
-    var parentNode = goog.userAgent.GECKO || goog.userAgent.IE ||
-        goog.userAgent.OPERA ? bot.dom.getParentElement(e) : parent;
+    var parent = goog.dom.getParentElement(e);
 
-    // Gecko will skip the BODY tag when calling getOffsetParent. However, the
-    // combination of the overflow values on the BODY _and_ HTML tags determine
-    // whether scroll bars are shown, so we need to guarantee that both values
-    // are checked.
-    if ((goog.userAgent.GECKO || goog.userAgent.IE || goog.userAgent.OPERA) &&
-        bot.dom.isElement(parentNode, goog.dom.TagName.BODY)) {
-      parent = parentNode;
-    }
-
-    if (parent && bot.dom.getEffectiveStyle(parent, 'overflow') == 'hidden') {
+    if (parent && (bot.dom.getEffectiveStyle(parent, 'overflow') == 'hidden' ||
+        bot.dom.getEffectiveStyle(parent, 'overflow-x') == 'hidden' ||
+        bot.dom.getEffectiveStyle(parent, 'overflow-y') == 'hidden')) {
       var sizeOfParent = bot.dom.getElementSize(parent);
       var locOfParent = goog.style.getClientPosition(parent);
       var locOfElement = goog.style.getClientPosition(e);
@@ -752,9 +743,9 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       if (locOfParent.y + sizeOfParent.height <= locOfElement.y) {
         return false;
       }
-      return isOverflowHiding(parent);
+      return true;
     }
-    return true;
+    return !parent || isOverflowHiding(parent);
   }
 
   if (!isOverflowHiding(elem)) {

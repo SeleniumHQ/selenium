@@ -30,6 +30,35 @@
     #box ul > li > a{
       height: 26px;
     }
+#moz814037 {
+  width: 100%;
+  height: 100px;
+  margin: 0px;
+  transition: transform 300ms ease;
+  overflow-x: hidden;
+}
+
+#moz814037 .section1 {
+  transform: translateX(0%);
+}
+
+#moz814037 .section2 {
+  transform: translateX(-100%);
+}
+
+section {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+#section1 {
+  left: 0px;  
+}
+
+#section2 {
+  left: 100%;
+}
   </style>
   <script type="text/javascript">
     var isShown = bot.dom.isShown;
@@ -47,12 +76,13 @@
     }
 
     function testThatElementIsShownWithZIndex() {
-      assertTrue(isShown(findElement({id: "bug5109"})))
+      assertTrue(isShown(findElement({id: "bug5109"})));
+    }
+
+    function testThatElementWithOverflowXShowsHidden() {
+      assertFalse(isShown(findElement({id: 'assertMe2'})))
     }
   </script>
-
-  <style type="text/css">
-  </style>
 </head>
   <body>
   <div style="
@@ -74,6 +104,21 @@
       background-position:center;
       " href="http://lurkmore.to/%D0%A4%D0%B0%D0%B9%D0%BB:BoromirOriginal.jpg"></a>
 
+    </div>
+    <div id='moz814037' >
+      <section id="section1">
+        <div id="assertMe1">
+          <p>Section 1</p>
+        </div>
+        <button id="b1" onclick="var sect = document.getElementById('moz814037'); sect.classList.add('section2'); sect.classList.remove('section1');">Show section 2</button>
+      </section>
+
+      <section id="section2">
+        <div id="assertMe2">
+          <p>Section 2</p>
+        </div>
+        <button id="b2" onclick="var sect = document.getElementById('moz814037'); sect.classList.add('section1'); sect.classList.remove('section2'); ">Show section 1</button>
+      </section>
     </div>
   </body>
 </html>
