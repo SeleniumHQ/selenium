@@ -277,7 +277,7 @@
         assertContains('left: 0px;', style);
         assertContains('text-align: center;', style);
         assertContains('background-image: url(', style);
-        assertContains('http://www.google.ca/Test.gif;?a=b&c=d', style);
+        assertContains('testdata/kitten3.jpg', style);
       }
 
       function testGetAttributeShouldReturnStyleAttributeWithCaseOfPropertyNormalizedToLowercase() {
@@ -332,7 +332,7 @@
     </div>
     <div id="mixedCaseProperties" style="Left: 0px; Text-align: center;">
     </div>
-    <div id="mixedCaseValues" style="left: 0px; text-align: center; background-image: url(http://www.google.ca/Test.gif;?a=b&amp;c=d);">
+    <div id="mixedCaseValues" style="left: 0px; text-align: center; background-image: url(testdata/kitten3.jpg;?a=b&amp;c=d);">
     </div>
     <div id="namedColor" style="background-color: green;">namedColor</div>
     <div id="rgb" style="background-color: rgb(0,128,0);">rgb</div>
