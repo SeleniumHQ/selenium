@@ -7,8 +7,11 @@
       <Value>localhost</Value>
       <Value>mozillazine</Value>
       <Value>onone</Value>
-      <Value>wd</Value>
       <Value>safariextz</Value>
+      <Value>sslv</Value>
+      <Value>tlsv</Value>
+      <Value>utf</Value>
+      <Value>wd</Value>
     </CollectionProperty>
   </GlobalSettings>
   <Analyzers>

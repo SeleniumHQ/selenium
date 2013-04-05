@@ -378,6 +378,12 @@ namespace OpenQA.Selenium.PhantomJS
             return null;
         }
 
+        private static bool IsSerializableProperty(PropertyInfo info)
+        {
+            var attributes = info.GetCustomAttributes(typeof(JsonPropertyAttribute), true);
+            return attributes.Length > 0;
+        }
+
         private string GetPropertyCommandLineArgValue(PropertyInfo info)
         {
             object propertyValue = info.GetValue(this, null);
@@ -399,12 +405,6 @@ namespace OpenQA.Selenium.PhantomJS
             }
 
             return propertyValue.ToString();
-        }
-
-        private static bool IsSerializableProperty(PropertyInfo info)
-        {
-            var attributes = info.GetCustomAttributes(typeof(JsonPropertyAttribute), true);
-            return attributes.Length > 0;
         }
 
         private void InitializeProperties()
