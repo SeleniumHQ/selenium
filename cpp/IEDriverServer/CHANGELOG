@@ -9,7 +9,15 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
-v2.31.0.1
+v2.31.0.3
+=========
+ * Updates to JavaScript automation atoms.
+ * Fixing to no longer allow stale element references to be used in JavaScript
+   execution. The driver now checks the return value when recursively walking
+   JavaScript arrays and objects. Fixes issue #4769. Patch provided by Alex
+   Savchuk.
+
+v2.31.0.2
 =========
  * Updates to JavaScript automation atoms.
  * Refactored IE element finder to make clearer when Sizzle is used.
