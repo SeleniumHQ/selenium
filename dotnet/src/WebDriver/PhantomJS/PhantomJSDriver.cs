@@ -19,10 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.PhantomJS
@@ -81,6 +78,15 @@ namespace OpenQA.Selenium.PhantomJS
         /// <param name="options">The <see cref="PhantomJSOptions"/> used to initialize the driver.</param>
         public PhantomJSDriver(PhantomJSOptions options)
             : this(PhantomJSDriverService.CreateDefaultService(), options, TimeSpan.FromSeconds(60))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PhantomJSDriver"/> class using the specified driver service.
+        /// </summary>
+        /// <param name="service">The <see cref="PhantomJSDriverService"/> used to initialize the driver.</param>
+        public PhantomJSDriver(PhantomJSDriverService service)
+            : this(service, new PhantomJSOptions())
         {
         }
 
