@@ -594,4 +594,34 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
     assertEquals(2, ((Number) res).intValue());
   }
+
+  @JavascriptEnabled
+  @Test
+  public void testShouldThrowAnExceptionWhenArgumentsWithStaleElementPassed() {
+    if (!(driver instanceof JavascriptExecutor)) {
+      return;
+    }
+
+    driver.get(pages.simpleTestPage);
+
+    final WebElement el = driver.findElement(By.id("oneline"));
+
+    driver.get(pages.simpleTestPage);
+
+    Map<String, Object> args = new HashMap<String, Object>() {
+      {
+        put("key", Arrays.asList("a", new Object[]{"zero", 1, true, 3.14159, false, el}, "c"));
+      }
+    };
+
+    try {
+      executeScript("return undefined;", args);
+      fail("Expected an exception");
+    } catch (StaleElementReferenceException e) {
+      // This is expected
+    } catch (Exception ex) {
+      fail("Expected an StaleElementReferenceException exception");
+    }
+  }
+
 }
