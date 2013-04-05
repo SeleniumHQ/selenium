@@ -911,6 +911,7 @@ namespace OpenQA.Selenium.Remote
             IWrapsElement argAsWrapsElement = arg as IWrapsElement;
             RemoteWebElement argAsElement = arg as RemoteWebElement;
             IEnumerable argAsEnumerable = arg as IEnumerable;
+            IDictionary argAsDictionary = arg as IDictionary;
             
             if (argAsElement == null && argAsWrapsElement != null)
             {
@@ -929,19 +930,26 @@ namespace OpenQA.Selenium.Remote
                 elementDictionary.Add("ELEMENT", argAsElement.InternalElementId);
                 converted = elementDictionary;
             }
+            else if (argAsDictionary != null)
+            {
+                // Note that we must check for the argument being a dictionary before
+                // checking for IEnumerable, since dictionaries also implement IEnumerable.
+                // Additionally, JavaScript objects have property names as strings, so all
+                // keys will be converted to strings.
+                Dictionary<string, object> dictionary = new Dictionary<string, object>();
+                foreach (var key in argAsDictionary.Keys)
+                {
+                    dictionary.Add(key.ToString(), ConvertObjectToJavaScriptObject(argAsDictionary[key]));
+                }
+
+                converted = dictionary;
+            }
             else if (argAsEnumerable != null)
             {
                 List<object> objectList = new List<object>();
                 foreach (object item in argAsEnumerable)
                 {
-                    if (item is string || item is float || item is double || item is int || item is long || item is bool || item == null)
-                    {
-                        objectList.Add(item);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Only primitives may be used as elements in collections used as arguments for JavaScript functions.");
-                    }
+                    objectList.Add(ConvertObjectToJavaScriptObject(item));
                 }
 
                 converted = objectList.ToArray();

@@ -405,6 +405,20 @@ namespace OpenQA.Selenium
             Assert.AreEqual("", body.Text);
         }
 
+        // This is a duplicate test of ShouldBeAbleToExecuteScriptAndReturnElementsList.
+        // It's here and commented only to make comparison with the Java language bindings
+        // tests easier.
+        //[Test]
+        //public void testShouldBeAbleToReturnAnArrayOfWebElements()
+        //{
+        //    driver.Url = formsPage;
+
+        //    ReadOnlyCollection<IWebElement> items = (ReadOnlyCollection<IWebElement>)((IJavaScriptExecutor)driver)
+        //        .ExecuteScript("return document.getElementsByName('snack');");
+
+        //    Assert.IsFalse(items.Count == 0);
+        //}
+
         [Test]
         [Category("Javascript")]
         public void JavascriptStringHandlingShouldWorkAsExpected()
@@ -484,6 +498,58 @@ namespace OpenQA.Selenium
             Assert.AreEqual("hello world", text);
         }
 
+        [Test]
+        [IgnoreBrowser(Browser.Opera)]
+        public void ShouldBeAbleToHandleAnArrayOfElementsAsAnObjectArray()
+        {
+            driver.Url = formsPage;
+
+            ReadOnlyCollection<IWebElement> forms = driver.FindElements(By.TagName("form"));
+            object[] args = new object[] { forms };
+
+            string name = (string)((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0][0].tagName", args);
+
+            Assert.AreEqual("form", name.ToLower());
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "Android not tested")]
+        [IgnoreBrowser(Browser.Opera, "Opera obeys the method contract.")]
+        [IgnoreBrowser(Browser.HtmlUnit, "HtmlUnit obeys the method contract.")]
+        public void ShouldBeAbleToPassADictionaryAsAParameter()
+        {
+            driver.Url = simpleTestPage;
+
+            List<int> nums = new List<int>() { 1, 2 };
+            Dictionary<string, object> args = new Dictionary<string, object>();
+            args["bar"] = "test";
+            args["foo"] = nums;
+
+            object res = ((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0]['foo'][1]", args);
+
+            Assert.AreEqual(2, (long)res);
+        }
+
+        [Test]
+        [ExpectedException(typeof(StaleElementReferenceException))]
+        public void ShouldThrowAnExceptionWhenArgumentsWithStaleElementPassed()
+        {
+            IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
+            if (executor == null)
+            {
+                return;
+            }
+
+            driver.Url = simpleTestPage;
+
+            IWebElement el = driver.FindElement(By.Id("oneline"));
+
+            driver.Url = simpleTestPage;
+
+            Dictionary<string, object> args = new Dictionary<string, object>();
+            args["key"] = new object[] { "a", new object[] { "zero", 1, true, 3.14159, false, el }, "c" };
+            executor.ExecuteScript("return undefined;", args);
+        }
 
         ///////////////////////////////////////////////////////
         // Tests below here are unique to the .NET bindings.
