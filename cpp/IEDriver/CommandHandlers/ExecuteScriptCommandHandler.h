@@ -82,6 +82,8 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
   int PopulateArgumentArray(const IECommandExecutor& executor,
                             Script& script_wrapper,
                             Json::Value json_args) {
+    LOG(TRACE) << "Entering ExecuteScriptCommandHandler::PopulateArgumentArray";
+
     int status_code = WD_SUCCESS;
     for (UINT arg_index = 0; arg_index < json_args.size(); ++arg_index) {
       Json::Value arg = json_args[arg_index];
@@ -97,6 +99,8 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
   int AddArgument(const IECommandExecutor& executor,
                   Script& script_wrapper,
                   Json::Value arg) {
+    LOG(TRACE) << "Entering ExecuteScriptCommandHandler::AddArgument";
+
     int status_code = WD_SUCCESS;
     if (arg.isString()) {
       std::string value = arg.asString();
@@ -113,7 +117,7 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
     } else if (arg.isNull()) {
       script_wrapper.AddNullArgument();
     } else if (arg.isArray()) {
-      this->WalkArray(executor, script_wrapper, arg);
+      status_code = this->WalkArray(executor, script_wrapper, arg);
     } else if (arg.isObject()) {
       if (arg.isMember("ELEMENT")) {
         std::string element_id = arg["ELEMENT"].asString();
@@ -124,7 +128,7 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
           script_wrapper.AddArgument(element_wrapper);
         }
       } else {
-        this->WalkObject(executor, script_wrapper, arg);
+        status_code = this->WalkObject(executor, script_wrapper, arg);
       }
     }
 
@@ -134,6 +138,8 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
   int WalkArray(const IECommandExecutor& executor,
                 Script& script_wrapper,
                 Json::Value array_value) {
+    LOG(TRACE) << "Entering ExecuteScriptCommandHandler::WalkArray";
+					
     int status_code = WD_SUCCESS;
     Json::UInt array_size = array_value.size();
     std::wstring array_script = L"(function(){ return function() { return [";
@@ -149,7 +155,10 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
     array_script += L"];}})();";
 
     BrowserHandle browser;
-    executor.GetCurrentBrowser(&browser);
+    int browser_status = executor.GetCurrentBrowser(&browser);
+    if (browser_status != WD_SUCCESS) {
+      return browser_status;
+    }
 
     CComPtr<IHTMLDocument2> doc;
     browser->GetDocument(&doc);
@@ -177,6 +186,8 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
   int WalkObject(const IECommandExecutor& executor,
                  Script& script_wrapper,
                  Json::Value object_value) {
+    LOG(TRACE) << "Entering ExecuteScriptCommandHandler::WalkObject";
+
     int status_code = WD_SUCCESS;
     Json::Value::iterator it = object_value.begin();
     int counter = 0;
@@ -195,7 +206,10 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
     object_script += "};}})();";
 
     BrowserHandle browser;
-    executor.GetCurrentBrowser(&browser);
+    int browser_status = executor.GetCurrentBrowser(&browser);
+    if (browser_status != WD_SUCCESS) {
+      return browser_status;
+    }
 
     CComPtr<IHTMLDocument2> doc;
     browser->GetDocument(&doc);
