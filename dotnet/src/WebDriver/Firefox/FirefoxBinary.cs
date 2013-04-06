@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.Firefox
 
         #region Public properties
         /// <summary>
-        /// Gets or sets the timeout (in milliseconds) to wait for ommand execution.
+        /// Gets or sets the timeout (in milliseconds) to wait for command execution.
         /// </summary>
         [Obsolete("Timeouts should be expressed as a TimeSpan. Use the Timeout property instead")]
         public long TimeoutInMilliseconds
@@ -79,7 +79,7 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets or sets the timeout to wait for Firefox to be availale for ccommand execution.
+        /// Gets or sets the timeout to wait for Firefox to be available for command execution.
         /// </summary>
         public TimeSpan Timeout
         {

@@ -147,6 +147,28 @@ dotnet_test(name = "safari",
   omitdocxml = "true"
 )
 
+dotnet_test(name = "phantomjs",
+  srcs = "WebDriver.PhantomJS.Tests/**/*.cs",
+  refs = [
+    "System.dll",
+    "System.Core.dll",
+    "System.Data.dll",
+    "System.Drawing.dll",
+    "System.Xml.dll",
+    "//dotnet:dotnet",
+    ":common",
+    "third_party/dotnet/json-net-4.5r11/Net40/Newtonsoft.Json.dll",
+    "third_party/dotnet/nunit-2.6.2/framework/nunit.framework.dll"
+  ],
+  out = "WebDriver.PhantomJS.Tests.dll",
+  files = [
+    "WebDriver.PhantomJS.Tests/WebDriver.PhantomJS.Tests.config",
+    "WebDriver.PhantomJS.Tests/WebDriver.PhantomJS.Tests.nunit"
+  ],
+  project = "WebDriver.PhantomJS.Tests.nunit",
+  omitdocxml = "true"
+)
+
 dotnet_test(name = "support",
   srcs = "WebDriver.Support.Tests/**/*.cs",
   refs = [
