@@ -50,6 +50,14 @@ void CommandLineArguments::ParseArguments(int argc, _TCHAR* argv[]) {
     // coerce all argument names to lowercase, making argument names
     // case-insensitive.
     std::transform(arg_name.begin(), arg_name.end(), arg_name.begin(), tolower);
+
+    // trim single and double quotes from argument value begin and end
+    size_t startpos = arg_value.find_first_not_of(L"'\"");
+    size_t endpos = arg_value.find_last_not_of(L"'\"");
+    if ((startpos != string::npos) && (endpos != string::npos)) {
+      arg_value = arg_value.substr(startpos, endpos + 1);
+    }
+
     if (arg_name == L"?" || arg_name == L"h" || arg_name == L"help") {
       this->is_help_requested_ = true;
     }
