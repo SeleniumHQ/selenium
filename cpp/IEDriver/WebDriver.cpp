@@ -12,23 +12,34 @@
 // limitations under the License.
 
 #include "WebDriver.h"
+#include "logging.h"
 
 webdriver::Server* StartServer(int port,
                                const std::wstring& host,
                                const std::wstring& log_level,
                                const std::wstring& log_file,
+                               const std::wstring& launch_api,
+                               const std::wstring& ie_switches,
                                const std::wstring& version) {
+  LOG(TRACE) << "Entering StartServer";
   if (server == NULL) {
+    LOG(DEBUG) << "Instanciating webdriver server";
+
     std::string converted_host = webdriver::StringUtilities::ToString(host);
     std::string converted_log_level = webdriver::StringUtilities::ToString(log_level);
     std::string converted_log_file = webdriver::StringUtilities::ToString(log_file);
     std::string converted_version = webdriver::StringUtilities::ToString(version);
+    std::string converted_launch_api = webdriver::StringUtilities::ToString(launch_api);
+    std::string converted_ie_switches = webdriver::StringUtilities::ToString(ie_switches);    
     server = new webdriver::IEServer(port,
                                      converted_host,
                                      converted_log_level,
                                      converted_log_file,
+                                     converted_launch_api,
+                                     converted_ie_switches,
                                      converted_version);
     if (!server->Start()) {
+      LOG(TRACE) << "Starting of IEServer is failed";
       delete server;
       server = NULL;
     }
@@ -37,6 +48,7 @@ webdriver::Server* StartServer(int port,
 }
 
 void StopServer() {
+  LOG(TRACE) << "Entering StopServer";
   if (server) {
     server->Stop();
     delete server;

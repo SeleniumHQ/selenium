@@ -43,7 +43,7 @@ typedef void (__cdecl *STOPSERVERPROC)(void);
 #define EXTRACTPATH_COMMAND_LINE_ARG L"extract-path"
 #define LAUNCH_API_COMMAND_LINE_ARG L"launch-api"
 #define IE_SWITCHES_COMMAND_LINE_ARG L"ie-switches"
-//#define ATTACH_TO_IE_PROCESS_LINE_ARG L"attach-to-ie-process"
+//#define ATTACH_TO_IE_PROCESS_LINE_ARG L"attach-to-ie-process=<default|group|all>"
 #define BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE L"value-not-specified"
 
 bool ExtractResource(unsigned short resource_id,
@@ -179,8 +179,8 @@ void ShowUsage(void) {
              << L"                Specifies a IE launch API to use. Valid values are:  " << std::endl
              << L"                'ielaunchurl' and 'createprocess'. If option is omited " << std::endl
              << L"                firstly 'ielaunchurl' (IELaunchURL()) is tried (if it is available) and " << std::endl
-             << L"                'createprocess' (CreateProcess()) otherwise. 'createprocess' works only " << std::endl
-             << L"                if HKCU\Software\Microsoft\Internet Explorer\Main\TabProcGrowth = 0 is set." << std::endl
+             << L"                'createprocess' (CreateProcess()) otherwise. 'createprocess' works " << std::endl
+             << L"                correctly in IE 8 and older only if HKCU\\Software\\Microsoft\\Internet Explorer\\Main\\TabProcGrowth = 0 is set." << std::endl
              << L"  /ie-switches=<switches>" << std::endl
              << L"                Specifies command-line switches which will be specified during " << std::endl
              << L"                IE launch if 'createprocess' launch api is used." << std::endl;
@@ -258,7 +258,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
                << L"log level = '" << log_level << L"', "
                << L"log file = '" << log_file << L"', "
                << L"launch api = '" << launch_api << "', "
-               << L"ie switches = '" << ie_switches <<"'.";
+               << L"ie switches = '" << ie_switches << "'.";
     return ERR_SERVER_START;
   }
   if (!silent) {

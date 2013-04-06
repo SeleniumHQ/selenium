@@ -55,6 +55,9 @@
 #define ZONE_INTERNET L"3"
 #define ZONE_RESTRICTED_SITES L"4"
 
+#define IELAUNCHURL_API L"ielaunchurl"
+#define CREATEPROCESS_API L"createprocess"
+
 using namespace std;
 
 namespace webdriver {
@@ -72,6 +75,8 @@ class BrowserFactory {
 
   DWORD LaunchBrowserProcess(const std::string& initial_url,
                              const bool ignore_protected_mode_settings,
+                             const std::string& launch_api,
+                             const std::string& ie_switches,
                              std::string* error_message);
   IWebBrowser2* CreateBrowser();
   bool AttachToBrowser(ProcessWindowInfo* procWinInfo,
