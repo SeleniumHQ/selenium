@@ -57,7 +57,7 @@ void CommandLineArguments::ParseArguments(int argc, _TCHAR* argv[]) {
     if (startpos != std::string::npos) {
       arg_value = arg_value.substr(startpos);
     }
-	size_t endpos = arg_value.find_last_not_of(L"'\"");
+    size_t endpos = arg_value.find_last_not_of(L"'\"");
     if (endpos != std::string::npos) {
       arg_value = arg_value.substr(0, endpos + 1);
     }

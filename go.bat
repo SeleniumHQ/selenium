@@ -1,4 +1,4 @@
 @echo off
 
-java -Xmx1024m -XX:MaxPermSize=128m -XX:ReservedCodeCacheSize=128m -client -jar third_party\jruby\jruby-complete.jar -X-C -S rake %*
+java -Xmx2048m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=256m -client -jar third_party\jruby\jruby-complete.jar -X-C -S rake %*
 
