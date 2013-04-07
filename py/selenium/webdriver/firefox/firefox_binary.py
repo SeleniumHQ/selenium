@@ -98,7 +98,10 @@ class FirefoxBinary(object):
         return True
 
     def _find_exe_in_registry(self):
-        from _winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE
+        try:
+            from _winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE
+        except ImportError:
+            from winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE
         import shlex
         keys = (
            r"SOFTWARE\Classes\FirefoxHTML\shell\open\command",
