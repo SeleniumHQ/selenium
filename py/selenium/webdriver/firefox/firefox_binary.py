@@ -139,8 +139,11 @@ class FirefoxBinary(object):
         return start_cmd
 
     def _default_windows_location(self):
-        program_files = os.getenv("PROGRAMFILES", r"\Program Files")
-        return os.path.join(program_files, "Mozilla Firefox\\firefox.exe")
+        program_files = (os.getenv("PROGRAMFILES", r"C:\Program Files"),
+                         os.getenv("PROGRAMFILES(X86)", r"C:\Program Files (x86)"))
+        paths = [os.path.join(path, r"Mozilla Firefox\firefox.exe") for path in program_files]
+        valid_path = [path for path in paths if os.access(path, os.X_OK)]
+        return valid_path[0] if valid_path else ""
 
     def _modify_link_library_path(self):
         existing_ld_lib_path = os.environ.get('LD_LIBRARY_PATH', '')
