@@ -34,6 +34,9 @@ class FirefoxBinary(object):
         # Rather than modifying the environment of the calling Python process
         # copy it and modify as needed.
         self._firefox_env = os.environ.copy()
+        self._firefox_env["MOZ_CRASHREPORTER_DISABLE"] = "1"
+        self._firefox_env["MOZ_NO_REMOTE"] = "1"
+        self._firefox_env["NO_EM_RESTART"] = "1"
 
     def add_command_line_options(self, *args):
         self.command_line = args
@@ -58,9 +61,6 @@ class FirefoxBinary(object):
 
     def _start_from_profile_path(self, path):
         self._firefox_env["XRE_PROFILE_PATH"] = path
-        self._firefox_env["MOZ_CRASHREPORTER_DISABLE"] = "1"
-        self._firefox_env["MOZ_NO_REMOTE"] = "1"
-        self._firefox_env["NO_EM_RESTART"] = "1"
 
         if platform.system().lower() == 'linux':
             self._modify_link_library_path()
