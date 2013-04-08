@@ -19,7 +19,7 @@ package com.thoughtworks.selenium.condition;
 
 import com.thoughtworks.selenium.Selenium;
 
-import junit.framework.Assert;
+import static org.junit.Assert.fail;
 
 /**
  * This class throws an {@link junit.framework.AssertionFailedError} when the condition is not met.
@@ -50,13 +50,13 @@ public class JUnitConditionRunner extends DefaultConditionRunner {
 
   @Override
   public void throwAssertionException(String message) {
-    Assert.fail(message);
+    fail(message);
   }
 
   @Override
   public void throwAssertionException(String message, Throwable cause) {
     String causeText = cause.getMessage();
-    Assert.fail(message + (causeText == null ? "" : "; cause: " + causeText));
+    fail(message + (causeText == null ? "" : "; cause: " + causeText));
   }
 
 
