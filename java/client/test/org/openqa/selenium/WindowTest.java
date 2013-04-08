@@ -33,7 +33,6 @@ import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -41,7 +40,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-@Ignore(value = {ANDROID, HTMLUNIT, IPHONE, OPERA, SELENESE, OPERA_MOBILE},
+@Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE, OPERA_MOBILE},
         reason = "Not yet implemented.")
 public class WindowTest extends JUnit4TestBase {
 
@@ -94,7 +93,7 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = { SAFARI, PHANTOMJS },
+  @Ignore(value = {SAFARI, PHANTOMJS},
       reason = "Safari: getPosition after setPosition doesn't match up exactly, " +
           "as expected - probably due to nuances in Mac OSX window manager.")
   public void testSetsThePositionOfTheCurrentWindow() throws InterruptedException {

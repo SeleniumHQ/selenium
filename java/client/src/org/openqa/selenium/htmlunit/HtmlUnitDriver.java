@@ -64,6 +64,7 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.InvalidCookieDomainException;
@@ -75,6 +76,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TimeoutException;
@@ -120,6 +122,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   private WebClient webClient;
   private WebWindow currentWindow;
 
+  // Fictive position just to implement the API
+  private Point windowPosition = new Point(0, 0);
+  private Dimension initialWindowDimension;
+
   private boolean enableJavascript;
   private ProxyConfig proxyConfig;
   private long implicitWait = 0;
@@ -135,6 +141,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   public HtmlUnitDriver(BrowserVersion version) {
     webClient = createWebClient(version);
     currentWindow = webClient.getCurrentWindow();
+    initialWindowDimension = new Dimension(currentWindow.getOuterWidth(), currentWindow.getOuterHeight());
 
     webClient.addWebWindowListener(new WebWindowListener() {
       public void webWindowOpened(WebWindowEvent webWindowEvent) {
@@ -1230,7 +1237,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     public Window window() {
-      throw new UnsupportedOperationException("Window handling not yet implemented in HtmlUnit");
+      return new HtmlUnitWindow();
     }
 
   }
@@ -1251,6 +1258,49 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       int timeout = (int) TimeUnit.MILLISECONDS.convert(time, unit);
       webClient.getOptions().setTimeout(timeout > 0 ? timeout : 0);
       return this;
+    }
+  }
+
+  public class HtmlUnitWindow implements Window {
+
+    private int SCROLLBAR_WIDTH = 8;
+    private int HEADER_HEIGHT = 150;
+
+    @Override
+    public void setSize(Dimension targetSize) {
+      WebWindow topWindow = getCurrentWindow().getTopWindow();
+
+      int width = targetSize.getWidth();
+      if (width < SCROLLBAR_WIDTH) width = SCROLLBAR_WIDTH;
+      topWindow.setOuterWidth(width);
+      topWindow.setInnerWidth(width - SCROLLBAR_WIDTH);
+
+      int height = targetSize.getHeight();
+      if (height < HEADER_HEIGHT) height = HEADER_HEIGHT;
+      topWindow.setOuterHeight(height);
+      topWindow.setInnerHeight(height - HEADER_HEIGHT);
+    }
+
+    @Override
+    public void setPosition(Point targetPosition) {
+      windowPosition = targetPosition;
+    }
+
+    @Override
+    public Dimension getSize() {
+      WebWindow topWindow = getCurrentWindow().getTopWindow();
+      return new Dimension(topWindow.getOuterWidth(), topWindow.getOuterHeight());
+    }
+
+    @Override
+    public Point getPosition() {
+      return windowPosition;
+    }
+
+    @Override
+    public void maximize() {
+      setSize(initialWindowDimension);
+      setPosition(new Point(0, 0));
     }
   }
 
