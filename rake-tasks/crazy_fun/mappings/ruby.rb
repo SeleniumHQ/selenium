@@ -97,7 +97,7 @@ class RubyMappings
         STDOUT.sync = true
         puts "Running: #{args[:name]} ruby tests"
 
-        add_jruby_requires(args) if Platform.jruby?
+        add_jruby_requires(args) if Platform.jruby? && !ENV['force_local_ruby']
 
         ENV['WD_SPEC_DRIVER'] = args[:name]
         ENV['CI_REPORTS']     = "build/test_logs"
@@ -256,15 +256,24 @@ class RubyRunner
   def self.run(opts)
     cmd = []
 
-    if Platform.jruby?
-      require 'java'
-      JRuby.runtime.instance_config.run_ruby_in_process = true
-      cmd << "ruby"
-      cmd << "-J-Djava.awt.headless=true" if opts[:headless]
-    elsif defined?(Gem)
-      cmd << Gem.ruby
+    if ENV['force_local_ruby']
+      cmd << 'ruby'
+
+      if Platform.jruby?
+        require 'java'
+        JRuby.runtime.instance_config.run_ruby_in_process = false
+      end
     else
-      cmd << "ruby"
+      if Platform.jruby?
+        require 'java'
+        JRuby.runtime.instance_config.run_ruby_in_process = true
+        cmd << "ruby"
+        cmd << "-J-Djava.awt.headless=true" if opts[:headless]
+      elsif defined?(Gem)
+        cmd << Gem.ruby
+      else
+        cmd << "ruby"
+      end
     end
 
     if opts[:debug]
