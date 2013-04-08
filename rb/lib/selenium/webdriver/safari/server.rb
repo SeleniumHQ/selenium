@@ -68,28 +68,14 @@ module Selenium
         end
 
         HEADERS = <<-HEADERS
-HTTP/1.1 200 OK
+HTTP/1.1 %d %s
 Content-Type: text/html; charset=utf-8
 Server: safaridriver-ruby
         HEADERS
 
         HEADERS.gsub!("\n", "\r\n")
 
-        HTML = <<-HTML
-<!DOCTYPE html>
-<h2>SafariDriver requesting connection at %s</h2>
-<script>
-// Must wait for onload so the injected script is loaded by the
-// SafariDriver extension.
-window.onload = function() {
-  window.postMessage({
-    'type': 'connect',
-    'origin': 'webdriver',
-    'url': '%s'
-  }, '*');
-};
-</script>
-        HTML
+        HTML = "<!DOCTYPE html><script>#{Safari.resource_path.join('client.js').read}</script>"
 
         def process_initial_http_request
           http = @server.accept
@@ -99,11 +85,19 @@ window.onload = function() {
             req << http.read(1)
           end
 
-          http << HEADERS
-          http << "\r\n\r\n"
-          http << HTML % [ws_uri, ws_uri]
+          if !req.include?("?url=")
+            http << HEADERS % [302, 'Moved Temporarily']
+            http << "Location: #{uri}?url=#{encode_form_component ws_uri}\r\n"
+            http << "\r\n\r\n"
+            http.close
 
-          http.close
+            process_initial_http_request
+          else
+            http << HEADERS % [200, 'OK']
+            http << "\r\n\r\n"
+            http << HTML
+            http.close
+          end
         end
 
         def process_handshake
@@ -134,6 +128,15 @@ window.onload = function() {
           puts "handshake complete, v#{hs.version}" if $DEBUG
           @server.close
           @version = hs.version
+        end
+
+        def encode_form_component(str)
+          if URI.respond_to?(:encode_www_form_component) # >= 1.9
+            URI.encode_form_component(str)
+          else
+            # best effort for 1.8
+            str.gsub(":", '%3A').gsub('/', '%2F')
+          end
         end
       end
 

@@ -118,7 +118,7 @@ class RubyMappings
         childprocess.jar
         rack.jar
         webmock.jar
-        libwebsocket.jar
+        websocket.jar
       ].map { |jar| File.join("third_party/jruby", jar) }
 
       args[:require] ||= []

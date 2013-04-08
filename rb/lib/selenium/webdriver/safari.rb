@@ -1,4 +1,5 @@
 require 'websocket'
+require 'pathname'
 
 module Selenium
   module WebDriver
@@ -29,6 +30,10 @@ module Selenium
             path
           )
         end
+
+        def resource_path
+          @resource_path ||= Pathname.new(File.expand_path("../safari/resources", __FILE__))
+        end
       end
 
     end
@@ -37,5 +42,6 @@ end
 
 require 'selenium/webdriver/safari/browser'
 require 'selenium/webdriver/safari/server'
+require 'selenium/webdriver/safari/extension'
 require 'selenium/webdriver/safari/bridge'
 

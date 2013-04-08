@@ -5,12 +5,18 @@ module Selenium
       class Bridge < Remote::Bridge
         COMMAND_TIMEOUT = 60
 
-
         def initialize(opts = {})
-          port = Integer(opts[:port] || PortProber.random)
-          timeout = Integer(opts[:timeout] || COMMAND_TIMEOUT)
+          port              = Integer(opts[:port] || PortProber.random)
+          timeout           = Integer(opts[:timeout] || COMMAND_TIMEOUT)
+          custom_data_dir   = opts[:custom_data_dir]
+          install_extension = opts.fetch(:install_extension) { true }
 
           @command_id ||= 0
+
+          if install_extension
+            @extension = Extension.new(:custom_data_dir => custom_data_dir)
+            @extension.install
+          end
 
           @server = Server.new(port, timeout)
           @server.start
@@ -28,6 +34,7 @@ module Selenium
 
           @server.stop
           @safari.stop
+          @extension && @extension.uninstall
         end
 
         def driver_extensions

@@ -250,6 +250,10 @@ ruby_library(name = "safari",
   deps = [
     ":common",
     ":remote",
+  ],
+  resources = [
+    { "//javascript/safari-driver/prebuilt:SafariDriver": "rb/lib/selenium/webdriver/safari/resources/SafariDriver.safariextz"},
+    { "//javascript/safari-driver:client": "rb/lib/selenium/webdriver/safari/resources/client.js"}
   ]
 )
 
