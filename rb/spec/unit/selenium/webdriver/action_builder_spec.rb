@@ -87,4 +87,11 @@ describe Selenium::WebDriver::ActionBuilder do
             release.perform
   end
 
+  it 'can click, hold and release at the current location' do
+    mouse.should_receive(:down).with(nil)
+    mouse.should_receive(:up)
+
+    builder.click_and_hold.release.perform
+  end
+
 end

@@ -142,7 +142,7 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def click_and_hold(element)
+      def click_and_hold(element = nil)
         @actions << [:mouse, :down, [element]]
         self
       end
