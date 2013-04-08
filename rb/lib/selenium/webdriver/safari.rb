@@ -15,8 +15,7 @@ module Selenium
           @path ||= (
             path = case Platform.os
             when :windows
-              # TODO: improve this
-              File.join(ENV['ProgramFiles'], 'Safari', 'Safari.exe')
+              Platform.find_in_program_files("Safari\\Safari.exe")
             when :macosx
               "/Applications/Safari.app/Contents/MacOS/Safari"
             else

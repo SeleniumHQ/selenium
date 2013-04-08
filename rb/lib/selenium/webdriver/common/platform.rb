@@ -149,6 +149,22 @@ module Selenium
         nil
       end
 
+      def find_in_program_files(*binary_names)
+        paths = [
+          ENV['PROGRAMFILES'] || "\\Program Files",
+          ENV['ProgramFiles(x86)'] || "\\Program Files (x86)"
+        ]
+
+        paths.each do |root|
+          binary_names.each do |name|
+            exe = File.join(root, name)
+            return exe if File.executable?(exe)
+          end
+        end
+
+        nil
+      end
+
       def localhost
         info = Socket.getaddrinfo "localhost", 80, Socket::AF_INET, Socket::SOCK_STREAM
 
