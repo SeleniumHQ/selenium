@@ -67,12 +67,11 @@ module Selenium
           no_restart    = opts.delete(:no_restart)
           no_quit       = opts.delete(:no_quit)
           product       = opts.delete(:product)
+          caps          = opts.delete(:desired_capabilities) { Remote::Capabilities.opera }
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
-
-          caps = Remote::Capabilities.opera
 
           if arguments
             unless arguments.kind_of? Array

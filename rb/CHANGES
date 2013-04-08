@@ -1,8 +1,11 @@
 2.32.0 (??)
 ===========
 
+Opera:
+  * Allow passing :desired_capabailities (#5279)
 Other:
   * Allow #click_and_hold without target (#5410).
+
 
 2.31.0 (2013-03-02)
 ===================
