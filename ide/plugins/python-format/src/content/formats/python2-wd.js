@@ -368,7 +368,7 @@ WDAPI.Driver.prototype.chooseOkOnNextConfirmation = function() {
 };
 
 WDAPI.Driver.prototype.chooseCancelOnNextConfirmation = function() {
-  return "self.accept_next_alert = false";
+  return "self.accept_next_alert = False";
 };
 
 WDAPI.Driver.prototype.refresh = function() {
