@@ -35,9 +35,13 @@ def is_connectable(port):
             return False
 
 def is_url_connectable(port):
-    import urllib2
     try:
-        res = urllib2.urlopen("http://localhost:%s/status" % port)
+        from urllib import request as url_request
+    except ImportError:
+        import urllib2 as url_request
+
+    try:
+        res = url_request.urlopen("http://localhost:%s/status" % port)
         if res.getcode() == 200:
             return True
         else:

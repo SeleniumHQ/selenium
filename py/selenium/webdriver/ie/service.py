@@ -87,8 +87,12 @@ class Service(object):
             return
 
         #Tell the Server to die!
-        import urllib2
-        urllib2.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
+        try:
+            from urllib import request as url_request
+        except ImportError:
+            import urllib2 as url_request
+
+        url_request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
         count = 0
         while utils.is_connectable(self.port):
             if count == 30:
