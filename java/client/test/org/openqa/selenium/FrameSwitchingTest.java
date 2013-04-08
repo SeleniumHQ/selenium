@@ -325,7 +325,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   // See https://code.google.com/p/selenium/issues/detail?id=5237
-  @Ignore({FIREFOX, OPERA, ANDROID, OPERA_MOBILE})
+  @Ignore({OPERA, ANDROID, OPERA_MOBILE})
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation() {
