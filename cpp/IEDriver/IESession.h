@@ -18,10 +18,18 @@
 
 #define MUTEX_NAME L"WD_INITIALIZATION_MUTEX"
 #define MUTEX_WAIT_TIMEOUT 30000
+#define THREAD_WAIT_TIMEOUT 30000
 
 using namespace std;
 
 namespace webdriver {
+
+// Structure to be used for storing session initialization parameters
+struct SessionParameters {
+  int port;
+  bool force_createprocess_api;
+  std::string ie_switches;
+};
 
 class IESession : public Session {
 public:

@@ -40,6 +40,7 @@
 
 #define IE_CLSID_REGISTRY_KEY L"SOFTWARE\\Classes\\InternetExplorer.Application\\CLSID"
 #define IE_SECURITY_ZONES_REGISTRY_KEY L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones"
+#define IE_TABPROCGROWTH_REGISTRY_KEY L"Software\\Microsoft\\Internet Explorer\\Main"
 
 #define IE_PROTECTED_MODE_SETTING_VALUE_NAME L"2500"
 
@@ -48,12 +49,16 @@
 #define NULL_PROCESS_ID_ERROR_MESSAGE " successfully launched Internet Explorer, but did not return a valid process ID."
 #define PROTECTED_MODE_SETTING_ERROR_MESSAGE "Protected Mode settings are not the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones."
 #define ATTACH_TIMEOUT_ERROR_MESSAGE "Could not find an Internet Explorer window belonging to the process with ID %d within %d milliseconds."
+#define CREATEPROCESS_REGISTRY_ERROR_MESSAGE "Unable to use CreateProcess() API. To use CreateProcess() with Internet Explorer 8 or higher, the value of registry setting in HEKY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\TabProcGrowth must be '0'."
 
 #define ZONE_MY_COMPUTER L"0"
 #define ZONE_LOCAL_INTRANET L"1"
 #define ZONE_TRUSTED_SITES L"2"
 #define ZONE_INTERNET L"3"
 #define ZONE_RESTRICTED_SITES L"4"
+
+#define IELAUNCHURL_API L"ielaunchurl"
+#define CREATEPROCESS_API L"createprocess"
 
 using namespace std;
 
@@ -72,6 +77,8 @@ class BrowserFactory {
 
   DWORD LaunchBrowserProcess(const std::string& initial_url,
                              const bool ignore_protected_mode_settings,
+                             const bool force_createprocess_api,
+                             const std::string& ie_switches,
                              std::string* error_message);
   IWebBrowser2* CreateBrowser();
   bool AttachToBrowser(ProcessWindowInfo* procWinInfo,
@@ -107,6 +114,15 @@ class BrowserFactory {
   int GetZoneProtectedModeSetting(const HKEY key_handle,
                                   const std::wstring& zone_subkey_name);
   int GetZoomLevel(IHTMLDocument2* document, IHTMLWindow2* window);
+  void LaunchBrowserUsingCreateProcess(const std::string& initial_url,
+                                       const std::string& command_line_switches,
+                                       PROCESS_INFORMATION* proc_info,
+                                       std::string* error_message);
+  void LaunchBrowserUsingIELaunchURL(const std::string& initial_url,
+                                     PROCESS_INFORMATION* proc_info,
+                                     std::string* error_message);
+  bool IsIELaunchURLAvailable(void);
+  bool IsCreateProcessApiAvailable(void);
 
   int ie_major_version_;
   int windows_major_version_;

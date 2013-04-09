@@ -303,7 +303,7 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
     if (document_type_key_name == L"IE.HTTP") {
       document_type_key_name = L"htmlfile";
     } else {
-      LOG(DEBUG) << "Unable to support custom document type: " << LOGWSTRING(document_type_key_name.c_str());
+      LOG(DEBUG) << "Unable to support custom document type: " << LOGWSTRING(document_type_key_name);
       document_type_key_name = L"";
     }
   } else {
@@ -348,7 +348,7 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
   std::wstring type_string = type;
 
   if (type_string == mime_type_name) {
-	  return true;
+    return true;
   }
 
   // If the user set Firefox as a default browser at any point, the MIME type

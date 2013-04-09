@@ -47,8 +47,8 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
     }
 
     LOG(DEBUG) << L"Using FindElement atom to locate element having "
-               << LOGWSTRING(mechanism.c_str()) << " = "
-               << LOGWSTRING(criteria.c_str());
+               << LOGWSTRING(mechanism) << " = "
+               << LOGWSTRING(criteria);
     std::wstring sanitized_criteria = criteria;
     this->SanitizeCriteria(mechanism, &sanitized_criteria);
     std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + 
@@ -83,8 +83,8 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
           script_wrapper.ConvertResultToJsonValue(executor, found_element);
         } else {
           LOG(WARN) << "Unable to find element by mechanism "
-                    << LOGWSTRING(mechanism.c_str()) << " and criteria " 
-                    << LOGWSTRING(sanitized_criteria.c_str());
+                    << LOGWSTRING(mechanism) << " and criteria " 
+                    << LOGWSTRING(sanitized_criteria);
           status_code = ENOSUCHELEMENT;
         }
       } else {
@@ -92,19 +92,19 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
         // to be a syntactically invalid XPath.
         if (mechanism == L"xpath") {
           LOG(WARN) << "Attempted to find element using invalid xpath: "
-                    << LOGWSTRING(sanitized_criteria.c_str());
+                    << LOGWSTRING(sanitized_criteria);
           status_code = EINVALIDSELECTOR;
         } else {
           LOG(WARN) << "Unexpected error attempting to find element by mechanism "
-                    << LOGWSTRING(mechanism.c_str()) << " with criteria "
-                    << LOGWSTRING(sanitized_criteria.c_str());
+                    << LOGWSTRING(mechanism) << " with criteria "
+                    << LOGWSTRING(sanitized_criteria);
           status_code = ENOSUCHELEMENT;
         }
       }
     } else {
       LOG(WARN) << "Unable to create criteria object for mechanism "
-                << LOGWSTRING(mechanism.c_str()) << " and criteria " 
-                << LOGWSTRING(sanitized_criteria.c_str());
+                << LOGWSTRING(mechanism) << " and criteria " 
+                << LOGWSTRING(sanitized_criteria);
       status_code = ENOSUCHELEMENT;
     }
   } else {
@@ -136,8 +136,8 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
     }
 
     LOG(DEBUG) << L"Using FindElements atom to locate element having "
-               << LOGWSTRING(mechanism.c_str()) << " = "
-               << LOGWSTRING(criteria.c_str());
+               << LOGWSTRING(mechanism) << " = "
+               << LOGWSTRING(criteria);
     std::wstring sanitized_criteria = criteria;
     this->SanitizeCriteria(mechanism, &sanitized_criteria);
     std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + mechanism + L"\" : \"" + sanitized_criteria + L"\" }; };})();";
@@ -177,19 +177,19 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
         // to be a syntactically invalid XPath.
         if (mechanism == L"xpath") {
           LOG(WARN) << "Attempted to find elements using invalid xpath: "
-                    << LOGWSTRING(sanitized_criteria.c_str());
+                    << LOGWSTRING(sanitized_criteria);
           status_code = EINVALIDSELECTOR;
         } else {
           LOG(WARN) << "Unexpected error attempting to find element by mechanism "
-                    << LOGWSTRING(mechanism.c_str()) << " and criteria "
-                    << LOGWSTRING(sanitized_criteria.c_str());
+                    << LOGWSTRING(mechanism) << " and criteria "
+                    << LOGWSTRING(sanitized_criteria);
           status_code = ENOSUCHELEMENT;
         }
       }
     } else {
       LOG(WARN) << "Unable to create criteria object for mechanism "
-                << LOGWSTRING(mechanism.c_str()) << " and criteria "
-                << LOGWSTRING(sanitized_criteria.c_str());
+                << LOGWSTRING(mechanism) << " and criteria "
+                << LOGWSTRING(sanitized_criteria);
       status_code = ENOSUCHELEMENT;
     }
   } else {

@@ -13,6 +13,7 @@
 
 #include "IEServer.h"
 #include "IESession.h"
+#include "logging.h"
 
 namespace webdriver {
 
@@ -20,21 +21,32 @@ IEServer::IEServer(int port,
                    const std::string& host,
                    const std::string& log_level,
                    const std::string& log_file,
+                   const bool force_createprocess,
+                   const std::string& ie_switches,
                    const std::string& version) : Server(port, host, log_level, log_file) {
+  LOG(TRACE) << "Entering IEServer::IEServer";
+
   this->version_ = version;
+  this->force_createprocess_ = force_createprocess;
+  this->ie_switches_ = ie_switches;
 }
 
 IEServer::~IEServer(void) {
 }
 
 SessionHandle IEServer::InitializeSession() {
+  LOG(TRACE) << "Entering IEServer::InitializeSession";
   SessionHandle session_handle(new IESession());
-  int port = this->port();
-  session_handle->Initialize(&port);
+  SessionParameters params;
+  params.port = this->port();
+  params.force_createprocess_api = this->force_createprocess_;
+  params.ie_switches = this->ie_switches_;
+  session_handle->Initialize(reinterpret_cast<void*>(&params));
   return session_handle;
 }
 
 std::string IEServer::GetStatus() {
+  LOG(TRACE) << "Entering IEServer::GetStatus";
   SYSTEM_INFO system_info;
   ::ZeroMemory(&system_info, sizeof(SYSTEM_INFO));
   ::GetNativeSystemInfo(&system_info);
@@ -80,6 +92,7 @@ std::string IEServer::GetStatus() {
 }
 
 void IEServer::ShutDown() {
+  LOG(TRACE) << "Entering IEServer::ShutDown";  
   DWORD process_id = ::GetCurrentProcessId();
   vector<wchar_t> process_id_buffer(10);
   _ltow_s(process_id, &process_id_buffer[0], process_id_buffer.size(), 10);

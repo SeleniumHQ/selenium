@@ -45,6 +45,15 @@ using namespace std;
 
 namespace webdriver {
 
+// Structure to be used for comunication between threads
+struct IECommandExecutorThreadContext
+{
+  HWND hwnd;
+  int port;
+  bool force_createprocess_api;
+  std::string ie_switches;
+};
+
 // We use a CWindowImpl (creating a hidden window) here because we
 // want to synchronize access to the command handler. For that we
 // use SendMessage() most of the time, and SendMessage() requires
@@ -241,6 +250,9 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   std::string session_id_;
   int port_;
+  bool force_createprocess_api_;
+  std::string launch_api_;
+  std::string ie_switches_;
   int browser_attach_timeout_;
   bool ignore_protected_mode_settings_;
   bool enable_native_events_;

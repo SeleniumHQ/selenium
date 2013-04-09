@@ -9,6 +9,26 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.32.1.0
+=========
+ * Modified IEDriverServer to take new command-line switches to allow click on
+   users to force the use of the Windows CreateProcess API for launching IE.
+   For some cases, it may be necessary to launch IE in Private mode for
+   testing in parallel on a single node. To support this, there must be a way
+   to force the IE driver to use the Windows CreateProcess() API to launch IE
+   so that the user can specify command-line switches. To preserve the
+   ability to locate the correct process for IE versions 8 and higher, a
+   registry value must be set to a specific value, and the IE driver checks for
+   the registry value before launching IE. Patch for this fix provided by Alex
+   Savchuk.The registry settings are:
+
+     Key: HKEY_CURRENT_USER\Software\Microsoft\InternetExplorer\Main
+     Value Name: TabProcGrowth
+     Value: "0"
+
+ * Fixed Element::IsAttachedToDom() when used with SVG for IEDriver.
+   Patch for this fix provided by Patrick Gansterer.
+
 v2.32.0.1
 =========
  * Fixed to allow click on visible portion of element if center point cannot be
