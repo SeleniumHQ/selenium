@@ -81,11 +81,6 @@ LRESULT IECommandExecutor::OnInit(UINT uMsg,
                                   LPARAM lParam,
                                   BOOL& bHandled) {
   LOG(TRACE) << "Entering IECommandExecutor::OnInit";
-
-  // If we wanted to be a little more clever, we could create a struct
-  // containing the HWND and the port number and pass them into the
-  // ThreadProc via lpParameter and avoid this message handler altogether.
-  this->port_ = (int)wParam;
   return 0;
 }
 
@@ -94,6 +89,12 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
                                     LPARAM lParam,
                                     BOOL& bHandled) {
   LOG(TRACE) << "Entering IECommandExecutor::OnCreate";
+  
+  CREATESTRUCT *create = reinterpret_cast <CREATESTRUCT*> (lParam);
+  IECommandExecutorThreadContext *ctx = reinterpret_cast <IECommandExecutorThreadContext*> (create->lpCreateParams);
+  this->port_ = ctx->port;
+  this->launch_api_ = ctx->launch_api;
+  this->ie_switches_ = ctx->ie_switches;
 
   // NOTE: COM should be initialized on this thread, so we
   // could use CoCreateGuid() and StringFromGUID2() instead.
@@ -244,6 +245,8 @@ LRESULT IECommandExecutor::OnWait(UINT uMsg,
                                                         &thread_id));
         if (thread_handle != NULL) {
           ::CloseHandle(thread_handle);
+        } else {
+          LOGERR(DEBUG) << "Unable to create waiter thread";
         }
       }
     }
@@ -266,6 +269,10 @@ LRESULT IECommandExecutor::OnBrowserNewWindow(UINT uMsg,
   HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2,
                                                        browser,
                                                        stream);
+  if (FAILED(hr)) {
+    LOGHR(DEBUG, hr) << "Marshalling of interface pointer b/w threads is failed.";
+  }
+
   return 0;
 }
 
@@ -345,6 +352,7 @@ LRESULT IECommandExecutor::OnRefreshManagedElements(UINT uMsg,
 }
 
 unsigned int WINAPI IECommandExecutor::WaitThreadProc(LPVOID lpParameter) {
+  LOG(TRACE) << "Entering IECommandExecutor::WaitThreadProc";
   HWND window_handle = reinterpret_cast<HWND>(lpParameter);
   ::Sleep(WAIT_TIME_IN_MILLISECONDS);
   ::PostMessage(window_handle, WD_WAIT, NULL, NULL);
@@ -353,19 +361,34 @@ unsigned int WINAPI IECommandExecutor::WaitThreadProc(LPVOID lpParameter) {
 
 
 unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
-  // Optional TODO: Create a struct to pass in via lpParameter
-  // instead of just a pointer to an HWND. That way, we could
-  // pass the mongoose server port via a single call, rather than
-  // having to send an init message after the window is created.
-  HWND *window_handle = reinterpret_cast<HWND*>(lpParameter);
+  LOG(TRACE) << "Entering IECommandExecutor::ThreadProc";
+
+  IECommandExecutorThreadContext *ctx = reinterpret_cast<IECommandExecutorThreadContext*>(lpParameter);
+  HWND window_handle = ctx->hwnd;
+
+  // it is better to use IECommandExecutorSessionContext instead
+  // but use ThreadContext for code minimization
+  IECommandExecutorThreadContext *in_ctx = new IECommandExecutorThreadContext();
+  in_ctx->port = ctx->port;
+  in_ctx->ie_switches = ctx->ie_switches;
+  in_ctx->launch_api = ctx->launch_api;
+
   DWORD error = 0;
   HRESULT hr = ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+  if (FAILED(hr)) {
+    LOGHR(DEBUG, hr) << "COM library initialization has some problem";
+  }
+
   IECommandExecutor new_session;
-  HWND session_window_handle = new_session.Create(HWND_MESSAGE,
-                                                  CWindow::rcDefault);
+  HWND session_window_handle = new_session.Create(/*HWND*/ HWND_MESSAGE,
+                                                  /*_U_RECT rect*/ CWindow::rcDefault,
+                                                  /*LPCTSTR szWindowName*/ NULL,
+                                                  /*DWORD dwStyle*/ NULL,
+                                                  /*DWORD dwExStyle*/ NULL,
+                                                  /*_U_MENUorID MenuOrID*/ 0U,
+                                                  /*LPVOID lpCreateParam*/ reinterpret_cast<LPVOID*>(in_ctx));
   if (session_window_handle == NULL) {
-    error = ::GetLastError();
-    LOG(WARN) << "Unable to create new session: " << error;
+    LOGERR(WARN) << "Unable to create new IECommandExecutor session";
   }
 
   MSG msg;
@@ -373,11 +396,13 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
 
   // Return the HWND back through lpParameter, and signal that the
   // window is ready for messages.
-  *window_handle = session_window_handle;
+  ctx->hwnd = session_window_handle;
   HANDLE event_handle = ::OpenEvent(EVENT_ALL_ACCESS, FALSE, EVENT_NAME);
   if (event_handle != NULL) {
     ::SetEvent(event_handle);
     ::CloseHandle(event_handle);
+  } else {
+    LOGERR(DEBUG) << "Unable to signal that window is ready";
   }
 
   // Run the message loop
@@ -467,7 +492,7 @@ void IECommandExecutor::DispatchCommand() {
         LOG(WARN) << "Unable to find current browser";
       }
     }
-	  CommandHandlerHandle command_handler = found_iterator->second;
+    CommandHandlerHandle command_handler = found_iterator->second;
     command_handler->Execute(*this, this->current_command_, &response);
 
     status_code = this->GetCurrentBrowser(&browser);
@@ -499,6 +524,7 @@ int IECommandExecutor::GetManagedBrowser(const std::string& browser_id,
   LOG(TRACE) << "Entering IECommandExecutor::GetManagedBrowser";
 
   if (!this->is_valid()) {
+    LOG(TRACE) << "Current command executor is not valid";
     return ENOSUCHDRIVER;
   }
 
@@ -553,7 +579,10 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   }
 
   DWORD process_id = this->factory_.LaunchBrowserProcess(initial_url,
-      this->ignore_protected_mode_settings_, error_message);
+                                                         this->ignore_protected_mode_settings_, 
+                                                         this->launch_api_,
+                                                         this->ie_switches_,
+                                                         error_message);
   if (process_id == NULL) {
     LOG(WARN) << "Unable to launch browser, received NULL process ID";
     this->is_waiting_ = false;

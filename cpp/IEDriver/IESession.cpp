@@ -27,9 +27,6 @@ IESession::~IESession(void) {
 void IESession::Initialize(void* init_params) {
   LOG(TRACE) << "Entering IESession::Initialize";
 
-  unsigned int thread_id = 0;
-  HWND executor_window_handle = NULL;
-
   HANDLE mutex = ::CreateMutex(NULL, FALSE, MUTEX_NAME);
   if (mutex != NULL) {
     // Wait for up to the timeout (currently 30 seconds) for other sessions
@@ -44,48 +41,77 @@ void IESession::Initialize(void* init_params) {
                 << "instances may hang or behave unpredictably";
     } else if (mutex_wait_status == WAIT_OBJECT_0) {
       LOG(DEBUG) << "Mutex acquired for session initalization";
+    } else if (mutex_wait_status == WAIT_FAILED) {
+      LOGERR(WARN) << "Mutex acquire waiting is failed";
     }
   } else {
-    LOG(WARN) << "Could not create session initialization mutex. Multiple " 
-              << "instances will behave unpredictably.";
+    LOGERR(WARN) << "Could not create session initialization mutex. Multiple " 
+                 << "instances will behave unpredictably. ";
   }
 
+  SessionParameters* params = reinterpret_cast<SessionParameters*>(init_params);
+  int port = params->port;
+  std::string launch_api = params->launch_api;
+  std::string ie_switches = params->ie_switches;
+
+  IECommandExecutorThreadContext ctx = IECommandExecutorThreadContext();
+  ctx.port = port;
+  ctx.launch_api = launch_api;
+  ctx.ie_switches = ie_switches;
+  ctx.hwnd = NULL;
+
+  unsigned int thread_id = 0;
+
   HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, EVENT_NAME);
+  if (event_handle == NULL) {
+    LOGERR(DEBUG) << "Unable to create event " << EVENT_NAME;
+  }
   HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(NULL,
                                                                  0,
                                                                  &IECommandExecutor::ThreadProc,
-                                                                 reinterpret_cast<void*>(&executor_window_handle),
+                                                                 reinterpret_cast<void*>(&ctx),
                                                                  0,
                                                                  &thread_id));
   if (event_handle != NULL) {
-    ::WaitForSingleObject(event_handle, INFINITE);
+    DWORD thread_wait_status = ::WaitForSingleObject(event_handle, THREAD_WAIT_TIMEOUT);
+    if (thread_wait_status != WAIT_OBJECT_0) {
+      LOGERR(WARN) << "Unable to wait until created thread notification: '" << thread_wait_status << "'.";
+    }
     ::CloseHandle(event_handle);
   }
 
   if (thread_handle != NULL) {
     ::CloseHandle(thread_handle);
+  } else {
+    LOG(DEBUG) << "Unable to create thread for command executor";
   }
 
   std::string session_id = "";
-  if (executor_window_handle != NULL) {
-    int* int_param = reinterpret_cast<int*>(init_params);
-    int port = *int_param;
-    ::SendMessage(executor_window_handle,
+  if (ctx.hwnd != NULL) {
+    LOG(TRACE) << "Created thread for command executor returns HWND: '" << ctx.hwnd << "'";
+
+    // Send INIT to window with port as WPARAM
+    // It is already deprecated
+    ::SendMessage(ctx.hwnd,
                   WD_INIT,
                   static_cast<WPARAM>(port),
                   NULL);
 
     vector<wchar_t> window_text_buffer(37);
-    ::GetWindowText(executor_window_handle, &window_text_buffer[0], 37);
+    ::GetWindowText(ctx.hwnd, &window_text_buffer[0], 37);
     session_id = StringUtilities::ToString(&window_text_buffer[0]);
+    LOG(TRACE) << "Session id is retrived from command executor window: '" << session_id << "'";
+  } else {
+    LOG(DEBUG) << "Created thread does not return HWND of created session";
   }
+
   if (mutex != NULL) {
     LOG(DEBUG) << "Releasing session initialization mutex";
     ::ReleaseMutex(mutex);
     ::CloseHandle(mutex);
   }
 
-  this->executor_window_handle_ = executor_window_handle;
+  this->executor_window_handle_ = ctx.hwnd;
   this->set_session_id(session_id);
 }
 
