@@ -172,6 +172,7 @@ class LOG : public Logger<LOG> {
 
 #ifdef _WIN32
   #define LOGHR(LEVEL,HR) LOG( ## LEVEL) << HR << " [" << (_bstr_t(_com_error((DWORD) HR).ErrorMessage())) << "]: "
+  #define LOGERR(LEVEL) LOG( ## LEVEL) << " [Windows Error " << (::GetLastError()) << "]: "
   #define LOGWSTRING(STR) _bstr_t(STR)
 #endif
 

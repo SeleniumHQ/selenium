@@ -9,6 +9,16 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.32.0.1
+=========
+ * Fixed to allow click on visible portion of element if center point cannot be
+   scrolled into view. This fixes issue #4390 for IE. There is still a fix that
+   needs to be made for Firefox for the issue to be closed.
+
+v2.32.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
 v2.31.0.3
 =========
  * Updates to JavaScript automation atoms.

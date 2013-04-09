@@ -94,7 +94,10 @@ class SendKeysCommandHandler : public IECommandHandler {
         CComPtr<IHTMLElement> element(element_wrapper->element());
 
         LocationInfo location = {};
-        element_wrapper->GetLocationOnceScrolledIntoView(executor.input_manager()->scroll_behavior(), &location);
+        std::vector<LocationInfo> frame_locations;
+        element_wrapper->GetLocationOnceScrolledIntoView(executor.input_manager()->scroll_behavior(),
+                                                         &location,
+                                                         &frame_locations);
 
         CComPtr<IHTMLInputFileElement> file;
         element->QueryInterface<IHTMLInputFileElement>(&file);

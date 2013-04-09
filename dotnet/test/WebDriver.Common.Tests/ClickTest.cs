@@ -31,6 +31,16 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "Not tested")]
+        [IgnoreBrowser(Browser.Opera, "Not tested")]
+        public void CanClickOnALinkThatOverflowsAndFollowIt()
+        {
+            driver.FindElement(By.Id("overflowLink")).Click();
+
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+        }
+
+        [Test]
         [Category("Javascript")]
         public void CanClickOnAnAnchorAndNotReloadThePage()
         {
@@ -157,6 +167,16 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ClickingLabelShouldSetCheckbox()
+        {
+            driver.Url = formsPage;
+
+            driver.FindElement(By.Id("label-for-checkbox-with-label")).Click();
+
+            Assert.IsTrue(driver.FindElement(By.Id("checkbox-with-label")).Selected, "Should be selected");
+        }
+
+        [Test]
         public void CanClickOnALinkWithEnclosedImage()
         {
             driver.FindElement(By.Id("link-with-enclosed-image")).Click();
@@ -181,6 +201,14 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void CanClickOnALinkThatContainsEmbeddedBlockElements()
+        {
+            driver.FindElement(By.Id("embeddedBlock")).Click();
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+        }
+
+        [Test]
         public void CanClickOnAnElementEnclosedInALink()
         {
             driver.FindElement(By.Id("link-with-enclosed-span")).FindElement(By.TagName("span")).Click();
@@ -195,14 +223,6 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("multilinelink")).Click();
             WaitFor(() => { return driver.Title == "We Arrive Here"; });
             Assert.AreEqual("We Arrive Here", driver.Title);
-        }
-
-        [Test]
-        public void ShouldBeAbleToClickLinkContainingEmbeddedBlockElement()
-        {
-            driver.FindElement(By.Id("embeddedBlock")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
-            Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
         // See http://code.google.com/p/selenium/issues/attachmentText?id=2700
@@ -222,6 +242,62 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("ClickTest_testClicksASurroundingStrongTag.html");
             driver.FindElement(By.TagName("a")).Click();
             WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Element is not clickable")]
+        [IgnoreBrowser(Browser.IE, "Map click fails")]
+        [IgnoreBrowser(Browser.Opera, "Map click fails")]
+        [IgnoreBrowser(Browser.Android, "Not tested")]
+        [IgnoreBrowser(Browser.IPhone, "Not tested")]
+        public void CanClickAnImageMapArea()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/google_map.html");
+            driver.FindElement(By.Id("rectG")).Click();
+            WaitFor(() => { return driver.Title == "Target Page 1"; });
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/google_map.html");
+            driver.FindElement(By.Id("circleO")).Click();
+            WaitFor(() => { return driver.Title == "Target Page 2"; });
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/google_map.html");
+            driver.FindElement(By.Id("polyLE")).Click();
+            WaitFor(() => { return driver.Title == "Target Page 3"; });
+        }
+
+        [Test]
+        public void ShouldBeAbleToClickOnAnElementGreaterThanTwoViewports()
+        {
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_too_big.html");
+            driver.Url = url;
+
+            IWebElement element = driver.FindElement(By.Id("click"));
+
+            element.Click();
+
+            WaitFor(() => { return driver.Title == "clicks"; });
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Firefox, "Fails on Firefox")]
+        [IgnoreBrowser(Browser.Chrome, "Fails on Chrome")]
+        [IgnoreBrowser(Browser.Opera, "Not Tested")]
+        [IgnoreBrowser(Browser.Android, "Not Tested")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Not Tested")]
+        [IgnoreBrowser(Browser.IPhone, "Not Tested")]
+        public void ShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports()
+        {
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_too_big_in_frame.html");
+            driver.Url = url;
+
+            IWebElement frame = driver.FindElement(By.Id("iframe1"));
+            driver.SwitchTo().Frame(frame);
+
+            IWebElement element = driver.FindElement(By.Id("click"));
+
+            element.Click();
+
+            WaitFor(() => { return driver.Title == "clicks"; });
         }
     }
 }

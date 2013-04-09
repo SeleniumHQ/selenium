@@ -52,8 +52,10 @@ class GetElementLocationOnceScrolledIntoViewCommandHandler : public IECommandHan
       status_code = this->GetElement(executor, element_id, &element_wrapper);
       if (status_code == WD_SUCCESS) {
         LocationInfo location = {};
+        std::vector<LocationInfo> frame_locations;
         status_code = element_wrapper->GetLocationOnceScrolledIntoView(executor.input_manager()->scroll_behavior(),
-                                                                       &location);
+                                                                       &location,
+                                                                       &frame_locations);
         if (status_code == WD_SUCCESS) {
           CComPtr<IHTMLDocument2> doc;
           browser_wrapper->GetDocument(&doc);

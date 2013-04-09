@@ -35,6 +35,7 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -282,5 +283,35 @@ public class ClickTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("click_tests/google_map.html"));
     driver.findElement(By.id("polyLE")).click();
     waitFor(WaitingConditions.pageTitleToBe(driver, "Target Page 3"));
+  }
+
+  @Test
+  @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE, SELENESE}, reason
+      = "Not tested against these browsers")
+  public void testShouldBeAbleToClickOnAnElementGreaterThanTwoViewports() {
+    String url = appServer.whereIs("click_too_big.html");
+    driver.get(url);
+
+    WebElement element = driver.findElement(By.id("click"));
+
+    element.click();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "clicks"));
+  }
+
+  @Test
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE, SELENESE}, reason
+      = "Chrome, Firefox: failed, others: not tested")
+  public void testShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports() {
+    String url = appServer.whereIs("click_too_big_in_frame.html");
+    driver.get(url);
+
+    WebElement frame = driver.findElement(By.id("iframe1"));
+    driver.switchTo().frame(frame);
+
+    WebElement element = driver.findElement(By.id("click"));
+    element.click();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "clicks"));
   }
 }

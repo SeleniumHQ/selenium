@@ -357,8 +357,10 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
       }
 
       LocationInfo element_location;
+      std::vector<LocationInfo> frame_locations;
       status_code = target_element->GetLocationOnceScrolledIntoView(this->scroll_behavior_,
-                                                                    &element_location);
+                                                                    &element_location,
+                                                                    &frame_locations);
       // We can't use the status code alone here. GetLocationOnceScrolledIntoView
       // returns EELEMENTNOTDISPLAYED if the element is visible, but the click
       // point (the center of the element) is not within the viewport. However,
