@@ -1,24 +1,56 @@
+v2.32.0
+=======
+ * Issue #4629: Modified .NET Firefox driver to only look to connect to IPv4
+   addresses. The ConnectToBrowser() method always created IPv4 addresses to
+   initially addresses for connection, this would throw an exception.
+ * Issue #5306: Fixing .NET PageFactory WebElementProxy to call wrapped
+   element's FindElements method.
+ * Changed FirefoxBinary timeout property to use TimeSpan. Using TimeSpan
+   allows more flexibility for the user to set, and does not hard-code
+   milliseconds as the unit of measure. This commit introduced overloads of the
+   appropriate exposed properties and methods, marking those taking a long as
+   obsolete. The obsolete members will be removed in a future version.
+ * Do not send chrome.binary capability if the property is null. This will
+   properly allow the bindings to start the default Chrome installation when
+   using chromedrive2.
+ * (on behalf of GeoffMcElhanon) Added support to pass arguments to PhantomJS.
+   The PhantomJSDriverService now has type-safe properties for all of the
+   command-line switches supported by PhantomJS. These can be passed directly
+   on the command line, or can be serialized into a JSON file for passing with
+   the --config command line switch to PhantomJS.
+ * Removed arbitrary limit on argument types for executing JavaScript.
+
 v2.31.2
 =======
+ * Issue #5221: Entirely removed the dependency on Castle.Core.dll for .NET
+   support library. Using the Castle DynamicProxy has been nothing but a thorn
+   in the side of users of WebDriver.Support.dll. This change implements
+   hard-coded "proxy" objects the .NET PageFactory implementation. Hopefully,
+   this will resolve the issues the PageFactory for everyone. Nevertheless,
+   there is every possibility that will entirely break the PageFactory in some
+   unforseen way for some subset of users, despite the fact that all of the
+   tests (both unit and browser-based tests) pass. If that is the case, feel
+   free to file issues, if the issues include code samples that reproduce the
+   problem.
  * Fixed .NET WebDriverBackedSelenium NuGet packaging. Package was lacking
    dependencies on other Selenium NuGet packages.
- * Entirely removed the dependency on Castle.Core.dll for .NET support library.
-   Using the Castle DynamicProxy has been nothing but a thorn in the side of us
-   of WebDriver.Support.dll. This change implements hard-coded "proxy" objects
-   the .NET PageFactory implementation. Hopefully, this will resolve the issues
-   the PageFactory for everyone. Nevertheless, there is every possibility that
-   will entirely break the PageFactory in some unforseen way for some subset of
-   users, despite the fact that all of the tests (unit tests, and browser-based
-   tests) pass. If that is the case, feel free to file issues, if the issues
-   include code samples that reproduce the problem. Fixes issue #5221.
 
 v2.31.1
 =======
- * Fixing assemblies merged with ILMerge on .NET 4.0 when built on a machine
-   with .NET 4.5 installed. Fixes issue #5257.
+ * Issue #5257: Fixed assemblies merged with ILMerge on .NET 4.0 when built on
+   a machine with .NET 4.5 installed.
 
 v2.31.0
 =======
+ * Issue #1320: Refactoring .NET Firefox driver's Executable class. The class
+   will now better handle custom paths to the Firefox executable.
+ * Issue #5160: Fixed .NET WebDriverBackedSelenium wait functions. Wait
+   functions in the .NET WebDriverBackedSelenium now will wait until the
+   timeout.
+ * Issue #5211: Allow extraction of IEDriverServer components to custom
+   directory in .NET. The .NET bindings were passing an incorrect command-line
+   switch to IEDriverServer.exe for the location to extract embedded library
+   files.
  * Introduced new IE attachBrowserTimeout capability to .NET bindings.
  * Blocked ability to set FileDetector for browser-specific drivers in .NET.
    Most of the server-components (chromedriver.exe, IEDriverServer.exe,
@@ -26,29 +58,24 @@ v2.31.0
    FileDetector property. They simply approach all file upload as uploading
    from the local machine. If you need to upload remotely, use an instance of
    the RemoteWebDriver class.
- * Allow extraction of IEDriverServer components to custom directory in .NET.
-   The .NET bindings were passing an incorrect command-line switch to
-   IEDriverServer.exe for the location to extract embedded library files. Fixes
-   issue #5211.
- * Fixed .NET WebDriverBackedSelenium wait functions.  Wait functions in the
-   .NET WebDriverBackedSelenium now will wait until the timeout. Fixes issue
-   #5160.
- * Refactoring .NET Firefox driver's Executable class. The class will now
-   better handle custom paths to the Firefox executable. Fixes issue #1320.
 
 v2.30.0
 =======
- * Now using ILMerge for WebDriver.Support.dll. The support library will no
-   longer require an explicit dependency on Castle.Core in its NuGet package.
-   Fixes issue #5177.
+ * Issue #5032: Fixed .NET FileUtilities.FindFile() to expand environment
+   variables and search for invalid characters in PATH directories.
+ * Issue #5089: Made connection to Firefox extension locked by socket lock in
+   .NET.
+ * Issue #5141: Corrected reversed logic in port assignment for .NET
+   SafariDriver's WebSocket server.
+ * Issue #5177: Now using ILMerge for WebDriver.Support.dll. The support
+   library will no longer require an explicit dependency on Castle.Core in its
+   NuGet package.
  * Updated .NET dependencies. Json.NET to 4.5r11; Castle.Core to 3.2.0.
  * Added more diagnostics for failed HTTP requests in .NET bindings. This is an
    attempt to help diagnose the root cause of issue #3719. Please note that it
    makes no effort whatsoever to "fix" the issue. This is simply hoping to 
    provide more information for those who have run into that issue, and see if
    all occurrances have the same root cause.
- * Corrected reversed logic in port assignment for .NET SafariDriver's
-   WebSocket server. Fixes issue #5141.
  * Only adding environment variables for Firefox process if they do not already
    exist.
  * Properly passing requireWindowFocus capability when set in .NET bindings.
@@ -56,13 +83,9 @@ v2.30.0
    it was not being passed through to the driver session.
  * Deprecated Alert property of UnhandledAlertException in favor of AlertText
    property.
- * Made connection to Firefox extension locked by socket lock in .NET. Fixes
-   issue #5089.
  * Updated .NET bindings to use embedded Safari extension. Separate extension
    build and installation no longer required.
  * Updated registry search for Firefox executable in the .NET bindings.
- * Fixed .NET FileUtilities.FindFile() to expand environment variables and
-   search for invalid characters in PATH directories. Fixes issue #5032.
 
 v2.29.1
 =======
@@ -109,8 +132,10 @@ v2.27.1
    
 v2.27.0
 =======
- * Changed DesiredCapabilities.Safari() to return DesiredCapabilities instead
-   of ICapabilities. Fixes issue #4865.
+ * Issues #3508 and #2103: Modified to no longer hang on alerts triggered by
+   onchange of <select> elements or by onsubmit of <form> elements.
+ * Issue #4865: Changed DesiredCapabilities.Safari() to return
+   DesiredCapabilities instead of ICapabilities.
  * Implemented rudimentary path searching for executable-based drivers (such
    as IE, Chrome, and PhantomJS).
  * Finally made the .NET PhantomJSDriver public. It still requires a PhantomJS
@@ -123,9 +148,6 @@ v2.27.0
  * Removed necessity for path to GhostDriver's main.js for the .NET
    PhantomJSDriverService in favor of a command line switch (GhostDriver is now
    internal to PhantomJS).
- * Modified to no longer hang on alerts triggered by onchange of <select>
-   elements or by onsubmit of <form> elements. Fixes issue #3508. Fixes issue
-   #2103.
  * Turned off use of the Expect-100 header for the HttpWebRequests.
  * Added various StyleCop changes.
  * Added support for file uploads to a remote WebDriver server.
@@ -133,10 +155,10 @@ v2.27.0
 
 v2.26.0
 =======
+ * Issue #4526: Bumping .NET HttpWebRequest service point connection limit to
+   2000.
  * Prevent firefox from updating, checking and warning for extension and plugin
    updates
- * Bumping .NET HttpWebRequest service point connection limit to 2000. Fixes 
-   issue #4526.
  * Handled the case where a JSON Wire Protocol error response contains a null
    value for the message property. Also guarded against null values in other 
    members of the error response.
@@ -210,8 +232,8 @@ v2.25.0
 
 v2.24.0
 =======
- * Updated OpenQA.Selenium.Support.PageObjects.FindsByAttribute so that overridden
-   operators correctly handle the null case. Fixes issue #4070.
+ * Issue #4070: Updated OpenQA.Selenium.Support.PageObjects.FindsByAttribute so
+   that overridden operators correctly handle the null case.
 
 v2.23.0
 =======
@@ -222,12 +244,17 @@ v2.23.0
 
 v2.22.1
 =======
- * Not all browser driver implementations understand the generic set timeouts
-   HTTP endpoint of the JSON wire protocol, instead responding to the
-   deprecated specific endpoints for each timeout. Fixes issue #4015. 
+ * Issue #4015: Not all browser driver implementations understand the generic
+   set timeouts HTTP endpoint of the JSON wire protocol, instead responding to
+   the deprecated specific endpoints for each timeout.
 
 v2.22.0
 =======
+ * Issue #3242: Added Android to Platform enumeration.
+ * Issue #3870 (code supplied by KellySummerlin): Added ByChained support to
+   the WebDriver.Support assembly. Also created  additions to the .NET
+   PageFactory to allow decorating members with multiple instances of
+   FindsByAttribute, including ordering of the attributes.
  * The .NET IE driver implementation now looks for the IE standalone server. 
    Please note that if you do not set the option in InternetExplorerOptions
    to use the legacy server, the constructor *will* throw an exception. There 
@@ -236,10 +263,6 @@ v2.22.0
    needs attention at runtime, and guarantee it will be seen.
  * Implemented ability to set page load timeout in the .NET bindings.
  * Added tests to .NET bindings to align more closely with Java.
- * Added ByChained support to the WebDriver.Support assembly. Also created 
-   additions to the .NET PageFactory to allow decorating members with multiple
-   instances of FindsByAttribute, including ordering of the attributes (issue
-   #3870, code supplied by KellySummerlin).
  * Updated .NET bindings InternetExplorerOptions to allow the user to disable
    native events for IE. Note that actually doing this is not recommended as of
    this release.
@@ -257,13 +280,14 @@ v2.22.0
    this is still by far a second-best choice, and the first choice should 
    *always* be to actually set the Protected Mode settings of each zone. If a 
    user is using this property, only a "best effort" at support will be given.
- * Added Android to Platform enumeration (issue #3242).
  * Allow user-defined installation path for Safari in the SafariDriver.
  * Changed .NET DesiredCapabilities.Android() to correctly assign a platform 
    value of Android.
 
 v2.21.0
 =======
+ * Issue #3329: Fixed .NET EventFiring WebDriver to switch to a frame using the
+   wrapped element.
  * Updated NoSuchFrameException, NoSuchWindowException, and
    NoAlertPresentException to properly descend from NotFoundException
    in the .NET bindings.
@@ -283,8 +307,6 @@ v2.21.0
  * Fixed .NET RemoteWebDriver to translate a single null deliberately passed in
    as a script arg into an arg array containing the null.
  * Upped service point connection limit for Selenium RC command processor
- * Fixed .NET EventFiring WebDriver to switch to a frame using the wrapped
-   element. Fixes issue #3329.
  * Removed deprecated constructors on .NET bindings InternetExplorerDriver
 
 v2.20.0
@@ -314,13 +336,13 @@ v2.18.0
 
 v2.17.0
 =======
+ * Issue #3172: Updated the .NET PageFactory to traverse the inheritance tree
+   to find custom attributes.
  * Reverted the .NET remote Command object to return an empty string
    instead of an empty JSON object ("{}") when the command has no parameters.
  * Introduced ChromeOptions class for use with the ChromeDriver. This makes
    obsolete calling constructors on ChromeDriver that take an ICapabilities
    object.
- * Updated the .NET PageFactory to traverse the inheritance tree to find
-   custom attributes (Issue #3172)
  * Added toolkit.telemetry.enabled and toolkit.telemetry.rejected to the
    default profile used by the FirefoxDriver.
 
@@ -398,10 +420,10 @@ v2.6.0
 ======
   * Issue 2349: Fixed memory leak in PageFactory
   * Issue 2356: Fixed P/Invoke signatures for native .NET 4.0 projects
-  * Disabled Firefox profile setting "browser.safebrowsing.malware.enabled" by
-    default
   * Issue 2385: Added protected AddAction method on Actions class to allow
     subclasses to insert IAction implementations into action chain.
+  * Disabled Firefox profile setting "browser.safebrowsing.malware.enabled" by
+    default
 
 v2.5.1
 ======
