@@ -12,6 +12,7 @@
 // limitations under the License.
 
 #include "CommandLineArguments.h"
+#include "logging.h"
 
 CommandLineArguments::CommandLineArguments(int argc, _TCHAR* argv[]) {
   this->ParseArguments(argc, argv);
@@ -44,15 +45,30 @@ void CommandLineArguments::ParseArguments(int argc, _TCHAR* argv[]) {
       arg_name = arg.substr(0, equal_pos);
       arg_value = arg.substr(equal_pos + 1);
     } else {
-      arg_name = arg.c_str();
+      arg_name = arg;
     }
 
     // coerce all argument names to lowercase, making argument names
     // case-insensitive.
     std::transform(arg_name.begin(), arg_name.end(), arg_name.begin(), tolower);
+
+    // trim single and double quotes from argument value begin and end
+    size_t startpos = arg_value.find_first_not_of(L"'\"");    
+    if (startpos != std::string::npos) {
+      arg_value = arg_value.substr(startpos);
+    }
+    size_t endpos = arg_value.find_last_not_of(L"'\"");
+    if (endpos != std::string::npos) {
+      arg_value = arg_value.substr(0, endpos + 1);
+    }
+
     if (arg_name == L"?" || arg_name == L"h" || arg_name == L"help") {
       this->is_help_requested_ = true;
     }
+
+    // silence!
+    // std::wcout << "Argument '" << LOGCWSTRING(arg_name) << "' with '" << LOGCWSTRING(arg_value) << "' value is found" << std::endl;
+
     this->args_map_[arg_name] = arg_value;
   }
 }

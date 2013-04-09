@@ -30,6 +30,8 @@ class IEServer : public Server
            const std::string& host,
            const std::string& log_level,
            const std::string& log_file,
+           const std::string& launch_api,
+           const std::string& ie_switches,
            const std::string& version);
   virtual ~IEServer(void);
 
@@ -39,6 +41,8 @@ class IEServer : public Server
   virtual void ShutDown(void);
  private:
   std::string version_;
+  std::string launch_api_;
+  std::string ie_switches_;
 };
 
 } // namespace webdriver
