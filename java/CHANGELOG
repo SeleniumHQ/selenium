@@ -1,3 +1,29 @@
+v2.32.0
+=======
+
+WebDriver:
+  This release supports Firefox verions: 10esr, 17esr, 19, 20
+
+  * Let WindowsUtils.killPID() kill the whole process tree
+  * Implementing support for implicit "submit" button type in HtmlUnitDriver.
+  * bug fix for python hang with 302 response
+  * Adding better support for SVG within Firefox. Has better scrolling to element and allows JavaScript execution
+  * Fixing case of "no active element" for HtmlUnitDriver
+  * WindowsUtils.kill() fix on Windows 8
+  * Updating HtmlUnit to 2.12 (and cssparser to 0.9.9)
+  * Fixing illegal negative timeout values for HtmlUnitDriver, zero means infinite wait
+  * Implementing pageLoadTimeout in HtmlUnitDriver
+  * Allow users to specify a custom location for Safari's data directory using the "safari.dataDir" capability.
+  * Fix for using DesiredCapabilities with WebDriverBackedSelenium
+  * PhantomJS Driver bindings updated to 1.0.3
+  * Minimize the number of third party libraries used by the very heart of the remote webdriver server.
+  * fix issue where server was appending '?null' to all forwarded requests
+  * Issues fixed: 5293, 4902, 5283, 5278
+
+v2.31.0
+=======
+  (summary not created, check version history logs)
+
 v2.30.0
 =======
 
