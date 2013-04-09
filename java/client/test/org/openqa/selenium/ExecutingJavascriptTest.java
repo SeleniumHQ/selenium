@@ -47,7 +47,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -581,7 +580,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, HTMLUNIT, OPERA, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE},
           reason = "Opera and HtmlUnit obey the method contract. Android not tested")
   @Test
   public void testCanPassAMapAsAParameter() {
@@ -620,7 +619,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     } catch (StaleElementReferenceException e) {
       // This is expected
     } catch (Exception ex) {
-      fail("Expected an StaleElementReferenceException exception");
+      fail("Expected an StaleElementReferenceException exception, got " + ex);
     }
   }
 

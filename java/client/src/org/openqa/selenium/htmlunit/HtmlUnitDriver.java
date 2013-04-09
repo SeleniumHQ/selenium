@@ -79,6 +79,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.WebDriver;
@@ -503,7 +504,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     final ContextAction action = new ContextAction() {
       public Object run(final Context context) {
         for (int i = 0; i < args.length; i++) {
-          parameters[i] = parseArgumentIntoJavsacriptParameter(context, scope, args[i]);
+          parameters[i] = parseArgumentIntoJavascriptParameter(context, scope, args[i]);
         }
         return null;
       }
@@ -530,7 +531,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     return (HtmlPage) lastPage;
   }
 
-  private Object parseArgumentIntoJavsacriptParameter(
+  private Object parseArgumentIntoJavascriptParameter(
       Context context, Scriptable scope, Object arg) {
     while (arg instanceof WrapsElement) {
       arg = ((WrapsElement) arg).getWrappedElement();
@@ -541,25 +542,72 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         arg instanceof Number ||
         arg instanceof String ||
         arg instanceof Boolean ||
-        arg.getClass().isArray() || arg instanceof Collection<?>)) {
+        arg.getClass().isArray() ||
+        arg instanceof Collection<?> ||
+        arg instanceof Map<?, ?>)) {
       throw new IllegalArgumentException(
           "Argument must be a string, number, boolean or WebElement: " +
               arg + " (" + arg.getClass() + ")");
     }
 
     if (arg instanceof HtmlUnitWebElement) {
-      HtmlElement element = ((HtmlUnitWebElement) arg).getElement();
-      return element.getScriptObject();
+      HtmlUnitWebElement webElement = (HtmlUnitWebElement) arg;
+      assertElementNotStale(webElement.getElement());
+      return webElement.getElement().getScriptObject();
+
     } else if (arg instanceof HtmlElement) {
-      return ((HtmlElement) arg).getScriptObject();
+      HtmlElement element = (HtmlElement) arg;
+      assertElementNotStale(element);
+      return element.getScriptObject();
+
     } else if (arg instanceof Collection<?>) {
       List<Object> list = new ArrayList<Object>();
       for (Object o : (Collection<?>) arg) {
-        list.add(parseArgumentIntoJavsacriptParameter(context, scope, o));
+        list.add(parseArgumentIntoJavascriptParameter(context, scope, o));
       }
       return context.newArray(scope, list.toArray());
+
+    } else if (arg.getClass().isArray()) {
+      List<Object> list = new ArrayList<Object>();
+      for (Object o : (Object[]) arg) {
+        list.add(parseArgumentIntoJavascriptParameter(context, scope, o));
+      }
+      return context.newArray(scope, list.toArray());
+
+    } else if (arg instanceof Map<?,?>) {
+      Map<?,?> argmap = (Map<?,?>) arg;
+      Scriptable map = context.newObject(scope);
+      for (Object key: argmap.keySet()) {
+        map.put((String) key, map, parseArgumentIntoJavascriptParameter(context, scope, argmap.get(key)));
+      }
+      return map;
+
     } else {
       return arg;
+    }
+  }
+
+  protected void assertElementNotStale(HtmlElement element) {
+    SgmlPage elementPage = element.getPage();
+    Page currentPage = lastPage();
+
+    if (!currentPage.equals(elementPage)) {
+      throw new StaleElementReferenceException(
+          "Element appears to be stale. Did you navigate away from the page that contained it? "
+          + " And is the current window focussed the same as the one holding this element?");
+    }
+
+    // We need to walk the DOM to determine if the element is actually attached
+    DomNode parentElement = element;
+    while (parentElement != null && !(parentElement instanceof HtmlHtml)) {
+      parentElement = parentElement.getParentNode();
+    }
+
+    System.err.println("" + element + " -> " + parentElement);
+    if (parentElement == null) {
+      throw new StaleElementReferenceException(
+          "The element seems to be disconnected from the DOM. "
+          + " This means that a user cannot interact with it.");
     }
   }
 

@@ -839,26 +839,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   }
 
   protected void assertElementNotStale() {
-    SgmlPage elementPage = element.getPage();
-    Page currentPage = parent.lastPage();
-
-    if (!currentPage.equals(elementPage)) {
-      throw new StaleElementReferenceException(
-          "Element appears to be stale. Did you navigate away from the page that contained it? "
-              + " And is the current window focussed the same as the one holding this element?");
-    }
-
-    // We need to walk the DOM to determine if the element is actually attached
-    DomNode parentElement = element;
-    while (parentElement != null && !(parentElement instanceof HtmlHtml)) {
-      parentElement = parentElement.getParentNode();
-    }
-
-    if (parentElement == null) {
-      throw new StaleElementReferenceException(
-          "The element seems to be disconnected from the DOM. "
-              + " This means that a user cannot interact with it.");
-    }
+    parent.assertElementNotStale(element);
   }
 
   public String getCssValue(String propertyName) {
