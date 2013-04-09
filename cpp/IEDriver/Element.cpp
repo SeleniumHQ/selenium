@@ -164,7 +164,7 @@ int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
   status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior, &location);
 
   if (status_code == WD_SUCCESS) {
-    LocationInfo click_location = GetClickPoint(location);
+    LocationInfo click_location = GetClickPoint(location, NULL);
 
     // Create a mouse move, mouse down, mouse up OS event
     LRESULT result = mouseMoveTo(this->containing_window_handle_,
@@ -242,8 +242,8 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
   LocationInfo element_location = {};
   std::vector<LocationInfo> frame_locations;
   int result = this->GetLocation(&element_location, &frame_locations);
-  LocationInfo click_location = this->GetClickPoint(element_location);
   bool document_contains_frames = frame_locations.size() != 0;
+  LocationInfo click_location = this->GetClickPoint(element_location, document_contains_frames);  
 
   if (result != WD_SUCCESS ||
       !this->IsLocationInViewPort(click_location, document_contains_frames) ||
@@ -268,7 +268,7 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
       return result;
     }
 
-    click_location = this->GetClickPoint(element_location);
+    click_location = this->GetClickPoint(element_location, document_contains_frames);
     if (!this->IsLocationInViewPort(click_location, document_contains_frames)) {
       LOG(WARN) << "Scrolled element is not in view";
       status_code = EELEMENTCLICKPOINTNOTSCROLLED;
@@ -699,25 +699,14 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
   return false;
 }
 
-LocationInfo Element::GetClickPoint(const LocationInfo location) {
-  LOG(TRACE) << "Entering Element::GetClickPoint";
-
-  LocationInfo click_location = {};
-  //Note: This logic is duplicated in javascript in Element::IsHiddenByOverflow
-  click_location.x = location.x + (location.width / 2);
-  click_location.y = location.y + (location.height / 2);
-  return click_location;
-}
-
-bool Element::IsLocationInViewPort(const LocationInfo location, const bool document_contains_frames) {
-  LOG(TRACE) << "Entering Element::IsLocationInViewPort";
+bool Element::GetClickableViewportLocation(const bool document_contains_frames, LocationInfo* location) {
+  LOG(TRACE) << "Entering Element::GetClickableViewportLocation";
 
   WINDOWINFO window_info;
   window_info.cbSize = sizeof(WINDOWINFO);
   BOOL get_window_info_result = ::GetWindowInfo(this->containing_window_handle_, &window_info);
   if (get_window_info_result == FALSE) {
-    DWORD error_code = ::GetLastError();
-    LOG(WARN) << "Cannot determine size of window, call to GetWindowInfo API failed with error code " << error_code;
+    LOGERR(WARN) << "Cannot determine size of window, call to GetWindowInfo API failed";
     return false;
   }
 
@@ -749,13 +738,70 @@ bool Element::IsLocationInViewPort(const LocationInfo location, const bool docum
   // where clicks are interpreted as a click on the window border, not
   // within the client area. We are assuming n == 2, but that's strictly
   // a wild guess, not based on any research.
-  if (location.x < 0 || location.x >= window_width - 2) {
+  location->width = window_width - 2;
+  location->height = window_height - 2;
+
+  return true;
+}
+
+LocationInfo Element::GetClickPoint(const LocationInfo location, const bool document_contains_frames) {
+  LOG(TRACE) << "Entering Element::GetClickPoint";
+
+  // Recalculate frame locations to understand is it in frame or not.
+  // Mostly it is already calculated and passed in as argumtny value
+  // but in Click() it is calculated at another level, so add special hadnling of NULL value
+  bool contains_frames;
+  if (document_contains_frames == NULL) {
+    LocationInfo element_location = {};
+    std::vector<LocationInfo> frame_locations;
+    int result = this->GetLocation(&element_location, &frame_locations);
+    contains_frames = frame_locations.size() != 0;
+  } else {
+    contains_frames = document_contains_frames;
+  }
+
+  //Note: This logic is duplicated in javascript in Element::IsHiddenByOverflow
+  long corrected_width = location.width;
+  long corrected_height = location.height;
+
+  LocationInfo clickable_viewport = {};
+  bool result = this->GetClickableViewportLocation(contains_frames, &clickable_viewport);
+  if (result) {
+    if (corrected_width > (2 * clickable_viewport.width)) {
+      corrected_width = clickable_viewport.width;
+    }
+    if (corrected_height > (2 * clickable_viewport.height)) {
+      corrected_height = clickable_viewport.height;
+    }
+  } else {
+    // do nothing: if we failed and element is really big, then it failes at anpther point
+    // and we'll trace this by logs.
+    // if element is not such big, then all will be normal.
+  }
+
+  LocationInfo click_location = {};  
+  click_location.x = location.x + (corrected_width / 2);
+  click_location.y = location.y + (corrected_height / 2);
+  return click_location;
+}
+
+bool Element::IsLocationInViewPort(const LocationInfo location, const bool document_contains_frames) {
+  LOG(TRACE) << "Entering Element::IsLocationInViewPort";
+
+  LocationInfo clickable_viewport = {};
+  bool result = this->GetClickableViewportLocation(document_contains_frames, &clickable_viewport);
+  if (!result) {
+    // problem is already logged, so just return 
+    return false;
+  }
+
+  if (location.x < 0 || location.x >= clickable_viewport.width) {
     LOG(WARN) << "X coordinate is out of element area";
     return false;
   }
 
   // And in the Y?
-  if (location.y < 0 || location.y >= window_height - 2) {
+  if (location.y < 0 || location.y >= clickable_viewport.height) {
     LOG(WARN) << "Y coordinate is out of element area";
     return false;
   }

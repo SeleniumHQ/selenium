@@ -62,7 +62,8 @@ class Element {
 
  private:
   int GetLocation(LocationInfo* location, std::vector<LocationInfo>* frame_locations);
-  LocationInfo GetClickPoint(const LocationInfo location);
+  LocationInfo GetClickPoint(const LocationInfo location, const bool document_contains_frames);
+  bool GetClickableViewportLocation(const bool document_contains_frames, LocationInfo* location);
   bool IsLocationInViewPort(const LocationInfo location, const bool document_contains_frames);
   bool IsLocationVisibleInFrames(const LocationInfo location, const std::vector<LocationInfo> frame_locations);
   bool IsHiddenByOverflow();
