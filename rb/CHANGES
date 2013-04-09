@@ -1,10 +1,14 @@
-2.32.0 (??)
-===========
+2.32.0 (2013-04-09)
+===================
 
 Safari:
   * The Safari extension is now packaged with the gem and automatically installed (#5322)
+  * Improved detection of the binary location on 64-bit windows (5273)
 Opera:
   * Allow passing :desired_capabailities (#5279)
+Firefox:
+  * This release supports versions 10esr, 17esr, 19, 20.
+  * Improved SVG support
 Other:
   * Allow #click_and_hold without target (#5410).
   * Remove assumptions about returned capabilities (for ios-driver)
