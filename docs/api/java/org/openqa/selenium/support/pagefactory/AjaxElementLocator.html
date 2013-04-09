@@ -148,13 +148,13 @@ extends <a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultE
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#AjaxElementLocator(org.openqa.selenium.support.ui.Clock, org.openqa.selenium.WebDriver, java.lang.reflect.Field, int)">AjaxElementLocator</a></strong>(<a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
-                  <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#AjaxElementLocator(org.openqa.selenium.support.ui.Clock, org.openqa.selenium.SearchContext, java.lang.reflect.Field, int)">AjaxElementLocator</a></strong>(<a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
+                  <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
                   java.lang.reflect.Field&nbsp;field,
                   int&nbsp;timeOutInSeconds)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#AjaxElementLocator(org.openqa.selenium.WebDriver, java.lang.reflect.Field, int)">AjaxElementLocator</a></strong>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/AjaxElementLocator.html#AjaxElementLocator(org.openqa.selenium.SearchContext, java.lang.reflect.Field, int)">AjaxElementLocator</a></strong>(<a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
                   java.lang.reflect.Field&nbsp;field,
                   int&nbsp;timeOutInSeconds)</code>
 <div class="block">Main constructor.</div>
@@ -238,27 +238,27 @@ extends <a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultE
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="AjaxElementLocator(org.openqa.selenium.WebDriver, java.lang.reflect.Field, int)">
+<a name="AjaxElementLocator(org.openqa.selenium.SearchContext, java.lang.reflect.Field, int)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>AjaxElementLocator</h4>
-<pre>public&nbsp;AjaxElementLocator(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+<pre>public&nbsp;AjaxElementLocator(<a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
                   java.lang.reflect.Field&nbsp;field,
                   int&nbsp;timeOutInSeconds)</pre>
 <div class="block">Main constructor.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>driver</code> - The WebDriver to use when locating elements</dd><dd><code>field</code> - The field representing this element</dd><dd><code>timeOutInSeconds</code> - How long to wait for the element to appear. Measured in seconds.</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>searchContext</code> - The context to use when finding the element</dd><dd><code>field</code> - The field representing this element</dd><dd><code>timeOutInSeconds</code> - How long to wait for the element to appear. Measured in seconds.</dd></dl>
 </li>
 </ul>
-<a name="AjaxElementLocator(org.openqa.selenium.support.ui.Clock, org.openqa.selenium.WebDriver, java.lang.reflect.Field, int)">
+<a name="AjaxElementLocator(org.openqa.selenium.support.ui.Clock, org.openqa.selenium.SearchContext, java.lang.reflect.Field, int)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>AjaxElementLocator</h4>
 <pre>public&nbsp;AjaxElementLocator(<a href="../../../../../org/openqa/selenium/support/ui/Clock.html" title="interface in org.openqa.selenium.support.ui">Clock</a>&nbsp;clock,
-                  <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
+                  <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;searchContext,
                   java.lang.reflect.Field&nbsp;field,
                   int&nbsp;timeOutInSeconds)</pre>
 </li>
@@ -327,7 +327,7 @@ extends <a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultE
 <h4>isElementUsable</h4>
 <pre>protected&nbsp;boolean&nbsp;isElementUsable(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element)</pre>
 <div class="block">By default, elements are considered "found" if they are in the DOM. Override this method in
- order to change whether or not you consider the elemet loaded. For example, perhaps you need
+ order to change whether or not you consider the element loaded. For example, perhaps you need
  the element to be displayed:
  
  <pre class="code>

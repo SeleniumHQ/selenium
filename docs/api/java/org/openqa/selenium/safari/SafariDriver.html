@@ -102,8 +102,7 @@
 </dl>
 <hr>
 <br>
-<pre><a href="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
-public class <span class="strong">SafariDriver</span>
+<pre>public class <span class="strong">SafariDriver</span>
 extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>
 implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></pre>
 <div class="block">A WebDriver implementation that controls Safari using a browser extension
@@ -153,6 +152,13 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/safari/SafariDriver.html#CLEAN_SESSION_CAPABILITY">CLEAN_SESSION_CAPABILITY</a></strong></code>
 <div class="block">A boolean capability that instructs the SafariDriver to delete all existing
  session data when starting a new session.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/safari/SafariDriver.html#DATA_DIR_CAPABILITY">DATA_DIR_CAPABILITY</a></strong></code>
+<div class="block">Capability that defines the path to a Safari installations data
+ directory.</div>
 </td>
 </tr>
 </table>
@@ -246,7 +252,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <a name="CLEAN_SESSION_CAPABILITY">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>CLEAN_SESSION_CAPABILITY</h4>
 <pre>public static final&nbsp;java.lang.String CLEAN_SESSION_CAPABILITY</pre>
@@ -258,6 +264,25 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
  current user, enabling this capability will permanently erase any existing
  session data.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.safari.SafariDriver.CLEAN_SESSION_CAPABILITY">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="DATA_DIR_CAPABILITY">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>DATA_DIR_CAPABILITY</h4>
+<pre>public static final&nbsp;java.lang.String DATA_DIR_CAPABILITY</pre>
+<div class="block">Capability that defines the path to a Safari installations data
+ directory. If omitted, the default installation location for the current
+ platform will be used:
+ <ul>
+   <li>OS X: /Users/$USER/Library/Safari
+   <li>Windows: %APPDATA%\Apple Computer\Safari
+ </ul>
+
+ <p>This capability may be set either as a String or File object.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.safari.SafariDriver.DATA_DIR_CAPABILITY">Constant Field Values</a></dd></dl>
 </li>
 </ul>
 </li>

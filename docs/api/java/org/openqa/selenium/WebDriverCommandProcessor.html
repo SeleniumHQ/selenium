@@ -211,29 +211,36 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/WebDriverCommandProcessor.html#setEnableAlertOverrides(boolean)">setEnableAlertOverrides</a></strong>(boolean&nbsp;enableAlertOverrides)</code>
+<div class="block">Sets whether to enable emulation of Selenium's alert handling functions or
+ to preserve WebDriver's alert handling.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/WebDriverCommandProcessor.html#setExtensionJs(java.lang.String)">setExtensionJs</a></strong>(java.lang.String&nbsp;s)</code>
 <div class="block">Sets extension Javascript for the session</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/WebDriverCommandProcessor.html#start()">start</a></strong>()</code>
 <div class="block">Starts a new Selenium testing session</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/WebDriverCommandProcessor.html#start(java.lang.Object)">start</a></strong>(java.lang.Object&nbsp;o)</code>
 <div class="block">Starts a new Selenium testing session with a configuration options object</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/WebDriverCommandProcessor.html#start(java.lang.String)">start</a></strong>(java.lang.String&nbsp;s)</code>
 <div class="block">Starts a new Selenium testing session with a String, representing a configuration</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../org/openqa/selenium/WebDriverCommandProcessor.html#stop()">stop</a></strong>()</code>
 <div class="block">Ends the current Selenium testing session (normally killing the browser)</div>
@@ -535,10 +542,22 @@ implements <a href="../../../com/thoughtworks/selenium/CommandProcessor.html" ti
 <a name="assertDriverSupportsJavascript(org.openqa.selenium.WebDriver)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>assertDriverSupportsJavascript</h4>
 <pre>protected&nbsp;void&nbsp;assertDriverSupportsJavascript(<a href="../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+</li>
+</ul>
+<a name="setEnableAlertOverrides(boolean)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setEnableAlertOverrides</h4>
+<pre>public&nbsp;void&nbsp;setEnableAlertOverrides(boolean&nbsp;enableAlertOverrides)</pre>
+<div class="block">Sets whether to enable emulation of Selenium's alert handling functions or
+ to preserve WebDriver's alert handling. This has no affect after calling
+ <a href="../../../org/openqa/selenium/WebDriverCommandProcessor.html#start()"><code>start()</code></a>.</div>
 </li>
 </ul>
 </li>
