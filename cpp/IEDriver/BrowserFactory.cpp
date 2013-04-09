@@ -116,7 +116,7 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
                                  location_key,
                                  L"TabProcGrowth",
                                  &tab_proc_growth)) {
-        if (tab_proc_growth == L"0") {
+        if (tab_proc_growth != L"0") {
           launch_error = "Unable to use CreateProcess() API in IE 8 and older with HKCU\\Software\\Microsoft\\Internet Explorer\\Main\\TabProcGrowth is not '0'.";
           *error_message = launch_error;
           use_launch_api = L"";
