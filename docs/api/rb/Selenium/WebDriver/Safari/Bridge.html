@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Safari::Bridge
   
-    &mdash; Documentation by YARD 0.8.3
+    &mdash; Documentation by YARD 0.8.5.2
   
 </title>
 
@@ -263,6 +263,7 @@
       <pre class="lines">
 
 
+8
 9
 10
 11
@@ -278,22 +279,35 @@
 21
 22
 23
-24</pre>
+24
+25
+26
+27
+28
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/bridge.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/bridge.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:port</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'>PortProber</span><span class='period'>.</span><span class='id identifier rubyid_random'>random</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_timeout'>timeout</span> <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:timeout</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'>COMMAND_TIMEOUT</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_port'>port</span>              <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:port</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'>PortProber</span><span class='period'>.</span><span class='id identifier rubyid_random'>random</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_timeout'>timeout</span>           <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:timeout</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'>COMMAND_TIMEOUT</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_custom_data_dir'>custom_data_dir</span>   <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:custom_data_dir</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_install_extension'>install_extension</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:install_extension</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
 
   <span class='ivar'>@command_id</span> <span class='op'>||=</span> <span class='int'>0</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_install_extension'>install_extension</span>
+    <span class='ivar'>@extension</span> <span class='op'>=</span> <span class='const'>Extension</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='symbol'>:custom_data_dir</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_custom_data_dir'>custom_data_dir</span><span class='rparen'>)</span>
+    <span class='ivar'>@extension</span><span class='period'>.</span><span class='id identifier rubyid_install'>install</span>
+  <span class='kw'>end</span>
 
   <span class='ivar'>@server</span> <span class='op'>=</span> <span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_timeout'>timeout</span><span class='rparen'>)</span>
   <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
 
-  <span class='ivar'>@browser</span> <span class='op'>=</span> <span class='const'>Browser</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
-  <span class='ivar'>@browser</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span><span class='lparen'>(</span><span class='id identifier rubyid_prepare_connect_file'>prepare_connect_file</span><span class='rparen'>)</span>
+  <span class='ivar'>@safari</span> <span class='op'>=</span> <span class='const'>Browser</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+  <span class='ivar'>@safari</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span><span class='lparen'>(</span><span class='id identifier rubyid_prepare_connect_file'>prepare_connect_file</span><span class='rparen'>)</span>
 
   <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_wait_for_connection'>wait_for_connection</span>
 
@@ -326,12 +340,12 @@
       <pre class="lines">
 
 
-33
-34
-35</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/bridge.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/bridge.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_driver_extensions'>driver_extensions</span>
   <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -356,21 +370,23 @@
       <pre class="lines">
 
 
-26
-27
-28
-29
-30
-31</pre>
+32
+33
+34
+35
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/bridge.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/bridge.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>super</span>
 
   <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_stop'>stop</span>
-  <span class='ivar'>@browser</span><span class='period'>.</span><span class='id identifier rubyid_stop'>stop</span>
+  <span class='ivar'>@safari</span><span class='period'>.</span><span class='id identifier rubyid_stop'>stop</span>
+  <span class='ivar'>@extension</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@extension</span><span class='period'>.</span><span class='id identifier rubyid_uninstall'>uninstall</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -382,9 +398,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Jan 21 19:22:52 2013 by
+  Generated on Tue Apr  9 23:39:08 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.3 (ruby-1.9.3).
+  0.8.5.2 (ruby-2.0.0).
 </div>
 
   </body>

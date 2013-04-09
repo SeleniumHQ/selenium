@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::Client::Extensions
   
-    &mdash; Documentation by YARD 0.8.3
+    &mdash; Documentation by YARD 0.8.5.2
   
 </title>
 
@@ -805,38 +805,40 @@ browser).</p>
 the current DOM. Note that this method treats a single string as a special
 case.</p>
 
-<h4>Parameters</h4>
+<h4 id="label-Parameters">Parameters<span><a href="#label-Parameters">&para;</a> <a href="#documentation">&uarr;</a></span></h4>
 
 <p>wait_for_text accepts an optional hash of parameters:</p>
 <ul><li>
-<p><tt>:element</tt> - a selenium locator for an element limiting the search
-scope.</p>
+<p><code>:element</code> - a selenium locator for an element limiting the
+search scope.</p>
 </li><li>
-<p><tt>:timeout_in_seconds</tt> - duration in seconds after  which we time out
-if text cannot be found.</p>
+<p><code>:timeout_in_seconds</code> - duration in seconds after  which we time
+out if text cannot be found.</p>
 </li></ul>
 
-<h4>Regular Expressions</h4>
+<h4 id="label-Regular+Expressions">Regular Expressions<span><a href="#label-Regular+Expressions">&para;</a> <a href="#documentation">&uarr;</a></span></h4>
 
 <p>In addition to plain strings, wait_for_text accepts regular expressions as
 the pattern specification.</p>
 
-<h4>Examples</h4>
+<h4 id="label-Examples">Examples<span><a href="#label-Examples">&para;</a> <a href="#documentation">&uarr;</a></span></h4>
 
-<p>The following are equivalent, and will match "some text" anywhere within
+<p>The following are equivalent, and will match “some text” anywhere within
 the document:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some text</span><span class='tstring_end'>&quot;</span></span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some text</span><span class='tstring_end'>&quot;</span></span>
 <span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>some text</span><span class='regexp_end'>/</span></span></code></pre>
 
-<p>This will match "some text" anywhere within the specified element:</p>
+<p>This will match “some text” anywhere within the specified element:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>some text</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>container</span><span class='tstring_end'>&quot;</span></span></code></pre>
+<pre class="ruby"><span class="ruby-identifier">wait_for_text</span> <span class="ruby-regexp">/some text/</span>, :<span class="ruby-identifier">element</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;container&quot;</span>
+</pre>
 
-<p>This will match "some text" only if it exactly matches the complete
+<p>This will match “some text” only if it exactly matches the complete
 innerHTML of the specified element:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_wait_for_text'>wait_for_text</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some text</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='symbol'>:element</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>container</span><span class='tstring_end'>&quot;</span></span></code></pre>
+<pre class="ruby"><span class="ruby-identifier">wait_for_text</span> <span class="ruby-string">&quot;some text&quot;</span>, :<span class="ruby-identifier">element</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;container&quot;</span>
+</pre>
 
 
   </div>
@@ -917,9 +919,9 @@ innerHTML of the specified element:</p>
 </div>
 
     <div id="footer">
-  Generated on Mon Jan 21 19:22:40 2013 by
+  Generated on Tue Apr  9 23:38:54 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.3 (ruby-1.9.3).
+  0.8.5.2 (ruby-2.0.0).
 </div>
 
   </body>

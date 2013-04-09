@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::Server
   
-    &mdash; Documentation by YARD 0.8.3
+    &mdash; Documentation by YARD 0.8.5.2
   
 </title>
 
@@ -106,27 +106,28 @@
 
 <p>Usage:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>/path/to/selenium-server-standalone.jar</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/path/to/selenium-server-standalone.jar</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span></code></pre>
 
 <p>Automatically download the given version:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>2.6.0</span><span class='tstring_end'>'</span></span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>2.6.0</span><span class='tstring_end'>&#39;</span></span>
 <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span></code></pre>
 
 <p>or the latest version:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='symbol'>:latest</span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='symbol'>:latest</span>
 <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span></code></pre>
 
 <p>Run the server in the background:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='comma'>,</span> <span class='symbol'>:background</span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='rparen'>)</span>
-<span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span></code></pre>
+<pre class="ruby"><span class="ruby-identifier">server</span> = <span class="ruby-constant">Selenium</span><span class="ruby-operator">::</span><span class="ruby-constant">Server</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">jar</span>, :<span class="ruby-identifier">background</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">true</span>)
+<span class="ruby-identifier">server</span>.<span class="ruby-identifier">start</span>
+</pre>
 
 <p>Add additional arguments:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='rparen'>)</span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jar'>jar</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_server'>server</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>--additional</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>args</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
 <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span></code></pre>
 
@@ -154,7 +155,7 @@
         <dt id="CL_RESET-constant" class="">CL_RESET =
           
         </dt>
-        <dd><pre class="code"><span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_windows?'>windows?</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\r\e[0K</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+        <dd><pre class="code"><span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_windows?'>windows?</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\r\e[0K</span><span class='tstring_end'>&quot;</span></span></pre></dd>
       
     </dl>
   
@@ -213,7 +214,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Path to log file, or 'true' for stdout.</p>
+<p>Path to log file, or &#39;true&#39; for stdout.</p>
 </div></span>
   
 </li>
@@ -725,7 +726,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Path to log file, or 'true' for stdout.</p>
+<p>Path to log file, or &#39;true&#39; for stdout.</p>
 
 
   </div>
@@ -921,7 +922,7 @@
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_download'>download</span><span class='lparen'>(</span><span class='id identifier rubyid_required_version'>required_version</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_required_version'>required_version</span> <span class='op'>=</span> <span class='id identifier rubyid_latest'>latest</span> <span class='kw'>if</span> <span class='id identifier rubyid_required_version'>required_version</span> <span class='op'>==</span> <span class='symbol'>:latest</span>
-  <span class='id identifier rubyid_download_file_name'>download_file_name</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>selenium-server-standalone-</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_required_version'>required_version</span><span class='rbrace'>}</span><span class='tstring_content'>.jar</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_download_file_name'>download_file_name</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>selenium-server-standalone-</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_required_version'>required_version</span><span class='embexpr_end'>}</span><span class='tstring_content'>.jar</span><span class='tstring_end'>&quot;</span></span>
 
   <span class='kw'>if</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_exists?'>exists?</span> <span class='id identifier rubyid_download_file_name'>download_file_name</span>
     <span class='kw'>return</span> <span class='id identifier rubyid_download_file_name'>download_file_name</span>
@@ -930,7 +931,7 @@
   <span class='kw'>begin</span>
     <span class='id identifier rubyid_open'>open</span><span class='lparen'>(</span><span class='id identifier rubyid_download_file_name'>download_file_name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>wb</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_destination'>destination</span><span class='op'>|</span>
       <span class='id identifier rubyid_net_http'>net_http</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>selenium.googlecode.com</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_http'>http</span><span class='op'>|</span>
-        <span class='id identifier rubyid_resp'>resp</span> <span class='op'>=</span> <span class='id identifier rubyid_http'>http</span><span class='period'>.</span><span class='id identifier rubyid_request_get'>request_get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/files/</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_download_file_name'>download_file_name</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_response'>response</span><span class='op'>|</span>
+        <span class='id identifier rubyid_resp'>resp</span> <span class='op'>=</span> <span class='id identifier rubyid_http'>http</span><span class='period'>.</span><span class='id identifier rubyid_request_get'>request_get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/files/</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_download_file_name'>download_file_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_response'>response</span><span class='op'>|</span>
           <span class='id identifier rubyid_total'>total</span> <span class='op'>=</span> <span class='id identifier rubyid_response'>response</span><span class='period'>.</span><span class='id identifier rubyid_content_length'>content_length</span>
           <span class='id identifier rubyid_progress'>progress</span> <span class='op'>=</span> <span class='int'>0</span>
           <span class='id identifier rubyid_segment_count'>segment_count</span> <span class='op'>=</span> <span class='int'>0</span>
@@ -941,7 +942,7 @@
 
             <span class='kw'>if</span> <span class='id identifier rubyid_segment_count'>segment_count</span> <span class='op'>%</span> <span class='int'>15</span> <span class='op'>==</span> <span class='int'>0</span>
               <span class='id identifier rubyid_percent'>percent</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_progress'>progress</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>/</span> <span class='id identifier rubyid_total'>total</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='int'>100</span>
-              <span class='id identifier rubyid_print'>print</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>CL_RESET</span><span class='rbrace'>}</span><span class='tstring_content'>Downloading </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_download_file_name'>download_file_name</span><span class='rbrace'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_percent'>percent</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rbrace'>}</span><span class='tstring_content'>% (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_progress'>progress</span><span class='rbrace'>}</span><span class='tstring_content'> / </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_total'>total</span><span class='rbrace'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
+              <span class='id identifier rubyid_print'>print</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>CL_RESET</span><span class='embexpr_end'>}</span><span class='tstring_content'>Downloading </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_download_file_name'>download_file_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_percent'>percent</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='embexpr_end'>}</span><span class='tstring_content'>% (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_progress'>progress</span><span class='embexpr_end'>}</span><span class='tstring_content'> / </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_total'>total</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
               <span class='id identifier rubyid_segment_count'>segment_count</span> <span class='op'>=</span> <span class='int'>0</span>
             <span class='kw'>end</span>
 
@@ -950,7 +951,7 @@
         <span class='kw'>end</span>
 
         <span class='kw'>unless</span> <span class='id identifier rubyid_resp'>resp</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span> <span class='const'>Net</span><span class='op'>::</span><span class='const'>HTTPSuccess</span>
-          <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_resp'>resp</span><span class='period'>.</span><span class='id identifier rubyid_code'>code</span><span class='rbrace'>}</span><span class='tstring_content'> for </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_download_file_name'>download_file_name</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+          <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_resp'>resp</span><span class='period'>.</span><span class='id identifier rubyid_code'>code</span><span class='embexpr_end'>}</span><span class='tstring_content'> for </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_download_file_name'>download_file_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
         <span class='kw'>end</span>
       <span class='kw'>end</span>
     <span class='kw'>end</span>
@@ -1192,7 +1193,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/server.rb', line 172</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_webdriver_url'>webdriver_url</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='rbrace'>}</span><span class='tstring_content'>/wd/hub</span><span class='tstring_end'>&quot;</span></span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>/wd/hub</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1204,9 +1205,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Jan 21 19:22:44 2013 by
+  Generated on Tue Apr  9 23:38:58 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.3 (ruby-1.9.3).
+  0.8.5.2 (ruby-2.0.0).
 </div>
 
   </body>

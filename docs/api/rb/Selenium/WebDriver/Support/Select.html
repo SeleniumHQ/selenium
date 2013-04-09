@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Support::Select
   
-    &mdash; Documentation by YARD 0.8.3
+    &mdash; Documentation by YARD 0.8.5.2
   
 </title>
 
@@ -99,6 +99,16 @@
 </dl>
 <div class="clear"></div>
 
+<h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Select/Escaper.html" title="Selenium::WebDriver::Support::Select::Escaper (module)">Escaper</a></span>
+    
+  
+    
+  
+</p>
 
 
 
@@ -402,7 +412,7 @@
   <span class='id identifier rubyid_tag_name'>tag_name</span> <span class='op'>=</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_tag_name'>tag_name</span>
 
   <span class='kw'>unless</span> <span class='id identifier rubyid_tag_name'>tag_name</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>select</span><span class='tstring_end'>&quot;</span></span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unexpected tag name </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_tag_name'>tag_name</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unexpected tag name </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_tag_name'>tag_name</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
   <span class='ivar'>@element</span> <span class='op'>=</span> <span class='id identifier rubyid_element'>element</span>
@@ -478,7 +488,7 @@ selections.</p>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_deselect_all'>deselect_all</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_multiple?'>multiple?</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>UnsupportedOperationError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>you may only deselect all options of a multi-select</span><span class='tstring_end'>'</span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>UnsupportedOperationError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>you may only deselect all options of a multi-select</span><span class='tstring_end'>&#39;</span></span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_deselect_option'>deselect_option</span> <span class='id identifier rubyid_e'>e</span> <span class='rbrace'>}</span>
@@ -582,7 +592,7 @@ selections.</p>
   <span class='kw'>when</span> <span class='symbol'>:index</span>
     <span class='id identifier rubyid_deselect_by_index'>deselect_by_index</span> <span class='id identifier rubyid_what'>what</span>
   <span class='kw'>else</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>can't deselect options by </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>can&#39;t deselect options by </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -657,7 +667,7 @@ selections.</p>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_first_selected_option'>first_selected_option</span>
   <span class='id identifier rubyid_option'>option</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_selected?'>selected?</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_option'>option</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>NoSuchElementError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>no options are selected</span><span class='tstring_end'>'</span></span>
+  <span class='id identifier rubyid_option'>option</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>NoSuchElementError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>no options are selected</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -765,7 +775,7 @@ selections.</p>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/support/select.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_options'>options</span>
-  <span class='ivar'>@element</span><span class='period'>.</span><span class='id identifier rubyid_find_elements'>find_elements</span> <span class='symbol'>:tag_name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>option</span><span class='tstring_end'>'</span></span>
+  <span class='ivar'>@element</span><span class='period'>.</span><span class='id identifier rubyid_find_elements'>find_elements</span> <span class='symbol'>:tag_name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>option</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -830,7 +840,7 @@ selections.</p>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_select_all'>select_all</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_multiple?'>multiple?</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>UnsupportedOperationError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>you may only select all options of a multi-select</span><span class='tstring_end'>'</span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>UnsupportedOperationError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>you may only select all options of a multi-select</span><span class='tstring_end'>&#39;</span></span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_select_option'>select_option</span> <span class='id identifier rubyid_e'>e</span> <span class='rbrace'>}</span>
@@ -855,17 +865,17 @@ selections.</p>
 <p>Select options by visible text, index or value.</p>
 
 <p>When selecting by :text, selects options that display text matching the
-argument. That is, when given "Bar" this would select an option like:</p>
+argument. That is, when given “Bar” this would select an option like:</p>
 
-<pre class="code ruby"><code>&lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;</code></pre>
+<pre class="code ruby"><code class="ruby">&lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;</code></pre>
 
 <p>When slecting by :value, selects all options that have a value matching the
-argument. That is, when given "foo" this would select an option like:</p>
+argument. That is, when given “foo” this would select an option like:</p>
 
-<pre class="code ruby"><code>&lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;</code></pre>
+<pre class="code ruby"><code class="ruby">&lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;</code></pre>
 
 <p>When selecting by :index, selects the option at the given index. This is
-done by examining the "index" attribute of an element, and not merely by
+done by examining the “index” attribute of an element, and not merely by
 counting.</p>
 
 
@@ -941,7 +951,7 @@ counting.</p>
   <span class='kw'>when</span> <span class='symbol'>:value</span>
     <span class='id identifier rubyid_select_by_value'>select_by_value</span> <span class='id identifier rubyid_what'>what</span>
   <span class='kw'>else</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>can't select options by </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>can&#39;t select options by </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1008,9 +1018,9 @@ counting.</p>
 </div>
 
     <div id="footer">
-  Generated on Mon Jan 21 19:22:52 2013 by
+  Generated on Tue Apr  9 23:39:08 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.3 (ruby-1.9.3).
+  0.8.5.2 (ruby-2.0.0).
 </div>
 
   </body>

@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Driver
   
-    &mdash; Documentation by YARD 0.8.3
+    &mdash; Documentation by YARD 0.8.5.2
   
 </title>
 
@@ -862,7 +862,7 @@ Selenium::WebDriver.for instead of using this directly.</p>
            <span class='kw'>when</span> <span class='symbol'>:safari</span>
              <span class='const'>Safari</span><span class='op'>::</span><span class='const'>Bridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
            <span class='kw'>else</span>
-             <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown driver: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_browser'>browser</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+             <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown driver: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_browser'>browser</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
            <span class='kw'>end</span>
 
   <span class='id identifier rubyid_bridge'>bridge</span> <span class='op'>=</span> <span class='const'>Support</span><span class='op'>::</span><span class='const'>EventFiringBridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='comma'>,</span> <span class='id identifier rubyid_listener'>listener</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_listener'>listener</span>
@@ -897,8 +897,9 @@ Symbol, it will be used as the id of the element.</p>
 
 <p>Examples:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_driver'>driver</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>someElementId</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>    <span class='comment'>#=&gt; #&lt;WebDriver::Element:0x1011c3b88&gt;
-</span><span class='id identifier rubyid_driver'>driver</span><span class='lbracket'>[</span><span class='symbol'>:tag_name</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>div</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='comment'>#=&gt; #&lt;WebDriver::Element:0x1011c3b88&gt;</span></code></pre>
+<pre class="ruby"><span class="ruby-identifier">driver</span>[<span class="ruby-string">&#39;someElementId&#39;</span>]    <span class="ruby-comment">#=&gt; #&lt;WebDriver::Element:0x1011c3b88&gt;</span>
+<span class="ruby-identifier">driver</span>[:<span class="ruby-identifier">tag_name</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&#39;div&#39;</span>] <span class="ruby-comment">#=&gt; #&lt;WebDriver::Element:0x1011c3b88&gt;</span>
+</pre>
 
 
   </div>
@@ -1269,7 +1270,7 @@ injected into the executed function as the last argument.</p>
       
         &mdash;
         <div class='inline'>
-<p>Arguments will be available in the given script in the 'arguments'
+<p>Arguments will be available in the given script in the &#39;arguments&#39;
 pseudo-array.</p>
 </div>
       
@@ -1381,7 +1382,7 @@ pseudo-array.</p>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_inspect'>inspect</span>
-  <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>#&lt;%s:0x%x browser=%s&gt;</span><span class='tstring_end'>'</span></span> <span class='op'>%</span> <span class='lbracket'>[</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='comma'>,</span> <span class='id identifier rubyid_hash'>hash</span><span class='op'>*</span><span class='int'>2</span><span class='comma'>,</span> <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_browser'>browser</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbracket'>]</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>#&lt;%s:0x%x browser=%s&gt;</span><span class='tstring_end'>&#39;</span></span> <span class='op'>%</span> <span class='lbracket'>[</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='comma'>,</span> <span class='id identifier rubyid_hash'>hash</span><span class='op'>*</span><span class='int'>2</span><span class='comma'>,</span> <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_browser'>browser</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1994,9 +1995,9 @@ pseudo-array.</p>
 </div>
 
     <div id="footer">
-  Generated on Mon Jan 21 19:22:45 2013 by
+  Generated on Tue Apr  9 23:39:00 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.3 (ruby-1.9.3).
+  0.8.5.2 (ruby-2.0.0).
 </div>
 
   </body>

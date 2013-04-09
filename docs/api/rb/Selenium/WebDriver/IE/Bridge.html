@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::IE::Bridge
   
-    &mdash; Documentation by YARD 0.8.3
+    &mdash; Documentation by YARD 0.8.5.2
   
 </title>
 
@@ -390,6 +390,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/ie/bridge.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_caps'>caps</span>          <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:desired_capabilities</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id identifier rubyid_internet_explorer'>internet_explorer</span> <span class='rbrace'>}</span>
   <span class='id identifier rubyid_timeout'>timeout</span>       <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:timeout</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>DEFAULT_TIMEOUT</span> <span class='rbrace'>}</span>
   <span class='id identifier rubyid_port'>port</span>          <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>PortProber</span><span class='period'>.</span><span class='id identifier rubyid_above'>above</span><span class='lparen'>(</span><span class='const'>DEFAULT_PORT</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
   <span class='id identifier rubyid_http_client'>http_client</span>   <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:http_client</span><span class='rparen'>)</span>
@@ -397,22 +398,21 @@
   <span class='id identifier rubyid_native_events'>native_events</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:native_events</span><span class='rparen'>)</span> <span class='op'>!=</span> <span class='kw'>false</span>
 
   <span class='ivar'>@server</span> <span class='op'>=</span> <span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span>
-  
+
   <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_log_level'>log_level</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:log_level</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:log_level</span><span class='rbracket'>]</span>
   <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_log_file'>log_file</span>  <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:log_file</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:log_file</span><span class='rbracket'>]</span>
 
   <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown option</span><span class='embexpr_beg'>#{</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>s</span><span class='tstring_end'>'</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>!=</span> <span class='int'>1</span><span class='rbrace'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown option</span><span class='embexpr_beg'>#{</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>s</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span> <span class='op'>!=</span> <span class='int'>1</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
   <span class='ivar'>@port</span> <span class='op'>=</span> <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_timeout'>timeout</span>
 
-  <span class='id identifier rubyid_caps'>caps</span> <span class='op'>=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id identifier rubyid_internet_explorer'>internet_explorer</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_ignore_mode'>ignore_mode</span>
-    <span class='id identifier rubyid_caps'>caps</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>ignoreProtectedModeSettings</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='kw'>true</span>
+    <span class='id identifier rubyid_caps'>caps</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ignoreProtectedModeSettings</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='kw'>true</span>
   <span class='kw'>end</span>
 
-  <span class='id identifier rubyid_caps'>caps</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>nativeEvents</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_native_events'>native_events</span>
+  <span class='id identifier rubyid_caps'>caps</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>nativeEvents</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_native_events'>native_events</span>
 
   <span class='id identifier rubyid_remote_opts'>remote_opts</span> <span class='op'>=</span> <span class='lbrace'>{</span>
     <span class='symbol'>:url</span> <span class='op'>=&gt;</span> <span class='ivar'>@server</span><span class='period'>.</span><span class='id identifier rubyid_uri'>uri</span><span class='comma'>,</span>
@@ -575,9 +575,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Jan 21 19:22:50 2013 by
+  Generated on Tue Apr  9 23:39:05 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.3 (ruby-1.9.3).
+  0.8.5.2 (ruby-2.0.0).
 </div>
 
   </body>

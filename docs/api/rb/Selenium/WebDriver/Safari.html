@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Safari
   
-    &mdash; Documentation by YARD 0.8.3
+    &mdash; Documentation by YARD 0.8.5.2
   
 </title>
 
@@ -80,7 +80,7 @@
   
     <dt class="r1 last">Defined in:</dt>
     <dd class="r1 last">rb/lib/selenium/webdriver/safari.rb<span class="defines">,<br />
-  rb/lib/selenium/webdriver/safari/bridge.rb,<br /> rb/lib/selenium/webdriver/safari/browser.rb,<br /> rb/lib/selenium/webdriver/safari/server.rb</span>
+  rb/lib/selenium/webdriver/safari/bridge.rb,<br /> rb/lib/selenium/webdriver/safari/browser.rb,<br /> rb/lib/selenium/webdriver/safari/extension.rb,<br /> rb/lib/selenium/webdriver/safari/server.rb</span>
 </dd>
   
 </dl>
@@ -92,7 +92,7 @@
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Safari/Bridge.html" title="Selenium::WebDriver::Safari::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Safari/Browser.html" title="Selenium::WebDriver::Safari::Browser (class)">Browser</a></span>, <span class='object_link'><a href="Safari/Server.html" title="Selenium::WebDriver::Safari::Server (class)">Server</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Safari/Bridge.html" title="Selenium::WebDriver::Safari::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Safari/Browser.html" title="Selenium::WebDriver::Safari::Browser (class)">Browser</a></span>, <span class='object_link'><a href="Safari/Extension.html" title="Selenium::WebDriver::Safari::Extension (class)">Extension</a></span>, <span class='object_link'><a href="Safari/Server.html" title="Selenium::WebDriver::Safari::Server (class)">Server</a></span>
     
   
 </p>
@@ -155,6 +155,28 @@
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#resource_path-class_method" title="resource_path (class method)">+ (Object) <strong>resource_path</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
     </ul>
   
 
@@ -179,7 +201,6 @@
       <pre class="lines">
 
 
-13
 14
 15
 16
@@ -200,14 +221,13 @@
 31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari.rb', line 14</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_path'>path</span>
   <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='lparen'>(</span>
     <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_os'>os</span>
     <span class='kw'>when</span> <span class='symbol'>:windows</span>
-      <span class='comment'># TODO: improve this
-</span>      <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>ProgramFiles</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Safari</span><span class='tstring_end'>'</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Safari.exe</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
+      <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_find_in_program_files'>find_in_program_files</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Safari\\Safari.exe</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
     <span class='kw'>when</span> <span class='symbol'>:macosx</span>
       <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/Applications/Safari.app/Contents/MacOS/Safari</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>else</span>
@@ -241,17 +261,47 @@
       <pre class="lines">
 
 
-8
 9
 10
-11</pre>
+11
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari.rb', line 9</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_path='>path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='ivar'>@path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="resource_path-class_method">
+  
+    + (<tt>Object</tt>) <strong>resource_path</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+33
+34
+35</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari.rb', line 33</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_resource_path'>resource_path</span>
+  <span class='ivar'>@resource_path</span> <span class='op'>||=</span> <span class='const'>Pathname</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>../safari/resources</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='kw'>__FILE__</span><span class='rparen'>)</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -263,9 +313,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Jan 21 19:22:43 2013 by
+  Generated on Tue Apr  9 23:38:57 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.3 (ruby-1.9.3).
+  0.8.5.2 (ruby-2.0.0).
 </div>
 
   </body>

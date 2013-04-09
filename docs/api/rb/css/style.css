@@ -27,6 +27,16 @@ h2 small { font-weight: normal; font-size: 0.7em; display: block; float: right; 
 .rdoc-term { padding-right: 25px; font-weight: bold; }
 .rdoc-list p { margin: 0; padding: 0; margin-bottom: 4px; }
 
+/* style for <table> */
+#filecontents table, .docstring table { border-collapse: collapse; }
+#filecontents table th, #filecontents table td,
+.docstring table th, .docstring table td { border: 1px solid #ccc; padding: 8px; padding-right: 17px; }
+#filecontents table tr:nth-child(odd),
+.docstring table tr:nth-child(odd) { background: #eee; }
+#filecontents table tr:nth-child(even),
+.docstring table tr:nth-child(even) { background: #fff; }
+#filecontents table th, .docstring table th { background: #fff; }
+
 /* style for <ul> */
 #filecontents li > p, .docstring li > p { margin: 0px; }
 #filecontents ul, .docstring ul { padding-left: 20px; }

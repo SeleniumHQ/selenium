@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::SearchContext
   
-    &mdash; Documentation by YARD 0.8.3
+    &mdash; Documentation by YARD 0.8.5.2
   
 </title>
 
@@ -110,16 +110,16 @@
 </div>
         </dt>
         <dd><pre class="code"><span class='lbrace'>{</span>
-  <span class='symbol'>:class</span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>class name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
-  <span class='symbol'>:class_name</span>        <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>class name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
-  <span class='symbol'>:css</span>               <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>css selector</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
-  <span class='symbol'>:id</span>                <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>id</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
-  <span class='symbol'>:link</span>              <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>link text</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
-  <span class='symbol'>:link_text</span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>link text</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
-  <span class='symbol'>:name</span>              <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
-  <span class='symbol'>:partial_link_text</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>partial link text</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
-  <span class='symbol'>:tag_name</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>tag name</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
-  <span class='symbol'>:xpath</span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>xpath</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='symbol'>:class</span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>class name</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:class_name</span>        <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>class name</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:css</span>               <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>css selector</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:id</span>                <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>id</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:link</span>              <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>link text</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:link_text</span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>link text</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:name</span>              <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>name</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:partial_link_text</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>partial link text</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:tag_name</span>          <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>tag name</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='symbol'>:xpath</span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>xpath</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
 <span class='rbrace'>}</span></pre></dd>
       
     </dl>
@@ -211,8 +211,8 @@
 <p>Find the first element matching the given arguments.</p>
 
 <p>When using Element#find_element with :xpath, be aware that webdriver
-follows standard conventions: a search prefixed with "//" will search the
-entire document, not just the children of this current node. Use ".//" to
+follows standard conventions: a search prefixed with “//” will search the
+entire document, not just the children of this current node. Use “.//” to
 limit your search to the children of the receiving Element.</p>
 
 
@@ -271,7 +271,7 @@ limit your search to the children of the receiving Element.</p>
       
         &mdash;
         <div class='inline'>
-<p>if the element doesn't exist</p>
+<p>if the element doesn&#39;t exist</p>
 </div>
       
     </li>
@@ -301,7 +301,7 @@ limit your search to the children of the receiving Element.</p>
   <span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span> <span class='op'>=</span> <span class='id identifier rubyid_extract_args'>extract_args</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
 
   <span class='kw'>unless</span> <span class='id identifier rubyid_by'>by</span> <span class='op'>=</span> <span class='const'>FINDERS</span><span class='lbracket'>[</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cannot find element by </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cannot find element by </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_find_element_by'>find_element_by</span> <span class='id identifier rubyid_by'>by</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='comma'>,</span> <span class='id identifier rubyid_ref'>ref</span>
@@ -400,7 +400,7 @@ limit your search to the children of the receiving Element.</p>
   <span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span> <span class='op'>=</span> <span class='id identifier rubyid_extract_args'>extract_args</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
 
   <span class='kw'>unless</span> <span class='id identifier rubyid_by'>by</span> <span class='op'>=</span> <span class='const'>FINDERS</span><span class='lbracket'>[</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cannot find elements by </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cannot find elements by </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_how'>how</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_find_elements_by'>find_elements_by</span> <span class='id identifier rubyid_by'>by</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='comma'>,</span> <span class='id identifier rubyid_ref'>ref</span>
@@ -415,9 +415,9 @@ limit your search to the children of the receiving Element.</p>
 </div>
 
     <div id="footer">
-  Generated on Mon Jan 21 19:22:43 2013 by
+  Generated on Tue Apr  9 23:38:57 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.3 (ruby-1.9.3).
+  0.8.5.2 (ruby-2.0.0).
 </div>
 
   </body>

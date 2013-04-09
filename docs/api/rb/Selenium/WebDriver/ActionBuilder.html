@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::ActionBuilder
   
-    &mdash; Documentation by YARD 0.8.3
+    &mdash; Documentation by YARD 0.8.5.2
   
 </title>
 
@@ -118,13 +118,13 @@ available on Driver instances that support the user interaction API.</p>
     <p class="tag_title">Examples:</p>
     
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_down'>key_down</span><span class='lparen'>(</span><span class='symbol'>:shift</span><span class='rparen'>)</span><span class='period'>.</span>
               <span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span>
               <span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_second_element'>second_element</span><span class='rparen'>)</span><span class='period'>.</span>
               <span class='id identifier rubyid_key_up'>key_up</span><span class='lparen'>(</span><span class='symbol'>:shift</span><span class='rparen'>)</span><span class='period'>.</span>
               <span class='id identifier rubyid_drag_and_drop'>drag_and_drop</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_third_element'>third_element</span><span class='rparen'>)</span><span class='period'>.</span>
-              <span class='id identifier rubyid_perform'>perform</span></pre>
+              <span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 
@@ -175,7 +175,7 @@ available on Driver instances that support the user interaction API.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#click_and_hold-instance_method" title="#click_and_hold (instance method)">- (ActionBuilder) <strong>click_and_hold</strong>(element) </a>
+      <a href="#click_and_hold-instance_method" title="#click_and_hold (instance method)">- (ActionBuilder) <strong>click_and_hold</strong>(element = nil) </a>
     
 
     
@@ -571,7 +571,7 @@ source element, moves by a given offset, then releases the mouse.</p>
     
 <p>Clicks in the middle of the given element. Equivalent to:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span></code></pre>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span></code></pre>
 
 <p>When no element is passed, the current mouse position will be clicked.</p>
 
@@ -588,17 +588,17 @@ source element, moves by a given offset, then releases the mouse.</p>
 <p>Clicking on an element</p>
 </div></p>
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
       
         <p class="example_title"><div class='inline'>
 <p>Clicking at the current mouse position</p>
 </div></p>
       
-      <pre class="example code">
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+      <pre class="example code"><code>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -669,7 +669,7 @@ source element, moves by a given offset, then releases the mouse.</p>
       <div class="method_details ">
   <h3 class="signature " id="click_and_hold-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>click_and_hold</strong>(element) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>) <strong>click_and_hold</strong>(element = nil) 
   
 
   
@@ -681,7 +681,7 @@ source element, moves by a given offset, then releases the mouse.</p>
 <p>Clicks (without releasing) in the middle of the given element. This is
 equivalent to:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_click_and_hold'>click_and_hold</span></code></pre>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_click_and_hold'>click_and_hold</span></code></pre>
 
 
   </div>
@@ -696,9 +696,9 @@ equivalent to:</p>
 <p>Clicking and holding on some element</p>
 </div></p>
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -711,6 +711,8 @@ equivalent to:</p>
       
         <span class='type'>(<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Selenium::WebDriver::Element</a></span></tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
@@ -755,7 +757,7 @@ equivalent to:</p>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/action_builder.rb', line 145</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='symbol'>:down</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
   <span class='kw'>self</span>
 <span class='kw'>end</span></pre>
@@ -792,9 +794,9 @@ move_to to the location of the element.</p>
 <p>Context-click at middle of given element</p>
 </div></p>
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_context_click'>context_click</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_context_click'>context_click</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -876,7 +878,7 @@ move_to to the location of the element.</p>
     
 <p>Performs a double-click at middle of the given element. Equivalent to:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_double_click'>double_click</span></code></pre>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_double_click'>double_click</span></code></pre>
 
 
   </div>
@@ -891,9 +893,9 @@ move_to to the location of the element.</p>
 <p>Double click an element</p>
 </div></p>
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_double_click'>double_click</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_double_click'>double_click</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -990,10 +992,10 @@ the mouse.</p>
 <p>Drag and drop one element onto another</p>
 </div></p>
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_el1'>el1</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id1</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_el2'>el2</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id2</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_drag_and_drop'>drag_and_drop</span><span class='lparen'>(</span><span class='id identifier rubyid_el1'>el1</span><span class='comma'>,</span> <span class='id identifier rubyid_el2'>el2</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_drag_and_drop'>drag_and_drop</span><span class='lparen'>(</span><span class='id identifier rubyid_el1'>el1</span><span class='comma'>,</span> <span class='id identifier rubyid_el2'>el2</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -1109,9 +1111,9 @@ source element, moves by a given offset, then releases the mouse.</p>
 <p>Drag and drop an element by offset</p>
 </div></p>
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id1</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_drag_and_drop_by'>drag_and_drop_by</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='int'>100</span><span class='comma'>,</span> <span class='int'>100</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_drag_and_drop_by'>drag_and_drop_by</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='int'>100</span><span class='comma'>,</span> <span class='int'>100</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -1244,13 +1246,13 @@ source element, moves by a given offset, then releases the mouse.</p>
   <div class="discussion">
     
 <p>Performs a modifier key press. Does not release the modifier key -
-subsequent interactions may assume it's kept pressed. Note that the
+subsequent interactions may assume it&#39;s kept pressed. Note that the
 modifier key is never released implicitly - either #key_up(key) or
 #send_keys(:null) must be called to release the modifier.</p>
 
 <p>Equivalent to:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
 <span class='comment'># or
 </span><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span></code></pre>
 
@@ -1267,17 +1269,17 @@ modifier key is never released implicitly - either #key_up(key) or
 <p>Press a key</p>
 </div></p>
       
-      <pre class="example code">
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_down'>key_down</span><span class='lparen'>(</span><span class='symbol'>:control</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+      <pre class="example code"><code>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_down'>key_down</span><span class='lparen'>(</span><span class='symbol'>:control</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
       
         <p class="example_title"><div class='inline'>
 <p>Press a key on an element</p>
 </div></p>
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_down'>key_down</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='symbol'>:shift</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_down'>key_down</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='symbol'>:shift</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -1413,17 +1415,17 @@ will yield undefined behaviour.</p>
 <p>Release a key</p>
 </div></p>
       
-      <pre class="example code">
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_up'>key_up</span><span class='lparen'>(</span><span class='symbol'>:shift</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+      <pre class="example code"><code>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_up'>key_up</span><span class='lparen'>(</span><span class='symbol'>:shift</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
       
         <p class="example_title"><div class='inline'>
 <p>Release a key from an element</p>
 </div></p>
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_up'>key_up</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='symbol'>:alt</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_key_up'>key_up</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='symbol'>:alt</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -1560,8 +1562,8 @@ outside the browser window) then the viewport is scrolled to match.</p>
 <p>Move the mouse to a certain offset from its current position</p>
 </div></p>
       
-      <pre class="example code">
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_by'>move_by</span><span class='lparen'>(</span><span class='int'>100</span><span class='comma'>,</span> <span class='int'>100</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+      <pre class="example code"><code>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_by'>move_by</span><span class='lparen'>(</span><span class='int'>100</span><span class='comma'>,</span> <span class='int'>100</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -1631,7 +1633,7 @@ outside the browser window) then the viewport is scrolled to match.</p>
       
         &mdash;
         <div class='inline'>
-<p>if the provided offset is outside the document's boundaries.</p>
+<p>if the provided offset is outside the document&#39;s boundaries.</p>
 </div>
       
     </li>
@@ -1692,14 +1694,14 @@ the mouse is moved to optional offset coordinates from the element.</p>
 <p>Scroll element into view and move the mouse to it</p>
 </div></p>
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='int'>100</span><span class='comma'>,</span> <span class='int'>100</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='int'>100</span><span class='comma'>,</span> <span class='int'>100</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -1889,9 +1891,9 @@ coordinates above the element.</p>
 <p>Releasing an element after clicking and holding it</p>
 </div></p>
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_release'>release</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click_and_hold'>click_and_hold</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_release'>release</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 
@@ -1971,17 +1973,17 @@ switching elements should work.</p>
 <p>Send the text "help" to an element</p>
 </div></p>
       
-      <pre class="example code">
+      <pre class="example code"><code>
 <span class='id identifier rubyid_el'>el</span> <span class='op'>=</span> <span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>some_id</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>help</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_el'>el</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>help</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
       
         <p class="example_title"><div class='inline'>
 <p>Send the text "help" to the currently focused element</p>
 </div></p>
       
-      <pre class="example code">
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>help</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></pre>
+      <pre class="example code"><code>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>help</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_perform'>perform</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -2076,9 +2078,9 @@ switching elements should work.</p>
 </div>
 
     <div id="footer">
-  Generated on Mon Jan 21 19:22:45 2013 by
+  Generated on Tue Apr  9 23:38:59 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.3 (ruby-1.9.3).
+  0.8.5.2 (ruby-2.0.0).
 </div>
 
   </body>

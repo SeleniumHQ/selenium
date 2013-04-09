@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Firefox::Launcher
   
-    &mdash; Documentation by YARD 0.8.3
+    &mdash; Documentation by YARD 0.8.5.2
   
 </title>
 
@@ -510,7 +510,7 @@
   <span class='ivar'>@binary</span> <span class='op'>=</span> <span class='id identifier rubyid_binary'>binary</span>
   <span class='ivar'>@port</span>   <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span>
 
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid port: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@port</span> <span class='op'>&lt;</span> <span class='int'>1</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid port: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@port</span> <span class='op'>&lt;</span> <span class='int'>1</span>
 
   <span class='kw'>if</span> <span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span> <span class='const'>Profile</span>
     <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='id identifier rubyid_profile'>profile</span>
@@ -634,7 +634,7 @@
 
   <span class='kw'>unless</span> <span class='id identifier rubyid_poller'>poller</span><span class='period'>.</span><span class='id identifier rubyid_connected?'>connected?</span>
     <span class='ivar'>@binary</span><span class='period'>.</span><span class='id identifier rubyid_quit'>quit</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to obtain stable firefox connection in </span><span class='embexpr_beg'>#{</span><span class='const'>STABLE_CONNECTION_TIMEOUT</span><span class='rbrace'>}</span><span class='tstring_content'> seconds (</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='rbrace'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to obtain stable firefox connection in </span><span class='embexpr_beg'>#{</span><span class='const'>STABLE_CONNECTION_TIMEOUT</span><span class='embexpr_end'>}</span><span class='tstring_content'> seconds (</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -745,7 +745,7 @@
     <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='const'>Profile</span><span class='period'>.</span><span class='id identifier rubyid_from_name'>from_name</span> <span class='ivar'>@profile_name</span>
 
     <span class='kw'>unless</span> <span class='ivar'>@profile</span>
-      <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to find profile named: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@profile_name</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span>
+      <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to find profile named: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@profile_name</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>end</span>
   <span class='kw'>else</span>
     <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='const'>Profile</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -1076,7 +1076,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/firefox/launcher.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_url'>url</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='rbrace'>}</span><span class='tstring_content'>/hub</span><span class='tstring_end'>&quot;</span></span>
+  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>/hub</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1088,9 +1088,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Jan 21 19:22:49 2013 by
+  Generated on Tue Apr  9 23:39:05 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.3 (ruby-1.9.3).
+  0.8.5.2 (ruby-2.0.0).
 </div>
 
   </body>

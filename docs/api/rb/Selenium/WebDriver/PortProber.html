@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::PortProber
   
-    &mdash; Documentation by YARD 0.8.3
+    &mdash; Documentation by YARD 0.8.5.2
   
 </title>
 
@@ -293,7 +293,7 @@
     <span class='kw'>begin</span>
       <span class='const'>TCPServer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_host'>host</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
     <span class='kw'>rescue</span> <span class='op'>*</span><span class='const'>IGNORED_ERRORS</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_ex'>ex</span>
-      <span class='gvar'>$stderr</span><span class='period'>.</span><span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>port prober could not bind to </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_host'>host</span><span class='rbrace'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_port'>port</span><span class='rbrace'>}</span><span class='tstring_content'> (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ex'>ex</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rbrace'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='gvar'>$DEBUG</span>
+      <span class='gvar'>$stderr</span><span class='period'>.</span><span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>port prober could not bind to </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_host'>host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_port'>port</span><span class='embexpr_end'>}</span><span class='tstring_content'> (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ex'>ex</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='gvar'>$DEBUG</span>
       <span class='comment'># ignored - some machines appear unable to bind to some of their interfaces
 </span>    <span class='kw'>end</span>
   <span class='kw'>end</span>
@@ -341,7 +341,7 @@
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_random'>random</span>
   <span class='comment'># TODO: Avoid this
 </span>  <span class='comment'>#
-</span>  <span class='comment'># (a) should pick a port that's guaranteed to be free on all interfaces
+</span>  <span class='comment'># (a) should pick a port that&#39;s guaranteed to be free on all interfaces
 </span>  <span class='comment'># (b) should pick a random port outside the ephemeral port range
 </span>  <span class='comment'>#
 </span>  <span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>TCPServer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span><span class='comma'>,</span> <span class='int'>0</span><span class='rparen'>)</span>
@@ -360,9 +360,9 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Jan 21 19:22:48 2013 by
+  Generated on Tue Apr  9 23:39:03 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.3 (ruby-1.9.3).
+  0.8.5.2 (ruby-2.0.0).
 </div>
 
   </body>

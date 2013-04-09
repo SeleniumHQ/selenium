@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Element
   
-    &mdash; Documentation by YARD 0.8.3
+    &mdash; Documentation by YARD 0.8.5.2
   
 </title>
 
@@ -436,7 +436,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Determine an element's location on the screen once it has been scrolled
+<p>Determine an element&#39;s location on the screen once it has been scrolled
 into view.</p>
 </div></span>
   
@@ -807,9 +807,9 @@ current value, even if this has been modified after the page has been
 loaded. More exactly, this method will return the value of the given
 attribute, unless that attribute is not present, in which case the value of
 the property with the same name is returned. If neither value is set, nil
-is returned. The "style" attribute is converted as best can be to a text
+is returned. The “style” attribute is converted as best can be to a text
 representation with a trailing semi-colon. The following are deemed to be
-"boolean" attributes, and will return either "true" or "false":</p>
+“boolean” attributes, and will return either “true” or “false”:</p>
 
 <p>async, autofocus, autoplay, checked, compact, complete, controls, declare,
 defaultchecked, defaultselected, defer, disabled, draggable, ended,
@@ -904,9 +904,9 @@ are evaluated as expected:</p>
 effect on other elements. Text entry elements are INPUT and TEXTAREA
 elements.</p>
 
-<p>Note that the events fired by this event may not be as you'd expect.  In
-particular, we don't fire any keyboard or mouse events.  If you want to
-ensure keyboard events are fired, consider using #send_keys with the
+<p>Note that the events fired by this event may not be as you&#39;d expect. 
+In particular, we don&#39;t fire any keyboard or mouse events.  If you want
+to ensure keyboard events are fired, consider using #send_keys with the
 backspace key. To ensure you get a change event,  consider following with a
 call to #send_keys with the tab key.</p>
 
@@ -955,15 +955,15 @@ discard all references to this element and any further operations performed
 on this element will raise a StaleElementReferenceError unless you know
 that the element and the page will still be present. If click() causes a
 new page to be loaded via an event or is done by sending a native event
-then the method will <b>not</b> wait for it to be loaded and the caller
-should verify that a new page has been loaded.</p>
+then the method will <strong>not</strong> wait for it to be loaded and the
+caller should verify that a new page has been loaded.</p>
 
 <p>There are some preconditions for an element to be clicked.  The element
 must be visible and it must have a height and width greater then 0.</p>
 
 <p>Equivalent to:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span></code></pre>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span></code></pre>
 
 
   </div>
@@ -978,8 +978,8 @@ must be visible and it must have a height and width greater then 0.</p>
 <p>Click on a button</p>
 </div></p>
       
-      <pre class="example code">
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:tag_name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>button</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span></pre>
+      <pre class="example code"><code>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:tag_name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>button</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_click'>click</span></code></pre>
     
   </div>
 
@@ -1242,7 +1242,7 @@ background-color) to access the desired values.</p>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/element.rb', line 16</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_inspect'>inspect</span>
-  <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>#&lt;%s:0x%x id=%s&gt;</span><span class='tstring_end'>'</span></span> <span class='op'>%</span> <span class='lbracket'>[</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='comma'>,</span> <span class='id identifier rubyid_hash'>hash</span><span class='op'>*</span><span class='int'>2</span><span class='comma'>,</span> <span class='ivar'>@id</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbracket'>]</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>#&lt;%s:0x%x id=%s&gt;</span><span class='tstring_end'>&#39;</span></span> <span class='op'>%</span> <span class='lbracket'>[</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='comma'>,</span> <span class='id identifier rubyid_hash'>hash</span><span class='op'>*</span><span class='int'>2</span><span class='comma'>,</span> <span class='ivar'>@id</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1315,7 +1315,7 @@ background-color) to access the desired values.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Determine an element's location on the screen once it has been scrolled
+<p>Determine an element&#39;s location on the screen once it has been scrolled
 into view.</p>
 
 
@@ -1477,9 +1477,10 @@ into view.</p>
 
 <p>Examples:</p>
 
-<pre class="code ruby"><code><span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>foo</span><span class='tstring_end'>&quot;</span></span>                     <span class='comment'>#=&gt; value: 'foo'
-</span><span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>tet</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='symbol'>:arrow_left</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>s</span><span class='tstring_end'>&quot;</span></span>   <span class='comment'>#=&gt; value: 'test'
-</span><span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_send_keys'>send_keys</span> <span class='lbracket'>[</span><span class='symbol'>:control</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>a</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:space</span>   <span class='comment'>#=&gt; value: ' '</span></code></pre>
+<pre class="ruby"><span class="ruby-identifier">element</span>.<span class="ruby-identifier">send_keys</span> <span class="ruby-string">&quot;foo&quot;</span>                     <span class="ruby-comment">#=&gt; value: &#39;foo&#39;</span>
+<span class="ruby-identifier">element</span>.<span class="ruby-identifier">send_keys</span> <span class="ruby-string">&quot;tet&quot;</span>, :<span class="ruby-identifier">arrow_left</span>, <span class="ruby-string">&quot;s&quot;</span>   <span class="ruby-comment">#=&gt; value: &#39;test&#39;</span>
+<span class="ruby-identifier">element</span>.<span class="ruby-identifier">send_keys</span> [:<span class="ruby-identifier">control</span>, <span class="ruby-string">&#39;a&#39;</span>], :<span class="ruby-identifier">space</span>   <span class="ruby-comment">#=&gt; value: &#39; &#39;</span>
+</pre>
 
 
   </div>
@@ -1652,8 +1653,8 @@ into view.</p>
 <p>Get the tagname of an INPUT element(returns "input")</p>
 </div></p>
       
-      <pre class="example code">
-<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:xpath</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>//input</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tag_name'>tag_name</span></pre>
+      <pre class="example code"><code>
+<span class='id identifier rubyid_driver'>driver</span><span class='period'>.</span><span class='id identifier rubyid_find_element'>find_element</span><span class='lparen'>(</span><span class='symbol'>:xpath</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>//input</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tag_name'>tag_name</span></code></pre>
     
   </div>
 
@@ -1808,9 +1809,9 @@ into view.</p>
 </div>
 
     <div id="footer">
-  Generated on Mon Jan 21 19:22:46 2013 by
+  Generated on Tue Apr  9 23:39:00 2013 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.3 (ruby-1.9.3).
+  0.8.5.2 (ruby-2.0.0).
 </div>
 
   </body>
