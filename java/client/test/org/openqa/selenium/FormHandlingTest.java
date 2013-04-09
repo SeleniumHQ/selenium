@@ -191,6 +191,32 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
+  @Ignore(value = {SELENESE, IPHONE, ANDROID, SAFARI, OPERA, OPERA_MOBILE},
+          reason = "Does not yet support file uploads", issues = {4220})
+  @Test
+  public void testShouldBeAbleToSendKeysToAMultipleFileUploadInputElement() throws IOException {
+    driver.get(pages.formPage);
+    WebElement uploadElement = driver.findElement(By.id("multiple_upload"));
+    assertThat(uploadElement.getAttribute("value"), equalTo(""));
+    long file_count = (Long) ((JavascriptExecutor) driver).executeScript("return document.getElementById('multiple_upload').files.length;");
+    assertThat(file_count, equalTo(0L));
+    
+    File file1 = File.createTempFile("test1", "txt");
+    File file2 = File.createTempFile("test2", "txt");
+    file1.deleteOnExit();
+    file2.deleteOnExit();
+    String[] filenames = {file1.getAbsolutePath(), file2.getAbsolutePath()};
+    uploadElement.sendKeys(filenames);
+
+    file_count = (Long) ((JavascriptExecutor) driver).executeScript("return document.getElementById('multiple_upload').files.length;");
+    assertThat(file_count, equalTo(2L));
+    
+    String filename1 = (String) ((JavascriptExecutor) driver).executeScript("return document.getElementById('multiple_upload').files[0].name");
+    assertTrue(filename1.endsWith(file1.getName()));
+    String filename2 = (String) ((JavascriptExecutor) driver).executeScript("return document.getElementById('multiple_upload').files[1].name");
+    assertTrue(filename2.endsWith(file2.getName()));
+  }
+
   @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE},
           reason = "Does not yet support file uploads", issues = {4220})
   @Test

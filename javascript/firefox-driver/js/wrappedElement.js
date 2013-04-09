@@ -184,7 +184,6 @@ WebElement.sendKeysToElement = function(respond, parameters) {
   var alreadyFocused = true;
   var currentlyActive = Utils.getActiveElement(respond.session.getDocument());
   var newDocument = goog.dom.getOwnerDocument(currentlyActive);
-
   if (currentlyActive != element || currentDocument != new XPCNativeWrapper(newDocument)) {
     fxdriver.logging.info('Need to switch focus');
     alreadyFocused = false;
@@ -210,7 +209,11 @@ WebElement.sendKeysToElement = function(respond, parameters) {
   if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
     var inputtype = element.getAttribute('type');
     if (inputtype && inputtype.toLowerCase() == 'file') {
-      element.value = parameters.value.join('');
+      if (element.getAttribute('multiple')) {
+        element.mozSetFileNameArray(parameters.value, parameters.value.length)
+      } else {
+        element.value = parameters.value.join('');
+      }
       Utils.fireHtmlEvent(element, 'change');
       respond.send();
       return;
