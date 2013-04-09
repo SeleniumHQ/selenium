@@ -36,7 +36,7 @@ rubygem(
   files = [
     "lib/**/*",
     "CHANGES",
-    "README",
+    "README.md",
     "COPYING"
   ]
 )
@@ -46,7 +46,7 @@ rubydocs(
     "rb/lib/**/*.rb",
     "CHANGES"
   ],
-  readme = "rb/README",
+  readme = "rb/README.md",
   output_dir = "docs/api/rb"
 )
 
@@ -59,7 +59,7 @@ ruby_library(name = "common",
     "lib/selenium/rake/server_task.rb",
     "lib/selenium-webdriver.rb",
     "CHANGES",
-    "README"
+    "README.md"
   ],
   resources = [
     { "../COPYING" : "rb/COPYING" }
