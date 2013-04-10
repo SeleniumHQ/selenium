@@ -14,5 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abstract_event_listener import AbstractEventListener
-from event_firing_webdriver import EventFiringWebDriver
+from .abstract_event_listener import AbstractEventListener
+from .event_firing_webdriver import EventFiringWebDriver
