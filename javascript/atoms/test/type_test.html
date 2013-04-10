@@ -473,6 +473,11 @@
       });
     }
 
+    function browserImplementsDateInputWidget() {
+      // chrome and mobile safari
+      return goog.userAgent.WEBKIT && !(goog.userAgent.product.SAFARI && !goog.userAgent.MOBILE);
+    }
+
     function testTypeDate() {
       var dateInput = document.getElementById("date");
       dateInput.value = "";
@@ -484,17 +489,17 @@
       var dateInput = document.getElementById("date");
       dateInput.value = "";
       bot.action.type(dateInput, "2013-01-01T12:10:12.000Z");
-      assertEquals(dateInput.value, goog.userAgent.WEBKIT ? "2013-01-01" : "2013-01-01T12:10:12.000Z");
+      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "2013-01-01" : "2013-01-01T12:10:12.000Z");
       dateInput.value = "";
     }
     function testTypeInvalidDate() {
       var dateInput = document.getElementById("date");
       dateInput.value = "";
       bot.action.type(dateInput, "2013-13-01");
-      assertEquals(dateInput.value, goog.userAgent.WEBKIT ? "" : "2013-13-01");
+      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "2013-13-01");
       dateInput.value = "";
       bot.action.type(dateInput, "February 28, 2013");
-      assertEquals(dateInput.value, goog.userAgent.WEBKIT ? "" : "February 28, 2013");
+      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "February 28, 2013");
     }
   </script>
 </head>

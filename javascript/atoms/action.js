@@ -170,7 +170,9 @@ bot.action.type = function(
   }
 
   // mobile safari (iPhone / iPad). one cannot 'type' in a date field
-  if (goog.userAgent.WEBKIT && element.type == 'date') {
+  // chrome implements this, but desktop Safari doesn't, what's webkit again?
+  if ((!(goog.userAgent.product.SAFARI && !goog.userAgent.MOBILE)) &&
+      goog.userAgent.WEBKIT && element.type == 'date') {
     var val = goog.isArray(values)? values = values.join("") : values;
     var datePattern = /\d{4}-\d{2}-\d{2}/;
     if (val.match(datePattern)) {
