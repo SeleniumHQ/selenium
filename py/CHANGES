@@ -1,3 +1,9 @@
+Selenium 2.32
+* Support for FF20 Native Events
+* Python 3 support
+* Misc Python 3 patches
+* Allow easy FirefoxBinary subclassing
+
 Selenium 2.31
 * Support for FF19 native events
 * web element equality is now in conformance with other language bindings

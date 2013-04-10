@@ -28,7 +28,7 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass':{'install': install},
     'name':'selenium',
-    'version':"2.31.0",
+    'version':"2.32.0",
     'description':'Python bindings for Selenium',
     'long_description':open(join(abspath(dirname(__file__)), "py", "README")).read(),
     'url':'http://code.google.com/p/selenium/',
@@ -43,7 +43,6 @@ setup_args = {
                      'Programming Language :: Python',
                      'Programming Language :: Python :: 2.6',
                      'Programming Language :: Python :: 2.7',
-                     'Programming Language :: Python :: 3.1',
                      'Programming Language :: Python :: 3.2',
                      'Programming Language :: Python :: 3.3'],
     'package_dir':{
