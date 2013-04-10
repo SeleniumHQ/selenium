@@ -97,6 +97,7 @@ import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.SessionNotFoundException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -318,13 +319,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   public void setProxy(String host, int port) {
     proxyConfig = new ProxyConfig(host, port);
-    webClient.getOptions().setProxyConfig(proxyConfig);
+    getWebClient().getOptions().setProxyConfig(proxyConfig);
   }
 
   public void setAutoProxy(String autoProxyUrl) {
     proxyConfig = new ProxyConfig();
     proxyConfig.setProxyAutoConfigUrl(autoProxyUrl);
-    webClient.getOptions().setProxyConfig(proxyConfig);
+    getWebClient().getOptions().setProxyConfig(proxyConfig);
   }
 
   public Capabilities getCapabilities() {
@@ -362,9 +363,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    */
   protected void get(URL fullUrl) {
     try {
+      getWebClient().getPage(fullUrl);
       // A "get" works over the entire page
-      currentWindow = currentWindow.getTopWindow();
-      webClient.getPage(fullUrl);
+      currentWindow = getCurrentWindow().getTopWindow();
     } catch (UnknownHostException e) {
       // This should be fine
     } catch (ConnectException e) {
@@ -388,7 +389,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   protected void pickWindow() {
     // TODO(simon): HtmlUnit tries to track the current window as the frontmost. We don't
     if (currentWindow == null) {
-      currentWindow = webClient.getCurrentWindow();
+      currentWindow = getWebClient().getCurrentWindow();
     }
   }
 
@@ -407,8 +408,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     if (page == null || !(page instanceof HtmlPage)) {
       return null; // no page so there is no title
     }
-    if (currentWindow instanceof FrameWindow) {
-      page = ((FrameWindow) currentWindow).getTopWindow().getEnclosedPage();
+    if (getCurrentWindow() instanceof FrameWindow) {
+      page = ((FrameWindow) getCurrentWindow()).getTopWindow().getEnclosedPage();
     }
 
     return ((HtmlPage) page).getTitleText();
@@ -436,11 +437,19 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   public void close() {
-    if (currentWindow != null) {
-      ((TopLevelWindow) currentWindow.getTopWindow()).close();
-    }
-    if (webClient.getWebWindows().size() == 0) {
+    getWebClient(); // check that session is active
+    WebWindow thisWindow = getCurrentWindow(); // check that the current window is active
+    if (getWebClient().getWebWindows().size() == 1) {
+      // closing the last window is equivalent to quit
       quit();
+
+    } else {
+      if (thisWindow != null) {
+        ((TopLevelWindow) thisWindow.getTopWindow()).close();
+      }
+      if (getWebClient().getWebWindows().size() == 0) {
+        quit();
+      }
     }
   }
 
@@ -454,7 +463,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   public Set<String> getWindowHandles() {
     final Set<String> allHandles = Sets.newHashSet();
-    for (final WebWindow window : webClient.getTopLevelWindows()) {
+    for (final WebWindow window : getWebClient().getTopLevelWindows()) {
       allHandles.add(String.valueOf(System.identityHashCode(window)));
     }
 
@@ -462,7 +471,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   public String getWindowHandle() {
-    WebWindow topWindow = currentWindow.getTopWindow();
+    WebWindow topWindow = getCurrentWindow().getTopWindow();
     if (topWindow.isClosed()) {
       throw new NoSuchWindowException("Window is closed");
     }
@@ -480,7 +489,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     result = page.executeJavaScriptFunctionIfPossible(
         func,
-        (ScriptableObject) currentWindow.getScriptObject(),
+        (ScriptableObject) getCurrentWindow().getScriptObject(),
         parameters,
         page.getDocumentElement());
 
@@ -509,7 +518,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         return null;
       }
     };
-    webClient.getJavaScriptEngine().getContextFactory().call(action);
+    getWebClient().getJavaScriptEngine().getContextFactory().call(action);
     return parameters;
   }
 
@@ -578,7 +587,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       Map<?,?> argmap = (Map<?,?>) arg;
       Scriptable map = context.newObject(scope);
       for (Object key: argmap.keySet()) {
-        map.put((String) key, map, parseArgumentIntoJavascriptParameter(context, scope, argmap.get(key)));
+        map.put((String) key, map, parseArgumentIntoJavascriptParameter(context, scope,
+                                                                        argmap.get(key)));
       }
       return map;
 
@@ -734,10 +744,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected Page lastPage() {
-    if (currentWindow == null || currentWindow.isClosed()) {
-      throw new NoSuchWindowException("The current window was closed");
-    }
-    return currentWindow.getEnclosedPage();
+    getWebClient(); // check that session is active
+    return getCurrentWindow().getEnclosedPage();
   }
 
   public WebElement findElementByLinkText(String selector) {
@@ -952,34 +960,37 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   public boolean isJavascriptEnabled() {
-    return webClient.getOptions().isJavaScriptEnabled();
+    return getWebClient().getOptions().isJavaScriptEnabled();
   }
 
   public void setJavascriptEnabled(boolean enableJavascript) {
     this.enableJavascript = enableJavascript;
-    webClient.getOptions().setJavaScriptEnabled(enableJavascript);
+    getWebClient().getOptions().setJavaScriptEnabled(enableJavascript);
   }
 
   private class HtmlUnitTargetLocator implements TargetLocator {
 
     public WebDriver frame(int index) {
-      HtmlPage currentPage = (HtmlPage) currentWindow.getEnclosedPage();
-      try {
-        // 1.) try to find frame in current window ...
-        currentWindow = currentPage.getFrames().get(index);
-      } catch (IndexOutOfBoundsException ignored) {
-        throw new NoSuchFrameException("Cannot find frame: " + index);
+      Page page = lastPage();
+      if (page instanceof HtmlPage) {
+        try {
+          currentWindow = ((HtmlPage) page).getFrames().get(index);
+        } catch (IndexOutOfBoundsException ignored) {
+          throw new NoSuchFrameException("Cannot find frame: " + index);
+        }
       }
       return HtmlUnitDriver.this;
     }
 
     public WebDriver frame(final String nameOrId) {
-      // First check for a frame with the matching name.
-      HtmlPage startPage = (HtmlPage) currentWindow.getEnclosedPage();
-      for (final FrameWindow frameWindow : startPage.getFrames()) {
-        if (frameWindow.getName().equals(nameOrId)) {
-          currentWindow = frameWindow;
-          return HtmlUnitDriver.this;
+      Page page = lastPage();
+      if (page instanceof HtmlPage) {
+        // First check for a frame with the matching name.
+        for (final FrameWindow frameWindow : ((HtmlPage) page).getFrames()) {
+          if (frameWindow.getName().equals(nameOrId)) {
+            currentWindow = frameWindow;
+            return HtmlUnitDriver.this;
+          }
         }
       }
 
@@ -1020,11 +1031,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     public WebDriver window(String windowId) {
       try {
-        WebWindow window = webClient.getWebWindowByName(windowId);
+        WebWindow window = getWebClient().getWebWindowByName(windowId);
         return finishSelecting(window);
       } catch (WebWindowNotFoundException e) {
 
-        List<WebWindow> allWindows = webClient.getWebWindows();
+        List<WebWindow> allWindows = getWebClient().getWebWindows();
         for (WebWindow current : allWindows) {
           WebWindow top = current.getTopWindow();
           if (String.valueOf(System.identityHashCode(top)).equals(windowId)) {
@@ -1036,19 +1047,19 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     private WebDriver finishSelecting(WebWindow window) {
-      webClient.setCurrentWindow(window);
+      getWebClient().setCurrentWindow(window);
       currentWindow = window;
       pickWindow();
       return HtmlUnitDriver.this;
     }
 
     public WebDriver defaultContent() {
-      switchToDefaultContentOfWindow(currentWindow.getTopWindow());
+      switchToDefaultContentOfWindow(getCurrentWindow().getTopWindow());
       return HtmlUnitDriver.this;
     }
 
     public WebElement activeElement() {
-      Page page = currentWindow.getEnclosedPage();
+      Page page = lastPage();
       if (page instanceof HtmlPage) {
         HtmlElement element = ((HtmlPage) page).getFocusedElement();
         if (element == null || element instanceof HtmlHtml) {
@@ -1104,10 +1115,16 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected WebClient getWebClient() {
+    if (webClient == null) {
+      throw new SessionNotFoundException("Session is closed");
+    }
     return webClient;
   }
 
   protected WebWindow getCurrentWindow() {
+    if (currentWindow == null || currentWindow.isClosed()) {
+      throw new NoSuchWindowException("Window is closed");
+    }
     return currentWindow;
   }
 
@@ -1125,7 +1142,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     public void back() {
       try {
-        currentWindow.getHistory().back();
+        getCurrentWindow().getHistory().back();
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
@@ -1133,7 +1150,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     public void forward() {
       try {
-        currentWindow.getHistory().forward();
+        getCurrentWindow().getHistory().forward();
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
@@ -1178,7 +1195,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       String domain = getDomainForCookie();
       verifyDomain(cookie, domain);
 
-      webClient.getCookieManager().addCookie(
+      getWebClient().getCookieManager().addCookie(
           new com.gargoylesoftware.htmlunit.util.Cookie(domain, cookie.getName(),
               cookie.getValue(),
               cookie.getPath(), cookie.getExpiry(), cookie.isSecure()));
@@ -1223,11 +1240,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     public void deleteCookieNamed(String name) {
-      CookieManager cookieManager = webClient.getCookieManager();
+      CookieManager cookieManager = getWebClient().getCookieManager();
 
       URL url = getRawUrl();
-      Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies =
-          webClient.getCookieManager().getCookies(url);
+      Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies = cookieManager.getCookies(url);
       for (com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
         if (name.equals(cookie.getName())) {
           cookieManager.removeCookie(cookie);
@@ -1240,7 +1256,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     public void deleteAllCookies() {
-      webClient.getCookieManager().clearCookies();
+      getWebClient().getCookieManager().clearCookies();
     }
 
     public Set<Cookie> getCookies() {
@@ -1255,7 +1271,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       }
 
       return ImmutableSet.copyOf(Collections2.transform(
-          webClient.getCookieManager().getCookies(url),
+          getWebClient().getCookieManager().getCookies(url),
           htmlUnitCookieToSeleniumCookieTransformer));
     }
 
@@ -1304,7 +1320,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
       int timeout = (int) TimeUnit.MILLISECONDS.convert(time, unit);
-      webClient.getOptions().setTimeout(timeout > 0 ? timeout : 0);
+      getWebClient().getOptions().setTimeout(timeout > 0 ? timeout : 0);
       return this;
     }
   }
