@@ -13,7 +13,8 @@ v2.32.0.1
 =========
  * Fixed to allow click on visible portion of element if center point cannot be
    scrolled into view. This fixes issue #4390 for IE. There is still a fix that
-   needs to be made for Firefox for the issue to be closed.
+   needs to be made for Firefox for the issue to be closed. Patch provided by
+   Alex Savchuk.
 
 v2.32.0.0
 =========
