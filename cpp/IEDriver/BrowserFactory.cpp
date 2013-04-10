@@ -39,6 +39,8 @@ BrowserFactory::~BrowserFactory(void) {
 
 DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
                                            const bool ignore_protected_mode_settings,
+                                           const std::string& launch_api,
+                                           const std::string& ie_switches,
                                            std::string* error_message) {
   LOG(TRACE) << "Entering BrowserFactory::LaunchBrowserProcess";
 
@@ -53,29 +55,89 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
   LOG(DEBUG) << "Has Valid Protected Mode Settings: "
              << has_valid_protected_mode_settings;
   if (ignore_protected_mode_settings || has_valid_protected_mode_settings) {
+
+    std::wstring wide_initial_url = StringUtilities::ToWString(initial_url);
+    std::wstring wide_launch_api = StringUtilities::ToWString(launch_api);
+    std::wstring wide_ie_switches = StringUtilities::ToWString(ie_switches);
+
+    std::string launch_api_name = "";
+    std::string launch_error = "";
+
     STARTUPINFO start_info;
     PROCESS_INFORMATION proc_info;
 
     ::ZeroMemory(&start_info, sizeof(start_info));
     start_info.cb = sizeof(start_info);
     ::ZeroMemory(&proc_info, sizeof(proc_info));
-
-    std::wstring wide_initial_url = StringUtilities::ToWString(initial_url);
-
-    FARPROC proc_address = 0;
-    HMODULE library_handle = ::LoadLibrary(IEFRAME_LIBRARY_NAME);
-    if (library_handle != NULL) {
-      proc_address = ::GetProcAddress(library_handle, IELAUNCHURL_FUNCTION_NAME);
+	
+    // Determine which launch API to use.
+    // If forcibly specified launch api is not able to use then use_launch_api is still empty.
+    std::wstring use_launch_api = L"";
+    if ((wide_launch_api == L"") || (wide_launch_api == IELAUNCHURL_API)) {
+      HMODULE library_handle = ::LoadLibrary(IEFRAME_LIBRARY_NAME);
+      if (library_handle != NULL) {
+        FARPROC proc_address = 0;
+        proc_address = ::GetProcAddress(library_handle, IELAUNCHURL_FUNCTION_NAME);
+        if (proc_address == NULL || proc_address == 0) {
+          LOGERR(DEBUG) << "Unable to get address of " << IELAUNCHURL_FUNCTION_NAME << " method in " << IEFRAME_LIBRARY_NAME;
+          if (wide_launch_api == L"") {
+            LOG(DEBUG) << "IELaunchURL() API is not available. Try to use CreateProcess() API.";
+            use_launch_api = CREATEPROCESS_API;
+          } else {
+            launch_error = "IELaunchURL() API is not available in iframe.dll";
+            *error_message = launch_error;
+          }
+        } else {
+          use_launch_api = IELAUNCHURL_API;
+        }
+        ::FreeLibrary(library_handle);
+      } else {
+        LOGERR(DEBUG) << "Unable to load library " << IEFRAME_LIBRARY_NAME;
+        if (wide_launch_api == L"") {
+          LOG(DEBUG) << "IELaunchURL() API is not available. Try to use CreateProcess() API.";
+          use_launch_api = CREATEPROCESS_API;
+        } else {
+          launch_error = "Unable to load iframe.dll to use IELaunchURL() API.";
+          *error_message = launch_error;
+        }
+      }
+    } else {
+      use_launch_api = CREATEPROCESS_API;
     }
 
-    std::string launch_api = "The IELaunchURL() API";
-    std::string launch_error = "";
-    if (proc_address != 0) {
+    if ((this->ie_major_version_ >= 8) && (use_launch_api == CREATEPROCESS_API)) {
+      // According to http://blogs.msdn.com/b/askie/archive/2009/03/09/opening-a-new-tab-may-launch-a-new-process-with-internet-explorer-8-0.aspx
+      // If CreateProcess() is used and TabProcGrowth != 0 IE will use different tab and frame processes.
+      // Such behaviour is not supported by AttachToBrowser().
+      // FYI, IELaunchURL() returns correct 'frame' process (but sometimes not).
+      std::wstring location_key = L"Software\\Microsoft\\Internet Explorer\\Main";
+      std::wstring tab_proc_growth;
+      if (this->GetRegistryValue(HKEY_CURRENT_USER,
+                                 location_key,
+                                 L"TabProcGrowth",
+                                 &tab_proc_growth)) {
+        if (tab_proc_growth != L"0") {
+          launch_error = "Unable to use CreateProcess() API in IE 8 and older with HKCU\\Software\\Microsoft\\Internet Explorer\\Main\\TabProcGrowth is not '0'.";
+          *error_message = launch_error;
+          use_launch_api = L"";
+        } else {
+          LOG(TRACE) << "CreateProcess() API can be used";
+        }
+      } else {
+        launch_error = "Unable to use CreateProcess() API in IE 8 and older with HKCU\\Software\\Microsoft\\Internet Explorer\\Main\\TabProcGrowth is not '0'.";
+        *error_message = launch_error;
+        use_launch_api = L"";
+      }
+    }
+
+    if (use_launch_api == IELAUNCHURL_API) {
       // If we have the IELaunchURL API, expressly use it. This will
       // guarantee a new session. Simply using CoCreateInstance to 
       // create the browser will merge sessions, making separate cookie
       // handling impossible.
       LOG(DEBUG) << "Starting IE using the IELaunchURL API";
+      launch_api_name = "The IELaunchURL() API";
+
       HRESULT launch_result = ::IELaunchURL(wide_initial_url.c_str(),
                                             &proc_info,
                                             NULL);
@@ -93,11 +155,16 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
         launch_error = &launch_result_msg[0];
         *error_message = launch_error;
       }
-    } else {
+
+    } else if (use_launch_api == CREATEPROCESS_API) {
       LOG(DEBUG) << "Starting IE using the CreateProcess API";
-      launch_api = "The CreateProcess() API";
+      launch_api_name = "The CreateProcess() API";	  
+
       std::wstring executable_and_url = this->ie_executable_location_ +
+                                        L" " + wide_ie_switches +
                                         L" " + wide_initial_url;
+	  LOG(TRACE) << "IE starting command line is: '" << LOGCWSTRING(executable_and_url) << "'.";
+
       LPWSTR command_line = new WCHAR[executable_and_url.size() + 1];
       wcscpy_s(command_line,
                executable_and_url.size() + 1,
@@ -159,9 +226,6 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
       ::CloseHandle(proc_info.hProcess);
     }
 
-    if (library_handle != NULL) {
-      ::FreeLibrary(library_handle);
-    }
   } else {
     *error_message = PROTECTED_MODE_SETTING_ERROR_MESSAGE;
   }
@@ -644,14 +708,14 @@ bool BrowserFactory::GetRegistryValue(const HKEY root_key,
                 << registry_call_result
                 << " retrieving required buffer size for value with name "
                 << LOGWSTRING(value_name.c_str()) << " in subkey "
-                << LOGWSTRING(subkey.c_str()) << "in hive "
+                << LOGWSTRING(subkey.c_str()) << " in hive "
                 << root_key_description;
     }
     ::RegCloseKey(key_handle);
   } else {
     LOG(WARN) << "RegOpenKeyEx failed with error code "
               << registry_call_result <<  " attempting to open subkey "
-              << LOGWSTRING(subkey.c_str()) << "in hive "
+              << LOGWSTRING(subkey.c_str()) << " in hive "
               << root_key_description;
 
   }
