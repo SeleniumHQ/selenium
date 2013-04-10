@@ -283,4 +283,30 @@ public class ClickTest extends JUnit4TestBase {
     driver.findElement(By.id("polyLE")).click();
     waitFor(WaitingConditions.pageTitleToBe(driver, "Target Page 3"));
   }
+
+  @Test
+  public void testShouldBeAbleToClickOnAnElementGreaterThanTwoViewports() {
+    String url = appServer.whereIs("click_too_big.html");
+    driver.get(url);
+
+    WebElement element = driver.findElement(By.id("click"));
+
+    element.click();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "Clicks"));
+  }
+
+  @Test
+  public void testShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports() {
+    String url = appServer.whereIs("click_too_big_in_frame.html");
+    driver.get(url);
+
+    WebElement frame = driver.findElement(By.id("iframe"));
+    driver.switchTo().frame(frame);
+
+    WebElement element = driver.findElement(By.id("click"));
+    element.click();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "Clicks"));
+  }
 }
