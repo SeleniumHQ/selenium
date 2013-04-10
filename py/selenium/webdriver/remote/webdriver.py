@@ -712,7 +712,7 @@ class WebDriver(object):
         png = self.execute(Command.SCREENSHOT)['value']
         try:
             with open(filename, 'wb') as f:
-                f.write(base64.decodestring(png))
+                f.write(base64.b64decode(png.encode('ascii')))
         except IOError:
             return False
         del png
@@ -820,7 +820,7 @@ class WebDriver(object):
         png = self.execute(Command.SCREENSHOT)['value']
         try:
             f = open(filename, 'wb')
-            f.write(base64.decodestring(png))
+            f.write(base64.b64decode(png.encode('ascii')))
             f.close()
         except IOError:
             return False
