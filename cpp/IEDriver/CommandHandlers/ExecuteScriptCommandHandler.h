@@ -139,7 +139,7 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
                 Script& script_wrapper,
                 Json::Value array_value) {
     LOG(TRACE) << "Entering ExecuteScriptCommandHandler::WalkArray";
-					
+
     int status_code = WD_SUCCESS;
     Json::UInt array_size = array_value.size();
     std::wstring array_script = L"(function(){ return function() { return [";

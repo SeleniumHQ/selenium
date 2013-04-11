@@ -22,7 +22,7 @@ namespace webdriver {
 
 class GetActiveElementCommandHandler : public IECommandHandler {
  public:
-  GetActiveElementCommandHandler(void) 	{
+  GetActiveElementCommandHandler(void) {
   }
 
   virtual ~GetActiveElementCommandHandler(void) {
