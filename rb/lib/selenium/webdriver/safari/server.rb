@@ -132,7 +132,7 @@ Server: safaridriver-ruby
 
         def encode_form_component(str)
           if URI.respond_to?(:encode_www_form_component) # >= 1.9
-            URI.encode_form_component(str)
+            URI.encode_www_form_component(str)
           else
             # best effort for 1.8
             str.gsub(":", '%3A').gsub('/', '%2F')
