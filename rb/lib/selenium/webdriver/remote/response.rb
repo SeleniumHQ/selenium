@@ -48,12 +48,10 @@ module Selenium
         private
 
         def assert_ok
-          if @code.nil? || @code >= 400
-            if e = error()
-              raise e
-            else
-              raise Error::ServerError, self
-            end
+          if e = error()
+            raise e
+          elsif @code.nil? || @code >= 400
+            raise Error::ServerError, self
           end
         end
 
