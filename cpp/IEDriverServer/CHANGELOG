@@ -9,6 +9,15 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.32.2.0
+=========
+ * Corrected logic error in reading TabProcGrowth registry value. The
+   TabProcGrowth registry value can be a DWORD or a string. If it is a string,
+   it can be a numeric string (e.g., "0"), and still be treated by Internet
+   Explorer as if it were an actual numeric value. This change to
+   BrowserFactory::GetRegistryValue() correctly handles both cases, coercing
+   the value to a string type for comparison.
+
 v2.32.1.0
 =========
  * Modified IEDriverServer to take new command-line switches to allow click on
