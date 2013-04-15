@@ -340,7 +340,7 @@ bot.dom.isEnabled = function(el) {
 
     if (parent &&
         bot.dom.isElement(parent, goog.dom.TagName.FIELDSET) &&
-        bot.dom.getProperty(parent, 'disabled')) {
+        bot.dom.getProperty(/** @type {!Element} */ (parent), 'disabled')) {
       if (!bot.dom.isElement(e, goog.dom.TagName.LEGEND)) {
         return true;
       }
