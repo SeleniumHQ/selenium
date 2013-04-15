@@ -175,7 +175,7 @@ safaridriver.extension.Server.prototype.disposeInternal = function() {
     if (this.ready_.isPending()) {
       this.ready_.cancel(Error('Server has been disposed'));
     }
-    this.webSocket_.close();
+    this.disposeWebSocket_();
   }
 
   while (this.disposeCallbacks_.length) {
@@ -190,6 +190,21 @@ safaridriver.extension.Server.prototype.disposeInternal = function() {
   delete this.webSocket_;
 
   goog.base(this, 'disposeInternal');
+};
+
+
+/** @private */
+safaridriver.extension.Server.prototype.disposeWebSocket_ = function() {
+  if (this.webSocket_) {
+    var webSocket = this.webSocket_;
+    this.webSocket_ = null;
+
+    webSocket.onopen = goog.nullFunction;
+    webSocket.onclose = goog.nullFunction;
+    webSocket.onmessage = goog.nullFunction;
+    webSocket.onerror = goog.nullFunction;
+    webSocket.close();
+  }
 };
 
 
@@ -237,25 +252,34 @@ safaridriver.extension.Server.prototype.connect = function(url) {
     throw Error('This server has already connected!');
   }
 
+  this.attemptConnect_(url);
+  return this.ready_.promise;
+};
+
+
+/**
+ * Attempts to open a WebSocket connection with the given URL.
+ * @param {string} url The URL to attempt to connect to.
+ * @private
+ */
+safaridriver.extension.Server.prototype.attemptConnect_ = function(url) {
   if (safaridriver.extension.Server.connectedUrls_[url]) {
     throw Error('Another instance is already connected to ' + url);
   }
   safaridriver.extension.Server.connectedUrls_[url] = true;
 
-  this.logMessage_('Connecting to ' + url);
-  this.webSocket_ = new WebSocket(url);
+  this.logMessage_('Attempting to connect to ' + url);
 
   // Register the event handlers.  Note that it is not possible for these
   // callbacks to be missed because it is registered after the web socket is
   // instantiated.  Because of the synchronous nature of JavaScript, this code
   // will execute before the browser creates the resource and makes any calls
   // to these callbacks.
+  this.webSocket_ = new WebSocket(url);
   this.webSocket_.onopen = goog.bind(this.onOpen_, this);
   this.webSocket_.onclose = goog.bind(this.onClose_, this, url);
   this.webSocket_.onmessage = goog.bind(this.onMessage_, this);
   this.webSocket_.onerror = goog.bind(this.onError_, this);
-
-  return this.ready_.promise;
 };
 
 
@@ -367,9 +391,12 @@ safaridriver.extension.Server.prototype.onClose_ = function(url) {
       goog.debug.Logger.Level.WARNING);
   if (!this.isDisposed()) {
     if (this.ready_.isPending()) {
-      this.ready_.reject(Error('Failed to connect'));
+      this.logMessage_('Failed to connect to ' + url);
+      this.disposeWebSocket_();
+      setTimeout(goog.bind(this.attemptConnect_, this, url), 250);
+    } else {
+      this.dispose();
     }
-    this.dispose();
   }
 };
 
