@@ -493,7 +493,7 @@ int InputManager::SendKeystrokes(BrowserHandle browser_wrapper, Json::Value keys
 
     CComPtr<IHTMLDocument2> doc;
     browser_wrapper->GetDocument(&doc);
-    Script script_wrapper(doc, script_source, 3);
+    Script script_wrapper(doc, script_source, 4);
           
     script_wrapper.AddNullArgument();
     script_wrapper.AddArgument(keys);

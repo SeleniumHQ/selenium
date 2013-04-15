@@ -9,6 +9,13 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.32.3.0
+=========
+ * Corrected number of script arguments in InputManager::SendKeystrokes. In a
+   recent refactor, this code was slightly changed, and the declaration of a
+   Script object was expecting three arguments instead of the required four.
+   Fixes issue #5502.
+
 v2.32.2.0
 =========
  * Corrected logic error in reading TabProcGrowth registry value. The
