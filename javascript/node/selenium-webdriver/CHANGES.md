@@ -1,4 +1,4 @@
-## v2.32.0-dev
+## v2.32.0
 
 * Added the `selenium-webdriver/testing` package, which provides a basic
     framework for writing tests using Mocha. See
