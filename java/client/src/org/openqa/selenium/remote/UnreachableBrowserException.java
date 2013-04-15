@@ -32,6 +32,10 @@ import org.openqa.selenium.WebDriverException;
  * 1)
  */
 public class UnreachableBrowserException extends WebDriverException {
+  public UnreachableBrowserException(String message) {
+    super(message);
+  }
+
   public UnreachableBrowserException(String message, Throwable cause) {
     super(message, cause);
   }

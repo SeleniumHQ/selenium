@@ -31,6 +31,7 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Stopwatch;
@@ -103,9 +104,13 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     stopwatch.start();
     try {
       connection = server.getConnection(45, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
+    } catch (InterruptedException ignored) {
+      // Do nothing.
+    }
+
+    if (connection == null) {
       stop();
-      throw new WebDriverException(String.format(
+      throw new UnreachableBrowserException(String.format(
           "Failed to connect to SafariDriver after %d ms",
           stopwatch.elapsed(TimeUnit.MILLISECONDS)));
     }
