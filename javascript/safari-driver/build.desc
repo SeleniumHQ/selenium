@@ -70,6 +70,7 @@ js_binary(
         "deps.js",
         "extension/commands.js",
         "extension/extension.js",
+        "extension/extensionbar.js",
         "extension/server.js",
         "extension/session.js",
         "extension/tab.js",
@@ -235,7 +236,8 @@ folder(
     name = "SafariDriver",
     srcs = [
       "Info.plist",
-      "extension/extension.html"
+      "extension/extension.html",
+      "extension/extension_bar.html",
     ],
     deps = [
       ":extension",

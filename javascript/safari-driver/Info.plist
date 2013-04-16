@@ -18,6 +18,17 @@
 	<string>2.32.0</string>
 	<key>Chrome</key>
 	<dict>
+		<key>Bars</key>
+		<array>
+			<dict>
+				<key>Filename</key>
+				<string>extension_bar.html</string>
+				<key>Identifier</key>
+				 <string>safaridriver.extension.bar</string>
+				<key>Label</key>
+				<string>WebDriver</string>
+			</dict>
+		</array>
 		<key>Global Page</key>
 		<string>extension.html</string>
 	</dict>
