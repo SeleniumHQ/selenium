@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 
 /**
  * Implements {@link org.openqa.selenium.internal.Lock} via an implementation that uses a well-known
@@ -119,6 +120,8 @@ public class SocketLock implements Lock {
       lockSocket.bind(address);
       return true;
     } catch (BindException e) {
+      return false;
+    } catch (SocketException e) {
       return false;
     }
   }
