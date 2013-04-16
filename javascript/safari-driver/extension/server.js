@@ -24,6 +24,7 @@ goog.require('goog.string');
 goog.require('safaridriver.Command');
 goog.require('safaridriver.alert');
 goog.require('safaridriver.extension.commands');
+goog.require('safaridriver.extension.bar');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Response');
 goog.require('webdriver.CommandName');
@@ -269,6 +270,7 @@ safaridriver.extension.Server.prototype.attemptConnect_ = function(url) {
   safaridriver.extension.Server.connectedUrls_[url] = true;
 
   this.logMessage_('Attempting to connect to ' + url);
+  safaridriver.extension.bar.setUserMessage('Connecting to ' + url);
 
   // Register the event handlers.  Note that it is not possible for these
   // callbacks to be missed because it is registered after the web socket is
@@ -316,6 +318,7 @@ safaridriver.extension.Server.prototype.execute = function(
   var result = flow.execute(fn, description).
       then(bot.response.createResponse, bot.response.createErrorResponse).
       addBoth(function(response) {
+        safaridriver.extension.bar.setUserMessage('<idle>');
         this.session_.setCurrentCommand(null);
         return response;
       }, this);
@@ -341,6 +344,8 @@ safaridriver.extension.Server.prototype.execute = function(
 safaridriver.extension.Server.prototype.executeCommand_ = function(
     command, handler) {
   this.logMessage_('Executing command: ' + command.getName());
+  safaridriver.extension.bar.setUserMessage(
+      command.getName() + ' ' + JSON.stringify(command.getParameters()));
 
   var alertText = this.session_.getUnhandledAlertText();
   if (!goog.isNull(alertText)) {
@@ -391,9 +396,11 @@ safaridriver.extension.Server.prototype.onClose_ = function(url) {
       goog.debug.Logger.Level.WARNING);
   if (!this.isDisposed()) {
     if (this.ready_.isPending()) {
-      this.logMessage_('Failed to connect to ' + url);
+      var message = 'Failed to connect to ' + url;
+      this.logMessage_(message);
+      safaridriver.extension.bar.setUserMessage(message, 'red');
       this.disposeWebSocket_();
-      setTimeout(goog.bind(this.attemptConnect_, this, url), 250);
+      setTimeout(goog.bind(this.attemptConnect_, this, url), 500);
     } else {
       this.dispose();
     }

@@ -28,6 +28,7 @@ goog.require('safaridriver.console');
 goog.require('safaridriver.extension.Server');
 goog.require('safaridriver.extension.Session');
 goog.require('safaridriver.extension.TabManager');
+goog.require('safaridriver.extension.bar');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Connect');
@@ -57,6 +58,7 @@ safaridriver.extension.init = function() {
   // Now that we're initialized, we sit and wait for a page to send us a client
   // to attempt connecting to.
   safaridriver.extension.LOG_.info('Waiting for connect command...');
+  safaridriver.extension.bar.setUserMessage('<idle>');
   safari.application.addEventListener('message',
       safaridriver.extension.onMessage_, false);
 };

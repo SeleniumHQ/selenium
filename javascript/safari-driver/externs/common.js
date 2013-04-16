@@ -269,7 +269,34 @@ SafariEventTarget.prototype.removeEventListener = function(type, listener,
 
 /** @constructor */
 function SafariExtension() {}
-// TODO: finish documenting the SafariExtension type.
+
+/** @type {!Array.<!SafariExtensionBar>} */
+SafariExtension.prototype.bars;
+
+
+/**
+ * @constructor
+ * @extends {SafariEventTarget}
+ */
+function SafariExtensionBar() {}
+
+/** @type {boolean} */
+SafariExtensionBar.prototype.visible;
+
+/** @type {!SafariBrowserWindow} */
+SafariExtensionBar.prototype.browserWindow;
+
+/** @type {!Window} */
+SafariExtensionBar.prototype.contentWindow;
+
+/** @type {string} */
+SafariExtensionBar.prototype.identifier;
+
+/** @type {string} */
+SafariExtensionBar.prototype.label;
+
+SafariExtensionBar.prototype.hide = function() {};
+SafariExtensionBar.prototype.show = function() {};
 
 
 /** @constructor */
