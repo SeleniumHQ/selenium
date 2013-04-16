@@ -27,7 +27,7 @@ class WebDriverException(Exception):
                 % exception_msg
         if self.stacktrace is not None:
             exception_msg = "%s; Stacktrace: %s " \
-                % (exception_msg, str(self.stacktrace))
+                % (exception_msg, str("\n" + "\n".join(self.stacktrace)))
         return exception_msg
 
 class ErrorInResponseException(WebDriverException):
