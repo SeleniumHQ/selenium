@@ -343,7 +343,8 @@ namespace OpenQA.Selenium
             {
                 driver.FindElement(By.Id("open-new-window")).Click();
                 WaitFor(WindowHandleCountToBe(2));
-                driver.SwitchTo().Window("newwindow").Close();
+                WaitFor(WindowWithName("newwindow"));
+                driver.Close();
                 WaitFor(WindowHandleCountToBe(1));
 
                 try
@@ -627,6 +628,29 @@ namespace OpenQA.Selenium
             alert.Accept();
             WaitFor(() => { return driver.Url.Contains(alertsPage); });
             Assert.IsTrue(driver.Url.Contains(alertsPage));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
+        [IgnoreBrowser(Browser.Safari)]
+        [NeedsFreshDriver(AfterTest = true)]
+        public void ShouldHandleOnBeforeUnloadAlertAtClose()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
+            IWebElement element = driver.FindElement(By.Id("navigate"));
+            element.Click();
+            IAlert alert = WaitFor<IAlert>(AlertToBePresent);
+            driver.Quit();
+            //alert.Dismiss();
+            //Assert.IsTrue(driver.Url.Contains("pageWithOnBeforeUnloadMessage.html"));
+
+            //// Can't move forward or even quit the driver
+            //// until the alert is accepted.
+            //element.Click();
+            //alert = WaitFor<IAlert>(AlertToBePresent);
+            //alert.Accept();
+            //WaitFor(() => { return driver.Url.Contains(alertsPage); });
+            //Assert.IsTrue(driver.Url.Contains(alertsPage));
         }
 
         [Test]
