@@ -98,6 +98,11 @@ class TestFirefoxProfile:
             break
         fp.close()
 
+    def testThePathOfTheTemporaryProfileShouldNotBeUnicode(self):
+        #firefox 20.0.1 can not take unicode string in env
+        existingProfile = webdriver.FirefoxProfile()
+        profile = webdriver.FirefoxProfile(existingProfile.path)
+        assert(type(profile.path) is str)
 
     def test_that_we_delete_the_profile(self):
         path = self.driver.firefox_profile.path

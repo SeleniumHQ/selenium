@@ -154,7 +154,7 @@ class FirefoxProfile(object):
         """
         Gets the profile directory that is currently being used
         """
-        return self.profile_dir
+        return str(self.profile_dir)
 
     @property
     def port(self):
