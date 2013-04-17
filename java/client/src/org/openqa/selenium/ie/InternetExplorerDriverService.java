@@ -313,7 +313,7 @@ public class InternetExplorerDriverService extends DriverService {
         ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
         argsBuilder.add(String.format("--port=%d", port));
         if (logFile != null) {
-          argsBuilder.add(String.format("--log-file='%s'", logFile.getAbsolutePath()));
+          argsBuilder.add(String.format("--log-file=\"%s\"", logFile.getAbsolutePath()));
         }
         if (logLevel != null) {
           argsBuilder.add(String.format("--log-level=%s", logLevel.toString()));
@@ -322,16 +322,16 @@ public class InternetExplorerDriverService extends DriverService {
           argsBuilder.add(String.format("--host=%s", host));
         }
         if (extractPath != null) {
-          argsBuilder.add(String.format("--extract-path='%s'", extractPath.getAbsolutePath()));
+          argsBuilder.add(String.format("--extract-path=\"%s\"", extractPath.getAbsolutePath()));
         }
         if (silent != null && silent.equals(Boolean.TRUE)) {
           argsBuilder.add("--silent");
         }
         if (forceCreateProcess != null && forceCreateProcess.equals(Boolean.TRUE)) {
           argsBuilder.add(String.format("--force-createprocess"));
-        }
-        if (ieSwitches != null) {
-          argsBuilder.add(String.format("--ie-switches='%s'", ieSwitches));
+          if (ieSwitches != null) {
+            argsBuilder.add(String.format("--ie-switches=\"%s\"", ieSwitches));
+          }
         }
 
         return new InternetExplorerDriverService(exe, port, argsBuilder.build(), environment);
