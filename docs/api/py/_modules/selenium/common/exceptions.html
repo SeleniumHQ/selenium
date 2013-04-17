@@ -78,7 +78,7 @@
                 <span class="o">%</span> <span class="n">exception_msg</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stacktrace</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">exception_msg</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">; Stacktrace: </span><span class="si">%s</span><span class="s"> &quot;</span> \
-                <span class="o">%</span> <span class="p">(</span><span class="n">exception_msg</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stacktrace</span><span class="p">))</span>
+                <span class="o">%</span> <span class="p">(</span><span class="n">exception_msg</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stacktrace</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">exception_msg</span>
 </div>
 <div class="viewcode-block" id="ErrorInResponseException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.ErrorInResponseException">[docs]</a><span class="k">class</span> <span class="nc">ErrorInResponseException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
@@ -114,6 +114,9 @@
     <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="InvalidElementStateException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidElementStateException">[docs]</a><span class="k">class</span> <span class="nc">InvalidElementStateException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="UnexpectedAlertPresentException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.UnexpectedAlertPresentException">[docs]</a><span class="k">class</span> <span class="nc">UnexpectedAlertPresentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="NoAlertPresentException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.NoAlertPresentException">[docs]</a><span class="k">class</span> <span class="nc">NoAlertPresentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>

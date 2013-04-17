@@ -81,9 +81,9 @@
 
 <span class="k">class</span> <span class="nc">MyListener</span><span class="p">(</span><span class="n">AbstractEventListener</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">before_navigate_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
-        <span class="k">print</span> <span class="s">&quot;Before navigate to </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">url</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Before navigate to </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">after_navigate_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
-        <span class="k">print</span> <span class="s">&quot;After navigate to </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">url</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;After navigate to </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
 
 <span class="n">driver</span> <span class="o">=</span> <span class="n">Firefox</span><span class="p">()</span>
 <span class="n">ef_driver</span> <span class="o">=</span> <span class="n">EventFiringWebDriver</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">MyListener</span><span class="p">())</span>

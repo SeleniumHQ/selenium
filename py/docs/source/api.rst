@@ -32,6 +32,7 @@ Webdriver.common
    selenium.webdriver.common.by
    selenium.webdriver.common.desired_capabilities
    selenium.webdriver.common.keys
+   selenium.webdriver.common.touch_actions
    selenium.webdriver.common.utils
 
 Webdriver.support

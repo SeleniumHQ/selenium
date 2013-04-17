@@ -69,7 +69,7 @@
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webelement</span> <span class="kn">import</span> <span class="n">WebElement</span>
-<span class="kn">from</span> <span class="nn">abstract_event_listener</span> <span class="kn">import</span> <span class="n">AbstractEventListener</span>
+<span class="kn">from</span> <span class="nn">.abstract_event_listener</span> <span class="kn">import</span> <span class="n">AbstractEventListener</span>
 
 
 <span class="k">def</span> <span class="nf">_wrap_elements</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">ef_driver</span><span class="p">):</span>
@@ -102,9 +102,9 @@
 <span class="sd">            </span>
 <span class="sd">            class MyListener(AbstractEventListener):</span>
 <span class="sd">                def before_navigate_to(self, url, driver):</span>
-<span class="sd">                    print &quot;Before navigate to %s&quot; % url</span>
+<span class="sd">                    print(&quot;Before navigate to %s&quot; % url)</span>
 <span class="sd">                def after_navigate_to(self, url, driver):</span>
-<span class="sd">                    print &quot;After navigate to %s&quot; % url</span>
+<span class="sd">                    print(&quot;After navigate to %s&quot; % url)</span>
 <span class="sd">            </span>
 <span class="sd">            driver = Firefox()</span>
 <span class="sd">            ef_driver = EventFiringWebDriver(driver, MyListener())</span>
@@ -203,7 +203,7 @@
         <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="p">,</span> <span class="s">&quot;before_</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">l_call</span><span class="p">)(</span><span class="o">*</span><span class="n">l_args</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,</span> <span class="n">d_call</span><span class="p">)(</span><span class="o">*</span><span class="n">d_args</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">on_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">e</span>
         <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="p">,</span> <span class="s">&quot;after_</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">l_call</span><span class="p">)(</span><span class="o">*</span><span class="n">l_args</span><span class="p">)</span>
@@ -225,7 +225,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="nb">object</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">on_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">e</span>
             
@@ -235,7 +235,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">attrib</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">_wrap_elements</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">on_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">e</span>
                 
@@ -244,7 +244,7 @@
                 <span class="n">attrib</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">attrib</span><span class="p">):</span>
                     <span class="k">return</span> <span class="n">attrib</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">on_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">e</span>
             <span class="k">return</span> <span class="n">_wrap</span>
@@ -338,7 +338,7 @@
         <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="p">,</span> <span class="s">&quot;before_</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">l_call</span><span class="p">)(</span><span class="o">*</span><span class="n">l_args</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_webelement</span><span class="p">,</span> <span class="n">d_call</span><span class="p">)(</span><span class="o">*</span><span class="n">d_args</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">on_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">e</span>
         <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="p">,</span> <span class="s">&quot;after_</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">l_call</span><span class="p">)(</span><span class="o">*</span><span class="n">l_args</span><span class="p">)</span>
@@ -350,7 +350,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="nb">object</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_webelement</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">on_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">e</span>
             
@@ -360,7 +360,7 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="n">attrib</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">_wrap_elements</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ef_driver</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">on_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="n">e</span>
                 
@@ -369,7 +369,7 @@
                 <span class="n">attrib</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_webelement</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">attrib</span><span class="p">):</span>
                     <span class="k">return</span> <span class="n">attrib</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_listener</span><span class="o">.</span><span class="n">on_exception</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">e</span>
             <span class="k">return</span> <span class="n">_wrap</span>

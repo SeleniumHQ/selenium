@@ -64,10 +64,19 @@
 <span class="sd">See the License for the specific language governing permissions and</span>
 <span class="sd">limitations under the License.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+
 <span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext en&quot;</span>
 
-<span class="kn">import</span> <span class="nn">httplib</span>
-<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">http.client</span> <span class="kn">as</span> <span class="nn">http_client</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">httplib</span> <span class="kn">as</span> <span class="nn">http_client</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">urllib.parse</span> <span class="kn">as</span> <span class="nn">urllib_parse</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">urllib</span> <span class="kn">as</span> <span class="nn">urllib_parse</span>
 
 <span class="k">class</span> <span class="nc">selenium</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <div class="viewcode-block" id="selenium"><a class="viewcode-back" href="../../selenium/selenium.selenium.html#selenium.selenium.selenium">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
@@ -240,19 +249,19 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sessionId</span> <span class="o">=</span> <span class="n">result</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">result</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
 <div class="viewcode-block" id="selenium.stop"><a class="viewcode-back" href="../../selenium/selenium.selenium.html#selenium.selenium.selenium.stop">[docs]</a>        <span class="bp">self</span><span class="o">.</span><span class="n">do_command</span><span class="p">(</span><span class="s">&quot;testComplete&quot;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sessionId</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">do_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verb</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span></div>
-<div class="viewcode-block" id="selenium.do_command"><a class="viewcode-back" href="../../selenium/selenium.selenium.html#selenium.selenium.selenium.do_command">[docs]</a>        <span class="n">conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+<div class="viewcode-block" id="selenium.do_command"><a class="viewcode-back" href="../../selenium/selenium.selenium.html#selenium.selenium.selenium.do_command">[docs]</a>        <span class="n">conn</span> <span class="o">=</span> <span class="n">http_client</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">body</span> <span class="o">=</span> <span class="s">u&#39;cmd=&#39;</span> <span class="o">+</span> <span class="n">urllib</span><span class="o">.</span><span class="n">quote_plus</span><span class="p">(</span><span class="nb">unicode</span><span class="p">(</span><span class="n">verb</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
+            <span class="n">body</span> <span class="o">=</span> <span class="s">&#39;cmd=&#39;</span> <span class="o">+</span> <span class="n">urllib_parse</span><span class="o">.</span><span class="n">quote_plus</span><span class="p">(</span><span class="nb">unicode</span><span class="p">(</span><span class="n">verb</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)):</span>
                 <span class="n">body</span> <span class="o">+=</span> <span class="s">&#39;&amp;&#39;</span> <span class="o">+</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;=&#39;</span> <span class="o">+</span> \
-                        <span class="n">urllib</span><span class="o">.</span><span class="n">quote_plus</span><span class="p">(</span><span class="nb">unicode</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
+                        <span class="n">urllib_parse</span><span class="o">.</span><span class="n">quote_plus</span><span class="p">(</span><span class="nb">unicode</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">))</span>
             <span class="k">if</span> <span class="p">(</span><span class="bp">None</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sessionId</span><span class="p">):</span>
                 <span class="n">body</span> <span class="o">+=</span> <span class="s">&quot;&amp;sessionId=&quot;</span> <span class="o">+</span> <span class="nb">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sessionId</span><span class="p">)</span>
             <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
@@ -264,7 +273,7 @@
             <span class="n">response</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
             <span class="n">data</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s">&quot;UTF-8&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;OK&#39;</span><span class="p">)):</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">data</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">data</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -313,7 +322,7 @@
             <span class="k">return</span> <span class="bp">True</span>
         <span class="k">if</span> <span class="p">(</span><span class="s">&quot;false&quot;</span> <span class="o">==</span> <span class="n">boolstr</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">False</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="s">&quot;result is neither &#39;true&#39; nor &#39;false&#39;: &quot;</span> <span class="o">+</span> <span class="n">boolstr</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;result is neither &#39;true&#39; nor &#39;false&#39;: &quot;</span> <span class="o">+</span> <span class="n">boolstr</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_boolean_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verb</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span></div>
 <div class="viewcode-block" id="selenium.get_boolean_array"><a class="viewcode-back" href="../../selenium/selenium.selenium.html#selenium.selenium.selenium.get_boolean_array">[docs]</a>        <span class="n">boolarr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_string_array</span><span class="p">(</span><span class="n">verb</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
@@ -324,7 +333,7 @@
             <span class="k">if</span> <span class="p">(</span><span class="s">&quot;false&quot;</span> <span class="o">==</span> <span class="n">boolstr</span><span class="p">):</span>
                 <span class="n">boolarr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
                 <span class="k">continue</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="s">&quot;result is neither &#39;true&#39; nor &#39;false&#39;: &quot;</span> <span class="o">+</span> <span class="n">boolarr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;result is neither &#39;true&#39; nor &#39;false&#39;: &quot;</span> <span class="o">+</span> <span class="n">boolarr</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">boolarr</span>
     
     

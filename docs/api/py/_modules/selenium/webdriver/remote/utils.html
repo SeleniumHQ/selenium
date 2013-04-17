@@ -158,7 +158,7 @@
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Unzipped file can be found at </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">tempdir</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tempdir</span>
 
-    <span class="k">except</span> <span class="ne">IOError</span><span class="p">,</span> <span class="n">err</span><span class="p">:</span>
+    <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Error in extracting webdriver.xpi: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">err</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">None</span></div>
 </pre></div>

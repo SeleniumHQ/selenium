@@ -85,6 +85,9 @@
         <span class="c"># Rather than modifying the environment of the calling Python process</span>
         <span class="c"># copy it and modify as needed.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">[</span><span class="s">&quot;MOZ_CRASHREPORTER_DISABLE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">[</span><span class="s">&quot;MOZ_NO_REMOTE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">[</span><span class="s">&quot;NO_EM_RESTART&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
 
 <div class="viewcode-block" id="FirefoxBinary.add_command_line_options"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.firefox_binary.html#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.add_command_line_options">[docs]</a>    <span class="k">def</span> <span class="nf">add_command_line_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span> <span class="o">=</span> <span class="n">args</span>
@@ -109,9 +112,6 @@
 </div>
     <span class="k">def</span> <span class="nf">_start_from_profile_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">[</span><span class="s">&quot;XRE_PROFILE_PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">[</span><span class="s">&quot;MOZ_CRASHREPORTER_DISABLE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">[</span><span class="s">&quot;MOZ_NO_REMOTE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">[</span><span class="s">&quot;NO_EM_RESTART&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span>
 
         <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;linux&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_modify_link_library_path</span><span class="p">()</span>
@@ -149,7 +149,10 @@
         <span class="k">return</span> <span class="bp">True</span>
 
     <span class="k">def</span> <span class="nf">_find_exe_in_registry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">_winreg</span> <span class="kn">import</span> <span class="n">OpenKey</span><span class="p">,</span> <span class="n">QueryValue</span><span class="p">,</span> <span class="n">HKEY_LOCAL_MACHINE</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">_winreg</span> <span class="kn">import</span> <span class="n">OpenKey</span><span class="p">,</span> <span class="n">QueryValue</span><span class="p">,</span> <span class="n">HKEY_LOCAL_MACHINE</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">winreg</span> <span class="kn">import</span> <span class="n">OpenKey</span><span class="p">,</span> <span class="n">QueryValue</span><span class="p">,</span> <span class="n">HKEY_LOCAL_MACHINE</span>
         <span class="kn">import</span> <span class="nn">shlex</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span>
            <span class="s">r&quot;SOFTWARE\Classes\FirefoxHTML\shell\open\command&quot;</span><span class="p">,</span>
@@ -190,8 +193,13 @@
         <span class="k">return</span> <span class="n">start_cmd</span>
 
     <span class="k">def</span> <span class="nf">_default_windows_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">program_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s">&quot;PROGRAMFILES&quot;</span><span class="p">,</span> <span class="s">r&quot;\Program Files&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">program_files</span><span class="p">,</span> <span class="s">&quot;Mozilla Firefox</span><span class="se">\\</span><span class="s">firefox.exe&quot;</span><span class="p">)</span>
+        <span class="n">program_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s">&quot;PROGRAMFILES&quot;</span><span class="p">,</span> <span class="s">r&quot;C:\Program Files&quot;</span><span class="p">),</span>
+                         <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s">&quot;PROGRAMFILES(X86)&quot;</span><span class="p">,</span> <span class="s">r&quot;C:\Program Files (x86)&quot;</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">program_files</span><span class="p">:</span>
+            <span class="n">binary_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">r&quot;Mozilla Firefox\firefox.exe&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">binary_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">X_OK</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">binary_path</span>
+        <span class="k">return</span> <span class="s">&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_modify_link_library_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">existing_ld_lib_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;LD_LIBRARY_PATH&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
