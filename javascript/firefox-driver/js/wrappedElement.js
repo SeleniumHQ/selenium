@@ -77,8 +77,8 @@ WebElement.clickElement = function(respond, parameters) {
   var isOption = 'option' == unwrapped.tagName.toLowerCase();
 
   var location = Utils.getLocation(unwrapped, unwrapped.tagName == 'A');
-  var elementHalfWidth = (location.width ? location.width / 2 : 0);
-  var elementHalfHeight = (location.height ? location.height / 2 : 0);
+  var elementHalfWidth = (location.width ? Math.floor(location.width / 2) : 0);
+  var elementHalfHeight = (location.height ? Math.floor(location.height / 2) : 0);
 
   if (!isOption && this.enableNativeEvents && nativeMouse && node && useNativeClick && thmgr_cls) {
     fxdriver.logging.info('Using native events for click');
