@@ -166,7 +166,7 @@ int Alert::ClickAlertButton(DialogButtonInfo button_info) {
   // algorithim, since the busy property of the browser may
   // not be the right thing to check here.
   int retry_count = 20;
-  while (::IsWindow(this->alert_handle_) && this->browser_->IsBusy() && retry_count > 0) {
+  while ((::IsWindow(this->alert_handle_) || this->browser_->IsBusy()) && retry_count > 0) {
     ::Sleep(50);
     retry_count--;
   }

@@ -9,6 +9,14 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.32.3.1
+=========
+ * Corrected logic error in alert handling. A slight logic error in the alert
+   handling code was causing the alert handling to not wait for the alert to be
+   completely dismissed before continuing. This was causing a race condition
+   that could lead to crashes when quitting the browser if certain types of
+   alerts were active. Fixes issue #5489.
+
 v2.32.3.0
 =========
  * Corrected number of script arguments in InputManager::SendKeystrokes. In a
