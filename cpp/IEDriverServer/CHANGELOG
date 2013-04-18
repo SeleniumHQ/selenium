@@ -9,6 +9,13 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.32.3.2
+=========
+ * Corrected dismissal of onBeforeUnload dialogs. We now notify the button's
+   immediate parent, instead of sending a message to the button. Sending the
+   BM_CLICK message to the button can fail if the dialog doesn't have the 
+   system focus.
+
 v2.32.3.1
 =========
  * Corrected logic error in alert handling. A slight logic error in the alert

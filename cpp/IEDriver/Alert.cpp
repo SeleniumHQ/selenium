@@ -156,18 +156,30 @@ int Alert::ClickAlertButton(DialogButtonInfo button_info) {
                   button_info.button_control_id,
                   NULL);
   } else {
-    ::SendMessage(button_info.button_handle,
-                  BM_CLICK,
-                  NULL,
-                  NULL);
+    // For non-standard alerts (that is, alerts that are not
+    // created by alert(), confirm() or prompt() JavaScript
+    // functions), we cheat. Sending the BN_CLICKED notification
+    // via WM_COMMAND makes the dialog think that the proper
+    // button was clicked, but it's not the same as sending the
+    // click message to the button. N.B., sending the BM_CLICK
+    // message to the button may fail if the dialog doesn't have
+    // focus, so we do it this way. Also, we send the notification
+    // to the immediate parent of the button, which, in turn,
+    // notifies the top-level dialog.
+    ::SendMessage(::GetParent(button_info.button_handle),
+                  WM_COMMAND,
+                  MAKEWPARAM(0, BN_CLICKED),
+                  reinterpret_cast<LPARAM>(button_info.button_handle));
   }
   // Hack to make sure alert is really closed, and browser
   // is ready for the next operation. This may be a flawed
   // algorithim, since the busy property of the browser may
   // not be the right thing to check here.
   int retry_count = 20;
-  while ((::IsWindow(this->alert_handle_) || this->browser_->IsBusy()) && retry_count > 0) {
+  bool is_alert_handle_valid = (::IsWindow(this->alert_handle_) == TRUE);
+  while ((is_alert_handle_valid || this->browser_->IsBusy()) && retry_count > 0) {
     ::Sleep(50);
+    is_alert_handle_valid = (::IsWindow(this->alert_handle_) == TRUE);
     retry_count--;
   }
 
@@ -175,6 +187,8 @@ int Alert::ClickAlertButton(DialogButtonInfo button_info) {
   // 1. Alert window still present (::IsWindow(this->alert_handle_) == TRUE)
   // 2. Browser still busy (this->browser_->IsBusy() == true)
   // and return an appropriate non-WD_SUCCESS error code.
+  LOG(DEBUG) << "IsWindow() for alert handle 0x" << this->alert_handle_ << ": "
+             << is_alert_handle_valid ? "true" : "false";
   return WD_SUCCESS;
 }
 
