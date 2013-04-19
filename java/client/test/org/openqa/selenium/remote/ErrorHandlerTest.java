@@ -32,13 +32,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.InvalidElementStateException;
+import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.XPathLookupException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 
 import java.util.Map;
@@ -79,7 +79,7 @@ public class ErrorHandlerTest {
     assertThrowsCorrectExceptionType(
         ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class);
     assertThrowsCorrectExceptionType(
-        ErrorCodes.XPATH_LOOKUP_ERROR, XPathLookupException.class);
+        ErrorCodes.XPATH_LOOKUP_ERROR, InvalidSelectorException.class);
     assertThrowsCorrectExceptionType(ErrorCodes.INVALID_ELEMENT_COORDINATES,
         InvalidCoordinatesException.class);
   }

@@ -37,7 +37,6 @@ import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.XPathLookupException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
@@ -80,7 +79,6 @@ public class ErrorCodes {
   public static final int INVALID_SELECTOR_ERROR = 32;
   public static final int SESSION_NOT_CREATED = 33;
   public static final int MOVE_TARGET_OUT_OF_BOUNDS = 34;
-  public static final int SQL_DATABASE_ERROR = 35;
   public static final int INVALID_XPATH_SELECTOR = 51;
   public static final int INVALID_XPATH_SELECTOR_RETURN_TYPER = 52;
   // The following error codes are derived straight from HTTP return codes.
@@ -143,6 +141,7 @@ public class ErrorCodes {
       case INVALID_SELECTOR_ERROR:
       case INVALID_XPATH_SELECTOR:
       case INVALID_XPATH_SELECTOR_RETURN_TYPER:
+      case XPATH_LOOKUP_ERROR:
         return InvalidSelectorException.class;
       case MOVE_TARGET_OUT_OF_BOUNDS:
         return MoveTargetOutOfBoundsException.class;
@@ -158,8 +157,6 @@ public class ErrorCodes {
       case ELEMENT_NOT_SELECTABLE:
       case INVALID_ELEMENT_STATE:
         return InvalidElementStateException.class;
-      case XPATH_LOOKUP_ERROR:
-        return XPathLookupException.class;
       case ASYNC_SCRIPT_TIMEOUT:
       case TIMEOUT:
         return TimeoutException.class;
@@ -223,8 +220,6 @@ public class ErrorCodes {
       return UNABLE_TO_SET_COOKIE;
     } else if (thrown instanceof UnhandledAlertException) {
       return UNEXPECTED_ALERT_PRESENT;
-    } else if (thrown instanceof XPathLookupException) {
-      return XPATH_LOOKUP_ERROR;
     } else {
       return UNHANDLED_ERROR;
     }
