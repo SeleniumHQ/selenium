@@ -634,7 +634,7 @@ bot.action.LegacyDevice_.findAncestorForm = function(element) {
  * @return {boolean} Whether the element is in view after scrolling.
  */
 bot.action.scrollIntoView = function(element, opt_coords) {
-  if (!bot.dom.isScrolledIntoView(element, opt_coords)) {
+  if (!bot.dom.isScrolledIntoView(element, opt_coords) && !bot.dom.isInParentOverflow(element, opt_coords)) {
     // Some elements may not have a scrollIntoView function - for example,
     // elements under an SVG element. Call those only if they exist.
     if (typeof element.scrollIntoView == 'function') {

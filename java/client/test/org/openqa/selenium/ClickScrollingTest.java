@@ -30,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -87,6 +88,14 @@ public class ClickScrollingTest extends JUnit4TestBase {
     // This used to throw a MoveTargetOutOfBoundsException - we don't expect it to
     link.click();
     assertEquals("line8", driver.findElement(By.id("clicked")).getText());
+  }
+
+  @Test
+  public void testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow() {
+    driver.get(appServer.whereIs("scrolling_tests/page_with_double_overflow_auto.html"));
+
+    driver.findElement(By.id("link")).click();
+    waitFor(WaitingConditions.pageTitleToBe(driver, "Clicked Successfully!"));
   }
 
   @JavascriptEnabled
