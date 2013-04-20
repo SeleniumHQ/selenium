@@ -737,10 +737,12 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       var sizeOfParent = bot.dom.getElementSize(parent);
       var locOfParent = goog.style.getClientPosition(parent);
       var locOfElement = goog.style.getClientPosition(e);
-      if (locOfParent.x + sizeOfParent.width <= locOfElement.x) {
+      if (locOfParent.x + sizeOfParent.width <= locOfElement.x &&
+          bot.dom.getEffectiveStyle(parent, 'overflow-x') == 'hidden') {
         return false;
       }
-      if (locOfParent.y + sizeOfParent.height <= locOfElement.y) {
+      if (locOfParent.y + sizeOfParent.height <= locOfElement.y &&
+          bot.dom.getEffectiveStyle(parent, 'overflow-y') == 'hidden') {
         return false;
       }
       return true;
