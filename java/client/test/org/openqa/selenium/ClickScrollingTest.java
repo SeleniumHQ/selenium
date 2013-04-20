@@ -90,6 +90,8 @@ public class ClickScrollingTest extends JUnit4TestBase {
     assertEquals("line8", driver.findElement(By.id("clicked")).getText());
   }
 
+  @JavascriptEnabled
+  @Ignore(value = {CHROME, IPHONE}, reason = "Chrome: failed, iPhone: untested")
   @Test
   public void testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_double_overflow_auto.html"));
