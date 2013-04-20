@@ -42,7 +42,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class ClickTest extends JUnit4TestBase {
 
@@ -63,7 +62,7 @@ public class ClickTest extends JUnit4TestBase {
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
-  @Ignore(value = {CHROME, OPERA, SELENESE},
+  @Ignore(value = {CHROME, OPERA},
           reason = "Not tested on these browsers.")
   @Test
   public void testCanClickOnALinkThatOverflowsAndFollowIt() {
@@ -99,7 +98,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, OPERA, ANDROID, OPERA_MOBILE},
+  @Ignore(value = {OPERA, ANDROID, OPERA_MOBILE},
           reason = "Opera: Incorrect runtime retrieved; " +
                    "Android: fails when running with other tests.")
   @Test
@@ -117,10 +116,10 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, OPERA, ANDROID, OPERA_MOBILE}, reason =
+  @Ignore(value = {OPERA, ANDROID, OPERA_MOBILE}, reason =
       "Opera: Incorrect runtime retrieved, Android: fails when running with other tests.")
   @Test
-  public void testJsLoactedElementsCanUpdateFramesIfFoundSomehowElse() {
+  public void testJsLocatedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
 
     // Prime the cache of elements
@@ -150,7 +149,7 @@ public class ClickTest extends JUnit4TestBase {
     assertEquals("click", log);
   }
 
-  @Ignore(value = {ANDROID, IPHONE, SAFARI, SELENESE, OPERA_MOBILE}, reason = "Not tested")
+  @Ignore(value = {ANDROID, IPHONE, SAFARI, OPERA_MOBILE}, reason = "Not tested")
   @Test
   public void testShouldClickOnFirstBoundingClientRectWithNonZeroSize() {
     driver.findElement(By.id("twoClientRects")).click();
@@ -158,7 +157,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, OPERA, SELENESE}, reason = "Not implemented")
+  @Ignore(value = {ANDROID, CHROME, OPERA}, reason = "Not implemented")
   @Test
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
@@ -179,7 +178,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NoDriverAfterTest
-  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, OPERA_MOBILE},
           reason = "Doesn't support multiple windows; Safari: issue 3693")
   @Test
   public void testShouldOnlyFollowHrefOnce() {
@@ -199,7 +198,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @Ignore
   public void testShouldSetRelatedTargetForMouseOut() {
-    fail("Must. Write. Meamingful. Test (but we don't fire mouse outs synthetically");
+    fail("Must. Write. Meaningful. Test (but we don't fire mouse outs synthetically");
   }
 
   @Test
@@ -270,8 +269,8 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME, IE, OPERA, OPERA_MOBILE, ANDROID, IPHONE, SELENESE}, reason
-      = "Chrome: element is no clickable, Opera, IE: failed, others: not tested")
+  @Ignore(value = {CHROME, IE, OPERA, OPERA_MOBILE, ANDROID, IPHONE}, reason
+      = "Chrome: element is not clickable, Opera, IE: failed, others: not tested")
   public void testCanClickAnImageMapArea() {
     driver.get(appServer.whereIs("click_tests/google_map.html"));
     driver.findElement(By.id("rectG")).click();
@@ -287,7 +286,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE, SELENESE}, reason
+  @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE}, reason
       = "Not tested against these browsers")
   public void testShouldBeAbleToClickOnAnElementGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big.html");
@@ -301,7 +300,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE, SELENESE}, reason
+  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE}, reason
       = "Chrome, Firefox: failed, others: not tested")
   public void testShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big_in_frame.html");

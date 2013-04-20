@@ -39,7 +39,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class ElementAttributeTest extends JUnit4TestBase {
 
@@ -82,7 +81,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(body.getAttribute("style"), equalTo(""));
   }
 
-  @Ignore({OPERA, IPHONE, ANDROID, SELENESE})
+  @Ignore({OPERA, IPHONE, ANDROID})
   @Test
   public void testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
     driver.get(pages.formPage);
@@ -127,7 +126,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(disabledSubmitElement.isEnabled(), is(false));
   }
 
-  @Ignore(value = {IPHONE, SELENESE},
+  @Ignore(value = {IPHONE},
           reason = "sendKeys does not determine whether the element is disabled")
   @Test
   public void testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings() {
@@ -280,7 +279,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   // This is a test-case re-creating issue 900.
-  @Ignore(SELENESE)
   @Test
   public void testShouldReturnValueOfOnClickAttribute() {
     driver.get(pages.javascriptPage);
@@ -336,7 +334,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("hello world", element.getAttribute("value"));
   }
 
-  @Ignore({OPERA, IPHONE, ANDROID, SELENESE})
+  @Ignore({OPERA, IPHONE, ANDROID})
   @Test
   public void testShouldReturnNullForNonPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
@@ -346,7 +344,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertNull(element2.getAttribute("nowrap"));
   }
 
-  @Ignore({IPHONE, ANDROID, SELENESE})
+  @Ignore({IPHONE, ANDROID})
   @Test
   public void testShouldReturnTrueForPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);

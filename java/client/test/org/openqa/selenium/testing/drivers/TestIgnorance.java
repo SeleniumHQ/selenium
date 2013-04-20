@@ -47,7 +47,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.drivers.Browser.android;
 import static org.openqa.selenium.testing.drivers.Browser.chrome;
 import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
@@ -162,9 +161,6 @@ public class TestIgnorance {
   }
 
   private void addIgnoresForBrowser(Browser browser, IgnoreComparator comparator) {
-    if (Boolean.getBoolean("selenium.browser.selenium")) {
-      comparator.addDriver(SELENESE);
-    }
     if (Boolean.getBoolean("selenium.browser.remote") || SauceDriver.shouldUseSauce()) {
       comparator.addDriver(REMOTE);
     }

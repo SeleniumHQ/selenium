@@ -17,12 +17,10 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class StaleElementReferenceTest extends JUnit4TestBase {
 
@@ -54,7 +52,6 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   @Test
   public void testShouldNotCrashWhenQueryingTheAttributeOfAStaleElement() {
     driver.get(pages.xhtmlTestPage);

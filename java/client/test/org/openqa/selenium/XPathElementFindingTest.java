@@ -33,7 +33,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class XPathElementFindingTest extends JUnit4TestBase {
 
@@ -68,7 +67,6 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     assertThat(element.getText(), equalTo("XHTML Might Be The Future"));
   }
 
-  @Ignore(SELENESE)
   @Test
   public void testShouldFindElementsByXPath() {
     driver.get(pages.xhtmlTestPage);
@@ -76,7 +74,6 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     assertThat(divs.size(), equalTo(13));
   }
 
-  @Ignore(SELENESE)
   @Test
   public void testShouldBeAbleToFindManyElementsRepeatedlyByXPath() {
     driver.get(pages.xhtmlTestPage);
@@ -119,7 +116,7 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
     driver.get(pages.formPage);
@@ -133,7 +130,7 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     if (TestUtilities.isIe6(driver)) {
@@ -152,7 +149,7 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
     driver.get(pages.formPage);
@@ -166,7 +163,7 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
     if (TestUtilities.isIe6(driver)) {
@@ -184,7 +181,7 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
     driver.get(pages.formPage);
@@ -198,7 +195,7 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
     if (TestUtilities.isIe6(driver)) {
@@ -216,7 +213,7 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement() {
     driver.get(pages.formPage);
@@ -232,7 +229,7 @@ public class XPathElementFindingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
     if (TestUtilities.isIe6(driver)) {

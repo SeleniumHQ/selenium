@@ -32,7 +32,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
@@ -110,7 +109,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldfindAnElementBasedOnId() {
+  public void testShouldFindAnElementBasedOnId() {
     driver.get(pages.formPage);
 
     WebElement element = driver.findElement(By.id("checky"));
@@ -119,7 +118,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldNotBeAbleTofindElementsBasedOnIdIfTheElementIsNotThere() {
+  public void testShouldNotBeAbleToFindElementsBasedOnIdIfTheElementIsNotThere() {
     driver.get(pages.formPage);
 
     try {
@@ -148,7 +147,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(rows.size(), equalTo(0));
   }
 
-  @Ignore(value = SELENESE, reason = "Value returned as 'off'")
   @Test
   public void testShouldFindElementsByName() {
     driver.get(pages.formPage);
@@ -433,7 +431,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertEquals("Changed", driver.getTitle());
   }
 
-  @Ignore({SELENESE})
   @Test
   public void testShouldNotBeAbleToFindAnElementOnABlankPage() {
     driver.get("about:blank");
@@ -574,8 +571,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertEquals("two", element.getAttribute("value"));
   }
 
-  // TODO(danielwh): Add extensive CSS selector tests
-  @Ignore(value = {ANDROID, OPERA, SELENESE, OPERA_MOBILE}, reason = "Just not working")
+  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE}, reason = "Just not working")
   @Test
   public void testAnElementFoundInADifferentFrameIsStale() {
     driver.get(pages.missedJsReferencePage);
@@ -591,7 +587,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, OPERA, SELENESE, OPERA_MOBILE})
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     driver.get(pages.missedJsReferencePage);

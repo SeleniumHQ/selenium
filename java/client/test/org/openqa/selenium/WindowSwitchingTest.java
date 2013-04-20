@@ -46,13 +46,12 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
 
 @Ignore(value = {IPHONE}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends JUnit4TestBase {
 
-  @Ignore({SELENESE, OPERA_MOBILE})
+  @Ignore({OPERA_MOBILE})
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -81,7 +80,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window(current);
   }
 
-  @Ignore({SELENESE})
   @Test
   public void testShouldThrowNoSuchWindowException() {
     driver.get(pages.xhtmlTestPage);
@@ -97,7 +95,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window(current);
   }
 
-  @Ignore({OPERA, CHROME, SELENESE, OPERA_MOBILE})
+  @Ignore({OPERA, CHROME, OPERA_MOBILE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
     driver.get(pages.xhtmlTestPage);
@@ -121,7 +119,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA, CHROME, SELENESE, OPERA_MOBILE})
+  @Ignore({OPERA, CHROME, OPERA_MOBILE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -154,7 +152,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA, CHROME, SELENESE, OPERA_MOBILE})
+  @Ignore({OPERA, CHROME, OPERA_MOBILE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -181,7 +179,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({IE, REMOTE, SELENESE})
+  @Ignore({IE, REMOTE})
   @Test
   public void testShouldBeAbleToIterateOverAllOpenWindows() {
     driver.get(pages.xhtmlTestPage);
@@ -203,7 +201,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     assertEquals(3, allWindowHandles.size());
   }
 
-  @Ignore(value = {SELENESE})
   @JavascriptEnabled
   @Test
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
@@ -238,7 +235,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({SELENESE})
   @JavascriptEnabled
   @Test
   public void testCanCallGetWindowHandlesAfterClosingAWindow() {
@@ -275,7 +271,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({SELENESE})
   @Test
   public void testCanObtainAWindowHandle() {
     driver.get(pages.xhtmlTestPage);
@@ -285,7 +280,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     assertNotNull(currentHandle);
   }
 
-  @Ignore({SELENESE})
   @Test
   public void testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs() {
     driver.get(pages.xhtmlTestPage);
@@ -305,7 +299,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(value = {SELENESE, OPERA_MOBILE})
+  @Ignore(value = {OPERA_MOBILE})
   @Test
   public void testCanCloseWindowWhenMultipleWindowsAreOpen() {
     driver.get(pages.xhtmlTestPage);
@@ -328,7 +322,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(value = {SELENESE, OPERA_MOBILE})
+  @Ignore(value = {OPERA_MOBILE})
   @Test
   public void testCanCloseWindowAndSwitchBackToMainWindow() {
     driver.get(pages.xhtmlTestPage);
@@ -354,7 +348,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({SELENESE})
   @Test
   public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
     driver.get(pages.xhtmlTestPage);

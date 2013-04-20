@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 @Ignore(OPERA_MOBILE)
 public class SlowLoadingPageTest extends JUnit4TestBase {
@@ -41,7 +40,6 @@ public class SlowLoadingPageTest extends JUnit4TestBase {
     assertElapsed(LOAD_TIME_IN_SECONDS * 1000, now - start);
   }
 
-  @Ignore(SELENESE)
   @Test
   public void testShouldBlockUntilIFramesAreLoaded() throws Exception {
     long start = System.currentTimeMillis();
@@ -50,9 +48,7 @@ public class SlowLoadingPageTest extends JUnit4TestBase {
     assertElapsed(3000, now - start);
   }
 
-  @Ignore(value = {IPHONE, SELENESE, OPERA},
-      reason = "Selenium: refresh is unsupported;" +
-               "Others: untested")
+  @Ignore(value = {IPHONE, OPERA}, reason = "untested")
   @Test
   public void testRefreshShouldBlockUntilPageLoads() {
     long start = System.currentTimeMillis();

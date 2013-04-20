@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import static org.hamcrest.Matchers.is;
 
@@ -33,7 +32,7 @@ import java.util.List;
 
 public class SelectElementHandlingTest extends JUnit4TestBase {
 
-  @Ignore({SELENESE, IPHONE, OPERA, ANDROID})
+  @Ignore({IPHONE, OPERA, ANDROID})
   @Test
   public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
@@ -52,7 +51,7 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     assertThat(option.isSelected(), is(true));
   }
 
-  @Ignore({OPERA, SELENESE, ANDROID})
+  @Ignore({OPERA, ANDROID})
   @Test
   public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
     driver.get(pages.formPage);
@@ -68,7 +67,7 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     assertThat(two.isSelected(), is(true));
   }
 
-  @Ignore({SELENESE, ANDROID})
+  @Ignore({ANDROID})
   @Test
   public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
@@ -88,7 +87,7 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({SELENESE, ANDROID})
+  @Ignore({ANDROID})
   @Test
   public void testShouldSelectFirstOptionByDefaultIfNoneIsSelected() {
     driver.get(pages.formPage);
@@ -104,7 +103,6 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     assertThat(two.isSelected(), is(true));
   }
 
-  @Ignore({SELENESE})
   @Test
   public void testCanSelectElementsInOptGroups() {
     driver.get(pages.selectPage);

@@ -38,9 +38,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-@Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE, OPERA_MOBILE},
+@Ignore(value = {ANDROID, IPHONE, OPERA, OPERA_MOBILE},
         reason = "Not yet implemented.")
 public class WindowTest extends JUnit4TestBase {
 

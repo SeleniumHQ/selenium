@@ -26,11 +26,10 @@ import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class GetMultipleAttributeTest extends JUnit4TestBase {
 
-  @Ignore({OPERA, IPHONE, ANDROID, SELENESE})
+  @Ignore({OPERA, IPHONE, ANDROID})
   @Test
   public void testMultipleAttributeShouldBeNullWhenNotSet() {
     driver.get(pages.selectPage);

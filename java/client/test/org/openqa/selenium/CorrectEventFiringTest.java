@@ -49,7 +49,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
@@ -76,7 +75,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, ANDROID})
+  @Ignore({ANDROID})
   @Test
   public void testShouldFireMouseDownEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -87,7 +86,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, ANDROID})
+  @Ignore({ANDROID})
   @Test
   public void testShouldFireMouseUpEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -98,7 +97,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE})
   @Test
   public void testShouldFireMouseOverEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -111,7 +109,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   // TODO: this is a bad test: mousemove should not fire in a perfect click (e.g. mouse did not move
   // while doing down, up, click
   @JavascriptEnabled
-  @Ignore({SELENESE, CHROME, FIREFOX})
+  @Ignore({CHROME, FIREFOX})
   @Test
   public void testShouldFireMouseMoveEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -122,7 +120,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   @Test
   public void testShouldNotThrowIfEventHandlerThrows() {
     driver.get(pages.javascriptPage);
@@ -134,7 +131,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME, SELENESE, FIREFOX, ANDROID},
+  @Ignore(value = {CHROME, FIREFOX, ANDROID},
       reason = "Webkit bug 22261. Firefox 3.6 wants focus")
   @JavascriptEnabled
   @Test
@@ -155,7 +152,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, ANDROID})
+  @Ignore({ANDROID})
   @Test
   public void testsShouldIssueMouseDownEvents() {
     driver.get(pages.javascriptPage);
@@ -178,7 +175,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, SELENESE}, reason = "Android: triggers mouse click instead.")
+  @Ignore(value = {ANDROID}, reason = "Android: triggers mouse click instead.")
   @Test
   public void testShouldIssueMouseUpEvents() {
     driver.get(pages.javascriptPage);
@@ -190,7 +187,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE})
+  @Ignore(value = {IPHONE})
   @Test
   public void testMouseEventsShouldBubbleUpToContainingElements() {
     driver.get(pages.javascriptPage);
@@ -202,7 +199,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, ANDROID})
+  @Ignore(value = {IPHONE, ANDROID})
   @Test
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
@@ -223,7 +220,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, ANDROID, HTMLUNIT})
+  @Ignore(value = {IPHONE, ANDROID, HTMLUNIT})
   @Test
   public void testShouldEmitOnClickEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
@@ -242,7 +239,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, IE, HTMLUNIT},
+  @Ignore(value = {IE, HTMLUNIT},
       reason = "IE: Only fires the onchange event when the checkbox loses the focus, "
              + "HtmlUnit: default mode is IE8 now")
   @Test
@@ -293,9 +290,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, IPHONE, ANDROID},
-      reason = "Selenese: Fails when running in firefox.\n"
-          + "  iPhone: sendKeys implementation is incorrect")
+  @Ignore(value = {IPHONE, ANDROID}, reason = "iPhone: sendKeys implementation is incorrect")
   @Test
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
     if (browserNeedsFocusOnThisOs(driver)) {
@@ -312,9 +307,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, IPHONE, ANDROID},
-      reason = "Selenese: Fails when running in firefox.\n"
-          + "  iPhone: sendKeys implementation is incorrect")
+  @Ignore(value = {IPHONE, ANDROID}, reason = "iPhone: sendKeys implementation is incorrect")
   @Test
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
     if (browserNeedsFocusOnThisOs(driver)) {
@@ -329,7 +322,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, ANDROID},
+  @Ignore(value = {IPHONE, ANDROID},
       reason = "iPhone: input elements are blurred when the keyboard is closed")
   @Test
   public void testSendingKeysToAFocusedElementShouldNotBlurThatElement() {
@@ -366,7 +359,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE})
   @Test
   public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
@@ -376,7 +368,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, ANDROID})
+  @Ignore({ANDROID})
   @Test
   public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
@@ -386,7 +378,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, ANDROID})
+  @Ignore({ANDROID})
   @Test
   public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(pages.javascriptPage);
@@ -397,7 +389,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, SELENESE, IPHONE, ANDROID, OPERA, SAFARI, OPERA_MOBILE},
+  @Ignore(value = {CHROME, IPHONE, ANDROID, OPERA, SAFARI, OPERA_MOBILE},
       reason = "Does not yet support file uploads", issues = { 4220 })
   @Test
   public void testUploadingFileShouldFireOnChangeEvent() throws IOException {
@@ -421,7 +413,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, ANDROID}, reason = "Not implemented")
+  @Ignore(value = {ANDROID}, reason = "Not implemented")
   @Test
   public void testShouldReportTheXAndYCoordinatesWhenClicking() {
     if (SauceDriver.shouldUseSauce() && TestUtilities.isInternetExplorer(driver)) {

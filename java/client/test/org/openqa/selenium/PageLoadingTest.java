@@ -51,7 +51,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class PageLoadingTest extends JUnit4TestBase {
 
@@ -78,7 +77,6 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  @Ignore(SELENESE)
   @Test
   public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
     driver.get(pages.xhtmlTestPage);
@@ -86,7 +84,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     driver.findElement(By.id("id1"));
   }
 
-  @Ignore(value = {SAFARI, SELENESE}, issues = {4062})
+  @Ignore(value = {SAFARI}, issues = {4062})
   @Test
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
     try {
@@ -99,14 +97,14 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {IPHONE, SAFARI, SELENESE}, issues = {4062})
+  @Ignore(value = {IPHONE, SAFARI}, issues = {4062})
   @Test
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be
     driver.get("http://localhost:3001");
   }
 
-  @Ignore({IPHONE, SELENESE, ANDROID})
+  @Ignore({IPHONE, ANDROID})
   @Test
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(pages.framesetPage);
@@ -120,7 +118,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(pageNumber.getText().trim(), equalTo("2"));
   }
 
-  @Ignore(value = {IPHONE, SAFARI, SELENESE}, issues = {3771})
+  @Ignore(value = {IPHONE, SAFARI}, issues = {3771})
   @NeedsFreshDriver
   @Test
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
@@ -140,7 +138,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
   }
 
-  @Ignore(value = {ANDROID, SAFARI, SELENESE}, issues = {3771})
+  @Ignore(value = {ANDROID, SAFARI}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
     driver.get(pages.formPage);
@@ -152,7 +150,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("We Leave From Here"));
   }
 
-  @Ignore(value = {SAFARI, SELENESE}, issues = {3771})
+  @Ignore(value = {SAFARI}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
     driver.get(pages.xhtmlTestPage);
@@ -167,7 +165,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
   }
 
-  @Ignore(value = {ANDROID, SAFARI, SELENESE}, issues = {3771})
+  @Ignore(value = {ANDROID, SAFARI}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
     driver.get(pages.formPage);
@@ -185,7 +183,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  @Ignore(value = {IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, PHANTOMJS},
+  @Ignore(value = {IE, CHROME, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, PHANTOMJS},
           reason = "Safari: does not support insecure SSL")
   @Test
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
@@ -196,7 +194,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
   }
 
-  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, SELENESE})
+  @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
   @Test
   public void shouldBeAbleToDisableAcceptOfInsecureSslCertsWithRequiredCapability() {
     // TODO: Resolve why this test doesn't work on the remote server
@@ -213,7 +211,6 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(localDriver.getTitle(), not("Hello WebDriver"));
   }
 
-  @Ignore(SELENESE)
   @Test
   public void testShouldBeAbleToRefreshAPage() {
     driver.get(pages.xhtmlTestPage);
@@ -231,7 +228,7 @@ public class PageLoadingTest extends JUnit4TestBase {
    *      driver after it.
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=2282">Issue 2282</a>
    */
-  @Ignore(value = {IE, SELENESE, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE},
+  @Ignore(value = {IE, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE},
           reason = "Safari: issue 4062; Others: Untested user-agents",
           issues = {4062})
   @NoDriverAfterTest
@@ -272,7 +269,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 5 * 1000);
   }
 
-  @Ignore(value = {ANDROID, CHROME, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, CHROME, IPHONE, OPERA, SAFARI, OPERA_MOBILE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NeedsLocalEnvironment

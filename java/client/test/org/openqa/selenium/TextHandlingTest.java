@@ -27,7 +27,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.TestWaiter.waitFor;
 
 import static org.hamcrest.Matchers.containsString;
@@ -73,7 +72,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text.contains("and block level elements"), is(true));
   }
 
-  @Ignore(SELENESE)
   @Test
   public void testShouldIgnoreScriptElements() {
     driver.get(pages.javascriptEnhancedForm);
@@ -120,7 +118,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo("This line has a non-breaking space"));
   }
 
-  @Ignore({IPHONE, SELENESE})
+  @Ignore({IPHONE})
   @Test
   public void testShouldNotCollapseANonBreakingSpaces() {
     driver.get(pages.simpleTestPage);
@@ -130,7 +128,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo("This line has a   non-breaking space and spaces"));
   }
 
-  @Ignore({IPHONE, SELENESE})
+  @Ignore({IPHONE})
   @Test
   public void testShouldNotTrimNonBreakingSpacesAtTheEndOfALineInTheMiddleOfText() {
     driver.get(pages.simpleTestPage);
@@ -139,7 +137,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, startsWith("These lines  \n"));
   }
 
-  @Ignore({IPHONE, SELENESE})
+  @Ignore({IPHONE})
   @Test
   public void testShouldNotTrimNonBreakingSpacesAtTheStartOfALineInTheMiddleOfText() {
     driver.get(pages.simpleTestPage);
@@ -148,7 +146,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, containsString("\n  have"));
   }
 
-  @Ignore({IPHONE, SELENESE})
+  @Ignore({IPHONE})
   @Test
   public void testShouldNotTrimTrailingNonBreakingSpacesInMultilineText() {
     driver.get(pages.simpleTestPage);
@@ -175,7 +173,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo("An inline element"));
   }
 
-  @Ignore({SELENESE, IPHONE, ANDROID, OPERA})
+  @Ignore({IPHONE, ANDROID, OPERA})
   @Test
   public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
     driver.get(pages.simpleTestPage);
@@ -187,7 +185,7 @@ public class TextHandlingTest extends JUnit4TestBase {
         "         "));
   }
 
-  @Ignore({SELENESE, IPHONE, ANDROID, OPERA})
+  @Ignore({IPHONE, ANDROID, OPERA})
   @Test
   public void testShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock() {
     driver.get(pages.simpleTestPage);
@@ -200,7 +198,7 @@ public class TextHandlingTest extends JUnit4TestBase {
         "after pre"));
   }
 
-  @Ignore(value = {SELENESE, IPHONE, IE, OPERA, OPERA_MOBILE}, reason =
+  @Ignore(value = {IPHONE, IE, OPERA, OPERA_MOBILE}, reason =
       "iPhone: sendKeys is broken;"
       + " Opera,IE: inserts \r\n instead of \n.")
   @Test
@@ -219,7 +217,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(seenText, equalTo(expectedText));
   }
 
-  @Ignore(value = {OPERA, SELENESE, ANDROID})
+  @Ignore(value = {OPERA, ANDROID})
   @Test
   public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(pages.formPage);
@@ -247,7 +245,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo(""));
   }
 
-  @Ignore(SELENESE)
   @Test
   public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
     if (TestUtilities.isOldIe(driver)) {
@@ -260,7 +257,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, equalTo(""));
   }
 
-  @Ignore({SELENESE, HTMLUNIT})
+  @Ignore({HTMLUNIT})
   @Test
   public void testShouldNotTrimSpacesWhenLineWraps() {
     driver.get(pages.simpleTestPage);
@@ -278,7 +275,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, is("Some text" + newLine + "Some more text"));
   }
 
-  @Ignore({HTMLUNIT, SELENESE})
+  @Ignore({HTMLUNIT})
   @Test
   public void testShouldHandleNestedBlockLevelElements() {
     driver.get(pages.simpleTestPage);
@@ -298,7 +295,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, is("line has text"));
   }
 
-  @Ignore(value = {IPHONE, SELENESE})
+  @Ignore(value = {IPHONE})
   @Test
   public void testReadALargeAmountOfData() {
     driver.get(pages.macbethPage);
@@ -333,7 +330,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE, IPHONE})
+  @Ignore({IPHONE})
   @Test
   public void testShouldOnlyIncludeVisibleText() {
     driver.get(pages.javascriptPage);
@@ -371,7 +368,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE, SELENESE, IPHONE, ANDROID, HTMLUNIT},
+  @Ignore(value = {IE, IPHONE, ANDROID, HTMLUNIT},
           reason = "IE, HTMLUNIT: failed, other: untested")
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping() {
     driver.get(pages.formPage);
@@ -383,7 +380,7 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @JavascriptEnabled
-  @Ignore(value = {IE, SELENESE, IPHONE, ANDROID, HTMLUNIT},
+  @Ignore(value = {IE, IPHONE, ANDROID, HTMLUNIT},
           reason = "IE, HTMLUNIT: failed, other: untested")
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue() {
     driver.get(pages.formPage);

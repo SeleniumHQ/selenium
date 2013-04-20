@@ -38,7 +38,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 /**
  * Demonstrates how to use WebDriver with a file input element.
@@ -58,7 +57,7 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, OPERA, OPERA_MOBILE},
+  @Ignore(value = {OPERA, OPERA_MOBILE},
           reason = "Opera/Opera Mobile: File input elements are not supported yet")
   @Test
   public void testFileUploading() throws Exception {

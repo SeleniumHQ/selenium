@@ -41,7 +41,6 @@ public @interface Ignore {
     PHANTOMJS,
     REMOTE,
     SAFARI,
-    SELENESE,
   }
 
   Driver[] value() default {Driver.ALL};

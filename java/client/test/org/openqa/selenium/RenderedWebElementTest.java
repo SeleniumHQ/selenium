@@ -46,12 +46,11 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, OPERA, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, OPERA})
   @Test
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
@@ -68,7 +67,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, OPERA, SELENESE})
+  @Ignore({ANDROID, HTMLUNIT, OPERA})
   @Test
   public void testGetCssValueShouldReturnStandardizedColour() {
     driver.get(pages.colorPage);
@@ -88,7 +87,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   // should handle sub-pixel rendering, and every browser seems to be different anyhow:
   // http://ejohn.org/blog/sub-pixel-problems-in-css/
   @JavascriptEnabled
-  @Ignore({IE, CHROME, SELENESE, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, PHANTOMJS})
+  @Ignore({IE, CHROME, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, PHANTOMJS})
   // Reason for Chrome: WebKit bug 28804
   @Test
   public void testShouldHandleNonIntegerPositionAndSize() {
@@ -108,7 +107,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, OPERA, SELENESE, HTMLUNIT})
+  @Ignore({ANDROID, IPHONE, OPERA, HTMLUNIT})
   @Test
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);
@@ -124,7 +123,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE,  OPERA, SELENESE},
+      value = {HTMLUNIT, IPHONE,  OPERA},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers. Firefox: hover is broken again.")
   @Test
   public void testShouldAllowUsersToHoverOverElements() {
@@ -159,7 +158,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE, SELENESE, OPERA},
+      value = {HTMLUNIT, IPHONE, OPERA},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testHoverPersists() throws Exception {
@@ -208,7 +207,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE, SELENESE, OPERA, FIREFOX},
+      value = {HTMLUNIT, IPHONE, OPERA, FIREFOX},
       reason = "This is an IE only tests")
   @NoDriverAfterTest
   @NeedsLocalEnvironment
@@ -313,7 +312,6 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   @Test
   public void testCorrectlyDetectMapElementsAreShown() {
     driver.get(pages.mapVisibilityPage);
@@ -351,7 +349,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE},
+  @Ignore(value = {HTMLUNIT},
       reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMovingMouseByRelativeOffset() {
@@ -377,7 +375,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE},
+  @Ignore(value = {HTMLUNIT},
       reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMovingMouseToRelativeElementOffset() {
@@ -400,7 +398,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE},
+  @Ignore(value = {HTMLUNIT},
       reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMovingMouseToRelativeZeroElementOffset() {
@@ -424,7 +422,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NeedsFreshDriver
-  @Ignore(value = {HTMLUNIT, SELENESE}, reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {HTMLUNIT}, reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMoveRelativeToBody() {
     if (!hasInputDevices() || !TestUtilities.isNativeEventsEnabled(driver)) {

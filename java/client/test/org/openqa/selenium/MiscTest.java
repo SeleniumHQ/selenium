@@ -33,7 +33,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class MiscTest extends JUnit4TestBase {
 
@@ -47,7 +46,6 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   @Test
   public void testShouldReturnTheSourceOfAPage() {
     driver.get(pages.simpleTestPage);
@@ -63,7 +61,7 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, IE, SELENESE, SAFARI, OPERA, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, CHROME, IE, SAFARI, OPERA, OPERA_MOBILE},
           reason = "Chrome, Safari: returns XML content formatted for display as HTML document"
                    + "Opera: includes XML doctype"
                    + "Others: untested")

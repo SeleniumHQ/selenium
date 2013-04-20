@@ -28,14 +28,13 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import org.junit.Test;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-@Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, SAFARI, ANDROID, IPHONE, SELENESE},
+@Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, SAFARI, ANDROID, IPHONE},
         reason = "HtmlUnit: Getting coordinates requires rendering, "
                + "Opera: Not implemented, others: not tested")
 public class CoordinatesTest extends JUnit4TestBase {

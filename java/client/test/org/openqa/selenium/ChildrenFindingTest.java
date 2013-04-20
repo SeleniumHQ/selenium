@@ -17,7 +17,6 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
@@ -27,7 +26,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 
 public class ChildrenFindingTest extends JUnit4TestBase {
@@ -39,7 +37,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertThat(child.getAttribute("id"), is("2"));
   }
 
-  @Ignore(value = SELENESE, reason = "Apparently Selenium is filtering results")
   @Test
   public void testFindingElementsOnElementByXPathShouldFindTopLevelElements() {
     driver.get(pages.simpleTestPage);

@@ -43,11 +43,10 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
 
 @Ignore(
-    value = {ANDROID, HTMLUNIT, IPHONE, SAFARI, SELENESE, OPERA_MOBILE},
+    value = {ANDROID, HTMLUNIT, IPHONE, SAFARI, OPERA_MOBILE},
     reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers" +
              "Safari: not implemented (issue 4136)",
     issues = {4136})

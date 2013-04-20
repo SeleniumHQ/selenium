@@ -26,9 +26,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-@Ignore({SELENESE, ANDROID})
+@Ignore({ANDROID})
 public class ClearTest extends JUnit4TestBase {
 
   @Test

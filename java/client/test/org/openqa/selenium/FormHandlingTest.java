@@ -45,7 +45,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class FormHandlingTest extends JUnit4TestBase {
 
@@ -93,14 +92,14 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldSubmitAFormWhenAnyElementWihinThatFormIsSubmitted() {
+  public void testShouldSubmitAFormWhenAnyElementWithinThatFormIsSubmitted() {
     driver.get(pages.formPage);
     driver.findElement(By.xpath("//form/p")).submit();
     waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
   @Test
-  @Ignore(value = {ANDROID, CHROME, IE, IPHONE, OPERA, PHANTOMJS, SAFARI, SELENESE, OPERA_MOBILE})
+  @Ignore(value = {ANDROID, CHROME, IE, IPHONE, OPERA, PHANTOMJS, SAFARI, OPERA_MOBILE})
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
 
@@ -134,7 +133,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertThat(textarea.getAttribute("value"), equalTo(cheesey));
   }
 
-  @Ignore(value = {SELENESE, IPHONE, ANDROID, OPERA_MOBILE})
+  @Ignore(value = {IPHONE, ANDROID, OPERA_MOBILE})
   @Test
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(pages.formPage);
@@ -145,7 +144,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
   }
 
-  @Ignore({SELENESE, IPHONE, ANDROID, OPERA_MOBILE})
+  @Ignore({IPHONE, ANDROID, OPERA_MOBILE})
   @Test
   public void testShouldSubmitAFormUsingTheEnterKey() {
     driver.get(pages.formPage);
@@ -174,7 +173,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertThat(newFormValue, equalTo("some text"));
   }
 
-  @Ignore(value = {SELENESE, IPHONE, ANDROID, SAFARI, OPERA, OPERA_MOBILE},
+  @Ignore(value = {IPHONE, ANDROID, SAFARI, OPERA, OPERA_MOBILE},
           reason = "Does not yet support file uploads", issues = {4220})
   @Test
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
@@ -191,7 +190,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, SELENESE, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, OPERA_MOBILE},
           reason = "Does not yet support file uploads", issues = {4220})
   @Test
   public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
@@ -213,7 +212,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {SELENESE, IPHONE, ANDROID, OPERA, SAFARI},
+  @Ignore(value = {IPHONE, ANDROID, OPERA, SAFARI},
           reason = "Does not yet support file uploads", issues = {4220})
   @Test
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
@@ -251,8 +250,8 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertThat(value, is("some text"));
   }
 
-  @Ignore(value = {ANDROID, IPHONE, OPERA, SELENESE, OPERA_MOBILE},
-          reason = "iPhone: sendKeys implemented incorrectly. Selenium: just because")
+  @Ignore(value = {ANDROID, IPHONE, OPERA, OPERA_MOBILE},
+          reason = "iPhone: sendKeys implemented incorrectly")
   @Test
   public void testSendingKeyboardEventsShouldAppendTextInInputsWithExistingValue() {
     driver.get(pages.formPage);
@@ -263,11 +262,11 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertThat(value, is("Example text. Some text"));
   }
 
-  @Ignore(value = {SELENESE, IPHONE, ANDROID, OPERA_MOBILE},
+  @Ignore(value = {IPHONE, ANDROID, OPERA_MOBILE},
           reason = "Not implemented going to the end of the line first;\n" +
                    "iPhone: sendKeys not implemented correctly")
   @Test
-  public void testSendingKeyboardEventsShouldAppendTextinTextAreas() {
+  public void testSendingKeyboardEventsShouldAppendTextInTextAreas() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
 
@@ -313,7 +312,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, PHANTOMJS, SAFARI, SELENESE, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, PHANTOMJS, SAFARI, OPERA_MOBILE},
           reason = "Untested on all other browsers, fails on chrome, fails on IE.",
           issues = {3508})
   public void handleFormWithJavascriptAction() {
@@ -328,26 +327,26 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertEquals("Tasty cheese", text);
   }
 
-  @Ignore(value = {ANDROID, IPHONE, SAFARI, SELENESE, OPERA_MOBILE}, reason = "untested")
+  @Ignore(value = {ANDROID, IPHONE, SAFARI, OPERA_MOBILE}, reason = "untested")
   @Test
   public void testCanClickOnASubmitButton() {
     checkSubmitButton("internal_explicit_submit");
   }
 
-  @Ignore(value = {ANDROID, IPHONE, SAFARI, SELENESE, OPERA_MOBILE}, reason = "untested")
+  @Ignore(value = {ANDROID, IPHONE, SAFARI, OPERA_MOBILE}, reason = "untested")
   @Test
   public void testCanClickOnAnImplicitSubmitButton() {
     checkSubmitButton("internal_implicit_submit");
   }
 
-  @Ignore(value = {ANDROID, HTMLUNIT, IE, IPHONE, SAFARI, SELENESE, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, HTMLUNIT, IE, IPHONE, SAFARI, OPERA_MOBILE},
           reason = "IE, HtmlUnit: failed; Others: untested")
   @Test
   public void testCanClickOnAnExternalSubmitButton() {
     checkSubmitButton("external_explicit_submit");
   }
 
-  @Ignore(value = {ANDROID, HTMLUNIT, IE, IPHONE, SAFARI, SELENESE, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, HTMLUNIT, IE, IPHONE, SAFARI, OPERA_MOBILE},
       reason = "IE, HtmlUnit: failed; Others: untested")
   @Test
   public void testCanClickOnAnExternalImplicitSubmitButton() {

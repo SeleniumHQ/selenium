@@ -85,7 +85,6 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     List<Supplier<WebDriver>> suppliers = Lists.newArrayList();
     suppliers.add(new SauceBackedDriverSupplier(desiredCaps));
     suppliers.add(new RemoteSupplier(desiredCaps, requiredCaps));
-    suppliers.add(new SeleniumBackedSupplier(desiredCaps));
     suppliers.add(new OperaDriverSupplier(desiredCaps));
     suppliers.add(new PhantomJSDriverSupplier(desiredCaps));
     suppliers.add(new TestInternetExplorerSupplier(desiredCaps));

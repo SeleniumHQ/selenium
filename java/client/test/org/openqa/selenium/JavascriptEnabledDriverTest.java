@@ -42,7 +42,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 /**
  * Test case for browsers that support using Javascript
@@ -50,7 +49,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, ANDROID}, reason = "I'm not sure why this fails")
+  @Ignore(value = {ANDROID}, reason = "I'm not sure why this fails")
   @Test
   public void testDocumentShouldReflectLatestTitle() throws Exception {
     driver.get(pages.javascriptPage);
@@ -81,7 +80,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, ANDROID},
+  @Ignore(value = {IPHONE, ANDROID},
           reason = "iPhone: does not detect that a new page loaded.")
   @Test
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
@@ -94,7 +93,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, IPHONE, ANDROID},
+  @Ignore(value = {IPHONE, ANDROID},
           reason = "iPhone: does not detect that a new page loaded.")
   @Test
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
@@ -107,7 +106,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   @Test
   public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
     driver.get(pages.xhtmlTestPage);
@@ -200,7 +198,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, REMOTE, SAFARI, SELENESE},
+  @Ignore(value = {FIREFOX, REMOTE, SAFARI},
           reason = "Firefox: Window demands focus to work." +
               " Safari: issue 4061." +
               " Other platforms: not properly tested")
@@ -242,7 +240,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IPHONE, SELENESE})
+  @Ignore({IPHONE})
   @Test
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
     driver.get(pages.javascriptPage);
@@ -274,7 +272,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
    * running: "ImplicitWaitTest", "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
    * SimonStewart 2010-10-04
    */
-  @Ignore(value = {SELENESE, IPHONE, OPERA, SAFARI}, reason = "Safari: issue 3693")
+  @Ignore(value = {IPHONE, OPERA, SAFARI}, reason = "Safari: issue 3693")
   @JavascriptEnabled
   @NeedsFreshDriver
   @Test

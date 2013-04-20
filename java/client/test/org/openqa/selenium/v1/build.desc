@@ -29,31 +29,6 @@ java_library(name = "environment",
     "//third_party/java/guava-libraries",
   ])
 
-java_library(name = "selenium_backed_webdriver",
-  srcs = [
-    "SeleneseBackedWebDriver.java",
-  ],
-  deps = [
-    "//java/client/src/org/openqa/selenium:selenium-backed-webdriver",
-    "//java/client/src/org/openqa/selenium/remote",
-  ])
-
-java_test(name = "selenium-backed-webdriver-test",
-  srcs = [
-    "SeleneseWebDriverTests.java",
-  ],
-  sysproperties = [
-    { "selenium.browser" : "ff" },
-    { "selenium.browser.selenium" : "true" },
-  ],
-  deps = [
-    ":selenium_backed_webdriver",
-    "//java/client/src/com/thoughtworks/selenium",
-    "//java/client/test/org/openqa/selenium:base",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-    "//java/client/test/org/openqa/selenium:tests",
-  ])
-
 java_test(name = "small_tests",
   srcs = [
     "SmallTests.java",

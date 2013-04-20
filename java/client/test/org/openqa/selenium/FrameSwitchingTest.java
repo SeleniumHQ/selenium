@@ -40,7 +40,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class FrameSwitchingTest extends JUnit4TestBase {
 
@@ -132,7 +131,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.tagName("body")).getText(), containsString("Page number 3"));
   }
 
-  @Ignore(value = {SELENESE}, reason = "switchTo().frame(WebElement) not supported with Selenium")
   @Test
   public void testShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement() {
     driver.get(pages.framesetPage);
@@ -152,7 +150,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), equalTo("name"));
   }
 
-  @Ignore(value = {SELENESE}, reason = "switchTo().frame(WebElement) not supported with Selenium")
   @Test
   public void testShouldEnsureElementIsAFrameBeforeSwitching() {
     driver.get(pages.framesetPage);
@@ -420,7 +417,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {SELENESE}, reason = "These drivers still return frame title.")
   @Test
   public void testShouldReturnWindowTitleInAFrameset() {
     driver.get(pages.framesetPage);

@@ -34,7 +34,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 import org.junit.After;
 import org.junit.Before;
@@ -50,7 +49,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-@Ignore({ANDROID,CHROME,HTMLUNIT,IE,IPHONE,OPERA,SAFARI,SELENESE})
+@Ignore({ANDROID,CHROME,HTMLUNIT,IE,IPHONE,OPERA,SAFARI})
 public class Html5CapabilitiesTest extends JUnit4TestBase {
 
   private WebDriver localDriver;  

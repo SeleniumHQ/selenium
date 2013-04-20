@@ -32,7 +32,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class OpacityTest extends JUnit4TestBase {
 
@@ -41,7 +40,7 @@ public class OpacityTest extends JUnit4TestBase {
    *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
    */
   @JavascriptEnabled
-  @Ignore({IE, HTMLUNIT, SELENESE, OPERA, OPERA_MOBILE})
+  @Ignore({IE, HTMLUNIT, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
@@ -54,7 +53,7 @@ public class OpacityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, SELENESE})
+  @Ignore(value = {ANDROID})
   @Test
   public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);

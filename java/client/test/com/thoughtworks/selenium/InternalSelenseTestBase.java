@@ -45,7 +45,6 @@ import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-import org.openqa.selenium.v1.SeleneseBackedWebDriver;
 import org.openqa.selenium.v1.SeleniumTestEnvironment;
 
 import java.io.File;
@@ -154,10 +153,13 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       caps.setCapability("selenium.base.url", baseUrl);
       caps.setCapability("selenium.server.url", seleniumServerUrl);
 
-      WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
-      if (driver instanceof SeleneseBackedWebDriver) {
-        selenium = ((SeleneseBackedWebDriver) driver).getWrappedSelenium();
+      if (Boolean.getBoolean("selenium.browser.selenium")) {
+        URL serverUrl = new URL(seleniumServerUrl);
+        selenium = new DefaultSelenium(serverUrl.getHost(), serverUrl.getPort(), determineBrowserName(), baseUrl);
+        selenium.start();
+
       } else {
+        WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
         selenium = new WebDriverBackedSelenium(driver, baseUrl);
       }
 
@@ -165,6 +167,37 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       instance.set(selenium);
     }
   };
+
+  private String determineBrowserName() {
+    String property = System.getProperty("selenium.browser");
+    if (property == null) {
+      return "*chrome";  // Default to firefox
+    }
+
+    if (property.startsWith("*")) {
+      return property;
+    }
+
+    Browser browser = Browser.valueOf(property);
+    switch (browser) {
+      case chrome:
+        return "*googlechrome";
+
+      case ie:
+        return "*iexplore";
+
+      case ff:
+        return "*firefox";
+
+      case safari:
+        return "*safari";
+
+      default:
+        fail("Attempt to use an unsupported browser: " + property);
+    }
+
+    return null; // we never get here.
+  }
 
   public ExternalResource addNecessaryJavascriptCommands = new ExternalResource() {
     @Override

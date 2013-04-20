@@ -34,11 +34,10 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
-@Ignore(value = {HTMLUNIT, IE, OPERA, SELENESE, OPERA_MOBILE},
+@Ignore(value = {HTMLUNIT, IE, OPERA, OPERA_MOBILE},
         reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
 public class SvgElementTest extends JUnit4TestBase {
 

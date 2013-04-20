@@ -33,9 +33,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-@Ignore({IPHONE, SELENESE})
+@Ignore({IPHONE})
 public class ElementEqualityTest extends JUnit4TestBase {
 
   @Test
@@ -76,7 +75,7 @@ public class ElementEqualityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, IPHONE, OPERA, OPERA_MOBILE},
           reason = "Opera: Needs investigation")
   @Test
   public void testAnElementFoundInADifferentFrameViaJsShouldHaveSameId() {

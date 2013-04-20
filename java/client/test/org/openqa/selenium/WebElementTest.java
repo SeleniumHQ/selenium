@@ -19,18 +19,15 @@ package org.openqa.selenium;
 
 import org.junit.Test;
 import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 /**
  * Tests for generic WebElement.
  */
 public class WebElementTest extends JUnit4TestBase {
 
-  @Ignore(SELENESE)
   @Test
   public void testElementImplementsWrapsDriver() {
     driver.get(pages.simpleTestPage);
@@ -38,7 +35,6 @@ public class WebElementTest extends JUnit4TestBase {
     assertTrue(parent instanceof WrapsDriver);
   }
 
-  @Ignore(SELENESE)
   @Test
   public void testElementReturnsOriginDriver() {
     driver.get(pages.simpleTestPage);

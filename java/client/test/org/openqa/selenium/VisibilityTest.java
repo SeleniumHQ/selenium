@@ -37,7 +37,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
 public class VisibilityTest extends JUnit4TestBase {
 
@@ -102,7 +101,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   @Test
   public void testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);
@@ -117,7 +115,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
   @Test
   public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);
@@ -134,7 +131,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, SELENESE})
+  @Ignore({IE})
   @Test
   public void testZeroSizedDivIsShownIfDescendantHasSize() {
     driver.get(pages.javascriptPage);
@@ -166,7 +163,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({ANDROID, IPHONE, SELENESE, OPERA, OPERA_MOBILE})
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   public void tooSmallAWindowWithOverflowHiddenIsNotAProblem() {
     WebDriver.Window window = driver.manage().window();
     Dimension originalSize = window.getSize();

@@ -42,7 +42,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
@@ -88,7 +87,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, SELENESE, OPERA})
+  @Ignore({ANDROID, IE, REMOTE, IPHONE, OPERA})
   @Test
   public void testSelectingMultipleItems() {
     if (!isNativeEventsEnabled(driver) || (!getEffectivePlatform().is(Platform.LINUX))) {
@@ -136,14 +135,14 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
-  @Ignore({SELENESE, IPHONE})
+  @Ignore({IPHONE})
   @Test
   public void testCanClickOnLinks() {
     navigateToClicksPageAndClickLink();
   }
 
   @Ignore(
-      value = {HTMLUNIT, IPHONE, SELENESE},
+      value = {HTMLUNIT, IPHONE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testCanClickOnLinksWithAnOffset() {
@@ -165,7 +164,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
    * the mouse in the driver keeps the wrong state, mouse movement will end
    * up at the wrong coordinates.
    */
-  @Ignore({SELENESE, IPHONE,HTMLUNIT})
+  @Ignore({IPHONE, HTMLUNIT})
   @Test
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
@@ -179,7 +178,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     waitFor(WaitingConditions.pageTitleToBe(driver, "We Arrive Here"));
   }
 
-  @Ignore({SELENESE, HTMLUNIT, OPERA, OPERA_MOBILE})
+  @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE})
   @Test
   public void testChordControlCutAndPaste() {
     // FIXME: macs don't have CONRTROL key
@@ -225,7 +224,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertEquals("abc defabc def", element.getAttribute("value"));
   }
 
-  @Ignore({SELENESE, HTMLUNIT, OPERA, IE, SELENESE})
+  @Ignore({HTMLUNIT, OPERA, IE})
   @Test
   public void testCombiningShiftAndClickResultsInANewWindow() {
     if (!isNativeEventsEnabled(driver) || (!getEffectivePlatform().is(Platform.LINUX))) {
@@ -251,7 +250,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
   }
 
-  @Ignore({SELENESE, HTMLUNIT, OPERA, OPERA_MOBILE, IPHONE, IE})
+  @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE, IPHONE, IE})
   @Test
   public void testHoldingDownShiftKeyWhileClicking() {
     if (!isNativeEventsEnabled(driver) || (!getEffectivePlatform().is(Platform.LINUX))) {

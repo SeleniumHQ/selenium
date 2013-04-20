@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.junit.Test;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
@@ -27,9 +26,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.SELENESE;
 
-@Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, SELENESE},
+@Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE},
         reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
 public class SvgDocumentTest extends JUnit4TestBase {
 
