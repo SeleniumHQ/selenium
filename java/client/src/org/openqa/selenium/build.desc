@@ -121,16 +121,6 @@ java_library(name = "webdriver-backed-selenium",
     "//java/client/src/org/openqa/selenium/internal/seleniumemulation:scripts",
   ])
 
-java_library(name = "selenium-backed-webdriver",
-  srcs = [
-    "SeleneseCommandExecutor.java",
-  ],
-  deps = [
-    "//java/client/src/org/openqa/selenium/internal/selenesedriver",
-    "//java/client/src/org/openqa/selenium/firefox",
-    "//java/client/src/org/openqa/selenium/remote",
-  ])
-
 java_library(name = "client-combined",
   deps = [
     "//java/client/src/com/thoughtworks/selenium:selenium",

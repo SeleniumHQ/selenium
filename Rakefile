@@ -180,7 +180,7 @@ task :android_client => ['//java/client/src/org/openqa/selenium/android']
 task :android_server => ['//android:android-server']
 
 # TODO(simon): test-core should go first, but it's changing the least for now.
-task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-selenium-backed-webdriver', :'test-core']
+task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-core']
 
 task :'test-v1-emulation' => [ '//java/client/test/com/thoughtworks/selenium:firefox-emulation-test:run' ]
 task :'test-rc' => ['//java/client/test/org/openqa/selenium:RcBrowserLauncherTests:run',
