@@ -33,10 +33,14 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 public class VisibilityTest extends JUnit4TestBase {
 
@@ -162,6 +166,7 @@ public class VisibilityTest extends JUnit4TestBase {
     assertTrue(element.isDisplayed());
   }
 
+  @Ignore({IE, CHROME, HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
   @Test
   public void testElementHiddenByOverflowXIsNotVisible() {
     String[] pages = new String[]{
@@ -172,13 +177,13 @@ public class VisibilityTest extends JUnit4TestBase {
     for (String page: pages) {
       driver.get(appServer.whereIs(page));
       WebElement right = driver.findElement(By.id("right"));
-      System.out.println(right.getLocation());
       assertFalse(page, right.isDisplayed());
       WebElement bottomRight = driver.findElement(By.id("bottom-right"));
       assertFalse(page, bottomRight.isDisplayed());
     }
   }
 
+  @Ignore({CHROME, HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS})
   @Test
   public void testElementHiddenByOverflowYIsNotVisible() {
     String[] pages = new String[]{
@@ -195,6 +200,7 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
+  @Ignore({IE})
   @Test
   public void testElementScrollableByOverflowXIsVisible() {
     String[] pages = new String[]{
@@ -212,6 +218,7 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
+  @Ignore({IE, SAFARI})
   @Test
   public void testElementScrollableByOverflowYIsVisible() {
     String[] pages = new String[]{
