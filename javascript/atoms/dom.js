@@ -728,11 +728,15 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   // Elements should be hidden if their parent has a fixed size AND has the
   // style overflow:hidden AND the element's location is not within the fixed
   // size of the parent
-  function isOverflowHiding(e) {
-    var parent = goog.dom.getParentElement(e);
+  function isOverflowHiding(e, block) {
+    var parent;
+    if (block == null) {
+      parent = goog.dom.getParentElement(e);
+    } else {
+      parent = goog.dom.getParentElement(block);
+    }
 
-    if (parent && (bot.dom.getEffectiveStyle(parent, 'overflow') == 'hidden' ||
-        bot.dom.getEffectiveStyle(parent, 'overflow-x') == 'hidden' ||
+    if (parent && (bot.dom.getEffectiveStyle(parent, 'overflow-x') == 'hidden' ||
         bot.dom.getEffectiveStyle(parent, 'overflow-y') == 'hidden')) {
       var sizeOfParent = bot.dom.getElementSize(parent);
       var locOfParent = goog.style.getClientPosition(parent);
@@ -747,10 +751,10 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       }
       return true;
     }
-    return !parent || isOverflowHiding(parent);
+    return !parent || isOverflowHiding(e, parent);
   }
 
-  if (!isOverflowHiding(elem)) {
+  if (!isOverflowHiding(elem, null)) {
     return false;
   }
 
