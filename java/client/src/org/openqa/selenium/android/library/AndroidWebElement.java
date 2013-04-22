@@ -407,12 +407,4 @@ public class AndroidWebElement implements WebElement,
     }
     return coordinates;
   }
-
-  /**
-   * @deprecated To be removed in 2.31. Use {@link #getCoordinates()} instead
-   */
-  @Deprecated
-  public Point getLocationOnScreenOnceScrolledIntoView() {
-    return getLocation();
-  }
 }

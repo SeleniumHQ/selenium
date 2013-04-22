@@ -25,23 +25,6 @@ import org.openqa.selenium.Point;
  * screen coordinates) are evaluated lazily since the element may have to be scrolled into view.
  */
 public interface Coordinates {
-  /**
-   * @deprecated To be removed in 2.31. Use {@link #onScreen()} instead
-   */
-  @Deprecated
-  Point getLocationOnScreen();
-
-  /**
-   * @deprecated To be removed in 2.31. Use {@link #inViewPort()} instead
-   */
-  @Deprecated
-  Point getLocationInViewPort();
-
-  /**
-   * @deprecated To be removed in 2.31. Use {@link #onPage()} instead
-   */
-  @Deprecated
-  Point getLocationInDOM();
 
   /**
    * Gets coordinates on the element relative to the top-left corner of the monitor (screen).
@@ -49,7 +32,7 @@ public interface Coordinates {
    * before calculating its coordinates.
    * 
    * @return coordinates on the element relative to the top-left corner of the monitor (screen).
-   * @throws ElementNotVisibleException if the element can't be scrolled into view.
+   * @throws org.openqa.selenium.ElementNotVisibleException if the element can't be scrolled into view.
    */
   Point onScreen();
 
@@ -59,7 +42,7 @@ public interface Coordinates {
    * scrolls the page and/or frames to make element visible in viewport before calculating its coordinates.
    * 
    * @return coordinates on the element relative to the top-left corner of the browser window's viewport.
-   * @throws ElementNotVisibleException if the element can't be scrolled into view.
+   * @throws org.openqa.selenium.ElementNotVisibleException if the element can't be scrolled into view.
    */
   Point inViewPort();
 

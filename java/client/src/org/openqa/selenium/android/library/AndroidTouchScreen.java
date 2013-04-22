@@ -41,7 +41,7 @@ class AndroidTouchScreen implements TouchScreen {
   }
 
   public void singleTap(Coordinates where) {
-    Point toTap = where.getLocationOnScreen();
+    Point toTap = where.onScreen();
     List<MotionEvent> motionEvents = Lists.newArrayList();
     long downTime = SystemClock.uptimeMillis();
     motionEvents.add(getMotionEvent(downTime, downTime, MotionEvent.ACTION_DOWN, toTap));
@@ -76,7 +76,7 @@ class AndroidTouchScreen implements TouchScreen {
   public void scroll(Coordinates where, int xOffset, int yOffset) {
     long downTime = SystemClock.uptimeMillis();
     List<MotionEvent> motionEvents = Lists.newArrayList();
-    Point origin = where.getLocationOnScreen();
+    Point origin = where.onScreen();
     Point destination = new Point(origin.x + xOffset, origin.y + yOffset);
     motionEvents.add(getMotionEvent(downTime, downTime, MotionEvent.ACTION_DOWN, origin));
 
@@ -95,7 +95,7 @@ class AndroidTouchScreen implements TouchScreen {
   }
 
   public void doubleTap(Coordinates where) {
-    Point toDoubleTap = where.getLocationOnScreen();
+    Point toDoubleTap = where.onScreen();
     List<MotionEvent> motionEvents = Lists.newArrayList();
     long downTime = SystemClock.uptimeMillis();
     motionEvents.add(getMotionEvent(downTime, downTime, MotionEvent.ACTION_DOWN, toDoubleTap));
@@ -108,7 +108,7 @@ class AndroidTouchScreen implements TouchScreen {
   public void longPress(Coordinates where) {
     long downTime = SystemClock.uptimeMillis();
     List<MotionEvent> motionEvents = Lists.newArrayList();
-    Point point = where.getLocationOnScreen();
+    Point point = where.onScreen();
     motionEvents.add(getMotionEvent(downTime, downTime, MotionEvent.ACTION_DOWN, point));
     motionEvents.add(getMotionEvent(downTime, (downTime + 3000), MotionEvent.ACTION_UP, point));
     sendMotionEvents(motionEvents);
@@ -133,7 +133,7 @@ class AndroidTouchScreen implements TouchScreen {
   public void flick(Coordinates where, int xOffset, int yOffset, int speed) {
     long downTime = SystemClock.uptimeMillis();
     List<MotionEvent> motionEvents = Lists.newArrayList();
-    Point origin = where.getLocationOnScreen();
+    Point origin = where.onScreen();
     Point destination = new Point(origin.x + xOffset, origin.y + yOffset);
     Flick flick = new Flick(speed);
     motionEvents.add(getMotionEvent(downTime, downTime, MotionEvent.ACTION_DOWN, origin));

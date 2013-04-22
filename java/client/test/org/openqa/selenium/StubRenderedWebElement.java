@@ -26,10 +26,6 @@ import org.openqa.selenium.internal.Locatable;
  */
 public class StubRenderedWebElement extends StubElement implements Locatable {
 
-  public Point getLocationOnScreenOnceScrolledIntoView() {
-    return null;
-  }
-
   public Coordinates getCoordinates() {
     return null;
   }

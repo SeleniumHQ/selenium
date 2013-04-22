@@ -345,40 +345,8 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     return new Dimension(width, height);
   }
 
-  /**
-   * @deprecated To be removed in 2.31. Use {@link #getCoordinates()} instead
-   */
-  @Deprecated
-  public Point getLocationOnScreenOnceScrolledIntoView() {
-    return getCoordinates().inViewPort();
-  }
-
   public Coordinates getCoordinates() {
     return new Coordinates() {
-
-      /**
-       * @deprecated To be removed in 2.31. Use {@link #onScreen()} instead
-       */
-      @Deprecated
-      public Point getLocationOnScreen() {
-        return onScreen();
-      }
-
-      /**
-       * @deprecated To be removed in 2.31. Use {@link #inViewPort()} instead
-       */
-      @Deprecated
-      public Point getLocationInViewPort() {
-        return inViewPort();
-      }
-
-      /**
-       * @deprecated To be removed in 2.31. Use {@link #onPage()} instead
-       */
-      @Deprecated
-      public Point getLocationInDOM() {
-        return onPage();
-      }
 
       public Point onScreen() {
         throw new UnsupportedOperationException("Not supported yet.");

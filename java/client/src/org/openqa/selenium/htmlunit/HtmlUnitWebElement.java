@@ -40,9 +40,7 @@ import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 
-import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ScriptResult;
-import com.gargoylesoftware.htmlunit.SgmlPage;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomText;
@@ -50,7 +48,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
-import com.gargoylesoftware.htmlunit.html.HtmlHtml;
 import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlLabel;
@@ -916,40 +913,8 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return parent;
   }
 
-  /**
-   * @deprecated To be removed in 2.31. Use {@link #getCoordinates()} instead
-   */
-  @Deprecated
-  public Point getLocationOnScreenOnceScrolledIntoView() {
-    return getLocation();
-  }
-
   public Coordinates getCoordinates() {
     return new Coordinates() {
-
-      /**
-       * @deprecated To be removed in 2.31. Use {@link #onScreen()} instead
-       */
-      @Deprecated
-      public Point getLocationOnScreen() {
-        throw new UnsupportedOperationException("Not displayed, no screen location.");
-      }
-
-      /**
-       * @deprecated To be removed in 2.31. Use {@link #inViewPort()} instead
-       */
-      @Deprecated
-      public Point getLocationInViewPort() {
-        return getLocation();
-      }
-
-      /**
-       * @deprecated To be removed in 2.31. Use {@link #onPage()} instead
-       */
-      @Deprecated
-      public Point getLocationInDOM() {
-        return getLocation();
-      }
 
       public Point onScreen() {
         throw new UnsupportedOperationException("Not displayed, no screen location.");

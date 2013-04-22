@@ -20,15 +20,5 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 public interface Locatable {
-  /**
-   * Use this to discover where on the screen an element is so that we can click it. This method
-   * should cause the element to be scrolled into view.
-   * 
-   * @return The top lefthand corner location on the screen, or null if the element is not visible
-   * @deprecated To be removed in 2.31. Use {@link #getCoordinates()} instead
-   */
-  @Deprecated
-  Point getLocationOnScreenOnceScrolledIntoView();
-
   Coordinates getCoordinates();
 }
