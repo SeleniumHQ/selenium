@@ -21,8 +21,7 @@ namespace OpenQA.Selenium
             Assert.AreEqual("XHTML Test Page", driver.Title);
 
             WaitFor(WindowCountToBe(2));
-
-            driver.SwitchTo().Window("result");
+            WaitFor(WindowWithName("result"));
             WaitFor(() => { return driver.Title == "We Arrive Here"; });
             Assert.AreEqual("We Arrive Here", driver.Title);
 

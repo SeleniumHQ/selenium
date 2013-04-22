@@ -4,6 +4,7 @@ using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.IE;
 
 namespace OpenQA.Selenium
 {
@@ -641,16 +642,7 @@ namespace OpenQA.Selenium
             element.Click();
             IAlert alert = WaitFor<IAlert>(AlertToBePresent);
             driver.Quit();
-            //alert.Dismiss();
-            //Assert.IsTrue(driver.Url.Contains("pageWithOnBeforeUnloadMessage.html"));
-
-            //// Can't move forward or even quit the driver
-            //// until the alert is accepted.
-            //element.Click();
-            //alert = WaitFor<IAlert>(AlertToBePresent);
-            //alert.Accept();
-            //WaitFor(() => { return driver.Url.Contains(alertsPage); });
-            //Assert.IsTrue(driver.Url.Contains(alertsPage));
+            driver = null;
         }
 
         [Test]
