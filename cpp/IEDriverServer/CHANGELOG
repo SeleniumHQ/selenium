@@ -9,6 +9,18 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.32.3.3
+=========
+ * Corrected dismissal of dialogs on browser quit. The IESession object already
+   had code to check that the IECommandExecutor had fully quit before shutting
+   down the thread on which the executor was running. However, it had no code
+   to handle the case where all browser instances for that session were not
+   properly shut down. Now the session will ask the executor to check one final
+   time and make one last-ditch effort to dismiss any dialogs and shut down
+   the browser instances. Please note that the best practice is to handle any
+   alerts that may appear in web pages being automated before executing
+   driver.quit(); this should only be used as a last resort.
+
 v2.32.3.2
 =========
  * Corrected dismissal of onBeforeUnload dialogs. We now notify the button's

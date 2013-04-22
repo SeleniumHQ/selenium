@@ -122,19 +122,31 @@ void IESession::ShutDown(void) {
   stopPersistentEventFiring();
 
   // Don't terminate the thread until the browsers have all been deallocated.
-  int is_quitting = static_cast<int>(::SendMessage(this->executor_window_handle_,
-                                                   WD_GET_QUIT_STATUS,
-                                                   NULL,
-                                                   NULL));
-  int retry_count = 50;
-  while (is_quitting > 0 && --retry_count > 0) {
-    ::Sleep(100);
-    is_quitting = static_cast<int>(::SendMessage(this->executor_window_handle_,
-                                                 WD_GET_QUIT_STATUS,
-                                                 NULL,
-                                                 NULL));
+  bool has_quit = this->WaitForCommandExecutorExit(EXECUTOR_EXIT_WAIT_TIMEOUT);
+  if (!has_quit) {
+    // ASSUMPTION! If all browsers haven't been deallocated by the timeout
+    // specified, they're blocked from quitting by something. We'll assume
+    // that something is an alert blocking close, and ask the executor to
+    // attempt another close after closing the offending alert.
+    // N.B., this could probably be made more robust by modifying
+    // IECommandExecutor::OnGetQuitStatus(), but that would require some
+    // fairly complex synchronization code, to make sure a browser isn't
+    // deallocated while the "close the alert and close the browser again"
+    // code is still running, since the deallocation happens in response
+    // to the DWebBrowserEvents2::OnQuit event.
+    LOG(DEBUG) << "Not all browsers have been deallocated!";
+    ::PostMessage(this->executor_window_handle_,
+                  WD_HANDLE_UNEXPECTED_ALERTS,
+                  NULL,
+                  NULL);
+    has_quit = this->WaitForCommandExecutorExit(EXECUTOR_EXIT_WAIT_TIMEOUT);
   }
 
+  if (has_quit) {
+    LOG(DEBUG) << "Executor shutdown successful!";
+  } else {
+    LOG(ERROR) << "Still running browsers after handling alerts! This is likely to lead to a crash.";
+  }
   DWORD process_id;
   DWORD thread_id = ::GetWindowThreadProcessId(this->executor_window_handle_,
                                                &process_id);
@@ -147,6 +159,23 @@ void IESession::ShutDown(void) {
     }
     ::CloseHandle(thread_handle);
   }
+}
+
+bool IESession::WaitForCommandExecutorExit(int timeout_in_milliseconds) {
+  LOG(TRACE) << "Entering IESession::WaitForCommandExecutorExit";
+  int is_quitting = static_cast<int>(::SendMessage(this->executor_window_handle_,
+                                                   WD_GET_QUIT_STATUS,
+                                                   NULL,
+                                                   NULL));
+  int retry_count = timeout_in_milliseconds / EXECUTOR_EXIT_WAIT_INTERVAL;
+  while (is_quitting > 0 && --retry_count > 0) {
+    ::Sleep(EXECUTOR_EXIT_WAIT_INTERVAL);
+    is_quitting = static_cast<int>(::SendMessage(this->executor_window_handle_,
+                                                 WD_GET_QUIT_STATUS,
+                                                 NULL,
+                                                 NULL));
+  }
+  return is_quitting == 0;
 }
 
 bool IESession::ExecuteCommand(const std::string& serialized_command,

@@ -78,6 +78,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     MESSAGE_HANDLER(WD_NEW_HTML_DIALOG, OnNewHtmlDialog)
     MESSAGE_HANDLER(WD_GET_QUIT_STATUS, OnGetQuitStatus)
     MESSAGE_HANDLER(WD_REFRESH_MANAGED_ELEMENTS, OnRefreshManagedElements)
+    MESSAGE_HANDLER(WD_HANDLE_UNEXPECTED_ALERTS, OnHandleUnexpectedAlerts)
   END_MSG_MAP()
 
   LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -95,6 +96,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   LRESULT OnNewHtmlDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnGetQuitStatus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnRefreshManagedElements(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnHandleUnexpectedAlerts(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
   std::string session_id(void) const { return this->session_id_; }
 
@@ -232,6 +234,11 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   void PopulateCommandHandlers(void);
   void PopulateElementFinderMethods(void);
+
+  bool IsAlertActive(BrowserHandle browser, HWND* alert_handle);
+  std::string HandleUnexpectedAlert(BrowserHandle browser,
+                                    HWND alert_handle,
+                                    bool force_use_dismiss);
 
   BrowserMap managed_browsers_;
   ElementRepository managed_elements_;
