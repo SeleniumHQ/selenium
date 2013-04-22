@@ -37,6 +37,7 @@ import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
@@ -321,6 +322,18 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     // Make sure it was really frame "third" which was replaced ...
     driver.switchTo().defaultContent().switchTo().frame("third");
     assertThat(getTextOfGreetingElement(), equalTo("Success!"));
+  }
+
+  // See https://code.google.com/p/selenium/issues/detail?id=5237
+  @Ignore({FIREFOX, OPERA, ANDROID, OPERA_MOBILE})
+  @JavascriptEnabled
+  @Test
+  public void testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation() {
+    driver.get(appServer.whereIs("click_tests/issue5237.html"));
+    driver.switchTo().frame("search");
+    driver.findElement(By.id("submit")).click();
+    driver.switchTo().defaultContent();
+    waitFor(pageTitleToBe(driver, "Google"));
   }
 
   @Ignore({OPERA, ANDROID, OPERA_MOBILE})
