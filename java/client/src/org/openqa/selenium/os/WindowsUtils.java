@@ -143,9 +143,15 @@ public class WindowsUtils {
         logMessage.append(": ");
         logMessage.append(commandLine);
         LOG.info(logMessage.toString());
-        killPID(processID);
-        LOG.info("Killed");
-        killedOne = true;
+        try {
+          killPID(processID);
+          LOG.info("Killed");
+          killedOne = true;
+        } catch (WindowsRegistryException e) {
+          // As we kill the process tree we might here try to
+          // kill a process that was already killed in a previous call.
+          // So ignore it.
+        }
       }
     }
     if (!killedOne) {
