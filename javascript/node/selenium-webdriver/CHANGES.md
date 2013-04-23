@@ -1,3 +1,8 @@
+## v2.33.0-dev
+
+* FIXED: 5541: Added missing return statement for windows in
+    `portprober.findFreePort()`
+
 ## v2.32.0
 
 * Added the `selenium-webdriver/testing` package, which provides a basic

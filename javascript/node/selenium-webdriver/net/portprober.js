@@ -111,7 +111,7 @@ function findWindowsPortRange() {
   var deferredRange = promise.defer();
   // First, check if we're running on XP.  If this initial command fails,
   // we just fallback on the default IANA range.
-  execute('cmd.exe /c ver').then(function(stdout) {
+  return execute('cmd.exe /c ver').then(function(stdout) {
     if (/Windows XP/.test(stdout)) {
       // TODO: Try to read these values from the registry.
       return {min: 1025, max: 5000};
