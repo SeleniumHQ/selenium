@@ -106,7 +106,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "Div with size 0 is not interpreted as displayed even if descendent has size")]
+        //[IgnoreBrowser(Browser.IE, "Div with size 0 is not interpreted as displayed even if descendent has size")]
         public void ZeroSizedDivIsShownIfDescendantHasSize()
         {
             driver.Url = javascriptPage;
@@ -127,6 +127,132 @@ namespace OpenQA.Selenium
 
             IWebElement element = driver.FindElement(By.Id("suggest"));
             Assert.IsTrue(element.Displayed);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.PhantomJS)]
+        [IgnoreBrowser(Browser.Safari)]
+        public void ElementHiddenByOverflowXIsNotVisible()
+        {
+            string[] pages = new string[]{
+                "overflow/x_hidden_y_hidden.html",
+                "overflow/x_hidden_y_scroll.html",
+                "overflow/x_hidden_y_auto.html",
+            };
+            foreach (string page in pages)
+            {
+                driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
+                IWebElement right = driver.FindElement(By.Id("right"));
+                Assert.IsFalse(right.Displayed, "Failed for " + page);
+                IWebElement bottomRight = driver.FindElement(By.Id("bottom-right"));
+                Assert.IsFalse(bottomRight.Displayed, "Failed for " + page);
+            }
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.PhantomJS)]
+        public void ElementHiddenByOverflowYIsNotVisible()
+        {
+            string[] pages = new string[]{
+                "overflow/x_hidden_y_hidden.html",
+                "overflow/x_scroll_y_hidden.html",
+                "overflow/x_auto_y_hidden.html",
+            };
+            foreach (string page in pages)
+            {
+                driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
+                IWebElement bottom = driver.FindElement(By.Id("bottom"));
+                Assert.IsFalse(bottom.Displayed, "Failed for " + page);
+                IWebElement bottomRight = driver.FindElement(By.Id("bottom-right"));
+                Assert.IsFalse(bottomRight.Displayed, "Failed for " + page);
+            }
+        }
+
+        [Test]
+        public void ElementScrollableByOverflowXIsVisible()
+        {
+            string[] pages = new string[]{
+                "overflow/x_scroll_y_hidden.html",
+                "overflow/x_scroll_y_scroll.html",
+                "overflow/x_scroll_y_auto.html",
+                "overflow/x_auto_y_hidden.html",
+                "overflow/x_auto_y_scroll.html",
+                "overflow/x_auto_y_auto.html",
+            };
+            foreach (string page in pages)
+            {
+                driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
+                IWebElement right = driver.FindElement(By.Id("right"));
+                Assert.IsTrue(right.Displayed, "Failed for " + page);
+            }
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Safari)]
+        public void ElementScrollableByOverflowYIsVisible()
+        {
+            string[] pages = new string[]{
+                "overflow/x_hidden_y_scroll.html",
+                "overflow/x_scroll_y_scroll.html",
+                "overflow/x_auto_y_scroll.html",
+                "overflow/x_hidden_y_auto.html",
+                "overflow/x_scroll_y_auto.html",
+                "overflow/x_auto_y_auto.html",
+            };
+            foreach (string page in pages)
+            {
+                driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
+                IWebElement bottom = driver.FindElement(By.Id("bottom"));
+                Assert.IsTrue(bottom.Displayed, "Failed for " + page);
+            }
+        }
+
+        [Test]
+        public void ElementScrollableByOverflowXAndYIsVisible()
+        {
+            string[] pages = new string[]{
+                "overflow/x_scroll_y_scroll.html",
+                "overflow/x_scroll_y_auto.html",
+                "overflow/x_auto_y_scroll.html",
+                "overflow/x_auto_y_auto.html",
+            };
+            foreach (string page in pages)
+            {
+                driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs(page);
+                IWebElement bottomRight = driver.FindElement(By.Id("bottom-right"));
+                Assert.IsTrue(bottomRight.Displayed, "Failed for " + page);
+            }
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Opera)]
+        public void tooSmallAWindowWithOverflowHiddenIsNotAProblem()
+        {
+            IWindow window = driver.Manage().Window;
+            Size originalSize = window.Size;
+
+            try
+            {
+                // Short in the Y dimension
+                window.Size = new Size(1024, 500);
+
+                driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("overflow-body.html");
+
+                IWebElement element = driver.FindElement(By.Name("resultsFrame"));
+                Assert.IsTrue(element.Displayed);
+            }
+            finally
+            {
+                window.Size = originalSize;
+            }
         }
     }
 }
