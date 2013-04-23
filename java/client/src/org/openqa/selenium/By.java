@@ -206,7 +206,7 @@ public abstract class By {
     public List<WebElement> findElements(SearchContext context) {
       if (context instanceof FindsById)
         return ((FindsById) context).findElementsById(id);
-      return ((FindsByXPath) context).findElementsByXPath("*[@id = '" + id
+      return ((FindsByXPath) context).findElementsByXPath(".//*[@id = '" + id
           + "']");
     }
 
@@ -214,7 +214,7 @@ public abstract class By {
     public WebElement findElement(SearchContext context) {
       if (context instanceof FindsById)
         return ((FindsById) context).findElementById(id);
-      return ((FindsByXPath) context).findElementByXPath("*[@id = '" + id
+      return ((FindsByXPath) context).findElementByXPath(".//*[@id = '" + id
           + "']");
     }
 
