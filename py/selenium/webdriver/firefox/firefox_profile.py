@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import with_statement
-from __future__ import unicode_literals
 
 import base64
 import copy
@@ -24,11 +23,11 @@ import tempfile
 import zipfile
 
 try:
-    from io import BytesIO
-except ImportError:
     from cStringIO import StringIO as BytesIO
     bytes = str
     str = unicode
+except ImportError:
+    from io import BytesIO
 
 from xml.dom import minidom
 from distutils import dir_util

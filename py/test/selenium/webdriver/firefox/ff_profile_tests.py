@@ -98,6 +98,23 @@ class TestFirefoxProfile:
             break
         fp.close()
 
+    def test_that_integer_prefs_are_written_in_the_correct_format(self):
+        # The setup gave us a browser but we dont need it
+        self.driver.quit()
+
+        profile = webdriver.FirefoxProfile()
+        profile.set_preference("sample.int.preference", 12345)
+        profile.update_preferences()
+        assert "12345" == profile.default_preferences["sample.int.preference"]
+
+    def test_that_boolean_prefs_are_written_in_the_correct_format(self):
+        # The setup gave us a browser but we dont need it
+        self.driver.quit()
+
+        profile = webdriver.FirefoxProfile()
+        profile.set_preference("sample.bool.preference", True)
+        profile.update_preferences()
+        assert "true" == profile.default_preferences["sample.bool.preference"]
 
     def test_that_we_delete_the_profile(self):
         path = self.driver.firefox_profile.path
