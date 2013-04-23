@@ -1,4 +1,4 @@
-## v2.33.0-dev
+## v2.32.1
 
 * FIXED: 5541: Added missing return statement for windows in
     `portprober.findFreePort()`
