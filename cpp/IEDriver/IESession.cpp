@@ -122,8 +122,11 @@ void IESession::ShutDown(void) {
   stopPersistentEventFiring();
 
   // Don't terminate the thread until the browsers have all been deallocated.
+  // Note: Loop count of 6, because the timeout is 5 seconds, giving us a nice,
+  // round 30 seconds.
+  int retry_count = 6;
   bool has_quit = this->WaitForCommandExecutorExit(EXECUTOR_EXIT_WAIT_TIMEOUT);
-  if (!has_quit) {
+  if (!has_quit && retry_count > 0) {
     // ASSUMPTION! If all browsers haven't been deallocated by the timeout
     // specified, they're blocked from quitting by something. We'll assume
     // that something is an alert blocking close, and ask the executor to
@@ -140,6 +143,7 @@ void IESession::ShutDown(void) {
                   NULL,
                   NULL);
     has_quit = this->WaitForCommandExecutorExit(EXECUTOR_EXIT_WAIT_TIMEOUT);
+    retry_count--;
   }
 
   if (has_quit) {
