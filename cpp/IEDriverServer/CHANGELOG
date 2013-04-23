@@ -9,6 +9,13 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.32.3.4
+=========
+ * Updates to JavaScript automation atoms.
+ * Added retry loop for handling alerts on shutdown. Previously the IE session
+   would only check twice for alerts on shutdown. This handles the case of
+   repeated alerts, and will check up to six times, for a total of 30 seconds.
+
 v2.32.3.3
 =========
  * Corrected dismissal of dialogs on browser quit. The IESession object already
