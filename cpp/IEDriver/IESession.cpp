@@ -126,7 +126,7 @@ void IESession::ShutDown(void) {
   // round 30 seconds.
   int retry_count = 6;
   bool has_quit = this->WaitForCommandExecutorExit(EXECUTOR_EXIT_WAIT_TIMEOUT);
-  if (!has_quit && retry_count > 0) {
+  while (!has_quit && retry_count > 0) {
     // ASSUMPTION! If all browsers haven't been deallocated by the timeout
     // specified, they're blocked from quitting by something. We'll assume
     // that something is an alert blocking close, and ask the executor to
