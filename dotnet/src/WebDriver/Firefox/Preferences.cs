@@ -38,6 +38,8 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="key">The name of the preference to set.</param>
         /// <param name="value">A <see cref="System.String"/> value give the preference.</param>
+        /// <remarks>If the preference already exists in the currently-set list of preferences, 
+        /// the value will be updated.</remarks>
         internal void SetPreference(string key, string value)
         {
             if (IsWrappedAsString(value))
@@ -45,7 +47,7 @@ namespace OpenQA.Selenium.Firefox
                 throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Preference values must be plain strings: {0}: {1}", key, value));
             }
 
-            this.additionalPrefs.Add(key, string.Format(CultureInfo.InvariantCulture, "\"{0}\"", value));
+            this.additionalPrefs[key] = string.Format(CultureInfo.InvariantCulture, "\"{0}\"", value);
         }
 
         /// <summary>
@@ -53,9 +55,11 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="key">The name of the preference to set.</param>
         /// <param name="value">A <see cref="System.Int32"/> value give the preference.</param>
+        /// <remarks>If the preference already exists in the currently-set list of preferences, 
+        /// the value will be updated.</remarks>
         internal void SetPreference(string key, int value)
         {
-            this.additionalPrefs.Add(key, value.ToString(CultureInfo.InvariantCulture));
+            this.additionalPrefs[key] =  value.ToString(CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -63,9 +67,11 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="key">The name of the preference to set.</param>
         /// <param name="value">A <see cref="System.Boolean"/> value give the preference.</param>
+        /// <remarks>If the preference already exists in the currently-set list of preferences, 
+        /// the value will be updated.</remarks>
         internal void SetPreference(string key, bool value)
         {
-            this.additionalPrefs.Add(key, value.ToString().ToLowerInvariant());
+            this.additionalPrefs[key] = value.ToString().ToLowerInvariant();
         }
 
         /// <summary>
