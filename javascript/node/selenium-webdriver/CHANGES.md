@@ -1,3 +1,7 @@
+## v2.33.0-dev
+
+* FIXED: 5511: Added webdriver.manage().timeouts().pageLoadTimeout(ms)
+
 ## v2.32.1
 
 * FIXED: 5541: Added missing return statement for windows in

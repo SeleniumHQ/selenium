@@ -1116,6 +1116,22 @@ webdriver.WebDriver.Timeouts.prototype.setScriptTimeout = function(ms) {
 };
 
 
+/**
+ * Sets the amount of time to wait for a page load to complete before returning
+ * an error.  If the timeout is negative, page loads may be indefinite.
+ * @param {number} ms The amount of time to wait, in milliseconds.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ *     the timeout has been set.
+ */
+webdriver.WebDriver.Timeouts.prototype.pageLoadTimeout = function(ms) {
+  return this.driver_.schedule(
+      new webdriver.Command(webdriver.CommandName.SET_TIMEOUT).
+          setParameter('type', 'page load').
+          setParameter('ms', ms),
+      'WebDriver.manage().timeouts().pageLoadTimeout(' + ms + ')');
+};
+
+
 
 /**
  * An interface for managing the current window.

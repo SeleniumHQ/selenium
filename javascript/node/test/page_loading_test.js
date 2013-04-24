@@ -18,7 +18,8 @@
 require('./lib/_bootstrap')(module);
 
 var assert = require('assert'),
-    By = require('selenium-webdriver').By;
+    By = require('selenium-webdriver').By,
+    ErrorCode = require('selenium-webdriver').error.ErrorCode;
 
 var test = require('./lib/testbase'),
     Browser = test.Browser,
@@ -122,5 +123,34 @@ test.suite(function(env) {
 
     driver.get(Pages.simpleTestPage);
     assertTitleIs('Hello WebDriver');
+  });
+
+  // Only implemented in Firefox.
+  test.ignore(browsers(
+      Browser.ANDROID,
+      Browser.CHROME,
+      Browser.IE,
+      Browser.IOS,
+      Browser.OPERA,
+      Browser.PHANTOMJS,
+      Browser.SAFARI)).
+  it('should timeout if page load timeout is set', function() {
+    driver.call(function() {
+      driver.manage().timeouts().pageLoadTimeout(1);
+      driver.get(Pages.sleepingPage + '?time=3').
+          then(function() {
+            throw Error('Should have timed out on page load');
+          }, function(e) {
+            assert.equal(ErrorCode.SCRIPT_TIMEOUT, e.code);
+          });
+    }).then(resetPageLoad, function(err) {
+      resetPageLoad().addBoth(function() {
+        throw err;
+      });
+    });
+
+    function resetPageLoad() {
+      return driver.manage().timeouts().pageLoadTimeout(-1);
+    }
   });
 });

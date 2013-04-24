@@ -110,6 +110,7 @@ var Path = {
   MANIFEST: path.join(WEB_ROOT, 'manifest'),
   REDIRECT: path.join(WEB_ROOT, 'redirect'),
   PAGE: path.join(WEB_ROOT, 'page'),
+  SLEEP: path.join(WEB_ROOT, 'sleep'),
   UPLOAD: path.join(WEB_ROOT, 'upload')
 };
 
@@ -136,6 +137,7 @@ function onRequest(request, response) {
     case Path.MANIFEST: return sendManifest(response);
     case Path.PAGE: return sendInifinitePage(request, response);
     case Path.REDIRECT: return redirectToResultPage(response);
+    case Path.SLEEP: return sendDelayedResponse(request, response);
     case Path.UPLOAD: return sendUpload(response);
   }
 
@@ -205,6 +207,28 @@ function sendInifinitePage(request, response) {
 
 
 function sendDelayedResponse(request, response) {
+  var duration = 0;
+  var query = url.parse(request.url).query || '';
+  var match = query.match(/\btime=(\d+)/);
+  if (match) {
+    duration = parseInt(match[1]);
+  }
+
+  setTimeout(function() {
+    var body = [
+      '<!DOCTYPE html>',
+      '<title>Done</title>',
+      '<body>Slept for ', duration, 's</body>'
+    ].join('');
+    response.writeHead(200, {
+      'Content-Length': Buffer.byteLength(body, 'utf8'),
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+      'Expires': 0
+    });
+    response.end(body);
+  }, duration * 1000);
 }
 
 

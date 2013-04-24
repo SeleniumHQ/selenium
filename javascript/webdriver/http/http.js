@@ -263,6 +263,8 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
           post('/session/:sessionId/execute_async')).
       put(webdriver.CommandName.SCREENSHOT,
           get('/session/:sessionId/screenshot')).
+      put(webdriver.CommandName.SET_TIMEOUT,
+          post('/session/:sessionId/timeouts')).
       put(webdriver.CommandName.SET_SCRIPT_TIMEOUT,
           post('/session/:sessionId/timeouts/async_script')).
       put(webdriver.CommandName.IMPLICITLY_WAIT,

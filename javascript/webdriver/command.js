@@ -162,6 +162,7 @@ webdriver.CommandName = {
   SCREENSHOT: 'screenshot',
   IMPLICITLY_WAIT: 'implicitlyWait',
   SET_SCRIPT_TIMEOUT: 'setScriptTimeout',
+  SET_TIMEOUT: 'setTimeout',
 
   ACCEPT_ALERT: 'acceptAlert',
   DISMISS_ALERT: 'dismissAlert',
