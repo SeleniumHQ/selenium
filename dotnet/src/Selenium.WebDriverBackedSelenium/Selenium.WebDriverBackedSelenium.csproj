@@ -83,7 +83,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\..\..\WebDriver.snk</AssemblyOriginatorKeyFile>
@@ -232,11 +232,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\WebDriver.snk">
-      <Link>WebDriver.snk</Link>
-    </None>
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>copy /y "$(SolutionDir)java\client\src\org\openqa\selenium\internal\seleniumemulation\injectableSelenium.js" "$(TargetDir)"

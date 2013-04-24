@@ -17,7 +17,6 @@ dotnet_library(name = "dotnet",
     {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"},
 	{"javascript/safari-driver/prebuilt/SafariDriver.safariextz" : "WebDriver.SafariExtension"}
   ],
-  keyfile = "WebDriver.snk",
   framework_ver = "net40",
   out = "WebDriver.dll"
 )
@@ -40,7 +39,6 @@ dotnet_library(name = "dotnet35",
     {"//cpp:noblur" : "WebDriver.FirefoxNoFocus.x86.dll"},
     {"//cpp:noblur64" : "WebDriver.FirefoxNoFocus.x64.dll"}
   ],
-  keyfile = "WebDriver.snk",
   framework_ver = "net35",
   out = "WebDriver.dll"
 )
@@ -70,7 +68,6 @@ dotnet_library(name = "support",
     "System.Xml.dll",
     ":dotnet"
   ],
-  keyfile = "WebDriver.snk",
   framework_ver = "net40",
   out = "WebDriver.Support.dll"
 )
@@ -86,7 +83,6 @@ dotnet_library(name = "support35",
     ":dotnet35"
   ],
   framework_ver = "net35",
-  keyfile = "WebDriver.snk",
   out = "WebDriver.Support.dll"
 )
 
@@ -117,7 +113,6 @@ dotnet_library(name = "core",
     "System.Xml.dll",
     "System.Web.dll"
   ],
-  keyfile = "WebDriver.snk",
   framework_ver = "net40",
   out = "ThoughtWorks.Selenium.Core.dll"
 )
@@ -132,7 +127,6 @@ dotnet_library(name = "core35",
     "System.Web.dll"
   ],
   framework_ver = "net35",
-  keyfile = "WebDriver.snk",
   out = "ThoughtWorks.Selenium.Core.dll"
 )
 
@@ -179,7 +173,6 @@ dotnet_library(name = "webdriverbackedselenium",
     {"//javascript/selenium-atoms:isVisible" : "isVisible.js" },
     {"//javascript/selenium-atoms:type" : "type.js" }
   ],
-  keyfile = "WebDriver.snk",
   framework_ver = "net40",
   out = "Selenium.WebDriverBackedSelenium.dll"
 )
@@ -212,7 +205,6 @@ dotnet_library(name = "webdriverbackedselenium35",
     {"//javascript/selenium-atoms:isVisible" : "isVisible.js" },
     {"//javascript/selenium-atoms:type" : "type.js" }
   ],
-  keyfile = "WebDriver.snk",
   framework_ver = "net35",
   out = "Selenium.WebDriverBackedSelenium.dll"
 )
