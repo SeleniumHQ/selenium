@@ -24,6 +24,12 @@ try:
     from io import BytesIO
 except ImportError:
     from cStringIO import StringIO as BytesIO
+
+try:
+    unicode
+except NameError:
+    unicode = str
+
 from selenium import webdriver
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
@@ -79,7 +85,7 @@ class TestFirefoxProfile:
         self.driver.quit()
 
         profile = webdriver.FirefoxProfile()
-        profile.set_preference('sample.preference.2', 'hi there')
+        profile.set_preference('sample.preference.2', unicode('hi there'))
         profile.update_preferences()
 
         assert '"hi there"' == profile.default_preferences["sample.preference.2"]
