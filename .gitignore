@@ -22,6 +22,7 @@ android/client/bin/
 android/server/bin/
 android/gen/org/openqa/selenium/android/app/BuildConfig.java
 android/gen/org/openqa/selenium/android/app/Manifest.java
+android/gen/org/openqa/selenium/android/app/R.java
 cpp/IEDriver/IEReturnTypes.h
 java/org/openqa/selenium/ie/IeReturnTypes.java
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
