@@ -55,6 +55,32 @@ public class InternetExplorerDriverService extends DriverService {
   public static final String IE_DRIVER_LOGLEVEL_PROPERTY = "webdriver.ie.driver.loglevel";
 
   /**
+   * System property that defines host to which will be bound IEDriverServer.
+   */
+  public final static String IE_DRIVER_HOST_PROPERTY = "webdriver.ie.driver.host";
+
+  /**
+   * System property that defines path to which will be extracted IEDriverServer library.
+   */
+  public final static String IE_DRIVER_EXTRACT_PATH_PROPERTY = "webdriver.ie.driver.extractpath";
+
+  /**
+   * System property that defines logging to stdout for IEDriverServer.
+   */
+  public final static String IE_DRIVER_SILENT_PROPERTY = "webdriver.ie.driver.silent";
+
+  /**
+   * System property that defines launch API of IE used by IEDriverServer.
+   */
+  public final static String IE_DRIVER_FORCE_CREATE_PROCESS_PROPERTY = "webdriver.ie.driver.forcecreateprocess";
+
+  /**
+   * System property that defines used IE CLI switches.
+   */
+  public final static String IE_DRIVER_IE_SWITCHES_PROPERTY = "webdriver.ie.driver.ieswitches";
+
+
+  /**
    *
    * @param executable The IEDriverServer executable.
    * @param port Which port to start the IEDriverServer on.
@@ -63,7 +89,7 @@ public class InternetExplorerDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   private InternetExplorerDriverService(File executable, int port, ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
+                                        ImmutableMap<String, String> environment) throws IOException {
     super(executable, port, args, environment);
   }
 
@@ -89,6 +115,11 @@ public class InternetExplorerDriverService extends DriverService {
     private ImmutableMap<String, String> environment = ImmutableMap.of();
     private File logFile;
     private InternetExplorerDriverLogLevel logLevel;
+    private String host = null;
+    private File extractPath = null;
+    private Boolean silent = null;
+    private Boolean forceCreateProcess = null;
+    private String ieSwitches = null;
 
     /**
      * Sets which driver executable the builder will use.
@@ -140,7 +171,7 @@ public class InternetExplorerDriverService extends DriverService {
       this.environment = ImmutableMap.copyOf(environment);
       return this;
     }
-    
+
     /**
      * Configures the driver server to write log to the given file.
      *
@@ -164,6 +195,63 @@ public class InternetExplorerDriverService extends DriverService {
     }
 
     /**
+     * Configures the host to which the driver server bound.
+     *
+     * @param host A host name.
+     * @return A self reference.
+     */
+    public Builder withHost(String host) {
+      this.host = host;
+      return this;
+    }
+
+    /**
+     * Configures path to which the driver server library will be extracted.
+     *
+     * @param extractPath A path.
+     * @return A self reference.
+     */
+    public Builder withExtractPath(File extractPath) {
+      this.extractPath = extractPath;
+      return this;
+    }
+
+    /**
+     * Configures silence in stdout of the driver server by unlogged messages.
+     *
+     * @param silent To be silent in stdout ir not.
+     * @return A self reference.
+     */
+    public Builder withSilent(Boolean silent) {
+      this.silent = silent;
+      return this;
+    }
+
+    /**
+     * Configures IE launch API used by the driver server.
+     *
+     * @param forceCreateProcess To use force CreateProcess() IE launch API or not.
+     * @return A self reference.
+     */
+    public Builder withLaunchApi(Boolean forceCreateProcess) {
+      this.forceCreateProcess = forceCreateProcess;
+      return this;
+    }
+
+    /**
+     * Configures IE CLI switches which will be used by the driver service
+     *  if CREATE_PROCESS launch api is specified.
+     *
+     * @param ieSwitches IE CLI switches.
+     * @return A self reference.
+     */
+    public Builder withIeSwitches(String ieSwitches) {
+      checkArgument(ieSwitches.trim().length() >= 0, "Empty IE switches");
+      this.ieSwitches = ieSwitches.trim();
+      return this;
+    }
+
+    /**
      * Creates a new service to manage the driver server. Before creating a new service, the
      * builder will find a port for the server to listen to.
      *
@@ -175,8 +263,8 @@ public class InternetExplorerDriverService extends DriverService {
       }
       if (exe == null) {
         exe = findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
-            "http://code.google.com/p/selenium/wiki/InternetExplorerDriver",
-            "http://code.google.com/p/selenium/downloads/list");
+                             "http://code.google.com/p/selenium/wiki/InternetExplorerDriver",
+                             "http://code.google.com/p/selenium/downloads/list");
       }
       if (logFile == null) {
         String logFilePath = System.getProperty(IE_DRIVER_LOGFILE_PROPERTY);
@@ -190,15 +278,60 @@ public class InternetExplorerDriverService extends DriverService {
           logLevel = InternetExplorerDriverLogLevel.valueOf(level);
         }
       }
+      if (host == null) {
+        String hostProperty = System.getProperty(IE_DRIVER_HOST_PROPERTY);
+        if (hostProperty != null) {
+          host = hostProperty;
+        }
+      }
+      if (extractPath == null) {
+        String extractPathProperty = System.getProperty(IE_DRIVER_EXTRACT_PATH_PROPERTY);
+        if (extractPathProperty != null) {
+          extractPath = new File(extractPathProperty);
+        }
+      }
+      if (silent == null) {
+        String silentProperty = System.getProperty(IE_DRIVER_SILENT_PROPERTY);
+        if (silentProperty != null) {
+          silent = Boolean.valueOf(silentProperty);
+        }
+      }
+      if (forceCreateProcess == null) {
+        String forceCreateProcessProperty = System.getProperty(IE_DRIVER_FORCE_CREATE_PROCESS_PROPERTY);
+        if (forceCreateProcessProperty != null) {
+          forceCreateProcess = Boolean.valueOf(forceCreateProcessProperty);
+        }
+      }
+      if (ieSwitches == null) {
+        String ieSwitchesProperty = System.getProperty(IE_DRIVER_IE_SWITCHES_PROPERTY);
+        if (ieSwitchesProperty != null) {
+          ieSwitches = ieSwitchesProperty;
+        }
+      }
 
       try {
         ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
         argsBuilder.add(String.format("--port=%d", port));
         if (logFile != null) {
-          argsBuilder.add(String.format("--log-file=%s", logFile.getAbsolutePath()));
+          argsBuilder.add(String.format("--log-file=\"%s\"", logFile.getAbsolutePath()));
         }
         if (logLevel != null) {
           argsBuilder.add(String.format("--log-level=%s", logLevel.toString()));
+        }
+        if (host != null) {
+          argsBuilder.add(String.format("--host=%s", host));
+        }
+        if (extractPath != null) {
+          argsBuilder.add(String.format("--extract-path=\"%s\"", extractPath.getAbsolutePath()));
+        }
+        if (silent != null && silent.equals(Boolean.TRUE)) {
+          argsBuilder.add("--silent");
+        }
+        if (forceCreateProcess != null && forceCreateProcess.equals(Boolean.TRUE)) {
+          argsBuilder.add(String.format("--force-createprocess"));
+          if (ieSwitches != null) {
+            argsBuilder.add(String.format("--ie-switches=\"%s\"", ieSwitches));
+          }
         }
 
         return new InternetExplorerDriverService(exe, port, argsBuilder.build(), environment);
