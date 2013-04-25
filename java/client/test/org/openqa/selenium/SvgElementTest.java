@@ -36,6 +36,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
+import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 @Ignore(value = {HTMLUNIT, IE, OPERA, OPERA_MOBILE},
         reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
@@ -54,6 +55,11 @@ public class SvgElementTest extends JUnit4TestBase {
     if (isFirefox30(driver) && isNativeEventsEnabled(driver)) {
       System.out.println("Not testing SVG elements with Firefox 3.0 and native events as" +
                          " this functionality is not working.");
+      return;
+    }
+
+    if (isOldIe(driver)) {
+      System.err.println("IE version < 9 doesn't support SVG");
       return;
     }
 
@@ -85,6 +91,11 @@ public class SvgElementTest extends JUnit4TestBase {
 
   @Test
   public void testShouldClickOnGraphTextElements() {
+    if (isOldIe(driver)) {
+      System.err.println("IE version < 9 doesn't support SVG");
+      return;
+    }
+
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
     List<WebElement> textElements = svg.findElements(By.cssSelector("text"));

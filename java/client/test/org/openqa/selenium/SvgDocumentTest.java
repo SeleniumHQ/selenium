@@ -26,14 +26,18 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE},
         reason = "HtmlUnit: SVG interaction is only implemented in rendered browsers")
 public class SvgDocumentTest extends JUnit4TestBase {
 
   @Test
-  @Ignore(IE)
   public void testClickOnSvgElement() {
+    if (isOldIe(driver)) {
+      System.err.println("IE version < 9 doesn't support SVG");
+      return;
+    }
     driver.get(pages.svgTestPage);
     WebElement rect = driver.findElement(By.id("rect"));
 
@@ -44,6 +48,10 @@ public class SvgDocumentTest extends JUnit4TestBase {
 
   @Test
   public void testExecuteScriptInSvgDocument() {
+    if (isOldIe(driver)) {
+      System.err.println("IE version < 9 doesn't support SVG");
+      return;
+    }
     driver.get(pages.svgTestPage);
     WebElement rect = driver.findElement(By.id("rect"));
 
