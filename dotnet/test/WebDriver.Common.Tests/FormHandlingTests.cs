@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -73,7 +74,17 @@ namespace OpenQA.Selenium
         {
             driver.Url = javascriptPage;
             IWebElement textarea = driver.FindElement(By.Id("keyUpArea"));
-            String cheesey = "Brie and cheddar";
+            string cheesey = "Brie and cheddar";
+            textarea.SendKeys(cheesey);
+            Assert.AreEqual(textarea.GetAttribute("value"), cheesey);
+        }
+
+        [Test]
+        public void SendKeysKeepsCapitalization()
+        {
+            driver.Url = javascriptPage;
+            IWebElement textarea = driver.FindElement(By.Id("keyUpArea"));
+            string cheesey = "BrIe And CheDdar";
             textarea.SendKeys(cheesey);
             Assert.AreEqual(textarea.GetAttribute("value"), cheesey);
         }
@@ -129,6 +140,32 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             IWebElement uploadElement = driver.FindElement(By.Id("upload"));
             Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
+
+            System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
+            System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
+            inputFileWriter.WriteLine("Hello world");
+            inputFileWriter.Close();
+
+            uploadElement.SendKeys(inputFile.FullName);
+
+            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElement.GetAttribute("value"));
+            Assert.AreEqual(inputFile.Name, outputFile.Name);
+            inputFile.Delete();
+        }
+
+        [Test]
+        public void ShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
+        {
+            // IE before 9 doesn't handle pages served with an XHTML content type, and just prompts for to
+            // download it
+            if (TestUtilities.IsOldIE(driver))
+            {
+                return;
+            }
+
+            driver.Url = xhtmlFormPage;
+            IWebElement uploadElement = driver.FindElement(By.Id("file"));
+            Assert.AreEqual(string.Empty, uploadElement.GetAttribute("value"));
 
             System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
@@ -246,6 +283,81 @@ namespace OpenQA.Selenium
             value = element.GetAttribute("value");
 
             Assert.AreEqual(value.Length, 0);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "Untested")]
+        [IgnoreBrowser(Browser.Chrome, "Fails on Chrome, issue #3508")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Untested")]
+        [IgnoreBrowser(Browser.IE, "Fails on IE, issue #3508")]
+        [IgnoreBrowser(Browser.IPhone, "Untested")]
+        [IgnoreBrowser(Browser.Opera, "Untested")]
+        [IgnoreBrowser(Browser.PhantomJS, "Untested")]
+        [IgnoreBrowser(Browser.Safari, "Untested")]
+        public void HandleFormWithJavascriptAction()
+        {
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("form_handling_js_submit.html");
+            driver.Url = url;
+            IWebElement element = driver.FindElement(By.Id("theForm"));
+            element.Submit();
+            IAlert alert = driver.SwitchTo().Alert();
+            string text = alert.Text;
+            alert.Dismiss();
+
+            Assert.AreEqual("Tasty cheese", text);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "Untested")]
+        [IgnoreBrowser(Browser.IPhone, "Untested")]
+        [IgnoreBrowser(Browser.Safari, "Untested")]
+        public void CanClickOnASubmitButton()
+        {
+            CheckSubmitButton("internal_explicit_submit");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "Untested")]
+        [IgnoreBrowser(Browser.IPhone, "Untested")]
+        [IgnoreBrowser(Browser.Safari, "Untested")]
+        public void CanClickOnAnImplicitSubmitButton()
+        {
+            CheckSubmitButton("internal_implicit_submit");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "Untested")]
+        [IgnoreBrowser(Browser.IPhone, "Untested")]
+        [IgnoreBrowser(Browser.Safari, "Untested")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Fails on HtmlUnit")]
+        [IgnoreBrowser(Browser.IE, "Fails on IE")]
+        public void CanClickOnAnExternalSubmitButton()
+        {
+            CheckSubmitButton("external_explicit_submit");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "Untested")]
+        [IgnoreBrowser(Browser.IPhone, "Untested")]
+        [IgnoreBrowser(Browser.Safari, "Untested")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Fails on HtmlUnit")]
+        [IgnoreBrowser(Browser.IE, "Fails on IE")]
+        public void CanClickOnAnExternalImplicitSubmitButton()
+        {
+            CheckSubmitButton("external_implicit_submit");
+        }
+
+        private void CheckSubmitButton(string buttonId)
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/html5_submit_buttons.html");
+            string name = "Gromit";
+
+            driver.FindElement(By.Id("name")).SendKeys(name);
+            driver.FindElement(By.Id(buttonId)).Click();
+
+            WaitFor(TitleToBe("Submitted Successfully!"));
+
+            Assert.That(driver.Url.Contains("name=" + name), "URL does not contain 'name=" + name + "'. Actual URL:" + driver.Url);
         }
 
         private Func<bool> TitleToBe(string desiredTitle)
