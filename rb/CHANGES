@@ -1,6 +1,9 @@
 2.33.0 (???)
 ============
 
+Remote:
+  * Support rotating devices, such iPhone & iPad in simulator and Android browser in emulator
+
 2.32.1 (2013-04-11)
 ===================
 
