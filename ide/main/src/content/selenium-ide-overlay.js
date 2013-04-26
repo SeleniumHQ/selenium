@@ -267,6 +267,22 @@ SeleniumIDE.Overlay.init = function() {
                 SeleniumIDE.Overlay.onLoad(event);
             }, true);
     }
-}
+
+  //Add the Selenium IDE Toolbar button on the first run
+  addEventListener('load', function() {
+    removeEventListener('load', arguments.callee, false);
+    Application.getExtensions(function (extensions) {
+      var extension = extensions.get('{a6fd85ed-e919-4a43-a5af-8da18bda539f}');
+      if (extension.firstRun) {
+        if (!document.getElementById('selenium-ide-button')) {
+          var toolbar = document.getElementById('nav-bar');
+          toolbar.insertItem('selenium-ide-button', null, null, false);
+          toolbar.setAttribute("currentset", toolbar.currentSet);
+          document.persist(toolbar.id, "currentset");
+        }
+      }
+    });
+  }, false);
+};
 
 SeleniumIDE.Overlay.init();

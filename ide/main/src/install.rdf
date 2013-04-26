@@ -15,13 +15,12 @@
         <em:optionsURL>chrome://selenium-ide/content/optionsDialog.xul</em:optionsURL>
         <em:updateURL>https://addons.seleniumhq.org/se-ide/update.rdf</em:updateURL>
         <em:iconURL>chrome://selenium-ide/content/images/selenium-ide-logo32.png</em:iconURL>
-        <em:unpack>true</em:unpack>
 
         <em:targetApplication>
           <Description>
             <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id> <!-- firefox -->
             <em:minVersion>3.6.*</em:minVersion>
-            <em:maxVersion>18.*</em:maxVersion>
+            <em:maxVersion>20.*</em:maxVersion>
           </Description>
         </em:targetApplication>
 
