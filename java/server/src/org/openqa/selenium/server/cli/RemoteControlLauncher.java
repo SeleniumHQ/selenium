@@ -22,6 +22,7 @@ import org.openqa.selenium.server.InjectionHelper;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
+import java.io.PrintStream;
 
 /**
  * Parse Remote Control Launcher Options
@@ -30,7 +31,7 @@ public class RemoteControlLauncher {
 
   public static void usage(String msg) {
     if (msg != null) {
-      System.err.println(msg + ":");
+      System.out.println(msg + ":");
     }
     String INDENT = "  ";
     String INDENT2X = INDENT + INDENT;
@@ -289,18 +290,18 @@ public class RemoteControlLauncher {
   }
 
   public static void printWrappedErrorLine(String prefix, String msg) {
-    printWrappedErrorLine(prefix, msg, true);
+    printWrappedLine(System.err, prefix, msg, true);
   }
 
-  public static void printWrappedErrorLine(String prefix, String msg, boolean first) {
-    System.err.print(prefix);
+  public static void printWrappedLine(PrintStream output, String prefix, String msg, boolean first) {
+    output.print(prefix);
     if (!first) {
-      System.err.print("  ");
+      output.print("  ");
     }
     int defaultWrap = 70;
     int wrap = defaultWrap - prefix.length();
     if (wrap > msg.length()) {
-      System.err.println(msg);
+      output.println(msg);
       return;
     }
     String lineRaw = msg.substring(0, wrap);
@@ -309,8 +310,8 @@ public class RemoteControlLauncher {
       spaceIndex = lineRaw.length();
     }
     String line = lineRaw.substring(0, spaceIndex);
-    System.err.println(line);
-    printWrappedErrorLine(prefix, msg.substring(spaceIndex + 1), false);
+    output.println(line);
+    printWrappedLine(output, prefix, msg.substring(spaceIndex + 1), false);
   }
 
   public static void setSystemProperty(String arg) {
