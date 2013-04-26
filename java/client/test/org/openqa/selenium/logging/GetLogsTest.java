@@ -21,7 +21,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assume.assumeTrue;
 
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -29,6 +28,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
 
 import org.junit.After;
 import org.junit.Test;
@@ -39,6 +39,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.HashMap;
@@ -46,7 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-@Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+@Ignore({ANDROID, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
 public class GetLogsTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
@@ -61,7 +62,8 @@ public class GetLogsTest extends JUnit4TestBase {
 
   @Test
   public void logBufferShouldBeResetAfterEachGetLogCall() {
-    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
+  	assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
+  	Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     for (String logType : logTypes) {
       driver.get(pages.simpleTestPage);
       LogEntries firstEntries = driver.manage().logs().get(logType);
@@ -75,6 +77,7 @@ public class GetLogsTest extends JUnit4TestBase {
   
   @Test
   public void differentLogsShouldNotContainTheSameLogEntries() {
+  	assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
     driver.get(pages.simpleTestPage);
     Map<String, LogEntries> logTypeToEntriesMap = new HashMap<String, LogEntries>();
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
@@ -96,6 +99,7 @@ public class GetLogsTest extends JUnit4TestBase {
   @Test
   @NeedsLocalEnvironment
   public void turningOffLogShouldMeanNoLogMessages() {
+  	assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     for (String logType : logTypes) {
       createWebDriverWithLogging(logType, Level.OFF);

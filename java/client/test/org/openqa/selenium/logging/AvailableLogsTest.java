@@ -42,7 +42,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
-@Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+@Ignore({ANDROID, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
 public class AvailableLogsTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
@@ -56,6 +56,7 @@ public class AvailableLogsTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore({CHROME})  // Remove when chromedriver2 has it + use assumeFalse(isOldChromedriver()).
   public void browserLogShouldBeEnabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertTrue("Browser logs should be enabled by default",
@@ -82,6 +83,7 @@ public class AvailableLogsTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore({CHROME})  // Remove when chromedriver2 has it + use assumeFalse(isOldChromedriver()).
   public void driverLogShouldBeEnabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertTrue("Remote driver logs should be enabled by default",
@@ -96,6 +98,7 @@ public class AvailableLogsTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore({CHROME})  // Profiler log is getting deprecated, chromedriver2 will not implement.
   public void shouldBeAbleToEnableProfilerLog() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(ENABLE_PROFILING_CAPABILITY, true);

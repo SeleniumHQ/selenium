@@ -21,6 +21,8 @@ import static org.junit.Assume.assumeTrue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.junit.Before;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
@@ -91,7 +93,30 @@ public class TestUtilities {
     return isFirefox(driver)
         && getUserAgent(driver).contains("Firefox/9.0");
   }
-  
+
+  public static boolean isOldChromedriver(WebDriver driver) {
+    Capabilities caps;
+    try {
+      caps = ((HasCapabilities) driver).getCapabilities();
+    } catch (ClassCastException e) {
+      // Driver does not support capabilities -- not a chromedriver at all.
+      return false;
+    }
+    String chromedriverVersion = (String) caps.getCapability("chrome.chromedriverVersion");
+    if (chromedriverVersion != null) {
+      String[] versionMajorMinor = chromedriverVersion.split("\\.", 2);
+      if (versionMajorMinor.length > 1) {
+        try {
+          return 20 < Long.parseLong(versionMajorMinor[0]);
+        } catch (NumberFormatException e) {
+          // First component of the version is not a number -- not a chromedriver.
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+
   /**
    * Finds the Firefox version of the given webdriver and returns it as an integer. 
    * For instance, '14.0.1' will translate to 14.
