@@ -80,7 +80,8 @@ module Selenium
             DriverExtensions::HasInputDevices,
             DriverExtensions::UploadsFiles,
             DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasSessionId
+            DriverExtensions::HasSessionId,
+            DriverExtensions::Rotatable
           ]
         end
 
@@ -469,6 +470,14 @@ module Selenium
                                    :yoffset => down_by,
                                    :speed   => speed
 
+        end
+
+        def setScreenOrientation(orientation)
+          execute :setScreenOrientation, {}, :orientation => orientation
+        end
+
+        def getScreenOrientation
+          execute :getScreenOrientation
         end
 
         #
