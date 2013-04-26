@@ -267,6 +267,7 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/window/$windowHandle/position'),
             Command.MAXIMIZE_WINDOW:
                 ('POST', '/session/$sessionId/window/$windowHandle/maximize'),
+            Command.SESSIONS: ('GET', '/sessions'),
             Command.SET_SCREEN_ORIENTATION:
                 ('POST', '/session/$sessionId/orientation'),
             Command.GET_SCREEN_ORIENTATION:
