@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.safari;
 
+import com.google.common.base.Optional;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -60,6 +62,13 @@ public class SafariDriver extends RemoteWebDriver
    */
   public static final String DATA_DIR_CAPABILITY = "safari.dataDir";
 
+  /**
+   * Boolean capability that specifies whether to skip installing the SafariDriver extension.
+   * When using this capability, a copy of the extension must be pre-installed with Safari or
+   * the driver will not function.
+   */
+  public static final String NO_INSTALL_EXTENSION_CAPABILITY = "safari.extension.noInstall";
+
   public SafariDriver() {
     this(DesiredCapabilities.safari());
   }
@@ -68,18 +77,25 @@ public class SafariDriver extends RemoteWebDriver
     super(
         new SafariDriverCommandExecutor(
             0, desiredCapabilities.is(CLEAN_SESSION_CAPABILITY),
-            new SafariDriverExtension(dataDirOrNull(desiredCapabilities))),
+            new SafariDriverExtension(
+                dataDir(desiredCapabilities),
+                installExtension(desiredCapabilities))),
         desiredCapabilities);
   }
 
-  private static File dataDirOrNull(Capabilities capabilities) {
+  private static boolean installExtension(Capabilities capabilities) {
+    return !capabilities.is(NO_INSTALL_EXTENSION_CAPABILITY);
+  }
+
+  private static Optional<File> dataDir(Capabilities capabilities) {
     Object cap = capabilities.getCapability(DATA_DIR_CAPABILITY);
+    File dir = null;
     if (cap instanceof String) {
-      return new File((String) cap);
+      dir = new File((String) cap);
     } else if (cap instanceof File) {
-      return (File) cap;
+      dir = (File) cap;
     }
-    return null;
+    return Optional.fromNullable(dir);
   }
 
   @Override
