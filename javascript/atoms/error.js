@@ -21,8 +21,6 @@
 goog.provide('bot.Error');
 goog.provide('bot.ErrorCode');
 
-goog.require('goog.object');
-
 
 /**
  * Error codes from the WebDriver wire protocol:
@@ -57,7 +55,11 @@ bot.ErrorCode = {
   INVALID_SELECTOR_ERROR: 32,
   SESSION_NOT_CREATED: 33,
   MOVE_TARGET_OUT_OF_BOUNDS: 34,
-  SQL_DATABASE_ERROR: 35
+  SQL_DATABASE_ERROR: 35,
+  INVALID_XPATH_SELECTOR: 51,
+  INVALID_XPATH_SELECTOR_RETURN_TYPE: 52,
+  // The following error codes are derived straight from HTTP return codes.
+  METHOD_NOT_ALLOWED: 405
 };
 
 
@@ -80,12 +82,23 @@ bot.Error = function(code, opt_message) {
    */
   this.code = code;
 
+  /** @type {string} */
+  this.state =
+      bot.Error.CODE_TO_STATE_[code] || bot.Error.State.UNKNOWN_ERROR;
+
   /** @override */
   this.message = opt_message || '';
 
+  var name = this.state.replace(/((?:^|\s+)[a-z])/g, function(str) {
+    return str.toUpperCase().trim();
+  });
+  var l = name.length - 'Error'.length;
+  if (l < 0 || name.indexOf('Error', l) != l) {
+    name += 'Error';
+  }
+
   /** @override */
-  this.name = (/**@type {string}*/ bot.Error.NAMES_[code] ||
-      bot.Error.NAMES_[bot.ErrorCode.UNKNOWN_ERROR]);
+  this.name = name;
 
   // Generate a stacktrace for our custom error; ensure the error has our
   // custom name and message so the stack prints correctly in all browsers.
@@ -99,29 +112,76 @@ goog.inherits(bot.Error, Error);
 
 
 /**
- * A map of error codes to error names.
- * @const
- * @private {!Object.<string>}
+ * Status strings enumerated in the W3C WebDriver working draft.
+ * @enum {string}
+ * @see http://www.w3.org/TR/webdriver/#status-codes
  */
-bot.Error.NAMES_ = goog.object.create(
-    bot.ErrorCode.NO_SUCH_ELEMENT, 'NoSuchElementError',
-    bot.ErrorCode.NO_SUCH_FRAME, 'NoSuchFrameError',
-    bot.ErrorCode.UNKNOWN_COMMAND, 'UnknownCommandError',
-    bot.ErrorCode.STALE_ELEMENT_REFERENCE, 'StaleElementReferenceError',
-    bot.ErrorCode.ELEMENT_NOT_VISIBLE, 'ElementNotVisibleError',
-    bot.ErrorCode.INVALID_ELEMENT_STATE, 'InvalidElementStateError',
-    bot.ErrorCode.UNKNOWN_ERROR, 'UnknownError',
-    bot.ErrorCode.ELEMENT_NOT_SELECTABLE, 'ElementNotSelectableError',
-    bot.ErrorCode.XPATH_LOOKUP_ERROR, 'XPathLookupError',
-    bot.ErrorCode.NO_SUCH_WINDOW, 'NoSuchWindowError',
-    bot.ErrorCode.INVALID_COOKIE_DOMAIN, 'InvalidCookieDomainError',
-    bot.ErrorCode.UNABLE_TO_SET_COOKIE, 'UnableToSetCookieError',
-    bot.ErrorCode.MODAL_DIALOG_OPENED, 'ModalDialogOpenedError',
-    bot.ErrorCode.NO_MODAL_DIALOG_OPEN, 'NoModalDialogOpenError',
-    bot.ErrorCode.SCRIPT_TIMEOUT, 'ScriptTimeoutError',
-    bot.ErrorCode.INVALID_SELECTOR_ERROR, 'InvalidSelectorError',
-    bot.ErrorCode.SQL_DATABASE_ERROR, 'SqlDatabaseError',
-    bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, 'MoveTargetOutOfBoundsError');
+bot.Error.State = {
+  ELEMENT_NOT_SELECTABLE: 'element not selectable',
+  ELEMENT_NOT_VISIBLE: 'element not visible',
+  IME_ENGINE_ACTIVATION_FAILED: 'ime engine activation failed',
+  IME_NOT_AVAILABLE: 'ime not available',
+  INVALID_COOKIE_DOMAIN: 'invalid cookie domain',
+  INVALID_ELEMENT_COORDINATES: 'invalid element coordinates',
+  INVALID_ELEMENT_STATE: 'invalid element state',
+  INVALID_SELECTOR: 'invalid selector',
+  JAVASCRIPT_ERROR: 'javascript error',
+  MOVE_TARGET_OUT_OF_BOUNDS: 'move target out of bounds',
+  NO_SUCH_ALERT: 'no such alert',
+  NO_SUCH_DOM: 'no such dom',
+  NO_SUCH_ELEMENT: 'no such element',
+  NO_SUCH_FRAME: 'no such frame',
+  NO_SUCH_WINDOW: 'no such window',
+  SCRIPT_TIMEOUT: 'script timeout',
+  SESSION_NOT_CREATED: 'session not created',
+  STALE_ELEMENT_REFERENCE: 'stale element reference',
+  SUCCESS: 'success',
+  TIMEOUT: 'timeout',
+  UNABLE_TO_SET_COOKIE: 'unable to set cookie',
+  UNEXPECTED_ALERT_OPEN: 'unexpected alert open',
+  UNKNOWN_COMMAND: 'unknown command',
+  UNKNOWN_ERROR: 'unknown error',
+  UNSUPPORTED_OPERATION: 'unsupported operation'
+};
+
+
+/**
+ * A map of error codes to state string.
+ * @private {!Object.<bot.ErrorCode, bot.Error.State>}
+ */
+bot.Error.CODE_TO_STATE_ = {};
+goog.scope(function() {
+  var map = bot.Error.CODE_TO_STATE_;
+  var code = bot.ErrorCode;
+  var state = bot.Error.State;
+
+  map[code.ELEMENT_NOT_SELECTABLE] = state.ELEMENT_NOT_SELECTABLE;
+  map[code.ELEMENT_NOT_VISIBLE] = state.ELEMENT_NOT_VISIBLE;
+  map[code.IME_ENGINE_ACTIVATION_FAILED] = state.IME_ENGINE_ACTIVATION_FAILED;
+  map[code.IME_NOT_AVAILABLE] = state.IME_NOT_AVAILABLE;
+  map[code.INVALID_COOKIE_DOMAIN] = state.INVALID_COOKIE_DOMAIN;
+  map[code.INVALID_ELEMENT_COORDINATES] = state.INVALID_ELEMENT_COORDINATES;
+  map[code.INVALID_ELEMENT_STATE] = state.INVALID_ELEMENT_STATE;
+  map[code.INVALID_SELECTOR_ERROR] = state.INVALID_SELECTOR;
+  map[code.INVALID_XPATH_SELECTOR] = state.INVALID_SELECTOR;
+  map[code.INVALID_XPATH_SELECTOR_RETURN_TYPE] = state.INVALID_SELECTOR;
+  map[code.JAVASCRIPT_ERROR] = state.JAVASCRIPT_ERROR;
+  map[code.METHOD_NOT_ALLOWED] = state.UNSUPPORTED_OPERATION;
+  map[code.MOVE_TARGET_OUT_OF_BOUNDS] = state.MOVE_TARGET_OUT_OF_BOUNDS;
+  map[code.NO_MODAL_DIALOG_OPEN] = state.NO_SUCH_ALERT;
+  map[code.NO_SUCH_ELEMENT] = state.NO_SUCH_ELEMENT;
+  map[code.NO_SUCH_FRAME] = state.NO_SUCH_FRAME;
+  map[code.NO_SUCH_WINDOW] = state.NO_SUCH_WINDOW;
+  map[code.SCRIPT_TIMEOUT] = state.SCRIPT_TIMEOUT;
+  map[code.SESSION_NOT_CREATED] = state.SESSION_NOT_CREATED;
+  map[code.STALE_ELEMENT_REFERENCE] = state.STALE_ELEMENT_REFERENCE;
+  map[code.SUCCESS] = state.SUCCESS;
+  map[code.TIMEOUT] = state.TIMEOUT;
+  map[code.UNABLE_TO_SET_COOKIE] = state.UNABLE_TO_SET_COOKIE;
+  map[code.MODAL_DIALOG_OPENED] = state.UNEXPECTED_ALERT_OPEN;
+  map[code.UNKNOWN_ERROR] = state.UNKNOWN_ERROR;
+  map[code.UNSUPPORTED_OPERATION] = state.UNKNOWN_COMMAND;
+});  // goog.scope
 
 
 /**
