@@ -381,6 +381,14 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieHasValue(key, value);
   }
 
+  @Test
+  public void testDeleteNotExistedCookie() {
+    String key = generateUniqueKey();
+    assertCookieIsNotPresentWithName(key);
+
+    driver.manage().deleteCookieNamed(key);
+  }
+
   private String generateUniqueKey() {
     return String.format("key_%d", random.nextInt());
   }
