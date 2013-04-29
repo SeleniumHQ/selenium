@@ -45,6 +45,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 @Ignore(value = {IPHONE, OPERA, ANDROID, OPERA_MOBILE, PHANTOMJS},
         reason = "Opera: not implemented yet")
@@ -232,6 +233,31 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
       executor.executeAsyncScript("throw Error('you should catch this!');");
       fail();
     } catch (WebDriverException expected) {
+    }
+  }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+  public void shouldCatchErrorsWithMessageAndStacktraceWhenExecutingInitialScript() {
+    driver.get(pages.ajaxyPage);
+    String js = "function functionB() { throw Error('errormessage'); };"
+                + "function functionA() { functionB(); };"
+                + "functionA();";
+    try {
+      executor.executeAsyncScript(js);
+      fail("Expected an exception");
+    } catch (WebDriverException e) {
+      assertTrue(e.getMessage(), e.getMessage().contains("errormessage"));
+
+      StackTraceElement [] st = e.getCause().getStackTrace();
+      boolean seen = false;
+      for (StackTraceElement s: st) {
+        if (s.getMethodName().equals("functionB")) {
+          seen = true;
+        }
+      }
+      assertTrue("Stacktrace has not js method info", seen);
     }
   }
 

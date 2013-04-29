@@ -352,6 +352,7 @@ js_library(name = "timer",
 js_library(name = "utils",
   srcs = [ "js/utils.js" ],
   deps = [
+    ":error",
     ":firefox_utils",
     ":logging",
     ":moz",

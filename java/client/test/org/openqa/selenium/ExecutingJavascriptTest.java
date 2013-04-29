@@ -50,6 +50,11 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 public class ExecutingJavascriptTest extends JUnit4TestBase {
 
@@ -306,11 +311,43 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     try {
       executeScript("return squiggle();");
       fail("Expected an exception");
-    } catch (Exception e) {
+    } catch (WebDriverException e) {
       // This is expected
       assertFalse(e.getMessage(), e.getMessage().startsWith("null "));
     }
   }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+  public void testShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad() {
+    if (!(driver instanceof JavascriptExecutor)) {
+      return;
+    }
+
+    driver.get(pages.xhtmlTestPage);
+
+    String js = "function functionB() { throw Error('errormessage'); };"
+                + "function functionA() { functionB(); };"
+                + "functionA();";
+    try {
+      executeScript(js);
+      fail("Expected an exception");
+    } catch (WebDriverException e) {
+      assertTrue(e.getMessage(), e.getMessage().contains("errormessage"));
+
+      StackTraceElement [] st = e.getCause().getStackTrace();
+      boolean seen = false;
+      for (StackTraceElement s: st) {
+        if (s.getMethodName().equals("functionB")) {
+          seen = true;
+        }
+      }
+      assertTrue("Stacktrace has not js method info", seen);
+    }
+  }
+
+
 
   @JavascriptEnabled
   @Test

@@ -26,6 +26,7 @@ goog.require('bot.userAgent');
 goog.require('fxdriver.logging');
 goog.require('fxdriver.moz');
 goog.require('fxdriver.utils');
+goog.require('fxdriver.error');
 goog.require('goog.dom');
 goog.require('goog.string');
 goog.require('goog.style');
@@ -938,7 +939,12 @@ Utils.wrapResult = function(result, doc) {
       try {
         // There's got to be a better way, but 'result instanceof Error' returns false
         if (Object.getPrototypeOf(result) != null && goog.string.endsWith(Object.getPrototypeOf(result).toString(), 'Error')) {
-          return result.toString();
+          try {
+            return fxdriver.error.toJSON(result);
+          } catch (ignored2) {
+            fxdriver.logging.info(ignored2);
+            return result.toString();
+          }
         }
       } catch (ignored) {
         fxdriver.logging.info(ignored);
