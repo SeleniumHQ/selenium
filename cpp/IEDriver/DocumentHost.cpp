@@ -404,14 +404,14 @@ bool DocumentHost::IsStandardsMode(IHTMLDocument2* doc) {
   CComPtr<IHTMLDocument5> compatibility_mode_doc;
   doc->QueryInterface<IHTMLDocument5>(&compatibility_mode_doc);
   if (!compatibility_mode_doc) {
-    LOG(WARN) << L"Unable to cast document to IHTMLDocument5. IE6 or greater is required.";
+    LOG(WARN) << "Unable to cast document to IHTMLDocument5. IE6 or greater is required.";
     return false;
   }
 
   CComBSTR compatibility_mode;
   HRESULT hr = compatibility_mode_doc->get_compatMode(&compatibility_mode);
   if (FAILED(hr)) {
-    LOGHR(WARN, hr) << L"Failed calling get_compatMode.";
+    LOGHR(WARN, hr) << "Failed calling get_compatMode.";
     return false;
   }
   // Compatibility mode should be "BackCompat" for quirks mode, and
@@ -438,21 +438,21 @@ bool DocumentHost::GetDocumentDimensions(IHTMLDocument2* doc, LocationInfo* info
     CComPtr<IHTMLDocument3> document_element_doc;
     doc->QueryInterface<IHTMLDocument3>(&document_element_doc);
     if (!document_element_doc) {
-      LOG(WARN) << L"Unable to get IHTMLDocument3 handle from document.";
+      LOG(WARN) << "Unable to get IHTMLDocument3 handle from document.";
       return false;
     }
 
     // The root node should be the HTML element.
     document_element_doc->get_documentElement(&canvas_element);
     if (!canvas_element) {
-      LOG(WARN) << L"Could not retrieve document element.";
+      LOG(WARN) << "Could not retrieve document element.";
       return false;
     }
 
     CComPtr<IHTMLHtmlElement> html_element;
     canvas_element->QueryInterface<IHTMLHtmlElement>(&html_element);
     if (!html_element) {
-      LOG(WARN) << L"Document element is not the HTML element.";
+      LOG(WARN) << "Document element is not the HTML element.";
       return false;
     }
   }

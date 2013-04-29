@@ -123,13 +123,13 @@ class ScreenshotCommandHandler : public IECommandHandler {
     // the browser window to greater than 65536 x 65536. This is pretty
     // big, so we'll cap the allowable screenshot size to that.
     if (max_height > 65536) {
-      LOG(WARN) << L"Height greater than 65536 pixels. Truncating screenshot height to 65536.";
+      LOG(WARN) << "Height greater than 65536 pixels. Truncating screenshot height to 65536.";
       max_height = 65536;
       document_info.height = max_height - chrome_height;
     }
 
     if (max_width > 65536) {
-      LOG(WARN) << L"Width greater than 65536 pixels. Truncating screenshot width to 65536.";
+      LOG(WARN) << "Width greater than 65536 pixels. Truncating screenshot width to 65536.";
       max_width = 65536;
       document_info.width = max_width - chrome_width;
     }
@@ -165,7 +165,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
                                       device_context_handle,
                                       PW_CLIENTONLY);
     if (!print_result) {
-      LOG(WARN) << L"PrintWindow API returned FALSE";
+      LOG(WARN) << "PrintWindow API returned FALSE";
     }
 
     this->UninstallWindowsHook();
@@ -300,7 +300,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(::GetProcAddress(instance_handle,
                                                                           "ScreenshotWndProc"));
     if (hook_procedure == NULL) {
-      LOG(WARN) << L"GetProcAddress return value was NULL";
+      LOG(WARN) << "GetProcAddress return value was NULL";
       return;
     }
     // Install the Windows hook.
@@ -311,7 +311,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
                                    thread_id);
     if (next_hook == NULL) {
       DWORD error = ::GetLastError();
-      LOG(WARN) << L"SetWindowsHookEx return value was NULL, actual error code was " << error;
+      LOG(WARN) << "SetWindowsHookEx return value was NULL, actual error code was " << error;
     }
   }
 

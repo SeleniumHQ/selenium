@@ -46,7 +46,7 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
       }
     }
 
-    LOG(DEBUG) << L"Using FindElement atom to locate element having "
+    LOG(DEBUG) << "Using FindElement atom to locate element having "
                << LOGWSTRING(mechanism) << " = "
                << LOGWSTRING(criteria);
     std::wstring sanitized_criteria = criteria;
@@ -135,7 +135,7 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
       }
     }
 
-    LOG(DEBUG) << L"Using FindElements atom to locate element having "
+    LOG(DEBUG) << "Using FindElements atom to locate element having "
                << LOGWSTRING(mechanism) << " = "
                << LOGWSTRING(criteria);
     std::wstring sanitized_criteria = criteria;
