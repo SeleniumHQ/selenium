@@ -314,4 +314,16 @@ public class ClickTest extends JUnit4TestBase {
 
     waitFor(WaitingConditions.pageTitleToBe(driver, "clicks"));
   }
+
+  @Test
+  public void testShouldBeAbleToClickOnRTLLanguageLink() {
+    String url = appServer.whereIs("click_rtl.html");
+    driver.get(url);
+
+    WebElement element = driver.findElement(By.id("ar_link"));
+    element.click();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "clicks"));
+  }
+
 }
