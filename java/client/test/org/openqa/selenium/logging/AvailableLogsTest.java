@@ -25,11 +25,13 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+import static org.openqa.selenium.testing.TestUtilities.isOldChromedriver;
 
 import java.util.Set;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -56,8 +58,9 @@ public class AvailableLogsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({CHROME})  // Remove when chromedriver2 has it + use assumeFalse(isOldChromedriver()).
+  @Ignore({CHROME})  // Remove when chromedriver2 has it
   public void browserLogShouldBeEnabledByDefault() {
+    assumeFalse(isOldChromedriver(driver));
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertTrue("Browser logs should be enabled by default",
                logTypes.contains(LogType.BROWSER));
@@ -65,7 +68,9 @@ public class AvailableLogsTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @Test
+  @Ignore({CHROME})  // Remove when chromedriver2 has it
   public void clientLogShouldBeEnabledByDefault() {
+    assumeFalse(isOldChromedriver(driver));
     // Do one action to have *something* in the client logs.
     driver.get(pages.formPage);
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
@@ -83,15 +88,18 @@ public class AvailableLogsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({CHROME})  // Remove when chromedriver2 has it + use assumeFalse(isOldChromedriver()).
+  @Ignore({CHROME})  // Remove when chromedriver2 has it
   public void driverLogShouldBeEnabledByDefault() {
+    assumeFalse(isOldChromedriver(driver));
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertTrue("Remote driver logs should be enabled by default",
                logTypes.contains(LogType.DRIVER));
   }
 
   @Test
+  @Ignore({CHROME})  // Remove when chromedriver2 has it
   public void profilerLogShouldBeDisabledByDefault() {
+    assumeFalse(isOldChromedriver(driver));
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertFalse("Profiler logs should not be enabled by default",
                 logTypes.contains(LogType.PROFILER));
