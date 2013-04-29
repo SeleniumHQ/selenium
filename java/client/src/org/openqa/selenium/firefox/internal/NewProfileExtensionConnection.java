@@ -52,6 +52,8 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
   private final Lock lock;
   private File profileDir;
 
+  private final static Object globalLock = new Object();
+
 
   private HttpCommandExecutor delegate;
 
@@ -69,63 +71,65 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
   public void start() throws IOException {
     int port = 0;
 
-    lock.lock(connectTimeout);
-    try {
-      port = determineNextFreePort(DEFAULT_PORT);
-      profile.setPreference(PORT_PREFERENCE, port);
+    synchronized (globalLock) {
+      lock.lock(connectTimeout);
+      try {
+        port = determineNextFreePort(DEFAULT_PORT);
+        profile.setPreference(PORT_PREFERENCE, port);
 
-      profileDir = profile.layoutOnDisk();
+        profileDir = profile.layoutOnDisk();
 
-      process.clean(profile, profileDir);
+        process.clean(profile, profileDir);
 
-      delegate = new HttpCommandExecutor(buildUrl(host, port));
-      delegate.setLocalLogs(logs);
-      String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
+        delegate = new HttpCommandExecutor(buildUrl(host, port));
+        delegate.setLocalLogs(logs);
+        String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
 
-      if (firefoxLogFile !=  null) {
-        if ("/dev/stdout".equals(firefoxLogFile)) {
-          process.setOutputWatcher(System.out);
-        } else {
-          File logFile = new File(firefoxLogFile);
-          process.setOutputWatcher(new CircularOutputStream(logFile, BUFFER_SIZE));
+        if (firefoxLogFile !=  null) {
+          if ("/dev/stdout".equals(firefoxLogFile)) {
+            process.setOutputWatcher(System.out);
+          } else {
+            File logFile = new File(firefoxLogFile);
+            process.setOutputWatcher(new CircularOutputStream(logFile, BUFFER_SIZE));
+          }
         }
+
+        process.startProfile(profile, profileDir, "-foreground");
+
+        // Just for the record; the critical section is all along while firefox is starting with the
+        // profile.
+
+        // There is currently no mechanism for the profile to notify us when it has started
+        // successfully and is ready for requests. Instead, we must loop until we're able to
+        // open a connection with the server, at which point it should be safe to continue
+        // (since the extension shouldn't accept connections until it is ready for requests).
+        long waitUntil = System.currentTimeMillis() + connectTimeout;
+        while (!isConnected()) {
+          if (waitUntil < System.currentTimeMillis()) {
+            throw new NotConnectedException(
+                delegate.getAddressOfRemoteServer(), connectTimeout, process.getConsoleOutput());
+          }
+
+          try {
+            Thread.sleep(100);
+          } catch (InterruptedException ignored) {
+            // Do nothing
+          }
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+        throw new WebDriverException(
+            String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
+                process.toString(), port, process.getConsoleOutput()), e);
+      } catch (WebDriverException e) {
+        throw new WebDriverException(
+            String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
+                process.toString(), port, process.getConsoleOutput()), e);
+      } catch (Exception e) {
+        throw new WebDriverException(e);
+      } finally {
+        lock.unlock();
       }
-
-      process.startProfile(profile, profileDir, "-foreground");
-
-      // Just for the record; the critical section is all along while firefox is starting with the
-      // profile.
-
-      // There is currently no mechanism for the profile to notify us when it has started
-      // successfully and is ready for requests. Instead, we must loop until we're able to
-      // open a connection with the server, at which point it should be safe to continue
-      // (since the extension shouldn't accept connections until it is ready for requests).
-      long waitUntil = System.currentTimeMillis() + connectTimeout;
-      while (!isConnected()) {
-        if (waitUntil < System.currentTimeMillis()) {
-          throw new NotConnectedException(
-              delegate.getAddressOfRemoteServer(), connectTimeout, process.getConsoleOutput());
-        }
-
-        try {
-          Thread.sleep(100);
-        } catch (InterruptedException ignored) {
-          // Do nothing
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-      throw new WebDriverException(
-          String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
-              process.toString(), port, process.getConsoleOutput()), e);
-    } catch (WebDriverException e) {
-      throw new WebDriverException(
-          String.format("Failed to connect to binary %s on port %d; process output follows: \n%s",
-              process.toString(), port, process.getConsoleOutput()), e);
-    } catch (Exception e) {
-      throw new WebDriverException(e);
-    } finally {
-      lock.unlock();
     }
   }
 
