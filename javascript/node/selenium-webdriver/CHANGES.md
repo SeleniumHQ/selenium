@@ -1,5 +1,6 @@
 ## v2.33.0-dev
 
+* Added support for WebDriver's logging API
 * FIXED: 5511: Added webdriver.manage().timeouts().pageLoadTimeout(ms)
 
 ## v2.32.1

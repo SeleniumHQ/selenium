@@ -214,7 +214,9 @@ webdriver.CommandName = {
   TOUCH_LONG_PRESS: 'touchLongPress',
   TOUCH_FLICK: 'touchFlick',
 
-  GET_LOGS: 'getLogs'
+  GET_AVAILABLE_LOG_TYPES: 'getAvailableLogTypes',
+  GET_LOG: 'getLog',
+  GET_SESSION_LOGS: 'getSessionLogs'
 };
 
 

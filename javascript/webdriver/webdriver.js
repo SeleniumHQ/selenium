@@ -32,6 +32,7 @@ goog.require('webdriver.CommandName');
 goog.require('webdriver.Key');
 goog.require('webdriver.Locator');
 goog.require('webdriver.Session');
+goog.require('webdriver.logging');
 goog.require('webdriver.promise');
 
 
@@ -1040,6 +1041,15 @@ webdriver.WebDriver.Options.prototype.getCookie = function(name) {
 
 
 /**
+ * @return {!webdriver.WebDriver.Logs} The interface for managing driver
+ *     logs.
+ */
+webdriver.WebDriver.Options.prototype.logs = function() {
+  return new webdriver.WebDriver.Logs(this.driver_);
+};
+
+
+/**
  * @return {!webdriver.WebDriver.Timeouts} The interface for managing driver
  *     timeouts.
  */
@@ -1219,6 +1229,61 @@ webdriver.WebDriver.Window.prototype.maximize = function() {
       new webdriver.Command(webdriver.CommandName.MAXIMIZE_WINDOW).
           setParameter('windowHandle', 'current'),
       'WebDriver.manage().window().maximize()');
+};
+
+
+/**
+ * Interface for managing WebDriver log records.
+ * @param {!webdriver.WebDriver} driver The parent driver.
+ * @constructor
+ */
+webdriver.WebDriver.Logs = function(driver) {
+
+  /** @private {!webdriver.WebDriver} */
+  this.driver_ = driver;
+};
+
+
+/**
+ * Fetches available log entries for the given type.
+ *
+ * <p/>Note that log buffers are reset after each call, meaning that
+ * available log entries correspond to those entries not yet returned for a
+ * given log type. In practice, this means that this call will return the
+ * available log entries since the last call, or from the start of the
+ * session.
+ *
+ * @param {!webdriver.logging.Type} type The desired log type.
+ * @return {!webdriver.promise.Promise.<!Array.<!webdriver.logging.Entry>>} A
+ *   promise that will resolve to a list of log entries for the specified
+ *   type.
+ */
+webdriver.WebDriver.Logs.prototype.get = function(type) {
+  return this.driver_.schedule(
+      new webdriver.Command(webdriver.CommandName.GET_LOG).
+          setParameter('type', type),
+      'WebDriver.manage().logs().get(' + type + ')').
+      then(function(entries) {
+        return goog.array.map(entries, function(entry) {
+          if (!(entry instanceof webdriver.logging.Entry)) {
+            return new webdriver.logging.Entry(
+                entry['level'], entry['message'], entry['timestamp']);
+          }
+          return entry;
+        });
+      });
+};
+
+
+/**
+ * Retrieves the log types available to this driver.
+ * @return {!webdriver.promise.Promise.<!Array.<!webdriver.logging.Type>>} A
+ *     promise that will resolve to a list of available log types.
+ */
+webdriver.WebDriver.Logs.prototype.getAvailableLogTypes = function() {
+  return this.driver_.schedule(
+      new webdriver.Command(webdriver.CommandName.GET_AVAILABLE_LOG_TYPES),
+      'WebDriver.manage().logs().getAvailableLogTypes()');
 };
 
 

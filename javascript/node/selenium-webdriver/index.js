@@ -49,6 +49,7 @@ var submodules = {
     EventEmitter: base.require('webdriver.EventEmitter')
   },
   http: require('./http'),
+  logging: base.exportPublicApi('webdriver.logging'),
   promise: base.exportPublicApi('webdriver.promise'),
   stacktrace: base.exportPublicApi('webdriver.stacktrace')
 };

@@ -287,6 +287,10 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
           get('/session/:sessionId/alert_text')).
       put(webdriver.CommandName.SET_ALERT_TEXT,
           post('/session/:sessionId/alert_text')).
+      put(webdriver.CommandName.GET_LOG, post('/session/:sessionId/log')).
+      put(webdriver.CommandName.GET_AVAILABLE_LOG_TYPES,
+          get('/session/:sessionId/log/types')).
+      put(webdriver.CommandName.GET_SESSION_LOGS, post('/logs')).
       build();
 
   /** @constructor */

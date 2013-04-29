@@ -1,0 +1,103 @@
+// Copyright 2013 Selenium comitters
+// Copyright 2013 Software Freedom Conservancy
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+goog.provide('webdriver.logging');
+
+
+
+/**
+ * Logging levels.
+ * @enum {{value: number, name: string}}
+ */
+webdriver.logging.Level = {
+  ALL: {value: Number.MIN_VALUE, name: 'ALL'},
+  DEBUG: {value: 500, name: 'DEBUG'},
+  INFO: {value: 800, name: 'INFO'},
+  WARNING: {value: 900, name: 'WARNING'},
+  SEVERE: {value: 1000, name: 'SEVERE'},
+  OFF: {value: Number.MAX_VALUE, name: 'OFF'}
+};
+
+
+/**
+ * Common log types.
+ * @enum {string}
+ */
+webdriver.logging.Type = {
+  BROWSER: 'browser',
+  CLIENT: 'client',
+  DRIVER: 'driver',
+  PROFILER: 'profiler',
+  SERVER: 'server'
+};
+
+
+/**
+ * A single log entry.
+ * @param {(!webdriver.logging.Level|string)} level The entry level.
+ * @param {string} message The log message.
+ * @param {number=} opt_timestamp The time this entry was generated, in
+ *     milliseconds since 0:00:00, January 1, 1970 UTC. If omitted, the
+ *     current time will be used.
+ * @constructor
+ */
+webdriver.logging.Entry = function(level, message, opt_timestamp) {
+
+  /** @type {string} */
+  this.level = goog.isString(level) ? level : level.name;
+
+  /** @type {string} */
+  this.message = message;
+
+  /** @type {number} */
+  this.timestamp = goog.isNumber(opt_timestamp) ? opt_timestamp : goog.now();
+};
+
+
+/**
+ * @return {{level: string, message: string, timestamp: number}} The JSON
+ *     representation of this entry.
+ */
+webdriver.logging.Entry.prototype.toJSON = function() {
+  return {
+    'level': this.level,
+    'message': this.message,
+    'timestamp': this.timestamp
+  };
+};
+
+
+/**
+ * Converts a {@link goog.debug.LogRecord} into a
+ * {@link webdriver.logging.Entry}.
+ * @param {!goog.debug.LogRecord} logRecord The record to convert.
+ * @return {!webdriver.logging.Entry} The converted entry.
+ */
+webdriver.logging.Entry.fromClosureLogRecord = function(logRecord) {
+  var level = logRecord.getLevel();
+  if (level.value <= webdriver.logging.Level.DEBUG.value) {
+    level = webdriver.logging.Level.DEBUG;
+  } else if (level.value <= webdriver.logging.Level.INFO.value) {
+    level = webdriver.logging.Level.INFO;
+  } else if (level.value <= webdriver.logging.Level.WARNING.value) {
+    level = webdriver.logging.Level.WARNING;
+  } else {
+    level = webdriver.logging.Level.SEVERE;
+  }
+  return new webdriver.logging.Entry(
+      /** @type {!webdriver.logging.Level} */ (level),
+      '[' + logRecord.getLoggerName() + '] ' + logRecord.getMessage(),
+      logRecord.getMillis());
+};

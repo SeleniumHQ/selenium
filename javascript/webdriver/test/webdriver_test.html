@@ -30,6 +30,7 @@ limitations under the License.
     goog.require('webdriver.CommandName');
     goog.require('webdriver.WebDriver');
     goog.require('webdriver.Session');
+    goog.require('webdriver.logging');
     goog.require('webdriver.promise');
     goog.require('webdriver.promise.ControlFlow');
     goog.require('webdriver.promise.Deferred');
@@ -2055,6 +2056,37 @@ limitations under the License.
     });
 
     testHelper.execute();
+  }
+
+  function testFetchingLogs() {
+    var testHelper = TestHelper.
+        expectingSuccess().
+        expect(CName.GET_LOG, {'type': 'browser'}).
+        andReturnSuccess([
+          new webdriver.logging.Entry(
+              'INFO', 'hello', 1234),
+          {'level': 'DEBUG', 'message': 'abc123', 'timestamp': 5678}
+        ]).
+        replayAll();
+
+    var pair = callbackPair(function(entries) {
+      assertEquals(2, entries.length);
+
+      assertTrue(entries[0] instanceof webdriver.logging.Entry);
+      assertEquals('INFO', entries[0].level);
+      assertEquals('hello', entries[0].message);
+      assertEquals(1234, entries[0].timestamp);
+
+      assertTrue(entries[1] instanceof webdriver.logging.Entry);
+      assertEquals('DEBUG', entries[1].level);
+      assertEquals('abc123', entries[1].message);
+      assertEquals(5678, entries[1].timestamp);
+    });
+
+    var driver = testHelper.createDriver();
+    driver.manage().logs().get('browser').then(pair.callback, pair.errback);
+    testHelper.execute();
+    pair.assertCallback();
   }
   </script>
 </body>
