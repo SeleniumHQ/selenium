@@ -124,7 +124,7 @@ class ErrorHandler(object):
         else:
             exception_class = WebDriverException
         value = response['value']
-        if type(value) is str:
+        if isinstance(value, basestring):
             if exception_class == ErrorInResponseException:
                 raise exception_class(response, value)
             raise exception_class(value)
