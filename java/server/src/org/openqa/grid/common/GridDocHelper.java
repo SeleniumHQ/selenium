@@ -19,7 +19,11 @@ package org.openqa.grid.common;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.lang.System;
 import java.util.Properties;
+
+import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
 
 public class GridDocHelper {
@@ -65,31 +69,9 @@ public class GridDocHelper {
     System.out.println("Usage :");
     for (Object key : p.keySet()) {
       System.out.println(indent + "-" + key + ":\t");
-      printWrappedErrorLine(indent2x, getParam(p, key.toString()), true);
+      RemoteControlLauncher.printWrappedLine(System.out, indent2x, getParam(p, key.toString()), true);
       System.out.println("");
     }
-  }
-
-
-  public static void printWrappedErrorLine(String prefix, String msg, boolean first) {
-    System.err.print(prefix);
-    if (!first) {
-      System.err.print("  ");
-    }
-    int defaultWrap = 70;
-    int wrap = defaultWrap - prefix.length();
-    if (wrap > msg.length()) {
-      System.err.println(msg);
-      return;
-    }
-    String lineRaw = msg.substring(0, wrap);
-    int spaceIndex = lineRaw.lastIndexOf(' ');
-    if (spaceIndex == -1) {
-      spaceIndex = lineRaw.length();
-    }
-    String line = lineRaw.substring(0, spaceIndex);
-    System.err.println(line);
-    printWrappedErrorLine(prefix, msg.substring(spaceIndex + 1), false);
   }
 
   private static Properties load(String resource) {
