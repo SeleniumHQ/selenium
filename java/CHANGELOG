@@ -18,6 +18,7 @@ WebDriver:
     concurrent environments.
   * FIXED: 5045: Added support for fetching logs from SafariDriver.
   * FIXED: 5652: Adding unhandled alert text to the exception message.
+  * Added LogType.PERFORMANCE, supported in chromedriver2 0.9+.
 
 WebDriver JS:
   * FIXED: 5511: Implement
