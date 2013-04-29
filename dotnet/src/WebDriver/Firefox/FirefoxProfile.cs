@@ -425,6 +425,7 @@ namespace OpenQA.Selenium.Firefox
             AddDefaultPreference(prefs, "extensions.logging.enabled", "true");
             AddDefaultPreference(prefs, "extensions.update.enabled", "false");
             AddDefaultPreference(prefs, "extensions.update.notifyUser", "false");
+            AddDefaultPreference(prefs, "focusmanager.testmode", "true");
             AddDefaultPreference(prefs, "network.manage-offline-status", "false");
             AddDefaultPreference(prefs, "network.http.max-connections-per-server", "10");
             AddDefaultPreference(prefs, "network.http.phishy-userpass-length", "255");

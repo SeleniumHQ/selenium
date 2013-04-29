@@ -94,6 +94,7 @@ class FirefoxProfile(object):
         "webdriver_enable_native_events": "true",
         "webdriver_assume_untrusted_issuer": "true",
         "dom.max_script_run_time": "30",
+        "focusmanager.testmode": "true",
         }
 
     def __init__(self,profile_directory=None):
