@@ -62,8 +62,8 @@ public class GetLogsTest extends JUnit4TestBase {
 
   @Test
   public void logBufferShouldBeResetAfterEachGetLogCall() {
-  	assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
-  	Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
+    assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
+    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     for (String logType : logTypes) {
       driver.get(pages.simpleTestPage);
       LogEntries firstEntries = driver.manage().logs().get(logType);
@@ -77,7 +77,7 @@ public class GetLogsTest extends JUnit4TestBase {
   
   @Test
   public void differentLogsShouldNotContainTheSameLogEntries() {
-  	assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
+    assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
     driver.get(pages.simpleTestPage);
     Map<String, LogEntries> logTypeToEntriesMap = new HashMap<String, LogEntries>();
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
@@ -99,7 +99,7 @@ public class GetLogsTest extends JUnit4TestBase {
   @Test
   @NeedsLocalEnvironment
   public void turningOffLogShouldMeanNoLogMessages() {
-  	assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
+    assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     for (String logType : logTypes) {
       createWebDriverWithLogging(logType, Level.OFF);
