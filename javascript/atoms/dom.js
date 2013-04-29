@@ -573,7 +573,7 @@ bot.dom.isBodyScrollBarShown_ = function(bodyElement) {
  * @return {!goog.math.Size} The dimensions of the element.
  */
 bot.dom.getElementSize = function(element) {
-  if (goog.isFunction(element['getBBox'])) {
+  if (goog.isFunction(element['getBBox']) && !bot.dom.isElement(element, goog.dom.TagName.SVG)) {
     try {
       var bb = element['getBBox']();
       if (bb) {
