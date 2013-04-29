@@ -459,18 +459,11 @@
       bot.action.type(textBox, [LEFT, 'ghi', SHIFT, 'j'], keyboard,
                       persitModifierKeys);
 
-      expectedFailures.expectFailureFor(
-          goog.userAgent.GECKO &&
-              bot.userAgent.isProductVersion(10) &&
-              !bot.userAgent.isProductVersion(17),
-          'Selection is not updated on LEFT while shift is pressed');
-      expectedFailures.run(function() {
-        assertEquals('abcdEGHIj', textBox.value);
-        assertFalse(keyboard.isPressed(ALT));
-        assertFalse(keyboard.isPressed(CONTROL));
-        assertFalse(keyboard.isPressed(META));
-        assertFalse(keyboard.isPressed(SHIFT));
-      });
+      assertEquals('abcdEGHIj', textBox.value);
+      assertFalse(keyboard.isPressed(ALT));
+      assertFalse(keyboard.isPressed(CONTROL));
+      assertFalse(keyboard.isPressed(META));
+      assertFalse(keyboard.isPressed(SHIFT));
     }
 
     function browserImplementsDateInputWidget() {
