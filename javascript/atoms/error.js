@@ -90,7 +90,10 @@ bot.Error = function(code, opt_message) {
   this.message = opt_message || '';
 
   var name = this.state.replace(/((?:^|\s+)[a-z])/g, function(str) {
-    return str.toUpperCase().trim();
+    // IE<9 does not support String#trim(). Also, IE does not include 0xa0
+    // (the non-breaking-space) in the \s character class, so we have to
+    // explicitly include it.
+    return str.toUpperCase().replace(/^[\s\xa0]+/g, '');
   });
   var l = name.length - 'Error'.length;
   if (l < 0 || name.indexOf('Error', l) != l) {

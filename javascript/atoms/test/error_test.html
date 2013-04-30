@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<title>error_test.html</title>
+<script src="test_bootstrap.js"></script>
+<script>
+goog.require('bot.Error');
+goog.require('bot.ErrorCode');
+goog.require('goog.testing.jsunit');
+</script>
+<script>
+function testConvertsCodeToState() {
+  var e = new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT, 'boom');
+  assertEquals(bot.ErrorCode.NO_SUCH_ELEMENT, e.code);
+  assertEquals(bot.Error.State.NO_SUCH_ELEMENT, e.state);
+  assertEquals('NoSuchElementError', e.name);
+}
+</script>
