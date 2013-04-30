@@ -355,11 +355,7 @@
     }
 
     function testEnterTextArea() {
-      // Although this looks like a platform dependent change, these newlines
-      // are what is seen. In particular, the Opera line ending is consistent
-      // cross-platform.
-      var newline = (bot.userAgent.IE_DOC_PRE9 || goog.userAgent.OPERA) ?
-          '\r\n' : '\n';
+      var newline = bot.userAgent.IE_DOC_PRE9 ? '\r\n' : '\n';
       var finalText = 'asdf' + newline + 'qwer';
       runTypingTest(['asdf', ENTER, 'qwer'], finalText, 9, 9, ['textarea']);
     }
@@ -456,14 +452,21 @@
       assertFalse(keyboard.isPressed(META));
       assertTrue(keyboard.isPressed(SHIFT));
 
-      bot.action.type(textBox, [LEFT, 'ghi', SHIFT, 'j'], keyboard,
-                      persitModifierKeys);
+      expectedFailures.expectFailureFor(
+        goog.userAgent.GECKO &&
+        bot.userAgent.isProductVersion(10) &&
+        !bot.userAgent.isProductVersion(17),
+        'Selection is not updated on LEFT while shift is pressed');
+      expectedFailures.run(function() {
+        bot.action.type(textBox, [LEFT, 'ghi', SHIFT, 'j'], keyboard,
+                        persitModifierKeys);
 
-      assertEquals('abcdEGHIj', textBox.value);
-      assertFalse(keyboard.isPressed(ALT));
-      assertFalse(keyboard.isPressed(CONTROL));
-      assertFalse(keyboard.isPressed(META));
-      assertFalse(keyboard.isPressed(SHIFT));
+        assertEquals('abcdEGHIj', textBox.value);
+        assertFalse(keyboard.isPressed(ALT));
+        assertFalse(keyboard.isPressed(CONTROL));
+        assertFalse(keyboard.isPressed(META));
+        assertFalse(keyboard.isPressed(SHIFT));
+      });
     }
 
     function browserImplementsDateInputWidget() {
@@ -472,27 +475,36 @@
     }
 
     function testTypeDate() {
-      var dateInput = document.getElementById("date");
-      dateInput.value = "";
-      bot.action.type(dateInput, "2013-01-01");
-      assertEquals(dateInput.value, "2013-01-01");
-      dateInput.value = "";
+      expectedFailures.expectFailureFor(goog.userAgent.OPERA);
+      expectedFailures.run(function() {
+        var dateInput = document.getElementById("date");
+        dateInput.value = "";
+        bot.action.type(dateInput, "2013-01-01");
+        assertEquals(dateInput.value, "2013-01-01");
+        dateInput.value = "";
+      });
     }
     function testTypeDateWithTimestamp() {
-      var dateInput = document.getElementById("date");
-      dateInput.value = "";
-      bot.action.type(dateInput, "2013-01-01T12:10:12.000Z");
-      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "2013-01-01" : "2013-01-01T12:10:12.000Z");
-      dateInput.value = "";
+      expectedFailures.expectFailureFor(goog.userAgent.OPERA);
+      expectedFailures.run(function() {
+        var dateInput = document.getElementById("date");
+        dateInput.value = "";
+        bot.action.type(dateInput, "2013-01-01T12:10:12.000Z");
+        assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "2013-01-01" : "2013-01-01T12:10:12.000Z");
+        dateInput.value = "";
+      });
     }
     function testTypeInvalidDate() {
-      var dateInput = document.getElementById("date");
-      dateInput.value = "";
-      bot.action.type(dateInput, "2013-13-01");
-      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "2013-13-01");
-      dateInput.value = "";
-      bot.action.type(dateInput, "February 28, 2013");
-      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "February 28, 2013");
+      expectedFailures.expectFailureFor(goog.userAgent.OPERA);
+      expectedFailures.run(function() {
+        var dateInput = document.getElementById("date");
+        dateInput.value = "";
+        bot.action.type(dateInput, "2013-13-01");
+        assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "2013-13-01");
+        dateInput.value = "";
+        bot.action.type(dateInput, "February 28, 2013");
+        assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "February 28, 2013");
+      });
     }
   </script>
 </head>
@@ -511,6 +523,8 @@
   </form>
 </body>
 <script type="text/javascript">
-  asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+  if (goog.userAgent.IE && !bot.userAgent.isEngineVersion(8)) {
+    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
+  }
 </script>
 </html>

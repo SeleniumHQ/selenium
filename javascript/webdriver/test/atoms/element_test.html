@@ -22,10 +22,22 @@ limitations under the License.
   <script type="text/javascript">
     goog.require('bot.locators');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.testing.ExpectedFailures');
     goog.require('webdriver.atoms.element');
   </script>
 
   <script type="text/javascript">
+    var expectedFailures;
+
+    function setUp() {
+      expectedFailures = new goog.testing.ExpectedFailures();
+    }
+
+
+    function tearDown() {
+      expectedFailures.handleTearDown();
+    }
+
     function testShouldReturnTheValueOfAnAttribute() {
       var element = bot.locators.findElement({id: 'has_id'});
 
@@ -186,8 +198,7 @@ limitations under the License.
       assertEquals('true', webdriver.atoms.element.getAttribute(el, 'nowrap'));
     }
 
-    var newLine =
-        bot.userAgent.IE_DOC_PRE9 || goog.userAgent.OPERA ? '\r\n' : '\n';
+    var newLine = bot.userAgent.IE_DOC_PRE9 ? '\r\n' : '\n';
 
     function testTypingEnterKeyOnTextArea() {
       var el = document.getElementById('textarea');
@@ -198,12 +209,6 @@ limitations under the License.
     }
 
     function testTypingNewlineOnTextArea() {
-      if (goog.userAgent.OPERA &&
-          goog.userAgent.ASSUME_WINDOWS &&
-          bot.userAgent.isEngineVersion(11)) {
-        return;
-      }
-
       var el = document.getElementById('textarea');
       el.value = '';
       webdriver.atoms.element.type(el, ['hello\n\nworld']);
