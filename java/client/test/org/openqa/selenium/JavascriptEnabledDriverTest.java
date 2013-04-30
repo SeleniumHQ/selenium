@@ -58,9 +58,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     driver.findElement(By.linkText("Change the page title!")).click();
     waitForTitleChange("Changed");
     assertThat(driver.getTitle(), equalTo("Changed"));
-
-    String titleViaXPath = driver.findElement(By.xpath("/html/head/title")).getText();
-    assertThat(titleViaXPath, equalTo("Changed"));
   }
 
   @JavascriptEnabled

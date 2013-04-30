@@ -238,15 +238,6 @@ webdriver.atoms.element.isInHead_ = function(element) {
  * @return {string} The visible text or an empty string.
  */
 webdriver.atoms.element.getText = function(element) {
-  if (webdriver.atoms.element.isInHead_(element)) {
-    var doc = goog.dom.getOwnerDocument(element);
-    if (element.tagName.toUpperCase() == goog.dom.TagName.TITLE &&
-        goog.dom.getWindow(doc) == bot.getWindow().top) {
-      return goog.string.trim((/** @type {string} */doc.title));
-    }
-    return '';
-  }
-
   return bot.dom.getVisibleText(element);
 };
 
