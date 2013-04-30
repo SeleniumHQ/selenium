@@ -69,6 +69,11 @@ public class TestUtilities {
         && getUserAgent(driver).contains("MSIE 6");
   }
 
+  public static boolean isIe7(WebDriver driver) {
+    return isInternetExplorer(driver)
+           && getUserAgent(driver).contains("MSIE 7");
+  }
+
   public static boolean isOldIe(WebDriver driver) {
     try {
       String jsToExecute = "return parseInt(window.navigator.appVersion.split(' ')[0]);";
