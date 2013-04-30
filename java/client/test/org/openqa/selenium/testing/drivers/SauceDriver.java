@@ -133,7 +133,6 @@ public class SauceDriver extends RemoteWebDriver {
             Boolean.parseBoolean(requireFocus));
     }
 
-    mungedCapabilities.setCapability("public", true);
     return mungedCapabilities;
   }
 
