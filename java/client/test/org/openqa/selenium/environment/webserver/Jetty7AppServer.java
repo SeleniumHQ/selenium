@@ -264,14 +264,24 @@ public class Jetty7AppServer implements AppServer {
     handlers.addHandler(handler);
   }
 
+  private static int getHttpPortFromEnv() {
+    String port = System.getenv(FIXED_HTTP_PORT_ENV_NAME);
+    return port == null ? DEFAULT_HTTP_PORT : Integer.parseInt(port);
+  }
+
+  private static int getHttpsPortFromEnv() {
+    String port = System.getenv(FIXED_HTTPS_PORT_ENV_NAME);
+    return port == null ? DEFAULT_HTTPS_PORT : Integer.parseInt(port);
+  }
+
   public static void main(String[] args) {
     Jetty7AppServer server = new Jetty7AppServer(detectHostname());
 
-    server.listenOn(DEFAULT_HTTP_PORT);
-    System.out.println(String.format("Starting server on port %d", DEFAULT_HTTP_PORT));
+    server.listenOn(getHttpPortFromEnv());
+    System.out.println(String.format("Starting server on port %d", getHttpPortFromEnv()));
 
-    server.listenSecurelyOn(DEFAULT_HTTPS_PORT);
-    System.out.println(String.format("HTTPS on %d", DEFAULT_HTTPS_PORT));
+    server.listenSecurelyOn(getHttpsPortFromEnv());
+    System.out.println(String.format("HTTPS on %d", getHttpsPortFromEnv()));
 
     server.start();
   }
