@@ -72,7 +72,7 @@ public class SocketLock implements Lock {
   /**
    * @inheritDoc
    */
-  public void lock(long timeoutInMillis) throws WebDriverException {
+  public synchronized void lock(long timeoutInMillis) throws WebDriverException {
 
     // Calculate the 'exit time' for our wait loop.
     long maxWait = System.currentTimeMillis() + timeoutInMillis;
