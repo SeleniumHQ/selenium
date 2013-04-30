@@ -17,11 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -34,10 +38,8 @@ public class SvgDocumentTest extends JUnit4TestBase {
 
   @Test
   public void testClickOnSvgElement() {
-    if (isOldIe(driver)) {
-      System.err.println("IE version < 9 doesn't support SVG");
-      return;
-    }
+    assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
+
     driver.get(pages.svgTestPage);
     WebElement rect = driver.findElement(By.id("rect"));
 
@@ -48,10 +50,8 @@ public class SvgDocumentTest extends JUnit4TestBase {
 
   @Test
   public void testExecuteScriptInSvgDocument() {
-    if (isOldIe(driver)) {
-      System.err.println("IE version < 9 doesn't support SVG");
-      return;
-    }
+    assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
+
     driver.get(pages.svgTestPage);
     WebElement rect = driver.findElement(By.id("rect"));
 
