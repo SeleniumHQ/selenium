@@ -136,9 +136,9 @@ limitations under the License.
       assertEquals("true", webdriver.atoms.element.getAttribute(broken, 'disabled'));
     }
 
-    function testTheTopWindowsTitleShouldBeConsideredVisibleText() {
+    function testTheTopWindowsTitleShouldNotBeConsideredVisibleText() {
       var title = bot.locators.findElement({tagName: 'title'});
-      assertEquals('element_test.html', webdriver.atoms.element.getText(title));
+      assertEquals('', webdriver.atoms.element.getText(title));
     }
 
     function testAFrameDocumentsTitleShouldNotBeConsideredVisibleText() {
