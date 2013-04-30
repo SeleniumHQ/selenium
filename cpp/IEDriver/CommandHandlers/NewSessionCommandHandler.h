@@ -19,17 +19,6 @@
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
 
-#define IGNORE_PROTECTED_MODE_CAPABILITY "ignoreProtectedModeSettings"
-#define IGNORE_ZOOM_SETTING_CAPABILITY "ignoreZoomSetting"
-#define NATIVE_EVENTS_CAPABILITY "nativeEvents"
-#define INITIAL_BROWSER_URL_CAPABILITY "initialBrowserUrl"
-#define ELEMENT_SCROLL_BEHAVIOR_CAPABILITY "elementScrollBehavior"
-#define UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY "unexpectedAlertBehaviour"
-#define ENABLE_PERSISTENT_HOVER_CAPABILITY "enablePersistentHover"
-#define ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY "enableElementCacheCleanup"
-#define REQUIRE_WINDOW_FOCUS_CAPABILITY "requireWindowFocus"
-#define BROWSER_ATTACH_TIMEOUT_CAPABILITY "browserAttachTimeout"
-
 namespace webdriver {
 
 class NewSessionCommandHandler : public IECommandHandler {

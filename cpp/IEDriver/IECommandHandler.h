@@ -23,6 +23,25 @@
 #include "Element.h"
 #include "response.h"
 
+#define BROWSER_NAME_CAPABILITY "browserName"
+#define BROWSER_VERSION_CAPABILITY "version"
+#define PLATFORM_CAPABILITY "platform"
+#define JAVASCRIPT_ENABLED_CAPABILITY "javascriptEnabled"
+#define ALLOW_ASYNC_JAVASCRIPT_CAPABILITY "allowAsynchronousJavaScript"
+#define TAKES_SCREENSHOT_CAPABILITY "takesScreenshot"
+#define HANDLES_ALERTS_CAPABILITY "handlesAlerts"
+#define UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY "unexpectedAlertBehaviour"
+#define CSS_SELECTOR_ENABLED_CAPABILITY "cssSelectorsEnabled"
+#define NATIVE_EVENTS_CAPABILITY "nativeEvents"
+#define IGNORE_PROTECTED_MODE_CAPABILITY "ignoreProtectedModeSettings"
+#define IGNORE_ZOOM_SETTING_CAPABILITY "ignoreZoomSetting"
+#define INITIAL_BROWSER_URL_CAPABILITY "initialBrowserUrl"
+#define ELEMENT_SCROLL_BEHAVIOR_CAPABILITY "elementScrollBehavior"
+#define ENABLE_PERSISTENT_HOVER_CAPABILITY "enablePersistentHover"
+#define ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY "enableElementCacheCleanup"
+#define REQUIRE_WINDOW_FOCUS_CAPABILITY "requireWindowFocus"
+#define BROWSER_ATTACH_TIMEOUT_CAPABILITY "browserAttachTimeout"
+
 using namespace std;
 
 namespace webdriver {
