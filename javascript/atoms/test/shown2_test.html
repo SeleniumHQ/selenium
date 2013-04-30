@@ -46,7 +46,7 @@
   transform: translateX(-100%);
 }
 
-section {
+.section {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -106,19 +106,19 @@ section {
 
     </div>
     <div id='moz814037' >
-      <section id="section1">
+      <div class="section" id="section1">
         <div id="assertMe1">
           <p>Section 1</p>
         </div>
         <button id="b1" onclick="var sect = document.getElementById('moz814037'); sect.classList.add('section2'); sect.classList.remove('section1');">Show section 2</button>
-      </section>
+      </div>
 
-      <section id="section2">
+      <div class="section" id="section2">
         <div id="assertMe2">
           <p>Section 2</p>
         </div>
         <button id="b2" onclick="var sect = document.getElementById('moz814037'); sect.classList.add('section1'); sect.classList.remove('section2'); ">Show section 1</button>
-      </section>
+      </div>
     </div>
   </body>
 </html>
