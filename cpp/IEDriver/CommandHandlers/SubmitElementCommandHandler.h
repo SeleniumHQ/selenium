@@ -53,6 +53,10 @@ class SubmitElementCommandHandler : public IECommandHandler {
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
       if (status_code == WD_SUCCESS) {
+        if (!this->FindParentForm(element_wrapper)) {
+          response->SetErrorResponse(ENOSUCHELEMENT, "Requested element is not within a form, and thus cannot be submitted");
+          return;
+        }
         // Use native events if we can. If not, use the automation atom.
         bool handled_with_native_events = false;
         CComPtr<IHTMLInputElement> input;
@@ -93,21 +97,23 @@ class SubmitElementCommandHandler : public IECommandHandler {
   }
 
  private:
-  void SubmitElementCommandHandler::FindParentForm(IHTMLElement *element,
-                                                   IHTMLFormElement **form_element) {
-    CComPtr<IHTMLElement> current(element);
+  bool SubmitElementCommandHandler::FindParentForm(ElementHandle element_wrapper) {
+    CComPtr<IHTMLElement> current(element_wrapper->element());
     while (current) {
       CComPtr<IHTMLFormElement> form;
-      current->QueryInterface<IHTMLFormElement>(&form);
-      if (form) {
-        *form_element = form.Detach();
-        return;
+      HRESULT hr = current->QueryInterface<IHTMLFormElement>(&form);
+      if (SUCCEEDED(hr) && form) {
+        return true;
       }
 
       CComPtr<IHTMLElement> temp;
-      current->get_parentElement(&temp);
+      hr = current->get_parentElement(&temp);
+      if (FAILED(hr)) {
+        return false;
+      }
       current = temp;
     }
+    return false;
   }
 
   int ExecuteAtom(BrowserHandle browser_wrapper,
