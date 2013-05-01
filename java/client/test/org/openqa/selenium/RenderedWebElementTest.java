@@ -432,13 +432,17 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       return;
     }
 
-    driver.get(pages.mouseTrackerPage);
+    try {
+      driver.get(pages.mouseTrackerPage);
 
-    new Actions(driver).moveByOffset(50, 100).build().perform();
+      new Actions(driver).moveByOffset(50, 100).build().perform();
 
-    WebElement reporter = driver.findElement(By.id("status"));
+      WebElement reporter = driver.findElement(By.id("status"));
 
-    waitFor(fuzzyMatchingOfCoordinates(reporter, 40, 20));
+      waitFor(fuzzyMatchingOfCoordinates(reporter, 40, 20));
+    } finally {
+      new Actions(driver).moveByOffset(-50, -100).build().perform();
+    }
   }
 
 
