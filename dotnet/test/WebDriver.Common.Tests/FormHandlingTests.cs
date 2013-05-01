@@ -62,11 +62,17 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.Opera)]
+        [IgnoreBrowser(Browser.PhantomJS)]
+        [IgnoreBrowser(Browser.Safari)]
         [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotBeAbleToSubmitAFormThatDoesNotExist()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.Name("there is no spoon")).Submit();
+            driver.FindElement(By.Name("SearchableText")).Submit();
         }
 
         [Test]
@@ -289,7 +295,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android, "Untested")]
         [IgnoreBrowser(Browser.Chrome, "Fails on Chrome, issue #3508")]
         [IgnoreBrowser(Browser.HtmlUnit, "Untested")]
-        [IgnoreBrowser(Browser.IE, "Fails on IE, issue #3508")]
         [IgnoreBrowser(Browser.IPhone, "Untested")]
         [IgnoreBrowser(Browser.Opera, "Untested")]
         [IgnoreBrowser(Browser.PhantomJS, "Untested")]
