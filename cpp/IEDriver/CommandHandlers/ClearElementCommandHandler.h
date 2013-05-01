@@ -66,7 +66,7 @@ class ClearElementCommandHandler : public IECommandHandler {
         Script script_wrapper(doc, script_source, 1);
         script_wrapper.AddArgument(element_wrapper);
         if (executor.allow_asynchronous_javascript()) {
-          status_code = script_wrapper.ExecuteAsync();
+          status_code = script_wrapper.ExecuteAsync(ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS);
         } else {
           status_code = script_wrapper.Execute();
         }

@@ -301,7 +301,7 @@ int Script::Execute() {
   return return_code;
 }
 
-int Script::ExecuteAsync() {
+int Script::ExecuteAsync(int timeout_in_milliseconds) {
   LOG(TRACE) << "Entering Script::ExecuteAsync";
   int return_code = WD_SUCCESS;
   CComVariant result;
@@ -420,7 +420,7 @@ int Script::ExecuteAsync() {
   // complete. This will allow us to say synchronous for short-running scripts
   // like clearing an input element, yet still be able to continue processing
   // when the script is blocked, as when an alert() window is present.
-  retry_counter = 50;
+  retry_counter = static_cast<int>(timeout_in_milliseconds / 10);
   bool is_execution_finished = ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_IS_EXECUTION_COMPLETE, NULL, NULL) != 0;
   while(!is_execution_finished && --retry_counter > 0) {
     ::Sleep(10);

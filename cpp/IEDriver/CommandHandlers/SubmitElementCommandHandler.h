@@ -134,7 +134,7 @@ class SubmitElementCommandHandler : public IECommandHandler {
     Script script_wrapper(doc, script_source, 1);
     script_wrapper.AddArgument(element_wrapper);
     if (allow_asynchronous_javascript) {
-      status_code = script_wrapper.ExecuteAsync();
+      status_code = script_wrapper.ExecuteAsync(ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS);
       if (status_code != WD_SUCCESS) {
         std::wstring error = script_wrapper.result().bstrVal;
         *error_msg = StringUtilities::ToString(error);
