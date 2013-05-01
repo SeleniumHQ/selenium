@@ -487,11 +487,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     Object[] parameters = convertScriptArgs(page, args);
 
-    result = page.executeJavaScriptFunctionIfPossible(
-        func,
-        (ScriptableObject) getCurrentWindow().getScriptObject(),
-        parameters,
-        page.getDocumentElement());
+    try {
+      result = page.executeJavaScriptFunctionIfPossible(
+          func,
+          (ScriptableObject) getCurrentWindow().getScriptObject(),
+          parameters,
+          page.getDocumentElement());
+    } catch (Throwable ex) {
+      throw new WebDriverException(ex);
+    }
 
     return parseNativeJavascriptResult(result);
   }
