@@ -81,32 +81,6 @@ public class Hub {
   }
 
   public Hub(GridHubConfiguration config) {
-    Level logLevel = config.isDebug() ? Level.FINE : Level.INFO;
-    Logger.getLogger("").setLevel(logLevel);
-
-    for (Handler handler : Logger.getLogger("").getHandlers()) {
-      Logger.getLogger("").removeHandler(handler);
-    }
-
-    String logFilename =
-        config.getLogFilename() == null
-        ? LoggingOptions.getDefaultLogOutFile()
-        : config.getLogFilename();
-    if (logFilename != null) {
-      try {
-        Handler logFile = new FileHandler(new File(logFilename).getAbsolutePath(), true);
-        logFile.setFormatter(new TerseFormatter(true));
-        logFile.setLevel(logLevel);
-        Logger.getLogger("").addHandler(logFile);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    } else {
-      Handler console = new ConsoleHandler();
-      console.setLevel(logLevel);
-      Logger.getLogger("").addHandler(console);
-    }
-
     registry = Registry.newInstance(this, config);
 
     if (config.getHost() != null) {

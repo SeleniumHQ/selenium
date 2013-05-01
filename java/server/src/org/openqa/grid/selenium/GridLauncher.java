@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.grid.selenium;
 
+import org.openqa.selenium.remote.server.log.LoggingOptions;
+import org.openqa.selenium.remote.server.log.TerseFormatter;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
@@ -29,6 +31,12 @@ import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GridLauncher {
@@ -44,8 +52,33 @@ public class GridLauncher {
       GridDocHelper.printHelp(separator+"To use in a grid environment :"+separator,false);
       return;
     }
-    
-    
+
+    Level logLevel = helper.isParamPresent("-debug") ? Level.FINE : Level.INFO;
+    Logger.getLogger("").setLevel(logLevel);
+
+    for (Handler handler : Logger.getLogger("").getHandlers()) {
+      Logger.getLogger("").removeHandler(handler);
+    }
+
+    String logFilename =
+        helper.isParamPresent("-log")
+        ? helper.getParamValue("-log")
+        : LoggingOptions.getDefaultLogOutFile();
+    if (logFilename != null) {
+      try {
+        Handler logFile = new FileHandler(new File(logFilename).getAbsolutePath(), true);
+        logFile.setFormatter(new TerseFormatter(true));
+        logFile.setLevel(logLevel);
+        Logger.getLogger("").addHandler(logFile);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      Handler console = new ConsoleHandler();
+      console.setLevel(logLevel);
+      Logger.getLogger("").addHandler(console);
+    }
+
     GridRole role = GridRole.find(args);
 
     switch (role) {
