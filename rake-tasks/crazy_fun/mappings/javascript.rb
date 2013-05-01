@@ -729,7 +729,13 @@ module Javascript
         puts "Compiling #{name} as #{output}"
 
         js_files = build_deps(output, Rake::Task[output], []).uniq
-        all_deps = calc_deps(exports, js_files)
+
+        # Always load closure's deps.js first to "forward declare" all of the
+        # Closure types. This prevents type errors when a symbol is referenced
+        # in a file's type annotation, but not actually needed in the compiled
+        # output.
+        all_deps = [File.expand_path('third_party/closure/goog/deps.js')]
+        all_deps += calc_deps(exports, js_files)
 
         # Wrap the output in two functions. The outer function ensures the
         # compiled fragment never pollutes the global scope by using its
@@ -747,14 +753,38 @@ module Javascript
 
         cmd = "" <<
             "--create_name_map_files=true " <<
-            "--third_party=true " <<
+            "--third_party=false " <<
             "--js_output_file=#{output} " <<
             "--output_wrapper='#{wrapper}' " <<
             "--compilation_level=#{compilation_level(minify)} " <<
             "--define=goog.NATIVE_ARRAY_PROTOTYPES=false " <<
             "--define=bot.json.NATIVE_JSON=false " <<
-            "--jscomp_off=unknownDefines " <<
             "#{defines} " <<
+            "--jscomp_off=unknownDefines " <<
+            "--jscomp_off=deprecated " <<
+            "--jscomp_error=accessControls " <<
+            "--jscomp_error=ambiguousFunctionDecl " <<
+            "--jscomp_error=checkDebuggerStatement " <<
+            "--jscomp_error=checkRegExp " <<
+            "--jscomp_error=checkTypes " <<
+            "--jscomp_error=checkVars " <<
+            "--jscomp_error=const " <<
+            "--jscomp_error=constantProperty " <<
+            "--jscomp_error=duplicate " <<
+            "--jscomp_error=duplicateMessage " <<
+            "--jscomp_error=externsValidation " <<
+            "--jscomp_error=fileoverviewTags " <<
+            "--jscomp_error=globalThis " <<
+            "--jscomp_error=internetExplorerChecks " <<
+            "--jscomp_error=invalidCasts " <<
+            "--jscomp_error=missingProperties " <<
+            "--jscomp_error=nonStandardJsDocs " <<
+            "--jscomp_error=strictModuleDepCheck " <<
+            "--jscomp_error=typeInvalidation " <<
+            "--jscomp_error=undefinedNames " <<
+            "--jscomp_error=undefinedVars " <<
+            "--jscomp_error=uselessCode " <<
+            "--jscomp_error=visibility " <<
             "--js='" <<
             all_deps.join("' --js='") << "'"
 

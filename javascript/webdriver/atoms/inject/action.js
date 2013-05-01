@@ -43,6 +43,7 @@ webdriver.atoms.inject.action.type = function(element, keys) {
  *
  * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to submit.
  * @return {string} A stringified {@link bot.response.ResponseObject}.
+ * @deprecated Click on a submit button or type ENTER in a text box instead.
  */
 webdriver.atoms.inject.action.submit = function(element) {
   return webdriver.atoms.inject.executeScript(bot.action.submit, [element]);

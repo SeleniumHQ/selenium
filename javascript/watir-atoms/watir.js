@@ -17,8 +17,12 @@ goog.require('goog.dom.Range');
 goog.require('goog.iter');
 goog.require('goog.array');
 
+/**
+ * @param {!Element} element .
+ * @param {string} string .
+ */
 watir.selectText = function(element, string) {
-  var range = new goog.dom.Range.createFromNodeContents(element);
+  var range = goog.dom.Range.createFromNodeContents(element);
 
   var match = goog.array.find(goog.iter.toArray(range), function(e) {
     return e.nodeType == goog.dom.NodeType.TEXT &&

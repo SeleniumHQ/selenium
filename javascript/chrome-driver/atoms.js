@@ -114,7 +114,8 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
   while (container &&
          container != doc.documentElement &&
          container != doc.body) {
-    offset = webdriver.chrome.computeOffsetInContainer_(container, elem);
+    offset = webdriver.chrome.computeOffsetInContainer_(
+        /** @type {!Element} */ (container), elem);
     var containerSize = new goog.math.Size(container.clientWidth,
                                            container.clientHeight);
     scrollHelper(container, containerSize, offset, region, center);
@@ -187,11 +188,16 @@ webdriver.chrome.getFirstClientRect = function(elem) {
  *
  * @param {!Element} elem The element to use.
  * @param {!goog.math.Coordinate} coord, The coordinate to use.
- * @return {{clickable:boolean, message:string=}} Object containing a boolean
- *     "clickable" property, as to whether it can be clicked, and an optional
- *     "message" string property, which contains any warning/error message.
+ * @return {{clickable:boolean, message: (string|undefined)}} Object containing
+ *     a boolean "clickable" property, as to whether it can be clicked, and an
+ *     optional "message" string property, which contains any warning/error 
+ *     message.
  */
 webdriver.chrome.isElementClickable = function(elem, coord) {
+  /**
+   * @param {boolean} clickable .
+   * @param {string=} opt_msg .
+   */
   function makeResult(clickable, opt_msg) {
     var dict = {'clickable': clickable};
     if (opt_msg)
@@ -203,10 +209,10 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
   if (elemAtPoint == elem)
     return makeResult(true);
 
-  var coord = '(' + coord.x + ', ' + coord.y + ')';
+  var coordStr = '(' + coord.x + ', ' + coord.y + ')';
   if (elemAtPoint == null) {
     return makeResult(
-        false, 'Element is not clickable at point ' + coord);
+        false, 'Element is not clickable at point ' + coordStr);
   }
   var elemAtPointHTML = elemAtPoint.outerHTML;
   if (elemAtPoint.hasChildNodes()) {
@@ -229,7 +235,7 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
   }
   return makeResult(
       false,
-      'Element is not clickable at point ' + coord + '. Other element ' +
+      'Element is not clickable at point ' + coordStr + '. Other element ' +
           'would receive the click: ' + elemAtPointHTML);
 };
 

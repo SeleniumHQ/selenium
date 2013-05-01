@@ -29,6 +29,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.string');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
 
 
 
@@ -129,7 +130,7 @@ core.text.normalizeSpaces_ = function(text) {
 
   // Replace &nbsp; with a space
   var nbspPattern = new RegExp(String.fromCharCode(160), 'g');
-  if (goog.userAgent.SAFARI) {
+  if (goog.userAgent.product.SAFARI) {
     return core.text.replaceAll_(text, String.fromCharCode(160), ' ');
   } else {
     return text.replace(nbspPattern, ' ');
@@ -149,7 +150,8 @@ core.text.getElementText = function(element) {
       (goog.userAgent.GECKO && goog.userAgent.VERSION >= '1.8');
 
   if (isRecentFirefox ||
-      goog.userAgent.SAFARI || goog.userAgent.OPERA || goog.userAgent.IE) {
+      goog.userAgent.product.SAFARI || goog.userAgent.OPERA ||
+      goog.userAgent.IE) {
     text = core.text.getTextContent_(element, false);
   } else {
     if (element.textContent) {
