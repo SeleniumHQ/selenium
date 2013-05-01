@@ -982,9 +982,11 @@ Editor.prototype.loadSeleniumAPI = function() {
             ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().userExtensionsURL, this.seleniumAPI);
         } catch (error) {
             this.showAlert("Failed to load user-extensions.js!"
-                + "\nfiles=" + this.getOptions().userExtensionsURL
-                + "\nlineNumber=" + error.lineNumber
-                + "\nerror=" + error);
+                + "\nfiles=" + this.getOptions().userExtensionsURL // The list of files may be long, therefore I add a blank line after it.
+                + "\n\nlineNumber=" + error.lineNumber
+                + "\nfileName=" +error.fileName
+                + "\nerror=" + error
+                + "\n\nstack:\n" +error.stack);
         }
     }
 
@@ -1002,9 +1004,11 @@ Editor.prototype.loadSeleniumAPI = function() {
             }
         } catch (error) {
             this.showAlert("Failed to load plugin provided js!"
-                + "\nfiles=" + pluginProvided
-                + "\nlineNumber=" + error.lineNumber
-                + "\nerror=" + error);
+                + "\nfiles=" + pluginProvided // The list of files may be long, therefore I add a blank line after it.
+                + "\n\nlineNumber=" + error.lineNumber
+                + "\nfileName=" +error.fileName
+                + "\nerror=" + error
+                + "\n\nstack:\n" +error.stack);
         }
     }
 }
