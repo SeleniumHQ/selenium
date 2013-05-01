@@ -1,4 +1,4 @@
-// Copyright 2011 Software Freedom Conservancy
+// Copyright 2013 Software Freedom Conservancy
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -54,9 +54,6 @@ class Element {
   bool IsSelected(void);
   bool IsAttachedToDom(void);
   int Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior);
-  int ExecuteAsyncAtom(const std::wstring& sync_event_name,
-                       ASYNCEXECPROC execute_proc,
-                       std::string* error_msg);
 
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }

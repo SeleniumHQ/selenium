@@ -10,6 +10,13 @@ namespace OpenQA.Selenium.IE
     public class IeSpecificTests : DriverTestFixture
     {
         [Test]
+        public void InputOnChangeAlert()
+        {
+            driver.Url = alertsPage;
+            driver.FindElement(By.Id("input")).Clear();
+        }
+
+        [Test]
         public void ScrollingFrameTest()
         {
             try

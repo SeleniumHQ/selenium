@@ -1,4 +1,4 @@
-// Copyright 2011 Software Freedom Conservancy
+// Copyright 2013 Software Freedom Conservancy
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -65,7 +65,11 @@ class ClearElementCommandHandler : public IECommandHandler {
         browser_wrapper->GetDocument(&doc);
         Script script_wrapper(doc, script_source, 1);
         script_wrapper.AddArgument(element_wrapper);
-        status_code = script_wrapper.Execute();
+        if (executor.allow_asynchronous_javascript()) {
+          status_code = script_wrapper.ExecuteAsync();
+        } else {
+          status_code = script_wrapper.Execute();
+        }
         if (status_code != WD_SUCCESS) {
           // Assume that a JavaScript error returned by the atom is that
           // the element is either invisible, disabled, or read-only.

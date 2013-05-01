@@ -65,6 +65,7 @@ class Script {
   bool ResultIsIDispatch(void);
 
   int Execute(void);
+  int ExecuteAsync(void);
   int ConvertResultToJsonValue(const IECommandExecutor& executor,
                                Json::Value* value);
   bool ConvertResultToString(std::string* value);

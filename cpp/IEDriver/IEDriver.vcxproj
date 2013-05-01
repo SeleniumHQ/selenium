@@ -224,6 +224,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alert.cpp" />
+    <ClCompile Include="AsyncScriptExecutor.cpp" />
     <ClCompile Include="Browser.cpp" />
     <ClCompile Include="BrowserFactory.cpp" />
     <ClCompile Include="DocumentHost.cpp" />
@@ -248,6 +249,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alert.h" />
+    <ClInclude Include="AsyncScriptExecutor.h" />
     <ClInclude Include="Browser.h" />
     <ClInclude Include="BrowserFactory.h" />
     <ClInclude Include="CommandHandlers\GetWindowPositionCommandHandler.h" />
