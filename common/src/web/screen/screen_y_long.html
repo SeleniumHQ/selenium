@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html><head>
+<title>screen test</title>
+<script type="text/javascript" src="screen.js"></script>
+<link rel="stylesheet" type="text/css" href="screen.css" />
+</head>
+<body>
+<style>
+#content {
+  width: 100%;
+  height: 3000px;
+}
+.row {
+  height: 600px;
+  width: 100%;
+}
+.column {
+  height: 20%;
+  width: 20px;
+}
+</style>
+<table id="content">
+<tr class="row row1">
+<td class="column column1 cell" id="cell11">.</td>
+<td class="column column2 cell" id="cell12">.</td>
+<td class="column column3 cell" id="cell13">.</td>
+<td class="column column4 cell" id="cell14">.</td>
+<td class="column column5 cell" id="cell15">.</td>
+</tr>
+<tr class="row row2">
+<td class="column column1 cell" id="cell21">.</td>
+<td class="column column2 cell" id="cell22">.</td>
+<td class="column column3 cell" id="cell23">.</td>
+<td class="column column4 cell" id="cell24">.</td>
+<td class="column column5 cell" id="cell25">.</td>
+</tr>
+<tr class="row row3">
+<td class="column column1 cell" id="cell31">.</td>
+<td class="column column2 cell" id="cell32">.</td>
+<td class="column column3 cell" id="cell33">.</td>
+<td class="column column4 cell" id="cell34">.</td>
+<td class="column column5 cell" id="cell35">.</td>
+</tr>
+<tr class="row row4">
+<td class="column column1 cell" id="cell41">.</td>
+<td class="column column2 cell" id="cell42">.</td>
+<td class="column column3 cell" id="cell43">.</td>
+<td class="column column4 cell" id="cell44">.</td>
+<td class="column column5 cell" id="cell45">.</td>
+</tr>
+<tr class="row row5">
+<td class="column column1 cell" id="cell51">.</td>
+<td class="column column2 cell" id="cell52">.</td>
+<td class="column column3 cell" id="cell53">.</td>
+<td class="column column4 cell" id="cell54">.</td>
+<td class="column column5 cell" id="cell55">.</td>
+</tr>
+</table>
+<script>
+var initialColor = 0x0F0F0F;
+var stepColor = 1000;
+var cnt = 1;
+for (var i = 1; i < 6; i++) {
+  for (var j = 1; j < 6; j++) {
+    el = document.getElementById('cell' + i + '' + j);
+    el.style.backgroundColor = toColor(initialColor + (cnt * stepColor));
+    cnt++;
+  }
+}
+</script>
+</body>
+</html>

@@ -48,6 +48,8 @@ class ScreenshotCommandHandler : public IECommandHandler {
                        const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
+    LOG(TRACE) << "Entering ScreenshotCommandHandler::ExecuteInternal";
+
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
     if (status_code != WD_SUCCESS) {
@@ -58,44 +60,55 @@ class ScreenshotCommandHandler : public IECommandHandler {
     bool isSameColour = true;
     HRESULT hr;
     int i = 0;
+    int tries = 4;
     do {
-      if (this->image_ != NULL) {
-        delete this->image_;
-      }
+      this->ClearImage();
+
       this->image_ = new CImage();
       hr = this->CaptureBrowser(browser_wrapper);
       if (FAILED(hr)) {
         LOGHR(WARN, hr) << "Failed to capture browser image at " << i << " try";
-        delete this->image_;
-        this->image_ = NULL;
+        this->ClearImage();
         response->SetSuccessResponse("");
         return;
       }
+
       isSameColour = IsSameColour();
       if (isSameColour) {
         ::Sleep(2000);
         LOG(DEBUG) << "Failed to capture non single color browser image at " << i << " try";
       }
-      i++;
-    } while (i < 4 && isSameColour);
 
+      i++;
+    } while ((i < tries) && isSameColour);
+
+    // now either correct or single color image is got
     std::string base64_screenshot = "";
     hr = this->GetBase64Data(base64_screenshot);
     if (FAILED(hr)) {
       LOGHR(WARN, hr) << "Unable to transform browser image to Base64 format";
+      this->ClearImage();
       response->SetSuccessResponse("");
       return;
     }
 
+    this->ClearImage();
     response->SetSuccessResponse(base64_screenshot);
-    delete this->image_;
-    this->image_ = NULL;
   }
 
  private:
   ATL::CImage* image_;
 
+  void ClearImage() {
+    if (this->image_ != NULL) {
+      delete this->image_;
+      this->image_ = NULL;
+    }
+  }
+
   HRESULT CaptureBrowser(BrowserHandle browser) {
+    LOG(TRACE) << "Entering ScreenshotCommandHandler::CaptureBrowser";
+
     ie_window_handle = browser->GetTopLevelWindowHandle();
     HWND content_window_handle = browser->GetWindowHandle();
 
@@ -108,6 +121,8 @@ class ScreenshotCommandHandler : public IECommandHandler {
       LOG(DEBUG) << "Unable to get document dimensions";
       return E_FAIL;
     }
+    LOG(DEBUG) << "Initial document sizes (scrollWidth, scrollHeight) are (w, h): "
+               << document_info.width << ", " << document_info.height;
 
     int chrome_width(0);
     int chrome_height(0);
@@ -115,27 +130,33 @@ class ScreenshotCommandHandler : public IECommandHandler {
                                      content_window_handle,
                                      &chrome_width,
                                      &chrome_height);
+    LOG(DEBUG) << "Initial chrome sizes are (w, h): "
+               << chrome_width << ", " << chrome_height;
 
     max_width = document_info.width + chrome_width;
     max_height = document_info.height + chrome_height;
 
     // For some reason, this technique does not allow the user to resize
-    // the browser window to greater than 65536 x 65536. This is pretty
+    // the browser window to greater than SIZE_LIMIT x SIZE_LIMIT. This is pretty
     // big, so we'll cap the allowable screenshot size to that.
-    if (max_height > 65536) {
-      LOG(WARN) << "Height greater than 65536 pixels. Truncating screenshot height to 65536.";
-      max_height = 65536;
+    //
+    // GDI+ limit after which it may report Generic error for some image types
+    int SIZE_LIMIT = 65534; 
+    if (max_height > SIZE_LIMIT) {
+      LOG(WARN) << "Required height is greater than limit. Truncating screenshot height.";
+      max_height = SIZE_LIMIT;
       document_info.height = max_height - chrome_height;
     }
-
-    if (max_width > 65536) {
-      LOG(WARN) << "Width greater than 65536 pixels. Truncating screenshot width to 65536.";
-      max_width = 65536;
+    if (max_width > SIZE_LIMIT) {
+      LOG(WARN) << "Required width is greater than limit. Truncating screenshot width.";
+      max_width = SIZE_LIMIT;
       document_info.width = max_width - chrome_width;
     }
 
     long original_width = browser->GetWidth();
     long original_height = browser->GetHeight();
+    LOG(DEBUG) << "Initial browser window sizes are (w, h): "
+               << original_width << ", " << original_height;
 
     // The resize message is being ignored if the window appears to be
     // maximized.  There's likely a way to bypass that. The kludgy way 
@@ -144,6 +165,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     // back to the original dimensions afterward.
     BOOL is_maximized = ::IsZoomed(ie_window_handle);
     if (is_maximized) {
+      LOG(DEBUG) << "Window is maximized currently. Demaximizing.";
       ::ShowWindow(ie_window_handle, SW_SHOWNORMAL);
     }
 
@@ -157,7 +179,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
                                         document_info.height,
                                         /*numbers of bits per pixel = */ 32);
     if (!created) {
-      LOG(WARN) << "Unable to create image";
+      LOG(WARN) << "Unable to initialize image object";
     }
     HDC device_context_handle = this->image_->GetDC();
 
@@ -165,7 +187,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
                                       device_context_handle,
                                       PW_CLIENTONLY);
     if (!print_result) {
-      LOG(WARN) << "PrintWindow API returned FALSE";
+      LOG(WARN) << "PrintWindow API is not able to get content window screenshot";
     }
 
     this->UninstallWindowsHook();
@@ -197,6 +219,8 @@ class ScreenshotCommandHandler : public IECommandHandler {
   }
 
   HRESULT GetBase64Data(std::string& data) {
+    LOG(TRACE) << "Entering ScreenshotCommandHandler::GetBase64Data";
+
     if (this->image_ == NULL) {
       LOG(DEBUG) << "CImage was not initialized.";
       return E_POINTER;
@@ -205,13 +229,14 @@ class ScreenshotCommandHandler : public IECommandHandler {
     CComPtr<IStream> stream;
     HRESULT hr = ::CreateStreamOnHGlobal(NULL, TRUE, &stream);
     if (FAILED(hr)) {
-      LOGHR(WARN, hr) << "Error creating IStream";
+      LOGHR(WARN, hr) << "Error is occured during creating IStream";
       return hr;
     }
 
-    hr = this->image_->Save(stream, Gdiplus::ImageFormatPNG);
+    GUID image_format = Gdiplus::ImageFormatPNG /*Gdiplus::ImageFormatJPEG*/;
+    hr = this->image_->Save(stream, image_format);
     if (FAILED(hr)) {
-      LOGHR(WARN, hr) << "Saving image failed";
+      LOGHR(WARN, hr) << "Saving screenshot image is failed";
       return hr;
     }
 
@@ -219,7 +244,7 @@ class ScreenshotCommandHandler : public IECommandHandler {
     STATSTG statstg;
     hr = stream->Stat(&statstg, STATFLAG_DEFAULT);
     if (FAILED(hr)) {
-      LOGHR(WARN, hr) << "No stat on stream";
+      LOGHR(WARN, hr) << "No stat on stream is got";
       return hr;
     }
 
@@ -231,9 +256,10 @@ class ScreenshotCommandHandler : public IECommandHandler {
     }
 
     // TODO: What if the file is bigger than max_int?
-    LOG(DEBUG) << "Size of stream: " << statstg.cbSize.QuadPart;
-    int length = ::Base64EncodeGetRequiredLength(static_cast<int>(statstg.cbSize.QuadPart),
-                                                 ATL_BASE64_FLAG_NOCRLF);
+    int stream_size = static_cast<int>(statstg.cbSize.QuadPart);
+    LOG(DEBUG) << "Size of screenshot image stream is " << stream_size;
+
+    int length = ::Base64EncodeGetRequiredLength(stream_size, ATL_BASE64_FLAG_NOCRLF);
     if (length <= 0) {
       LOG(WARN) << "Got zero or negative length from base64 required length";
       return E_FAIL;
@@ -241,20 +267,20 @@ class ScreenshotCommandHandler : public IECommandHandler {
 
     BYTE* global_lock = reinterpret_cast<BYTE*>(::GlobalLock(global_memory_handle));
     if (global_lock == NULL) {
-      ::GlobalUnlock(global_memory_handle);
-      LOG(WARN) << "Failure to lock memory";
+      LOGERR(WARN) << "Unable to lock memory for base64 encoding";
+      ::GlobalUnlock(global_memory_handle);      
       return E_FAIL;
     }
 
     char* data_array = new char[length + 1];
     if (!::Base64Encode(global_lock,
-                        static_cast<int>(statstg.cbSize.QuadPart),
+                        stream_size,
                         data_array,
                         &length,
                         ATL_BASE64_FLAG_NOCRLF)) {
       delete[] data_array;
       ::GlobalUnlock(global_memory_handle);
-      LOG(WARN) << "Failure encoding to base64";
+      LOG(WARN) << "Unable to encode image stream to base64";
       return E_FAIL;
     }
     data_array[length] = '\0';
@@ -270,25 +296,29 @@ class ScreenshotCommandHandler : public IECommandHandler {
                                   HWND content_window_handle,
                                   int* width,
                                   int* height) {
+    LOG(TRACE) << "Entering ScreenshotCommandHandler::GetBrowserChromeDimensions";
+
     int top_level_window_width = 0;
     int top_level_window_height = 0;
     this->GetWindowDimensions(top_level_window_handle,
                               &top_level_window_width,
                               &top_level_window_height);
+    LOG(TRACE) << "Top level window dimensions are (w, h): "
+               << top_level_window_width << "," << top_level_window_height;
 
     int content_window_width = 0;
     int content_window_height = 0;
     this->GetWindowDimensions(content_window_handle,
                               &content_window_width,
                               &content_window_height);
+    LOG(TRACE) << "Content window dimensions are (w, h): "
+               << content_window_width << "," << content_window_height;
 
     *width = top_level_window_width - content_window_width;
     *height = top_level_window_height - content_window_height;
   }
 
-  void ScreenshotCommandHandler::GetWindowDimensions(HWND window_handle,
-                                                     int* width,
-                                                     int* height) {
+  void GetWindowDimensions(HWND window_handle, int* width, int* height) {
     RECT window_rect;
     ::GetWindowRect(window_handle, &window_rect);
     *width = window_rect.right - window_rect.left;
@@ -296,22 +326,25 @@ class ScreenshotCommandHandler : public IECommandHandler {
   }
 
   void InstallWindowsHook() {
+    LOG(TRACE) << "Entering ScreenshotCommandHandler::InstallWindowsHook";
+
     HINSTANCE instance_handle = _AtlBaseModule.GetModuleInstance();
-    HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(::GetProcAddress(instance_handle,
-                                                                          "ScreenshotWndProc"));
-    if (hook_procedure == NULL) {
-      LOG(WARN) << "GetProcAddress return value was NULL";
+
+    FARPROC hook_procedure_address = ::GetProcAddress(instance_handle, "ScreenshotWndProc");
+    if (hook_procedure_address == NULL || hook_procedure_address == 0) {
+      LOGERR(WARN) << "Unable to get address of hook procedure to catch WM_GETMINMAXINFO";
       return;
     }
+    HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(hook_procedure_address);
+
     // Install the Windows hook.
     DWORD thread_id = ::GetWindowThreadProcessId(ie_window_handle, NULL);
     next_hook = ::SetWindowsHookEx(WH_CALLWNDPROC,
                                    hook_procedure,
                                    instance_handle,
                                    thread_id);
-    if (next_hook == NULL) {
-      DWORD error = ::GetLastError();
-      LOG(WARN) << "SetWindowsHookEx return value was NULL, actual error code was " << error;
+    if (next_hook == NULL) {      
+      LOGERR(WARN) << "Unable to set windows hook to catch WM_GETMINMAXINFO";
     }
   }
 
