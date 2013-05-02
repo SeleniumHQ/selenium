@@ -53,11 +53,11 @@ class ClearElementCommandHandler : public IECommandHandler {
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
       if (status_code == WD_SUCCESS) {
-        if (!element_wrapper->IsInteractable()) {
-          // Yes, the clear atom should check this for us, but executing it asynchronously
-          // does not return the proper error code when this error condition is encountered.
-          // Thus, we'll check the interactable state of the element before attempting to
-          // clear it.
+        // Yes, the clear atom should check this for us, but executing it asynchronously
+        // does not return the proper error code when this error condition is encountered.
+        // Thus, we'll check the interactable and editable states of the element before 
+        // attempting to clear it.
+        if (!element_wrapper->IsInteractable() || !element_wrapper->IsEditable()) {
           response->SetErrorResponse(EELEMENTNOTENABLED,
                                      "Element must not be hidden, disabled or read-only");
           return;

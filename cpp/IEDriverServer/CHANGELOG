@@ -9,9 +9,18 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.32.3.9
+=========
+ * Modified to check the editable state of an element before clearing.
+   The clear Automation Atom normally checks that an element is interactable
+   and editable before attempting to clear it. A previous change fixed the case
+   for checking the interactable state, but not the editable state. The driver
+   will now check the editable state as well. To facilitate this, a new atom
+   has been exposed for checking the editable state.
+
 v2.32.3.8
 =========
- * Modified to check the interactable state of an element before clicking.
+ * Modified to check the interactable state of an element before clearing.
    The clear Automation Atom normally checks that an element is interactable
    before attempting to clear it. Unfortunately, when the atom is run on a
    separate thread in legacy IE, the error states do not get propagated back to

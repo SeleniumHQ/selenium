@@ -172,6 +172,33 @@ bool Element::IsInteractable() {
   return result;
 }
 
+bool Element::IsEditable() {
+  LOG(TRACE) << "Entering Element::IsEditable";
+
+  bool result = false;
+
+  // The atom is just the definition of an anonymous
+  // function: "function() {...}"; Wrap it in another function so we can
+  // invoke it with our arguments without polluting the current namespace.
+  std::wstring script_source(L"(function() { return (");
+  script_source += atoms::asString(atoms::IS_EDITABLE);
+  script_source += L")})();";
+
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+  Script script_wrapper(doc, script_source, 1);
+  script_wrapper.AddArgument(this->element_);
+  int status_code = script_wrapper.Execute();
+
+  if (status_code == WD_SUCCESS) {
+    result = script_wrapper.result().boolVal == VARIANT_TRUE;
+  } else {
+    LOG(WARN) << "Failed to determine is element enabled";
+  }
+
+  return result;
+}
+
 int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
   LOG(TRACE) << "Entering Element::Click";
 
