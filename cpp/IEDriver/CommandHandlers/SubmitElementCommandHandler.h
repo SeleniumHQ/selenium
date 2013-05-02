@@ -78,7 +78,6 @@ class SubmitElementCommandHandler : public IECommandHandler {
           std::string submit_error = "";
           status_code = this->ExecuteAtom(browser_wrapper,
                                           element_wrapper,
-                                          executor.allow_asynchronous_javascript(),
                                           &submit_error);
           if (status_code != WD_SUCCESS) {
             response->SetErrorResponse(status_code,
@@ -118,10 +117,7 @@ class SubmitElementCommandHandler : public IECommandHandler {
 
   int ExecuteAtom(BrowserHandle browser_wrapper,
                   ElementHandle element_wrapper,
-                  bool allow_asynchronous_javascript,
                   std::string* error_msg) {
-    int status_code = WD_SUCCESS;
-
     // The atom is just the definition of an anonymous
     // function: "function() {...}"; Wrap it in another function so we can
     // invoke it with our arguments without polluting the current namespace.
@@ -133,14 +129,10 @@ class SubmitElementCommandHandler : public IECommandHandler {
     browser_wrapper->GetDocument(&doc);
     Script script_wrapper(doc, script_source, 1);
     script_wrapper.AddArgument(element_wrapper);
-    if (allow_asynchronous_javascript) {
-      status_code = script_wrapper.ExecuteAsync(ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS);
-      if (status_code != WD_SUCCESS) {
-        std::wstring error = script_wrapper.result().bstrVal;
-        *error_msg = StringUtilities::ToString(error);
-      }
-    } else {
-      status_code = script_wrapper.Execute();
+    int status_code = script_wrapper.ExecuteAsync(ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS);
+    if (status_code != WD_SUCCESS) {
+      std::wstring error = script_wrapper.result().bstrVal;
+      *error_msg = StringUtilities::ToString(error);
     }
     return status_code;
   }

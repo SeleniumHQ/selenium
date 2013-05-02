@@ -27,7 +27,6 @@
 #define BROWSER_VERSION_CAPABILITY "version"
 #define PLATFORM_CAPABILITY "platform"
 #define JAVASCRIPT_ENABLED_CAPABILITY "javascriptEnabled"
-#define ALLOW_ASYNC_JAVASCRIPT_CAPABILITY "allowAsynchronousJavaScript"
 #define TAKES_SCREENSHOT_CAPABILITY "takesScreenshot"
 #define HANDLES_ALERTS_CAPABILITY "handlesAlerts"
 #define UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY "unexpectedAlertBehaviour"

@@ -52,7 +52,6 @@ class GetSessionCapabilitiesCommandHandler : public IECommandHandler {
     capabilities[ENABLE_PERSISTENT_HOVER_CAPABILITY] = executor.enable_persistent_hover();
     capabilities[UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY] = executor.unexpected_alert_behavior();
     capabilities[ELEMENT_SCROLL_BEHAVIOR_CAPABILITY] = executor.input_manager()->scroll_behavior();
-    capabilities[ALLOW_ASYNC_JAVASCRIPT_CAPABILITY] = executor.allow_asynchronous_javascript();
     capabilities[IGNORE_PROTECTED_MODE_CAPABILITY] = executor.ignore_protected_mode_settings();
     capabilities[IGNORE_ZOOM_SETTING_CAPABILITY] = executor.ignore_zoom_setting();
     capabilities[INITIAL_BROWSER_URL_CAPABILITY] = executor.initial_browser_url();

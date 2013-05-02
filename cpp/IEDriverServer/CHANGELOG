@@ -9,6 +9,15 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.32.3.10
+==========
+ * Reinstated separate-thread execution of JavaScript on Windows 8. This
+   functionality had been disabled in 2.26.1.2, because of crashes in the IE
+   driver on Windows 8. It seems likely that the COM object lifetime cleanup
+   that happened in 2.31.0.2 corrected these problems. There is a possibililty,
+   however, that the root cause of the Windows 8 crashes is still in place. If
+   that is the case, this change should be rolled back.
+
 v2.32.3.9
 =========
  * Modified to check the editable state of an element before clearing.

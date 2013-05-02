@@ -61,7 +61,6 @@ class ClickElementCommandHandler : public IECommandHandler {
             status_code = this->ExecuteAtom(this->GetClickAtom(),
                                             browser_wrapper,
                                             element_wrapper,
-                                            executor.allow_asynchronous_javascript(),
                                             &option_click_error);
             if (status_code != WD_SUCCESS) {
               response->SetErrorResponse(status_code, "Cannot click on option element. " + option_click_error);
@@ -100,7 +99,6 @@ class ClickElementCommandHandler : public IECommandHandler {
           status_code = this->ExecuteAtom(this->GetSyntheticClickAtom(),
                                           browser_wrapper,
                                           element_wrapper,
-                                          executor.allow_asynchronous_javascript(),
                                           &synthetic_click_error);
           if (status_code != WD_SUCCESS) {
             // This is a hack. We should change this when we can get proper error
@@ -146,21 +144,15 @@ class ClickElementCommandHandler : public IECommandHandler {
   int ExecuteAtom(const std::wstring& atom_script_source,
                   BrowserHandle browser_wrapper,
                   ElementHandle element_wrapper,
-                  bool allow_asynchronous_javascript,
                   std::string* error_msg) {
-    int status_code = WD_SUCCESS;
     CComPtr<IHTMLDocument2> doc;
     browser_wrapper->GetDocument(&doc);
     Script script_wrapper(doc, atom_script_source, 1);
     script_wrapper.AddArgument(element_wrapper);
-    if (allow_asynchronous_javascript) {
-      status_code = script_wrapper.ExecuteAsync(ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS);
-      if (status_code != WD_SUCCESS) {
-        std::wstring error = script_wrapper.result().bstrVal;
-        *error_msg = StringUtilities::ToString(error);
-      }
-    } else {
-      status_code = script_wrapper.Execute();
+    int status_code = script_wrapper.ExecuteAsync(ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS);
+    if (status_code != WD_SUCCESS) {
+      std::wstring error = script_wrapper.result().bstrVal;
+      *error_msg = StringUtilities::ToString(error);
     }
     return status_code;
   }
