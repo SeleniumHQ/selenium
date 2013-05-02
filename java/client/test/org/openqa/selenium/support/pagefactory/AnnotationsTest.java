@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
+import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.How;
@@ -52,10 +53,25 @@ public class AnnotationsTest extends MockTestBase {
       @FindBy(id = "fruit")})
   public WebElement findBys_field;
 
+  @FindAll({@FindBy(how = How.TAG_NAME, using = "div"),
+            @FindBy(id = "fruit")})
+  public WebElement findAll_field;
+
   @FindBy(how = How.NAME, using = "cheese")
   @FindBys({@FindBy(how = How.NAME, using = "cheese"),
       @FindBy(id = "fruit")})
   public WebElement findByAndFindBys_field;
+
+  @FindBy(how = How.NAME, using = "cheese")
+  @FindAll({@FindBy(how = How.NAME, using = "cheese"),
+            @FindBy(id = "fruit")})
+  public WebElement findAllAndFindBy_field;
+
+  @FindAll({@FindBy(how = How.NAME, using = "cheese"),
+            @FindBy(id = "fruit")})
+  @FindBys({@FindBy(how = How.NAME, using = "cheese"),
+            @FindBy(id = "fruit")})
+  public WebElement findAllAndFindBys_field;
 
   @FindBy(id = "cheese", name = "fruit")
   public WebElement findByMultipleHows_field;
@@ -66,6 +82,10 @@ public class AnnotationsTest extends MockTestBase {
   @FindBys({@FindBy(id = "cheese", name = "fruit"),
       @FindBy(id = "crackers")})
   public WebElement findBysMultipleHows_field;
+
+  @FindAll({@FindBy(id = "cheese", name = "fruit"),
+            @FindBy(id = "crackers")})
+  public WebElement findAllMultipleHows_field;
 
   @Test
   public void testDefault() throws Exception {
@@ -110,11 +130,39 @@ public class AnnotationsTest extends MockTestBase {
   }
 
   @Test
+  public void findAll() throws Exception {
+    assertThat(new Annotations(getClass().getField("findAll_field")).buildBy(),
+               is(equalTo((By) new ByAll(By.tagName("div"), By.id("fruit")))));
+  }
+
+  @Test
   public void findByAndFindBys() throws Exception {
     try {
       new Annotations(getClass().getField("findByAndFindBys_field")).buildBy();
       fail("Expected field annotated with both @FindBy and @FindBys "
           + "to throw exception");
+    } catch (IllegalArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  public void findAllAndFindBy() throws Exception {
+    try {
+      new Annotations(getClass().getField("findByAndFindBys_field")).buildBy();
+      fail("Expected field annotated with both @FindAll and @FindBy "
+           + "to throw exception");
+    } catch (IllegalArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  public void findAllAndFindBys() throws Exception {
+    try {
+      new Annotations(getClass().getField("findByAndFindBys_field")).buildBy();
+      fail("Expected field annotated with both @FindAll and @FindBys "
+           + "to throw exception");
     } catch (IllegalArgumentException e) {
       // Expected exception
     }
@@ -145,6 +193,16 @@ public class AnnotationsTest extends MockTestBase {
     try {
       new Annotations(getClass().getField("findBysMultipleHows_field")).buildBy();
       fail("Expected field annotated with @FindBys containing bad @FindBy to throw error");
+    } catch (IllegalArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  public void findAllMultipleHows() throws Exception {
+    try {
+      new Annotations(getClass().getField("findAllMultipleHows_field")).buildBy();
+      fail("Expected field annotated with @FindAll containing bad @FindBy to throw error");
     } catch (IllegalArgumentException e) {
       // Expected exception
     }
