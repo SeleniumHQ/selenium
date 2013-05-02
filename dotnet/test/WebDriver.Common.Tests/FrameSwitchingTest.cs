@@ -224,7 +224,6 @@ namespace OpenQA.Selenium
             // TODO(simon): Avoid going too fast when native events are there.
             System.Threading.Thread.Sleep(1000);
             Assert.AreEqual("XHTML Test Page", driver.Title);
-            Assert.AreEqual("XHTML Test Page", driver.FindElement(By.XPath("/html/head/title")).Text);
         }
 
         [Test]
