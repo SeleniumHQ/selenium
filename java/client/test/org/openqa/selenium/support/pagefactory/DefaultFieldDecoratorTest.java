@@ -23,6 +23,7 @@ import static org.junit.Assert.assertThat;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasInputDevices;
+import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
@@ -65,8 +66,20 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
   private List<WebElement> list4;
 
   @SuppressWarnings("unused")
+  @FindAll({@FindBy(tagName = "div"), @FindBy(tagName = "a")})
+  private List<WebElement> list5;
+
+  @SuppressWarnings("unused")
   @FindBy(tagName = "div")
-  private List<Object> list5;
+  private List<Object> list6;
+
+  @SuppressWarnings("unused")
+  @FindBys({@FindBy(tagName = "div"), @FindBy(tagName = "a")})
+  private List<Object> list7;
+
+  @SuppressWarnings("unused")
+  @FindAll({@FindBy(tagName = "div"), @FindBy(tagName = "a")})
+  private List<Object> list8;
 
   private FieldDecorator createDecoratorWithNullLocator() {
     return new DefaultFieldDecorator(new ElementLocatorFactory() {
@@ -101,6 +114,9 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
     assertThat(decorator.decorate(getClass().getClassLoader(),
         getClass().getDeclaredField("list4")),
         is(notNullValue()));
+    assertThat(decorator.decorate(getClass().getClassLoader(),
+        getClass().getDeclaredField("list5")),
+        is(notNullValue()));
   }
 
   @Test
@@ -126,7 +142,13 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
   public void doesNotDecorateListOfSomethingElse() throws Exception {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
-        getClass().getDeclaredField("list5")),
+        getClass().getDeclaredField("list6")),
+        is(nullValue()));
+    assertThat(decorator.decorate(getClass().getClassLoader(),
+        getClass().getDeclaredField("list7")),
+        is(nullValue()));
+    assertThat(decorator.decorate(getClass().getClassLoader(),
+        getClass().getDeclaredField("list8")),
         is(nullValue()));
   }
 
