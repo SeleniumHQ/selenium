@@ -121,13 +121,40 @@ std::string Element::GetTagName() {
 bool Element::IsEnabled() {
   LOG(TRACE) << "Entering Element::IsEnabled";
 
-  bool result(false);
+  bool result = false;
 
   // The atom is just the definition of an anonymous
   // function: "function() {...}"; Wrap it in another function so we can
   // invoke it with our arguments without polluting the current namespace.
   std::wstring script_source(L"(function() { return (");
   script_source += atoms::asString(atoms::IS_ENABLED);
+  script_source += L")})();";
+
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+  Script script_wrapper(doc, script_source, 1);
+  script_wrapper.AddArgument(this->element_);
+  int status_code = script_wrapper.Execute();
+
+  if (status_code == WD_SUCCESS) {
+    result = script_wrapper.result().boolVal == VARIANT_TRUE;
+  } else {
+    LOG(WARN) << "Failed to determine is element enabled";
+  }
+
+  return result;
+}
+
+bool Element::IsInteractable() {
+  LOG(TRACE) << "Entering Element::IsInteractable";
+
+  bool result = false;
+
+  // The atom is just the definition of an anonymous
+  // function: "function() {...}"; Wrap it in another function so we can
+  // invoke it with our arguments without polluting the current namespace.
+  std::wstring script_source(L"(function() { return (");
+  script_source += atoms::asString(atoms::IS_INTERACTABLE);
   script_source += L")})();";
 
   CComPtr<IHTMLDocument2> doc;

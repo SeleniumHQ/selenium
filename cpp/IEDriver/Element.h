@@ -52,6 +52,7 @@ class Element {
   int IsDisplayed(bool* result);
   bool IsEnabled(void);
   bool IsSelected(void);
+  bool IsInteractable(void);
   bool IsAttachedToDom(void);
   int Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior);
 
