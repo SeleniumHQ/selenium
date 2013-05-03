@@ -30,7 +30,6 @@ except ImportError:
     from io import BytesIO
 
 from xml.dom import minidom
-from distutils import dir_util
 from selenium.webdriver.common.proxy import ProxyType
 from selenium.common.exceptions import WebDriverException
 
@@ -329,11 +328,11 @@ class FirefoxProfile(object):
                 os.makedirs(extensions_path)
             shutil.copy(xpifile, addon_path + '.xpi')
         else:
-            dir_util.copy_tree(addon, addon_path, preserve_symlinks=1)
+            shutil.copytree(addon, addon_path, symlinks=True)
 
         # remove the temporary directory, if any
         if tmpdir:
-            dir_util.remove_tree(tmpdir)
+            shutil.rmtree(tmpdir)
 
     def _addon_details(self, addon_path):
         """
