@@ -93,8 +93,8 @@ public class GridLauncher {
           Hub h = new Hub(c);
           h.start();
         } catch (GridConfigurationException e) {
-          e.printStackTrace();
           GridDocHelper.printHelp(e.getMessage());
+          e.printStackTrace();
         }
         break;
       case NODE:
@@ -105,8 +105,8 @@ public class GridLauncher {
           remote.startRemoteServer();
           remote.startRegistrationProcess();
         } catch (GridConfigurationException e) {
-          e.printStackTrace();
           GridDocHelper.printHelp(e.getMessage());
+          e.printStackTrace();
         }
         break;
       default:
