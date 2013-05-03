@@ -20,9 +20,12 @@ package org.openqa.selenium.testing.drivers;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.File;
@@ -34,7 +37,7 @@ import java.net.URL;
  * entire test suite. We do not use {@link org.openqa.selenium.chrome.ChromeDriver} since that starts and stops the service
  * with each instance (and that is too expensive for our purposes).
  */
-public class TestChromeDriver extends RemoteWebDriver {
+public class TestChromeDriver extends RemoteWebDriver implements TakesScreenshot {
   private static ChromeDriverService service;
 
   public TestChromeDriver() {
@@ -83,4 +86,12 @@ public class TestChromeDriver extends RemoteWebDriver {
     
     return capabilities;
   }
+
+  public <X> X getScreenshotAs(OutputType<X> target) {
+    // Get the screenshot as base64.
+    String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();
+    // ... and convert it.
+    return target.convertFromBase64Png(base64);
+  }
+
 }

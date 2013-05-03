@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -54,17 +56,16 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   private File tempFile = null;
 
-  @Before()
-  public void setUp() {
-    if (tempFile != null) {
-      tempFile.delete();
-      tempFile = null;
-    }
-  }
-
   @After()
   public void tearDown() {
     if (tempFile != null) {
+//      // use it locally only to help debugging
+//      try {
+//        File tmp = File.createTempFile("scr_" + this.testName.getMethodName(), ".png");
+//        FileUtils.copyFile(tempFile, tmp);
+//        System.out.println("Screenshot image file: " + tmp.getAbsolutePath());
+//      } catch (Exception e) {}
+
       tempFile.delete();
       tempFile = null;
     }
@@ -119,7 +120,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     String url = appServer.whereIs("screen/screen.html");
     driver.get(url);
 
-
     tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
@@ -140,8 +140,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {SAFARI},
+  @Ignore(value = {SAFARI, CHROME},
           reason = " SAFARI: take only visible viewport."
+                   + " CHROME: (v1) ok, (v2) take only visible viewport."
   )
   public void testShouldCaptureScreenshotWithLongX() throws Exception {
     if (!isAbleToTakeScreenshots(driver)) {
@@ -171,8 +172,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {SAFARI},
+  @Ignore(value = {SAFARI, CHROME},
           reason = " SAFARI: take only visible viewport."
+                   + " CHROME: (v1) ok, (v2) take only visible viewport."
   )
   public void testShouldCaptureScreenshotWithLongY() throws Exception {
     if (!isAbleToTakeScreenshots(driver)) {
@@ -206,6 +208,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
           reason = "IE9: captured image is cat at driver level. it's not yet supported."
                    + " FF: unable to grab screenshot with too long size (NS_ERROR_FAILURE)."
                    + " SAFARI: take only visible viewport."
+                   + " CHROME: (v1) partially black, (v2) take only visible viewport."
                    + ", anothers: untested")
   public void testShouldCaptureScreenshotWithTooLongX() throws Exception {
     if (!isAbleToTakeScreenshots(driver)) {
@@ -235,10 +238,11 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE, FIREFOX, SAFARI},
+  @Ignore(value = {IE, FIREFOX, SAFARI, CHROME},
           reason = "IE: captured image is cat at driver level. it's not yet supported."
                    + " FF: unable to grab screenshot with too long size (NS_ERROR_FAILURE)."
                    + " SAFARI: take only visible viewport."
+                   + " CHROME: (v1) partially black, (v2) take only visible viewport."
                    + ", anothers: untested")
   public void testShouldCaptureScreenshotWithTooLongY() throws Exception {
     if (!isAbleToTakeScreenshots(driver)) {
@@ -390,10 +394,11 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE, FIREFOX, SAFARI},
+  @Ignore(value = {IE, FIREFOX, SAFARI, CHROME},
           reason = "IE9: unable to capture such image due Image initialization failure"
                    + " FF: unable to grab screenshot with too long size (NS_ERROR_FAILURE)."
                    + " SAFARI: take only visible viewport."
+                   + " CHROME: (v1) browser oopsed, (v2) untested."
                    + ", anothers: untested")
   public void testShouldCaptureScreenshotWithTooLong() throws Exception {
     //TODO(user): need to understand it's necessary to run volume tests
@@ -428,8 +433,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     return (TakesScreenshot) driver;
   }
 
-  private boolean isAbleToTakeScreenshots(WebDriver driver) throws Exception {
-    return driver instanceof TakesScreenshot;
+  private boolean isAbleToTakeScreenshots(WebDriver d) throws Exception {
+    return d instanceof TakesScreenshot;
   }
 
   private Image getImage(File path)  {

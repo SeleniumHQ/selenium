@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -67,6 +68,9 @@ public abstract class JUnit4TestBase implements WrapsDriver {
   public void createDriver() throws Exception {
     driver = actuallyCreateDriver();
   }
+
+  @Rule
+  public TestName testName = new TestName();
 
   @Rule
   public TestRule traceMethodName = new TestWatcher() {
