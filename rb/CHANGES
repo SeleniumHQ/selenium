@@ -2,7 +2,8 @@
 ============
 
 Remote:
-  * Support rotating devices, such iPhone & iPad in simulator and Android browser in emulator
+  * Support rotating devices, such as iPhone & iPad in simulator and Android browser in emulator
+  * Support for interacting with touch screen devices, such as iPhone & iPad in simulator and Android browser in emulator
 
 2.32.1 (2013-04-11)
 ===================
