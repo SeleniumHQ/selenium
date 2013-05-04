@@ -37,14 +37,6 @@ module Selenium
           ]
         end
 
-        def setScreenOrientation(orientation)
-          execute :setScreenOrientation, {}, :orientation => orientation
-        end
-
-        def getScreenOrientation
-          execute :getScreenOrientation
-        end
-
         def capabilities
           @capabilities ||= Remote::Capabilities.android
         end
