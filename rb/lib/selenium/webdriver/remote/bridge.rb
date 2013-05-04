@@ -81,7 +81,8 @@ module Selenium
             DriverExtensions::UploadsFiles,
             DriverExtensions::TakesScreenshot,
             DriverExtensions::HasSessionId,
-            DriverExtensions::Rotatable
+            DriverExtensions::Rotatable,
+            DriverExtensions::HasTouchScreen
           ]
         end
 
