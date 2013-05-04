@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.testing.Ignore;
@@ -207,14 +208,14 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     input.sendKeys("test");
     moveFocus();
     assertThat(driver.findElement(By.id("result")).getText().trim(),
-               either(is("focus change blur")).or(is("focus blur change")));
+               Matchers.<String>either(is("focus change blur")).or(is("focus blur change")));
 
     input.sendKeys(Keys.BACK_SPACE, "t");
     moveFocus();
 
     // I weep.
     assertThat(driver.findElement(By.id("result")).getText().trim(),
-               either(is("focus change blur focus blur"))
+               Matchers.<String>either(is("focus change blur focus blur"))
                    .or(is("focus blur change focus blur"))
                    .or(is("focus blur change focus blur change"))
                    .or(is("focus change blur focus change blur"))); // What Chrome does
