@@ -25,12 +25,12 @@ goog.require('bot.ErrorCode');
 goog.require('bot.response');
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
-goog.require('safaridriver.console');
 goog.require('safaridriver.dom');
 goog.require('safaridriver.inject.CommandRegistry');
 goog.require('safaridriver.inject.Encoder');
 goog.require('safaridriver.inject.message');
 goog.require('safaridriver.inject.page.modules');
+goog.require('safaridriver.logging.ForwardingHandler');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Command');
@@ -59,7 +59,9 @@ safaridriver.inject.page.encoder;
  * script driven by {@link safaridriver.inject.Tab}.
  */
 safaridriver.inject.page.init = function() {
-  safaridriver.console.init();
+  var handler = new safaridriver.logging.ForwardingHandler(window);
+  handler.captureConsoleOutput();
+
   safaridriver.inject.page.modules.init();
 
   safaridriver.inject.page.LOG_.info(

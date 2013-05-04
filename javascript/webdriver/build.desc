@@ -10,6 +10,11 @@ js_library(name = "base_lib",
     "//third_party/closure",
   ])
 
+js_library(
+  name = "logging_lib",
+  srcs = ["logging.js"],
+  deps = ["//third_party/closure"])
+
 js_library(name = "key_lib",
   srcs = [ "key.js" ])
 

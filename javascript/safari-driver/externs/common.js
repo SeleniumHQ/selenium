@@ -149,10 +149,10 @@ SafariBrowserWindow.prototype.close = function() {};
 SafariBrowserWindow.prototype.insertTab = function(tab, index) {};
 
 /**
- * @param {string} visibility
- * @param {number} index
+ * @param {string=} opt_visibility
+ * @param {number=} opt_index
  */
-SafariBrowserWindow.prototype.openTab = function(visibility, index) {};
+SafariBrowserWindow.prototype.openTab = function(opt_visibility, opt_index) {};
 
 
 /**
@@ -163,6 +163,19 @@ function SafariCloseEvent() {}
 
 /** @override */
 SafariCloseEvent.prototype.type = 'close';
+
+
+/**
+ * @constructor
+ * @extends {SafariEvent}
+ */
+function SafariCommandEvent() {}
+
+/** @override */
+SafariCommandEvent.prototype.type = 'command';
+
+/** @type {string} */
+SafariCommandEvent.prototype.command = '';
 
 
 /** @constructor */
@@ -272,6 +285,9 @@ function SafariExtension() {}
 
 /** @type {!Array.<!SafariExtensionBar>} */
 SafariExtension.prototype.bars;
+
+/** @type {string} */
+SafariExtension.prototype.baseURI;
 
 
 /**

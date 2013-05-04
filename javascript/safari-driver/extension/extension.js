@@ -28,7 +28,7 @@ goog.require('safaridriver.console');
 goog.require('safaridriver.extension.Server');
 goog.require('safaridriver.extension.Session');
 goog.require('safaridriver.extension.TabManager');
-goog.require('safaridriver.extension.bar');
+goog.require('safaridriver.logging.ForwardingHandler');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Connect');
@@ -55,12 +55,14 @@ safaridriver.extension.init = function() {
       new webdriver.Session('debug', {}), server);
   goog.exportSymbol('driver', safaridriver.extension.driver);
 
+  safari.application.addEventListener(
+      'message', safaridriver.extension.onMessage_, false);
+  safari.application.addEventListener(
+      'command', safaridriver.extension.onCommand_, false);
+
   // Now that we're initialized, we sit and wait for a page to send us a client
   // to attempt connecting to.
   safaridriver.extension.LOG_.info('Waiting for connect command...');
-  safaridriver.extension.bar.setUserMessage('<idle>');
-  safari.application.addEventListener('message',
-      safaridriver.extension.onMessage_, false);
 };
 
 
@@ -101,6 +103,72 @@ safaridriver.extension.driver;
  * @private {number}
  */
 safaridriver.extension.numConnections_ = 0;
+
+
+/**
+ * @private {string}
+ * @const
+ */
+safaridriver.extension.LOG_PAGE_URL_ = safari.extension.baseURI + 'log.html';
+
+
+/**
+ * The tab to display logging info in.
+ * @private {SafariBrowserTab}
+ */
+safaridriver.extension.loggingTab_ = null;
+
+
+/** @private {safaridriver.logging.ForwardingHandler} */
+safaridriver.extension.logHandler_ = null;
+
+
+/**
+ * Opens the logging tab if it is not currently open.
+ * @private
+ */
+safaridriver.extension.openLogWindow_ = function() {
+  if (!safaridriver.extension.loggingTab_) {
+    var win = safari.application.openBrowserWindow();
+    safaridriver.extension.loggingTab_ = win.activeTab;
+    safaridriver.extension.loggingTab_.addEventListener(
+        'close', onClose, true);
+
+    safaridriver.extension.logHandler_ =
+        new safaridriver.logging.ForwardingHandler(
+            safaridriver.extension.loggingTab_.page);
+
+    safaridriver.extension.tabManager_.ignoreTab(
+        safaridriver.extension.loggingTab_);
+  }
+
+  if (safaridriver.extension.loggingTab_.url !==
+      safaridriver.extension.LOG_PAGE_URL_) {
+    safaridriver.extension.loggingTab_.url =
+        safaridriver.extension.LOG_PAGE_URL_;
+  }
+
+  function onClose() {
+    safaridriver.extension.loggingTab_.removeEventListener(
+        'close', onClose, true);
+    safaridriver.extension.loggingTab_ = null;
+
+    safaridriver.extension.logHandler_.dispose();
+    safaridriver.extension.logHandler_ = null;
+  }
+};
+
+
+/**
+ * Responds to command events from the Safari application.
+ * @param {!SafariCommandEvent} e The event.
+ * @private
+ */
+safaridriver.extension.onCommand_ = function(e) {
+  if (e.command === 'showlog') {
+    safaridriver.extension.openLogWindow_();
+  }
+};
 
 
 /**
@@ -152,6 +220,13 @@ safaridriver.extension.onMessage_ = function(e) {
       // TODO: Fully support alerts. See
       // http://code.google.com/p/selenium/issues/detail?id=3862
       e.message = !!safaridriver.extension.numConnections_;
+      break;
+
+    case safaridriver.message.Log.TYPE:
+      if (safaridriver.extension.logHandler_) {
+        safaridriver.extension.logHandler_.forward(
+            /** @type {!safaridriver.message.Log} */ (message));
+      }
       break;
 
     case safaridriver.message.LoadModule.TYPE:

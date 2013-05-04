@@ -52,6 +52,7 @@ js_module(
         "//javascript/safari-driver:common_lib",
         "//javascript/safari-driver/message:connect",
         "//javascript/webdriver:base_lib",
+        "//javascript/webdriver:logging_lib",
     ])
 
 js_module(

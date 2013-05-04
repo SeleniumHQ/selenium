@@ -23,7 +23,7 @@ goog.provide('webdriver.logging');
  */
 webdriver.logging.Level = {
   ALL: {value: Number.MIN_VALUE, name: 'ALL'},
-  DEBUG: {value: 500, name: 'DEBUG'},
+  DEBUG: {value: 700, name: 'DEBUG'},
   INFO: {value: 800, name: 'INFO'},
   WARNING: {value: 900, name: 'WARNING'},
   SEVERE: {value: 1000, name: 'SEVERE'},
