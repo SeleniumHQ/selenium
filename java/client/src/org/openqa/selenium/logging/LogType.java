@@ -33,14 +33,19 @@ public class LogType {
   public static final String CLIENT = "client";
 
   /**
-   * This log type pertains to logs relating to performance timings.
-   */
-  public static final String PROFILER = "profiler";
-
-  /**
    * This log pertains to logs from the WebDriver implementation.
    */
   public static final String DRIVER = "driver";
+
+  /**
+   * This log type pertains to logs relating to performance timings.
+   */
+  public static final String PERFORMANCE = "performance";
+
+  /**
+   * This log type pertains to logs relating to performance timings.
+   */
+  public static final String PROFILER = "profiler";
 
   /**
    * This log type pertains to logs from the remote server.

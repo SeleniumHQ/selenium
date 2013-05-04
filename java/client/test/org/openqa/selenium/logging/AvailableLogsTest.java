@@ -25,7 +25,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-import static org.openqa.selenium.testing.TestUtilities.isOldChromedriver;
 
 import java.util.Set;
 
@@ -43,6 +42,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.isOldChromedriver;
 
 @Ignore({ANDROID, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
 public class AvailableLogsTest extends JUnit4TestBase {
@@ -97,7 +97,6 @@ public class AvailableLogsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({CHROME})  // Remove when chromedriver2 has it
   public void profilerLogShouldBeDisabledByDefault() {
     assumeFalse(isOldChromedriver(driver));
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();

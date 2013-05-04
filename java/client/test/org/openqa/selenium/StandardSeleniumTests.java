@@ -29,6 +29,7 @@ import org.openqa.selenium.interactions.InteractionTests;
 import org.openqa.selenium.logging.AvailableLogsTest;
 import org.openqa.selenium.logging.GetLogsTest;
 import org.openqa.selenium.logging.PerformanceLoggingTest;
+import org.openqa.selenium.logging.PerformanceLogTypeTest;
 import org.openqa.selenium.support.ui.SelectElementTest;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.ParallelSuite;
@@ -68,6 +69,7 @@ import org.openqa.selenium.testing.ParallelSuite;
     PageLoadingTest.class,
     PartialLinkTextMatchTest.class,
     PerformanceLoggingTest.class,
+    PerformanceLogTypeTest.class,
     ProxySettingTest.class,
     RenderedWebElementTest.class,
     RotatableTest.class,

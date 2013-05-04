@@ -99,6 +99,11 @@ public class TestUtilities {
         && getUserAgent(driver).contains("Firefox/9.0");
   }
 
+  public static boolean isChrome(WebDriver driver) {
+    return !(driver instanceof HtmlUnitDriver)
+        && getUserAgent(driver).contains("Chrome");
+  }
+
   public static boolean isOldChromedriver(WebDriver driver) {
     Capabilities caps;
     try {
