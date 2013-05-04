@@ -58,7 +58,6 @@ public class AvailableLogsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({CHROME})  // Remove when chromedriver2 has it
   public void browserLogShouldBeEnabledByDefault() {
     assumeFalse(isOldChromedriver(driver));
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
@@ -68,7 +67,6 @@ public class AvailableLogsTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @Test
-  @Ignore({CHROME})  // Remove when chromedriver2 has it
   public void clientLogShouldBeEnabledByDefault() {
     assumeFalse(isOldChromedriver(driver));
     // Do one action to have *something* in the client logs.
@@ -105,7 +103,6 @@ public class AvailableLogsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({CHROME})  // Profiler log is getting deprecated, chromedriver2 will not implement.
   public void shouldBeAbleToEnableProfilerLog() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(ENABLE_PROFILING_CAPABILITY, true);
