@@ -12,6 +12,4 @@ java_test(name = "test",
     "//java/server/src/org/openqa/grid/selenium",
     "//java/client/test/org/openqa/selenium",
     "//third_party/java/jmock",
-    "//third_party/java/testng",
-    
   ])
