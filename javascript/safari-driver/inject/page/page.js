@@ -24,6 +24,7 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.response');
 goog.require('goog.array');
+goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.dom');
 goog.require('safaridriver.inject.CommandRegistry');
@@ -59,12 +60,14 @@ safaridriver.inject.page.encoder;
  * script driven by {@link safaridriver.inject.Tab}.
  */
 safaridriver.inject.page.init = function() {
+  goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.INFO);
+
   var handler = new safaridriver.logging.ForwardingHandler(window);
   handler.captureConsoleOutput();
 
   safaridriver.inject.page.modules.init();
 
-  safaridriver.inject.page.LOG_.info(
+  safaridriver.inject.page.LOG_.config(
       'Loaded page script for ' + window.location);
 
   var messageTarget = new safaridriver.message.MessageTarget(window, true);
@@ -76,7 +79,7 @@ safaridriver.inject.page.init = function() {
       new safaridriver.inject.Encoder(messageTarget);
 
   var message = new safaridriver.message.Load(window !== window.top);
-  safaridriver.inject.page.LOG_.info('Sending ' + message);
+  safaridriver.inject.page.LOG_.config('Sending ' + message);
   message.send(window);
 
   wrapDialogFunction('alert', safaridriver.inject.page.wrappedAlert_);
@@ -188,7 +191,7 @@ safaridriver.inject.page.sendAlert_ = function(dialog, var_args) {
     }
   }
 
-  safaridriver.inject.page.LOG_.info('Sending alert notification; ' +
+  safaridriver.inject.page.LOG_.config('Sending alert notification; ' +
       'type: ' + dialog.name + ', text: ' + alertText);
 
   var message = new safaridriver.message.Alert(alertText, blocksUiThread);
@@ -196,7 +199,7 @@ safaridriver.inject.page.sendAlert_ = function(dialog, var_args) {
 
   if (ignoreAlert == '1') {
     if (dialog !== safaridriver.inject.page.NativeDialog_.BEFOREUNLOAD) {
-      safaridriver.inject.page.LOG_.info('Invoking native alert');
+      safaridriver.inject.page.LOG_.config('Invoking native alert');
       return nativeFn.apply(window, args);
     }
     return null;  // Return and let onbeforeunload be called as usual.
@@ -261,7 +264,7 @@ safaridriver.inject.page.onCommand_ = function(message, e) {
       then(function(response) {
         var responseMessage = new safaridriver.message.Response(
             command.getId(), response);
-        safaridriver.inject.page.LOG_.info(
+        safaridriver.inject.page.LOG_.config(
             'Sending ' + command.getName() + ' response: ' + responseMessage);
         responseMessage.send(window);
       });

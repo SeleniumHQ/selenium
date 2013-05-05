@@ -51,30 +51,32 @@ safaridriver.debug.formatTimeStamp_ = function(ms) {
  * @private
  */
 safaridriver.debug.onLogEntry_ = function(message) {
-  var entry = message.getEntry();
-  var content = safaridriver.debug.formatTimeStamp_(entry.timestamp) +
-      ' ' + entry.message.replace('<', '&lt;').replace('>', '&gt;');
-
-  var className = ['msg'];
-  switch (entry.level) {
-    case webdriver.logging.Level.DEBUG.name:
-      className.push('debug');
-      break;
-    case webdriver.logging.Level.WARNING.name:
-      className.push('warning');
-      break;
-    case webdriver.logging.Level.SEVERE.name:
-      className.push('severe');
-      break;
-  }
-
-  if (message.getLogType() === webdriver.logging.Type.BROWSER) {
-    className.push('browser');
-  }
-
-  var div = goog.dom.createDom(goog.dom.TagName.DIV, className.join(' '),
-      goog.dom.createDom(goog.dom.TagName.PRE, null, content));
-
   var log = goog.dom.getElement('log');
-  goog.dom.appendChild(log, div);
+  message.getEntries().forEach(function(entry) {
+    var content =
+        safaridriver.debug.formatTimeStamp_(entry.timestamp) +
+        ' ' + entry.message.replace('<', '&lt;').replace('>', '&gt;');
+
+    var className = ['msg'];
+    switch (entry.level) {
+      case webdriver.logging.Level.DEBUG:
+        className.push('debug');
+        break;
+      case webdriver.logging.Level.WARNING:
+        className.push('warning');
+        break;
+      case webdriver.logging.Level.SEVERE:
+        className.push('severe');
+        break;
+    }
+
+    if (entry.type === webdriver.logging.Type.BROWSER) {
+      className.push('browser');
+    }
+
+    var div = goog.dom.createDom(
+        goog.dom.TagName.DIV, className.join(' '),
+        goog.dom.createDom(goog.dom.TagName.PRE, null, content));
+    goog.dom.appendChild(log, div);
+  });
 };

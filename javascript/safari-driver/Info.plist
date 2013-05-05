@@ -18,6 +18,8 @@
 	<string>2.32.0</string>
 	<key>Chrome</key>
 	<dict>
+		<key>Database Quota</key>
+		<real>52428800</real>
 		<key>Global Page</key>
 		<string>extension.html</string>
 		<key>Toolbar Items</key>

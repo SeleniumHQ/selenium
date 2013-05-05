@@ -83,9 +83,10 @@ safaridriver.logging.ForwardingHandler.prototype.captureConsoleOutput =
   function wrap(nativeFn, level) {
     var fn = function() {
       var args = goog.array.slice(arguments, 0);
-      var message = new safaridriver.message.Log(
-          webdriver.logging.Type.BROWSER,
-          new webdriver.logging.Entry(level, args.join(' ')));
+      var message = new safaridriver.message.Log([
+        new webdriver.logging.Entry(level, args.join(' '),
+            goog.now(), webdriver.logging.Type.BROWSER)
+      ]);
       message.send(target);
       return nativeFn.apply(console, arguments);
     };
@@ -112,8 +113,8 @@ safaridriver.logging.ForwardingHandler.prototype.forward = function(message) {
  */
 safaridriver.logging.ForwardingHandler.prototype.handleLogRecord_ = function(
     logRecord) {
-  var entry = webdriver.logging.Entry.fromClosureLogRecord(logRecord);
-  var message = new safaridriver.message.Log(
-      webdriver.logging.Type.DRIVER, entry);
+  var entry = webdriver.logging.Entry.fromClosureLogRecord(
+      logRecord, webdriver.logging.Type.DRIVER);
+  var message = new safaridriver.message.Log([entry]);
   this.forward(message);
 };

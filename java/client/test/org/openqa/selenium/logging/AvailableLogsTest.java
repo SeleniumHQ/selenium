@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+import static org.openqa.selenium.testing.TestUtilities.isOldChromedriver;
 
 import java.util.Set;
 
@@ -44,7 +45,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isOldChromedriver;
 
-@Ignore({ANDROID, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+@Ignore({ANDROID, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS})
 public class AvailableLogsTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
@@ -103,6 +104,7 @@ public class AvailableLogsTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = {SAFARI}, reason = "Safari does not support profiler logs")
   public void shouldBeAbleToEnableProfilerLog() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(ENABLE_PROFILING_CAPABILITY, true);

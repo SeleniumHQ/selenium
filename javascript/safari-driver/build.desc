@@ -116,7 +116,7 @@ js_binary(
         "deps.js",
         "extension/commands.js",
         "extension/extension.js",
-        "extension/extensionbar.js",
+        "extension/logdb.js",
         "extension/server.js",
         "extension/session.js",
         "extension/tab.js",

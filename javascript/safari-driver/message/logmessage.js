@@ -27,17 +27,15 @@ goog.require('webdriver.logging');
 
 /**
  * Message used to pass log entries between components.
- * @param {string} type The log type.
- * @param {!webdriver.logging.Entry} entry The log entry.
+ * @param {!Array.<!webdriver.logging.Entry>} entries The log entries.
  * @constructor
  * @extends {safaridriver.message.Message}
  */
-safaridriver.message.Log = function(type, entry) {
+safaridriver.message.Log = function(entries) {
   goog.base(this, safaridriver.message.Log.TYPE);
-  this.setField('logType', type);
 
-  /** @private {!webdriver.logging.Entry} */
-  this.entry_ = entry;
+  /** @private {!Array.<!webdriver.logging.Entry>} */
+  this.entries_ = entries;
 };
 goog.inherits(safaridriver.message.Log, safaridriver.message.Message);
 
@@ -56,51 +54,65 @@ safaridriver.message.Log.TYPE = 'log';
  * @private
  */
 safaridriver.message.Log.fromData_ = function(data) {
-  var type = data['logType'];
-  var entry = data['entry'];
-  if (!goog.isString(type) ||
-      !goog.isString(entry['level']) ||
-      !goog.isString(entry['message']) ||
-      !goog.isNumber(entry['timestamp'])) {
+  var rawEntries = data['entries'];
+  if (!goog.isArray(rawEntries)) {
     throw safaridriver.message.throwInvalidMessageError(data);
   }
-  return new safaridriver.message.Log(
-      type,
-      new webdriver.logging.Entry(
-          entry['level'], entry['message'], entry['timestamp']));
+
+  var entries = rawEntries.map(function(rawEntry) {
+    if (!goog.isString(rawEntry['type']) ||
+        !goog.isString(rawEntry['level']) ||
+        !goog.isString(rawEntry['message']) ||
+        !goog.isNumber(rawEntry['timestamp'])) {
+      throw safaridriver.message.throwInvalidMessageError(data);
+    }
+    return new webdriver.logging.Entry(
+        rawEntry['level'], rawEntry['message'],
+        rawEntry['timestamp'], rawEntry['type']);
+  });
+  return new safaridriver.message.Log(entries);
+};
+
+
+/** @private */
+safaridriver.message.Log.prototype.serialized_ = false;
+
+
+/** @private */
+safaridriver.message.Log.prototype.serializeEntries_ = function() {
+  if (!this.serialized_) {
+    this.setField('entries', this.entries_.map(function(entry) {
+      return entry.toJSON();
+    }));
+    this.serialized_ = true;
+  }
 };
 
 
 /** @override */
 safaridriver.message.Log.prototype.toJSON = function() {
-  this.setField('entry', this.entry_.toJSON());
+  this.serializeEntries_();
   return goog.base(this, 'toJSON');
 };
 
 
 /** @override */
 safaridriver.message.Log.prototype.send = function(target) {
-  this.setField('entry', this.entry_.toJSON());
+  this.serializeEntries_();
   goog.base(this, 'send', target);
 };
 
 
 /** @override */
 safaridriver.message.Log.prototype.sendSync = function(target) {
-  this.setField('entry', this.entry_.toJSON());
+  this.serializeEntries_();
   goog.base(this, 'sendSync', target);
 };
 
 
-/** @return {string} The log entry type. */
-safaridriver.message.Log.prototype.getLogType = function() {
-  return /** @type {string} */ (this.getField('logType'));
-};
-
-
-/** @return {!webdriver.logging.Entry} The log entry. */
-safaridriver.message.Log.prototype.getEntry = function() {
-  return this.entry_;
+/** @return {!Array.<!webdriver.logging.Entry>} The log entries. */
+safaridriver.message.Log.prototype.getEntries = function() {
+  return this.entries_;
 };
 
 

@@ -15,6 +15,7 @@
 
 goog.provide('webdriver.logging');
 
+goog.require('goog.object');
 
 
 /**
@@ -28,6 +29,24 @@ webdriver.logging.Level = {
   WARNING: {value: 900, name: 'WARNING'},
   SEVERE: {value: 1000, name: 'SEVERE'},
   OFF: {value: Number.MAX_VALUE, name: 'OFF'}
+};
+
+
+/**
+ * Converts a level name or value to a {@link webdriver.logging.Level} value.
+ * If the name/value is not recognized, {@link webdriver.logging.Level.ALL}
+ * will be returned.
+ * @param {(number|string)} nameOrValue The log level name, or value, to
+ *     convert .
+ * @return {!webdriver.logging.Level} The converted level.
+ */
+webdriver.logging.getLevel = function(nameOrValue) {
+  var predicate = goog.isString(nameOrValue) ?
+      function(val) { return val.name === nameOrValue; } :
+      function(val) { return val.value === nameOrValue; };
+
+  return goog.object.findValue(webdriver.logging.Level, predicate) ||
+      webdriver.logging.Level.ALL;
 };
 
 
@@ -51,30 +70,36 @@ webdriver.logging.Type = {
  * @param {number=} opt_timestamp The time this entry was generated, in
  *     milliseconds since 0:00:00, January 1, 1970 UTC. If omitted, the
  *     current time will be used.
+ * @param {string=} opt_type The log type, if known.
  * @constructor
  */
-webdriver.logging.Entry = function(level, message, opt_timestamp) {
+webdriver.logging.Entry = function(level, message, opt_timestamp, opt_type) {
 
-  /** @type {string} */
-  this.level = goog.isString(level) ? level : level.name;
+  /** @type {!webdriver.logging.Level} */
+  this.level =
+      goog.isString(level) ? webdriver.logging.getLevel(level) : level;
 
   /** @type {string} */
   this.message = message;
 
   /** @type {number} */
   this.timestamp = goog.isNumber(opt_timestamp) ? opt_timestamp : goog.now();
+
+  /** @type {string} */
+  this.type = opt_type || '';
 };
 
 
 /**
- * @return {{level: string, message: string, timestamp: number}} The JSON
- *     representation of this entry.
+ * @return {{level: string, message: string, timestamp: number,
+ *           type: string}} The JSON representation of this entry.
  */
 webdriver.logging.Entry.prototype.toJSON = function() {
   return {
-    'level': this.level,
+    'level': this.level.name,
     'message': this.message,
-    'timestamp': this.timestamp
+    'timestamp': this.timestamp,
+    'type': this.type
   };
 };
 
@@ -83,11 +108,13 @@ webdriver.logging.Entry.prototype.toJSON = function() {
  * Converts a {@link goog.debug.LogRecord} into a
  * {@link webdriver.logging.Entry}.
  * @param {!goog.debug.LogRecord} logRecord The record to convert.
+ * @param {string=} opt_type The log type.
  * @return {!webdriver.logging.Entry} The converted entry.
  */
-webdriver.logging.Entry.fromClosureLogRecord = function(logRecord) {
+webdriver.logging.Entry.fromClosureLogRecord = function(logRecord, opt_type) {
   var closureLevel = logRecord.getLevel();
   var level = webdriver.logging.Level.SEVERE;
+
   if (closureLevel.value <= webdriver.logging.Level.DEBUG.value) {
     level = webdriver.logging.Level.DEBUG;
   } else if (closureLevel.value <= webdriver.logging.Level.INFO.value) {
@@ -95,8 +122,10 @@ webdriver.logging.Entry.fromClosureLogRecord = function(logRecord) {
   } else if (closureLevel.value <= webdriver.logging.Level.WARNING.value) {
     level = webdriver.logging.Level.WARNING;
   }
+
   return new webdriver.logging.Entry(
       level,
       '[' + logRecord.getLoggerName() + '] ' + logRecord.getMessage(),
-      logRecord.getMillis());
+      logRecord.getMillis(),
+      opt_type);
 };
