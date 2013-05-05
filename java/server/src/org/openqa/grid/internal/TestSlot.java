@@ -104,6 +104,7 @@ public class TestSlot {
         return null;
       } else {
         if (matches(desiredCapabilities)) {
+          log.info("Trying to create a new session on test slot " + this.capabilities);
           TestSession session = new TestSession(this, desiredCapabilities, new DefaultTimeSource());
           currentSession = session;
           return session;
