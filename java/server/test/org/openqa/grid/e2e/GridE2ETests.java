@@ -12,6 +12,7 @@ import org.openqa.grid.e2e.misc.Grid1HeartbeatTest;
 import org.openqa.grid.e2e.misc.GridSerializeExceptionTest;
 import org.openqa.grid.e2e.misc.HubRestart;
 import org.openqa.grid.e2e.misc.HubRestartNeg;
+import org.openqa.grid.e2e.misc.WebDriverPriorityDemo;
 import org.openqa.grid.e2e.node.BrowserTimeOutTest;
 import org.openqa.grid.e2e.node.CrashWhenStartingBrowserTest;
 import org.openqa.grid.e2e.node.DefaultProxyFindsFirefoxLocationsTest;
@@ -30,7 +31,7 @@ import org.openqa.grid.e2e.utils.ExtraServletUtilTest;
     HubRestart.class,
     HubRestartNeg.class,
     //Issue1586.class, // extremely slow test, for issue1586. Excluding from regression.
-    //WebDriverPriorityDemo.class, // not yet moved to JUnit
+    WebDriverPriorityDemo.class, // not yet moved to JUnit
     BrowserTimeOutTest.class,
     CrashWhenStartingBrowserTest.class,
     DefaultProxyFindsFirefoxLocationsTest.class,
