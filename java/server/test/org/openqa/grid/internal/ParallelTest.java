@@ -35,6 +35,7 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
 
 public class ParallelTest {
 
@@ -68,7 +69,7 @@ public class ParallelTest {
   @Test
   public void canGetApp2() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
@@ -89,7 +90,7 @@ public class ParallelTest {
   @Test
   public void cannotGet2App2() throws InterruptedException {
     final Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
       MockedRequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
@@ -117,7 +118,7 @@ public class ParallelTest {
   @Test(timeout = 2000)
   public void canGet5App1() {
     final Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
       for (int i = 0; i < 5; i++) {
@@ -138,7 +139,7 @@ public class ParallelTest {
   @Test(timeout = 1000)
   public void cannotGet6App1() throws InterruptedException {
     final Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
       final AtomicInteger count = new AtomicInteger();
@@ -176,7 +177,7 @@ public class ParallelTest {
   @Test(timeout = 1000)
   public void cannotGetApp2() throws InterruptedException {
     final Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
     try {
       registry.add(p1);
 
@@ -227,6 +228,7 @@ public class ParallelTest {
     req.addDesiredCapability(app1);
     req.addDesiredCapability(app2);
     req.setConfiguration(config);
+    req.getConfiguration().put(CapabilityType.PROXY, DetachedRemoteProxy.class.getCanonicalName());
 
     p1 = BaseRemoteProxy.getNewInstance(req, registry);
 

@@ -26,10 +26,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
@@ -59,7 +61,7 @@ public class SessionTimesOutTest {
     req.setConfiguration(config);
   }
 
-  class MyRemoteProxyTimeout extends BaseRemoteProxy implements TimeoutListener {
+  class MyRemoteProxyTimeout extends DetachedRemoteProxy implements TimeoutListener {
 
     public MyRemoteProxyTimeout(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -100,7 +102,7 @@ public class SessionTimesOutTest {
 
   private static boolean timeoutDone = false;
 
-  class MyRemoteProxyTimeoutSlow extends BaseRemoteProxy implements TimeoutListener {
+  class MyRemoteProxyTimeoutSlow extends DetachedRemoteProxy implements TimeoutListener {
 
     public MyRemoteProxyTimeoutSlow(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -114,7 +116,6 @@ public class SessionTimesOutTest {
         e.printStackTrace();
       }
     }
-
   }
 
   @Test(timeout = 5000)
@@ -156,7 +157,7 @@ public class SessionTimesOutTest {
     }
   }
 
-  class MyBuggyRemoteProxyTimeout extends BaseRemoteProxy implements TimeoutListener {
+  class MyBuggyRemoteProxyTimeout extends DetachedRemoteProxy implements TimeoutListener {
 
     public MyBuggyRemoteProxyTimeout(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -199,7 +200,7 @@ public class SessionTimesOutTest {
     }
   }
 
-  class MyStupidConfig extends BaseRemoteProxy implements TimeoutListener {
+  class MyStupidConfig extends DetachedRemoteProxy implements TimeoutListener {
 
     public MyStupidConfig(RegistrationRequest request, Registry registry) {
       super(request, registry);

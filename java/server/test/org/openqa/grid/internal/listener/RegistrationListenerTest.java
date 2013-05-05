@@ -28,6 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
+import org.openqa.grid.internal.DetachedRemoteProxy;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.RegistrationListener;
@@ -39,7 +40,7 @@ public class RegistrationListenerTest {
 
   private static boolean serverUp = false;
 
-  static class MyRemoteProxy extends BaseRemoteProxy implements RegistrationListener {
+  static class MyRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
 
     public MyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -88,7 +89,7 @@ public class RegistrationListenerTest {
    *
    * @author François Reynaud
    */
-  static class MyBuggyRemoteProxy extends BaseRemoteProxy implements RegistrationListener {
+  static class MyBuggyRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
 
     public MyBuggyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -118,7 +119,7 @@ public class RegistrationListenerTest {
 
   static boolean slowRemoteUp = false;
 
-  static class MySlowRemoteProxy extends BaseRemoteProxy implements RegistrationListener {
+  static class MySlowRemoteProxy extends DetachedRemoteProxy implements RegistrationListener {
 
     public MySlowRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -144,7 +145,7 @@ public class RegistrationListenerTest {
   public void registerSomeSlow() {
     final Registry registry = Registry.newInstance();
     try {
-      registry.add(new BaseRemoteProxy(req, registry));
+      registry.add(new DetachedRemoteProxy(req, registry));
       new Thread(new Runnable() { // Thread safety reviewed
         public void run() {
           registry.add(new MySlowRemoteProxy(req, registry));

@@ -76,6 +76,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     remote.addBrowser(ff7, 1);
     remote.addBrowser(ff3, 1);
 
+    remote.startRemoteServer();
     remote.sendRegistrationRequest();
   }
 
@@ -103,6 +104,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
 
   @AfterClass
   public static void teardown() throws Exception {
+    remote.stopRemoteServer();
     hub.stop();
   }
 

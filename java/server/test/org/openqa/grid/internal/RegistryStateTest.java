@@ -25,10 +25,12 @@ import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
@@ -69,7 +71,7 @@ public class RegistryStateTest {
   public void sessionIsRemoved() {
     Registry registry = Registry.newInstance();
 
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
 
     try {
@@ -89,7 +91,7 @@ public class RegistryStateTest {
   @Test(timeout = 5000)
   public void basichecks() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -118,7 +120,7 @@ public class RegistryStateTest {
   @Test(timeout = 4000)
   public void sessionIsRemoved2() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -137,7 +139,7 @@ public class RegistryStateTest {
   @Test(timeout = 4000)
   public void sessionByExtKey() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -166,7 +168,7 @@ public class RegistryStateTest {
   @Test
   public void sessionByExtKeyNull() {
     Registry registry = Registry.newInstance();
-    RemoteProxy p1 = new BaseRemoteProxy(req, registry);
+    RemoteProxy p1 = new DetachedRemoteProxy(req, registry);
 
     try {
       registry.add(p1);
@@ -183,5 +185,4 @@ public class RegistryStateTest {
       registry.stop();
     }
   }
-
 }

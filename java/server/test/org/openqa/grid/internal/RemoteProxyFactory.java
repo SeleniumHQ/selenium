@@ -20,7 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.GridException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 @SuppressWarnings({"JavaDoc"})
@@ -98,7 +100,7 @@ public class RemoteProxyFactory {
   }
 
   private static RemoteProxy createProxy(Registry registry, RegistrationRequest req) {
-    final RemoteProxy remoteProxy = new BaseRemoteProxy(req, registry);
+    final RemoteProxy remoteProxy = new DetachedRemoteProxy(req, registry);
     remoteProxy.setupTimeoutListener();
     return remoteProxy;
   }
