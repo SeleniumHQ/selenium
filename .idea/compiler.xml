@@ -18,6 +18,7 @@
       <entry name="?*.tld" />
       <entry name="?*.ftl" />
       <entry name="?*.yml" />
+      <entry name="*.json" />
     </wildcardResourcePatterns>
     <annotationProcessing>
       <profile default="true" name="Default" enabled="false">
