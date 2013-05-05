@@ -379,5 +379,5 @@ safaridriver.message.Message.prototype.toJSON = function() {
 
 /** @override */
 safaridriver.message.Message.prototype.toString = function() {
-  return bot.json.stringify(this);
+  return bot.json.stringify(this.toJSON());
 };

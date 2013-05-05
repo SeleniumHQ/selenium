@@ -45,6 +45,7 @@ goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Load');
 goog.require('safaridriver.message.LoadModule');
+goog.require('safaridriver.message.Log');
 goog.require('safaridriver.message.Message');
 goog.require('safaridriver.message.MessageTarget');
 goog.require('safaridriver.message.PendingFrame');
@@ -178,6 +179,7 @@ safaridriver.inject.Tab.prototype.init = function() {
       on(safaridriver.message.Alert.TYPE, tab.onAlert_, tab).
       on(safaridriver.message.Load.TYPE, tab.onLoad_, tab).
       on(safaridriver.message.LoadModule.TYPE, tab.onLoadModule_, tab).
+      on(safaridriver.message.Log.TYPE, tab.onLogMessage_, tab).
       on(safaridriver.message.Response.TYPE, tab.onPageResponse_, tab).
       on(safaridriver.inject.message.ReactivateFrame.TYPE,
           tab.onReactivateFrame_, tab);
@@ -229,6 +231,18 @@ safaridriver.inject.Tab.prototype.init = function() {
 
   if ('about:blank' !== window.location.href) {
     this.installPageScript_();
+  }
+};
+
+
+/**
+ * @param {!safaridriver.message.Log} message The log message.
+ * @param {!MessageEvent} e The original message event.
+ * @private
+ */
+safaridriver.inject.Tab.prototype.onLogMessage_ = function(message, e) {
+  if (!message.isSameOrigin() && safaridriver.inject.message.isFromSelf(e)) {
+    message.sendSync(safari.self.tab);
   }
 };
 

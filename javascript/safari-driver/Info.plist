@@ -18,19 +18,21 @@
 	<string>2.32.0</string>
 	<key>Chrome</key>
 	<dict>
-		<key>Bars</key>
+		<key>Global Page</key>
+		<string>extension.html</string>
+		<key>Toolbar Items</key>
 		<array>
 			<dict>
-				<key>Filename</key>
-				<string>extension_bar.html</string>
+				<key>Command</key>
+				<string>showlog</string>
 				<key>Identifier</key>
-				 <string>safaridriver.extension.bar</string>
+				<string>WebDriver</string>
+				<key>Image</key>
+				<string>toolbar.png</string>
 				<key>Label</key>
 				<string>WebDriver</string>
 			</dict>
 		</array>
-		<key>Global Page</key>
-		<string>extension.html</string>
 	</dict>
 	<key>Content</key>
 	<dict>

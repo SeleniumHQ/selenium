@@ -1,0 +1,119 @@
+// Copyright 2013 Selenium committers
+// Copyright 2013 Software Freedom Conservancy
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @fileoverview Defines a log handler that forwards entries to another
+ * component.
+ */
+
+goog.provide('safaridriver.logging.ForwardingHandler');
+
+goog.require('goog.Disposable');
+goog.require('goog.array');
+goog.require('goog.debug.LogManager');
+goog.require('safaridriver.message.Log');
+goog.require('webdriver.logging');
+
+
+
+/**
+ * Registers a log handler that will forward all entries to the given
+ * target.
+ * @param {!(SafariContentBrowserTabProxy|SafariWebPageProxy|Window)} target
+ *     The object to send log entries to.
+ * @constructor
+ * @extends {goog.Disposable}
+ */
+safaridriver.logging.ForwardingHandler = function(target) {
+  goog.base(this);
+
+  /** @private {!(SafariContentBrowserTabProxy|SafariWebPageProxy|Window)} */
+  this.target_ = target;
+
+  /** @private {!Function} */
+  this.boundHandle_ = goog.bind(this.handleLogRecord_, this);
+
+  goog.debug.LogManager.getRoot().addHandler(this.boundHandle_);
+};
+goog.inherits(safaridriver.logging.ForwardingHandler, goog.Disposable);
+
+
+/** @private {boolean} */
+safaridriver.logging.ForwardingHandler.prototype.captureConsole_ = false;
+
+
+/** @override */
+safaridriver.logging.ForwardingHandler.prototype.disposeInternal = function() {
+  goog.debug.LogManager.getRoot().removeHandler(this.boundHandle_);
+  delete this.boundHandle_;
+};
+
+
+/**
+ * Configures this handler to also capture and forward JavaScript console
+ * output.
+ */
+safaridriver.logging.ForwardingHandler.prototype.captureConsoleOutput =
+    function() {
+  if (this.captureConsole_) {
+    return;
+  }
+  this.captureConsole_ = true;
+
+  var target = this.target_;
+  console.debug = wrap(console.debug, webdriver.logging.Level.DEBUG);
+  console.error = wrap(console.error, webdriver.logging.Level.SEVERE);
+  console.group = wrap(console.group, webdriver.logging.Level.INFO);
+  console.info = wrap(console.info, webdriver.logging.Level.INFO);
+  console.log = wrap(console.log, webdriver.logging.Level.INFO);
+  console.warn = wrap(console.warn, webdriver.logging.Level.WARNING);
+
+  function wrap(nativeFn, level) {
+    var fn = function() {
+      var args = goog.array.slice(arguments, 0);
+      var message = new safaridriver.message.Log(
+          webdriver.logging.Type.BROWSER,
+          new webdriver.logging.Entry(level, args.join(' ')));
+      message.send(target);
+      return nativeFn.apply(console, arguments);
+    };
+    fn.toString = function() {
+      return nativeFn.toString();
+    };
+    return fn;
+  }
+};
+
+
+/**
+ * Forwards a log message.
+ * @param {!safaridriver.message.Log} message The message to forward.
+ */
+safaridriver.logging.ForwardingHandler.prototype.forward = function(message) {
+  message.send(this.target_);
+};
+
+
+/**
+ * @param {!goog.debug.LogRecord} logRecord The record to forward.
+ * @private
+ */
+safaridriver.logging.ForwardingHandler.prototype.handleLogRecord_ = function(
+    logRecord) {
+  var entry = webdriver.logging.Entry.fromClosureLogRecord(logRecord);
+  var message = new safaridriver.message.Log(
+      webdriver.logging.Type.DRIVER, entry);
+  this.forward(message);
+};

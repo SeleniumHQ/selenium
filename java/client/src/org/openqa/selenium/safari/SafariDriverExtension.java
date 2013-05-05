@@ -114,6 +114,7 @@ class SafariDriverExtension {
   private final Runtime runtime;
   private final Backup backup;
   private final Optional<File> customDataDir;
+  private final boolean installExtension;
 
   private UninstallThread uninstallThread;
   private File installedExtension;
@@ -124,15 +125,16 @@ class SafariDriverExtension {
    *
    * @param customDataDir Path to the data directory for the Safari
    *     instance to use.
+   * @param installExtension Whether to install the embedded SafariDriver extension. If
+   *     {@code false}, the extension must be pre-installed with Safari for the driver to
+   *     function properly. This value will be forced to {@code false} if the
+   *     {@link #NO_INSTALL_EXTENSION_PROPERTY} system property has been set.
    */
-  SafariDriverExtension(File customDataDir) {
-    this(Optional.fromNullable(customDataDir));
-  }
-
-  private SafariDriverExtension(Optional<File> customDataDir) {
+  SafariDriverExtension(Optional<File> customDataDir, boolean installExtension) {
     this.runtime = Runtime.getRuntime();
     this.backup = new Backup();
     this.customDataDir = customDataDir;
+    this.installExtension = !Boolean.getBoolean(NO_INSTALL_EXTENSION_PROPERTY) && installExtension;
   }
 
   /**
@@ -186,7 +188,7 @@ class SafariDriverExtension {
       return;  // Already installed.
     }
 
-    if (Boolean.getBoolean(NO_INSTALL_EXTENSION_PROPERTY)) {
+    if (!installExtension) {
       logger.info("Use of prebuilt extension requested; skipping installation");
       return;  // Use a pre-installed extension.
     }

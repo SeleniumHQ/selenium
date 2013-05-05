@@ -196,7 +196,11 @@ safaridriver.inject.CommandRegistry.prototype.execute = function(
   if (moduleId) {
     return this.loadModule_(moduleId).then(executeCommand);
   } else {
-    return executeCommand();
+    try {
+      return executeCommand();
+    } catch (ex) {
+      return webdriver.promise.rejected(ex);
+    }
   }
 };
 

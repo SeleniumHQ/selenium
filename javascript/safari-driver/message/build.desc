@@ -5,6 +5,7 @@ js_library(
         "command.js",
         "load.js",
         "loadmodule.js",
+        "logmessage.js",
         "message.js",
         "messagetarget.js",
     ],
