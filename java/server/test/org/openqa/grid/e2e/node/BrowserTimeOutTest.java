@@ -28,9 +28,9 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,11 +41,11 @@ import java.util.Arrays;
  */
 public class BrowserTimeOutTest {
 
-  private Hub hub;
-  private SelfRegisteringRemote node;
+  private static Hub hub;
+  private static SelfRegisteringRemote node;
 
-  @BeforeClass(alwaysRun = true)
-  public void setup() throws Exception {
+  @BeforeClass
+  public static void setup() throws Exception {
     GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
     gridHubConfiguration.setPort(PortProber.findFreePort());
     gridHubConfiguration.setHost("localhost");
@@ -80,7 +80,7 @@ public class BrowserTimeOutTest {
   }
 
   @AfterClass
-  public void teardown() throws Exception {
+  public static void teardown() throws Exception {
     node.stopRemoteServer();
     hub.stop();
   }

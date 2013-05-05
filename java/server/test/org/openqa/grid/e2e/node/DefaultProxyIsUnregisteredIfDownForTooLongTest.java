@@ -24,17 +24,17 @@ import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
-  private Hub hub;
-  private SelfRegisteringRemote remote;
+  private static Hub hub;
+  private static SelfRegisteringRemote remote;
 
   @BeforeClass
-  public void prepare() throws Exception {
+  public static void prepare() throws Exception {
 
     hub = GridTestHelper.getHub();
 
@@ -64,7 +64,7 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
   }
 
   @AfterClass
-  public void tearDown() throws Exception {
+  public static void tearDown() throws Exception {
     hub.stop();
   }
 }

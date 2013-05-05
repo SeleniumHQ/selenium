@@ -28,22 +28,22 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static org.openqa.selenium.TestWaiter.waitFor;
 
-@Test(groups = {"slow", "firefox"})
+//@Test(groups = {"slow", "firefox"})
 public class NodeGoingDownAndUpTest {
 
-  private Hub hub;
-  private Registry registry;
-  private SelfRegisteringRemote remote;
+  private static Hub hub;
+  private static Registry registry;
+  private static SelfRegisteringRemote remote;
   
 
-  @BeforeClass(alwaysRun = false)
-  public void prepare() throws Exception {
+  @BeforeClass
+  public static void prepare() throws Exception {
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
 
@@ -95,8 +95,8 @@ public class NodeGoingDownAndUpTest {
     };
   }
 
-  @AfterClass(alwaysRun = false)
-  public void stop() throws Exception {
+  @AfterClass
+  public static void stop() throws Exception {
     hub.stop();
     remote.stopRemoteServer();
   }

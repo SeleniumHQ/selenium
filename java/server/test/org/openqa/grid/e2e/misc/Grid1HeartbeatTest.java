@@ -31,21 +31,21 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class Grid1HeartbeatTests {
+public class Grid1HeartbeatTest {
 
-  private Hub hub;
+  private static Hub hub;
 
   @BeforeClass
-  public void setup() throws Exception {
+  public static void setup() throws Exception {
     hub = GridTestHelper.getHub();
   }
 
@@ -112,7 +112,7 @@ public class Grid1HeartbeatTests {
   }
 
   @AfterClass
-  public void teardown() throws Exception {
+  public static void teardown() throws Exception {
     hub.stop();
   }
 }

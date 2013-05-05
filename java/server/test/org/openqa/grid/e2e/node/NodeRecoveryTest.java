@@ -25,9 +25,9 @@ import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
@@ -41,14 +41,14 @@ import com.thoughtworks.selenium.Selenium;
  */
 public class NodeRecoveryTest {
 
-  private Hub hub;
-  SelfRegisteringRemote node;
+  private static Hub hub;
+  private static SelfRegisteringRemote node;
 
-  int originalTimeout = 3000;
-  int newtimeout = 20000;
+  private static int originalTimeout = 3000;
+  private static int newtimeout = 20000;
 
-  @BeforeClass(alwaysRun = true)
-  public void setup() throws Exception {
+  @BeforeClass
+  public static void setup() throws Exception {
     GridHubConfiguration config = new GridHubConfiguration();
     config.setHost("localhost");
     config.setPort(PortProber.findFreePort());

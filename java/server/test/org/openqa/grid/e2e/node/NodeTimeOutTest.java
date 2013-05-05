@@ -34,21 +34,21 @@ import org.openqa.selenium.TestWaiter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * checks that the browser is properly stopped when a selenium1 session times out.
  */
 public class NodeTimeOutTest {
 
-  private Hub hub;
-  private SelfRegisteringRemote node;
+  private static Hub hub;
+  private static SelfRegisteringRemote node;
 
-  @BeforeClass(alwaysRun = true)
-  public void setup() throws Exception {
+  @BeforeClass
+  public static void setup() throws Exception {
     hub = GridTestHelper.getHub();
 
     // register a selenium 1
@@ -106,7 +106,7 @@ public class NodeTimeOutTest {
   }
 
   @AfterClass
-  public void teardown() throws Exception {
+  public static void teardown() throws Exception {
     node.stopRemoteServer();
     hub.stop();
 

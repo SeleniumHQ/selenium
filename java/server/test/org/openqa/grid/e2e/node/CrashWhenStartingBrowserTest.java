@@ -31,20 +31,20 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 public class CrashWhenStartingBrowserTest {
 
 
-  private Hub hub;
-  private final String wrong_path = "stupidPathUnliklyToExist";
+  private static Hub hub;
+  private static final String wrong_path = "stupidPathUnliklyToExist";
 
-  @BeforeClass(alwaysRun = false)
-  public void prepareANodePointingToANonExistingFirefox() throws Exception {
+  @BeforeClass
+  public static void prepareANodePointingToANonExistingFirefox() throws Exception {
 
     hub = GridTestHelper.getHub();
 
@@ -71,12 +71,11 @@ public class CrashWhenStartingBrowserTest {
     }
     Assert.assertNotNull(exception);
     Assert.assertTrue(exception.getMessage().contains(wrong_path));
-    Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0,"resource released");
-    
+    Assert.assertEquals("resource released", hub.getRegistry().getActiveSessions().size(), 0);
   }
 
-  @AfterClass(alwaysRun = false)
-  public void stop() throws Exception {
+  @AfterClass
+  public static void stop() throws Exception {
     hub.stop();
   }
 }

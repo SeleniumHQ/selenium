@@ -27,10 +27,10 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * by specifing a RegistrationRequest.REGISTER_CYCLE= -1 , the node to not try to register against
@@ -41,13 +41,13 @@ import org.testng.annotations.Test;
  * 
  */
 public class HubRestartNeg {
-  private Hub hub;
-  private Registry registry;
-  private SelfRegisteringRemote remote;
-  private GridHubConfiguration config = new GridHubConfiguration();
+  private static Hub hub;
+  private static Registry registry;
+  private static SelfRegisteringRemote remote;
+  private static GridHubConfiguration config = new GridHubConfiguration();
 
-  @BeforeClass(alwaysRun = false)
-  public void prepare() throws Exception {
+  @BeforeClass
+  public static void prepare() throws Exception {
     config.setHost("localhost");
     config.setPort(PortProber.findFreePort());
     hub = new Hub(config);
@@ -62,7 +62,7 @@ public class HubRestartNeg {
 
   }
 
-  @Test(timeOut = 5000)
+  @Test(timeout = 5000)
   public void nodeRegisterAgain() throws Exception {
 
     // every 5 sec, the node register themselves again.
@@ -90,8 +90,8 @@ public class HubRestartNeg {
 
   }
 
-  @AfterClass(alwaysRun = false)
-  public void stop() throws Exception {
+  @AfterClass
+  public static void stop() throws Exception {
     hub.stop();
     remote.stopRemoteServer();
 

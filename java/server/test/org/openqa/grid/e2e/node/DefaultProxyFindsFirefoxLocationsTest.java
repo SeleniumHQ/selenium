@@ -40,21 +40,21 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class DefaultProxyFindsFirefoxLocationsTest {
 
   private static final String locationFF7 = "/home/ff7";
   private static final String locationFF3 = "c:\\program files\\ff3";
-  private Hub hub;
-  private Registry registry;
-  private SelfRegisteringRemote remote;
+  private static Hub hub;
+  private static Registry registry;
+  private static SelfRegisteringRemote remote;
 
   @BeforeClass
-  public void prepare() throws Exception {
+  public static void prepare() throws Exception {
 
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
@@ -77,11 +77,9 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     remote.addBrowser(ff3, 1);
 
     remote.sendRegistrationRequest();
-
-
   }
 
-  @Test(timeOut = 1000)
+  @Test(timeout = 1000)
   public void firefoxOnWebDriver() throws MalformedURLException {
     Map<String, Object> ff = new HashMap<String, Object>();
     ff.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
@@ -100,12 +98,11 @@ public class DefaultProxyFindsFirefoxLocationsTest {
 
     Assert.assertEquals(locationFF3, newSessionRequest2.getSession().getRequestedCapabilities()
         .get(FirefoxDriver.BINARY));
-
   }
 
 
   @AfterClass
-  public void teardown() throws Exception {
+  public static void teardown() throws Exception {
     hub.stop();
   }
 

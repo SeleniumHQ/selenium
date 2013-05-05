@@ -1,13 +1,12 @@
 
 java_test(name = "test",
   srcs = [
+    "GridE2ETests.java",
     "misc/**/*.java",
     "node/*.java",
     "utils/**/*.java",
     
   ],
-  main_class = "org.testng.TestNG",
-  args = "grid-e2e-tests.xml",
   deps = [
     "//java/client/src/com/thoughtworks/selenium",
     "//java/server/src/org/openqa/grid/selenium",

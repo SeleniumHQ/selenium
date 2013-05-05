@@ -27,9 +27,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,10 +37,10 @@ import java.net.URL;
 // see http://code.google.com/p/selenium/issues/detail?id=1586
 public class Issue1586 {
 
-  private Hub hub;
+  private static Hub hub;
 
-  @BeforeClass(alwaysRun = true)
-  public void prepare() throws Exception {
+  @BeforeClass
+  public static void prepare() throws Exception {
     hub = GridTestHelper.getHub();
 
     // register a webdriver
@@ -54,7 +54,7 @@ public class Issue1586 {
   }
 
   // extremely slow test, for issue1586. Excluding from regression.
-  @Test(enabled=false)
+  @Test
   public void test() throws MalformedURLException {
     DesiredCapabilities ff = DesiredCapabilities.firefox();
     WebDriver driver = null;
@@ -76,8 +76,8 @@ public class Issue1586 {
     }
   }
 
-  @AfterClass(alwaysRun = true)
-  public void stop() throws Exception {
+  @AfterClass
+  public static void stop() throws Exception {
     hub.stop();
   }
 }
