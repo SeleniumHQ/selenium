@@ -114,6 +114,7 @@ public class Hub {
 
       root.addServlet(ConsoleServlet.class.getName(), "/grid/console/*");
       root.addServlet(ConsoleServlet.class.getName(), "/grid/beta/console/*");
+      root.addServlet(org.openqa.grid.web.servlet.ConsoleServlet.class.getName(), "/grid/old/console/*");
       root.addServlet(RegistrationServlet.class.getName(), "/grid/register/*");
       // TODO remove at some point. Here for backward compatibility of
       // tests etc.
