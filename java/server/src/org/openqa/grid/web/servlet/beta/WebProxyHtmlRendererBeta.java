@@ -154,7 +154,7 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
     TestSession session = s.getSession();
     if (icon != null) {
       builder.append("<img ");
-      builder.append("src='").append(icon).append("' ");
+      builder.append("src='").append(icon).append("' width='16' height='16'");
     } else {
       builder.append("<a href='#' ");
     }

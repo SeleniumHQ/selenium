@@ -5,7 +5,7 @@
 
 body {
 	background:
-		url("http://seleniumhq.org/images/blue-background-gradient.png")
+		url("/grid/resources/org/openqa/grid/images/blue-background-gradient.png")
 		repeat-x scroll left top white;
 	color: #000000;
 	font-family: verdana, sans-serif;
@@ -47,7 +47,7 @@ li {
 }
 
 #header {
-	background: url("http://seleniumhq.org/images/header_bl.png") repeat-x
+	background: url("/grid/resources/org/openqa/grid/images/header_bl.png") repeat-x
 		scroll left bottom #455372;
 	height: 3em;
 	min-height: 39px;
@@ -56,7 +56,7 @@ li {
 }
 
 #header div {
-	background: url("http://seleniumhq.org/images/header_br.gif") no-repeat
+	background: url("/grid/resources/org/openqa/grid/images/header_br.gif") no-repeat
 		scroll right bottom transparent;
 	bottom: 0;
 	list-style: none outside none;
@@ -69,7 +69,7 @@ li {
 }
 
 #header h1 {
-	background: url("http://seleniumhq.org/images/header_tl.gif") no-repeat
+	background: url("/grid/resources/org/openqa/grid/images/header_tl.gif") no-repeat
 		scroll 0 0 transparent;
 	border: none;
 	font-size: 2px;
@@ -82,7 +82,7 @@ li {
 }
 
 #header h1 a {
-	background: url("http://seleniumhq.org/images/selenium-logo.png")
+	background: url("/grid/resources/org/openqa/grid/images/selenium.png")
 		no-repeat scroll 0 0 transparent;
 	display: block;
 	height: 64px;
