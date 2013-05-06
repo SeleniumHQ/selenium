@@ -264,7 +264,6 @@ public class WaitingConditions {
       public String call() throws Exception {
         Set<String> currentWindowHandles = driver.getWindowHandles();
         if (currentWindowHandles.size() > originalHandles.size()) {
-          sleepBecauseOfIssue2764();
           currentWindowHandles.removeAll(originalHandles);
           return currentWindowHandles.iterator().next();
         } else {

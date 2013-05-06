@@ -39,28 +39,40 @@ class SwitchToWindowCommandHandler : public IECommandHandler {
       return;
     } else {
       std::string found_browser_handle = "";
-      std::string desired_name = name_parameter_iterator->second.asString();
+      std::string desired_name = name_parameter_iterator->second.asString();	  
 
-      std::vector<std::string> handle_list;
-      executor.GetManagedBrowserHandles(&handle_list);
-      for (unsigned int i = 0; i < handle_list.size(); ++i) {
-        BrowserHandle browser_wrapper;
-        int get_handle_loop_status_code = executor.GetManagedBrowser(handle_list[i],
-                                                                     &browser_wrapper);
-        if (get_handle_loop_status_code == WD_SUCCESS) {
-          std::string browser_name = browser_wrapper->GetWindowName();
-          if (browser_name == desired_name) {
-            found_browser_handle = handle_list[i];
-            break;
-          }
+      unsigned int limit = 10;
+      unsigned int tries = 0;
+      do {
+        tries++;
 
-          std::string browser_handle = handle_list[i];
-          if (browser_handle == desired_name) {
-            found_browser_handle = handle_list[i];
-            break;
+        std::vector<std::string> handle_list;
+        executor.GetManagedBrowserHandles(&handle_list);
+
+        for (unsigned int i = 0; i < handle_list.size(); ++i) {
+          BrowserHandle browser_wrapper;
+          int get_handle_loop_status_code = executor.GetManagedBrowser(handle_list[i],
+                                                                       &browser_wrapper);
+          if (get_handle_loop_status_code == WD_SUCCESS) {
+
+            std::string browser_name = browser_wrapper->GetWindowName();
+            if (browser_name == desired_name) {
+              found_browser_handle = handle_list[i];
+              break;
+            }
+
+            std::string browser_handle = handle_list[i];
+            if (browser_handle == desired_name) {
+              found_browser_handle = handle_list[i];
+              break;
+            }
           }
         }
-      }
+
+        // Wait until new window name becomes available
+        ::Sleep(100);
+
+      } while( tries < limit && found_browser_handle == "");
 
       if (found_browser_handle == "") {
         response->SetErrorResponse(ENOSUCHWINDOW, "No window found");
