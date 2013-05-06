@@ -1372,7 +1372,7 @@ FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) 
 
   var currentlyActiveElement = Utils.getActiveElement(respond.session.getDocument());
 
-  if (bot.dom.isEditable(currentlyActiveElement)) {
+  if (bot.dom.isEditable(currentlyActiveElement) && currentlyActiveElement.value !== undefined) {
       goog.dom.selection.setCursorPosition(
           currentlyActiveElement, currentlyActiveElement.value.length);
   }
