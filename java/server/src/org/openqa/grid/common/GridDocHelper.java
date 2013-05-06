@@ -26,20 +26,15 @@ public class GridDocHelper {
   private static Properties gridProperties = load("org/openqa/grid/common/defaults/GridParameters.properties");
 
   public static void printHelp(String msg) {
-    printHelpInConsole(gridProperties, msg, true);
+    printHelpInConsole(msg, true);
   }
 
   public static void printHelp(String msg, boolean error) {
-    printHelpInConsole(gridProperties, msg, error);
+    printHelpInConsole(msg, error);
   }
 
 
   public static String getGridParam(String param) {
-    return getParam(gridProperties, param);
-  }
-
-
-  private static String getParam(Properties p, String param) {
     if (param == null) {
       return "";
     }
@@ -51,7 +46,8 @@ public class GridDocHelper {
     }
   }
 
-  private static void printHelpInConsole(Properties p, String msg, boolean error) {
+
+  private static void printHelpInConsole(String msg, boolean error) {
     String indent = "  ";
     String indent2x = indent + indent;
     if (msg != null) {
@@ -63,9 +59,9 @@ public class GridDocHelper {
     }
 
     System.out.println("Usage :");
-    for (Object key : p.keySet()) {
+    for (Object key : gridProperties.keySet()) {
       System.out.println(indent + "-" + key + ":\t");
-      printWrappedErrorLine(indent2x, getParam(p, key.toString()), true);
+      printWrappedErrorLine(indent2x, getGridParam(key.toString()), true);
       System.out.println("");
     }
   }
