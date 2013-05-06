@@ -20,6 +20,7 @@ import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -91,8 +92,8 @@ public class TestSlot {
    * test slot can host the desired capabilities, {@link CapabilityMatcher#matches(Map, Map)} is
    * invoked.
    * <p/>
-   * Use {@link RemoteProxy#setCapabilityHelper(CapabilityMatcher)} on the proxy histing the test
-   * slot to modify the definition of match
+   * Use {@link GridHubConfiguration#setCapabilityMatcher(CapabilityMatcher)}
+   * on the proxy hosting the test slot to modify the definition of match
    * 
    * @param desiredCapabilities capabilities for the new session
    * @return a new session linked to that testSlot if possible, null otherwise.
