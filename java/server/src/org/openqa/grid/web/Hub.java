@@ -21,7 +21,7 @@ import com.google.common.collect.Maps;
 
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.web.servlet.ConsoleServlet;
+import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
 import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
@@ -113,8 +113,7 @@ public class Hub {
       root.addServlet(DisplayHelpServlet.class.getName(), "/*");
 
       root.addServlet(ConsoleServlet.class.getName(), "/grid/console/*");
-      root.addServlet(org.openqa.grid.web.servlet.beta.ConsoleServlet.class.getName(),
-                      "/grid/beta/console/*");
+      root.addServlet(ConsoleServlet.class.getName(), "/grid/beta/console/*");
       root.addServlet(RegistrationServlet.class.getName(), "/grid/register/*");
       // TODO remove at some point. Here for backward compatibility of
       // tests etc.

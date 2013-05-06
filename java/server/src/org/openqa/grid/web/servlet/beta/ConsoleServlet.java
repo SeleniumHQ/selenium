@@ -105,7 +105,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     if (refresh != -1) {
       builder.append(String.format("<meta http-equiv='refresh' content='%d' />", refresh));
     }
-    builder.append("<title>Grid Console (beta)</title>");
+    builder.append("<title>Grid Console</title>");
 
     builder.append("<style>");
     builder.append(".busy {");
@@ -198,7 +198,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     StringBuilder builder = new StringBuilder();
     builder.append("<div id='header'>");
     builder.append("<h1><a href='http://code.google.com/p/selenium/wiki/Grid2' >Selenium</a></h1>");
-    builder.append("<h2>Grid Console (beta) v.");
+    builder.append("<h2>Grid Console v.");
     builder.append(coreVersion).append(coreRevision);
     builder.append("</h2>");
     builder.append("<div>.</div>");

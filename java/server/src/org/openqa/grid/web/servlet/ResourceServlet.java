@@ -51,7 +51,6 @@ public class ResourceServlet extends HttpServlet {
   protected void process(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     String resource = request.getPathInfo().replace(request.getServletPath(), "");
-    System.out.println("Serving resource " + resource);
     if (resource.startsWith("/"))
       resource = resource.replaceFirst("/", "");
     InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
