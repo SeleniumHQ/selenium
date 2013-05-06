@@ -529,7 +529,6 @@ public class BaseRemoteProxy implements RemoteProxy {
   
   
   public float getResourceUsageInPercent() {
-    float percent = 100 * (float)getTotalUsed() / (float)getMaxNumberOfConcurrentTestSessions();
-    return percent;
+    return 100 * (float)getTotalUsed() / (float)getMaxNumberOfConcurrentTestSessions();
   }
 }

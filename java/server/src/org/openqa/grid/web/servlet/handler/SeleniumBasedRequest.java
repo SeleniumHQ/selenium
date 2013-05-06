@@ -171,7 +171,7 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
       Charset charset = Charset.forName(encoding);
       CharsetDecoder decoder = charset.newDecoder();
       CharBuffer cbuf = decoder.decode(ByteBuffer.wrap(body));
-      return new String(cbuf.toString());
+      return cbuf.toString();
     } catch (CharacterCodingException e) {
       e.printStackTrace();
     }

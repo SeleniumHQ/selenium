@@ -84,10 +84,9 @@ public class WebDriverRequest extends SeleniumBasedRequest {
   @Override
   public String getNewSessionRequestedCapability(TestSession session) {
     try {
-    JSONObject c = new JSONObject();
-    c.put("desiredCapabilities", session.getRequestedCapabilities());
-    String content = c.toString();
-    return content;
+      JSONObject c = new JSONObject();
+      c.put("desiredCapabilities", session.getRequestedCapabilities());
+      return c.toString();
     } catch (JSONException  e) {
       throw new NewSessionException("Error with the request " + e.getMessage(),e);
     }

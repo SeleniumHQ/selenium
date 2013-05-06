@@ -111,26 +111,25 @@ public class SelfRegisteringRemote {
     String servletsStr = (String) nodeConfig.getConfiguration().get(GridNodeConfiguration.SERVLETS);
     if (servletsStr != null) {
       List<String> servlets = Arrays.asList(servletsStr.split(","));
-      if (servlets != null) {
-        HttpContext extra = new HttpContext();
 
-        extra.setContextPath("/extra");
-        ServletHandler handler = new ServletHandler();
-        handler.addServlet("/resources/*", ResourceServlet.class.getName());
+      HttpContext extra = new HttpContext();
 
-        for (String s : servlets) {
-          Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
-          if (servletClass != null) {
-            String path = "/" + servletClass.getSimpleName() + "/*";
-            String clazz = servletClass.getCanonicalName();
-            handler.addServlet(path, clazz);
-            log.info("started extra node servlet visible at : http://xxx:"
-                + nodeConfig.getConfiguration().get(RegistrationRequest.PORT) + "/extra" + path);
-          }
+      extra.setContextPath("/extra");
+      ServletHandler handler = new ServletHandler();
+      handler.addServlet("/resources/*", ResourceServlet.class.getName());
+
+      for (String s : servlets) {
+        Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
+        if (servletClass != null) {
+          String path = "/" + servletClass.getSimpleName() + "/*";
+          String clazz = servletClass.getCanonicalName();
+          handler.addServlet(path, clazz);
+          log.info("started extra node servlet visible at : http://xxx:"
+              + nodeConfig.getConfiguration().get(RegistrationRequest.PORT) + "/extra" + path);
         }
-        extra.addHandler(handler);
-        jetty.addContext(extra);
       }
+      extra.addHandler(handler);
+      jetty.addContext(extra);
     }
 
     server.boot();
@@ -238,10 +237,7 @@ public class SelfRegisteringRemote {
   }
 
   private void registerToHub(boolean checkPresenceFirst) {
-    // check for presence :
-    boolean ok = checkPresenceFirst == true ? !isAlreadyRegistered(nodeConfig) : true;
-
-    if (ok) {
+    if (!checkPresenceFirst || !isAlreadyRegistered(nodeConfig)) {
       String tmp =
           "http://" + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST) + ":"
               + nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT) + "/grid/register";
@@ -295,8 +291,7 @@ public class SelfRegisteringRemote {
     r.setEntity(new StringEntity(j.toString()));
 
     HttpResponse response = client.execute(host, r);
-    JSONObject o = extractObject(response);
-    return o;
+    return extractObject(response);
   }
   
   private boolean isAlreadyRegistered(RegistrationRequest node) {

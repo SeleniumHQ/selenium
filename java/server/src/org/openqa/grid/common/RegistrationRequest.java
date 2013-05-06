@@ -387,7 +387,6 @@ public class RegistrationRequest {
     // from command line
     res.loadFromCommandLine(args);
 
-    BrowserLauncherFactory brf = new BrowserLauncherFactory();
     for (DesiredCapabilities cap : res.capabilities) {
       if (SeleniumProtocol.Selenium.toString().equals(cap.getCapability(SELENIUM_PROTOCOL))) {
         if (!BrowserLauncherFactory.isBrowserSupported(cap.getBrowserName())) {

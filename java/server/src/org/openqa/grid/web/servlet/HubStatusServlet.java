@@ -102,7 +102,7 @@ public class HubStatusServlet extends RegistryBasedServlet {
         }
         rd.close();
         String json = s.toString();
-        if (json != null && !"".equals(json)) {
+        if (!"".equals(json)) {
           requestJSON = new JSONObject(json);
         }
 

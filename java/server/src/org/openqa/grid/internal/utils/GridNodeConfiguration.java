@@ -79,9 +79,6 @@ public class GridNodeConfiguration {
    */
   private String[] args;
 
-  // the config file path.
-  private String nodeJSON;
-
   public static GridNodeConfiguration build(String[] args) {
     GridNodeConfiguration res = new GridNodeConfiguration();
     res.args = args;
@@ -96,7 +93,6 @@ public class GridNodeConfiguration {
     // -file *.json ?
     if (helper.isParamPresent("-nodeConfig")) {
       String value = helper.getParamValue("-nodeConfig");
-      res.nodeJSON = value;
       res.loadFromJSON(value);
     }
 
