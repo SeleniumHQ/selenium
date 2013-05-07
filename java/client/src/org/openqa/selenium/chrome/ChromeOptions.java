@@ -70,7 +70,7 @@ public class ChromeOptions {
    */
   public static final String CAPABILITY = "chromeOptions";
 
-  private File binary;
+  private String binary;
   private List<String> args = Lists.newArrayList();
   private List<File> extensionFiles = Lists.newArrayList();
   private Map<String, Object> experimentalOptions = Maps.newHashMap();
@@ -83,6 +83,17 @@ public class ChromeOptions {
    * @param path Path to Chrome executable.
    */
   public void setBinary(File path) {
+    binary = checkNotNull(path).getPath();
+  }
+
+  /**
+   * Sets the path to the Chrome executable. This path should exist on the
+   * machine which will launch Chrome. The path should either be absolute or
+   * relative to the location of running ChromeDriver server.
+   *
+   * @param path Path to Chrome executable.
+   */
+  public void setBinary(String path) {
     binary = checkNotNull(path);
   }
 
@@ -162,7 +173,7 @@ public class ChromeOptions {
     JSONObject options = new JSONObject(experimentalOptions);
 
     if (binary != null) {
-      options.put("binary", binary.getPath());
+      options.put("binary", binary);
     }
 
     options.put("args", ImmutableList.copyOf(args));
@@ -196,7 +207,7 @@ public class ChromeOptions {
     // TODO: remove this once the deprecated capabilities are no longer supported.
     capabilities.setCapability("chrome.switches", args);
     if (binary != null) {
-      capabilities.setCapability("chrome.binary", binary.getPath());
+      capabilities.setCapability("chrome.binary", binary);
     }
 
     return capabilities;
