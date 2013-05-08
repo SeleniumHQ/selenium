@@ -395,6 +395,11 @@ public class RegistrationRequest {
                                                + BrowserLauncherFactory.getSupportedBrowsersAsString());
         }
       }
+      if (cap.getCapability(SELENIUM_PROTOCOL) == null) {
+        cap.setCapability(SELENIUM_PROTOCOL,
+          GridRole.RCAliases().contains(nodeType)
+            ? SeleniumProtocol.Selenium.toString() : SeleniumProtocol.WebDriver.toString());
+      }
     }
 
     res.configuration.put(HOST, guessHost((String) res.configuration.get(HOST)));
@@ -502,7 +507,7 @@ public class RegistrationRequest {
   }
 
   private DesiredCapabilities addCapabilityFromString(String capability) {
-    System.out.println("adding " + capability);
+    log.info("Adding " + capability);
     String[] s = capability.split(",");
     if (s.length == 0) {
       throw new GridConfigurationException("-browser must be followed by a browser description");
