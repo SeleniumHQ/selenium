@@ -86,18 +86,17 @@ webdriver.logging.Entry.prototype.toJSON = function() {
  * @return {!webdriver.logging.Entry} The converted entry.
  */
 webdriver.logging.Entry.fromClosureLogRecord = function(logRecord) {
-  var level = logRecord.getLevel();
-  if (level.value <= webdriver.logging.Level.DEBUG.value) {
+  var closureLevel = logRecord.getLevel();
+  var level = webdriver.logging.Level.SEVERE;
+  if (closureLevel.value <= webdriver.logging.Level.DEBUG.value) {
     level = webdriver.logging.Level.DEBUG;
-  } else if (level.value <= webdriver.logging.Level.INFO.value) {
+  } else if (closureLevel.value <= webdriver.logging.Level.INFO.value) {
     level = webdriver.logging.Level.INFO;
-  } else if (level.value <= webdriver.logging.Level.WARNING.value) {
+  } else if (closureLevel.value <= webdriver.logging.Level.WARNING.value) {
     level = webdriver.logging.Level.WARNING;
-  } else {
-    level = webdriver.logging.Level.SEVERE;
   }
   return new webdriver.logging.Entry(
-      /** @type {!webdriver.logging.Level} */ (level),
+      level,
       '[' + logRecord.getLoggerName() + '] ' + logRecord.getMessage(),
       logRecord.getMillis());
 };
