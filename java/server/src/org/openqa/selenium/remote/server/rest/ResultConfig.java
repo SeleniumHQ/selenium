@@ -187,9 +187,6 @@ public class ResultConfig {
     throwUpIfSessionTerminated(sessId);
     final RestishHandler handler = getHandler(pathInfo, sessId);
 
-    if (handler instanceof JsonParametersAware) {
-      setJsonParameters(request, handler);
-    }
 
     request.setAttribute("handler", handler);
 
@@ -197,6 +194,9 @@ public class ResultConfig {
     throwUpIfSessionTerminated(sessId);
 
     try {
+      if (handler instanceof JsonParametersAware) {
+        setJsonParameters(request, handler);
+      }
       log.info(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
       result = handler.handle();
       addHandlerAttributesToRequest(request, handler);

@@ -218,6 +218,30 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  public void testShouldNotFindElementWhenCompoundClassNameIsUsed() {
+    driver.get(pages.xhtmlTestPage);
+
+    try {
+      driver.findElement(By.className("nameA nameB"));
+      fail("Should not have succeeded");
+    } catch (InvalidSelectorException e) {
+      // this is expected
+    }
+  }
+
+  @Test
+  public void testShouldNotFindElementsWhenCompoundClassNameIsUsed() {
+    driver.get(pages.xhtmlTestPage);
+
+    try {
+      driver.findElements(By.className("nameA nameB"));
+      fail("Should not have succeeded");
+    } catch (InvalidSelectorException e) {
+      // this is expected
+    }
+  }
+
+  @Test
   public void testShouldBeAbleToFindMultipleElementsByXPath() {
     driver.get(pages.xhtmlTestPage);
 
