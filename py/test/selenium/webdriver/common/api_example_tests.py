@@ -252,6 +252,17 @@ class ApiExampleTest (unittest.TestCase):
         self.assertEquals(size['width'], newSize[0])
         self.assertEquals(size['height'], newSize[1])
 
+    def testGetLogTypes(self):
+        self._loadPage("blank")
+        self.assertTrue(isinstance(self.driver.log_types, list))
+
+    def testGetLog(self):
+        self._loadPage("blank")
+        for log_type in self.driver.log_types:
+            log = self.driver.get_log(log_type)
+            self.assertTrue(isinstance(log, list))
+            self.assertTrue(log)
+
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
 
