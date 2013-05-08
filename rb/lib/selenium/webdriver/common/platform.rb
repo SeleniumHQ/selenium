@@ -121,10 +121,11 @@ module Selenium
 
       def assert_executable(path)
         assert_file(path)
-
-        unless File.executable? path
-          raise Error::WebDriverError, "not executable: #{path.inspect}"
-        end
+				if RbConfig::CONFIG['target_os'].include? 'linux'	
+        	unless File.executable? path
+          	raise Error::WebDriverError, "not executable: #{path.inspect}"
+        	end
+				end
       end
 
       def exit_hook(&blk)
