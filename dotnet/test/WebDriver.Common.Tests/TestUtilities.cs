@@ -44,6 +44,30 @@ namespace OpenQA.Selenium
             return IsInternetExplorer(driver) && GetUserAgent(driver).Contains("MSIE 6");
         }
 
+        public static bool IsIE10OrHigher(IWebDriver driver)
+        {
+            if (IsInternetExplorer(driver))
+            {
+                string jsToExecute = "return window.navigator.appVersion;";
+                // IE9 is trident version 5.  IE9 is the start of new IE.
+                string appVersionString = (string)GetExecutor(driver).ExecuteScript(jsToExecute);
+                int tokenStart = appVersionString.IndexOf("MSIE ") + 5;
+                int tokenEnd = appVersionString.IndexOf(";", tokenStart);
+                if (tokenEnd - tokenStart > 0)
+                {
+                    string substring = appVersionString.Substring(tokenStart, tokenEnd - tokenStart);
+                    double version = 0;
+                    bool parsed = double.TryParse(substring, out version);
+                    if (parsed)
+                    {
+                        return version >= 10;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public static bool IsOldIE(IWebDriver driver)
         {
             try
