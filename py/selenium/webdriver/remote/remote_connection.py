@@ -327,7 +327,10 @@ class RemoteConnection(object):
                 ('DELETE', '/session/$sessionId/session_storage'),
             Command.GET_SESSION_STORAGE_SIZE:
                 ('GET','/session/$sessionId/session_storage/size'),
-            }
+            Command.SESSIONS: ('GET', '/sessions'),
+            Command.LOG_TYPES: ('GET', '/session/$sessionId/log/types'),
+            Command.GET_LOG: ('POST', '/session/$sessionId/log'),
+        }
 
     def execute(self, command, params):
         """

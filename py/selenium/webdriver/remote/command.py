@@ -88,6 +88,9 @@ class Command(object):
     SET_SCRIPT_TIMEOUT = "setScriptTimeout"
     SET_TIMEOUTS = "setTimeouts"
     MAXIMIZE_WINDOW = "windowMaximize"
+    SESSIONS = "sessions"
+    LOG_TYPES = "logTypes"
+    GET_LOG = "getLog"
 
     #Alerts
     DISMISS_ALERT = "dismissAlert"
