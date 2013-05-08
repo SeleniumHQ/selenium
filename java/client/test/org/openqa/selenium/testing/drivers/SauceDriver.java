@@ -108,7 +108,7 @@ public class SauceDriver extends RemoteWebDriver {
         String[] tags = {nativeEvents};
         mungedCapabilities.setCapability("tags", tags);
     }
-    mungedCapabilities.setCapability("prevent-requeue", true);
+    mungedCapabilities.setCapability("prevent-requeue", false);
 
     if (!Strings.isNullOrEmpty(browserVersion)) {
       mungedCapabilities.setVersion(browserVersion);
