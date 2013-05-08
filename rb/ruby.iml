@@ -6,7 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/lib" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
     </content>
-    <orderEntry type="jdk" jdkName="ruby-1.9.3-p374" jdkType="RUBY_SDK" />
+    <orderEntry type="jdk" jdkName="ruby-1.9" jdkType="RUBY_SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
