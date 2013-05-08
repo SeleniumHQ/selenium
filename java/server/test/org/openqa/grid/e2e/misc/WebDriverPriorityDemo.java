@@ -100,7 +100,7 @@ public class WebDriverPriorityDemo {
     DesiredCapabilities ff = DesiredCapabilities.firefox();
     runningOne = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
     runningOne.get(hubURL + "/grid/console");
-    Assert.assertEquals(runningOne.getTitle(), "Grid overview");
+    Assert.assertEquals(runningOne.getTitle(), "Grid Console");
 
   }
 
@@ -196,7 +196,7 @@ public class WebDriverPriorityDemo {
         System.out.println("waiting for browser to start");
       }
       importantOne.get(hubURL + "/grid/console");
-      Assert.assertEquals(importantOne.getTitle(), "Grid overview");
+      Assert.assertEquals(importantOne.getTitle(), "Grid Console");
     } finally {
       // cleaning the queue to avoid having some browsers left over after
       // the test

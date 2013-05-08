@@ -73,7 +73,7 @@ public class SmokeTest {
       DesiredCapabilities ff = DesiredCapabilities.firefox();
       driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), ff);
       driver.get(hub.getUrl() + "/grid/console");
-      Assert.assertEquals(driver.getTitle(), "Grid overview");
+      Assert.assertEquals(driver.getTitle(), "Grid Console");
     } finally {
       if (driver != null) {
         driver.quit();
@@ -91,7 +91,7 @@ public class SmokeTest {
       selenium.start();
       Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
       selenium.open(hub.getUrl() + "/grid/console");
-      Assert.assertTrue(selenium.getTitle().contains("Grid overview"));
+      Assert.assertEquals(selenium.getTitle(), "Grid Console");
       
     } finally {
       if (selenium != null) {

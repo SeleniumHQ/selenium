@@ -90,7 +90,7 @@ public class NodeTimeOutTest {
     DesiredCapabilities ff = DesiredCapabilities.firefox();
     WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), ff);
     driver.get(url);
-    Assert.assertEquals(driver.getTitle(), "Grid overview");
+    Assert.assertEquals(driver.getTitle(), "Grid Console");
     TestWaiter.waitFor(new Callable<Integer>() {
       public Integer call() throws Exception {
         Integer i = hub.getRegistry().getActiveSessions().size();
