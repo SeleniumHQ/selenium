@@ -30,9 +30,11 @@ import java.net.SocketException;
  * 
  * @author gregory.block@gmail.com (Gregory Block)
  */
-public class SocketLock implements Lock {
+public class SocketLock implements Lock, NeedsSynchronization {
   public static final int DEFAULT_PORT = 7055;
   private static final long DELAY_BETWEEN_SOCKET_CHECKS = 2000;
+
+  private static Object syncObject = new Object();
 
   private static final InetSocketAddress localhost = new InetSocketAddress("localhost",
       DEFAULT_PORT - 1);
@@ -72,7 +74,7 @@ public class SocketLock implements Lock {
   /**
    * @inheritDoc
    */
-  public synchronized void lock(long timeoutInMillis) throws WebDriverException {
+  public void lock(long timeoutInMillis) throws WebDriverException {
 
     // Calculate the 'exit time' for our wait loop.
     long maxWait = System.currentTimeMillis() + timeoutInMillis;
@@ -106,6 +108,13 @@ public class SocketLock implements Lock {
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public Object getSyncObject() {
+    return syncObject;
   }
 
   /**

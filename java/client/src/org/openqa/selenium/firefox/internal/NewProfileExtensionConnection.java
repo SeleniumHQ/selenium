@@ -23,6 +23,7 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.internal.Lock;
+import org.openqa.selenium.internal.NeedsSynchronization;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.net.NetworkUtils;
@@ -67,6 +68,16 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
   }
 
   public void start() throws IOException {
+    if (lock instanceof NeedsSynchronization) {
+      synchronized (((NeedsSynchronization) lock).getSyncObject()) {
+        _start();
+      }
+    } else {
+      _start();
+    }
+  }
+
+  private void _start() throws IOException {
     int port = 0;
 
     lock.lock(connectTimeout);
