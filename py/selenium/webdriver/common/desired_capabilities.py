@@ -45,7 +45,7 @@ class DesiredCapabilities(object):
 
     SAFARI = {
         "browserName": "safari",
-        "version": "5",
+        "version": "",
         "platform": "MAC",
         "javascriptEnabled": True,
     }
