@@ -497,14 +497,13 @@ public class ExpectedConditions {
 
   /**
    * An expectation with the logical opposite condition of the given condition.
-   * In case of null, it will return false.
    */
   public static ExpectedCondition<Boolean> not(final ExpectedCondition<?> condition) {
     return new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver driver) {
         Object result = condition.apply(driver);
-        return !(result == null || result == Boolean.TRUE);
+        return result == null || result == Boolean.FALSE;
       }
 
       @Override
