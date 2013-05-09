@@ -69,7 +69,22 @@ class SubmitElementCommandHandler : public IECommandHandler {
 
           if (_wcsicmp(L"submit", type.c_str()) == 0 ||
               _wcsicmp(L"image", type.c_str()) == 0) {
-            element_wrapper->Click(executor.input_manager()->scroll_behavior());
+            Json::Value move_action;
+            move_action["action"] = "moveto";
+            move_action["element"] = element_wrapper->element_id();
+
+            Json::Value click_action;
+            click_action["action"] = "click";
+            click_action["button"] = 0;
+            
+            Json::UInt index = 0;
+            Json::Value actions(Json::arrayValue);
+            actions[index] = move_action;
+            ++index;
+            actions[index] = click_action;
+            
+            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+            status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
             handled_with_native_events = true;
           }
         }

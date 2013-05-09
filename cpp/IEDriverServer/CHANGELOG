@@ -9,6 +9,13 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.32.3.11
+==========
+ * Refactored IE driver element click code to all use InputManager class. 
+   Previously, WebElement.click() used a different code path than the Advanced
+   User Interactions API. These code paths are now unified for the native
+   events case.
+
 v2.32.3.10
 ==========
  * Reinstated separate-thread execution of JavaScript on Windows 8. This

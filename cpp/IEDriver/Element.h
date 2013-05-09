@@ -42,12 +42,12 @@ class Element {
   int GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scroll,
                                       LocationInfo* location,
                                       std::vector<LocationInfo>* frame_locations);
+  int GetClickLocation(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior,
+                       LocationInfo* element_location,
+                       LocationInfo* click_location);
   int GetAttributeValue(const std::string& attribute_name,
                         std::string* attribute_value,
                         bool* value_is_null);
-
-  bool HasOnlySingleTextNodeChild(void);
-  bool GetTextBoundaries(LocationInfo* text_info);
 
   int IsDisplayed(bool* result);
   bool IsEnabled(void);
@@ -55,15 +55,14 @@ class Element {
   bool IsInteractable(void);
   bool IsEditable(void);
   bool IsAttachedToDom(void);
-  int Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior);
 
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }
 
  private:
   int GetLocation(LocationInfo* location, std::vector<LocationInfo>* frame_locations);
-  LocationInfo GetClickPoint(const LocationInfo location, const bool document_contains_frames);
-  bool GetClickableViewportLocation(const bool document_contains_frames, LocationInfo* location);
+  LocationInfo CalculateClickPoint(const LocationInfo location, const bool document_contains_frames);
+  bool GetClickableViewPortLocation(const bool document_contains_frames, LocationInfo* location);
   bool IsLocationInViewPort(const LocationInfo location, const bool document_contains_frames);
   bool IsLocationVisibleInFrames(const LocationInfo location, const std::vector<LocationInfo> frame_locations);
   bool IsHiddenByOverflow();
@@ -72,7 +71,10 @@ class Element {
   int GetDocumentFromWindow(IHTMLWindow2* parent_window,
                             IHTMLDocument2** parent_doc);
   bool IsInline(void);
-  static bool Element::RectHasNonZeroDimensions(const CComPtr<IHTMLRect> rect);
+  static bool Element::RectHasNonZeroDimensions(IHTMLRect* rect);
+
+  bool HasOnlySingleTextNodeChild(void);
+  bool Element::GetTextBoundaries(LocationInfo* text_info);
 
   std::string element_id_;
   CComPtr<IHTMLElement> element_;

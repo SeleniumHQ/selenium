@@ -67,10 +67,22 @@ class ClickElementCommandHandler : public IECommandHandler {
               return;
             }
           } else {
-            if (executor.input_manager()->require_window_focus()) {
-              executor.input_manager()->SetFocusToBrowser(browser_wrapper);
-            }
-            status_code = element_wrapper->Click(executor.input_manager()->scroll_behavior());
+            Json::Value move_action;
+            move_action["action"] = "moveto";
+            move_action["element"] = element_wrapper->element_id();
+
+            Json::Value click_action;
+            click_action["action"] = "click";
+            click_action["button"] = 0;
+            
+            Json::UInt index = 0;
+            Json::Value actions(Json::arrayValue);
+            actions[index] = move_action;
+            ++index;
+            actions[index] = click_action;
+            
+            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+            status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
             browser_wrapper->set_wait_required(true);
             if (status_code != WD_SUCCESS) {
               if (status_code == EELEMENTCLICKPOINTNOTSCROLLED) {

@@ -199,8 +199,10 @@ bool Element::IsEditable() {
   return result;
 }
 
-int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
-  LOG(TRACE) << "Entering Element::Click";
+int Element::GetClickLocation(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior,
+                              LocationInfo* element_location,
+                              LocationInfo* click_location) {
+  LOG(TRACE) << "Entering Element::GetClickLocation";
 
   bool displayed;
   int status_code = this->IsDisplayed(&displayed);
@@ -214,40 +216,13 @@ int Element::Click(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
     return EELEMENTNOTDISPLAYED;
   }
 
-  LocationInfo location = {};
   std::vector<LocationInfo> frame_locations;
-  status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior, &location, &frame_locations);
+  status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior, element_location, &frame_locations);
 
   if (status_code == WD_SUCCESS) {
     bool document_contains_frames = frame_locations.size() != 0;
-    LocationInfo click_location = GetClickPoint(location, document_contains_frames);
-
-    // Create a mouse move, mouse down, mouse up OS event
-    LRESULT result = mouseMoveTo(this->containing_window_handle_,
-                                 /* duration of move in ms = */ 10,
-                                 location.x,
-                                 location.y,
-                                 click_location.x,
-                                 click_location.y);
-    if (result != WD_SUCCESS) {
-      LOG(WARN) << "Unable to move mouse, mouseMoveTo returned non-zero value";
-      return static_cast<int>(result);
-    }
-    
-    result = clickAt(this->containing_window_handle_,
-                     click_location.x,
-                     click_location.y,
-                     MOUSEBUTTON_LEFT);
-    if (result != WD_SUCCESS) {
-      LOG(WARN) << "Unable to click at by mouse, clickAt returned non-zero value";
-      return static_cast<int>(result);
-    }
-
-    //wait(50);
-  } else {
-    LOG(WARN) << "Unable to get location of clicked element";
+    *click_location = CalculateClickPoint(*element_location, document_contains_frames);
   }
-
   return status_code;
 }
 
@@ -299,7 +274,7 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
   LocationInfo element_location = {};
   int result = this->GetLocation(&element_location, frame_locations);
   bool document_contains_frames = frame_locations->size() != 0;
-  LocationInfo click_location = this->GetClickPoint(element_location, document_contains_frames);  
+  LocationInfo click_location = this->CalculateClickPoint(element_location, document_contains_frames);  
 
   if (result != WD_SUCCESS ||
       !this->IsLocationInViewPort(click_location, document_contains_frames) ||
@@ -324,7 +299,7 @@ int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scrol
       return result;
     }
 
-    click_location = this->GetClickPoint(element_location, document_contains_frames);
+    click_location = this->CalculateClickPoint(element_location, document_contains_frames);
     if (!this->IsLocationInViewPort(click_location, document_contains_frames)) {
       LOG(WARN) << "Scrolled element is not in view";
       status_code = EELEMENTCLICKPOINTNOTSCROLLED;
@@ -462,6 +437,17 @@ int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* fram
   } else {
     LOG(DEBUG) << "Element is a block element, using IHTMLElement2::getBoundingClientRect";
     hr = element2->getBoundingClientRect(&rect);
+    if (this->HasOnlySingleTextNodeChild()) {
+      LOG(DEBUG) << "Element has only a single child text node, using text node boundaries";
+      // Note that since subsequent statements in this method use the HTMLRect
+      // object, we will update that object with the values of the text node.
+      LocationInfo text_node_location;
+      this->GetTextBoundaries(&text_node_location);
+      rect->put_left(text_node_location.x);
+      rect->put_top(text_node_location.y);
+      rect->put_right(text_node_location.x + text_node_location.width);
+      rect->put_bottom(text_node_location.y + text_node_location.height);
+    }
   }
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Cannot figure out where the element is on screen, client rect retrieval failed";
@@ -560,7 +546,7 @@ bool Element::IsInline() {
   return false;
 }
 
-bool Element::RectHasNonZeroDimensions(const CComPtr<IHTMLRect> rect) {
+bool Element::RectHasNonZeroDimensions(IHTMLRect* rect) {
   LOG(TRACE) << "Entering Element::RectHasNonZeroDimensions";
 
   long top = 0, bottom = 0, left = 0, right = 0;
@@ -679,7 +665,7 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
               }
             } else {
               LOG(DEBUG) << "No <iframe> elements, looking for <frame> elements in parent document.";
-              CComBSTR frame_tag_name = L"iframe";
+              CComBSTR frame_tag_name = L"frame";
               CComPtr<IHTMLElementCollection> frame_collection;
               hr = doc->getElementsByTagName(frame_tag_name, &frame_collection);
               hr = frame_collection->get_length(&collection_count);
@@ -755,8 +741,8 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
   return false;
 }
 
-bool Element::GetClickableViewportLocation(const bool document_contains_frames, LocationInfo* location) {
-  LOG(TRACE) << "Entering Element::GetClickableViewportLocation";
+bool Element::GetClickableViewPortLocation(const bool document_contains_frames, LocationInfo* location) {
+  LOG(TRACE) << "Entering Element::GetClickableViewPortLocation";
 
   WINDOWINFO window_info;
   window_info.cbSize = sizeof(WINDOWINFO);
@@ -799,39 +785,24 @@ bool Element::GetClickableViewportLocation(const bool document_contains_frames, 
   return true;
 }
 
-LocationInfo Element::GetClickPoint(const LocationInfo location, const bool document_contains_frames) {
-  LOG(TRACE) << "Entering Element::GetClickPoint";
+LocationInfo Element::CalculateClickPoint(const LocationInfo location, const bool document_contains_frames) {
+  LOG(TRACE) << "Entering Element::CalculateClickPoint";
 
-  // Recalculate frame locations to understand is it in frame or not.
-  // Mostly it is already calculated and passed in as argumtny value
-  // but in Click() it is calculated at another level, so add special hadnling of NULL value
-  bool contains_frames;
-  if (document_contains_frames == NULL) {
-    LocationInfo element_location = {};
-    std::vector<LocationInfo> frame_locations;
-    int result = this->GetLocation(&element_location, &frame_locations);
-    contains_frames = frame_locations.size() != 0;
-  } else {
-    contains_frames = document_contains_frames;
-  }
-
-  //Note: This logic is duplicated in javascript in Element::IsHiddenByOverflow
   long corrected_width = location.width;
   long corrected_height = location.height;
 
   LocationInfo clickable_viewport = {};
-  bool result = this->GetClickableViewportLocation(contains_frames, &clickable_viewport);
+  bool result = this->GetClickableViewPortLocation(document_contains_frames, &clickable_viewport);
   if (result) {
+    // If GetClickableViewportLocation fails and this element is really big,
+    // then we will fail at another point and can trace that failure through
+    // the logs. If the element is not too big, then all will be normal.
     if (corrected_width > (2 * clickable_viewport.width)) {
       corrected_width = clickable_viewport.width;
     }
     if (corrected_height > (2 * clickable_viewport.height)) {
       corrected_height = clickable_viewport.height;
     }
-  } else {
-    // do nothing: if we failed and element is really big, then it failes at anpther point
-    // and we'll trace this by logs.
-    // if element is not such big, then all will be normal.
   }
 
   LocationInfo click_location = {};  
@@ -844,7 +815,7 @@ bool Element::IsLocationInViewPort(const LocationInfo location, const bool docum
   LOG(TRACE) << "Entering Element::IsLocationInViewPort";
 
   LocationInfo clickable_viewport = {};
-  bool result = this->GetClickableViewportLocation(document_contains_frames, &clickable_viewport);
+  bool result = this->GetClickableViewPortLocation(document_contains_frames, &clickable_viewport);
   if (!result) {
     // problem is already logged, so just return 
     return false;
@@ -1106,6 +1077,22 @@ bool Element::GetTextBoundaries(LocationInfo* text_info) {
     return false;
   }
 
+  long top = 0;
+  hr = range_metrics->get_boundingTop(&top);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Call to get_boundingTop on range metrics failed.";
+    return false;
+  }
+
+  long left = 0;
+  hr = range_metrics->get_boundingLeft(&left);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Call to get_boundingLeft on range metrics failed.";
+    return false;
+  }
+
+  text_info->x = left;
+  text_info->y = top;
   text_info->height = height;
   text_info->width = width;
   return true;

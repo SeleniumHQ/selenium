@@ -54,6 +54,7 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     return EUNHANDLEDERROR;
   }
 
+  int status_code = WD_SUCCESS;
   // Use a single mutex, so that all instances synchronize on the same object 
   // for focus purposes.
   HANDLE mutex_handle = ::CreateMutex(NULL, FALSE, USER_INTERACTION_MUTEX_NAME);
@@ -89,31 +90,36 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     std::string action_name = action["action"].asString();
     if (action_name == "moveto") {
       bool offset_specified = action.isMember("xoffset") && action.isMember("yoffset");
-      this->MouseMoveTo(browser_wrapper,
-                        action.get("element", "").asString(),
-                        offset_specified,
-                        action.get("xoffset", 0).asInt(),
-                        action.get("yoffset", 0).asInt());
+      status_code = this->MouseMoveTo(browser_wrapper,
+                                      action.get("element", "").asString(),
+                                      offset_specified,
+                                      action.get("xoffset", 0).asInt(),
+                                      action.get("yoffset", 0).asInt());
     } else if (action_name == "buttondown") {
-      this->MouseButtonDown(browser_wrapper);
+      status_code = this->MouseButtonDown(browser_wrapper);
     } else if (action_name == "buttonup") {
-      this->MouseButtonUp(browser_wrapper);
+      status_code = this->MouseButtonUp(browser_wrapper);
     } else if (action_name == "click") {
-      this->MouseClick(browser_wrapper, action.get("button", 0).asInt());
+      status_code = this->MouseClick(browser_wrapper, action.get("button", 0).asInt());
     } else if (action_name == "doubleclick") {
-      this->MouseDoubleClick(browser_wrapper);
+      status_code = this->MouseDoubleClick(browser_wrapper);
     } else if (action_name == "keys") {
       if (action.isMember("value")) {
         Json::Value keystroke_array = action.get("value", Json::Value(Json::arrayValue));
         bool auto_release_modifiers = action.get("releaseModifiers", false).asBool();
-        this->SendKeystrokes(browser_wrapper, keystroke_array, auto_release_modifiers);
+        status_code = this->SendKeystrokes(browser_wrapper, keystroke_array, auto_release_modifiers);
       }
+    }
+    if (status_code != WD_SUCCESS) {
+      // Received an error for one of the actions in the sequence.
+      // Abort the sequence.
+      break;
     }
   }
 
   // If there are inputs in the array, then we've queued up input actions
   // to be played back. So play them back.
-  if (this->inputs_.size() > 0) {
+  if (status_code == WD_SUCCESS && this->inputs_.size() > 0) {
     ::SendInput(static_cast<UINT>(this->inputs_.size()), &this->inputs_[0], sizeof(INPUT));
   }
 
@@ -122,7 +128,7 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     ::ReleaseMutex(mutex_handle);
     ::CloseHandle(mutex_handle);
   }
-  return WD_SUCCESS;
+  return status_code;
 }
 
 bool InputManager::SetFocusToBrowser(BrowserHandle browser_wrapper) {
@@ -224,7 +230,7 @@ int InputManager::MouseButtonDown(BrowserHandle browser_wrapper) {
       LOG(DEBUG) << "Queuing SendInput structure for mouse button down";
       this->AddMouseInput(browser_window_handle, MOUSEEVENTF_LEFTDOWN, this->last_known_mouse_x_, this->last_known_mouse_y_);
     } else { 
-    LOG(DEBUG) << "Using SendMessage method for mouse button down";
+      LOG(DEBUG) << "Using SendMessage method for mouse button down";
       //TODO: json wire protocol allows 3 mouse button types for this command
       mouseDownAt(browser_window_handle,
                   this->last_known_mouse_x_,
@@ -344,31 +350,26 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
     long end_x = start_x;
     long end_y = start_y;
     if (element_specified) {
-      bool displayed;
-      status_code = target_element->IsDisplayed(&displayed);
-      if (status_code != WD_SUCCESS) {
-        LOG(WARN) << "Unable to determine element is displayed";
-        return status_code;
-      } 
-
-      if (!displayed) {
-        LOG(WARN) << "Element is not displayed";
-        return EELEMENTNOTDISPLAYED;
-      }
-
       LocationInfo element_location;
-      std::vector<LocationInfo> frame_locations;
-      status_code = target_element->GetLocationOnceScrolledIntoView(this->scroll_behavior_,
-                                                                    &element_location,
-                                                                    &frame_locations);
-      // We can't use the status code alone here. GetLocationOnceScrolledIntoView
-      // returns EELEMENTNOTDISPLAYED if the element is visible, but the click
-      // point (the center of the element) is not within the viewport. However,
-      // we might still be able to move to whatever portion of the element *is*
-      // visible in the viewport, so we have to have an extra check.
-      if (status_code != WD_SUCCESS && element_location.width == 0 && element_location.height == 0) {
-        LOG(WARN) << "Unable to get location after scrolling or element sizes are zero";
-        return status_code;
+      LocationInfo move_location;
+      status_code = target_element->GetClickLocation(this->scroll_behavior_,
+                                                     &element_location,
+                                                     &move_location);
+      // We can't use the status code alone here. Even though the center of the
+      // element may not reachable via the mouse, we might still be able to move
+      // to whatever portion of the element *is* visible in the viewport, especially
+      // if we have an offset specifed, so we have to have an extra check.
+      if (status_code != WD_SUCCESS) {
+        if (status_code == EELEMENTCLICKPOINTNOTSCROLLED && !offset_specified) {
+          // If no offset is specified (meaning "move to the element's center"),
+          // and the "could not scroll center point into view" status code is
+          // returned, bail out here.
+          LOG(WARN) <<  "No offset was specified, and the center point of the element could not be scrolled into view.";
+          return status_code;
+        } else {
+          LOG(WARN) << "Element::CalculateClickPoint() returned an error code indicating the element is not reachable.";
+          return status_code;
+        }
       }
 
       // An element was specified as the starting point, so we know the end of the mouse
@@ -376,22 +377,9 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
       end_x = element_location.x;
       end_y = element_location.y;
       if (!offset_specified) {
-        // No offset was specified, which means move to the center of the element. All
-        // that remains is to determine whether that's the center of a block element,
-        // or the center of a the text (if the element's children only contain a single
-        // text node).
-        LOG(INFO) << "Checking whether element has single text node.";
-        if (target_element->HasOnlySingleTextNodeChild()) {
-          LOG(INFO) << "Element has single text node. Will use the middle of that.";
-          LocationInfo text_info;
-          target_element->GetTextBoundaries(&text_info);
-          // Get middle of selection if there's only one text node.
-          end_x += text_info.width / 2;
-          end_y += text_info.height / 2;
-        } else {
-          end_x += element_location.width / 2;
-          end_y += element_location.height / 2;
-        }
+        // No offset was specified, which means move to the center of the element. 
+        end_x = move_location.x;
+        end_y = move_location.y;
       }
     }
 
