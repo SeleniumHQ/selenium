@@ -36,19 +36,9 @@ goog.inherits(webdriver.Builder, webdriver.AbstractBuilder);
  * @override
  */
 webdriver.Builder.prototype.build = function() {
-  var executor;
-  if (webdriver.FirefoxDomExecutor.isAvailable()) {
-    executor = new webdriver.FirefoxDomExecutor();
-    return webdriver.WebDriver.createSession(executor, this.getCapabilities());
-  } else {
-    var client = new webdriver.http.CorsClient(this.getServerUrl());
-    executor = new webdriver.http.Executor(client);
-
-    if (this.getSession()) {
-      return webdriver.WebDriver.attachToSession(executor, this.getSession());
-    } else {
-      throw new Error('Unable to create a new client for this browser. The ' +
-          'WebDriver session ID has not been defined.');
-    }
-  }
+  var client = new webdriver.http.CorsClient(this.getServerUrl());
+  var executor = new webdriver.http.Executor(client);
+  return this.getSession() ?
+         webdriver.WebDriver.attachToSession(executor, this.getSession()) :
+         webdriver.WebDriver.createSession(executor, this.getCapabilities());
 };
