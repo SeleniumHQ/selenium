@@ -32,8 +32,10 @@ goog.require('safaridriver.extension.TabManager');
 goog.require('safaridriver.logging.ForwardingHandler');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Alert');
+goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Connect');
 goog.require('safaridriver.message.LoadModule');
+goog.require('safaridriver.message.Response');
 goog.require('webdriver.Session');
 goog.require('webdriver.WebDriver');
 goog.require('webdriver.logging');
@@ -219,6 +221,28 @@ safaridriver.extension.onMessage_ = function(e) {
   var message = safaridriver.message.fromEvent(e);
   var type = message.getType();
   switch (type) {
+    case safaridriver.message.Command.TYPE:
+      var command = /** @type {!safaridriver.message.Command} */ (message).
+          getCommand();
+
+      var server = safaridriver.extension.createSessionServer_();
+      server.execute(command, function(error, responseObj) {
+        // Only send responses to the logging window. If the window is no longer
+        // open, there's nothing to send the response to.
+        if (!safaridriver.extension.loggingTab_) {
+          return;
+        }
+
+        if (error) {
+          responseObj = bot.response.createErrorResponse(error);
+        }
+
+        var response = new safaridriver.message.Response(command.getId(),
+            /** @type {bot.response.ResponseObject} */ (responseObj));
+        response.send(safaridriver.extension.loggingTab_.page);
+      });
+      break;
+
     case safaridriver.message.Connect.TYPE:
       var url = /** @type {!safaridriver.message.Connect} */ (message).getUrl();
 

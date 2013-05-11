@@ -67,7 +67,10 @@ js_binary(
 # Binary for the debug/logging window.
 js_binary(
     name = "debug",
-    srcs = ["debug/debug.js"],
+    srcs = [
+        "deps.js",
+        "debug/debug.js",
+    ],
     defines = [
         "goog.userAgent.ASSUME_WEBKIT=true",
         "goog.userAgent.product.ASSUME_SAFARI=true",
