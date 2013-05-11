@@ -238,6 +238,7 @@ js_module_binary(
     ],
     flags = [
         "--define=bot.json.NATIVE_JSON=false",
+        "--define=goog.NATIVE_ARRAY_PROTOTYPES=false",
         "--define=goog.userAgent.ASSUME_WEBKIT=true",
         "--define=goog.userAgent.product.ASSUME_SAFARI=true",
         "--define=safaridriver.message.ASSUME_DOM_WINDOW=true",
