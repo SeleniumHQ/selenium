@@ -18,7 +18,8 @@
   }
 
   function testGetInViewLocationWithPositiveOffset() {
-    if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
+    if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) ||
+        goog.userAgent.product.SAFARI) {
       // Scroll offsets are not reliable on mobile viewports.
       return;
     }
@@ -41,7 +42,8 @@
   }
 
   function testGetInViewLocationWithNegativeOffsetX() {
-    if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
+    if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) ||
+        goog.userAgent.product.SAFARI) {
       // Scroll offsets are not reliable on mobile viewports.
       return;
     }
@@ -62,7 +64,8 @@
   }
 
   function testGetInViewLocationWithNegativeOffsetY() {
-    if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
+    if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) ||
+        goog.userAgent.product.SAFARI) {
       // Scroll offsets are not reliable on mobile viewports.
       return;
     }

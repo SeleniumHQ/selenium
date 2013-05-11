@@ -298,3 +298,15 @@ folder(
       ":page",
     ],
     out = "SafariDriver.safariextension")
+
+js_test(
+    name = "test",
+    srcs = [
+        "test/**/*.js",
+        "test/**/*_test.html",
+    ],
+    browsers = ["safari"],
+    deps = [
+        "//java/client/test/org/openqa/selenium/javascript",
+        "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    ])

@@ -693,8 +693,19 @@ namespace :safari do
     "//java/client/src/org/openqa/selenium/safari"
   ]
 
-  desc "Run the SafariDriver's java test suite"
-  task :test => [ "//java/client/test/org/openqa/selenium/safari:test:run" ]
+  desc "Run JavaScript tests for Safari"
+  task :testjs => [
+      "//javascript/atoms:test_safari:run",
+      "//javascript/safari-driver:test:run",
+      "//javascript/selenium-atoms:test_safari:run",
+      "//javascript/webdriver:test_safari:run"
+  ]
+
+  desc "Run all SafariDriver tests"
+  task :test => [
+      "safari:testjs",
+      "//java/client/test/org/openqa/selenium/safari:test:run"
+  ]
 
   desc "Re-install the SafariDriver extension; OSX only"
   task :reinstall => [ :extension ] do |t|

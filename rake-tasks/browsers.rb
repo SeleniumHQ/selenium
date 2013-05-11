@@ -87,5 +87,13 @@ BROWSERS = {
       :class => "Remote",
       :constructor_args => "desired_capabilities=webdriver.DesiredCapabilities.FIREFOX"
     }
+  },
+  "safari" => {
+    :java => {
+      :class => "org.openqa.selenium.safari.SafariDriver",
+      :deps => [ "//java/client/src/org/openqa/selenium/safari:safari" ]
+    },
+    :browser_name => "safari",
+    :available => mac?
   }
 }

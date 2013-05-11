@@ -27,7 +27,7 @@
 
       try {
         var win = bot.getWindow();
-        var db = win.openDatabase('testDB', '1.0', 'db name', 5*1024*1024);
+        var db = win.openDatabase('testDB', '1.0', 'db name', 2*1024*1024);
         db.transaction(transactionCallback, errorCallback, successCallback);
         asyncTestCase.waitForAsync('insertEntriesInDatabase');
       } catch (e) {
