@@ -197,10 +197,18 @@ public class ResultConfig {
     throwUpIfSessionTerminated(sessId);
 
     try {
-      log.info(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
+      if ("/status".equals(pathInfo)) {
+        log.fine(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
+      } else {
+        log.info(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
+      }
       result = handler.handle();
       addHandlerAttributesToRequest(request, handler);
-      log.info("Done: " + pathInfo);
+      if ("/status".equals(pathInfo)) {
+        log.fine("Done: " + pathInfo);
+      } else {
+        log.info("Done: " + pathInfo);
+      }
     } catch (UnreachableBrowserException e){
       throwUpIfSessionTerminated(sessId);
       replyError(request, response, e);
