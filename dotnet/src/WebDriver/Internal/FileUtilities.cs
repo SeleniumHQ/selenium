@@ -31,6 +31,7 @@ namespace OpenQA.Selenium.Internal
     internal static class FileUtilities
     {
         private static Random tempFileGenerator = new Random();
+        static string[] execExtension = new[] { ".exe", ".cmd", ".bat", ".com", "" };
 
         /// <summary>
         /// Recursively copies a directory.
@@ -105,6 +106,34 @@ namespace OpenQA.Selenium.Internal
             {
                 Console.WriteLine("Unable to delete directory '{0}'", directoryToDelete);
             }
+        }
+
+        /// <summary>
+        /// Searches for a executable with the specified name.
+        /// </summary>
+        /// <param name="fileName">The name of the executable to find.</param>
+        /// <returns>The full path to the directory where the file can be found,
+        /// or an empty string if the file does not exist in the locations searched.</returns>
+        /// <remarks>
+        /// This method looks first in the directory of the currently executing
+        /// assembly. If the specified file is not there, the method then looks in
+        /// each directory on the PATH environment variable, in order.
+        /// It looks in those place for each possible extension (exe, cmd, bat, com)
+        /// </remarks>
+        public static string FindExecutableFile(string fileName)
+        {
+            var result = FindFile(fileName);
+            if (result != string.Empty) return result;
+
+            var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+            var oriExt = fileName.Substring(fileNameWithoutExt.Length);
+            foreach (var ext in execExtension)
+            {
+                if (ext == oriExt) continue;
+                result = FindFile(fileNameWithoutExt + ext);
+                if (result != string.Empty) return result;
+            }
+            return string.Empty;
         }
 
         /// <summary>
