@@ -206,7 +206,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
   
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, OPERA_MOBILE})
+  @Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, OPERA_MOBILE, IE})
   @Test
   @SuppressWarnings("unused")
   public void testSendingCommandKey() throws InterruptedException {
