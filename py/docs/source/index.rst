@@ -61,4 +61,4 @@ Documentation
 
 Use The Source Luke!
 ====================
-http://code.google.com/p/selenium/source/browse/trunk/py/selenium/webdriver/remote/webdriver.py
+https://code.google.com/p/selenium/source/browse/py/selenium/webdriver/remote/webdriver.py
