@@ -829,16 +829,6 @@ class WebDriver(object):
         return True
 
     @property
-    def sessions(self):
-        """
-        Gets a list of the currently active sessions
-
-        :Usage:
-            driver.sessions
-        """
-        return self.execute(Command.SESSIONS)['value']
-
-    @property
     def log_types(self):
         """
         Gets a list of the available log types
