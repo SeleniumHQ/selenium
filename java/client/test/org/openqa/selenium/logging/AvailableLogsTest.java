@@ -106,6 +106,7 @@ public class AvailableLogsTest extends JUnit4TestBase {
   @Test
   @Ignore(value = {SAFARI}, reason = "Safari does not support profiler logs")
   public void shouldBeAbleToEnableProfilerLog() {
+    assumeFalse(isOldChromedriver(driver));
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(ENABLE_PROFILING_CAPABILITY, true);
     WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(caps);
