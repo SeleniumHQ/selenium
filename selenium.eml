@@ -154,10 +154,10 @@
 	<lib name="xalan-2.7.1.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/xml/xalan-2.7.1.jar!/"/>
 	</lib>
-	<lib name="operadriver-1.2.jar" scope="COMPILE">
-		<srcroot url="jar://$MODULE_DIR$/third_party/java/opera-driver/operadriver-1.2-sources.jar!/"/>
-		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-1.2-sources.jar!/"/>
-		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-1.2.jar!/"/>
+	<lib name="operadriver-1.3.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/third_party/java/opera-driver/operadriver-1.3-sources.jar!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-1.3-sources.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-1.3.jar!/"/>
 	</lib>
 	<lib name="phantomjsdriver-1.0.3.jar" scope="COMPILE">
 		<srcroot url="jar://$MODULE_DIR$/third_party/java/phantomjs-driver/phantomjsdriver-1.0.3-source.jar!/"/>
