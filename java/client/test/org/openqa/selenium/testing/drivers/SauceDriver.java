@@ -125,6 +125,7 @@ public class SauceDriver extends RemoteWebDriver {
       if (ieDriverVersion != null) {
         mungedCapabilities.setCapability("iedriver-version", ieDriverVersion);
       }
+      mungedCapabilities.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, true);
     }
 
     String requireFocus = System.getenv(SAUCE_REQUIRE_FOCUS_ENV_NAME);
