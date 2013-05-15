@@ -21,12 +21,12 @@ public class UnhandledAlertException extends WebDriverException {
   
   private final String alertText;
 
-  public UnhandledAlertException(String commandName) {
-    this(commandName, null);
+  public UnhandledAlertException(String message) {
+    this(message, null);
   }
   
-  public UnhandledAlertException(String commandName, String alertText) {
-    super(commandName);
+  public UnhandledAlertException(String message, String alertText) {
+    super(message + ": " + alertText);
     this.alertText = alertText;
   }
 

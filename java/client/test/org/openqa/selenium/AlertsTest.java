@@ -17,7 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
@@ -427,6 +429,7 @@ public class AlertsTest extends JUnit4TestBase {
       fail("Expected UnhandledAlertException");
     } catch (UnhandledAlertException e) {
       assertEquals("cheese", e.getAlertText());
+      assertThat(e.getMessage(), containsString("cheese"));
     }
   }
 
