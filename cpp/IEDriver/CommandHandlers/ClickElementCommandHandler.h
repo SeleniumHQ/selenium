@@ -81,9 +81,18 @@ class ClickElementCommandHandler : public IECommandHandler {
             ++index;
             actions[index] = click_action;
             
+            // Check to make sure we're not within the double-click time for this element
+            // since the last click.
+            int double_click_time = ::GetDoubleClickTime();
+            int time_since_last_click = static_cast<int>(static_cast<float>(clock() - element_wrapper->last_click_time()) / CLOCKS_PER_SEC * 1000);
+            if (time_since_last_click < double_click_time) {
+              ::Sleep(double_click_time - time_since_last_click + 10);
+            }
+
             IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
             status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
             browser_wrapper->set_wait_required(true);
+            element_wrapper->set_last_click_time(clock());
             if (status_code != WD_SUCCESS) {
               if (status_code == EELEMENTCLICKPOINTNOTSCROLLED) {
                 // We hard-code the error code here to be "Element not visible"

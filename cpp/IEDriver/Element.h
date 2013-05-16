@@ -14,6 +14,7 @@
 #ifndef WEBDRIVER_IE_ELEMENT_H_
 #define WEBDRIVER_IE_ELEMENT_H_
 
+#include <ctime>
 #include <memory>
 #include <string>
 #include <vector>
@@ -59,6 +60,9 @@ class Element {
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }
 
+  clock_t last_click_time(void) const { return this->last_click_time_; }
+  void set_last_click_time(clock_t click_time) { this->last_click_time_ = click_time; }
+
  private:
   int GetLocation(LocationInfo* location, std::vector<LocationInfo>* frame_locations);
   LocationInfo CalculateClickPoint(const LocationInfo location, const bool document_contains_frames);
@@ -79,6 +83,7 @@ class Element {
   std::string element_id_;
   CComPtr<IHTMLElement> element_;
   HWND containing_window_handle_;
+  clock_t last_click_time_;
 };
 
 typedef std::tr1::shared_ptr<Element> ElementHandle;

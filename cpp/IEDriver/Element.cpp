@@ -60,6 +60,7 @@ Element::Element(IHTMLElement* element, HWND containing_window_handle) {
 
   this->element_ = element;
   this->containing_window_handle_ = containing_window_handle;
+  this->last_click_time_ = 0;
 }
 
 Element::~Element(void) {
