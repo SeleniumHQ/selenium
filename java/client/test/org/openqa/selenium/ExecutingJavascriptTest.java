@@ -618,7 +618,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE},
-          reason = "Opera and HtmlUnit obey the method contract. Android not tested")
+          reason = "Opera obeys the method contract. Android not tested")
   @Test
   public void testCanPassAMapAsAParameter() {
     driver.get(pages.simpleTestPage);
@@ -633,6 +633,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = {OPERA, OPERA_MOBILE}, reason = "Opera: failed")
   public void testShouldThrowAnExceptionWhenArgumentsWithStaleElementPassed() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;

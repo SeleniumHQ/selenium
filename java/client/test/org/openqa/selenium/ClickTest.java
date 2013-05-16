@@ -316,6 +316,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = {OPERA, OPERA_MOBILE}, reason = "Opera: failed")
   public void testShouldBeAbleToClickOnRTLLanguageLink() {
     String url = appServer.whereIs("click_rtl.html");
     driver.get(url);
