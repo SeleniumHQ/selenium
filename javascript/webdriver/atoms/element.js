@@ -129,7 +129,7 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
   var value = null;
   var name = attribute.toLowerCase();
 
-  if ('style' == attribute.toLowerCase()) {
+  if ('style' == name) {
     value = element.style;
 
     if (value && !goog.isString(value)) {
