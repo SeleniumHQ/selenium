@@ -14,6 +14,8 @@ namespace OpenQA.Selenium.IE
         {
             driver.Url = alertsPage;
             driver.FindElement(By.Id("input")).Clear();
+            IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); });
+            alert.Accept();
         }
 
         [Test]
