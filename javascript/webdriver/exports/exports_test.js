@@ -242,7 +242,6 @@ function checkPromise() {
   assertFunction('webdriver.promise', 'checkedNodeCall');
 
   assertFunction('webdriver.promise', 'ControlFlow');
-  assertFunction('webdriver.promise.ControlFlow', 'getInstance');
   assertObject('webdriver.promise.ControlFlow', 'EventType');
   assert.equal('idle', webdriver.promise.ControlFlow.EventType.IDLE,
       'Should be "idle", is ' + webdriver.promise.ControlFlow.EventType.IDLE);
