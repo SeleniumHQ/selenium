@@ -95,7 +95,7 @@ class FirefoxProfile(object):
         "dom.max_script_run_time": "30",
         }
 
-    def __init__(self,profile_directory=None):
+    def __init__(self,profile_directory=None,keep_profile=False):
         """
         Initialises a new instance of a Firefox Profile
 
@@ -103,6 +103,10 @@ class FirefoxProfile(object):
          - profile_directory: Directory of profile that you want to use.
            This defaults to None and will create a new
            directory when object is created.
+         - keep_profile: Boolean that indicates if you want to create or copy a 
+           temporary profile that is thrown away after the session (False) or 
+           if you want to use profile_directory directly and don't want to throw
+           away the profile changes from this session (True).
         """
         self.default_preferences = copy.deepcopy(
             FirefoxProfile.DEFAULT_PREFERENCES)
@@ -111,12 +115,13 @@ class FirefoxProfile(object):
         if self.profile_dir is None:
             self.profile_dir = self._create_tempfolder()
         else:
-            self.tempfolder = tempfile.mkdtemp()
-            newprof = os.path.join(self.tempfolder,
-                "webdriver-py-profilecopy")
-            shutil.copytree(self.profile_dir, newprof,
-                ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock"))
-            self.profile_dir = newprof
+            if not keep_profile:
+                self.tempfolder = tempfile.mkdtemp()
+                newprof = os.path.join(self.tempfolder,
+                    "webdriver-py-profilecopy")
+                shutil.copytree(self.profile_dir, newprof,
+                    ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock"))
+                self.profile_dir = newprof
             self._read_existing_userjs()
         self.extensionsDir = os.path.join(self.profile_dir, "extensions")
         self.userPrefs = os.path.join(self.profile_dir, "user.js")
