@@ -95,6 +95,10 @@ function webdriverBackedSeleniumBuilder() {
 
   };
 
+	WebdriverBackedSelenium.prototype.doStore = function(value, varName) {
+	  storedVars[varName] = value;
+	};
+
   WebdriverBackedSelenium.prototype._elementLocator = function(sel1Locator) {
     var locator = parse_locator(sel1Locator);
     if (sel1Locator.match(/^\/\//) || locator.type == 'xpath') {
