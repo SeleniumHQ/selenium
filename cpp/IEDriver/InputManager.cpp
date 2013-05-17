@@ -11,12 +11,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <ctime>
 #include "errorcodes.h"
 #include "InputManager.h"
 #include "interactions.h"
 #include "logging.h"
 #include "Script.h"
 #include "Generated/atoms.h"
+
+#pragma data_seg("INPUTS")
+int input_message_count = 0;
+#pragma data_seg()
+
+#pragma comment(linker, "/section:INPUTS,RWS")
 
 namespace webdriver {
 
@@ -49,7 +56,7 @@ void InputManager::Initialize(ElementRepository* element_map) {
 }
 
 int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json::Value& sequence) {
-  LOG(TRACE) << "Entering InputManager::PerformInputSequence";
+  LOG(INFO) << "Entering InputManager::PerformInputSequence";
   if (!sequence.isArray()) {
     return EUNHANDLEDERROR;
   }
@@ -119,8 +126,29 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
 
   // If there are inputs in the array, then we've queued up input actions
   // to be played back. So play them back.
+  int sent_event_count = 0;
   if (status_code == WD_SUCCESS && this->inputs_.size() > 0) {
-    ::SendInput(static_cast<UINT>(this->inputs_.size()), &this->inputs_[0], sizeof(INPUT));
+    // SendInput simulates mouse and keyboard events at a very low level, so
+    // low that there is no guarantee that IE will have processed the resulting
+    // windows messages before this method returns. Therefore, we'll install
+    // keyboard and mouse hooks that will count the number of Windows messages
+    // processed by any application the system. There is a potential for this
+    // code to be wrong if the user is interacting with the system via mouse and
+    // keyboard during this process. Since this code path should only be hit if
+    // the requireWindowFocus capability is turned on, and since SendInput is 
+    // documented to not allow other input events to be interspersed into the
+    // input queue, the risk is hopefully minimized.
+    this->InstallInputEventHooks();
+    sent_event_count = ::SendInput(static_cast<UINT>(this->inputs_.size()), &this->inputs_[0], sizeof(INPUT));
+    LOG(INFO) << "Sent " << sent_event_count << " events via SendInput()";
+    bool wait_succeeded = this->WaitForInputEventProcessing(sent_event_count);
+    std::string success = wait_succeeded ? "true" : "false";
+    LOG(INFO) << "Wait for input event processing returned " << success;
+    this->UninstallInputEventHooks();
+    // A small sleep after all messages have been detected by an application
+    // event loop is appropriate here. This value (50 milliseconds is chosen
+    // as it's probably undetectable by most people observing the test running. 
+    ::Sleep(50);
   }
 
   // Must always release the mutex.
@@ -129,6 +157,75 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     ::CloseHandle(mutex_handle);
   }
   return status_code;
+}
+
+void InputManager::InstallInputEventHooks() {
+  LOG(TRACE) << "Entering InputManager::InstallInputEventHooks";
+  this->keyboard_hook_handle_ = this->InstallWindowsHook("KeyboardHookProc", WH_KEYBOARD);
+  if (this->keyboard_hook_handle_ == NULL) {
+    LOG(WARN) << "Installing hook for keyboard messages failed";
+  }
+  this->mouse_hook_handle_ = this->InstallWindowsHook("MouseHookProc", WH_MOUSE);
+  if (this->mouse_hook_handle_ == NULL) {
+    LOG(WARN) << "Installing hook for mouse messages failed";
+  }
+}
+
+void InputManager::UninstallInputEventHooks() {
+  LOG(TRACE) << "Entering InputManager::UninstallInputEventHooks";
+  if (this->keyboard_hook_handle_ != NULL) {
+    ::UnhookWindowsHookEx(this->keyboard_hook_handle_);
+    this->keyboard_hook_handle_ = NULL;
+  }
+  if (this->mouse_hook_handle_ != NULL) {
+    ::UnhookWindowsHookEx(this->mouse_hook_handle_);
+    this->mouse_hook_handle_ = NULL;
+  }
+  input_message_count = 0;
+}
+
+HHOOK InputManager::InstallWindowsHook(std::string hook_procedure_name, int hook_type) {
+  LOG(TRACE) << "Entering InputManager::InstallWindowsHook";
+
+  HHOOK hook_handle = NULL;
+  HINSTANCE instance_handle = _AtlBaseModule.GetModuleInstance();
+
+  FARPROC hook_procedure_address = ::GetProcAddress(instance_handle, hook_procedure_name.c_str());
+  if (hook_procedure_address == NULL || hook_procedure_address == 0) {
+    LOGERR(WARN) << "Unable to get address of hook procedure to catch input events";
+    return NULL;
+  }
+  HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(hook_procedure_address);
+
+  // Install the Windows hook.
+  hook_handle = ::SetWindowsHookEx(hook_type,
+                                   hook_procedure,
+                                   instance_handle,
+                                   0);
+  if (hook_handle == NULL) {      
+    LOGERR(WARN) << "Unable to set windows hook to catch WM_GETMINMAXINFO";
+  }
+  return hook_handle;
+}
+
+bool InputManager::WaitForInputEventProcessing(int input_count) {
+  LOG(TRACE) << "Entering InputManager::WaitForInputEventProcessing";
+  // Adaptive wait. The total wait time is the number of input messages
+  // expected by the hook multiplied by a static wait time for each
+  // message to be processed (currently 50 milliseconds). We should
+  // exit out of this loop once the number of processed windows keyboard
+  // or mouse messages processed by the system exceeds the number of
+  // input events created by the call to SendInput.
+  int total_timeout_in_milliseconds = input_count * WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT;
+  clock_t end = clock() + (total_timeout_in_milliseconds / 1000 * CLOCKS_PER_SEC);
+
+  bool inputs_processed = input_message_count >= input_count;
+  while (!inputs_processed && clock() < end) {
+    // Sleep a short amount of time to prevent starving the processor.
+    ::Sleep(25);
+    inputs_processed = input_message_count >= input_count;
+  }
+  return inputs_processed;
 }
 
 bool InputManager::SetFocusToBrowser(BrowserHandle browser_wrapper) {
@@ -394,8 +491,12 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
 
     HWND browser_window_handle = browser_wrapper->GetWindowHandle();
     if (this->require_window_focus_) {
-      LOG(DEBUG) << "Queueing SendInput structure for mouse move";
-      this->AddMouseInput(browser_window_handle, MOUSEEVENTF_MOVE, end_x, end_y);
+      if (end_x == this->last_known_mouse_x_ && end_y == this->last_known_mouse_y_) {
+        LOG(DEBUG) << "Omitting SendInput structure for mouse move; no movement required";
+      } else {
+        LOG(DEBUG) << "Queueing SendInput structure for mouse move";
+        this->AddMouseInput(browser_window_handle, MOUSEEVENTF_MOVE, end_x, end_y);
+      }
     } else {
       LOG(DEBUG) << "Using SendMessage method for mouse move";
       LRESULT move_result = mouseMoveTo(browser_window_handle,
@@ -868,3 +969,21 @@ void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character) {
 }
 
 } // namespace webdriver
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+LRESULT CALLBACK KeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
+  ++input_message_count;
+  return ::CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+
+LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
+  ++input_message_count;
+  return ::CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+
+#ifdef __cplusplus
+}
+#endif

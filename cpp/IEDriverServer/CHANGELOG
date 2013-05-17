@@ -9,6 +9,24 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.32.3.12
+==========
+ * Updates to JavaScript automation atoms.
+ * Prevent double-clicks when using WebElement.click(). When using the 
+   requireWindowFocus capability, it's possible that multiple calls to 
+   WebElement.click() might happen too quickly, and they might be interpreted
+   as a double-click. This change inspects the last time an element was clicked
+   on, and if it is within the system double-click time, it waits until that
+   time passes before performing the second click.
+ * Made InputManager more robust in the requireWindowFocus case. Previously, 
+   using the Windows SendInput API could cause keystrokes and mouse events to
+   be added to the system message queue, but would return back to the caller
+   before those events were processed by Internet Explorer's message loop.
+   This change adds a Windows mouse hook and keyboard hook to monitor when
+   the messages are processed by an applications message loop. There is still a
+   potential race condition, and users may still need to execute some local
+   synchronization code.
+
 v2.32.3.11
 ==========
  * Refactored IE driver element click code to all use InputManager class. 
