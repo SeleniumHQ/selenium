@@ -16,7 +16,6 @@
 # limitations under the License.
 
 """Tests for advanced user interactions."""
-import time
 import unittest
 import pytest
 from selenium.webdriver.common.keys import Keys
@@ -70,12 +69,10 @@ class AdvancedUserInteractionTest(unittest.TestCase):
 
     def testDragAndDrop(self):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        element_available_timeout = 15
+        wait = WebDriverWait(self, element_available_timeout)
         self._loadPage("droppableItems")
-        waitEndTime = time.time() + 15
-
-        while (not self._isElementAvailable("draggable") and
-            time.time() < waitEndTime):
-          time.sleep(0.2)
+        wait.until(lambda dr: dr._isElementAvailable("draggable"))
 
         if not self._isElementAvailable("draggable"):
             raise "Could not find draggable element after 15 seconds."
