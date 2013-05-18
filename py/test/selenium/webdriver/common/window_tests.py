@@ -13,9 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
 import unittest
 import pytest
+
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 class WindowTests(unittest.TestCase):
@@ -24,20 +25,20 @@ class WindowTests(unittest.TestCase):
     @pytest.mark.ignore_opera
     @pytest.mark.ignore_ie
     def testShouldMaximizeTheWindow(self):
+        resize_timeout = 5
+        wait = WebDriverWait(self.driver, resize_timeout)
+        old_size = self.driver.get_window_size()
         self.driver.set_window_size(200, 200)
-        # TODO convert to WebDriverWait
-        time.sleep(0.5);
-            
+        wait.until(
+            lambda dr: dr.get_window_size() != old_size if old_size["width"] != 200 and old_size["height"] != 200 \
+                else True)
         size = self.driver.get_window_size()
-                
         self.driver.maximize_window()
-        # TODO convert to WebDriverWait
-        time.sleep(0.5)
-                                
+        wait.until(lambda dr: dr.get_window_size() != size)
         new_size = self.driver.get_window_size()
         assert new_size["width"] > size["width"]
         assert new_size["height"] > size["height"]
-        
+
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
 
@@ -46,4 +47,3 @@ class WindowTests(unittest.TestCase):
 
     def _loadPage(self, name):
         self.driver.get(self._pageURL(name))
-
