@@ -280,38 +280,10 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClearTextFromInputElements() {
-    driver.get(pages.formPage);
-    WebElement element = driver.findElement(By.id("working"));
-    element.sendKeys("Some text");
-    String value = element.getAttribute("value");
-    assertThat(value.length(), is(greaterThan(0)));
-
-    element.clear();
-    value = element.getAttribute("value");
-
-    assertThat(value.length(), is(0));
-  }
-
-  @Test
   public void testEmptyTextBoxesShouldReturnAnEmptyStringNotNull() {
     driver.get(pages.formPage);
     WebElement emptyTextBox = driver.findElement(By.id("working"));
     assertEquals(emptyTextBox.getAttribute("value"), "");
-  }
-
-  @Test
-  public void testShouldBeAbleToClearTextFromTextAreas() {
-    driver.get(pages.formPage);
-    WebElement element = driver.findElement(By.id("withText"));
-    element.sendKeys("Some text");
-    String value = element.getAttribute("value");
-    assertThat(value.length(), is(greaterThan(0)));
-
-    element.clear();
-    value = element.getAttribute("value");
-
-    assertThat(value.length(), is(0));
   }
 
   @Test
