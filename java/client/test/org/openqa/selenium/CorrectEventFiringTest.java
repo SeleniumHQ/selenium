@@ -433,7 +433,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
   
   @JavascriptEnabled
-  @Ignore(ALL)
+  @Ignore(value = {ANDROID, IPHONE}, reason = "Not tested")
   @Test
   public void testClickEventsShouldBubble() {
     driver.get(pages.clicksPage);
