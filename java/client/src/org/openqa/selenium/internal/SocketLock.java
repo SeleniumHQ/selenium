@@ -30,7 +30,7 @@ import java.net.SocketException;
  * 
  * @author gregory.block@gmail.com (Gregory Block)
  */
-public class SocketLock implements Lock, NeedsSynchronization {
+public class SocketLock implements Lock {
   public static final int DEFAULT_PORT = 7055;
   private static final long DELAY_BETWEEN_SOCKET_CHECKS = 2000;
 
@@ -75,28 +75,30 @@ public class SocketLock implements Lock, NeedsSynchronization {
    * @inheritDoc
    */
   public void lock(long timeoutInMillis) throws WebDriverException {
-
     // Calculate the 'exit time' for our wait loop.
     long maxWait = System.currentTimeMillis() + timeoutInMillis;
 
-    // Attempt to acquire the lock until something goes wrong or we run out of time.
-    do {
-      try {
-        if (isLockFree(address))
-          return;
-        // Randomness or retry! Something from my past (Paul H) :
-        // http://www.wattystuff.net/amateur/packet/whatispacket.htm (search for random in page)
-        Thread.sleep((long) (DELAY_BETWEEN_SOCKET_CHECKS * Math.random()));
-      } catch (InterruptedException e) {
-        throw new WebDriverException(e);
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
-    } while (System.currentTimeMillis() < maxWait);
+    synchronized (syncObject) {
+      // Attempt to acquire the lock until something goes wrong or we run out of time.
+      do {
+        try {
+          if (isLockFree(address)) {
+            return;
+          }
+          // Randomness or retry! Something from my past (Paul H) :
+          // http://www.wattystuff.net/amateur/packet/whatispacket.htm (search for random in page)
+          Thread.sleep((long) (DELAY_BETWEEN_SOCKET_CHECKS * Math.random()));
+        } catch (InterruptedException e) {
+          throw new WebDriverException(e);
+        } catch (IOException e) {
+          throw new WebDriverException(e);
+        }
+      } while (System.currentTimeMillis() < maxWait);
 
-    throw new WebDriverException(
-        String.format("Unable to bind to locking port %d within %d ms", address.getPort(),
-            timeoutInMillis));
+      throw new WebDriverException(
+          String.format("Unable to bind to locking port %d within %d ms", address.getPort(),
+                        timeoutInMillis));
+    }
   }
 
   /**
@@ -108,13 +110,6 @@ public class SocketLock implements Lock, NeedsSynchronization {
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public Object getSyncObject() {
-    return syncObject;
   }
 
   /**
