@@ -494,8 +494,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {OPERA, IPHONE, ANDROID},
-          reason = "untested user agents, Opera: F4 triggers sidebar")
+  @Ignore(value = {OPERA, IPHONE, ANDROID, IE},
+          reason = "untested user agents, Opera: F4 triggers sidebar," +
+                   "IE: F4 triggers address bar")
   @Test
   public void testFunctionKeys() {
     driver.get(pages.javascriptPage);
