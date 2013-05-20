@@ -72,6 +72,7 @@ class SendKeysCommandHandler : public IECommandHandler {
         return;
       }
       HWND window_handle = browser_wrapper->GetWindowHandle();
+      HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
 
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
@@ -122,7 +123,6 @@ class SendKeysCommandHandler : public IECommandHandler {
 
           DWORD ie_process_id;
           ::GetWindowThreadProcessId(window_handle, &ie_process_id);
-          HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
 
           FileNameData key_data;
           key_data.main = top_level_window_handle;
@@ -145,8 +145,12 @@ class SendKeysCommandHandler : public IECommandHandler {
           return;
         }
 
-        this->VerifyPageHasFocus(browser_wrapper->GetTopLevelWindowHandle(), browser_wrapper->window_handle());
-        this->WaitUntilElementFocused(element);
+        if (!this->VerifyPageHasFocus(top_level_window_handle, window_handle)) {
+          LOG(WARN) << "HTML rendering pane does not have the focus. Keystrokes may go to an unexpected UI element.";
+        }
+        if (!this->WaitUntilElementFocused(element)) {
+          LOG(WARN) << "Specified element is not the active element. Keystrokes may go to an unexpected DOM element.";
+        }
         Json::Value value = this->RecreateJsonParameterObject(command_parameters);
         value["action"] = "keys";
         value["releaseModifiers"] = true;
@@ -265,14 +269,15 @@ class SendKeysCommandHandler : public IECommandHandler {
     return false;
   }
 
-  void VerifyPageHasFocus(HWND top_level_window_handle, HWND browser_pane_window_handle) {
+  bool VerifyPageHasFocus(HWND top_level_window_handle, HWND browser_pane_window_handle) {
     DWORD proc;
-    DWORD thread_id = ::GetWindowThreadProcessId(top_level_window_handle, &proc);
+    DWORD thread_id = ::GetWindowThreadProcessId(browser_pane_window_handle, &proc);
     GUITHREADINFO info;
     info.cbSize = sizeof(GUITHREADINFO);
     ::GetGUIThreadInfo(thread_id, &info);
 
     if (info.hwndFocus != browser_pane_window_handle) {
+      LOG(INFO) << "Focus is on a UI element other than the HTML viewer pane.";
       // The focus is on a UI element other than the HTML viewer pane (like
       // the address bar, for instance). This has implications for certain
       // keystrokes, like backspace. We need to set the focus to the HTML
@@ -280,12 +285,20 @@ class SendKeysCommandHandler : public IECommandHandler {
       // N.B. The SetFocus() API should *NOT* cause the IE browser window to
       // magically appear in the foreground. If that is not true, we will need
       // to find some other solution.
-      LOG(DEBUG) << "Focus is on a UI element other than the HTML viewer pane.";
+      // Send an explicit WM_KILLFOCUS message to free up SetFocus() to place the
+      // focus on the correct window. While SetFocus() is supposed to already do
+      // this, it seems to not work entirely correctly.
+      ::SendMessage(info.hwndFocus, WM_KILLFOCUS, NULL, NULL);
       DWORD current_thread_id = ::GetCurrentThreadId();
       ::AttachThreadInput(current_thread_id, thread_id, TRUE);
-      ::SetFocus(browser_pane_window_handle);
+      HWND previous_focus = ::SetFocus(browser_pane_window_handle);
+      if (previous_focus == NULL) {
+        LOGERR(WARN) << "SetFocus API call failed";
+      }
       ::AttachThreadInput(current_thread_id, thread_id, FALSE);
+      ::GetGUIThreadInfo(thread_id, &info);
     }
+    return info.hwndFocus == browser_pane_window_handle;
   }
 
   bool WaitUntilElementFocused(IHTMLElement *element) {
@@ -308,7 +321,8 @@ class SendKeysCommandHandler : public IECommandHandler {
     element->QueryInterface<IHTMLElement2>(&element2);
     element2->focus();
 
-    clock_t max_wait = clock() + 1000;
+    // Hard-coded 1 second timeout here. Possible TODO is make this adjustable.
+    clock_t max_wait = clock() + CLOCKS_PER_SEC;
     for (int i = clock(); i < max_wait; i = clock()) {
       wait(1);
       CComPtr<IHTMLElement> active_wait_element;
@@ -321,10 +335,6 @@ class SendKeysCommandHandler : public IECommandHandler {
           break;
         }
       }
-    }
-
-    if (!has_focus) {
-      LOG(WARN) << "We don't have focus on element.";
     }
 
     return has_focus;

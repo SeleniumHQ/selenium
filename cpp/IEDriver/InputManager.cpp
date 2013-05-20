@@ -56,7 +56,7 @@ void InputManager::Initialize(ElementRepository* element_map) {
 }
 
 int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json::Value& sequence) {
-  LOG(INFO) << "Entering InputManager::PerformInputSequence";
+  LOG(TRACE) << "Entering InputManager::PerformInputSequence";
   if (!sequence.isArray()) {
     return EUNHANDLEDERROR;
   }
@@ -140,10 +140,10 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     // input queue, the risk is hopefully minimized.
     this->InstallInputEventHooks();
     sent_event_count = ::SendInput(static_cast<UINT>(this->inputs_.size()), &this->inputs_[0], sizeof(INPUT));
-    LOG(INFO) << "Sent " << sent_event_count << " events via SendInput()";
+    LOG(DEBUG) << "Sent " << sent_event_count << " events via SendInput()";
     bool wait_succeeded = this->WaitForInputEventProcessing(sent_event_count);
     std::string success = wait_succeeded ? "true" : "false";
-    LOG(INFO) << "Wait for input event processing returned " << success;
+    LOG(DEBUG) << "Wait for input event processing returned " << success;
     this->UninstallInputEventHooks();
     // A small sleep after all messages have been detected by an application
     // event loop is appropriate here. This value (50 milliseconds is chosen
