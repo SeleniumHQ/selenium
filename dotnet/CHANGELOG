@@ -1,3 +1,11 @@
+v2.33.0
+=======
+ * Issue #5549: Modified to use indexer for putting entry in .NET Firefox
+   Profile preferences Dictionary. Was previously using the .Add() method of
+   the Dictionary, which would throw an exception if the key already existed.
+ * Updated InternetExplorerDriverService to allow using new command line
+   options for IEDriverServer.exe
+
 v2.32.1
 =======
  * Removed strong-naming from released assemblies. No functional changes.
