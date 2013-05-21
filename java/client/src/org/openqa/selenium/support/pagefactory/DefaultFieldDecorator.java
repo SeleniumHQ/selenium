@@ -19,6 +19,7 @@ package org.openqa.selenium.support.pagefactory;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler;
@@ -33,8 +34,8 @@ import java.util.List;
 
 /**
  * Default decorator for use with PageFactory. Will decorate 1) all of the
- * WebElement fields and 2) List<WebElement> fields that have @FindBy or
- * @FindBys annotation with a proxy that locates the elements using the passed
+ * WebElement fields and 2) List<WebElement> fields that have @FindBy, @FindBys,
+ * or @FindAll annotation with a proxy that locates the elements using the passed
  * in ElementLocatorFactory.
  */
 public class DefaultFieldDecorator implements FieldDecorator {
@@ -84,7 +85,8 @@ public class DefaultFieldDecorator implements FieldDecorator {
     }
 
     if (field.getAnnotation(FindBy.class) == null &&
-        field.getAnnotation(FindBys.class) == null) {
+        field.getAnnotation(FindBys.class) == null &&
+        field.getAnnotation(FindAll.class) == null) {
       return false;
     }
 
