@@ -11,7 +11,7 @@ module Selenium
           if opts.has_key?(:url)
             url = opts.delete(:url)
           else
-            @service = Service.default_service
+            @service = Service.default_service(*extract_service_args(opts))
             @service.start
 
             url = @service.uri
@@ -100,6 +100,16 @@ module Selenium
           end
 
           caps
+        end
+
+        def extract_service_args(opts)
+          args = []
+
+          if opts.has_key?(:service_log_path)
+            args << "--log-path=#{opts.delete(:service_log_path)}"
+          end
+
+          args
         end
 
       end # Bridge

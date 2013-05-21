@@ -117,6 +117,11 @@ module Selenium
 
           Bridge.new(:http_client => http, :desired_capabilities => custom_caps, :args => %w[baz])
         end
+
+        it 'accepts :service_log_path' do
+          Service.should_receive(:default_service).with("--log-path=/foo/bar")
+          Bridge.new(:http_client => http, :service_log_path => "/foo/bar")
+        end
       end
 
     end # Chrome
