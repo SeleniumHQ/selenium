@@ -35,7 +35,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 @RunWith(SeleniumTestRunner.class)
-@Ignore(value = {ANDROID, IPHONE, OPERA_MOBILE, REMOTE, SAFARI},
+@Ignore(value = {ANDROID, IPHONE, OPERA_MOBILE, REMOTE},
     reason = "Not tested")
 public class SessionHandlingTest {
 
@@ -69,7 +69,9 @@ public class SessionHandlingTest {
   }
 
   @Test(expected = SessionNotFoundException.class)
-  @Ignore(value = {OPERA}, reason = "Opera: throws Opera-specific exception")
+  @Ignore(value = {OPERA, SAFARI}, reason =
+      "Opera: throws Opera-specific exception,"
+      + "Safari: throws UnreachableBrowserException")
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
     driver.quit();
@@ -77,11 +79,12 @@ public class SessionHandlingTest {
   }
 
   @Test(expected = SessionNotFoundException.class)
-  @Ignore(value = {FIREFOX, CHROME, OPERA, PHANTOMJS}, reason =
+  @Ignore(value = {FIREFOX, CHROME, OPERA, PHANTOMJS, SAFARI}, reason =
       "Chrome: throws generic WebDriverException,"
       + "Firefox: can perform an operation after closing the last window,"
       + "Opera: throws Opera-specific exception,"
-      + "PhantomJS: throws NoSuchWindowException")
+      + "PhantomJS: throws NoSuchWindowException,"
+      + "Safari: throws NullPointerException")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
     driver.close();
