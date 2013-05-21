@@ -68,7 +68,8 @@ core.events.getEventFactory_ = function(eventName) {
       }
 
       return event;
-    }
+    },
+    type_: eventName
   };
 };
 
