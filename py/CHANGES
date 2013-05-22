@@ -1,3 +1,10 @@
+Selenium 2.33
+* getText() ignores elements in the <head>
+* Adding both official and informal string representations to Color object.
+* Replace distutils.dir_util by shutil
+* Allow finding firefox binary at ProgramFiles(x86) on windows(64 bit)
+* Py3 compatible winreg import and content-type access
+
 Selenium 2.32
 * Support for FF20 Native Events
 * Python 3 support
