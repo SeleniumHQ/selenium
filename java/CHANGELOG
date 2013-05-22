@@ -1,3 +1,46 @@
+v2.33.0
+=======
+
+WebDriver:
+  * getText() ignores elements in the <head>
+  * Bundled OperaDriver version bumped to 1.3.
+  * Added a FindAll annotation for the PageFactory to use.
+  * Added a toString() implementation to Color.
+  * Deleted the Selenium-backed WebDriver.
+  * FIXED: 2218: IE >=9 versions triggerMouseEvent like other
+    browsers.
+  * FIXED: 2610: Implementing ability to specify path to the chrome
+    executable in the node configuration file using chrome_binary
+    capability.
+  * FIXED: 2685: Increasing port range for Firefox to chose from when
+    starting.
+  * FIXED: 4790: Improvements made to Firefox startup in highly
+    concurrent environments.
+  * FIXED: 5045: Added support for fetching logs from SafariDriver.
+  * FIXED: 5652: Adding unhandled alert text to the exception message.
+
+WebDriver JS:
+  * FIXED: 5511: Implement
+    driver.manage().timeouts().pageLoadTimeout(ms) for WebDriverJs.
+  * FIXED: 5632: It's now possible to create a new session with
+    WebDriverJs when running in a browser.
+  * Add a WebDriverJs client to the SafariDriver's logging window so
+    it's possible to use WebDriver from the devtools REPL on that
+    page.
+
+Grid:
+
+  * Making "beta" console the default one, it's time to get out of
+    beta status
+  * Old console is now available at /grid/old/console/
+  * Addressed memory leaks caused by per-session logging.
+  * FIXED: 3001: Making Selenium the default protocol if a node was
+    started with "-role rc" option.
+  
+RC:
+  * FIXED: 3636: selenium.fireEvent works with the webdriver-backed
+     selenium and IE.
+  
 v2.32.0
 =======
 
@@ -5,19 +48,25 @@ WebDriver:
   This release supports Firefox verions: 10esr, 17esr, 19, 20
 
   * Let WindowsUtils.killPID() kill the whole process tree
-  * Implementing support for implicit "submit" button type in HtmlUnitDriver.
+  * Implementing support for implicit "submit" button type in
+    HtmlUnitDriver.
   * bug fix for python hang with 302 response
-  * Adding better support for SVG within Firefox. Has better scrolling to element and allows JavaScript execution
+  * Adding better support for SVG within Firefox. Has better scrolling
+    to element and allows JavaScript execution
   * Fixing case of "no active element" for HtmlUnitDriver
   * WindowsUtils.kill() fix on Windows 8
   * Updating HtmlUnit to 2.12 (and cssparser to 0.9.9)
-  * Fixing illegal negative timeout values for HtmlUnitDriver, zero means infinite wait
+  * Fixing illegal negative timeout values for HtmlUnitDriver, zero
+    means infinite wait
   * Implementing pageLoadTimeout in HtmlUnitDriver
-  * Allow users to specify a custom location for Safari's data directory using the "safari.dataDir" capability.
+  * Allow users to specify a custom location for Safari's data
+    directory using the "safari.dataDir" capability.
   * Fix for using DesiredCapabilities with WebDriverBackedSelenium
   * PhantomJS Driver bindings updated to 1.0.3
-  * Minimize the number of third party libraries used by the very heart of the remote webdriver server.
-  * fix issue where server was appending '?null' to all forwarded requests
+  * Minimize the number of third party libraries used by the very
+    heart of the remote webdriver server.
+  * fix issue where server was appending '?null' to all forwarded
+    requests
   * Issues fixed: 5293, 4902, 5283, 5278
 
 v2.31.0
