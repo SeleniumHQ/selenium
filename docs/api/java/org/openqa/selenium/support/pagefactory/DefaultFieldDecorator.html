@@ -101,7 +101,9 @@
 extends java.lang.Object
 implements <a href="../../../../../org/openqa/selenium/support/pagefactory/FieldDecorator.html" title="interface in org.openqa.selenium.support.pagefactory">FieldDecorator</a></pre>
 <div class="block">Default decorator for use with PageFactory. Will decorate 1) all of the
- WebElement fields and 2) List<WebElement> fields that have @FindBy or</div>
+ WebElement fields and 2) List<WebElement> fields that have @FindBy, @FindBys,
+ or @FindAll annotation with a proxy that locates the elements using the passed
+ in ElementLocatorFactory.</div>
 </li>
 </ul>
 </div>
