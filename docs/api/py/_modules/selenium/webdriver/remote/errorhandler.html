@@ -175,7 +175,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">exception_class</span> <span class="o">==</span> <span class="n">ErrorInResponseException</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">exception_class</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">exception_class</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
