@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>HtmlUnitDriver.JavaScriptResultsCollection</title>
+<title>FindAll</title>
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="HtmlUnitDriver.JavaScriptResultsCollection";
+        parent.document.title="FindAll";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.HtmlUnitWindow.html" title="class in org.openqa.selenium.htmlunit"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html" title="class in org.openqa.selenium.htmlunit"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/support/Colors.html" title="enum in org.openqa.selenium.support"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/htmlunit/HtmlUnitDriver.JavaScriptResultsCollection.html" target="_top">Frames</a></li>
-<li><a href="HtmlUnitDriver.JavaScriptResultsCollection.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/support/FindAll.html" target="_top">Frames</a></li>
+<li><a href="FindAll.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -58,16 +58,12 @@
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method_summary">Method</a></li>
+<li><a href="#annotation_type_required_element_summary">Required</a>&nbsp;|&nbsp;</li>
+<li>Optional</li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method_detail">Method</a></li>
+<li><a href="#annotation_type_element_detail">Element</a></li>
 </ul>
 </div>
 <a name="skip-navbar_top">
@@ -76,45 +72,49 @@
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">org.openqa.selenium.htmlunit</div>
-<h2 title="Interface HtmlUnitDriver.JavaScriptResultsCollection" class="title">Interface HtmlUnitDriver.JavaScriptResultsCollection</h2>
+<div class="subTitle">org.openqa.selenium.support</div>
+<h2 title="Annotation Type FindAll" class="title">Annotation Type FindAll</h2>
 </div>
 <div class="contentContainer">
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>Enclosing class:</dt>
-<dd><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a></dd>
-</dl>
 <hr>
 <br>
-<pre>protected static interface <span class="strong">HtmlUnitDriver.JavaScriptResultsCollection</span></pre>
+<pre>@Retention(value=RUNTIME)
+@Target(value=FIELD)
+public @interface <span class="strong">FindAll</span></pre>
+<div class="block">Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
+ It will then search for all elements that match any of the FindBy criteria. Note that elements
+ are not guaranteed to be in document order.
+
+ Eg:
+
+ <pre class="code">
+ &#64;FindAll({&#64;FindBy(how = How.ID, using = "foo"),
+           &#64;FindBy(className = "bar")})
+ </pre></div>
 </li>
 </ul>
 </div>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========== METHOD SUMMARY =========== -->
+<!-- =========== ANNOTATION TYPE REQUIRED MEMBER SUMMARY =========== -->
 <ul class="blockList">
-<li class="blockList"><a name="method_summary">
+<li class="blockList"><a name="annotation_type_required_element_summary">
 <!--   -->
 </a>
-<h3>Method Summary</h3>
-<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<h3>Required Element Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Required Element Summary table, listing required elements, and an explanation">
+<caption><span>Required Elements</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Method and Description</th>
+<th class="colLast" scope="col">Required Element and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.JavaScriptResultsCollection.html#getLength()">getLength</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>java.lang.Object</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.JavaScriptResultsCollection.html#item(int)">item</a></strong>(int&nbsp;index)</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support">FindBy</a>[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/support/FindAll.html#value()">value</a></strong></code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -125,28 +125,19 @@
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ METHOD DETAIL ========== -->
+<!-- ============ ANNOTATION TYPE MEMBER DETAIL =========== -->
 <ul class="blockList">
-<li class="blockList"><a name="method_detail">
+<li class="blockList"><a name="annotation_type_element_detail">
 <!--   -->
 </a>
-<h3>Method Detail</h3>
-<a name="getLength()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getLength</h4>
-<pre>int&nbsp;getLength()</pre>
-</li>
-</ul>
-<a name="item(int)">
+<h3>Element Detail</h3>
+<a name="value()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>item</h4>
-<pre>java.lang.Object&nbsp;item(int&nbsp;index)</pre>
+<h4>value</h4>
+<pre>public abstract&nbsp;<a href="../../../../org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support">FindBy</a>[]&nbsp;value</pre>
 </li>
 </ul>
 </li>
@@ -174,12 +165,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.HtmlUnitWindow.html" title="class in org.openqa.selenium.htmlunit"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html" title="class in org.openqa.selenium.htmlunit"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/support/Colors.html" title="enum in org.openqa.selenium.support"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/htmlunit/HtmlUnitDriver.JavaScriptResultsCollection.html" target="_top">Frames</a></li>
-<li><a href="HtmlUnitDriver.JavaScriptResultsCollection.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/support/FindAll.html" target="_top">Frames</a></li>
+<li><a href="FindAll.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -199,16 +190,12 @@
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method_summary">Method</a></li>
+<li><a href="#annotation_type_required_element_summary">Required</a>&nbsp;|&nbsp;</li>
+<li>Optional</li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method_detail">Method</a></li>
+<li><a href="#annotation_type_element_detail">Element</a></li>
 </ul>
 </div>
 <a name="skip-navbar_bottom">

@@ -212,12 +212,18 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setBinary(java.lang.String)">setBinary</a></strong>(java.lang.String&nbsp;path)</code>
+<div class="block">Sets the path to the Chrome executable.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setExperimentalOptions(java.lang.String, java.lang.Object)">setExperimentalOptions</a></strong>(java.lang.String&nbsp;name,
                       java.lang.Object&nbsp;value)</code>
 <div class="block">Sets an experimental option.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>org.json.JSONObject</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#toJson()">toJson</a></strong>()</code>
 <div class="block">Converts this instance to its JSON representation.</div>
@@ -289,6 +295,19 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>setBinary</h4>
 <pre>public&nbsp;void&nbsp;setBinary(java.io.File&nbsp;path)</pre>
+<div class="block">Sets the path to the Chrome executable. This path should exist on the
+ machine which will launch Chrome. The path should either be absolute or
+ relative to the location of running ChromeDriver server.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>path</code> - Path to Chrome executable.</dd></dl>
+</li>
+</ul>
+<a name="setBinary(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setBinary</h4>
+<pre>public&nbsp;void&nbsp;setBinary(java.lang.String&nbsp;path)</pre>
 <div class="block">Sets the path to the Chrome executable. This path should exist on the
  machine which will launch Chrome. The path should either be absolute or
  relative to the location of running ChromeDriver server.</div>

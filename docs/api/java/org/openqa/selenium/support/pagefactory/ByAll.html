@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>ByChained</title>
+<title>ByAll</title>
 <link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="ByChained";
+        parent.document.title="ByAll";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../org/openqa/selenium/support/pagefactory/ByAll.html" title="class in org.openqa.selenium.support.pagefactory"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultElementLocator.html" title="class in org.openqa.selenium.support.pagefactory"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/support/pagefactory/Annotations.html" title="class in org.openqa.selenium.support.pagefactory"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/support/pagefactory/ByChained.html" title="class in org.openqa.selenium.support.pagefactory"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../../index.html?org/openqa/selenium/support/pagefactory/ByChained.html" target="_top">Frames</a></li>
-<li><a href="ByChained.html" target="_top">No Frames</a></li>
+<li><a href="../../../../../index.html?org/openqa/selenium/support/pagefactory/ByAll.html" target="_top">Frames</a></li>
+<li><a href="ByAll.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
@@ -77,7 +77,7 @@
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="subTitle">org.openqa.selenium.support.pagefactory</div>
-<h2 title="Class ByChained" class="title">Class ByChained</h2>
+<h2 title="Class ByAll" class="title">Class ByAll</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
@@ -87,7 +87,7 @@
 <li><a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">org.openqa.selenium.By</a></li>
 <li>
 <ul class="inheritance">
-<li>org.openqa.selenium.support.pagefactory.ByChained</li>
+<li>org.openqa.selenium.support.pagefactory.ByAll</li>
 </ul>
 </li>
 </ul>
@@ -98,17 +98,17 @@
 <li class="blockList">
 <hr>
 <br>
-<pre>public class <span class="strong">ByChained</span>
+<pre>public class <span class="strong">ByAll</span>
 extends <a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a></pre>
-<div class="block">Mechanism used to locate elements within a document using a series of other lookups.  This class
- will find all DOM elements that matches each of the locators in sequence, e.g.
- 
+<div class="block">Mechanism used to locate elements within a document using a series of  lookups. This class will
+ find all DOM elements that matches any of the locators in sequence, e.g.
+
  <pre>
- driver.findElements(new ByChained(by1, by2))
+ driver.findElements(new ByAll(by1, by2))
  </pre>
- 
- will find all elements that match <var>by2</var> and appear under an element that matches
- <var>by1</var>.</div>
+
+ will find all elements that match <var>by1</var> and then all elements that match <var>by2</var>.
+ This means that the list of elements returned may not be in document order.</div>
 </li>
 </ul>
 </div>
@@ -142,7 +142,7 @@ extends <a href="../../../../../org/openqa/selenium/By.html" title="class in org
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/ByChained.html#ByChained(org.openqa.selenium.By...)">ByChained</a></strong>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>...&nbsp;bys)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/ByAll.html#ByAll(org.openqa.selenium.By...)">ByAll</a></strong>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>...&nbsp;bys)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -161,19 +161,19 @@ extends <a href="../../../../../org/openqa/selenium/By.html" title="class in org
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/ByChained.html#findElement(org.openqa.selenium.SearchContext)">findElement</a></strong>(<a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context)</code>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/ByAll.html#findElement(org.openqa.selenium.SearchContext)">findElement</a></strong>(<a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context)</code>
 <div class="block">Find a single element.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/ByChained.html#findElements(org.openqa.selenium.SearchContext)">findElements</a></strong>(<a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context)</code>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/ByAll.html#findElements(org.openqa.selenium.SearchContext)">findElements</a></strong>(<a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context)</code>
 <div class="block">Find many elements.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/ByChained.html#toString()">toString</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/pagefactory/ByAll.html#toString()">toString</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -204,13 +204,13 @@ extends <a href="../../../../../org/openqa/selenium/By.html" title="class in org
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="ByChained(org.openqa.selenium.By...)">
+<a name="ByAll(org.openqa.selenium.By...)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>ByChained</h4>
-<pre>public&nbsp;ByChained(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>...&nbsp;bys)</pre>
+<h4>ByAll</h4>
+<pre>public&nbsp;ByAll(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>...&nbsp;bys)</pre>
 </li>
 </ul>
 </li>
@@ -291,12 +291,12 @@ extends <a href="../../../../../org/openqa/selenium/By.html" title="class in org
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../org/openqa/selenium/support/pagefactory/ByAll.html" title="class in org.openqa.selenium.support.pagefactory"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../../org/openqa/selenium/support/pagefactory/DefaultElementLocator.html" title="class in org.openqa.selenium.support.pagefactory"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/support/pagefactory/Annotations.html" title="class in org.openqa.selenium.support.pagefactory"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/support/pagefactory/ByChained.html" title="class in org.openqa.selenium.support.pagefactory"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../../index.html?org/openqa/selenium/support/pagefactory/ByChained.html" target="_top">Frames</a></li>
-<li><a href="ByChained.html" target="_top">No Frames</a></li>
+<li><a href="../../../../../index.html?org/openqa/selenium/support/pagefactory/ByAll.html" target="_top">Frames</a></li>
+<li><a href="ByAll.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
