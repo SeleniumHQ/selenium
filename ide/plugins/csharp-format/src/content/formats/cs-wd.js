@@ -247,7 +247,8 @@ this.options = {
           '        \n' +
           '        [Test]\n' +
           '        public void ${methodName}()\n' +
-          '        {\n',
+          '        {\n'+
+          '            var mainWindow=driver.CurrentWindowHandle;\n' ,
   footer:
           '        }\n' +
           "        private bool IsElementPresent(By by)\n" +
@@ -275,6 +276,34 @@ this.options = {
           "                return false;\n" +
           "            }\n" +
           "        }\n" +
+          '        \n' +
+      	  '        private void waitForPopup(string title="null", int waitTime=30000)\n'+
+          "        {\n" +
+    		  '             waitTime = waitTime / 1000;\n'+
+    		  '             if (title == "null" || title.Length == 0)\n'+
+    		  "             {\n"+
+    		  "                int windowNum = driver.WindowHandles.Count;\n"+
+    		  "                for (int second = 0; second < 30; second++){\n" +
+    		  "                    Thread.Sleep(1000);\n"+
+    		  '                    if (second >= 5) break;\n' +
+    		  "                    if (driver.WindowHandles.Count > 1) break;//temporary\n" +
+    		  '                }\n'+
+    		  '                if (driver.WindowHandles.Count == 1)\n'+
+    		  '                    Assert.Fail("timeout waiting for popup");\n'+
+    		  "             }\n"+
+    		  "             else\n"+
+    		  "             {\n"+
+    		  "                for (int second = 0; second < waitTime; second++)\n"+
+    		  "                   {\n"+
+    		  '                      if (second >= waitTime) Assert.Fail("timeout waiting for popup");\n'+
+    		  "                      var windows = driver.WindowHandles;\n"+
+    		  "                      foreach (var window in windows)\n"+
+    		  "                         if (driver.SwitchTo().Window(window).Title == title)\n"+
+    		  "                             return;\n"+
+    		  "                      Thread.Sleep(1000);\n"+
+    		  "                   }\n"+
+    		  "             }\n"+
+    		  "        }\n"+
           '        \n' +
           "        private string CloseAlertAndGetItsText() {\n" +
           "            try {\n" +
@@ -412,7 +441,7 @@ WDAPI.Element.prototype.submit = function() {
   return this.ref + ".Submit()";
 };
 
-WDAPI.Element.prototype.select = function(label) {
+WDAPI.Element.prototype.select = function(selectLocator) {
   if (selectLocator.type == 'index') {
     return "new SelectElement(" + this.ref + ").SelectByIndex(" + selectLocator.string + ")";
   }
@@ -420,6 +449,16 @@ WDAPI.Element.prototype.select = function(label) {
     return "new SelectElement(" + this.ref + ").SelectByValue(" + xlateArgument(selectLocator.string) + ")";
   }
   return "new Select(" + this.ref + ").SelectByText(" + xlateArgument(selectLocator.string) + ")";
+};
+
+WDAPI.Element.prototype.deselect = function(selectLocator) {
+  if (selectLocator.type == 'index') {
+    return "new SelectElement(" + this.ref + ").DeselectByIndex(" + selectLocator.string + ")";
+  }
+  if (selectLocator.type == 'value') {
+    return "new SelectElement(" + this.ref + ").DeselectByValue(" + xlateArgument(selectLocator.string) + ")";
+  }
+  return "new SelectElement(" + this.ref + ").DeselectByText(" + xlateArgument(selectLocator.string) + ")";
 };
 
 WDAPI.ElementList = function(ref) {
@@ -438,6 +477,83 @@ WDAPI.ElementList.prototype.isEmpty = function() {
   return this.ref + ".Count == 0";
 };
 
+WDAPI.Element.prototype.contextMenu = function() {
+  return "new Actions(driver).ContextClick("+this.ref+").Perform()";
+};
+
+WDAPI.Driver.prototype.switchWindow = function(name) {
+  if(name=="null")
+    return this.ref + ".SwitchTo().Window(mainWindow)";
+  if(name=="last")
+	  return "windows=driver.WindowHandles;\n"+this.ref + ".SwitchTo().Window(windows[windows.Count-1])";
+  return "windowSwitch("+xlateArgument(name.split("=")[1])+")";
+};
+
+WDAPI.Driver.prototype.selectPopup = function(name) {
+  if(name=="null")
+	  return this.ref + ".SwitchTo().Window(driver.WindowHandles[driver.WindowHandles.Count-1])";
+  if(name=="")
+	  return this.ref + ".SwitchTo().Window(driver.WindowHandles[driver.WindowHandles.Count-1])";
+  return "windowSwitch("+xlateArgument(name.split("=")[1])+")";
+};
+
+WDAPI.Driver.prototype.switchFrame = function(name) {
+  if(name.split("=")[0]=="index")
+		return "driver.SwitchTo().Frame("+name.split("=")[1]+")";
+  return this.ref + ".SwitchTo().Frame("+xlateArgument(name)+")";
+};
+
+WDAPI.Element.prototype.SelectedOption = function() {
+  return new WDAPI.Element("new SelectElement("+this.ref + ").SelectedOption");
+};
+
+WDAPI.Element.prototype.location = function() {
+  return this.ref+".Location";
+};
+
+WDAPI.Element.prototype.getElementPositionTop = function() {
+  return this.ref+".Location.Y";
+};
+
+WDAPI.Element.prototype.MoveToElement = function() {
+  return "new Actions(driver).MoveToElement("+this.ref+").Perform()";
+};
+
+//in webdriver this uses coordinates
+WDAPI.Element.prototype.mouseDown = function() {
+   return "new Actions(driver).ClickAndHold("+this.ref+").Perform()";
+};
+
+WDAPI.Element.prototype.mouseUp = function() {
+   return "new Actions(driver).Release("+this.ref+").Perform()";
+};
+
+
+WDAPI.Element.prototype.dragAndDrop = function(Destination) {
+  return "new Actions(driver).DragAndDrop("+this.ref+","+Destination.ref+").Perform()";
+};
+
+WDAPI.Element.prototype.isEditable = function() {
+  return this.ref+".Enabled";
+};
+
+WDAPI.Element.prototype.doubleClick = function() {
+  return "new Actions(driver).DoubleClick("+this.ref+").Perform()";
+};
+
+WDAPI.Element.prototype.keyPress = function(keyPressed) {
+   if(keyPressed.indexOf("\\")!=-1)
+   {
+      keyPressed= keyPressed.substring(1,keyPressed.length);
+      return this.ref+".SendKeys(\"\"+Convert.ToChar("+keyPressed+"))";
+   }
+  return this.ref+".SendKeys(\""+keyPressed+"\")";
+};
+
+WDAPI.Element.prototype.dragAndDropOffset = function(offSet) {
+  return "new Actions(driver).DragAndDropToOffset("+this.ref+","+offSet[0]+","+offSet[1]+").Perform()";
+};
+
 WDAPI.Utils = function() {
 };
 
@@ -447,4 +563,26 @@ WDAPI.Utils.isElementPresent = function(how, what) {
 
 WDAPI.Utils.isAlertPresent = function() {
   return "IsAlertPresent()";
+};
+
+WDAPI.Utils.waitForPopup = function() {
+    return 'waitForPopup("null")';
+};
+
+WDAPI.Utils.getEval = function(evalu) {
+   return "(String)((IJavaScriptExecutor)driver).ExecuteScript("+xlateArgument(javaScriptFix(evalu))+")";
+};
+
+//Phase 2/6/2013 - Simply adds a return to javascript statements
+function javaScriptFix(sentence){
+  if(sentence.indexOf("return")!=-1)
+		return sentence;
+	var withoutSemi;
+	if(sentence.trim()[sentence.length-1]==";")
+		withoutSemi = sentence.trim().substring(0,sentence.length-1);
+	else
+		withoutSemi = sentence.trim();
+	var splitz = withoutSemi.split(';');
+	splitz[splitz.length-1]= "return ("+splitz[splitz.length-1]+'+"")';
+	return splitz.join(';')+';';
 };
