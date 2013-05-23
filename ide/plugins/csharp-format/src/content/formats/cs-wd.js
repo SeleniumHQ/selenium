@@ -566,7 +566,7 @@ WDAPI.Utils.isAlertPresent = function() {
 };
 
 WDAPI.Utils.waitForPopup = function() {
-    return 'waitForPopup("null")';
+    return 'waitForPopup("'+name+'")';
 };
 
 WDAPI.Utils.getEval = function(evalu) {
