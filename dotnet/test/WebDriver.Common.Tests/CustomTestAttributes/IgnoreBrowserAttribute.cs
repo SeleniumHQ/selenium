@@ -2,7 +2,7 @@ using System;
 
 namespace OpenQA.Selenium
 {
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class IgnoreBrowserAttribute : Attribute
     {
         private Browser browser;

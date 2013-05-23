@@ -36,25 +36,35 @@ namespace OpenQA.Selenium
             
             if (testMethod != null && testMethod.RunState == RunState.Runnable)
             {
+                List<Attribute> ignoreAttributes = new List<Attribute>();
                 Attribute[] ignoreAttr = Reflect.GetAttributes(member, IgnoreBrowserAttributeTypeFullName, true);
                 if (ignoreAttr != null)
                 {
-                    foreach (Attribute attr in ignoreAttr)
-                    {
-                        IgnoreBrowserAttribute browserToIgnoreAttr = attr as IgnoreBrowserAttribute;
-                        if (browserToIgnoreAttr != null && IgnoreTestForBrowser(browserToIgnoreAttr.Value))
-                        {
-                            string ignoreReason = "Ignoring browser " + EnvironmentManager.Instance.Browser.ToString() + ".";
-                            if (!string.IsNullOrEmpty(browserToIgnoreAttr.Reason))
-                            {
-                                ignoreReason = ignoreReason + " " + browserToIgnoreAttr.Reason;
-                            }
+                    ignoreAttributes.AddRange(ignoreAttr);
+                }
 
-                            test.RunState = RunState.Ignored;
-                            test.IgnoreReason = ignoreReason;
+                Attribute[] ignoreClassAttributes = Reflect.GetAttributes(member.DeclaringType, IgnoreBrowserAttributeTypeFullName, true);
+                if (ignoreClassAttributes != null)
+                {
+                    ignoreAttributes.AddRange(ignoreClassAttributes);
+                }
+
+                foreach (Attribute attr in ignoreAttributes)
+                {
+                    IgnoreBrowserAttribute browserToIgnoreAttr = attr as IgnoreBrowserAttribute;
+                    if (browserToIgnoreAttr != null && IgnoreTestForBrowser(browserToIgnoreAttr.Value))
+                    {
+                        string ignoreReason = "Ignoring browser " + EnvironmentManager.Instance.Browser.ToString() + ".";
+                        if (!string.IsNullOrEmpty(browserToIgnoreAttr.Reason))
+                        {
+                            ignoreReason = ignoreReason + " " + browserToIgnoreAttr.Reason;
                         }
+
+                        test.RunState = RunState.Ignored;
+                        test.IgnoreReason = ignoreReason;
                     }
                 }
+                
 
                 if (test.RunState == RunState.Runnable)
                 {
