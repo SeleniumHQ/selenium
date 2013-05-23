@@ -65,9 +65,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   BEGIN_MSG_MAP(Session)
     MESSAGE_HANDLER(WM_CREATE, OnCreate)
-    MESSAGE_HANDLER(WM_CLOSE, OnClose)
     MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
-    MESSAGE_HANDLER(WD_INIT, OnInit)
     MESSAGE_HANDLER(WD_SET_COMMAND, OnSetCommand)
     MESSAGE_HANDLER(WD_EXEC_COMMAND, OnExecCommand)
     MESSAGE_HANDLER(WD_GET_RESPONSE_LENGTH, OnGetResponseLength)
@@ -83,9 +81,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   END_MSG_MAP()
 
   LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-  LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-  LRESULT OnInit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnSetCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnExecCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnGetResponseLength(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);

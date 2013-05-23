@@ -76,14 +76,6 @@
 
 namespace webdriver {
 
-LRESULT IECommandExecutor::OnInit(UINT uMsg,
-                                  WPARAM wParam,
-                                  LPARAM lParam,
-                                  BOOL& bHandled) {
-  LOG(TRACE) << "Entering IECommandExecutor::OnInit";
-  return 0;
-}
-
 LRESULT IECommandExecutor::OnCreate(UINT uMsg,
                                     WPARAM wParam,
                                     LPARAM lParam,
@@ -136,24 +128,19 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   return 0;
 }
 
-LRESULT IECommandExecutor::OnClose(UINT uMsg,
-                                   WPARAM wParam,
-                                   LPARAM lParam,
-                                   BOOL& bHandled) {
-  LOG(TRACE) << "Entering IECommandExecutor::OnClose";
-  this->managed_elements_.Clear();
-  delete this->input_manager_;
-  this->DestroyWindow();
-  return 0;
-}
-
 LRESULT IECommandExecutor::OnDestroy(UINT uMsg,
                                      WPARAM wParam,
                                      LPARAM lParam,
                                      BOOL& bHandled) {
-  LOG(TRACE) << "Entering IECommandExecutor::OnDestroy";
+  LOG(DEBUG) << "Entering IECommandExecutor::OnDestroy";
 
+  LOG(DEBUG) << "Clearing managed element cache";
+  this->managed_elements_.Clear();
+  LOG(DEBUG) << "Closing input manager";
+  delete this->input_manager_;
+  LOG(DEBUG) << "Posting quit message";
   ::PostQuitMessage(0);
+  LOG(DEBUG) << "Leaving IECommandExecutor::OnDestroy";
   return 0;
 }
 
@@ -386,7 +373,7 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
   DWORD error = 0;
   HRESULT hr = ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
   if (FAILED(hr)) {
-    LOGHR(DEBUG, hr) << "COM library initialization has some problem";
+    LOGHR(DEBUG, hr) << "COM library initialization encountered an error";
   }
 
   IECommandExecutor new_session;
@@ -416,11 +403,25 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
   }
 
   // Run the message loop
-  while (::GetMessage(&msg, NULL, 0, 0) > 0) {
-    ::TranslateMessage(&msg);
-    ::DispatchMessage(&msg);
+  BOOL get_message_return_value;
+  while ((get_message_return_value = ::GetMessage(&msg, NULL, 0, 0)) != 0) {
+    if (get_message_return_value == -1) {
+      LOGERR(WARN) << "Windows GetMessage() API returned error";
+      break;
+    } else {
+      if (msg.message == WD_SHUTDOWN) {
+        LOG(DEBUG) << "Shutdown message received";
+        new_session.DestroyWindow();
+        LOG(DEBUG) << "Returned from DestroyWindow()";
+        break;
+      } else {
+        ::TranslateMessage(&msg);
+        ::DispatchMessage(&msg);
+      }
+    }
   }
 
+  LOG(DEBUG) << "Exited IECommandExecutor thread message loop";
   ::CoUninitialize();
   delete session_context;
   return 0;
