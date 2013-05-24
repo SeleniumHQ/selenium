@@ -26,8 +26,18 @@ class FirefoxBinary(object):
 
     NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
 
-    def __init__(self, firefox_path=None):
+    def __init__(self, firefox_path=None, log_file=None):
+        """
+        Creates a new instance of Firefox binary.
+
+        :Args:
+         - firefox_path - Path to the Firefox executable. By default, it will be detected from the standard locations.
+         - log_file - A file object to redirect the firefox process output to. It can be sys.stdout.
+                      Please note that with parallel run the output won't be synchronous.
+                      By default, it will be redirected to subprocess.PIPE.
+        """
         self._start_cmd = firefox_path
+        self._log_file = log_file or PIPE
         self.command_line = None
         if self._start_cmd is None:
             self._start_cmd = self._get_firefox_start_cmd()
@@ -69,11 +79,11 @@ class FirefoxBinary(object):
             for cli in self.command_line:
                 command.append(cli)
 
-        Popen(command, stdout=PIPE, stderr=STDOUT,
+        Popen(command, stdout=self._log_file, stderr=STDOUT,
               env=self._firefox_env).communicate()
         command[1] = '-foreground'
         self.process = Popen(
-            command, stdout=PIPE, stderr=STDOUT,
+            command, stdout=self._log_file, stderr=STDOUT,
             env=self._firefox_env)
 
     def _get_firefox_output(self):
