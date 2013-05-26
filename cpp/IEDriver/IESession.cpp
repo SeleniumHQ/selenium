@@ -155,11 +155,15 @@ void IESession::ShutDown(void) {
   DWORD thread_id = ::GetWindowThreadProcessId(this->executor_window_handle_,
                                                &process_id);
   HANDLE thread_handle = ::OpenThread(SYNCHRONIZE, FALSE, thread_id);
-  ::SendMessage(this->executor_window_handle_, WM_CLOSE, NULL, NULL);
+  LOG(DEBUG) << "Posting thread shutdown message";
+  ::PostThreadMessage(thread_id, WD_SHUTDOWN, NULL, NULL);
   if (thread_handle != NULL) {
-    DWORD wait_result = ::WaitForSingleObject(thread_handle, 30000);
+    LOG(DEBUG) << "Starting wait for thread completion";
+    DWORD wait_result = ::WaitForSingleObject(&thread_handle, 30000);
     if (wait_result != WAIT_OBJECT_0) {
       LOG(DEBUG) << "Waiting for thread to end returned " << wait_result;
+    } else {
+      LOG(DEBUG) << "Wait for thread handle complete";
     }
     ::CloseHandle(thread_handle);
   }

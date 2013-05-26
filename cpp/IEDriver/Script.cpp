@@ -415,7 +415,7 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
     }
     ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_SET_ARGUMENT, wparam, lparam);
   }
-  ::PostMessage(executor_handle, WD_EXECUTE_ASYNC_SCRIPT, NULL, NULL);
+  ::PostMessage(executor_handle, WD_ASYNC_SCRIPT_EXECUTE, NULL, NULL);
   // We will wait a short bit and poll for the execution of the script to be
   // complete. This will allow us to say synchronous for short-running scripts
   // like clearing an input element, yet still be able to continue processing

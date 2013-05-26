@@ -149,9 +149,14 @@ function Editor(window) {
     this.speedMaxInterval = parseInt(document.getElementById("speedSlider").getAttribute("maxpos"));
     this.initMenus();
 	this.app.initOptions();
+  this.pluginManager = this.app.pluginManager;
 	this.loadExtensions();
-	this.loadSeleniumAPI();
-	this.selectDefaultReference();
+  this.loadSeleniumAPI();
+  //TODO show plugin errors
+  if (this.pluginManager.errors.hasErrors()) {
+    this.showAlert("The following plugins were disabled due to errors while loading their code. See the Plugins section in the Selenium IDE Options dialog for individual plugin details.\n\n" + this.pluginManager.errors.getPluginIdsWithErrors().join("\n"));
+  }
+  this.selectDefaultReference();
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
         this.suiteTreeView = new SuiteTreeView(this, document.getElementById("suiteTree"));
@@ -932,7 +937,7 @@ Editor.prototype.toggleView = function(view) {
 Editor.prototype.showAlert = function(message) {
 	this.errorMessage = message;
 	//	window.alert(message);
-}
+};
 
 /*
  * Load default options.
@@ -940,7 +945,7 @@ Editor.prototype.showAlert = function(message) {
  */
 Editor.prototype.loadDefaultOptions = function() {
 	this.app.setOptions(Preferences.DEFAULT_OPTIONS);
-}
+};
 
 Editor.prototype.loadExtensions = function() {
 	const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
@@ -952,14 +957,25 @@ Editor.prototype.loadExtensions = function() {
 		}
 	}
 	//Samit: Enh: add support for plugin provided IDE extensions 
-	if (this.getOptions().pluginProvidedIDEExtensions) {
-		try {
-			ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().pluginProvidedIDEExtensions, window);
-		} catch (error) {
-			this.showAlert("error loading Selenium IDE extensions: " + error);
-		}
-	}
-}
+//	if (this.getOptions().pluginProvidedIDEExtensions) {
+//		try {
+//			ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().pluginProvidedIDEExtensions, window);
+//		} catch (error) {
+//			this.showAlert("error loading Selenium IDE extensions: " + error);
+//		}
+//	}
+  var pluginManager = this.pluginManager;
+  pluginManager.getEnabledIDEExtensions().forEach(function (plugin) {
+    for (var i = 0; i < plugin.code.length; i++) {
+      try {
+        ExtensionsLoader.loadSubScript(subScriptLoader, plugin.code[i], window);
+      } catch (error) {
+        pluginManager.setPluginError(plugin.id, plugin.code[i], error);
+        break;
+      }
+    }
+  });
+};
 
 Editor.prototype.loadSeleniumAPI = function() {
     // load API document
@@ -968,18 +984,18 @@ Editor.prototype.loadSeleniumAPI = function() {
     Command.apiDocuments = new Array(document);
     
     // load functions
-    this.seleniumAPI = {};
+    var seleniumAPI = {};
     
     const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
         .getService(Components.interfaces.mozIJSSubScriptLoader);
     
-    subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/scripts/selenium-api.js', this.seleniumAPI);
-    subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-api-override.js', this.seleniumAPI);
+    subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-core/scripts/selenium-api.js', seleniumAPI);
+    subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium-api-override.js', seleniumAPI);
 
     // user supplied extensions
     if (this.getOptions().userExtensionsURL) {
         try {
-            ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().userExtensionsURL, this.seleniumAPI);
+            ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().userExtensionsURL, seleniumAPI);
         } catch (error) {
             this.showAlert("Failed to load user-extensions.js!"
                 + "\nfiles=" + this.getOptions().userExtensionsURL
@@ -989,25 +1005,44 @@ Editor.prototype.loadSeleniumAPI = function() {
     }
 
     // plugin supplied extensions
-    var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions");
-    if (typeof pluginProvided != 'undefined' && pluginProvided.length != 0) {
-        try {
-            var split_pluginProvided = pluginProvided.split(",");
-            for(var sp = 0; sp < split_pluginProvided.length; sp++){
-                var js_url = split_pluginProvided[sp].split(";");
-                ExtensionsLoader.loadSubScript(subScriptLoader, js_url[0], this.seleniumAPI);
-                if (js_url[1] != 'undefined') {
-                  Command.apiDocuments.push(parser.parseFromString(FileUtils.readURL(js_url[1]), "text/xml"));
-                }
-            }
-        } catch (error) {
-            this.showAlert("Failed to load plugin provided js!"
-                + "\nfiles=" + pluginProvided
-                + "\nlineNumber=" + error.lineNumber
-                + "\nerror=" + error);
+//    var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedUserExtensions");
+//    if (typeof pluginProvided != 'undefined' && pluginProvided.length != 0) {
+//        try {
+//            var split_pluginProvided = pluginProvided.split(",");
+//            for(var sp = 0; sp < split_pluginProvided.length; sp++){
+//                var js_url = split_pluginProvided[sp].split(";");
+//                ExtensionsLoader.loadSubScript(subScriptLoader, js_url[0], this.seleniumAPI);
+//                if (js_url[1] != 'undefined') {
+//                  Command.apiDocuments.push(parser.parseFromString(FileUtils.readURL(js_url[1]), "text/xml"));
+//                }
+//            }
+//        } catch (error) {
+//            this.showAlert("Failed to load plugin provided js!"
+//                + "\nfiles=" + pluginProvided
+//                + "\nlineNumber=" + error.lineNumber
+//                + "\nerror=" + error);
+//        }
+//    }
+
+  var pluginManager = this.pluginManager;
+  pluginManager.getEnabledUserExtensions().forEach(function (plugin) {
+    for (var i = 0; i < plugin.code.length; i++) {
+      try {
+        var js_url = plugin.code[i].split(";");
+        ExtensionsLoader.loadSubScript(subScriptLoader, js_url[0], seleniumAPI);
+        if (js_url[1] != 'undefined') {
+          Command.apiDocuments.push(parser.parseFromString(FileUtils.readURL(js_url[1]), "text/xml"));
         }
+      } catch (error) {
+        pluginManager.setPluginError(plugin.id, plugin.code[i], error);
+        break;
+      }
     }
-}
+  });
+
+  this.seleniumAPI = seleniumAPI;
+
+};
 
 Editor.prototype.reload = function(){
 

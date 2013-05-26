@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.33.0.1
+=========
+ * Refactored session shutdown code to properly wait for thread termination.
+   Fixes issue #5543.
+
 v2.33.0.0
 =========
  * Release to synchronize with release of Selenium project.

@@ -188,16 +188,12 @@ var ExtensionsLoader = {
   getURLs: function(commaSeparatedPaths) {
     var urls = [];
     if (commaSeparatedPaths) {
-      commaSeparatedPaths.split(/,/).forEach(function(path) {
-          path = path.replace(/^\s*/, '');
-          path = path.replace(/\s*$/, '');
+      urls = commaSeparatedPaths.split(/,/).map(function(path) {
+          path = path.trim();
           if (!path.match(/^(file|chrome):/)) {
             path = FileUtils.fileURI(FileUtils.getFile(path));
           }
-          // force a reload of the extensions by adding the timestamp as parameter
-          var timestamp = new Date().getTime();
-          path = path + '?' + timestamp;
-          urls.push(path);
+          return path;
         });
     }
     return urls;
@@ -206,7 +202,8 @@ var ExtensionsLoader = {
   loadSubScript: function(loader, paths, obj) {
     this.getURLs(paths).forEach(function(url) {
         if (url) {
-          loader.loadSubScript(url, obj);
+          // force a reload of the extensions by adding the timestamp as parameter
+          loader.loadSubScript(url + '?' + new Date().getTime(), obj);
         }
       });
   }

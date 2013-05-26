@@ -108,6 +108,12 @@ limitations under the License.
         </hbox>
       </tabpanel>
       <tabpanel orient="vertical" id="pluginsPanel">
+        <hbox>
+          <vbox>
+            <checkbox id="disableBadPluginCode" label="&options.disableBadPluginCode.label;"/>
+            <checkbox id="disableBadPluginAddon" label="&options.disableBadPluginAddon.label;"/>
+          </vbox>
+        </hbox>
         <hbox flex="1">
           <hbox flex="1">
             <listbox id="plugin-list" onselect="updatePluginSelection()" flex="1" width="100"/>
