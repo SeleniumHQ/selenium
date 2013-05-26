@@ -1,9 +1,17 @@
-2.33.0 (???)
-============
+2.33.0 (2013-05-26)
+===================
 
 Remote:
   * Support rotating devices, such as iPhone & iPad in simulator and Android browser in emulator
   * Support for interacting with touch screen devices, such as iPhone & iPad in simulator and Android browser in emulator
+  * Improve error messages for invalid wire protocol responses 
+Chrome:
+  * Accept :service_log_path for Chrome. (#3475)
+IE: 
+  * IE >=9 versions triggerMouseEvent like other browsers (#2218).
+Various:
+  * Element#text ignores elements in <head>
+
 
 2.32.1 (2013-04-11)
 ===================
@@ -16,7 +24,7 @@ Safari:
 
 Safari:
   * The Safari extension is now packaged with the gem and automatically installed (#5322)
-  * Improved detection of the binary location on 64-bit windows (5273)
+  * Improved detection of the binary location on 64-bit windows (#5273)
 Opera:
   * Allow passing :desired_capabailities (#5279)
 Firefox:
