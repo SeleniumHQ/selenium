@@ -334,7 +334,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT},
+  @Ignore(value = {HTMLUNIT, OPERA},
       reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMovingMouseByRelativeOffset() {
@@ -401,7 +401,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NeedsFreshDriver
-  @Ignore(value = {HTMLUNIT}, reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {HTMLUNIT, OPERA}, reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMoveRelativeToBody() {
     if (!hasInputDevices()) {
