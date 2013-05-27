@@ -164,7 +164,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     // This test passes on IE. When running in Firefox on Windows, the test
     // will fail if the mouse cursor is not in the window. Solution: Maximize.
     if ((TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) &&
-        TestUtilities.isFirefox(driver)) {
+        TestUtilities.isFirefox(driver) && TestUtilities.isNativeEventsEnabled(driver)) {
       driver.manage().window().maximize();
     }
 
@@ -264,7 +264,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     // This test passes on IE. When running in Firefox on Windows, the test
     // will fail if the mouse cursor is not in the window. Solution: Maximize.
     if ((TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) &&
-        TestUtilities.isFirefox(driver)) {
+        TestUtilities.isFirefox(driver) && TestUtilities.isNativeEventsEnabled(driver)) {
       driver.manage().window().maximize();
     }
 
