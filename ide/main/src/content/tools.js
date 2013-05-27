@@ -203,7 +203,7 @@ var ExtensionsLoader = {
     this.getURLs(paths).forEach(function(url) {
         if (url) {
           // force a reload of the extensions by adding the timestamp as parameter
-          loader.loadSubScript(url + '?' + new Date().getTime(), obj);
+          loader.loadSubScript(url + '?' + new Date().getTime(), obj, 'UTF-8');
         }
       });
   }

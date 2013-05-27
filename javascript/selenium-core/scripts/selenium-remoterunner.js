@@ -577,6 +577,7 @@ function requireExtensionJs(sessionId) {
         scriptTag.type = 'text/javascript';
         scriptTag.src = src;
         scriptTag.id = src;
+        scriptTag.charset = 'UTF-8';
         var headTag = document.getElementsByTagName('head')[0];
         headTag.appendChild(scriptTag);
     }
