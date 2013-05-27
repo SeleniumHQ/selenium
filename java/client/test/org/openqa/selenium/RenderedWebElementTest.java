@@ -131,11 +131,6 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       return;
     }
 
-    if (!TestUtilities.isNativeEventsEnabled(driver)) {
-      System.out.println("Skipping hover test: needs native events");
-      return;
-    }
-
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("menu1"));
@@ -163,11 +158,6 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   @Test
   public void testHoverPersists() throws Exception {
     if (!hasInputDevices()) {
-      return;
-    }
-
-    if (!TestUtilities.isNativeEventsEnabled(driver)) {
-      System.out.println("Skipping hover test: needs native events");
       return;
     }
 
@@ -268,7 +258,6 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   @Ignore({OPERA, OPERA_MOBILE})
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     assumeTrue(hasInputDevices());
-    assumeTrue(TestUtilities.isNativeEventsEnabled(driver));
 
     driver.get(pages.javascriptPage);
 
@@ -332,10 +321,6 @@ public class RenderedWebElementTest extends JUnit4TestBase {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("menu1"));
-    if (!TestUtilities.isNativeEventsEnabled(driver)) {
-      System.out.println("Skipping hover test: needs native events");
-      return;
-    }
 
     new Actions(driver).moveToElement(element).build().perform();
 
@@ -353,10 +338,8 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMovingMouseByRelativeOffset() {
-    if (!hasInputDevices() || !TestUtilities.isNativeEventsEnabled(driver)) {
-      System.out.println(
-          String.format("Skipping move by offset test: native events %s has input devices: %s",
-            TestUtilities.isNativeEventsEnabled(driver), hasInputDevices()));
+    if (!hasInputDevices()) {
+      System.out.println("Skipping move by offset test: no input devices");
       return;
     }
 
@@ -379,10 +362,8 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMovingMouseToRelativeElementOffset() {
-    if (!hasInputDevices() || !TestUtilities.isNativeEventsEnabled(driver)) {
-      System.out.println(
-          String.format("Skipping move to offset test: native events %s has input devices: %s",
-            TestUtilities.isNativeEventsEnabled(driver), hasInputDevices()));
+    if (!hasInputDevices()) {
+      System.out.println("Skipping move to offset test: no input devices: %s");
       return;
     }
 
@@ -402,10 +383,8 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMovingMouseToRelativeZeroElementOffset() {
-    if (!hasInputDevices() || !TestUtilities.isNativeEventsEnabled(driver)) {
-      System.out.println(
-          String.format("Skipping move to offset test: native events %s has input devices: %s",
-            TestUtilities.isNativeEventsEnabled(driver), hasInputDevices()));
+    if (!hasInputDevices()) {
+      System.out.println("Skipping move to offset test: no input devices");
       return;
     }
 
@@ -425,10 +404,8 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   @Ignore(value = {HTMLUNIT}, reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMoveRelativeToBody() {
-    if (!hasInputDevices() || !TestUtilities.isNativeEventsEnabled(driver)) {
-      System.out.println(
-          String.format("Skipping move to offset test: native events %s has input devices: %s",
-            TestUtilities.isNativeEventsEnabled(driver), hasInputDevices()));
+    if (!hasInputDevices()) {
+      System.out.println(String.format("Skipping move to offset test: no input devices"));
       return;
     }
 

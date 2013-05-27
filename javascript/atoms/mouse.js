@@ -42,12 +42,13 @@ goog.require('goog.userAgent');
  * supports having one button pressed at a time.
  * @param {bot.Mouse.State=} opt_state The mouse's initial state.
  * @param {bot.Device.ModifiersState=} opt_modifiersState State of the keyboard.
+ * @param {bot.Device.EventEmitter=} opt_eventEmitter An object that should be used to fire events.
  *
  * @constructor
  * @extends {bot.Device}
  */
-bot.Mouse = function(opt_state, opt_modifiersState) {
-  goog.base(this, opt_modifiersState);
+bot.Mouse = function(opt_state, opt_modifiersState, opt_eventEmitter) {
+  goog.base(this, opt_modifiersState, opt_eventEmitter);
 
   /** @private {?bot.Mouse.Button} */
   this.buttonPressed_ = null;
@@ -258,7 +259,6 @@ bot.Mouse.prototype.pressButton = function(button) {
 
 /**
  * Releases the pressed mouse button. Throws exception if no button pressed.
- *
  */
 bot.Mouse.prototype.releaseButton = function() {
   if (goog.isNull(this.buttonPressed_)) {

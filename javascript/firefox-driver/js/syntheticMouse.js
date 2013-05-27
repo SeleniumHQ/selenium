@@ -20,6 +20,7 @@ goog.provide('SyntheticMouse');
 goog.require('Utils');
 goog.require('bot.ErrorCode');
 goog.require('bot.Mouse');
+goog.require('bot.Device.EventEmitter');
 goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('bot.events');
@@ -80,6 +81,15 @@ SyntheticMouse.prototype.getElement_ = function(coords) {
   return coords.auxiliary || this.lastElement;
 };
 
+
+SyntheticMouse.prototype.getMouse_ = function(opt_modifierKeys) {
+  if (!this.mouse) {
+    this.mouse = new bot.Mouse(null, opt_modifierKeys || this.modifierKeys, new SyntheticMouse.EventEmitter());
+  }
+  return this.mouse;
+};
+
+
 // wdIMouse
 
 SyntheticMouse.prototype.initialize = function(modifierKeys) {
@@ -88,57 +98,76 @@ SyntheticMouse.prototype.initialize = function(modifierKeys) {
 
 
 SyntheticMouse.prototype.move = function(target, xOffset, yOffset) {
-  // TODO(simon): find the current "body" element iff element == null
-  var element = target || this.lastElement;
-  this.lastElement = element;
-
+  fxdriver.logging.info('SyntheticMouse.move ' + target + ' ' + xOffset + ' ' + yOffset);
   xOffset = xOffset || 0;
   yOffset = yOffset || 0;
 
-  var doc = goog.dom.getOwnerDocument(element);
-  var win = goog.dom.getWindow(doc);
-  bot.setWindow(goog.dom.getWindow(doc));
-  var mouse = new bot.Mouse();
+  var element;
+  if (target) {
+    if (target.nodeType == goog.dom.NodeType.ELEMENT) {
+      element = target;
+    } else {
+      if (this.lastElement) {
+        // move to relative offset
+        element = this.lastElement;
+        xOffset = this.lastMousePosition.x + xOffset;
+        yOffset = this.lastMousePosition.y + yOffset;
+      } else {
+        // no previous element, move relative to viewport
+        element = Utils.getMainDocumentElement(target);
+        var bodyPos = goog.style.getClientPosition(element);
+        xOffset = xOffset - bodyPos.x;
+        yOffset = yOffset - bodyPos.y;
+      }
+    }
+  }
 
-  var inViewAfterScroll = bot.action.scrollIntoView(
-      element,
-      new goog.math.Coordinate(xOffset, yOffset));
+  var doc = goog.dom.getOwnerDocument(element);
+  bot.setWindow(goog.dom.getWindow(doc));
+
+  //var inViewAfterScroll = bot.action.scrollIntoView(
+  //    element,
+  //    new goog.math.Coordinate(xOffset, yOffset));
   // Check to see if the given positions and offsets are outside of the window
   // Are we about to be dragged out of the window?
 
-  var isOption = bot.dom.isElement(element, goog.dom.TagName.OPTION);
-  var isSVG = Utils.isSVG(element.ownerDocument);
+  //var isOption = bot.dom.isElement(element, goog.dom.TagName.OPTION);
+  //var isSVG = Utils.isSVG(element.ownerDocument);
 
-  if (!isOption && !isSVG && !inViewAfterScroll) {
-    return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-        'Element cannot be scrolled into view:' + element);
-  }
+  //if (!isOption && !isSVG && !inViewAfterScroll) {
+  //  return SyntheticMouse.newResponse(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
+  //      'Element cannot be scrolled into view:' + element);
+  //}
 
   var xCompensate = 0;
   var yCompensate = 0;
   if (this.isButtonPressed) {
     // See the comment on the viewPortOffset field for why this is necessary.
-    var doc = goog.dom.getOwnerDocument(element);
     var scrollOffset = goog.dom.getDomHelper(doc).getDocumentScroll();
     xCompensate = (scrollOffset.x - this.viewPortOffset.x) * 2;
     yCompensate = (scrollOffset.y - this.viewPortOffset.y) * 2;
+    fxdriver.logging.info('xCompensate = ' + xCompensate + ' yCompensate = ' + yCompensate);
   }
 
   var coords =
       new goog.math.Coordinate(xOffset + xCompensate, yOffset + yCompensate);
 
-  mouse.move(element, coords);
+  fxdriver.logging.info('Calling mouse.move with: ' + coords.x + ', ' + coords.y + ', ' + element);
+  this.getMouse_().move(element, coords);
+
+  this.lastElement = element;
+  this.lastMousePosition = coords;
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
 };
 
 
 SyntheticMouse.prototype.click = function(target) {
+  fxdriver.logging.info('SyntheticMouse.click ' + target);
 
   // No need to unwrap the target. All information is provided by the wrapped
   // version, and unwrapping does not work for all firefox versions.
   var element = target ? target : this.lastElement;
-
   var error = this.isElementShown(element);
   if (error) {
     return error;
@@ -154,7 +183,7 @@ SyntheticMouse.prototype.click = function(target) {
     }
 
     if (parent && parent.tagName.toLowerCase() == 'select' && !parent.multiple) {
-      bot.action.click(parent);
+      bot.action.click(parent, undefined /* coords */);
     }
   }
 
@@ -167,91 +196,106 @@ SyntheticMouse.prototype.click = function(target) {
     keyboardState.setPressed(bot.Device.Modifier.META, this.modifierKeys.isMetaPressed());
   }
 
-  var mouseWithKeyboardState = new bot.Mouse(null, keyboardState);
+  bot.action.click(element, undefined /* coords */, new bot.Mouse(null, keyboardState));
 
-  bot.action.click(element, undefined /* coords */, mouseWithKeyboardState);
+  this.lastElement = element;
+
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
 };
 
 SyntheticMouse.prototype.contextClick = function(target) {
+  fxdriver.logging.info('SyntheticMouse.contextClick ' + target);
 
   // No need to unwrap the target. All information is provided by the wrapped
   // version, and unwrapping does not work for all firefox versions.
   var element = target ? target : this.lastElement;
-
   var error = this.isElementShown(element);
   if (error) {
     return error;
   }
 
   fxdriver.logging.info('About to do a bot.action.rightClick on ' + element);
-  bot.action.rightClick(element);
+  bot.action.rightClick(element, undefined /* coords */);
+
+  this.lastElement = element;
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
 };
 
 SyntheticMouse.prototype.doubleClick = function(target) {
-  var element = target ? target : this.lastElement;
+  fxdriver.logging.info('SyntheticMouse.doubleClick ' + target);
 
+  var element = target ? target : this.lastElement;
   var error = this.isElementShown(element);
   if (error) {
     return error;
   }
 
   fxdriver.logging.info('About to do a bot.action.doubleClick on ' + element);
-  bot.action.doubleClick(element);
+  bot.action.doubleClick(element, undefined /* coords */);
+
+  this.lastElement = element;
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
 };
 
 
 SyntheticMouse.prototype.down = function(coordinates) {
+  fxdriver.logging.info('SyntheticMouse.down ' + coordinates);
+
   var element = this.getElement_(coordinates);
 
-  var pos = goog.style.getClientPosition(element);
+  this.getMouse_().pressButton(bot.Mouse.Button.LEFT);
 
   this.isButtonPressed = true;
   var doc = goog.dom.getOwnerDocument(element);
-  var scrollOffset =
-      goog.dom.getDomHelper(doc).getDocumentScroll();
-  this.viewPortOffset = scrollOffset;
+  this.viewPortOffset = goog.dom.getDomHelper(doc).getDocumentScroll();
 
   // TODO(simon): This implementation isn't good enough. Again
   // Defaults to left mouse button, which is right.
-  this.buttonDown = bot.Mouse.Button.LEFT;
-  var botCoords = {
-    'clientX': coordinates['x'] + pos.x,
-    'clientY': coordinates['y'] + pos.y,
-    'button': bot.Mouse.Button.LEFT
-  };
-  this.addEventModifierKeys(botCoords);
-  bot.events.fire(element, bot.events.EventType.MOUSEDOWN, botCoords);
+  //this.buttonDown = bot.Mouse.Button.LEFT;
+  //var botCoords = {
+  //  'clientX': coordinates['x'] + pos.x,
+  //  'clientY': coordinates['y'] + pos.y,
+  //  'button': bot.Mouse.Button.LEFT
+  //};
+  //this.addEventModifierKeys(botCoords);
+  //bot.events.fire(element, bot.events.EventType.MOUSEDOWN, botCoords);
+
+  this.lastElement = element;
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
 };
 
 
 SyntheticMouse.prototype.up = function(coordinates) {
+  fxdriver.logging.info('SyntheticMouse.up ' + coordinates);
+
   var element = this.getElement_(coordinates);
 
-  var pos = goog.style.getClientPosition(element);
+  this.getMouse_().releaseButton();
+
+  //var doc = goog.dom.getOwnerDocument(element);
+  //var pos = goog.style.getClientPosition(element);
 
   // TODO(simon): This implementation isn't good enough. Again
   // Defaults to left mouse button, which is the correct one.
-  var button = this.buttonDown;
-  var botCoords = {
-    'clientX': coordinates['x'] + pos.x,
-    'clientY': coordinates['y'] + pos.y,
-    'button': button
-  };
-  this.addEventModifierKeys(botCoords);
-  bot.events.fire(element, bot.events.EventType.MOUSEMOVE, botCoords);
-  bot.events.fire(element, bot.events.EventType.MOUSEUP, botCoords);
+  //var button = this.buttonDown;
+  //var botCoords = {
+  //  'clientX': coordinates['x'] + pos.x,
+  //  'clientY': coordinates['y'] + pos.y,
+  //  'button': button
+  //};
+  //this.addEventModifierKeys(botCoords);
+  //bot.events.fire(element, bot.events.EventType.MOUSEMOVE, botCoords);
+  //bot.events.fire(element, bot.events.EventType.MOUSEUP, botCoords);
 
   this.buttonDown = null;
   this.isButtonPressed = false;
   this.viewPortOffset.x = 0;
   this.viewPortOffset.y = 0;
+
+  this.lastElement = element;
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
 };
@@ -264,6 +308,137 @@ SyntheticMouse.prototype.addEventModifierKeys = function(botCoords) {
     botCoords.metaKey = this.modifierKeys.isMetaPressed();
     botCoords.shiftKey = this.modifierKeys.isShiftPressed();
   }
+};
+
+
+/**
+ * Fires events using nsIDOMWindowUtils
+ *
+ * @constructor
+ * @extends {bot.Device.EventEmitter}
+ */
+SyntheticMouse.EventEmitter = function() {
+  goog.base(this);
+};
+goog.inherits(SyntheticMouse.EventEmitter, bot.Device.EventEmitter);
+
+
+/**
+ * Parse the key modifier flags from aEvent. Used to share code between
+ * synthesizeMouse and synthesizeKey.
+ */
+SyntheticMouse.EventEmitter.prototype._parseModifiers = function(event) {
+  var masks = Components.interfaces.nsIDOMNSEvent;
+  var mval = 0;
+  if (event.shiftKey)
+    mval |= masks.SHIFT_MASK;
+  if (event.ctrlKey)
+    mval |= masks.CONTROL_MASK;
+  if (event.altKey)
+    mval |= masks.ALT_MASK;
+  if (event.metaKey)
+    mval |= masks.META_MASK;
+  if (event.accelKey)
+    mval |= (navigator.platform.indexOf("Mac") >= 0) ? masks.META_MASK :
+            masks.CONTROL_MASK;
+
+  return mval;
+};
+
+
+SyntheticMouse.EventEmitter.prototype._getDOMWindowUtils = function(aWindow) {
+  if (!aWindow) {
+    aWindow = window;
+  }
+
+  //TODO: this is assuming we are in chrome space
+  return aWindow.QueryInterface(Components.interfaces.nsIInterfaceRequestor).
+      getInterface(Components.interfaces.nsIDOMWindowUtils);
+};
+
+
+/**
+ * Fires an HTML event given the state of the device.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type HTML Event type.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+SyntheticMouse.EventEmitter.prototype.fireHtmlEvent = function(target, type) {
+  return bot.events.fire(target, type);
+};
+
+
+/**
+ * Fires a keyboard event given the state of the device and the given arguments.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type Keyboard event type.
+ * @param {bot.events.KeyboardArgs} args Keyboard event arguments.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+SyntheticMouse.EventEmitter.prototype.fireKeyboardEvent = function(target, type, args) {
+  var doc = goog.dom.getOwnerDocument(target);
+  var wind = goog.dom.getWindow(doc);
+  var utils = this._getDOMWindowUtils(wind);
+  var modifiers = this._parseModifiers(args);
+  utils.sendKeyEvent(type, args.keyCode, args.charCode, modifiers);
+  return true;
+};
+
+
+/**
+ * Fires a mouse event given the state of the device and the given arguments.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type Mouse event type.
+ * @param {bot.events.MouseArgs} args Mouse event arguments.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+SyntheticMouse.EventEmitter.prototype.fireMouseEvent = function(target, type, args) {
+  fxdriver.logging.info('Calling fireMouseEvent ' + type + ' ' + args.clientX + ', ' + args.clientY + ', ' + target);
+  if (type == 'click') {
+    // A click event will be automatically fired as a result of a mousedown and mouseup in sequence
+    return true;
+  }
+  var doc = goog.dom.getOwnerDocument(target);
+  var wind = goog.dom.getWindow(doc);
+  var utils = this._getDOMWindowUtils(wind);
+  var modifiers = this._parseModifiers(args);
+  utils.sendMouseEventToWindow(type, Math.round(args.clientX), Math.round(args.clientY), args.button, 1, modifiers);
+  fxdriver.logging.info('Called fireMouseEvent ' + type + ' ' + args.clientX + ', ' + args.clientY + ', ' + target);
+  return true;
+};
+
+
+/**
+ * Fires a mouse event given the state of the device and the given arguments.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type Touch event type.
+ * @param {bot.events.TouchArgs} args Touch event arguments.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+SyntheticMouse.EventEmitter.prototype.fireTouchEvent = function(target, type, args) {
+  return bot.events.fire(target, type, args);
+};
+
+
+/**
+ * Fires an MSPointer event given the state of the device and the given arguments.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type MSPointer event type.
+ * @param {bot.events.MSPointerArgs} args MSPointer event arguments.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+SyntheticMouse.EventEmitter.prototype.fireMSPointerEvent = function(target, type, args) {
+  return bot.events.fire(target, type, args);
 };
 
 

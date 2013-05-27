@@ -1117,12 +1117,13 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   //     the mouse is released.
 
   var doc = respond.session.getDocument();
+  var coords = fxdriver.events.buildCoordinates(parameters, doc);
 
   // Fast path first
   if (!this.enableNativeEvents) {
-    var target = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
-    fxdriver.logging.info('Calling move with: ' + parameters['xoffset'] + ', ' + parameters['yoffset'] + ', ' + target);
-    var result = this.mouse.move(target, parameters['xoffset'], parameters['yoffset']);
+    var target = coords.auxiliary || doc;
+    fxdriver.logging.info('Calling move with: ' + coords.x + ', ' + coords.y + ', ' + target);
+    var result = this.mouse.move(target, coords.x, coords.y);
     this.sendResponseFromSyntheticMouse_(result, respond);
 
     return;
@@ -1195,22 +1196,23 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
   };
 
-  var coords = fxdriver.events.buildCoordinates(parameters, doc);
   mouseMoveTo(coords, this.enableNativeEvents, this.jsTimer);
 
   respond.send();
 };
 
 FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
+  var doc = respond.session.getDocument();
+
   if (!this.enableNativeEvents) {
-    var coords = fxdriver.utils.newCoordinates(null, 0, 0);
+    var coords = fxdriver.events.buildCoordinates(parameters, doc);
+    fxdriver.logging.info('Calling down with: ' + coords.x + ', ' + coords.y + ', ' + coords.auxiliary);
     var result = this.mouse.down(coords);
 
     this.sendResponseFromSyntheticMouse_(result, respond);
     return;
   }
 
-  var doc = respond.session.getDocument();
   var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
 
   var nativeMouse = Utils.getNativeMouse();
@@ -1238,15 +1240,17 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
 };
 
 FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
+  var doc = respond.session.getDocument();
+
   if (!this.enableNativeEvents) {
-    var coords = fxdriver.utils.newCoordinates(null, 0, 0);
+    var coords = fxdriver.events.buildCoordinates(parameters, doc);
+    fxdriver.logging.info('Calling up with: ' + coords.x + ', ' + coords.y + ', ' + coords.auxiliary);
     var result = this.mouse.up(coords);
 
     this.sendResponseFromSyntheticMouse_(result, respond);
     return;
   }
 
-  var doc = respond.session.getDocument();
   var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
 
   var nativeMouse = Utils.getNativeMouse();

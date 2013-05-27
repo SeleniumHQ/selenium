@@ -19,6 +19,7 @@
  */
 
 goog.provide('bot.Device');
+goog.provide('bot.Device.EventEmitter');
 
 goog.require('bot');
 goog.require('bot.dom');
@@ -36,10 +37,11 @@ goog.require('goog.userAgent.product');
  * A Device class that provides common functionality for input devices.
  * @param {bot.Device.ModifiersState=} opt_modifiersState state of modifier
  * keys. The state is shared, not copied from this parameter.
+ * @param {bot.Device.EventEmitter=} opt_eventEmitter An object that should be used to fire events.
  *
  * @constructor
  */
-bot.Device = function(opt_modifiersState) {
+bot.Device = function(opt_modifiersState, opt_eventEmitter) {
   /**
    * Element being interacted with.
    * @private {!Element}
@@ -64,6 +66,8 @@ bot.Device = function(opt_modifiersState) {
    * @protected
    */
   this.modifiersState = opt_modifiersState || new bot.Device.ModifiersState();
+
+  this.eventEmitter = opt_eventEmitter || new bot.Device.EventEmitter();
 };
 
 
@@ -105,7 +109,7 @@ bot.Device.prototype.setElement = function(element) {
  * @protected
  */
 bot.Device.prototype.fireHtmlEvent = function(type) {
-  return bot.events.fire(this.element_, type);
+  return this.eventEmitter.fireHtmlEvent(this.element_, type);
 };
 
 
@@ -119,7 +123,7 @@ bot.Device.prototype.fireHtmlEvent = function(type) {
  * @protected
  */
 bot.Device.prototype.fireKeyboardEvent = function(type, args) {
-  return bot.events.fire(this.element_, type, args);
+  return this.eventEmitter.fireKeyboardEvent(this.element_, type, args);
 };
 
 
@@ -165,7 +169,7 @@ bot.Device.prototype.fireMouseEvent = function(type, coord, button,
 
   var target = this.select_ ?
       this.getTargetOfOptionMouseEvent_(type) : this.element_;
-  return target ? bot.events.fire(target, type, args) : true;
+  return target ? this.eventEmitter.fireMouseEvent(target, type, args) : true;
 };
 
 
@@ -222,7 +226,7 @@ bot.Device.prototype.fireTouchEvent = function(type, id, coord, opt_id2,
     addTouch(opt_id2, opt_coord2);
   }
 
-  return bot.events.fire(this.element_, type, args);
+  return this.eventEmitter.fireTouchEvent(this.element_, type, args);
 };
 
 
@@ -279,7 +283,7 @@ bot.Device.prototype.fireMSPointerEvent = function(type, coord, button,
 
   var target = this.select_ ?
       this.getTargetOfOptionMouseEvent_(type) : this.element_;
-  return target ? bot.events.fire(target, type, args) : true;
+  return target ? this.eventEmitter.fireMSPointerEvent(target, type, args) : true;
 };
 
 
@@ -829,4 +833,82 @@ bot.Device.ModifiersState.prototype.isAltPressed = function() {
  */
 bot.Device.ModifiersState.prototype.isMetaPressed = function() {
   return this.isPressed(bot.Device.Modifier.META);
+};
+
+
+/**
+ * Fires events, a driver can replace it with a custom implementation
+ *
+ * @constructor
+ */
+bot.Device.EventEmitter = function() {
+};
+
+
+/**
+ * Fires an HTML event given the state of the device.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type HTML Event type.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+bot.Device.EventEmitter.prototype.fireHtmlEvent = function(target, type) {
+  return bot.events.fire(target, type);
+};
+
+
+/**
+ * Fires a keyboard event given the state of the device and the given arguments.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type Keyboard event type.
+ * @param {bot.events.KeyboardArgs} args Keyboard event arguments.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+bot.Device.EventEmitter.prototype.fireKeyboardEvent = function(target, type, args) {
+  return bot.events.fire(target, type, args);
+};
+
+
+/**
+ * Fires a mouse event given the state of the device and the given arguments.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type Mouse event type.
+ * @param {bot.events.MouseArgs} args Mouse event arguments.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+bot.Device.EventEmitter.prototype.fireMouseEvent = function(target, type, args) {
+  return bot.events.fire(target, type, args);
+};
+
+
+/**
+ * Fires a mouse event given the state of the device and the given arguments.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type Touch event type.
+ * @param {bot.events.TouchArgs} args Touch event arguments.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+bot.Device.EventEmitter.prototype.fireTouchEvent = function(target, type, args) {
+  return bot.events.fire(target, type, args);
+};
+
+
+/**
+ * Fires an MSPointer event given the state of the device and the given arguments.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type MSPointer event type.
+ * @param {bot.events.MSPointerArgs} args MSPointer event arguments.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+bot.Device.EventEmitter.prototype.fireMSPointerEvent = function(target, type, args) {
+  return bot.events.fire(target, type, args);
 };

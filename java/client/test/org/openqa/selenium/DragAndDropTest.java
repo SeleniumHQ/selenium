@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -54,7 +55,7 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  public void testDragAndDrop() {
+  public void testDragAndDropRelative() {
     if (Platform.getCurrent().is(Platform.MAC)) {
       System.out.println("Skipping testDragAndDrop on Mac: See issue 2281.");
       return;
@@ -119,6 +120,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Ignore({CHROME, IE, OPERA, PHANTOMJS})
   @Test
   public void testDragTooFar() {
+    assumeTrue(TestUtilities.isNativeEventsEnabled(driver));
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
 
