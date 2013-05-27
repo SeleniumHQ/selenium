@@ -72,15 +72,24 @@ safaridriver.logging.ForwardingHandler.prototype.captureConsoleOutput =
   }
   this.captureConsole_ = true;
 
-  var target = this.target_;
-  console.debug = wrap(console.debug, webdriver.logging.Level.DEBUG);
-  console.error = wrap(console.error, webdriver.logging.Level.SEVERE);
-  console.group = wrap(console.group, webdriver.logging.Level.INFO);
-  console.info = wrap(console.info, webdriver.logging.Level.INFO);
-  console.log = wrap(console.log, webdriver.logging.Level.INFO);
-  console.warn = wrap(console.warn, webdriver.logging.Level.WARNING);
+  if (!window.console) {
+    return;
+  }
 
-  function wrap(nativeFn, level) {
+  var target = this.target_;
+  wrap('debug', webdriver.logging.Level.DEBUG);
+  wrap('error', webdriver.logging.Level.SEVERE);
+  wrap('group', webdriver.logging.Level.INFO);
+  wrap('info', webdriver.logging.Level.INFO);
+  wrap('log', webdriver.logging.Level.INFO);
+  wrap('warn', webdriver.logging.Level.WARNING);
+
+  function wrap(fnName, level) {
+    var nativeFn = console[fnName];
+    if (!nativeFn) {
+      return;
+    }
+
     var fn = function() {
       var args = goog.array.slice(arguments, 0);
       var message = new safaridriver.message.Log([
@@ -90,10 +99,12 @@ safaridriver.logging.ForwardingHandler.prototype.captureConsoleOutput =
       message.send(target);
       return nativeFn.apply(console, arguments);
     };
+
     fn.toString = function() {
       return nativeFn.toString();
     };
-    return fn;
+
+    console[fnName] = fn;
   }
 };
 
