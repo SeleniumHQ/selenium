@@ -67,7 +67,7 @@ module CrazyFunJava
       :classpath => 'third_party/java/jarjar/jarjar-1.4.jar'
       ant.taskdef :resource  => 'testngtasks' do |t|
         t.classpath do |cp|
-          cp.pathelement :location => 'third_party/java/testng/testng-6.8.jar'
+          cp.pathelement :location => 'third_party/java/testng/testng-6.8.5.jar'
           cp.pathelement :location => 'third_party/java/jcommander/jcommander-1.29.jar'
           cp.pathelement :location => 'third_party/java/beanshell/bsh-1.3.0.jar'
         end
