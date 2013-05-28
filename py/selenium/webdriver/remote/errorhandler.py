@@ -32,6 +32,12 @@ from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import MoveTargetOutOfBoundsException
 
+try:
+    basestring
+except NameError:  # Python 3.x
+    basestring = str
+
+
 class ErrorCode(object):
     """
     Error codes defined in the WebDriver wire protocol.
