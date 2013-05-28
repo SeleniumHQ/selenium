@@ -127,9 +127,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers. Firefox: hover is broken again.")
   @Test
   public void testShouldAllowUsersToHoverOverElements() {
-    if (!hasInputDevices()) {
-      return;
-    }
+    assumeTrue(hasInputDevices());
 
     driver.get(pages.javascriptPage);
 
@@ -157,9 +155,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testHoverPersists() throws Exception {
-    if (!hasInputDevices()) {
-      return;
-    }
+    assumeTrue(hasInputDevices());
 
     // This test passes on IE. When running in Firefox on Windows, the test
     // will fail if the mouse cursor is not in the window. Solution: Maximize.
@@ -203,9 +199,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   @NeedsLocalEnvironment
   @Test
   public void testPersistentHoverCanBeTurnedOff() throws Exception {
-    if (!hasInputDevices()) {
-      return;
-    }
+    assumeTrue(hasInputDevices());
 
     assumeTrue(TestUtilities.isInternetExplorer(driver));
     // Destroy the previous driver to make sure the hovering thread is
@@ -314,9 +308,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
-    if (!hasInputDevices()) {
-      return;
-    }
+    assumeTrue(hasInputDevices());
 
     driver.get(pages.javascriptPage);
 
@@ -338,10 +330,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMovingMouseByRelativeOffset() {
-    if (!hasInputDevices()) {
-      System.out.println("Skipping move by offset test: no input devices");
-      return;
-    }
+    assumeTrue(hasInputDevices());
 
     driver.get(pages.mouseTrackerPage);
 
@@ -362,10 +351,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMovingMouseToRelativeElementOffset() {
-    if (!hasInputDevices()) {
-      System.out.println("Skipping move to offset test: no input devices: %s");
-      return;
-    }
+    assumeTrue(hasInputDevices());
 
     driver.get(pages.mouseTrackerPage);
 
@@ -383,10 +369,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
       reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMovingMouseToRelativeZeroElementOffset() {
-    if (!hasInputDevices()) {
-      System.out.println("Skipping move to offset test: no input devices");
-      return;
-    }
+    assumeTrue(hasInputDevices());
 
     driver.get(pages.mouseTrackerPage);
 
@@ -404,10 +387,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   @Ignore(value = {HTMLUNIT, OPERA}, reason = "Advanced mouse actions only implemented in rendered browsers")
   @Test
   public void testMoveRelativeToBody() {
-    if (!hasInputDevices()) {
-      System.out.println(String.format("Skipping move to offset test: no input devices"));
-      return;
-    }
+    assumeTrue(hasInputDevices());
 
     try {
       driver.get(pages.mouseTrackerPage);

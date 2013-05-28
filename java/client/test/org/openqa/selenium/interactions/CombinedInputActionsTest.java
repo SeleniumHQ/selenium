@@ -31,6 +31,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -59,11 +60,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testClickingOnFormElements() {
-    if (!isNativeEventsEnabled(driver) || (!getEffectivePlatform().is(Platform.LINUX))) {
-      System.out.println("Skipping testClickingOnFormElements: Only works with native events" +
-          " on Linux.");
-      return;
-    }
+    assumeTrue("Only works with native events on Linux",
+               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
+
     driver.get(pages.formSelectionPage);
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
@@ -90,11 +89,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore({ANDROID, IE, REMOTE, IPHONE, OPERA})
   @Test
   public void testSelectingMultipleItems() {
-    if (!isNativeEventsEnabled(driver) || (!getEffectivePlatform().is(Platform.LINUX))) {
-      System.out.println("Skipping testClickingOnFormElements: Only works with native events" +
-          " on Linux.");
-      return;
-    }
+    assumeTrue("Only works with native events on Linux",
+               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
 
     driver.get(pages.selectableItemsPage);
 
@@ -227,11 +223,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore({HTMLUNIT, OPERA, IE})
   @Test
   public void testCombiningShiftAndClickResultsInANewWindow() {
-    if (!isNativeEventsEnabled(driver) || (!getEffectivePlatform().is(Platform.LINUX))) {
-      System.out.println("Skipping testCombiningShiftAndClickResultsInANewWindow: " +
-          "Only works with native events on Linux.");
-      return;
-    }
+    assumeTrue("Only works with native events on Linux",
+               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
 
     driver.get(pages.linkedImage);
     WebElement link = driver.findElement(By.id("link"));
@@ -253,11 +246,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE, IPHONE, IE})
   @Test
   public void testHoldingDownShiftKeyWhileClicking() {
-    if (!isNativeEventsEnabled(driver) || (!getEffectivePlatform().is(Platform.LINUX))) {
-      System.out.println("Skipping testHoldingDownShiftKeyWhileClicking: " +
-          "Only works with native events on Linux.");
-      return;
-    }
+    assumeTrue("Only works with native events on Linux",
+               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
 
     driver.get(pages.clickEventPage);
 
