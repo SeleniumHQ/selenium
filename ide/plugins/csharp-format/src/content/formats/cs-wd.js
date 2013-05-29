@@ -295,13 +295,13 @@ this.options = {
     		  "             {\n"+
     		  "                for (int second = 0; second < waitTime; second++)\n"+
     		  "                   {\n"+
-    		  '                      if (second >= waitTime) Assert.Fail("timeout waiting for popup");\n'+
     		  "                      var windows = driver.WindowHandles;\n"+
     		  "                      foreach (var window in windows)\n"+
     		  "                         if (driver.SwitchTo().Window(window).Title == title)\n"+
     		  "                             return;\n"+
     		  "                      Thread.Sleep(1000);\n"+
     		  "                   }\n"+
+    		  '                   Assert.Fail("timeout waiting for popup");\n'+
     		  "             }\n"+
     		  "        }\n"+
           '        \n' +
