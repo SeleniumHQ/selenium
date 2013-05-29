@@ -32,6 +32,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeTrue;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -60,8 +61,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testClickingOnFormElements() {
-    assumeTrue("Only works with native events on Linux",
-               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
+    //assumeTrue("Only works with native events on Linux",
+    //           isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
 
     driver.get(pages.formSelectionPage);
 
@@ -89,8 +90,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore({ANDROID, IE, REMOTE, IPHONE, OPERA})
   @Test
   public void testSelectingMultipleItems() {
-    assumeTrue("Only works with native events on Linux",
-               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
+    assumeFalse("Does not works with native events on Windows",
+                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.selectableItemsPage);
 
@@ -177,17 +178,10 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE})
   @Test
   public void testChordControlCutAndPaste() {
-    // FIXME: macs don't have CONRTROL key
-    if (getEffectivePlatform().is(Platform.MAC)) {
-      return;
-    }
-
-    if (getEffectivePlatform().is(Platform.WINDOWS) &&
-        (isInternetExplorer(driver) || isFirefox(driver))) {
-      System.out.println("Skipping testChordControlCutAndPaste on Windows: native events library" +
-          " does not support storing modifiers state yet.");
-      return;
-    }
+    assumeFalse("FIXME: macs don't have CONRTROL key", getEffectivePlatform().is(Platform.MAC));
+    assumeFalse("Windows: native events library  does not support storing modifiers state yet",
+                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS) &&
+                (isInternetExplorer(driver) || isFirefox(driver)));
 
     driver.get(pages.javascriptPage);
 
@@ -223,8 +217,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore({HTMLUNIT, OPERA, IE})
   @Test
   public void testCombiningShiftAndClickResultsInANewWindow() {
-    assumeTrue("Only works with native events on Linux",
-               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
+    assumeFalse("Does not works with native events on Windows",
+                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.linkedImage);
     WebElement link = driver.findElement(By.id("link"));
@@ -246,8 +240,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE, IPHONE, IE})
   @Test
   public void testHoldingDownShiftKeyWhileClicking() {
-    assumeTrue("Only works with native events on Linux",
-               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
+    assumeFalse("Does not works with native events on Windows",
+               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.clickEventPage);
 
