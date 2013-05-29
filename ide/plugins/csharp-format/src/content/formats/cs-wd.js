@@ -277,15 +277,14 @@ this.options = {
           "            }\n" +
           "        }\n" +
           '        \n' +
-      	  '        private void waitForPopup(string title="null", int waitTime=30000)\n'+
+      	  '        private void waitForPopup(string title="null", int waitTime=20000)\n'+
           "        {\n" +
     		  '             waitTime = waitTime / 1000;\n'+
     		  '             if (title == "null" || title.Length == 0)\n'+
     		  "             {\n"+
     		  "                int windowNum = driver.WindowHandles.Count;\n"+
-    		  "                for (int second = 0; second < 30; second++){\n" +
+    		  "                for (int second = 0; second < 20; second++){\n" +
     		  "                    Thread.Sleep(1000);\n"+
-    		  '                    if (second >= 5) break;\n' +
     		  "                    if (driver.WindowHandles.Count > 1) break;//temporary\n" +
     		  '                }\n'+
     		  '                if (driver.WindowHandles.Count == 1)\n'+
