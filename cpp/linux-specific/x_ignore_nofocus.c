@@ -588,7 +588,6 @@ int find_xlib_by_env(char *library, uint16_t desired_architecture)
     snprintf(potential_library, MAX_LIBRARY_PATH, "%s/libX11.so.6", t);
     if (is_usable_library(potential_library, desired_architecture)) {
       strcpy(library, potential_library);
-      fprintf(stderr, "Found libX11.so.6 at: %s\n", potential_library);
       found_library = TRUE;
     }
     t = strtok(NULL, ":");
