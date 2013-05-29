@@ -141,6 +141,63 @@ public class ExpectedConditions {
   }
 
   /**
+   * An expectation for checking that all elements present on the web page that
+   * match the locator are visible. Visibility means that the elements are not
+   * only displayed but also have a height and width that is greater than 0.
+   *
+   * @param locator used to find the element
+   * @return the list of WebElements once they are located
+   */
+  public static ExpectedCondition<List<WebElement>> visibilityOfAllElementsLocatedBy(
+      final By locator) {
+    return new ExpectedCondition<List<WebElement>>() {
+      @Override
+      public List<WebElement> apply(WebDriver driver) {
+        List<WebElement> elements = findElements(locator, driver);
+        for(WebElement element : elements){
+          if(!element.isDisplayed()){
+            return null;
+          }
+        }
+        return elements.size() > 0 ? elements : null;
+      }
+
+      @Override
+      public String toString() {
+        return "visibility of all elements located by " + locator;
+      }
+    };
+  }
+
+  /**
+   * An expectation for checking that all elements present on the web page that
+   * match the locator are visible. Visibility means that the elements are not
+   * only displayed but also have a height and width that is greater than 0.
+   *
+   * @param elements list of WebElements
+   * @return the list of WebElements once they are located
+   */
+  public static ExpectedCondition<List<WebElement>> visibilityOfAllElements(
+      final List<WebElement> elements) {
+    return new ExpectedCondition<List<WebElement>>() {
+      @Override
+      public List<WebElement> apply(WebDriver driver) {
+        for(WebElement element : elements){
+          if(!element.isDisplayed()){
+            return null;
+          }
+        }
+        return elements.size() > 0 ? elements : null;
+      }
+
+      @Override
+      public String toString() {
+        return "visibility of all " + elements;
+      }
+    };
+  }
+
+  /**
    * An expectation for checking that an element, known to be present on the DOM
    * of a page, is visible. Visibility means that the element is not only
    * displayed but also has a height and width that is greater than 0.
