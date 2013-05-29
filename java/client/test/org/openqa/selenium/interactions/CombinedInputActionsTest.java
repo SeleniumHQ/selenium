@@ -61,8 +61,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testClickingOnFormElements() {
-    //assumeTrue("Only works with native events on Linux",
-    //           isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
+    assumeTrue("Only works with native events on Linux",
+               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
 
     driver.get(pages.formSelectionPage);
 
