@@ -432,7 +432,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                Platform.getCurrent().is(Platform.MAC));
+                TestUtilities.getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -530,10 +530,8 @@ public class TypingTest extends JUnit4TestBase {
           reason = "untested user agents")
   @Test
   public void testChordControlHomeShiftEndDelete() {
-    // FIXME: macs don't have HOME keys, would PGUP work?
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      return;
-    }
+    assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
+                TestUtilities.getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -555,10 +553,8 @@ public class TypingTest extends JUnit4TestBase {
           reason = "untested user agents")
   @Test
   public void testChordReveseShiftHomeSelectionDeletes() {
-    // FIXME: macs don't have HOME keys, would PGUP work?
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      return;
-    }
+    assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
+                TestUtilities.getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -591,10 +587,8 @@ public class TypingTest extends JUnit4TestBase {
           reason = "untested user agents")
   @Test
   public void testChordControlCutAndPaste() {
-    // FIXME: macs don't have HOME keys, would PGUP work?
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      return;
-    }
+    assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
+                TestUtilities.getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -702,12 +696,9 @@ public class TypingTest extends JUnit4TestBase {
   @Ignore(value = {HTMLUNIT, OPERA, ANDROID, OPERA_MOBILE})
   @Test
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
-    driver.get(pages.richTextPage);
+    assumeFalse("not tested on mac", TestUtilities.getEffectivePlatform().is(Platform.MAC));
 
-    // not tested on mac
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      return;
-    }
+    driver.get(pages.richTextPage);
 
     driver.switchTo().frame("editFrame");
     WebElement element = driver.switchTo().activeElement();

@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
+import static org.junit.Assume.assumeFalse;
 
 import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
 
@@ -102,13 +103,15 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
 
   @Test 
   public void enableNativeEventCapability() {
-    assumeTrue(!Platform.getCurrent().is(Platform.MAC));
+    assumeFalse(TestUtilities.getEffectivePlatform().is(Platform.MAC));
+
     configureCapability(CapabilityType.HAS_NATIVE_EVENTS, true);
   }
 
   @Test 
   public void disableNativeEventCapability() {
-    assumeTrue(!Platform.getCurrent().is(Platform.MAC));
+    assumeFalse(TestUtilities.getEffectivePlatform().is(Platform.MAC));
+
     configureCapability(CapabilityType.HAS_NATIVE_EVENTS, false);
   }
   
@@ -127,7 +130,8 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
   
   @Test 
   public void requiredNativeEventCapabilityShouldHavePriority() {
-    assumeTrue(!Platform.getCurrent().is(Platform.MAC));
+    assumeFalse(TestUtilities.getEffectivePlatform().is(Platform.MAC));
+
     DesiredCapabilities desiredCaps = new DesiredCapabilities();
     desiredCaps.setCapability(HAS_NATIVE_EVENTS, false);
     DesiredCapabilities requiredCaps = new DesiredCapabilities();

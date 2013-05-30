@@ -453,7 +453,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   private boolean browserNeedsFocusOnThisOs(WebDriver driver) {
     // No browser yet demands focus on windows
-    if (Platform.getCurrent().is(Platform.WINDOWS))
+    if (TestUtilities.getEffectivePlatform().is(Platform.WINDOWS))
       return false;
 
     if (Boolean.getBoolean("webdriver.focus.override")) {

@@ -104,8 +104,10 @@ public class I18nTest extends JUnit4TestBase {
           + "Firefox/Linux at the moment.")
   @Test
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
-    assumeTrue("IME is supported on Linux only.", Platform.getCurrent().is(Platform.LINUX));
-    assumeTrue("Native events are disabled, IME will not work.", TestUtilities.isNativeEventsEnabled(driver));
+    assumeTrue("IME is supported on Linux only.",
+               TestUtilities.getEffectivePlatform().is(Platform.LINUX));
+    assumeTrue("Native events are disabled, IME will not work.",
+               TestUtilities.isNativeEventsEnabled(driver));
 
     driver.get(pages.formPage);
 
@@ -152,8 +154,10 @@ public class I18nTest extends JUnit4TestBase {
           + "Firefox/Linux at the moment.")
   @Test
   public void testShouldBeAbleToInputJapanese() {
-    assumeTrue("IME is supported on Linux only.", Platform.getCurrent().is(Platform.LINUX));
-    assumeTrue("Native events are disabled, IME will not work.", TestUtilities.isNativeEventsEnabled(driver));
+    assumeTrue("IME is supported on Linux only.",
+               TestUtilities.getEffectivePlatform().is(Platform.LINUX));
+    assumeTrue("Native events are disabled, IME will not work.",
+               TestUtilities.isNativeEventsEnabled(driver));
 
     driver.get(pages.formPage);
 

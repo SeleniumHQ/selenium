@@ -56,7 +56,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testDragAndDropRelative() {
-    assumeFalse("See issue 2281", Platform.getCurrent().is(Platform.MAC));
+    assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
     assumeFalse(Browser.detect() == Browser.opera &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
@@ -102,7 +102,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testElementInDiv() {
-    assumeFalse("See issue 2281", Platform.getCurrent().is(Platform.MAC));
+    assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));

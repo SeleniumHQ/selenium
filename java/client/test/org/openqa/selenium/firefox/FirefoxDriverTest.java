@@ -480,7 +480,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @Test
   public void multipleFirefoxDriversRunningConcurrently() throws Exception {
     assumeFalse("Unfortunately native events on linux mean mucking around with the window's focus",
-                Platform.getCurrent().is(Platform.LINUX) && TestUtilities.isNativeEventsEnabled(driver));
+                TestUtilities.getEffectivePlatform().is(Platform.LINUX) && TestUtilities.isNativeEventsEnabled(driver));
 
     int numThreads;
     if (!SauceDriver.shouldUseSauce()) {
