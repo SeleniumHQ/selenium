@@ -52,7 +52,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
-  @Ignore(value = {CHROME, FIREFOX, ANDROID}, reason = "Webkit bug 22261. Firefox 3.6 wants focus")
+  @Ignore(value = {CHROME, ANDROID}, reason = "Webkit bug 22261")
   @JavascriptEnabled
   @Test
   public void testShouldFireFocusEventWhenClicking() {
@@ -131,8 +131,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME, FIREFOX, ANDROID},
-      reason = "Webkit bug 22261. Firefox 3.6 wants focus")
+  @Ignore(value = {CHROME, ANDROID}, reason = "Webkit bug 22261")
   @JavascriptEnabled
   @Test
   public void testShouldFireEventsInTheRightOrder() {
