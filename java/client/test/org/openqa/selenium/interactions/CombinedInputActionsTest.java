@@ -36,6 +36,7 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -59,6 +60,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
   @Test
+  @Ignore(CHROME)
   public void testClickingOnFormElements() {
     assumeTrue("Only works with native events on Linux",
                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
