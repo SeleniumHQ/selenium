@@ -28,7 +28,6 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NativeEventsRequired;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
-import java.lang.reflect.AnnotatedElement;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -84,14 +83,6 @@ public class TestIgnorance {
     }
   }
 
-  public boolean isIgnored(AnnotatedElement element) {
-    boolean ignored = ignoreComparator.shouldIgnore(element.getAnnotation(Ignore.class));
-
-    ignored |= isIgnoredDueToJavascript(element.getAnnotation(JavascriptEnabled.class));
-
-    return ignored;
-  }
-
   // JUnit 4
   public boolean isIgnored(FrameworkMethod method, Object test) {
     boolean ignored = ignoreComparator.shouldIgnore(test.getClass().getAnnotation(Ignore.class)) ||
@@ -103,8 +94,8 @@ public class TestIgnorance {
     ignored |= isIgnoredDueToJavascript(test.getClass().getAnnotation(JavascriptEnabled.class));
     ignored |= isIgnoredDueToJavascript(method.getMethod().getAnnotation(JavascriptEnabled.class));
 
-    ignored |= isIgnoredBecauseOfNativeEvents(test, test.getClass().getAnnotation(NativeEventsRequired.class));
-    ignored |= isIgnoredBecauseOfNativeEvents(test, method.getMethod().getAnnotation(NativeEventsRequired.class));
+    ignored |= isIgnoredBecauseOfNativeEvents(test.getClass().getAnnotation(NativeEventsRequired.class));
+    ignored |= isIgnoredBecauseOfNativeEvents(method.getMethod().getAnnotation(NativeEventsRequired.class));
 
     ignored |= isIgnoredDueToEnvironmentVariables(method, test);
 
@@ -117,7 +108,7 @@ public class TestIgnorance {
     return annotation != null;
   }
 
-  private boolean isIgnoredBecauseOfNativeEvents(Object test, NativeEventsRequired annotation) {
+  private boolean isIgnoredBecauseOfNativeEvents(NativeEventsRequired annotation) {
     if (annotation == null) {
       return false;
     }
