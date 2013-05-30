@@ -32,7 +32,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -115,7 +114,7 @@ public class WindowTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME, PHANTOMJS}, reason = "Not yet implemented.")
+  @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindow() throws InterruptedException {
     if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
@@ -127,7 +126,7 @@ public class WindowTest extends JUnit4TestBase {
     maximize();
   }
 
-  @Ignore(value = {CHROME, PHANTOMJS}, reason = "Not yet implemented.")
+  @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindowFromFrame() throws InterruptedException {
     if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
@@ -146,7 +145,7 @@ public class WindowTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME, PHANTOMJS}, reason = "Not yet implemented.")
+  @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindowFromIframe() throws InterruptedException {
     if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {

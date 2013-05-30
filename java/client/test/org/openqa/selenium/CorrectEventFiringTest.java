@@ -39,7 +39,6 @@ import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -109,7 +108,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   // TODO: this is a bad test: mousemove should not fire in a perfect click (e.g. mouse did not move
   // while doing down, up, click
   @JavascriptEnabled
-  @Ignore({CHROME, FIREFOX})
+  @Ignore({FIREFOX})
   @Test
   public void testShouldFireMouseMoveEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -389,7 +388,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, IPHONE, ANDROID, OPERA, SAFARI, OPERA_MOBILE},
+  @Ignore(value = {IPHONE, ANDROID, OPERA, SAFARI, OPERA_MOBILE},
       reason = "Does not yet support file uploads", issues = { 4220 })
   @Test
   public void testUploadingFileShouldFireOnChangeEvent() throws IOException {

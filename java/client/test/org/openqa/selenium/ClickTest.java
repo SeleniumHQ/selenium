@@ -62,8 +62,7 @@ public class ClickTest extends JUnit4TestBase {
     waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
   }
 
-  @Ignore(value = {CHROME, OPERA},
-          reason = "Not tested on these browsers.")
+  @Ignore(value = {OPERA}, reason = "Not tested.")
   @Test
   public void testCanClickOnALinkThatOverflowsAndFollowIt() {
     driver.findElement(By.id("overflowLink")).click();
