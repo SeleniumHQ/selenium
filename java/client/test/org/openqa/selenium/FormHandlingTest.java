@@ -26,7 +26,6 @@ import java.io.IOException;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -34,7 +33,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -161,9 +159,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   public void testShouldEnterDataIntoFormFields() {
     driver.get(pages.xhtmlTestPage);
-    WebElement element = driver.findElement(By
-                                                .xpath(
-                                                    "//form[@name='someForm']/input[@id='username']"));
+    WebElement element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
     String originalValue = element.getAttribute("value");
     assertThat(originalValue, equalTo("change"));
 
@@ -198,9 +194,9 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
       throws IOException {
-    // IE before 9 doesn't handle pages served with an XHTML content type, and just prompts for to
-    // download it
-    assumeTrue(!TestUtilities.isInternetExplorer(driver) || !TestUtilities.isOldIe(driver));
+    assumeFalse("IE before 9 doesn't handle pages served with an XHTML content type,"
+                + " and just prompts for to download it",
+                TestUtilities.isOldIe(driver));
 
     driver.get(pages.xhtmlFormPage);
     WebElement uploadElement = driver.findElement(By.id("file"));

@@ -18,6 +18,7 @@ package org.openqa.selenium.interactions;
 
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -25,7 +26,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
 
 import static org.hamcrest.Matchers.is;
 
@@ -153,11 +153,10 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @Ignore({ANDROID, IPHONE})
   @Test
   public void testSendingKeysToActiveElement() {
-    if (TestUtilities.isFirefox9(driver)) {
-      // This test fails due to a bug in Firefox 9. For more details, see:
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=696020
-      return;
-    }
+    assumeFalse("This test fails due to a bug in Firefox 9. For more details, see: " +
+                "https://bugzilla.mozilla.org/show_bug.cgi?id=696020",
+                TestUtilities.isFirefox9(driver));
+
     driver.get(pages.bodyTypingPage);
 
     Action someKeys = getBuilder(driver).sendKeys("ab").build();

@@ -16,30 +16,25 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.OutputType.BASE64;
-import static org.openqa.selenium.OutputType.BYTES;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -54,9 +49,16 @@ import javax.imageio.ImageIO;
 @Ignore(value = {IPHONE})
 public class TakesScreenshotTest extends JUnit4TestBase {
 
+  private TakesScreenshot screenshoter;
   private File tempFile = null;
 
-  @After()
+  @Before
+  public void setUp() throws Exception {
+    assumeTrue(driver instanceof TakesScreenshot);
+    screenshoter = (TakesScreenshot) driver;
+  }
+
+  @After
   public void tearDown() {
     if (tempFile != null) {
 //      // use it locally only to help debugging
@@ -90,37 +92,24 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   public void testSaveScreenshotAsFile() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
-
     driver.get(pages.simpleTestPage);
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
   }
 
   @Test
   public void testCaptureToBase64() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
-
     driver.get(pages.simpleTestPage);
-    String screenshot = getScreenshot().getScreenshotAs(OutputType.BASE64);
+    String screenshot = screenshoter.getScreenshotAs(OutputType.BASE64);
     assertTrue(screenshot.length() > 0);
   }
 
   @Test
   public void testShouldCaptureScreenshot() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+    driver.get(appServer.whereIs("screen/screen.html"));
 
-    String url = appServer.whereIs("screen/screen.html");
-    driver.get(url);
-
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
 
@@ -145,14 +134,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                    + " CHROME: (v1) ok, (v2) take only visible viewport."
   )
   public void testShouldCaptureScreenshotWithLongX() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+    driver.get(appServer.whereIs("screen/screen_x_long.html"));
 
-    String url = appServer.whereIs("screen/screen_x_long.html");
-    driver.get(url);
-
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
 
@@ -177,14 +161,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                    + " CHROME: (v1) ok, (v2) take only visible viewport."
   )
   public void testShouldCaptureScreenshotWithLongY() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+    driver.get(appServer.whereIs("screen/screen_y_long.html"));
 
-    String url = appServer.whereIs("screen/screen_y_long.html");
-    driver.get(url);
-
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
 
@@ -211,14 +190,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                    + " CHROME: (v1) partially black, (v2) take only visible viewport."
                    + ", anothers: untested")
   public void testShouldCaptureScreenshotWithTooLongX() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+    driver.get(appServer.whereIs("screen/screen_x_too_long.html"));
 
-    String url = appServer.whereIs("screen/screen_x_too_long.html");
-    driver.get(url);
-
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
 
@@ -245,14 +219,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
                    + " CHROME: (v1) partially black, (v2) take only visible viewport."
                    + ", anothers: untested")
   public void testShouldCaptureScreenshotWithTooLongY() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+    driver.get(appServer.whereIs("screen/screen_y_too_long.html"));
 
-    String url = appServer.whereIs("screen/screen_y_too_long.html");
-    driver.get(url);
-
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
 
@@ -273,14 +242,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   public void testShouldCaptureScreenshotAtFramePage() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+    driver.get(appServer.whereIs("screen/screen_frames.html"));
 
-    String url = appServer.whereIs("screen/screen_frames.html");
-    driver.get(url);
-
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
 
@@ -302,14 +266,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   public void testShouldCaptureScreenshotAtIFramePage() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+    driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
-    String url = appServer.whereIs("screen/screen_iframes.html");
-    driver.get(url);
-
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
 
@@ -331,16 +290,11 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   public void testShouldCaptureScreenshotAtFramePageAfterSwitching() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
-
-    String url = appServer.whereIs("screen/screen_frames.html");
-    driver.get(url);
+    driver.get(appServer.whereIs("screen/screen_frames.html"));
 
     driver.switchTo().frame(driver.findElement(By.id("frame1")));
 
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
 
@@ -364,16 +318,11 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
-
-    String url = appServer.whereIs("screen/screen_iframes.html");
-    driver.get(url);
+    driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
     driver.switchTo().frame(driver.findElement(By.id("iframe1")));
 
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
 
@@ -403,14 +352,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   public void testShouldCaptureScreenshotWithTooLong() throws Exception {
     //TODO(user): need to understand it's necessary to run volume tests
     //because from my point of view there are not enough memory to init 49*10**8 bytes
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+    driver.get(appServer.whereIs("screen/screen_too_long.html"));
 
-    String url = appServer.whereIs("screen/screen_too_long.html");
-    driver.get(url);
-
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
 
@@ -427,14 +371,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     }
 
     compareColors(expectedColors, actualColors);
-  }
-
-  private TakesScreenshot getScreenshot() {
-    return (TakesScreenshot) driver;
-  }
-
-  private boolean isAbleToTakeScreenshots(WebDriver d) throws Exception {
-    return d instanceof TakesScreenshot;
   }
 
   private Image getImage(File path)  {

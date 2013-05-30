@@ -30,6 +30,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
@@ -43,7 +44,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
 
 public class TypingTest extends JUnit4TestBase {
 
@@ -431,10 +431,8 @@ public class TypingTest extends JUnit4TestBase {
           reason = "untested user agents")
   @Test
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
-    // FIXME: macs don't have HOME keys, would PGUP work?
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      return;
-    }
+    assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
+                Platform.getCurrent().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 

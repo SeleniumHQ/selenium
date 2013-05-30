@@ -34,6 +34,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
@@ -292,10 +293,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Ignore(value = {IPHONE, ANDROID}, reason = "iPhone: sendKeys implementation is incorrect")
   @Test
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
-    if (browserNeedsFocusOnThisOs(driver)) {
-      System.out.println("Skipping this test because browser demands focus");
-      return;
-    }
+    assumeFalse(browserNeedsFocusOnThisOs(driver));
 
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("theworks"));
@@ -309,10 +307,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Ignore(value = {IPHONE, ANDROID}, reason = "iPhone: sendKeys implementation is incorrect")
   @Test
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
-    if (browserNeedsFocusOnThisOs(driver)) {
-      System.out.println("Skipping this test because browser demands focus");
-      return;
-    }
+    assumeFalse(browserNeedsFocusOnThisOs(driver));
 
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("theworks"));
@@ -325,10 +320,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
       reason = "iPhone: input elements are blurred when the keyboard is closed")
   @Test
   public void testSendingKeysToAFocusedElementShouldNotBlurThatElement() {
-    if (browserNeedsFocusOnThisOs(driver)) {
-      System.out.println("Skipping this test because browser demands focus");
-      return;
-    }
+    assumeFalse(browserNeedsFocusOnThisOs(driver));
 
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("theworks"));
@@ -415,10 +407,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Ignore(value = {ANDROID}, reason = "Not implemented")
   @Test
   public void testShouldReportTheXAndYCoordinatesWhenClicking() {
-    if (SauceDriver.shouldUseSauce() && TestUtilities.isInternetExplorer(driver)) {
-      System.err.println("Skipping test which fails in IE on Sauce");
-      return;
-    }
+    assumeFalse("Skipping test which fails in IE on Sauce",
+                SauceDriver.shouldUseSauce() && TestUtilities.isInternetExplorer(driver));
+
     driver.get(pages.clickEventPage);
 
     WebElement element = driver.findElement(By.id("eventish"));

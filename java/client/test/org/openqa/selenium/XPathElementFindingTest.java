@@ -29,6 +29,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -133,10 +134,8 @@ public class XPathElementFindingTest extends JUnit4TestBase {
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
-    if (TestUtilities.isIe6(driver)) {
-      System.out.println("Ignoring xpath error test in IE6");
-      return;
-    }
+    assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
+
     driver.get(pages.formPage);
 
     try {
@@ -166,10 +165,8 @@ public class XPathElementFindingTest extends JUnit4TestBase {
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
-    if (TestUtilities.isIe6(driver)) {
-      System.out.println("Ignoring xpath error test in IE6");
-      return;
-    }
+    assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
+
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
     try {
@@ -198,10 +195,8 @@ public class XPathElementFindingTest extends JUnit4TestBase {
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
-    if (TestUtilities.isIe6(driver)) {
-      System.out.println("Ignoring xpath error test in IE6");
-      return;
-    }
+    assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
+
     driver.get(pages.formPage);
 
     try {
@@ -232,10 +227,8 @@ public class XPathElementFindingTest extends JUnit4TestBase {
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
   @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
-    if (TestUtilities.isIe6(driver)) {
-      System.out.println("Ignoring xpath error test in IE6");
-      return;
-    }
+    assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
+
     driver.get(pages.formPage);
 
     WebElement body = driver.findElement(By.tagName("body"));

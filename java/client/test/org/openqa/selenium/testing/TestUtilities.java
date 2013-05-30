@@ -16,8 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.testing;
 
-import static org.junit.Assume.assumeTrue;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,12 +29,11 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
 public class TestUtilities {
-  public static boolean isNativeEventsEnabled(WebDriver driver) {
-    if (!(driver instanceof HasCapabilities)) {
-      return false;
-    }
 
-    return ((HasCapabilities) driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS);
+  public static boolean isNativeEventsEnabled(WebDriver driver) {
+    return driver instanceof HasCapabilities &&
+           ((HasCapabilities) driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS);
+
   }
 
   private static String getUserAgent(WebDriver driver) {
@@ -74,6 +71,9 @@ public class TestUtilities {
   }
 
   public static boolean isOldIe(WebDriver driver) {
+    if (!isInternetExplorer(driver)) {
+      return false;
+    }
     try {
       String jsToExecute = "return parseInt(window.navigator.appVersion.split(' ')[0]);";
       // IE9 is trident version 5.  IE9 is the start of new IE.
@@ -161,9 +161,5 @@ public class TestUtilities {
 
   public static boolean isLocal() {
     return !Boolean.getBoolean("selenium.browser.remote") && !SauceDriver.shouldUseSauce();
-  }
-
-  public static void assumeFalse(boolean b) {
-    assumeTrue(!b);
   }
 }

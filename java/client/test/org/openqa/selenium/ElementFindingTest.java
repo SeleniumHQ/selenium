@@ -27,6 +27,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -615,10 +616,8 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Test
   @Ignore({OPERA})
   public void findsByLinkTextOnXhtmlPage() {
-    if (isOldIe(driver)) {
-      // Old IE doesn't render XHTML pages, don't try loading XHTML pages in it
-      return;
-    }
+    assumeFalse("Old IE doesn't render XHTML pages, don't try loading XHTML pages in it", isOldIe(driver));
+
     driver.get(appServer.whereIs("actualXhtmlPage.xhtml"));
     String linkText = "Foo";
     WebElement element = driver.findElement(By.linkText(linkText));

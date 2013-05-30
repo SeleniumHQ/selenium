@@ -113,17 +113,17 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
 
   @Test
   public void testCanGetValueFromOptionViaAttributeWhenAttributeDoesntExist() {
-	  driver.get(pages.formPage);
-	  WebElement element = driver.findElement(By.cssSelector("select[name='select-default'] option"));
-	  assertThat(element.getAttribute("value"), is("One"));
-	  element = driver.findElement(By.id("blankOption"));
-	  assertThat(element.getAttribute("value"), is(""));
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.cssSelector("select[name='select-default'] option"));
+    assertThat(element.getAttribute("value"), is("One"));
+    element = driver.findElement(By.id("blankOption"));
+    assertThat(element.getAttribute("value"), is(""));
   }
 
   @Test
   public void testCanGetValueFromOptionViaAttributeWhenAttributeIsEmptyString() {
-	  driver.get(pages.formPage);
-	  WebElement element = driver.findElement(By.id("optionEmptyValueSet"));
-	  assertThat(element.getAttribute("value"), is(""));
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.id("optionEmptyValueSet"));
+    assertThat(element.getAttribute("value"), is(""));
   }
 }

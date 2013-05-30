@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -247,10 +248,8 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
-    if (TestUtilities.isOldIe(driver)) {
-      System.err.println("IE version < 9 doesn't support application/xhtml+xml mime type");
-      return;
-    }
+    assumeFalse("IE version < 9 doesn't support application/xhtml+xml mime type", TestUtilities.isOldIe(driver));
+
     driver.get(pages.xhtmlFormPage);
 
     String text = driver.findElement(By.id("self-closed")).getText();

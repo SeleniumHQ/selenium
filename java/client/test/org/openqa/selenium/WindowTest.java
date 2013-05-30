@@ -30,6 +30,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -117,10 +118,7 @@ public class WindowTest extends JUnit4TestBase {
   @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindow() throws InterruptedException {
-    if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
-      // This test requires a window manager on Linux, and Sauce currently doesn't have one.
-      return;
-    }
+    assumeThereIsAWindowManager();
 
     changeSizeTo(new Dimension(275, 275));
     maximize();
@@ -129,10 +127,7 @@ public class WindowTest extends JUnit4TestBase {
   @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindowFromFrame() throws InterruptedException {
-    if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
-      // This test requires a window manager on Linux, and Sauce currently doesn't have one.
-      return;
-    }
+    assumeThereIsAWindowManager();
 
     driver.get(pages.framesetPage);
     changeSizeTo(new Dimension(275, 275));
@@ -148,10 +143,7 @@ public class WindowTest extends JUnit4TestBase {
   @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindowFromIframe() throws InterruptedException {
-    if(SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
-      // This test requires a window manager on Linux, and Sauce currently doesn't have one.
-      return;
-    }
+    assumeThereIsAWindowManager();
 
     driver.get(pages.iframePage);
     changeSizeTo(new Dimension(275, 275));
@@ -263,6 +255,11 @@ public class WindowTest extends JUnit4TestBase {
         return null;
       }
     };
+  }
+
+  private void assumeThereIsAWindowManager() {
+    assumeFalse("This test requires a window manager on Linux, and Sauce currently doesn't have one",
+                SauceDriver.shouldUseSauce() && TestUtilities.getEffectivePlatform().is(Platform.LINUX));
   }
 
 }
