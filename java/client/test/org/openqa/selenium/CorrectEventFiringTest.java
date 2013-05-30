@@ -109,7 +109,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   // TODO: this is a bad test: mousemove should not fire in a perfect click (e.g. mouse did not move
   // while doing down, up, click
   @JavascriptEnabled
-  @Ignore({FIREFOX})
   @Test
   public void testShouldFireMouseMoveEventWhenClicking() {
     driver.get(pages.javascriptPage);
