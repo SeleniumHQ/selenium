@@ -879,6 +879,10 @@ this.SeleniumWebDriverAdaptor.prototype.getEval = function() {
    return WDAPI.Utils.getEval(this.rawArgs[0]);
 };
 
+this.SeleniumWebDriverAdaptor.prototype.getAllWindowTitles = function() {
+   return WDAPI.Utils.getAllWindowTitles(this.rawArgs);
+};
+
 this.SeleniumWebDriverAdaptor.prototype.getSelectedValue = function() {
   var locator = this._elementLocator(this.rawArgs[0]);
   var driver = new WDAPI.Driver();
