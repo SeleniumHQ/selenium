@@ -236,7 +236,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, IE, IPHONE, FIREFOX})
+  @Ignore({ANDROID, CHROME, IE, IPHONE})
   @Test
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
@@ -270,12 +270,13 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, FIREFOX, OPERA},
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, OPERA},
           reason = "Behaviour not finalized yet regarding linked images.")
   @Test
   public void testMovingIntoAnImageEnclosedInALink() {
     assumeFalse("No way to compensate for accessibility-provided offsets on Firefox 3.0 or 3.5",
                 isFirefox30(driver) || isFirefox35(driver));
+    assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
 
     driver.get(pages.linkedImage);
 
