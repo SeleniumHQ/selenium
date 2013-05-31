@@ -204,7 +204,8 @@ this.options = {
   indent: '4',
   initialIndents:  '3',
   header:
-      'using System;\n' +
+          'using System;\n' +
+	  'using System.Linq;\n'+
           'using System.Text;\n' +
           'using System.Text.RegularExpressions;\n' +
           'using System.Threading;\n' +
@@ -562,6 +563,10 @@ WDAPI.Utils.isElementPresent = function(how, what) {
 
 WDAPI.Utils.isAlertPresent = function() {
   return "IsAlertPresent()";
+};
+
+WDAPI.Utils.getAllWindowTitles = function(arg) {
+  return "driver.WindowHandles.Select(x => driver.SwitchTo().Window(x).Title).ToArray()";
 };
 
 WDAPI.Utils.waitForPopup = function() {
