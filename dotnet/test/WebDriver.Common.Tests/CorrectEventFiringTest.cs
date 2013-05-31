@@ -70,7 +70,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "Chrome does not report mouse move event when clicking")]
         [IgnoreBrowser(Browser.Firefox, "Firefox does not report mouse move event when clicking")]
         public void ShouldFireMouseMoveEventWhenClicking()
         {

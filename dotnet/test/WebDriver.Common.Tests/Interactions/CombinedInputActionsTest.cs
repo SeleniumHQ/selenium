@@ -19,8 +19,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (!IsNativeEventsEnabled || (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Linux)))
             {
-                Console.WriteLine("Skipping ShouldAllowClickingOnFormElements: Only works with native events on Linux.");
-                return;
+                Assert.Ignore("Skipping ShouldAllowClickingOnFormElements: Only works with native events on Linux.");
             }
 
             driver.Url = formSelectionPage;
@@ -44,7 +43,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Control-click implementation not complete")]
         [IgnoreBrowser(Browser.Remote, "Control-click implementation not complete")]
         [IgnoreBrowser(Browser.IPhone, "Control-click implementation not complete")]
         [IgnoreBrowser(Browser.Android, "Control-click implementation not complete")]
@@ -53,8 +51,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (!IsNativeEventsEnabled || (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Linux)))
             {
-                Console.WriteLine("Skipping ShouldAllowSelectingMultipleItems: Only works with native events on Linux.");
-                return;
+                Assert.Ignore("Skipping ShouldAllowSelectingMultipleItems: Only works with native events on Linux.");
             }
 
             driver.Url = selectableItemsPage;
@@ -96,7 +93,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Android)]
@@ -108,7 +104,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Android)]
@@ -135,7 +130,6 @@ namespace OpenQA.Selenium.Interactions
          * up at the wrong coordinates.
          */
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Android)]
@@ -155,7 +149,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Android)]
@@ -210,7 +203,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Android)]
@@ -221,8 +213,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (!IsNativeEventsEnabled || (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Linux)))
             {
-                Console.WriteLine("Skipping CombiningShiftAndClickResultsInANewWindow: Only works with native events on Linux.");
-                return;
+                Assert.Ignore("Skipping CombiningShiftAndClickResultsInANewWindow: Only works with native events on Linux.");
             }
 
             driver.Url = linkedImage;
@@ -242,7 +233,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Android)]
@@ -253,8 +243,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (!IsNativeEventsEnabled || (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Linux)))
             {
-                Console.WriteLine("Skipping CombiningShiftAndClickResultsInANewWindow: Only works with native events on Linux.");
-                return;
+                Assert.Ignore("Skipping CombiningShiftAndClickResultsInANewWindow: Only works with native events on Linux.");
             }
 
             driver.Url = clickEventPage;

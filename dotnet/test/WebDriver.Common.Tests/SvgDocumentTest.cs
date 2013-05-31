@@ -11,11 +11,12 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "SVG tests only in rendered browsers")]
         [IgnoreBrowser(Browser.Opera, "Not tested")]
+        [IgnoreBrowser(Browser.Chrome, "Test not supported in Chrome yet")]
         public void ClickOnSvgElement()
         {
             if (TestUtilities.IsOldIE(driver))
             {
-                return;
+                Assert.Ignore("SVG support only exists in IE9+");
             }
 
             driver.Url = svgTestPage;
@@ -33,7 +34,7 @@ namespace OpenQA.Selenium
         {
             if (TestUtilities.IsOldIE(driver))
             {
-                return;
+                Assert.Ignore("SVG support only exists in IE9+");
             }
 
             driver.Url = svgTestPage;

@@ -7,6 +7,7 @@ using NUnit.Framework;
 namespace OpenQA.Selenium
 {
     [TestFixture]
+    [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
     public class WindowTest : DriverTestFixture
     {
         private Size originalWindowSize;
@@ -26,7 +27,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
@@ -39,7 +39,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
@@ -59,7 +58,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
@@ -73,7 +71,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
@@ -95,7 +92,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]

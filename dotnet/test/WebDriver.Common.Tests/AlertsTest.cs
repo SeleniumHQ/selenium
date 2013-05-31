@@ -5,6 +5,7 @@ using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium
 {
@@ -251,7 +252,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver.exe returns a JSON response with no status code")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
@@ -315,7 +315,6 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver.exe returns a JSON response with no status code")]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Remote)]
@@ -650,6 +649,27 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari)]
         public void ShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert()
         {
+            IHasCapabilities capabilitiesDriver = driver as IHasCapabilities;
+            if (driver == null)
+            {
+                Assert.Ignore("Cannot get ICapabilities from driver");
+            }
+            else
+            {
+                if (!capabilitiesDriver.Capabilities.HasCapability(CapabilityType.UnexpectedAlertBehavior))
+                {
+                    Assert.Ignore("Driver does not support automatic handling of unexpected alerts");
+                }
+                else
+                {
+                    string alertBehavior = capabilitiesDriver.Capabilities.GetCapability(CapabilityType.UnexpectedAlertBehavior).ToString().ToLower();
+                    if (alertBehavior != "dismiss")
+                    {
+                        Assert.Ignore("unexpectedAlertBehaviour capability not set to 'dismiss'");
+                    }
+                }
+            }
+
             driver.Url = alertsPage;
 
             driver.FindElement(By.Id("alert")).Click();

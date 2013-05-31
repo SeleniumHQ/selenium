@@ -29,6 +29,11 @@ namespace OpenQA.Selenium
             }
         }
 
+        public static bool IsChrome(IWebDriver driver)
+        {
+            return GetUserAgent(driver).Contains("Chrome");
+        }
+
         public static bool IsFirefox(IWebDriver driver)
         {
             return GetUserAgent(driver).Contains("Firefox");

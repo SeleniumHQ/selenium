@@ -293,7 +293,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Android, "Untested")]
-        [IgnoreBrowser(Browser.Chrome, "Fails on Chrome, issue #3508")]
         [IgnoreBrowser(Browser.HtmlUnit, "Untested")]
         [IgnoreBrowser(Browser.IPhone, "Untested")]
         [IgnoreBrowser(Browser.Opera, "Untested")]

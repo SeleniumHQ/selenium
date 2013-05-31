@@ -73,6 +73,7 @@ namespace OpenQA.Selenium
         public string linkedImage = EnvironmentManager.Instance.UrlBuilder.WhereIs("linked_image.html");
         public string xhtmlFormPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("xhtmlFormPage.xhtml");
         public string svgTestPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("svgTest.svg");
+        public string slowLoadingAlertPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("slowLoadingAlert.html");
 
         protected IWebDriver driver;
 

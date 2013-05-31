@@ -39,14 +39,14 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Invisible elements report position of [0, 0] in IE")]
         public void ShouldGetCoordinatesOfAnInvisibleElement()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_invisible_element.html");
-            Assert.AreEqual(new Point(10, 10), GetLocationInViewPort(By.Id("box")));
+            Assert.AreEqual(new Point(0, 0), GetLocationInViewPort(By.Id("box")));
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not scroll correctly yet")]
         public void ShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_element_out_of_view.html");

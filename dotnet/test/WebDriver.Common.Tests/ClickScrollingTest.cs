@@ -45,7 +45,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         public void ShouldBeAbleToClickOnAnElementHiddenByOverflow()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll.html");
@@ -68,7 +67,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.IPhone)]
         public void ShouldBeAbleToClickOnAnElementHiddenByYOverflow()
         {
@@ -79,7 +77,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome)]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldNotScrollOverflowElementsWhichAreVisible()
         {

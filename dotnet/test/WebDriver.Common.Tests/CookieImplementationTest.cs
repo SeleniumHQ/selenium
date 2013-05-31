@@ -285,7 +285,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE cookies do not conform to RFC, so setting cookie on domain fails.")]
-        [IgnoreBrowser(Browser.Chrome, "Test tries to set the domain explicitly to 'localhost', which is not allowed.")]
         public void ShouldBeAbleToSetDomainToTheCurrentDomain()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -347,7 +346,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE cookies do not conform to RFC, so setting cookie on domain fails.")]
-        [IgnoreBrowser(Browser.Chrome, "Test tries to set the domain explicitly to 'localhost', which is not allowed.")]
         public void ShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -365,6 +363,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Opera)]
         public void CookieEqualityAfterSetAndGet()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -399,9 +398,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info;")]
         [IgnoreBrowser(Browser.IE, "IE does not return expiry info")]
         [IgnoreBrowser(Browser.Android, "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info;")]
+        [IgnoreBrowser(Browser.Opera)]
         public void ShouldRetainCookieExpiry()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -468,6 +467,7 @@ namespace OpenQA.Selenium
         //////////////////////////////////////////////
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome)]
         public void CanSetCookiesOnADifferentPathOfTheSameHost()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -562,13 +562,12 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Add cookie to unrelated domain silently fails for IE.")]
-        [IgnoreBrowser(Browser.Chrome, "Chrome returns incorrect error code when setting cookie")]
         [ExpectedException(typeof(WebDriverException))]
         public void ShouldNotShowCookieAddedToDifferentDomain()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
             {
-                return;
+                Assert.Ignore("Not on a standard domain for cookies (localhost doesn't count).");
             }
 
             driver.Url = macbethPage;
@@ -580,7 +579,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Test tries to set the domain explicitly to 'localhost', which is not allowed.")]
         public void ShouldNotShowCookieAddedToDifferentPath()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -617,7 +615,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome and Selenium, which use JavaScript to retrieve cookies, cannot return expiry info;")]
         public void ShouldReturnNullBecauseCookieRetainsExpiry()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -727,8 +724,9 @@ namespace OpenQA.Selenium
             // TODO(JimEvan): Some coverage is better than none, so we
             // need to ignore the fact that localhost cookies are problematic.
             // Reenable this when we have a better solution per DanielWagnerHall.
+            // ChromeDriver2 has trouble with localhost. IE and Firefox don't.
             // return !IsIpv4Address(hostname) && "localhost" != hostname;
-            return !IsIpv4Address(hostname);
+            return !IsIpv4Address(hostname) && ("localhost" != hostname && TestUtilities.IsChrome(driver));
         }
 
         private static bool IsIpv4Address(string addrString)

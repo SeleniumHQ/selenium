@@ -234,6 +234,128 @@ namespace OpenQA.Selenium
             Assert.AreEqual("<html><head><title>Done</title></head><body>Slept for 2s</body></html>", response.Trim());
         }
 
+        [Test]
+        [IgnoreBrowser(Browser.Android, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.IE, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
+        public void ThrowsIfScriptTriggersAlert()
+        {
+            driver.Url = simpleTestPage;
+            driver.Manage().Timeouts().SetScriptTimeout(TimeSpan.FromSeconds(5));
+            try
+            {
+                ((IJavaScriptExecutor)driver).ExecuteAsyncScript(
+                    "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An alert!'); }, 50);");
+                Assert.Fail("Expected UnhandledAlertException");
+            }
+            catch (UnhandledAlertException)
+            {
+                // Expected exception
+            }
+            // Shouldn't throw
+            string title = driver.Title;
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.IE, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
+        public void ThrowsIfAlertHappensDuringScript()
+        {
+            driver.Url = slowLoadingAlertPage;
+            driver.Manage().Timeouts().SetScriptTimeout(TimeSpan.FromSeconds(5));
+            try
+            {
+                ((IJavaScriptExecutor)driver).ExecuteAsyncScript("setTimeout(arguments[0], 1000);");
+                Assert.Fail("Expected UnhandledAlertException");
+            }
+            catch (UnhandledAlertException)
+            {
+                //Expected exception
+            }
+            // Shouldn't throw
+            string title = driver.Title;
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.IE, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
+        public void ThrowsIfScriptTriggersAlertWhichTimesOut()
+        {
+            driver.Url = simpleTestPage;
+            driver.Manage().Timeouts().SetScriptTimeout(TimeSpan.FromSeconds(5));
+            try
+            {
+                ((IJavaScriptExecutor)driver)
+                    .ExecuteAsyncScript("setTimeout(function() { window.alert('Look! An alert!'); }, 50);");
+                Assert.Fail("Expected UnhandledAlertException");
+            }
+            catch (UnhandledAlertException)
+            {
+                // Expected exception
+            }
+            // Shouldn't throw
+            string title = driver.Title;
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.IE, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
+        public void ThrowsIfAlertHappensDuringScriptWhichTimesOut()
+        {
+            driver.Url = slowLoadingAlertPage;
+            driver.Manage().Timeouts().SetScriptTimeout(TimeSpan.FromSeconds(5));
+            try
+            {
+                ((IJavaScriptExecutor)driver).ExecuteAsyncScript("");
+                Assert.Fail("Expected UnhandledAlertException");
+            }
+            catch (UnhandledAlertException)
+            {
+                //Expected exception
+            }
+            // Shouldn't throw
+            string title = driver.Title;
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Android, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Chrome, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.IE, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.IPhone, "Does not handle async alerts")]
+        [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
+        public void IncludesAlertTextInUnhandledAlertException()
+        {
+            driver.Manage().Timeouts().SetScriptTimeout(TimeSpan.FromSeconds(5));
+            string alertText = "Look! An alert!";
+            try
+            {
+                ((IJavaScriptExecutor)driver).ExecuteAsyncScript(
+                    "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('" + alertText
+                    + "'); }, 50);");
+                Assert.Fail("Expected UnhandledAlertException");
+            }
+            catch (UnhandledAlertException e)
+            {
+                Assert.AreEqual(alertText, e.AlertText);
+            }
+        }
+
         private long GetNumberOfDivElements()
         {
             IJavaScriptExecutor jsExecutor = driver as IJavaScriptExecutor;
