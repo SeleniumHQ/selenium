@@ -23,6 +23,8 @@ package org.openqa.selenium.remote;
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 public interface DriverCommand {
+  String GET_ALL_SESSIONS = "getAllSessions";
+  String GET_CAPABILITIES = "getCapabilities";
   String NEW_SESSION = "newSession";
   
   String STATUS = "status";
