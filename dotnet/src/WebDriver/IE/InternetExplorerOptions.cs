@@ -92,10 +92,8 @@ namespace OpenQA.Selenium.IE
         private const string IgnoreProtectedModeSettingsCapability = "ignoreProtectedModeSettings";
         private const string IgnoreZoomSettingCapability = "ignoreZoomSetting";
         private const string InitialBrowserUrlCapability = "initialBrowserUrl";
-        private const string EnableNativeEventsCapability = "nativeEvents";
         private const string EnablePersistentHoverCapability = "enablePersistentHover";
         private const string ElementScrollBehaviorCapability = "elementScrollBehavior";
-        private const string UnexpectedAlertBehaviorCapability = "unexpectedAlertBehaviour";
         private const string RequireWindowFocusCapability = "requireWindowFocus";
         private const string BrowserAttachTimeoutCapability = "browserAttachTimeout";
 
@@ -218,10 +216,10 @@ namespace OpenQA.Selenium.IE
         {
             if (capabilityName == IgnoreProtectedModeSettingsCapability ||
                 capabilityName == IgnoreZoomSettingCapability ||
-                capabilityName == EnableNativeEventsCapability ||
+                capabilityName == CapabilityType.HasNativeEvents ||
                 capabilityName == InitialBrowserUrlCapability ||
                 capabilityName == ElementScrollBehaviorCapability ||
-                capabilityName == UnexpectedAlertBehaviorCapability ||
+                capabilityName == CapabilityType.UnexpectedAlertBehavior ||
                 capabilityName == EnablePersistentHoverCapability ||
                 capabilityName == RequireWindowFocusCapability ||
                 capabilityName == BrowserAttachTimeoutCapability)
@@ -247,7 +245,7 @@ namespace OpenQA.Selenium.IE
         public ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = DesiredCapabilities.InternetExplorer();
-            capabilities.SetCapability(EnableNativeEventsCapability, this.enableNativeEvents);
+            capabilities.SetCapability(CapabilityType.HasNativeEvents, this.enableNativeEvents);
             capabilities.SetCapability(EnablePersistentHoverCapability, this.enablePersistentHover);
 
             if (this.requireWindowFocus)
@@ -289,7 +287,7 @@ namespace OpenQA.Selenium.IE
                         break;
                 }
 
-                capabilities.SetCapability(UnexpectedAlertBehaviorCapability, unexpectedAlertBehaviorSetting);
+                capabilities.SetCapability(CapabilityType.UnexpectedAlertBehavior, unexpectedAlertBehaviorSetting);
             }
 
             if (this.browserAttachTimeout != TimeSpan.MinValue)

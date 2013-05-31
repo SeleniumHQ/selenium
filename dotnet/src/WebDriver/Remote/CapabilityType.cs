@@ -81,5 +81,10 @@ namespace OpenQA.Selenium.Remote
         /// Capability name used to indicate whether the browser uses native events.
         /// </summary>
         public static readonly string HasNativeEvents = "nativeEvents";
+
+        /// <summary>
+        /// Capability name used to indicate how the browser handles unexpected alerts.
+        /// </summary>
+        public static readonly string UnexpectedAlertBehavior = "unexpectedAlertBehaviour";
     }
 }
