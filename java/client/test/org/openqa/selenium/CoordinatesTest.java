@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
@@ -104,7 +105,7 @@ public class CoordinatesTest extends JUnit4TestBase {
     assertThat(getLocationInViewPort(By.id("box")), is(new Point(40, 40)));
   }
 
-  @Ignore(SAFARI)
+  @Ignore({FIREFOX, SAFARI})
   @Test
   public void testShouldGetCoordinatesOfAnElementWithFixedPosition() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_fixed_element.html"));
