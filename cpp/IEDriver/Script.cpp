@@ -209,7 +209,8 @@ bool Script::ResultIsObject() {
 int Script::Execute() {
   LOG(TRACE) << "Entering Script::Execute";
 
-  CComVariant result;
+  CComVariant result = L"";
+  CComBSTR error_description = L"";
 
   if (this->script_engine_host_ == NULL) {
     LOG(WARN) << "Script engine host is NULL";
@@ -280,7 +281,6 @@ int Script::Execute() {
                                       0);
 
   if (FAILED(hr)) {
-    CComBSTR error_description = L"";
     if (DISP_E_EXCEPTION == hr) {
       error_description = exception.bstrDescription ? exception.bstrDescription : L"EUNEXPECTEDJSERROR";
       CComBSTR error_source(exception.bstrSource ? exception.bstrSource : L"EUNEXPECTEDJSERROR");
@@ -304,7 +304,10 @@ int Script::Execute() {
 int Script::ExecuteAsync(int timeout_in_milliseconds) {
   LOG(TRACE) << "Entering Script::ExecuteAsync";
   int return_code = WD_SUCCESS;
-  CComVariant result;
+
+  CComVariant result = L"";
+  CComBSTR error_description = L"";
+
   AsyncScriptExecutorThreadContext thread_context;
   thread_context.script_source = this->source_code_.c_str();
   thread_context.script_argument_count = this->argument_count_;
@@ -326,7 +329,8 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
     LOG(WARN) << "OpenEvent() returned non-NULL, event already exists.";
     result.Clear();
     result.vt = VT_BSTR;
-    result.bstrVal = L"Couldn't create an event for synchronizing the creation of the thread. This generally means that you were trying to click on an option in two different instances.";
+    error_description = L"Couldn't create an event for synchronizing the creation of the thread. This generally means that you were trying to click on an option in two different instances.";
+    result.bstrVal = error_description;
     this->result_.Copy(&result);
     return EUNEXPECTEDJSERROR;
   }
@@ -337,7 +341,8 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
     LOG(WARN) << "CreateEvent() failed.";
     result.Clear();
     result.vt = VT_BSTR;
-    result.bstrVal = L"Couldn't create an event for synchronizing the creation of the thread. This is an internal failure at the Windows OS level, and is generally not due to an error in the IE driver.";
+    error_description = L"Couldn't create an event for synchronizing the creation of the thread. This is an internal failure at the Windows OS level, and is generally not due to an error in the IE driver.";
+    result.bstrVal = error_description;
     this->result_.Copy(&result);
     return EUNEXPECTEDJSERROR;
   }
@@ -364,7 +369,8 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
     LOG(WARN) << "_beginthreadex() failed.";
     result.Clear();
     result.vt = VT_BSTR;
-    result.bstrVal = L"Couldn't create the thread for executing JavaScript asynchronously.";
+    error_description = L"Couldn't create the thread for executing JavaScript asynchronously.";
+    result.bstrVal = error_description;
     this->result_.Copy(&result);
     return EUNEXPECTEDJSERROR;
   }
@@ -379,7 +385,8 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
     LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for document failed";
     result.Clear();
     result.vt = VT_BSTR;
-    result.bstrVal = L"Couldn't marshal the IHTMLDocument2 interface to a stream. This is an internal COM error.";
+    error_description = L"Couldn't marshal the IHTMLDocument2 interface to a stream. This is an internal COM error.";
+    result.bstrVal = error_description;
     this->result_.Copy(&result);
     return EUNEXPECTEDJSERROR;
   }
@@ -397,7 +404,8 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
           LOGHR(WARN, hr) << "CoMarshalInterfaceThreadInStream() for IDispatch argument failed";
           result.Clear();
           result.vt = VT_BSTR;
-          result.bstrVal = L"Couldn't marshal the IDispatch interface to a stream. This is an internal COM error.";
+          error_description = L"Couldn't marshal the IDispatch interface to a stream. This is an internal COM error.";
+          result.bstrVal = error_description;
           this->result_.Copy(&result);
           return EUNEXPECTEDJSERROR;
         }
