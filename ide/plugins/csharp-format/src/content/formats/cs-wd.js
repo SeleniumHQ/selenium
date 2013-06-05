@@ -102,17 +102,7 @@ RegexpMatch.patternToString = function(pattern) {
     //value = value.replace(/^\s+/, '');
     //value = value.replace(/\s+$/, '');
     pattern = pattern.replace(/\\/g, '\\\\');
-    
-    //pattern = pattern.replace(/\"/g, '\\"');
-    //f'ing javascript doesn't support lookbehind regex otherwise I could just use /(?<! \+ )"(?! \+ )/g instead of the following 4 commands
-    //the following 4 lines provide a way for variables to be used by looking for ' + ' with quotes
-    //eg. verifyTextPresent || ${date}       date gets transoformed to " + date + "
-    //     this will make sure those extra quotes don't get commented out with "\"
-    pattern = pattern.replace(/ \+ \"/g, ' + \"\\'); 
-    pattern = pattern.replace(/\" \+ /g, '\"\\ + '); //so I'm just adding a '\' after a quote
-    pattern = pattern.replace(/\"(?!\\)/g, '\\"'); //replace every quote unless following by "\"
-    pattern = pattern.replace(/\"\\/g, '\"'); //remove that "\" I put in
-    
+    pattern = pattern.replace(/\"/g, '\\"');
     pattern = pattern.replace(/\r/g, '\\r');
     pattern = pattern.replace(/\n/g, '(\\n|\\r\\n)');
     return '"' + pattern + '"';
