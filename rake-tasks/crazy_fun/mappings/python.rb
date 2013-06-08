@@ -167,6 +167,8 @@ module Python
     def handle(fun, dir, args)
       task Tasks.new.task_name(dir, args[:name]) do
         dest = Platform.path_for(args[:dest])
+        # Clean the destination dir(build/python) before virtualenv'ing into it
+        FileUtils.rm_rf("#{dest}", :secure => true)
         pip_pkg = "pip install #{args[:packages].join(' ')}"
         virtualenv = ["virtualenv", "--no-site-packages", " #{dest}"]
         virtualenv += ["-p", ENV['pyversion']] if ENV['pyversion']
