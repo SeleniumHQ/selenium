@@ -16,12 +16,10 @@ limitations under the License.
 
 package org.openqa.selenium.support.events;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
+import org.jmock.Expectations;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.StubElement;
@@ -30,14 +28,15 @@ import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
-
-import org.jmock.Expectations;
-import org.junit.Test;
+import org.openqa.selenium.testing.MockTestBase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author Michael Tamm
@@ -391,6 +390,28 @@ public class EventFiringWebDriverTest extends MockTestBase {
     driver.register(new MyListener());
 
     driver.findElement(By.name("stub")).click();
+  }
+
+  @Test
+  public void shouldReturnLocatorFromToStringMethod() {
+    final StubElement stubElement = new StubElement() {
+      @Override
+      public String toString() {
+        return "cheese";
+      }
+    };
+
+    StubDriver driver = new StubDriver() {
+      @Override
+      public WebElement findElement(By by) {
+        return stubElement;
+      }
+    };
+
+    EventFiringWebDriver firingDriver = new EventFiringWebDriver(driver);
+    WebElement firingElement = firingDriver.findElement(By.id("ignored"));
+
+    assertEquals(stubElement.toString(), firingElement.toString());
   }
 
   private WebDriver unwrapDriver(WebDriver driver) {

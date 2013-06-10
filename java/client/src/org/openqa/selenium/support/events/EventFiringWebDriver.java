@@ -434,6 +434,11 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return underlyingElement.hashCode();
     }
 
+    @Override
+    public String toString() {
+      return underlyingElement.toString();
+    }
+
     public WebDriver getWrappedDriver() {
       return driver;
     }
