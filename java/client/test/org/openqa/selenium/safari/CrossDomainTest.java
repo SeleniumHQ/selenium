@@ -41,7 +41,7 @@ import org.junit.Test;
 import java.util.concurrent.Callable;
 
 @NeedsLocalEnvironment(reason = "Uses a local server")
-public class CrossDomainTest extends JUnit4TestBase {
+public class CrossDomainTest extends SafariTestBase {
 
   private static AppServer otherServer;
   private static Pages otherPages;

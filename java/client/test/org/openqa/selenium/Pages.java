@@ -21,6 +21,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 public class Pages {
   public String ajaxyPage;
   public String alertsPage;
+  public String blankPage;
   public String bodyTypingPage;
   public String booleanAttributes;
   public String childPage;
@@ -78,6 +79,7 @@ public class Pages {
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
     alertsPage = appServer.whereIs("alerts.html");
+    blankPage = appServer.whereIs("blank.html");
     bodyTypingPage = appServer.whereIs("bodyTypingTest.html");
     booleanAttributes = appServer.whereIs("booleanAttributes.html");
     childPage = appServer.whereIs("child/childPage.html");
