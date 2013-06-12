@@ -19,6 +19,7 @@ package org.openqa.selenium.safari;
 
 import com.google.common.base.Optional;
 
+import org.json.JSONException;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -34,6 +35,8 @@ import java.io.IOException;
 /**
  * A WebDriver implementation that controls Safari using a browser extension
  * (consequently, only Safari 5.1+ is supported).
+ *
+ * This driver can be configured using the {@link SafariOptions} class.
  */
 public class SafariDriver extends RemoteWebDriver
     implements TakesScreenshot {
@@ -46,7 +49,9 @@ public class SafariDriver extends RemoteWebDriver
    * <p><strong>Warning:</strong> Since Safari uses a single profile for the
    * current user, enabling this capability will permanently erase any existing
    * session data.
+   * @deprecated use {@link SafariOptions#setUseCleanSession(boolean)} instead.
    */
+  @Deprecated
   public static final String CLEAN_SESSION_CAPABILITY = "safari.cleanSession";
 
   /**
@@ -59,43 +64,41 @@ public class SafariDriver extends RemoteWebDriver
    * </ul>
    *
    * <p>This capability may be set either as a String or File object.
+   * @deprecated use {@link SafariOptions#setDataDir(java.io.File)} instead.
    */
+  @Deprecated
   public static final String DATA_DIR_CAPABILITY = "safari.dataDir";
 
   /**
    * Boolean capability that specifies whether to skip installing the SafariDriver extension.
    * When using this capability, a copy of the extension must be pre-installed with Safari or
    * the driver will not function.
+   * @deprecated use {@link SafariOptions#setSkipExtensionInstallation(boolean)} instead.
    */
+  @Deprecated
   public static final String NO_INSTALL_EXTENSION_CAPABILITY = "safari.extension.noInstall";
 
+  /**
+   * Initializes a new SafariDriver} class with default {@link SafariOptions}.
+   */
   public SafariDriver() {
-    this(DesiredCapabilities.safari());
+    this(new SafariOptions());
   }
 
+  /**
+   * Converts the specified {@link DesiredCapabilities} to a {@link SafariOptions}
+   * instance and initializes a new SafariDriver using these options.
+   * @see SafariOptions#fromCapabilities(org.openqa.selenium.Capabilities)
+   */
   public SafariDriver(Capabilities desiredCapabilities) {
-    super(
-        new SafariDriverCommandExecutor(
-            0, desiredCapabilities.is(CLEAN_SESSION_CAPABILITY),
-            new SafariDriverExtension(
-                dataDir(desiredCapabilities),
-                installExtension(desiredCapabilities))),
-        desiredCapabilities);
+    this(SafariOptions.fromCapabilities(desiredCapabilities));
   }
 
-  private static boolean installExtension(Capabilities capabilities) {
-    return !capabilities.is(NO_INSTALL_EXTENSION_CAPABILITY);
-  }
-
-  private static Optional<File> dataDir(Capabilities capabilities) {
-    Object cap = capabilities.getCapability(DATA_DIR_CAPABILITY);
-    File dir = null;
-    if (cap instanceof String) {
-      dir = new File((String) cap);
-    } else if (cap instanceof File) {
-      dir = (File) cap;
-    }
-    return Optional.fromNullable(dir);
+  /**
+   * Initializes a new SafariDriver using the specified {@link SafariOptions}.
+   */
+  public SafariDriver(SafariOptions safariOptions) {
+    super(new SafariDriverCommandExecutor(safariOptions), safariOptions.toCapabilities());
   }
 
   @Override
