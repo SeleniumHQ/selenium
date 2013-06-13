@@ -53,19 +53,28 @@ wgxpath.XPathResultType_ = {
  * @constructor
  * @extends {XPathExpression}
  * @param {string} expr The expression string.
+ * @param {?(XPathNSResolver|function(string): ?string)} nsResolver
+ *     XPath namespace resolver.
  * @private
  */
-wgxpath.XPathExpression_ = function(expr) {
+wgxpath.XPathExpression_ = function(expr, nsResolver) {
   if (!expr.length) {
     throw Error('Empty XPath expression.');
   }
-
   var lexer = wgxpath.Lexer.tokenize(expr);
-
   if (lexer.empty()) {
     throw Error('Invalid XPath expression.');
   }
-  var gexpr = new wgxpath.Parser(lexer).parseExpr();
+
+  // nsResolver may either be an XPathNSResolver, which has a lookupNamespaceURI
+  // function, a custom function, or null. Standardize it to a function.
+  if (!nsResolver) {
+    nsResolver = function(string) {return null;};
+  } else if (!goog.isFunction(nsResolver)) {
+    nsResolver = goog.bind(nsResolver.lookupNamespaceURI, nsResolver);
+  }
+
+  var gexpr = new wgxpath.Parser(lexer, nsResolver).parseExpr();
   if (!lexer.empty()) {
     throw Error('Bad token: ' + lexer.next());
   }
@@ -104,7 +113,7 @@ wgxpath.XPathResult_ = function(value, type) {
       type != wgxpath.XPathResultType_.NUMBER_TYPE &&
       type != wgxpath.XPathResultType_.BOOLEAN_TYPE &&
       !(value instanceof wgxpath.NodeSet)) {
-    throw Error('document.evaluate called with wrong result type.');
+    throw Error('value could not be converted to the specified type');
   }
   this['resultType'] = type;
   var nodes;
@@ -148,14 +157,14 @@ wgxpath.XPathResult_ = function(value, type) {
   this['iterateNext'] = function() {
     if (type != wgxpath.XPathResultType_.UNORDERED_NODE_ITERATOR_TYPE &&
         type != wgxpath.XPathResultType_.ORDERED_NODE_ITERATOR_TYPE) {
-      throw Error('iterateNext called with wrong result type.');
+      throw Error('iterateNext called with wrong result type');
     }
     return (index >= nodes.length) ? null : nodes[index++];
   };
   this['snapshotItem'] = function(i) {
     if (type != wgxpath.XPathResultType_.UNORDERED_NODE_SNAPSHOT_TYPE &&
         type != wgxpath.XPathResultType_.ORDERED_NODE_SNAPSHOT_TYPE) {
-      throw Error('snapshotItem called with wrong result type.');
+      throw Error('snapshotItem called with wrong result type');
     }
     return (i >= nodes.length || i < 0) ? null : nodes[i];
   };
@@ -190,11 +199,12 @@ wgxpath.install = function(opt_win) {
   // Installation is a noop if native XPath is available.
   if (!doc['evaluate']) {
     win['XPathResult'] = wgxpath.XPathResult_;
-    doc['evaluate'] = function(expr, context, nsresolver, type, result) {
-      return new wgxpath.XPathExpression_(expr).evaluate(context, type);
+    doc['evaluate'] = function(expr, context, nsResolver, type, result) {
+      return new wgxpath.XPathExpression_(expr, nsResolver).
+          evaluate(context, type);
     };
-    doc['createExpression'] = function(expr) {
-      return new wgxpath.XPathExpression_(expr);
+    doc['createExpression'] = function(expr, nsResolver) {
+      return new wgxpath.XPathExpression_(expr, nsResolver);
     };
   }
 };

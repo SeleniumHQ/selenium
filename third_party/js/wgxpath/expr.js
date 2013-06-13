@@ -46,12 +46,14 @@ wgxpath.Expr = function(dataType) {
 
 
 /**
- * A default indentation for pretty printing.
+ * Indentation method for pretty printing.
  *
- * @const
- * @type {string}
+ * @param {*} obj The object to return a string representation for.
+ * @return {string} The string prepended with newline and two spaces.
  */
-wgxpath.Expr.INDENT = '  ';
+wgxpath.Expr.indent = function(obj) {
+  return '\n  ' + obj.toString().split('\n').join('\n  ');
+};
 
 
 /**
@@ -64,10 +66,7 @@ wgxpath.Expr.prototype.evaluate = goog.abstractMethod;
 
 
 /**
- * Returns the string representation of the expression for debugging.
- *
- * @param {string=} opt_indent An optional indentation.
- * @return {string} The string representation.
+ * @override
  */
 wgxpath.Expr.prototype.toString = goog.abstractMethod;
 

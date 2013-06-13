@@ -26,14 +26,19 @@ goog.require('wgxpath.UnionExpr');
  *
  * @constructor
  * @param {!wgxpath.Lexer} lexer The lexer.
+ * @param {function(string): ?string} nsResolver Namespace resolver.
  */
-wgxpath.Parser = function(lexer) {
+wgxpath.Parser = function(lexer, nsResolver) {
 
   /**
-   * @private
-   * @type {!wgxpath.Lexer}
+   * @private {!wgxpath.Lexer}
    */
   this.lexer_ = lexer;
+
+  /**
+   * @private {function(string): ?string}
+   */
+  this.nsResolver_ = nsResolver;
 };
 
 
@@ -232,13 +237,21 @@ wgxpath.Parser.prototype.parseLiteral_ = function() {
  * @return {!wgxpath.NameTest} The NameTest constructed.
  */
 wgxpath.Parser.prototype.parseNameTest_ = function() {
-  // Has namespace
-  if (this.lexer_.peek() != '*' && this.lexer_.peek(1) == ':' &&
-      this.lexer_.peek(2) == '*') {
-    return new wgxpath.NameTest(this.lexer_.next() + this.lexer_.next() +
-        this.lexer_.next());
+  var name = this.lexer_.next();
+
+  // Check whether there's a namespace prefix.
+  var colonIndex = name.indexOf(':');
+  if (colonIndex == -1) {
+    return new wgxpath.NameTest(name);
+  } else {
+    var namespacePrefix = name.substring(0, colonIndex);
+    var namespaceUri = this.nsResolver_(namespacePrefix);
+    if (!namespaceUri) {
+      throw Error('Namespace prefix not declared: ' + namespacePrefix);
+    }
+    name = name.substr(colonIndex + 1);
+    return new wgxpath.NameTest(name, namespaceUri);
   }
-  return new wgxpath.NameTest(this.lexer_.next());
 };
 
 
@@ -309,8 +322,6 @@ wgxpath.Parser.prototype.parsePathExpr_ = function() {
  * @return {!wgxpath.Step} The parsed expression.
  */
 wgxpath.Parser.prototype.parseStep_ = function(op) {
-  // TODO (evanrthomas) : Let parseStep see op instead of passing it
-  //     as a parameter
   var test, step, token, predicates;
   if (op != '/' && op != '//') {
     throw Error('Step op should be "/" or "//"');

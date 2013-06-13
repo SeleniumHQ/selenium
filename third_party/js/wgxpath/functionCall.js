@@ -84,16 +84,13 @@ wgxpath.FunctionCall.prototype.evaluate = function(ctx) {
 /**
  * @override
  */
-wgxpath.FunctionCall.prototype.toString = function(opt_indent) {
-  var indent = opt_indent || '';
-  var text = indent + 'Function: ' + this.func_ + '\n';
-  indent += wgxpath.Expr.INDENT;
+wgxpath.FunctionCall.prototype.toString = function() {
+  var text = 'Function: ' + this.func_;
   if (this.args_.length) {
-    text += indent + 'Arguments:';
-    indent += wgxpath.Expr.INDENT;
-    text = goog.array.reduce(this.args_, function(prev, curr) {
-      return prev + '\n' + curr.toString(indent);
-    }, text);
+    var args = goog.array.reduce(this.args_, function(prev, curr) {
+      return prev + wgxpath.Expr.indent(curr);
+    }, 'Arguments:');
+    text += wgxpath.Expr.indent(args);
   }
   return text;
 };
@@ -228,7 +225,7 @@ wgxpath.FunctionCall.createFunc_ = function(name, dataType,
   var func = new wgxpath.FunctionCall.Func_(name, dataType,
       needContextPosition, needContextNodeWithoutArgs, needContextNodeWithArgs,
       evaluate, minArgs, opt_maxArgs, opt_nodesetsRequired);
-  func = (/** @type {!wgxpath.FunctionCall.Func} */ func);
+  func = /** @type {!wgxpath.FunctionCall.Func} */ (func);
   wgxpath.FunctionCall.nameToFuncMap_[name] = func;
   return func;
 };

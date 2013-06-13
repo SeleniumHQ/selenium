@@ -1,5 +1,6 @@
 goog.provide('wgxpath.Step');
 
+goog.require('goog.array');
 goog.require('goog.dom.NodeType');
 goog.require('wgxpath.DataType');
 goog.require('wgxpath.Expr');
@@ -153,7 +154,7 @@ wgxpath.Step.prototype.doesIncludeDescendants = function() {
  * @return {!wgxpath.Step.Axis} The axis.
  */
 wgxpath.Step.prototype.getAxis = function() {
-  return (/** @type {!wgxpath.Step.Axis} */ this.axis_);
+  return /** @type {!wgxpath.Step.Axis} */ (this.axis_);
 };
 
 
@@ -170,21 +171,19 @@ wgxpath.Step.prototype.getTest = function() {
 /**
  * @override
  */
-wgxpath.Step.prototype.toString = function(opt_indent) {
-  var indent = opt_indent || '';
-  var text = indent + 'Step: ' + '\n';
-  indent += wgxpath.Expr.INDENT;
-  text += indent + 'Operator: ' + (this.descendants_ ? '//' : '/') + '\n';
+wgxpath.Step.prototype.toString = function() {
+  var text = 'Step:';
+  text += wgxpath.Expr.indent('Operator: ' + (this.descendants_ ? '//' : '/'));
   if (this.axis_.name_) {
-    text += indent + 'Axis: ' + this.axis_ + '\n';
+    text += wgxpath.Expr.indent('Axis: ' + this.axis_);
   }
-  text += this.test_.toString(indent);
-  if (this.predicates_.length) {
-    text += indent + 'Predicates: ' + '\n';
-    for (var i = 0; i < this.predicates_.length; i++) {
-      var tail = i < this.predicates_.length - 1 ? ', ' : '';
-      text += this.predicates_[i].toString(indent) + tail;
-    }
+  text += wgxpath.Expr.indent(this.test_);
+  if (this.predicates_.getLength()) {
+    var predicates = goog.array.reduce(this.predicates_.getPredicates(),
+        function(prev, curr) {
+          return prev + wgxpath.Expr.indent(curr);
+        }, 'Predicates:');
+    text += wgxpath.Expr.indent(predicates);
   }
   return text;
 };
@@ -277,9 +276,9 @@ wgxpath.Step.createAxis_ =
     throw Error('Axis already created: ' + name);
   }
   // The upcast and then downcast for the JSCompiler.
-  var axis = (/** @type {!Object} */ new wgxpath.Step.Axis_(
+  var axis = /** @type {!Object} */ (new wgxpath.Step.Axis_(
       name, func, reverse, !!opt_supportsQuickAttr));
-  axis = (/** @type {!wgxpath.Step.Axis} */ axis);
+  axis = /** @type {!wgxpath.Step.Axis} */ (axis);
   wgxpath.Step.nameToAxisMap_[name] = axis;
   return axis;
 };

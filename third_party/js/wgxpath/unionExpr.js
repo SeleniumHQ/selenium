@@ -46,7 +46,7 @@ wgxpath.UnionExpr.prototype.evaluate = function(ctx) {
   goog.array.forEach(this.paths_, function(p) {
     var result = p.evaluate(ctx);
     if (!(result instanceof wgxpath.NodeSet)) {
-      throw Error('PathExpr must evaluate to NodeSet.');
+      throw Error('Path expression must evaluate to NodeSet.');
     }
     nodeset = wgxpath.NodeSet.merge(nodeset, result);
   });
@@ -57,12 +57,8 @@ wgxpath.UnionExpr.prototype.evaluate = function(ctx) {
 /**
  * @override
  */
-wgxpath.UnionExpr.prototype.toString = function(opt_indent) {
-  var indent = opt_indent || '';
-  var text = indent + 'UnionExpr:' + '\n';
-  indent += wgxpath.Expr.INDENT;
-  goog.array.forEach(this.paths_, function(p) {
-    text += p.toString(indent) + '\n';
-  });
-  return text.substring(0, text.length); // Remove trailing newline.
+wgxpath.UnionExpr.prototype.toString = function() {
+  return goog.array.reduce(this.paths_, function(prev, curr) {
+    return prev + wgxpath.Expr.indent(curr);
+  }, 'Union Expression:');
 };

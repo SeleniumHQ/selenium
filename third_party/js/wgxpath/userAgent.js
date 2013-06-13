@@ -14,7 +14,7 @@ goog.require('goog.userAgent');
  * @const
  */
 wgxpath.userAgent.IE_DOC_PRE_9 = goog.userAgent.IE &&
-    !goog.userAgent.isDocumentMode(9);
+    !goog.userAgent.isDocumentModeOrHigher(9);
 
 
 /**
@@ -22,4 +22,4 @@ wgxpath.userAgent.IE_DOC_PRE_9 = goog.userAgent.IE &&
  * @const
  */
 wgxpath.userAgent.IE_DOC_PRE_8 = goog.userAgent.IE &&
-    !goog.userAgent.isDocumentMode(8);
+    !goog.userAgent.isDocumentModeOrHigher(8);

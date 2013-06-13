@@ -442,13 +442,13 @@ goog.userAgent.compare = function(v1, v2) {
 
 
 /**
- * Cache for {@link goog.userAgent.isVersion}. Calls to compareVersions are
- * surprisingly expensive and as a browsers version number is unlikely to change
- * during a session we cache the results.
- * @type {Object}
+ * Cache for {@link goog.userAgent.isVersionOrHigher}.
+ * Calls to compareVersions are surprisingly expensive and, as a browser's
+ * version number is unlikely to change during a session, we cache the results.
+ * @const
  * @private
  */
-goog.userAgent.isVersionCache_ = {};
+goog.userAgent.isVersionOrHigherCache_ = {};
 
 
 /**
@@ -465,12 +465,21 @@ goog.userAgent.isVersionCache_ = {};
  * @return {boolean} Whether the user agent version is higher or the same as
  *     the given version.
  */
-goog.userAgent.isVersion = function(version) {
+goog.userAgent.isVersionOrHigher = function(version) {
   return goog.userAgent.ASSUME_ANY_VERSION ||
-      goog.userAgent.isVersionCache_[version] ||
-      (goog.userAgent.isVersionCache_[version] =
+      goog.userAgent.isVersionOrHigherCache_[version] ||
+      (goog.userAgent.isVersionOrHigherCache_[version] =
           goog.string.compareVersions(goog.userAgent.VERSION, version) >= 0);
 };
+
+
+/**
+ * Deprecated alias to {@code goog.userAgent.isVersionOrHigher}.
+ * @param {string|number} version The version to check.
+ * @return {boolean} Whether the user agent version is higher or the same as
+ *     the given version.
+ */
+goog.userAgent.isVersion = goog.userAgent.isVersionOrHigher;
 
 
 /**
@@ -482,9 +491,18 @@ goog.userAgent.isVersion = function(version) {
  * @return {boolean} Whether the IE effective document mode is higher or the
  *     same as the given version.
  */
-goog.userAgent.isDocumentMode = function(documentMode) {
+goog.userAgent.isDocumentModeOrHigher = function(documentMode) {
   return goog.userAgent.IE && goog.userAgent.DOCUMENT_MODE >= documentMode;
 };
+
+
+/**
+ * Deprecated alias to {@code goog.userAgent.isDocumentModeOrHigher}.
+ * @param {number} version The version to check.
+ * @return {boolean} Whether the IE effective document mode is higher or the
+ *      same as the given version.
+ */
+goog.userAgent.isDocumentMode = goog.userAgent.isDocumentModeOrHigher;
 
 
 /**
