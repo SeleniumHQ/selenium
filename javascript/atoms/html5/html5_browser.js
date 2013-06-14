@@ -48,7 +48,6 @@ bot.html5.API = {
 
 /**
  * True if the current browser is IE8.
- *
  * @private {boolean}
  * @const
  */
@@ -58,7 +57,6 @@ bot.html5.IS_IE8_ = goog.userAgent.IE &&
 
 /**
  * True if the current browser is Safari 4.
- *
  * @private {boolean}
  * @const
  */
@@ -68,7 +66,6 @@ bot.html5.IS_SAFARI4_ = goog.userAgent.product.SAFARI &&
 
 /**
  * True if the browser is Android 2.2 (Froyo).
- *
  * @private {boolean}
  * @const
  */
@@ -78,7 +75,6 @@ bot.html5.IS_ANDROID_FROYO_ = goog.userAgent.product.ANDROID &&
 
 /**
  * True if the current browser is Safari 5 on Windows.
- *
  * @private {boolean}
  * @const
  */

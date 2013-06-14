@@ -16,6 +16,7 @@ limitations under the License.
 */
 
 goog.provide('core.filters');
+goog.provide('core.filters.Strategy');
 
 goog.require('bot.dom');
 goog.require('core.Error');

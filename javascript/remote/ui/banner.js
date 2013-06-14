@@ -45,7 +45,7 @@ remote.ui.Banner.prototype.onResizeKey_ = null;
 remote.ui.Banner.prototype.disposeInternal = function() {
   goog.events.removeAll(this.getElement());
   goog.events.unlistenByKey(this.onResizeKey_);
-  delete this.onResizeKey_;
+  this.onResizeKey_ = null;
 
   goog.base(this, 'disposeInternal');
 };

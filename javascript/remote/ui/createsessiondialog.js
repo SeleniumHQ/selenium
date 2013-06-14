@@ -15,8 +15,10 @@
 goog.provide('remote.ui.CreateSessionDialog');
 
 goog.require('goog.array');
+goog.require('goog.dom');
 goog.require('goog.dom.TagName');
-goog.require('goog.ui.Component.EventType');
+goog.require('goog.events');
+goog.require('goog.ui.Component');
 goog.require('remote.ui.ActionDialog');
 
 

@@ -25,7 +25,6 @@ goog.provide('bot');
  * Frameworks using the atoms keep track of which window or frame is currently
  * being used for command execution. Note that "window" may not always be
  * defined (for example in firefox extensions)
- *
  * @private {!Window}
  */
 bot.window_;

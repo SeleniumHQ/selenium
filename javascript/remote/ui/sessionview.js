@@ -25,7 +25,6 @@ goog.require('goog.ui.Dialog');
 goog.require('remote.ui.ControlBlock');
 goog.require('remote.ui.Event');
 goog.require('remote.ui.JsonTooltip');
-goog.require('remote.ui.OpenScriptDialog');
 
 
 

@@ -107,7 +107,7 @@ safaridriver.inject.Encoder.getElementCssSelector_ = function(element) {
       path.indexOf('form') != -1) {
     var str = goog.string.getRandomString();
     element.setAttribute(
-        safaridriver.inject.Encoder.ENCODING_ATTRIBUTE_NAME_, str)
+        safaridriver.inject.Encoder.ENCODING_ATTRIBUTE_NAME_, str);
     path = element.tagName.toLowerCase() +
         '[' + safaridriver.inject.Encoder.ENCODING_ATTRIBUTE_NAME_ +
         '="' + str + '"]';

@@ -49,7 +49,7 @@ bot.locators.css.single = function(target, root) {
   var element = root.querySelector(target);
 
   return element && element.nodeType == goog.dom.NodeType.ELEMENT ?
-      /**@type {Element}*/(element) : null;
+      /**@type {Element}*/ (element) : null;
 };
 
 

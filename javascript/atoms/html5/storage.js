@@ -122,7 +122,7 @@ bot.storage.Storage.prototype.setItem = function(key, value) {
  */
 bot.storage.Storage.prototype.getItem = function(key) {
   var value = this.storageMap_.getItem(key);
-  return  /** @type {?string} */ (value);
+  return /** @type {?string} */ (value);
 };
 
 
