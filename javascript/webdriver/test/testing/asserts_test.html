@@ -31,19 +31,15 @@ limitations under the License.
     }
 
 
-    function tearDown() {
-    }
-
-
     function testApplyMatcher_nonPromiseValue_valueMatches() {
-      webdriver.testing.asserts.applyMatcher('foo', equals('foo')).
+      assertThat('foo', equals('foo')).
           then(result.callback, result.errback);
       result.assertCallback();
     }
 
 
     function testApplyMatcher_nonPromiseValue_notValueMatches() {
-      webdriver.testing.asserts.applyMatcher('foo', equals('bar')).
+      assertThat('foo', equals('bar')).
           then(result.callback, result.errback);
       result.assertErrback();
     }
@@ -51,7 +47,7 @@ limitations under the License.
 
     function testApplyMatcher_promiseValue_valueMatches() {
       var d = new webdriver.promise.Deferred();
-      webdriver.testing.asserts.applyMatcher(d, equals('foo')).
+      assertThat(d, equals('foo')).
           then(result.callback, result.errback);
       result.assertNeither();
       d.fulfill('foo');
@@ -61,7 +57,7 @@ limitations under the License.
 
     function testApplyMatcher_promiseValue_notValueMatches() {
       var d = new webdriver.promise.Deferred();
-      webdriver.testing.asserts.applyMatcher(d, equals('foo')).
+      assertThat(d, equals('foo')).
           then(result.callback, result.errback);
       result.assertNeither();
       d.fulfill('bar');
@@ -71,7 +67,7 @@ limitations under the License.
 
     function testApplyMatcher_promiseValue_promiseRejected() {
       var d = new webdriver.promise.Deferred();
-      webdriver.testing.asserts.applyMatcher(d, equals('foo')).
+      assertThat(d, equals('foo')).
           then(result.callback, result.errback);
       result.assertNeither();
       d.reject();

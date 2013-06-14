@@ -41,10 +41,12 @@ goog.require('webdriver.promise.Promise');
  * @param {!webdriver.WebDriver} driver The driver to use.
  * @param {(string|!webdriver.promise.Promise)} handle Either the managed
  *     window's handle, or a promise that will resolve to it.
+ * @param {(Window|webdriver.promise.Promise)=} opt_window The raw window
+ *     object, if available.
  * @constructor
  * @extends {webdriver.promise.Promise}
  */
-webdriver.testing.Window = function(driver, handle) {
+webdriver.testing.Window = function(driver, handle, opt_window) {
   webdriver.promise.Promise.call(this);
 
   /** @private {!webdriver.WebDriver} */
@@ -52,6 +54,9 @@ webdriver.testing.Window = function(driver, handle) {
 
   /** @private {!webdriver.promise.Promise} */
   this.handle_ = webdriver.promise.when(handle);
+
+  /** @private {!webdriver.promise.Promise} */
+  this.window_ = webdriver.promise.when(opt_window);
 };
 goog.inherits(webdriver.testing.Window, webdriver.promise.Promise);
 
@@ -84,6 +89,7 @@ webdriver.testing.Window.currentWindow_ = null;
  * @return {!webdriver.testing.Window} The new window.
  */
 webdriver.testing.Window.create = function(driver, opt_size, opt_timeout) {
+  var windowPromise = webdriver.promise.defer();
   var handle = driver.call(function() {
     var features = [
       'location=yes',
@@ -97,7 +103,7 @@ webdriver.testing.Window.create = function(driver, opt_size, opt_timeout) {
     }
 
     var name = goog.string.getRandomString();
-    window.open('', name, features.join(','));
+    windowPromise.fulfill(window.open('', name, features.join(',')));
 
     driver.wait(function() {
       return driver.switchTo().window(name).then(
@@ -107,7 +113,7 @@ webdriver.testing.Window.create = function(driver, opt_size, opt_timeout) {
     return driver.getWindowHandle();
   });
 
-  return new webdriver.testing.Window(driver, handle);
+  return new webdriver.testing.Window(driver, handle, windowPromise);
 };
 
 
@@ -131,7 +137,8 @@ webdriver.testing.Window.focusOnWindow = function(driver, opt_window) {
     win.name = name;
     ret = new webdriver.testing.Window(driver,
         driver.switchTo().window(name).
-            addCallback(driver.getWindowHandle, driver));
+            addCallback(driver.getWindowHandle, driver),
+        win);
     if (win === window) {
       webdriver.testing.Window.currentWindow_ = ret;
     }
@@ -169,7 +176,13 @@ webdriver.testing.Window.prototype.focus = function() {
  *     when this command has completed.
  */
 webdriver.testing.Window.prototype.close = function() {
-  return this.focus().addCallback(this.driver_.close, this.driver_);
+  return this.window_.addCallback(function(win) {
+    if (win) {
+      win.close();
+    } else {
+      return this.focus().addCallback(this.driver_.close, this.driver_);
+    }
+  }, this);
 };
 
 

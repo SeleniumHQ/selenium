@@ -23,7 +23,6 @@ goog.require('webdriver.promise.ControlFlow');
 /**
  * Describes an object that can be used to advance the clock and trigger
  * timeouts registered on the global timing functions.
- * @constructor
  * @interface
  */
 webdriver.testing.Clock = function() {};
@@ -161,14 +160,17 @@ webdriver.testing.promise.FlowTester.prototype.throwWithMessages_ = function(
 webdriver.testing.promise.FlowTester.prototype.verifySuccess = function(
     opt_flow) {
   var messages = [];
-  var foundFlow = !opt_flow;
+  var foundFlow = false;
 
   goog.array.forEach(this.allFlows_, function(record, index) {
     if (!opt_flow || opt_flow === record.flow) {
-      foundFlow = foundFlow || opt_flow === record.flow;
+      foundFlow = true;
       if (record.errors.length) {
         messages = goog.array.concat(
-            messages, 'Uncaught errors for flow #' + index, record.errors);
+            messages, 'Uncaught errors for flow #' + index,
+            goog.array.map(record.errors, function(error) {
+              return error.stack || error.message || String(error);
+            }));
       }
 
       if (!record.isIdle) {
@@ -196,12 +198,12 @@ webdriver.testing.promise.FlowTester.prototype.verifySuccess = function(
 webdriver.testing.promise.FlowTester.prototype.verifyFailure = function(
     opt_flow) {
   var messages = [];
-  var foundFlow = !opt_flow;
+  var foundFlow = false;
   var foundAFailure = false;
 
   goog.array.forEach(this.allFlows_, function(record, index) {
     if (!opt_flow || opt_flow === record.flow) {
-      foundFlow = foundFlow || opt_flow === record.flow;
+      foundFlow = true;
 
       if (!record.isIdle) {
         messages.push('Flow #' + index + ' is not idle');
@@ -279,11 +281,11 @@ webdriver.testing.promise.FlowTester.prototype.turnEventLoop = function() {
 webdriver.testing.promise.FlowTester.prototype.assertStillRunning = function(
     opt_flow) {
   var messages = [];
-  var foundFlow = !opt_flow;
+  var foundFlow = false;
 
   goog.array.forEach(this.allFlows_, function(record, index) {
     if (!opt_flow || opt_flow === record.flow) {
-      foundFlow = foundFlow || opt_flow === record.flow;
+      foundFlow = true;
       if (record.isIdle) {
         messages.push('Flow #' + index + ' is idle');
       }

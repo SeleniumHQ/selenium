@@ -24,6 +24,7 @@ goog.provide('webdriver.stacktrace.Snapshot');
 
 goog.require('goog.array');
 goog.require('goog.string');
+goog.require('goog.userAgent');
 
 
 
@@ -39,15 +40,23 @@ webdriver.stacktrace.Snapshot = function(opt_slice) {
   /** @private {number} */
   this.slice_ = opt_slice || 0;
 
-  /** @private {!Error} */
-  this.error_ = Error();
-
+  var error;
   if (webdriver.stacktrace.CAN_CAPTURE_STACK_TRACE_) {
-    Error.captureStackTrace(this.error_, webdriver.stacktrace.Snapshot);
+    error = Error();
+    Error.captureStackTrace(error, webdriver.stacktrace.Snapshot);
   } else {
-    // Opera and Firefox do not generate a stack frame for calls to Error(),
-    // so just remove 1 extra for the call to this constructor.
+    // Remove 1 extra frame for the call to this constructor.
     this.slice_ += 1;
+    // IE will only create a stack trace when the Error is thrown.
+    // We use null.x() to throw an exception instead of throw this.error_
+    // because the closure compiler may optimize throws to a function call
+    // in an attempt to minimize the binary size which in turn has the side
+    // effect of adding an unwanted stack frame.
+    try {
+      null.x();
+    } catch (e) {
+      error = e;
+    }
   }
 
   /**
@@ -55,7 +64,7 @@ webdriver.stacktrace.Snapshot = function(opt_slice) {
    * computes the context correctly.
    * @private {string}
    */
-  this.stack_ = this.error_.stack;
+  this.stack_ = webdriver.stacktrace.getStack_(error);
 };
 
 
@@ -70,24 +79,37 @@ webdriver.stacktrace.CAN_CAPTURE_STACK_TRACE_ =
 
 
 /**
+ * Whether the current browser supports stack traces.
+ *
+ * @type {boolean}
+ * @const
+ */
+webdriver.stacktrace.BROWSER_SUPPORTED = (function() {
+  try {
+    throw Error();
+  } catch (e) {
+    return !!e.stack;
+  }
+})();
+
+
+/**
  * The parsed stack trace. This list is lazily generated the first time it is
  * accessed.
- * @private {?string}
+ * @private {Array.<!webdriver.stacktrace.Frame>}
  */
 webdriver.stacktrace.Snapshot.prototype.parsedStack_ = null;
 
 
 /**
- * @return {string} The parsed stack trace.
+ * @return {!Array.<!webdriver.stacktrace.Frame>} The parsed stack trace.
  */
 webdriver.stacktrace.Snapshot.prototype.getStacktrace = function() {
   if (goog.isNull(this.parsedStack_)) {
-    var stack = webdriver.stacktrace.parse(this.error_);
+    this.parsedStack_ = webdriver.stacktrace.parse_(this.stack_);
     if (this.slice_) {
-      stack = goog.array.slice(stack, this.slice_);
+      this.parsedStack_ = goog.array.slice(this.parsedStack_, this.slice_);
     }
-    this.parsedStack_ = stack.join('\n');
-    delete this.error_;
     delete this.slice_;
     delete this.stack_;
   }
@@ -108,9 +130,8 @@ webdriver.stacktrace.Snapshot.prototype.getStacktrace = function() {
  * @param {(string|undefined)} path File path or URL including line number and
  *     optionally column number separated by colons.
  * @constructor
- * @private
  */
-webdriver.stacktrace.Frame_ = function(context, name, alias, path) {
+webdriver.stacktrace.Frame = function(context, name, alias, path) {
 
   /** @private {string} */
   this.context_ = context || '';
@@ -123,31 +144,73 @@ webdriver.stacktrace.Frame_ = function(context, name, alias, path) {
 
   /** @private {string} */
   this.path_ = path || '';
+
+  /** @private {string} */
+  this.url_ = this.path_;
+
+  /** @private {number} */
+  this.line_ = -1;
+
+  /** @private {number} */
+  this.column_ = -1;
+
+  if (path) {
+    var match = /:(\d+)(?::(\d+))?$/.exec(path);
+    if (match) {
+      this.line_ = Number(match[1]);
+      this.column = Number(match[2] || -1);
+      this.url_ = path.substr(0, match.index);
+    }
+  }
 };
 
 
 /**
  * Constant for an anonymous frame.
- * @private {!webdriver.stacktrace.Frame_}
+ * @private {!webdriver.stacktrace.Frame}
  * @const
  */
 webdriver.stacktrace.ANONYMOUS_FRAME_ =
-    new webdriver.stacktrace.Frame_('', '', '', '');
+    new webdriver.stacktrace.Frame('', '', '', '');
 
 
 /**
  * @return {string} The function name or empty string if the function is
  *     anonymous and the object field which it's assigned to is unknown.
  */
-webdriver.stacktrace.Frame_.prototype.getName = function() {
+webdriver.stacktrace.Frame.prototype.getName = function() {
   return this.name_;
+};
+
+
+/**
+ * @return {string} The url or empty string if it is unknown.
+ */
+webdriver.stacktrace.Frame.prototype.getUrl = function() {
+  return this.url_;
+};
+
+
+/**
+ * @return {number} The line number if known or -1 if it is unknown.
+ */
+webdriver.stacktrace.Frame.prototype.getLine = function() {
+  return this.line_;
+};
+
+
+/**
+ * @return {number} The column number if known and -1 if it is unknown.
+ */
+webdriver.stacktrace.Frame.prototype.getColumn = function() {
+  return this.column_;
 };
 
 
 /**
  * @return {boolean} Whether the stack frame contains an anonymous function.
  */
-webdriver.stacktrace.Frame_.prototype.isAnonymous = function() {
+webdriver.stacktrace.Frame.prototype.isAnonymous = function() {
   return !this.name_ || this.context_ == '[object Object]';
 };
 
@@ -158,7 +221,7 @@ webdriver.stacktrace.Frame_.prototype.isAnonymous = function() {
  * @return {string} The string representation of this frame.
  * @override
  */
-webdriver.stacktrace.Frame_.prototype.toString = function() {
+webdriver.stacktrace.Frame.prototype.toString = function() {
   var context = this.context_;
   if (context && context !== 'new ') {
     context += '.';
@@ -269,7 +332,7 @@ webdriver.stacktrace.V8_FUNCTION_CALL_PATTERN_ =
  * @const
  */
 webdriver.stacktrace.URL_PATTERN_ =
-    '((?:http|https|file)://[^\\s)]+|javascript:.*)';
+    '((?:http|https|file)://[^\\s]+|javascript:.*)';
 
 
 /**
@@ -295,13 +358,24 @@ webdriver.stacktrace.V8_STACK_FRAME_REGEXP_ = new RegExp('^    at' +
 
 
 /**
+ * RegExp pattern for function names in the Firefox stack trace.
+ * Firefox has extended identifiers to deal with inner functions and anonymous
+ * functions: https://bugzilla.mozilla.org/show_bug.cgi?id=433529#c9
+ * @private {string}
+ * @const
+ */
+webdriver.stacktrace.FIREFOX_FUNCTION_NAME_PATTERN_ =
+    webdriver.stacktrace.IDENTIFIER_PATTERN_ + '[\\w./<$]*';
+
+
+/**
  * RegExp pattern for function call in the Firefox stack trace.
  * Creates a submatch for the function name.
  * @private {string}
  * @const
  */
 webdriver.stacktrace.FIREFOX_FUNCTION_CALL_PATTERN_ =
-    '(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + ')?' +
+    '(' + webdriver.stacktrace.FIREFOX_FUNCTION_NAME_PATTERN_ + ')?' +
     '(?:\\(.*\\))?@';
 
 
@@ -350,6 +424,27 @@ webdriver.stacktrace.OPERA_STACK_FRAME_REGEXP_ = new RegExp('^' +
 
 
 /**
+ * RegExp pattern for function call in a Chakra (IE) stack trace. This
+ * expression allows for identifiers like 'Anonymous function', 'eval code',
+ * and 'Global code'.
+ * @private {string}
+ * @const
+ */
+webdriver.stacktrace.CHAKRA_FUNCTION_CALL_PATTERN_ = '(' +
+    webdriver.stacktrace.IDENTIFIER_PATTERN_ + '(?:\\s+\\w+)*)';
+
+
+/**
+ * Regular expression for parsing on stack frame in Chakra (IE).
+ * @private {!RegExp}
+ * @const
+ */
+webdriver.stacktrace.CHAKRA_STACK_FRAME_REGEXP_ = new RegExp('^   at ' +
+    webdriver.stacktrace.CHAKRA_FUNCTION_CALL_PATTERN_ +
+    '\\s*(?:\\((.*)\\))$');
+
+
+/**
  * Placeholder for an unparsable frame in a stack trace generated by
  * {@link goog.testing.stacktrace}.
  * @private {string}
@@ -394,14 +489,14 @@ webdriver.stacktrace.CLOSURE_STACK_FRAME_REGEXP_ = new RegExp('^> ' +
 /**
  * Parses one stack frame.
  * @param {string} frameStr The stack frame as string.
- * @return {webdriver.stacktrace.Frame_} Stack frame object or null if the
+ * @return {webdriver.stacktrace.Frame} Stack frame object or null if the
  *     parsing failed.
  * @private
  */
 webdriver.stacktrace.parseStackFrame_ = function(frameStr) {
   var m = frameStr.match(webdriver.stacktrace.V8_STACK_FRAME_REGEXP_);
   if (m) {
-    return new webdriver.stacktrace.Frame_(
+    return new webdriver.stacktrace.Frame(
         m[1] || m[2], m[3], m[4], m[5] || m[6]);
   }
 
@@ -412,12 +507,17 @@ webdriver.stacktrace.parseStackFrame_ = function(frameStr) {
 
   m = frameStr.match(webdriver.stacktrace.FIREFOX_STACK_FRAME_REGEXP_);
   if (m) {
-    return new webdriver.stacktrace.Frame_('', m[1], '', m[2]);
+    return new webdriver.stacktrace.Frame('', m[1], '', m[2]);
   }
 
   m = frameStr.match(webdriver.stacktrace.OPERA_STACK_FRAME_REGEXP_);
   if (m) {
-    return new webdriver.stacktrace.Frame_(m[2], m[1] || m[3], '', m[4]);
+    return new webdriver.stacktrace.Frame(m[2], m[1] || m[3], '', m[4]);
+  }
+
+  m = frameStr.match(webdriver.stacktrace.CHAKRA_STACK_FRAME_REGEXP_);
+  if (m) {
+    return new webdriver.stacktrace.Frame('', m[1], '', m[2]);
   }
 
   if (frameStr == webdriver.stacktrace.UNKNOWN_CLOSURE_FRAME_ ||
@@ -427,7 +527,7 @@ webdriver.stacktrace.parseStackFrame_ = function(frameStr) {
 
   m = frameStr.match(webdriver.stacktrace.CLOSURE_STACK_FRAME_REGEXP_);
   if (m) {
-    return new webdriver.stacktrace.Frame_(m[1], m[2], m[3], m[4] || m[5]);
+    return new webdriver.stacktrace.Frame(m[1], m[2], m[3], m[4] || m[5]);
   }
 
   return null;
@@ -437,7 +537,7 @@ webdriver.stacktrace.parseStackFrame_ = function(frameStr) {
 /**
  * Parses a long firefox stack frame.
  * @param {string} frameStr The stack frame as string.
- * @return {!webdriver.stacktrace.Frame_} Stack frame object.
+ * @return {!webdriver.stacktrace.Frame} Stack frame object.
  * @private
  */
 webdriver.stacktrace.parseLongFirefoxFrame_ = function(frameStr) {
@@ -452,7 +552,26 @@ webdriver.stacktrace.parseLongFirefoxFrame_ = function(frameStr) {
   if ((lastAmpersand >= 0) && (lastAmpersand + 1 < lastColon)) {
     loc = frameStr.substring(lastAmpersand + 1);
   }
-  return new webdriver.stacktrace.Frame_('', functionName, '', loc);
+  return new webdriver.stacktrace.Frame('', functionName, '', loc);
+};
+
+
+/**
+ * Get an error's stack trace with the error string trimmed.
+ * V8 prepends the string representation of an error to its stack trace.
+ * This function trims the string so that the stack trace can be parsed
+ * consistently with the other JS engines.
+ * @param {!(Error|goog.testing.JsUnitException)} error The error.
+ * @return {string} The stack trace string.
+ * @private
+ */
+webdriver.stacktrace.getStack_ = function(error) {
+  var stack = error.stack || error.stackTrace || '';
+  var errorStr = error + '\n';
+  if (goog.string.startsWith(stack, errorStr)) {
+    stack = stack.substring(errorStr.length);
+  }
+  return stack;
 };
 
 
@@ -462,35 +581,35 @@ webdriver.stacktrace.parseLongFirefoxFrame_ = function(frameStr) {
  * @return {!(Error|goog.testing.JsUnitException)} The formatted error.
  */
 webdriver.stacktrace.format = function(error) {
-  var stack = webdriver.stacktrace.parse(error).join('\n');
+  var stack = webdriver.stacktrace.getStack_(error);
+  var frames = webdriver.stacktrace.parse_(stack);
+
+  // Older versions of IE simply return [object Error] for toString(), so
+  // only use that as a last resort.
+  var errorStr = '';
+  if (error.message) {
+    errorStr = (error.name ? error.name + ': ' : '') + error.message;
+  } else {
+    errorStr = error.toString();
+  }
 
   // Ensure the error is in the V8 style with the error's string representation
   // prepended to the stack.
-  error.stack = error.toString() + '\n' + stack;
+  error.stack = errorStr + '\n' + frames.join('\n');
   return error;
 };
 
 
 /**
  * Parses an Error object's stack trace.
- * @param {!(Error|goog.testing.JsUnitException)} error The error.
- * @return {!Array.<webdriver.stacktrace.Frame_>} Stack frames. The
+ * @param {string} stack The stack trace.
+ * @return {!Array.<!webdriver.stacktrace.Frame>} Stack frames. The
  *     unrecognized frames will be nulled out.
  * @private
  */
-webdriver.stacktrace.parse = function(error) {
-  var stack = error.stack || error.stackTrace;
+webdriver.stacktrace.parse_ = function(stack) {
   if (!stack) {
     return [];
-  }
-
-  // V8 prepends the string representation of an error to its stack trace.
-  // Remove this so the stack trace is parsed consistently with the other JS
-  // engines.
-  var errorStr = error + '\n';
-
-  if (goog.string.startsWith(stack, errorStr)) {
-    stack = stack.substring(errorStr.length);
   }
 
   var lines = stack.
@@ -499,7 +618,15 @@ webdriver.stacktrace.parse = function(error) {
   var frames = [];
   for (var i = 0; i < lines.length; i++) {
     var frame = webdriver.stacktrace.parseStackFrame_(lines[i]);
-    frames.push(frame || webdriver.stacktrace.ANONYMOUS_FRAME_);
+    // The first two frames will be:
+    //   webdriver.stacktrace.Snapshot()
+    //   webdriver.stacktrace.get()
+    // In the case of Opera, sometimes an extra frame is injected in the next
+    // frame with a reported line number of zero. The next line detects that
+    // case and skips that frame.
+    if (!(goog.userAgent.OPERA && i == 2 && frame.getLine() == 0)) {
+      frames.push(frame || webdriver.stacktrace.ANONYMOUS_FRAME_);
+    }
   }
   return frames;
 };
@@ -509,7 +636,7 @@ webdriver.stacktrace.parse = function(error) {
  * Gets the native stack trace if available otherwise follows the call chain.
  * The generated trace will exclude all frames up to and including the call to
  * this function.
- * @return {string} The stack trace in canonical format.
+ * @return {!Array.<!webdriver.stacktrace.Frame>} The frames of the stack trace.
  */
 webdriver.stacktrace.get = function() {
   return new webdriver.stacktrace.Snapshot(1).getStacktrace();

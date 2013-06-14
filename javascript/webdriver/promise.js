@@ -48,6 +48,7 @@
 
 goog.provide('webdriver.promise');
 goog.provide('webdriver.promise.ControlFlow');
+goog.provide('webdriver.promise.ControlFlow.Timer');
 goog.provide('webdriver.promise.Deferred');
 goog.provide('webdriver.promise.Promise');
 
@@ -441,7 +442,7 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   this.promise.cancel = this.cancel = cancel;
   this.promise.isPending = this.isPending = isPending;
   this.fulfill = fulfill;
-  /** @deprecated Use fulfill instead. This will be removed in 2.34.0 */
+  /** @deprecated Use fulfill instead. This will be removed in 2.34.0. */
   this.resolve = this.callback = fulfill;
   this.reject = this.errback = reject;
 
@@ -569,8 +570,8 @@ webdriver.promise.resolved = webdriver.promise.fulfilled;
 
 /**
  * Creates a promise that has been rejected with the given reason.
- * @param {*=} opt_reason The rejection reason; may be any value, but is usually an
- *     Error or a string.
+ * @param {*=} opt_reason The rejection reason; may be any value, but is
+ *     usually an Error or a string.
  * @return {!webdriver.promise.Promise} The rejected promise.
  */
 webdriver.promise.rejected = function(opt_reason) {
@@ -829,11 +830,8 @@ webdriver.promise.fullyResolveKeys_ = function(obj) {
  * there are no listeners registered with the flow, the error will be
  * rethrown to the global error handler.
  *
- * @param {{clearInterval: function(number),
- *          clearTimeout: function(number),
- *          setInterval: function(!Function, number): number,
- *          setTimeout: function(!Function, number): number}=} opt_timer
- *     The timer object to use. Should only be set for testing.
+ * @param {webdriver.promise.ControlFlow.Timer=} opt_timer The timer object
+ *     to use. Should only be set for testing.
  * @constructor
  * @extends {webdriver.EventEmitter}
  */
@@ -842,10 +840,7 @@ webdriver.promise.ControlFlow = function(opt_timer) {
 
   /**
    * The timer used by this instance.
-   * @type {{clearInterval: function(number),
-   *         clearTimeout: function(number),
-   *         setInterval: function(!Function, number): number,
-   *         setTimeout: function(!Function, number): number}}
+   * @type {webdriver.promise.ControlFlow.Timer}
    */
   this.timer = opt_timer || webdriver.promise.ControlFlow.defaultTimer;
 
@@ -862,11 +857,17 @@ goog.inherits(webdriver.promise.ControlFlow, webdriver.EventEmitter);
 
 
 /**
+ * @typedef {{clearInterval: function(number),
+ *            clearTimeout: function(number),
+ *            setInterval: function(!Function, number): number,
+ *            setTimeout: function(!Function, number): number}}
+ */
+webdriver.promise.ControlFlow.Timer;
+
+
+/**
  * The default timer object, which uses the global timer functions.
- * @type {{clearInterval: function(number),
- *         clearTimeout: function(number),
- *         setInterval: function(!Function, number): number,
- *         setTimeout: function(!Function, number): number}}
+ * @type {webdriver.promise.ControlFlow.Timer}
  */
 webdriver.promise.ControlFlow.defaultTimer = (function() {
   // The default timer functions may be defined as free variables for the
@@ -1085,7 +1086,7 @@ webdriver.promise.ControlFlow.prototype.annotateError = function(e) {
   if (history.length) {
     e = webdriver.stacktrace.format(e);
 
-    /** @type {!Error} */(e).stack = (e.stack || e.stackTrace || '') + [
+    /** @type {!Error} */(e).stack += [
       '\n==== async task ====\n',
       history.join('\n==== async task ====\n')
     ].join('');
@@ -1789,7 +1790,7 @@ webdriver.promise.Task_.prototype.getDescription = function() {
 webdriver.promise.Task_.prototype.toString = function() {
   var stack = this.snapshot_.getStacktrace();
   var ret = this.description_;
-  if (stack) {
+  if (stack.length) {
     if (this.description_) {
       ret += '\n';
     }

@@ -45,9 +45,7 @@ webdriver.ActionSequence = function(driver) {
   /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 
-  /**
-   * @private {!Array.<{description: string, command: !webdriver.Command}>}
-   */
+  /** @private {!Array.<{description: string, command: !webdriver.Command}>} */
   this.actions_ = [];
 };
 

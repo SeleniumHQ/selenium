@@ -206,7 +206,7 @@ webdriver.WebDriver.fromWireValue_ = function(driver, value) {
   if (goog.isArray(value)) {
     value = goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
         goog.partial(webdriver.WebDriver.fromWireValue_, driver));
-  } else if (value && goog.isObject(value)) {
+  } else if (value && goog.isObject(value) && !goog.isFunction(value)) {
     if (webdriver.WebElement.ELEMENT_KEY in value) {
       value = new webdriver.WebElement(driver,
           value[webdriver.WebElement.ELEMENT_KEY]);
