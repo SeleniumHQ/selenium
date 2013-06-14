@@ -16,35 +16,35 @@ See the COPYING file for details.
 <style class="text/css">
   /* NOTE(pupius): Horrible class names needed to get around IE6 not supporting
      the ".foo.bar" selector */
-  
+
   #test {
     height: 20px;
   }
-  
+
   label {
     padding-left: 5px;
     font: normal 13px/20px arial;
     color: #999;
   }
-  
-    
+
+
   .goog-ratings {
     display: block;
     float: left;
     height: 20px;
     height: 20px;
   }
-    
+
   .goog-ratings-star {
     display: block;
     float: left;
     padding-left: 13px;
     height: 19px;
     cursor: pointer;
-    background-image: url('ratingstars.gif');
+    background-image: url('../images/ratingstars.gif');
     background-repeat: no-repeat;
   }
-  
+
   .goog-ratings-firststar-off {
     padding-left: 20px;
     background-position: 0px 0px;
@@ -54,7 +54,7 @@ See the COPYING file for details.
     padding-left: 20px;
     background-position: 0px -20px;
   }
-  
+
   .goog-ratings-midstar-off {
     background-position: 0px -40px;
   }
@@ -83,7 +83,8 @@ See the COPYING file for details.
     <option selected>Ok</option>
     <option>Good</option>
     <option>Excellent</option>
-  </select> <label id="lab" for="sel">Rate this...</label> 
+  </select>
+  <label id="lab" for="sel">Rate this...</label>
 </div>
 <div id="test2" style="height: 40px;"></div>
 <div id="test3" style="height: 40px;"></div>
@@ -99,13 +100,13 @@ See the COPYING file for details.
         e.target.getHighlightedValue() || defaultText;
   });
   rw1.decorate(document.getElementById('test1'));
-  
-  
+
+
   var rw2 = new goog.ui.Ratings();
   rw2.setRatings([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   rw2.render(document.getElementById('test2'));
   rw2.setSelectedIndex(3);
-  
+
   setTimeout(function() { rw2.setSelectedIndex(8); }, 500);
   setTimeout(function() { rw2.setSelectedIndex(5); }, 750);
   setTimeout(function() { rw2.exitDocument(); }, 1000);

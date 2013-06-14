@@ -29,6 +29,7 @@ goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.Field.EventType');
 goog.require('goog.editor.Plugin');
+goog.require('goog.editor.node');
 goog.require('goog.editor.plugins.UndoRedoManager');
 goog.require('goog.editor.plugins.UndoRedoState');
 goog.require('goog.events');
@@ -107,7 +108,7 @@ goog.editor.plugins.UndoRedo.prototype.undoManager_;
 /**
  * The key for the event listener handling state change events from the
  * undo-redo manager.
- * @type {number}
+ * @type {goog.events.Key}
  * @private
  */
 goog.editor.plugins.UndoRedo.prototype.managerStateChangeKey_;
@@ -154,12 +155,12 @@ goog.editor.plugins.UndoRedo.prototype.setUndoRedoManager = function(manager) {
   }
 
   this.undoManager_ = manager;
-  this.managerStateChangeKey_ = /** @type {number} */ (
+  this.managerStateChangeKey_ =
       goog.events.listen(this.undoManager_,
           goog.editor.plugins.UndoRedoManager.EventType.STATE_CHANGE,
           this.dispatchCommandValueChange_,
           false,
-          this));
+          this);
 };
 
 
@@ -411,7 +412,7 @@ goog.editor.plugins.UndoRedo.prototype.restoreState = function(
     // We specifically set the raw innerHTML of the field here as that's what
     // we get from the field when we save an undo/redo state. There's
     // no need to clean/unclean the contents in either direction.
-    fieldObj.getElement().innerHTML = content;
+    goog.editor.node.replaceInnerHtml(fieldObj.getElement(), content);
 
     if (cursorPosition) {
       cursorPosition.select();

@@ -36,7 +36,7 @@ goog.inherits(remote.ui.Banner, goog.ui.Component);
 
 /**
  * Key for the {@link goog.events.EventType.RESIZE} event listener.
- * @private {?number}
+ * @private {goog.events.Key}
  */
 remote.ui.Banner.prototype.onResizeKey_ = null;
 
@@ -70,7 +70,7 @@ remote.ui.Banner.prototype.createDom = function() {
 
 /** @param {boolean} visible Whether this component should be visible. */
 remote.ui.Banner.prototype.setVisible = function(visible) {
-  goog.style.showElement(this.getElement(), visible);
+  goog.style.setElementShown(this.getElement(), visible);
   this.reposition_();
 };
 

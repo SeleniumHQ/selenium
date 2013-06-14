@@ -943,7 +943,7 @@ goog.vec.Matrix4.multVec4 = function(mat, vec, resultVec) {
  */
 goog.vec.Matrix4.multVec3ToArray = function(mat, vec, resultVec) {
   goog.vec.Matrix4.multVec3(
-      mat, vec, (/** @type {goog.vec.ArrayType} */ resultVec));
+      mat, vec, /** @type {goog.vec.ArrayType} */ (resultVec));
   return resultVec;
 };
 
@@ -962,7 +962,7 @@ goog.vec.Matrix4.multVec3ToArray = function(mat, vec, resultVec) {
  */
 goog.vec.Matrix4.multVec4ToArray = function(mat, vec, resultVec) {
   goog.vec.Matrix4.multVec4(
-      mat, vec, (/** @type {goog.vec.ArrayType} */ resultVec));
+      mat, vec, /** @type {goog.vec.ArrayType} */ (resultVec));
   return resultVec;
 };
 

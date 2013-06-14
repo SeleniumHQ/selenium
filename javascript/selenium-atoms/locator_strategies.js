@@ -101,7 +101,7 @@ core.LocatorStrategies.dom_ = function(locator, opt_doc) {
     return null;
   }
 
-  return element ? (/**@type{Element}*/ element) : null;
+  return element ? /**@type{Element}*/ (element) : null;
 };
 
 

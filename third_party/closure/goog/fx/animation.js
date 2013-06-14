@@ -371,7 +371,7 @@ goog.fx.Animation.prototype.destroy = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.fx.Animation.prototype.onAnimationFrame = function(now) {
   this.cycle(now);
 };

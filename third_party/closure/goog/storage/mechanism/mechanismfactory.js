@@ -46,9 +46,9 @@ goog.storage.mechanism.mechanismfactory.USER_DATA_SHARED_KEY =
  * @return {goog.storage.mechanism.IterableMechanism} Created mechanism or null.
  */
 goog.storage.mechanism.mechanismfactory.create = function(opt_namespace) {
-  var factory = goog.storage.mechanism.mechanismfactory;
-  return factory.createHTML5LocalStorage(opt_namespace) ||
-      factory.createIEUserData(opt_namespace);
+  return goog.storage.mechanism.mechanismfactory.createHTML5LocalStorage(
+      opt_namespace) ||
+      goog.storage.mechanism.mechanismfactory.createIEUserData(opt_namespace);
 };
 
 

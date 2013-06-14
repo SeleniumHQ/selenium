@@ -199,7 +199,9 @@ goog.i18n.BidiFormatter.prototype.dirResetIfNeeded_ = function(str, dir,
  * is RTL, and "ltr" otherwise.
  * Needed for GXP, which can't handle dirAttr.
  * Example use case:
- * <td expr:dir='bidiFormatter.dirAttrValue(foo)'><gxp:eval expr='foo'></td>
+ * &lt;td expr:dir='bidiFormatter.dirAttrValue(foo)'&gt;
+ *   &lt;gxp:eval expr='foo'&gt;
+ * &lt;/td&gt;
  *
  * @param {string} str Text whose directionality is to be estimated.
  * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.

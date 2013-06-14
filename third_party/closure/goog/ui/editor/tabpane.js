@@ -22,7 +22,10 @@
 goog.provide('goog.ui.editor.TabPane');
 
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.classes');
 goog.require('goog.events.EventHandler');
+goog.require('goog.events.EventType');
+goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.Control');
 goog.require('goog.ui.Tab');
@@ -114,12 +117,17 @@ goog.ui.editor.TabPane.prototype.setSelectedTabId = function(id) {
  * @param {string} id The id of the tab to add.
  * @param {string} caption The caption of the tab.
  * @param {string} tooltip The tooltip for the tab.
+ * @param {string} groupName for the radio button group.
  * @param {Element} content The content element to show when this tab is
  *     selected.
  */
 goog.ui.editor.TabPane.prototype.addTab = function(id, caption, tooltip,
-    content) {
-  var radio = this.dom_.createDom(goog.dom.TagName.INPUT, {type: 'radio'});
+    groupName, content) {
+  var radio = this.dom_.createDom(goog.dom.TagName.INPUT,
+      {
+        name: groupName,
+        type: 'radio'
+      });
 
   var tab = new goog.ui.Tab([radio, this.dom_.createTextNode(caption)],
       undefined, this.dom_);
@@ -127,12 +135,18 @@ goog.ui.editor.TabPane.prototype.addTab = function(id, caption, tooltip,
   tab.setTooltip(tooltip);
   this.tabBar_.addChild(tab, true);
 
-  this.eventHandler_.listen(radio, goog.events.EventType.SELECT,
+  // When you navigate the radio buttons with TAB and then the Arrow keys on
+  // Chrome and FF, you get a CLICK event on them, and the radio button
+  // is selected.  You don't get a SELECT at all.  We listen for SELECT
+  // nonetheless because it's possible that some browser will issue only
+  // SELECT.
+  this.eventHandler_.listen(radio,
+      [goog.events.EventType.SELECT, goog.events.EventType.CLICK],
       goog.bind(this.tabBar_.setSelectedTab, this.tabBar_, tab));
 
   content.id = id + '-tab';
   this.tabContent_.appendChild(content);
-  goog.style.showElement(content, false);
+  goog.style.setElementShown(content, false);
 };
 
 
@@ -169,10 +183,10 @@ goog.ui.editor.TabPane.prototype.handleTabSelect_ = function(e) {
 
   // Show the tab content.
   if (this.visibleContent_) {
-    goog.style.showElement(this.visibleContent_, false);
+    goog.style.setElementShown(this.visibleContent_, false);
   }
   this.visibleContent_ = this.dom_.getElement(tab.getId() + '-tab');
-  goog.style.showElement(this.visibleContent_, true);
+  goog.style.setElementShown(this.visibleContent_, true);
 
   // Select the appropriate radio button (and deselect the current one).
   if (this.selectedRadio_) {

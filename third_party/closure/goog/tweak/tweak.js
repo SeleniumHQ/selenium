@@ -23,6 +23,7 @@ goog.provide('goog.tweak');
 goog.provide('goog.tweak.ConfigParams');
 
 goog.require('goog.asserts');
+goog.require('goog.tweak.BaseSetting');
 goog.require('goog.tweak.BooleanGroup');
 goog.require('goog.tweak.BooleanInGroupSetting');
 goog.require('goog.tweak.BooleanSetting');
@@ -88,24 +89,6 @@ goog.tweak.getRegistry = function() {
  *     }|!Object}
  */
 goog.tweak.ConfigParams;
-
-
-/**
- * Silences warning about properties on ConfigParams never being set when
- * running JsLibTest.
- * @return {goog.tweak.ConfigParams} Dummy return.
- * @private
- */
-goog.tweak.configParamsNeverCompilerWarningWorkAround_ = function() {
-  return {
-    label: '',
-    validValues: [],
-    paramName: '',
-    restartRequired: true,
-    callback: goog.nullFunction,
-    token: ''
-  };
-};
 
 
 /**

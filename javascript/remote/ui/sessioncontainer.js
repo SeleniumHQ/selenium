@@ -372,7 +372,7 @@ remote.ui.SessionContainer.prototype.onCreateSession_ = function() {
  * @private
  */
 remote.ui.SessionContainer.prototype.onSessionSelect_ = function() {
-  var tab = (/** @type {!remote.ui.SessionContainer.SessionTab_} */
+  var tab = /** @type {!remote.ui.SessionContainer.SessionTab_} */ (
       this.tabBar_.getSelectedTab());
   this.view_.update(tab ? tab.session_ : null);
 };

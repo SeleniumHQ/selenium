@@ -13,40 +13,37 @@
 // limitations under the License.
 
 /**
- * @fileoverview Mock of OnlineHandler for unit testing.
+ * @fileoverview NetworkStatusMonitor test double.
  * @author dbk@google.com (David Barrett-Kahn)
  */
 
 goog.provide('goog.testing.events.OnlineHandler');
 
 goog.require('goog.events.EventTarget');
-goog.require('goog.events.OnlineHandler.EventType');
+goog.require('goog.net.NetworkStatusMonitor');
 
 
 
 /**
- * Mock implementation of goog.events.OnlineHandler.
+ * NetworkStatusMonitor test double.
  * @param {boolean} initialState The initial online state of the mock.
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @implements {goog.net.NetworkStatusMonitor}
  */
 goog.testing.events.OnlineHandler = function(initialState) {
   goog.base(this);
 
   /**
    * Whether the mock is online.
-   * @type {boolean}
-   * @private
+   * @private {boolean}
    */
   this.online_ = initialState;
 };
 goog.inherits(goog.testing.events.OnlineHandler, goog.events.EventTarget);
 
 
-/**
- * Mock implementation of goog.events.OnlineHandler.isOnline.
- * @return {boolean} Whether the mock is online.
- */
+/** @override */
 goog.testing.events.OnlineHandler.prototype.isOnline = function() {
   return this.online_;
 };
@@ -61,7 +58,7 @@ goog.testing.events.OnlineHandler.prototype.setOnline =
   if (newOnlineState != this.online_) {
     this.online_ = newOnlineState;
     this.dispatchEvent(newOnlineState ?
-        goog.events.OnlineHandler.EventType.ONLINE :
-        goog.events.OnlineHandler.EventType.OFFLINE);
+        goog.net.NetworkStatusMonitor.EventType.ONLINE :
+        goog.net.NetworkStatusMonitor.EventType.OFFLINE);
   }
 };

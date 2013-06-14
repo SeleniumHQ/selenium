@@ -45,7 +45,10 @@ goog.testing.net.XhrIoPool = function(opt_xhr) {
 goog.inherits(goog.testing.net.XhrIoPool, goog.net.XhrIoPool);
 
 
-/** @override */
+/**
+ * @override
+ * @suppress {invalidCasts}
+ */
 goog.testing.net.XhrIoPool.prototype.createObject = function() {
   return (/** @type {!goog.net.XhrIo} */ (this.xhr_));
 };

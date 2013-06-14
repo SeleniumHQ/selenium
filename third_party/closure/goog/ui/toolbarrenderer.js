@@ -20,7 +20,7 @@
 
 goog.provide('goog.ui.ToolbarRenderer');
 
-goog.require('goog.dom.a11y.Role');
+goog.require('goog.a11y.aria.Role');
 goog.require('goog.ui.Container.Orientation');
 goog.require('goog.ui.ContainerRenderer');
 goog.require('goog.ui.Separator');
@@ -55,7 +55,7 @@ goog.ui.ToolbarRenderer.CSS_CLASS = goog.getCssName('goog-toolbar');
  * @override
  */
 goog.ui.ToolbarRenderer.prototype.getAriaRole = function() {
-  return goog.dom.a11y.Role.TOOLBAR;
+  return goog.a11y.aria.Role.TOOLBAR;
 };
 
 

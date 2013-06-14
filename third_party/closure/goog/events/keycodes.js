@@ -240,7 +240,7 @@ goog.events.KeyCodes.isTextModifyingKeyEvent = function(e) {
 goog.events.KeyCodes.firesKeyPressEvent = function(keyCode, opt_heldKeyCode,
     opt_shiftKey, opt_ctrlKey, opt_altKey) {
   if (!goog.userAgent.IE &&
-      !(goog.userAgent.WEBKIT && goog.userAgent.isVersion('525'))) {
+      !(goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525'))) {
     return true;
   }
 
@@ -292,7 +292,7 @@ goog.events.KeyCodes.firesKeyPressEvent = function(keyCode, opt_heldKeyCode,
   switch (keyCode) {
     case goog.events.KeyCodes.ENTER:
       // IE9 does not fire KEYPRESS on ENTER.
-      return !(goog.userAgent.IE && goog.userAgent.isDocumentMode(9));
+      return !(goog.userAgent.IE && goog.userAgent.isDocumentModeOrHigher(9));
     case goog.events.KeyCodes.ESC:
       return !goog.userAgent.WEBKIT;
   }

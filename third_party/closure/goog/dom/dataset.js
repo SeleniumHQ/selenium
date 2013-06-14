@@ -108,7 +108,7 @@ goog.dom.dataset.has = function(element, key) {
 
 /**
  * Gets all custom data attributes as a string map.  The attribute names will be
- * camel cased (e.g., data-foo-bar -> dataset['foobar']).  This operation is not
+ * camel cased (e.g., data-foo-bar -> dataset['fooBar']).  This operation is not
  * safe for attributes having camel-cased names clashing with already existing
  * properties (e.g., data-to-string -> dataset['toString']).
  * @param {!Element} element DOM node to get the data attributes from.

@@ -115,7 +115,8 @@
   outline: none;
 }
 
-.goog-char-picker-grid .goog-flat-button-hover {
+.goog-char-picker-grid .goog-flat-button-hover,
+.goog-char-picker-grid .goog-flat-button-focus {
   background-color: #ffcc33;
 }
 

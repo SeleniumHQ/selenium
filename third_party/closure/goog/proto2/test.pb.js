@@ -19,10 +19,10 @@
  */
 
 goog.provide('proto2.TestAllTypes');
+goog.provide('proto2.TestAllTypes.NestedEnum');
 goog.provide('proto2.TestAllTypes.NestedMessage');
 goog.provide('proto2.TestAllTypes.OptionalGroup');
 goog.provide('proto2.TestAllTypes.RepeatedGroup');
-goog.provide('proto2.TestAllTypes.NestedEnum');
 
 goog.require('goog.proto2.Message');
 

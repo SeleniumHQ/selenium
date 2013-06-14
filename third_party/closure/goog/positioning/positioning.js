@@ -185,8 +185,11 @@ goog.positioning.OverflowStatus.FAILED_VERTICAL =
  * @param {goog.math.Size=} opt_preferredSize The preferred size of the
  *     movableElement.
  * @param {goog.math.Box=} opt_viewport Box object describing the dimensions of
- *     the viewport. If not provided, a default one will be calculated by the
- *     position of the anchorElement and its moveable parent element.
+ *     the viewport. The viewport is specified relative to offsetParent of
+ *     {@code movableElement}. In other words, the viewport can be thought of as
+ *     describing a "position: absolute" element contained in the offsetParent.
+ *     It defaults to visible area of nearest scrollable ancestor of
+ *     {@code movableElement} (see {@code goog.style.getVisibleRectForElement}).
  * @return {goog.positioning.OverflowStatus} Status bitmap,
  *     {@see goog.positioning.OverflowStatus}.
  */
@@ -459,6 +462,15 @@ goog.positioning.adjustForViewport_ = function(pos, size, viewport, overflow) {
   if (pos.y < viewport.top && overflow & goog.positioning.Overflow.ADJUST_Y) {
     pos.y = viewport.top;
     status |= goog.positioning.OverflowStatus.ADJUSTED_Y;
+  }
+
+  // Bottom edge inside and top edge outside viewport, try to resize it.
+  if (pos.y <= viewport.top &&
+      pos.y + size.height < viewport.bottom &&
+      overflow & goog.positioning.Overflow.RESIZE_HEIGHT) {
+    size.height = Math.max(size.height - (viewport.top - pos.y), 0);
+    pos.y = viewport.top;
+    status |= goog.positioning.OverflowStatus.HEIGHT_ADJUSTED;
   }
 
   // Top edge inside and bottom edge outside viewport, try to resize it.

@@ -60,7 +60,7 @@ goog.debug.LogBuffer.getInstance = function() {
  * @define {number} The number of log records to buffer. 0 means disable
  * buffering.
  */
-goog.debug.LogBuffer.CAPACITY = 0;
+goog.define('goog.debug.LogBuffer.CAPACITY', 0);
 
 
 /**

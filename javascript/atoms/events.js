@@ -268,7 +268,7 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
         'Browser does not support a mouse pixel scroll event.');
   }
 
-  var args = (/** @type {!bot.events.MouseArgs} */ opt_args);
+  var args = /** @type {!bot.events.MouseArgs} */ (opt_args);
   var doc = goog.dom.getOwnerDocument(target);
   var event;
 
@@ -404,7 +404,7 @@ goog.inherits(bot.events.KeyboardEventFactory_, bot.events.EventFactory_);
  * @override
  */
 bot.events.KeyboardEventFactory_.prototype.create = function(target, opt_args) {
-  var args = (/** @type {!bot.events.KeyboardArgs} */ opt_args);
+  var args = /** @type {!bot.events.KeyboardArgs} */ (opt_args);
   var doc = goog.dom.getOwnerDocument(target);
   var event;
 
@@ -467,7 +467,7 @@ bot.events.TouchEventFactory_.prototype.create = function(target, opt_args) {
         'Browser does not support firing touch events.');
   }
 
-  var args = (/** @type {!bot.events.TouchArgs} */ opt_args);
+  var args = /** @type {!bot.events.TouchArgs} */ (opt_args);
   var doc = goog.dom.getOwnerDocument(target);
   var view = goog.dom.getWindow(doc);
 
@@ -576,7 +576,7 @@ bot.events.MSGestureEventFactory_.prototype.create = function(target,
         'Browser does not support MSGesture events.');
   }
 
-  var args = (/** @type {!bot.events.MSGestureArgs} */ opt_args);
+  var args = /** @type {!bot.events.MSGestureArgs} */ (opt_args);
   var doc = goog.dom.getOwnerDocument(target);
   var view = goog.dom.getWindow(doc);
   var event = doc.createEvent('MSGestureEvent');
@@ -623,7 +623,7 @@ bot.events.MSPointerEventFactory_.prototype.create = function(target,
         'Browser does not support MSPointer events.');
   }
 
-  var args = (/** @type {!bot.events.MSPointerArgs} */ opt_args);
+  var args = /** @type {!bot.events.MSPointerArgs} */ (opt_args);
   var doc = goog.dom.getOwnerDocument(target);
   var view = goog.dom.getWindow(doc);
   var event = doc.createEvent('MSPointerEvent');

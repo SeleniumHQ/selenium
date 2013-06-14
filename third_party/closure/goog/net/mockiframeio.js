@@ -18,9 +18,10 @@
 
 goog.provide('goog.net.MockIFrameIo');
 goog.require('goog.events.EventTarget');
+goog.require('goog.json');
 goog.require('goog.net.ErrorCode');
+goog.require('goog.net.EventType');
 goog.require('goog.net.IframeIo');
-goog.require('goog.net.IframeIo.IncrementalDataEvent');
 
 
 
@@ -125,7 +126,7 @@ goog.net.MockIFrameIo.prototype.send = function(uri, opt_method, opt_noCache,
  *     caching.
  */
 goog.net.MockIFrameIo.prototype.sendFromForm = function(form, opt_uri,
-     opt_noCache) {
+    opt_noCache) {
   if (this.active_) {
     throw Error('[goog.net.IframeIo] Unable to send, already active.');
   }

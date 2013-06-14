@@ -30,6 +30,7 @@ goog.provide('goog.dom.browserrange');
 goog.provide('goog.dom.browserrange.Error');
 
 goog.require('goog.dom');
+goog.require('goog.dom.NodeType');
 goog.require('goog.dom.browserrange.GeckoRange');
 goog.require('goog.dom.browserrange.IeRange');
 goog.require('goog.dom.browserrange.OperaRange');
@@ -58,7 +59,7 @@ goog.dom.browserrange.Error = {
  * @return {goog.dom.browserrange.AbstractRange} A wrapper object.
  */
 goog.dom.browserrange.createRange = function(range) {
-  if (goog.userAgent.IE && !goog.userAgent.isDocumentMode(9)) {
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) {
     return new goog.dom.browserrange.IeRange(
         /** @type {TextRange} */ (range),
         goog.dom.getOwnerDocument(range.parentElement()));
@@ -85,7 +86,7 @@ goog.dom.browserrange.createRange = function(range) {
  * @return {goog.dom.browserrange.AbstractRange} A wrapper object.
  */
 goog.dom.browserrange.createRangeFromNodeContents = function(node) {
-  if (goog.userAgent.IE && !goog.userAgent.isDocumentMode(9)) {
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) {
     return goog.dom.browserrange.IeRange.createFromNodeContents(node);
   } else if (goog.userAgent.WEBKIT) {
     return goog.dom.browserrange.WebKitRange.createFromNodeContents(node);
@@ -114,7 +115,7 @@ goog.dom.browserrange.createRangeFromNodeContents = function(node) {
  */
 goog.dom.browserrange.createRangeFromNodes = function(startNode, startOffset,
     endNode, endOffset) {
-  if (goog.userAgent.IE && !goog.userAgent.isDocumentMode(9)) {
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) {
     return goog.dom.browserrange.IeRange.createFromNodes(startNode, startOffset,
         endNode, endOffset);
   } else if (goog.userAgent.WEBKIT) {

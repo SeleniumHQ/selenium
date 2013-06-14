@@ -16,6 +16,7 @@ See the COPYING file for details.
 
 goog.require('goog.events');
 goog.require('goog.events.OnlineHandler');
+goog.require('goog.net.NetworkStatusMonitor');
 
 </script>
 <style>
@@ -64,8 +65,8 @@ function updateText() {
   out.className = oh.isOnline() ? 'online' : 'offline';
 }
 
-goog.events.listen(oh, [goog.events.OnlineHandler.EventType.ONLINE,
-                        goog.events.OnlineHandler.EventType.OFFLINE],
+goog.events.listen(oh, [goog.net.NetworkStatusMonitor.EventType.ONLINE,
+                        goog.net.NetworkStatusMonitor.EventType.OFFLINE],
                    updateText);
 goog.events.listen(window, 'unload', function() {
   oh.dispose();

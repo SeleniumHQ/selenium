@@ -270,8 +270,8 @@ safaridriver.message.Message.prototype.send = function(target) {
           /** @type {!SafariContentBrowserTabProxy} */ (target));
     }
 
-    (/** @type {!(SafariContentBrowserTabProxy|SafariWebPageProxy)} */ (
-        target)).dispatchMessage(this.getType(), this.data_);
+    /** @type {!(SafariContentBrowserTabProxy|SafariWebPageProxy)} */ (
+        target).dispatchMessage(this.getType(), this.data_);
   }
 };
 

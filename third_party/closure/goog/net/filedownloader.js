@@ -41,14 +41,16 @@ goog.require('goog.asserts');
 goog.require('goog.async.Deferred');
 goog.require('goog.crypt.hash32');
 goog.require('goog.debug.Error');
+goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.fs');
-goog.require('goog.fs.DirectoryEntry.Behavior');
-goog.require('goog.fs.Error.ErrorCode');
-goog.require('goog.fs.FileSaver.EventType');
+goog.require('goog.fs.DirectoryEntry');
+goog.require('goog.fs.Error');
+goog.require('goog.fs.FileSaver');
 goog.require('goog.net.EventType');
-goog.require('goog.net.XhrIo.ResponseType');
+goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIoPool');
+goog.require('goog.object');
 
 
 

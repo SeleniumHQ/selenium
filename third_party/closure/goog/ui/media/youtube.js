@@ -70,13 +70,10 @@ goog.provide('goog.ui.media.Youtube');
 goog.provide('goog.ui.media.YoutubeModel');
 
 goog.require('goog.string');
-goog.require('goog.ui.Component.Error');
-goog.require('goog.ui.Component.State');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.media.FlashObject');
 goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaModel');
-goog.require('goog.ui.media.MediaModel.Player');
-goog.require('goog.ui.media.MediaModel.Thumbnail');
 goog.require('goog.ui.media.MediaRenderer');
 
 
@@ -126,7 +123,6 @@ goog.addSingletonGetter(goog.ui.media.Youtube);
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @return {goog.ui.media.Media} A Control binded to the youtube renderer.
- * @suppress {visibility} Calling protected control.setStateInternal().
  */
 goog.ui.media.Youtube.newControl = function(youtubeModel, opt_domHelper) {
   var control = new goog.ui.media.Media(

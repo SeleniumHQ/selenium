@@ -133,7 +133,7 @@ goog.testing.PerformanceTable.prototype.round_ = function(num) {
  */
 goog.testing.PerformanceTable.prototype.run = function(fn, opt_desc) {
   this.runTask(
-      new goog.testing.PerformanceTimer.Task((/** @type {function()} */ fn)),
+      new goog.testing.PerformanceTimer.Task(/** @type {function()} */ (fn)),
       opt_desc);
 };
 

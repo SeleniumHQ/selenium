@@ -27,10 +27,9 @@ goog.provide('goog.fs');
 
 goog.require('goog.array');
 goog.require('goog.async.Deferred');
-goog.require('goog.events');
 goog.require('goog.fs.Error');
 goog.require('goog.fs.FileReader');
-goog.require('goog.fs.FileSystem');
+goog.require('goog.fs.FileSystemImpl');
 goog.require('goog.userAgent');
 
 
@@ -53,7 +52,7 @@ goog.fs.get_ = function(type, size) {
 
   var d = new goog.async.Deferred();
   requestFileSystem(type, size, function(fs) {
-    d.callback(new goog.fs.FileSystem(fs));
+    d.callback(new goog.fs.FileSystemImpl(fs));
   }, function(err) {
     d.errback(new goog.fs.Error(err.code, 'requesting filesystem'));
   });
@@ -227,8 +226,8 @@ goog.fs.sliceBlob = function(blob, start, opt_end) {
     // Negative indices are not accepted, only range end is clamped and
     // range end specification is obligatory.
     // See http://www.w3.org/TR/2009/WD-FileAPI-20091117/
-    if ((goog.userAgent.GECKO && !goog.userAgent.isVersion('13.0')) ||
-        (goog.userAgent.WEBKIT && !goog.userAgent.isVersion('537.1'))) {
+    if ((goog.userAgent.GECKO && !goog.userAgent.isVersionOrHigher('13.0')) ||
+        (goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher('537.1'))) {
       if (start < 0) {
         start += blob.size;
       }

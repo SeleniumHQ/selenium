@@ -145,7 +145,7 @@ goog.events.KeyHandler.prototype.element_ = null;
 
 /**
  * The key for the key press listener.
- * @type {?number}
+ * @type {goog.events.Key}
  * @private
  */
 goog.events.KeyHandler.prototype.keyPressKey_ = null;
@@ -153,7 +153,7 @@ goog.events.KeyHandler.prototype.keyPressKey_ = null;
 
 /**
  * The key for the key down listener.
- * @type {?number}
+ * @type {goog.events.Key}
  * @private
  */
 goog.events.KeyHandler.prototype.keyDownKey_ = null;
@@ -161,7 +161,7 @@ goog.events.KeyHandler.prototype.keyDownKey_ = null;
 
 /**
  * The key for the key up listener.
- * @type {?number}
+ * @type {goog.events.Key}
  * @private
  */
 goog.events.KeyHandler.prototype.keyUpKey_ = null;
@@ -279,7 +279,7 @@ goog.events.KeyHandler.keyIdentifier_ = {
  * @private
  */
 goog.events.KeyHandler.USES_KEYDOWN_ = goog.userAgent.IE ||
-    goog.userAgent.WEBKIT && goog.userAgent.isVersion('525');
+    goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525');
 
 
 /**

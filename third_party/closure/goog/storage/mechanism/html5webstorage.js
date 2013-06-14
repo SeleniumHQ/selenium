@@ -44,6 +44,15 @@ goog.inherits(goog.storage.mechanism.HTML5WebStorage,
 
 
 /**
+ * The key used to check if the storage instance is available.
+ * @type {string}
+ * @const
+ * @private
+ */
+goog.storage.mechanism.HTML5WebStorage.STORAGE_AVAILABLE_KEY_ = '__sak';
+
+
+/**
  * The web storage object (window.localStorage or window.sessionStorage).
  *
  * @type {Storage}
@@ -59,12 +68,21 @@ goog.storage.mechanism.HTML5WebStorage.prototype.storage_;
  * @return {boolean} True if the mechanism is available.
  */
 goog.storage.mechanism.HTML5WebStorage.prototype.isAvailable = function() {
+  if (!this.storage_) {
+    return false;
+  }
   /** @preserveTry */
   try {
-    // May throw a security exception if web storage is disabled.
-    return !!this.storage_ && !!this.storage_.getItem;
-  } catch (e) {}
-  return false;
+    // setItem will throw an exception if we cannot access WebStorage (e.g.,
+    // Safari in private mode).
+    this.storage_.setItem(
+        goog.storage.mechanism.HTML5WebStorage.STORAGE_AVAILABLE_KEY_, '1');
+    this.storage_.removeItem(
+        goog.storage.mechanism.HTML5WebStorage.STORAGE_AVAILABLE_KEY_);
+    return true;
+  } catch (e) {
+    return false;
+  }
 };
 
 
@@ -75,7 +93,15 @@ goog.storage.mechanism.HTML5WebStorage.prototype.set = function(key, value) {
     // May throw an exception if storage quota is exceeded.
     this.storage_.setItem(key, value);
   } catch (e) {
-    throw goog.storage.mechanism.ErrorCode.QUOTA_EXCEEDED;
+    // In Safari Private mode, conforming to the W3C spec, invoking
+    // Storage.prototype.setItem will allways throw a QUOTA_EXCEEDED_ERR
+    // exception.  Since it's impossible to verify if we're in private browsing
+    // mode, we throw a different exception if the storage is empty.
+    if (this.storage_.length == 0) {
+      throw goog.storage.mechanism.ErrorCode.STORAGE_DISABLED;
+    } else {
+      throw goog.storage.mechanism.ErrorCode.QUOTA_EXCEEDED;
+    }
   }
 };
 
@@ -135,4 +161,16 @@ goog.storage.mechanism.HTML5WebStorage.prototype.__iterator__ = function(
 /** @override */
 goog.storage.mechanism.HTML5WebStorage.prototype.clear = function() {
   this.storage_.clear();
+};
+
+
+/**
+ * Gets the key for a given key index. If an index outside of
+ * [0..this.getCount()) is specified, this function returns null.
+ * @param {number} index A key index.
+ * @return {?string} A storage key, or null if the specified index is out of
+ *     range.
+ */
+goog.storage.mechanism.HTML5WebStorage.prototype.key = function(index) {
+  return this.storage_.key(index);
 };

@@ -27,6 +27,7 @@ goog.require('goog.asserts');
 goog.require('goog.async.Deferred');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.Trace');
+/** @suppress {extraRequire} */
 goog.require('goog.dispose');
 goog.require('goog.module.ModuleInfo');
 goog.require('goog.module.ModuleLoadCallback');
@@ -50,6 +51,7 @@ goog.module.ModuleManager = function() {
    */
   this.moduleInfoMap_ = {};
 
+  // TODO (malteubl): Switch this to a reentrant design.
   /**
    * The ids of the currently loading modules. If batch mode is disabled, then
    * this array will never contain more than one element at a time.
@@ -65,6 +67,16 @@ goog.module.ModuleManager = function() {
    * @private
    */
   this.requestedLoadingModuleIds_ = [];
+
+  // TODO(user): Make these and other arrays that are used as sets be
+  // actual sets.
+  /**
+   * All module ids that have ever been requested. In concurrent loading these
+   * are the ones to subtract from future requests.
+   * @type {!Array.<string>}
+   * @private
+   */
+  this.requestedModuleIds_ = [];
 
   /**
    * A queue of the ids of requested but not-yet-loaded modules. The zero
@@ -111,6 +123,23 @@ goog.module.ModuleManager = function() {
    * @private
    */
   this.currentlyLoadingModule_ = this.baseModuleInfo_;
+
+  /**
+   * The id of the last requested initial module. When it loaded
+   * the deferred in {@code this.initialModulesLoaded_} resolves.
+   * @private {?string}
+   */
+  this.lastInitialModuleId_ = null;
+
+  /**
+   * Deferred for when all initial modules have loaded. We currently block
+   * sending additional module requests until this deferred resolves. In a
+   * future optimization it may be possible to use the initial modules as
+   * seeds for the module loader "requested module ids" and start making new
+   * requests even sooner.
+   * @private {!goog.async.Deferred}
+   */
+  this.initialModulesLoaded_ = new goog.async.Deferred();
 };
 goog.inherits(goog.module.ModuleManager, goog.Disposable);
 goog.addSingletonGetter(goog.module.ModuleManager);
@@ -181,6 +210,14 @@ goog.module.ModuleManager.prototype.batchModeEnabled_ = false;
 
 
 /**
+ * Whether the module requests may be sent out of order.
+ * @type {boolean}
+ * @private
+ */
+goog.module.ModuleManager.prototype.concurrentLoadingEnabled_ = false;
+
+
+/**
  * A loader for the modules that implements loadModules(ids, moduleInfoMap,
  * opt_successFn, opt_errorFn, opt_timeoutFn, opt_forceReload) method.
  * @type {goog.module.AbstractModuleLoader}
@@ -245,6 +282,18 @@ goog.module.ModuleManager.prototype.setBatchModeEnabled = function(
 
 
 /**
+ * Sets the concurrent loading mode as enabled or disabled for the module
+ * manager. Requires a moduleloader implementation that supports concurrent
+ * loads. The default {@see goog.module.ModuleLoader} does not.
+ * @param {boolean} enabled
+ */
+goog.module.ModuleManager.prototype.setConcurrentLoadingEnabled = function(
+    enabled) {
+  this.concurrentLoadingEnabled_ = enabled;
+};
+
+
+/**
  * Sets the module info for all modules. Should only be called once.
  *
  * @param {Object.<Array.<string>>} infoMap An object that contains a mapping
@@ -253,6 +302,9 @@ goog.module.ModuleManager.prototype.setBatchModeEnabled = function(
 goog.module.ModuleManager.prototype.setAllModuleInfo = function(infoMap) {
   for (var id in infoMap) {
     this.moduleInfoMap_[id] = new goog.module.ModuleInfo(infoMap[id], id);
+  }
+  if (!this.initialModulesLoaded_.hasFired()) {
+    this.initialModulesLoaded_.callback();
   }
   this.maybeFinishBaseLoad_();
 };
@@ -300,8 +352,16 @@ goog.module.ModuleManager.prototype.setAllModuleInfoString = function(
     moduleIds.push(id);
     this.moduleInfoMap_[id] = new goog.module.ModuleInfo(deps, id);
   }
-  if (opt_loadingModuleIds) {
+  if (opt_loadingModuleIds && opt_loadingModuleIds.length) {
     goog.array.extend(this.loadingModuleIds_, opt_loadingModuleIds);
+    // The last module in the list of initial modules. When it has loaded all
+    // initial modules have loaded.
+    this.lastInitialModuleId_ = /** @type {?string}  */ (
+        goog.array.peek(opt_loadingModuleIds));
+  } else {
+    if (!this.initialModulesLoaded_.hasFired()) {
+      this.initialModulesLoaded_.callback();
+    }
   }
   this.maybeFinishBaseLoad_();
 };
@@ -505,6 +565,7 @@ goog.module.ModuleManager.prototype.loadModulesOrEnqueueIfNotLoadedOrLoading_ =
   for (var i = 0; i < uniqueIds.length; i++) {
     var id = uniqueIds[i];
     var moduleInfo = this.getModuleInfo(id);
+    goog.asserts.assertObject(moduleInfo, 'Unknown module: ' + id);
     var d = new goog.async.Deferred();
     deferredMap[id] = d;
     if (moduleInfo.isLoaded()) {
@@ -572,11 +633,21 @@ goog.module.ModuleManager.prototype.registerModuleLoadCallbacks_ =
  * @private
  */
 goog.module.ModuleManager.prototype.loadModulesOrEnqueue_ = function(ids) {
-  if (goog.array.isEmpty(this.loadingModuleIds_)) {
-    this.loadModules_(ids);
+  // With concurrent loading we always just send off the request.
+  if (this.concurrentLoadingEnabled_) {
+    // For now we wait for initial modules to have downloaded as this puts the
+    // loader in a good state for calculating the needed deps of additional
+    // loads.
+    // TODO(user): Make this wait unnecessary.
+    this.initialModulesLoaded_.addCallback(
+        goog.bind(this.loadModules_, this, ids));
   } else {
-    this.requestedModuleIdsQueue_.push(ids);
-    this.dispatchActiveIdleChangeIfNeeded_();
+    if (goog.array.isEmpty(this.loadingModuleIds_)) {
+      this.loadModules_(ids);
+    } else {
+      this.requestedModuleIdsQueue_.push(ids);
+      this.dispatchActiveIdleChangeIfNeeded_();
+    }
   }
 };
 
@@ -631,11 +702,21 @@ goog.module.ModuleManager.prototype.loadModules_ = function(
   // Dispatch an active/idle change if needed.
   this.dispatchActiveIdleChangeIfNeeded_();
 
+  if (goog.array.isEmpty(idsToLoadImmediately)) {
+    // All requested modules and deps have been either loaded already or have
+    // already been requested.
+    return;
+  }
+
+  this.requestedModuleIds_.push.apply(this.requestedModuleIds_,
+      idsToLoadImmediately);
+
   var loadFn = goog.bind(this.loader_.loadModules, this.loader_,
       goog.array.clone(idsToLoadImmediately),
       this.moduleInfoMap_,
       null,
-      goog.bind(this.handleLoadError_, this),
+      goog.bind(this.handleLoadError_, this, this.requestedLoadingModuleIds_,
+          idsToLoadImmediately),
       goog.bind(this.handleLoadTimeout_, this),
       !!opt_forceReload);
 
@@ -707,11 +788,15 @@ goog.module.ModuleManager.prototype.getNotYetLoadedTransitiveDepIds_ =
   // NOTE(user): We want the earliest occurrance of a module, not the first
   // dependency we find. Therefore we strip duplicates at the end rather than
   // during.  See the tests for concrete examples.
-  var ids = [id];
+  var ids = [];
+  if (!goog.array.contains(this.requestedModuleIds_, id)) {
+    ids.push(id);
+  }
   var depIds = goog.array.clone(this.getModuleInfo(id).getDependencies());
   while (depIds.length) {
     var depId = depIds.pop();
-    if (!this.getModuleInfo(depId).isLoaded()) {
+    if (!this.getModuleInfo(depId).isLoaded() &&
+        !goog.array.contains(this.requestedModuleIds_, depId)) {
       ids.unshift(depId);
       // We need to process direct dependencies first.
       Array.prototype.unshift.apply(depIds,
@@ -773,6 +858,12 @@ goog.module.ModuleManager.prototype.setLoaded = function(id) {
     // No more modules are currently being loaded (e.g. arriving later in the
     // same HTTP response), so proceed to load the next module in the queue.
     this.loadNextModules_();
+  }
+
+  if (this.lastInitialModuleId_ && id == this.lastInitialModuleId_) {
+    if (!this.initialModulesLoaded_.hasFired()) {
+      this.initialModulesLoaded_.callback();
+    }
   }
 
   // Dispatch an active/idle change if needed.
@@ -1029,11 +1120,24 @@ goog.module.ModuleManager.FailureType = {
 /**
  * Handles a module load failure.
  *
+ * @param {!Array.<string>} requestedLoadingModuleIds Modules ids that were
+ *     requested in failed request. Does not included calculated dependencies.
+ * @param {!Array.<string>} requestedModuleIdsWithDeps All module ids requested
+ *     in the failed request including all dependencies.
  * @param {?number} status The error status.
  * @private
  */
-goog.module.ModuleManager.prototype.handleLoadError_ = function(status) {
+goog.module.ModuleManager.prototype.handleLoadError_ = function(
+    requestedLoadingModuleIds, requestedModuleIdsWithDeps, status) {
   this.consecutiveFailures_++;
+  // Module manager was not designed to be reentrant. Reinstate the instance
+  // var with actual value when request failed (Other requests may have
+  // started already.)
+  this.requestedLoadingModuleIds_ = requestedLoadingModuleIds;
+  // Pretend we never requested the failed modules.
+  goog.array.forEach(requestedModuleIdsWithDeps,
+      goog.partial(goog.array.remove, this.requestedModuleIds_), this);
+
   if (status == 401) {
     // The user is not logged in. They've cleared their cookies or logged out
     // from another window.

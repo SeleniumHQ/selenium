@@ -195,7 +195,7 @@ goog.proto2.TextFormatSerializer.prototype.printFieldValue_ =
     case goog.proto2.FieldDescriptor.FieldType.GROUP:
     case goog.proto2.FieldDescriptor.FieldType.MESSAGE:
       this.serializeMessage_(
-          (/** @type {goog.proto2.Message} */value), printer);
+          /** @type {goog.proto2.Message} */ (value), printer);
       break;
   }
 };
@@ -486,7 +486,7 @@ goog.proto2.TextFormatSerializer.Tokenizer_.prototype.nextInternal_ =
   // Advance the index by the length of the token.
   if (next) {
     this.current_ =
-        (/** @type {goog.proto2.TextFormatSerializer.Tokenizer_.Token} */next);
+        /** @type {goog.proto2.TextFormatSerializer.Tokenizer_.Token} */ (next);
     this.index_ += next.value.length;
     this.currentData_ = this.currentData_.substring(next.value.length);
   }

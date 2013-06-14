@@ -517,7 +517,7 @@ See the COPYING file for details.
     goog.events.listen(goog.dom.getElement('enable_log'),
         goog.events.EventType.CLICK,
         function(e) {
-          goog.style.showElement(goog.dom.getElement('log'), e.target.checked);
+          goog.style.setElementShown(goog.dom.getElement('log'), e.target.checked);
           logconsole.setCapturing(e.target.checked);
         });
 

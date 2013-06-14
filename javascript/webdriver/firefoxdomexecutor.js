@@ -155,7 +155,7 @@ webdriver.FirefoxDomExecutor.prototype.onResponse_ = function() {
 
   try {
     var response = bot.response.checkResponse(
-        (/** @type {!bot.response.ResponseObject} */goog.json.parse(json)));
+        /** @type {!bot.response.ResponseObject} */ (goog.json.parse(json)));
   } catch (ex) {
     command.callback(ex);
     return;

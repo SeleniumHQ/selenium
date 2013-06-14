@@ -31,6 +31,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyNames');
 goog.require('goog.object');
+goog.require('goog.userAgent');
 
 
 
@@ -528,7 +529,7 @@ goog.ui.KeyboardShortcutHandler.prototype.setGlobalKeys = function(keys) {
 
 
 /**
- * @return {Array.<number>} The global keys, i.e. keys that are safe to always
+ * @return {Array.<string>} The global keys, i.e. keys that are safe to always
  *     regard as shortcuts, even if entered in a textarea or input field.
  */
 goog.ui.KeyboardShortcutHandler.prototype.getGlobalKeys = function() {
@@ -615,7 +616,7 @@ goog.ui.KeyboardShortcutHandler.prototype.initializeKeyListener =
   // In this case we capture the keyup (which is fired) and fake as
   // if the user had pressed the key to begin with.
   if (goog.userAgent.MAC &&
-      goog.userAgent.GECKO && goog.userAgent.isVersion('1.8')) {
+      goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.8')) {
     goog.events.listen(this.keyTarget_, goog.events.EventType.KEYUP,
         this.handleMacGeckoKeyUp_, false, this);
   }
@@ -724,7 +725,7 @@ goog.ui.KeyboardShortcutHandler.prototype.clearKeyListener = function() {
   goog.events.unlisten(this.keyTarget_, goog.events.EventType.KEYDOWN,
       this.handleKeyDown_, false, this);
   if (goog.userAgent.MAC &&
-      goog.userAgent.GECKO && goog.userAgent.isVersion('1.8')) {
+      goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.8')) {
     goog.events.unlisten(this.keyTarget_, goog.events.EventType.KEYUP,
         this.handleMacGeckoKeyUp_, false, this);
   }

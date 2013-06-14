@@ -16,14 +16,14 @@
 /**
  * @fileoverview A utility to get better currency format pattern.
  *
- * This module implement a new currency format representation model. It
+ * This module implements a new currency format representation model. It
  * provides 3 currency representation forms: global, portable and local. Local
  * format is the most popular format people use to represent currency in its
  * circulating country without worrying about how it should be distinguished
  * from other currencies.  Global format is a formal representation in context
  * of multiple currencies in same page, it is ISO 4217 currency code. Portable
  * format is a compromise between global and local. It looks similar to how
- * people would like to see how their currencies is being represented in other
+ * people would like to see how their currency is being represented in other
  * media. While at the same time, it should be distinguishable to world's
  * popular currencies (like USD, EUR) and currencies somewhat relevant in the
  * area (like CNY in HK, though native currency is HKD). There is no guarantee
@@ -33,6 +33,8 @@
 
 
 goog.provide('goog.i18n.currency');
+goog.provide('goog.i18n.currency.CurrencyInfo');
+goog.provide('goog.i18n.currency.CurrencyInfoTier2');
 
 
 /**
@@ -43,15 +45,14 @@ goog.i18n.currency.PRECISION_MASK_ = 0x07;
 
 
 /**
- * If this flag is set, it means the currency sign should position before
- * number.
+ * Whether the currency sign should be positioned after the number.
  * @private
  */
 goog.i18n.currency.POSITION_FLAG_ = 0x08;
 
 
 /**
- * Should a space to inserted between number and currency sign.
+ * Whether a space should be inserted between the number and currency sign.
  * @private
  */
 goog.i18n.currency.SPACE_FLAG_ = 0x20;
@@ -59,8 +60,8 @@ goog.i18n.currency.SPACE_FLAG_ = 0x20;
 
 /**
  * This function will add tier2 currency support. Be default, only tier1
- * (most popular currencies) are supportted. If an application really need
- * to support some of the rarely used currency, it should call this function
+ * (most popular currencies) are supported. If an application really needs
+ * to support some of the rarely used currencies, it should call this function
  * before any other functions in this namespace.
  */
 goog.i18n.currency.addTier2Support = function() {
@@ -75,8 +76,8 @@ goog.i18n.currency.addTier2Support = function() {
  * Global currency pattern always uses ISO-4217 currency code as prefix. Local
  * currency sign is added if it is different from currency code. Each currency
  * is unique in this form. The negative side is that ISO code looks weird in
- * some countries as poeple normally do not use it. Local currency sign
- * alleviate the problem, but also make it a little verbose.
+ * some countries as people normally do not use it. Local currency sign
+ * alleviates the problem, but also makes it a little verbose.
  *
  * @param {string} currencyCode ISO-4217 3-letter currency code.
  * @return {string} Global currency pattern string for given currency.
@@ -123,6 +124,7 @@ goog.i18n.currency.getLocalCurrencyPattern = function(currencyCode) {
 /**
  * Returns local currency sign string for those applications that need to
  * handle currency sign separately.
+ *
  * @param {string} currencyCode ISO-4217 3-letter currency code.
  * @return {string} Local currency sign for given currency.
  */
@@ -151,6 +153,7 @@ goog.i18n.currency.getPortableCurrencyPattern = function(currencyCode) {
 /**
  * Return portable currency sign string for those applications that need to
  * handle currency sign themselves.
+ *
  * @param {string} currencyCode ISO-4217 3-letter currency code.
  * @return {string} Portable currency sign for given currency.
  */
@@ -160,13 +163,13 @@ goog.i18n.currency.getPortableCurrencySign = function(currencyCode) {
 
 
 /**
- * This function returns the default currency sign position. Some application
+ * This function returns the default currency sign position. Some applications
  * may want to handle currency sign and currency amount separately. This
- * function can be used in such situation to position the currency sign
- * relative to amount field correctly.
+ * function can be used in such situations to correctly position the currency
+ * sign relative to the amount.
+ *
  * To match the behavior of ICU, position is not determined by display locale.
- * This method will always return true for now (because of the change of
- * data) and should be avoided if possible.
+ *
  * @param {string} currencyCode ISO-4217 3-letter currency code.
  * @return {boolean} true if currency should be positioned before amount field.
  */
@@ -177,13 +180,12 @@ goog.i18n.currency.isPrefixSignPosition = function(currencyCode) {
 
 
 /**
- * This function construct the currency pattern. Currency sign is provided. The
+ * This function constructs the currency pattern. Currency sign is provided. The
  * pattern information is encoded in patternNum.
  *
  * @param {number} patternNum Encoded pattern number that has
  *     currency pattern information.
- * @param {string} sign the currency sign that will be used in pattern.
- *
+ * @param {string} sign The currency sign that will be used in pattern.
  * @return {string} currency pattern string.
  * @private
  */
@@ -219,7 +221,6 @@ goog.i18n.currency.getCurrencyPattern_ = function(patternNum, sign) {
  *
  * @param {string} pattern currency pattern string.
  * @param {string} currencyCode 3-letter currency code.
- *
  * @return {string} modified currency pattern string.
  */
 goog.i18n.currency.adjustPrecision = function(pattern, currencyCode) {
@@ -238,6 +239,23 @@ goog.i18n.currency.adjustPrecision = function(pattern, currencyCode) {
 
 /**
  * Tier 1 currency information.
+ *
+ * The first number in the array is a combination of the precision mask and
+ * other flags. The precision mask indicates how many decimal places to show for
+ * the currency. Valid values are [0..7]. The position flag indicates whether
+ * the currency sign should be positioned after the number. Valid values are 0
+ * (before the number) or 16 (after the number). The space flag indicates
+ * whether a space should be inserted between the currency sign and number.
+ * Valid values are 0 (no space) and 24 (space).
+ *
+ * The number in the array is calculated by adding together the mask and flag
+ * values. For example:
+ *
+ * 0: no precision (0), currency sign first (0), no space (0)
+ * 2: two decimals precision (2), currency sign first (0), no space (0)
+ * 18: two decimals precision (2), currency sign last (16), no space (0)
+ * 42: two decimals precision (2), currency sign last (16), space (24)
+ *
  * @type {!Object.<!Array>}
  */
 goog.i18n.currency.CurrencyInfo = {
@@ -273,7 +291,7 @@ goog.i18n.currency.CurrencyInfo = {
   'PEN': [2, 'S/.', 'S/.'],
   'PHP': [2, '\u20B1', 'Php'],
   'PKR': [0, 'Rs', 'PKRs.'],
-  'RUB': [2, 'Rup', 'Rup'],
+  'RUB': [42, 'руб.', 'руб.'],
   'SAR': [2, 'Rial', 'Rial'],
   'SEK': [2, 'kr', 'kr'],
   'SGD': [2, '$', 'S$'],

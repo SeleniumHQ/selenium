@@ -203,7 +203,6 @@ goog.messaging.AbstractChannel.prototype.decodePayload = function(
 /** @override */
 goog.messaging.AbstractChannel.prototype.disposeInternal = function() {
   goog.base(this, 'disposeInternal');
-  goog.dispose(this.logger);
   delete this.logger;
   delete this.services_;
   delete this.defaultService_;

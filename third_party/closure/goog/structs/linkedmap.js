@@ -240,7 +240,7 @@ goog.structs.LinkedMap.prototype.setMaxCount = function(maxCount) {
 
 
 /**
- * @return {Array.<string>} The list of the keys in the appropriate order for
+ * @return {!Array.<string>} The list of the keys in the appropriate order for
  *     this LinkedMap.
  */
 goog.structs.LinkedMap.prototype.getKeys = function() {

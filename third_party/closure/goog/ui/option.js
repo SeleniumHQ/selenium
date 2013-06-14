@@ -20,8 +20,7 @@
 
 goog.provide('goog.ui.Option');
 
-goog.require('goog.ui.Component.EventType');
-goog.require('goog.ui.ControlContent');
+goog.require('goog.ui.Component');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.ui.registry');
 
@@ -64,6 +63,6 @@ goog.ui.Option.prototype.performActionInternal = function(e) {
 // Register a decorator factory function for goog.ui.Options.
 goog.ui.registry.setDecoratorByClassName(
     goog.getCssName('goog-option'), function() {
-  // Option defaults to using MenuItemRenderer.
-  return new goog.ui.Option(null);
-});
+      // Option defaults to using MenuItemRenderer.
+      return new goog.ui.Option(null);
+    });

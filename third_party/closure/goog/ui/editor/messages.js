@@ -64,9 +64,9 @@ goog.ui.editor.messages.MSG_TR_LINK_EXPLANATION = goog.getMsg(
     "the box in your browser's address bar, and paste it into " +
     'the box above.',
     {'startBold': '<b>',
-     'endBold': '</b>',
-     'searchEngineLink': "<a href='http://www.google.com/' target='_new'>",
-     'endLink': '</a>'});
+      'endBold': '</b>',
+      'searchEngineLink': "<a href='http://www.google.com/' target='_new'>",
+      'endLink': '</a>'});
 
 
 /** @desc Prompt for the URL of a link that the user is creating. */

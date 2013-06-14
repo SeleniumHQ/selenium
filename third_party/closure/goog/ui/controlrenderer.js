@@ -21,15 +21,15 @@
 
 goog.provide('goog.ui.ControlRenderer');
 
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.State');
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.a11y');
-goog.require('goog.dom.a11y.State');
 goog.require('goog.dom.classes');
 goog.require('goog.object');
 goog.require('goog.style');
-goog.require('goog.ui.Component.State');
-goog.require('goog.ui.ControlContent');
+goog.require('goog.ui.Component');
 goog.require('goog.userAgent');
 
 
@@ -159,7 +159,7 @@ goog.ui.ControlRenderer.ARIA_STATE_MAP_;
 /**
  * Returns the ARIA role to be applied to the control.
  * See http://wiki/Main/ARIA for more info.
- * @return {goog.dom.a11y.Role|undefined} ARIA role.
+ * @return {goog.a11y.aria.Role|undefined} ARIA role.
  */
 goog.ui.ControlRenderer.prototype.getAriaRole = function() {
   // By default, the ARIA role is unspecified.
@@ -209,12 +209,12 @@ goog.ui.ControlRenderer.prototype.getContentElement = function(element) {
  */
 goog.ui.ControlRenderer.prototype.enableClassName = function(control,
     className, enable) {
-  var element = (/** @type {Element} */
+  var element = /** @type {Element} */ (
       control.getElement ? control.getElement() : control);
   if (element) {
     // For IE6, we need to enable any combined classes involving this class
     // as well.
-    if (goog.userAgent.IE && !goog.userAgent.isVersion('7')) {
+    if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('7')) {
       var combinedClasses = this.getAppliedCombinedClassNames_(
           goog.dom.classes.get(element), className);
       combinedClasses.push(className);
@@ -261,7 +261,6 @@ goog.ui.ControlRenderer.prototype.canDecorate = function(element) {
  * @param {goog.ui.Control} control Control instance to decorate the element.
  * @param {Element} element Element to decorate.
  * @return {Element} Decorated element.
- * @suppress {visibility} setContentInternal and setStateInternal
  */
 goog.ui.ControlRenderer.prototype.decorate = function(control, element) {
   // Set the control's ID to the decorated element's DOM ID, if any.
@@ -320,7 +319,7 @@ goog.ui.ControlRenderer.prototype.decorate = function(control, element) {
 
   // For IE6, rewrite all classes on the decorated element if any combined
   // classes apply.
-  if (goog.userAgent.IE && !goog.userAgent.isVersion('7')) {
+  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('7')) {
     var combinedClasses = this.getAppliedCombinedClassNames_(
         classNames);
     if (combinedClasses.length > 0) {
@@ -368,13 +367,15 @@ goog.ui.ControlRenderer.prototype.initializeDom = function(control) {
 /**
  * Sets the element's ARIA role.
  * @param {Element} element Element to update.
- * @param {?goog.dom.a11y.Role=} opt_preferredRole The preferred ARIA role.
+ * @param {?goog.a11y.aria.Role=} opt_preferredRole The preferred ARIA role.
  */
 goog.ui.ControlRenderer.prototype.setAriaRole = function(element,
     opt_preferredRole) {
   var ariaRole = opt_preferredRole || this.getAriaRole();
   if (ariaRole) {
-    goog.dom.a11y.setRole(element, ariaRole);
+    goog.asserts.assert(element,
+        'The element passed as a first parameter cannot be null.');
+    goog.a11y.aria.setRole(element, ariaRole);
   }
 };
 
@@ -389,21 +390,26 @@ goog.ui.ControlRenderer.prototype.setAriaRole = function(element,
 goog.ui.ControlRenderer.prototype.setAriaStates = function(control, element) {
   goog.asserts.assert(control);
   goog.asserts.assert(element);
-  if (!control.isEnabled()) {
-    this.updateAriaState(element, goog.ui.Component.State.DISABLED,
-                         true);
+
+  if (!control.isVisible()) {
+    goog.a11y.aria.setState(
+        element, goog.a11y.aria.State.HIDDEN, !control.isVisible());
   }
-  if (control.isSelected()) {
-    this.updateAriaState(element, goog.ui.Component.State.SELECTED,
-                         true);
+  if (!control.isEnabled()) {
+    this.updateAriaState(
+        element, goog.ui.Component.State.DISABLED, !control.isEnabled());
+  }
+  if (control.isSupportedState(goog.ui.Component.State.SELECTED)) {
+    this.updateAriaState(
+        element, goog.ui.Component.State.SELECTED, control.isSelected());
   }
   if (control.isSupportedState(goog.ui.Component.State.CHECKED)) {
-    this.updateAriaState(element, goog.ui.Component.State.CHECKED,
-                         control.isChecked());
+    this.updateAriaState(
+        element, goog.ui.Component.State.CHECKED, control.isChecked());
   }
   if (control.isSupportedState(goog.ui.Component.State.OPENED)) {
-    this.updateAriaState(element, goog.ui.Component.State.OPENED,
-                         control.isOpen());
+    this.updateAriaState(
+        element, goog.ui.Component.State.OPENED, control.isOpen());
   }
 };
 
@@ -499,7 +505,10 @@ goog.ui.ControlRenderer.prototype.setFocusable = function(control, focusable) {
 goog.ui.ControlRenderer.prototype.setVisible = function(element, visible) {
   // The base class implementation is trivial; subclasses should override as
   // needed.  It should be possible to do animated reveals, for example.
-  goog.style.showElement(element, visible);
+  goog.style.setElementShown(element, visible);
+  if (element) {
+    goog.a11y.aria.setState(element, goog.a11y.aria.State.HIDDEN, !visible);
+  }
 };
 
 
@@ -534,14 +543,16 @@ goog.ui.ControlRenderer.prototype.updateAriaState = function(element, state,
   // Ensure the ARIA state map exists.
   if (!goog.ui.ControlRenderer.ARIA_STATE_MAP_) {
     goog.ui.ControlRenderer.ARIA_STATE_MAP_ = goog.object.create(
-        goog.ui.Component.State.DISABLED, goog.dom.a11y.State.DISABLED,
-        goog.ui.Component.State.SELECTED, goog.dom.a11y.State.SELECTED,
-        goog.ui.Component.State.CHECKED, goog.dom.a11y.State.CHECKED,
-        goog.ui.Component.State.OPENED, goog.dom.a11y.State.EXPANDED);
+        goog.ui.Component.State.DISABLED, goog.a11y.aria.State.DISABLED,
+        goog.ui.Component.State.SELECTED, goog.a11y.aria.State.SELECTED,
+        goog.ui.Component.State.CHECKED, goog.a11y.aria.State.CHECKED,
+        goog.ui.Component.State.OPENED, goog.a11y.aria.State.EXPANDED);
   }
   var ariaState = goog.ui.ControlRenderer.ARIA_STATE_MAP_[state];
   if (ariaState) {
-    goog.dom.a11y.setState(element, ariaState, enable);
+    goog.asserts.assert(element,
+        'The element passed as a first parameter cannot be null.');
+    goog.a11y.aria.setState(element, ariaState, enable);
   }
 };
 
@@ -694,7 +705,7 @@ goog.ui.ControlRenderer.prototype.getClassNames = function(control) {
   }
 
   // Add composite classes for IE6 support
-  if (goog.userAgent.IE && !goog.userAgent.isVersion('7')) {
+  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('7')) {
     classNames.push.apply(classNames,
         this.getAppliedCombinedClassNames_(classNames));
   }

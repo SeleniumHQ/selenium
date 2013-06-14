@@ -22,7 +22,9 @@ goog.provide('goog.ui.CustomColorPalette');
 
 goog.require('goog.color');
 goog.require('goog.dom');
+goog.require('goog.dom.classes');
 goog.require('goog.ui.ColorPalette');
+goog.require('goog.ui.Component');
 
 
 
@@ -58,9 +60,9 @@ goog.ui.CustomColorPalette.prototype.createColorNodes = function() {
 
   var nl = goog.base(this, 'createColorNodes');
   nl.push(goog.dom.createDom('div', {
-      'class': goog.getCssName('goog-palette-customcolor'),
-      'title': MSG_CLOSURE_CUSTOM_COLOR_BUTTON
-      }, '+'));
+    'class': goog.getCssName('goog-palette-customcolor'),
+    'title': MSG_CLOSURE_CUSTOM_COLOR_BUTTON
+  }, '+'));
   return nl;
 };
 
@@ -74,7 +76,7 @@ goog.ui.CustomColorPalette.prototype.performActionInternal = function(e) {
   var item = /** @type {Element} */ (this.getHighlightedItem());
   if (item) {
     if (goog.dom.classes.has(
-            item, goog.getCssName('goog-palette-customcolor'))) {
+        item, goog.getCssName('goog-palette-customcolor'))) {
       // User activated the special "add custom color" swatch.
       this.promptForCustomColor();
     } else {

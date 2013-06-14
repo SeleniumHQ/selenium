@@ -114,7 +114,7 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
             return (opt_isPartial && text.indexOf(target) != -1) ||
                 text == target;
           });
-          return (/**@type{Element}*/element);
+          return /**@type{Element}*/ (element);
         },
         many: function(target, root, opt_isPartial) {
           var elements = cssSelectorFunction.many('a', root);

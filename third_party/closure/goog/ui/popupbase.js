@@ -379,6 +379,19 @@ goog.ui.PopupBase.prototype.getLastHideTime = function() {
 
 
 /**
+ * Returns the event handler for the popup. All event listeners belonging to
+ * this handler are removed when the tooltip is hidden. Therefore,
+ * the recommended usage of this handler is to listen on events in
+ * {@link #onShow_}.
+ * @return {goog.events.EventHandler} Event handler for this popup.
+ * @protected
+ */
+goog.ui.PopupBase.prototype.getHandler = function() {
+  return this.handler_;
+};
+
+
+/**
  * Helper to throw exception if the popup is showing.
  * @private
  */
@@ -631,7 +644,7 @@ goog.ui.PopupBase.prototype.continueHidingPopup_ = function(opt_target) {
  */
 goog.ui.PopupBase.prototype.showPopupElement = function() {
   this.element_.style.visibility = 'visible';
-  goog.style.showElement(this.element_, true);
+  goog.style.setElementShown(this.element_, true);
 };
 
 
@@ -641,7 +654,7 @@ goog.ui.PopupBase.prototype.showPopupElement = function() {
  */
 goog.ui.PopupBase.prototype.hidePopupElement_ = function() {
   this.element_.style.visibility = 'hidden';
-  goog.style.showElement(this.element_, false);
+  goog.style.setElementShown(this.element_, false);
 };
 
 
@@ -767,7 +780,7 @@ goog.ui.PopupBase.prototype.onDocumentBlur_ = function(e) {
   // Ignore blur events if the active element is still inside the popup or if
   // there is no longer an active element.  For example, a widget like a
   // goog.ui.Button might programatically blur itself before losing tabIndex.
-  if (goog.userAgent.IE || goog.userAgent.OPERA) {
+  if (typeof document.activeElement != 'undefined') {
     var activeElement = doc.activeElement;
     if (!activeElement || goog.dom.contains(this.element_,
         activeElement) || activeElement.tagName == 'BODY') {

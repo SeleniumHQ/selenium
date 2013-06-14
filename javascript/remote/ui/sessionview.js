@@ -163,9 +163,9 @@ remote.ui.SessionView.prototype.createDom = function() {
       capabilities = dom.createDom(goog.dom.TagName.SPAN,
       'session-capabilities', 'Capabilities'));
   this.controlBlock_.addElement(
-      (/** @type {!Element} */this.screenshotButton_.getElement()));
+      /** @type {!Element} */ (this.screenshotButton_.getElement()));
   this.controlBlock_.addElement(
-      (/** @type {!Element} */this.deleteSessionButton_.getElement()));
+      /** @type {!Element} */ (this.deleteSessionButton_.getElement()));
 
   this.viewElement_ = dom.createDom(goog.dom.TagName.DIV, 'goog-tab-content',
       this.controlBlock_.getElement(), this.todoBlock_);
@@ -204,8 +204,8 @@ remote.ui.SessionView.prototype.addControlElement = function(element) {
  */
 remote.ui.SessionView.prototype.update = function(session) {
   var hasSession = !!session;
-  goog.style.showElement(this.emptyViewElement_, !hasSession);
-  goog.style.showElement(this.viewElement_, hasSession);
+  goog.style.setElementShown(this.emptyViewElement_, !hasSession);
+  goog.style.setElementShown(this.viewElement_, hasSession);
 
   if (session) {
     goog.dom.setTextContent(this.sessionIdSpan_, session.getId());

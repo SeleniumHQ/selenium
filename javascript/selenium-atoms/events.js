@@ -145,7 +145,7 @@ core.events.fireAt = function(locator, eventName, opt_coordString) {
       metaKey: false,
       relatedTarget: null
   };
-  bot.events.fire(element, type, (/** @type {!bot.events.MouseArgs} */args));
+  bot.events.fire(element, type, /** @type {!bot.events.MouseArgs} */ (args));
 };
 
 

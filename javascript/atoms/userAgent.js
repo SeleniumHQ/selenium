@@ -46,7 +46,7 @@ bot.userAgent.isEngineVersion = function(version) {
     return goog.string.compareVersions(
         /** @type {number} */ (goog.userAgent.DOCUMENT_MODE), version) >= 0;
   } else {
-    return goog.userAgent.isVersion(version);
+    return goog.userAgent.isVersionOrHigher(version);
   }
 };
 

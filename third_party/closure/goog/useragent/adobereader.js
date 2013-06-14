@@ -19,7 +19,7 @@
  * @see ../demos/useragent.html
  */
 
-
+/** @suppress {extraProvide} */
 goog.provide('goog.userAgent.adobeReader');
 
 goog.require('goog.string');
@@ -29,7 +29,7 @@ goog.require('goog.userAgent');
 (function() {
   var version = '';
   if (goog.userAgent.IE) {
-    function detectOnIe(classId) {
+    var detectOnIe = function(classId) {
       /** @preserveTry */
       try {
         new ActiveXObject(classId);
@@ -37,7 +37,7 @@ goog.require('goog.userAgent');
       } catch (ex) {
         return false;
       }
-    }
+    };
     if (detectOnIe('AcroPDF.PDF.1')) {
       version = '7';
     } else if (detectOnIe('PDF.PdfCtrl.6')) {

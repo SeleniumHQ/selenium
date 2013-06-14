@@ -162,7 +162,7 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
   switch (goog.typeOf(obj)) {
     case 'array':
       return webdriver.promise.fullyResolved(
-          goog.array.map((/** @type {!Array} */obj),
+          goog.array.map(/** @type {!Array} */ (obj),
               webdriver.WebDriver.toWireValue_));
     case 'object':
       if (goog.isFunction(obj.toWireValue)) {
@@ -177,7 +177,7 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
         ].join(''));
       }
       return webdriver.promise.fullyResolved(
-          goog.object.map((/** @type {!Object} */obj),
+          goog.object.map(/** @type {!Object} */ (obj),
               webdriver.WebDriver.toWireValue_));
     case 'function':
       return webdriver.promise.fulfilled('' + obj);
@@ -204,14 +204,14 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
  */
 webdriver.WebDriver.fromWireValue_ = function(driver, value) {
   if (goog.isArray(value)) {
-    value = goog.array.map((/**@type {goog.array.ArrayLike}*/value),
+    value = goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
         goog.partial(webdriver.WebDriver.fromWireValue_, driver));
   } else if (value && goog.isObject(value)) {
     if (webdriver.WebElement.ELEMENT_KEY in value) {
       value = new webdriver.WebElement(driver,
           value[webdriver.WebElement.ELEMENT_KEY]);
     } else {
-      value = goog.object.map((/**@type {!Object}*/value),
+      value = goog.object.map(/**@type {!Object}*/ (value),
           goog.partial(webdriver.WebDriver.fromWireValue_, driver));
     }
   }
@@ -655,7 +655,7 @@ webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
                                                      var_args) {
   var id;
   if (locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument) {
-    var element = (/** @type {!Element} */locatorOrElement);
+    var element = /** @type {!Element} */ (locatorOrElement);
     id = this.findDomElement_(element).
         then(function(elements) {
           if (!elements.length) {
@@ -756,7 +756,7 @@ webdriver.WebDriver.prototype.isElementPresent = function(locatorOrElement,
                                                           var_args) {
   var findElement =
       locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument ?
-          this.findDomElement_((/** @type {!Element} */locatorOrElement)) :
+          this.findDomElement_(/** @type {!Element} */ (locatorOrElement)) :
           this.findElements.apply(this, arguments);
   return findElement.then(function(result) {
     return !!result.length;
@@ -957,7 +957,7 @@ webdriver.WebDriver.Options.prototype.addCookie = function(
     if (goog.isNumber(opt_expiry)) {
       expiryDate = new Date(opt_expiry);
     } else {
-      expiryDate = (/** @type {!Date} */opt_expiry);
+      expiryDate = /** @type {!Date} */ (opt_expiry);
       opt_expiry = expiryDate.getTime();
     }
     cookieString += ';expires=' + expiryDate.toUTCString();

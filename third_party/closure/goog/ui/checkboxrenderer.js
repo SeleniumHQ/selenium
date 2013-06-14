@@ -19,11 +19,11 @@
 
 goog.provide('goog.ui.CheckboxRenderer');
 
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.Role');
+goog.require('goog.a11y.aria.State');
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.dom.a11y');
-goog.require('goog.dom.a11y.Role');
-goog.require('goog.dom.a11y.State');
 goog.require('goog.dom.classes');
 goog.require('goog.object');
 goog.require('goog.ui.ControlRenderer');
@@ -84,9 +84,9 @@ goog.ui.CheckboxRenderer.prototype.decorate = function(checkbox, element) {
     checked = goog.ui.Checkbox.State.UNCHECKED;
   }
   checkbox.setCheckedInternal(checked);
-
-  goog.dom.a11y.setState(element, goog.dom.a11y.State.CHECKED,
-                         this.ariaStateFromCheckState_(checked));
+  goog.asserts.assert(element, 'The element cannot be null.');
+  goog.a11y.aria.setState(element, goog.a11y.aria.State.CHECKED,
+      this.ariaStateFromCheckState_(checked));
 
   return element;
 };
@@ -94,11 +94,11 @@ goog.ui.CheckboxRenderer.prototype.decorate = function(checkbox, element) {
 
 /**
  * Returns the ARIA role to be applied to checkboxes.
- * @return {goog.dom.a11y.Role} ARIA role.
+ * @return {goog.a11y.aria.Role} ARIA role.
  * @override
  */
 goog.ui.CheckboxRenderer.prototype.getAriaRole = function() {
-  return goog.dom.a11y.Role.CHECKBOX;
+  return goog.a11y.aria.Role.CHECKBOX;
 };
 
 
@@ -121,7 +121,7 @@ goog.ui.CheckboxRenderer.prototype.setCheckboxState = function(
       goog.dom.classes.enable(element, className,
           className == classToAdd);
     }, this);
-    goog.dom.a11y.setState(element, goog.dom.a11y.State.CHECKED,
+    goog.a11y.aria.setState(element, goog.a11y.aria.State.CHECKED,
         this.ariaStateFromCheckState_(state));
   }
 };
@@ -130,7 +130,7 @@ goog.ui.CheckboxRenderer.prototype.setCheckboxState = function(
 /**
  * Gets the checkbox's ARIA (accessibility) state from its checked state.
  * @param {goog.ui.Checkbox.State} state Checkbox state.
- * @return {string} The value of goog.dom.a11y.state.CHECKED. Either 'true',
+ * @return {string} The value of goog.a11y.aria.state.CHECKED. Either 'true',
  *     'false', or 'mixed'.
  * @private
  */

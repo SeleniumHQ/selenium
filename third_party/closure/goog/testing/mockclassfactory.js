@@ -390,8 +390,8 @@ goog.testing.MockClassFactory.prototype.createProxy_ = function(namespace,
  * @param {Object} namespace A javascript namespace (e.g. goog.testing).
  * @param {Function} classToMock The class that will be mocked.
  * @param {boolean} isStrict Whether or not the mock should be strict.
- * @param {Array} ctorArgs The arguments associated with this instance's
- *     constructor.
+ * @param {goog.array.ArrayLike} ctorArgs The arguments associated with this
+ *     instance's constructor.
  * @return {goog.testing.StrictMock|goog.testing.LooseMock} The mock created
  *     for the provided class.
  * @private
@@ -437,9 +437,8 @@ goog.testing.MockClassFactory.prototype.getMockClass_ =
  */
 goog.testing.MockClassFactory.prototype.getStrictMockClass =
     function(namespace, classToMock, var_args) {
-  var args = /** @type {Array} */ (arguments);
   return /** @type {goog.testing.StrictMock} */ (this.getMockClass_(namespace,
-      classToMock, true, args));
+      classToMock, true, arguments));
 };
 
 
@@ -453,9 +452,8 @@ goog.testing.MockClassFactory.prototype.getStrictMockClass =
  */
 goog.testing.MockClassFactory.prototype.getLooseMockClass =
     function(namespace, classToMock, var_args) {
-  var args = /** @type {Array} */ (arguments);
   return /** @type {goog.testing.LooseMock} */ (this.getMockClass_(namespace,
-      classToMock, false, args));
+      classToMock, false, arguments));
 };
 
 

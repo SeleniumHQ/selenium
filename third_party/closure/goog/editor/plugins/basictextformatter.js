@@ -588,9 +588,10 @@ goog.editor.plugins.BasicTextFormatter.prototype.convertBreaksToDivs_ =
       // div's. The reason may be hidden in CLs 5332866 and 8530601.
       var attribute = 'trtempbr';
       var value = 'temp_br';
-      parent.innerHTML = parent.innerHTML.replace(
+      var newHtml = parent.innerHTML.replace(
           goog.editor.plugins.BasicTextFormatter.BR_REGEXP_,
           '<p$1 ' + attribute + '="' + value + '">');
+      goog.editor.node.replaceInnerHtml(parent, newHtml);
 
       var paragraphs =
           goog.array.toArray(parent.getElementsByTagName(goog.dom.TagName.P));
@@ -796,7 +797,8 @@ goog.editor.plugins.BasicTextFormatter.prototype.execCommandHelper_ = function(
     doc.execCommand('styleWithCSS', false, false);
   }
 
-  if (goog.userAgent.WEBKIT && !goog.userAgent.isVersion('526') &&
+  if (goog.userAgent.WEBKIT &&
+      !goog.userAgent.isVersionOrHigher('526') &&
       command.toLowerCase() == 'formatblock' &&
       opt_value && /^[<]?h\d[>]?$/i.test(opt_value)) {
     this.cleanUpSafariHeadings_();
@@ -1439,7 +1441,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.applyExecCommandSafariFixes_ =
  */
 goog.editor.plugins.BasicTextFormatter.prototype.applyExecCommandGeckoFixes_ =
     function(command) {
-  if (goog.userAgent.isVersion('1.9') &&
+  if (goog.userAgent.isVersionOrHigher('1.9') &&
       command.toLowerCase() == 'formatblock') {
     // Firefox 3 and above throw a JS error for formatblock if the range is
     // a child of the body node. Changing the selection to the BR fixes the

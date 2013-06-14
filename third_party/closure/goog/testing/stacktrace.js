@@ -257,6 +257,29 @@ goog.testing.stacktrace.FUNCTION_SOURCE_REGEXP_ = new RegExp(
 
 
 /**
+ * RegExp pattern for function call in a IE stack trace. This expression allows
+ * for identifiers like 'Anonymous function', 'eval code', and 'Global code'.
+ * @type {string}
+ * @const
+ * @private
+ */
+goog.testing.stacktrace.IE_FUNCTION_CALL_PATTERN_ = '(' +
+    goog.testing.stacktrace.IDENTIFIER_PATTERN_ + '(?:\\s+\\w+)*)';
+
+
+/**
+ * Regular expression for parsing a stack frame in IE.
+ * @type {!RegExp}
+ * @const
+ * @private
+ */
+goog.testing.stacktrace.IE_STACK_FRAME_REGEXP_ = new RegExp('^   at ' +
+    goog.testing.stacktrace.IE_FUNCTION_CALL_PATTERN_ +
+    '\\s*\\((eval code:[^)]*|' + goog.testing.stacktrace.URL_PATTERN_ +
+    ')\\)?$');
+
+
+/**
  * Creates a stack trace by following the call chain. Based on
  * {@link goog.debug.getStacktrace}.
  * @return {!Array.<!goog.testing.stacktrace.Frame>} Stack frames.
@@ -345,6 +368,12 @@ goog.testing.stacktrace.parseStackFrame_ = function(frameStr) {
         '', m[4] || '', m[5] || '');
   }
 
+  m = frameStr.match(goog.testing.stacktrace.IE_STACK_FRAME_REGEXP_);
+  if (m) {
+    return new goog.testing.stacktrace.Frame('', m[1] || '', '', '',
+        m[2] || '');
+  }
+
   return null;
 };
 
@@ -425,9 +454,9 @@ goog.testing.stacktrace.isClosureInspectorActive_ = function() {
  */
 goog.testing.stacktrace.htmlEscape_ = function(text) {
   return text.replace(/&/g, '&amp;').
-              replace(/</g, '&lt;').
-              replace(/>/g, '&gt;').
-              replace(/"/g, '&quot;');
+             replace(/</g, '&lt;').
+             replace(/>/g, '&gt;').
+             replace(/"/g, '&quot;');
 };
 
 
@@ -505,7 +534,17 @@ goog.testing.stacktrace.canonicalize = function(stack) {
  * @return {string} The stack trace in canonical format.
  */
 goog.testing.stacktrace.get = function() {
-  var stack = new Error().stack;
+  var stack = '';
+  // IE10 will only create a stack trace when the Error is thrown.
+  // We use null.x() to throw an exception because the closure compiler may
+  // replace "throw" with a function call in an attempt to minimize the binary
+  // size, which in turn has the side effect of adding an unwanted stack frame.
+  try {
+    null.x();
+  } catch (e) {
+    stack = e.stack;
+  }
+
   var frames = stack ? goog.testing.stacktrace.parse_(stack) :
       goog.testing.stacktrace.followCallChain_();
   return goog.testing.stacktrace.framesToString_(frames);

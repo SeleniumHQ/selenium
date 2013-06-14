@@ -55,6 +55,8 @@ goog.require('goog.string');
  */
 goog.gears.ManagedResourceStore = function(name, requiredCookie,
     opt_localServer) {
+  goog.base(this);
+
   this.localServer_ = opt_localServer ||
                       goog.gears.getFactory().create('beta.localserver', '1.0');
 

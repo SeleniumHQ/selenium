@@ -328,7 +328,7 @@ bot.dom.isEnabled = function(el) {
       el.parentNode.nodeType == goog.dom.NodeType.ELEMENT &&
       goog.dom.TagName.OPTGROUP == tagName ||
       goog.dom.TagName.OPTION == tagName) {
-    return bot.dom.isEnabled((/**@type{!Element}*/el.parentNode));
+    return bot.dom.isEnabled(/**@type{!Element}*/ (el.parentNode));
   }
 
   // Is there an ancestor of the current element that is a disabled fieldset
@@ -466,7 +466,7 @@ bot.dom.getParentElement = function(node) {
          elem.nodeType != goog.dom.NodeType.DOCUMENT_FRAGMENT) {
     elem = elem.parentNode;
   }
-  return (/** @type {Element} */ bot.dom.isElement(elem) ? elem : null);
+  return /** @type {Element} */ (bot.dom.isElement(elem) ? elem : null);
 };
 
 
@@ -655,7 +655,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
                    /** @type {!Element} */ (n), 'usemap') == '#' + elem.name;
       });
     }
-    return !!mapImage && bot.dom.isShown((/** @type {!Element} */ mapImage),
+    return !!mapImage && bot.dom.isShown(/** @type {!Element} */ (mapImage),
         opt_ignoreOpacity);
   }
 
@@ -884,7 +884,7 @@ bot.dom.getVisibleText = function(elem) {
  */
 bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
   function currLine() {
-    return (/** @type {string|undefined} */ goog.array.peek(lines)) || '';
+    return /** @type {string|undefined} */ (goog.array.peek(lines)) || '';
   }
 
   // TODO(gdennis): Add case here for textual form elements.
@@ -931,11 +931,11 @@ bot.dom.appendVisibleTextLinesFromElement_ = function(elem, lines) {
 
     goog.array.forEach(elem.childNodes, function(node) {
       if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
-        var textNode = (/** @type {!Text} */ node);
+        var textNode = /** @type {!Text} */ (node);
         bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
             whitespace, textTransform);
       } else if (bot.dom.isElement(node)) {
-        var castElem = (/** @type {!Element} */ node);
+        var castElem = /** @type {!Element} */ (node);
         bot.dom.appendVisibleTextLinesFromElement_(castElem, lines);
       }
     });

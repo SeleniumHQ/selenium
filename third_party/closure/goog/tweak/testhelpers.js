@@ -21,6 +21,14 @@
 goog.provide('goog.tweak.testhelpers');
 
 goog.require('goog.tweak');
+goog.require('goog.tweak.BooleanGroup');
+goog.require('goog.tweak.BooleanInGroupSetting');
+goog.require('goog.tweak.BooleanSetting');
+goog.require('goog.tweak.ButtonAction');
+goog.require('goog.tweak.NumericSetting');
+goog.require('goog.tweak.Registry');
+goog.require('goog.tweak.StringSetting');
+
 
 var boolEntry;
 var boolEntry2;

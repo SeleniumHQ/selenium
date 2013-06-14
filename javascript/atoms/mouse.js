@@ -86,7 +86,7 @@ bot.Mouse = function(opt_state, opt_modifiersState, opt_eventEmitter) {
 
     try {
       if (bot.dom.isElement(opt_state.element)) {
-        this.setElement((/** @type {!Element} */opt_state.element));
+        this.setElement(/** @type {!Element} */ (opt_state.element));
       }
     } catch (ignored) {
       this.buttonPressed_ = null;

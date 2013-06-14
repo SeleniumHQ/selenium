@@ -48,7 +48,7 @@ goog.ui.equation.EditorPane.prototype.helpUrl_ = '';
  */
 goog.ui.equation.EditorPane.prototype.setVisible =
     function(visible) {
-  goog.style.showElement(this.getElement(), visible);
+  goog.style.setElementShown(this.getElement(), visible);
 };
 
 

@@ -208,7 +208,7 @@ goog.ui.Popup.prototype.reposition = function() {
   var el = this.getElement();
   if (hideForPositioning) {
     el.style.visibility = 'hidden';
-    goog.style.showElement(el, true);
+    goog.style.setElementShown(el, true);
   }
 
   this.position_.reposition(el, this.popupCorner_, this.margin_);
@@ -218,7 +218,7 @@ goog.ui.Popup.prototype.reposition = function() {
     // method in PopupBase. Resetting it here causes flickering in some
     // situations, even if set to visible after the display property has been
     // set to none by the call below.
-    goog.style.showElement(el, false);
+    goog.style.setElementShown(el, false);
   }
 };
 

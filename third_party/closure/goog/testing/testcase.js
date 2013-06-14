@@ -64,7 +64,7 @@ goog.testing.TestCase = function(opt_name) {
 
   /**
    * Array of test functions that can be executed.
-   * @type {Array.<goog.testing.TestCase.Test>}
+   * @type {!Array.<!goog.testing.TestCase.Test>}
    * @private
    */
   this.tests_ = [];
@@ -182,6 +182,15 @@ goog.testing.TestCase.protectedClearTimeout_ = goog.global.clearTimeout;
 
 
 /**
+ * Save a reference to {@code window.Date}, so any code that overrides
+ * the default behavior doesn't affect our runner.
+ * @type {function(new: Date)}
+ * @private
+ */
+goog.testing.TestCase.protectedDate_ = Date;
+
+
+/**
  * Saved string referencing goog.global.setTimeout's string serialization.  IE
  * sometimes fails to uphold equality for setTimeout, but the string version
  * stays the same.
@@ -267,7 +276,7 @@ goog.testing.TestCase.prototype.onCompleteCallback_ = null;
 
 /**
  * The test runner that is running this case.
- * @type {goog.testing.TestRunner?}
+ * @type {goog.testing.TestRunner}
  * @private
  */
 goog.testing.TestCase.prototype.testRunner_ = null;
@@ -283,8 +292,25 @@ goog.testing.TestCase.prototype.add = function(test) {
 
 
 /**
+ * Creates and adds a new test.
+ *
+ * Convenience function to make syntax less awkward when not using automatic
+ * test discovery.
+ *
+ * @param {string} name The test name.
+ * @param {!Function} ref Reference to the test function.
+ * @param {!Object=} opt_scope Optional scope that the test function should be
+ *     called in.
+ */
+goog.testing.TestCase.prototype.addNewTest = function(name, ref, opt_scope) {
+  var test = new goog.testing.TestCase.Test(name, ref, opt_scope || this);
+  this.tests_.push(test);
+};
+
+
+/**
  * Sets the tests.
- * @param {Array.<goog.testing.TestCase.Test>} tests A new test array.
+ * @param {!Array.<goog.testing.TestCase.Test>} tests A new test array.
  * @protected
  */
 goog.testing.TestCase.prototype.setTests = function(tests) {
@@ -323,7 +349,7 @@ goog.testing.TestCase.prototype.getActuallyRunCount = function() {
 
 /**
  * Returns the current test and increments the pointer.
- * @return {goog.testing.TestCase.Test?} The current test case.
+ * @return {goog.testing.TestCase.Test} The current test case.
  */
 goog.testing.TestCase.prototype.next = function() {
   var test;
@@ -598,7 +624,10 @@ goog.testing.TestCase.prototype.orderTests_ = function(tests) {
 /**
  * Gets the object with all globals.
  * @param {string=} opt_prefix An optional prefix. If specified, only get things
- *     under this prefix.
+ *     under this prefix. Note that the prefix is only honored in IE, since it
+ *     supports the RuntimeObject:
+ *     http://msdn.microsoft.com/en-us/library/ff521039%28VS.85%29.aspx
+ *     TODO: Fix this method to honor the prefix in all browsers.
  * @return {Object} An object with all globals starting with the prefix.
  */
 goog.testing.TestCase.prototype.getGlobals = function(opt_prefix) {
@@ -609,7 +638,10 @@ goog.testing.TestCase.prototype.getGlobals = function(opt_prefix) {
 /**
  * Gets the object with all globals.
  * @param {string=} opt_prefix An optional prefix. If specified, only get things
- *     under this prefix.
+ *     under this prefix. Note that the prefix is only honored in IE, since it
+ *     supports the RuntimeObject:
+ *     http://msdn.microsoft.com/en-us/library/ff521039%28VS.85%29.aspx
+ *     TODO: Fix this method to honor the prefix in all browsers.
  * @return {Object} An object with all globals starting with the prefix.
  */
 goog.testing.TestCase.getGlobals = function(opt_prefix) {
@@ -874,7 +906,9 @@ goog.testing.TestCase.prototype.clearTimeout = function(id) {
  * @protected
  */
 goog.testing.TestCase.prototype.now = function() {
-  return new Date().getTime();
+  // Cannot use "new goog.testing.TestCase.protectedDate_()" due to b/8323223.
+  var protectedDate = goog.testing.TestCase.protectedDate_;
+  return new protectedDate().getTime();
 };
 
 
@@ -884,7 +918,9 @@ goog.testing.TestCase.prototype.now = function() {
  * @private
  */
 goog.testing.TestCase.prototype.getTimeStamp_ = function() {
-  var d = new Date;
+  // Cannot use "new goog.testing.TestCase.protectedDate_()" due to b/8323223.
+  var protectedDate = goog.testing.TestCase.protectedDate_;
+  var d = new protectedDate();
 
   // Ensure millis are always 3-digits
   var millis = '00' + d.getMilliseconds();
@@ -1143,7 +1179,7 @@ goog.testing.TestCase.initializeTestRunner = function(testCase) {
     gTestRunner['initialize'](testCase);
   } else {
     throw Error('G_testRunner is undefined. Please ensure goog.testing.jsunit' +
-        'is included.');
+        ' is included.');
   }
 };
 

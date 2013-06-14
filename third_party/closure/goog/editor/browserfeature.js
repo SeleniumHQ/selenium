@@ -32,13 +32,13 @@ goog.require('goog.userAgent.product.isVersion');
  */
 goog.editor.BrowserFeature = {
   // Whether this browser uses the IE TextRange object.
-  HAS_IE_RANGES: goog.userAgent.IE && !goog.userAgent.isDocumentMode(9),
+  HAS_IE_RANGES: goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9),
 
   // Whether this browser uses the W3C standard Range object.
   // Assumes IE higher versions will be compliance with W3C standard.
   HAS_W3C_RANGES: goog.userAgent.GECKO || goog.userAgent.WEBKIT ||
       goog.userAgent.OPERA ||
-      (goog.userAgent.IE && goog.userAgent.isDocumentMode(9)),
+      (goog.userAgent.IE && goog.userAgent.isDocumentModeOrHigher(9)),
 
   // Has the contentEditable attribute, which makes nodes editable.
   //
@@ -57,7 +57,7 @@ goog.editor.BrowserFeature = {
   HAS_CONTENT_EDITABLE: goog.userAgent.IE || goog.userAgent.WEBKIT ||
       goog.userAgent.OPERA ||
       (goog.editor.defines.USE_CONTENTEDITABLE_IN_FIREFOX_3 &&
-       goog.userAgent.GECKO && goog.userAgent.isVersion('1.9')),
+       goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9')),
 
   // Whether to use mutation event types to detect changes
   // in the field contents.
@@ -69,7 +69,7 @@ goog.editor.BrowserFeature = {
   // we have no other choice in that case but to use this event.
   HAS_DOM_SUBTREE_MODIFIED_EVENT: goog.userAgent.WEBKIT ||
       (goog.editor.defines.USE_CONTENTEDITABLE_IN_FIREFOX_3 &&
-       goog.userAgent.GECKO && goog.userAgent.isVersion('1.9')),
+       goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9')),
 
   // Whether nodes can be copied from one document to another
   HAS_DOCUMENT_INDEPENDENT_NODES: goog.userAgent.GECKO,
@@ -94,7 +94,8 @@ goog.editor.BrowserFeature = {
   // Whether this browser's "FormatBlock" command may create multiple
   // blockquotes.
   CREATES_MULTIPLE_BLOCKQUOTES:
-      (goog.userAgent.WEBKIT && !goog.userAgent.isVersion('534.16')) ||
+      (goog.userAgent.WEBKIT &&
+       !goog.userAgent.isVersionOrHigher('534.16')) ||
       goog.userAgent.OPERA,
 
   // Whether this browser's "FormatBlock" command will wrap blockquotes
@@ -116,7 +117,9 @@ goog.editor.BrowserFeature = {
   // Whether keyboard events only reliably fire on the document.
   // On Gecko without contentEditable, keyboard events only fire reliably on the
   // document element. With contentEditable, the field itself is focusable,
-  // which means that it will fire key events.
+  // which means that it will fire key events. This does not apply if
+  // application is using ContentEditableField or otherwise overriding Field
+  // not to use an iframe.
   USE_DOCUMENT_FOR_KEY_EVENTS: goog.userAgent.GECKO &&
       !goog.editor.defines.USE_CONTENTEDITABLE_IN_FIREFOX_3,
 
@@ -138,22 +141,22 @@ goog.editor.BrowserFeature = {
 
   // Whether this browser unescapes urls when you extract it from the href tag.
   UNESCAPES_URLS_WITHOUT_ASKING: goog.userAgent.IE &&
-      !goog.userAgent.isVersion('7.0'),
+      !goog.userAgent.isVersionOrHigher('7.0'),
 
   // Whether this browser supports execCommand("styleWithCSS") to toggle between
   // inserting html tags or inline styling for things like bold, italic, etc.
   HAS_STYLE_WITH_CSS:
-      goog.userAgent.GECKO && goog.userAgent.isVersion('1.8') ||
+      goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.8') ||
       goog.userAgent.WEBKIT || goog.userAgent.OPERA,
 
   // Whether clicking on an editable link will take you to that site.
   FOLLOWS_EDITABLE_LINKS: goog.userAgent.WEBKIT ||
-      goog.userAgent.IE && goog.userAgent.isVersion('9'),
+      goog.userAgent.IE && goog.userAgent.isVersionOrHigher('9'),
 
   // Whether this browser has document.activeElement available.
   HAS_ACTIVE_ELEMENT:
       goog.userAgent.IE || goog.userAgent.OPERA ||
-      goog.userAgent.GECKO && goog.userAgent.isVersion('1.9'),
+      goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9'),
 
   // Whether this browser supports the setCapture method on DOM elements.
   HAS_SET_CAPTURE: goog.userAgent.IE,
@@ -161,7 +164,7 @@ goog.editor.BrowserFeature = {
   // Whether this browser can't set background color when the selection
   // is collapsed.
   EATS_EMPTY_BACKGROUND_COLOR: goog.userAgent.GECKO ||
-      goog.userAgent.WEBKIT && !goog.userAgent.isVersion('527'),
+      goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher('527'),
 
   // Whether this browser supports the "focusin" or "DOMFocusIn" event
   // consistently.
@@ -198,26 +201,26 @@ goog.editor.BrowserFeature = {
   // Whether to use keydown for key listening (uses keypress otherwise). Taken
   // from goog.events.KeyHandler.
   USES_KEYDOWN: goog.userAgent.IE ||
-      goog.userAgent.WEBKIT && goog.userAgent.isVersion('525'),
+      goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525'),
 
   // Whether this browser converts spaces to non-breaking spaces when calling
   // execCommand's RemoveFormat.
   // See: https://bugs.webkit.org/show_bug.cgi?id=14062
   ADDS_NBSPS_IN_REMOVE_FORMAT:
-      goog.userAgent.WEBKIT && !goog.userAgent.isVersion('531'),
+      goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher('531'),
 
   // Whether the browser will get stuck inside a link.  That is, if your cursor
   // is after a link and you type, does your text go inside the link tag.
   // Bug: http://bugs.webkit.org/show_bug.cgi?id=17697
   GETS_STUCK_IN_LINKS:
-      goog.userAgent.WEBKIT && !goog.userAgent.isVersion('528'),
+      goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher('528'),
 
   // Whether the browser corrupts empty text nodes in Node#normalize,
   // removing them from the Document instead of merging them.
   NORMALIZE_CORRUPTS_EMPTY_TEXT_NODES: goog.userAgent.GECKO &&
-      goog.userAgent.isVersion('1.9') || goog.userAgent.IE ||
+      goog.userAgent.isVersionOrHigher('1.9') || goog.userAgent.IE ||
       goog.userAgent.OPERA ||
-      goog.userAgent.WEBKIT && goog.userAgent.isVersion('531'),
+      goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('531'),
 
   // Whether the browser corrupts all text nodes in Node#normalize,
   // removing them from the Document instead of merging them.
@@ -233,7 +236,7 @@ goog.editor.BrowserFeature = {
   CAN_SELECT_EMPTY_ELEMENT: !goog.userAgent.IE && !goog.userAgent.WEBKIT,
 
   FORGETS_FORMATTING_WHEN_LISTIFYING: goog.userAgent.GECKO ||
-      goog.userAgent.WEBKIT && !goog.userAgent.isVersion('526'),
+      goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher('526'),
 
   LEAVES_P_WHEN_REMOVING_LISTS: goog.userAgent.IE || goog.userAgent.OPERA,
 
@@ -250,9 +253,12 @@ goog.editor.BrowserFeature = {
   // browser: http://www.whatwg/org/specs/web-apps/current-work/#dnd
   SUPPORTS_HTML5_FILE_DRAGGING: (goog.userAgent.product.CHROME &&
                                  goog.userAgent.product.isVersion('4')) ||
-      (goog.userAgent.product.SAFARI && goog.userAgent.isVersion('533')) ||
-      (goog.userAgent.GECKO && goog.userAgent.isVersion('2.0')) ||
-      (goog.userAgent.IE && goog.userAgent.isVersion('10')),
+      (goog.userAgent.product.SAFARI &&
+       goog.userAgent.isVersionOrHigher('533')) ||
+      (goog.userAgent.GECKO &&
+       goog.userAgent.isVersionOrHigher('2.0')) ||
+      (goog.userAgent.IE &&
+       goog.userAgent.isVersionOrHigher('10')),
 
   // Version of Opera that supports the opera-defaultBlock execCommand to change
   // the default block inserted when [return] is pressed. Note that this only is
@@ -260,7 +266,7 @@ goog.editor.BrowserFeature = {
   // TODO(user): Link to public documentation of this feature if Opera puts
   // something up about it.
   SUPPORTS_OPERA_DEFAULTBLOCK_COMMAND:
-      goog.userAgent.OPERA && goog.userAgent.isVersion('11.10'),
+      goog.userAgent.OPERA && goog.userAgent.isVersionOrHigher('11.10'),
 
   SUPPORTS_FILE_PASTING: goog.userAgent.product.CHROME &&
       goog.userAgent.product.isVersion('12')

@@ -40,9 +40,9 @@
 goog.provide('goog.ui.Slider');
 goog.provide('goog.ui.Slider.Orientation');
 
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.Role');
 goog.require('goog.dom');
-goog.require('goog.dom.a11y');
-goog.require('goog.dom.a11y.Role');
 goog.require('goog.ui.SliderBase');
 goog.require('goog.ui.SliderBase.Orientation');
 
@@ -121,7 +121,7 @@ goog.ui.Slider.prototype.createThumbs = function() {
 goog.ui.Slider.prototype.createThumb_ = function() {
   var thumb =
       this.getDomHelper().createDom('div', goog.ui.Slider.THUMB_CSS_CLASS);
-  goog.dom.a11y.setRole(thumb, goog.dom.a11y.Role.BUTTON);
+  goog.a11y.aria.setRole(thumb, goog.a11y.aria.Role.BUTTON);
   return /** @type {HTMLDivElement} */ (thumb);
 };
 

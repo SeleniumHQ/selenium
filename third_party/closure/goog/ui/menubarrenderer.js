@@ -19,10 +19,8 @@
 
 goog.provide('goog.ui.MenuBarRenderer');
 
+goog.require('goog.a11y.aria.Role');
 goog.require('goog.dom');
-goog.require('goog.dom.a11y');
-goog.require('goog.dom.a11y.Role');
-goog.require('goog.dom.a11y.State');
 goog.require('goog.ui.ContainerRenderer');
 
 
@@ -52,7 +50,7 @@ goog.ui.MenuBarRenderer.CSS_CLASS = goog.getCssName('goog-menubar');
  * @override
  */
 goog.ui.MenuBarRenderer.prototype.getAriaRole = function() {
-  return goog.dom.a11y.Role.MENUBAR;
+  return goog.a11y.aria.Role.MENUBAR;
 };
 
 

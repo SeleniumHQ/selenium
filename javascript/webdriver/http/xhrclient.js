@@ -38,7 +38,7 @@ webdriver.http.XhrClient = function(url) {
 /** @override */
 webdriver.http.XhrClient.prototype.send = function(request, callback) {
   try {
-    var xhr = (/** @type {!XMLHttpRequest} */ goog.net.XmlHttp());
+    var xhr = /** @type {!XMLHttpRequest} */ (goog.net.XmlHttp());
     var url = this.url_ + request.path;
     xhr.open(request.method, url, true);
 

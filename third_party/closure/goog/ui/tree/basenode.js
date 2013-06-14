@@ -28,8 +28,8 @@ goog.provide('goog.ui.tree.BaseNode');
 goog.provide('goog.ui.tree.BaseNode.EventType');
 
 goog.require('goog.Timer');
+goog.require('goog.a11y.aria');
 goog.require('goog.asserts');
-goog.require('goog.dom.a11y');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.string');
 goog.require('goog.string.StringBuffer');
@@ -165,34 +165,37 @@ goog.ui.tree.BaseNode.prototype.initAccessibility = function() {
       label.id = this.getId() + '.label';
     }
 
-    goog.dom.a11y.setRole(el, 'treeitem');
-    goog.dom.a11y.setState(el, 'selected', false);
-    goog.dom.a11y.setState(el, 'expanded', false);
-    goog.dom.a11y.setState(el, 'level', this.getDepth());
+    goog.a11y.aria.setRole(el, 'treeitem');
+    goog.a11y.aria.setState(el, 'selected', false);
+    goog.a11y.aria.setState(el, 'expanded', false);
+    goog.a11y.aria.setState(el, 'level', this.getDepth());
     if (label) {
-      goog.dom.a11y.setState(el, 'labelledby', label.id);
+      goog.a11y.aria.setState(el, 'labelledby', label.id);
     }
 
     var img = this.getIconElement();
     if (img) {
-      goog.dom.a11y.setRole(img, 'presentation');
+      goog.a11y.aria.setRole(img, 'presentation');
     }
     var ei = this.getExpandIconElement();
     if (ei) {
-      goog.dom.a11y.setRole(ei, 'presentation');
+      goog.a11y.aria.setRole(ei, 'presentation');
     }
 
     var ce = this.getChildrenElement();
-    goog.dom.a11y.setRole(ce, 'group');
+    if (ce) {
+      goog.a11y.aria.setRole(ce, 'group');
 
-    // In case the children will be created lazily.
-    if (ce.hasChildNodes()) {
-      // do setsize for each child
-      var count = this.getChildCount();
-      for (var i = 1; i <= count; i++) {
-        var child = this.getChildAt(i - 1).getElement();
-        goog.dom.a11y.setState(child, 'setsize', count);
-        goog.dom.a11y.setState(child, 'posinset', i);
+      // In case the children will be created lazily.
+      if (ce.hasChildNodes()) {
+        // do setsize for each child
+        var count = this.getChildCount();
+        for (var i = 1; i <= count; i++) {
+          var child = this.getChildAt(i - 1).getElement();
+          goog.asserts.assert(child, 'The child element cannot be null');
+          goog.a11y.aria.setState(child, 'setsize', count);
+          goog.a11y.aria.setState(child, 'posinset', i);
+        }
       }
     }
   }
@@ -278,7 +281,7 @@ goog.ui.tree.BaseNode.prototype.addChildAt = function(child, index,
         if (prevNode) {
           prevNode.updateExpandIcon();
         } else {
-          goog.style.showElement(el, true);
+          goog.style.setElementShown(el, true);
           this.setExpanded(this.getExpanded());
         }
       }
@@ -587,9 +590,13 @@ goog.ui.tree.BaseNode.prototype.setSelectedInternal = function(selected) {
 
   var el = this.getElement();
   if (el) {
-    goog.dom.a11y.setState(el, 'selected', selected);
+    goog.a11y.aria.setState(el, 'selected', selected);
     if (selected) {
-      goog.dom.a11y.setState(this.getTree().getElement(), 'activedescendant',
+      var treeElement = this.getTree().getElement();
+      goog.asserts.assert(treeElement,
+          'The DOM element for the tree cannot be null');
+      goog.a11y.aria.setState(treeElement,
+          'activedescendant',
           this.getId());
     }
   }
@@ -639,7 +646,7 @@ goog.ui.tree.BaseNode.prototype.setExpanded = function(expanded) {
     if (el) {
       ce = this.getChildrenElement();
       if (ce) {
-        goog.style.showElement(ce, expanded);
+        goog.style.setElementShown(ce, expanded);
 
         // Make sure we have the HTML for the children here.
         if (expanded && this.isInDocument() && !ce.hasChildNodes()) {
@@ -658,12 +665,12 @@ goog.ui.tree.BaseNode.prototype.setExpanded = function(expanded) {
   } else {
     ce = this.getChildrenElement();
     if (ce) {
-      goog.style.showElement(ce, false);
+      goog.style.setElementShown(ce, false);
     }
   }
   if (el) {
     this.updateIcon_();
-    goog.dom.a11y.setState(el, 'expanded', expanded);
+    goog.a11y.aria.setState(el, 'expanded', expanded);
   }
 
   if (isStateChange) {

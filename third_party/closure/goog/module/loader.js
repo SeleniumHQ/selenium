@@ -147,7 +147,7 @@ goog.module.Loader.prototype.init = function(baseUrl, opt_urlFunction) {
   goog.exportSymbol(goog.module.Loader.LOAD_CALLBACK,
       goog.module.Loader.loaderEval_);
 
-  this.urlBase_ = baseUrl.replace('.js', '');
+  this.urlBase_ = baseUrl.replace(/\.js$/, '');
   if (opt_urlFunction) {
     this.getModuleUrl_ = opt_urlFunction;
   }
@@ -185,7 +185,7 @@ goog.module.Loader.prototype.require = function(module, symbol, callback) {
     pending[module] = [[symbol, callback]];  // Yes, really [[ ]].
     // Defer loading to initialization if Loader is not yet
     // initialized, otherwise load the module.
-    if (this.urlBase_) {
+    if (goog.isString(this.urlBase_)) {
       this.load_(module);
     } else {
       this.pendingBeforeInit_.push(module);

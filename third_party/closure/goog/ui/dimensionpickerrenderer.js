@@ -24,6 +24,8 @@
 
 goog.provide('goog.ui.DimensionPickerRenderer');
 
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.State');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.i18n.bidi');
@@ -77,7 +79,7 @@ goog.ui.DimensionPickerRenderer.prototype.getUnderlyingDiv_ = function(
  */
 goog.ui.DimensionPickerRenderer.prototype.getHighlightDiv_ = function(
     element) {
-  return /** @type {Element} */ element.firstChild.lastChild;
+  return /** @type {Element} */ (element.firstChild.lastChild);
 };
 
 
@@ -101,7 +103,7 @@ goog.ui.DimensionPickerRenderer.prototype.getStatusDiv_ = function(
  */
 goog.ui.DimensionPickerRenderer.prototype.getMouseCatcher_ = function(
     element) {
-  return /** @type {Element} */ element.firstChild.firstChild;
+  return /** @type {Element} */ (element.firstChild.firstChild);
 };
 
 
@@ -154,7 +156,7 @@ goog.ui.DimensionPickerRenderer.prototype.updateSize =
   underlyingDiv.style.height = size.height + 'em';
 
   if (palette.isRightToLeft()) {
-      this.adjustParentDirection_(palette, element);
+    this.adjustParentDirection_(palette, element);
   }
 };
 
@@ -176,10 +178,10 @@ goog.ui.DimensionPickerRenderer.prototype.addElementContents_ = function(
   var mouseCatcherDiv = palette.getDomHelper().createDom(goog.dom.TagName.DIV,
       goog.getCssName(this.getCssClass(), 'mousecatcher'));
   var unhighlightedDiv = palette.getDomHelper().createDom(goog.dom.TagName.DIV,
-    {
-      'class': goog.getCssName(this.getCssClass(), 'unhighlighted'),
-      'style': 'width:100%;height:100%'
-    });
+      {
+        'class': goog.getCssName(this.getCssClass(), 'unhighlighted'),
+        'style': 'width:100%;height:100%'
+      });
   var highlightedDiv = palette.getDomHelper().createDom(goog.dom.TagName.DIV,
       goog.getCssName(this.getCssClass(), 'highlighted'));
   element.appendChild(
@@ -189,14 +191,13 @@ goog.ui.DimensionPickerRenderer.prototype.addElementContents_ = function(
 
   // Lastly we add a div to store the text version of the current state.
   element.appendChild(palette.getDomHelper().createDom(goog.dom.TagName.DIV,
-      goog.getCssName(this.getCssClass(), 'status'),
-      goog.i18n.bidi.enforceLtrInText('0 x 0')));
+      goog.getCssName(this.getCssClass(), 'status')));
 };
 
 
 /**
  * Creates a div and adds the appropriate contents to it.
- * @param {goog.ui.Control} control Picker to render
+ * @param {goog.ui.Control} control Picker to render.
  * @return {Element} Root element for the palette.
  * @override
  */
@@ -223,6 +224,12 @@ goog.ui.DimensionPickerRenderer.prototype.initializeDom = function(
     control) {
   var palette = /** @type {goog.ui.DimensionPicker} */ (control);
   goog.ui.DimensionPickerRenderer.superClass_.initializeDom.call(this, palette);
+
+  // Make the displayed highlighted size match the dimension picker's value.
+  var highlightedSize = palette.getValue();
+  this.setHighlightedSize(palette,
+      highlightedSize.width, highlightedSize.height);
+
   this.positionMouseCatcher(palette);
 };
 
@@ -264,7 +271,7 @@ goog.ui.DimensionPickerRenderer.prototype.getGridOffsetY = function(
 
 
 /**
- * Sets the highlighted size.
+ * Sets the highlighted size. Does nothing if the palette hasn't been rendered.
  * @param {goog.ui.DimensionPicker} palette The table size palette.
  * @param {number} columns The number of columns to highlight.
  * @param {number} rows The number of rows to highlight.
@@ -272,6 +279,10 @@ goog.ui.DimensionPickerRenderer.prototype.getGridOffsetY = function(
 goog.ui.DimensionPickerRenderer.prototype.setHighlightedSize = function(
     palette, columns, rows) {
   var element = palette.getElement();
+  // Can't update anything if DimensionPicker hasn't been rendered.
+  if (!element) {
+    return;
+  }
 
   // Style the highlight div.
   var style = this.getHighlightDiv_(element).style;
@@ -283,6 +294,17 @@ goog.ui.DimensionPickerRenderer.prototype.setHighlightedSize = function(
   if (palette.isRightToLeft()) {
     style.right = '0';
   }
+
+  // Update the aria label.
+  /**
+   * @desc The dimension of the columns and rows currently selected in the
+   * dimension picker, as text that can be spoken by a screen reader.
+   */
+  var MSG_DIMENSION_PICKER_HIGHLIGHTED_DIMENSIONS = goog.getMsg(
+      '{$numCols} by {$numRows}',
+      {'numCols': columns, 'numRows': rows});
+  goog.a11y.aria.setState(element, goog.a11y.aria.State.LABEL,
+      MSG_DIMENSION_PICKER_HIGHLIGHTED_DIMENSIONS);
 
   // Update the size text.
   goog.dom.setTextContent(this.getStatusDiv_(element),
@@ -361,7 +383,7 @@ goog.ui.DimensionPickerRenderer.prototype.getCssClass = function() {
  * @param {Element} element The palette's element.
  */
 goog.ui.DimensionPickerRenderer.prototype.adjustParentDirection_ =
-  function(palette, element) {
+    function(palette, element) {
   var parent = palette.getParent();
   if (parent) {
     var parentElement = parent.getElement();
@@ -392,4 +414,3 @@ goog.ui.DimensionPickerRenderer.prototype.adjustParentDirection_ =
     goog.style.setStyle(element, 'right', '0px');
   }
 };
-

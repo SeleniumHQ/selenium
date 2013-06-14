@@ -29,6 +29,7 @@ goog.require('goog.iter');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.string.Unicode');
+goog.require('goog.userAgent');
 
 
 /**
@@ -454,4 +455,29 @@ goog.editor.node.getSecondHalfOfNode_ = function(node, startNode, firstChild) {
  */
 goog.editor.node.transferChildren = function(newNode, oldNode) {
   goog.dom.append(newNode, oldNode.childNodes);
+};
+
+
+/**
+ * Replaces the innerHTML of a node.
+ *
+ * IE has serious problems if you try to set innerHTML of an editable node with
+ * any selection. Early versions of IE tear up the old internal tree storage, to
+ * help avoid ref-counting loops. But this sometimes leaves the selection object
+ * in a bad state and leads to segfaults.
+ *
+ * Removing the nodes first prevents IE from tearing them up. This is not
+ * strictly necessary in nodes that do not have the selection. You should always
+ * use this function when setting innerHTML inside of a field.
+ *
+ * @param {Node} node A node.
+ * @param {string} html The innerHTML to set on the node.
+ */
+goog.editor.node.replaceInnerHtml = function(node, html) {
+  // Only do this IE. On gecko, we use element change events, and don't
+  // want to trigger spurious events.
+  if (goog.userAgent.IE) {
+    goog.dom.removeChildren(node);
+  }
+  node.innerHTML = html;
 };

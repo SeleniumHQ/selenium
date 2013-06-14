@@ -186,8 +186,8 @@ goog.messaging.RespondingChannel.prototype.callbackServiceHandler_ = function(
   var result = message['data'];
 
   if (signature in this.sigCallbackMap_) {
-    var callback = /** @type {function(Object)} */ this.sigCallbackMap_[
-        signature];
+    var callback = /** @type {function(Object)} */ (this.sigCallbackMap_[
+        signature]);
     callback(result);
     delete this.sigCallbackMap_[signature];
   } else {

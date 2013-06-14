@@ -126,7 +126,7 @@ goog.fx.AnimationParallelQueue = function() {
 goog.inherits(goog.fx.AnimationParallelQueue, goog.fx.AnimationQueue);
 
 
-/** @inheritDoc */
+/** @override */
 goog.fx.AnimationParallelQueue.prototype.play = function(opt_restart) {
   if (this.queue.length == 0) {
     return false;
@@ -159,7 +159,7 @@ goog.fx.AnimationParallelQueue.prototype.play = function(opt_restart) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.fx.AnimationParallelQueue.prototype.pause = function() {
   if (this.isPlaying()) {
     goog.array.forEach(this.queue, function(anim) {
@@ -174,7 +174,7 @@ goog.fx.AnimationParallelQueue.prototype.pause = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.fx.AnimationParallelQueue.prototype.stop = function(opt_gotoEnd) {
   goog.array.forEach(this.queue, function(anim) {
     if (!anim.isStopped()) {
@@ -190,7 +190,7 @@ goog.fx.AnimationParallelQueue.prototype.stop = function(opt_gotoEnd) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.fx.AnimationParallelQueue.prototype.onAnimationFinish = function(e) {
   this.finishedCounter_++;
   if (this.finishedCounter_ == this.queue.length) {
@@ -223,7 +223,7 @@ goog.fx.AnimationSerialQueue = function() {
 goog.inherits(goog.fx.AnimationSerialQueue, goog.fx.AnimationQueue);
 
 
-/** @inheritDoc */
+/** @override */
 goog.fx.AnimationSerialQueue.prototype.play = function(opt_restart) {
   if (this.queue.length == 0) {
     return false;
@@ -256,7 +256,7 @@ goog.fx.AnimationSerialQueue.prototype.play = function(opt_restart) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.fx.AnimationSerialQueue.prototype.pause = function() {
   if (this.isPlaying()) {
     this.queue[this.current_].pause();
@@ -266,7 +266,7 @@ goog.fx.AnimationSerialQueue.prototype.pause = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.fx.AnimationSerialQueue.prototype.stop = function(opt_gotoEnd) {
   this.setStateStopped();
   this.endTime = goog.now();
@@ -290,7 +290,7 @@ goog.fx.AnimationSerialQueue.prototype.stop = function(opt_gotoEnd) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.fx.AnimationSerialQueue.prototype.onAnimationFinish = function(e) {
   if (this.isPlaying()) {
     this.current_++;

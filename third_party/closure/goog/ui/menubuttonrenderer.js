@@ -20,7 +20,11 @@
 
 goog.provide('goog.ui.MenuButtonRenderer');
 
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.State');
+goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.ui.CustomButtonRenderer');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
@@ -108,6 +112,35 @@ goog.ui.MenuButtonRenderer.prototype.getContentElement = function(element) {
 
 
 /**
+ * Updates the menu button's ARIA (accessibility) state so that aria-expanded
+ * does not appear when the button is "opened."
+ * @param {Element} element Element whose ARIA state is to be updated.
+ * @param {goog.ui.Component.State} state Component state being enabled or
+ *     disabled.
+ * @param {boolean} enable Whether the state is being enabled or disabled.
+ * @protected
+ * @override
+ */
+goog.ui.MenuButtonRenderer.prototype.updateAriaState = function(element, state,
+    enable) {
+  // If button has OPENED state, do not assign an ARIA state. Usually
+  // aria-expanded would be assigned, which does not mean anything for a menu
+  // button.
+  goog.asserts.assert(
+      element, 'The menu button DOM element cannot be null.');
+  goog.asserts.assert(
+      goog.string.isEmpty(
+      goog.a11y.aria.getState(element, goog.a11y.aria.State.EXPANDED)),
+      'Menu buttons do not support the ARIA expanded attribute. ' +
+      'Please use ARIA disabled instead.' +
+      goog.a11y.aria.getState(element, goog.a11y.aria.State.EXPANDED).length);
+  if (state != goog.ui.Component.State.OPENED) {
+    goog.base(this, 'updateAriaState', element, state, enable);
+  }
+};
+
+
+/**
  * Takes an element, decorates it with the menu button control, and returns
  * the element.  Overrides {@link goog.ui.CustomButtonRenderer#decorate} by
  * looking for a child element that can be decorated by a menu, and if it
@@ -125,7 +158,7 @@ goog.ui.MenuButtonRenderer.prototype.decorate = function(control, element) {
   if (menuElem) {
     // Move the menu element directly under the body (but hide it first to
     // prevent flicker; see bug 1089244).
-    goog.style.showElement(menuElem, false);
+    goog.style.setElementShown(menuElem, false);
     goog.dom.appendChild(goog.dom.getOwnerDocument(menuElem).body, menuElem);
 
     // Decorate the menu and attach it to the button.

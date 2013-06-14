@@ -43,6 +43,15 @@ goog.userAgent.platform.determineVersion_ = function() {
     // Note: some old versions of Camino do not report an OSX version.
     // Default to 10.
     return match ? match[0].replace(/_/g, '.') : '10';
+  } else if (goog.userAgent.ANDROID) {
+    re = /Android\s+([^\);]+)(\)|;)/;
+    var match = re.exec(goog.userAgent.getUserAgentString());
+    return match ? match[1] : '';
+  } else if (goog.userAgent.IPHONE || goog.userAgent.IPAD) {
+    re = /(?:iPhone|CPU)\s+OS\s+(\S+)/;
+    var match = re.exec(goog.userAgent.getUserAgentString());
+    // Report the version as x.y.z and not x_y_z
+    return match ? match[1].replace(/_/g, '.') : '';
   }
 
   return '';
@@ -69,5 +78,5 @@ goog.userAgent.platform.VERSION = goog.userAgent.platform.determineVersion_();
  */
 goog.userAgent.platform.isVersion = function(version) {
   return goog.string.compareVersions(
-             goog.userAgent.platform.VERSION, version) >= 0;
+      goog.userAgent.platform.VERSION, version) >= 0;
 };

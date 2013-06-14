@@ -1287,7 +1287,7 @@ webdriver.promise.ControlFlow.prototype.runEventLoop_ = function() {
   var activeFrame = this.activeFrame_;
   activeFrame.setPendingTask(task);
   var markTaskComplete = goog.bind(function() {
-    this.history_.push(task);
+    this.history_.push(/** @type {!webdriver.promise.Task_} */ (task));
     activeFrame.setPendingTask(null);
   }, this);
 
@@ -1342,7 +1342,7 @@ webdriver.promise.ControlFlow.prototype.resolveFrame_ = function(frame) {
     // Frame parent is always another frame, but the compiler is not smart
     // enough to recognize this.
     this.activeFrame_ =
-        (/** @type {webdriver.promise.Frame_} */frame.getParent());
+        /** @type {webdriver.promise.Frame_} */ (frame.getParent());
   }
 
   if (frame.getParent()) {
@@ -1379,7 +1379,7 @@ webdriver.promise.ControlFlow.prototype.abortFrame_ = function(error) {
 
   // Frame parent is always another frame, but the compiler is not smart
   // enough to recognize this.
-  var parent = (/** @type {webdriver.promise.Frame_} */
+  var parent = /** @type {webdriver.promise.Frame_} */ (
       this.activeFrame_.getParent());
   if (parent) {
     parent.removeChild(this.activeFrame_);

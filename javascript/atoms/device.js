@@ -632,7 +632,7 @@ bot.Device.prototype.toggleRadioButtonOrCheckbox_ = function(wasSelected) {
  * @protected
  */
 bot.Device.findAncestorForm = function(node) {
-  return (/** @type {Element} */ goog.dom.getAncestor(
+  return /** @type {Element} */ (goog.dom.getAncestor(
       node, bot.Device.isForm_, /*includeNode=*/true));
 };
 

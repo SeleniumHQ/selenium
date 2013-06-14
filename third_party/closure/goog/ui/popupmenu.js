@@ -380,7 +380,7 @@ goog.ui.PopupMenu.prototype.showWithPosition = function(position,
     this.getElement().style.visibility = 'hidden';
   }
 
-  goog.style.showElement(this.getElement(), true);
+  goog.style.setElementShown(this.getElement(), true);
   position.reposition(this.getElement(), menuCorner, opt_margin);
 
   if (!isVisible) {

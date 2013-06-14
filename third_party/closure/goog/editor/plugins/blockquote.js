@@ -211,7 +211,7 @@ goog.editor.plugins.Blockquote.findAndRemoveSingleChildAncestor_ = function(
     node, root) {
   var predicateFunc = function(parentNode) {
     return parentNode != root && parentNode.childNodes.length == 1;
-  }
+  };
   var ancestor = goog.editor.node.findHighestMatchingAncestor(node,
       predicateFunc);
   if (!ancestor) {

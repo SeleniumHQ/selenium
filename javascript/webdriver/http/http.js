@@ -88,7 +88,7 @@ webdriver.http.Executor.prototype.execute = function(command, callback) {
     if (!e) {
       try {
         responseObj = webdriver.http.Executor.parseHttpResponse_(
-            (/** @type {!webdriver.http.Response} */response));
+            /** @type {!webdriver.http.Response} */ (response));
       } catch (ex) {
         e = ex;
       }
@@ -144,7 +144,7 @@ webdriver.http.Executor.buildPath_ = function(path, parameters) {
  */
 webdriver.http.Executor.parseHttpResponse_ = function(httpResponse) {
   try {
-    return (/** @type {!bot.response.ResponseObject} */goog.json.parse(
+    return /** @type {!bot.response.ResponseObject} */ (goog.json.parse(
         httpResponse.body));
   } catch (ex) {
     // Whoops, looks like the server sent us a malformed response. We'll need

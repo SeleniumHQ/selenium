@@ -23,17 +23,17 @@ goog.provide('goog.ui.DatePicker');
 goog.provide('goog.ui.DatePicker.Events');
 goog.provide('goog.ui.DatePickerEvent');
 
+goog.require('goog.a11y.aria');
+goog.require('goog.asserts');
 goog.require('goog.date');
 goog.require('goog.date.Date');
 goog.require('goog.date.Interval');
 goog.require('goog.dom');
-goog.require('goog.dom.a11y');
+goog.require('goog.dom.NodeType');
 goog.require('goog.dom.classes');
-goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyHandler');
-goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.i18n.DateTimeFormat');
 goog.require('goog.i18n.DateTimeSymbols');
 goog.require('goog.style');
@@ -405,9 +405,10 @@ goog.ui.DatePicker.prototype.setExtraWeekAtEnd = function(b) {
  */
 goog.ui.DatePicker.prototype.setShowWeekNum = function(b) {
   this.showWeekNum_ = b;
-  // The navigation row may rely on the number of visible columns,
-  // so we update it when adding/removing the weeknum column.
+  // The navigation and footer rows may rely on the number of visible columns,
+  // so we update them when adding/removing the weeknum column.
   this.updateNavigationRow_();
+  this.updateFooterRow_();
   this.updateCalendarGrid_();
 };
 
@@ -469,9 +470,10 @@ goog.ui.DatePicker.prototype.setShowToday = function(b) {
  * @private
  */
 goog.ui.DatePicker.prototype.updateTodayAndNone_ = function() {
-  goog.style.showElement(this.elToday_, this.showToday_);
-  goog.style.showElement(this.elNone_, this.allowNone_);
-  goog.style.showElement(this.tableFoot_, this.showToday_ || this.allowNone_);
+  goog.style.setElementShown(this.elToday_, this.showToday_);
+  goog.style.setElementShown(this.elNone_, this.allowNone_);
+  goog.style.setElementShown(this.tableFoot_,
+                             this.showToday_ || this.allowNone_);
 };
 
 
@@ -674,6 +676,10 @@ goog.ui.DatePicker.prototype.updateNavigationRow_ = function() {
  * @private
  */
 goog.ui.DatePicker.prototype.updateFooterRow_ = function() {
+  if (!this.elFootRow_) {
+    return;
+  }
+
   var row = this.elFootRow_;
 
   // Clear the footer row.
@@ -681,7 +687,7 @@ goog.ui.DatePicker.prototype.updateFooterRow_ = function() {
 
   // Populate the footer row with buttons for Today and None.
   var cell = this.dom_.createElement('td');
-  cell.colSpan = 2;
+  cell.colSpan = this.showWeekNum_ ? 2 : 3;
   cell.className = goog.getCssName(this.getBaseCssClass(), 'today-cont');
 
   /** @desc Label for button that selects the current date. */
@@ -691,7 +697,7 @@ goog.ui.DatePicker.prototype.updateFooterRow_ = function() {
   row.appendChild(cell);
 
   cell = this.dom_.createElement('td');
-  cell.colSpan = 4;
+  cell.colSpan = this.showWeekNum_ ? 4 : 3;
   row.appendChild(cell);
 
   cell = this.dom_.createElement('td');
@@ -710,14 +716,14 @@ goog.ui.DatePicker.prototype.updateFooterRow_ = function() {
 goog.ui.DatePicker.prototype.decorateInternal = function(el) {
   goog.ui.DatePicker.superClass_.decorateInternal.call(this, el);
 
-  el.className = this.getBaseCssClass();
+  goog.dom.classes.add(el, this.getBaseCssClass());
 
   var table = this.dom_.createElement('table');
   var thead = this.dom_.createElement('thead');
   var tbody = this.dom_.createElement('tbody');
   var tfoot = this.dom_.createElement('tfoot');
 
-  goog.dom.a11y.setRole(tbody, 'grid');
+  goog.a11y.aria.setRole(tbody, 'grid');
   tbody.tabIndex = '0';
 
   // As per comment in colorpicker: table.tBodies and table.tFoot should not be
@@ -743,7 +749,7 @@ goog.ui.DatePicker.prototype.decorateInternal = function(el) {
         cell.className = (j == 0) ?
             goog.getCssName(this.getBaseCssClass(), 'week') :
             goog.getCssName(this.getBaseCssClass(), 'wday');
-        goog.dom.a11y.setRole(cell, j == 0 ? 'rowheader' : 'columnheader');
+        goog.a11y.aria.setRole(cell, j == 0 ? 'rowheader' : 'columnheader');
       }
       row.appendChild(cell);
       this.elTable_[i][j] = cell;
@@ -1227,7 +1233,8 @@ goog.ui.DatePicker.prototype.redrawCalendarGrid_ = function() {
       if (!el.id) {
         el.id = this.cellIdGenerator_.getNextUniqueId();
       }
-      goog.dom.a11y.setRole(el, 'gridcell');
+      goog.asserts.assert(el, 'The table DOM element cannot be null.');
+      goog.a11y.aria.setRole(el, 'gridcell');
       var classes = [goog.getCssName(this.getBaseCssClass(), 'date')];
       if (this.showOtherMonths_ || o.getMonth() == month) {
         // Date belongs to previous or next month
@@ -1252,7 +1259,9 @@ goog.ui.DatePicker.prototype.redrawCalendarGrid_ = function() {
             o.getMonth() == this.date_.getMonth() &&
             o.getFullYear() == this.date_.getFullYear()) {
           classes.push(goog.getCssName(this.getBaseCssClass(), 'selected'));
-          goog.dom.a11y.setState(this.tableBody_, 'activedescendant', el.id);
+          goog.asserts.assert(this.tableBody_,
+              'The table body DOM element cannot be null');
+          goog.a11y.aria.setState(this.tableBody_, 'activedescendant', el.id);
         }
 
         // Custom decorator
@@ -1277,9 +1286,8 @@ goog.ui.DatePicker.prototype.redrawCalendarGrid_ = function() {
     // from the active month and the showFixedNumWeeks is false. The first four
     // weeks are always shown as no month has less than 28 days).
     if (y >= 4) {
-      goog.style.showElement(this.elTable_[y + 1][0].parentNode,
-                             this.grid_[y][0].getMonth() == month ||
-                                 this.showFixedNumWeeks_);
+      goog.style.setElementShown(this.elTable_[y + 1][0].parentNode,
+          this.grid_[y][0].getMonth() == month || this.showFixedNumWeeks_);
     }
   }
 };
@@ -1301,7 +1309,8 @@ goog.ui.DatePicker.prototype.redrawWeekdays_ = function() {
       goog.dom.setTextContent(el, this.wdayNames_[(wday + 1) % 7]);
     }
   }
-  goog.style.showElement(this.elTable_[0][0].parentNode, this.showWeekdays_);
+  goog.style.setElementShown(this.elTable_[0][0].parentNode,
+                             this.showWeekdays_);
 };
 
 

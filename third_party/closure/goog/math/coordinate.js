@@ -158,3 +158,76 @@ goog.math.Coordinate.difference = function(a, b) {
 goog.math.Coordinate.sum = function(a, b) {
   return new goog.math.Coordinate(a.x + b.x, a.y + b.y);
 };
+
+
+/**
+ * Rounds the x and y fields to the next larger integer values.
+ * @return {!goog.math.Coordinate} This coordinate with ceil'd fields.
+ */
+goog.math.Coordinate.prototype.ceil = function() {
+  this.x = Math.ceil(this.x);
+  this.y = Math.ceil(this.y);
+  return this;
+};
+
+
+/**
+ * Rounds the x and y fields to the next smaller integer values.
+ * @return {!goog.math.Coordinate} This coordinate with floored fields.
+ */
+goog.math.Coordinate.prototype.floor = function() {
+  this.x = Math.floor(this.x);
+  this.y = Math.floor(this.y);
+  return this;
+};
+
+
+/**
+ * Rounds the x and y fields to the nearest integer values.
+ * @return {!goog.math.Coordinate} This coordinate with rounded fields.
+ */
+goog.math.Coordinate.prototype.round = function() {
+  this.x = Math.round(this.x);
+  this.y = Math.round(this.y);
+  return this;
+};
+
+
+/**
+ * Translates this box by the given offsets. If a {@code goog.math.Coordinate}
+ * is given, then the x and y values are translated by the coordinate's x and y.
+ * Otherwise, x and y are translated by {@code tx} and {@code opt_ty}
+ * respectively.
+ * @param {number|goog.math.Coordinate} tx The value to translate x by or the
+ *     the coordinate to translate this coordinate by.
+ * @param {number=} opt_ty The value to translate y by.
+ * @return {!goog.math.Coordinate} This coordinate after translating.
+ */
+goog.math.Coordinate.prototype.translate = function(tx, opt_ty) {
+  if (tx instanceof goog.math.Coordinate) {
+    this.x += tx.x;
+    this.y += tx.y;
+  } else {
+    this.x += tx;
+    if (goog.isNumber(opt_ty)) {
+      this.y += opt_ty;
+    }
+  }
+  return this;
+};
+
+
+/**
+ * Scales this coordinate by the given scale factors. The x and y values are
+ * scaled by {@code sx} and {@code opt_sy} respectively.  If {@code opt_sy}
+ * is not given, then {@code sx} is used for both x and y.
+ * @param {number} sx The scale factor to use for the x dimension.
+ * @param {number=} opt_sy The scale factor to use for the y dimension.
+ * @return {!goog.math.Coordinate} This coordinate after scaling.
+ */
+goog.math.Coordinate.prototype.scale = function(sx, opt_sy) {
+  var sy = goog.isNumber(opt_sy) ? opt_sy : sx;
+  this.x *= sx;
+  this.y *= sy;
+  return this;
+};

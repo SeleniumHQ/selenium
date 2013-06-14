@@ -72,7 +72,7 @@ goog.messaging.PortChannel = function(underlyingPort) {
 
   /**
    * The key for the event listener.
-   * @type {?number}
+   * @type {goog.events.Key}
    * @private
    */
   this.listenerKey_ = goog.events.listen(

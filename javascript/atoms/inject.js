@@ -87,7 +87,7 @@ bot.inject.wrapValue = function(value) {
       return value.toString();
 
     case 'array':
-      return goog.array.map((/**@type {goog.array.ArrayLike}*/value),
+      return goog.array.map(/**@type {goog.array.ArrayLike}*/(value),
           bot.inject.wrapValue);
 
     case 'object':
@@ -95,34 +95,34 @@ bot.inject.wrapValue = function(value) {
       // JSCompiler complains that it is too broad a type for the remainder of
       // this block where {!Object} is expected. Downcast to prevent generating
       // a ton of compiler warnings.
-      value = (/**@type {!Object}*/value);
+      var obj = /**@type {!Object}*/ (value);
 
       // Sniff out DOM elements. We're using duck-typing instead of an
       // instanceof check since the instanceof might not always work
       // (e.g. if the value originated from another Firefox component)
-      if (goog.object.containsKey(value, 'nodeType') &&
-          (value['nodeType'] == goog.dom.NodeType.ELEMENT ||
-           value['nodeType'] == goog.dom.NodeType.DOCUMENT)) {
+      if (goog.object.containsKey(obj, 'nodeType') &&
+          (obj['nodeType'] == goog.dom.NodeType.ELEMENT ||
+           obj['nodeType'] == goog.dom.NodeType.DOCUMENT)) {
         var ret = {};
         ret[bot.inject.ELEMENT_KEY] =
-            bot.inject.cache.addElement((/**@type {!Element}*/value));
+            bot.inject.cache.addElement(/**@type {!Element}*/(obj));
         return ret;
       }
 
       // Check if this is a Window
-      if (goog.object.containsKey(value, 'document')) {
+      if (goog.object.containsKey(obj, 'document')) {
         var ret = {};
         ret[bot.inject.WINDOW_KEY] =
-            bot.inject.cache.addElement((/**@type{!Window}*/value));
+            bot.inject.cache.addElement(/**@type{!Window}*/(obj));
         return ret;
       }
 
-      if (goog.isArrayLike(value)) {
-        return goog.array.map((/**@type {goog.array.ArrayLike}*/value),
+      if (goog.isArrayLike(obj)) {
+        return goog.array.map(/**@type {goog.array.ArrayLike}*/(obj),
             bot.inject.wrapValue);
       }
 
-      var filtered = goog.object.filter(value, function(val, key) {
+      var filtered = goog.object.filter(obj, function(val, key) {
         return goog.isNumber(key) || goog.isString(key);
       });
       return goog.object.map(filtered, bot.inject.wrapValue);
@@ -143,7 +143,7 @@ bot.inject.wrapValue = function(value) {
  */
 bot.inject.unwrapValue_ = function(value, opt_doc) {
   if (goog.isArray(value)) {
-    return goog.array.map((/**@type {goog.array.ArrayLike}*/value),
+    return goog.array.map(/**@type {goog.array.ArrayLike}*/(value),
         function(v) { return bot.inject.unwrapValue_(v, opt_doc); });
   } else if (goog.isObject(value)) {
     if (typeof value == 'function') {
@@ -232,7 +232,7 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
   var ret;
   try {
     fn = bot.inject.recompileFunction_(fn, win);
-    var unwrappedArgs = (/**@type {Object}*/bot.inject.unwrapValue_(args,
+    var unwrappedArgs = /**@type {Object}*/ (bot.inject.unwrapValue_(args,
         win.document));
     ret = bot.inject.wrapResponse(fn.apply(null, unwrappedArgs));
   } catch (ex) {

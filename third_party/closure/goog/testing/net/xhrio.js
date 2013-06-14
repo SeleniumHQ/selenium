@@ -26,11 +26,10 @@ goog.require('goog.json');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.net.HttpStatus');
-goog.require('goog.net.XhrIo.ResponseType');
+goog.require('goog.net.XhrIo');
 goog.require('goog.net.XmlHttp');
 goog.require('goog.object');
 goog.require('goog.structs.Map');
-goog.require('goog.uri.utils');
 
 
 
@@ -623,6 +622,16 @@ goog.testing.net.XhrIo.prototype.getLastRequestHeaders = function() {
 goog.testing.net.XhrIo.prototype.getResponseText = function() {
   return goog.isString(this.response_) ? this.response_ :
          goog.dom.xml.serialize(this.response_);
+};
+
+
+/**
+ * Gets the response body from the Xhr object. Will only return correct result
+ * when called from the context of a callback.
+ * @return {Object} Binary result from the server or null.
+ */
+goog.testing.net.XhrIo.prototype.getResponseBody = function() {
+  return null;
 };
 
 

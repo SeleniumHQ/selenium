@@ -147,7 +147,7 @@ goog.ui.GaugeTheme.prototype.getNeedleFill = function(cx, cy, r) {
  * @return {string} The color to use.
  */
 goog.ui.GaugeTheme.prototype.getTitleColor = function() {
-    return '#333333';
+  return '#333333';
 };
 
 
@@ -156,7 +156,7 @@ goog.ui.GaugeTheme.prototype.getTitleColor = function() {
  * @return {string} The color to use.
  */
 goog.ui.GaugeTheme.prototype.getValueColor = function() {
-    return 'black';
+  return 'black';
 };
 
 
@@ -165,5 +165,5 @@ goog.ui.GaugeTheme.prototype.getValueColor = function() {
  * @return {string} The color to use.
  */
 goog.ui.GaugeTheme.prototype.getTickLabelColor = function() {
-    return '#333333';
+  return '#333333';
 };

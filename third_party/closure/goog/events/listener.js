@@ -17,31 +17,85 @@
  * @see ../demos/events.html
  */
 
-
-/**
- * Namespace for events
- */
 goog.provide('goog.events.Listener');
+
+goog.require('goog.events.ListenableKey');
 
 
 
 /**
  * Simple class that stores information about a listener
+ * @param {!Function} listener Callback function.
+ * @param {Function} proxy Wrapper for the listener that patches the event.
+ * @param {EventTarget|goog.events.Listenable} src Source object for
+ *     the event.
+ * @param {string} type Event type.
+ * @param {boolean} capture Whether in capture or bubble phase.
+ * @param {Object=} opt_handler Object in whose context to execute the callback.
+ * @implements {goog.events.ListenableKey}
  * @constructor
  */
-goog.events.Listener = function() {
+goog.events.Listener = function(
+    listener, proxy, src, type, capture, opt_handler) {
   if (goog.events.Listener.ENABLE_MONITORING) {
     this.creationStack = new Error().stack;
   }
+
+  /**
+   * Callback function.
+   * @type {Function}
+   */
+  this.listener = listener;
+
+  /**
+   * Proxy for callback that passes through {@link goog.events#HandleEvent_}.
+   * @type {Function}
+   */
+  this.proxy = proxy;
+
+  /**
+   * Object or node that callback is listening to
+   * @type {EventTarget|goog.events.Listenable}
+   */
+  this.src = src;
+
+  /**
+   * The event type.
+   * @const {string}
+   */
+  this.type = type;
+
+  /**
+   * Whether the listener is being called in the capture or bubble phase
+   * @const {boolean}
+   */
+  this.capture = !!capture;
+
+  /**
+   * Optional object whose context to execute the listener in
+   * @type {Object|undefined}
+   */
+  this.handler = opt_handler;
+
+  /**
+   * The key of the listener.
+   * @const {number}
+   * @override
+   */
+  this.key = goog.events.ListenableKey.reserveKey();
+
+  /**
+   * Whether to remove the listener after it has been called.
+   * @type {boolean}
+   */
+  this.callOnce = false;
+
+  /**
+   * Whether the listener has been removed.
+   * @type {boolean}
+   */
+  this.removed = false;
 };
-
-
-/**
- * Counter used to create a unique key
- * @type {number}
- * @private
- */
-goog.events.Listener.counter_ = 0;
 
 
 /**
@@ -51,78 +105,7 @@ goog.events.Listener.counter_ = 0;
  *     performance and memory usage. If switched off, the monitoring code
  *     compiles down to 0 bytes.
  */
-goog.events.Listener.ENABLE_MONITORING = false;
-
-
-/**
- * Whether the listener is a function or an object that implements handleEvent.
- * @type {boolean}
- * @private
- */
-goog.events.Listener.prototype.isFunctionListener_;
-
-
-/**
- * Call back function or an object with a handleEvent function.
- * @type {Function|Object|null}
- */
-goog.events.Listener.prototype.listener;
-
-
-/**
- * Proxy for callback that passes through {@link goog.events#HandleEvent_}
- * @type {Function}
- */
-goog.events.Listener.prototype.proxy;
-
-
-/**
- * Object or node that callback is listening to
- * @type {Object|goog.events.EventTarget}
- */
-goog.events.Listener.prototype.src;
-
-
-/**
- * Type of event
- * @type {string}
- */
-goog.events.Listener.prototype.type;
-
-
-/**
- * Whether the listener is being called in the capture or bubble phase
- * @type {boolean}
- */
-goog.events.Listener.prototype.capture;
-
-
-/**
- * Optional object whose context to execute the listener in
- * @type {Object|undefined}
- */
-goog.events.Listener.prototype.handler;
-
-
-/**
- * The key of the listener.
- * @type {number}
- */
-goog.events.Listener.prototype.key = 0;
-
-
-/**
- * Whether the listener has been removed.
- * @type {boolean}
- */
-goog.events.Listener.prototype.removed = false;
-
-
-/**
- * Whether to remove the listener after it has been called.
- * @type {boolean}
- */
-goog.events.Listener.prototype.callOnce = false;
+goog.define('goog.events.Listener.ENABLE_MONITORING', false);
 
 
 /**
@@ -134,48 +117,13 @@ goog.events.Listener.prototype.creationStack;
 
 
 /**
- * Initializes the listener.
- * @param {Function|Object} listener Callback function, or an object with a
- *     handleEvent function.
- * @param {Function} proxy Wrapper for the listener that patches the event.
- * @param {Object} src Source object for the event.
- * @param {string} type Event type.
- * @param {boolean} capture Whether in capture or bubble phase.
- * @param {Object=} opt_handler Object in whose context to execute the callback.
+ * Marks this listener as removed. This also remove references held by
+ * this listener object (such as listener and event source).
  */
-goog.events.Listener.prototype.init = function(listener, proxy, src, type,
-                                               capture, opt_handler) {
-  // we do the test of the listener here so that we do  not need to
-  // continiously do this inside handleEvent
-  if (goog.isFunction(listener)) {
-    this.isFunctionListener_ = true;
-  } else if (listener && listener.handleEvent &&
-      goog.isFunction(listener.handleEvent)) {
-    this.isFunctionListener_ = false;
-  } else {
-    throw Error('Invalid listener argument');
-  }
-
-  this.listener = listener;
-  this.proxy = proxy;
-  this.src = src;
-  this.type = type;
-  this.capture = !!capture;
-  this.handler = opt_handler;
-  this.callOnce = false;
-  this.key = ++goog.events.Listener.counter_;
-  this.removed = false;
-};
-
-
-/**
- * Calls the internal listener
- * @param {Object} eventObject Event object to be passed to listener.
- * @return {boolean} The result of the internal listener call.
- */
-goog.events.Listener.prototype.handleEvent = function(eventObject) {
-  if (this.isFunctionListener_) {
-    return this.listener.call(this.handler || this.src, eventObject);
-  }
-  return this.listener.handleEvent.call(this.listener, eventObject);
+goog.events.Listener.prototype.markAsRemoved = function() {
+  this.removed = true;
+  this.listener = null;
+  this.proxy = null;
+  this.src = null;
+  this.handler = null;
 };

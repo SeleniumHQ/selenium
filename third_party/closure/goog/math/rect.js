@@ -16,10 +16,10 @@
  * @fileoverview A utility class for representing rectangles.
  */
 
-
 goog.provide('goog.math.Rect');
 
 goog.require('goog.math.Box');
+goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 
 
@@ -33,35 +33,22 @@ goog.require('goog.math.Size');
  * @constructor
  */
 goog.math.Rect = function(x, y, w, h) {
-  /**
-   * Left
-   * @type {number}
-   */
+  /** @type {number} */
   this.left = x;
 
-  /**
-   * Top
-   * @type {number}
-   */
+  /** @type {number} */
   this.top = y;
 
-  /**
-   * Width
-   * @type {number}
-   */
+  /** @type {number} */
   this.width = w;
 
-  /**
-   * Height
-   * @type {number}
-   */
+  /** @type {number} */
   this.height = h;
 };
 
 
 /**
- * Returns a new copy of the rectangle.
- * @return {!goog.math.Rect} A clone of this Rectangle.
+ * @return {!goog.math.Rect} A new copy of this Rectangle.
  */
 goog.math.Rect.prototype.clone = function() {
   return new goog.math.Rect(this.left, this.top, this.width, this.height);
@@ -333,9 +320,144 @@ goog.math.Rect.prototype.contains = function(another) {
 
 
 /**
- * Returns the size of this rectangle.
+ * @param {!goog.math.Coordinate} point A coordinate.
+ * @return {number} The squared distance between the point and the closest
+ *     point inside the rectangle. Returns 0 if the point is inside the
+ *     rectangle.
+ */
+goog.math.Rect.prototype.squaredDistance = function(point) {
+  var dx = point.x < this.left ?
+      this.left - point.x : Math.max(point.x - (this.left + this.width), 0);
+  var dy = point.y < this.top ?
+      this.top - point.y : Math.max(point.y - (this.top + this.height), 0);
+  return dx * dx + dy * dy;
+};
+
+
+/**
+ * @param {!goog.math.Coordinate} point A coordinate.
+ * @return {number} The distance between the point and the closest point
+ *     inside the rectangle. Returns 0 if the point is inside the rectangle.
+ */
+goog.math.Rect.prototype.distance = function(point) {
+  return Math.sqrt(this.squaredDistance(point));
+};
+
+
+/**
  * @return {!goog.math.Size} The size of this rectangle.
  */
 goog.math.Rect.prototype.getSize = function() {
   return new goog.math.Size(this.width, this.height);
+};
+
+
+/**
+ * @return {!goog.math.Coordinate} A new coordinate for the top-left corner of
+ *     the rectangle.
+ */
+goog.math.Rect.prototype.getTopLeft = function() {
+  return new goog.math.Coordinate(this.left, this.top);
+};
+
+
+/**
+ * @return {!goog.math.Coordinate} A new coordinate for the center of the
+ *     rectangle.
+ */
+goog.math.Rect.prototype.getCenter = function() {
+  return new goog.math.Coordinate(
+      this.left + this.width / 2, this.top + this.height / 2);
+};
+
+
+/**
+ * @return {!goog.math.Coordinate} A new coordinate for the bottom-right corner
+ *     of the rectangle.
+ */
+goog.math.Rect.prototype.getBottomRight = function() {
+  return new goog.math.Coordinate(
+      this.left + this.width, this.top + this.height);
+};
+
+
+/**
+ * Rounds the fields to the next larger integer values.
+ * @return {!goog.math.Rect} This rectangle with ceil'd fields.
+ */
+goog.math.Rect.prototype.ceil = function() {
+  this.left = Math.ceil(this.left);
+  this.top = Math.ceil(this.top);
+  this.width = Math.ceil(this.width);
+  this.height = Math.ceil(this.height);
+  return this;
+};
+
+
+/**
+ * Rounds the fields to the next smaller integer values.
+ * @return {!goog.math.Rect} This rectangle with floored fields.
+ */
+goog.math.Rect.prototype.floor = function() {
+  this.left = Math.floor(this.left);
+  this.top = Math.floor(this.top);
+  this.width = Math.floor(this.width);
+  this.height = Math.floor(this.height);
+  return this;
+};
+
+
+/**
+ * Rounds the fields to nearest integer values.
+ * @return {!goog.math.Rect} This rectangle with rounded fields.
+ */
+goog.math.Rect.prototype.round = function() {
+  this.left = Math.round(this.left);
+  this.top = Math.round(this.top);
+  this.width = Math.round(this.width);
+  this.height = Math.round(this.height);
+  return this;
+};
+
+
+/**
+ * Translates this rectangle by the given offsets. If a
+ * {@code goog.math.Coordinate} is given, then the left and top values are
+ * translated by the coordinate's x and y values. Otherwise, top and left are
+ * translated by {@code tx} and {@code opt_ty} respectively.
+ * @param {number|goog.math.Coordinate} tx The value to translate left by or the
+ *     the coordinate to translate this rect by.
+ * @param {number=} opt_ty The value to translate top by.
+ * @return {!goog.math.Rect} This rectangle after translating.
+ */
+goog.math.Rect.prototype.translate = function(tx, opt_ty) {
+  if (tx instanceof goog.math.Coordinate) {
+    this.left += tx.x;
+    this.top += tx.y;
+  } else {
+    this.left += tx;
+    if (goog.isNumber(opt_ty)) {
+      this.top += opt_ty;
+    }
+  }
+  return this;
+};
+
+
+/**
+ * Scales this rectangle by the given scale factors. The left and width values
+ * are scaled by {@code sx} and the top and height values are scaled by
+ * {@code opt_sy}.  If {@code opt_sy} is not given, then all fields are scaled
+ * by {@code sx}.
+ * @param {number} sx The scale factor to use for the x dimension.
+ * @param {number=} opt_sy The scale factor to use for the y dimension.
+ * @return {!goog.math.Rect} This rectangle after scaling.
+ */
+goog.math.Rect.prototype.scale = function(sx, opt_sy) {
+  var sy = goog.isNumber(opt_sy) ? opt_sy : sx;
+  this.left *= sx;
+  this.width *= sx;
+  this.top *= sy;
+  this.height *= sy;
+  return this;
 };

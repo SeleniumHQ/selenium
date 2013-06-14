@@ -35,8 +35,11 @@ goog.require('goog.asserts');
  * If your javascript can be loaded by a third party site and you are wary about
  * relying on the prototype functions, specify
  * "--define goog.NATIVE_ARRAY_PROTOTYPES=false" to the JSCompiler.
+ *
+ * Setting goog.TRUSTED_SITE to false will automatically set
+ * NATIVE_ARRAY_PROTOTYPES to false.
  */
-goog.NATIVE_ARRAY_PROTOTYPES = true;
+goog.define('goog.NATIVE_ARRAY_PROTOTYPES', goog.TRUSTED_SITE);
 
 
 /**
@@ -155,20 +158,15 @@ goog.array.lastIndexOf = goog.NATIVE_ARRAY_PROTOTYPES &&
 
 
 /**
- * Calls a function for each element in an array.
- *
+ * Calls a function for each element in an array. Skips holes in the array.
  * See {@link http://tinyurl.com/developer-mozilla-org-array-foreach}
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
+ * @param {Array.<T>|goog.array.ArrayLike} arr Array or array like object over
+ *     which to iterate.
  * @param {?function(this: S, T, number, ?): ?} f The function to call for every
- *     element.
- *     This function takes 3 arguments (the element, the index and the array).
- *     The return value is ignored. The function is called only for indexes of
- *     the array which have assigned values; it is not called for indexes which
- *     have been deleted or which have never been assigned values.
- * @param {S=} opt_obj The object to be used as the value of 'this'
- *     within f.
+ *     element. This function takes 3 arguments (the element, the index and the
+ *     array). The return value is ignored.
+ * @param {S=} opt_obj The object to be used as the value of 'this' within f.
  * @template T,S
  */
 goog.array.forEach = goog.NATIVE_ARRAY_PROTOTYPES &&
@@ -446,6 +444,29 @@ goog.array.every = goog.NATIVE_ARRAY_PROTOTYPES &&
       }
       return true;
     };
+
+
+/**
+ * Counts the array elements that fulfill the predicate, i.e. for which the
+ * callback function returns true. Skips holes in the array.
+ *
+ * @param {!(Array.<T>|goog.array.ArrayLike)} arr Array or array like object
+ *     over which to iterate.
+ * @param {function(this: S, T, number, ?): boolean} f The function to call for
+ *     every element. Takes 3 arguments (the element, the index and the array).
+ * @param {S=} opt_obj The object to be used as the value of 'this' within f.
+ * @return {number} The number of the matching elements.
+ * @template T,S
+ */
+goog.array.count = function(arr, f, opt_obj) {
+  var count = 0;
+  goog.array.forEach(arr, function(element, index, arr) {
+    if (f.call(opt_obj, element, index, arr)) {
+      ++count;
+    }
+  }, opt_obj);
+  return count;
+};
 
 
 /**
@@ -780,9 +801,8 @@ goog.array.extend = function(arr1, var_args) {
         (isArrayLike = goog.isArrayLike(arr2)) &&
             // The getter for callee throws an exception in strict mode
             // according to section 10.6 in ES5 so check for presence instead.
-            arr2.hasOwnProperty('callee')) {
+            Object.prototype.hasOwnProperty.call(arr2, 'callee')) {
       arr1.push.apply(arr1, arr2);
-
     } else if (isArrayLike) {
       // Otherwise loop over arr2 to prevent copying the object.
       var len1 = arr1.length;
@@ -1238,22 +1258,23 @@ goog.array.binaryRemove = function(array, value, opt_compareFn) {
 /**
  * Splits an array into disjoint buckets according to a splitting function.
  * @param {Array.<T>} array The array.
- * @param {function(T,number,Array.<T>):?} sorter Function to call for every
- *     element.  This
- *     takes 3 arguments (the element, the index and the array) and must
- *     return a valid object key (a string, number, etc), or undefined, if
- *     that object should not be placed in a bucket.
+ * @param {function(this:S, T,number,Array.<T>):?} sorter Function to call for
+ *     every element.  This takes 3 arguments (the element, the index and the
+ *     array) and must return a valid object key (a string, number, etc), or
+ *     undefined, if that object should not be placed in a bucket.
+ * @param {S=} opt_obj The object to be used as the value of 'this' within
+ *     sorter.
  * @return {!Object} An object, with keys being all of the unique return values
  *     of sorter, and values being arrays containing the items for
  *     which the splitter returned that key.
- * @template T
+ * @template T,S
  */
-goog.array.bucket = function(array, sorter) {
+goog.array.bucket = function(array, sorter, opt_obj) {
   var buckets = {};
 
   for (var i = 0; i < array.length; i++) {
     var value = array[i];
-    var key = sorter(value, i, array);
+    var key = sorter.call(opt_obj, value, i, array);
     if (goog.isDef(key)) {
       // Push the value to the right bucket, creating it if necessary.
       var bucket = buckets[key] || (buckets[key] = []);
@@ -1276,7 +1297,7 @@ goog.array.bucket = function(array, sorter) {
  *     key for the element in the new object. If the function returns the same
  *     key for more than one element, the value for that key is
  *     implementation-defined.
- * @param {S=} opt_obj  The object to be used as the value of 'this'
+ * @param {S=} opt_obj The object to be used as the value of 'this'
  *     within keyFunc.
  * @return {!Object.<T>} The new object.
  * @template T,S
@@ -1287,6 +1308,54 @@ goog.array.toObject = function(arr, keyFunc, opt_obj) {
     ret[keyFunc.call(opt_obj, element, index, arr)] = element;
   });
   return ret;
+};
+
+
+/**
+ * Creates a range of numbers in an arithmetic progression.
+ *
+ * Range takes 1, 2, or 3 arguments:
+ * <pre>
+ * range(5) is the same as range(0, 5, 1) and produces [0, 1, 2, 3, 4]
+ * range(2, 5) is the same as range(2, 5, 1) and produces [2, 3, 4]
+ * range(-2, -5, -1) produces [-2, -3, -4]
+ * range(-2, -5, 1) produces [], since stepping by 1 wouldn't ever reach -5.
+ * </pre>
+ *
+ * @param {number} startOrEnd The starting value of the range if an end argument
+ *     is provided. Otherwise, the start value is 0, and this is the end value.
+ * @param {number=} opt_end The optional end value of the range.
+ * @param {number=} opt_step The step size between range values. Defaults to 1
+ *     if opt_step is undefined or 0.
+ * @return {!Array.<number>} An array of numbers for the requested range. May be
+ *     an empty array if adding the step would not converge toward the end
+ *     value.
+ */
+goog.array.range = function(startOrEnd, opt_end, opt_step) {
+  var array = [];
+  var start = 0;
+  var end = startOrEnd;
+  var step = opt_step || 1;
+  if (opt_end !== undefined) {
+    start = startOrEnd;
+    end = opt_end;
+  }
+
+  if (step * (end - start) < 0) {
+    // Sign mismatch: start + step will never reach the end value.
+    return [];
+  }
+
+  if (step > 0) {
+    for (var i = start; i < end; i += step) {
+      array.push(i);
+    }
+  } else {
+    for (var i = start; i > end; i += step) {
+      array.push(i);
+    }
+  }
+  return array;
 };
 
 

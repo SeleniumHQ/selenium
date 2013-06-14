@@ -94,7 +94,7 @@ goog.ui.ac.RemoteArrayMatcher.prototype.headers_ = null;
 
 /**
  * Key to the listener on XHR. Used to clear previous listeners.
- * @type {?number}
+ * @type {goog.events.Key}
  * @private
  */
 goog.ui.ac.RemoteArrayMatcher.prototype.lastListenerKey_ = null;

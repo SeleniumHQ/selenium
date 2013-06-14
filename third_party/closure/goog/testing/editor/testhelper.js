@@ -25,7 +25,9 @@ goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.node');
+goog.require('goog.editor.plugins.AbstractBubblePlugin');
 goog.require('goog.testing.dom');
+
 
 
 /**

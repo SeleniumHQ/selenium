@@ -81,7 +81,7 @@ goog.object.forEach(['text', 'password', 'textarea'], function(id) {
 });
 
 goog.events.listen(window, 'unload', function() {
-  goog.events.removeAll();
+  goog.events.removeAllNativeListeners();
 });
 </script>
 </body>

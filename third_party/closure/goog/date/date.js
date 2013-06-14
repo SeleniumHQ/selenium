@@ -27,6 +27,7 @@ goog.provide('goog.date.month');
 goog.provide('goog.date.weekDay');
 
 goog.require('goog.asserts');
+/** @suppress {extraRequire} */
 goog.require('goog.date.DateLike');
 goog.require('goog.i18n.DateTimeSymbols');
 goog.require('goog.string');
@@ -263,6 +264,28 @@ goog.date.getWeekNumber = function(year, month, date, opt_weekDay,
 
   // Number of week. The round() eliminates the effect of daylight saving.
   return Math.floor(Math.round((cutoffSameWeek - jan1) / ONE_DAY) / 7) + 1;
+};
+
+
+/**
+ * @param {!T} date1 A datelike object.
+ * @param {!S} date2 Another datelike object.
+ * @return {!(T|S)} The earlier of them in time.
+ * @template T,S
+ */
+goog.date.min = function(date1, date2) {
+  return date1 < date2 ? date1 : date2;
+};
+
+
+/**
+ * @param {!T} date1 A datelike object.
+ * @param {!S} date2 Another datelike object.
+ * @return {!(T|S)} The later of them in time.
+ * @template T,S
+ */
+goog.date.max = function(date1, date2) {
+  return date1 > date2 ? date1 : date2;
 };
 
 
@@ -1205,9 +1228,10 @@ goog.date.Date.prototype.toUTCIsoString = function(opt_verbose, opt_tz) {
  * @return {boolean} Whether the given date is equal to this one.
  */
 goog.date.Date.prototype.equals = function(other) {
-  return this.getYear() == other.getYear() &&
-         this.getMonth() == other.getMonth() &&
-         this.getDate() == other.getDate();
+  return !!(other &&
+            this.getYear() == other.getYear() &&
+            this.getMonth() == other.getMonth() &&
+            this.getDate() == other.getDate());
 };
 
 
@@ -1472,6 +1496,15 @@ goog.date.DateTime.prototype.setUTCSeconds = function(seconds) {
  */
 goog.date.DateTime.prototype.setUTCMilliseconds = function(ms) {
   this.date_.setUTCMilliseconds(ms);
+};
+
+
+/**
+ * @return {boolean} Whether the datetime is aligned to midnight.
+ */
+goog.date.DateTime.prototype.isMidnight = function() {
+  return this.getHours() == 0 && this.getMinutes() == 0 &&
+      this.getSeconds() == 0 && this.getMilliseconds() == 0;
 };
 
 

@@ -20,6 +20,7 @@
 goog.provide('goog.string.Stringifier');
 
 
+
 /**
  * An interface for serializing objects into strings.
  * @interface
