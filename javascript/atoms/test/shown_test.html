@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
   <title>shown_test.html</title>
@@ -220,17 +220,18 @@
       var element = goog.dom.createDom('div', null,
           goog.dom.createDom('div'));
       document.body.appendChild(element);
-      var size = bot.dom.getElementSize(element);
+      var size = bot.dom.getClientRect(element);
       // Width will be equivalent of width:100%
       assertEquals('Should have 0 height', 0, size.height);
       assertFalse(isShown(element));
     }
 
     function testZeroSizedDivIsShownIfDescendantHasSize() {
-       if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
-       return;
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        return;
       }
-      var element = goog.dom.createDom('div', {id:"ZeroSizedDiv", style: 'width:0;height:0'},
+      var element = goog.dom.createDom('div',
+          {id: 'ZeroSizedDiv', style: 'width:0;height:0'},
           goog.dom.createDom('div', null,
               goog.dom.createDom('img', {
                 src: 'testdata/map.png',
@@ -238,13 +239,13 @@
                 width: '364'
               })));
       document.body.appendChild(element);
-      var size = bot.dom.getElementSize(element);
+      var size = bot.dom.getClientRect(element);
       assertEquals('Should have 0 width', 0, size.width);
       assertEquals('Should have 0 height', 0, size.height);
       assertTrue(isShown(element));
     }
 
-    function testZeroSizedAbsolutePositionedBlockElemetnsAreShownIfDescendantHasSize() {
+    function testZeroSizedAbsolutePositionedBlockElementsAreShownIfDescendantHasSize() {
       var div = goog.partial(goog.dom.createDom, 'div');
 
       function position(element, left, top, opt_zIndex) {
@@ -272,7 +273,7 @@
       root.appendChild(child);
       document.body.appendChild(root);
 
-      var size = bot.dom.getElementSize(root);
+      var size = bot.dom.getClientRect(root);
       assertEquals('Should have 0 width', 0, size.width);
       assertEquals('Should have 0 height', 0, size.height);
       assertTrue('Should still be considered shown', isShown(root));
@@ -310,9 +311,6 @@
     }
 
     function testThatItemsHiddenWithOverflowHiddenAreFalse() {
-      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
-       return;
-      }
       var target = findElement({id: 'target'});
       assertFalse(isShown(target));
     }
@@ -322,32 +320,13 @@
       assertFalse(isShown(target));
     }
 
-    function testParentNodeVisibleWhenAllChildrenAreAbsolutelyPositionedAndOverflowIsHidden() {
-      goog.style.setStyle(document.body, 'overflow', 'hidden');
-      var target = findElement({id: 'suggest'});
-      var shown = isShown(target);
-      assertTrue(shown);
+    function testZeroSizeElemWithOverflowHiddenAndTextNotShown() {
+      var target = findElement({id: 'bug5022'});
+      assertFalse(isShown(target));
     }
 
-    function testElementsAreVisibleWhenBodyIsOverflowHiddenButHtmlMayNotBe() {
-      var iframe = findElement({id: 'body-overflow'});
-      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
-      var html = findElement({tagName: 'html'}, iframeDoc);
-      var alwaysSeen = findElement({id: 'always_seen'}, iframeDoc);
-      var sometimesSeen = findElement({id: 'sometimes_seen'}, iframeDoc);
-
-      var possibilities = [
-        ['auto', true],
-        ['scroll', true],
-        ['', false],
-        ['visible', false]
-      ];
-
-      goog.array.forEach(possibilities, function(possibility) {
-          html.style.overflow = possibility[0];
-          assertTrue(isShown(alwaysSeen));
-          assertEquals(possibility[1], isShown(sometimesSeen));
-      });
+    function testThatElementIsShownWithZIndex() {
+      assertTrue(isShown(findElement({id: 'bug5109'})));
     }
 
     function testElementWithTransformIsReallyHidden() {
@@ -418,79 +397,91 @@
   </script>
 
   <style type="text/css">
-        #nav {
-            padding: 0; margin: 0; list-style: none;
-        }
-        #nav li {
-            float: left; position: relative; width: 10em;
-        }
-        #nav li ul {
-            display: none; position: absolute; top: 1em; left: 0;
-        }
-        #nav li > ul { top: auto; left: auto; }
-        #nav li:hover ul, #nav li.over ul{ display: block; background: white; }
-        #transparent {
-          opacity: 0; /* non IE */
-          filter:alpha(opacity=0); /* IE 6+ */
-        }
-        #zeroheight, #zerowidth {
-          border: 0;
-          padding: 0;
-          margin: 0;
-        }
-        #zerowidth {
-          width: 0;
-          height: 70px;
-        }
-        #zeroheight {
-          width: 70px;
-          height: 0;
-        }
-        .box-popup {
-            border : 1px;
-            min-width : 150px;
-        }
-
-        #hidden-transformY {
-          transform: translateY(-10000px);
-          -webkit-transform: translateY(-10000px);
-          -ms-transform: translateY(-10000px);
-          -o-transform: translateY(-10000px);
-          -moz-transform: translateY(-10000px);
-        }
-        #hidden-transformX {
-          transform: translateX(-10000px);
-          -webkit-transform: translateX(-10000px);
-          -ms-transform: translateX(-10000px);
-          -o-transform: translateX(-10000px);
-          -moz-transform: translateX(-10000px);
-        }
-        #zero-transform {
-          transform: translateX(0px);
-          -webkit-transform: translateX(0px);
-          -ms-transform: translateX(0px);
-          -o-transform: translateX(0px);
-          -moz-transform: translateX(0px);
-          transform: translateY(0px);
-          -webkit-transform: translateY(0px);
-          -ms-transform: translateY(0px);
-          -o-transform: translateY(0px);
-          -moz-transform: translateY(0px);
-        }
-        #negative-percentage-transform {
-          transform: translateY(-75%);
-          -webkit-transform: translateY(-75%);
-          -ms-transform: translateY(-75%);
-          -o-transform: translateY(-75%);
-          -moz-transform: translateY(-75%);
-        }
-        #negative-percentage-transform {
-          transform: translateY(-75%);
-          -webkit-transform: translateY(-75%);
-          -ms-transform: translateY(-75%);
-          -o-transform: translateY(-75%);
-          -moz-transform: translateY(-75%);
-        }
+    #nav {
+      padding: 0; margin: 0; list-style: none;
+    }
+    #nav li {
+      float: left; position: relative; width: 10em;
+    }
+    #nav li ul {
+      display: none; position: absolute; top: 1em; left: 0;
+    }
+    #nav li > ul { top: auto; left: auto; }
+    #nav li:hover ul, #nav li.over ul{ display: block; background: white; }
+    #transparent {
+      opacity: 0; /* non IE */
+      filter:alpha(opacity=0); /* IE 6+ */
+    }
+    #zeroheight, #zerowidth {
+      border: 0;
+      padding: 0;
+      margin: 0;
+    }
+    #zerowidth {
+      width: 0;
+      height: 70px;
+    }
+    #zeroheight {
+      width: 70px;
+      height: 0;
+    }
+    box-popup {
+      border : 1px;
+      min-width : 150px;
+    }
+    #box{
+      border: 1px solid black;
+    }
+    #box ul{
+      height: 250px;
+      overflow: hidden;
+    }
+    #box ul > li{
+      height: 50px;
+    }
+    #box ul > li > a{
+      height: 26px;
+    }
+    #hidden-transformY {
+    transform: translateY(-10000px);
+    -webkit-transform: translateY(-10000px);
+    -ms-transform: translateY(-10000px);
+    -o-transform: translateY(-10000px);
+    -moz-transform: translateY(-10000px);
+    }
+    #hidden-transformX {
+    transform: translateX(-10000px);
+    -webkit-transform: translateX(-10000px);
+    -ms-transform: translateX(-10000px);
+    -o-transform: translateX(-10000px);
+    -moz-transform: translateX(-10000px);
+    }
+    #zero-transform {
+    transform: translateX(0px);
+    -webkit-transform: translateX(0px);
+    -ms-transform: translateX(0px);
+    -o-transform: translateX(0px);
+    -moz-transform: translateX(0px);
+    transform: translateY(0px);
+    -webkit-transform: translateY(0px);
+    -ms-transform: translateY(0px);
+    -o-transform: translateY(0px);
+    -moz-transform: translateY(0px);
+    }
+    #negative-percentage-transform {
+    transform: translateY(-75%);
+    -webkit-transform: translateY(-75%);
+    -ms-transform: translateY(-75%);
+    -o-transform: translateY(-75%);
+    -moz-transform: translateY(-75%);
+    }
+    #negative-percentage-transform {
+    transform: translateY(-75%);
+    -webkit-transform: translateY(-75%);
+    -ms-transform: translateY(-75%);
+    -o-transform: translateY(-75%);
+    -moz-transform: translateY(-75%);
+    }
   </style>
 </head>
 <body>
@@ -592,18 +583,37 @@
 </div>
 
 <div>
-<!-- This iframe is deliberately diminutive -->
-<iframe src="testdata/overflow_hidden.html" id="body-overflow" width="75%" height="100px"></iframe>
+  <!-- This iframe is deliberately diminutive -->
+  <iframe src="testdata/overflow_hidden.html" id="body-overflow" width="75%" height="100px"></iframe>
 </div>
 <div id='hidden-transformY'>will never be shown<div id='child-of-hidden-transformY'>I am a hidden child</div></div>
 <div id='hidden-transformX'>will never be shown<div id='child-of-hidden-transformX'>I am a hidden child</div></div>
 <div id='zero-transform'>I have a zero transform</div>
 <div id='negative-percentage-transform'>I have a negative percentage transform</div>
 <div style="display:-webkit-flex;display:-o-flex;display:flex;-webkit-transform: translate3d(-100px, 0, 0);-ms-transform: translate3d(-100px, 0, 0);-o-transform:translate3d(-100px, 0,0); transform: translate3d(-100px, 0,0)">
-    <div style="width:200px">first</div>
-      <a href='/' id="click">second</a>
+  <div style="width:200px">first</div>
+  <a href='/' id="click">second</a>
 </div>
-<div id='bug5022' style="overflow:hidden; height:0; width:0;">This is a zero height/width div and overflow hidden</div>
+
+<div id="bug5022" style="overflow:hidden; height:0; width:0;">
+  This is a zero height/width div and overflow hidden
+</div>
+
+<div style="position:relative;
+            width:300px;
+            height:300px;
+            background-image:url(testdata/kitten1.jpg);
+            background-position:center;">
+ <a id="bug5109" href="kitten2.jpg"
+    style="display:block;
+           position:relative;
+           width:100px;
+           height:100px;
+           left:-60px;
+           top:-66px;
+           background-image:url(testdata/kitten2.jpg);
+           background-position:center;"></a>
+</div>
 <div id='bug5140-1' style="overflow:hidden; height:0; width:0;"><div id='bug5140-1-child' style="height:25px; width:25px;">.</div></div>
 <div id='bug5140-2' style="overflow:hidden; height:50px; width:50px;"><div id='bug5140-2-child' style="height:25px; width:25px; margin:50px; background-color:red;">.</div></div>
 <div id='bug5140-3' style="overflow:hidden; height:50px; width:50px;"><div id='bug5140-3-child' style="height:25px; width:25px; margin:49px; background-color:red;">.</div></div>

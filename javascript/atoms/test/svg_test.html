@@ -42,15 +42,33 @@
       if (!bot.test.SUPPORTS_INLINE_SVG) {
         return;
       }
+      if ((goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher(536)) ||
+          (goog.userAgent.GECKO && !goog.userAgent.isVersionOrHigher(17))) {
+        // Older versions of WebKit report an incorrect bounding box for
+        // SVG elements, causing the isShown check in this test to fail.
+        return;
+      }
       var element = bot.locators.findElement({id: 'path'});
       assertTrue(bot.dom.isShown(element));
+    }
+
+    function testSvgClientRect() {
+      if (!bot.test.SUPPORTS_INLINE_SVG) {
+        return;
+      }
+      var e = bot.locators.findElement({id: 'rect'});
+      var rect = bot.dom.getClientRect(e);
+      assertEquals('left value incorrect', 100, rect.left);
+      assertEquals('top value incorrect', 20, rect.top);
+      assertEquals('width value incorrect', 12, rect.width);
+      assertEquals('height value incorrect', 12, rect.height);
     }
   </script>
 </head>
 <body>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1000 50">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1000 50" id="root">
   <rect id="rect" fill="red" stroke="none" height="12" width="12" y="20" x="100"></rect>
-  <text id="text" fill="black" font-size="12" font-family="Arial" y="30" x="115">Apple</text> 
+  <text id="text" fill="black" font-size="12" font-family="Arial" y="30" x="115">Apple</text>
   <path id="path" d="M 200 26 L 600 26" stroke="red" stroke-width="1em"/>
 </svg>
 </body>

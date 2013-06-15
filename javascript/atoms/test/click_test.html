@@ -19,7 +19,6 @@
     goog.require('goog.style');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
-    goog.require('goog.userAgent.product');
   </script>
   <script type="text/javascript">
     var clicker;
@@ -388,7 +387,7 @@
     }
 
     function testClickShouldScrollWhenElementNotInView() {
-      if (bot.userAgent.MOBILE || goog.userAgent.product.SAFARI) {
+      if (bot.userAgent.MOBILE) {
         return;
       }
       var target = findElement({id: 'targetNotInView'});

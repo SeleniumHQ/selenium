@@ -19,7 +19,6 @@
 
 goog.provide('webdriver.atoms.inject.dom');
 
-goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('webdriver.atoms.element');
 goog.require('webdriver.atoms.inject');
@@ -77,8 +76,12 @@ webdriver.atoms.inject.dom.getAttributeValue = function(element, attribute) {
  *     defined by the wire protocol.
  */
 webdriver.atoms.inject.dom.getSize = function(element) {
-  return webdriver.atoms.inject.executeScript(bot.dom.getElementSize,
-      [element]);
+  return webdriver.atoms.inject.executeScript(getSize, [element]);
+
+  function getSize(e) {
+    var rect = bot.dom.getClientRect(e);
+    return {'width': rect.width, 'height': rect.height};
+  }
 };
 
 

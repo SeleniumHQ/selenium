@@ -20,18 +20,12 @@
 
     // WebDriver does not enable geolocation for Android (b/5787618).
     // WebDriver does not enable geolocation for Firefox (b/5787180).
-    // WebDriver does not enable geolocation for Opera 11.5 (b/5746540).
     // WebDriver does not enable geolocation for IE 9 (b/5817463).
-    // WebDriver does not enable geolocation for Safari.
-    // Selenium breaks geolocation on Opera (b/5773581).
     var GEOLOCATION_NOT_WORKING =
       !bot.html5.isSupported(bot.html5.API.GEOLOCATION) ||
       goog.userAgent.product.ANDROID ||
       goog.userAgent.product.FIREFOX ||
-      bot.userAgent.IE_DOC_9 ||
-      goog.userAgent.product.SAFARI ||
-      (goog.userAgent.OPERA && (bot.test.isSeleniumBacked() ||
-                                bot.userAgent.isEngineVersion(11.5)));
+      bot.userAgent.IE_DOC_9;
 
 
     /**

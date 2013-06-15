@@ -22,6 +22,7 @@ limitations under the License.
 goog.provide('core.text');
 
 
+goog.require('bot');
 goog.require('bot.userAgent');
 goog.require('core.patternMatcher');
 goog.require('goog.dom');

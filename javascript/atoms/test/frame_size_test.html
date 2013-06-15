@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>frame_size_test</title>
+  <script src="test_bootstrap.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    goog.require('bot');
+    goog.require('bot.locators');
+    goog.require('bot.userAgent');
+    goog.require('bot.window');
+    goog.require('goog.dom');
+    goog.require('goog.math');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+  </script>
+</head>
+<body>
+  <iframe id="frame" src="testdata/iframe_simple_page.html"></iframe>
+  <script type="text/javascript">
+    var frame = document.getElementById('frame');
+
+    function setUpPage() {
+      bot.setWindow(goog.dom.getFrameContentWindow(frame));
+    }
+
+    function verifySize(expectedSize) {
+      var actualSize = bot.window.getSize();
+      assertEquals(expectedSize.width, actualSize.width);
+      assertEquals(expectedSize.height, actualSize.height);
+    }
+
+    function testFrameGetSizeWithZeroFrameBorder() {
+      frame.frameBorder = '0';
+      frame.style.height = '100px';
+      frame.style.width = '110px';
+      verifySize(new goog.math.Size(110, 100));
+    }
+
+    function testFrameGetSizeWithNonZeroFrameBorder() {
+      frame.frameBorder = '1';
+      frame.style.height = '100px';
+      frame.style.width = '110px';
+      verifySize(new goog.math.Size(110, 100));
+    }
+
+    function testFrameSetSize() {
+      var size = new goog.math.Size(200, 150);
+      bot.window.setSize(size);
+      verifySize(size);
+    }
+
+    function testFrameSetSizeUsingGetSize() {
+      var size = bot.window.getSize();
+      bot.window.setSize(size);
+      verifySize(size);
+    }
+  </script>
+</body>
+</html>

@@ -37,7 +37,7 @@
   }
 
   function tearDown() {
-    goog.events.removeAll();
+    goog.events.removeAllNativeListeners();
   }
 
   function submitForm(formName, opt_cancelSubmit) {

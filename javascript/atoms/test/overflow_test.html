@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>overflow_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.userAgent');
+    goog.require('goog.array');
+    goog.require('goog.dom');
+    goog.require('goog.testing.jsunit');
+  </script>
+
+  <script type="text/javascript">
+    var NONE = bot.dom.OverflowState.NONE;
+    var HIDDEN = bot.dom.OverflowState.HIDDEN;
+    var SCROLL = bot.dom.OverflowState.SCROLL;
+
+    function testElemHiddenByParent() {
+      // Column 1: position style of the element
+      // Column 2: position style of the element's parent
+      // Column 3: expected overflow state of the element
+      var positionStylesToOverflowStateTable = [
+        ['absolute', 'absolute', HIDDEN],
+        ['absolute', 'fixed',    HIDDEN],
+        ['absolute', 'relative', HIDDEN],
+        ['absolute', 'static',   NONE  ],
+        ['fixed'   , 'absolute', NONE  ],
+        ['fixed'   , 'fixed',    NONE  ],
+        ['fixed'   , 'relative', NONE  ],
+        ['fixed'   , 'static',   NONE  ],
+        ['relative', 'absolute', HIDDEN],
+        ['relative', 'fixed',    HIDDEN],
+        ['relative', 'relative', HIDDEN],
+        ['relative', 'static',   HIDDEN],
+        ['static'  , 'absolute', HIDDEN],
+        ['static'  , 'fixed',    HIDDEN],
+        ['static'  , 'relative', HIDDEN],
+        ['static'  , 'static',   HIDDEN]
+      ];
+
+      goog.array.forEach(positionStylesToOverflowStateTable, function(test) {
+        var position = test[0];
+        var parentPosition = test[1];
+        var expectedState = test[2];
+
+        var elem = document.createElement('DIV');
+        elem.style['position'] = position;
+        elem.innerHTML = position + ' in ' + parentPosition;
+
+        var parent = document.createElement('DIV');
+        parent.style['overflow'] = 'hidden';
+        parent.style['height'] = '0px';
+        parent.style['position'] = parentPosition;
+
+        parent.appendChild(elem);
+        document.body.appendChild(parent);
+
+        assertEquals('position: ' + position + '; parent position: ' +
+            parentPosition, expectedState, bot.dom.getOverflowState(elem));
+      });
+    }
+
+    function testElemHiddenByGrandparent() {
+      // Column 1: position style of the element
+      // Column 2: position style of the element's parent
+      // Column 3: position style of the element's grandparent
+      // Column 4: expected overflow state of the element
+      var positionStylesToOverflowStateTable = [
+        ['absolute', 'absolute', 'absolute', HIDDEN],
+        ['absolute', 'absolute', 'fixed'   , HIDDEN],
+        ['absolute', 'absolute', 'relative', HIDDEN],
+        ['absolute', 'absolute', 'static'  , NONE  ],
+        ['absolute', 'fixed'   , 'absolute', NONE  ],
+        ['absolute', 'fixed'   , 'fixed'   , NONE  ],
+        ['absolute', 'fixed'   , 'relative', NONE  ],
+        ['absolute', 'fixed'   , 'static'  , NONE  ],
+        ['absolute', 'relative', 'absolute', HIDDEN],
+        ['absolute', 'relative', 'fixed'   , HIDDEN],
+        ['absolute', 'relative', 'relative', HIDDEN],
+        ['absolute', 'relative', 'static'  , HIDDEN],
+        ['absolute', 'static'  , 'absolute', HIDDEN],
+        ['absolute', 'static'  , 'fixed'   , HIDDEN],
+        ['absolute', 'static'  , 'relative', HIDDEN],
+        ['absolute', 'static'  , 'static'  , NONE  ],
+        ['fixed'   , 'absolute', 'absolute', NONE  ],
+        ['fixed'   , 'absolute', 'fixed'   , NONE  ],
+        ['fixed'   , 'absolute', 'relative', NONE  ],
+        ['fixed'   , 'absolute', 'static'  , NONE  ],
+        ['fixed'   , 'fixed'   , 'absolute', NONE  ],
+        ['fixed'   , 'fixed'   , 'fixed'   , NONE  ],
+        ['fixed'   , 'fixed'   , 'relative', NONE  ],
+        ['fixed'   , 'fixed'   , 'static'  , NONE  ],
+        ['fixed'   , 'relative', 'absolute', NONE  ],
+        ['fixed'   , 'relative', 'fixed'   , NONE  ],
+        ['fixed'   , 'relative', 'relative', NONE  ],
+        ['fixed'   , 'relative', 'static'  , NONE  ],
+        ['fixed'   , 'static'  , 'absolute', NONE  ],
+        ['fixed'   , 'static'  , 'fixed'   , NONE  ],
+        ['fixed'   , 'static'  , 'relative', NONE  ],
+        ['fixed'   , 'static'  , 'static'  , NONE  ],
+        ['relative', 'absolute', 'absolute', HIDDEN],
+        ['relative', 'absolute', 'fixed'   , HIDDEN],
+        ['relative', 'absolute', 'relative', HIDDEN],
+        ['relative', 'absolute', 'static'  , NONE  ],
+        ['relative', 'fixed'   , 'absolute', NONE  ],
+        ['relative', 'fixed'   , 'fixed'   , NONE  ],
+        ['relative', 'fixed'   , 'relative', NONE  ],
+        ['relative', 'fixed'   , 'static'  , NONE  ],
+        ['relative', 'relative', 'absolute', HIDDEN],
+        ['relative', 'relative', 'fixed'   , HIDDEN],
+        ['relative', 'relative', 'relative', HIDDEN],
+        ['relative', 'relative', 'static'  , HIDDEN],
+        ['relative', 'static'  , 'absolute', HIDDEN],
+        ['relative', 'static'  , 'fixed'   , HIDDEN],
+        ['relative', 'static'  , 'relative', HIDDEN],
+        ['relative', 'static'  , 'static'  , HIDDEN],
+        ['static'  , 'absolute', 'absolute', HIDDEN],
+        ['static'  , 'absolute', 'fixed'   , HIDDEN],
+        ['static'  , 'absolute', 'relative', HIDDEN],
+        ['static'  , 'absolute', 'static'  , NONE  ],
+        ['static'  , 'fixed'   , 'absolute', NONE  ],
+        ['static'  , 'fixed'   , 'fixed'   , NONE  ],
+        ['static'  , 'fixed'   , 'relative', NONE  ],
+        ['static'  , 'fixed'   , 'static'  , NONE  ],
+        ['static'  , 'relative', 'absolute', HIDDEN],
+        ['static'  , 'relative', 'fixed'   , HIDDEN],
+        ['static'  , 'relative', 'relative', HIDDEN],
+        ['static'  , 'relative', 'static'  , HIDDEN],
+        ['static'  , 'static'  , 'absolute', HIDDEN],
+        ['static'  , 'static'  , 'fixed'   , HIDDEN],
+        ['static'  , 'static'  , 'relative', HIDDEN],
+        ['static'  , 'static'  , 'static'  , HIDDEN]
+      ];
+
+      goog.array.forEach(positionStylesToOverflowStateTable, function(test) {
+        var position = test[0];
+        var parentPosition = test[1];
+        var grandparentPosition = test[2];
+        var expectedState = test[3];
+
+        var elem = document.createElement('DIV');
+        elem.style['position'] = position;
+        elem.innerHTML =
+            position + ' in ' + parentPosition + ' in ' + grandparentPosition;
+
+        var parent = document.createElement('DIV');
+        parent.style['position'] = parentPosition;
+
+        var grandparent = document.createElement('DIV');
+        grandparent.style['overflow'] = 'hidden';
+        grandparent.style['height'] = '0px';
+        grandparent.style['position'] = grandparentPosition;
+
+        parent.appendChild(elem);
+        grandparent.appendChild(parent);
+        document.body.appendChild(grandparent);
+
+        assertEquals('position: ' + position + '; parent position: ' +
+            parentPosition + '; grandparent position: ' + grandparentPosition,
+            expectedState, bot.dom.getOverflowState(elem));
+      });
+    }
+
+    function testChildOfScrollStyleHasScrollStatus() {
+      var e = document.getElementById('overflowScroll');
+      assertEquals(SCROLL, bot.dom.getOverflowState(e));
+    }
+
+    function testChildOfAutoStyleHasScrollStatus() {
+      var e = document.getElementById('overflowAuto');
+      assertEquals(SCROLL, bot.dom.getOverflowState(e));
+    }
+
+    function testChildOfScrollStyleInHiddenHasScrollStatusWhenParentNotInOverflow() {
+      var e = document.getElementById('overflowScrollInHiddenIsScroll');
+      assertEquals(SCROLL, bot.dom.getOverflowState(e));
+    }
+
+    function testChildOfScrollStyleInHiddenHasHiddenStatusWhenParentInOverflow() {
+      var e = document.getElementById('overflowScrollInHiddenIsHidden');
+      assertEquals(HIDDEN, bot.dom.getOverflowState(e));
+    }
+
+    function testOverflowOfHtmlAndBodyElements() {
+      if (bot.userAgent.ANDROID_PRE_GINGERBREAD) {
+        return;
+      }
+
+      // Column 1: overflow style of the <html> element
+      // Column 2: overflow style of the <body> element
+      // Column 3: expected overflow state of the overflowsBodyNotDoc element
+      // Column 4: expected overflow state of the overflowsBodyAndDoc element
+      var overflowStylesToOverflowStateTable = [
+        ['auto'   , 'auto'   , SCROLL, SCROLL],
+        ['auto'   , 'hidden' , HIDDEN, HIDDEN],
+        ['auto'   , 'scroll' , SCROLL, SCROLL],
+        ['auto'   , 'visible', NONE  , SCROLL],
+        ['hidden' , 'auto'   , SCROLL, SCROLL],
+        ['hidden' , 'hidden' , HIDDEN, HIDDEN],
+        ['hidden' , 'scroll' , SCROLL, SCROLL],
+        ['hidden' , 'visible', NONE  , HIDDEN],
+        ['scroll' , 'auto'   , SCROLL, SCROLL],
+        ['scroll' , 'hidden' , HIDDEN, HIDDEN],
+        ['scroll' , 'scroll' , SCROLL, SCROLL],
+        ['scroll' , 'visible', NONE  , SCROLL],
+        ['visible', 'auto'   , NONE  , SCROLL],
+        ['visible', 'hidden' , NONE  , HIDDEN],
+        ['visible', 'scroll' , NONE  , SCROLL],
+        ['visible', 'visible', NONE  , SCROLL]
+      ];
+
+      var iframe = document.getElementById('iframe');
+      var iframeDoc = goog.dom.getFrameContentDocument(iframe);
+      var overflowsNothing = iframeDoc.getElementById('overflowsNothing');
+      var overflowsBodyNotDoc = iframeDoc.getElementById('overflowsBodyNotDoc');
+      var overflowsBodyAndDoc = iframeDoc.getElementById('overflowsBodyAndDoc');
+
+      goog.array.forEach(overflowStylesToOverflowStateTable, function(test) {
+        var htmlOverflowStyle = test[0];
+        var bodyOverflowStyle = test[1];
+        var expectedOverflowsBodyNotDocState = test[2];
+        var expectedOverflowsBodyAndDocState = test[3];
+        iframeDoc.documentElement.style['overflow'] = htmlOverflowStyle;
+        iframeDoc.body.style['overflow'] = bodyOverflowStyle;
+
+        var msg = 'html overflow style: ' + htmlOverflowStyle + '; ' +
+                  'body overflow style: ' + bodyOverflowStyle;
+        overflowsNothing.innerHTML = msg;
+        //assertEquals(msg, NONE,
+        //    bot.dom.getOverflowState(overflowsNothing));
+        //assertEquals(msg, expectedOverflowsBodyNotDocState,
+        //    bot.dom.getOverflowState(overflowsBodyNotDoc));
+        assertEquals(msg, expectedOverflowsBodyAndDocState,
+            bot.dom.getOverflowState(overflowsBodyAndDoc));
+      });
+    }
+
+    function testChildOfAnElementWithZeroHeightAndWidthAndOverflowHiddenIsNotVisible() {
+      var child = document.getElementById('bug5140-1-child');
+      assertEquals(HIDDEN, bot.dom.getOverflowState(child));
+    }
+
+    function testFarShiftedChildOfAnElementWitOverflowHiddenIsNotVisible() {
+      var child = document.getElementById('bug5140-2-child');
+      assertEquals(HIDDEN, bot.dom.getOverflowState(child));
+    }
+
+    function testNotFarShiftedChildOfAnElementWithOverflowHiddenIsVisible() {
+      var child = document.getElementById('bug5140-3-child');
+      assertEquals(NONE, bot.dom.getOverflowState(child));
+    }
+
+    function testFarShiftedGrandchildOfAnElementWitOverflowHiddenIsNotVisible() {
+      var child = document.getElementById('bug5140-4-grandchild');
+      assertEquals(HIDDEN, bot.dom.getOverflowState(child));
+    }
+
+    function testFloatingElemHiddenByBlockParent() {
+      var elem = document.getElementById('floatingInsideBlockParent');
+      assertEquals(HIDDEN, bot.dom.getOverflowState(elem));
+    }
+
+    function testFloatingElemNotHiddenByInlineParent() {
+      var elem = document.getElementById('floatingInsideInlineParent');
+      assertEquals(NONE, bot.dom.getOverflowState(elem));
+    }
+  </script>
+</head>
+<body>
+<div style="overflow:scroll; height:40px">
+  <div>scroll down to see element</div>
+  <br><br><br><br><br><br><br><br><br>
+  <div id="overflowScroll">in overflow scroll</div>
+</div>
+
+<div style="overflow:auto; height:40px">
+  <div>scroll down to see element</div>
+  <br><br><br><br><br><br><br><br><br>
+  <div id="overflowAuto">in overflow scroll</div>
+</div>
+
+<div style="overflow:hidden; height:40px;">
+  <div style="overflow:scroll; height:40px">
+    <div>scroll down to see element</div>
+    <br><br><br><br><br><br><br><br><br>
+    <div id="overflowScrollInHiddenIsScroll">in overflow scroll</div>
+  </div>
+</div>
+
+<div style="overflow:hidden; height:0px;">
+  <div style="overflow:scroll; height:40px">
+    <div>scroll down to see element</div>
+    <br><br><br><br><br><br><br><br><br>
+    <div id="overflowScrollInHiddenIsHidden">in overflow hidden</div>
+  </div>
+</div>
+
+<iframe src="testdata/overflow_hidden.html" id="iframe" width="75%" height="100"></iframe>
+
+<div id="bug5140-1" style="overflow:hidden; height:0; width:0;">
+  <div id="bug5140-1-child" style="height:25px; width:25px;">.</div>
+</div>
+<div id="bug5140-2" style="overflow:hidden; height:50px; width:50px;">
+  <div id="bug5140-2-child" style="height:25px; width:25px; margin:50px; background-color:red;">.</div>
+</div>
+<div id="bug5140-3" style="overflow:hidden; height:50px; width:50px;">
+  <div id="bug5140-3-child" style="height:25px; width:25px; margin:49px; background-color:red;">.</div>
+</div>
+<div id="bug5140-4" style="overflow:hidden; height:50px; width:50px;">
+  <div id="bug5140-4-child" style="overflow:hidden; height:25px; width:25px; margin:50px; background-color:red;">
+    <div id="bug5140-4-grandchild">.</div>
+  </div>
+</div>
+
+<div style="overflow:hidden;height:0;width:0;">
+  <div id="floatingInsideBlockParent" style="float:left">floating inside block parent</div>
+</div>
+
+<span style="overflow:hidden;height:0;width:0;">
+  <div id="floatingInsideInlineParent" style="float:left">floating inside inline parent</div>
+</span>
+</body>
+</html>

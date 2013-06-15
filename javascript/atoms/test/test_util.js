@@ -40,13 +40,3 @@ bot.test.SUPPORTS_INLINE_SVG = !bot.userAgent.IE_DOC_PRE9 &&
 bot.test.isWindowFocused = function() {
   return !goog.userAgent.GECKO || window.document.hasFocus();
 };
-
-
-/**
- * @return {boolean} Whether the current test is Selenium-backed.
- */
-bot.test.isSeleniumBacked = function() {
-  // Test ('selenium' in window.opener) rather than !!window.opener['selenium']
-  // to avoid "attempted to read protected variable" error in Opera.
-  return !!window.opener && ('selenium' in window.opener);
-};

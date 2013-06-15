@@ -23,19 +23,22 @@ goog.provide('bot.window');
 goog.require('bot');
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.events');
 goog.require('bot.userAgent');
+goog.require('goog.dom.DomHelper');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
+goog.require('goog.style');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
 
 
 /**
  * Whether the value of history.length includes a newly loaded page. If not,
  * after a new page load history.length is the number of pages that have loaded,
  * minus 1, but becomes the total number of pages on a subsequent back() call.
- *
- * @const
  * @private {boolean}
+ * @const
  */
 bot.window.HISTORY_LENGTH_INCLUDES_NEW_PAGE_ = !goog.userAgent.IE &&
     !goog.userAgent.OPERA;
@@ -46,12 +49,60 @@ bot.window.HISTORY_LENGTH_INCLUDES_NEW_PAGE_ = !goog.userAgent.IE &&
  * in the history. If not, history.length equals the number of prior pages.
  * Here is the WebKit bug for this behavior that was fixed by version 533:
  * https://bugs.webkit.org/show_bug.cgi?id=24472
- *
- * @const
  * @private {boolean}
+ * @const
  */
 bot.window.HISTORY_LENGTH_INCLUDES_FORWARD_PAGES_ = !goog.userAgent.OPERA &&
     (!goog.userAgent.WEBKIT || bot.userAgent.isEngineVersion('533'));
+
+
+/**
+ * Screen orientation values. From the draft W3C spec at:
+ * http://www.w3.org/TR/2012/WD-screen-orientation-20120522
+ *
+ * @enum {string}
+ */
+bot.window.Orientation = {
+  PORTRAIT: 'portrait-primary',
+  PORTRAIT_SECONDARY: 'portrait-secondary',
+  LANDSCAPE: 'landscape-primary',
+  LANDSCAPE_SECONDARY: 'landscape-secondary'
+};
+
+
+/**
+ * Returns the degrees corresponding to the orientation input.
+ *
+ * @param {!bot.window.Orientation} orientation The orientation.
+ * @return {number} The orientation degrees.
+ * @private
+ */
+bot.window.getOrientationDegrees_ = (function() {
+  var orientationMap;
+  return function(orientation) {
+    if (!orientationMap) {
+      orientationMap = {};
+      if (goog.userAgent.MOBILE) {
+        // The iPhone and Android phones do not change orientation event when
+        // held upside down. Hence, PORTRAIT_SECONDARY is not set.
+        orientationMap[bot.window.Orientation.PORTRAIT] = 0;
+        orientationMap[bot.window.Orientation.LANDSCAPE] = 90;
+        orientationMap[bot.window.Orientation.LANDSCAPE_SECONDARY] = -90;
+        if (goog.userAgent.product.IPAD) {
+          orientationMap[bot.window.Orientation.PORTRAIT_SECONDARY] = 180;
+        }
+      } else if (goog.userAgent.product.ANDROID) {
+        // Unlike the iPad, Android tablets treat landscape orientation as the
+        // default, i.e., having window.orientation = 0.
+        orientationMap[bot.window.Orientation.PORTRAIT] = -90;
+        orientationMap[bot.window.Orientation.LANDSCAPE] = 0;
+        orientationMap[bot.window.Orientation.PORTRAIT_SECONDARY] = 90;
+        orientationMap[bot.window.Orientation.LANDSCAPE_SECONDARY] = 180;
+      }
+    }
+    return orientationMap[orientation];
+  };
+})();
 
 
 /**
@@ -142,6 +193,24 @@ bot.window.getInteractableSize = function(opt_win) {
 
 
 /**
+ * Gets the frame element.
+ *
+ * @param {!Window} win Window of the frame. Defaults to bot.getWindow().
+ * @return {Element} The frame element if it exists, null otherwise.
+ * @private
+ */
+bot.window.getFrame_ = function(win) {
+  try {
+    // On IE, accessing the frameElement of a popup window results in a "No
+    // Such interface" exception.
+    return win.frameElement;
+  } catch (e) {
+    return null;
+  }
+};
+
+
+/**
  * Determine the outer size of the window.
  *
  * @param {!Window=} opt_win Window to determine the size of. Defaults to
@@ -150,11 +219,28 @@ bot.window.getInteractableSize = function(opt_win) {
  */
 bot.window.getSize = function(opt_win) {
   var win = opt_win || bot.getWindow();
-
-  var width = win.outerWidth;
-  var height = win.outerHeight;
-
-  return new goog.math.Size(width, height);
+  var frame = bot.window.getFrame_(win);
+  if (bot.userAgent.ANDROID_PRE_GINGERBREAD) {
+    if (frame) {
+      // Early Android browsers do not account for border width.
+      var box = goog.style.getBorderBox(frame);
+      return new goog.math.Size(frame.clientWidth - box.left - box.right,
+                                frame.clientHeight);
+    } else {
+      // A fixed popup size.
+      return new goog.math.Size(320, 240);
+    }
+  } else if (frame) {
+    return new goog.math.Size(frame.clientWidth, frame.clientHeight);
+  } else {
+    var docElem = win.document.documentElement;
+    var body = win.document.body;
+    var width = win.outerWidth || (docElem && docElem.clientWidth) ||
+        (body && body.clientWidth) || 0;
+    var height = win.outerHeight || (docElem && docElem.clientHeight) ||
+        (body && body.clientHeight) || 0;
+    return new goog.math.Size(width, height);
+  }
 };
 
 
@@ -167,8 +253,45 @@ bot.window.getSize = function(opt_win) {
  */
 bot.window.setSize = function(size, opt_win) {
   var win = opt_win || bot.getWindow();
+  var frame = bot.window.getFrame_(win);
+  if (frame) {
+    // minHeight and minWidth are altered because many browsers will not change
+    // height or width if it is less than a specified minHeight or minWidth.
+    frame.style.minHeight = '0px';
+    frame.style.minWidth = '0px';
+    frame.width = size.width + 'px';
+    frame.style.width = size.width + 'px';
+    frame.height = size.height + 'px';
+    frame.style.height = size.height + 'px';
+  } else {
+    win.resizeTo(size.width, size.height);
+  }
+};
 
-  win.resizeTo(size.width, size.height);
+
+/**
+ * Determine the scroll position of the window.
+ *
+ * @param {!Window=} opt_win Window to determine the scroll position of.
+ *   Defaults to bot.getWindow().
+ * @return {!goog.math.Coordinate} The scroll position.
+ */
+bot.window.getScroll = function(opt_win) {
+  var win = opt_win || bot.getWindow();
+  return new goog.dom.DomHelper(win.document).getDocumentScroll();
+};
+
+
+/**
+ * Set the scroll position of the window.
+ *
+ * @param {!goog.math.Coordinate} position The new scroll position.
+ * @param {!Window=} opt_win Window to apply position to. Defaults to
+ *   bot.getWindow().
+ */
+bot.window.setScroll = function(position, opt_win) {
+  var win = opt_win || bot.getWindow();
+  win.scrollTo(position.x, position.y);
 };
 
 
@@ -205,4 +328,67 @@ bot.window.getPosition = function(opt_win) {
 bot.window.setPosition = function(targetPosition, opt_win) {
   var win = opt_win || bot.getWindow();
   win.moveTo(targetPosition.x, targetPosition.y);
+};
+
+
+/**
+ * @return {number} The current window orientation degrees.
+ *     window.
+ * @private
+ */
+bot.window.getCurrentOrientationDegrees_ = function() {
+  var win = bot.getWindow();
+  if (!goog.isDef(win.orientation)) {
+    // If window.orientation is not defined, assume a default orientation of 0.
+    // A value of 0 indicates a portrait orientation except for android tablets
+    // where 0 indicates a landscape orientation.
+    win.orientation = 0;
+  }
+  return win.orientation;
+};
+
+
+/**
+ * Changes window orientation.
+ *
+ * @param {!bot.window.Orientation} orientation The new orientation of the
+ *     window.
+ */
+bot.window.changeOrientation = function(orientation) {
+  var win = bot.getWindow();
+  var currentOrientationDegrees = bot.window.getCurrentOrientationDegrees_();
+  var newOrientationDegrees = bot.window.getOrientationDegrees_(orientation);
+  if (currentOrientationDegrees == newOrientationDegrees ||
+      !goog.isDef(newOrientationDegrees)) {
+    return;
+  }
+
+  // If possible, try to override the window's orientation value.
+  // On some older version of Android, it's not possible to change
+  // the window's orientation value.
+  if (Object.getOwnPropertyDescriptor && Object.defineProperty) {
+    var descriptor = Object.getOwnPropertyDescriptor(win, 'orientation');
+    if (descriptor && descriptor.configurable) {
+      Object.defineProperty(win, 'orientation', {
+        configurable: true,
+        get: function() {
+          return newOrientationDegrees;
+        }
+      });
+    }
+  }
+  bot.events.fire(win, bot.events.EventType.ORIENTATIONCHANGE);
+
+  // Change the window size to reflect the new orientation.
+  if (Math.abs(currentOrientationDegrees - newOrientationDegrees) % 180 != 0) {
+    var size = bot.window.getSize();
+    var shorter = size.getShortest();
+    var longer = size.getLongest();
+    if (orientation == bot.window.Orientation.PORTRAIT ||
+        orientation == bot.window.Orientation.PORTRAIT_SECONDARY) {
+      bot.window.setSize(new goog.math.Size(shorter, longer));
+    } else {
+      bot.window.setSize(new goog.math.Size(longer, shorter));
+    }
+  }
 };

@@ -1,16 +1,12 @@
+<!DOCTYPE html>
 <html>
 <head>
   <title>parent_overflow_test.html</title>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
-    goog.require('bot');
-    goog.require('bot.action');
     goog.require('bot.dom');
     goog.require('bot.locators');
-    goog.require('goog.events');
     goog.require('goog.testing.jsunit');
-    goog.require('goog.userAgent');
-    goog.require('goog.userAgent.product');
   </script>
 </head>
 <body>
@@ -33,20 +29,20 @@
       assertFalse(bot.dom.isInParentOverflow(element));
     }
   </script>
-  <div style='height: 150px'></div>
-  <ul style='overflow: scroll; width: 150px; height: 80px; background-color: yellow' onclick="dump(event)">
-    <li id='line1'>line1</li>
-    <li id='line2'>line2</li>
-    <li id='line3'>line3</li>
-    <li id='line4'>line4</li>
-    <li id='line5'>line5</li>
-    <li id='line6'>line6</li>
-    <li id='line7'>line7</li>
-    <li id='line8'>line8</li>
-    <li id='line9'>line9</li>
+  <div style="height: 150px"></div>
+  <ul style="overflow: scroll; width: 150px; height: 80px; background-color: yellow" onclick="dump(event)">
+    <li id="line1">line1</li>
+    <li id="line2">line2</li>
+    <li id="line3">line3</li>
+    <li id="line4">line4</li>
+    <li id="line5">line5</li>
+    <li id="line6">line6</li>
+    <li id="line7">line7</li>
+    <li id="line8">line8</li>
+    <li id="line9">line9</li>
   </ul>
   <div>
-    Clicked: <span id='clicked'></span>
+    Clicked: <span id="clicked"></span>
   </div>
 </body>
 </html>

@@ -27,7 +27,7 @@
     }
 
     function setUp() {
-      goog.events.removeAll();
+      goog.events.removeAllNativeListeners();
       window.scrollTo(0, 0);
       assertEquals(document.body.scrollLeft, 0);
       assertEquals(document.body.scrollTop, 0);

@@ -17,7 +17,7 @@
 
     function setUp() {
       elem = goog.dom.getElement('multitouch');
-      goog.events.removeAll();
+      goog.events.removeAllNativeListeners();
       startCoords = [];
       firstMoveCoords = [];
       secondMoveCoords = [];
@@ -168,6 +168,14 @@
     </script>
 </head>
 <body>
-  <div id="multitouch" style="position:fixed; left:0px; top:0px; width:100px; height:100px">multitouch</div>
+  <div id="multitouch"
+       style="position:fixed;
+              left:0px;
+              top:0px;
+              width:100px;
+              height:100px;
+              -ms-touch-action:none">
+    multitouch
+  </div>
 </body>
 </html>
