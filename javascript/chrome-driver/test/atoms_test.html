@@ -18,7 +18,7 @@ limitations under the License.
 <html>
 <head>
   <title>atoms_test.html</title>
-  <script type="text/javascript" src="../../webdriver-bootstrap.js">
+  <script type="text/javascript" src="test_bootstrap.js">
   </script>
   <script type="text/javascript">
     goog.require('goog.math.Coordinate');
@@ -97,8 +97,8 @@ limitations under the License.
       var elem = frames[0].document.getElementById('elem');
       var coord = webdriver.chrome.getLocationInView(
           elem, false, new goog.math.Rect(0,0,4,4));
-      assertEquals(281, coord.x);
-      assertEquals(281, coord.y);
+      assertEquals(296, coord.x);
+      assertEquals(296, coord.y);
       assertEquals(408, frames[0].document.body.scrollLeft);
       assertEquals(408, frames[0].document.body.scrollTop);
     }
@@ -157,7 +157,7 @@ limitations under the License.
   <div style='width:1px'>
     <span id='span'>a b</span>
   </div>
-  <iframe width=300 height=300 src='location_in_view.html'>
+  <iframe width=300 height=300 src='location_in_view.html'></iframe>
 </body>
 </html>
 
