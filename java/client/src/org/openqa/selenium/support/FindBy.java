@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to mark a field on a Page Object to indicate an alternative mechanism for locating the
+ * Used to mark a field or class on a Page Object to indicate an alternative mechanism for locating the
  * element or a list of elements. Used in conjunction with
  * {@link org.openqa.selenium.support.PageFactory}
  * this allows users to quickly and easily create PageObjects.
@@ -47,7 +47,7 @@ import java.lang.annotation.Target;
  * </pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.TYPE})
 public @interface FindBy {
   How how() default How.ID;
 
