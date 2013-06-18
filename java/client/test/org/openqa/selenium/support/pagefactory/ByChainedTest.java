@@ -42,12 +42,7 @@ public class ByChainedTest extends MockTestBase {
     final AllDriver driver = mock(AllDriver.class);
 
     ByChained by = new ByChained();
-    try {
-      by.findElement(driver);
-      fail("Expected NoSuchElementException!");
-    } catch (NoSuchElementException e) {
-      // Expected
-    }
+    by.findElement(driver);
   }
 
   @Test
@@ -95,7 +90,7 @@ public class ByChainedTest extends MockTestBase {
     assertThat(by.findElements(driver), equalTo(elems12));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void findElementOneByEmpty() {
     final AllDriver driver = mock(AllDriver.class);
     final List<WebElement> elems = new ArrayList<WebElement>();
@@ -106,12 +101,7 @@ public class ByChainedTest extends MockTestBase {
     }});
 
     ByChained by = new ByChained(By.name("cheese"));
-    try {
-      by.findElement(driver);
-      fail("Expected NoSuchElementException!");
-    } catch (NoSuchElementException e) {
-      // Expected
-    }
+    by.findElement(driver);
   }
 
   @Test
@@ -161,7 +151,7 @@ public class ByChainedTest extends MockTestBase {
     assertThat(by.findElement(driver), equalTo(elem3));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void findElementTwoByEmptyParent() {
     final AllDriver driver = mock(AllDriver.class);
     final WebElement elem1 = mock(WebElement.class, "webElement1");
@@ -189,12 +179,7 @@ public class ByChainedTest extends MockTestBase {
     }});
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
-    try {
-      by.findElement(driver);
-      fail("Expected NoSuchElementException!");
-    } catch (NoSuchElementException e) {
-      // Expected
-    }
+    by.findElement(driver);
   }
 
   @Test
