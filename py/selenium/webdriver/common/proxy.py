@@ -133,4 +133,6 @@ class Proxy(object):
             proxy_caps['proxyAutoconfigUrl'] = self.proxyAutoconfigUrl
         if self.sslProxy:
             proxy_caps['sslProxy'] = self.sslProxy
+        if self.noProxy:
+            proxy_caps['noProxy'] = self.noProxy
         capabilities['proxy'] = proxy_caps
