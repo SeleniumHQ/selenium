@@ -18,7 +18,6 @@
  */
 
 goog.provide('webdriver.testing.asserts');
-goog.provide('webdriver.testing.asserts.RegExpMatcher');
 
 goog.require('goog.array');
 goog.require('goog.string');
@@ -37,34 +36,17 @@ goog.require('webdriver.promise');
 
 
 /**
- * Asserts that a matcher accepts a given value.  This function has two
- * signatures based on the number of arguments:
- *
- * Two arguments:
- *   assertThat(actualValue, matcher)
- * Three arguments:
- *   assertThat(failureMessage, actualValue, matcher)
- *
- * @param {*} failureMessageOrActualValue Either a failure message or the value
- *     to apply to the given matcher.
- * @param {*} actualValueOrMatcher Either the value to apply to the given
- *     matcher, or the matcher itself.
- * @param {webdriver.testing.asserts.Matcher=} opt_matcher The matcher to use;
- *     ignored unless this function is invoked with three arguments.
+ * Asserts that a matcher accepts a given value.
+ * @param {*} value The value to apply a matcher to. If this value is a
+ *     promise, will wait for the promise to resolve before applying the
+ *     matcher.
+ * @param {!goog.labs.testing.Matcher} matcher The matcher to apply.
+ * @param {string=} opt_message An optional error message.
  * @return {!webdriver.promise.Promise} The assertion result.
  */
-webdriver.testing.asserts.assertThat = function(
-    failureMessageOrActualValue, actualValueOrMatcher, opt_matcher) {
-  var args = goog.array.slice(arguments, 0);
-
-  var message = args.length > 2 ? args.shift() : '';
-  if (message) message += '\n';
-
-  var actualValue = args.shift();
-  var matcher = args.shift();
-
-  return webdriver.promise.when(actualValue, function(value) {
-    goog.labs.testing.assertThat(value, matcher, message);
+webdriver.testing.asserts.assertThat = function(value, matcher, opt_message) {
+  return webdriver.promise.when(value, function(value) {
+    goog.labs.testing.assertThat(value, matcher, opt_message);
   });
 };
 

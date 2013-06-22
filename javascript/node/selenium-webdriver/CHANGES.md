@@ -1,3 +1,9 @@
+## v2.34.0-dev
+
+* Added the `selenium-webdriver/testing/asserts` module. This module
+    simplifies writing assertions against promised values (see
+    example in module documentation).
+
 ## v2.33.0
 
 * Added support for WebDriver's logging API

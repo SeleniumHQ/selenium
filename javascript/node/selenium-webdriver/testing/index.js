@@ -75,8 +75,6 @@
  *   function maybe() { return Math.random() < 0.5; }
  */
 
-var assert = require('assert');
-
 var flow = require('..').promise.controlFlow();
 
 
@@ -150,7 +148,7 @@ function ignore(predicateFn) {
   };
 
   return {it: it};
-};
+}
 
 
 // PUBLIC API
