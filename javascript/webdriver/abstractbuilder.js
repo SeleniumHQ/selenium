@@ -14,6 +14,7 @@
 
 goog.provide('webdriver.AbstractBuilder');
 
+goog.require('webdriver.Capabilities');
 goog.require('webdriver.process');
 
 
@@ -60,9 +61,9 @@ webdriver.AbstractBuilder = function() {
 
   /**
    * The desired capabilities to use when creating a new session.
-   * @private {!Object.<*>}
+   * @private {!webdriver.Capabilities}
    */
-  this.capabilities_ = {};
+  this.capabilities_ = new webdriver.Capabilities();
 };
 
 
@@ -145,18 +146,19 @@ webdriver.AbstractBuilder.prototype.getSession = function() {
 
 /**
  * Sets the desired capabilities when requesting a new session.
- * @param {!Object.<*>} capabilities The desired capabilities for a new
- *     session.
+ * @param {!(Object|webdriver.Capabilities)} capabilities The desired
+ *     capabilities for a new session.
  * @return {!webdriver.AbstractBuilder} This Builder instance for chain calling.
  */
 webdriver.AbstractBuilder.prototype.withCapabilities = function(capabilities) {
-  this.capabilities_ = capabilities;
+  this.capabilities_ = new webdriver.Capabilities(capabilities);
   return this;
 };
 
 
 /**
- * @return {!Object.<*>} The current desired capabilities for this builder.
+ * @return {!webdriver.Capabilities} The current desired capabilities for this
+ *     builder.
  */
 webdriver.AbstractBuilder.prototype.getCapabilities = function() {
   return this.capabilities_;

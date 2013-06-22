@@ -23,6 +23,7 @@ goog.require('safaridriver.console');
 goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Log');
 goog.require('safaridriver.message.MessageTarget');
+goog.require('webdriver.Capabilities');
 goog.require('webdriver.Session');
 goog.require('webdriver.WebDriver');
 goog.require('webdriver.logging');
@@ -45,10 +46,9 @@ safaridriver.debug.init = function() {
   messageTarget.on(safaridriver.message.Log.TYPE, safaridriver.debug.onLogEntry_);
   messageTarget.setLogger(safaridriver.debug.LOG_);
 
-  var desiredCapabilities = {};
   var driver = webdriver.WebDriver.createSession(
       new safaridriver.debug.CommandExecutor(messageTarget),
-      desiredCapabilities);
+      webdriver.Capabilities.safari());
 
   goog.exportSymbol('driver', driver);
 };

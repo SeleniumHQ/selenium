@@ -24,19 +24,18 @@ exports.ActionSequence = base.require('webdriver.ActionSequence');
 exports.Builder = require('./builder').Builder;
 exports.Button = base.require('webdriver.Button');
 exports.By = base.require('webdriver.Locator.Strategy');
+exports.Capabilities = base.require('webdriver.Capabilities');
 exports.Command = base.require('webdriver.Command');
-exports.CommandName = base.require('webdriver.CommandName');
 exports.EventEmitter = base.require('webdriver.EventEmitter');
 exports.Session = base.require('webdriver.Session');
 exports.WebDriver = base.require('webdriver.WebDriver');
 exports.WebElement = base.require('webdriver.WebElement');
 
-exports.__defineGetter__('Key', function() {
-  return base.require('webdriver.Key');
-});
-
-
 var submodules = {
+  Browser: base.require('webdriver.Browser'),
+  Capability: base.require('webdriver.Capability'),
+  CommandName: base.require('webdriver.CommandName'),
+  Key: base.require('webdriver.Key'),
   command: {
     Command: base.require('webdriver.Command'),
     CommandName: base.require('webdriver.CommandName')
