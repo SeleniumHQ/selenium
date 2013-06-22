@@ -442,8 +442,6 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   this.promise.cancel = this.cancel = cancel;
   this.promise.isPending = this.isPending = isPending;
   this.fulfill = fulfill;
-  /** @deprecated Use fulfill instead. This will be removed in 2.34.0. */
-  this.resolve = this.callback = fulfill;
   this.reject = this.errback = reject;
 
   // Export symbols necessary for the contract on this object to work in
@@ -556,16 +554,6 @@ webdriver.promise.fulfilled = function(opt_value) {
   deferred.fulfill(opt_value);
   return deferred.promise;
 };
-
-
-/**
- * Creates a promise that has been resolved with the given value.
- * @param {*=} opt_value The fulfilled promises's value.
- * @return {!webdriver.promise.Promise} A fulfilled promise.
- * @deprecated Use webdriver.promise.fulfilled(). This will be removed in
- *     Selenium 2.34.0.
- */
-webdriver.promise.resolved = webdriver.promise.fulfilled;
 
 
 /**

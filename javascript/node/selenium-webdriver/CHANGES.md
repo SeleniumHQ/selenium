@@ -3,6 +3,8 @@
 * Added the `selenium-webdriver/testing/asserts` module. This module
     simplifies writing assertions against promised values (see
     example in module documentation).
+* Removed the deprecated `webdriver.Deferred#resolve` and
+    `webdriver.promise.resolved` functions.
 
 ## v2.33.0
 
