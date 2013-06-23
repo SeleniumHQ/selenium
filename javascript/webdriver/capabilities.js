@@ -140,7 +140,7 @@ webdriver.Capabilities = function(opt_other) {
 
 
 /**
- * @returns {!webdriver.Capabilities} A basic set of capabilities for Android.
+ * @return {!webdriver.Capabilities} A basic set of capabilities for Android.
  */
 webdriver.Capabilities.android = function() {
   return new webdriver.Capabilities().
@@ -150,7 +150,7 @@ webdriver.Capabilities.android = function() {
 
 
 /**
- * @returns {!webdriver.Capabilities} A basic set of capabilities for Chrome.
+ * @return {!webdriver.Capabilities} A basic set of capabilities for Chrome.
  */
 webdriver.Capabilities.chrome = function() {
   return new webdriver.Capabilities().
@@ -159,7 +159,7 @@ webdriver.Capabilities.chrome = function() {
 
 
 /**
- * @returns {!webdriver.Capabilities} A basic set of capabilities for Firefox.
+ * @return {!webdriver.Capabilities} A basic set of capabilities for Firefox.
  */
 webdriver.Capabilities.firefox = function() {
   return new webdriver.Capabilities().
@@ -168,7 +168,7 @@ webdriver.Capabilities.firefox = function() {
 
 
 /**
- * @returns {!webdriver.Capabilities} A basic set of capabilities for
+ * @return {!webdriver.Capabilities} A basic set of capabilities for
  *     Internet Explorer.
  */
 webdriver.Capabilities.ie = function() {
@@ -180,7 +180,7 @@ webdriver.Capabilities.ie = function() {
 
 
 /**
- * @returns {!webdriver.Capabilities} A basic set of capabilities for iPad.
+ * @return {!webdriver.Capabilities} A basic set of capabilities for iPad.
  */
 webdriver.Capabilities.ipad = function() {
   return new webdriver.Capabilities().
@@ -190,7 +190,7 @@ webdriver.Capabilities.ipad = function() {
 
 
 /**
- * @returns {!webdriver.Capabilities} A basic set of capabilities for iPhone.
+ * @return {!webdriver.Capabilities} A basic set of capabilities for iPhone.
  */
 webdriver.Capabilities.iphone = function() {
   return new webdriver.Capabilities().
@@ -200,7 +200,7 @@ webdriver.Capabilities.iphone = function() {
 
 
 /**
- * @returns {!webdriver.Capabilities} A basic set of capabilities for Opera.
+ * @return {!webdriver.Capabilities} A basic set of capabilities for Opera.
  */
 webdriver.Capabilities.opera = function() {
   return new webdriver.Capabilities().
@@ -209,7 +209,7 @@ webdriver.Capabilities.opera = function() {
 
 
 /**
- * @returns {!webdriver.Capabilities} A basic set of capabilities for
+ * @return {!webdriver.Capabilities} A basic set of capabilities for
  *     PhantomJS.
  */
 webdriver.Capabilities.phantomjs = function() {
@@ -219,11 +219,17 @@ webdriver.Capabilities.phantomjs = function() {
 
 
 /**
- * @returns {!webdriver.Capabilities} A basic set of capabilities for Safari.
+ * @return {!webdriver.Capabilities} A basic set of capabilities for Safari.
  */
 webdriver.Capabilities.safari = function() {
   return new webdriver.Capabilities().
       set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.SAFARI);
+};
+
+
+/** @return {!Object} The JSON representation of this instance. */
+webdriver.Capabilities.prototype.toJSON = function() {
+  return this.caps_;
 };
 
 
