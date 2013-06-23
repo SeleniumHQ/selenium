@@ -64,7 +64,8 @@ var Response = function(command, responseHandler) {
     status: bot.ErrorCode.SUCCESS,
     value: ''
   };
-  if (this.json_['sessionId'] && this.json_['sessionId']['value']) {
+
+  if (goog.isObject(this.json_['sessionId'])) {
     this.json_['sessionId'] = this.json_['sessionId']['value'];
   }
   this.session = null;
@@ -119,6 +120,8 @@ Response.prototype = {
 
   set name(name) { this.json_.name = name; },
   get name() { return this.json_.name; },
+  get sessionId() { return this.json_.sessionId; },
+  set sessionId(sessionId) { this.json_.sessionId = sessionId; },
   set status(newStatus) { this.json_.status = newStatus; },
   get status() { return this.json_.status; },
   set value(val) { this.json_.value = val; },
@@ -701,9 +704,10 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
     session.setChromeWindow(win);
 
     response.session = session;
-    response.value = session.getId();
+    response.sessionId = session.getId();
 
     fxdriver.logging.info('Created a new session with id: ' + session.getId());
+    this.getSessionCapabilities(response);
   }
 
   response.send();
