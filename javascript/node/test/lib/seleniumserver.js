@@ -21,8 +21,7 @@ var util = require('util'),
     promise = require('selenium-webdriver').promise,
     RemoteServer = require('selenium-webdriver/remote').SeleniumServer;
 
-var build = require('./build'),
-    inproject = require('./inproject');
+var build = require('./build');
 
 
 var SERVER_JAR_PATH =
@@ -31,7 +30,7 @@ var SERVER_JAR_PATH =
 
 function buildServer() {
   if (process.env.SKIP_BUILD) {
-    return promise.resolved();
+    return promise.fulfilled();
   }
   return build.of('selenium-server-standalone').onlyOnce().go();
 }
@@ -43,8 +42,7 @@ function buildServer() {
  * @extends {RemoteServer}
  */
 function Server() {
-  RemoteServer.call(this, {
-    jar: SERVER_JAR_PATH,
+  RemoteServer.call(this, SERVER_JAR_PATH, {
     port: 0
   });
 }

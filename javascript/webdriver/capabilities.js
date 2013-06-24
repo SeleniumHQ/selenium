@@ -124,7 +124,7 @@ webdriver.Capability = {
 
 
 /**
- * @param {(webdriver.Capabilities)=} opt_other Another set of
+ * @param {(webdriver.Capabilities|Object)=} opt_other Another set of
  *     capabilities to merge into this instance.
  * @constructor
  */

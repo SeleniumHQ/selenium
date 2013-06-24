@@ -76,7 +76,7 @@ Build.prototype.go = function(opt_callback) {
     });
 
     if (!targets.length) {
-      return promise.resolved();
+      return promise.fulfilled();
     }
   }
 
@@ -100,7 +100,7 @@ Build.prototype.go = function(opt_callback) {
       targets.forEach(function(target) {
         builtTargets[target] = 1;
       });
-      return result.resolve();
+      return result.fulfill();
     }
 
     var msg = 'Unable to build artifacts';

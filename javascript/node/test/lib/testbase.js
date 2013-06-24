@@ -36,8 +36,20 @@ var Browser = {
   FIREFOX: 'firefox',
   OPERA: 'opera',
   PHANTOMJS: 'phantomjs',
-  SAFARI: 'safari'
+  SAFARI: 'safari',
+
+  // Browsers that should always be tested via the java Selenium server.
+  REMOTE_CHROME: 'remote.chrome'
 };
+
+
+/**
+ * Browsers with native support.
+ * @type {!Array.<string>}
+ */
+var NATIVE_BROWSERS = [
+  Browser.CHROME
+];
 
 
 var browsersToTest = (function() {
@@ -61,9 +73,10 @@ var browsersToTest = (function() {
 
 
 /**
- * Creates a predicate function that ignores tests for speific browsers.
+ * Creates a predicate function that ignores tests for specific browsers.
  * @param {string} currentBrowser The name of the current browser.
- * @param {...Browser} var_args Names of the browsers to ignore.
+ * @param {!Array.<!Browser>} browsersToIgnore The browsers to ignore.
+ * @return {function(): boolean} The predicate function.
  */
 function browsers(currentBrowser, browsersToIgnore) {
   return function() {
@@ -77,24 +90,42 @@ function browsers(currentBrowser, browsersToIgnore) {
 
 /**
  * @param {string} browserName The name to use.
+ * @param {remote.DriverService} server The server to use, if any.
  * @constructor
  */
-function TestEnvironment(browserName) {
+function TestEnvironment(browserName, server) {
   var driver;
 
   this.__defineGetter__('driver', function() { return driver; });
 
   this.browsers = function(var_args) {
     var browsersToIgnore = Array.prototype.slice.apply(arguments, [0]);
+    var remoteVariants = [];
+    browsersToIgnore.forEach(function(browser) {
+      if (browser.lastIndexOf('remote.', 0) === 0) {
+        remoteVariants.push(browser.substring('remote.'.length));
+      }
+    });
+    browsersToIgnore = browsersToIgnore.concat(remoteVariants);
     return browsers(browserName, browsersToIgnore);
   };
 
   this.createDriver = function() {
     if (!driver) {
-      driver = new webdriver.Builder().
-          withCapabilities({browserName: browserName}).
-          usingServer(server.address()).
-          build();
+      var name = browserName;
+      if (name.lastIndexOf('remote.', 0) == 0) {
+        name = name.substring('remote.'.length);
+      }
+
+      var builder = new webdriver.Builder().withCapabilities({
+        browserName: name
+      });
+
+      if (server) {
+        builder.usingServer(server.address());
+      }
+
+      driver = builder.build();
     }
     return driver;
   };
@@ -130,12 +161,12 @@ function TestEnvironment(browserName) {
 }
 
 
+var seleniumServer = new seleniumserver.Server();
 var inSuite = false;
 
 
 /**
  * Expands a function to cover each of the target browsers.
- * @param {f}
  * @param {function(!TestEnvironment)} fn The top level suite
  *     function.
  */
@@ -147,7 +178,14 @@ function suite(fn) {
     browsersToTest.forEach(function(browser) {
 
       testing.describe('[' + browser + ']', function() {
-        var env = new TestEnvironment(browser);
+        var serverToUse = null;
+
+        if (NATIVE_BROWSERS.indexOf(browser) == -1) {
+          serverToUse = seleniumServer;
+          testing.before(seleniumServer.start.bind(seleniumServer, 60 * 1000));
+        }
+
+        var env = new TestEnvironment(browser, serverToUse);
 
         testing.beforeEach(function() {
           env.createDriver();
@@ -166,16 +204,14 @@ function suite(fn) {
 }
 
 
-var server = new seleniumserver.Server();
-
-
 // GLOBAL TEST SETUP
 
 
-testing.before(server.start.bind(server, 60 * 1000));
 testing.before(fileserver.start);
-testing.after(server.stop.bind(server));
 testing.after(fileserver.stop);
+
+// Server is only started if required for a specific config.
+testing.after(seleniumServer.stop.bind(seleniumServer));
 
 
 // PUBLIC API

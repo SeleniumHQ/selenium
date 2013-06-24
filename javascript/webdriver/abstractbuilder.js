@@ -45,19 +45,7 @@ webdriver.AbstractBuilder = function() {
    * @private {string}
    */
   this.serverUrl_ = webdriver.process.getEnv(
-      webdriver.AbstractBuilder.SERVER_URL_ENV,
-      webdriver.AbstractBuilder.DEFAULT_SERVER_URL);
-
-  /**
-   * ID of an existing WebDriver session that new clients should use.
-   * Initialized from the value of the
-   * {@link webdriver.AbstractBuilder.SESSION_ID_ENV} environment variable, but
-   * may be overridden using
-   * {@link webdriver.AbstractBuilder#usingSession}.
-   * @private {string}
-   */
-  this.sessionId_ =
-      webdriver.process.getEnv(webdriver.AbstractBuilder.SESSION_ID_ENV);
+      webdriver.AbstractBuilder.SERVER_URL_ENV);
 
   /**
    * The desired capabilities to use when creating a new session.
@@ -65,20 +53,6 @@ webdriver.AbstractBuilder = function() {
    */
   this.capabilities_ = new webdriver.Capabilities();
 };
-
-
-/**
- * Environment variable that defines the session ID of an existing WebDriver
- * session to use when creating clients. If set, all new Builder instances will
- * default to creating clients that use this session. To create a new session,
- * use {@code #useExistingSession(boolean)}. The use of this environment
- * variable requires that {@link webdriver.AbstractBuilder.SERVER_URL_ENV} also
- * be set.
- * @type {string}
- * @const
- * @see webdriver.process.getEnv
- */
-webdriver.AbstractBuilder.SESSION_ID_ENV = 'wdsid';
 
 
 /**
@@ -120,27 +94,6 @@ webdriver.AbstractBuilder.prototype.usingServer = function(url) {
  */
 webdriver.AbstractBuilder.prototype.getServerUrl = function() {
   return this.serverUrl_;
-};
-
-
-/**
- * Configures the builder to create a client that will use an existing WebDriver
- * session.
- * @param {string} id The existing session ID to use.
- * @return {!webdriver.AbstractBuilder} This Builder instance for chain calling.
- */
-webdriver.AbstractBuilder.prototype.usingSession = function(id) {
-  this.sessionId_ = id;
-  return this;
-};
-
-
-/**
- * @return {string} The ID of the session, if any, this builder is configured
- *     to reuse.
- */
-webdriver.AbstractBuilder.prototype.getSession = function() {
-  return this.sessionId_;
 };
 
 

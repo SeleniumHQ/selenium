@@ -34,25 +34,24 @@ var base = require('../_base'),
     asserts = base.require('webdriver.testing.asserts');
 
 
-// Load Closure's predefined matchers. This will define the factory functions
-// in Closure's global context.
-base.require('goog.labs.testing.AllOfMatcher');
-base.require('goog.labs.testing.AnyOfMatcher');
-base.require('goog.labs.testing.AnythingMatcher');
-base.require('goog.labs.testing.CloseToMatcher');
-base.require('goog.labs.testing.ContainsStringMatcher');
-base.require('goog.labs.testing.EndsWithMatcher');
-base.require('goog.labs.testing.GreaterThanEqualToMatcher');
-base.require('goog.labs.testing.GreaterThanMatcher');
-base.require('goog.labs.testing.LessThanEqualToMatcher');
-base.require('goog.labs.testing.LessThanMatcher');
-base.require('goog.labs.testing.InstanceOfMatcher');
-base.require('goog.labs.testing.IsNotMatcher');
-base.require('goog.labs.testing.IsNullMatcher');
-base.require('goog.labs.testing.IsNullOrUndefinedMatcher');
-base.require('goog.labs.testing.IsUndefinedMatcher');
-base.require('goog.labs.testing.RegexMatcher');
-base.require('goog.labs.testing.StartsWithMatcher');
+// Load Closure's predefined matchers.
+goog.require('goog.labs.testing.AllOfMatcher');
+goog.require('goog.labs.testing.AnyOfMatcher');
+goog.require('goog.labs.testing.AnythingMatcher');
+goog.require('goog.labs.testing.CloseToMatcher');
+goog.require('goog.labs.testing.ContainsStringMatcher');
+goog.require('goog.labs.testing.EndsWithMatcher');
+goog.require('goog.labs.testing.GreaterThanEqualToMatcher');
+goog.require('goog.labs.testing.GreaterThanMatcher');
+goog.require('goog.labs.testing.LessThanEqualToMatcher');
+goog.require('goog.labs.testing.LessThanMatcher');
+goog.require('goog.labs.testing.InstanceOfMatcher');
+goog.require('goog.labs.testing.IsNotMatcher');
+goog.require('goog.labs.testing.IsNullMatcher');
+goog.require('goog.labs.testing.IsNullOrUndefinedMatcher');
+goog.require('goog.labs.testing.IsUndefinedMatcher');
+goog.require('goog.labs.testing.RegexMatcher');
+goog.require('goog.labs.testing.StartsWithMatcher');
 
 
 // PUBLIC API
@@ -76,7 +75,11 @@ exports.assertThat = asserts.assertThat;
  * @param {...!goog.labs.testing.Matcher} var_args The matchers to apply.
  * @return {!goog.labs.testing.Matcher} The new matcher.
  */
-exports.allOf = goog.global.allOf;
+exports.allOf = function(var_args) {
+  var matchers = goog.array.toArray(arguments);
+  return new goog.labs.testing.AllOfMatcher(matchers);
+};
+exports.and = exports.allOf;
 
 
 /**
@@ -85,15 +88,20 @@ exports.allOf = goog.global.allOf;
  * @param {...!goog.labs.testing.Matcher} var_args The matchers to apply.
  * @return {!goog.labs.testing.Matcher} The new matcher.
  */
-exports.anyOf = goog.global.anyOf;
-exports.or = goog.global.anyOf;
+exports.anyOf = function(var_args) {
+  var matchers = goog.array.toArray(arguments);
+  return new goog.labs.testing.AnyOfMatcher(matchers);
+};
+exports.or = exports.anyOf;
 
 
 /**
  * @return {!goog.labs.testing.Matcher} A matcher that will accept any input
  *     value.
  */
-exports.anything = goog.global.anything;
+exports.anything = function() {
+  return new goog.labs.testing.AnythingMatcher();
+};
 
 
 /**
@@ -104,7 +112,9 @@ exports.anything = goog.global.anything;
  * @param {!goog.labs.testing.Matcher} matcher The matcher to wrap.
  * @return {!goog.labs.testing.Matcher} The wrapped matcher.
  */
-exports.is = goog.global.is;
+exports.is = function(matcher) {
+  return matcher;
+};
 
 
 /**
@@ -112,8 +122,10 @@ exports.is = goog.global.is;
  * @param {!goog.labs.testing.Matcher} matcher The matcher to negate.
  * @return {!goog.labs.testing.Matcher} The new matcher.
  */
-exports.isNot = goog.global.isNot;
-exports.not = goog.global.isNot;
+exports.isNot = function(matcher) {
+  return new goog.labs.testing.IsNotMatcher(matcher);
+};
+exports.not = exports.isNot;
 
 
 /**
@@ -121,7 +133,9 @@ exports.not = goog.global.isNot;
  * @return {!goog.labs.testing.Matcher} A matcher that accepts values greater
  *     than the given value.
  */
-exports.greaterThan = goog.global.greaterThan;
+exports.greaterThan = function(expectedValue) {
+  return new goog.labs.testing.GreaterThanMatcher(expectedValue);
+};
 
 
 /**
@@ -129,7 +143,9 @@ exports.greaterThan = goog.global.greaterThan;
  * @return {!goog.labs.testing.Matcher} A matcher that accepts values greater
  *     than or equal to the given value.
  */
-exports.greaterThanEqualTo = goog.global.greaterThanEqualTo;
+exports.greaterThanEqualTo = function(expectedValue) {
+  return new goog.labs.testing.GreaterThanEqualToMatcher(expectedValue);
+};
 
 
 /**
@@ -137,7 +153,9 @@ exports.greaterThanEqualTo = goog.global.greaterThanEqualTo;
  * @return {!goog.labs.testing.Matcher} A matcher that accepts values less
  *     than the given value.
  */
-exports.lessThan = goog.global.lessThan;
+exports.lessThan = function(expectedValue) {
+  return new goog.labs.testing.LessThanMatcher(expectedValue);
+};
 
 
 /**
@@ -145,7 +163,9 @@ exports.lessThan = goog.global.lessThan;
  * @return {!goog.labs.testing.Matcher} A matcher that accepts values less
  *     than or equal to the given value.
  */
-exports.lessThanEqualTo = goog.global.lessThanEqualTo;
+exports.lessThanEqualTo = function(expectedValue) {
+  return new goog.labs.testing.LessThanEqualToMatcher(expectedValue);
+};
 
 
 /**
@@ -155,7 +175,9 @@ exports.lessThanEqualTo = goog.global.lessThanEqualTo;
  * @return {!goog.labs.testing.Matcher} A matcher that accepts numbers within
  *     a given range of the expected value.
  */
-exports.closeTo = goog.global.closeTo;
+exports.closeTo = function(value, range) {
+  return new goog.labs.testing.CloseToMatcher(value, range);
+};
 
 
 /**
@@ -163,27 +185,35 @@ exports.closeTo = goog.global.closeTo;
  * @return {!goog.labs.testing.Matcher} A matcher that accepts objects that
  *     are an instance of the given class.
  */
-exports.instanceOfClass = goog.global.instanceOfClass;
+exports.instanceOfClass = function(ctor) {
+  return new goog.labs.testing.InstanceOfMatcher(ctor);
+};
 
 
 /**
  * @return {!goog.labs.testing.Matcher} A matcher that accepts null values.
  */
-exports.isNull = goog.global.isNull;
+exports.isNull = function() {
+  return new goog.labs.testing.IsNullMatcher();
+};
 
 
 /**
  * @return {!goog.labs.testing.Matcher} A matcher that accepts null undefined
  *     or values.
  */
-exports.isNullOrUndefined = goog.global.isNullOrUndefined;
+exports.isNullOrUndefined = function() {
+  return new goog.labs.testing.IsNullOrUndefinedMatcher();
+};
 
 
 /**
  * @return {!goog.labs.testing.Matcher} A matcher that accepts undefined
  *     values.
  */
-exports.isUndefined = goog.global.isUndefined;
+exports.isUndefined = function() {
+  return new goog.labs.testing.IsUndefinedMatcher();
+};
 
 
 /**
@@ -191,7 +221,9 @@ exports.isUndefined = goog.global.isUndefined;
  * @return {!goog.labs.testing.Matcher} A matcher that accepts strings
  *     containing the given substring.
  */
-exports.containsString = goog.global.containsString;
+exports.containsString = function(substring) {
+  return new goog.labs.testing.ContainsStringMatcher(substring);
+};
 
 
 /**
@@ -199,7 +231,9 @@ exports.containsString = goog.global.containsString;
  * @return {!goog.labs.testing.Matcher} A matcher that accepts strings ending
  *     with the given suffix.
  */
-exports.endsWith = goog.global.endsWith;
+exports.endsWith = function(expectedSuffix) {
+  return new goog.labs.testing.EndsWithMatcher(expectedSuffix);
+};
 
 
 /**
@@ -207,7 +241,9 @@ exports.endsWith = goog.global.endsWith;
  * @return {!goog.labs.testing.Matcher} A matcher that accepts strings matching
  *     the given regex.
  */
-exports.matchesRegex = goog.global.matchesRegex;
+exports.matchesRegex = function(regex) {
+  return new goog.labs.testing.RegexMatcher(regex);
+};
 
 
 /**
@@ -215,7 +251,9 @@ exports.matchesRegex = goog.global.matchesRegex;
  * @return {!goog.labs.testing.Matcher} A matcher that accepts strings starting
  *     with the given prefix.
  */
-exports.startsWith = goog.global.startsWith;
+exports.startsWith = function(expectedPrefix) {
+  return new goog.labs.testing.StartsWithMatcher(expectedPrefix);
+};
 
 
 /**

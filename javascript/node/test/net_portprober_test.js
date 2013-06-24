@@ -44,7 +44,7 @@ describe('isFree', function() {
         var done = promise.defer();
         server.close(function() {
           server = null;
-          done.resolve(assertPortIsFree(port));
+          done.fulfill(assertPortIsFree(port));
         });
         return done.promise;
       }).then(function() { done(); }, done);
@@ -59,7 +59,7 @@ describe('isFree', function() {
         var done = promise.defer();
         server.close(function() {
           server = null;
-          done.resolve(assertPortIsFree(port, host));
+          done.fulfill(assertPortIsFree(port, host));
         });
         return done.promise;
       }).then(function() { done(); }, done);
@@ -88,7 +88,7 @@ describe('findFreePort', function() {
           var done = promise.defer();
           server.close(function() {
             server = null;
-            done.resolve(assertPortIsFree(port));
+            done.fulfill(assertPortIsFree(port));
           });
           return done.promise;
         }).then(function() { done(); }, done);
@@ -104,7 +104,7 @@ describe('findFreePort', function() {
           var done = promise.defer();
           server.close(function() {
             server = null;
-            done.resolve(assertPortIsFree(port, host));
+            done.fulfill(assertPortIsFree(port, host));
           });
           return done.promise;
         }).then(function() { done(); }, done);

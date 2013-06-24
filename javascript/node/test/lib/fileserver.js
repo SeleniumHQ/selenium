@@ -393,7 +393,7 @@ exports.start = function(opt_port) {
  */
 exports.stop = function() {
   var d = promise.defer();
-  server.close(d.resolve);
+  server.close(d.fulfill);
   return d.promise;
 };
 
