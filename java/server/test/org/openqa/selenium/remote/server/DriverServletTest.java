@@ -28,6 +28,8 @@ import org.junit.Test;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.testing.FakeHttpServletRequest;
 import org.openqa.selenium.remote.server.testing.FakeHttpServletResponse;
@@ -178,13 +180,13 @@ public class DriverServletTest {
   private SessionId createSession() throws IOException, ServletException {
     FakeHttpServletResponse response = sendCommand("POST", "/session", null);
 
-    assertEquals(HttpServletResponse.SC_SEE_OTHER, response.getStatus());
+    assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 
-    String location = response.getHeader("location");
-    assertNotNull(location);
-    assertTrue(location.startsWith("/wd/hub/session/"));
-    
-    String sessionId = location.substring("/wd/hub/session/".length());
+    Response resp = (Response) new JsonToBeanConverter().convert(
+      Response.class, response.getBody());
+
+    String sessionId = resp.getSessionId();
+    assertNotNull(sessionId);
     assertFalse(sessionId.isEmpty());
     return new SessionId(sessionId);
   }
