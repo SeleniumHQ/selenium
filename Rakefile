@@ -612,6 +612,7 @@ desc "Generate a single file with WebDriverJS' public API"
 task :webdriverjs => [ "//javascript/webdriver:webdriver" ]
 
 task :release => [
+    :clean,
     '//java/server/src/org/openqa/selenium/server:server:zip',
     '//java/server/src/org/openqa/grid/selenium:selenium:zip',
     '//java/client/src/org/openqa/selenium:client-combined:zip',
