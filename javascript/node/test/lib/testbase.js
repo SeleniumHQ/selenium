@@ -94,8 +94,18 @@ function browsers(currentBrowser, browsersToIgnore) {
  * @constructor
  */
 function TestEnvironment(browserName, server) {
-  var driver;
+  var name = browserName;
+  if (name.lastIndexOf('remote.', 0) == 0) {
+    name = name.substring('remote.'.length);
+  }
 
+  var autoCreate = true;
+  this.__defineGetter__(
+      'autoCreateDriver', function() { return autoCreate; });
+  this.__defineSetter__(
+      'autoCreateDriver', function(auto) { autoCreate = auto; });
+
+  var driver;
   this.__defineGetter__('driver', function() { return driver; });
 
   this.browsers = function(var_args) {
@@ -110,22 +120,27 @@ function TestEnvironment(browserName, server) {
     return browsers(browserName, browsersToIgnore);
   };
 
-  this.createDriver = function() {
-    if (!driver) {
-      var name = browserName;
-      if (name.lastIndexOf('remote.', 0) == 0) {
-        name = name.substring('remote.'.length);
-      }
+  this.builder = function() {
+    assert.ok(!driver, 'Can only have one driver at a time');
+    var builder = new webdriver.Builder();
+    var realBuild = builder.build;
 
-      var builder = new webdriver.Builder().withCapabilities({
-        browserName: name
-      });
+    builder.build = function() {
+      builder.getCapabilities().
+          set(webdriver.Capability.BROWSER_NAME, name);
 
       if (server) {
         builder.usingServer(server.address());
       }
+      return driver = realBuild.call(builder);
+    };
 
-      driver = builder.build();
+    return builder;
+  };
+
+  this.createDriver = function() {
+    if (!driver) {
+      driver = this.builder().build();
     }
     return driver;
   };
@@ -188,7 +203,9 @@ function suite(fn) {
         var env = new TestEnvironment(browser, serverToUse);
 
         testing.beforeEach(function() {
-          env.createDriver();
+          if (env.autoCreateDriver) {
+            env.createDriver();
+          }
         });
 
         testing.after(function() {

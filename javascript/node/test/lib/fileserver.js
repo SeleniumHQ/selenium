@@ -26,15 +26,14 @@ var fs = require('fs'),
     url = require('url');
 
 var inproject = require('./inproject');
+var Server = require('./httpserver').Server;
 
 
 var WEB_ROOT = '/common/src/web';
 var JS_ROOT = '/javascript';
 
 var baseDirectory = inproject.locate('.'),
-    server = http.createServer(onRequest).on('connection', function(stream) {
-      stream.setTimeout(4000);
-    });
+    server = new Server(onRequest);
 
 
 var Pages = (function() {
@@ -319,8 +318,7 @@ function sendDirectoryListing(request, response) {
 
   var host = request.headers.host;
   if (!host) {
-    var address = server.address();
-    host = address.address + ':' + address.port;
+    host = server.host();
   }
 
   var requestUrl = ['http://' + host + pathname].join('');
@@ -373,29 +371,18 @@ function sendDirectoryListing(request, response) {
 /**
  * Starts the server on the specified port.
  * @param {number=} opt_port The port to use, or 0 for any free port.
- * @param {function(Error)=} opt_callback A function to call when the server's
- *     "listening" event is emitted.
+ * @return {!webdriver.promise.Promise.<Host>} A promise that will resolve
+ *     with the server host when it has fully started.
  */
-exports.start = function(opt_port) {
-  var port = opt_port || portprober.findFreePort('localhost');
-  return promise.when(port, function(port) {
-    console.log('starting file server on ' + port);
-    return promise.checkedNodeCall(
-        server.listen.bind(server, port, 'localhost'));
-  });
-};
+exports.start = server.start.bind(server);
 
 
 /**
  * Stops the server.
- * @return {!promise.Promise} A promise that will resolve when the server has
- *     closed all functions.
+ * @return {!webdriver.promise.Promise} A promise that will resolve when the
+ *     server has closed all connections.
  */
-exports.stop = function() {
-  var d = promise.defer();
-  server.close(d.fulfill);
-  return d.promise;
-};
+exports.stop = server.stop.bind(server);
 
 
 /**
@@ -404,19 +391,7 @@ exports.stop = function() {
  * @return {string} The formatted URL.
  * @throws {Error} If the server is not running.
  */
-exports.url = function(opt_pathname) {
-  var addr = server.address();
-  if (!addr) {
-    throw Error('There server is not running!');
-  }
-  var pathname = opt_pathname || '';
-  return url.format({
-    protocol: 'http',
-    hostname: addr.address,
-    port: addr.port,
-    pathname: pathname
-  });
-};
+exports.url = server.url.bind(server);
 
 
 /**
@@ -428,7 +403,7 @@ exports.url = function(opt_pathname) {
  * @throws {Error} If the server is not running.
  */
 exports.whereIs = function(filePath) {
-  return exports.url(path.join(WEB_ROOT, filePath));
+  return server.url(path.join(WEB_ROOT, filePath));
 };
 
 
@@ -436,7 +411,7 @@ exports.Pages = Pages;
 
 
 if (require.main === module) {
-  exports.start(2310).then(function() {
-    console.log('Server running at ' + exports.url());
+  server.start(2310).then(function() {
+    console.log('Server running at ' + server.url());
   });
 }

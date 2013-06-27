@@ -98,7 +98,8 @@ webdriver.AbstractBuilder.prototype.getServerUrl = function() {
 
 
 /**
- * Sets the desired capabilities when requesting a new session.
+ * Sets the desired capabilities when requesting a new session. This will
+ * overwrite any previously set desired capabilities.
  * @param {!(Object|webdriver.Capabilities)} capabilities The desired
  *     capabilities for a new session.
  * @return {!webdriver.AbstractBuilder} This Builder instance for chain calling.

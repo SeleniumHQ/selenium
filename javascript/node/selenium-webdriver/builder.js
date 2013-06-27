@@ -53,6 +53,19 @@ goog.inherits(Builder, AbstractBuilder);
 
 
 /**
+ * Sets the proxy configuration to use for WebDriver clients created by this
+ * builder. Any calls to {@link #withCapabilities} after this function will
+ * overwrite these settings.
+ * @param {!ProxyConfig} config The configuration to use.
+ * @return {!Builder} A self reference.
+ */
+Builder.prototype.setProxy = function(config) {
+  this.getCapabilities().set(Capability.PROXY, config);
+  return this;
+};
+
+
+/**
  * @override
  */
 Builder.prototype.build = function() {

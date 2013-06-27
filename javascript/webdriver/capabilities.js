@@ -81,6 +81,11 @@ webdriver.Capability = {
    */
   PLATFORM: 'platform',
 
+  /**
+   * Describes the proxy configuration to use for a new WebDriver session.
+   */
+  PROXY: 'proxy',
+
   /** Whether the driver supports changing the brower's orientation. */
   ROTATABLE: 'rotatable',
 
