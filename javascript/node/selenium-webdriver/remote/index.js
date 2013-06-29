@@ -131,6 +131,14 @@ DriverService.prototype.address = function() {
 
 
 /**
+ * @return {boolean} Whether the underlying service process is running.
+ */
+DriverService.prototype.isRunning = function() {
+  return !!this.address_;
+};
+
+
+/**
  * Starts the server if it is not already running.
  * @param {number=} opt_timeoutMs How long to wait, in milliseconds, for the
  *     server to start accepting requests. Defaults to 30 seconds.

@@ -91,7 +91,7 @@ Build.prototype.go = function(opt_callback) {
   }
 
   var result = promise.defer();
-  var proc = spawn(cmd, args, {
+  spawn(cmd, args, {
     cwd: inproject.locate('.'),
     env: process.env,
     stdio: ['ignore', process.stdout, process.stderr]
@@ -111,7 +111,6 @@ Build.prototype.go = function(opt_callback) {
       msg += '; signal=' + signal;
     }
 
-    var err = Error(msg);
     result.reject(Error(msg));
   });
 

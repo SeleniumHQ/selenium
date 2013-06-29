@@ -184,13 +184,15 @@ var inSuite = false;
  * Expands a function to cover each of the target browsers.
  * @param {function(!TestEnvironment)} fn The top level suite
  *     function.
+ * @param {{browsers: !Array.<string>}=} opt_options Suite specific options.
  */
-function suite(fn) {
+function suite(fn, opt_options) {
   assert.ok(!inSuite, 'You may not nest suite calls');
   inSuite = true;
 
+  var suiteOptions = opt_options || {};
   try {
-    browsersToTest.forEach(function(browser) {
+    (suiteOptions.browsers || browsersToTest).forEach(function(browser) {
 
       testing.describe('[' + browser + ']', function() {
         var serverToUse = null;

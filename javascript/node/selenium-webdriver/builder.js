@@ -33,7 +33,7 @@ function createNativeDriver(capabilities) {
       // Requiring 'chrome' above would create a cycle:
       // index -> builder -> chrome/index -> index
       var chrome = require('./chrome');
-      return new chrome.Builder().withCapabilities(capabilities).build();
+      return chrome.createDriver(capabilities);
 
     default:
       return null;
@@ -62,6 +62,17 @@ goog.inherits(Builder, AbstractBuilder);
 Builder.prototype.setProxy = function(config) {
   this.getCapabilities().set(Capability.PROXY, config);
   return this;
+};
+
+
+/**
+ * Sets Chrome-specific options for drivers created by this builder.
+ * @param {!chrome.Options} options The ChromeDriver options to use.
+ * @return {!Builder} A self reference.
+ */
+Builder.prototype.setChromeOptions = function(options) {
+  var newCapabilities = options.toCapabilities(this.getCapabilities());
+  return /** @type {!Builder} */(this.withCapabilities(newCapabilities));
 };
 
 

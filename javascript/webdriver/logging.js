@@ -19,16 +19,30 @@ goog.require('goog.object');
 
 
 /**
+ * Log level names from WebDriver's JSON wire protocol.
+ * @enum {string}
+ */
+webdriver.logging.LevelName = {
+  ALL: 'ALL',
+  DEBUG: 'DEBUG',
+  INFO: 'INFO',
+  WARNING: 'WARNING',
+  SEVERE: 'SEVERE',
+  OFF: 'OFF'
+};
+
+
+/**
  * Logging levels.
- * @enum {{value: number, name: string}}
+ * @enum {{value: number, name: webdriver.logging.LevelName}}
  */
 webdriver.logging.Level = {
-  ALL: {value: Number.MIN_VALUE, name: 'ALL'},
-  DEBUG: {value: 700, name: 'DEBUG'},
-  INFO: {value: 800, name: 'INFO'},
-  WARNING: {value: 900, name: 'WARNING'},
-  SEVERE: {value: 1000, name: 'SEVERE'},
-  OFF: {value: Number.MAX_VALUE, name: 'OFF'}
+  ALL: {value: Number.MIN_VALUE, name: webdriver.logging.LevelName.ALL},
+  DEBUG: {value: 700, name: webdriver.logging.LevelName.DEBUG},
+  INFO: {value: 800, name: webdriver.logging.LevelName.INFO},
+  WARNING: {value: 900, name: webdriver.logging.LevelName.WARNING},
+  SEVERE: {value: 1000, name: webdriver.logging.LevelName.SEVERE},
+  OFF: {value: Number.MAX_VALUE, name: webdriver.logging.LevelName.OFF}
 };
 
 
@@ -55,12 +69,24 @@ webdriver.logging.getLevel = function(nameOrValue) {
  * @enum {string}
  */
 webdriver.logging.Type = {
+  /** Logs originating from the browser. */
   BROWSER: 'browser',
+  /** Logs from a WebDriver client. */
   CLIENT: 'client',
+  /** Logs from a WebDriver implementation. */
   DRIVER: 'driver',
-  PROFILER: 'profiler',
+  /** Logs related to performance. */
+  PERFORMANCE: 'performance',
+  /** Logs from the remote server. */
   SERVER: 'server'
 };
+
+
+/**
+ * A hash describing log preferences.
+ * @typedef {Object.<webdriver.logging.Type, webdriver.logging.LevelName>}
+ */
+webdriver.logging.Preferences;
 
 
 /**
