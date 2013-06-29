@@ -88,8 +88,8 @@ objectExtend(TreeView.prototype, {
             };
             this.tree.controllers.appendController(controller);
             
-            this.atomService = Components.classes["@mozilla.org/atom-service;1"].
-                getService(Components.interfaces.nsIAtomService);
+//            this.atomService = Components.classes["@mozilla.org/atom-service;1"].
+//                getService(Components.interfaces.nsIAtomService);
             
             this._loadSeleniumCommands();
         },
@@ -534,35 +534,36 @@ objectExtend(TreeView.prototype, {
             var command = this.getCommand(row);
             if (this.selection.isSelected(row)) return;
             if (row == this.testCase.debugContext.debugIndex) {
-                props.AppendElement(this.atomService.getAtom("debugIndex"));
+                return XulUtils.setProperty(props, "debugIndex");
             } else if (command.result == 'done') {
-                props.AppendElement(this.atomService.getAtom("commandDone"));
+                return XulUtils.setProperty(props, "commandDone");
             } else if (command.result == 'passed') {
-                props.AppendElement(this.atomService.getAtom("commandPassed"));
+                return XulUtils.setProperty(props, "commandPassed");
             } else if (command.result == 'failed') {
-                props.AppendElement(this.atomService.getAtom("commandFailed"));
+                return XulUtils.setProperty(props, "commandFailed");
             } else if (command.selectedForReplacement) {
-                props.AppendElement(this.atomService.getAtom(
-                    'commandSelectedForReplacement'));
+                return XulUtils.setProperty(props, "commandSelectedForReplacement");
             }
         },
         getCellProperties: function(row, col, props) {
             var command = this.getCommand(row);
+            var propRa = [];
             if (command.type == 'comment') {
-                props.AppendElement(this.atomService.getAtom("comment"));
+                XulUtils.setPropertyRa(props, "comment", propRa);
             }
             if (command == this.currentCommand) {
-                props.AppendElement(this.atomService.getAtom("currentCommand"));
+                XulUtils.setPropertyRa(props, "currentCommand", propRa);
             }
             if (row == this.recordIndex) {
-                props.AppendElement(this.atomService.getAtom("recordIndex"));
+                XulUtils.setPropertyRa(props, "recordIndex", propRa);
             }
             if (0 == col.index && command.breakpoint) {
-                props.AppendElement(this.atomService.getAtom("breakpoint"));
+                XulUtils.setPropertyRa(props, "breakpoint", propRa);
             }
             if ((this.testCase.startPoint) && 0 == col.index && this.testCase.startPoint == command) {
-                props.AppendElement(this.atomService.getAtom("startpoint"));
+                XulUtils.setPropertyRa(props, "startpoint", propRa);
             }
+            return propRa.join(' ');
         },
 
         getParentIndex: function(index){return -1;},
