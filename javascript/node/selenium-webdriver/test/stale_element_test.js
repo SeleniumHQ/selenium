@@ -15,13 +15,11 @@
 
 'use strict';
 
-require('./lib/_bootstrap')(module);
+var assert = require('assert');
 
-var assert = require('assert'),
-    By = require('selenium-webdriver').By,
-    error = require('selenium-webdriver').error;
-
-var test = require('./lib/testbase'),
+var By = require('..').By,
+    error = require('..').error,
+    test = require('../lib/test'),
     Browser = test.Browser,
     Pages = test.Pages;
 

@@ -15,12 +15,11 @@
 
 'use strict';
 
-require('./_bootstrap')(module);
+var assert = require('assert');
 
-var assert = require('assert'),
-    webdriver = require('selenium-webdriver'),
+var webdriver = require('../..'),
     flow = webdriver.promise.controlFlow(),
-    testing = require('selenium-webdriver/testing'),
+    testing = require('../../testing'),
     fileserver = require('./fileserver'),
     seleniumserver = require('./seleniumserver');
 
@@ -61,7 +60,7 @@ var browsersToTest = (function() {
     }
 
     for (var name in Browser) {
-      if (Browser[name] === browser) {
+      if (Browser.hasOwnProperty(name) && Browser[name] === browser) {
         return;
       }
     }
@@ -176,7 +175,7 @@ function TestEnvironment(browserName, server) {
 }
 
 
-var seleniumServer = new seleniumserver.Server();
+var seleniumServer;
 var inSuite = false;
 
 
@@ -199,6 +198,9 @@ function suite(fn, opt_options) {
 
         if (NATIVE_BROWSERS.indexOf(browser) == -1) {
           serverToUse = seleniumServer;
+          if (!serverToUse) {
+            serverToUse = seleniumServer = new seleniumserver.Server();
+          }
           testing.before(seleniumServer.start.bind(seleniumServer, 60 * 1000));
         }
 
@@ -230,7 +232,11 @@ testing.before(fileserver.start);
 testing.after(fileserver.stop);
 
 // Server is only started if required for a specific config.
-testing.after(seleniumServer.stop.bind(seleniumServer));
+testing.after(function() {
+  if (seleniumServer) {
+    seleniumServer.stop();
+  }
+});
 
 
 // PUBLIC API

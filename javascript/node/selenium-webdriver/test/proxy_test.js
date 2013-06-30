@@ -15,18 +15,15 @@
 
 'use strict';
 
-require('./lib/_bootstrap')(module);
-
 var http = require('http'),
     url = require('url');
 
-var promise = require('selenium-webdriver').promise,
-    proxy = require('selenium-webdriver/proxy'),
-    assertThat = require('selenium-webdriver/testing/asserts').assertThat,
-    equals = require('selenium-webdriver/testing/asserts').equals;
-
-var test = require('./lib/testbase'),
-    Server = require('./lib/httpserver').Server,
+var promise = require('..').promise,
+    proxy = require('../proxy'),
+    assertThat = require('../testing/asserts').assertThat,
+    equals = require('../testing/asserts').equals,
+    test = require('../lib/test'),
+    Server = require('../lib/test/httpserver').Server,
     Pages = test.Pages;
 
 

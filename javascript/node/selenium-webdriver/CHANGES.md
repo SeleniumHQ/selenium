@@ -6,7 +6,9 @@
 * Added the `webdriver.Capabilities` class.
 * Added native support for the ChromeDriver. When using the `Builder`,
     requesting chrome without specifying a remote server URL will default to
-    the native ChromeDriver implementation.
+    the native ChromeDriver implementation.  The
+    [ChromeDriver server](https://code.google.com/p/chromedriver/downloads/list)
+    must be downloaded separately.
 
         // Will start ChromeDriver locally.
         var driver = new webdriver.Builder().
@@ -19,14 +21,11 @@
             usingServer('http://server:1234/wd/hub').
             build();
 
-* Added support for configuring proxies through the builder:
-
-        var driver = new webdriver.Builder().
-            withCapabilities(webdriver.Capabilities.chrome()).
-            setProxy(webdriver.proxy.pac('http://localhost:1234/pac')).
-            build();
-
+* Added support for configuring proxies through the builder. For examples, see
+    `selenium-webdriver/test/proxy_test`.
 * Changed signature of `SeleniumServer` to `SeleniumServer(jar, options)`.
+* Tests are now included in the npm published package. See `README.md` for
+    execution instructions
 * Removed the deprecated `webdriver.Deferred#resolve` and
     `webdriver.promise.resolved` functions.
 * Removed the ability to connect to an existing session from the Builder. This

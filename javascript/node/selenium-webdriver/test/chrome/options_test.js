@@ -15,19 +15,17 @@
 
 'use strict';
 
-require('./lib/_bootstrap')(module);
-
 var fs = require('fs');
 
-var webdriver = require('selenium-webdriver'),
-    chrome = require('selenium-webdriver/chrome'),
-    proxy = require('selenium-webdriver/proxy'),
-    asserts = require('selenium-webdriver/testing/asserts'),
+var webdriver = require('../..'),
+    chrome = require('../../chrome'),
+    proxy = require('../../proxy'),
+    asserts = require('../../testing/asserts'),
     assertThat = asserts.assertThat,
     equals = asserts.equals,
     instanceOfClass = asserts.instanceOfClass;
 
-var test = require('./lib/testbase');
+var test = require('../../lib/test');
 
 
 describe('chrome.Options', function() {

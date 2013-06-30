@@ -15,17 +15,15 @@
 
 'use strict';
 
-require('./lib/_bootstrap')(module);
+var fail = require('assert').fail;
 
-var fail = require('assert').fail,
-    By = require('selenium-webdriver').By,
-    error = require('selenium-webdriver').error,
-    assertThat = require('selenium-webdriver/testing/asserts').assertThat,
-    equals = require('selenium-webdriver/testing/asserts').equals,
-    greaterThan = require('selenium-webdriver/testing/asserts').greaterThan,
-    startsWith = require('selenium-webdriver/testing/asserts').startsWith;
-
-var test = require('./lib/testbase'),
+var By = require('..').By,
+    error = require('..').error,
+    test = require('../lib/test'),
+    assertThat = require('../testing/asserts').assertThat,
+    equals = require('../testing/asserts').equals,
+    greaterThan = require('../testing/asserts').greaterThan,
+    startsWith = require('../testing/asserts').startsWith,
     Browser = test.Browser,
     Pages = test.Pages;
 

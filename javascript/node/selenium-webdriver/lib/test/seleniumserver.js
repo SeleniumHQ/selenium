@@ -15,17 +15,20 @@
 
 'use strict';
 
-require('./_bootstrap')(module);
+var assert = require('assert'),
+    fs = require('fs'),
+    util = require('util');
 
-var util = require('util'),
-    promise = require('selenium-webdriver').promise,
-    RemoteServer = require('selenium-webdriver/remote').SeleniumServer;
+var promise = require('../..').promise,
+    isDevMode = require('../../_base').isDevMode(),
+    RemoteServer = require('../../remote').SeleniumServer,
+    build = require('./build');
 
-var build = require('./build');
 
-
-var SERVER_JAR_PATH =
+var DEV_MODE_JAR_PATH =
     'build/java/server/src/org/openqa/grid/selenium/selenium-standalone.jar';
+var SELENIUM_SERVER_JAR_ENV = 'SELENIUM_SERVER_JAR';
+var PROD_MODE_JAR_PATH = process.env[SELENIUM_SERVER_JAR_ENV];
 
 
 function buildServer() {
@@ -36,13 +39,26 @@ function buildServer() {
 }
 
 
+function getProdModeJarPath() {
+  assert.ok(!!PROD_MODE_JAR_PATH,
+      'You must specify the Selenium server jar to use with the ' +
+      SELENIUM_SERVER_JAR_ENV + ' environment variable');
+  assert.ok(fs.existsSync(PROD_MODE_JAR_PATH),
+      SELENIUM_SERVER_JAR_ENV + ' does not exist: ' + PROD_MODE_JAR_PATH);
+  return PROD_MODE_JAR_PATH;
+}
+
+
 /**
  * Manages the life and death of a Selenium server built in the current client.
+ * @throws {Error} If not running dev mode and the Selenium server cannot be
+ *     found on the PATH.
  * @constructor
  * @extends {RemoteServer}
  */
 function Server() {
-  RemoteServer.call(this, SERVER_JAR_PATH, {
+  var jarPath = isDevMode ? DEV_MODE_JAR_PATH : getProdModeJarPath();
+  RemoteServer.call(this, jarPath, {
     port: 0
   });
 }
@@ -51,10 +67,11 @@ util.inherits(Server, RemoteServer);
 
 /** @override */
 Server.prototype.start = function(opt_timeout) {
-  var self = this;
-  return buildServer().then(function() {
-    return RemoteServer.prototype.start.call(self, opt_timeout);
-  });
+  var startServer = RemoteServer.prototype.start.bind(this, opt_timeout);
+  if (isDevMode) {
+    return buildServer().then(startServer);
+  }
+  return startServer();
 };
 
 

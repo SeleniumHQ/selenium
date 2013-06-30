@@ -15,12 +15,11 @@
 
 'use strict';
 
-require('./lib/_bootstrap')(module);
-
 var assert = require('assert'),
-    net = require('net'),
-    promise = require('selenium-webdriver').promise,
-    portprober = require('selenium-webdriver/net/portprober');
+    net = require('net');
+
+var promise = require('../..').promise,
+    portprober = require('../../net/portprober');
 
 describe('isFree', function() {
 

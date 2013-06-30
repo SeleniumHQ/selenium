@@ -15,14 +15,12 @@
 
 'use strict';
 
-require('./_bootstrap')(module);
-
 var assert = require('assert'),
     http = require('http'),
     url = require('url');
 
-var portprober = require('selenium-webdriver/net/portprober'),
-    promise = require('selenium-webdriver').promise;
+var portprober = require('../../net/portprober'),
+    promise = require('../..').promise;
 
 
 

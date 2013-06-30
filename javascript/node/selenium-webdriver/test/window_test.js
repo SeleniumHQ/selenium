@@ -15,11 +15,9 @@
 
 'use strict';
 
-require('./lib/_bootstrap')(module);
-
 var assert = require('assert');
 
-var test = require('./lib/testbase');
+var test = require('../lib/test');
 
 
 test.suite(function(env) {

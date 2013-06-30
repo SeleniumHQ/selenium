@@ -20,5 +20,11 @@
     },
     "engines": {
         "node": ">= 0.8.x"
+    },
+    "devDependencies" : {
+        "mocha" : "~1.10.0"
+    },
+    "scripts": {
+        "test": "node_modules/mocha/bin/mocha -R list --recursive test"
     }
 }
