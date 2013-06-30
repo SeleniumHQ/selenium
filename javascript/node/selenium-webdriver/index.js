@@ -47,10 +47,8 @@ var closureModules = {
   events: {
     EventEmitter: base.require('webdriver.EventEmitter')
   },
-  http: require('./http'),
   logging: base.exportPublicApi('webdriver.logging'),
   promise: base.exportPublicApi('webdriver.promise'),
-  proxy: require('./proxy'),
   stacktrace: base.exportPublicApi('webdriver.stacktrace')
 };
 
@@ -60,17 +58,3 @@ Object.keys(closureModules).forEach(function(key) {
     return closureModules[key];
   });
 });
-
-
-var subModules = {
-  http: './http',
-  proxy: './proxy'
-};
-
-
-Object.keys(subModules).forEach(function(key) {
-  exports.__defineGetter__(key, function() {
-    return require(subModules[key]);
-  });
-});
-

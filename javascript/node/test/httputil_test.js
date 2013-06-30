@@ -19,7 +19,7 @@ require('./lib/_bootstrap')(module);
 
 var assert = require('assert'),
     http = require('http'),
-    util = require('selenium-webdriver').http.util;
+    util = require('selenium-webdriver/http/util');
 
 describe('webdriver.http.util', function() {
 
