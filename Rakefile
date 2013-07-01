@@ -456,6 +456,18 @@ GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-21/win32',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/21.0/sdk/xulrunner-21.0.en-US.win32.sdk.zip',
            '246304f40c6b970b7a0c53305452630d'
+
+  sdks.add 'third_party/gecko-22/linux',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/sdk/xulrunner-22.0.en-US.linux-i686.sdk.tar.bz2',
+           '39fde24e395bf49d2e74d31b60c7e514'
+
+  sdks.add 'third_party/gecko-22/linux64',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/sdk/xulrunner-22.0.en-US.linux-x86_64.sdk.tar.bz2',
+           'a8d41f23fad4fa6a2d534b10daf9ab97'
+
+  sdks.add 'third_party/gecko-22/win32',
+           'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/22.0/sdk/xulrunner-22.0.en-US.win32.sdk.zip',
+           '2f9cd784be008aa2b18231a365d6b59a'
 end
 
 task :'selenium-server_zip' do
