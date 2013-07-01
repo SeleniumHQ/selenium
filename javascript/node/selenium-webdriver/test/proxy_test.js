@@ -20,8 +20,7 @@ var http = require('http'),
 
 var promise = require('..').promise,
     proxy = require('../proxy'),
-    assertThat = require('../testing/asserts').assertThat,
-    equals = require('../testing/asserts').equals,
+    assert = require('../testing/assert'),
     test = require('../lib/test'),
     Server = require('../lib/test/httpserver').Server,
     Pages = test.Pages;
@@ -45,7 +44,7 @@ test.suite(function(env) {
       '    return "DIRECT";',
       '  }',
       '  return "PROXY ' + proxyServer.host() + '";',
-      '}',
+      '}'
     ].join('\n'), 'ascii', 'application/x-javascript-config');
   }
 
@@ -97,10 +96,9 @@ test.suite(function(env) {
           build();
 
       driver.get(helloServer.url());
-      assertThat(driver.getTitle(), equals('Proxy page'));
-      assertThat(
-          driver.findElement({tagName: 'h3'}).getText(),
-          equals('This is the proxy landing page'));
+      assert(driver.getTitle()).equalTo('Proxy page');
+      assert(driver.findElement({tagName: 'h3'}).getText()).
+          equalTo('This is the proxy landing page');
     });
 
     test.it('can bypass proxy for specific hosts', function() {
@@ -112,16 +110,14 @@ test.suite(function(env) {
           build();
 
       driver.get(helloServer.url());
-      assertThat(driver.getTitle(), equals('Hello'));
-      assertThat(
-          driver.findElement({tagName: 'h3'}).getText(),
-          equals('Hello, world!'));
+      assert(driver.getTitle()).equalTo('Hello');
+      assert(driver.findElement({tagName: 'h3'}).getText()).
+          equalTo('Hello, world!');
 
       driver.get(goodbyeServer.url());
-      assertThat(driver.getTitle(), equals('Proxy page'));
-      assertThat(
-          driver.findElement({tagName: 'h3'}).getText(),
-          equals('This is the proxy landing page'));
+      assert(driver.getTitle()).equalTo('Proxy page');
+      assert(driver.findElement({tagName: 'h3'}).getText()).
+          equalTo('This is the proxy landing page');
     });
 
     // TODO: test ftp and https proxies.
@@ -134,16 +130,14 @@ test.suite(function(env) {
           build();
 
       driver.get(helloServer.url());
-      assertThat(driver.getTitle(), equals('Proxy page'));
-      assertThat(
-          driver.findElement({tagName: 'h3'}).getText(),
-          equals('This is the proxy landing page'));
+      assert(driver.getTitle()).equalTo('Proxy page');
+      assert(driver.findElement({tagName: 'h3'}).getText()).
+          equalTo('This is the proxy landing page');
 
       driver.get(goodbyeServer.url());
-      assertThat(driver.getTitle(), equals('Goodbye'));
-      assertThat(
-          driver.findElement({tagName: 'h3'}).getText(),
-          equals('Goodbye, world!'));
+      assert(driver.getTitle()).equalTo('Goodbye');
+      assert(driver.findElement({tagName: 'h3'}).getText()).
+          equalTo('Goodbye, world!');
     });
   });
 

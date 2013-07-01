@@ -20,10 +20,7 @@ var fs = require('fs');
 var webdriver = require('../..'),
     chrome = require('../../chrome'),
     proxy = require('../../proxy'),
-    asserts = require('../../testing/asserts'),
-    assertThat = asserts.assertThat,
-    equals = asserts.equals,
-    instanceOfClass = asserts.instanceOfClass;
+    assert = require('../../testing/assert');
 
 var test = require('../../lib/test');
 
@@ -36,14 +33,14 @@ describe('chrome.Options', function() {
        function() {
          var options = chrome.Options.fromCapabilities(
              new webdriver.Capabilities());
-         assertThat(options, instanceOfClass(chrome.Options));
+         assert(options).instanceOf(chrome.Options);
        });
 
     it('should return options instance if present', function() {
       var options = new chrome.Options();
       var caps = options.toCapabilities();
-      assertThat(caps, instanceOfClass(webdriver.Capabilities));
-      assertThat(chrome.Options.fromCapabilities(caps), equals(options));
+      assert(caps).instanceOf(webdriver.Capabilities);
+      assert(chrome.Options.fromCapabilities(caps)).equalTo(options);
     });
 
     it('should rebuild options from wire representation', function() {
@@ -59,17 +56,17 @@ describe('chrome.Options', function() {
 
       var options = chrome.Options.fromCapabilities(caps);
 
-      assertThat(options.args_.length, equals(2));
-      assertThat(options.args_[0], equals('a'));
-      assertThat(options.args_[1], equals('b'));
-      assertThat(options.extensions_.length, equals(2));
-      assertThat(options.extensions_[0], equals(1));
-      assertThat(options.extensions_[1], equals(2));
-      assertThat(options.binary_, equals('binaryPath'));
-      assertThat(options.logFile_, equals('logFilePath'));
-      assertThat(options.detach_, equals(true));
-      assertThat(options.localState_, equals('localStateValue'));
-      assertThat(options.prefs_, equals('prefsValue'));
+      assert(options.args_.length).equalTo(2);
+      assert(options.args_[0]).equalTo('a');
+      assert(options.args_[1]).equalTo('b');
+      assert(options.extensions_.length).equalTo(2);
+      assert(options.extensions_[0]).equalTo(1);
+      assert(options.extensions_[1]).equalTo(2);
+      assert(options.binary_).equalTo('binaryPath');
+      assert(options.logFile_).equalTo('logFilePath');
+      assert(options.detach_).equalTo(true);
+      assert(options.localState_).equalTo('localStateValue');
+      assert(options.prefs_).equalTo('prefsValue');
     });
 
     it('should extract supported WebDriver capabilities', function() {
@@ -80,60 +77,60 @@ describe('chrome.Options', function() {
           set(webdriver.Capability.LOGGING_PREFS, logPrefs);
 
       var options = chrome.Options.fromCapabilities(caps);
-      assertThat(options.proxy_, equals(proxyPrefs));
-      assertThat(options.logPrefs_, equals(logPrefs));
+      assert(options.proxy_).equalTo(proxyPrefs);
+      assert(options.logPrefs_).equalTo(logPrefs);
     });
   });
 
   describe('addArguments', function() {
     it('takes var_args', function() {
       var options = new chrome.Options();
-      assertThat(options.args_.length, equals(0));
+      assert(options.args_.length).equalTo(0);
 
       options.addArguments('a', 'b');
-      assertThat(options.args_.length, equals(2));
-      assertThat(options.args_[0], equals('a'));
-      assertThat(options.args_[1], equals('b'));
+      assert(options.args_.length).equalTo(2);
+      assert(options.args_[0]).equalTo('a');
+      assert(options.args_[1]).equalTo('b');
     });
 
     it('flattens input arrays', function() {
       var options = new chrome.Options();
-      assertThat(options.args_.length, equals(0));
+      assert(options.args_.length).equalTo(0);
 
       options.addArguments(['a', 'b'], 'c', [1, 2], 3);
-      assertThat(options.args_.length, equals(6));
-      assertThat(options.args_[0], equals('a'));
-      assertThat(options.args_[1], equals('b'));
-      assertThat(options.args_[2], equals('c'));
-      assertThat(options.args_[3], equals(1));
-      assertThat(options.args_[4], equals(2));
-      assertThat(options.args_[5], equals(3));
+      assert(options.args_.length).equalTo(6);
+      assert(options.args_[0]).equalTo('a');
+      assert(options.args_[1]).equalTo('b');
+      assert(options.args_[2]).equalTo('c');
+      assert(options.args_[3]).equalTo(1);
+      assert(options.args_[4]).equalTo(2);
+      assert(options.args_[5]).equalTo(3);
     });
   });
 
   describe('addExtensions', function() {
     it('takes var_args', function() {
       var options = new chrome.Options();
-      assertThat(options.extensions_.length, equals(0));
+      assert(options.extensions_.length).equalTo(0);
 
       options.addExtensions('a', 'b');
-      assertThat(options.extensions_.length, equals(2));
-      assertThat(options.extensions_[0], equals('a'));
-      assertThat(options.extensions_[1], equals('b'));
+      assert(options.extensions_.length).equalTo(2);
+      assert(options.extensions_[0]).equalTo('a');
+      assert(options.extensions_[1]).equalTo('b');
     });
 
     it('flattens input arrays', function() {
       var options = new chrome.Options();
-      assertThat(options.extensions_.length, equals(0));
+      assert(options.extensions_.length).equalTo(0);
 
       options.addExtensions(['a', 'b'], 'c', [1, 2], 3);
-      assertThat(options.extensions_.length, equals(6));
-      assertThat(options.extensions_[0], equals('a'));
-      assertThat(options.extensions_[1], equals('b'));
-      assertThat(options.extensions_[2], equals('c'));
-      assertThat(options.extensions_[3], equals(1));
-      assertThat(options.extensions_[4], equals(2));
-      assertThat(options.extensions_[5], equals(3));
+      assert(options.extensions_.length).equalTo(6);
+      assert(options.extensions_[0]).equalTo('a');
+      assert(options.extensions_[1]).equalTo('b');
+      assert(options.extensions_[2]).equalTo('c');
+      assert(options.extensions_[3]).equalTo(1);
+      assert(options.extensions_[4]).equalTo(2);
+      assert(options.extensions_[5]).equalTo(3);
     });
   });
 
@@ -141,8 +138,8 @@ describe('chrome.Options', function() {
     it('base64 encodes extensions', function() {
       var expected = fs.readFileSync(__filename, 'base64');
       var wire = new chrome.Options().addExtensions(__filename).toJSON();
-      assertThat(wire.extensions.length, equals(1));
-      assertThat(wire.extensions[0], equals(expected));
+      assert(wire.extensions.length).equalTo(1);
+      assert(wire.extensions[0]).equalTo(expected);
     });
   });
 
@@ -150,16 +147,16 @@ describe('chrome.Options', function() {
     it('returns a new capabilities object if one is not provided', function() {
       var options = new chrome.Options();
       var caps = options.toCapabilities();
-      assertThat(caps.get('browserName'), equals('chrome'));
-      assertThat(caps.get('chromeOptions'), equals(options));
+      assert(caps.get('browserName')).equalTo('chrome');
+      assert(caps.get('chromeOptions')).equalTo(options);
     });
 
     it('adds to input capabilities object', function() {
       var caps = webdriver.Capabilities.firefox();
       var options = new chrome.Options();
-      assertThat(options.toCapabilities(caps), equals(caps));
-      assertThat(caps.get('browserName'), equals('firefox'));
-      assertThat(caps.get('chromeOptions'), equals(options));
+      assert(options.toCapabilities(caps)).equalTo(caps);
+      assert(caps.get('browserName')).equalTo('firefox');
+      assert(caps.get('chromeOptions')).equalTo(options);
     });
 
     it('sets generic driver capabilities', function() {
@@ -170,8 +167,8 @@ describe('chrome.Options', function() {
           setProxy(proxyPrefs);
 
       var caps = options.toCapabilities();
-      assertThat(caps.get('proxy'), equals(proxyPrefs));
-      assertThat(caps.get('loggingPrefs'), equals(loggingPrefs));
+      assert(caps.get('proxy')).equalTo(proxyPrefs);
+      assert(caps.get('loggingPrefs')).equalTo(loggingPrefs);
     });
   });
 });
@@ -192,7 +189,7 @@ test.suite(function(env) {
 
       var userAgent = driver.executeScript(
           'return window.navigator.userAgent');
-      assertThat(userAgent, equals('foo;bar'));
+      assert(userAgent).equalTo('foo;bar');
     });
   });
 }, {browsers: ['chrome']});

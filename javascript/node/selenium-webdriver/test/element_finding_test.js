@@ -20,10 +20,7 @@ var fail = require('assert').fail;
 var By = require('..').By,
     error = require('..').error,
     test = require('../lib/test'),
-    assertThat = require('../testing/asserts').assertThat,
-    equals = require('../testing/asserts').equals,
-    greaterThan = require('../testing/asserts').greaterThan,
-    startsWith = require('../testing/asserts').startsWith,
+    assert = require('../testing/assert'),
     Browser = test.Browser,
     Pages = test.Pages;
 
@@ -57,7 +54,7 @@ test.suite(function(env) {
         driver.get(Pages.formPage);
         driver.findElement(By.id('nonExistantButton')).
             then(fail, function(e) {
-              assertThat(e.code, equals(error.ErrorCode.NO_SUCH_ELEMENT));
+              assert(e.code).equalTo(error.ErrorCode.NO_SUCH_ELEMENT);
             });
       });
 
@@ -67,7 +64,7 @@ test.suite(function(env) {
           function() {
             driver.get(Pages.nestedPage);
             driver.findElements(By.id('2')).then(function(elements) {
-              assertThat(elements.length, equals(8));
+              assert(elements.length).equalTo(8);
             });
           });
     });
@@ -90,7 +87,7 @@ test.suite(function(env) {
         driver.get(Pages.xhtmlTestPage);
         var id = driver.findElement(By.linkText('Link=equalssign')).
             getAttribute('id');
-        assertThat(id, equals('linkWithEqualsSign'));
+        assert(id).equalTo('linkWithEqualsSign');
       });
 
       test.it('matches by partial text when containing equals sign',
@@ -98,7 +95,7 @@ test.suite(function(env) {
           driver.get(Pages.xhtmlTestPage);
           var id = driver.findElement(By.partialLinkText('Link=')).
               getAttribute('id');
-          assertThat(id, equals('linkWithEqualsSign'));
+          assert(id).equalTo('linkWithEqualsSign');
         });
 
       test.it('works when searching for multiple and text contains =',
@@ -106,11 +103,11 @@ test.suite(function(env) {
             driver.get(Pages.xhtmlTestPage);
             driver.findElements(By.linkText('Link=equalssign')).
                 then(function(elements) {
-                  assertThat(elements.length, equals(1));
+                  assert(elements.length).equalTo(1);
                   return elements[0].getAttribute('id');
                 }).
                 then(function(id) {
-                  assertThat(id, equals('linkWithEqualsSign'));
+                  assert(id).equalTo('linkWithEqualsSign');
                 });
           });
 
@@ -120,11 +117,11 @@ test.suite(function(env) {
             driver.get(Pages.xhtmlTestPage);
             driver.findElements(By.partialLinkText('Link=')).
                 then(function(elements) {
-                  assertThat(elements.length, equals(1));
+                  assert(elements.length).equalTo(1);
                   return elements[0].getAttribute('id');
                 }).
                 then(function(id) {
-                  assertThat(id, equals('linkWithEqualsSign'));
+                  assert(id).equalTo('linkWithEqualsSign');
                 });
       });
 
@@ -133,7 +130,7 @@ test.suite(function(env) {
             driver.get(Pages.xhtmlTestPage);
             driver.findElements(By.linkText('click me')).
                 then(function(elements) {
-                  assertThat(elements.length, equals(2));
+                  assert(elements.length).equalTo(2);
                 });
           });
 
@@ -142,7 +139,7 @@ test.suite(function(env) {
             driver.get(Pages.xhtmlTestPage);
             driver.findElements(By.partialLinkText('ick me')).
                 then(function(elements) {
-                  assertThat(elements.length, equals(2));
+                  assert(elements.length).equalTo(2);
                 });
           });
 
@@ -151,7 +148,7 @@ test.suite(function(env) {
         driver.get(test.whereIs('actualXhtmlPage.xhtml'));
 
         var el = driver.findElement(By.linkText('Foo'));
-        assertThat(el.getText(), equals('Foo'));
+        assert(el.getText()).equalTo('Foo');
       });
     });
 
@@ -160,13 +157,13 @@ test.suite(function(env) {
         driver.get(Pages.formPage);
 
         var el = driver.findElement(By.name('checky'));
-        assertThat(el.getAttribute('value'), equals('furrfu'));
+        assert(el.getAttribute('value')).equalTo('furrfu');
       });
 
       test.it('should find multiple elements with same name', function() {
         driver.get(Pages.nestedPage);
         driver.findElements(By.name('checky')).then(function(elements) {
-          assertThat(elements.length, greaterThan(1));
+          assert(elements.length).greaterThan(1);
         });
       });
 
@@ -190,49 +187,49 @@ test.suite(function(env) {
         driver.get(Pages.xhtmlTestPage);
 
         var el = driver.findElement(By.className('extraDiv'));
-        assertThat(el.getText(), startsWith('Another div starts here.'));
+        assert(el.getText()).startsWith('Another div starts here.');
       });
 
       test.it('should work when name is first name among many', function() {
         driver.get(Pages.xhtmlTestPage);
 
         var el = driver.findElement(By.className('nameA'));
-        assertThat(el.getText(), equals('An H2 title'));
+        assert(el.getText()).equalTo('An H2 title');
       });
 
       test.it('should work when name is last name among many', function() {
         driver.get(Pages.xhtmlTestPage);
 
         var el = driver.findElement(By.className('nameC'));
-        assertThat(el.getText(), equals('An H2 title'));
+        assert(el.getText()).equalTo('An H2 title');
       });
 
       test.it('should work when name is middle of many', function() {
         driver.get(Pages.xhtmlTestPage);
 
         var el = driver.findElement(By.className('nameBnoise'));
-        assertThat(el.getText(), equals('An H2 title'));
+        assert(el.getText()).equalTo('An H2 title');
       });
 
       test.it('should work when name surrounded by whitespace', function() {
         driver.get(Pages.xhtmlTestPage);
 
         var el = driver.findElement(By.className('spaceAround'));
-        assertThat(el.getText(), equals('Spaced out'));
+        assert(el.getText()).equalTo('Spaced out');
       });
 
       test.it('should fail if queried name only partially matches', function() {
         driver.get(Pages.xhtmlTestPage);
         driver.findElement(By.className('nameB')).
             then(fail, function(e) {
-              assertThat(e.code, equals(error.ErrorCode.NO_SUCH_ELEMENT));
+              assert(e.code).equalTo(error.ErrorCode.NO_SUCH_ELEMENT);
             });
       });
 
       test.it('should be able to find multiple matches', function() {
         driver.get(Pages.xhtmlTestPage);
         driver.findElements(By.className('nameC')).then(function(elements) {
-          assertThat(elements.length, greaterThan(1));
+          assert(elements.length).greaterThan(1);
         });
       });
 
@@ -248,7 +245,7 @@ test.suite(function(env) {
       test.it('should work with multiple matches', function() {
         driver.get(Pages.xhtmlTestPage);
         driver.findElements(By.xpath('//div')).then(function(elements) {
-          assertThat(elements.length, greaterThan(1));
+          assert(elements.length).greaterThan(1);
         });
       });
 
@@ -264,13 +261,13 @@ test.suite(function(env) {
         driver.get(Pages.formPage);
 
         var el = driver.findElement(By.tagName('input'));
-        assertThat(el.getTagName(), equals('input'));
+        assert(el.getTagName()).equalTo('input');
       });
 
       test.it('can find multiple elements', function() {
         driver.get(Pages.formPage);
         driver.findElements(By.tagName('input')).then(function(elements) {
-          assertThat(elements.length, greaterThan(1));
+          assert(elements.length).greaterThan(1);
         });
       });
     });
@@ -285,7 +282,7 @@ test.suite(function(env) {
       test.it('can find multiple elements', function() {
         driver.get(Pages.xhtmlTestPage);
         driver.findElements(By.css('p')).then(function(elements) {
-          assertThat(elements.length, greaterThan(1));
+          assert(elements.length).greaterThan(1);
         });
         // Pass if no error.
       });
@@ -296,7 +293,7 @@ test.suite(function(env) {
           function() {
             driver.get(Pages.xhtmlTestPage);
             var el = driver.findElement(By.css('div.extraDiv, div.content'));
-            assertThat(el.getAttribute('class'), equals('content'));
+            assert(el.getAttribute('class')).equalTo('content');
           });
 
       test.it('should be able to find multiple elements by compound selector',
@@ -308,7 +305,7 @@ test.suite(function(env) {
                   assertClassIs(elements[1], 'extraDiv');
 
                   function assertClassIs(el, expected) {
-                    assertThat(el.getAttribute('class'), equals(expected));
+                    assert(el.getAttribute('class')).equalTo(expected);
                   }
                 });
           });
@@ -320,7 +317,7 @@ test.suite(function(env) {
             'locators_tests/boolean_attribute_selected.html'));
 
         var el = driver.findElement(By.css('option[selected="selected"]'));
-        assertThat(el.getAttribute('value'), equals('two'));
+        assert(el.getAttribute('value')).equalTo('two');
       });
 
       test.it(
@@ -331,7 +328,7 @@ test.suite(function(env) {
                 'locators_tests/boolean_attribute_selected.html'));
 
             var el = driver.findElement(By.css('option[selected]'));
-            assertThat(el.getAttribute('value'), equals('two'));
+            assert(el.getAttribute('value')).equalTo('two');
           });
 
       test.it(
@@ -342,7 +339,7 @@ test.suite(function(env) {
                 'locators_tests/boolean_attribute_selected_html4.html'));
 
             var el = driver.findElement(By.css('option[selected]'));
-            assertThat(el.getAttribute('value'), equals('two'));
+            assert(el.getAttribute('value')).equalTo('two');
           });
     });
   });

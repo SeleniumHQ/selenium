@@ -15,18 +15,16 @@
 
 'use strict';
 
-var assert = require('assert');
-
 var By = require('..').By,
     ErrorCode = require('..').error.ErrorCode,
+    assert = require('../testing/assert'),
     test = require('../lib/test'),
     Browser = test.Browser,
     Pages = test.Pages;
 
 
 test.suite(function(env) {
-  var assertTitleIs = env.assertTitleIs,
-      browsers = env.browsers,
+  var browsers = env.browsers,
       waitForTitleToBe = env.waitForTitleToBe;
 
   var driver;
@@ -34,19 +32,19 @@ test.suite(function(env) {
 
   test.it('should wait for document to be loaded', function() {
     driver.get(Pages.simpleTestPage);
-    assertTitleIs('Hello WebDriver');
+    assert(driver.getTitle()).equalTo('Hello WebDriver');
   });
 
   test.it('should follow redirects sent in the http response headers',
       function() {
     driver.get(Pages.redirectPage);
-    assertTitleIs('We Arrive Here');
+    assert(driver.getTitle()).equalTo('We Arrive Here');
   });
 
   test.ignore(browsers(Browser.ANDROID)).it('should follow meta redirects',
       function() {
     driver.get(Pages.metaRedirectPage);
-    assertTitleIs('We Arrive Here');
+    assert(driver.getTitle()).equalTo('We Arrive Here');
   });
 
   test.it('should be able to get a fragment on the current page', function() {
@@ -61,13 +59,13 @@ test.suite(function(env) {
     driver.switchTo().frame(0);
 
     driver.findElement(By.css('span#pageNumber')).getText().then(function(txt) {
-      assert.equal('1', txt.trim());
+      assert(txt.trim()).equalTo('1');
     });
 
     driver.switchTo().defaultContent();
     driver.switchTo().frame(1);
     driver.findElement(By.css('span#pageNumber')).getText().then(function(txt) {
-      assert.equal('2', txt.trim());
+      assert(txt.trim()).equalTo('2');
     });
   });
 
@@ -79,7 +77,7 @@ test.suite(function(env) {
     waitForTitleToBe('We Arrive Here');
 
     driver.navigate().back();
-    assertTitleIs('We Leave From Here');
+    assert(driver.getTitle()).equalTo('We Leave From Here');
   });
 
   test.ignore(browsers(Browser.SAFARI)).
@@ -90,7 +88,7 @@ test.suite(function(env) {
     waitForTitleToBe('This page has iframes');
 
     driver.navigate().back();
-    assertTitleIs('XHTML Test Page');
+    assert(driver.getTitle()).equalTo('XHTML Test Page');
   });
 
   test.ignore(browsers(Browser.ANDROID, Browser.SAFARI)).
@@ -112,15 +110,15 @@ test.suite(function(env) {
 
     driver.navigate().refresh();
 
-    assertTitleIs('XHTML Test Page');
+    assert(driver.getTitle()).equalTo('XHTML Test Page');
   });
 
   test.it('should return title of page if set', function() {
     driver.get(Pages.xhtmlTestPage);
-    assertTitleIs('XHTML Test Page');
+    assert(driver.getTitle()).equalTo('XHTML Test Page');
 
     driver.get(Pages.simpleTestPage);
-    assertTitleIs('Hello WebDriver');
+    assert(driver.getTitle()).equalTo('Hello WebDriver');
   });
 
   // Only implemented in Firefox.
@@ -139,7 +137,7 @@ test.suite(function(env) {
           then(function() {
             throw Error('Should have timed out on page load');
           }, function(e) {
-            assert.equal(ErrorCode.SCRIPT_TIMEOUT, e.code);
+            assert(e.code).equalTo(ErrorCode.SCRIPT_TIMEOUT);
           });
     }).then(resetPageLoad, function(err) {
       resetPageLoad().addBoth(function() {

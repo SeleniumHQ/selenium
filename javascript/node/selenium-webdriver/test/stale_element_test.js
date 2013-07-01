@@ -15,10 +15,11 @@
 
 'use strict';
 
-var assert = require('assert');
+var fail = require('assert').fail;
 
 var By = require('..').By,
     error = require('..').error,
+    assert = require('../testing/assert'),
     test = require('../lib/test'),
     Browser = test.Browser,
     Pages = test.Pages;
@@ -35,7 +36,7 @@ test.suite(function(env) {
         driver.get(Pages.javascriptPage);
 
         var toBeDeleted = driver.findElement(By.id('deleted'));
-        toBeDeleted.isDisplayed().then(assert.ok);
+        assert(toBeDeleted.isDisplayed()).isTrue();
 
         driver.findElement(By.id('delete')).click();
         driver.wait(function() {
@@ -55,8 +56,8 @@ test.suite(function(env) {
     driver.switchTo().frame('inner');
     var el = driver.findElement(By.id('oneline'));
     driver.switchTo().defaultContent();
-    el.getText().then(assert.fail, function(e) {
-      assert.equal(e.code, error.ErrorCode.STALE_ELEMENT_REFERENCE);
+    el.getText().then(fail, function(e) {
+      assert(e.code).equalTo(error.ErrorCode.STALE_ELEMENT_REFERENCE);
     });
   });
 });

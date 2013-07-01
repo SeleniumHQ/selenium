@@ -15,17 +15,15 @@
 
 'use strict';
 
-var assert = require('assert');
-
 var By = require('..').By,
+    assert = require('../testing/assert'),
     test = require('../lib/test');
 
 
 test.suite(function(env) {
   test.it('should return lower case tag name', function() {
     env.driver.get(test.Pages.formPage);
-    env.driver.findElement(By.id('cheese')).getTagName().then(function(name) {
-      assert.equal('input', name);
-    });
+    assert(env.driver.findElement(By.id('cheese')).getTagName()).
+        equalTo('input');
   });
 });

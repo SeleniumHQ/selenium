@@ -159,12 +159,6 @@ function TestEnvironment(browserName, server) {
     }
   };
 
-  this.assertTitleIs = function(expected) {
-    driver.getTitle().then(function(title) {
-      assert.equal(expected, title);
-    });
-  };
-
   this.waitForTitleToBe = function(expected) {
     driver.wait(function() {
       return driver.getTitle().then(function(title) {
