@@ -1615,7 +1615,7 @@ webdriver.promise.Node_.prototype.getRoot = function() {
 webdriver.promise.Frame_ = function(flow) {
   webdriver.promise.Node_.call(this, flow);
 
-  var reject = this.reject;
+  var reject = goog.bind(this.reject, this);
   var cancelRemainingTasks = goog.bind(this.cancelRemainingTasks, this);
 
   /** @override */
