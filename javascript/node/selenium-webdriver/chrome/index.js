@@ -45,7 +45,7 @@ var CHROMEDRIVER_EXE =
  * @constructor
  */
 var ServiceBuilder = function(opt_exe) {
-  this.exe_ = opt_exe || io.findInPath(CHROMEDRIVER_EXE);
+  this.exe_ = opt_exe || io.findInPath(CHROMEDRIVER_EXE, true);
   if (!this.exe_) {
     throw Error(
         'The ChromeDriver could not be found on the current PATH. Please ' +
