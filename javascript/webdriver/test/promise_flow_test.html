@@ -2123,6 +2123,49 @@ limitations under the License.
     runAndExpectSuccess();
     pair.assertErrback();
   }
+
+
+  function testCancelsRemainingTasksIfFrameThrowsDuringScheduling() {
+    var task1, task2;
+    var pair = callbackPair(null, assertIsStubError);
+    var flow = webdriver.promise.controlFlow();
+    flow.execute(function() {
+      task1 = flow.execute(goog.nullFunction);
+      task2 = flow.execute(goog.nullFunction);
+      throw STUB_ERROR;
+    }).then(pair.callback, pair.errback);
+
+    runAndExpectSuccess();
+    pair.assertErrback();
+
+    assertFalse(task1.isPending());
+    pair = callbackPair();
+    task1.then(pair.callback, pair.errback);
+    pair.assertErrback();
+
+    assertFalse(task2.isPending());
+    pair = callbackPair();
+    task2.then(pair.callback, pair.errback);
+    pair.assertErrback();
+  }
+
+  function testCancelsRemainingTasksInFrameIfATaskFails() {
+    var task;
+    var pair = callbackPair(null, assertIsStubError);
+    var flow = webdriver.promise.controlFlow();
+    flow.execute(function() {
+      flow.execute(throwStubError);
+      task = flow.execute(goog.nullFunction);
+    }).then(pair.callback, pair.errback);
+
+    runAndExpectSuccess();
+    pair.assertErrback();
+
+    assertFalse(task.isPending());
+    pair = callbackPair();
+    task.then(pair.callback, pair.errback);
+    pair.assertErrback();
+  }
 </script>
 </body>
 </html>
