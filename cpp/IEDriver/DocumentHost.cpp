@@ -396,7 +396,8 @@ int DocumentHost::GetDocumentMode(IHTMLDocument2* doc) {
     LOGHR(WARN, hr) << "get_documentMode failed.";
     return 5;
   }
-  return mode.lVal;
+  int document_mode = static_cast<int>(mode.fltVal);
+  return document_mode;
 }
 
 bool DocumentHost::IsStandardsMode(IHTMLDocument2* doc) {

@@ -13,6 +13,13 @@ v2.34.0.0
 =========
  * Release to synchronize with release of Selenium project.
 
+v2.33.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Corrected logic in getting location of element after scrolling into view.
+   For IE 6 and 7, an additional 2-pixel offset must be added for every frame
+   on the page when calculating element location.
+
 v2.33.0.1
 =========
  * Refactored session shutdown code to properly wait for thread termination.

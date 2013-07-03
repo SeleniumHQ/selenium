@@ -62,8 +62,11 @@ class GetElementLocationOnceScrolledIntoViewCommandHandler : public IECommandHan
           bool browser_appears_before_ie8 = executor.browser_version() < 8 || DocumentHost::GetDocumentMode(doc) <= 7;
           bool is_quirks_mode = !DocumentHost::IsStandardsMode(doc);
           if (browser_appears_before_ie8 && !is_quirks_mode) {
-            location.x -= 2;
-            location.y -= 2;
+            // In Standards Mode for IE6 and IE7, each frame gets a two-pixel
+            // border in rendering, plus 2 pixels for the main window.
+            int frame_offset = 2 * (static_cast<int>(frame_locations.size()) + 1);
+            location.x -= frame_offset;
+            location.y -= frame_offset;
           }
           Json::Value response_value;
           response_value["x"] = location.x;
