@@ -1405,7 +1405,7 @@ FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) 
 FirefoxDriver.prototype.getWindowSize = function(respond, parameters) {
   this.assertTargetsCurrentWindow_(parameters);
 
-  var size = bot.window.getSize(respond.session.getWindow());
+  var size = bot.window.getSize(respond.session.getWindow().top);
   respond.value = { width: size.width, height: size.height };
   respond.send();
 };
