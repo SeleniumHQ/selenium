@@ -147,8 +147,14 @@ function createDriver(opt_capabilities) {
       return args;
     })
   });
+
   var executor = executors.createExecutor(service.start());
-  return webdriver.WebDriver.createSession(executor, capabilities);
+  var driver = webdriver.WebDriver.createSession(executor, capabilities);
+  var boundQuit = driver.quit.bind(driver);
+  driver.quit = function() {
+    return boundQuit().addBoth(service.kill.bind(service));
+  };
+  return driver;
 }
 
 
