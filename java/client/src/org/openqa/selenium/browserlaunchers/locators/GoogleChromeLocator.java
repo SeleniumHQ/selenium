@@ -32,7 +32,7 @@ public class GoogleChromeLocator extends SingleBrowserLocator {
 
   @Override
   protected String seleniumBrowserName() {
-    return BrowserType.GOOGLECHROME;
+    return BrowserType.GOOGLECHROME.browserName();
   }
 
   @Override

@@ -238,20 +238,20 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     // This is for backwards compatibility - in case there are users who are trying to
     // configure the HtmlUnitDriver by using the c'tor with capabilities.
-    if (!BrowserType.HTMLUNIT.equals(capabilities.getBrowserName())) {
+    if (!BrowserType.HTMLUNIT.browserName().equals(capabilities.getBrowserName())) {
       browserName = capabilities.getBrowserName();
       browserVersion = capabilities.getVersion();
     }
 
-    if (BrowserType.FIREFOX.equals(browserName)) {
+    if (BrowserType.FIREFOX.browserName().equals(browserName)) {
       return BrowserVersion.FIREFOX_17;
     }
 
-    if (BrowserType.CHROME.equals(browserName)) {
+    if (BrowserType.CHROME.browserName().equals(browserName)) {
       return BrowserVersion.CHROME;
     }
 
-    if (BrowserType.IE.equals(browserName)) {
+    if (BrowserType.IE.browserName().equals(browserName)) {
       // Try and convert the version
       try {
         int version = Integer.parseInt(browserVersion);

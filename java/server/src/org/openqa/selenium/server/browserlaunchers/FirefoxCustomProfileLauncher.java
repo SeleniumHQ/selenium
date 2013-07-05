@@ -48,7 +48,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     this(browserOptions, configuration,
         sessionId, ApplicationRegistry.instance().browserInstallationCache()
             .locateBrowserInstallation(
-                BrowserType.FIREFOX_PROXY, browserLaunchLocation, new CombinedFirefoxLocator()));
+                BrowserType.FIREFOX_PROXY.browserName(), browserLaunchLocation, new CombinedFirefoxLocator()));
     if (browserInstallation == null) {
       throw new InvalidBrowserExecutableException(
           "The specified path to the browser executable is invalid.");

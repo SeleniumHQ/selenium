@@ -51,7 +51,7 @@ public class Firefox3Locator extends FirefoxLocator {
 
   @Override
   protected String seleniumBrowserName() {
-    return BrowserType.FIREFOX_3;
+    return BrowserType.FIREFOX_3.browserName();
   }
 
   @Override

@@ -100,12 +100,12 @@ public class DefaultCapabilityMatcherTest {
     DefaultCapabilityMatcher matcher = new DefaultCapabilityMatcher();
 
     Map<String, Object> requested = new HashMap<String, Object>();
-    requested.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
+    requested.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX.browserName());
     requested.put(CapabilityType.PLATFORM, null);
     requested.put(CapabilityType.VERSION, "");
 
     Map<String, Object> node = new HashMap<String, Object>();
-    node.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
+    node.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX.browserName());
     node.put(CapabilityType.PLATFORM, Platform.LINUX);
     node.put(CapabilityType.VERSION, "3.6");
 

@@ -51,7 +51,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     this(browserOptions, configuration,
         sessionId, ApplicationRegistry.instance()
             .browserInstallationCache().locateBrowserInstallation(
-                BrowserType.CHROME, browserString, new CombinedFirefoxLocator()));
+                BrowserType.CHROME.browserName(), browserString, new CombinedFirefoxLocator()));
     if (browserInstallation == null) {
       throw new InvalidBrowserExecutableException(
           "The specified path to the browser executable is invalid.");

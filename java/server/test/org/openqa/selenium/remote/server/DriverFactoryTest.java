@@ -103,7 +103,7 @@ public class DriverFactoryTest {
     factory.registerDriver(DesiredCapabilities.opera(), Opera.class);
 
     DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-    desiredCapabilities.setBrowserName(BrowserType.IE);
+    desiredCapabilities.setBrowserName(BrowserType.IE.browserName());
     desiredCapabilities.setVersion("");
     desiredCapabilities.setJavascriptEnabled(true);
     desiredCapabilities.setPlatform(Platform.ANY);

@@ -159,7 +159,7 @@ public class DriverServletTest {
             .put("path", "/session")
             .put("data", new JSONObject()
                 .put("desiredCapabilities", new JSONObject()
-                    .put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX)
+                    .put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX.browserName())
                     .put(CapabilityType.VERSION, true))));
 
     mockery.assertIsSatisfied();
@@ -173,7 +173,7 @@ public class DriverServletTest {
 
     JSONObject value = jsonResponse.getJSONObject("value");
     assertEquals(2, Iterators.size(value.keys()));
-    assertEquals(BrowserType.FIREFOX, value.getString(CapabilityType.BROWSER_NAME));
+    assertEquals(BrowserType.FIREFOX.browserName(), value.getString(CapabilityType.BROWSER_NAME));
     assertTrue(value.getBoolean(CapabilityType.VERSION));
   }
 

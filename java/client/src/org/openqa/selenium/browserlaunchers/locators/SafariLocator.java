@@ -42,7 +42,7 @@ public class SafariLocator extends SingleBrowserLocator {
 
   @Override
   protected String seleniumBrowserName() {
-    return BrowserType.SAFARI;
+    return BrowserType.SAFARI.browserName();
   }
 
   @Override

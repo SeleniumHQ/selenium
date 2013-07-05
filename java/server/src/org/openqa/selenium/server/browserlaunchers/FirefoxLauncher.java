@@ -35,15 +35,15 @@ public class FirefoxLauncher implements BrowserLauncher {
   public FirefoxLauncher(Capabilities browserOptions, RemoteControlConfiguration configuration,
       String sessionId, String browserLaunchLocation)
       throws InvalidBrowserExecutableException {
-    String browserName = BrowserType.FIREFOX;
+    String browserName = BrowserType.FIREFOX.browserName();
     BrowserLocator locator = new CombinedFirefoxLocator();
     String version = (String) browserOptions.getCapability(CapabilityType.VERSION);
     if ("2".equals(version)) {
-      browserName = BrowserType.FIREFOX_2;
+      browserName = BrowserType.FIREFOX_2.browserName();
       locator = new Firefox2Locator();
     }
     if ("3".equals(version)) {
-      browserName = BrowserType.FIREFOX_3;
+      browserName = BrowserType.FIREFOX_3.browserName();
       locator = new Firefox3Locator();
     }
     String mode = (String) browserOptions.getCapability("mode");
