@@ -23,6 +23,7 @@ var promise = require('..').promise,
     assert = require('../testing/assert'),
     test = require('../lib/test'),
     Server = require('../lib/test/httpserver').Server,
+    Browser = test.Browser,
     Pages = test.Pages;
 
 
@@ -88,7 +89,10 @@ test.suite(function(env) {
   test.afterEach(env.dispose.bind(env));
 
   describe('manual proxy settings', function() {
-    test.it('can configure HTTP proxy host', function() {
+    // phantomjs 1.9.1 in webdriver mode does not appear to respect proxy
+    // settings.
+    test.ignore(env.browsers(Browser.PHANTOMJS)).
+    it('can configure HTTP proxy host', function() {
       var driver = env.builder().
           setProxy(proxy.manual({
             http: proxyServer.host()
@@ -101,7 +105,9 @@ test.suite(function(env) {
           equalTo('This is the proxy landing page');
     });
 
-    test.it('can bypass proxy for specific hosts', function() {
+    // PhantomJS does not support bypassing the proxy for individual hosts.
+    test.ignore(env.browsers(Browser.PHANTOMJS)).
+    it('can bypass proxy for specific hosts', function() {
       var driver = env.builder().
           setProxy(proxy.manual({
             http: proxyServer.host(),
@@ -123,6 +129,8 @@ test.suite(function(env) {
     // TODO: test ftp and https proxies.
   });
 
+  // PhantomJS does not support PAC file proxy configuration.
+  test.ignore(env.browsers(Browser.PHANTOMJS)).
   describe('pac proxy settings', function() {
     test.it('can configure proxy through PAC file', function() {
       var driver = env.builder().
@@ -142,4 +150,6 @@ test.suite(function(env) {
   });
 
   // TODO: figure out how to test direct and system proxy settings.
+  describe.skip('direct proxy settings', function() {});
+  describe.skip('system proxy settings', function() {});
 });

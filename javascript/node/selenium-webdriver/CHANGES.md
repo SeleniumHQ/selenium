@@ -23,6 +23,7 @@
 
 * Added support for configuring proxies through the builder. For examples, see
     `selenium-webdriver/test/proxy_test`.
+* Added native support for PhantomJS.
 * Changed signature of `SeleniumServer` to `SeleniumServer(jar, options)`.
 * Tests are now included in the npm published package. See `README.md` for
     execution instructions

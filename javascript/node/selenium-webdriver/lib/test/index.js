@@ -38,7 +38,8 @@ var Browser = {
   SAFARI: 'safari',
 
   // Browsers that should always be tested via the java Selenium server.
-  REMOTE_CHROME: 'remote.chrome'
+  REMOTE_CHROME: 'remote.chrome',
+  REMOTE_PHANTOMJS: 'remote.phantomjs'
 };
 
 
@@ -47,7 +48,8 @@ var Browser = {
  * @type {!Array.<string>}
  */
 var NATIVE_BROWSERS = [
-  Browser.CHROME
+  Browser.CHROME,
+  Browser.PHANTOMJS
 ];
 
 
@@ -103,6 +105,8 @@ function TestEnvironment(browserName, server) {
       'autoCreateDriver', function() { return autoCreate; });
   this.__defineSetter__(
       'autoCreateDriver', function(auto) { autoCreate = auto; });
+
+  this.__defineGetter__('browser', function() { return name; });
 
   var driver;
   this.__defineGetter__('driver', function() { return driver; });

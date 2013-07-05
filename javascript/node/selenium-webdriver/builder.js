@@ -17,6 +17,7 @@ var base = require('./_base'),
 
 var goog = base.require('goog'),
     AbstractBuilder = base.require('webdriver.AbstractBuilder'),
+    Browser = base.require('webdriver.Browser'),
     Capability = base.require('webdriver.Capability'),
     WebDriver = base.require('webdriver.WebDriver'),
     promise = base.require('webdriver.promise');
@@ -29,11 +30,17 @@ var goog = base.require('goog'),
  */
 function createNativeDriver(capabilities) {
   switch (capabilities.get(Capability.BROWSER_NAME)) {
-    case 'chrome':
+    case Browser.CHROME:
       // Requiring 'chrome' above would create a cycle:
-      // index -> builder -> chrome/index -> index
+      // index -> builder -> chrome -> index
       var chrome = require('./chrome');
       return chrome.createDriver(capabilities);
+
+    case Browser.PHANTOM_JS:
+      // Requiring 'phantomjs' would create a cycle:
+      // index -> builder -> phantomjs -> index
+      var phantomjs = require('./phantomjs');
+      return phantomjs.createDriver(capabilities);
 
     default:
       return null;

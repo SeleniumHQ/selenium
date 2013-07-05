@@ -127,27 +127,30 @@ function wrapped(globalFn) {
  * true.
  * @param {function(): boolean} predicateFn A predicate to call to determine
  *     if the test should be suppressed. This function MUST be synchronous.
- * @return {!Object} A wrapped version of exports.it that ignores tests as
- *     indicated by the predicate.
+ * @return {!Object} An object with wrapped versions of exports.it and
+ *     exports.describe that ignore tests as indicated by the predicate.
  */
 function ignore(predicateFn) {
-  var it = function(title, fn) {
-    if (predicateFn()) {
-      exports.xit(title, fn);
-    } else {
-      exports.it(title, fn);
-    }
+  var describe = wrap(exports.xdescribe, exports.describe);
+  describe.only = wrap(exports.xdescribe, exports.describe.only);
+
+  var it = wrap(exports.xit, exports.it);
+  it.only = wrap(exports.xit, exports.it.only);
+
+  return {
+    describe: describe,
+    it: it
   };
 
-  it.only = function(title, fn) {
-    if (predicateFn()) {
-      exports.xit(title, fn);
-    } else {
-      exports.it(title, fn);
-    }
-  };
-
-  return {it: it};
+  function wrap(onSkip, onRun) {
+    return function(title, fn) {
+      if (predicateFn()) {
+        onSkip(title, fn);
+      } else {
+        onRun(title, fn);
+      }
+    };
+  }
 }
 
 
@@ -156,6 +159,7 @@ function ignore(predicateFn) {
 
 exports.describe = global.describe;
 exports.xdescribe = global.xdescribe;
+exports.describe.skip = global.describe.skip;
 
 exports.after = wrapped(global.after);
 exports.afterEach = wrapped(global.afterEach);
