@@ -24,9 +24,6 @@
 #include "DocumentHost.h"
 #include "messages.h"
 
-#define BASE_TEN_BASE 10
-#define MAX_DIGITS_OF_NUMBER 22
-
 using namespace std;
 
 namespace webdriver {

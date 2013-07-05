@@ -109,101 +109,52 @@ void Script::AddNullArgument() {
 
 bool Script::ResultIsString() {
   LOG(TRACE) << "Entering Script::ResultIsString";
-  return this->result_.vt == VT_BSTR;
+  return VariantUtilities::VariantIsString(this->result_);
 }
 
 bool Script::ResultIsInteger() {
   LOG(TRACE) << "Entering Script::ResultIsInteger";
-  return this->result_.vt == VT_I4 || this->result_.vt == VT_I8;
+  return VariantUtilities::VariantIsInteger(this->result_);
 }
 
 bool Script::ResultIsDouble() {
   LOG(TRACE) << "Entering Script::ResultIsDouble";
-  return this->result_.vt == VT_R4 || this->result_.vt == VT_R8;
+  return VariantUtilities::VariantIsDouble(this->result_);
 }
 
 bool Script::ResultIsBoolean() {
   LOG(TRACE) << "Entering Script::ResultIsBoolean";
-  return this->result_.vt == VT_BOOL;
+  return VariantUtilities::VariantIsBoolean(this->result_);
 }
 
 bool Script::ResultIsEmpty() {
   LOG(TRACE) << "Entering Script::ResultIsEmpty";
-  return this->result_.vt == VT_EMPTY;
+  return VariantUtilities::VariantIsEmpty(this->result_);
 }
 
 bool Script::ResultIsIDispatch() {
   LOG(TRACE) << "Entering Script::ResultIsIDispatch";
-  return this->result_.vt == VT_DISPATCH;
+  return VariantUtilities::VariantIsIDispatch(this->result_);
 }
 
 bool Script::ResultIsElementCollection() {
   LOG(TRACE) << "Entering Script::ResultIsElementCollection";
-
-  if (this->result_.vt == VT_DISPATCH) {
-    CComPtr<IHTMLElementCollection> is_collection;
-    this->result_.pdispVal->QueryInterface<IHTMLElementCollection>(&is_collection);
-    if (is_collection) {
-      return true;
-    }
-  }
-  return false;
+  return VariantUtilities::VariantIsElementCollection(this->result_);
 }
 
 bool Script::ResultIsElement() {
   LOG(TRACE) << "Entering Script::ResultIsElement";
-
-  if (this->result_.vt == VT_DISPATCH) {
-    CComPtr<IHTMLElement> is_element;
-    this->result_.pdispVal->QueryInterface<IHTMLElement>(&is_element);
-    if (is_element) {
-      return true;
-    }
-  }
-  return false;
+  return VariantUtilities::VariantIsElement(this->result_);
 }
 
 bool Script::ResultIsArray() {
   LOG(TRACE) << "Entering Script::ResultIsArray";
-
-  std::wstring type_name = this->GetResultObjectTypeName();
-
-  // If the name is DispStaticNodeList, we can be pretty sure it's an array
-  // (or at least has array semantics). It is unclear to what extent checking
-  // for DispStaticNodeList is supported behaviour.
-  if (type_name == L"DispStaticNodeList") {
-    LOG(DEBUG) << "Result type is DispStaticNodeList";
-    return true;
-  }
-
-  // If the name is JScriptTypeInfo then this *may* be a Javascript array.
-  // Note that strictly speaking, to determine if the result is *actually*
-  // a JavaScript array object, we should also be testing to see if
-  // propertyIsEnumerable('length') == false, but that does not find the
-  // array-like objects returned by some of the calls we make to the Google
-  // Closure library.
-  // IMPORTANT: Using this script, user-defined objects with a length
-  // property defined will be seen as arrays instead of objects.
-  if (type_name == L"JScriptTypeInfo") {
-    LOG(DEBUG) << "Result type is JScriptTypeInfo";
-    const std::wstring script_source = L"(function() { return function(){ return arguments[0] && arguments[0].hasOwnProperty('length') && typeof arguments[0] === 'object' && typeof arguments[0].length === 'number';};})();";
-    Script is_array_wrapper(this->script_engine_host_, script_source, 1);
-    is_array_wrapper.AddArgument(this->result_);
-    is_array_wrapper.Execute();
-    return is_array_wrapper.result().boolVal == VARIANT_TRUE;
-  }
-
-  return false;
+  return VariantUtilities::VariantIsArray(this->result_);
 }
 
 bool Script::ResultIsObject() {
   LOG(TRACE) << "Entering Script::ResultIsObject";
-
-  std::wstring type_name = this->GetResultObjectTypeName();
-  if (type_name == L"JScriptTypeInfo") {
-    return true;
-  }
-  return false;
+  return VariantUtilities::VariantIsObject(this->result_);
 }
 
 int Script::Execute() {
@@ -456,86 +407,9 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
 int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
                                      Json::Value* value) {
   LOG(TRACE) << "Entering Script::ConvertResultToJsonValue";
-
-  int status_code = WD_SUCCESS;
-  if (this->ResultIsString()) { 
-    std::string string_value = "";
-    if (this->result_.bstrVal) {
-      std::wstring bstr_value = this->result_.bstrVal;
-      string_value = StringUtilities::ToString(bstr_value);
-    }
-    *value = string_value;
-  } else if (this->ResultIsInteger()) {
-    *value = this->result_.lVal;
-  } else if (this->ResultIsDouble()) {
-    *value = this->result_.dblVal;
-  } else if (this->ResultIsBoolean()) {
-    *value = this->result_.boolVal == VARIANT_TRUE;
-  } else if (this->ResultIsEmpty()) {
-    *value = Json::Value::null;
-  } else if (this->result_.vt == VT_NULL) {
-    *value = Json::Value::null;
-  } else if (this->ResultIsIDispatch()) {
-    if (this->ResultIsArray() || this->ResultIsElementCollection()) {
-      Json::Value result_array(Json::arrayValue);
-
-      long length = 0;
-      status_code = this->GetArrayLength(&length);
-
-      for (long i = 0; i < length; ++i) {
-        Json::Value array_item_result;
-        int array_item_status = this->GetArrayItem(executor,
-                                                   i,
-                                                   &array_item_result);
-        result_array[i] = array_item_result;
-      }
-      *value = result_array;
-    } else if (this->ResultIsObject()) {
-      Json::Value result_object;
-
-      std::wstring property_name_list = L"";
-      status_code = this->GetPropertyNameList(&property_name_list);
-
-      std::vector<std::wstring> property_names;
-      size_t end_position(0);
-      size_t start_position(0);
-      while (true) {
-        std::wstring property_name = L"";
-        end_position = property_name_list.find_first_of(L",", start_position);
-        if(end_position == std::wstring::npos) {
-          property_names.push_back(property_name_list.substr(start_position,
-                                                             property_name_list.size() - start_position));
-          break;
-        } else {
-          property_names.push_back(property_name_list.substr(start_position,
-                                                             end_position - start_position));
-          start_position = end_position + 1;
-        }
-      }
-
-      for (size_t i = 0; i < property_names.size(); ++i) {
-        Json::Value property_value_result;
-        int property_value_status = this->GetPropertyValue(executor,
-                                                           property_names[i],
-                                                           &property_value_result);
-        std::string name = StringUtilities::ToString(property_names[i]);
-        result_object[name] = property_value_result;
-      }
-      *value = result_object;
-    } else {
-      LOG(INFO) << "Unknown type of dispatch is found in result, assuming IHTMLElement";
-      IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-      CComPtr<IHTMLElement> node;
-      this->result_.pdispVal->QueryInterface<IHTMLElement>(&node);
-      ElementHandle element_wrapper;
-      mutable_executor.AddManagedElement(node, &element_wrapper);
-      *value = element_wrapper->ConvertToJson();
-    }
-  } else {
-    LOG(WARN) << "Unknown type of result is found";
-    status_code = EUNKNOWNSCRIPTRESULT;
-  }
-  return status_code;
+  return VariantUtilities::ConvertVariantToJsonValue(executor,
+                                                     this->result_,
+                                                     value);
 }
 
 bool Script::ConvertResultToString(std::string* value) {
@@ -561,13 +435,7 @@ bool Script::ConvertResultToString(std::string* value) {
   
     case VT_I4:
       LOG(DEBUG) << "result type is int";
-      {
-        char* buffer = reinterpret_cast<char*>(malloc(sizeof(char) * MAX_DIGITS_OF_NUMBER));
-        if (buffer != NULL) {
-          _i64toa_s(this->result_.lVal, buffer, MAX_DIGITS_OF_NUMBER, BASE_TEN_BASE);
-        }
-        *value = buffer;
-      }
+      *value = StringUtilities::ToString(this->result_.lVal);
       return true;
 
     case VT_EMPTY:
@@ -586,127 +454,6 @@ bool Script::ConvertResultToString(std::string* value) {
       LOG(DEBUG) << "result type is unknown: " << type;
   }
   return false;
-}
-
-std::wstring Script::GetResultObjectTypeName() {
-  LOG(TRACE) << "Entering Script::GetResultObjectTypeName";
-
-  std::wstring name = L"";
-  if (this->result_.vt == VT_DISPATCH && this->result_.pdispVal) {
-    CComPtr<ITypeInfo> typeinfo;
-    HRESULT get_type_info_result = this->result_.pdispVal->GetTypeInfo(0,
-                                                                       LOCALE_USER_DEFAULT,
-                                                                       &typeinfo);
-    TYPEATTR* type_attr;
-    CComBSTR name_bstr;
-    if (SUCCEEDED(get_type_info_result) &&
-        SUCCEEDED(typeinfo->GetTypeAttr(&type_attr)) &&
-        SUCCEEDED(typeinfo->GetDocumentation(-1, &name_bstr, 0, 0, 0))) {
-      typeinfo->ReleaseTypeAttr(type_attr);
-      name = name_bstr.Copy();
-    } else {
-      LOG(WARN) << "Unable to get object type";
-    }
-  } else {
-    LOG(DEBUG) << "Unable to get object type for non-object result, result is not IDispatch or IDispatch pointer is NULL";
-  }
-  return name;
-}
-
-int Script::GetPropertyNameList(std::wstring* property_names) {
-  LOG(TRACE) << "Entering Script::GetPropertyNameList";
-
-  // Loop through the properties, appending the name of each one to the string.
-  std::wstring get_names_script = L"(function(){return function() { var name_list = ''; for (var name in arguments[0]) { if (name_list.length > 0) name_list += ','; name_list += name } return name_list;}})();";
-  Script get_names_script_wrapper(this->script_engine_host_,
-                                  get_names_script,
-                                  1);
-  get_names_script_wrapper.AddArgument(this->result_);
-  int get_names_result = get_names_script_wrapper.Execute();
-
-  if (get_names_result != WD_SUCCESS) {
-    LOG(WARN) << "Unable to get property name list, script execution returned error code";
-    return get_names_result;
-  }
-
-  // Expect the return type to be an string. A non-string means ... (what?)
-  if (!get_names_script_wrapper.ResultIsString()) {
-    LOG(WARN) << "Result properties are not string";
-    return EUNEXPECTEDJSERROR;
-  }
-
-  *property_names = get_names_script_wrapper.result().bstrVal;
-  return WD_SUCCESS;
-}
-
-int Script::GetPropertyValue(const IECommandExecutor& executor,
-                             const std::wstring& property_name,
-                             Json::Value* property_value){
-  LOG(TRACE) << "Entering Script::GetPropertyValue";
-
-  std::wstring get_value_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();";
-  Script get_value_script_wrapper(this->script_engine_host_,
-                                  get_value_script,
-                                  2);
-  get_value_script_wrapper.AddArgument(this->result_);
-  get_value_script_wrapper.AddArgument(property_name);
-  int get_value_result = get_value_script_wrapper.Execute();
-  if (get_value_result != WD_SUCCESS) {
-    LOG(WARN) << "Unable to get property value, script execution returned error code";
-    return get_value_result;
-  }
-
-  int property_value_status = get_value_script_wrapper.ConvertResultToJsonValue(executor, property_value);
-  return WD_SUCCESS;
-}
-
-int Script::GetArrayLength(long* length) {
-  LOG(TRACE) << "Entering Script::GetArrayLength";
-
-  // Prepare an array for the Javascript execution, containing only one
-  // element - the original returned array from a JS execution.
-  std::wstring get_length_script = L"(function(){return function() {return arguments[0].length;}})();";
-  Script get_length_script_wrapper(this->script_engine_host_,
-                                   get_length_script,
-                                   1);
-  get_length_script_wrapper.AddArgument(this->result_);
-  int length_result = get_length_script_wrapper.Execute();
-
-  if (length_result != WD_SUCCESS) {
-    LOG(WARN) << "Unable to get array length, script execution returned error code";
-    return length_result;
-  }
-
-  // Expect the return type to be an integer. A non-integer means this was
-  // not an array after all.
-  if (!get_length_script_wrapper.ResultIsInteger()) {
-    LOG(WARN) << "Array length is not integer";
-    return EUNEXPECTEDJSERROR;
-  }
-
-  *length = get_length_script_wrapper.result().lVal;
-  return WD_SUCCESS;
-}
-
-int Script::GetArrayItem(const IECommandExecutor& executor,
-                         long index,
-                         Json::Value* item){
-  LOG(TRACE) << "Entering Script::GetArrayItem";
-
-  std::wstring get_array_item_script = L"(function(){return function() {return arguments[0][arguments[1]];}})();";
-  Script get_array_item_script_wrapper(this->script_engine_host_,
-                                       get_array_item_script,
-                                       2);
-  get_array_item_script_wrapper.AddArgument(this->result_);
-  get_array_item_script_wrapper.AddArgument(index);
-  int get_item_result = get_array_item_script_wrapper.Execute();
-  if (get_item_result != WD_SUCCESS) {
-    LOG(WARN) << "Unable to get array item, script execution returned error";
-    return get_item_result;
-  }
-
-  int array_item_status = get_array_item_script_wrapper.ConvertResultToJsonValue(executor, item);
-  return WD_SUCCESS;
 }
 
 bool Script::CreateAnonymousFunction(VARIANT* result) {
@@ -731,32 +478,11 @@ bool Script::CreateAnonymousFunction(VARIANT* result) {
     return false;
   }
 
-  OLECHAR FAR* function_object_name = L"__webdriver_script_fn";
-  DISPID dispid_function_object;
-  hr = this->script_engine_host_->GetIDsOfNames(IID_NULL,
-                                                &function_object_name,
-                                                1,
-                                                LOCALE_USER_DEFAULT,
-                                                &dispid_function_object);
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Unable to get id of name __webdriver_script_fn";
-    return false;
-  }
-
-  // get the value of eval result
-  DISPPARAMS no_args_dispatch_parameters = { NULL, NULL, 0, 0 };
-  hr = this->script_engine_host_->Invoke(dispid_function_object,
-                                         IID_NULL,
-                                         LOCALE_USER_DEFAULT,
-                                         DISPATCH_PROPERTYGET,
-                                         &no_args_dispatch_parameters,
-                                         result,
-                                         NULL,
-                                         NULL);
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Unable to get value of eval result";
-    return false;
-  }
-  return true;
+  bool get_result_success = VariantUtilities::GetVariantObjectPropertyValue(
+      this->script_engine_host_,
+      L"__webdriver_script_fn",
+      result);
+  return get_result_success;
 }
+
 } // namespace webdriver
