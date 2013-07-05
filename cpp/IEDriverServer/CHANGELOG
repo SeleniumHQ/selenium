@@ -13,6 +13,23 @@ v2.34.0.0
 =========
  * Release to synchronize with release of Selenium project.
 
+v2.33.0.3
+=========
+ * Corrected logic for invisible element coordinate calculation on IE6 and 7.
+ * Fixed logic error in Script::ExecuteAsync() waiting for exclusive access to
+   event.
+ * Added IE-specific atoms to eliminate round-trips through IE's JS engine. The
+   findElement and findElements atoms take a JavaScript object as their first
+   parameter. Until now, that facilitated a round-trip through the IE
+   JavaScript engine to be able to create the JavaScript object to pass into
+   the atom function. We are now creating IE-specific JavaScript functions that
+   wrap those two atoms, and take simple strings as arguments, which lets the
+   IE driver call the atom directly without having to call a separate script
+   that simply creates the JavaScript criteria object.
+ * Removed extra round-trips through JavaScript engine when executing
+   JavaScript. This should provide a slight performance boost when executing
+   JavaScript that returns arrays or JavaScript objects.
+
 v2.33.0.2
 =========
  * Updates to JavaScript automation atoms.
