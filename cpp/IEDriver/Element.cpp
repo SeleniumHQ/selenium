@@ -218,11 +218,14 @@ int Element::GetClickLocation(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior,
   }
 
   std::vector<LocationInfo> frame_locations;
-  status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior, element_location, &frame_locations);
+  status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior,
+                                                      element_location,
+                                                      &frame_locations);
 
   if (status_code == WD_SUCCESS) {
     bool document_contains_frames = frame_locations.size() != 0;
-    *click_location = CalculateClickPoint(*element_location, document_contains_frames);
+    *click_location = CalculateClickPoint(*element_location,
+                                          document_contains_frames);
   }
   return status_code;
 }
