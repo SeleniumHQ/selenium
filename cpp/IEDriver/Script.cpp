@@ -32,7 +32,6 @@ Script::Script(IHTMLDocument2* document,
 }
 
 Script::~Script(void) {
-  //this->argument_array_.Destroy();
 }
 
 void Script::Initialize(IHTMLDocument2* document,
@@ -268,7 +267,7 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
   // until OpenEvent returns NULL.
   int retry_counter = 50;
   HANDLE event_handle = ::OpenEvent(SYNCHRONIZE, FALSE, ASYNC_SCRIPT_EVENT_NAME);
-  if (event_handle != NULL && --retry_counter > 0) {
+  while (event_handle != NULL && --retry_counter > 0) {
     ::CloseHandle(event_handle);
     ::Sleep(50);
     event_handle = ::OpenEvent(SYNCHRONIZE, FALSE, ASYNC_SCRIPT_EVENT_NAME);
