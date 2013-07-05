@@ -18,11 +18,11 @@
 var fs = require('fs'),
     util = require('util');
 
-var webdriver = require('..'),
-    executors = require('../executors'),
-    io = require('../io'),
-    portprober = require('../net/portprober'),
-    remote = require('../remote');
+var webdriver = require('./index'),
+    executors = require('./executors'),
+    io = require('./io'),
+    portprober = require('./net/portprober'),
+    remote = require('./remote');
 
 
 /**
