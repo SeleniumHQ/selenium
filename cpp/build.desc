@@ -147,7 +147,7 @@ visualc_library(name = "imehandler_dll",
 
 visualc_release(name = "ie_win32_exe",
   deps = [
-    ":atoms",
+    "//javascript/ie-driver:atoms",
     ":ie_result_type_cpp",
     ":sizzle"
   ],
@@ -159,7 +159,7 @@ visualc_release(name = "ie_win32_exe",
 
 visualc_release(name = "ie_x64_exe",
   deps = [
-    ":atoms",
+    "//javascript/ie-driver:atoms",
     ":ie_result_type_cpp",
     ":sizzle"
   ],
@@ -167,29 +167,6 @@ visualc_release(name = "ie_x64_exe",
   project = "IEDriverServer/IEDriverServer.vcxproj",
   desc = "InternetExplorerDriver standalone server for 64-bit IE",
   out = "x64/Release/IEDriverServer.exe"
-)
-
-js_fragment_header(name = "atoms",
-  deps = [
-    "//javascript/webdriver/atoms:click:ie",
-    "//javascript/webdriver/atoms:clear:ie",
-    "//javascript/webdriver/atoms:find_element:ie",
-    "//javascript/webdriver/atoms:find_elements:ie",
-    "//javascript/webdriver/atoms:get_attribute:ie",
-    "//javascript/webdriver/atoms:get_effective_style:ie",
-    "//javascript/webdriver/atoms:get_location:ie",
-    "//javascript/webdriver/atoms:get_size:ie",
-    "//javascript/webdriver/atoms:get_text:ie",
-    "//javascript/webdriver/atoms:is_displayed:ie",
-    "//javascript/webdriver/atoms:is_editable:ie",
-    "//javascript/webdriver/atoms:is_enabled:ie",
-    "//javascript/webdriver/atoms:is_interactable:ie",
-    "//javascript/webdriver/atoms:is_selected:ie",
-    "//javascript/webdriver/atoms:is_in_parent_overflow:ie",
-    "//javascript/webdriver/atoms:submit:ie",
-    "//javascript/webdriver/atoms:inputs"
-  ],
-  out = "cpp/IEDriver/Generated/atoms.h"
 )
 
 rake_task(name = "sizzle",
