@@ -72,27 +72,9 @@ class GetElementValueOfCssPropertyCommandHandler : public IECommandHandler {
       ElementHandle element_wrapper;
       status_code = this->GetElement(executor, element_id, &element_wrapper);
       if (status_code == WD_SUCCESS) {
-        // The atom is just the definition of an anonymous
-        // function: "function() {...}"; Wrap it in another function so we can
-        // invoke it with our arguments without polluting the current namespace.
-        std::wstring script_source = L"(function() { return (";
-        script_source += atoms::asString(atoms::GET_EFFECTIVE_STYLE);
-        script_source += L")})();";
-
-        CComPtr<IHTMLDocument2> doc;
-        browser_wrapper->GetDocument(&doc);
-        Script script_wrapper(doc, script_source, 2);
-        script_wrapper.AddArgument(element_wrapper);
-        script_wrapper.AddArgument(name);
-        status_code = script_wrapper.Execute();
-
+        std::string raw_value = "";
+        status_code = element_wrapper->GetCssPropertyValue(name, &raw_value);
         if (status_code == WD_SUCCESS) {
-          std::string raw_value = "";
-          script_wrapper.ConvertResultToString(&raw_value);
-          std::transform(raw_value.begin(),
-                         raw_value.end(),
-                         raw_value.begin(),
-                         tolower);
           std::string style_value = this->MangleColour(name, raw_value);
           response->SetSuccessResponse(style_value);
           return;
