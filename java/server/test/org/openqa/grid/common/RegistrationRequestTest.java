@@ -69,7 +69,7 @@ public class RegistrationRequestTest {
     req.setConfiguration(config);
 
     for (int i = 0; i < 5; i++) {
-      DesiredCapabilities cap = new DesiredCapabilities(BrowserType.FIREFOX, "" + i, Platform.LINUX);
+      DesiredCapabilities cap = new DesiredCapabilities(BrowserType.FIREFOX.browserName(), "" + i, Platform.LINUX);
       req.addDesiredCapability(cap);
     }
 

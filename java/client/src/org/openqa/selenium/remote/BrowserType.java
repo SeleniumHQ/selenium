@@ -20,27 +20,53 @@ package org.openqa.selenium.remote;
 /**
  * All the browsers supported by selenium
  */
-public interface BrowserType {
-  String FIREFOX = "firefox";
-  String FIREFOX_2 = "firefox2";
-  String FIREFOX_3 = "firefox3";
-  String FIREFOX_PROXY = "firefoxproxy";
-  String FIREFOX_CHROME = "firefoxchrome";
-  String GOOGLECHROME = "googlechrome";
-  String SAFARI = "safari";
-  String OPERA = "opera"; 
-  String IEXPLORE= "iexplore";
-  String IEXPLORE_PROXY= "iexploreproxy";
-  String SAFARI_PROXY = "safariproxy";
-  String CHROME = "chrome";
-  String KONQUEROR = "konqueror";
-  String MOCK = "mock";
-  String IE_HTA="iehta";
+public enum BrowserType {
+	FIREFOX("firefox"),
+	FIREFOX_2("firefox2"),
+	FIREFOX_3("firefox3"),
+	FIREFOX_PROXY("firefoxproxy"),
+	FIREFOX_CHROME("firefoxchrome"),
+	GOOGLECHROME("googlechrome"),
+	SAFARI("safari"),
+	OPERA("opera"),
+	IEXPLORE("iexplore"),
+	IEXPLORE_PROXY("iexploreproxy"),
+	SAFARI_PROXY("safariproxy"),
+	CHROME("chrome"),
+	KONQUEROR("konqueror"),
+	MOCK("mock"),
+	IE_HTA("iehta"),
+	ANDROID("android"),
+	HTMLUNIT("htmlunit"),
+	IE("internetexplorer"),
+	IPHONE("iPhone"),
+	IPAD("iPad"),
+	PHANTOMJS("phantomjs");
+	private String type;
 
-  String ANDROID = "android";
-  String HTMLUNIT = "htmlunit";
-  String IE = "internet explorer";
-  String IPHONE = "iPhone"; 
-  String IPAD = "iPad"; 
-  String PHANTOMJS = "phantomjs"; 
+	BrowserType(String type) {
+		this.type = type;
+	}
+
+	public static BrowserType fromString(String type) {
+		if (type == null) {
+			throw new IllegalArgumentException();
+		}
+		for (BrowserType browserType : BrowserType.values()) {
+			if (type.equalsIgnoreCase(browserType.type)) {
+				return browserType;
+			}
+		}
+		throw new IllegalArgumentException();
+	}
+
+	@Override
+	public String toString() {
+		return type;
+	}
+
+	public String browserName() {
+		return toString();
+	}
+
 }

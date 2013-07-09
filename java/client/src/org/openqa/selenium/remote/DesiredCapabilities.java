@@ -176,46 +176,46 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public static DesiredCapabilities android() {
-    return new DesiredCapabilities(BrowserType.ANDROID, "", Platform.ANDROID);
+    return new DesiredCapabilities(BrowserType.ANDROID.browserName(), "", Platform.ANDROID);
   }
 
   public static DesiredCapabilities chrome() {
-    return new DesiredCapabilities(BrowserType.CHROME, "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.CHROME.browserName(), "", Platform.ANY);
   }
 
   public static DesiredCapabilities firefox() {
-    return new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.FIREFOX.browserName(), "", Platform.ANY);
   }
 
   public static DesiredCapabilities htmlUnit() {
-    return new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.HTMLUNIT.browserName(), "", Platform.ANY);
   }
 
   public static DesiredCapabilities internetExplorer() {
     DesiredCapabilities capabilities = new DesiredCapabilities(
-        BrowserType.IE, "", Platform.WINDOWS);
+        BrowserType.IE.browserName(), "", Platform.WINDOWS);
     capabilities.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
     return capabilities;
   }
 
   public static DesiredCapabilities iphone() {
-    return new DesiredCapabilities(BrowserType.IPHONE, "", Platform.MAC);
+    return new DesiredCapabilities(BrowserType.IPHONE.browserName(), "", Platform.MAC);
   }
 
   public static DesiredCapabilities ipad() {
-    return new DesiredCapabilities(BrowserType.IPAD, "", Platform.MAC);
+    return new DesiredCapabilities(BrowserType.IPAD.browserName(), "", Platform.MAC);
   }
 
   public static DesiredCapabilities opera() {
-    return new DesiredCapabilities(BrowserType.OPERA, "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.OPERA.browserName(), "", Platform.ANY);
   }
 
   public static DesiredCapabilities safari() {
-    return new DesiredCapabilities(BrowserType.SAFARI, "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.SAFARI.browserName(), "", Platform.ANY);
   }
 
   public static DesiredCapabilities phantomjs() {
-    return new DesiredCapabilities(BrowserType.PHANTOMJS, "", Platform.ANY);
+    return new DesiredCapabilities(BrowserType.PHANTOMJS.browserName(), "", Platform.ANY);
   }
 
   @Override

@@ -37,7 +37,7 @@ public class InternetExplorerLocator extends SingleBrowserLocator {
 
   @Override
   protected String seleniumBrowserName() {
-    return BrowserType.IEXPLORE;
+    return BrowserType.IEXPLORE.browserName();
   }
 
   @Override

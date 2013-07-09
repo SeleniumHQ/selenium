@@ -76,7 +76,7 @@ public class BrowserNameUtils {
 
     // Map browser environments to icon names.
     if (browserString.contains("iexplore") || browserString.startsWith("*iehta")) {
-      ret = BrowserType.IE;
+      ret = BrowserType.IE.browserName();
     } else if (browserString.contains("firefox") || browserString.startsWith("*chrome")) {
       if (cap.getVersion() != null && cap.getVersion().toLowerCase().equals("beta") ||
           cap.getBrowserName().toLowerCase().contains("beta")) {
@@ -88,15 +88,15 @@ public class BrowserNameUtils {
           cap.getBrowserName().toLowerCase().contains("nightly")) {
         ret = "nightly";
       } else {
-        ret = BrowserType.FIREFOX;
+        ret = BrowserType.FIREFOX.browserName();
       }
 
     } else if (browserString.startsWith("*safari")) {
-      ret = BrowserType.SAFARI;
+      ret = BrowserType.SAFARI.browserName();
     } else if (browserString.startsWith("*googlechrome")) {
-      ret = BrowserType.CHROME;
+      ret = BrowserType.CHROME.browserName();
     } else if (browserString.startsWith("opera")) {
-      ret = BrowserType.OPERA;
+      ret = BrowserType.OPERA.browserName();
     }
 
     return ret.replace(" ", "_");

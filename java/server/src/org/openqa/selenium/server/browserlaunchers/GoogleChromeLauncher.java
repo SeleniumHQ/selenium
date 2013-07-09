@@ -64,7 +64,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
       String sessionId, String browserLaunchLocation) {
     this(browserOptions, configuration, sessionId, ApplicationRegistry.instance()
         .browserInstallationCache().
-        locateBrowserInstallation(BrowserType.GOOGLECHROME, browserLaunchLocation, new GoogleChromeLocator()));
+        locateBrowserInstallation(BrowserType.GOOGLECHROME.browserName(), browserLaunchLocation, new GoogleChromeLocator()));
   }
 
   public GoogleChromeLauncher(Capabilities browserOptions,

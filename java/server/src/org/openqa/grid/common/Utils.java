@@ -22,13 +22,13 @@ import org.openqa.selenium.remote.BrowserType;
 public class Utils {
 
   public static String getSelenium1Equivalent(String webDriverBrowserName) {
-    if (BrowserType.FIREFOX.equals(webDriverBrowserName)) {
+    if (BrowserType.FIREFOX.browserName().equals(webDriverBrowserName)) {
       return "*firefox";
     }
-    if (BrowserType.IE.equals(webDriverBrowserName)) {
+    if (BrowserType.IE.browserName().equals(webDriverBrowserName)) {
       return "*iexplore";
     }
-    if (BrowserType.CHROME.equals(webDriverBrowserName)) {
+    if (BrowserType.CHROME.browserName().equals(webDriverBrowserName)) {
       return "*googlechrome";
     }
     return webDriverBrowserName;

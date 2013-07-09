@@ -250,14 +250,14 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   public void beforeSession(TestSession session) {
     if (session.getSlot().getProtocol() == SeleniumProtocol.WebDriver) {
       Map<String, Object> cap = session.getRequestedCapabilities();
-      if (BrowserType.FIREFOX.equals(cap.get(CapabilityType.BROWSER_NAME))) {
+      if (BrowserType.FIREFOX.browserName().equals(cap.get(CapabilityType.BROWSER_NAME))) {
         if (session.getSlot().getCapabilities().get(FirefoxDriver.BINARY) != null
             && cap.get(FirefoxDriver.BINARY) == null) {
           session.getRequestedCapabilities().put(FirefoxDriver.BINARY,
               session.getSlot().getCapabilities().get(FirefoxDriver.BINARY));
         }
       }
-      if (BrowserType.CHROME.equals(cap.get(CapabilityType.BROWSER_NAME))) {
+      if (BrowserType.CHROME.browserName().equals(cap.get(CapabilityType.BROWSER_NAME))) {
         if (session.getSlot().getCapabilities().get("chrome_binary") != null) {
           JSONObject options = (JSONObject) cap.get(ChromeOptions.CAPABILITY);
           if (options == null) {

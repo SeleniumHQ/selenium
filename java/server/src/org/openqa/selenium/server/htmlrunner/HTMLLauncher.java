@@ -222,7 +222,7 @@ public class HTMLLauncher implements HTMLResultsListener {
     String[] browsers;
     if (args.length == 4) {
       log.info("Running self tests");
-      browsers = new String[] {BrowserType.FIREFOX, BrowserType.IEXPLORE_PROXY, BrowserType.OPERA, BrowserType.CHROME};
+      browsers = new String[] {BrowserType.FIREFOX.browserName(), BrowserType.IEXPLORE_PROXY.browserName(), BrowserType.OPERA.browserName(), BrowserType.CHROME.browserName()};
     } else {
       browsers = new String[] {args[4]};
     }
