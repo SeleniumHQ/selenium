@@ -13,6 +13,14 @@ v2.34.0.0
 =========
  * Release to synchronize with release of Selenium project.
 
+v2.33.0.6
+=========
+ * Refactored IE driver registry access methods to RegistryUtilities class.
+   This eliminates the need for an unnecessary extra instance of the
+   BrowserFactory class.
+ * Implemented logging for IE driver HtmlDialog class.
+ * Cleaned up IEDriver logging on asynchronous script execution.
+
 v2.33.0.5
 =========
  * Corrected logic for invisible element coordinate calculation on IE6 and 7.
