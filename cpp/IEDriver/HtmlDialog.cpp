@@ -17,6 +17,7 @@
 namespace webdriver {
 
 HtmlDialog::HtmlDialog(IHTMLWindow2* window, HWND hwnd, HWND session_handle) : DocumentHost(hwnd, session_handle) {
+  LOG(TRACE) << "Entering HtmlDialog::HtmlDialog";
   this->is_navigating_ = false;
   this->window_ = window;
   this->AttachEvents();
@@ -32,20 +33,24 @@ void HtmlDialog::AttachEvents() {
 }
 
 void HtmlDialog::DetachEvents() {
+  LOG(TRACE) << "Entering HtmlDialog::DetachEvents";
   CComPtr<IUnknown> unknown;
   this->window_->QueryInterface<IUnknown>(&unknown);
   HRESULT hr = this->DispEventUnadvise(unknown);
 }
 
 void __stdcall HtmlDialog::OnBeforeUnload(IHTMLEventObj *pEvtObj) {
+  LOG(TRACE) << "Entering HtmlDialog::OnBeforeUnload";
   this->is_navigating_ = true;
 }
 
 void __stdcall HtmlDialog::OnLoad(IHTMLEventObj *pEvtObj) {
+  LOG(TRACE) << "Entering HtmlDialog::OnLoad";
   this->is_navigating_ = false;
 }
 
 void HtmlDialog::GetDocument(IHTMLDocument2** doc) {
+  LOG(TRACE) << "Entering HtmlDialog::GetDocument";
   HRESULT hr = S_OK;
   if (this->focused_frame_window() == NULL) {
     hr = this->window_->get_document(doc);
@@ -59,6 +64,7 @@ void HtmlDialog::GetDocument(IHTMLDocument2** doc) {
 }
 
 void HtmlDialog::Close() {
+  LOG(TRACE) << "Entering HtmlDialog::Close";
   if (!this->is_closing()) {
     this->is_navigating_ = false;
     // Closing the browser, so having focus on a frame doesn't
@@ -77,10 +83,12 @@ void HtmlDialog::Close() {
 }
 
 bool HtmlDialog::IsBusy() {
+  LOG(TRACE) << "Entering HtmlDialog::IsBusy";
   return false;
 }
 
 bool HtmlDialog::Wait() {
+  LOG(TRACE) << "Entering HtmlDialog::Wait";
   // If the window handle is no longer valid, the window is closing,
   // the wait is completed, and we must post the quit message.
   if (!this->is_closing() && !::IsWindow(this->GetTopLevelWindowHandle())) {
@@ -124,18 +132,22 @@ bool HtmlDialog::Wait() {
 }
 
 HWND HtmlDialog::GetWindowHandle() {
+  LOG(TRACE) << "Entering HtmlDialog::GetWindowHandle";
   return this->window_handle();
 }
 
 std::string HtmlDialog::GetWindowName() {
+  LOG(TRACE) << "Entering HtmlDialog::GetWindowName";
   return "";
 }
 
 std::string HtmlDialog::GetBrowserUrl() {
+  LOG(TRACE) << "Entering HtmlDialog::GetBrowserUrl";
   return "";
 }
 
 std::string HtmlDialog::GetTitle() {
+  LOG(TRACE) << "Entering HtmlDialog::GetTitle";
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
   CComBSTR title;
@@ -151,10 +163,12 @@ std::string HtmlDialog::GetTitle() {
 }
 
 HWND HtmlDialog::GetTopLevelWindowHandle(void) {
+  LOG(TRACE) << "Entering HtmlDialog::GetTopLevelWindowHandle";
   return ::GetParent(this->window_handle());
 }
 
 HWND HtmlDialog::GetActiveDialogWindowHandle() {
+  LOG(TRACE) << "Entering HtmlDialog::GetActiveDialogWindowHandle";
   DialogWindowInfo info;
   info.hwndOwner = this->GetTopLevelWindowHandle();
   info.hwndDialog = NULL;
@@ -165,37 +179,45 @@ HWND HtmlDialog::GetActiveDialogWindowHandle() {
 }
 
 long HtmlDialog::GetWidth() {
+  LOG(TRACE) << "Entering HtmlDialog::GetWidth";
   // TODO: calculate width
   return 0L;
 }
 
 long HtmlDialog::GetHeight() {
+  LOG(TRACE) << "Entering HtmlDialog::GetHeight";
   // TODO: calculate height
   return 0L;
 }
 
 void HtmlDialog::SetWidth(long width) { 
+  LOG(TRACE) << "Entering HtmlDialog::SetWidth";
 }
 
 void HtmlDialog::SetHeight(long height) {
+  LOG(TRACE) << "Entering HtmlDialog::SetHeight";
 }
 
 int HtmlDialog::NavigateToUrl(const std::string& url) {
+  LOG(TRACE) << "Entering HtmlDialog::NavigateToUrl";
   // Cannot force navigation on windows opened with showModalDialog();
   return ENOTIMPLEMENTED;
 }
 
 int HtmlDialog::NavigateBack() {
+  LOG(TRACE) << "Entering HtmlDialog::NavigateBack";
   // Cannot force navigation on windows opened with showModalDialog();
   return ENOTIMPLEMENTED;
 }
 
 int HtmlDialog::NavigateForward() {
+  LOG(TRACE) << "Entering HtmlDialog::NavigateForward";
   // Cannot force navigation on windows opened with showModalDialog();
   return ENOTIMPLEMENTED;
 }
 
 int HtmlDialog::Refresh() {
+  LOG(TRACE) << "Entering HtmlDialog::Refresh";
   // Cannot force navigation on windows opened with showModalDialog();
   return ENOTIMPLEMENTED;
 }
