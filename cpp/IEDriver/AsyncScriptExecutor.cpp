@@ -144,7 +144,6 @@ LRESULT AsyncScriptExecutor::OnIsExecutionComplete(UINT uMsg,
                                                    WPARAM wParam,
                                                    LPARAM lParam,
                                                    BOOL& bHandled) {
-  LOG(TRACE) << "Entering AsyncScriptExecutor::OnIsExecutionComplete";
   return this->is_execution_completed_ ? 1 : 0;
 }
 

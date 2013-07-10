@@ -378,6 +378,7 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
   // complete. This will allow us to say synchronous for short-running scripts
   // like clearing an input element, yet still be able to continue processing
   // when the script is blocked, as when an alert() window is present.
+  LOG(TRACE) << "Waiting for async script execution to be complete";
   retry_counter = static_cast<int>(timeout_in_milliseconds / 10);
   bool is_execution_finished = ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_IS_EXECUTION_COMPLETE, NULL, NULL) != 0;
   while(!is_execution_finished && --retry_counter > 0) {
@@ -395,9 +396,11 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
     // more messages, one for determining the variant type of the return value,
     // and another for actually retrieving that value from the worker window's
     // thread.
+    LOG(TRACE) << "Async script execution completed, getting result";
     int status_code = static_cast<int>(::SendMessage(executor_handle, WD_ASYNC_SCRIPT_GET_RESULT, NULL, NULL));
     return status_code;
   } else {
+    LOG(TRACE) << "Async script execution not completed after timeout, detaching listener";
     ::SendMessage(executor_handle, WD_ASYNC_SCRIPT_DETACH_LISTENTER, NULL, NULL);
   }
   return WD_SUCCESS;
