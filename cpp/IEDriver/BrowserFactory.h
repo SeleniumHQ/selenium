@@ -87,10 +87,6 @@ class BrowserFactory {
                        std::string* error_message);
   bool GetDocumentFromWindowHandle(HWND window_handle,
                                    IHTMLDocument2** document);
-  bool GetRegistryValue(const HKEY root_key,
-                        const std::wstring& subkey,
-                        const std::wstring& value_name,
-                        std::wstring* value);
 
   int browser_version(void) const { return this->ie_major_version_; }
   int windows_major_version(void) const { return this->windows_major_version_; }

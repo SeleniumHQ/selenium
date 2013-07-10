@@ -80,6 +80,9 @@
     <ClCompile Include="VariantUtilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RegistryUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Browser.h">
@@ -335,6 +338,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VariantUtilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RegistryUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

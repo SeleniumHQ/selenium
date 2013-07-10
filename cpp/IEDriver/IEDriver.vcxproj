@@ -237,6 +237,7 @@
     <ClCompile Include="IEServer.cpp" />
     <ClCompile Include="IESession.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="RegistryUtilities.cpp" />
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -272,6 +273,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="LocationInfo.h" />
     <ClInclude Include="messages.h" />
+    <ClInclude Include="RegistryUtilities.h" />
     <ClInclude Include="Script.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringUtilities.h" />
