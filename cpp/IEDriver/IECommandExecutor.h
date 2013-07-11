@@ -42,8 +42,6 @@
 
 #define EVENT_NAME L"WD_START_EVENT"
 
-using namespace std;
-
 namespace webdriver {
 
 // Structure to be used for comunication between threads

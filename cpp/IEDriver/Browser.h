@@ -24,8 +24,6 @@
 #include "DocumentHost.h"
 #include "messages.h"
 
-using namespace std;
-
 namespace webdriver {
 
 class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DIID_DWebBrowserEvents2> {

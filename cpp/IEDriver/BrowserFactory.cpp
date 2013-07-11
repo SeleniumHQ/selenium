@@ -96,13 +96,13 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
       // the browser launch API returned a success code), but we still have a
       // NULL process ID.
       if (error_message->size() == 0) {
-        string launch_api_name = use_createprocess_api ? "The CreateProcess API" : "The IELaunchURL API";
+        std::string launch_api_name = use_createprocess_api ? "The CreateProcess API" : "The IELaunchURL API";
         *error_message = launch_api_name + NULL_PROCESS_ID_ERROR_MESSAGE;
       }
     } else {
       ::WaitForInputIdle(proc_info.hProcess, 2000);
       LOG(DEBUG) << "IE launched successfully with process ID " << process_id;
-      vector<wchar_t> image_buffer(MAX_PATH);
+      std::vector<wchar_t> image_buffer(MAX_PATH);
       int buffer_count = ::GetProcessImageFileName(proc_info.hProcess, &image_buffer[0], MAX_PATH);
       std::wstring full_image_path = &image_buffer[0];
       size_t last_delimiter = full_image_path.find_last_of('\\');
@@ -625,7 +625,7 @@ void BrowserFactory::GetExecutableLocation() {
       // variable in it, expand the environment variable to an absolute
       // path.
       DWORD expanded_location_size = ::ExpandEnvironmentStrings(executable_location.c_str(), NULL, 0);
-      vector<wchar_t> expanded_location(expanded_location_size);
+      std::vector<wchar_t> expanded_location(expanded_location_size);
       ::ExpandEnvironmentStrings(executable_location.c_str(), &expanded_location[0], expanded_location_size);
       executable_location = &expanded_location[0];
       this->ie_executable_location_ = executable_location;

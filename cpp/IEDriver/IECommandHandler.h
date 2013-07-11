@@ -41,8 +41,6 @@
 #define REQUIRE_WINDOW_FOCUS_CAPABILITY "requireWindowFocus"
 #define BROWSER_ATTACH_TIMEOUT_CAPABILITY "browserAttachTimeout"
 
-using namespace std;
-
 namespace webdriver {
 
 // Forward declaration of classes to avoid

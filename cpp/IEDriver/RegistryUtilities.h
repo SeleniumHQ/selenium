@@ -16,8 +16,6 @@
 
 #include <string>
 
-using namespace std;
-
 namespace webdriver {
 
 class RegistryUtilities {

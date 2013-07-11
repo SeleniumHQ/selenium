@@ -17,8 +17,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 namespace webdriver {
 
 // Forward declaration of classes to avoid

@@ -61,8 +61,6 @@
 #define IELAUNCHURL_API L"ielaunchurl"
 #define CREATEPROCESS_API L"createprocess"
 
-using namespace std;
-
 namespace webdriver {
 
 struct ProcessWindowInfo {

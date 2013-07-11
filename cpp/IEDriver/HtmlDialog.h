@@ -22,8 +22,6 @@
 #include "messages.h"
 #include "BrowserFactory.h"
 
-using namespace std;
-
 namespace webdriver {
 
 struct DialogWindowInfo {

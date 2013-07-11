@@ -18,13 +18,9 @@
 
 #define IESERVER_SHUTDOWN_EVENT_NAME L"IEServer_Shutdown_Event"
 
-using namespace std;
+namespace webdriver {
 
-namespace webdriver
-{
-
-class IEServer : public Server
-{
+class IEServer : public Server {
  public:
   IEServer(int port,
            const std::string& host,

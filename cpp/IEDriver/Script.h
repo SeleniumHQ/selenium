@@ -20,8 +20,6 @@
 #include "Element.h"
 #include "VariantUtilities.h"
 
-using namespace std;
-
 namespace webdriver {
 
 // Forward declaration of classes to avoid
@@ -82,7 +80,7 @@ class Script {
   std::wstring source_code_;
   long current_arg_index_;
   
-  vector<CComVariant> argument_array_;
+  std::vector<CComVariant> argument_array_;
   CComVariant result_;
 };
 

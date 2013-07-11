@@ -22,8 +22,6 @@
 #define EXECUTOR_EXIT_WAIT_TIMEOUT 5000
 #define EXECUTOR_EXIT_WAIT_INTERVAL 100
 
-using namespace std;
-
 namespace webdriver {
 
 // Structure to be used for storing session initialization parameters

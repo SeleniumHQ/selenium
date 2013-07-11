@@ -205,7 +205,7 @@ int Script::Execute() {
   // to the end of the array to use as the "this" parameter for the
   // function invocation.
   size_t arg_count = this->argument_array_.size();
-  vector<CComVariant> argument_array_copy(arg_count + 1);
+  std::vector<CComVariant> argument_array_copy(arg_count + 1);
   CComVariant window_variant(win);
   argument_array_copy[arg_count].Copy(&window_variant);
 

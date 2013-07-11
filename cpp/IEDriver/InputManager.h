@@ -23,8 +23,6 @@
 #define USER_INTERACTION_MUTEX_NAME L"WebDriverUserInteractionMutex"
 #define WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT 100
 
-using namespace std;
-
 namespace webdriver {
 
 class InputManager {

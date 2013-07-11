@@ -617,7 +617,7 @@ HWND Browser::GetActiveDialogWindowHandle() {
 void Browser::CheckDialogType(HWND dialog_window_handle) {
   LOG(TRACE) << "Entering Browser::CheckDialogType";
 
-  vector<char> window_class_name(34);
+  std::vector<char> window_class_name(34);
   if (GetClassNameA(dialog_window_handle, &window_class_name[0], 34)) {
     if (strcmp(HTML_DIALOG_WINDOW_CLASS,
         &window_class_name[0]) == 0) {

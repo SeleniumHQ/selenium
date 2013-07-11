@@ -97,7 +97,7 @@ void IESession::Initialize(void* init_params) {
                   static_cast<WPARAM>(port),
                   NULL);
 
-    vector<wchar_t> window_text_buffer(37);
+    std::vector<wchar_t> window_text_buffer(37);
     ::GetWindowText(thread_context.hwnd, &window_text_buffer[0], 37);
     session_id = StringUtilities::ToString(&window_text_buffer[0]);
     LOG(TRACE) << "Session id is retrived from command executor window: '" << session_id << "'";

@@ -506,7 +506,7 @@ bool IECommandExecutor::IsAlertActive(BrowserHandle browser, HWND* alert_handle)
   if (dialog_handle != NULL) {
     // Found a window handle, make sure it's an actual alert,
     // and not a showModalDialog() window.
-    vector<char> window_class_name(34);
+    std::vector<char> window_class_name(34);
     ::GetClassNameA(dialog_handle, &window_class_name[0], 34);
     if (strcmp(ALERT_WINDOW_CLASS, &window_class_name[0]) == 0) {
       *alert_handle = dialog_handle;

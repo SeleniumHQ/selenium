@@ -16,8 +16,6 @@
 
 #include <string>
 
-using namespace std;
-
 #define BASE_TEN_BASE 10
 #define MAX_DIGITS_OF_NUMBER 22
 

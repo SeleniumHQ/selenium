@@ -18,8 +18,6 @@
 #include <vector>
 #include "json.h"
 
-using namespace std;
-
 namespace webdriver {
 
 // Forward declaration of classes to avoid
