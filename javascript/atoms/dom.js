@@ -686,7 +686,8 @@ bot.dom.getOverflowState = function(elem) {
   var elemRect = bot.dom.getClientRect(elem);
   var ownerDoc = goog.dom.getOwnerDocument(elem);
   var htmlElem = ownerDoc.documentElement;
-  var bodyElem = ownerDoc.body;
+  var bodyElem = ownerDoc.body
+      || htmlElem; // SVG case
   var htmlOverflowStyle = bot.dom.getEffectiveStyle(htmlElem, 'overflow');
 
   // Return the x and y overflow styles for the given element.
