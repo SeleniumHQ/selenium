@@ -73,6 +73,7 @@
 #include "CommandHandlers/SubmitElementCommandHandler.h"
 #include "CommandHandlers/SwitchToFrameCommandHandler.h"
 #include "CommandHandlers/SwitchToWindowCommandHandler.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 
@@ -598,9 +599,7 @@ void IECommandExecutor::AddManagedBrowser(BrowserHandle browser_wrapper) {
 int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   LOG(TRACE) << "Entering IECommandExecutor::CreateNewBrowser";
 
-  vector<char> port_buffer(10);
-  _itoa_s(this->port_, &port_buffer[0], 10, 10);
-  std::string port(&port_buffer[0]);
+  std::string port = StringUtilities::ToString(this->port_);
 
   std::string initial_url = this->initial_browser_url_;
   if (this->initial_browser_url_ == "") {

@@ -45,9 +45,10 @@
 #define IE_PROTECTED_MODE_SETTING_VALUE_NAME L"2500"
 
 #define IELAUNCHURL_ERROR_MESSAGE "IELaunchURL() returned %X for URL '%s'"
-#define CREATEPROCESS_ERROR_MESSAGE L"CreateProcess() failed for command line '%s'"
+#define CREATEPROCESS_ERROR_MESSAGE "CreateProcess() failed for command line '%s'"
 #define NULL_PROCESS_ID_ERROR_MESSAGE " successfully launched Internet Explorer, but did not return a valid process ID."
 #define PROTECTED_MODE_SETTING_ERROR_MESSAGE "Protected Mode settings are not the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones."
+#define ZOOM_SETTING_ERROR_MESSAGE "Browser zoom level was set to %d%%. It should be set to 100%%"
 #define ATTACH_TIMEOUT_ERROR_MESSAGE "Could not find an Internet Explorer window belonging to the process with ID %d within %d milliseconds."
 #define CREATEPROCESS_REGISTRY_ERROR_MESSAGE "Unable to use CreateProcess() API. To use CreateProcess() with Internet Explorer 8 or higher, the value of registry setting in HEKY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\TabProcGrowth must be '0'."
 

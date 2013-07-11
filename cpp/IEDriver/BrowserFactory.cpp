@@ -155,18 +155,10 @@ void BrowserFactory::LaunchBrowserUsingIELaunchURL(const std::string& initial_ur
                                         proc_info,
                                         NULL);
   if (FAILED(launch_result)) {
-    size_t launch_msg_count = _scprintf(IELAUNCHURL_ERROR_MESSAGE,
-                                        launch_result,
-                                        initial_url.c_str());
-    vector<char> launch_result_msg(launch_msg_count + 1);
-    _snprintf_s(&launch_result_msg[0],
-                launch_result_msg.size(),
-                launch_msg_count + 1,
-                IELAUNCHURL_ERROR_MESSAGE,
-                launch_result,
-                initial_url.c_str());
-    std::string launch_error = &launch_result_msg[0];
-    *error_message = launch_error;
+    LOGHR(WARN, launch_result) << "Error using IELaunchURL to start IE";
+    *error_message = StringUtilities::Format(IELAUNCHURL_ERROR_MESSAGE,
+                                             launch_result,
+                                             initial_url.c_str());
   }
 }
 
@@ -234,16 +226,8 @@ void BrowserFactory::LaunchBrowserUsingCreateProcess(const std::string& initial_
                                                &start_info,
                                                proc_info);
   if (!create_process_result) {
-    int create_proc_msg_count = _scwprintf(CREATEPROCESS_ERROR_MESSAGE,
-                                           command_line);
-    vector<wchar_t> create_proc_result_msg(create_proc_msg_count + 1);
-    _snwprintf_s(&create_proc_result_msg[0],
-                  create_proc_result_msg.size(),
-                  create_proc_msg_count,
-                  CREATEPROCESS_ERROR_MESSAGE,
-                  command_line);
-    std::string launch_error = StringUtilities::ToString(&create_proc_result_msg[0]);
-    *error_message = launch_error;
+    *error_message = StringUtilities::Format(CREATEPROCESS_ERROR_MESSAGE,
+                                             StringUtilities::ToString(command_line));
   }
   delete[] command_line;
 }
@@ -301,18 +285,9 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
   }
 
   if (process_window_info->hwndBrowser == NULL) {
-    int attach_fail_msg_count = _scprintf(ATTACH_TIMEOUT_ERROR_MESSAGE,
-                                          process_window_info->dwProcessId,
-                                          timeout_in_milliseconds);
-    vector<char> attach_fail_msg_buffer(attach_fail_msg_count + 1);
-    _snprintf_s(&attach_fail_msg_buffer[0],
-                attach_fail_msg_buffer.size(),
-                attach_fail_msg_count,
-                ATTACH_TIMEOUT_ERROR_MESSAGE,
-                process_window_info->dwProcessId,
-                timeout_in_milliseconds);
-    std::string attach_fail_msg = &attach_fail_msg_buffer[0];
-    *error_message = attach_fail_msg;
+    *error_message = StringUtilities::Format(ATTACH_TIMEOUT_ERROR_MESSAGE,
+                                             process_window_info->dwProcessId,
+                                             timeout_in_milliseconds);
     return false;
   }
 
@@ -329,10 +304,8 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
       zoom_level = this->GetZoomLevel(document, window);
     }
     if (zoom_level != 100) {
-      vector<char> zoom_level_buffer(10);
-      _itoa_s(zoom_level, &zoom_level_buffer[0], 10, 10);
-      std::string zoom(&zoom_level_buffer[0]);
-      *error_message = "Browser zoom level was set to " + zoom + "%. It should be set to 100%";
+      *error_message = StringUtilities::Format(ZOOM_SETTING_ERROR_MESSAGE,
+                                               zoom_level);
       return false;
     }
     if (SUCCEEDED(hr)) {
@@ -652,7 +625,7 @@ void BrowserFactory::GetExecutableLocation() {
       // variable in it, expand the environment variable to an absolute
       // path.
       DWORD expanded_location_size = ::ExpandEnvironmentStrings(executable_location.c_str(), NULL, 0);
-      vector<WCHAR> expanded_location(expanded_location_size);
+      vector<wchar_t> expanded_location(expanded_location_size);
       ::ExpandEnvironmentStrings(executable_location.c_str(), &expanded_location[0], expanded_location_size);
       executable_location = &expanded_location[0];
       this->ie_executable_location_ = executable_location;
@@ -767,7 +740,7 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
                                              NULL,
                                              NULL)) {
         int protected_mode_value = -1;
-        std::vector<TCHAR> subkey_name_buffer(max_subkey_name_length + 1);
+        std::vector<wchar_t> subkey_name_buffer(max_subkey_name_length + 1);
         for (size_t index = 0; index < subkey_count; ++index) {
           DWORD number_of_characters_copied = max_subkey_name_length + 1;
           ::RegEnumKeyEx(key_handle,
