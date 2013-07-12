@@ -95,6 +95,7 @@ struct BrowserFactorySettings {
   bool ignore_protected_mode_settings;
   bool ignore_zoom_setting;
   bool force_create_process_api;
+  bool force_shell_windows_api;
   bool clear_cache_before_launch;
   int browser_attach_timeout;
   std::string initial_browser_url;
@@ -119,6 +120,7 @@ class BrowserFactory {
   bool ignore_zoom_setting(void) const { return this->ignore_zoom_setting_; }
   bool clear_cache(void) const { return this->clear_cache_; }
   bool force_createprocess_api(void) const { return this->force_createprocess_api_; }
+  bool force_shell_windows_api(void) const { return this->force_shell_windows_api_; }
   int browser_attach_timeout(void) const { return this->browser_attach_timeout_; }
   std::string initial_browser_url(void) const {
     return StringUtilities::ToString(this->initial_browser_url_);
@@ -144,7 +146,15 @@ class BrowserFactory {
   bool CreateLowIntegrityLevelToken(HANDLE* process_token_handle,
                                     HANDLE* mic_token_handle,
                                     PSID* sid);
-  
+
+  bool AttachToBrowserUsingShellWindows(
+                       ProcessWindowInfo* process_window_info,
+                       std::string* error_message);
+
+  bool AttachToBrowserUsingActiveAccessibility(
+                       ProcessWindowInfo* process_window_info,
+                       std::string* error_message);
+
   void GetExecutableLocation(void);
   void GetIEVersion(void);
   void GetOSVersion(void);
@@ -164,6 +174,7 @@ class BrowserFactory {
   bool ignore_protected_mode_settings_;
   bool ignore_zoom_setting_;
   bool force_createprocess_api_;
+  bool force_shell_windows_api_;
   bool clear_cache_;
 
   std::wstring browser_command_line_switches_;
