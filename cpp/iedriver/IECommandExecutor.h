@@ -224,6 +224,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   int port_;
   bool enable_persistent_hover_;
   bool enable_element_cache_cleanup_;
+  bool ignore_zoom_setting_;
+  std::string initial_browser_url_;
   std::string unexpected_alert_behavior_;
 
   Command current_command_;

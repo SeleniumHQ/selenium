@@ -9,6 +9,13 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.39.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * On behalf of Mark Watson: Added ability to attach to IE using the
+   ShellWindows API instead of the ActiveAccessibility API. This is useful
+   when the Windows global atoms table is exhausted. Fixes issue #5342.
+
 v2.39.0.1
 =========
  * Improved error message for failed launch of IE using IELaunchURL API.
