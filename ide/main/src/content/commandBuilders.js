@@ -85,21 +85,21 @@ CommandBuilders.add('action', function(window) {
 		};
 	});
 
-CommandBuilders.add('accessor', function(window) {
-		var result = { accessor: "textPresent", booleanAccessor: true };
-		var selection = String(window.getSelection());
-		if (selection) {
-			result.target = selection;
-		} else {
-			var element = this.getRecorder(window).clickedElement;
-			if (element) {
-				result.target = exactMatchPattern(getText(element));
-			} else {
-				result.disabled = true;
-			}
-		}
-		return result;
-	});
+//CommandBuilders.add('accessor', function(window) {
+//		var result = { accessor: "textPresent", booleanAccessor: true };
+//		var selection = String(window.getSelection());
+//		if (selection) {
+//			result.target = selection;
+//		} else {
+//			var element = this.getRecorder(window).clickedElement;
+//			if (element) {
+//				result.target = exactMatchPattern(getText(element));
+//			} else {
+//				result.disabled = true;
+//			}
+//		}
+//		return result;
+//	});
 
 CommandBuilders.add('accessor', function(window) {
 		var result = { accessor: "title" };
