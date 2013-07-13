@@ -10,6 +10,7 @@
   goog.require('goog.math.Coordinate');
   goog.require('goog.testing.jsunit');
   goog.require('goog.userAgent');
+  goog.require('goog.userAgent.product');
 </script>
 <body>
 <script type="text/javascript">
@@ -18,8 +19,12 @@
   }
 
   function testGetInViewLocationWithPositiveOffset() {
-    if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
+    if (bot.userAgent.MOBILE ||
+        (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) ||
+        (goog.userAgent.product.SAFARI &&
+         goog.userAgent.isVersionOrHigher(6))) {
       // Scroll offsets are not reliable on mobile viewports.
+      // Safari 6 applies scroll effects asynchronously.
       return;
     }
     // Scroll with positive offsets.
@@ -41,8 +46,12 @@
   }
 
   function testGetInViewLocationWithNegativeOffsetX() {
-    if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
+    if (bot.userAgent.MOBILE ||
+        (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) ||
+        (goog.userAgent.product.SAFARI &&
+         goog.userAgent.isVersionOrHigher(6))) {
       // Scroll offsets are not reliable on mobile viewports.
+      // Safari 6 applies scroll effects asynchronously.
       return;
     }
     // Scroll down so that we can scroll up afterwards.
@@ -62,8 +71,12 @@
   }
 
   function testGetInViewLocationWithNegativeOffsetY() {
-    if (bot.userAgent.MOBILE || (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
+    if (bot.userAgent.MOBILE ||
+        (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) ||
+        (goog.userAgent.product.SAFARI &&
+         goog.userAgent.isVersionOrHigher(6))) {
       // Scroll offsets are not reliable on mobile viewports.
+      // Safari 6 applies scroll effects asynchronously.
       return;
     }
     // Scroll down so that we can scroll up afterwards.
@@ -83,8 +96,12 @@
   }
 
   function testShouldThrowAnErrorIfScrollingTooFar() {
-    if (bot.userAgent.MOBILE) {
+    if (bot.userAgent.MOBILE ||
+        (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) ||
+        (goog.userAgent.product.SAFARI &&
+         goog.userAgent.isVersionOrHigher(6))) {
       // Scroll offsets are not reliable on mobile viewports.
+      // Safari 6 applies scroll effects asynchronously.
       return;
     }
 
