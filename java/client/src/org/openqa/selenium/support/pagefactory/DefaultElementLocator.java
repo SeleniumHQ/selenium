@@ -47,6 +47,18 @@ public class DefaultElementLocator implements ElementLocator {
     shouldCache = annotations.isLookupCached();
     by = annotations.buildBy();
   }
+  
+  /**
+   * Creates a new element locator.
+   *
+   * @param searchContext      The context to use when finding the element
+   * @param annotationsHandler The annotations handler for locating element
+   */
+  public DefaultElementLocator(SearchContext searchContext, AnnotationsHandler annotationsHandler) {
+      this.searchContext = searchContext;
+      this.shouldCache = annotationsHandler.shouldCache();
+      this.by = annotationsHandler.buildBy();
+  }
 
   /**
    * Find the element.
