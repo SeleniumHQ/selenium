@@ -35,7 +35,7 @@ var fs = require('fs'),
 
 /**
  * If this script was loaded from the Selenium project repo, it will operate in
- * development, adjusting how it loads Closure-based dependencies.
+ * development mode, adjusting how it loads Closure-based dependencies.
  * @type {boolean}
  */
 var devMode = (function() {
@@ -95,7 +95,7 @@ loadScript(DEPS_FILE_PATH);
 function closureRequire(symbol) {
   closure.goog.require(symbol);
   return closure.goog.getObjectByName(symbol);
-};
+}
 
 
 /** @return {string} Path to the closure library's base script. */

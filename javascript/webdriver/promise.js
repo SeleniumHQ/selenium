@@ -53,6 +53,7 @@ goog.provide('webdriver.promise.Deferred');
 goog.provide('webdriver.promise.Promise');
 
 goog.require('goog.array');
+goog.require('goog.debug.Error');
 goog.require('goog.object');
 goog.require('webdriver.EventEmitter');
 goog.require('webdriver.stacktrace.Snapshot');
@@ -267,6 +268,17 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   }
 
   /**
+   * Removes all of the listeners previously registered on this deferred.
+   * @throws {Error} If this deferred has already been resolved.
+   */
+  function removeAll() {
+    if (!isPending()) {
+      throw new Error('This Deferred has already been resolved.');
+    }
+    listeners = [];
+  }
+
+  /**
    * Notifies all of the listeners registered with this Deferred that its state
    * has changed. Will throw an error if this Deferred has already been
    * resolved.
@@ -442,9 +454,13 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   this.promise.cancel = this.cancel = cancel;
   this.promise.isPending = this.isPending = isPending;
   this.fulfill = fulfill;
-  /** @deprecated Use fulfill instead. This will be removed in 2.34.0. */
-  this.resolve = this.callback = fulfill;
   this.reject = this.errback = reject;
+
+  // Only expose this function to our internal classes.
+  // TODO: find a cleaner way of handling this.
+  if (this instanceof webdriver.promise.Task_) {
+    this.removeAll = removeAll;
+  }
 
   // Export symbols necessary for the contract on this object to work in
   // compiled mode.
@@ -556,16 +572,6 @@ webdriver.promise.fulfilled = function(opt_value) {
   deferred.fulfill(opt_value);
   return deferred.promise;
 };
-
-
-/**
- * Creates a promise that has been resolved with the given value.
- * @param {*=} opt_value The fulfilled promises's value.
- * @return {!webdriver.promise.Promise} A fulfilled promise.
- * @deprecated Use webdriver.promise.fulfilled(). This will be removed in
- *     Selenium 2.34.0.
- */
-webdriver.promise.resolved = webdriver.promise.fulfilled;
 
 
 /**
@@ -1454,14 +1460,22 @@ webdriver.promise.ControlFlow.prototype.runInNewFrame_ = function(
       errback(e);
     });
   } catch (ex) {
-    removeNewFrame();
+    removeNewFrame(new webdriver.promise.CanceledTaskError_(ex));
     errback(ex);
   }
 
-  function removeNewFrame() {
+  /**
+   * @param {webdriver.promise.CanceledTaskError_=} opt_err If provided, the
+   *     error that triggered the removal of this frame.
+   */
+  function removeNewFrame(opt_err) {
     var parent = newFrame.getParent();
     if (parent) {
       parent.removeChild(newFrame);
+    }
+
+    if (opt_err) {
+      newFrame.cancelRemainingTasks(opt_err);
     }
     self.activeFrame_ = oldFrame;
   }
@@ -1601,6 +1615,15 @@ webdriver.promise.Node_.prototype.getRoot = function() {
 webdriver.promise.Frame_ = function(flow) {
   webdriver.promise.Node_.call(this, flow);
 
+  var reject = goog.bind(this.reject, this);
+  var cancelRemainingTasks = goog.bind(this.cancelRemainingTasks, this);
+
+  /** @override */
+  this.reject = function(e) {
+    cancelRemainingTasks(new webdriver.promise.CanceledTaskError_(e));
+    reject(e);
+  };
+
   /**
    * @private {!Array.<!(webdriver.promise.Frame_|webdriver.promise.Task_)>}
    */
@@ -1655,6 +1678,46 @@ webdriver.promise.Frame_.prototype.isLocked_ = false;
  * @private {webdriver.promise.Node_}
  */
 webdriver.promise.Frame_.prototype.lastInsertedChild_ = null;
+
+
+/**
+ * Marks all of the tasks that are descendants of this frame in the execution
+ * tree as cancelled. This is necessary for callbacks scheduled asynchronous.
+ * For example:
+ *
+ *     var someResult;
+ *     webdriver.promise.createFlow(function(flow) {
+ *       someResult = flow.execute(function() {});
+ *       throw Error();
+ *     }).addErrback(function(err) {
+ *       console.log('flow failed: ' + err);
+ *       someResult.then(function() {
+ *         console.log('task succeeded!');
+ *       }, function(err) {
+ *         console.log('task failed! ' + err);
+ *       });
+ *     });
+ *     // flow failed: Error: boom
+ *     // task failed! CanceledTaskError: Task discarded due to a previous
+ *     // task failure: Error: boom
+ *
+ * @param {!webdriver.promise.CanceledTaskError_} error The cancellation
+ *     error.
+ */
+webdriver.promise.Frame_.prototype.cancelRemainingTasks = function(error) {
+  goog.array.forEach(this.children_, function(child) {
+    if (child instanceof webdriver.promise.Frame_) {
+      child.cancelRemainingTasks(error);
+    } else {
+      // None of the previously registered listeners should be notified that
+      // the task is being canceled, however, we need at least one errback
+      // to prevent the cancellation from bubbling up.
+      child.removeAll();
+      child.addErrback(goog.nullFunction);
+      child.cancel(error);
+    }
+  });
+};
 
 
 /**
@@ -1798,6 +1861,26 @@ webdriver.promise.Task_.prototype.toString = function() {
   }
   return ret;
 };
+
+
+
+/**
+ * Special error used to signal when a task is canceled because a previous
+ * task in the same frame failed.
+ * @param {*} err The error that caused the task cancellation.
+ * @constructor
+ * @extends {goog.debug.Error}
+ * @private
+ */
+webdriver.promise.CanceledTaskError_ = function(err) {
+  goog.base(this, 'Task discarded due to a previous task failure: ' + err);
+};
+goog.inherits(webdriver.promise.CanceledTaskError_, goog.debug.Error);
+
+
+/** @override */
+webdriver.promise.CanceledTaskError_.prototype.name = 'CanceledTaskError';
+
 
 
 /**

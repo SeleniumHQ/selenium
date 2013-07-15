@@ -49,63 +49,44 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
     LOG(DEBUG) << "Using FindElement atom to locate element having "
                << LOGWSTRING(mechanism) << " = "
                << LOGWSTRING(criteria);
-    std::wstring sanitized_criteria = criteria;
-    this->SanitizeCriteria(mechanism, &sanitized_criteria);
-    std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + 
-                                          mechanism + 
-                                          L"\" : \"" +
-                                          sanitized_criteria + L"\" }; };})();";
     CComPtr<IHTMLDocument2> doc;
     browser->GetDocument(&doc);
 
-    Script criteria_wrapper(doc, criteria_object_script, 0);
-    status_code = criteria_wrapper.Execute();
+    std::wstring script_source(L"(function() { return (");
+    script_source += atoms::asString(atoms::FIND_ELEMENT);
+    script_source += L")})();";
+
+    Script script_wrapper(doc, script_source, 3);
+    script_wrapper.AddArgument(mechanism);
+    script_wrapper.AddArgument(criteria);
+    if (parent_wrapper) {
+      script_wrapper.AddArgument(parent_wrapper->element());
+    }
+
+    status_code = script_wrapper.Execute();
     if (status_code == WD_SUCCESS) {
-      CComVariant criteria_object;
-      criteria_object.Copy(&criteria_wrapper.result());
-
-      // The atom is just the definition of an anonymous
-      // function: "function() {...}"; Wrap it in another function so we can
-      // invoke it with our arguments without polluting the current namespace.
-      std::wstring script_source(L"(function() { return (");
-      script_source += atoms::asString(atoms::FIND_ELEMENT);
-      script_source += L")})();";
-
-      Script script_wrapper(doc, script_source, 2);
-      script_wrapper.AddArgument(criteria_object);
-      if (parent_wrapper) {
-        script_wrapper.AddArgument(parent_wrapper->element());
-      }
-
-      status_code = script_wrapper.Execute();
-      if (status_code == WD_SUCCESS) {
-        if (script_wrapper.ResultIsElement()) {
-          script_wrapper.ConvertResultToJsonValue(executor, found_element);
-        } else {
-          LOG(WARN) << "Unable to find element by mechanism "
-                    << LOGWSTRING(mechanism) << " and criteria " 
-                    << LOGWSTRING(sanitized_criteria);
-          status_code = ENOSUCHELEMENT;
-        }
+      if (script_wrapper.ResultIsElement()) {
+        script_wrapper.ConvertResultToJsonValue(executor, found_element);
       } else {
-        // An error in the execution of the FindElement atom for XPath is assumed
-        // to be a syntactically invalid XPath.
-        if (mechanism == L"xpath") {
-          LOG(WARN) << "Attempted to find element using invalid xpath: "
-                    << LOGWSTRING(sanitized_criteria);
-          status_code = EINVALIDSELECTOR;
-        } else {
-          LOG(WARN) << "Unexpected error attempting to find element by mechanism "
-                    << LOGWSTRING(mechanism) << " with criteria "
-                    << LOGWSTRING(sanitized_criteria);
-          status_code = ENOSUCHELEMENT;
-        }
+        LOG(WARN) << "Unable to find element by mechanism "
+                  << LOGWSTRING(mechanism) << " and criteria " 
+                  << LOGWSTRING(criteria);
+        status_code = ENOSUCHELEMENT;
       }
     } else {
-      LOG(WARN) << "Unable to create criteria object for mechanism "
-                << LOGWSTRING(mechanism) << " and criteria " 
-                << LOGWSTRING(sanitized_criteria);
-      status_code = ENOSUCHELEMENT;
+      // An error in the execution of the FindElement atom for XPath is assumed
+      // to be a syntactically invalid XPath.
+      if (mechanism == L"xpath") {
+        LOG(WARN) << "Attempted to find element using invalid xpath: "
+                  << LOGWSTRING(criteria);
+        status_code = EINVALIDSELECTOR;
+      } else {
+        LOG(WARN) << "Unexpected error attempting to find element by mechanism "
+                  << LOGWSTRING(mechanism) << " with criteria "
+                  << LOGWSTRING(
+                  criteria);
+        status_code = ENOSUCHELEMENT;
+      }
     }
   } else {
     LOG(WARN) << "Unable to get browser";
@@ -138,59 +119,42 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
     LOG(DEBUG) << "Using FindElements atom to locate element having "
                << LOGWSTRING(mechanism) << " = "
                << LOGWSTRING(criteria);
-    std::wstring sanitized_criteria = criteria;
-    this->SanitizeCriteria(mechanism, &sanitized_criteria);
-    std::wstring criteria_object_script = L"(function() { return function(){ return  { \"" + mechanism + L"\" : \"" + sanitized_criteria + L"\" }; };})();";
     CComPtr<IHTMLDocument2> doc;
     browser->GetDocument(&doc);
 
-    Script criteria_wrapper(doc, criteria_object_script, 0);
-    status_code = criteria_wrapper.Execute();
+    std::wstring script_source(L"(function() { return (");
+    script_source += atoms::asString(atoms::FIND_ELEMENTS);
+    script_source += L")})();";
+
+    Script script_wrapper(doc, script_source, 3);
+    script_wrapper.AddArgument(mechanism);
+    script_wrapper.AddArgument(criteria);
+    if (parent_wrapper) {
+      script_wrapper.AddArgument(parent_wrapper->element());
+    }
+
+    status_code = script_wrapper.Execute();
     if (status_code == WD_SUCCESS) {
-      CComVariant criteria_object;
-      criteria_object.Copy(&criteria_wrapper.result());
-
-      // The atom is just the definition of an anonymous
-      // function: "function() {...}"; Wrap it in another function so we can
-      // invoke it with our arguments without polluting the current namespace.
-      std::wstring script_source(L"(function() { return (");
-      script_source += atoms::asString(atoms::FIND_ELEMENTS);
-      script_source += L")})();";
-
-      Script script_wrapper(doc, script_source, 2);
-      script_wrapper.AddArgument(criteria_object);
-      if (parent_wrapper) {
-        script_wrapper.AddArgument(parent_wrapper->element());
-      }
-
-      status_code = script_wrapper.Execute();
-      if (status_code == WD_SUCCESS) {
-        if (script_wrapper.ResultIsArray() || 
-            script_wrapper.ResultIsElementCollection()) {
-          script_wrapper.ConvertResultToJsonValue(executor, found_elements);
-        } else {
-          LOG(WARN) << "Returned value is not an array or element collection";
-          status_code = ENOSUCHELEMENT;
-        }
+      if (script_wrapper.ResultIsArray() || 
+          script_wrapper.ResultIsElementCollection()) {
+        script_wrapper.ConvertResultToJsonValue(executor, found_elements);
       } else {
-        // An error in the execution of the FindElement atom for XPath is assumed
-        // to be a syntactically invalid XPath.
-        if (mechanism == L"xpath") {
-          LOG(WARN) << "Attempted to find elements using invalid xpath: "
-                    << LOGWSTRING(sanitized_criteria);
-          status_code = EINVALIDSELECTOR;
-        } else {
-          LOG(WARN) << "Unexpected error attempting to find element by mechanism "
-                    << LOGWSTRING(mechanism) << " and criteria "
-                    << LOGWSTRING(sanitized_criteria);
-          status_code = ENOSUCHELEMENT;
-        }
+        LOG(WARN) << "Returned value is not an array or element collection";
+        status_code = ENOSUCHELEMENT;
       }
     } else {
-      LOG(WARN) << "Unable to create criteria object for mechanism "
-                << LOGWSTRING(mechanism) << " and criteria "
-                << LOGWSTRING(sanitized_criteria);
-      status_code = ENOSUCHELEMENT;
+      // An error in the execution of the FindElement atom for XPath is assumed
+      // to be a syntactically invalid XPath.
+      if (mechanism == L"xpath") {
+        LOG(WARN) << "Attempted to find elements using invalid xpath: "
+                  << LOGWSTRING(criteria);
+        status_code = EINVALIDSELECTOR;
+      } else {
+        LOG(WARN) << "Unexpected error attempting to find element by mechanism "
+                  << LOGWSTRING(mechanism) << " and criteria "
+                  << LOGWSTRING(criteria);
+        status_code = ENOSUCHELEMENT;
+      }
     }
   } else {
     LOG(WARN) << "Unable to get browser";
@@ -324,33 +288,6 @@ int ElementFinder::FindElementsUsingSizzle(const IECommandExecutor& executor,
   }
 
   return result;
-}
-
-void ElementFinder::SanitizeCriteria(const std::wstring& mechanism,
-                                     std::wstring* criteria) {
-  LOG(TRACE) << "Entering ElementFinder::SanitizeCriteria";
-
-  // Any finder mechanism where the value can have embedded quotation
-  // marks needs to have those quotes escaped for calling into JavaScript.
-  if (mechanism == L"linkText" || 
-      mechanism == L"partialLinkText" || 
-      mechanism == L"css" || 
-      mechanism == L"xpath") {
-    this->ReplaceAllSubstrings(L"\\", L"\\\\", criteria);
-    this->ReplaceAllSubstrings(L"\"", L"\\\"", criteria);
-  }
-}
-
-void ElementFinder::ReplaceAllSubstrings(const std::wstring& to_replace,
-                                         const std::wstring& replace_with,
-                                         std::wstring* str) {
-  LOG(TRACE) << "Entering ElementFinder::ReplaceAllSubstrings";
-
-  size_t pos = str->find(to_replace);
-  while (pos != std::wstring::npos) {
-    str->replace(pos, to_replace.length(), replace_with);
-    pos = str->find(to_replace, pos + replace_with.length());
-  }
 }
 
 bool ElementFinder::HasNativeCssSelectorEngine(const IECommandExecutor& executor) {

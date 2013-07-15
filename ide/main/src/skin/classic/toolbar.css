@@ -9,3 +9,9 @@ toolbar[iconsize="small"] #selenium-ide-button > .toolbarbutton-icon {
     width: 16px;
     height: 16px;
 }
+
+toolbar[iconsize="large"] #selenium-ide-button > .toolbarbutton-icon {
+    list-style-image: url(chrome://selenium-ide/skin/selenium-ide-24.png);
+    width: 24px;
+    height: 24px;
+}

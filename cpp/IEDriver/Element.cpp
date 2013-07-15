@@ -218,11 +218,14 @@ int Element::GetClickLocation(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior,
   }
 
   std::vector<LocationInfo> frame_locations;
-  status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior, element_location, &frame_locations);
+  status_code = this->GetLocationOnceScrolledIntoView(scroll_behavior,
+                                                      element_location,
+                                                      &frame_locations);
 
   if (status_code == WD_SUCCESS) {
     bool document_contains_frames = frame_locations.size() != 0;
-    *click_location = CalculateClickPoint(*element_location, document_contains_frames);
+    *click_location = CalculateClickPoint(*element_location,
+                                          document_contains_frames);
   }
   return status_code;
 }
@@ -256,6 +259,39 @@ int Element::GetAttributeValue(const std::string& attribute_name,
   }
 
   return WD_SUCCESS;
+}
+
+int Element::GetCssPropertyValue(const std::string& property_name,
+                                 std::string* property_value) {
+  LOG(TRACE) << "Entering Element::GetCssPropertyValue";
+
+  int status_code = WD_SUCCESS;
+  // The atom is just the definition of an anonymous
+  // function: "function() {...}"; Wrap it in another function so we can
+  // invoke it with our arguments without polluting the current namespace.
+  std::wstring script_source = L"(function() { return (";
+  script_source += atoms::asString(atoms::GET_EFFECTIVE_STYLE);
+  script_source += L")})();";
+
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+  Script script_wrapper(doc, script_source, 2);
+  script_wrapper.AddArgument(this->element_);
+  script_wrapper.AddArgument(property_name);
+  status_code = script_wrapper.Execute();
+
+  if (status_code == WD_SUCCESS) {
+    std::string raw_value = "";
+    script_wrapper.ConvertResultToString(&raw_value);
+    std::transform(raw_value.begin(),
+                    raw_value.end(),
+                    raw_value.begin(),
+                    tolower);
+    *property_value = raw_value;
+  } else {
+    LOG(WARN) << "Failed to get value of CSS property";
+  }
+  return status_code;
 }
 
 int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scroll,

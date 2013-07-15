@@ -14,6 +14,7 @@
 
 goog.provide('webdriver.AbstractBuilder');
 
+goog.require('webdriver.Capabilities');
 goog.require('webdriver.process');
 
 
@@ -44,40 +45,14 @@ webdriver.AbstractBuilder = function() {
    * @private {string}
    */
   this.serverUrl_ = webdriver.process.getEnv(
-      webdriver.AbstractBuilder.SERVER_URL_ENV,
-      webdriver.AbstractBuilder.DEFAULT_SERVER_URL);
-
-  /**
-   * ID of an existing WebDriver session that new clients should use.
-   * Initialized from the value of the
-   * {@link webdriver.AbstractBuilder.SESSION_ID_ENV} environment variable, but
-   * may be overridden using
-   * {@link webdriver.AbstractBuilder#usingSession}.
-   * @private {string}
-   */
-  this.sessionId_ =
-      webdriver.process.getEnv(webdriver.AbstractBuilder.SESSION_ID_ENV);
+      webdriver.AbstractBuilder.SERVER_URL_ENV);
 
   /**
    * The desired capabilities to use when creating a new session.
-   * @private {!Object.<*>}
+   * @private {!webdriver.Capabilities}
    */
-  this.capabilities_ = {};
+  this.capabilities_ = new webdriver.Capabilities();
 };
-
-
-/**
- * Environment variable that defines the session ID of an existing WebDriver
- * session to use when creating clients. If set, all new Builder instances will
- * default to creating clients that use this session. To create a new session,
- * use {@code #useExistingSession(boolean)}. The use of this environment
- * variable requires that {@link webdriver.AbstractBuilder.SERVER_URL_ENV} also
- * be set.
- * @type {string}
- * @const
- * @see webdriver.process.getEnv
- */
-webdriver.AbstractBuilder.SESSION_ID_ENV = 'wdsid';
 
 
 /**
@@ -123,40 +98,21 @@ webdriver.AbstractBuilder.prototype.getServerUrl = function() {
 
 
 /**
- * Configures the builder to create a client that will use an existing WebDriver
- * session.
- * @param {string} id The existing session ID to use.
- * @return {!webdriver.AbstractBuilder} This Builder instance for chain calling.
- */
-webdriver.AbstractBuilder.prototype.usingSession = function(id) {
-  this.sessionId_ = id;
-  return this;
-};
-
-
-/**
- * @return {string} The ID of the session, if any, this builder is configured
- *     to reuse.
- */
-webdriver.AbstractBuilder.prototype.getSession = function() {
-  return this.sessionId_;
-};
-
-
-/**
- * Sets the desired capabilities when requesting a new session.
- * @param {!Object.<*>} capabilities The desired capabilities for a new
- *     session.
+ * Sets the desired capabilities when requesting a new session. This will
+ * overwrite any previously set desired capabilities.
+ * @param {!(Object|webdriver.Capabilities)} capabilities The desired
+ *     capabilities for a new session.
  * @return {!webdriver.AbstractBuilder} This Builder instance for chain calling.
  */
 webdriver.AbstractBuilder.prototype.withCapabilities = function(capabilities) {
-  this.capabilities_ = capabilities;
+  this.capabilities_ = new webdriver.Capabilities(capabilities);
   return this;
 };
 
 
 /**
- * @return {!Object.<*>} The current desired capabilities for this builder.
+ * @return {!webdriver.Capabilities} The current desired capabilities for this
+ *     builder.
  */
 webdriver.AbstractBuilder.prototype.getCapabilities = function() {
   return this.capabilities_;

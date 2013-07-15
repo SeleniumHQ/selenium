@@ -14,28 +14,24 @@
 
 goog.provide('webdriver.Session');
 
+goog.require('webdriver.Capabilities');
+
 
 
 /**
  * Contains information about a WebDriver session.
  * @param {string} id The session ID.
- * @param {!Object.<*>} capabilities A map describing the capabilities
- *     of this session.
+ * @param {!(Object|webdriver.Capabilities)} capabilities The session
+ *     capabilities.
  * @constructor
  */
 webdriver.Session = function(id, capabilities) {
 
-  /**
-   * The session ID.
-   * @type {string}
-   */
-  this.id = id;
+  /** @private {string} */
+  this.id_ = id;
 
-  /**
-   * A map describing the capabilities of this session.
-   * @type {!Object.<*>}
-   */
-  this.capabilities = capabilities;
+  /** @private {!webdriver.Capabilities} */
+  this.caps_ = new webdriver.Capabilities().merge(capabilities);
 };
 
 
@@ -43,15 +39,15 @@ webdriver.Session = function(id, capabilities) {
  * @return {string} This session's ID.
  */
 webdriver.Session.prototype.getId = function() {
-  return this.id;
+  return this.id_;
 };
 
 
 /**
- * @return {!Object.<*>} This session's capabilities.
+ * @return {!webdriver.Capabilities} This session's capabilities.
  */
 webdriver.Session.prototype.getCapabilities = function() {
-  return this.capabilities;
+  return this.caps_;
 };
 
 
@@ -61,7 +57,7 @@ webdriver.Session.prototype.getCapabilities = function() {
  * @return {*} The capability value.
  */
 webdriver.Session.prototype.getCapability = function(key) {
-  return this.capabilities[key];
+  return this.caps_.get(key);
 };
 
 
@@ -71,5 +67,5 @@ webdriver.Session.prototype.getCapability = function(key) {
  * @return {string} The JSON representation of this Session.
  */
 webdriver.Session.prototype.toJSON = function() {
-  return this.id;
+  return this.getId();
 };

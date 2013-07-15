@@ -617,7 +617,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       parentElement = parentElement.getParentNode();
     }
 
-    System.err.println("" + element + " -> " + parentElement);
     if (parentElement == null) {
       throw new StaleElementReferenceException(
           "The element seems to be disconnected from the DOM. "

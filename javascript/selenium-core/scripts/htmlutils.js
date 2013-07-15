@@ -322,8 +322,10 @@ function triggerKeyEvent(element, eventType, keySequence, canBubble, controlKeyD
     else {
         var evt;
         if (window.KeyEvent) {
-            evt = document.createEvent('KeyEvents');
-            evt.initKeyEvent(eventType, true, true, window, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown, keycode, keycode);
+            var doc = goog.dom.getOwnerDocument(element);
+            var view = goog.dom.getWindow(doc);
+            evt = doc.createEvent('KeyEvents');
+            evt.initKeyEvent(eventType, true, true, view, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown, keycode, keycode);
         } else {
             evt = document.createEvent('UIEvents');
             

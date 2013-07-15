@@ -13,33 +13,39 @@
 // limitations under the License.
 
 var base = require('./_base'),
-    HttpClient = require('./http').HttpClient;
+    executors = require('./executors');
 
 var goog = base.require('goog'),
     AbstractBuilder = base.require('webdriver.AbstractBuilder'),
+    Browser = base.require('webdriver.Browser'),
+    Capability = base.require('webdriver.Capability'),
     WebDriver = base.require('webdriver.WebDriver'),
-    HttpExecutor = base.require('webdriver.http.Executor'),
     promise = base.require('webdriver.promise');
 
 
-
 /**
- * Wraps a promised {@link webdriver.CommandExecutor}, ensuring no commands
- * are executed until the wrapped executor has been fully built.
- * @param {!webdriver.promise.Promise.<!webdriver.CommandExecutor>} delegate The
- *     promised delegate.
- * @constructor
- * @implements {webdriver.CommandExecutor}
+ * @param {!webdriver.Capabilities} capabilities The desired capabilities.
+ * @return {webdriver.WebDriver} A new WebDriver instance or {@code null}
+ *     if the requested browser is not natively supported in Node.
  */
-var DeferredExecutor = function(delegate) {
+function createNativeDriver(capabilities) {
+  switch (capabilities.get(Capability.BROWSER_NAME)) {
+    case Browser.CHROME:
+      // Requiring 'chrome' above would create a cycle:
+      // index -> builder -> chrome -> index
+      var chrome = require('./chrome');
+      return chrome.createDriver(capabilities);
 
-  /** @override */
-  this.execute = function(command, callback) {
-    delegate.then(function(executor) {
-      executor.execute(command, callback);
-    }, callback);
-  };
-};
+    case Browser.PHANTOM_JS:
+      // Requiring 'phantomjs' would create a cycle:
+      // index -> builder -> phantomjs -> index
+      var phantomjs = require('./phantomjs');
+      return phantomjs.createDriver(capabilities);
+
+    default:
+      return null;
+  }
+}
 
 
 
@@ -53,22 +59,50 @@ var Builder = function() {
 goog.inherits(Builder, AbstractBuilder);
 
 
+/**
+ * Sets the proxy configuration to use for WebDriver clients created by this
+ * builder. Any calls to {@link #withCapabilities} after this function will
+ * overwrite these settings.
+ * @param {!ProxyConfig} config The configuration to use.
+ * @return {!Builder} A self reference.
+ */
+Builder.prototype.setProxy = function(config) {
+  this.getCapabilities().set(Capability.PROXY, config);
+  return this;
+};
+
+
+/**
+ * Sets Chrome-specific options for drivers created by this builder.
+ * @param {!chrome.Options} options The ChromeDriver options to use.
+ * @return {!Builder} A self reference.
+ */
+Builder.prototype.setChromeOptions = function(options) {
+  var newCapabilities = options.toCapabilities(this.getCapabilities());
+  return /** @type {!Builder} */(this.withCapabilities(newCapabilities));
+};
+
 
 /**
  * @override
  */
 Builder.prototype.build = function() {
-  var serverUrl = this.getServerUrl();
-  var executor = new DeferredExecutor(promise.when(serverUrl, function(url) {
-    var client = new HttpClient(url);
-    return new HttpExecutor(client);
-  }));
+  var url = this.getServerUrl();
 
-  if (this.getSession()) {
-    return WebDriver.attachToSession(executor, this.getSession());
-  } else {
-    return WebDriver.createSession(executor, this.getCapabilities());
+  // If a remote server wasn't specified, check for browsers we support
+  // natively in node before falling back to using the java Selenium server.
+  if (!url) {
+    var driver = createNativeDriver(this.getCapabilities());
+    if (driver) {
+      return driver;
+    }
+
+    // Nope, fall-back to using the default java server.
+    url = AbstractBuilder.DEFAULT_SERVER_URL;
   }
+
+  var executor = executors.createExecutor(url);
+  return WebDriver.createSession(executor, this.getCapabilities());
 };
 
 

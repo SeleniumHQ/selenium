@@ -112,4 +112,11 @@ std::string StringUtilities::ToString(const std::wstring& input) {
   return output;
 }
 
+std::string StringUtilities::ToString(long input) {
+  std::vector<char> string_buffer(MAX_DIGITS_OF_NUMBER);
+  _i64toa_s(input, &string_buffer[0], MAX_DIGITS_OF_NUMBER, BASE_TEN_BASE);
+  std::string string_value = &string_buffer[0];
+  return string_value;
+}
+
 } // namespace webdriver

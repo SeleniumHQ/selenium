@@ -64,12 +64,13 @@ public class CoordinatesTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
   public void testShouldGetCoordinatesOfAnInvisibleElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_invisible_element.html"));
     assertThat(getLocationInViewPort(By.id("box")), is(new Point(0, 0)));
   }
 
-  @Ignore(value = {OPERA}, reason = "Opera: window().getSize() is not implemented")
+  @Ignore(value = {OPERA, SAFARI}, reason = "Opera: window().getSize() is not implemented")
   @Test
   public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_element_out_of_view.html"));

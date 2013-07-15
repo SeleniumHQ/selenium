@@ -72,7 +72,7 @@ class Options(object):
         """
         encoded_extensions = []
         for ext in self._extension_files:
-            file_ = open(ext)
+            file_ = open(ext, 'rb')
             # Should not use base64.encodestring() which inserts newlines every
             # 76 characters (per RFC 1521).  Chromedriver has to remove those
             # unnecessary newlines before decoding, causing performance hit.

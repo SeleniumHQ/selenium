@@ -15,11 +15,9 @@
 
 'use strict';
 
-require('./lib/_bootstrap')(module);
-
-var assert = require('assert');
-
-var test = require('./lib/testbase');
+var assert = require('../testing/assert'),
+    test = require('../lib/test'),
+    Browser = test.Browser;
 
 
 test.suite(function(env) {
@@ -49,7 +47,16 @@ test.suite(function(env) {
     driver.manage().window().getPosition().then(function(position) {
       driver.manage().window().setSize(640, 480);
       driver.manage().window().setPosition(position.x + 10, position.y + 10);
-      driver.wait(forPositionToBe(position.x + 10, position.y + 10), 1000);
+
+      // For phantomjs, setPosition is a no-op and the "window" stays at (0, 0)
+      if (env.browser === Browser.PHANTOMJS) {
+        driver.manage().window().getPosition().then(function(position) {
+          assert(position.x).equalTo(0);
+          assert(position.y).equalTo(0);
+        });
+      } else {
+        driver.wait(forPositionToBe(position.x + 10, position.y + 10), 1000);
+      }
     });
   });
 
@@ -59,7 +66,16 @@ test.suite(function(env) {
     driver.manage().window().getPosition().then(function(position) {
       driver.manage().window().setSize(640, 480);
       driver.manage().window().setPosition(position.x + 10, position.y + 10);
-      driver.wait(forPositionToBe(position.x + 10, position.y + 10), 1000);
+
+      // For phantomjs, setPosition is a no-op and the "window" stays at (0, 0)
+      if (env.browser === Browser.PHANTOMJS) {
+        driver.manage().window().getPosition().then(function(position) {
+          assert(position.x).equalTo(0);
+          assert(position.y).equalTo(0);
+        });
+      } else {
+        driver.wait(forPositionToBe(position.x + 10, position.y + 10), 1000);
+      }
     });
   });
 

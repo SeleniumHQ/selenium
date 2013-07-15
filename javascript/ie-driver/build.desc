@@ -1,0 +1,36 @@
+js_deps(name = "deps",
+  srcs = [ "*.js" ],
+  deps = [ "//javascript/atoms:deps" ])
+
+js_fragment(name = "find_element",
+  module = "webdriver.ie",
+  function = "webdriver.ie.findElement",
+  deps = [ ":deps" ])
+
+js_fragment(name = "find_elements",
+  module = "webdriver.ie",
+  function = "webdriver.ie.findElements",
+  deps = [ ":deps" ])
+
+js_fragment_header(name = "atoms",
+  deps = [
+    "//javascript/ie-driver:find_element:ie",
+    "//javascript/ie-driver:find_elements:ie",
+    "//javascript/webdriver/atoms:click:ie",
+    "//javascript/webdriver/atoms:clear:ie",
+    "//javascript/webdriver/atoms:get_attribute:ie",
+    "//javascript/webdriver/atoms:get_effective_style:ie",
+    "//javascript/webdriver/atoms:get_location:ie",
+    "//javascript/webdriver/atoms:get_size:ie",
+    "//javascript/webdriver/atoms:get_text:ie",
+    "//javascript/webdriver/atoms:is_displayed:ie",
+    "//javascript/webdriver/atoms:is_editable:ie",
+    "//javascript/webdriver/atoms:is_enabled:ie",
+    "//javascript/webdriver/atoms:is_interactable:ie",
+    "//javascript/webdriver/atoms:is_selected:ie",
+    "//javascript/webdriver/atoms:is_in_parent_overflow:ie",
+    "//javascript/webdriver/atoms:submit:ie",
+    "//javascript/webdriver/atoms:inputs"
+  ],
+  out = "cpp/IEDriver/Generated/atoms.h"
+)

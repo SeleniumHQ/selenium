@@ -15,13 +15,12 @@
 
 'use strict';
 
-require('./lib/_bootstrap')(module);
-
 var assert = require('assert'),
-    http = require('http'),
-    util = require('selenium-webdriver').http.util;
+    http = require('http');
 
-describe('webdriver.http.util', function() {
+var util = require('../../http/util');
+
+describe('selenium-webdriver/http/util', function() {
 
   var server, baseUrl;
 

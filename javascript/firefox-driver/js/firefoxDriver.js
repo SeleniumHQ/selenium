@@ -1405,7 +1405,7 @@ FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) 
 FirefoxDriver.prototype.getWindowSize = function(respond, parameters) {
   this.assertTargetsCurrentWindow_(parameters);
 
-  var size = bot.window.getSize(respond.session.getWindow());
+  var size = bot.window.getSize(respond.session.getWindow().top);
   respond.value = { width: size.width, height: size.height };
   respond.send();
 };
@@ -1423,7 +1423,7 @@ FirefoxDriver.prototype.setWindowSize = function(respond, parameters) {
 FirefoxDriver.prototype.getWindowPosition = function(respond, parameters) {
   this.assertTargetsCurrentWindow_(parameters);
 
-  var position = bot.window.getPosition(respond.session.getWindow());
+  var position = bot.window.getPosition(respond.session.getWindow().top);
 
   respond.value = { x: position.x, y: position.y };
   respond.send();
@@ -1433,7 +1433,7 @@ FirefoxDriver.prototype.setWindowPosition = function(respond, parameters) {
   this.assertTargetsCurrentWindow_(parameters);
 
   var position = new goog.math.Coordinate(parameters.x, parameters.y);
-  var win = respond.session.getWindow();
+  var win = respond.session.getWindow().top;
 
   bot.window.setPosition(position, win);
 

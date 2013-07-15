@@ -15,14 +15,21 @@
 
 'use strict';
 
-require('./_bootstrap')(module);
-
 var spawn = require('child_process').spawn,
     fs = require('fs'),
-    path = require('path'),
-    promise = require('selenium-webdriver').promise;
+    path = require('path');
 
-var inproject = require('./inproject');
+var promise = require('../..').promise,
+    base = require('../../_base');
+
+var projectRoot = path.normalize(path.join(__dirname, '../../../../..'));
+
+
+function checkIsDevMode() {
+  if (!base.isDevMode()) {
+    throw Error('Cannot execute build; not running in dev mode');
+  }
+}
 
 
 /**
@@ -34,9 +41,11 @@ var builtTargets = {};
 
 /**
  * @param {!Array.<string>} targets The targets to build.
+ * @throws {Error} If not running in dev mode.
  * @constructor
  */
 var Build = function(targets) {
+  checkIsDevMode();
   this.targets_ = targets;
 };
 
@@ -62,8 +71,7 @@ Build.prototype.onlyOnce = function() {
  *     the build has completed.
  * @throws {Error} If no targets were specified.
  */
-Build.prototype.go = function(opt_callback) {
-  // TODO(jleyba): Only build if in dev mode.
+Build.prototype.go = function() {
   var targets = this.targets_;
   if (!targets.length) {
     throw Error('No targets specified');
@@ -76,7 +84,7 @@ Build.prototype.go = function(opt_callback) {
     });
 
     if (!targets.length) {
-      return promise.resolved();
+      return promise.fulfilled();
     }
   }
 
@@ -85,14 +93,14 @@ Build.prototype.go = function(opt_callback) {
   var cmd, args = targets;
   if (process.platform === 'win32') {
     cmd = 'cmd.exe';
-    args.unshift('/c', inproject.locate('go.bat'));
+    args.unshift('/c', path.join(projectRoot, 'go.bat'));
   } else {
-    cmd = inproject.locate('go');
+    cmd = path.join(projectRoot, 'go');
   }
 
   var result = promise.defer();
-  var proc = spawn(cmd, args, {
-    cwd: inproject.locate('.'),
+  spawn(cmd, args, {
+    cwd: projectRoot,
     env: process.env,
     stdio: ['ignore', process.stdout, process.stderr]
   }).on('exit', function(code, signal) {
@@ -100,7 +108,7 @@ Build.prototype.go = function(opt_callback) {
       targets.forEach(function(target) {
         builtTargets[target] = 1;
       });
-      return result.resolve();
+      return result.fulfill();
     }
 
     var msg = 'Unable to build artifacts';
@@ -111,7 +119,6 @@ Build.prototype.go = function(opt_callback) {
       msg += '; signal=' + signal;
     }
 
-    var err = Error(msg);
     result.reject(Error(msg));
   });
 
@@ -126,9 +133,19 @@ Build.prototype.go = function(opt_callback) {
  * Creates a build of the listed targets.
  * @param {...string} var_args The targets to build.
  * @return {!Build} The new build.
+ * @throws {Error} If not running in dev mode.
  */
 exports.of = function(var_args) {
   var targets = Array.prototype.slice.call(arguments, 0);
   return new Build(targets);
 };
-exports.Build = Build;
+
+
+/**
+ * @return {string} Absolute path of the project's root directory.
+ * @throws {Error} If not running in dev mode.
+ */
+exports.projectRoot = function() {
+  checkIsDevMode();
+  return projectRoot;
+};

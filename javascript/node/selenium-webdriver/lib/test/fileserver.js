@@ -15,26 +15,22 @@
 
 'use strict';
 
-require('./_bootstrap')(module);
-
 var fs = require('fs'),
     http = require('http'),
     path = require('path'),
-    promise = require('selenium-webdriver').promise,
-    string = require('selenium-webdriver/_base').require('goog.string'),
-    portprober = require('selenium-webdriver/net/portprober'),
     url = require('url');
 
-var inproject = require('./inproject');
+var Server = require('./httpserver').Server,
+    resources = require('./resources'),
+    promise = require('../..').promise,
+    isDevMode = require('../../_base').isDevMode(),
+    string = require('../../_base').require('goog.string');
 
-
-var WEB_ROOT = '/common/src/web';
+var WEB_ROOT = isDevMode ? '/common/src/web' : '/common';
 var JS_ROOT = '/javascript';
 
-var baseDirectory = inproject.locate('.'),
-    server = http.createServer(onRequest).on('connection', function(stream) {
-      stream.setTimeout(4000);
-    });
+var baseDirectory = resources.locate('.'),
+    server = new Server(onRequest);
 
 
 var Pages = (function() {
@@ -127,6 +123,10 @@ function onRequest(request, response) {
   }
 
   var pathname = path.resolve(url.parse(request.url).pathname);
+  if (pathname === '/') {
+    return sendIndex(request, response);
+  }
+
   if (pathname === '/favicon.ico') {
     response.writeHead(204);
     return response.end();
@@ -151,30 +151,41 @@ function onRequest(request, response) {
     return sendManifest(response);
   }
 
+  if (string.startsWith(pathname, WEB_ROOT)) {
+    if (!isDevMode) {
+      pathname = pathname.substring(WEB_ROOT.length);
+    }
+  } else if (string.startsWith(pathname, JS_ROOT)) {
+    if (!isDevMode) {
+      sendSimpleError(response, 404, request.url);
+      return;
+    }
+    pathname = pathname.substring(JS_ROOT);
+  }
+
   try {
-    var fullPath = inproject.locate(pathname);
+    var fullPath = resources.locate(pathname);
   } catch (ex) {
     fullPath = '';
   }
 
   if (fullPath.lastIndexOf(baseDirectory, 0) == -1) {
-    return sendSimpleError(response, 404, pathname);
+    sendSimpleError(response, 404, request.url);
+    return;
   }
 
   fs.stat(fullPath, function(err, stats) {
     if (err) {
-      return sendIOError(request, response, err);
-
+      sendIOError(request, response, err);
     } else if (stats.isDirectory()) {
-      return sendDirectoryListing(request, response);
-
+      sendDirectoryListing(request, response, fullPath);
     } else if (stats.isFile()) {
-      return sendFile(request, response);
+      sendFile(request, response, fullPath);
+    } else {
+      sendSimpleError(response, 404, request.url);
     }
-
-    sendSimpleError(response, 404, pathname);
   });
-};
+}
 
 
 function redirectToResultPage(response) {
@@ -285,27 +296,57 @@ var MimeType = {
  * Responds to a request for an individual file.
  * @param {!http.ServerRequest} request The request object.
  * @param {!http.ServerResponse} response The response object.
+ * @param {string} filePath Path to the file to return.
  */
-function sendFile(request, response) {
-  var pathname = url.parse(request.url).pathname;
-  var filePath = inproject.locate(pathname);
-
-  fs.stat(filePath, function(err, stats) {
-    if (err) return sendIOError(request, response, err);
-
-    var index = pathname.lastIndexOf('.');
-    var type = MimeType[index < 0 ? '' : pathname.substring(index + 1)];
-
-    var headers = {'Content-Length': stats.size};
-    if (type) headers['Content-Type'] = type + '; charset=utf-8';
+function sendFile(request, response, filePath) {
+  fs.readFile(filePath, function(err, buffer) {
+    if (err) {
+      sendIOError(request, response, err);
+      return;
+    }
+    var index = filePath.lastIndexOf('.');
+    var type = MimeType[index < 0 ? '' : filePath.substring(index + 1)];
+    var headers = {'Content-Length': buffer.length};
+    if (type) headers['Content-Type'] = type;
     response.writeHead(200, headers);
-
-    fs.createReadStream(filePath, {flags: 'r', encoding: 'utf-8'}).
-        on('data', response.write.bind(response)).
-        on('end', function() {
-          response.end();
-        });
+    response.end(buffer);
   });
+}
+
+
+/**
+ * Responds to a request for the file server's main index.
+ * @param {!http.ServerRequest} request The request object.
+ * @param {!http.ServerResponse} response The response object.
+ */
+function sendIndex(request, response) {
+  var pathname = url.parse(request.url).pathname;
+
+  var host = request.headers.host;
+  if (!host) {
+    host = server.host();
+  }
+
+  var requestUrl = ['http://' + host + pathname].join('');
+
+  function createListEntry(path) {
+    var url = requestUrl + path;
+    return ['<li><a href="', url, '">', path, '</a>'].join('');
+  }
+
+  var data = ['<!DOCTYPE html><h1>/</h1><hr/><ul>',
+              createListEntry('common')];
+  if (isDevMode) {
+    data.push(createListEntry('javascript'));
+  }
+  data.push('</ul>');
+  data = data.join('');
+
+  response.writeHead(200, {
+    'Content-Type': 'text/html; charset=UTF-8',
+    'Content-Length': Buffer.byteLength(data, 'utf8')
+  });
+  response.end(data);
 }
 
 
@@ -313,14 +354,14 @@ function sendFile(request, response) {
  * Responds to a request for a directory listing.
  * @param {!http.ServerRequest} request The request object.
  * @param {!http.ServerResponse} response The response object.
+ * @param {string} dirPath Path to the directory to generate a listing for.
  */
-function sendDirectoryListing(request, response) {
+function sendDirectoryListing(request, response, dirPath) {
   var pathname = url.parse(request.url).pathname;
 
   var host = request.headers.host;
   if (!host) {
-    var address = server.address();
-    host = address.address + ':' + address.port;
+    host = server.host();
   }
 
   var requestUrl = ['http://' + host + pathname].join('');
@@ -329,9 +370,11 @@ function sendDirectoryListing(request, response) {
     return response.end();
   }
 
-  var dirPath = inproject.locate(pathname);
   fs.readdir(dirPath, function(err, files) {
-    if (err) return sendIOError(request, response, err);
+    if (err) {
+      sendIOError(request, response, err);
+      return;
+    }
 
     var data = ['<!DOCTYPE html><h1>', pathname, '</h1><hr/><ul>'];
     if (pathname !== '/') {
@@ -343,7 +386,10 @@ function sendDirectoryListing(request, response) {
       var file = files.shift();
       if (file) {
         fs.stat(path.join(dirPath, file), function(err, stats) {
-          if (err) return sendIOError(request, response, err);
+          if (err) {
+            sendIOError(request, response, err);
+            return;
+          }
 
           data.push(createListEntry(
               stats.isDirectory() ? file + '/' : file));
@@ -373,29 +419,18 @@ function sendDirectoryListing(request, response) {
 /**
  * Starts the server on the specified port.
  * @param {number=} opt_port The port to use, or 0 for any free port.
- * @param {function(Error)=} opt_callback A function to call when the server's
- *     "listening" event is emitted.
+ * @return {!webdriver.promise.Promise.<Host>} A promise that will resolve
+ *     with the server host when it has fully started.
  */
-exports.start = function(opt_port) {
-  var port = opt_port || portprober.findFreePort('localhost');
-  return promise.when(port, function(port) {
-    console.log('starting file server on ' + port);
-    return promise.checkedNodeCall(
-        server.listen.bind(server, port, 'localhost'));
-  });
-};
+exports.start = server.start.bind(server);
 
 
 /**
  * Stops the server.
- * @return {!promise.Promise} A promise that will resolve when the server has
- *     closed all functions.
+ * @return {!webdriver.promise.Promise} A promise that will resolve when the
+ *     server has closed all connections.
  */
-exports.stop = function() {
-  var d = promise.defer();
-  server.close(d.resolve);
-  return d.promise;
-};
+exports.stop = server.stop.bind(server);
 
 
 /**
@@ -404,19 +439,7 @@ exports.stop = function() {
  * @return {string} The formatted URL.
  * @throws {Error} If the server is not running.
  */
-exports.url = function(opt_pathname) {
-  var addr = server.address();
-  if (!addr) {
-    throw Error('There server is not running!');
-  }
-  var pathname = opt_pathname || '';
-  return url.format({
-    protocol: 'http',
-    hostname: addr.address,
-    port: addr.port,
-    pathname: pathname
-  });
-};
+exports.url = server.url.bind(server);
 
 
 /**
@@ -428,7 +451,7 @@ exports.url = function(opt_pathname) {
  * @throws {Error} If the server is not running.
  */
 exports.whereIs = function(filePath) {
-  return exports.url(path.join(WEB_ROOT, filePath));
+  return server.url(path.join(WEB_ROOT, filePath));
 };
 
 
@@ -436,7 +459,7 @@ exports.Pages = Pages;
 
 
 if (require.main === module) {
-  exports.start(2310).then(function() {
-    console.log('Server running at ' + exports.url());
+  server.start(2310).then(function() {
+    console.log('Server running at ' + server.url());
   });
 }

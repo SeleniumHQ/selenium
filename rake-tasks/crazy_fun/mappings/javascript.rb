@@ -1237,10 +1237,14 @@ module Javascript
           roots = args[:content_roots].collect {|root| File.join(Dir.pwd, root)}
 
           resources = []
+          exclude_resources = []
           (args[:resources] || []).each do |resource|
             resource.each do |from, to|
               resources.push(" --resource=#{from}:#{to}")
             end
+          end
+          (args[:exclude_resources] || []).each do |pattern|
+            exclude_resources.push(" --exclude_resource=#{pattern}")
           end
 
           mkdir_p "#{folder_name}"
@@ -1251,7 +1255,8 @@ module Javascript
               " --lib=third_party/closure/goog" <<
               " --root=" << roots.join(" --root=") <<
               " --src=" << srcdir <<
-              resources.join("")
+              resources.join("") <<
+              exclude_resources.join("")
 
           sh cmd
         end

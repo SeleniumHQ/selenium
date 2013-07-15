@@ -812,7 +812,7 @@ limitations under the License.
 
 
   function testScheduling_firstScheduledTaskIsWithinACallback() {
-    webdriver.promise.resolved().then(function() {
+    webdriver.promise.fulfilled().then(function() {
       schedule('a');
       schedule('b');
       schedule('c');
@@ -883,7 +883,7 @@ limitations under the License.
 
 
   function testFraming_promiseCallbacks() {
-    webdriver.promise.resolved().then(function() {
+    webdriver.promise.fulfilled().then(function() {
       schedule('b');
     });
     schedule('a');
@@ -1337,7 +1337,7 @@ limitations under the License.
   function testWaiting_aConditionThatReturnsAPromise_2() {
     var count = 0;
     scheduleWait(function() {
-      return webdriver.promise.resolved(++count == 3);
+      return webdriver.promise.fulfilled(++count == 3);
     }, 200, 'waiting for promise');
 
     turnEventLoop();  // Start the flow; triggers first condition poll.
@@ -1690,7 +1690,7 @@ limitations under the License.
   function testSubtasks_taskReturnsSubTaskResult_2() {
     var callback;
     schedule('a');
-    schedule('sub-tasks', webdriver.promise.resolved(123)).
+    schedule('sub-tasks', webdriver.promise.fulfilled(123)).
         then(callback = callbackHelper(function(value) {
           assertEquals(123, value);
         }));
@@ -1804,7 +1804,7 @@ limitations under the License.
     var d = new webdriver.promise.Deferred();
     d.then(deferredPair.callback, deferredPair.errback);
 
-    webdriver.promise.resolved().
+    webdriver.promise.fulfilled().
         then(function() {
           scheduleAction('boom', throwStubError);
           schedule('this should not run');
@@ -1840,7 +1840,7 @@ limitations under the License.
   }
 
   function testMaintainsOrderInCallbacksWhenATaskReturnsAPromise() {
-    schedule('__start__', webdriver.promise.resolved()).
+    schedule('__start__', webdriver.promise.fulfilled()).
         then(function() {
           webdriver.test.testutil.messages.push('a');
           schedulePush('b');
@@ -1975,7 +1975,7 @@ limitations under the License.
   function testDeferredFactoriesCreateForActiveFlow() {
     var e = Error();
     var defaultFlow = webdriver.promise.controlFlow();
-    webdriver.promise.resolved().then(function() {
+    webdriver.promise.fulfilled().then(function() {
       assertFlowIs(defaultFlow);
     });
     webdriver.promise.rejected(e).then(null, function(err) {
@@ -1989,7 +1989,7 @@ limitations under the License.
     var newFlow;
     webdriver.promise.createFlow(function(flow) {
       newFlow = flow;
-      webdriver.promise.resolved().then(function() {
+      webdriver.promise.fulfilled().then(function() {
         assertFlowIs(flow);
       });
       webdriver.promise.rejected(e).then(null, function(err) {
@@ -2092,21 +2092,21 @@ limitations under the License.
   }
 
   function testFailsIfCallbackReturnsRejectedPromise() {
-    webdriver.promise.resolved().then(function() {
+    webdriver.promise.fulfilled().then(function() {
       return webdriver.promise.rejected(STUB_ERROR);
     });
     runAndExpectFailure(assertIsStubError);
   }
 
   function testAbortsFrameIfTaskFails() {
-    webdriver.promise.resolved().then(function() {
+    webdriver.promise.fulfilled().then(function() {
       webdriver.promise.controlFlow().execute(throwStubError);
     });
     runAndExpectFailure(assertIsStubError);
   }
 
   function testAbortsFramePromisedChainedFromTaskIsNotHandled() {
-    webdriver.promise.resolved().then(function() {
+    webdriver.promise.fulfilled().then(function() {
       webdriver.promise.controlFlow().execute(goog.nullFunction).
           then(throwStubError);
     });
@@ -2115,12 +2115,55 @@ limitations under the License.
 
   function testTrapsChainedUnhandledRejectionsWithinAFrame() {
     var pair = callbackPair(null, assertIsStubError);
-    webdriver.promise.resolved().then(function() {
+    webdriver.promise.fulfilled().then(function() {
       webdriver.promise.controlFlow().execute(goog.nullFunction).
           then(throwStubError);
     }).then(pair.callback, pair.errback);
 
     runAndExpectSuccess();
+    pair.assertErrback();
+  }
+
+
+  function testCancelsRemainingTasksIfFrameThrowsDuringScheduling() {
+    var task1, task2;
+    var pair = callbackPair(null, assertIsStubError);
+    var flow = webdriver.promise.controlFlow();
+    flow.execute(function() {
+      task1 = flow.execute(goog.nullFunction);
+      task2 = flow.execute(goog.nullFunction);
+      throw STUB_ERROR;
+    }).then(pair.callback, pair.errback);
+
+    runAndExpectSuccess();
+    pair.assertErrback();
+
+    assertFalse(task1.isPending());
+    pair = callbackPair();
+    task1.then(pair.callback, pair.errback);
+    pair.assertErrback();
+
+    assertFalse(task2.isPending());
+    pair = callbackPair();
+    task2.then(pair.callback, pair.errback);
+    pair.assertErrback();
+  }
+
+  function testCancelsRemainingTasksInFrameIfATaskFails() {
+    var task;
+    var pair = callbackPair(null, assertIsStubError);
+    var flow = webdriver.promise.controlFlow();
+    flow.execute(function() {
+      flow.execute(throwStubError);
+      task = flow.execute(goog.nullFunction);
+    }).then(pair.callback, pair.errback);
+
+    runAndExpectSuccess();
+    pair.assertErrback();
+
+    assertFalse(task.isPending());
+    pair = callbackPair();
+    task.then(pair.callback, pair.errback);
     pair.assertErrback();
   }
 </script>

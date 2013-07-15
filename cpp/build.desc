@@ -22,14 +22,14 @@ visualc_library(name = "firefoxlatest_esr_dll",
 visualc_library(name = "firefoxprevious_dll",
   platform = "Win32",
   project = "webdriver-firefox/webdriver-firefox-previous.vcxproj",
-  file_deps = "third_party/gecko-20/win32",
+  file_deps = "third_party/gecko-21/win32",
   out = "Win32/Release/webdriver-firefox-previous.dll"
 )
 
 visualc_library(name = "firefoxlatest_dll",
   platform = "Win32",
   project = "webdriver-firefox/webdriver-firefox-latest.vcxproj",
-  file_deps = "third_party/gecko-21/win32",
+  file_deps = "third_party/gecko-22/win32",
   out = "Win32/Release/webdriver-firefox-latest.dll"
 )
 
@@ -94,28 +94,28 @@ mozilla_lib(name = "webdriver_firefox_previous",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "i386",
-  geckoversion="20")
+  geckoversion="21")
 
 mozilla_lib(name = "webdriver_firefox_previous_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
-  geckoversion="20")
+  geckoversion="21")
 
 mozilla_lib(name = "webdriver_firefox_latest",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "i386",
-  geckoversion="21")
+  geckoversion="22")
 
 mozilla_lib(name = "webdriver_firefox_latest_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
-  geckoversion="21")
+  geckoversion="22")
 
 gcc_library(name = "noblur",
   srcs = [ "linux-specific/*.c" ],
@@ -147,7 +147,7 @@ visualc_library(name = "imehandler_dll",
 
 visualc_release(name = "ie_win32_exe",
   deps = [
-    ":atoms",
+    "//javascript/ie-driver:atoms",
     ":ie_result_type_cpp",
     ":sizzle"
   ],
@@ -159,7 +159,7 @@ visualc_release(name = "ie_win32_exe",
 
 visualc_release(name = "ie_x64_exe",
   deps = [
-    ":atoms",
+    "//javascript/ie-driver:atoms",
     ":ie_result_type_cpp",
     ":sizzle"
   ],
@@ -167,29 +167,6 @@ visualc_release(name = "ie_x64_exe",
   project = "IEDriverServer/IEDriverServer.vcxproj",
   desc = "InternetExplorerDriver standalone server for 64-bit IE",
   out = "x64/Release/IEDriverServer.exe"
-)
-
-js_fragment_header(name = "atoms",
-  deps = [
-    "//javascript/webdriver/atoms:click:ie",
-    "//javascript/webdriver/atoms:clear:ie",
-    "//javascript/webdriver/atoms:find_element:ie",
-    "//javascript/webdriver/atoms:find_elements:ie",
-    "//javascript/webdriver/atoms:get_attribute:ie",
-    "//javascript/webdriver/atoms:get_effective_style:ie",
-    "//javascript/webdriver/atoms:get_location:ie",
-    "//javascript/webdriver/atoms:get_size:ie",
-    "//javascript/webdriver/atoms:get_text:ie",
-    "//javascript/webdriver/atoms:is_displayed:ie",
-    "//javascript/webdriver/atoms:is_editable:ie",
-    "//javascript/webdriver/atoms:is_enabled:ie",
-    "//javascript/webdriver/atoms:is_interactable:ie",
-    "//javascript/webdriver/atoms:is_selected:ie",
-    "//javascript/webdriver/atoms:is_in_parent_overflow:ie",
-    "//javascript/webdriver/atoms:submit:ie",
-    "//javascript/webdriver/atoms:inputs"
-  ],
-  out = "cpp/IEDriver/Generated/atoms.h"
 )
 
 rake_task(name = "sizzle",

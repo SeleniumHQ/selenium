@@ -1866,8 +1866,9 @@ limitations under the License.
 
     var driver = testHelper.createDriver();
     var element = driver.findElement(By.id('foo'));
-    element.sendKeys(webdriver.promise.resolved('abc'), 123,
-                     webdriver.promise.resolved('def'));
+    element.sendKeys(
+        webdriver.promise.fulfilled('abc'), 123,
+        webdriver.promise.fulfilled('def'));
     testHelper.execute();
   }
 
