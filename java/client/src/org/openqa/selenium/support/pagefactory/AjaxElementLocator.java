@@ -40,6 +40,29 @@ import java.util.List;
 public class AjaxElementLocator extends DefaultElementLocator {
   protected final int timeOutInSeconds;
   private final Clock clock;
+  private static final int DEFAULT_TIMEOUT = 5;
+
+  public AjaxElementLocator(SearchContext context, AnnotationsHandler annotationsHandler) {
+      this(context, DEFAULT_TIMEOUT, annotationsHandler);
+  }
+
+  /**
+   * Main constructor.
+   *
+   * @param context            The context to use when finding the element
+   * @param timeOutInSeconds   How long to wait for the element to appear. Measured in seconds.
+   * @param annotationsHandler The annotations handler for locating element
+   */
+  public AjaxElementLocator(SearchContext context, int timeOutInSeconds, AnnotationsHandler annotationsHandler) {
+      this(new SystemClock(), context, timeOutInSeconds, annotationsHandler);
+  }
+
+  public AjaxElementLocator(Clock clock, SearchContext context, int timeOutInSeconds,
+                            AnnotationsHandler annotationsHandler) {
+      super(context, annotationsHandler);
+      this.timeOutInSeconds = timeOutInSeconds;
+      this.clock = clock;
+  }
 
   /**
    * Main constructor.
