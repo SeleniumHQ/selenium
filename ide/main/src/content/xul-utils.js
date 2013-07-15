@@ -47,7 +47,24 @@ var XulUtils = {
     },
 
 	atomService: Components.classes["@mozilla.org/atom-service;1"].
-		getService(Components.interfaces.nsIAtomService)
+		getService(Components.interfaces.nsIAtomService),
+
+  setProperty: function(props, prop) {
+    if (props) {
+      props.AppendElement(this.atomService.getAtom(prop));
+    } else {
+      return prop;
+    }
+  },
+
+  setPropertyRa: function(props, prop, propRa) {
+    if (props) {
+      props.AppendElement(this.atomService.getAtom(prop));
+    } else {
+      propRa.push(prop);
+    }
+  }
+
 };
 
 XulUtils.TreeViewHelper = classCreate();

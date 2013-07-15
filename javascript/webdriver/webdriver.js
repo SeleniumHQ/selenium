@@ -102,8 +102,8 @@ webdriver.WebDriver.attachToSession = function(executor, sessionId) {
  * Creates a new WebDriver session.
  * @param {!webdriver.CommandExecutor} executor The executor to create the new
  *     session with.
- * @param {!Object.<*>} desiredCapabilities The desired capabilities for the
- *     new session.
+ * @param {!webdriver.Capabilities} desiredCapabilities The desired
+ *     capabilities for the new session.
  * @return {!webdriver.WebDriver} The driver for the newly created session.
  */
 webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
@@ -296,14 +296,27 @@ webdriver.WebDriver.prototype.getSession = function() {
 
 
 /**
+ * @return {!webdriver.promise.Promise} A promise that will resolve with the
+ *     this instance's capabilities.
+ */
+webdriver.WebDriver.prototype.getCapabilities = function() {
+  return webdriver.promise.when(this.session_, function(session) {
+    return session.getCapabilities();
+  });
+};
+
+
+/**
  * Returns a promise for one of this driver's capabilities.
  * @param {string} name The name of the capability to query.
  * @return {!webdriver.promise.Promise} A promise that will resolve with the
  *     given capability once its value is ready.
+ * @deprecated Use {@link #getCapabilities()}; this function will be removed
+ *     in 2.35.0.
  */
 webdriver.WebDriver.prototype.getCapability = function(name) {
   return webdriver.promise.when(this.session_, function(session) {
-    return session.capabilities[name];
+    return session.getCapabilities().get(name);
   });
 };
 

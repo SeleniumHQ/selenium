@@ -179,15 +179,15 @@ objectExtend(SuiteTreeView.prototype, {
             var testCase = this.getTestSuite().tests[row];
             if (testCase.testResult) {
                 if (testCase.testResult == 'passed') {
-                    props.AppendElement(XulUtils.atomService.getAtom("commandPassed"));
+                    return XulUtils.setProperty(props, "commandPassed");
                 } else if (testCase.testResult == 'failed') {
-                    props.AppendElement(XulUtils.atomService.getAtom("commandFailed"));
+                    return XulUtils.setProperty(props, "commandFailed");
                 }
             }
         },
         getCellProperties: function(row, col, props) {
             if (row == this.currentTestCaseIndex) {
-                props.AppendElement(XulUtils.atomService.getAtom("currentTestCase"));
+                return XulUtils.setProperty(props, "currentTestCase");
             }
         },
 

@@ -197,11 +197,14 @@ function copyLibraries(outputDirPath, filePaths) {
   var seenSymbols = {};
   var seenFiles = {};
   var symbols = [];
+  var providedSymbols = [];
   filePaths.filter(function(path) {
     return !fs.statSync(path).isDirectory();
   }).forEach(function(path) {
+    providedSymbols = providedSymbols.concat(FILE_INFO[path].provides);
     symbols = symbols.concat(FILE_INFO[path].requires);
   });
+  providedSymbols.forEach(resolveDeps);
   symbols.forEach(resolveDeps);
 
   var depsPath = path.join(outputDirPath, 'lib', 'deps.js');
@@ -250,8 +253,34 @@ function copyLibraries(outputDirPath, filePaths) {
 function copyFile(src, dest) {
   createDirectoryIfNecessary(path.dirname(dest));
 
-  var contents = fs.readFileSync(src, 'utf8');
-  fs.writeFileSync(dest, contents, 'utf8');
+  var buffer = fs.readFileSync(src);
+  fs.writeFileSync(dest, buffer);
+}
+
+
+function copyDirectory(baseDir, dest, exclusions) {
+  createDirectoryIfNecessary(dest);
+  if (!fs.statSync(dest).isDirectory()) {
+    throw Error(dest + ' is not a directory!');
+  }
+
+  fs.readdirSync(path.resolve(baseDir)).
+      map(function(filePath) {
+        return path.join(baseDir, filePath);
+      }).
+      filter(function(filePath) {
+        return !exclusions.some(function(exclusion) {
+          return exclusion.test(filePath);
+        });
+      }).
+      forEach(function(srcFile) {
+        var destFile = path.join(dest, srcFile.substring(baseDir.length));
+        if (fs.statSync(srcFile).isDirectory()) {
+          copyDirectory(srcFile, destFile, exclusions);
+        } else {
+          copyFile(path.resolve(srcFile), destFile);
+        }
+      });
 }
 
 
@@ -270,7 +299,7 @@ function createDirectoryIfNecessary(dirPath) {
 }
 
 
-function copyResources(outputDirPath, resources) {
+function copyResources(outputDirPath, resources, exclusions) {
   resources.forEach(function(resource) {
     var parts = resource.split(':', 2);
     var src = path.resolve(parts[0]);
@@ -281,7 +310,12 @@ function copyResources(outputDirPath, resources) {
       dest = path.join(dest, 'lib');
     }
     dest = path.join(dest, parts[1]);
-    copyFile(src, dest);
+
+    if (fs.statSync(src).isDirectory()) {
+      copyDirectory(parts[0], dest, exclusions);
+    } else {
+      copyFile(src, dest);
+    }
   });
 }
 
@@ -315,7 +349,14 @@ function main() {
             'designating the source, and the second its destination. If ' +
             'the destination path is absolute, it is relative to the ' +
             'module root, otherwise it will be treated relative to the ' +
-            'lib/ directory.',
+            'lib/ directory. If the source refers to a directory, the ' +
+            'recursive contents of that directory will be copied to the ' +
+            'destination directory.',
+        list: true
+      }).
+      regex('exclude_resource', {
+        help: 'A pattern for files to exclude when copying ' +
+              'an entire directory of resources.',
         list: true
       });
   parser.parse();
@@ -326,7 +367,7 @@ function main() {
 
   copySrcs(options.src, options.output);
   copyLibraries(options.output, options.lib);
-  copyResources(options.output, options.resource);
+  copyResources(options.output, options.resource, options.exclude_resource);
 }
 
 

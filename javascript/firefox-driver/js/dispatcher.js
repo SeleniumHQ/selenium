@@ -97,45 +97,6 @@ Dispatcher.executeAs = function(name) {
 
 
 /**
- * Creates a special handler for translating a request for a new session to a
- * request understood by the legacy nsICommandProcessor.
- */
-Dispatcher.translateNewSession = function() {
-  if (!bot.userAgent.isProductVersion('3.5')) {
-    // Smooth
-    eval(Utils.loadUrl('resource://fxdriver/json2.js'));
-  }
-
-  return function(request, response) {
-    var requestObject = {
-      'name': 'newSession',
-      'parameters': JSON.parse(request.getBody())
-    };
-    var callback = function(jsonResponseString) {
-      var jsonResponse = JSON.parse(jsonResponseString);
-      // Going to need more granularity here I think.
-      if (jsonResponse.status != 0) {
-        response.sendError(Response.INTERNAL_ERROR,
-            jsonResponseString, 'application/json');
-      } else {
-        var url = request.getRequestUrl();
-        response.setStatus(Response.SEE_OTHER);
-        response.setHeader('Location',
-            url.scheme + '://' + url.host + ':' + url.hostPort + url.path + '/' +
-                jsonResponse.value);
-        response.commit();
-      }
-    };
-
-    // Dispatch the command.
-    Components.classes['@googlecode.com/webdriver/command-processor;1'].
-        getService(Components.interfaces.nsICommandProcessor).
-        execute(JSON.stringify(requestObject), callback);
-  };
-};
-
-
-/**
  * Initializes the command bindings for this dispatcher.
  * @private
  */
@@ -147,7 +108,7 @@ Dispatcher.prototype.init_ = function() {
       on(Request.Method.GET, Dispatcher.executeAs('getStatus'));
 
   this.bind_('/session').
-      on(Request.Method.POST, Dispatcher.translateNewSession());
+      on(Request.Method.POST, Dispatcher.executeAs('newSession'));
 
   this.bind_('/session/:sessionId').
       on(Request.Method.GET, Dispatcher.executeAs('getSessionCapabilities')).

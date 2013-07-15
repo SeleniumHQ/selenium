@@ -32,5 +32,5 @@ goog.require('bot.inject');
 webdriver.iphone.executeAsyncScript = function(fn, args, timeout) {
   bot.inject.executeAsyncScript(fn, args, timeout, function(data) {
     window.location.href = 'webdriver://executeAsyncScript?' + data;
-  }, window, true);
+  }, true, window);
 };

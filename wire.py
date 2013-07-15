@@ -401,16 +401,6 @@ def main():
 
   error_codes = [
       ErrorCode(0, 'Success', 'The command executed successfully.'),
-#      ErrorCode(1, 'IndexOutOfBounds', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
-#      ErrorCode(2, 'NoCollection', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
-#      ErrorCode(3, 'NoString', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
-#      ErrorCode(4, 'NoStringLength', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
-#      ErrorCode(5, 'NoStringWrapper', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
       ErrorCode(6, 'NoSuchDriver', 'A session is either terminated or not started'),
       ErrorCode(7, 'NoSuchElement', 'An element could not be located on the \
 page using the given search parameters.'),
@@ -428,24 +418,14 @@ completed because the element is in an invalid state (e.g. attempting to \
 click a disabled element).'),
       ErrorCode(13, 'UnknownError', 'An unknown server-side error occurred \
 while processing the command.'),
-#      ErrorCode(14, 'ExpectedError', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
       ErrorCode(15, 'ElementIsNotSelectable', 'An attempt was made to select \
 an element that cannot be selected.'),
-#      ErrorCode(16, 'NoSuchDocument', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
       ErrorCode(17, 'JavaScriptError', 'An error occurred while executing user \
 supplied !JavaScript.'),
-#      ErrorCode(18, 'NoScriptResult', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
       ErrorCode(19, 'XPathLookupError', 'An error occurred while searching for \
 an element by XPath.'),
-#      ErrorCode(20, 'NoSuchCollection', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
       ErrorCode(21, 'Timeout', 'An operation did not complete before its \
 timeout expired.'),
-#      ErrorCode(22, 'NullPointer', 'This is probably an unused \
-#implementation detail of an old version of the IEDriver.'),
       ErrorCode(23, 'NoSuchWindow', 'A request to switch to a different window \
 could not be satisfied because the window could not be found.'),
       ErrorCode(24, 'InvalidCookieDomain', 'An illegal attempt was made to set \
@@ -525,9 +505,9 @@ to be created.''').
                        '{object}',
                        'An object describing the session\'s '
                        '[#Desired_Capabilities required capabilities] (Optional).').
-      SetReturnType(None,
-                    'A `303 See Other` redirect to `/session/:sessionId`, where'
-                    ' `:sessionId` is the ID of the newly created session.').
+      SetReturnType('{object}',
+                    'An object describing the session\'s '
+                    '[#Actual_Capabilities capabilities].').
       AddError('SessionNotCreatedException', 'If a required capability could not be set.'))
 
   resources.append(

@@ -227,7 +227,7 @@ function Logger() {
   this.observers = [];
 
   this.exception = function(exception) {
-    var msg = "Unexpected Exception: " + describe(exception, ', ');
+    var msg = "Unexpected Exception: " + exception + ". " + describe(exception, ', ');
     this.error(msg);
   }
 

@@ -21,13 +21,74 @@ limitations under the License.
   <script>
     goog.require('goog.testing.jsunit');
     goog.require('webdriver.test.testutil');
+    goog.require('webdriver.testing.assert');
     goog.require('webdriver.testing.asserts');
   </script>
   <script>
+    var assert = webdriver.testing.assert;
     var result;
 
     function setUp() {
       result = webdriver.test.testutil.callbackPair();
+    }
+
+
+    function testAssertion_nonPromiseValue_valueMatches() {
+      assert('foo').equalTo('foo');
+      // OK if it does not throw.
+    }
+
+
+    function testAssertion_nonPromiseValue_notValueMatches() {
+      var a = assert('foo');
+      assertThrows(goog.bind(a.equalTo, a, 'bar'));
+    }
+
+
+    function testAssertion_promiseValue_valueMatches() {
+      var d = new webdriver.promise.Deferred();
+      assert(d).equalTo('foo').then(result.callback, result.errback);
+      result.assertNeither();
+      d.fulfill('foo');
+      result.assertCallback();
+    }
+
+
+    function testAssertion_promiseValue_notValueMatches() {
+      var d = new webdriver.promise.Deferred();
+      assert(d).equalTo('foo').then(result.callback, result.errback);
+      result.assertNeither();
+      d.fulfill('bar');
+      result.assertErrback();
+    }
+
+
+    function testAssertion_promiseValue_promiseRejected() {
+      var d = new webdriver.promise.Deferred();
+      assert(d).equalTo('foo').then(result.callback, result.errback);
+      result.assertNeither();
+      d.reject();
+      result.assertErrback();
+    }
+
+
+    function testAssertion_decoration() {
+      assert('foo').is.equalTo('foo');
+      // Ok if no throws.
+    }
+
+
+    function testAssertion_negation() {
+      var a = assert('foo');
+
+      a.not.equalTo('bar');  // OK if this does not throw.
+      a.is.not.equalTo('bar');  // OK if this does not throw.
+
+      var notA = a.not;
+      assertThrows(goog.bind(notA.equalTo, notA, 123));
+
+      notA = a.is.not;
+      assertThrows(goog.bind(notA.equalTo, notA, 123));
     }
 
 

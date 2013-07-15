@@ -28,6 +28,10 @@ js_library(name = "webdriver_lib",
     "//javascript/atoms:json",
   ])
 
+js_library(name = "asserts_lib",
+  srcs = ["testing/asserts.js"],
+  deps = [":webdriver_lib"])
+
 js_library(name = "test_lib",
   srcs = [
     "testing/*.js",

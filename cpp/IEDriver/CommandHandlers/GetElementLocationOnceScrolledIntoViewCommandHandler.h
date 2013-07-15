@@ -62,8 +62,19 @@ class GetElementLocationOnceScrolledIntoViewCommandHandler : public IECommandHan
           bool browser_appears_before_ie8 = executor.browser_version() < 8 || DocumentHost::GetDocumentMode(doc) <= 7;
           bool is_quirks_mode = !DocumentHost::IsStandardsMode(doc);
           if (browser_appears_before_ie8 && !is_quirks_mode) {
-            location.x -= 2;
-            location.y -= 2;
+            // NOTE: For IE 6 and 7 in standards mode, each frame enclosing the document
+            // containing the element has a 2-pixel offset that must be accounted for.
+            int frame_offset = 2 * static_cast<int>(frame_locations.size());
+
+            // NOTE: For IE 6 and 7 in standards mode, elements with "display:none"
+            // in the CSS style should not have a 2-pixel offset.
+            std::string display_value = "";
+            element_wrapper->GetCssPropertyValue("display", &display_value);
+            if (display_value != "none") {
+              frame_offset += 2;
+            }
+            location.x -= frame_offset;
+            location.y -= frame_offset;
           }
           Json::Value response_value;
           response_value["x"] = location.x;

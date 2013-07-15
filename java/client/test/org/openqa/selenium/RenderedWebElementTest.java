@@ -123,8 +123,9 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE,  OPERA},
-      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers. Firefox: hover is broken again.")
+      value = {HTMLUNIT, IPHONE,  OPERA, SAFARI},
+      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers. Firefox: hover is broken again.",
+      issues = {4136})
   @Test
   public void testShouldAllowUsersToHoverOverElements() {
     assumeTrue(hasInputDevices());
@@ -151,8 +152,9 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE, OPERA},
-      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
+      value = {HTMLUNIT, IPHONE, OPERA, SAFARI},
+      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers",
+      issues = {4136})
   @Test
   public void testHoverPersists() throws Exception {
     assumeTrue(hasInputDevices());
@@ -249,7 +251,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({OPERA, OPERA_MOBILE})
+  @Ignore(value = {OPERA, OPERA_MOBILE, SAFARI}, issues = {4136})
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     assumeTrue(hasInputDevices());
 
@@ -307,6 +309,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = SAFARI, issues = {4136})
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
     assumeTrue(hasInputDevices());
 
@@ -326,8 +329,9 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, OPERA},
-      reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {HTMLUNIT, OPERA, SAFARI},
+      reason = "Advanced mouse actions only implemented in rendered browsers",
+      issues = {4136})
   @Test
   public void testMovingMouseByRelativeOffset() {
     assumeTrue(hasInputDevices());
@@ -347,8 +351,9 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT},
-      reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {HTMLUNIT, SAFARI},
+      reason = "Advanced mouse actions only implemented in rendered browsers",
+      issues = {4136})
   @Test
   public void testMovingMouseToRelativeElementOffset() {
     assumeTrue(hasInputDevices());
@@ -365,8 +370,9 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT},
-      reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {HTMLUNIT, SAFARI},
+      reason = "Advanced mouse actions only implemented in rendered browsers",
+      issues = {4136})
   @Test
   public void testMovingMouseToRelativeZeroElementOffset() {
     assumeTrue(hasInputDevices());
@@ -384,7 +390,9 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NeedsFreshDriver
-  @Ignore(value = {HTMLUNIT, OPERA}, reason = "Advanced mouse actions only implemented in rendered browsers")
+  @Ignore(value = {HTMLUNIT, OPERA, SAFARI},
+          reason = "Advanced mouse actions only implemented in rendered browsers",
+          issues = {4136})
   @Test
   public void testMoveRelativeToBody() {
     assumeTrue(hasInputDevices());

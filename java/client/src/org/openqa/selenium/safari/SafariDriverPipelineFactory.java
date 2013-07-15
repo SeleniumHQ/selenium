@@ -17,9 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.safari;
 
+import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.Channels;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.handler.codec.http.HttpChunkAggregator;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
@@ -30,20 +34,33 @@ class SafariDriverPipelineFactory implements ChannelPipelineFactory {
   
   private final int port;
   private final BlockingQueue<SafariDriverConnection> connectionQueue;
+  private final ChannelGroup channelGroup;
 
   SafariDriverPipelineFactory(int port,
-      BlockingQueue<SafariDriverConnection> connectionQueue) {
+      BlockingQueue<SafariDriverConnection> connectionQueue,
+      ChannelGroup channelGroup) {
     this.port = port;
     this.connectionQueue = connectionQueue;
+    this.channelGroup = channelGroup;
   }
 
   @Override
   public ChannelPipeline getPipeline() throws Exception {
     ChannelPipeline pipeline = Channels.pipeline();
+    pipeline.addLast("connection handler", new ConnectionHandler());
     pipeline.addLast("decoder", new HttpRequestDecoder());
     pipeline.addLast("aggregator", new HttpChunkAggregator(65536));
     pipeline.addLast("encoder", new HttpResponseEncoder());
     pipeline.addLast("handler", new SafariDriverChannelHandler(port, connectionQueue));
     return pipeline;
+  }
+
+  private class ConnectionHandler extends SimpleChannelUpstreamHandler {
+
+    @Override
+    public void channelOpen(ChannelHandlerContext ctx, ChannelStateEvent e) {
+      channelGroup.add(e.getChannel());
+      ctx.sendUpstream(e);
+    }
   }
 }

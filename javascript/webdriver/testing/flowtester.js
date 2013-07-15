@@ -169,6 +169,9 @@ webdriver.testing.promise.FlowTester.prototype.verifySuccess = function(
         messages = goog.array.concat(
             messages, 'Uncaught errors for flow #' + index,
             goog.array.map(record.errors, function(error) {
+              if (!error) {
+                error = error + '';
+              }
               return error.stack || error.message || String(error);
             }));
       }

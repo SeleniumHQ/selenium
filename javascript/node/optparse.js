@@ -237,6 +237,9 @@ function parseString(value) { return value; }
 parseString['default'] = '';
 
 
+function parseRegex(value) { return new RegExp(value); }
+
+
 
 /**
  * A command line option parser.  Will automatically parse the command line
@@ -362,6 +365,17 @@ function OptionParser() {
    */
   this.string = function(name, opt_spec) {
     return this.addOption(name, parseString, opt_spec);
+  };
+
+  /**
+   * Defines a regular expression based option.
+   * @param {string} name The name of the option.
+   * @param {Object=} opt_spec The option spec.
+   * @return {!OptionParser} A self reference.
+   * @this {OptionParser}
+   */
+  this.regex = function(name, opt_spec) {
+    return this.addOption(name, parseRegex, opt_spec);
   };
 
   /**

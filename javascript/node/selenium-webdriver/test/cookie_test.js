@@ -15,13 +15,11 @@
 
 'use strict';
 
-require('./lib/_bootstrap')(module);
-
 var assert = require('assert'),
     url = require('url');
 
-var fileserver = require('./lib/fileserver'),
-    test = require('./lib/testbase'),
+var test = require('../lib/test'),
+    fileserver = require('../lib/test/fileserver'),
     Browser = test.Browser,
     Pages = test.Pages;
 
