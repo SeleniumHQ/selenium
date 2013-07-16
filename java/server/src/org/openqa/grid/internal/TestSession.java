@@ -34,15 +34,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
+import org.apache.http.HeaderIterator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.openqa.grid.common.exception.ClientGoneException;
 import org.openqa.grid.common.exception.GridException;
@@ -55,7 +59,12 @@ import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
 import org.openqa.selenium.io.IOUtils;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
+import com.google.common.io.Closeables;
+import com.google.common.net.MediaType;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
@@ -224,9 +233,10 @@ public class TestSession {
       response.setStatus(statusCode);
       processResponseHeaders(request, response, slot.getRemoteURL(), proxyResponse);
 
+      byte[] consumedNewWebDriverSessionBody = null;
       if (statusCode != HttpServletResponse.SC_INTERNAL_SERVER_ERROR &&
           statusCode != HttpServletResponse.SC_NOT_FOUND) {
-        updateHubIfNewWebDriverSession(request, proxyResponse);
+        consumedNewWebDriverSessionBody = updateHubIfNewWebDriverSession(request, proxyResponse);
       }
       if (newSessionRequest && statusCode == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
         removeIncompleteNewSessionRequest();
@@ -239,15 +249,19 @@ public class TestSession {
       byte[] contentBeingForwarded = null;
       if (responseBody != null) {
         try {
-          InputStream in = responseBody.getContent();
+          InputStream in;
+          if (consumedNewWebDriverSessionBody == null) {
+            in = responseBody.getContent();
+            if (request.getRequestType() == RequestType.START_SESSION
+                && request instanceof LegacySeleniumRequest) {
+              res = getResponseUtf8Content(in);
 
-          if (request.getRequestType() == RequestType.START_SESSION
-              && request instanceof LegacySeleniumRequest) {
-            res = getResponseUtf8Content(in);
+              updateHubNewSeleniumSession(res);
 
-            updateHubNewSeleniumSession(res);
-
-            in = new ByteArrayInputStream(res.getBytes("UTF-8"));
+              in = new ByteArrayInputStream(res.getBytes("UTF-8"));
+            }
+          } else {
+            in = new ByteArrayInputStream(consumedNewWebDriverSessionBody);
           }
 
           final byte[] bytes = drainInputStream(in);
@@ -294,18 +308,54 @@ public class TestSession {
     setExternalKey(key);
   }
 
-  private void updateHubIfNewWebDriverSession(SeleniumBasedRequest request,
-                                              HttpResponse proxyResponse) {
+  private byte[] updateHubIfNewWebDriverSession(
+      SeleniumBasedRequest request, HttpResponse proxyResponse) throws IOException {
+    byte[] consumedData = null;
     if (request.getRequestType() == RequestType.START_SESSION
         && request instanceof WebDriverRequest) {
       Header h = proxyResponse.getFirstHeader("Location");
       if (h == null) {
-        throw new GridException(
-            "new session request for webdriver should contain a location header with the session.");
+        if (isSuccessJsonResponse(proxyResponse) && proxyResponse.getEntity() != null) {
+          InputStream stream = proxyResponse.getEntity().getContent();
+          consumedData = ByteStreams.toByteArray(stream);
+          stream.close();
+
+          String contentString = new String(consumedData, Charsets.UTF_8);
+          ExternalSessionKey key = ExternalSessionKey.fromJsonResponseBody(contentString);
+          if (key == null) {
+            throw new GridException(
+                "webdriver new session JSON response body did not contain a session ID");
+          }
+          setExternalKey(key);
+          return consumedData;
+        } else {
+          throw new GridException(
+              "new session request for webdriver should contain a location header "
+              + "or an 'application/json;charset=UTF-8' response body with the session ID.");
+        }
       }
       ExternalSessionKey key = ExternalSessionKey.fromWebDriverRequest(h.getValue());
       setExternalKey(key);
     }
+    return consumedData;
+  }
+
+  private static boolean isSuccessJsonResponse(HttpResponse response) {
+    if (response.getStatusLine().getStatusCode() == HttpServletResponse.SC_OK) {
+      for (Header header : response.getHeaders("Content-Type")) {
+        MediaType type;
+        try {
+          type = MediaType.parse(header.getValue());
+        } catch (IllegalArgumentException ignored) {
+          continue;
+        }
+
+        if (MediaType.JSON_UTF_8.is(type)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private HttpResponse sendRequestToNode(HttpRequest proxyRequest) throws ClientProtocolException,
