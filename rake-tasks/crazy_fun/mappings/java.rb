@@ -521,6 +521,10 @@ module CrazyFunJava
                 ant.sysproperty :key => 'webdriver.chrome.binary', :value => chrome
               end
 
+              if ipv4only?
+                ant.sysproperty :key => 'java.net.preferIPv4Stack', :value => 'true'
+              end
+
               # Log levels can be any of {'DEBUG', 'INFO', 'WARNING', 'ERROR'}
               levels = Array.[]("INFO", "DEBUG", "WARNING", "ERROR")
               if log_level
@@ -586,6 +590,11 @@ module CrazyFunJava
 
     def chrome
       return ENV['chrome']
+    end
+
+    def ipv4only?
+      # we set ipv4only true if the commandline argument is set and it is not 'false'
+      !([nil, 'false'].include? ENV['ipv4only'])
     end
 
     def leave_running?
