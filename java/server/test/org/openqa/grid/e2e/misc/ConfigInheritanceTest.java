@@ -48,7 +48,7 @@ public class ConfigInheritanceTest {
 
     SelfRegisteringRemote remote =
         GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
-    remote.addBrowser(DesiredCapabilities.firefox(), 1);
+    remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     remote.getConfiguration().put("A2", "proxyA2");
     remote.getConfiguration().put("B2", 50);
 

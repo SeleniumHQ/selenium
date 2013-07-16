@@ -34,7 +34,6 @@ import org.junit.Test;
 
 import static org.openqa.selenium.TestWaiter.waitFor;
 
-//@Test(groups = {"slow", "firefox"})
 public class NodeGoingDownAndUpTest {
 
   private static Hub hub;

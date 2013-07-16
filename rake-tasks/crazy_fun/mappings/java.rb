@@ -547,6 +547,10 @@ module CrazyFunJava
                 ant.sysproperty :key => 'webdriver.remote.shorten_log_messages', :value => 'true'
               end
 
+              if grid_test_browser
+                ant.sysproperty :key => 'webdriver.gridtest.browser', :value => grid_test_browser
+              end
+
               if (args[:args])
                 ant.jvmarg(:line => args[:args])
               end
@@ -605,6 +609,10 @@ module CrazyFunJava
     def shorten_log_messages?
       # we set shorten_log_messages true if the commandline argument is set and it is not 'false'
       !([nil, 'false'].include? ENV['shortenlogmessages'])
+    end
+
+    def grid_test_browser
+      return ENV['gridtestbrowser']
     end
 
   end

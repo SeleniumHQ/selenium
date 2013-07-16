@@ -60,10 +60,24 @@ public class GridTestHelper {
     DesiredCapabilities firefoxOnSeleniumCapability = new DesiredCapabilities();
     firefoxOnSeleniumCapability.setBrowserName("*firefox");
     firefoxOnSeleniumCapability.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,
-        SeleniumProtocol.Selenium);
+                                              SeleniumProtocol.Selenium);
     return firefoxOnSeleniumCapability;
   }
 
+  public static DesiredCapabilities getFirefoxCapability() {
+    return DesiredCapabilities.firefox();
+  }
+
+  public static DesiredCapabilities getDefaultBrowserCapability() {
+    String browser = System.getProperty("webdriver.gridtest.browser");
+    if (browser != null) {
+      DesiredCapabilities caps = new DesiredCapabilities();
+      caps.setBrowserName(browser);
+      return caps;
+    } else {
+      return DesiredCapabilities.firefox();
+    }
+  }
 
   public static Hub getHub() throws Exception {
     GridHubConfiguration config = new GridHubConfiguration();
@@ -78,9 +92,9 @@ public class GridTestHelper {
     return hub;
   }
 
-  public static void getRemoteWebDriver(DesiredCapabilities ff, Hub hub)
+  public static void getRemoteWebDriver(DesiredCapabilities caps, Hub hub)
       throws MalformedURLException {
-    new RemoteWebDriver(getGridDriver(hub), ff);
+    new RemoteWebDriver(getGridDriver(hub), caps);
   }
 
   public static URL getGridDriver(Hub hub) throws MalformedURLException {

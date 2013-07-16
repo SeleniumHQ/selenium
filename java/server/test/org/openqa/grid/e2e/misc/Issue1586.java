@@ -46,7 +46,7 @@ public class Issue1586 {
     // register a webdriver
     SelfRegisteringRemote webdriver =
         GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
-    webdriver.addBrowser(DesiredCapabilities.firefox(), 1);
+    webdriver.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     webdriver.startRemoteServer();
     webdriver.sendRegistrationRequest();
 
@@ -56,10 +56,9 @@ public class Issue1586 {
   // extremely slow test, for issue1586. Excluding from regression.
   @Test
   public void test() throws MalformedURLException {
-    DesiredCapabilities ff = DesiredCapabilities.firefox();
     WebDriver driver = null;
     try {
-      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/grid/driver"), ff);
+      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/grid/driver"), GridTestHelper.getDefaultBrowserCapability());
       for (int i = 0; i < 20; i++) {
         driver.get("http://code.google.com/p/selenium/");
         WebElement keywordInput = driver.findElement(By.name("q"));

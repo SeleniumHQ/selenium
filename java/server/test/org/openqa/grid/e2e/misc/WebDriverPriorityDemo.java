@@ -48,7 +48,7 @@ public class WebDriverPriorityDemo {
   private static Hub hub;
   private static URL hubURL;
 
-  // start a small grid that only has 1 testing slot : firefox
+  // start a small grid that only has 1 testing slot : htmlunit
   @BeforeClass
   public static void prepare() throws Exception {
 
@@ -63,7 +63,7 @@ public class WebDriverPriorityDemo {
 
     SelfRegisteringRemote remote =
             GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.NODE);
-    remote.addBrowser(DesiredCapabilities.firefox(), 1);
+    remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
 
     remote.startRemoteServer();
     remote.setMaxConcurrent(1);
@@ -94,13 +94,13 @@ public class WebDriverPriorityDemo {
 
   static WebDriver runningOne;
 
-  // mark the grid 100% busy = having 1 firefox test running.
+  // mark the grid 100% busy = having 1 browser test running.
   @Test
   public void test1StartDriver() throws MalformedURLException {
-    DesiredCapabilities ff = DesiredCapabilities.firefox();
-    runningOne = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
-    runningOne.get(hubURL + "/grid/console");
-    Assert.assertEquals(runningOne.getTitle(), "Grid Console");
+    DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
+    runningOne = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), caps);
+    runningOne.get(hubURL + "/grid/old/console");
+    Assert.assertEquals(runningOne.getTitle(), "Grid overview");
 
   }
 
@@ -110,9 +110,9 @@ public class WebDriverPriorityDemo {
     for (int i = 0; i < 5; i++) {
       new Thread(new Runnable() { // Thread safety reviewed
         public void run() {
-          DesiredCapabilities ff = DesiredCapabilities.firefox();
+          DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
           try {
-            new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+            new RemoteWebDriver(new URL(hubURL + "/grid/driver"), caps);
           } catch (MalformedURLException e) {
             e.printStackTrace();
           }
@@ -134,13 +134,13 @@ public class WebDriverPriorityDemo {
     Assert.assertEquals(hub.getRegistry().getNewSessionRequestCount(), 5);
     Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
 
-    final DesiredCapabilities ff = DesiredCapabilities.firefox();
-    ff.setCapability("_important", true);
+    final DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
+    caps.setCapability("_important", true);
 
     new Thread(new Runnable() { // Thread safety reviewed
       public void run() {
         try {
-          importantOne = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+          importantOne = new RemoteWebDriver(new URL(hubURL + "/grid/driver"), caps);
           importantOneStarted = true;
         } catch (MalformedURLException e) {
           throw new RuntimeException("bug", e);
@@ -157,9 +157,9 @@ public class WebDriverPriorityDemo {
     for (int i = 0; i < 5; i++) {
       new Thread(new Runnable() { // Thread safety reviewed
         public void run() {
-          DesiredCapabilities ff = DesiredCapabilities.firefox();
+          DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
           try {
-            new RemoteWebDriver(new URL(hubURL + "/grid/driver"), ff);
+            new RemoteWebDriver(new URL(hubURL + "/grid/driver"), caps);
           } catch (MalformedURLException e) {
             e.printStackTrace();
           }
@@ -177,7 +177,7 @@ public class WebDriverPriorityDemo {
       // queue = 5 + 1 important + 5.
       Assert.assertEquals(hub.getRegistry().getNewSessionRequestCount(), 11);
 
-      // 1 firefox still running
+      // 1 browser still running
       Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
 
       // closing the running test.
@@ -195,8 +195,8 @@ public class WebDriverPriorityDemo {
         Thread.sleep(250);
         System.out.println("waiting for browser to start");
       }
-      importantOne.get(hubURL + "/grid/console");
-      Assert.assertEquals(importantOne.getTitle(), "Grid Console");
+      importantOne.get(hubURL + "/grid/old/console");
+      Assert.assertEquals(importantOne.getTitle(), "Grid overview");
     } finally {
       // cleaning the queue to avoid having some browsers left over after
       // the test

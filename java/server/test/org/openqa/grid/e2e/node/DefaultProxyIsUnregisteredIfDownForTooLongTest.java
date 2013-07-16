@@ -46,7 +46,7 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
 
     // unregister the proxy is it's down for more than 2 sec in a row.
     remote.getConfiguration().put(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER, 2000);
-    remote.addBrowser(DesiredCapabilities.firefox(), 1);
+    remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     remote.startRemoteServer();
     remote.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);

@@ -57,7 +57,7 @@ public class BrowserTimeOutTest {
     // register a selenium 1
     node = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     node.addBrowser(GridTestHelper.getSelenium1FirefoxCapability(), 1);
-    node.addBrowser(DesiredCapabilities.firefox(), 1);
+    node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     node.startRemoteServer();
     node.sendRegistrationRequest();
 
@@ -68,8 +68,8 @@ public class BrowserTimeOutTest {
   @Test
   public void testWebDriverTimesOut() throws InterruptedException, MalformedURLException {
     String url = "http://" + hub.getHost() + ":" + hub.getPort() + "/grid/admin/SlowServlet";
-    DesiredCapabilities ff = DesiredCapabilities.firefox();
-    WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), ff);
+    DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
+    WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
 
     try {
       driver.get(url);
