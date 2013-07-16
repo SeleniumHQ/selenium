@@ -51,13 +51,9 @@ void IESession::Initialize(void* init_params) {
 
   SessionParameters* params = reinterpret_cast<SessionParameters*>(init_params);
   int port = params->port;
-  std::string ie_switches = params->ie_switches;
-  bool force_createprocess_api = params->force_createprocess_api;
 
   IECommandExecutorThreadContext thread_context;
   thread_context.port = port;
-  thread_context.force_createprocess_api = force_createprocess_api;
-  thread_context.ie_switches = ie_switches;
   thread_context.hwnd = NULL;
 
   unsigned int thread_id = 0;

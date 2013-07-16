@@ -18,8 +18,6 @@ webdriver::Server* StartServer(int port,
                                const std::wstring& host,
                                const std::wstring& log_level,
                                const std::wstring& log_file,
-                               const bool force_createprocess,
-                               const std::wstring& ie_switches,
                                const std::wstring& version) {
   LOG(TRACE) << "Entering StartServer";
   if (server == NULL) {
@@ -29,13 +27,10 @@ webdriver::Server* StartServer(int port,
     std::string converted_log_level = webdriver::StringUtilities::ToString(log_level);
     std::string converted_log_file = webdriver::StringUtilities::ToString(log_file);
     std::string converted_version = webdriver::StringUtilities::ToString(version);
-    std::string converted_ie_switches = webdriver::StringUtilities::ToString(ie_switches);    
     server = new webdriver::IEServer(port,
                                      converted_host,
                                      converted_log_level,
                                      converted_log_file,
-                                     force_createprocess,
-                                     converted_ie_switches,
                                      converted_version);
     if (!server->Start()) {
       LOG(TRACE) << "Starting of IEServer is failed";

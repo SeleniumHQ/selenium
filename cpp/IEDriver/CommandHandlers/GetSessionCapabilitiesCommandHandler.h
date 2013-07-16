@@ -52,12 +52,14 @@ class GetSessionCapabilitiesCommandHandler : public IECommandHandler {
     capabilities[ENABLE_PERSISTENT_HOVER_CAPABILITY] = executor.enable_persistent_hover();
     capabilities[UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY] = executor.unexpected_alert_behavior();
     capabilities[ELEMENT_SCROLL_BEHAVIOR_CAPABILITY] = executor.input_manager()->scroll_behavior();
-    capabilities[IGNORE_PROTECTED_MODE_CAPABILITY] = executor.ignore_protected_mode_settings();
-    capabilities[IGNORE_ZOOM_SETTING_CAPABILITY] = executor.ignore_zoom_setting();
-    capabilities[INITIAL_BROWSER_URL_CAPABILITY] = executor.initial_browser_url();
+    capabilities[IGNORE_PROTECTED_MODE_CAPABILITY] = executor.browser_factory()->ignore_protected_mode_settings();
+    capabilities[IGNORE_ZOOM_SETTING_CAPABILITY] = executor.browser_factory()->ignore_zoom_setting();
+    capabilities[INITIAL_BROWSER_URL_CAPABILITY] = executor.browser_factory()->initial_browser_url();
     capabilities[ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY] = executor.enable_element_cache_cleanup();
     capabilities[REQUIRE_WINDOW_FOCUS_CAPABILITY] = executor.input_manager()->require_window_focus();
-    capabilities[BROWSER_ATTACH_TIMEOUT_CAPABILITY] = executor.browser_attach_timeout();
+    capabilities[BROWSER_ATTACH_TIMEOUT_CAPABILITY] = executor.browser_factory()->browser_attach_timeout();
+    capabilities[BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY] = executor.browser_factory()->browser_command_line_switches();
+    capabilities[FORCE_CREATE_PROCESS_API_CAPABILITY] = executor.browser_factory()->force_createprocess_api();
     response->SetSuccessResponse(capabilities);
   }
 };

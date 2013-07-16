@@ -21,14 +21,10 @@ IEServer::IEServer(int port,
                    const std::string& host,
                    const std::string& log_level,
                    const std::string& log_file,
-                   const bool force_createprocess,
-                   const std::string& ie_switches,
                    const std::string& version) : Server(port, host, log_level, log_file) {
   LOG(TRACE) << "Entering IEServer::IEServer";
 
   this->version_ = version;
-  this->force_createprocess_ = force_createprocess;
-  this->ie_switches_ = ie_switches;
 }
 
 IEServer::~IEServer(void) {
@@ -39,8 +35,6 @@ SessionHandle IEServer::InitializeSession() {
   SessionHandle session_handle(new IESession());
   SessionParameters params;
   params.port = this->port();
-  params.force_createprocess_api = this->force_createprocess_;
-  params.ie_switches = this->ie_switches_;
   session_handle->Initialize(reinterpret_cast<void*>(&params));
   return session_handle;
 }

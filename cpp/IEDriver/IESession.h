@@ -27,8 +27,6 @@ namespace webdriver {
 // Structure to be used for storing session initialization parameters
 struct SessionParameters {
   int port;
-  bool force_createprocess_api;
-  std::string ie_switches;
 };
 
 class IESession : public Session {

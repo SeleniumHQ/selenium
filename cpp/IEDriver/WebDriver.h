@@ -28,8 +28,6 @@ EXPORT webdriver::Server* StartServer(int port,
                                       const std::wstring& host,
                                       const std::wstring& log_level,
                                       const std::wstring& log_file,
-                                      const bool force_createprocess,
-                                      const std::wstring& ie_switches,
                                       const std::wstring& version);
 EXPORT void StopServer(void);
 

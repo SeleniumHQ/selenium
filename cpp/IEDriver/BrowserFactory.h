@@ -69,23 +69,39 @@ struct ProcessWindowInfo {
   IWebBrowser2* pBrowser;
 };
 
+struct BrowserFactorySettings {
+  bool ignore_protected_mode_settings;
+  bool ignore_zoom_setting;
+  bool force_create_process_api;
+  int browser_attach_timeout;
+  std::string initial_browser_url;
+  std::string browser_command_line_switches;
+};
+
 class BrowserFactory {
  public:
   BrowserFactory(void);
   virtual ~BrowserFactory(void);
 
-  DWORD LaunchBrowserProcess(const std::string& initial_url,
-                             const bool ignore_protected_mode_settings,
-                             const bool force_createprocess_api,
-                             const std::string& ie_switches,
-                             std::string* error_message);
+  void Initialize(BrowserFactorySettings settings);
+
+  DWORD LaunchBrowserProcess(std::string* error_message);
   IWebBrowser2* CreateBrowser();
   bool AttachToBrowser(ProcessWindowInfo* procWinInfo,
-                       const int timeout_in_milliseconds,
-                       const bool ignore_zoom_setting,
                        std::string* error_message);
   bool GetDocumentFromWindowHandle(HWND window_handle,
                                    IHTMLDocument2** document);
+
+  bool ignore_protected_mode_settings(void) const { return this->ignore_protected_mode_settings_; }
+  bool ignore_zoom_setting(void) const { return this->ignore_zoom_setting_; }
+  bool force_createprocess_api(void) const { return this->force_createprocess_api_; }
+  int browser_attach_timeout(void) const { return this->browser_attach_timeout_; }
+  std::string initial_browser_url(void) const {
+    return StringUtilities::ToString(this->initial_browser_url_);
+  }
+  std::string browser_command_line_switches(void) const {
+    return StringUtilities::ToString(this->browser_command_line_switches_);
+  }
 
   int browser_version(void) const { return this->ie_major_version_; }
   int windows_major_version(void) const { return this->windows_major_version_; }
@@ -109,15 +125,19 @@ class BrowserFactory {
   int GetZoneProtectedModeSetting(const HKEY key_handle,
                                   const std::wstring& zone_subkey_name);
   int GetZoomLevel(IHTMLDocument2* document, IHTMLWindow2* window);
-  void LaunchBrowserUsingCreateProcess(const std::string& initial_url,
-                                       const std::string& command_line_switches,
-                                       PROCESS_INFORMATION* proc_info,
+  void LaunchBrowserUsingCreateProcess(PROCESS_INFORMATION* proc_info,
                                        std::string* error_message);
-  void LaunchBrowserUsingIELaunchURL(const std::string& initial_url,
-                                     PROCESS_INFORMATION* proc_info,
+  void LaunchBrowserUsingIELaunchURL(PROCESS_INFORMATION* proc_info,
                                      std::string* error_message);
   bool IsIELaunchURLAvailable(void);
   bool IsCreateProcessApiAvailable(void);
+
+  bool ignore_protected_mode_settings_;
+  bool ignore_zoom_setting_;
+  bool force_createprocess_api_;
+  std::wstring browser_command_line_switches_;
+  std::wstring initial_browser_url_;
+  int browser_attach_timeout_;
 
   int ie_major_version_;
   int windows_major_version_;
