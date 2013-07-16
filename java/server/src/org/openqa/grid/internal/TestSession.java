@@ -34,19 +34,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
-import org.apache.http.HeaderIterator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
-import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.openqa.grid.common.exception.ClientGoneException;
 import org.openqa.grid.common.exception.GridException;
@@ -61,10 +57,7 @@ import org.openqa.selenium.io.IOUtils;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
 import com.google.common.net.MediaType;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
