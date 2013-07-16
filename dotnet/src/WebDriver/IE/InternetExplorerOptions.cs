@@ -96,14 +96,18 @@ namespace OpenQA.Selenium.IE
         private const string ElementScrollBehaviorCapability = "elementScrollBehavior";
         private const string RequireWindowFocusCapability = "requireWindowFocus";
         private const string BrowserAttachTimeoutCapability = "browserAttachTimeout";
+        private const string BrowserCommandLineSwitchesCapability = "ie.browserCommandLineSwitches";
+        private const string ForceCreateProcessApiCapability = "ie.forceCreateProcessApi";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
         private bool enableNativeEvents = true;
         private bool requireWindowFocus;
         private bool enablePersistentHover = true;
+        private bool forceCreateProcessApi;
         private TimeSpan browserAttachTimeout = TimeSpan.MinValue;
         private string initialBrowserUrl = string.Empty;
+        private string browserCommandLineArguments = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
         private InternetExplorerUnexpectedAlertBehavior unexpectedAlertBehavior = InternetExplorerUnexpectedAlertBehavior.Default;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
@@ -201,6 +205,27 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to force the use of the Windows CreateProcess API
+        /// when launching Internet Explorer. The default value is <see langword="false"/>.
+        /// </summary>
+        public bool ForceCreateProcessApi
+        {
+            get { return this.forceCreateProcessApi; }
+            set { this.forceCreateProcessApi = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the command line arguments used in launching Internet Explorer when the 
+        /// Windows CreateProcess API is used. This property only has an effect when the
+        /// <see cref="ForceCreateProcessApi"/> is <see langword="true"/>.
+        /// </summary>
+        public string BrowserCommandLineArguments
+        {
+            get { return this.browserCommandLineArguments; }
+            set { this.browserCommandLineArguments = value; }
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options 
         /// for the Internet Explorer driver.
         /// </summary>
@@ -222,7 +247,9 @@ namespace OpenQA.Selenium.IE
                 capabilityName == CapabilityType.UnexpectedAlertBehavior ||
                 capabilityName == EnablePersistentHoverCapability ||
                 capabilityName == RequireWindowFocusCapability ||
-                capabilityName == BrowserAttachTimeoutCapability)
+                capabilityName == BrowserAttachTimeoutCapability ||
+                capabilityName == ForceCreateProcessApiCapability ||
+                capabilityName == BrowserCommandLineSwitchesCapability)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
@@ -293,6 +320,15 @@ namespace OpenQA.Selenium.IE
             if (this.browserAttachTimeout != TimeSpan.MinValue)
             {
                 capabilities.SetCapability(BrowserAttachTimeoutCapability, Convert.ToInt32(this.browserAttachTimeout.TotalMilliseconds));
+            }
+
+            if (this.forceCreateProcessApi)
+            {
+                capabilities.SetCapability(ForceCreateProcessApiCapability, true);
+                if (!string.IsNullOrEmpty(this.browserCommandLineArguments))
+                {
+                    capabilities.SetCapability(BrowserCommandLineSwitchesCapability, this.browserCommandLineArguments);
+                }
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
