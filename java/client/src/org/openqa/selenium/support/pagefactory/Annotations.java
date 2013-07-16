@@ -16,64 +16,20 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ByIdOrName;
-import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.How;
 
-import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Set;
+public abstract class Annotations {
 
-public class Annotations {
-
-  private Field field;
-
-  public Annotations(Field field) {
-    this.field = field;
-  }
-
-  public boolean isLookupCached() {
-    return (field.getAnnotation(CacheLookup.class) != null);
-  }
-
-  public By buildBy() {
-    assertValidAnnotations();
-
-    By ans = null;
-
-    FindBys findBys = field.getAnnotation(FindBys.class);
-    if (findBys != null) {
-      ans = buildByFromFindBys(findBys);
-    }
-
-    FindAll findAll = field.getAnnotation(FindAll.class);
-    if (ans == null && findAll != null) {
-      ans = buildBysFromFindByOneOf(findAll);
-    }
-
-    FindBy findBy = field.getAnnotation(FindBy.class);
-    if (ans == null && findBy != null) {
-      ans = buildByFromFindBy(findBy);
-    }
-
-    if (ans == null) {
-      ans = buildByFromDefault();
-    }
-
-    if (ans == null) {
-      throw new IllegalArgumentException("Cannot determine how to locate element " + field);
-    }
-
-    return ans;
-  }
-
-  protected By buildByFromDefault() {
-    return new ByIdOrName(field.getName());
-  }
+  public abstract By buildBy();
+  public abstract boolean isLookupCached();
 
   protected By buildByFromFindBys(FindBys findBys) {
     assertValidFindBys(findBys);
@@ -145,7 +101,7 @@ public class Annotations {
       default:
         // Note that this shouldn't happen (eg, the above matches all
         // possible values for the How enum)
-        throw new IllegalArgumentException("Cannot determine how to locate element " + field);
+        throw new IllegalArgumentException("Cannot determine how to locate element ");
     }
   }
 
@@ -176,24 +132,6 @@ public class Annotations {
 
     // Fall through
     return null;
-  }
-
-  private void assertValidAnnotations() {
-    FindBys findBys = field.getAnnotation(FindBys.class);
-    FindAll findAll = field.getAnnotation(FindAll.class);
-    FindBy findBy = field.getAnnotation(FindBy.class);
-    if (findBys != null && findBy != null) {
-      throw new IllegalArgumentException("If you use a '@FindBys' annotation, " +
-           "you must not also use a '@FindBy' annotation");
-    }
-    if (findAll != null && findBy != null) {
-      throw new IllegalArgumentException("If you use a '@FindAll' annotation, " +
-           "you must not also use a '@FindBy' annotation");
-    }
-    if (findAll != null && findBys != null) {
-      throw new IllegalArgumentException("If you use a '@FindAll' annotation, " +
-           "you must not also use a '@FindBys' annotation");
-    }
   }
 
   private void assertValidFindBys(FindBys findBys) {

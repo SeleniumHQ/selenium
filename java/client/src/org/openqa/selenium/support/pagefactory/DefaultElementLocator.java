@@ -43,7 +43,7 @@ public class DefaultElementLocator implements ElementLocator {
    */
   public DefaultElementLocator(SearchContext searchContext, Field field) {
     this.searchContext = searchContext;
-    Annotations annotations = new Annotations(field);
+    Annotations annotations = new DefaultFieldAnnotations(field);
     shouldCache = annotations.isLookupCached();
     by = annotations.buildBy();
   }
@@ -54,10 +54,10 @@ public class DefaultElementLocator implements ElementLocator {
    * @param searchContext      The context to use when finding the element
    * @param annotationsHandler The annotations handler for locating element
    */
-  public DefaultElementLocator(SearchContext searchContext, AnnotationsHandler annotationsHandler) {
+  public DefaultElementLocator(SearchContext searchContext, Annotations annotations) {
       this.searchContext = searchContext;
-      this.shouldCache = annotationsHandler.shouldCache();
-      this.by = annotationsHandler.buildBy();
+      this.shouldCache = annotations.isLookupCached();
+      this.by = annotations.buildBy();
   }
 
   /**
