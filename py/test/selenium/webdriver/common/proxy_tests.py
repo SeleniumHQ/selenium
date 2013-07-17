@@ -18,21 +18,29 @@
 import unittest
 from selenium.webdriver.common.proxy import Proxy
 
-
 class ProxyTests(unittest.TestCase):
 
     def testCanAddToDesiredCapabilities(self):
         desired_capabilities = {}
         proxy = Proxy()
         proxy.http_proxy = 'some.url:1234'
+        proxy.ftp_proxy = 'ftp.proxy:1234'
+        proxy.no_proxy = 'localhost, foo.localhost'
+        proxy.sslProxy = 'ssl.proxy:1234'
+        proxy.autodetect = 'True'
 
         proxy.add_to_capabilities(desired_capabilities)
 
         expected_capabilities = {
             'proxy': {
                 'proxyType': 'MANUAL',
-                'httpProxy': 'some.url:1234'
+                'httpProxy': 'some.url:1234',
+                'ftpProxy': 'ftp.proxy:1234',
+                'noProxy': 'localhost, foo.localhost',
+                'sslProxy': 'ssl.proxy:1234',
+                'autodetect': 'True'
             }
         }
+        print 'descap', desired_capabilities
 
         self.assertEqual(expected_capabilities, desired_capabilities)
