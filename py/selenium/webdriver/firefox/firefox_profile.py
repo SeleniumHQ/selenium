@@ -253,14 +253,15 @@ class FirefoxProfile(object):
             return False
         else:
             return item
+
     def _set_manual_proxy_preference(self, key, setting):
         if setting is None or setting is '':
             return
 
         host_details = setting.split(":")
-        self.set_preference("network.proxy.%s" % key, host_details[1][2:])
+        self.set_preference("network.proxy.%s" % key, host_details[0)
         if len(host_details) > 1:
-            self.set_preference("network.proxy.%s_port" % key, int(host_details[2]))
+            self.set_preference("network.proxy.%s_port" % key, int(host_details[1]))
 
     def _create_tempfolder(self):
         """
