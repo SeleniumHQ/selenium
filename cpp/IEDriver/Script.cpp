@@ -287,11 +287,17 @@ int Script::ExecuteAsync(int timeout_in_milliseconds) {
 
   LOG(DEBUG) << "Creating synchronization event for new thread";
   event_handle = ::CreateEvent(NULL, TRUE, FALSE, ASYNC_SCRIPT_EVENT_NAME);
-  if (event_handle == NULL) {
-    LOG(WARN) << "CreateEvent() failed.";
+  if (event_handle == NULL || ::GetLastError() == ERROR_ALREADY_EXISTS) {
+    if (event_handle == NULL) {
+      LOG(WARN) << "CreateEvent() failed.";
+      error_description = L"Couldn't create an event for synchronizing the creation of the thread. This is an internal failure at the Windows OS level, and is generally not due to an error in the IE driver.";
+    } else {
+      ::CloseHandle(event_handle);
+      LOG(WARN) << "Synchronization event is already created in another instance.";
+      error_description = L"Couldn't create an event for synchronizing the creation of the thread. This generally means that you were trying to click on an option in multiple different instances.";
+    }
     result.Clear();
     result.vt = VT_BSTR;
-    error_description = L"Couldn't create an event for synchronizing the creation of the thread. This is an internal failure at the Windows OS level, and is generally not due to an error in the IE driver.";
     result.bstrVal = error_description;
     this->result_.Copy(&result);
     return EUNEXPECTEDJSERROR;
@@ -421,12 +427,12 @@ bool Script::ConvertResultToString(std::string* value) {
   switch(type) {
 
     case VT_BOOL:
-      LOG(DEBUG) << "result type is boolean";
+      LOG(DEBUG) << "Result type is boolean";
       *value = this->result_.boolVal == VARIANT_TRUE ? "true" : "false";
       return true;
 
     case VT_BSTR:
-      LOG(DEBUG) << "result type is string";
+      LOG(DEBUG) << "Result type is string";
       if (!this->result_.bstrVal) {
         *value = "";
       } else {
@@ -436,24 +442,24 @@ bool Script::ConvertResultToString(std::string* value) {
       return true;
   
     case VT_I4:
-      LOG(DEBUG) << "result type is int";
+      LOG(DEBUG) << "Result type is int";
       *value = StringUtilities::ToString(this->result_.lVal);
       return true;
 
     case VT_EMPTY:
     case VT_NULL:
-      LOG(DEBUG) << "result type is empty";
+      LOG(DEBUG) << "Result type is empty";
       *value = "";
       return false;
 
     // This is lame
     case VT_DISPATCH:
-      LOG(DEBUG) << "result type is dispatch";
+      LOG(DEBUG) << "Result type is dispatch";
       *value = "";
       return true;
 
     default:
-      LOG(DEBUG) << "result type is unknown: " << type;
+      LOG(DEBUG) << "Result type is unknown: " << type;
   }
   return false;
 }

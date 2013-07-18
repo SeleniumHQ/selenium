@@ -29,6 +29,7 @@ class StringUtilities {
   static std::wstring ToWString(const std::string& input);
   static std::string ToString(const std::wstring& input);
   static std::string ToString(long input);
+  static std::wstring ToWString(long input);
   static std::string Format(const char* format, ...);
 };
 

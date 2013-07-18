@@ -151,7 +151,7 @@ bool BrowserFactory::IsIELaunchURLAvailable() {
 
 void BrowserFactory::LaunchBrowserUsingIELaunchURL(PROCESS_INFORMATION* proc_info,
                                                    std::string* error_message) {
-  LOG(TRACE) << "Entering BrowserFactory::IsIELaunchURLAvailable";
+  LOG(TRACE) << "Entering BrowserFactory::LaunchBrowserUsingIELaunchURL";
   LOG(DEBUG) << "Starting IE using the IELaunchURL API";
   HRESULT launch_result = ::IELaunchURL(this->initial_browser_url_.c_str(),
                                         proc_info,

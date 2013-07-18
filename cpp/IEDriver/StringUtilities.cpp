@@ -119,6 +119,11 @@ std::string StringUtilities::ToString(long input) {
   return string_value;
 }
 
+std::wstring StringUtilities::ToWString(long input) {
+  std::string string_value = ToString(input);
+  return ToWString(string_value);
+}
+
 std::string StringUtilities::Format(const char* format, ...) {
   va_list args;
   va_start(args, format);
