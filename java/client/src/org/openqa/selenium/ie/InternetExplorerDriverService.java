@@ -70,17 +70,6 @@ public class InternetExplorerDriverService extends DriverService {
   public final static String IE_DRIVER_SILENT_PROPERTY = "webdriver.ie.driver.silent";
 
   /**
-   * System property that defines launch API of IE used by IEDriverServer.
-   */
-  public final static String IE_DRIVER_FORCE_CREATE_PROCESS_PROPERTY = "webdriver.ie.driver.forcecreateprocess";
-
-  /**
-   * System property that defines used IE CLI switches.
-   */
-  public final static String IE_DRIVER_IE_SWITCHES_PROPERTY = "webdriver.ie.driver.ieswitches";
-
-
-  /**
    *
    * @param executable The IEDriverServer executable.
    * @param port Which port to start the IEDriverServer on.
@@ -228,30 +217,6 @@ public class InternetExplorerDriverService extends DriverService {
     }
 
     /**
-     * Configures IE launch API used by the driver server.
-     *
-     * @param forceCreateProcess To use force CreateProcess() IE launch API or not.
-     * @return A self reference.
-     */
-    public Builder withLaunchApi(Boolean forceCreateProcess) {
-      this.forceCreateProcess = forceCreateProcess;
-      return this;
-    }
-
-    /**
-     * Configures IE CLI switches which will be used by the driver service
-     *  if CREATE_PROCESS launch api is specified.
-     *
-     * @param ieSwitches IE CLI switches.
-     * @return A self reference.
-     */
-    public Builder withIeSwitches(String ieSwitches) {
-      checkArgument(ieSwitches.trim().length() >= 0, "Empty IE switches");
-      this.ieSwitches = ieSwitches.trim();
-      return this;
-    }
-
-    /**
      * Creates a new service to manage the driver server. Before creating a new service, the
      * builder will find a port for the server to listen to.
      *
@@ -296,18 +261,6 @@ public class InternetExplorerDriverService extends DriverService {
           silent = Boolean.valueOf(silentProperty);
         }
       }
-      if (forceCreateProcess == null) {
-        String forceCreateProcessProperty = System.getProperty(IE_DRIVER_FORCE_CREATE_PROCESS_PROPERTY);
-        if (forceCreateProcessProperty != null) {
-          forceCreateProcess = Boolean.valueOf(forceCreateProcessProperty);
-        }
-      }
-      if (ieSwitches == null) {
-        String ieSwitchesProperty = System.getProperty(IE_DRIVER_IE_SWITCHES_PROPERTY);
-        if (ieSwitchesProperty != null) {
-          ieSwitches = ieSwitchesProperty;
-        }
-      }
 
       try {
         ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
@@ -326,12 +279,6 @@ public class InternetExplorerDriverService extends DriverService {
         }
         if (silent != null && silent.equals(Boolean.TRUE)) {
           argsBuilder.add("--silent");
-        }
-        if (forceCreateProcess != null && forceCreateProcess.equals(Boolean.TRUE)) {
-          argsBuilder.add(String.format("--force-createprocess"));
-          if (ieSwitches != null) {
-            argsBuilder.add(String.format("--ie-switches=\"%s\"", ieSwitches));
-          }
         }
 
         return new InternetExplorerDriverService(exe, port, argsBuilder.build(), environment);
