@@ -1,0 +1,7 @@
+prebuilt_jar(name = 'objenesis',
+  binary_jar = 'objenesis-1.0.jar',
+  visibility = [
+    '//third_party/java/...',
+  ],
+)
+

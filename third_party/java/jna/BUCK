@@ -1,0 +1,21 @@
+java_library(
+  name = 'jna',
+  export_deps = True,
+  deps = [
+    ':core',
+    ':platform',
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/os:os',
+  ],
+)
+
+prebuilt_jar(
+  name = 'core',
+  binary_jar = 'jna-3.4.0.jar',
+)
+
+prebuilt_jar(
+  name = 'platform',
+  binary_jar = 'jna-platform-3.4.0.jar',
+)
