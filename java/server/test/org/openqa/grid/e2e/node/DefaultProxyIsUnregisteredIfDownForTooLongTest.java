@@ -67,18 +67,7 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
     remote.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(registry, 1);
 
-    RemoteProxy p = null;
-    Iterator<RemoteProxy> it = registry.getAllProxies().iterator();
-    while(it.hasNext()) {
-      p = it.next();
-    }
-    if (p == null) {
-      throw new Exception("Unable to find registered proxy at hub");
-    }
-    proxyId = p.getId();
-    if (proxyId == null) {
-      throw  new Exception("Unable to get id of proxy");
-    }
+    proxyId = getProxyId();
   }
 
   @Test
@@ -126,6 +115,22 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
         return proxy.isDown();
       }
     };
+  }
+
+  private static String getProxyId() throws Exception {
+    RemoteProxy p = null;
+    Iterator<RemoteProxy> it = registry.getAllProxies().iterator();
+    while(it.hasNext()) {
+      p = it.next();
+    }
+    if (p == null) {
+      throw new Exception("Unable to find registered proxy at hub");
+    }
+    String proxyId = p.getId();
+    if (proxyId == null) {
+      throw  new Exception("Unable to get id of proxy");
+    }
+    return proxyId;
   }
 
   @AfterClass
