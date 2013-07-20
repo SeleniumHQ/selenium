@@ -195,7 +195,7 @@ public class TestSession {
       browserTimeout += (selenium_server_cleanup_cycle + MAX_NETWORK_LATENCY);
       browserTimeout *=2; // Lets not let this happen too often
     }
-    return slot.getProxy().getHttpClientFactory().getGridHttpClient(browserTimeout);
+    return slot.getProxy().getHttpClientFactory().getGridHttpClient(browserTimeout, browserTimeout);
   }
 
   /**
