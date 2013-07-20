@@ -52,6 +52,10 @@ class AcceptAlertCommandHandler : public IECommandHandler {
         response->SetErrorResponse(status_code,
                                    "Could not find OK button");
       }
+
+      // Add sleep to give IE time to close dialog and start Navigation if it's necessary
+      ::Sleep(100);
+
       response->SetSuccessResponse(Json::Value::null);
     }
   }
