@@ -402,7 +402,6 @@ public class SelectTest extends MockTestBase {
    */
   @Test
   public void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
-//    assertEquals("concat(\"'\", '\"')", escapeQuotes("'\""));
     assertEquals("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')", escapeQuotes("Bar \"Rock'n'Roll\""));
   }
 

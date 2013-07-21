@@ -298,9 +298,8 @@ public class SelectElementTest extends JUnit4TestBase {
   public void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
-    String result = select.escapeQuotes("'\"");
+    String result = select.escapeQuotes("Bar \"Rock'n'Roll\"");
 
-    assertEquals("concat(\"'\", '\"')", result);
+    assertEquals("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')", result);
   }
-
 }
