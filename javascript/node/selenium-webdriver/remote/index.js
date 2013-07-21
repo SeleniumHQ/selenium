@@ -170,7 +170,7 @@ DriverService.prototype.start = function(opt_timeoutMs) {
 
       var serverUrl = url.format({
         protocol: 'http',
-        hostname: net.getAddress(),
+        hostname: net.getAddress() || net.getLoopbackAddress(),
         port: port,
         pathname: self.path_
       });
