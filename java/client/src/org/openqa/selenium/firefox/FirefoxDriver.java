@@ -148,12 +148,15 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
       Boolean acceptCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
       profile.setAcceptUntrustedCertificates(acceptCerts);
     }
+
+    // convert logging capabilities into profile preferences
+    // potentially it could be done at fxdriver level but will cause more problems with conversion
     if (capabilities.getCapability(LOGGING_PREFS) != null) {
       LoggingPreferences logsPrefs = 
           (LoggingPreferences) capabilities.getCapability(LOGGING_PREFS);
       for (String logtype : logsPrefs.getEnabledLogTypes()) {
-        profile.setPreference("webdriver.log." + logtype, 
-            logsPrefs.getLevel(logtype).intValue());
+        profile.setPreference("webdriver.log." + logtype + ".level",
+            logsPrefs.getLevel(logtype).getName());
       }
     }
 
