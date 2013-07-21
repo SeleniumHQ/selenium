@@ -16,23 +16,22 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
+import org.jmock.Expectations;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.MockTestBase;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
-
-import org.jmock.Expectations;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class SelectTest extends MockTestBase {
   @Test
@@ -379,70 +378,22 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldConvertAnUnquotedStringIntoOneWithQuotes() {
-    final WebElement element = mock(WebElement.class);
-
-    checking(new Expectations() {{
-      allowing(element).getTagName();
-      will(returnValue("select"));
-      allowing(element).getAttribute("multiple");
-      will(returnValue("multiple"));
-    }});
-
-    Select select = new Select(element);
-    String result = select.escapeQuotes("foo");
-
-    assertEquals("\"foo\"", result);
+    assertEquals("\"foo\"", escapeQuotes("foo"));
   }
 
   @Test
   public void shouldConvertAStringWithATickIntoOneWithQuotes() {
-    final WebElement element = mock(WebElement.class);
-
-    checking(new Expectations() {{
-      allowing(element).getTagName();
-      will(returnValue("select"));
-      allowing(element).getAttribute("multiple");
-      will(returnValue("multiple"));
-    }});
-
-    Select select = new Select(element);
-    String result = select.escapeQuotes("f'oo");
-
-    assertEquals("\"f'oo\"", result);
+    assertEquals("\"f'oo\"", escapeQuotes("f'oo"));
   }
 
   @Test
   public void shouldConvertAStringWithAQuotIntoOneWithTicks() {
-    final WebElement element = mock(WebElement.class);
-
-    checking(new Expectations() {{
-      allowing(element).getTagName();
-      will(returnValue("select"));
-      allowing(element).getAttribute("multiple");
-      will(returnValue("multiple"));
-    }});
-
-    Select select = new Select(element);
-    String result = select.escapeQuotes("f\"oo");
-
-    assertEquals("'f\"oo'", result);
+    assertEquals("'f\"oo'", escapeQuotes("f\"oo"));
   }
 
   @Test
   public void shouldProvideConcatenatedStringsWhenStringToEscapeContainsTicksAndQuotes() {
-    final WebElement element = mock(WebElement.class);
-
-    checking(new Expectations() {{
-      allowing(element).getTagName();
-      will(returnValue("select"));
-      allowing(element).getAttribute("multiple");
-      will(returnValue("multiple"));
-    }});
-
-    Select select = new Select(element);
-    String result = select.escapeQuotes("f\"o'o");
-
-    assertEquals("concat(\"f\", '\"', \"o'o\")", result);
+    assertEquals("concat(\"f\", '\"', \"o'o\")", escapeQuotes("f\"o'o"));
   }
 
   /**
@@ -451,19 +402,7 @@ public class SelectTest extends MockTestBase {
    */
   @Test
   public void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
-    final WebElement element = mock(WebElement.class);
-
-    checking(new Expectations() {{
-      allowing(element).getTagName();
-      will(returnValue("select"));
-      allowing(element).getAttribute("multiple");
-      will(returnValue("multiple"));
-    }});
-
-    Select select = new Select(element);
-    String result = select.escapeQuotes("'\"");
-
-    assertEquals("concat(\"'\", '\"')", result);
+    assertEquals("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')", escapeQuotes("Bar \"Rock'n'Roll\""));
   }
 
   @Test
@@ -567,5 +506,18 @@ public class SelectTest extends MockTestBase {
       fail("Was not meant to pass");
     } catch (NoSuchElementException ignored) {
     }
+  }
+
+  private String escapeQuotes(String text) {
+    final WebElement element = mock(WebElement.class);
+
+    checking(new Expectations() {{
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+    }});
+
+    return new Select(element).escapeQuotes(text);
   }
 }

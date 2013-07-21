@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
 public class Select {
 
   private final WebElement element;
-  private boolean isMulti;
+  private final boolean isMulti;
 
   /**
    * Constructor. A check is made that the given element is, indeed, a SELECT tag. If it is not,
@@ -290,7 +290,7 @@ public class Select {
     // Convert strings with both quotes and ticks into: foo'"bar -> concat("foo'", '"', "bar")
     if (toEscape.indexOf("\"") > -1 && toEscape.indexOf("'") > -1) {
       boolean quoteIsLast = false;
-      if (toEscape.indexOf("\"") == toEscape.length() - 1) {
+      if (toEscape.lastIndexOf("\"") == toEscape.length() - 1) {
         quoteIsLast = true;
       }
       String[] substrings = toEscape.split("\"");
