@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -33,8 +34,17 @@ public class SetWindowSize extends WebDriverHandler implements JsonParametersAwa
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    int width = ((Number) allParameters.get("width")).intValue();
-    int height = ((Number) allParameters.get("height")).intValue();
+    int width, height;
+    try {
+      width = ((Number) allParameters.get("width")).intValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-numeric) window width value passed: " + allParameters.get("width"), ex);
+    }
+    try {
+      height = ((Number) allParameters.get("height")).intValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-numeric) window height value passed: " + allParameters.get("height"), ex);
+    }
 
     size = new Dimension(width, height);
   }
