@@ -94,7 +94,8 @@ public class CrashWhenStartingBrowserTest {
 
     Assert.assertNotNull(exception);
     Assert.assertTrue(exception.getMessage().contains(wrong_path));
-    Assert.assertEquals("session which is expected to be terminated is not released", 0, registry.getActiveSessions().size());
+
+    RegistryTestHelper.waitForActiveTestSessionCount(registry, 0);
   }
 
   private Callable<Boolean> isUp(final DefaultRemoteProxy proxy) {
