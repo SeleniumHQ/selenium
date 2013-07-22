@@ -249,7 +249,7 @@ FirefoxDriver.prototype.close = function(respond) {
 
 function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   var doc = respond.session.getDocument();
-
+  var unwrappedDoc = fxdriver.moz.unwrap(doc);
   var script = parameters['script'];
   var converted = Utils.unwrapParameters(parameters['args'], doc);
 
@@ -307,11 +307,13 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   };
 
   var checkScriptLoaded = function() {
-    return !!doc.getUserData('webdriver-evaluate-attached');
+    return unwrappedDoc['__webdriver_evaluate'] && !!unwrappedDoc['__webdriver_evaluate']['attached'];
   };
 
   var runScript = function() {
-    // Since Firefox 15 we have to populate __exposedProps__ 
+    fxdriver.logging.info('Running script');
+
+    // Since Firefox 15 we have to populate __exposedProps__
     // when passing objects from chrome to content due to security reasons
     if (bot.userAgent.isProductVersion(4)) {
       for (var i = 0; i < converted.length; i++) {
@@ -326,11 +328,12 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
         }
       }
     }
-    doc.setUserData('webdriver-evaluate-args', converted, null);
-    doc.setUserData('webdriver-evaluate-async', isAsync, null);
-    doc.setUserData('webdriver-evaluate-script', script, null);
-    doc.setUserData('webdriver-evaluate-timeout',
-        respond.session.getScriptTimeout(), null);
+
+    fxdriver.logging.info('Setting the args');
+    unwrappedDoc['__webdriver_evaluate']['args'] = converted;
+    unwrappedDoc['__webdriver_evaluate']['async'] = isAsync;
+    unwrappedDoc['__webdriver_evaluate']['script'] = script;
+    unwrappedDoc['__webdriver_evaluate']['timeout'] = respond.session.getScriptTimeout();
 
     var handler = function(event) {
         doc.removeEventListener('webdriver-evaluate-response', handler, true);
@@ -341,13 +344,11 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
           return;
         }
 
-        var unwrapped = fxdriver.moz.unwrap(doc);
-        var result = unwrapped.getUserData('webdriver-evaluate-result');
+        var result = unwrappedDoc['__webdriver_evaluate']['result'];
         respond.value = Utils.wrapResult(result, doc);
-        respond.status = doc.getUserData('webdriver-evaluate-code');
+        respond.status = unwrappedDoc['__webdriver_evaluate']['code'];
 
-        doc.setUserData('webdriver-evaluate-result', null, null);
-        doc.setUserData('webdriver-evaluate-code', null, null);
+        delete unwrappedDoc['__webdriver_evaluate'];
 
         respond.send();
     };
@@ -355,12 +356,13 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
 
     var event = doc.createEvent('Events');
     event.initEvent('webdriver-evaluate', true, false);
+    fxdriver.logging.info('firing event');
     doc.dispatchEvent(event);
   };
 
   // Attach the listener to the DOM
   var addListener = function() {
-    if (!doc.getUserData('webdriver-evaluate-attached')) {
+    if (!doc['__webdriver_evaluate'] || !doc['__webdriver_evaluate']['attached']) {
       var parentNode = Utils.getMainDocumentElement(doc);
       var element = Utils.isSVG(doc) ? doc.createElementNS("http://www.w3.org/2000/svg", "script") : doc.createElement('script');
       element.setAttribute('type', 'text/javascript');
