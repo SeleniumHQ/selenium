@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO(simon): Add support for using sizzle to locate elements
-
 goog.provide('bot.locators.css');
 
 goog.require('bot.userAgent');
