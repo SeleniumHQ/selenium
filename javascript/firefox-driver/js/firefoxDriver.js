@@ -73,68 +73,6 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
   // Current state of modifier keys (for synthenized events).
   this.modifierKeysState = Utils.newInstance('@googlecode.com/webdriver/modifierkeys;1', 'wdIModifierKeys');
   this.mouse.initialize(this.modifierKeysState);
-
-  if (!bot.userAgent.isProductVersion('3.5')) {
-    fxdriver.logging.info('Replacing CSS lookup mechanism with Sizzle');
-    var cssSelectorFunction = (function() {
-      var sizzle = [
-        'var originalSizzle = window.Sizzle;',
-        Utils.loadUrl('resource://fxdriver/sizzle.js') + ';',
-        'var results = Sizzle(arguments[0], arguments[1]);',
-        'window.Sizzle = originalSizzle;'
-      ].join('\n');
-
-      function compileScript(script, root) {
-        var win = goog.dom.getOwnerDocument(root).defaultView;
-        win = fxdriver.moz.unwrap(win);
-        return new win.Function(script);
-      }
-
-      return {
-        single: function(target, root) {
-          var fn = compileScript(sizzle + ' return results[0] || null;', root);
-          root = fxdriver.moz.unwrap(root);
-          return fn.call(null, target, root);
-        },
-        many: function(target, root) {
-          var fn = compileScript(sizzle + ' return results;', root);
-          root = fxdriver.moz.unwrap(root);
-          return fn.call(null, target, root);
-        }
-      };
-    })();
-
-    var linkTextFunction = (function() {
-      return {
-        single: function(target, root, opt_isPartial) {
-          var elements = cssSelectorFunction.many('a', root);
-
-          var element = goog.array.find(elements, function(element) {
-            var text = bot.dom.getVisibleText(element);
-            return (opt_isPartial && text.indexOf(target) != -1) ||
-                text == target;
-          });
-          return /**@type{Element}*/ (element);
-        },
-        many: function(target, root, opt_isPartial) {
-          var elements = cssSelectorFunction.many('a', root);
-          return goog.array.filter(elements, function(element) {
-            var text = bot.dom.getVisibleText(element);
-            return (opt_isPartial && text.indexOf(target) != -1) ||
-                text == target;
-          });
-        }
-      };
-    })();
-
-
-    bot.locators.add('css', cssSelectorFunction);
-    bot.locators.add('css selector', cssSelectorFunction);
-    bot.locators.add('linkText', linkTextFunction);
-    bot.locators.add('link text', linkTextFunction);
-    bot.locators.add('partialLinkText', linkTextFunction);
-    bot.locators.add('partial link text', linkTextFunction);
-  }
 };
 
 
@@ -311,8 +249,6 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   };
 
   var runScript = function() {
-    fxdriver.logging.info('Running script');
-
     // Since Firefox 15 we have to populate __exposedProps__
     // when passing objects from chrome to content due to security reasons
     if (bot.userAgent.isProductVersion(4)) {
@@ -329,7 +265,6 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
       }
     }
 
-    fxdriver.logging.info('Setting the args');
     unwrappedDoc['__webdriver_evaluate']['args'] = converted;
     unwrappedDoc['__webdriver_evaluate']['async'] = isAsync;
     unwrappedDoc['__webdriver_evaluate']['script'] = script;
@@ -356,7 +291,6 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
 
     var event = doc.createEvent('Events');
     event.initEvent('webdriver-evaluate', true, false);
-    fxdriver.logging.info('firing event');
     doc.dispatchEvent(event);
   };
 
