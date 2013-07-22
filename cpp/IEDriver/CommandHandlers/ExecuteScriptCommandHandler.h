@@ -196,9 +196,7 @@ class ExecuteScriptCommandHandler : public IECommandHandler {
       if (counter != 0) {
         object_script += ",";
       }
-      std::vector<char> counter_buffer(10);
-      _itoa_s(counter, &counter_buffer[0], 10, 10);
-      std::string counter_string = &counter_buffer[0];
+      std::string counter_string = StringUtilities::ToString(counter);
       std::string name = it.memberName();
       object_script += name + ":arguments[" + counter_string + "]";
       ++counter;

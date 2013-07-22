@@ -122,12 +122,12 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   /**
    * Capability that defines launch API of IE used by IEDriverServer.
    */
-  public final static String FORCE_CREATE_PROCESS = "forceCreateProcess";
+  public final static String FORCE_CREATE_PROCESS = "ie.forceCreateProcessApi";
 
   /**
    * Capability that defines used IE CLI switches.
    */
-  public final static String IE_SWITCHES = "internetExplorerSwitches";
+  public final static String IE_SWITCHES = "ie.browserCommandLineSwitches";
 
   /**
    * Port which is used by default.
@@ -246,20 +246,6 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
           Boolean value = (Boolean) caps.getCapability(SILENT);
           if (value != null) {
             builder.withSilent(value);
-          }
-        }
-
-        if (caps.getCapability(FORCE_CREATE_PROCESS) != null) {
-          Boolean value = (Boolean) caps.getCapability(FORCE_CREATE_PROCESS);
-          if (value != null) {
-            builder.withLaunchApi(value);
-          }
-        }
-
-        if (caps.getCapability(IE_SWITCHES) != null) {
-          String value = (String) caps.getCapability(IE_SWITCHES);
-          if (value != null) {
-            builder.withIeSwitches(value);
           }
         }
       }

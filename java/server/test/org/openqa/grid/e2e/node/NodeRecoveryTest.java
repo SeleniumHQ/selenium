@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
+import org.junit.Ignore;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
@@ -28,9 +29,10 @@ import org.openqa.selenium.net.PortProber;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
+import java.net.URL;
 
 /**
  * a node should be allowed to stop / crash and restart. When the node restarts, it replaces the old
@@ -59,13 +61,14 @@ public class NodeRecoveryTest {
     node = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     // register a selenium 1 with a timeout of 3 sec
     
-    node.addBrowser(GridTestHelper.getSelenium1FirefoxCapability(), 1);
+    node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     node.setTimeout(originalTimeout, 1000);
     node.startRemoteServer();
     node.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
   }
 
+  @Ignore
   @Test
   public void nodeServerCanStopAndRestart() throws Exception {
 
@@ -74,10 +77,10 @@ public class NodeRecoveryTest {
       Assert.assertEquals(p.getTimeOut(), originalTimeout);
     }
 
-    String url = "http://" + hub.getHost() + ":" + hub.getPort() + "/grid/console";
+    URL hubURL = new URL("http://" + hub.getHost() + ":" + hub.getPort());
 
-    Selenium selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", url);
-    selenium.start();
+    DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
+    new RemoteWebDriver(new URL(hubURL + "/grid/driver"), caps);
 
     // kill the node
     node.stopRemoteServer();
@@ -85,7 +88,6 @@ public class NodeRecoveryTest {
 
     // change its config.
     node.setTimeout(newtimeout, 1000);
-
 
     // restart it
     node.startRemoteServer();

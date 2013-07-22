@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 
+import org.junit.Ignore;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
@@ -55,7 +56,7 @@ public class NodeTimeOutTest {
 
     node = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     node.addBrowser(GridTestHelper.getSelenium1FirefoxCapability(), 1);
-    node.addBrowser(DesiredCapabilities.firefox(), 1);
+    node.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     node.setTimeout(5000, 2000);
     node.startRemoteServer();
     node.sendRegistrationRequest();
@@ -63,6 +64,7 @@ public class NodeTimeOutTest {
     RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
   }
 
+  @Ignore
   @Test
   public void selenium1TimesOut() throws InterruptedException {
     String url = "http://" + hub.getHost() + ":" + hub.getPort() + "/grid/console";
@@ -86,11 +88,11 @@ public class NodeTimeOutTest {
 
   @Test
   public void webDriverTimesOut() throws InterruptedException, MalformedURLException {
-    String url = "http://" + hub.getHost() + ":" + hub.getPort() + "/grid/console";
-    DesiredCapabilities ff = DesiredCapabilities.firefox();
-    WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), ff);
+    String url = "http://" + hub.getHost() + ":" + hub.getPort() + "/grid/old/console";
+    DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
+    WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
     driver.get(url);
-    Assert.assertEquals(driver.getTitle(), "Grid Console");
+    Assert.assertEquals(driver.getTitle(), "Grid overview");
     TestWaiter.waitFor(new Callable<Integer>() {
       public Integer call() throws Exception {
         Integer i = hub.getRegistry().getActiveSessions().size();

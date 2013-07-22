@@ -119,4 +119,20 @@ std::string StringUtilities::ToString(long input) {
   return string_value;
 }
 
+std::wstring StringUtilities::ToWString(long input) {
+  std::string string_value = ToString(input);
+  return ToWString(string_value);
+}
+
+std::string StringUtilities::Format(const char* format, ...) {
+  va_list args;
+  va_start(args, format);
+  size_t buffer_size = _vscprintf(format, args);
+  std::vector<char> buffer(buffer_size + 1);
+  _vsnprintf_s(&buffer[0], buffer.size(), buffer_size + 1, format, args);
+  va_end(args);
+  std::string formatted = &buffer[0];
+  return formatted;
+}
+
 } // namespace webdriver

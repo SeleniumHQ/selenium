@@ -16,8 +16,6 @@
 
 #include <string>
 
-using namespace std;
-
 #define BASE_TEN_BASE 10
 #define MAX_DIGITS_OF_NUMBER 22
 
@@ -31,6 +29,8 @@ class StringUtilities {
   static std::wstring ToWString(const std::string& input);
   static std::string ToString(const std::wstring& input);
   static std::string ToString(long input);
+  static std::wstring ToWString(long input);
+  static std::string Format(const char* format, ...);
 };
 
 } // namespace webdriver

@@ -47,8 +47,7 @@ public class GridSerializeExceptionTest {
 
   @Test(expected = WebDriverException.class)
   public void testwebdriver() throws Throwable {
-    DesiredCapabilities ff = DesiredCapabilities.firefox();
-    GridTestHelper.getRemoteWebDriver(ff, hub);
+    GridTestHelper.getRemoteWebDriver(GridTestHelper.getDefaultBrowserCapability(), hub);
   }
 
   @AfterClass

@@ -76,6 +76,9 @@ public class BaseRemoteProxy implements RemoteProxy {
   private volatile boolean stop = false;
   private CleanUpThread cleanUpThread;
 
+  // connection and socket timeout for getStatus node alive check
+  // 0 means default timeouts of grid http client will be used.
+  private final int statusCheckTimeout;
 
   public List<TestSlot> getTestSlots() {
     return testSlots;
@@ -133,6 +136,11 @@ public class BaseRemoteProxy implements RemoteProxy {
     maxConcurrentSession = getConfigInteger(RegistrationRequest.MAX_SESSION);
     cleanUpCycle = getConfigInteger(RegistrationRequest.CLEAN_UP_CYCLE);
     timeOutMs = getConfigInteger(RegistrationRequest.TIME_OUT);
+    Object tm = this.config.get(RegistrationRequest.STATUS_CHECK_TIMEOUT);
+    if (tm == null) {
+      tm = new Integer(0);
+    }
+    statusCheckTimeout = ((Integer) tm).intValue();
 
     List<DesiredCapabilities> capabilities = request.getCapabilities();
 
@@ -208,7 +216,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       if (cleanUpCycle > 0 && timeOutMs > 0) {
         log.fine("starting cleanup thread");
         cleanUpThread = new CleanUpThread(this);
-        new Thread(cleanUpThread, "RemoteProxy CleanUpThread")
+        new Thread(cleanUpThread, "RemoteProxy CleanUpThread for " + getId())
             .start(); // Thread safety reviewed (hopefully ;)
       }
     }
@@ -488,7 +496,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   public JSONObject getStatus() throws GridException {
     String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
-    HttpClient client = getHttpClientFactory().getHttpClient();
+    HttpClient client = getHttpClientFactory().getGridHttpClient(statusCheckTimeout, statusCheckTimeout);
     HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort());
     HttpResponse response;
     String existingName = Thread.currentThread().getName();
@@ -501,6 +509,9 @@ public class BaseRemoteProxy implements RemoteProxy {
       if (code == 200) {
         JSONObject status = extractObject(response);
         EntityUtils.consume(response.getEntity());
+        return status;
+      } else if (code == 404) { // selenium RC case
+        JSONObject status = new JSONObject();
         return status;
       } else {
         EntityUtils.consume(response.getEntity());

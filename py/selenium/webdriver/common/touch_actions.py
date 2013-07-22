@@ -142,8 +142,8 @@ class TouchActions(object):
         """
         self._actions.append(lambda:
             self._driver.execute(Command.FLICK, {
-                'xSpeed': xspeed,
-                'ySpeed': yspeed}))
+                'xspeed': xspeed,
+                'yspeed': yspeed}))
         return self
 
     def flick_element(self, on_element, xoffset, yoffset, speed):

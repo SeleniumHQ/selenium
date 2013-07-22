@@ -21,7 +21,10 @@ import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.junit.Assert;
@@ -29,38 +32,105 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Iterator;
+import java.util.concurrent.Callable;
+
+import static org.openqa.selenium.TestWaiter.waitFor;
+
 public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
+
   private static Hub hub;
+  private static Registry registry;
   private static SelfRegisteringRemote remote;
+
+  private static String proxyId;
 
   @BeforeClass
   public static void prepare() throws Exception {
-
     hub = GridTestHelper.getHub();
-
+    registry = hub.getRegistry();
 
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
 
-    // check if the hub is up every 250 ms.
-    remote.getConfiguration().put(RegistrationRequest.NODE_POLLING, 250);
+    // check if the node is up every 900 ms
+    remote.getConfiguration().put(RegistrationRequest.NODE_POLLING, 900);
+    // unregister the proxy is it's down for more than 10 sec in a row.
+    remote.getConfiguration().put(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER, 10000);
+    // mark as down after 3 tries
+    remote.getConfiguration().put(RegistrationRequest.DOWN_POLLING_LIMIT, 3);
+    // limit connection and socket timeout for node alive check up to
+    remote.getConfiguration().put(RegistrationRequest.STATUS_CHECK_TIMEOUT, 100);
+    // add browser
+    remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
 
-    // unregister the proxy is it's down for more than 2 sec in a row.
-    remote.getConfiguration().put(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER, 2000);
-    remote.addBrowser(DesiredCapabilities.firefox(), 1);
     remote.startRemoteServer();
     remote.sendRegistrationRequest();
-    RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
+    RegistryTestHelper.waitForNode(registry, 1);
+
+    proxyId = getProxyId();
   }
 
   @Test
   public void proxyIsUnregistered() throws InterruptedException {
-    Assert.assertTrue(hub.getRegistry().getAllProxies().size() == 1);
+    DefaultRemoteProxy p;
+
+    // should be up
+    Assert.assertTrue(registry.getAllProxies().size() == 1);
+    p = (DefaultRemoteProxy) registry.getAllProxies().getProxyById(proxyId);
+    waitFor(isUp(p));
+
     remote.stopRemoteServer();
-    // first mark down.
-    Assert.assertTrue(hub.getRegistry().getAllProxies().size() == 1);
-    Thread.sleep(2500);
+
+    // first mark down - proxy is not down, proxy is not unregistered.
+    Thread.sleep(1500);
+    Assert.assertTrue(registry.getAllProxies().size() == 1);
+    p = (DefaultRemoteProxy) registry.getAllProxies().getProxyById(proxyId);
+    Assert.assertFalse(p.isDown());
+
+    // node is considered down - proxy is down, proxy is not unregistered.
+    // sleep interval should be bigger than (STATUS_CHECK_TIMEOUT + NODE_POLLING) * DOWN_POLLING_LIMIT
+    // but less than UNREGISTER_IF_STILL_DOWN_AFTER (with previous sleeps accounting).
+    Thread.sleep(3500);
+    Assert.assertTrue(registry.getAllProxies().size() == 1);
+    p = (DefaultRemoteProxy) registry.getAllProxies().getProxyById(proxyId);
+    Assert.assertTrue(p.isDown());
+
+    Thread.sleep(10000);
+
     // and finally removed after time > UNREGISTER_IF_STILL_DOWN_AFTER
-    RegistryTestHelper.waitForNode(hub.getRegistry(), 0);
+    RegistryTestHelper.waitForNode(registry, 0);
+  }
+
+  private Callable<Boolean> isUp(final DefaultRemoteProxy proxy) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        return ! proxy.isDown();
+      }
+    };
+  }
+
+  private Callable<Boolean> isDown(final DefaultRemoteProxy proxy) {
+    return new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        return proxy.isDown();
+      }
+    };
+  }
+
+  private static String getProxyId() throws Exception {
+    RemoteProxy p = null;
+    Iterator<RemoteProxy> it = registry.getAllProxies().iterator();
+    while(it.hasNext()) {
+      p = it.next();
+    }
+    if (p == null) {
+      throw new Exception("Unable to find registered proxy at hub");
+    }
+    String proxyId = p.getId();
+    if (proxyId == null) {
+      throw  new Exception("Unable to get id of proxy");
+    }
+    return proxyId;
   }
 
   @AfterClass

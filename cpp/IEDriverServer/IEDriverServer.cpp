@@ -24,7 +24,7 @@
 // by the .dll produced by the IEDriver project in this solution.
 // The definitions of these functions can be found in WebDriver.h
 // in that project.
-typedef void* (__cdecl *STARTSERVERPROC)(int, const std::wstring&, const std::wstring&, const std::wstring&, const bool, const std::wstring&, const std::wstring&);
+typedef void* (__cdecl *STARTSERVERPROC)(int, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&);
 typedef void (__cdecl *STOPSERVERPROC)(void);
 
 #define ERR_DLL_EXTRACT_FAIL 1
@@ -43,8 +43,6 @@ typedef void (__cdecl *STOPSERVERPROC)(void);
 #define LOGFILE_COMMAND_LINE_ARG L"log-file"
 #define SILENT_COMMAND_LINE_ARG L"silent"
 #define EXTRACTPATH_COMMAND_LINE_ARG L"extract-path"
-#define FORCE_CREATEPROCESS_COMMAND_LINE_ARG L"force-createprocess"
-#define IE_SWITCHES_COMMAND_LINE_ARG L"ie-switches"
 #define BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE L"value-not-specified"
 
 bool ExtractResource(unsigned short resource_id,
@@ -158,7 +156,6 @@ void ShowUsage(void) {
              << std::endl
              << L"IEDriverServer [/port=<port>] [/host=<host>] [/log-level=<level>]" << std::endl
              << L"               [/log-file=<file>] [/extract-path=<path>] [/silent]" << std::endl
-             << L"               [/force-createprocess [/ie-switches=<switches>]]" << std::endl
              << std::endl
              << L"  /port=<port>  Specifies the port on which the server will listen for" << std::endl
              << L"                commands. Defaults to 5555 if not specified." << std::endl
@@ -175,17 +172,7 @@ void ShowUsage(void) {
              << L"                Specifies the full path to the directory used to extract" << std::endl
              << L"                supporting files used by the server. Defaults to the TEMP" << std::endl
              << L"                directory if not specified." << std::endl
-             << L"  /silent       Suppresses diagnostic output when the server is started." << std::endl
-             << L"  /force-createprocess" << std::endl
-             << L"                Forces launching Internet Explorer using the CreateProcess" << std::endl
-             << L"                API. If this option is not specified, IE is launched using the" << std::endl
-             << L"                IELaunchURL, if it is available. For IE 8 and above, this" << std::endl
-             << L"                option requires the TabProcGrowth registry value to be set" << std::endl
-             << L"                to 0." << std::endl
-             << L"  /ie-switches=<switches>" << std::endl
-             << L"                Specifies command-line switches with which to launch Internet" << std::endl
-             << L"                Explorer. This option is only valid when used with the" << std::endl
-             << L"                /force-createprocess option." << std::endl;
+             << L"  /silent       Suppresses diagnostic output when the server is started." << std::endl;
 }
 
 int _tmain(int argc, _TCHAR* argv[]) {
@@ -241,27 +228,20 @@ int _tmain(int argc, _TCHAR* argv[]) {
   std::wstring host_address = args.GetValue(HOST_COMMAND_LINE_ARG, L"");
   std::wstring log_level = args.GetValue(LOGLEVEL_COMMAND_LINE_ARG, L"");
   std::wstring log_file = args.GetValue(LOGFILE_COMMAND_LINE_ARG, L"");
-  std::wstring ie_switches = args.GetValue(IE_SWITCHES_COMMAND_LINE_ARG, L"");
   bool silent = args.GetValue(SILENT_COMMAND_LINE_ARG,
-      BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE).size() == 0;
-  bool use_createprocess = args.GetValue(FORCE_CREATEPROCESS_COMMAND_LINE_ARG,
       BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE).size() == 0;
   std::wstring executable_version = GetExecutableVersion();
   void* server_value = start_server_ex_proc(port,
                                             host_address,
                                             log_level,
                                             log_file,
-                                            use_createprocess,
-                                            ie_switches,
                                             executable_version);
   if (server_value == NULL) {
     std::wcout << L"Failed to start the server with: "
                << L"port = '" << port << L"', "
                << L"host = '" << host_address << L"', "
                << L"log level = '" << log_level << L"', "
-               << L"log file = '" << log_file << L"', "
-               << L"force CreateProcess = " << use_createprocess << ", "
-               << L"ie switches = '" << ie_switches << "'.";
+               << L"log file = '" << log_file << L"'.";
     return ERR_SERVER_START;
   }
   if (!silent) {
@@ -289,15 +269,6 @@ int _tmain(int argc, _TCHAR* argv[]) {
     if (extraction_path_arg.size() > 0) {
       std::wcout << L"Library extracted to "
                  << extraction_path_arg
-                 << std::endl;
-    }
-    if (use_createprocess)  {
-      std::wcout << L"Forcing the use of the CreateProcess API"
-                 << std::endl;
-    }
-    if (ie_switches.size() > 0)  {
-      std::wcout << L"IE switches are set to "
-                 << ie_switches
                  << std::endl;
     }
   }

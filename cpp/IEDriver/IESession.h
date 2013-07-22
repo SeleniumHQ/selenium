@@ -22,15 +22,11 @@
 #define EXECUTOR_EXIT_WAIT_TIMEOUT 5000
 #define EXECUTOR_EXIT_WAIT_INTERVAL 100
 
-using namespace std;
-
 namespace webdriver {
 
 // Structure to be used for storing session initialization parameters
 struct SessionParameters {
   int port;
-  bool force_createprocess_api;
-  std::string ie_switches;
 };
 
 class IESession : public Session {

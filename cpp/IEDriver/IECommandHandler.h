@@ -40,8 +40,8 @@
 #define ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY "enableElementCacheCleanup"
 #define REQUIRE_WINDOW_FOCUS_CAPABILITY "requireWindowFocus"
 #define BROWSER_ATTACH_TIMEOUT_CAPABILITY "browserAttachTimeout"
-
-using namespace std;
+#define BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY "ie.browserCommandLineSwitches"
+#define FORCE_CREATE_PROCESS_API_CAPABILITY "ie.forceCreateProcessApi"
 
 namespace webdriver {
 

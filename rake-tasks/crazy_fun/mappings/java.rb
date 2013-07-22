@@ -521,6 +521,10 @@ module CrazyFunJava
                 ant.sysproperty :key => 'webdriver.chrome.binary', :value => chrome
               end
 
+              if ipv4only?
+                ant.sysproperty :key => 'java.net.preferIPv4Stack', :value => 'true'
+              end
+
               # Log levels can be any of {'DEBUG', 'INFO', 'WARNING', 'ERROR'}
               levels = Array.[]("INFO", "DEBUG", "WARNING", "ERROR")
               if log_level
@@ -541,6 +545,10 @@ module CrazyFunJava
 
               if shorten_log_messages?
                 ant.sysproperty :key => 'webdriver.remote.shorten_log_messages', :value => 'true'
+              end
+
+              if grid_test_browser
+                ant.sysproperty :key => 'webdriver.gridtest.browser', :value => grid_test_browser
               end
 
               if (args[:args])
@@ -588,6 +596,11 @@ module CrazyFunJava
       return ENV['chrome']
     end
 
+    def ipv4only?
+      # we set ipv4only true if the commandline argument is set and it is not 'false'
+      !([nil, 'false'].include? ENV['ipv4only'])
+    end
+
     def leave_running?
       # we set leaverunning true if the commandline argument is set and it is not 'false'
       !([nil, 'false'].include? ENV['leaverunning'])
@@ -596,6 +609,10 @@ module CrazyFunJava
     def shorten_log_messages?
       # we set shorten_log_messages true if the commandline argument is set and it is not 'false'
       !([nil, 'false'].include? ENV['shortenlogmessages'])
+    end
+
+    def grid_test_browser
+      return ENV['gridtestbrowser']
     end
 
   end

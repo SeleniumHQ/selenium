@@ -13,6 +13,16 @@ v2.34.0.0
 =========
  * Release to synchronize with release of Selenium project.
 
+v2.33.0.7
+=========
+ * Refactored IE driver to take advantage of new StringUtilities methods.
+ * Refactored BrowserFactory class to use member variables. Previously, most
+   functionality was passed into the methods of the BrowserFactory, breaking
+   the principle of encapsulation. This change also moves the ability to force
+   the use of the Windows CreateProcess API and to pass command-line parameters
+   to the CreateProcess API to capabilities of the IE driver, rather than
+   arguments passed via the command line of IEDriverServer.exe.
+
 v2.33.0.6
 =========
  * Refactored IE driver registry access methods to RegistryUtilities class.

@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.grid.internal.exception.NewSessionException;
 
 public class ExternalSessionKey {
@@ -86,6 +88,24 @@ public class ExternalSessionKey {
         return new ExternalSessionKey(session);
       }
       return null;
+  }
+
+  /**
+   * Extract the external key from the server response for a selenium2 new session request.
+   * The response body is expected to be of the form {"status":0,"sessionId":"XXXX",...}.
+   * @param responseBody the response body to parse
+   * @return the extracted ExternalKey, or null if one was not found.
+   */
+  public static ExternalSessionKey fromJsonResponseBody(String responseBody) {
+    try {
+      JSONObject json = new JSONObject(responseBody);
+      if (!json.has("sessionId") || json.isNull("sessionId")) {
+        return null;
+      }
+      return new ExternalSessionKey(json.getString("sessionId"));
+    } catch (JSONException e) {
+      return null;
+    }
   }
   
   /**

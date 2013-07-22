@@ -242,7 +242,7 @@ class FirefoxProfile(object):
             self._set_manual_proxy_preference("ftp", proxy.ftp_proxy)
             self._set_manual_proxy_preference("http", proxy.http_proxy)
             self._set_manual_proxy_preference("ssl", proxy.ssl_proxy)
-        elif proxy.proxy_type is ProxyType.AUTODETECT:
+        elif proxy.proxy_type is ProxyType.PAC:
             self.set_preference("network.proxy.autoconfig_url", proxy.proxy_autoconfig_url)
 
     #Private Methods
@@ -253,14 +253,15 @@ class FirefoxProfile(object):
             return False
         else:
             return item
+
     def _set_manual_proxy_preference(self, key, setting):
         if setting is None or setting is '':
             return
 
         host_details = setting.split(":")
-        self.set_preference("network.proxy.%s" % key, host_details[1][2:])
+        self.set_preference("network.proxy.%s" % key, host_details[0])
         if len(host_details) > 1:
-            self.set_preference("network.proxy.%s_port" % key, int(host_details[2]))
+            self.set_preference("network.proxy.%s_port" % key, int(host_details[1]))
 
     def _create_tempfolder(self):
         """

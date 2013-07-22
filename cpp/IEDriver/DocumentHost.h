@@ -23,8 +23,6 @@
 
 #define EELEMENTCLICKPOINTNOTSCROLLED 100
 
-using namespace std;
-
 namespace webdriver {
 
 class DocumentHost {
