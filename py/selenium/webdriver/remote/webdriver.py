@@ -827,3 +827,28 @@ class WebDriver(object):
         finally:
             del png
         return True
+
+    @property
+    def log_types(self):
+        """
+        Gets a list of the available log types
+
+        :Usage:
+            driver.log_types
+        """
+        return self.execute(Command.LOG_TYPES)['value']
+
+    def get_log(self, log_type):
+        """
+        Gets the log for a given log type
+
+        :Args:
+         - log_type: type of log that which will be returned
+
+        :Usage:
+            driver.get_log('browser')
+            driver.get_log('driver')
+            driver.get_log('client')
+            driver.get_log('server')
+        """
+        return self.execute(Command.GET_LOG, {'type': log_type})['value']
