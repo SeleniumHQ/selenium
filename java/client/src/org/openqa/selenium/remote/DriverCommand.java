@@ -162,5 +162,4 @@ public interface DriverCommand {
   // Logging API
   String GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes";
   String GET_LOG = "getLog";
-  String GET_SESSION_LOGS = "getSessionLogs";
 }
