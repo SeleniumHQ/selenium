@@ -836,7 +836,7 @@ class WebDriver(object):
         :Usage:
             driver.log_types
         """
-        return self.execute(Command.LOG_TYPES)['value']
+        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)['value']
 
     def get_log(self, log_type):
         """
