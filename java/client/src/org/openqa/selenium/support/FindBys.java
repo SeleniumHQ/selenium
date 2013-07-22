@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
+ * Used to mark a field or class on a Page Object to indicate that lookup should use a series of @FindBy tags
  * in a chain as described in {@link org.openqa.selenium.support.pagefactory.ByChained}
  * 
  * Eg:
@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * </pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.TYPE})
 public @interface FindBys {
   FindBy[] value();
 }
