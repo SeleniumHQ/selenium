@@ -40,11 +40,6 @@ import java.util.List;
 public class AjaxElementLocator extends DefaultElementLocator {
   protected final int timeOutInSeconds;
   private final Clock clock;
-  private static final int DEFAULT_TIMEOUT = 5;
-
-  public AjaxElementLocator(SearchContext context, Annotations annotations) {
-      this(context, DEFAULT_TIMEOUT, annotations);
-  }
 
   /**
    * Main constructor.
