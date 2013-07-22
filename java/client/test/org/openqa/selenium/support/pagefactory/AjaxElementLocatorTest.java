@@ -91,7 +91,13 @@ public class AjaxElementLocatorTest extends MockTestBase {
     final By by = new ByIdOrName("first");
 
     checking(new Expectations() {{
-      exactly(3).of(driver).findElement(by);
+      // Look ups:
+      // 1. In "isLoaded"
+      // 2. Immediately after call of load. (clock is 0)
+      // 3. First sleep, then third call.   (clock is 1)
+      // 4. Main loop is now over. Final call as we exit to see if we've loaded.
+      // The last call guarantees we've called "isLoaded" at least once after a load.
+      exactly(4).of(driver).findElement(by);
       will(throwException(new NoSuchElementException("bar")));
     }});
 
