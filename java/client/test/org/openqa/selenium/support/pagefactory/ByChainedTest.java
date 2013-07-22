@@ -18,10 +18,13 @@ package org.openqa.selenium.support.pagefactory;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jmock.Expectations;
+import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
@@ -29,15 +32,10 @@ import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
-
-import org.jmock.Expectations;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.openqa.selenium.testing.MockTestBase;
 
 public class ByChainedTest extends MockTestBase {
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void findElementZeroBy() {
     final AllDriver driver = mock(AllDriver.class);
 
