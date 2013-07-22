@@ -40,6 +40,10 @@ public class AjaxElementLocatorTest extends MockTestBase {
   protected ElementLocator newLocator(WebDriver driver, Field field) {
     return new MonkeyedAjaxElementLocator(clock, driver, field, 10);
   }
+  
+  protected ElementLocator locatorWithAnnotaions(WebDriver driver, Annotations annotations) {
+	return new DefaultElementLocator(driver, annotations);  
+  }
 
   @Test
   public void shouldContinueAttemptingToFindElement() throws Exception {
@@ -113,6 +117,26 @@ public class AjaxElementLocatorTest extends MockTestBase {
     ElementLocator locator = new MonkeyedAjaxElementLocator(clock, driver, f, 0);
 
     locator.findElement();
+  }
+  
+  @Test(expected = NullPointerException.class)
+  public void shouldWorkWithCustomAnnotations() throws NoSuchFieldException, SecurityException {
+	final WebDriver driver = mock(WebDriver.class);
+	
+	Annotations npeAnnotations = new Annotations() {
+		@Override
+		public boolean isLookupCached() {
+			return false;
+		}
+		
+		@Override
+		public By buildBy() {
+			throw new NullPointerException();
+		}
+	};
+	
+	ElementLocator locator = locatorWithAnnotaions(driver, npeAnnotations);
+	locator.findElement();
   }
 
   private class MonkeyedAjaxElementLocator extends AjaxElementLocator {

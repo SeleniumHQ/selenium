@@ -42,17 +42,14 @@ public class DefaultElementLocator implements ElementLocator {
    * @param field The field on the Page Object that will hold the located value
    */
   public DefaultElementLocator(SearchContext searchContext, Field field) {
-    this.searchContext = searchContext;
-    Annotations annotations = new DefaultFieldAnnotations(field);
-    shouldCache = annotations.isLookupCached();
-    by = annotations.buildBy();
+    this(searchContext, new DefaultFieldAnnotations(field));
   }
   
   /**
    * Creates a new element locator.
    *
    * @param searchContext      The context to use when finding the element
-   * @param annotationsHandler The annotations handler for locating element
+   * @param annotations Annotations class implementation
    */
   public DefaultElementLocator(SearchContext searchContext, Annotations annotations) {
       this.searchContext = searchContext;
