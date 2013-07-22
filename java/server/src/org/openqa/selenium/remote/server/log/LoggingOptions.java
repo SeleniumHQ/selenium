@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server.log;
 
 
 import java.io.File;
+import java.util.logging.Level;
 
 public class LoggingOptions {
 
@@ -74,5 +75,14 @@ public class LoggingOptions {
       return null;
     }
     return new File(logOutFileProperty).getAbsolutePath();
+  }
+
+  public static Level getDefaultLogLevel() {
+    final String logLevelProperty = System.getProperty("selenium.LOGGER.level");
+    if (null == logLevelProperty) {
+      return null;
+    } else {
+      return Level.parse(logLevelProperty);
+    }
   }
 }

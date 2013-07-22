@@ -53,7 +53,13 @@ public class GridLauncher {
       return;
     }
 
-    Level logLevel = helper.isParamPresent("-debug") ? Level.FINE : Level.INFO;
+    Level logLevel =
+        helper.isParamPresent("-debug")
+        ? Level.FINE
+        : LoggingOptions.getDefaultLogLevel();
+    if (logLevel == null) {
+      logLevel = Level.INFO;
+    }
     Logger.getLogger("").setLevel(logLevel);
 
     for (Handler handler : Logger.getLogger("").getHandlers()) {
