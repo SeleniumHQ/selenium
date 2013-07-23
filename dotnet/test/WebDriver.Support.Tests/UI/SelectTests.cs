@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using NMock2;
 using NUnit.Framework;
+using System.Reflection;
+using System;
 
 namespace OpenQA.Selenium.Support.UI
 {
@@ -17,7 +19,7 @@ namespace OpenQA.Selenium.Support.UI
             mocks = new Mockery();
             webElement = mocks.NewMock<IWebElement>();
         }
-        
+
         [Test]
         [ExpectedException(typeof(UnexpectedTagNameException))]
         public void ThrowUnexpectedTagNameExceptionWhenNotSelectTag()
@@ -31,7 +33,7 @@ namespace OpenQA.Selenium.Support.UI
         {
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value(null));
-            
+
             Assert.IsFalse(new SelectElement(webElement).IsMultiple);
         }
 
@@ -40,8 +42,8 @@ namespace OpenQA.Selenium.Support.UI
         {
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
-            
-            Assert.IsTrue(new SelectElement(webElement).IsMultiple);  
+
+            Assert.IsTrue(new SelectElement(webElement).IsMultiple);
         }
 
         [Test]
@@ -51,7 +53,7 @@ namespace OpenQA.Selenium.Support.UI
             Stub.On(webElement).GetProperty("TagName").Will(Return.Value("select"));
             Stub.On(webElement).Method("GetAttribute").With("multiple").Will(Return.Value("true"));
             Expect.Once.On(webElement).Method("FindElements").Will(Return.Value(new ReadOnlyCollection<IWebElement>(options)));
-            
+
             Assert.AreEqual(options, new SelectElement(webElement).Options);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
@@ -359,6 +361,58 @@ namespace OpenQA.Selenium.Support.UI
 
             SelectElement element = new SelectElement(webElement);
             IWebElement selectedOption = element.SelectedOption;
+        }
+
+        [Test]
+        public void ShouldConvertAnUnquotedStringIntoOneWithQuotes()
+        {
+            string result = EscapeQuotes("foo");
+
+            Assert.AreEqual("\"foo\"", result);
+        }
+
+        [Test]
+        public void ShouldConvertAStringWithATickIntoOneWithQuotes()
+        {
+            string result = EscapeQuotes("f'oo");
+
+            Assert.AreEqual("\"f'oo\"", result);
+        }
+
+        [Test]
+        public void ShouldConvertAStringWithAQuotIntoOneWithTicks()
+        {
+            string result = EscapeQuotes("f\"oo");
+
+            Assert.AreEqual("'f\"oo'", result);
+        }
+
+        [Test]
+        public void ShouldProvideConcatenatedStringsWhenStringToEscapeContainsTicksAndQuotes()
+        {
+            string result = EscapeQuotes("f\"o'o");
+
+            Assert.AreEqual("concat(\"f\", '\"', \"o'o\")", result);
+        }
+
+        /**
+         * Tests that escapeQuotes returns concatenated strings when the given
+         * string contains a tick and and ends with a quote.
+         */
+        [Test]
+        public void ShouldProvideConcatenatedStringsWhenStringEndsWithQuote()
+        {
+            string result = EscapeQuotes("Bar \"Rock'n'Roll\"");
+
+            Assert.AreEqual("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')", result);
+        }
+
+        private string EscapeQuotes(string toEscape)
+        {
+            Type selectElementType = typeof(SelectElement);
+            MethodInfo escapeQuotesMethod = selectElementType.GetMethod("EscapeQuotes", BindingFlags.Static | BindingFlags.NonPublic);
+            string result = escapeQuotesMethod.Invoke(null, new object[] { toEscape }).ToString();
+            return result;
         }
     }
 }

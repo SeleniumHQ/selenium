@@ -337,18 +337,26 @@ namespace OpenQA.Selenium.Support.UI
             if (toEscape.IndexOf("\"", StringComparison.OrdinalIgnoreCase) > -1 && toEscape.IndexOf("'", StringComparison.OrdinalIgnoreCase) > -1)
             {
                 bool quoteIsLast = false;
-                if (toEscape.IndexOf("\"", StringComparison.OrdinalIgnoreCase) == toEscape.Length - 1)
+                if (toEscape.LastIndexOf("\"", StringComparison.OrdinalIgnoreCase) == toEscape.Length - 1)
                 {
                     quoteIsLast = true;
                 }
 
-                string[] substrings = toEscape.Split('\"');
+                List<string> substrings = new List<string>(toEscape.Split('\"'));
+                if (quoteIsLast && string.IsNullOrEmpty(substrings[substrings.Count - 1]))
+                {
+                    // If the last character is a quote ('"'), we end up with an empty entry
+                    // at the end of the list, which is unnecessary. We don't want to split
+                    // ignoring *all* empty entries, since that might mask legitimate empty
+                    // strings. Instead, just remove the empty ending entry.
+                    substrings.RemoveAt(substrings.Count - 1);
+                }
 
                 StringBuilder quoted = new StringBuilder("concat(");
-                for (int i = 0; i < substrings.Length; i++)
+                for (int i = 0; i < substrings.Count; i++)
                 {
                     quoted.Append("\"").Append(substrings[i]).Append("\"");
-                    if (i == substrings.Length - 1)
+                    if (i == substrings.Count - 1)
                     {
                         if (quoteIsLast)
                         {
