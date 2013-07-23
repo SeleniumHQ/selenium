@@ -13,7 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+The Desired Capabilities implementation.
+"""
+
 class DesiredCapabilities(object):
+    """
+    Set of supported desired capabilities.
+    """
 
     FIREFOX = {
         "browserName": "firefox",

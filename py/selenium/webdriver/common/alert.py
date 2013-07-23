@@ -13,27 +13,51 @@
 #See the License for the specific language governing permissions and
 #limitations under the License.
 
+"""
+The Alert implementation.
+"""
+
 from selenium.webdriver.remote.command import Command
 
 
 class Alert(object):
+    """
+    Allows to work wit alerts.
+    """
 
     def __init__(self, driver):
+        """
+        Creates a new Alert.
+
+        :Args:
+         - driver: The WebDriver instance which performs user actions.
+        """
         self.driver = driver
 
     @property
     def text(self):
-        """ Gets the text of the Alert """
+        """
+        Gets the text of the Alert.
+        """
         return self.driver.execute(Command.GET_ALERT_TEXT)["value"]
 
     def dismiss(self):
-        """ Dismisses the alert available """
+        """
+        Dismisses the alert available.
+        """
         self.driver.execute(Command.DISMISS_ALERT)
 
     def accept(self):
-        """ Accepts the alert available """
+        """
+        Accepts the alert available.
+        """
         self.driver.execute(Command.ACCEPT_ALERT)
 
     def send_keys(self, keysToSend):
-        """ Send Keys to the Alert """
+        """
+        Send Keys to the Alert.
+
+        :Args:
+         - keysToSend: The text to be sent to Alert.
+        """
         self.driver.execute(Command.SET_ALERT_VALUE, {'text': keysToSend})

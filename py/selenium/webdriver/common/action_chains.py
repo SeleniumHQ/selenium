@@ -14,7 +14,7 @@
 # limitations under the License.
 
 """
-The ActionChains implementation
+The ActionChains implementation,
 """
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.common.keys import Keys
@@ -22,8 +22,8 @@ from selenium.webdriver.common.keys import Keys
 class ActionChains(object):
     """
     Generate user actions.
-    All actions are stored in the ActionChains object. Call perform() to fire
-    stored actions.
+       All actions are stored in the ActionChains object. 
+       Call perform() to fire stored actions.
     """
 
     def __init__(self, driver):
@@ -96,7 +96,8 @@ class ActionChains(object):
         return self
 
     def drag_and_drop(self, source, target):
-        """Holds down the left mouse button on the source element,
+        """
+        Holds down the left mouse button on the source element,
            then moves to the target element and releases the mouse button.
 
         :Args:
@@ -110,7 +111,7 @@ class ActionChains(object):
     def drag_and_drop_by_offset(self, source, xoffset, yoffset):
         """
         Holds down the left mouse button on the source element,
-           then moves to the target element and releases the mouse button.
+           then moves to the target offset and releases the mouse button.
 
         :Args:
          - source: The element to mouse down.
@@ -123,12 +124,13 @@ class ActionChains(object):
         return self
 
     def key_down(self, value, element=None):
-        """Sends a key press only, without releasing it.
-        Should only be used with modifier keys (Control, Alt and Shift).
+        """
+        Sends a key press only, without releasing it.
+           Should only be used with modifier keys (Control, Alt and Shift).
 
         :Args:
-         - key: The modifier key to send. Values are defined in Keys class.
-         - target: The element to send keys.
+         - value: The modifier key to send. Values are defined in `Keys` class.
+         - element: The element to send keys.
            If None, sends a key to current focused element.
         """
         typing = []
@@ -154,8 +156,8 @@ class ActionChains(object):
         Releases a modifier key.
 
         :Args:
-         - key: The modifier key to send. Values are defined in Keys class.
-         - target: The element to send keys.
+         - value: The modifier key to send. Values are defined in Keys class.
+         - element: The element to send keys.
            If None, sends a key to current focused element.
         """
         typing = []
@@ -204,7 +206,7 @@ class ActionChains(object):
     def move_to_element_with_offset(self, to_element, xoffset, yoffset):
         """
         Move the mouse by an offset of the specificed element.
-        Offsets are relative to the top-left corner of the element.
+           Offsets are relative to the top-left corner of the element.
 
         :Args:
          - to_element: The element to move to.
@@ -220,10 +222,11 @@ class ActionChains(object):
 
     def release(self, on_element=None):
         """
-        Releasing a held mouse button.
+        Releasing a held mouse button on an element.
 
         :Args:
          - on_element: The element to mouse up.
+           If None, releases on current mouse position.
         """
         if on_element: self.move_to_element(on_element)
         self._actions.append(lambda:
@@ -231,7 +234,8 @@ class ActionChains(object):
         return self
 
     def send_keys(self, *keys_to_send):
-        """Sends keys to current focused element.
+        """
+        Sends keys to current focused element.
 
         :Args:
          - keys_to_send: The keys to send.

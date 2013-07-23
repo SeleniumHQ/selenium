@@ -13,8 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+The By implemention.
+"""
 
 class By(object):
+    """
+    Set of supported locator strategies.
+    """
+
     ID = "id"
     XPATH = "xpath"
     LINK_TEXT = "link text"
