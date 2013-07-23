@@ -68,3 +68,8 @@ py_test(
     "remote_firefox",
     "opera"
   ])
+
+py_docs(
+  name = "docs",
+  make_folder = "py/docs"  
+)

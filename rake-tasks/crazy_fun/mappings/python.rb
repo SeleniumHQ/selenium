@@ -10,6 +10,8 @@ class PythonMappings
     fun.add_mapping("py_test", Python::RunTests.new)
 
     fun.add_mapping("py_env", Python::VirtualEnv.new)
+
+    fun.add_mapping("py_docs", Python::GenerateDocs.new)
   end
 end
 
@@ -188,5 +190,30 @@ module Python
       end
     end
   end
+
+  class GenerateDocs
+    def handle(fun, dir, args)
+      task Tasks.new.task_name(dir, args[:name]) do
+
+        current_folder = Dir.pwd
+        make_folder = File.expand_path args[:make_folder]
+
+        pip_pkg = "pip install Sphinx"
+        sh pip_pkg, :verbose => true
+
+        if Dir.chdir make_folder
+          begin
+            sh "make html", :verbose => true
+          rescue
+            Dir.chdir current_folder
+          end
+        else
+          raise "Unable to chdir to #{make_folder}. Task aborted."
+        end
+
+      end
+    end
+  end
+
 end
 
