@@ -17,7 +17,6 @@ limitations under the License.
 package org.openqa.selenium.support.pagefactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.testing.MockTestBase;
@@ -40,6 +39,10 @@ public class AjaxElementLocatorTest extends MockTestBase {
 
   protected ElementLocator newLocator(WebDriver driver, Field field) {
     return new MonkeyedAjaxElementLocator(clock, driver, field, 10);
+  }
+  
+  protected ElementLocator locatorWithAnnotaions(WebDriver driver, Annotations annotations) {
+	return new DefaultElementLocator(driver, annotations);  
   }
 
   @Test
@@ -84,7 +87,7 @@ public class AjaxElementLocatorTest extends MockTestBase {
     assertEquals(element, returnedList.get(0));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void shouldThrowNoSuchElementExceptionIfElementTakesTooLongToAppear() throws Exception {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
@@ -101,17 +104,12 @@ public class AjaxElementLocatorTest extends MockTestBase {
       will(throwException(new NoSuchElementException("bar")));
     }});
 
-    ElementLocator locator = new MonkeyedAjaxElementLocator(clock, driver, f, 2);
+    ElementLocator locator = new MonkeyedAjaxElementLocator(clock, driver, f, 1);
 
-    try {
-      locator.findElement();
-      fail("Should not have located the element");
-    } catch (NoSuchElementException e) {
-      // This is expected
-    }
+    locator.findElement();
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void shouldAlwaysDoAtLeastOneAttemptAtFindingTheElement() throws Exception {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
@@ -124,12 +122,27 @@ public class AjaxElementLocatorTest extends MockTestBase {
 
     ElementLocator locator = new MonkeyedAjaxElementLocator(clock, driver, f, 0);
 
-    try {
-      locator.findElement();
-      fail("Should not have located the element");
-    } catch (NoSuchElementException e) {
-      // This is expected
-    }
+    locator.findElement();
+  }
+  
+  @Test(expected = NullPointerException.class)
+  public void shouldWorkWithCustomAnnotations() throws NoSuchFieldException, SecurityException {
+	final WebDriver driver = mock(WebDriver.class);
+	
+	Annotations npeAnnotations = new Annotations() {
+		@Override
+		public boolean isLookupCached() {
+			return false;
+		}
+		
+		@Override
+		public By buildBy() {
+			throw new NullPointerException();
+		}
+	};
+	
+	ElementLocator locator = locatorWithAnnotaions(driver, npeAnnotations);
+	locator.findElement();
   }
 
   private class MonkeyedAjaxElementLocator extends AjaxElementLocator {

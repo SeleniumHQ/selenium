@@ -33,20 +33,14 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 public class ByAllTest extends MockTestBase {
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void findElementZeroBy() {
     final AllDriver driver = mock(AllDriver.class);
 
     ByAll by = new ByAll();
-    try {
-      by.findElement(driver);
-      fail("Expected NoSuchElementException!");
-    } catch (NoSuchElementException e) {
-      // Expected
-    }
+    by.findElement(driver);
   }
 
   @Test
@@ -94,7 +88,7 @@ public class ByAllTest extends MockTestBase {
     assertThat(by.findElements(driver), equalTo(elems12));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void findElementOneByEmpty() {
     final AllDriver driver = mock(AllDriver.class);
     final List<WebElement> elems = new ArrayList<WebElement>();
@@ -105,12 +99,7 @@ public class ByAllTest extends MockTestBase {
     }});
 
     ByAll by = new ByAll(By.name("cheese"));
-    try {
-      by.findElement(driver);
-      fail("Expected NoSuchElementException!");
-    } catch (NoSuchElementException e) {
-      // Expected
-    }
+    by.findElement(driver);
   }
 
   @Test
