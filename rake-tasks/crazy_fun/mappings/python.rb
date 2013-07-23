@@ -161,7 +161,6 @@ module Python
 
       #Also generate test with exactly this name, if only one browser specified
       task "#{base_task_name}:run" => [ :"#{base_task_name}_#{browsers.first}:run" ] if browsers.length == 1
-
     end
   end
 
@@ -191,17 +190,21 @@ module Python
     end
   end
 
-  class GenerateDocs
+  class GenerateDocs < Tasks
+
+    def python_path
+      #This path should be passed through the py_env dep, rather than hard-coded
+      windows? ? "build\\python\\Scripts\\" : "build/python/bin/"
+    end
+
     def handle(fun, dir, args)
-      task Tasks.new.task_name(dir, args[:name]) do
+      task Tasks.new.task_name(dir, args[:name]) => args[:deps] do
 
         source_folder = Platform.path_for args[:source_folder]
         target_folder = Platform.path_for args[:target_folder]
 
-        pip_pkg = "pip install Sphinx"
-        sh pip_pkg, :verbose => true
-
-        sphinx_build = "sphinx-build" + ".exe" if windows?
+        sphinx_build = "#{python_path}sphinx-build"
+        sphinx_build =  sphinx_build + ".exe" if windows?
 
         sh "#{sphinx_build} -b html -d build/doctrees #{source_folder} #{target_folder}", :verbose => true
       end
