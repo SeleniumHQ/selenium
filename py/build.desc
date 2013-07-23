@@ -71,5 +71,6 @@ py_test(
 
 py_docs(
   name = "docs",
-  make_folder = "py/docs"  
+  source_folder = "py/docs/source",
+  target_folder = "docs/api/py"
 )

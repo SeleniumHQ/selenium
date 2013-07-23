@@ -195,22 +195,15 @@ module Python
     def handle(fun, dir, args)
       task Tasks.new.task_name(dir, args[:name]) do
 
-        current_folder = Dir.pwd
-        make_folder = File.expand_path args[:make_folder]
+        source_folder = Platform.path_for args[:source_folder]
+        target_folder = Platform.path_for args[:target_folder]
 
         pip_pkg = "pip install Sphinx"
         sh pip_pkg, :verbose => true
 
-        if Dir.chdir make_folder
-          begin
-            sh "make html", :verbose => true
-          rescue
-            Dir.chdir current_folder
-          end
-        else
-          raise "Unable to chdir to #{make_folder}. Task aborted."
-        end
+        sphinx_build = "sphinx-build" + ".exe" if windows?
 
+        sh "#{sphinx_build} -b html -d build/doctrees #{source_folder} #{target_folder}", :verbose => true
       end
     end
   end
