@@ -537,6 +537,8 @@ task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :
     end
 end
 
+task :py_docs => "//py:docs"
+
 task :py_install => :py_prep_for_install_release do
     sh "python setup.py install"
 end
