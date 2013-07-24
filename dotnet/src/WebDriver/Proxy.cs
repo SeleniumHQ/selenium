@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace OpenQA.Selenium
 {
@@ -133,6 +134,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets or sets the type of proxy.
         /// </summary>
+        [JsonIgnore]
         public ProxyKind Kind
         {
             get 
@@ -148,8 +150,26 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets the type of proxy as a string for JSON serialization.
+        /// </summary>
+        [JsonProperty("proxyType")]
+        public string SerializableProxyKind
+        {
+            get
+            {
+                if (this.proxyType == ProxyKind.ProxyAutoConfigure)
+                {
+                    return "pac";
+                }
+
+                return this.proxyType.ToString().ToLowerInvariant();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the proxy uses automatic detection.
         /// </summary>
+        [JsonIgnore]
         public bool IsAutoDetect
         {
             get
@@ -173,6 +193,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets or sets the value of the proxy for the FTP protocol.
         /// </summary>
+        [JsonProperty("ftpProxy", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public string FtpProxy
         {
             get
@@ -191,6 +212,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets or sets the value of the proxy for the HTTP protocol.
         /// </summary>
+        [JsonProperty("httpProxy", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public string HttpProxy
         {
             get
@@ -209,6 +231,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets or sets the value for when no proxy is specified.
         /// </summary>
+        [JsonIgnore]
         public string NoProxy
         {
             get
@@ -227,6 +250,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets or sets the URL used for proxy automatic configuration.
         /// </summary>
+        [JsonProperty("proxyAutoconfigUrl", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public string ProxyAutoConfigUrl
         {
             get
@@ -245,6 +269,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets or sets the value of the proxy for the SSL protocol.
         /// </summary>
+        [JsonProperty("sslProxy", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public string SslProxy
         {
             get
