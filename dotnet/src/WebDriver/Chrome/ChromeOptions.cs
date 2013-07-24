@@ -84,8 +84,8 @@ namespace OpenQA.Selenium.Chrome
         [JsonIgnore]
         public Proxy Proxy
         {
-            get { return proxy; }
-            set { proxy = value; }
+            get { return this.proxy; }
+            set { this.proxy = value; }
         }
 
         /// <summary>
