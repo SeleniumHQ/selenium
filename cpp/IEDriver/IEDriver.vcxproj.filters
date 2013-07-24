@@ -83,6 +83,9 @@
     <ClCompile Include="RegistryUtilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WinInetUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Browser.h">
@@ -341,6 +344,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RegistryUtilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WinInetUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

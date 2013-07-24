@@ -42,6 +42,7 @@
 #define BROWSER_ATTACH_TIMEOUT_CAPABILITY "browserAttachTimeout"
 #define BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY "ie.browserCommandLineSwitches"
 #define FORCE_CREATE_PROCESS_API_CAPABILITY "ie.forceCreateProcessApi"
+#define ENSURE_CLEAN_SESSION_CAPABILITY "ensureCleanSession"
 
 namespace webdriver {
 

@@ -18,6 +18,7 @@
 #include "../Browser.h"
 #include "../IECommandHandler.h"
 #include "../IECommandExecutor.h"
+#include "../WinInetUtilities.h"
 
 namespace webdriver {
 
@@ -71,6 +72,10 @@ class NewSessionCommandHandler : public IECommandHandler {
         mutable_executor.set_enable_persistent_hover(false);
       } else {
         mutable_executor.set_enable_persistent_hover(enable_persistent_hover.asBool());
+      }
+      Json::Value ensure_clean_session = it->second.get(ENSURE_CLEAN_SESSION_CAPABILITY, false);
+      if (ensure_clean_session.asBool()) {
+        WinInetUtilities::ClearCache();
       }
     }
     std::string create_browser_error_message = "";
