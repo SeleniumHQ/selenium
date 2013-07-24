@@ -57,4 +57,17 @@ public class RegistryTestHelper {
       }
     });
   }
+
+  public static void waitForNewSessionRequestCount(final Registry r, final int newSessionRequestCount) {
+    TestWaiter.waitFor(new Callable<Integer>() {
+      public Integer call() throws Exception {
+        Integer i = r.getNewSessionRequestCount();
+        if (i != newSessionRequestCount) {
+          return null;
+        } else {
+          return i;
+        }
+      }
+    });
+  }
 }
