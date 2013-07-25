@@ -43,7 +43,9 @@ public class OperaDriverSupplier implements Supplier<WebDriver> {
     }
 
     // It's okay to avoid reflection here because the OperaDriver is a third party dependency
-    return new OperaDriver(capabilities);
+    OperaDriver driver = new OperaDriver(capabilities);
+    driver.preferences().set("Geolocation", "Enable geolocation", true);
+    return driver;
   }
 
 }
