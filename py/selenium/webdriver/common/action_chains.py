@@ -42,6 +42,7 @@ class ActionChains(object):
         """
         for action in self._actions:
             action()
+        self._actions = []
 
     def click(self, on_element=None):
         """
