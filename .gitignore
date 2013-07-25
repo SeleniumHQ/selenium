@@ -2,6 +2,7 @@ projectFilesBackup/
 *.iws
 .DS_Store
 .svn
+.nobuckcheck
 mockpiframe.log
 mockpiframe.log.lck
 junitvmwatcher*.properties
