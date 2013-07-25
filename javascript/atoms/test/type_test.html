@@ -52,6 +52,7 @@
     var expectedFailures;
 
     function setUp() {
+      goog.testing.AsyncTestCase.ControlBreakingException.prototype.isJsUnitException = function() { return true; };
       expectedFailures = new goog.testing.ExpectedFailures();
     }
 
@@ -356,10 +357,7 @@
     }
 
     function testEnterTextArea() {
-      // Although this looks like a platform dependent change, these newlines
-      // are what is seen. In particular, the Opera line ending is consistent
-      // cross-platform.
-      var newline = (bot.userAgent.IE_DOC_PRE9 || goog.userAgent.OPERA) ?
+      var newline = (bot.userAgent.IE_DOC_PRE9 || (goog.userAgent.OPERA && !goog.userAgent.product.isVersion(12))) ?
           '\r\n' : '\n';
       var finalText = 'asdf' + newline + 'qwer';
       runTypingTest(['asdf', ENTER, 'qwer'], finalText, 9, 9, ['textarea']);
@@ -479,36 +477,39 @@
     }
 
     function testTypeDate() {
-      expectedFailures.expectFailureFor(goog.userAgent.OPERA);
-      expectedFailures.run(function() {
-        var dateInput = document.getElementById("date");
-        dateInput.value = "";
-        bot.action.type(dateInput, "2013-01-01");
-        assertEquals(dateInput.value, "2013-01-01");
-        dateInput.value = "";
-      });
+      if (goog.userAgent.OPERA) {
+        return;
+      }
+
+      var dateInput = document.getElementById("date");
+      dateInput.value = "";
+      bot.action.type(dateInput, "2013-01-01");
+      assertEquals(dateInput.value, "2013-01-01");
+      dateInput.value = "";
     }
     function testTypeDateWithTimestamp() {
-      expectedFailures.expectFailureFor(goog.userAgent.OPERA);
-      expectedFailures.run(function() {
-        var dateInput = document.getElementById("date");
-        dateInput.value = "";
-        bot.action.type(dateInput, "2013-01-01T12:10:12.000Z");
-        assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "2013-01-01" : "2013-01-01T12:10:12.000Z");
-        dateInput.value = "";
-      });
+      if (goog.userAgent.OPERA) {
+        return;
+      }
+
+      var dateInput = document.getElementById("date");
+      dateInput.value = "";
+      bot.action.type(dateInput, "2013-01-01T12:10:12.000Z");
+      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "2013-01-01" : "2013-01-01T12:10:12.000Z");
+      dateInput.value = "";
     }
     function testTypeInvalidDate() {
-      expectedFailures.expectFailureFor(goog.userAgent.OPERA);
-      expectedFailures.run(function() {
-        var dateInput = document.getElementById("date");
-        dateInput.value = "";
-        bot.action.type(dateInput, "2013-13-01");
-        assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "2013-13-01");
-        dateInput.value = "";
-        bot.action.type(dateInput, "February 28, 2013");
-        assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "February 28, 2013");
-      });
+      if (goog.userAgent.OPERA) {
+        return;
+      }
+
+      var dateInput = document.getElementById("date");
+      dateInput.value = "";
+      bot.action.type(dateInput, "2013-13-01");
+      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "2013-13-01");
+      dateInput.value = "";
+      bot.action.type(dateInput, "February 28, 2013");
+      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "February 28, 2013");
     }
   </script>
 </head>
