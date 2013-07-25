@@ -521,6 +521,10 @@ module CrazyFunJava
                 ant.sysproperty :key => 'webdriver.chrome.binary', :value => chrome
               end
 
+              if firefox
+                ant.sysproperty :key => 'webdriver.firefox.bin', :value => firefox
+              end
+
               if ipv4only?
                 ant.sysproperty :key => 'java.net.preferIPv4Stack', :value => 'true'
               end
@@ -594,6 +598,10 @@ module CrazyFunJava
 
     def chrome
       return ENV['chrome']
+    end
+
+    def firefox
+      return ENV['firefox']
     end
 
     def ipv4only?
