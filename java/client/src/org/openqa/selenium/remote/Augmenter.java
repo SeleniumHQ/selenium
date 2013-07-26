@@ -211,12 +211,8 @@ public class Augmenter {
         continue;
       }
 
-      Class<?> iface = augmenter.getDescribedInterface();
-      if (iface.isInstance(objectToAugment)) {
-        continue;
-      }
-
-      handler.addCapabilityHander(iface, augmenter.getImplementation(value));
+      handler.addCapabilityHander(augmenter.getDescribedInterface(),
+          augmenter.getImplementation(value));
     }
     return handler;
   }
