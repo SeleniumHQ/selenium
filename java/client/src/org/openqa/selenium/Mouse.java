@@ -20,24 +20,9 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 
 /**
  * Interface representing basic mouse operations.
- * 
+ *
+ * @deprecated Use {@link org.openqa.selenium.interactions.Mouse}
  */
-public interface Mouse {
-  void click(Coordinates where);
-
-  void doubleClick(Coordinates where);
-
-  void mouseDown(Coordinates where);
-
-  void mouseUp(Coordinates where);
-
-  void mouseMove(Coordinates where);
-
-  /* Offset from the current location of the mouse pointer. */
-  void mouseMove(Coordinates where, long xOffset, long yOffset);
-
-  // Right-clicks an element.
-  void contextClick(Coordinates where);
-
-  // TODO: Scroll wheel support
+@Deprecated
+public interface Mouse extends org.openqa.selenium.interactions.Mouse {
 }

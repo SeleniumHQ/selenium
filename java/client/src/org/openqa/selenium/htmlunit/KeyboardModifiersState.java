@@ -20,8 +20,10 @@ import org.openqa.selenium.Keys;
 
 /**
  * Holds the state of the modifier keys (Shift, ctrl, alt) for HtmlUnit.
- * 
+ *
+ * @deprecated This class will soon be marked private
  */
+@Deprecated
 public class KeyboardModifiersState {
   private boolean shiftPressed = false;
   private boolean ctrlPressed = false;
@@ -39,29 +41,29 @@ public class KeyboardModifiersState {
     return altPressed;
   }
 
-  public void storeKeyDown(Keys key) {
+  public void storeKeyDown(CharSequence key) {
     storeIfEqualsShift(key, true);
     storeIfEqualsCtrl(key, true);
     storeIfEqualsAlt(key, true);
   }
 
-  public void storeKeyUp(Keys key) {
+  public void storeKeyUp(CharSequence key) {
     storeIfEqualsShift(key, false);
     storeIfEqualsCtrl(key, false);
     storeIfEqualsAlt(key, false);
   }
 
-  private void storeIfEqualsShift(Keys key, boolean keyState) {
+  private void storeIfEqualsShift(CharSequence key, boolean keyState) {
     if (key.equals(Keys.SHIFT))
       shiftPressed = keyState;
   }
 
-  private void storeIfEqualsCtrl(Keys key, boolean keyState) {
+  private void storeIfEqualsCtrl(CharSequence key, boolean keyState) {
     if (key.equals(Keys.CONTROL))
       ctrlPressed = keyState;
   }
 
-  private void storeIfEqualsAlt(Keys key, boolean keyState) {
+  private void storeIfEqualsAlt(CharSequence key, boolean keyState) {
     if (key.equals(Keys.ALT))
       altPressed = keyState;
   }

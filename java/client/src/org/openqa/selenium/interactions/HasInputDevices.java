@@ -1,5 +1,5 @@
 /*
-Copyright 2011 Selenium committers
+Copyright 2007-2010 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,21 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.interactions.internal;
+package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.internal.Locatable;
 
 /**
- * Base class for all touch screen-related actions
+ * Interface implemented by each driver that allows access to the raw input devices.
  */
-public class TouchAction extends DisplayAction {
+public interface HasInputDevices {
+  Keyboard getKeyboard();
 
-  protected final TouchScreen touchScreen;
-
-  public TouchAction(TouchScreen touchScreen, Locatable locationProvider) {
-    super(locationProvider);
-    this.touchScreen = touchScreen;
-  }
-
+  Mouse getMouse();
 }

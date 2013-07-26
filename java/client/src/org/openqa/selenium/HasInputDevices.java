@@ -16,12 +16,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-
 /**
  * Interface implemented by each driver that allows access to the raw input devices.
+ *
+ * @deprecated Use {@link org.openqa.selenium.interactions.HasInputDevices} instead.
  */
-public interface HasInputDevices {
+@Deprecated
+public interface HasInputDevices extends org.openqa.selenium.interactions.HasInputDevices {
   Keyboard getKeyboard();
-
   Mouse getMouse();
 }

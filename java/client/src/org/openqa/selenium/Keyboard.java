@@ -18,12 +18,9 @@ package org.openqa.selenium;
 
 /**
  * Interface representing basic keyboard operations.
- * 
+ *
+ * @deprecated Use {@link org.openqa.selenium.interactions.Keyboard} instead.
  */
-public interface Keyboard {
-  void sendKeys(CharSequence... keysToSend);
-
-  void pressKey(Keys keyToPress);
-
-  void releaseKey(Keys keyToRelease);
+@Deprecated
+public interface Keyboard extends org.openqa.selenium.interactions.Keyboard {
 }

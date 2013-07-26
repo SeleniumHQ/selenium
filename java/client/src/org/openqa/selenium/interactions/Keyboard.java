@@ -1,5 +1,5 @@
 /*
-Copyright 2011 Selenium committers
+Copyright 2007-2010 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,21 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.interactions.internal;
-
-import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.internal.Locatable;
+package org.openqa.selenium.interactions;
 
 /**
- * Base class for all touch screen-related actions
+ * Interface representing basic keyboard operations.
+ * 
  */
-public class TouchAction extends DisplayAction {
+public interface Keyboard {
+  void sendKeys(CharSequence... keysToSend);
 
-  protected final TouchScreen touchScreen;
+  void pressKey(CharSequence keyToPress);
 
-  public TouchAction(TouchScreen touchScreen, Locatable locationProvider) {
-    super(locationProvider);
-    this.touchScreen = touchScreen;
-  }
-
+  void releaseKey(CharSequence keyToRelease);
 }

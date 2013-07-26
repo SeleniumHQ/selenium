@@ -85,7 +85,7 @@ public class HtmlUnitKeyboard implements Keyboard {
     }
   }
 
-  public void pressKey(Keys keyToPress) {
+  public void pressKey(CharSequence keyToPress) {
     WebElement toElement = parent.switchTo().activeElement();
 
     HtmlUnitWebElement htmlElement = getElementToSend(toElement);
@@ -93,7 +93,7 @@ public class HtmlUnitKeyboard implements Keyboard {
     htmlElement.sendKeyDownEvent(keyToPress);
   }
 
-  public void releaseKey(Keys keyToRelease) {
+  public void releaseKey(CharSequence keyToRelease) {
     WebElement toElement = parent.switchTo().activeElement();
 
     HtmlUnitWebElement htmlElement = getElementToSend(toElement);
@@ -101,7 +101,10 @@ public class HtmlUnitKeyboard implements Keyboard {
     htmlElement.sendKeyUpEvent(keyToRelease);
   }
 
-  public void performSingleKeyAction(HtmlElement element, Keys modifierKey, String eventDescription) {
+  /**
+   * @deprecated Visibility will soon be reduced.
+   */
+  public void performSingleKeyAction(HtmlElement element, CharSequence modifierKey, String eventDescription) {
     boolean shiftKey = modifierKey.equals(Keys.SHIFT);
     boolean ctrlKey = modifierKey.equals(Keys.CONTROL);
     boolean altKey = modifierKey.equals(Keys.ALT);

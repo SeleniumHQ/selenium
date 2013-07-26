@@ -311,15 +311,21 @@ public class HtmlUnitWebElement implements WrapsDriver,
     element.focus();
   }
 
-  public void sendKeyDownEvent(Keys modifierKey) {
+  /**
+   * @deprecated Visibility will soon be reduced.
+   */
+  public void sendKeyDownEvent(CharSequence modifierKey) {
     sendSingleKeyEvent(modifierKey, Event.TYPE_KEY_DOWN);
   }
 
-  public void sendKeyUpEvent(Keys modifierKey) {
+  /**
+   * @deprecated Visibility will soon be reduced.
+   */
+  public void sendKeyUpEvent(CharSequence modifierKey) {
     sendSingleKeyEvent(modifierKey, Event.TYPE_KEY_UP);
   }
 
-  private void sendSingleKeyEvent(Keys modifierKey, String eventDescription) {
+  private void sendSingleKeyEvent(CharSequence modifierKey, String eventDescription) {
     verifyCanInteractWithElement();
     switchFocusToThisIfNeeded();
     HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();

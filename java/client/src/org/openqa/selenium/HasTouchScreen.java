@@ -19,7 +19,6 @@ package org.openqa.selenium;
 /**
  * Interface implemented by each driver that allows access to touch screen capabilities.
  */
-public interface HasTouchScreen {
-
+public interface HasTouchScreen extends org.openqa.selenium.interactions.HasTouchScreen {
   TouchScreen getTouch();
 }

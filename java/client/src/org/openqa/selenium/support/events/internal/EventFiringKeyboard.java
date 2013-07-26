@@ -43,11 +43,11 @@ public class EventFiringKeyboard implements Keyboard {
     keyboard.sendKeys(keysToSend);
   }
 
-  public void pressKey(Keys keyToPress) {
+  public void pressKey(CharSequence keyToPress) {
     keyboard.pressKey(keyToPress);
   }
 
-  public void releaseKey(Keys keyToRelease) {
+  public void releaseKey(CharSequence keyToRelease) {
     keyboard.releaseKey(keyToRelease);
   }
 }

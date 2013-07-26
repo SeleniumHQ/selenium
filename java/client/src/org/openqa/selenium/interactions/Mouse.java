@@ -16,22 +16,27 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.interactions.internal.MouseAction;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Coordinates;
 
 /**
- * Moves the mouse to an element.
- * 
+ * Interface representing basic mouse operations.
  */
-public class MoveMouseAction extends MouseAction implements Action {
-  public MoveMouseAction(Mouse mouse, Locatable locationProvider) {
-    super(mouse, locationProvider);
-    if (locationProvider == null) {
-      throw new IllegalArgumentException("Must provide a location for a move action.");
-    }
-  }
+public interface Mouse {
+  void click(Coordinates where);
 
-  public void perform() {
-    mouse.mouseMove(getActionLocation());
-  }
+  void doubleClick(Coordinates where);
+
+  void mouseDown(Coordinates where);
+
+  void mouseUp(Coordinates where);
+
+  void mouseMove(Coordinates where);
+
+  /* Offset from the current location of the mouse pointer. */
+  void mouseMove(Coordinates where, long xOffset, long yOffset);
+
+  // Right-clicks an element.
+  void contextClick(Coordinates where);
+
+  // TODO: Scroll wheel support
 }

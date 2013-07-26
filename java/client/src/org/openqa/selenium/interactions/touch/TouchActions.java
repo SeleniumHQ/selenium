@@ -16,13 +16,13 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.HasTouchScreen;
-import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.internal.Locatable;
 
 /**
