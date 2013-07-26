@@ -27,6 +27,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, SAFARI},
@@ -37,6 +39,7 @@ public class SvgDocumentTest extends JUnit4TestBase {
   @Test
   public void testClickOnSvgElement() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
+    assumeFalse("Firefox < 21 fails this test", isFirefox(driver) && (getFirefoxVersion(driver) < 21));
 
     driver.get(pages.svgTestPage);
     WebElement rect = driver.findElement(By.id("rect"));
