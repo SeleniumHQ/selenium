@@ -22,6 +22,7 @@ function Editor(window) {
 	this.window = window;
 	window.editor = this;
 	var self = this;
+  this.safeLastWindow = new LastWindow();
 	this.recordFrameTitle = false;
     this.app = new Application();
     this.app.addObserver({
@@ -552,7 +553,7 @@ Editor.prototype.exportTestSuiteWithFormat = function(format) {
 Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 	this.log.debug("loadRecorderFor: " + contentWindow);
 	if (this.recordingEnabled && (isRootDocument || this.recordFrameTitle) &&
-		contentWindow == this.lastWindow) {
+      this.safeLastWindow.windowEquals(contentWindow)) {
 		this.recordTitle(contentWindow);
 	}
 	Recorder.register(this, contentWindow);
@@ -618,18 +619,6 @@ Editor.prototype.clear = function(force) {
 	return false;
 }
 
-// create the path represented as an array from top level window to the specified frame
-Editor.prototype._createPaths = function(window) {
-    var path = [];
-    var lastWindow = null;
-    while (window != lastWindow) {
-        path.unshift(window);
-        lastWindow = window;
-        window = lastWindow.parent;
-    }
-    return path;
-}
-
 Editor.prototype._getTopWindow = function(window) {
     if (this.topWindow) {
         var top = this.topWindow; // for functional test of Selenium IDE
@@ -637,19 +626,6 @@ Editor.prototype._getTopWindow = function(window) {
         return top;
     } else {
         return window.top;
-    }
-}
-
-Editor.prototype._isSameWindow = function(w1, w2) {
-    if (w1 == null || w2 == null) return false;
-    if (w1 == w1.parent && w2 == w2.parent) {
-        // top level window
-        return w1.name == w2.name;
-    } else if (w1.parent == w2.parent) {
-        // frame
-        return w1.name == w2.name;
-    } else {
-        return false;
     }
 }
 
@@ -703,12 +679,7 @@ Editor.prototype.updateDeveloperTools = function(show) {
 
 Editor.prototype.addCommand = function(command,target,value,window,insertBeforeLastCommand) {
     this.log.debug("addCommand: command=" + command + ", target=" + target + ", value=" + value + " window.name=" + window.name);
-    if (this.lastWindow) {
-        this.log.debug("window.name=" + window.name + ", lastWindow.name=" + this.lastWindow.name);
-    } else {
-        this.log.debug("window.name=" + window.name);
-    }
-	if (command != 'open' && 
+    if (command != 'open' &&
         command != 'selectWindow' &&
         command != 'selectFrame') {
         if (this.getTestCase().commands.length == 0) {
@@ -718,12 +689,11 @@ Editor.prototype.addCommand = function(command,target,value,window,insertBeforeL
             this.addCommand("open", path, '', top);
             this.recordTitle(top);
         }
-        if (this.lastWindow != null &&
-            !this._isSameWindow(this.lastWindow, window)) {
-            if (this._isSameWindow(window.top, this.lastWindow.top)) {
+        if (!this.safeLastWindow.isSameWindow(window)) {
+            if (this.safeLastWindow.isSameTopWindow(window)) {
                 // frame
                 var destPath = this._createPaths(window);
-                var srcPath = this._createPaths(this.lastWindow);
+                var srcPath = this.safeLastWindow.getPath();
                 this.log.debug("selectFrame: srcPath.length=" + srcPath.length + ", destPath.length=" + destPath.length);
                 var branch = 0;
                 var i;
@@ -749,16 +719,16 @@ Editor.prototype.addCommand = function(command,target,value,window,insertBeforeL
                 // popup
                 var windowName = window.name;
                 if (windowName == '') {
-					this.addCommand('selectWindow', 'null', '', window);
+                    this.addCommand('selectWindow', 'null', '', window);
                 }else{
-					this.addCommand('selectWindow', "name=" + windowName, '', window);
-				}
+                    this.addCommand('selectWindow', "name=" + windowName, '', window);
+                }
             }
         }
 	}
 	//resultBox.inputField.scrollTop = resultBox.inputField.scrollHeight - resultBox.inputField.clientHeight;
     this.clearLastCommand();
-	this.lastWindow = window;
+    this.safeLastWindow.setWindow(window);
     var command = new Command(command, target, value);
     // bind to the href attribute instead of to window.document.location, which
     // is an object reference
@@ -787,7 +757,7 @@ Editor.prototype.clearLastCommand = function() {
 
 Editor.prototype.appendWaitForPageToLoad = function(window) {
     this.log.debug("appendWaitForPageToLoad");
-    if (window != this.lastWindow) {
+    if (!this.safeLastWindow.windowEquals(window)) {
         this.log.debug("window did not match");
         return;
     }
@@ -800,7 +770,7 @@ Editor.prototype.appendWaitForPageToLoad = function(window) {
 	if (lastCommand.type == 'command' && 
 		!lastCommand.command.match(/^(assert|verify|store)/)) {
 		if (this.app.getCurrentFormat().getFormatter().remoteControl) {
-			this.addCommand("waitForPageToLoad", this.getOptions().timeout, null, this.lastWindow);
+			this.addCommand("waitForPageToLoad", this.getOptions().timeout, null, window);
 		} else {
 			lastCommand.command = lastCommand.command + "AndWait";
 			this.view.rowUpdated(lastCommandIndex);
@@ -1521,3 +1491,65 @@ Editor.RollupView = function() {
 };
 
 Editor.RollupView.prototype = new Editor.InfoView;
+
+/*
+ * LastWindow is is a safe way to keep the last window information to avoid the dead object
+ * error in Firefox
+ */
+function LastWindow() {
+  this.window = null;
+  this.path = [];
+}
+
+LastWindow.prototype.setWindow = function(window) {
+  if (this.window != window) {
+    this.window = window;
+    this.parent = window.parent;
+    this.name = window.name;
+    this.isTopLevel = window == window.parent;
+    this.topName = window.top.name;
+    this.path = this.createPath(window);
+  }
+};
+
+LastWindow.prototype.windowEquals = function(window) {
+  if (this.window == null || window == null) return false;
+  return window == this.window;
+};
+
+LastWindow.prototype.isSameWindow = function(window) {
+  if (this.window == null || window == null) return false;
+  if (this.isTopLevel && window == window.parent) {
+    // top level window
+    return this.name == window.name;
+  } else if (this.parent == window.parent) {
+    // frame
+    return this.name == window.name;
+  }
+  return false;
+};
+
+LastWindow.prototype.isSameTopWindow = function(window) {
+  if (this.window == null || window == null) return false;
+  if (this.isTopLevel && window.top == window.top.parent) {
+    // top level window
+    return this.topName == window.top.name;
+  }
+  return false;
+};
+
+LastWindow.prototype.getPath = function() {
+  return this.path;
+};
+
+// create the path represented as an array from top level window to the specified frame
+LastWindow.prototype.createPath = function(window) {
+  var path = [];
+  var lastWindow = null;
+  while (window != lastWindow) {
+    path.unshift(window);
+    lastWindow = window;
+    window = lastWindow.parent;
+  }
+  return path;
+};
