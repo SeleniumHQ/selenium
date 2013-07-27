@@ -28,6 +28,12 @@ class TouchActions(object):
         for action in self._actions:
             action()
 
+    def clear(self):
+        """
+        Clears all stored actions.
+        """
+        self._actions = []
+
     def tap(self, on_element):
         """
         Taps on a given element.
