@@ -4,6 +4,7 @@
       <root url="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-legacy-2.6.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-junit4-2.6.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/jmock/jmock-2.6.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/objenesis/objenesis-1.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
