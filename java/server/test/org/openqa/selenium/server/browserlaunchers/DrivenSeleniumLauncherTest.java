@@ -22,7 +22,9 @@ import static org.junit.Assert.assertEquals;
 import com.thoughtworks.selenium.SeleniumException;
 
 import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -32,11 +34,12 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.testing.TestSessions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.testing.MockTestBase;
 
 import java.util.UUID;
 
-public class DrivenSeleniumLauncherTest extends MockTestBase {
+public class DrivenSeleniumLauncherTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
   private RemoteControlConfiguration rcConfig;
   private DesiredCapabilities caps;
@@ -78,7 +81,7 @@ public class DrivenSeleniumLauncherTest extends MockTestBase {
 
   @Test(expected = SeleniumException.class)
   public void shouldRequireSessionExistsInKnownSessionsWhenLaunching() {
-    TestSessions sessions = new TestSessions(context);
+    TestSessions sessions = new TestSessions(mockery);
 
     DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
         caps, rcConfig, seleniumSessionId, "1234");
@@ -89,19 +92,19 @@ public class DrivenSeleniumLauncherTest extends MockTestBase {
 
   @Test
   public void closeShouldCallQuitOnTheDriver() {
-    final DriverSessions sessions = mock(DriverSessions.class);
+    final DriverSessions sessions = mockery.mock(DriverSessions.class);
     final SessionId id = new SessionId("1234");
-    final Session session = mock(Session.class);
-    final WebDriver driver = mock(WebDriver.class);
+    final Session session = mockery.mock(Session.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     caps.setCapability("webdriver.remote.sessionid", id.toString());
 
-    checking(new Expectations() {{
-      one(sessions).get(id);
+    mockery.checking(new Expectations() {{
+      oneOf(sessions).get(id);
       will(returnValue(session));
-      one(session).getDriver();
+      oneOf(session).getDriver();
       will(returnValue(driver));
-      one(driver).quit();
-      one(session).close();
+      oneOf(driver).quit();
+      oneOf(session).close();
     }});
 
     DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
@@ -112,12 +115,12 @@ public class DrivenSeleniumLauncherTest extends MockTestBase {
 
   @Test
   public void closeShouldSurviveIfTheSessionIsNotPresent() {
-    final DriverSessions sessions = mock(DriverSessions.class);
+    final DriverSessions sessions = mockery.mock(DriverSessions.class);
     final SessionId id = new SessionId("1234");
     caps.setCapability("webdriver.remote.sessionid", id.toString());
 
-    checking(new Expectations() {{
-      one(sessions).get(id); will(returnValue(null));
+    mockery.checking(new Expectations() {{
+      oneOf(sessions).get(id); will(returnValue(null));
     }});
 
     DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
@@ -128,15 +131,15 @@ public class DrivenSeleniumLauncherTest extends MockTestBase {
 
   @Test
   public void closeShouldSurviveIfThereIsNoWebDriverInstance() {
-    final DriverSessions sessions = mock(DriverSessions.class);
+    final DriverSessions sessions = mockery.mock(DriverSessions.class);
     final SessionId id = new SessionId("1234");
-    final Session session = mock(Session.class);
+    final Session session = mockery.mock(Session.class);
     caps.setCapability("webdriver.remote.sessionid", id.toString());
 
-    checking(new Expectations() {{
-      one(sessions).get(id); will(returnValue(session));
-      one(session).getDriver(); will(returnValue(null));
-      one(session).close();
+    mockery.checking(new Expectations() {{
+      oneOf(sessions).get(id); will(returnValue(session));
+      oneOf(session).getDriver(); will(returnValue(null));
+      oneOf(session).close();
     }});
 
     DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(
@@ -147,17 +150,17 @@ public class DrivenSeleniumLauncherTest extends MockTestBase {
 
   @Test
   public void closeShouldSurviveQuitThrowingAnException() {
-    final DriverSessions sessions = mock(DriverSessions.class);
+    final DriverSessions sessions = mockery.mock(DriverSessions.class);
     final SessionId id = new SessionId("1234");
-    final Session session = mock(Session.class);
-    final WebDriver driver = mock(WebDriver.class);
+    final Session session = mockery.mock(Session.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     caps.setCapability("webdriver.remote.sessionid", id.toString());
 
-    checking(new Expectations() {{
-      one(sessions).get(id); will(returnValue(session));
-      one(session).getDriver(); will(returnValue(driver));
-      one(driver).quit(); will(throwException(new WebDriverException("boom")));
-      one(session).close();
+    mockery.checking(new Expectations() {{
+      oneOf(sessions).get(id); will(returnValue(session));
+      oneOf(session).getDriver(); will(returnValue(driver));
+      oneOf(driver).quit(); will(throwException(new WebDriverException("boom")));
+      oneOf(session).close();
     }});
 
     DrivenSeleniumLauncher launcher = new DrivenSeleniumLauncher(

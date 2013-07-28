@@ -21,7 +21,9 @@ package org.openqa.selenium.testing;
 import com.google.common.collect.Sets;
 
 import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore.Driver;
@@ -33,7 +35,10 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 
-public class IgnoreComparitorUnitTest extends MockTestBase {
+public class IgnoreComparitorUnitTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+
   private static final Platform CURRENT_PLATFORM = Platform.MAC;
   private static final Platform OTHER_PLATFORM = Platform.WINDOWS;
 
@@ -117,11 +122,13 @@ public class IgnoreComparitorUnitTest extends MockTestBase {
 
   private Ignore ignoreForDriver(final Set<Driver> drivers,
                                  final Set<Platform> platforms) {
-    final Ignore ignore = mock(Ignore.class);
+    final Ignore ignore = mockery.mock(Ignore.class);
     
-    checking(new Expectations() {{
-      allowing(ignore).value() ; will(returnValue(drivers.toArray(new Driver[drivers.size()])));
-      allowing(ignore).platforms() ; will(returnValue(platforms.toArray(new Platform[platforms.size()])));
+    mockery.checking(new Expectations() {{
+      allowing(ignore).value();
+      will(returnValue(drivers.toArray(new Driver[drivers.size()])));
+      allowing(ignore).platforms();
+      will(returnValue(platforms.toArray(new Platform[platforms.size()])));
     }});
     
     return ignore;

@@ -19,8 +19,9 @@ package org.openqa.selenium.support.pagefactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
@@ -36,7 +37,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class DefaultElementLocatorTest extends MockTestBase {
+public class DefaultElementLocatorTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+  
   protected ElementLocator newLocator(WebDriver driver, Field field) {
     return new DefaultElementLocator(driver, field);
   }
@@ -44,11 +48,11 @@ public class DefaultElementLocatorTest extends MockTestBase {
   @Test
   public void shouldDelegateToDriverInstanceToFindElement() throws Exception {
     Field f = Page.class.getDeclaredField("first");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = new ByIdOrName("first");
-    final WebElement element = mock(WebElement.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(1).of(driver).findElement(by);
       will(returnValue(element));
     }});
@@ -62,13 +66,13 @@ public class DefaultElementLocatorTest extends MockTestBase {
   @Test
   public void shouldDelegateToDriverInstanceToFindElementList() throws Exception {
     Field f = Page.class.getDeclaredField("list");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = new ByIdOrName("list");
-    final WebElement element1 = mock(WebElement.class, "webElement1");
-    final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final WebElement element1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement element2 = mockery.mock(WebElement.class, "webElement2");
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(1).of(driver).findElements(by);
       will(returnValue(list));
     }});
@@ -82,11 +86,11 @@ public class DefaultElementLocatorTest extends MockTestBase {
   @Test
   public void cachedElementShouldBeCached() throws Exception {
     Field f = Page.class.getDeclaredField("cached");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = new ByIdOrName("cached");
-    final WebElement element = mock(WebElement.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(1).of(driver).findElement(by);
       will(returnValue(element));
     }});
@@ -99,13 +103,13 @@ public class DefaultElementLocatorTest extends MockTestBase {
   @Test
   public void cachedElementListShouldBeCached() throws Exception {
     Field f = Page.class.getDeclaredField("cachedList");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = new ByIdOrName("cachedList");
-    final WebElement element1 = mock(WebElement.class, "webElement1");
-    final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final WebElement element1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement element2 = mockery.mock(WebElement.class, "webElement2");
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(1).of(driver).findElements(by);
       will(returnValue(list));
     }});
@@ -118,11 +122,11 @@ public class DefaultElementLocatorTest extends MockTestBase {
   @Test
   public void shouldNotCacheNormalElement() throws Exception {
     Field f = Page.class.getDeclaredField("first");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = new ByIdOrName("first");
-    final WebElement element = mock(WebElement.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(2).of(driver).findElement(by);
       will(returnValue(element));
     }});
@@ -135,13 +139,13 @@ public class DefaultElementLocatorTest extends MockTestBase {
   @Test
   public void shouldNotCacheNormalElementList() throws Exception {
     Field f = Page.class.getDeclaredField("list");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = new ByIdOrName("list");
-    final WebElement element1 = mock(WebElement.class, "webElement1");
-    final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final WebElement element1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement element2 = mockery.mock(WebElement.class, "webElement2");
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(2).of(driver).findElements(by);
       will(returnValue(list));
     }});
@@ -154,11 +158,11 @@ public class DefaultElementLocatorTest extends MockTestBase {
   @Test
   public void shouldUseFindByAnnotationsWherePossible() throws Exception {
     Field f = Page.class.getDeclaredField("byId");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = By.id("foo");
-    final WebElement element = mock(WebElement.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(1).of(driver).findElement(by);
       will(returnValue(element));
     }});
@@ -170,13 +174,13 @@ public class DefaultElementLocatorTest extends MockTestBase {
   @Test
   public void shouldUseFindAllByAnnotationsWherePossible() throws Exception {
     Field f = Page.class.getDeclaredField("listById");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = By.id("foo");
-    final WebElement element1 = mock(WebElement.class, "webElement1");
-    final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final WebElement element1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement element2 = mockery.mock(WebElement.class, "webElement2");
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(1).of(driver).findElements(by);
       will(returnValue(list));
     }});
@@ -188,10 +192,10 @@ public class DefaultElementLocatorTest extends MockTestBase {
   @Test
   public void shouldNotMaskNoSuchElementExceptionIfThrown() throws Exception {
     Field f = Page.class.getDeclaredField("byId");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = By.id("foo");
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(1).of(driver).findElement(by);
       will(throwException(new NoSuchElementException("Foo")));
     }});

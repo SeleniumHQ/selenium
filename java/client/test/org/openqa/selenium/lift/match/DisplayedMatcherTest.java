@@ -20,12 +20,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.testing.MockTestBase;
+
 import static org.openqa.selenium.lift.match.DisplayedMatcher.displayed;
 
-public class DisplayedMatcherTest extends MockTestBase {
+public class DisplayedMatcherTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
   @Test
   public void testShouldNotFailForDisplayedWebElement() {
@@ -40,10 +44,10 @@ public class DisplayedMatcherTest extends MockTestBase {
   }
 
   private WebElement createWebElementWithDisplayed(final boolean displayed) {
-    final WebElement element = mock(WebElement.class);
-    checking(new Expectations() {
+    final WebElement element = mockery.mock(WebElement.class);
+    mockery.checking(new Expectations() {
       {
-        one(element).isDisplayed();
+        oneOf(element).isDisplayed();
         will(returnValue(displayed));
       }
     });

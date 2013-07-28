@@ -19,8 +19,9 @@ package org.openqa.selenium.support.pagefactory.internal;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -36,17 +37,19 @@ import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
-public class LocatingElementListHandlerTest extends MockTestBase {
+public class LocatingElementListHandlerTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
   @SuppressWarnings("unchecked")
   @Test
   public void shouldAlwaysLocateTheElementPerCall() {
-    final ElementLocator locator = mock(ElementLocator.class);
-    final WebElement element1 = mock(WebElement.class, "webElement1");
-    final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final ElementLocator locator = mockery.mock(ElementLocator.class);
+    final WebElement element1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement element2 = mockery.mock(WebElement.class, "webElement2");
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(2).of(locator).findElements();
       will(returnValue(list));
       exactly(1).of(element2).sendKeys("Fishy");
@@ -63,12 +66,12 @@ public class LocatingElementListHandlerTest extends MockTestBase {
 
   @Test
   public void shouldUseAnnotationsToLookUpByAlternativeMechanisms() {
-    final WebDriver driver = mock(WebDriver.class);
-    final WebElement element1 = mock(WebElement.class, "webElement1");
-    final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final WebDriver driver = mockery.mock(WebDriver.class);
+    final WebElement element1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement element2 = mockery.mock(WebElement.class, "webElement2");
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(1).of(driver).findElements(By.tagName("a"));
       will(returnValue(list));
       exactly(1).of(element1).getAttribute("href");
@@ -83,12 +86,12 @@ public class LocatingElementListHandlerTest extends MockTestBase {
 
   @Test
   public void findByAnnotationShouldBeInherited() {
-    final WebDriver driver = mock(WebDriver.class);
-    final WebElement element1 = mock(WebElement.class, "webElement1");
-    final WebElement element2 = mock(WebElement.class, "webElement2");
-    final List<WebElement> list = Arrays.asList(new WebElement[] {element1, element2});
+    final WebDriver driver = mockery.mock(WebDriver.class);
+    final WebElement element1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement element2 = mockery.mock(WebElement.class, "webElement2");
+    final List<WebElement> list = Arrays.asList(element1, element2);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(1).of(driver).findElements(By.tagName("a"));
       will(returnValue(list));
       exactly(1).of(element1).getText();

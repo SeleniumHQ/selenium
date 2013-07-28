@@ -21,7 +21,7 @@ import org.openqa.selenium.logging.Logs;
 import java.util.List;
 import java.util.Set;
 
-public class StubDriver implements WebDriver, HasInputDevices, HasTouchScreen {
+public class StubDriver implements WebDriver, org.openqa.selenium.interactions.HasInputDevices, org.openqa.selenium.interactions.HasTouchScreen {
 
   public void get(String url) {
     throw new UnsupportedOperationException("get");
@@ -80,15 +80,15 @@ public class StubDriver implements WebDriver, HasInputDevices, HasTouchScreen {
   }
 
   // TODO(eran): Why does this not throw an exception like everything else?
-  public Keyboard getKeyboard() {
+  public org.openqa.selenium.interactions.Keyboard getKeyboard() {
     return null;
   }
 
-  public Mouse getMouse() {
+  public org.openqa.selenium.interactions.Mouse getMouse() {
     return null;
   }
 
-  public TouchScreen getTouch() {
+  public org.openqa.selenium.interactions.TouchScreen getTouch() {
     return null;
   }
 

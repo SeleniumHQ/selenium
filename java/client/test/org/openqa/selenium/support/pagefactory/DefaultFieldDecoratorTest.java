@@ -21,11 +21,12 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.openqa.selenium.By;
-import org.openqa.selenium.HasInputDevices;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.support.FindAll;
-import org.openqa.selenium.testing.MockTestBase;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -48,7 +49,9 @@ import java.util.List;
 
 /**
  */
-public class DefaultFieldDecoratorTest extends MockTestBase {
+public class DefaultFieldDecoratorTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
   // Unusued fields are used by tests. Do not remove!
   @SuppressWarnings("unused") private WebElement element1;
@@ -91,7 +94,7 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
 
   private FieldDecorator createDecoratorWithDefaultLocator() {
     return new DefaultFieldDecorator(
-        new DefaultElementLocatorFactory((WebDriver) null));
+        new DefaultElementLocatorFactory(null));
   }
 
   @Test
@@ -174,10 +177,10 @@ public class DefaultFieldDecoratorTest extends MockTestBase {
 
   @Test
   public void testDecoratingProxyImplementsRequiredInterfaces() throws Exception {
-    final AllDriver driver = mock(AllDriver.class);
-    final AllElement element = mock(AllElement.class);
-    final Mouse mouse = mock(Mouse.class);
-    checking(new Expectations() {{
+    final AllDriver driver = mockery.mock(AllDriver.class);
+    final AllElement element = mockery.mock(AllElement.class);
+    final Mouse mouse = mockery.mock(Mouse.class);
+    mockery.checking(new Expectations() {{
       exactly(1).of(driver).getKeyboard();
       exactly(1).of(driver).getMouse();
       will(returnValue(mouse));

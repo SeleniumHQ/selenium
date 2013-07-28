@@ -19,25 +19,28 @@ package org.openqa.selenium;
 import java.util.List;
 
 import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.testing.MockTestBase;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class ByTest extends MockTestBase {
+public class ByTest {
 
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+  
   @Test
   public void shouldUseFindsByNameToLocateElementsByName() {
-    final AllDriver driver = mock(AllDriver.class);
+    final AllDriver driver = mockery.mock(AllDriver.class);
 
-    checking(new Expectations() {
+    mockery.checking(new Expectations() {
       {
-        one(driver).findElementByName("cheese");
+        oneOf(driver).findElementByName("cheese");
       }
     });
 
@@ -47,11 +50,11 @@ public class ByTest extends MockTestBase {
 
   @Test
   public void shouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName() {
-    final OnlyXPath driver = mock(OnlyXPath.class);
+    final OnlyXPath driver = mockery.mock(OnlyXPath.class);
 
-    checking(new Expectations() {
+    mockery.checking(new Expectations() {
       {
-        one(driver).findElementByXPath(".//*[@name = 'cheese']");
+        oneOf(driver).findElementByXPath(".//*[@name = 'cheese']");
       }
     });
 

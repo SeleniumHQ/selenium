@@ -17,6 +17,8 @@ limitations under the License.
 package org.openqa.selenium.support.events;
 
 import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -28,7 +30,6 @@ import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
-import org.openqa.selenium.testing.MockTestBase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,21 +42,23 @@ import static org.junit.Assert.fail;
 /**
  * @author Michael Tamm
  */
-public class EventFiringWebDriverTest extends MockTestBase {
+public class EventFiringWebDriverTest {
 
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+  
   @Test
   public void navigationEvents() {
-    final WebDriver mockedDriver = mock(WebDriver.class);
-    final Navigation mockedNavigation = mock(Navigation.class);
+    final WebDriver mockedDriver = mockery.mock(WebDriver.class);
+    final Navigation mockedNavigation = mockery.mock(Navigation.class);
     final StringBuilder log = new StringBuilder();
 
-    checking(new Expectations() {{
-      one(mockedDriver).get("http://www.get.com");
+    mockery.checking(new Expectations() {{
+      oneOf(mockedDriver).get("http://www.get.com");
       exactly(3).of(mockedDriver).navigate();
       will(returnValue(mockedNavigation));
-      one(mockedNavigation).to("http://www.navigate-to.com");
-      one(mockedNavigation).back();
-      one(mockedNavigation).forward();
+      oneOf(mockedNavigation).to("http://www.navigate-to.com");
+      oneOf(mockedNavigation).back();
+      oneOf(mockedNavigation).forward();
     }});
 
     EventFiringWebDriver testedDriver =
@@ -110,14 +113,14 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
   @Test
   public void clickEvent() {
-    final WebDriver mockedDriver = mock(WebDriver.class);
-    final WebElement mockedElement = mock(WebElement.class);
+    final WebDriver mockedDriver = mockery.mock(WebDriver.class);
+    final WebElement mockedElement = mockery.mock(WebElement.class);
     final StringBuilder log = new StringBuilder();
 
-    checking(new Expectations() {{
-      one(mockedDriver).findElement(By.name("foo"));
+    mockery.checking(new Expectations() {{
+      oneOf(mockedDriver).findElement(By.name("foo"));
       will(returnValue(mockedElement));
-      one(mockedElement).click();
+      oneOf(mockedElement).click();
     }});
 
     EventFiringWebDriver testedDriver =
@@ -143,16 +146,16 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
   @Test
   public void changeValueEvent() {
-    final WebDriver mockedDriver = mock(WebDriver.class);
-    final WebElement mockedElement = mock(WebElement.class);
+    final WebDriver mockedDriver = mockery.mock(WebDriver.class);
+    final WebElement mockedElement = mockery.mock(WebElement.class);
     final StringBuilder log = new StringBuilder();
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(3).of(mockedDriver).findElement(By.name("foo"));
       will(returnValue(mockedElement));
-      one(mockedElement).clear();
-      one(mockedElement).sendKeys("some text");
-      one(mockedElement).click();
+      oneOf(mockedElement).clear();
+      oneOf(mockedElement).sendKeys("some text");
+      oneOf(mockedElement).click();
     }});
 
     EventFiringWebDriver testedDriver =
@@ -182,16 +185,16 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
   @Test
   public void findByEvent() {
-    final WebDriver mockedDriver = mock(WebDriver.class);
-    final WebElement mockedElement = mock(WebElement.class);
+    final WebDriver mockedDriver = mockery.mock(WebDriver.class);
+    final WebElement mockedElement = mockery.mock(WebElement.class);
     final StringBuilder log = new StringBuilder();
 
-    checking(new Expectations() {{
-      one(mockedDriver).findElement(By.id("foo"));
+    mockery.checking(new Expectations() {{
+      oneOf(mockedDriver).findElement(By.id("foo"));
       will(returnValue(mockedElement));
-      one(mockedElement).findElement(By.linkText("bar"));
-      one(mockedElement).findElements(By.name("xyz"));
-      one(mockedDriver).findElements(By.xpath("//link[@type = 'text/css']"));
+      oneOf(mockedElement).findElement(By.linkText("bar"));
+      oneOf(mockedElement).findElements(By.name("xyz"));
+      oneOf(mockedDriver).findElements(By.xpath("//link[@type = 'text/css']"));
     }});
 
     EventFiringWebDriver testedDriver =
@@ -228,13 +231,13 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
   @Test
   public void shouldCallListenersWhenAnExceptionIsThrown() {
-    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebDriver mockedDriver = mockery.mock(WebDriver.class);
     final StringBuilder log = new StringBuilder();
 
     final NoSuchElementException exception = new NoSuchElementException("argh");
 
-    checking(new Expectations() {{
-      one(mockedDriver).findElement(By.id("foo"));
+    mockery.checking(new Expectations() {{
+      oneOf(mockedDriver).findElement(By.id("foo"));
       will(throwException(exception));
     }});
 
@@ -248,7 +251,7 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
     try {
       testedDriver.findElement(By.id("foo"));
-      fail("Expected exception to be propogated");
+      fail("Expected exception to be propagated");
     } catch (NoSuchElementException e) {
       // Fine
     }
@@ -258,14 +261,14 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
   @Test
   public void shouldUnpackElementArgsWhenCallingScripts() {
-    final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
-    final WebElement stubbedElement = mock(WebElement.class);
+    final ExececutingDriver mockedDriver = mockery.mock(ExececutingDriver.class);
+    final WebElement stubbedElement = mockery.mock(WebElement.class);
 
-    checking(new Expectations() {{
-      one(mockedDriver).findElement(By.id("foo"));
+    mockery.checking(new Expectations() {{
+      oneOf(mockedDriver).findElement(By.id("foo"));
       will(returnValue(stubbedElement));
       allowing(stubbedElement);
-      one(mockedDriver).executeScript("foo", stubbedElement);
+      oneOf(mockedDriver).executeScript("foo", stubbedElement);
       will(returnValue("foo"));
     }});
 
@@ -283,12 +286,12 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
   @Test
   public void testShouldUnpackListOfElementArgsWhenCallingScripts() {
-    final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
-    final List<?> aList = mock(List.class);
+    final ExececutingDriver mockedDriver = mockery.mock(ExececutingDriver.class);
+    final List<?> aList = mockery.mock(List.class);
 
-    checking(new Expectations() {{
-      one(aList).size();
-      one(mockedDriver).executeScript("foo", new Object[] {new ArrayList<Object>()});
+    mockery.checking(new Expectations() {{
+      oneOf(aList).size();
+      oneOf(mockedDriver).executeScript("foo", new Object[] {new ArrayList<Object>()});
     }});
 
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
@@ -304,12 +307,12 @@ public class EventFiringWebDriverTest extends MockTestBase {
 
   @Test
   public void testShouldUnpackMapOfElementArgsWhenCallingScripts() {
-    final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
-    final Map<?,?> aMap = mock(Map.class);
+    final ExececutingDriver mockedDriver = mockery.mock(ExececutingDriver.class);
+    final Map<?,?> aMap = mockery.mock(Map.class);
 
-    checking(new Expectations() {{
-      one(aMap).keySet();
-      one(mockedDriver).executeScript("foo", new Object[] {new HashMap<Object, Object>()});
+    mockery.checking(new Expectations() {{
+      oneOf(aMap).keySet();
+      oneOf(mockedDriver).executeScript("foo", new Object[] {new HashMap<Object, Object>()});
     }});
 
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);

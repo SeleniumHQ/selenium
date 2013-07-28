@@ -16,26 +16,27 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import org.openqa.selenium.Keyboard;
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.testing.MockTestBase;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.StubRenderedWebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 
-import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Unit test for all simple keyboard actions.
  * 
  */
-public class IndividualKeyboardActionsTest extends MockTestBase {
+public class IndividualKeyboardActionsTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+
   private Keyboard dummyKeyboard;
   private Mouse dummyMouse;
   private Coordinates dummyCoordinates;
@@ -44,9 +45,9 @@ public class IndividualKeyboardActionsTest extends MockTestBase {
 
   @Before
   public void setUp() {
-    dummyKeyboard = mock(Keyboard.class);
-    dummyMouse = mock(Mouse.class);
-    dummyCoordinates = mock(Coordinates.class);
+    dummyKeyboard = mockery.mock(Keyboard.class);
+    dummyMouse = mockery.mock(Mouse.class);
+    dummyCoordinates = mockery.mock(Coordinates.class);
 
     locatableElement = new StubRenderedWebElement() {
       @Override
@@ -60,8 +61,8 @@ public class IndividualKeyboardActionsTest extends MockTestBase {
   public void keyDownActionWithoutProvidedElement() {
     final Keys keyToPress = Keys.SHIFT;
 
-    checking(new Expectations() {{
-      one(dummyKeyboard).pressKey(keyToPress);
+    mockery.checking(new Expectations() {{
+      oneOf(dummyKeyboard).pressKey(keyToPress);
     }});
 
     KeyDownAction keyDown = new KeyDownAction(dummyKeyboard, dummyMouse, keyToPress);
@@ -72,9 +73,9 @@ public class IndividualKeyboardActionsTest extends MockTestBase {
   public void keyDownActionOnAnElement() {
     final Keys keyToPress = Keys.SHIFT;
 
-    checking(new Expectations() {{
-      one(dummyMouse).click(dummyCoordinates);
-      one(dummyKeyboard).pressKey(keyToPress);
+    mockery.checking(new Expectations() {{
+      oneOf(dummyMouse).click(dummyCoordinates);
+      oneOf(dummyKeyboard).pressKey(keyToPress);
     }});
 
     KeyDownAction keyDown = new KeyDownAction(dummyKeyboard, dummyMouse,
@@ -87,8 +88,8 @@ public class IndividualKeyboardActionsTest extends MockTestBase {
   public void keyUpActionWithoutProvidedElement() {
     final Keys keyToRelease = Keys.CONTROL;
 
-    checking(new Expectations() {{
-      one(dummyKeyboard).releaseKey(keyToRelease);
+    mockery.checking(new Expectations() {{
+      oneOf(dummyKeyboard).releaseKey(keyToRelease);
     }});
 
     KeyUpAction keyUp = new KeyUpAction(dummyKeyboard, dummyMouse, keyToRelease);
@@ -99,9 +100,9 @@ public class IndividualKeyboardActionsTest extends MockTestBase {
   public void keyUpOnAnAnElement() {
     final Keys keyToRelease = Keys.SHIFT;
 
-    checking(new Expectations() {{
-      one(dummyMouse).click(dummyCoordinates);
-      one(dummyKeyboard).releaseKey(keyToRelease);
+    mockery.checking(new Expectations() {{
+      oneOf(dummyMouse).click(dummyCoordinates);
+      oneOf(dummyKeyboard).releaseKey(keyToRelease);
     }});
 
     KeyUpAction upAction = new KeyUpAction(dummyKeyboard, dummyMouse,
@@ -111,8 +112,8 @@ public class IndividualKeyboardActionsTest extends MockTestBase {
 
   @Test
   public void sendKeysActionWithoutProvidedElement() {
-    checking(new Expectations() {{
-      one(dummyKeyboard).sendKeys(keysToSend);
+    mockery.checking(new Expectations() {{
+      oneOf(dummyKeyboard).sendKeys(keysToSend);
     }});
 
     SendKeysAction sendKeys = new SendKeysAction(dummyKeyboard, dummyMouse, keysToSend);
@@ -121,9 +122,9 @@ public class IndividualKeyboardActionsTest extends MockTestBase {
 
   @Test
   public void sendKeysActionOnAnElement() {
-    checking(new Expectations() {{
-      one(dummyMouse).click(dummyCoordinates);
-      one(dummyKeyboard).sendKeys(keysToSend);
+    mockery.checking(new Expectations() {{
+      oneOf(dummyMouse).click(dummyCoordinates);
+      oneOf(dummyKeyboard).sendKeys(keysToSend);
     }});
 
     SendKeysAction sendKeys = new SendKeysAction(dummyKeyboard, dummyMouse,
@@ -136,8 +137,7 @@ public class IndividualKeyboardActionsTest extends MockTestBase {
     final Keys keyToPress = Keys.BACK_SPACE;
 
     try {
-      KeyDownAction keyDown = new KeyDownAction(dummyKeyboard, dummyMouse,
-          locatableElement, keyToPress);
+      new KeyDownAction(dummyKeyboard, dummyMouse, locatableElement, keyToPress);
       fail();
     } catch (IllegalArgumentException e) {
       assertTrue(e.getMessage().contains("modifier keys"));
