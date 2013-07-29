@@ -35,6 +35,8 @@ import static org.junit.Assume.assumeTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -130,7 +132,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .click(link)
         .perform();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   @Ignore({IPHONE})
@@ -154,7 +156,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .click()
         .perform();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   /**
@@ -173,7 +175,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .click()
         .perform();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "We Arrive Here"));
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
   @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE})
@@ -192,7 +194,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .sendKeys(element, "abc def")
         .perform();
 
-    assertEquals("abc def", element.getAttribute("value"));
+    waitFor(elementValueToEqual(element, "abc def"));
 
     //TODO: Figure out why calling sendKey(Key.CONTROL + "a") and then
     //sendKeys("x") does not work on Linux.
@@ -203,7 +205,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     // Release keys before next step.
     new Actions(driver).sendKeys(Keys.NULL).perform();
 
-    assertEquals("", element.getAttribute("value"));
+    waitFor(elementValueToEqual(element, ""));
 
     new Actions(driver)
         .sendKeys(Keys.CONTROL + "v")
@@ -212,7 +214,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     new Actions(driver).sendKeys(Keys.NULL).perform();
 
-    assertEquals("abc defabc def", element.getAttribute("value"));
+    waitFor(elementValueToEqual(element, "abc defabc def"));
   }
 
   @Ignore({HTMLUNIT, OPERA, IE})
