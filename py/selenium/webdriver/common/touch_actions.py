@@ -27,6 +27,7 @@ class TouchActions(object):
         """
         for action in self._actions:
             action()
+        return self
 
     def clear(self):
         """
