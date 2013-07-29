@@ -66,15 +66,16 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Describes proxy settings to be used with a driver instance.
     /// </summary>
+    [JsonObject(MemberSerialization.OptIn)]
     public class Proxy
     {
-        private ProxyKind proxyType = ProxyKind.Unspecified;
-        private bool autoDetect;
-        private string ftpProxy;
-        private string httpProxy;
+        private ProxyKind proxyKind = ProxyKind.Unspecified;
+        private bool isAutoDetect;
+        private string ftpProxyLocation;
+        private string httpProxyLocation;
         private string noProxy;
         private string proxyAutoConfigUrl;
-        private string sslProxy;
+        private string sslProxyLocation;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Proxy"/> class.
@@ -139,13 +140,13 @@ namespace OpenQA.Selenium
         {
             get 
             {
-                return this.proxyType; 
+                return this.proxyKind; 
             }
 
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.AutoDetect);
-                this.proxyType = value;
+                this.proxyKind = value;
             }
         }
 
@@ -157,12 +158,12 @@ namespace OpenQA.Selenium
         {
             get
             {
-                if (this.proxyType == ProxyKind.ProxyAutoConfigure)
+                if (this.proxyKind == ProxyKind.ProxyAutoConfigure)
                 {
                     return "pac";
                 }
 
-                return this.proxyType.ToString().ToLowerInvariant();
+                return this.proxyKind.ToString().ToLowerInvariant();
             }
         }
 
@@ -174,19 +175,19 @@ namespace OpenQA.Selenium
         {
             get
             {
-                return this.autoDetect;
+                return this.isAutoDetect;
             }
 
             set
             {
-                if (this.autoDetect == value)
+                if (this.isAutoDetect == value)
                 {
                     return;
                 }
 
                 this.VerifyProxyTypeCompatilibily(ProxyKind.AutoDetect);
-                this.proxyType = ProxyKind.AutoDetect;
-                this.autoDetect = value;
+                this.proxyKind = ProxyKind.AutoDetect;
+                this.isAutoDetect = value;
             }
         }
 
@@ -198,14 +199,14 @@ namespace OpenQA.Selenium
         {
             get
             {
-                return this.ftpProxy;
+                return this.ftpProxyLocation;
             }
 
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
-                this.proxyType = ProxyKind.Manual;
-                this.ftpProxy = value;
+                this.proxyKind = ProxyKind.Manual;
+                this.ftpProxyLocation = value;
             }
         }
 
@@ -217,14 +218,14 @@ namespace OpenQA.Selenium
         {
             get
             {
-                return this.httpProxy;
+                return this.httpProxyLocation;
             }
 
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
-                this.proxyType = ProxyKind.Manual;
-                this.httpProxy = value;
+                this.proxyKind = ProxyKind.Manual;
+                this.httpProxyLocation = value;
             }
         }
 
@@ -242,7 +243,7 @@ namespace OpenQA.Selenium
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
-                this.proxyType = ProxyKind.Manual;
+                this.proxyKind = ProxyKind.Manual;
                 this.noProxy = value;
             }
         }
@@ -261,7 +262,7 @@ namespace OpenQA.Selenium
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.ProxyAutoConfigure);
-                this.proxyType = ProxyKind.ProxyAutoConfigure;
+                this.proxyKind = ProxyKind.ProxyAutoConfigure;
                 this.proxyAutoConfigUrl = value;
             }
         }
@@ -274,20 +275,20 @@ namespace OpenQA.Selenium
         {
             get
             {
-                return this.sslProxy;
+                return this.sslProxyLocation;
             }
 
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
-                this.proxyType = ProxyKind.Manual;
-                this.sslProxy = value;
+                this.proxyKind = ProxyKind.Manual;
+                this.sslProxyLocation = value;
             }
         }
 
         private void VerifyProxyTypeCompatilibily(ProxyKind compatibleProxy)
         {
-            if (this.proxyType != ProxyKind.Unspecified && this.proxyType != compatibleProxy)
+            if (this.proxyKind != ProxyKind.Unspecified && this.proxyKind != compatibleProxy)
             {
                 throw new InvalidOperationException("Proxy autodetect is incompatible with manual settings");
             }
