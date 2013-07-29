@@ -245,6 +245,11 @@ LRESULT IECommandExecutor::OnBrowserNewWindow(UINT uMsg,
 
   IWebBrowser2* browser = this->factory_->CreateBrowser();
   BrowserHandle new_window_wrapper(new Browser(browser, NULL, this->m_hWnd));
+  // TODO: This is a big assumption that this will work. We need a test case
+  // to validate that it will or won't.
+  SHANDLE_PTR hwnd;
+  browser->get_HWND(&hwnd);
+  this->proxy_manager_->SetProxySettings(reinterpret_cast<HWND>(hwnd));
   this->AddManagedBrowser(new_window_wrapper);
   LPSTREAM* stream = reinterpret_cast<LPSTREAM*>(lParam);
   HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2,

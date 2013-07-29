@@ -49,6 +49,9 @@ class GetSessionCapabilitiesCommandHandler : public IECommandHandler {
     capabilities[CSS_SELECTOR_ENABLED_CAPABILITY] = true;
     capabilities[TAKES_SCREENSHOT_CAPABILITY] = true;
     capabilities[HANDLES_ALERTS_CAPABILITY] = true;
+    if (executor.proxy_manager()->is_proxy_set()) {
+      capabilities[PROXY_CAPABILITY] = executor.proxy_manager()->GetProxyAsJson();
+    }
     capabilities[ENABLE_PERSISTENT_HOVER_CAPABILITY] = executor.enable_persistent_hover();
     capabilities[UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY] = executor.unexpected_alert_behavior();
     capabilities[ELEMENT_SCROLL_BEHAVIOR_CAPABILITY] = executor.input_manager()->scroll_behavior();
@@ -60,6 +63,7 @@ class GetSessionCapabilitiesCommandHandler : public IECommandHandler {
     capabilities[BROWSER_ATTACH_TIMEOUT_CAPABILITY] = executor.browser_factory()->browser_attach_timeout();
     capabilities[BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY] = executor.browser_factory()->browser_command_line_switches();
     capabilities[FORCE_CREATE_PROCESS_API_CAPABILITY] = executor.browser_factory()->force_createprocess_api();
+    capabilities[USE_PER_PROCESS_PROXY_CAPABILITY] = executor.proxy_manager()->use_per_process_proxy();
     response->SetSuccessResponse(capabilities);
   }
 };

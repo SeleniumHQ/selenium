@@ -12,6 +12,7 @@
 // limitations under the License.
 
 #include "ProxyManager.h"
+#include <algorithm>
 #include <vector>
 #include <wininet.h>
 #include "logging.h"
@@ -58,12 +59,19 @@ ProxyManager::~ProxyManager(void) {
   this->RestoreProxySettings();
 }
 
-void ProxyManager::Initialize(std::string proxy_settings,
-                              bool use_per_process_proxy) {
+void ProxyManager::Initialize(ProxySettings settings) {
   LOG(TRACE) << "ProxyManager::Initialize";
-  this->proxy_settings_ = proxy_settings;
-  this->use_per_process_proxy_ = use_per_process_proxy;
-  this->proxy_modified_ = false;
+  this->use_per_process_proxy_ = settings.use_per_process_proxy;
+  // Must standardize the proxy type to a lowercase string.
+  this->proxy_type_ = settings.proxy_type;
+  std::transform(this->proxy_type_.begin(),
+                 this->proxy_type_.end(),
+                 this->proxy_type_.begin(),
+                 ::tolower);
+  this->http_proxy_ = settings.http_proxy;
+  this->ftp_proxy_ = settings.ftp_proxy;
+  this->ssl_proxy_ = settings.ssl_proxy;
+  this->is_proxy_modified_ = false;
 
   this->current_autoconfig_url_ = L"";
   this->current_proxy_auto_detect_flags_ = 0;
@@ -73,21 +81,72 @@ void ProxyManager::Initialize(std::string proxy_settings,
 }
 
 void ProxyManager::SetProxySettings(HWND browser_window_handle) {
-  if (this->proxy_settings_.size() > 0 && this->proxy_settings_ != "system") {
+  LOG(TRACE) << "ProxyManager::SetProxySettings";
+  if (this->proxy_type_ != "system") {
     if (this->use_per_process_proxy_) {
+      LOG(DEBUG) << "Setting proxy for individual IE instance.";
       this->SetPerProcessProxySettings(browser_window_handle);
     } else {
-      if (!this->proxy_modified_) {
+      if (!this->is_proxy_modified_) {
+        LOG(DEBUG) << "Setting system proxy.";
         this->GetCurrentProxySettings();
         this->SetGlobalProxySettings();
-        this->proxy_modified_ = true;
+      } else {
+        LOG(DEBUG) << "Proxy settings already set by IE driver.";
       }
     }
+    this->is_proxy_modified_ = true;
+  } else {
+    LOG(DEBUG) << "Using existing system proxy settings.";
   }
 }
 
+Json::Value ProxyManager::GetProxyAsJson() {
+  LOG(TRACE) << "ProxyManager::GetProxyAsJson";
+  Json::Value proxy_value;
+  proxy_value["proxyType"] = this->proxy_type_;
+  if (this->proxy_type_ == "manual") {
+    if (this->http_proxy_.size() > 0) {
+      proxy_value["httpProxy"] = this->http_proxy_;
+    }
+    if (this->ftp_proxy_.size() > 0) {
+      proxy_value["ftpProxy"] = this->ftp_proxy_;
+    }
+    if (this->ssl_proxy_.size() > 0) {
+      proxy_value["sslProxy"] = this->ssl_proxy_;
+    }
+  }
+  return proxy_value;
+}
+
+std::wstring ProxyManager::BuildProxySettingsString() {
+  LOG(TRACE) << "ProxyManager::BuildProxySettingsString";
+  std::string proxy_string = "";
+  if (this->proxy_type_ == "manual") {
+    if (this->http_proxy_.size() > 0) {
+      proxy_string.append("http=").append(this->http_proxy_);
+    }
+    if (this->ftp_proxy_.size() > 0) {
+      if (proxy_string.size() > 0) {
+        proxy_string.append(" ");
+      }
+      proxy_string.append("ftp=").append(this->ftp_proxy_);
+    }
+    if (this->ssl_proxy_.size() > 0) {
+      if (proxy_string.size() > 0) {
+        proxy_string.append(" ");
+      }
+      proxy_string.append("https=").append(this->ssl_proxy_);
+    }
+  } else {
+    proxy_string = this->proxy_type_;
+  }
+  return StringUtilities::ToWString(proxy_string);
+}
+
 void ProxyManager::RestoreProxySettings() {
-  if (!this->use_per_process_proxy_ && this->proxy_modified_) {
+  LOG(TRACE) << "ProxyManager::RestoreProxySettings";
+  if (!this->use_per_process_proxy_ && this->is_proxy_modified_) {
     INTERNET_PER_CONN_OPTION_LIST option_list;
     std::vector<INTERNET_PER_CONN_OPTION> restore_options(5);
     unsigned long list_size = sizeof(INTERNET_PER_CONN_OPTION_LIST);
@@ -119,14 +178,21 @@ void ProxyManager::RestoreProxySettings() {
     option_list.dwOptionError = 0;
     option_list.pOptions = &restore_options[0];
 
-    ::InternetSetOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &option_list, list_size);
-    ::InternetSetOption(NULL, INTERNET_OPTION_PROXY_SETTINGS_CHANGED, NULL, 0);
-    this->proxy_modified_ = false;
+    BOOL success = ::InternetSetOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &option_list, list_size);
+    if (!success) {
+      LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PER_CONNECTION_OPTION";
+    }
+    success = ::InternetSetOption(NULL, INTERNET_OPTION_PROXY_SETTINGS_CHANGED, NULL, 0);
+    this->is_proxy_modified_ = false;
+    if (!success) {
+      LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_SETTINGS_CHANGED";
+    }
   }
 }
 
 void ProxyManager::SetPerProcessProxySettings(HWND browser_window_handle) {
-  std::wstring proxy = StringUtilities::ToWString(this->proxy_settings_);
+  LOG(TRACE) << "ProxyManager::SetPerProcessProxySettings";
+  std::wstring proxy = this->BuildProxySettingsString();
   CopyDataHolderWindow holder;
   holder.Create(/*HWND*/ HWND_MESSAGE,
                 /*_U_RECT rect*/ CWindow::rcDefault,
@@ -147,21 +213,22 @@ void ProxyManager::SetPerProcessProxySettings(HWND browser_window_handle) {
 }
 
 void ProxyManager::SetGlobalProxySettings() {
-  std::wstring proxy = StringUtilities::ToWString(this->proxy_settings_);
+  LOG(TRACE) << "ProxyManager::SetGlobalProxySettings";
+  std::wstring proxy = this->BuildProxySettingsString();
   std::vector<wchar_t> buffer;
   StringUtilities::ToBuffer(proxy, &buffer);
 
   INTERNET_PER_CONN_OPTION_LIST option_list;
   unsigned long list_size = sizeof(INTERNET_PER_CONN_OPTION_LIST);
 
-  if (this->proxy_settings_ == "direct") {
-    INTERNET_PER_CONN_OPTION  direct_option[1];
+  if (this->proxy_type_ == "direct") {
+    INTERNET_PER_CONN_OPTION direct_option[1];
     direct_option[0].dwOption = INTERNET_PER_CONN_FLAGS;
     direct_option[0].Value.dwValue = PROXY_TYPE_DIRECT;
     option_list.pOptions = direct_option;
     option_list.dwOptionCount = 1;
   } else {
-    INTERNET_PER_CONN_OPTION  proxy_option[2];
+    INTERNET_PER_CONN_OPTION proxy_option[2];
     proxy_option[0].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
     proxy_option[0].Value.pszValue = &buffer[0];
     proxy_option[1].dwOption = INTERNET_PER_CONN_FLAGS;
@@ -173,11 +240,18 @@ void ProxyManager::SetGlobalProxySettings() {
   option_list.dwSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
   option_list.pszConnection = NULL;
   option_list.dwOptionError = 0;
-  ::InternetSetOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &option_list, list_size);
-  ::InternetSetOption(NULL, INTERNET_OPTION_PROXY_SETTINGS_CHANGED, NULL, 0);
+  BOOL success = ::InternetSetOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &option_list, list_size);
+  if (!success) {
+    LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PER_CONNECTION_OPTION";
+  }
+  success = ::InternetSetOption(NULL, INTERNET_OPTION_PROXY_SETTINGS_CHANGED, NULL, 0);
+  if (!success) {
+    LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_SETTINGS_CHANGED";
+  }
 }
 
 void ProxyManager::GetCurrentProxySettings() {
+  LOG(TRACE) << "ProxyManager::GetCurrentProxySettings";
   this->GetCurrentProxyType();
   INTERNET_PER_CONN_OPTION_LIST option_list;
   std::vector<INTERNET_PER_CONN_OPTION> options_to_get(4);
@@ -196,7 +270,7 @@ void ProxyManager::GetCurrentProxySettings() {
 
   BOOL success = ::InternetQueryOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &option_list, &list_size);
   if (!success) {
-    LOGERR(WARN) << "InternetQueryOption failed";
+    LOGERR(WARN) << "InternetQueryOption failed getting proxy settings";
   }
 
   if(options_to_get[0].Value.pszValue != NULL) {
@@ -218,6 +292,7 @@ void ProxyManager::GetCurrentProxySettings() {
 }
 
 void ProxyManager::GetCurrentProxyType() {
+  LOG(TRACE) << "ProxyManager::GetCurrentProxyType";
   INTERNET_PER_CONN_OPTION_LIST option_list;
   std::vector<INTERNET_PER_CONN_OPTION> proxy_type_options(1);
   unsigned long list_size = sizeof(INTERNET_PER_CONN_OPTION_LIST);
@@ -281,26 +356,20 @@ void ProxyManager::UninstallWindowsHook() {
 extern "C" {
 #endif
 
-// This function is our message processor that we inject into the IEFrame 
-// process. It only processes the message indicated herein. All other messages
-// are delegated to the original IEFrame message processor. This function 
-// uninjects itself immediately upon execution.
-LRESULT CALLBACK WindowProcedureHandler(HWND hwnd,
-                                        UINT message,
-                                        WPARAM wParam,
-                                        LPARAM lParam) {
-  // Grab a reference to the original message processor.
-  HANDLE original_message_proc = ::GetProp(hwnd,
-                                           L"__original_message_processor__");
-
-  ::RemoveProp(hwnd, L"__original_message_processor__");
-
-  // Uninject this method.
-  ::SetWindowLongPtr(hwnd,
-                      GWLP_WNDPROC,
-                      reinterpret_cast<LONG_PTR>(original_message_proc));
-
-  if (WD_CHANGE_PROXY == message) {
+// Many thanks to sunnyandy for helping out with this approach. What we're 
+// doing here is setting up a Windows hook to see incoming messages to the
+// IEFrame's message processor. Once we find one is the message we want,
+// we inject our own message processor into the IEFrame process to handle 
+// that one message. 
+//
+// See the discussion here: http://www.codeguru.com/forum/showthread.php?p=1889928
+LRESULT CALLBACK OverrideWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
+  CWPSTRUCT* call_window_proc_struct = reinterpret_cast<CWPSTRUCT*>(lParam);
+  if (WM_COPYDATA == call_window_proc_struct->message) {
+    COPYDATASTRUCT* data = reinterpret_cast<COPYDATASTRUCT*>(call_window_proc_struct->lParam);
+    proxy_string_buffer_size = data->cbData;
+    wcscpy_s(proxy_string, data->cbData, reinterpret_cast<LPCWSTR>(data->lpData));
+  } else if (WD_CHANGE_PROXY == call_window_proc_struct->message) {
     std::wstring proxy = proxy_string;
     INTERNET_PROXY_INFO proxy_info;
     std::vector<char> multibyte_buffer(proxy_string_buffer_size * 2);
@@ -329,44 +398,6 @@ LRESULT CALLBACK WindowProcedureHandler(HWND hwnd,
                                          reinterpret_cast<void*>(&proxy_info),
                                          proxy_info_size,
                                          0);
-    if (FAILED(hr)) {
-      return 1;
-    }
-    return 0;
-  }
-
-  // All other messages should be handled by the original message processor.
-  return ::CallWindowProc(reinterpret_cast<WNDPROC>(original_message_proc),
-                          hwnd,
-                          message,
-                          wParam,
-                          lParam);
-}
-
-// Many thanks to sunnyandy for helping out with this approach. What we're 
-// doing here is setting up a Windows hook to see incoming messages to the
-// IEFrame's message processor. Once we find one is the message we want,
-// we inject our own message processor into the IEFrame process to handle 
-// that one message. 
-//
-// See the discussion here: http://www.codeguru.com/forum/showthread.php?p=1889928
-LRESULT CALLBACK OverrideWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
-  CWPSTRUCT* call_window_proc_struct = reinterpret_cast<CWPSTRUCT*>(lParam);
-  if (WM_COPYDATA == call_window_proc_struct->message) {
-    COPYDATASTRUCT* data = reinterpret_cast<COPYDATASTRUCT*>(call_window_proc_struct->lParam);
-    proxy_string_buffer_size = data->cbData;
-    wcscpy_s(proxy_string, data->cbData, reinterpret_cast<LPCWSTR>(data->lpData));
-  } else if (WD_CHANGE_PROXY == call_window_proc_struct->message) {
-    // Inject our own message processor into the process so we can modify
-    // the WM_GETMINMAXINFO message. It is not possible to modify the 
-    // message from this hook, so the best we can do is inject a function
-    // that can.
-    LONG_PTR proc = ::SetWindowLongPtr(call_window_proc_struct->hwnd,
-                                       GWLP_WNDPROC,
-                                       reinterpret_cast<LONG_PTR>(WindowProcedureHandler));
-    ::SetProp(call_window_proc_struct->hwnd,
-              L"__original_message_processor__",
-              reinterpret_cast<HANDLE>(proc));
   }
 
   return ::CallNextHookEx(window_proc_hook, nCode, wParam, lParam);

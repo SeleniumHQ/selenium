@@ -72,41 +72,24 @@ class NewSessionCommandHandler : public IECommandHandler {
       } else {
         mutable_executor.set_enable_persistent_hover(enable_persistent_hover.asBool());
       }
-      std::string proxy_string = "";
+      ProxySettings proxy_settings = { false, "", "", "", "" };
       Json::Value proxy = it->second.get(PROXY_CAPABILITY, Json::nullValue);
       if (!proxy.isNull()) {
         // The wire protocol specifies lower case for the proxy type, but
         // language bindings have been sending upper case forever. Handle
         // both cases.
         std::string proxy_type = proxy.get("proxyType", "").asString();
-        if (proxy_type == "MANUAL" || proxy_type == "manual") {
-          std::string http_proxy = proxy.get("httpProxy", "").asString();
-          std::string ftp_proxy = proxy.get("ftpProxy", "").asString();
-          std::string ssl_proxy = proxy.get("sslProxy", "").asString();
-          if (http_proxy.size() > 0) {
-            proxy_string.append("http=").append(http_proxy);
-          }
-          if (ftp_proxy.size() > 0) {
-            if (proxy_string.size() > 0) {
-              proxy_string.append(" ");
-            }
-            proxy_string.append("ftp=").append(ftp_proxy);
-          }
-          if (ssl_proxy.size() > 0) {
-            if (proxy_string.size() > 0) {
-              proxy_string.append(" ");
-            }
-            proxy_string.append("https=").append(ftp_proxy);
-          }
-        } else if (proxy_type == "DIRECT" || proxy_type == "direct") {
-          proxy_string = "direct";
-        } else {
-          // IE driver only supports manual, direct or system proxies at the moment.
-          proxy_string = "system";
-        }
+        proxy_settings.proxy_type = proxy_type;
+        std::string http_proxy = proxy.get("httpProxy", "").asString();
+        proxy_settings.http_proxy = http_proxy;
+        std::string ftp_proxy = proxy.get("ftpProxy", "").asString();
+        proxy_settings.ftp_proxy = ftp_proxy;
+        std::string ssl_proxy = proxy.get("sslProxy", "").asString();
+        proxy_settings.ssl_proxy = ssl_proxy;
+        Json::Value use_per_process_proxy = it->second.get(USE_PER_PROCESS_PROXY_CAPABILITY, false);
+        proxy_settings.use_per_process_proxy = use_per_process_proxy.asBool();
       }
-      Json::Value use_per_process_proxy = it->second.get(USE_PER_PROCESS_PROXY_CAPABILITY, false);
-      mutable_executor.proxy_manager()->Initialize(proxy_string, use_per_process_proxy.asBool());
+      mutable_executor.proxy_manager()->Initialize(proxy_settings);
     }
     std::string create_browser_error_message = "";
     int result_code = mutable_executor.CreateNewBrowser(&create_browser_error_message);
