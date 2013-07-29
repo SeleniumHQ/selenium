@@ -124,7 +124,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Ignore(
       value = {HTMLUNIT, IPHONE,  OPERA, SAFARI},
-      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers. Firefox: hover is broken again.",
+      reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers.",
       issues = {4136})
   @Test
   public void testShouldAllowUsersToHoverOverElements() {

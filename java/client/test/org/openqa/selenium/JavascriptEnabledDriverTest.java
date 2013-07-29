@@ -38,10 +38,8 @@ import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 /**
@@ -196,10 +194,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, REMOTE, SAFARI},
-          reason = "Firefox: Window demands focus to work." +
-              " Safari: issue 4061." +
-              " Other platforms: not properly tested")
+  @Ignore(value = {SAFARI}, reason = " Safari: issue 4061. Other platforms: not properly tested")
   @Test
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
