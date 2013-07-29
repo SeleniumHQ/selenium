@@ -258,30 +258,15 @@ namespace OpenQA.Selenium.PhantomJS
             get
             {
                 StringBuilder argsBuilder = new StringBuilder();
-                if (string.IsNullOrEmpty(this.ghostDriverPath))
-                {
-                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver={0}", this.Port);
-                    if (!string.IsNullOrEmpty(this.logFile))
-                    {
-                        argsBuilder.AppendFormat(" --webdriver-logfile={0}", this.logFile);
-                    }
-                }
-                else
-                {
-                    argsBuilder.AppendFormat(" {0}", this.ghostDriverPath);
-                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --port={0}", this.Port);
-                    if (!string.IsNullOrEmpty(this.logFile))
-                    {
-                        argsBuilder.AppendFormat(" --logFile={0}", this.logFile);
-                    }
-                }
-
                 if (!string.IsNullOrEmpty(this.ConfigFile))
                 {
                     argsBuilder.AppendFormat(" --config={0}", this.ConfigFile);
                 }
                 else
                 {
+                    // These are all command-line args for PhantomJS proper, and
+                    // must be placed before the "main.js" file argument if running
+                    // with a non-embedded version of GhostDriver.
                     var properties = typeof(PhantomJSDriverService).GetProperties();
                     foreach (PropertyInfo info in properties)
                     {
@@ -296,6 +281,24 @@ namespace OpenQA.Selenium.PhantomJS
                                 argsBuilder.AppendFormat(" --{0}={1}", argumentName, argumentValue);
                             }
                         }
+                    }
+                }
+
+                if (string.IsNullOrEmpty(this.ghostDriverPath))
+                {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver={0}", this.Port);
+                    if (!string.IsNullOrEmpty(this.logFile))
+                    {
+                        argsBuilder.AppendFormat(" --webdriver-logfile={0}", this.logFile);
+                    }
+                }
+                else
+                {
+                    argsBuilder.AppendFormat(" \"{0}\"", this.ghostDriverPath);
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --port={0}", this.Port);
+                    if (!string.IsNullOrEmpty(this.logFile))
+                    {
+                        argsBuilder.AppendFormat(" --logFile={0}", this.logFile);
                     }
                 }
 
