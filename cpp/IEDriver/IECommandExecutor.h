@@ -30,6 +30,7 @@
 #include "ElementRepository.h"
 #include "HtmlDialog.h"
 #include "InputManager.h"
+#include "ProxyManager.h"
 #include "messages.h"
 #include "response.h"
 
@@ -178,6 +179,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   ElementFinder element_finder(void) const { return this->element_finder_; }
   InputManager* input_manager(void) const { return this->input_manager_; }
+  ProxyManager* proxy_manager(void) const { return this->proxy_manager_; }
   BrowserFactory* browser_factory(void) const { return this->factory_; }
 
   int port(void) const { return this->port_; }
@@ -232,6 +234,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   BrowserFactory* factory_;
   InputManager* input_manager_;
+  ProxyManager* proxy_manager_;
 };
 
 } // namespace webdriver

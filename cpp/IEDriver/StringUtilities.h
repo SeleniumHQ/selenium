@@ -15,6 +15,7 @@
 #define WEBDRIVER_IE_STRINGUTILITIES_H
 
 #include <string>
+#include <vector>
 
 #define BASE_TEN_BASE 10
 #define MAX_DIGITS_OF_NUMBER 22
@@ -31,6 +32,8 @@ class StringUtilities {
   static std::string ToString(long input);
   static std::wstring ToWString(long input);
   static std::string Format(const char* format, ...);
+  static void ToBuffer(const std::string& input, std::vector<char>* buffer);
+  static void ToBuffer(const std::wstring& input, std::vector<wchar_t>* buffer);
 };
 
 } // namespace webdriver

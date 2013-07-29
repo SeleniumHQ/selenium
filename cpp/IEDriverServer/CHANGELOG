@@ -13,6 +13,32 @@ v2.34.0.0
 =========
  * Release to synchronize with release of Selenium project.
 
+v2.33.0.8
+=========
+ * Added Proxy support to the IE driver native code. This commit adds proxy
+   support to the native code of the IE driver, having it recognize the proxy
+   capability in the WebDriver JSON wire protocol. The default behavior will
+   change the system proxy when a new instance of the IE driver is created.
+   This means that from that point forward, all IE instances, including those
+   *not* started by WebDriver, will use the same proxy information. The driver
+   will attempt to reset the system proxy to the previous settings when the 
+   session is properly exited by use of the quit method. Be aware that this 
+   means that crashes in the driver may leave the system's proxy settings in an
+   inconsistent state, and it further implies that attempting to drive multiple
+   instances of IE using proxy settings will likely do the same.
+   
+   The driver sets the proxy settings by means of the Windows WinINet API,
+   which explicitly cannot be used from within a Windows service. This implies
+   that IEDriverServer.exe cannot be used from within a Windows service.
+   
+   This commit also introduces a new capability, "ie.usePerProcessProxy". This
+   capability takes a boolean value, and defaults to false. When set to true,
+   it attempts to only set the proxy information for a single IE process, and
+   does not affect the proxy settings of other instances of IE. Use of this 
+   capability should be considered extremely experimental at present,and may
+   cause IE to behave inconsistently when attempting to use a proxy with this
+   capability set.
+
 v2.33.0.7
 =========
  * Refactored IE driver to take advantage of new StringUtilities methods.

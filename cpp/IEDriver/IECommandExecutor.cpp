@@ -118,6 +118,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
 
   this->input_manager_ = new InputManager();
   this->input_manager_->Initialize(&this->managed_elements_);
+  this->proxy_manager_ = new ProxyManager();
   this->factory_ = new BrowserFactory();
 
   return 0;
@@ -133,6 +134,8 @@ LRESULT IECommandExecutor::OnDestroy(UINT uMsg,
   this->managed_elements_.Clear();
   LOG(DEBUG) << "Closing input manager";
   delete this->input_manager_;
+  LOG(DEBUG) << "Closing proxy manager";
+  delete this->proxy_manager_;
   LOG(DEBUG) << "Closing browser factory";
   delete this->factory_;
   LOG(DEBUG) << "Posting quit message";
@@ -619,6 +622,7 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
     stopPersistentEventFiring();
   }
 
+  this->proxy_manager_->SetProxySettings(process_window_info.hwndBrowser);
   BrowserHandle wrapper(new Browser(process_window_info.pBrowser,
                                     process_window_info.hwndBrowser,
                                     this->m_hWnd));
