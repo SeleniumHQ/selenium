@@ -51,6 +51,8 @@ class NewSessionCommandHandler : public IECommandHandler {
       factory_settings.force_create_process_api = force_create_process_api.asBool();
       Json::Value browser_command_line_switches = it->second.get(BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY, "");
       factory_settings.browser_command_line_switches = browser_command_line_switches.asString();
+      Json::Value ensure_clean_session = it->second.get(ENSURE_CLEAN_SESSION_CAPABILITY, false);
+      factory_settings.clear_cache_before_launch = ensure_clean_session.asBool();
       mutable_executor.browser_factory()->Initialize(factory_settings);
 
       Json::Value enable_native_events = it->second.get(NATIVE_EVENTS_CAPABILITY, true);

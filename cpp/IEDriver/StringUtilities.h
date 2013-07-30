@@ -32,6 +32,7 @@ class StringUtilities {
   static std::string ToString(long input);
   static std::wstring ToWString(long input);
   static std::string Format(const char* format, ...);
+  static std::wstring Format(const wchar_t* format, ...);
   static void ToBuffer(const std::string& input, std::vector<char>* buffer);
   static void ToBuffer(const std::wstring& input, std::vector<wchar_t>* buffer);
 };

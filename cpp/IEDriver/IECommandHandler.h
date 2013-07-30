@@ -44,6 +44,7 @@
 #define BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY "ie.browserCommandLineSwitches"
 #define FORCE_CREATE_PROCESS_API_CAPABILITY "ie.forceCreateProcessApi"
 #define USE_PER_PROCESS_PROXY_CAPABILITY "ie.usePerProcessProxy"
+#define ENSURE_CLEAN_SESSION_CAPABILITY "ie.ensureCleanSession"
 
 namespace webdriver {
 

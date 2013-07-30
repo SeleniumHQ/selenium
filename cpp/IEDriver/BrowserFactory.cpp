@@ -14,6 +14,7 @@
 #include "BrowserFactory.h"
 #include <ctime>
 #include <iostream>
+#include <WinInet.h>
 #include "logging.h"
 #include "psapi.h"
 #include "RegistryUtilities.h"
@@ -35,6 +36,7 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
   this->ignore_zoom_setting_ = settings.ignore_zoom_setting;
   this->browser_attach_timeout_ = settings.browser_attach_timeout;
   this->force_createprocess_api_ = settings.force_create_process_api;
+  this->clear_cache_ = settings.clear_cache_before_launch;
   this->browser_command_line_switches_ = StringUtilities::ToWString(settings.browser_command_line_switches);
   this->initial_browser_url_ = StringUtilities::ToWString(settings.initial_browser_url);
 
@@ -45,6 +47,15 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
 
   // Explicitly load MSAA so we know if it's installed
   this->oleacc_instance_handle_ = ::LoadLibrary(OLEACC_LIBRARY_NAME);
+}
+
+void BrowserFactory::ClearCache() {
+  if (this->clear_cache_) {
+    if (this->windows_major_version_ >= 6) {
+      this->InvokeClearCacheUtility(true);
+    }
+    this->InvokeClearCacheUtility(false);
+  }
 }
 
 DWORD BrowserFactory::LaunchBrowserProcess(std::string* error_message) {
@@ -81,6 +92,8 @@ DWORD BrowserFactory::LaunchBrowserProcess(std::string* error_message) {
         use_createprocess_api = true;
       }
     }
+
+    this->ClearCache();
 
     PROCESS_INFORMATION proc_info;
     ::ZeroMemory(&proc_info, sizeof(proc_info));
@@ -456,59 +469,184 @@ IWebBrowser2* BrowserFactory::CreateBrowser() {
   return browser;
 }
 
+bool BrowserFactory::CreateLowIntegrityLevelToken(HANDLE* process_token_handle,
+                                                  HANDLE* mic_token_handle,
+                                                  PSID* sid) {
+  LOG(TRACE) << "Entering BrowserFactory::CreateLowIntegrityLevelToken";
+  BOOL result = TRUE;
+  TOKEN_MANDATORY_LABEL tml = {0};
+
+  HANDLE process_handle = ::GetCurrentProcess();
+  result = ::OpenProcessToken(process_handle,
+                              MAXIMUM_ALLOWED,
+                              process_token_handle);
+
+  if (result) {
+    result = ::DuplicateTokenEx(*process_token_handle,
+                                MAXIMUM_ALLOWED,
+                                NULL,
+                                SecurityImpersonation,
+                                TokenPrimary,
+                                mic_token_handle);
+    if (!result) {
+      ::CloseHandle(*process_token_handle);
+    }
+   }
+
+  if (result) {     
+    result = ::ConvertStringSidToSid(SDDL_ML_LOW, sid);
+    if (result) {
+      tml.Label.Attributes = SE_GROUP_INTEGRITY;
+      tml.Label.Sid = *sid;
+    } else {
+      ::CloseHandle(*process_token_handle);
+      ::CloseHandle(*mic_token_handle);
+    }
+  }
+
+  if(result) {
+    result = ::SetTokenInformation(*mic_token_handle,
+                                   TokenIntegrityLevel,
+                                   &tml,
+                                   sizeof(tml) + ::GetLengthSid(*sid));
+    if (!result) {
+      ::CloseHandle(*process_token_handle);
+      ::CloseHandle(*mic_token_handle);
+      ::LocalFree(*sid);
+    }
+  }
+
+  ::CloseHandle(process_handle);
+  return result == TRUE;
+}
+
 void BrowserFactory::SetThreadIntegrityLevel() {
   LOG(TRACE) << "Entering BrowserFactory::SetThreadIntegrityLevel";
 
-  // TODO: Error handling and return value checking.
   HANDLE process_token = NULL;
-  HANDLE process_handle = ::GetCurrentProcess();
-  BOOL result = ::OpenProcessToken(process_handle,
-                                   TOKEN_DUPLICATE,
-                                   &process_token);
-
   HANDLE thread_token = NULL;
-  result = ::DuplicateTokenEx(
-    process_token, 
-    TOKEN_QUERY | TOKEN_IMPERSONATE | TOKEN_ADJUST_DEFAULT,
-    NULL, 
-    SecurityImpersonation,
-    TokenImpersonation,
-    &thread_token);
-
   PSID sid = NULL;
-  result = ::ConvertStringSidToSid(SDDL_ML_LOW, &sid);
+  bool token_created = this->CreateLowIntegrityLevelToken(&process_token,
+                                                          &thread_token,
+                                                          &sid);
+  if (token_created) {
+    HANDLE thread_handle = ::GetCurrentThread();
+    BOOL result = ::SetThreadToken(&thread_handle, thread_token);
+    if (!result) {
+      // If we encounter an error, not bloody much we can do about it.
+      // Just log it and continue.
+      LOG(WARN) << "SetThreadToken returned FALSE";
+    }
+    result = ::ImpersonateLoggedOnUser(thread_token);
+    if (!result) {
+      // If we encounter an error, not bloody much we can do about it.
+      // Just log it and continue.
+      LOG(WARN) << "ImpersonateLoggedOnUser returned FALSE";
+    }
 
-  TOKEN_MANDATORY_LABEL tml;
-  tml.Label.Attributes = SE_GROUP_INTEGRITY | SE_GROUP_INTEGRITY_ENABLED;
-  tml.Label.Sid = sid;
-
-  result = ::SetTokenInformation(thread_token,
-                                 TokenIntegrityLevel,
-                                 &tml,
-                                 sizeof(tml) + ::GetLengthSid(sid));
-  ::LocalFree(sid);
-
-  HANDLE thread_handle = ::GetCurrentThread();
-  result = ::SetThreadToken(&thread_handle, thread_token);
-  if (!result) {
-    // If we encounter an error, not bloody much we can do about it.
-    // Just log it and continue.
-    LOG(WARN) << "SetThreadToken returned FALSE";
+    ::CloseHandle(thread_token);
+    ::CloseHandle(process_token);
+    ::LocalFree(sid);
   }
-  result = ::ImpersonateLoggedOnUser(thread_token);
-  if (!result) {
-    // If we encounter an error, not bloody much we can do about it.
-    // Just log it and continue.
-    LOG(WARN) << "ImpersonateLoggedOnUser returned FALSE";
-  }
-
-  result = ::CloseHandle(thread_token);
-  result = ::CloseHandle(process_token);
 }
 
 void BrowserFactory::ResetThreadIntegrityLevel() {
   LOG(TRACE) << "Entering BrowserFactory::ResetThreadIntegrityLevel";
   ::RevertToSelf();
+}
+
+void BrowserFactory::InvokeClearCacheUtility(bool use_low_integrity_level) {
+  HRESULT hr = S_OK;
+  std::vector<wchar_t> system_path_buffer(MAX_PATH);
+  std::vector<wchar_t> rundll_exe_path_buffer(MAX_PATH);
+  std::vector<wchar_t> inetcpl_path_buffer(MAX_PATH);
+  std::wstring args = L"";
+
+  UINT system_path_size = ::GetSystemDirectory(&system_path_buffer[0], MAX_PATH);
+
+  HANDLE  process_token = NULL;
+  HANDLE  mic_token = NULL;
+  PSID    sid = NULL;
+
+  bool can_create_process = true;
+  if (!use_low_integrity_level || 
+      this->CreateLowIntegrityLevelToken(&process_token, &mic_token, &sid)) {
+    if (0 != system_path_size &&
+        system_path_size <= static_cast<int>(system_path_buffer.size())) {
+      if (::PathCombine(&rundll_exe_path_buffer[0],
+                        &system_path_buffer[0],
+                        RUNDLL_EXE_NAME) && 
+          ::PathCombine(&inetcpl_path_buffer[0],
+                        &system_path_buffer[0],
+                        INTERNET_CONTROL_PANEL_APPLET_NAME)) {
+        // PathCombine will return NULL if the buffer would be exceeded.
+        ::PathQuoteSpaces(&rundll_exe_path_buffer[0]);
+        ::PathQuoteSpaces(&inetcpl_path_buffer[0]);
+        args = StringUtilities::Format(CLEAR_CACHE_COMMAND_LINE_ARGS,
+                                       &inetcpl_path_buffer[0],
+                                       CLEAR_CACHE_OPTIONS);
+      } else {
+        can_create_process = false;
+      }
+    } else {
+      can_create_process = false;
+    }
+
+    if (can_create_process) {
+      STARTUPINFO start_info;
+      ::ZeroMemory(&start_info, sizeof(start_info));
+      start_info.cb = sizeof(start_info);
+
+      PROCESS_INFORMATION process_info;
+      BOOL is_process_created = FALSE;
+      start_info.dwFlags = STARTF_USESHOWWINDOW;
+      start_info.wShowWindow = SW_SHOWNORMAL;
+
+      std::vector<wchar_t> args_buffer(0);
+      StringUtilities::ToBuffer(args, &args_buffer);
+      // Create the process to run with low or medium rights
+      if (use_low_integrity_level) {
+        is_process_created = CreateProcessAsUser(mic_token,
+                                                 &rundll_exe_path_buffer[0],
+                                                 &args_buffer[0],
+                                                 NULL,
+                                                 NULL,
+                                                 FALSE,
+                                                 0,
+                                                 NULL,
+                                                 NULL,
+                                                 &start_info,
+                                                 &process_info);
+      } else {
+        is_process_created = CreateProcess(&rundll_exe_path_buffer[0],
+                                           &args_buffer[0],
+                                           NULL,
+                                           NULL,
+                                           FALSE,
+                                           0,
+                                           NULL,
+                                           NULL,
+                                           &start_info,
+                                           &process_info);
+      }
+
+      if (is_process_created) {
+        // Wait for the rundll32.exe process to exit.
+        ::WaitForInputIdle(process_info.hProcess, 5000);
+        ::WaitForSingleObject(process_info.hProcess, 30000);
+        ::CloseHandle(process_info.hProcess);
+        ::CloseHandle(process_info.hThread);
+      }
+    }
+
+    // Close the handles opened when creating the
+    // low integrity level token
+    if (use_low_integrity_level) {
+      ::CloseHandle(process_token);
+      ::CloseHandle(mic_token);
+      ::LocalFree(sid);
+    }
+  }    
 }
 
 BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
