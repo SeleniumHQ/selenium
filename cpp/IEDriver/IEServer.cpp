@@ -50,9 +50,9 @@ std::string IEServer::GetStatus() {
   os_version_info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   ::GetVersionEx(&os_version_info);
 
-  std::string major_version = StringUtilities::ToString(os_version_info.dwMajorVersion);
-  std::string minor_version = StringUtilities::ToString(os_version_info.dwMinorVersion);
-  std::string build_version = StringUtilities::ToString(os_version_info.dwBuildNumber);;
+  std::string major_version = std::to_string(static_cast<long long>(os_version_info.dwMajorVersion));
+  std::string minor_version = std::to_string(static_cast<long long>(os_version_info.dwMinorVersion));
+  std::string build_version = std::to_string(static_cast<long long>(os_version_info.dwBuildNumber));
   std::string os_version = major_version + "." + minor_version + "." + build_version;
 
   std::string arch = "x86";
@@ -79,7 +79,7 @@ std::string IEServer::GetStatus() {
 void IEServer::ShutDown() {
   LOG(TRACE) << "Entering IEServer::ShutDown";  
   DWORD process_id = ::GetCurrentProcessId();
-  std::wstring process_id_string = StringUtilities::ToWString(StringUtilities::ToString(process_id));
+  std::wstring process_id_string = std::to_wstring(static_cast<long long>(process_id));
   std::wstring event_name = IESERVER_SHUTDOWN_EVENT_NAME + process_id_string;
   HANDLE event_handle = ::OpenEvent(EVENT_MODIFY_STATE,
                                     FALSE, 

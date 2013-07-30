@@ -282,7 +282,7 @@ int VariantUtilities::GetArrayItem(const IECommandExecutor& executor,
                          long index,
                          Json::Value* item){
   LOG(TRACE) << "Entering Script::GetArrayItem";
-  std::wstring index_string = StringUtilities::ToWString(StringUtilities::ToString(index));
+  std::wstring index_string = std::to_wstring(static_cast<long long>(index));
   CComVariant array_item_variant;
   bool get_array_item_success = GetVariantObjectPropertyValue(array_dispatch,
                                                               index_string,

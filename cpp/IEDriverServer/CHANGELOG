@@ -13,6 +13,28 @@ v2.34.0.0
 =========
  * Release to synchronize with release of Selenium project.
 
+v2.33.0.9
+=========
+ * Removed StringUtilities methods to create strings from longs. The C++
+   standard type libary already provides std::to_string() and std::to_wstring()
+   for this purpose.
+ * Introduced ability to clean browser cache before launching IE. This version
+   introduces the ie.ensureCleanSession capability, which will clear the
+   browser cache, history, and cookies before launching IE. When using this
+   capability, be aware that this clears the cache for all running instances of
+   Internet Explorer. Using this capability while attempting to run multiple
+   instances of the IE driver may cause unexpected behavior. Note this also
+   will cause a performance drop when launching the browser, as the driver will
+   wait for the cache clearing process to complete before actually launching
+   IE.
+ * Refactored Proxy setting handling in IE driver. We no longer need to replace
+   the window procedure to accomplish setting the proxy on a per-process basis,
+   simplifying the process considerably. This version also modifies the
+   ProxyManager class to let it build the proxy setting string instead of
+   prebuilding it in the new session command handler. Finally, this version
+   allows the proxy settings to be passed back to the language bindings via the
+   return from the getSessionCapabilities command handler.
+
 v2.33.0.8
 =========
  * Added Proxy support to the IE driver native code. This commit adds proxy

@@ -34,7 +34,7 @@ class NewSessionCommandHandler : public IECommandHandler {
                        const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
-    int port = executor.port();
+    std::string default_initial_url = "http://localhost:" + std::to_string(static_cast<long long>(executor.port())) + "/";
     IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
     ParametersMap::const_iterator it = command_parameters.find("desiredCapabilities");
     if (it != command_parameters.end()) {
@@ -45,7 +45,7 @@ class NewSessionCommandHandler : public IECommandHandler {
       factory_settings.ignore_zoom_setting = ignore_zoom_setting.asBool();
       Json::Value browser_attach_timeout = it->second.get(BROWSER_ATTACH_TIMEOUT_CAPABILITY, 0);
       factory_settings.browser_attach_timeout = browser_attach_timeout.asInt();
-      Json::Value initial_url = it->second.get(INITIAL_BROWSER_URL_CAPABILITY, "http://localhost:" + StringUtilities::ToString(port) + "/");
+      Json::Value initial_url = it->second.get(INITIAL_BROWSER_URL_CAPABILITY, default_initial_url);
       factory_settings.initial_browser_url = initial_url.asString();
       Json::Value force_create_process_api = it->second.get(FORCE_CREATE_PROCESS_API_CAPABILITY, false);
       factory_settings.force_create_process_api = force_create_process_api.asBool();
