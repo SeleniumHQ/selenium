@@ -99,6 +99,7 @@ namespace OpenQA.Selenium.IE
         private const string BrowserCommandLineSwitchesCapability = "ie.browserCommandLineSwitches";
         private const string ForceCreateProcessApiCapability = "ie.forceCreateProcessApi";
         private const string UsePerProcessProxyCapability = "ie.usePerProcessProxy";
+        private const string EnsureCleanSessionCapability = "ie.ensureCleanSession";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
@@ -107,6 +108,7 @@ namespace OpenQA.Selenium.IE
         private bool enablePersistentHover = true;
         private bool forceCreateProcessApi;
         private bool usePerProcessProxy;
+        private bool ensureCleanSession;
         private TimeSpan browserAttachTimeout = TimeSpan.MinValue;
         private string initialBrowserUrl = string.Empty;
         private string browserCommandLineArguments = string.Empty;
@@ -253,6 +255,18 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to clear the Internet Explorer cache
+        /// before launching the browser. When set to <see langword="true"/>, clears the
+        /// system cache for all instances of Internet Explorer, even those already running
+        /// when the driven instance is launched. Defaults to <see langword="false"/>.
+        /// </summary>
+        public bool EnsureCleanSession
+        {
+            get { return ensureCleanSession; }
+            set { ensureCleanSession = value; }
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options 
         /// for the Internet Explorer driver.
         /// </summary>
@@ -278,7 +292,8 @@ namespace OpenQA.Selenium.IE
                 capabilityName == ForceCreateProcessApiCapability ||
                 capabilityName == BrowserCommandLineSwitchesCapability ||
                 capabilityName == CapabilityType.Proxy ||
-                capabilityName == UsePerProcessProxyCapability)
+                capabilityName == UsePerProcessProxyCapability ||
+                capabilityName == EnsureCleanSessionCapability)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
@@ -364,6 +379,11 @@ namespace OpenQA.Selenium.IE
             {
                 capabilities.SetCapability(CapabilityType.Proxy, this.proxy);
                 capabilities.SetCapability(UsePerProcessProxyCapability, this.usePerProcessProxy);
+            }
+
+            if (this.ensureCleanSession)
+            {
+                capabilities.SetCapability(EnsureCleanSessionCapability, true);
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
