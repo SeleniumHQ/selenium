@@ -84,7 +84,11 @@ std::string DocumentHost::GetPageSource() {
 
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
-    
+  if (!doc) {
+    LOG(WARN) << "Unable to get document object, DocumentHost::GetDocument did not return a valid IHTMLDocument2 pointer";
+    return "";
+  }
+
   CComPtr<IHTMLDocument3> doc3;
   HRESULT hr = doc->QueryInterface<IHTMLDocument3>(&doc3);
   if (FAILED(hr) || !doc3) {
