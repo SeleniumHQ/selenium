@@ -90,13 +90,14 @@ class Select:
             - index - The option at this index will be selected 
            """
         match = str(index)
+        matched = False
         for opt in self.options:
             if opt.get_attribute("index") == match:
                 self._setSelected(opt)
                 if not self.is_multiple:
                     return
-                match = True
-        if match != True:
+                matched = True
+        if not matched:
             raise NoSuchElementException("Could not locate element with index %d" % index)
 
     def select_by_visible_text(self, text):
