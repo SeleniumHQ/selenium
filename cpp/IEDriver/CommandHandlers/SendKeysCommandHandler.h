@@ -211,8 +211,8 @@ class SendKeysCommandHandler : public IECommandHandler {
   static bool SendKeysToFileUploadAlert(HWND dialog_window_handle,
                                         const wchar_t* value) {
     HWND edit_field_window_handle = NULL;
-    int maxWait = 10;
-    while (!edit_field_window_handle && --maxWait) {
+    int max_wait = 10;
+    while (!edit_field_window_handle && --max_wait) {
       wait(200);
       edit_field_window_handle = dialog_window_handle;
       for (int i = 1; fileDialogNames[i]; ++i) {
@@ -227,7 +227,8 @@ class SendKeysCommandHandler : public IECommandHandler {
       size_t expected = wcslen(filename);
       size_t curr = 0;
 
-      while (expected != curr) {
+      max_wait = 10;
+      while ((expected != curr) && --max_wait) {
         ::SendMessage(edit_field_window_handle,
                       WM_SETTEXT,
                       0,
@@ -236,8 +237,9 @@ class SendKeysCommandHandler : public IECommandHandler {
         curr = ::SendMessage(edit_field_window_handle, WM_GETTEXTLENGTH, 0, 0);
       }
 
+      max_wait = 50;
       bool triedToDismiss = false;
-      for (int i = 0; i < 10000; i++) {
+      for (int i = 0; i < max_wait; i++) {
         HWND open_window_handle = ::GetDlgItem(dialog_window_handle, IDOK);
         if (open_window_handle) {
           LRESULT total = 0;
