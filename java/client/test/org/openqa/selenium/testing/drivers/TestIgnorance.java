@@ -41,6 +41,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
@@ -168,7 +169,11 @@ public class TestIgnorance {
         break;
 
       case ff:
-        comparator.addDriver(FIREFOX);
+        if (Boolean.getBoolean("webdriver.firefox.marionette")) {
+          comparator.addDriver(MARIONETTE);
+        } else {
+          comparator.addDriver(FIREFOX);
+        }
         break;
 
       case htmlunit:
