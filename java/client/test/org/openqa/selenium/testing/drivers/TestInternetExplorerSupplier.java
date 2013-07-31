@@ -22,6 +22,7 @@ import com.google.common.base.Supplier;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class TestInternetExplorerSupplier implements Supplier<WebDriver> {
@@ -40,6 +41,9 @@ public class TestInternetExplorerSupplier implements Supplier<WebDriver> {
       return null;
     }
 
-    return new LocallyBuiltInternetExplorerDriver(caps);
+    DesiredCapabilities mungedCapabilities = (DesiredCapabilities) caps;
+    mungedCapabilities.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, true);
+
+    return new LocallyBuiltInternetExplorerDriver(mungedCapabilities);
   }
 }
