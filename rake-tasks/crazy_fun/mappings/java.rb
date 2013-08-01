@@ -525,6 +525,10 @@ module CrazyFunJava
                 ant.sysproperty :key => 'webdriver.firefox.bin', :value => firefox
               end
 
+              if marionette?
+                ant.sysproperty :key => 'webdriver.firefox.marionette', :value => 'true'
+              end
+
               if ipv4only?
                 ant.sysproperty :key => 'java.net.preferIPv4Stack', :value => 'true'
               end
@@ -602,6 +606,11 @@ module CrazyFunJava
 
     def firefox
       return ENV['firefox']
+    end
+
+    def marionette?
+      # we set marionette true if the commandline argument is set and it is not 'false'
+      !([nil, 'false'].include? ENV['marionette'])
     end
 
     def ipv4only?

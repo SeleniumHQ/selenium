@@ -29,6 +29,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
@@ -36,6 +37,7 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.firefox.internal.MarionetteConnection;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.Killable;
@@ -56,6 +58,7 @@ import org.openqa.selenium.remote.SessionNotFoundException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -77,6 +80,10 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
 
   // For now, only enable native events on Windows
   public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = Platform.getCurrent().is(WINDOWS);
+
+  // For now, only enable native events on Windows
+  public static final boolean USE_MARIONETTE = Boolean.parseBoolean(
+      System.getProperty("webdriver.firefox.marionette"));
 
   // Accept untrusted SSL certificates.
   @Deprecated
@@ -148,15 +155,12 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
       Boolean acceptCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
       profile.setAcceptUntrustedCertificates(acceptCerts);
     }
-
-    // convert logging capabilities into profile preferences
-    // potentially it could be done at fxdriver level but will cause more problems with conversion
     if (capabilities.getCapability(LOGGING_PREFS) != null) {
       LoggingPreferences logsPrefs = 
           (LoggingPreferences) capabilities.getCapability(LOGGING_PREFS);
       for (String logtype : logsPrefs.getEnabledLogTypes()) {
-        profile.setPreference("webdriver.log." + logtype + ".level",
-            logsPrefs.getLevel(logtype).getName());
+        profile.setPreference("webdriver.log." + logtype, 
+            logsPrefs.getLevel(logtype).intValue());
       }
     }
 
@@ -189,8 +193,8 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, 
       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     super(new LazyCommandExecutor(binary, profile),
-      dropCapabilities(desiredCapabilities, BINARY, PROFILE), 
-      dropCapabilities(requiredCapabilities, BINARY, PROFILE));
+          dropCapabilities(desiredCapabilities, BINARY, PROFILE),
+          dropCapabilities(requiredCapabilities, BINARY, PROFILE));
     this.binary = binary;
   }
 
@@ -271,7 +275,12 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
     try {
       FirefoxBinary bin = binary == null ? new FirefoxBinary() : binary;
 
-      return new NewProfileExtensionConnection(lock, bin, profile, host);
+      if (USE_MARIONETTE) {
+        System.out.println("************************** Using marionette");
+        return new MarionetteConnection(lock, bin, profile, host);
+      } else {
+        return new NewProfileExtensionConnection(lock, bin, profile, host);
+      }
     } catch (Exception e) {
       throw new WebDriverException(e);
     } finally {
