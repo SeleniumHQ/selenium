@@ -141,6 +141,7 @@ std::wstring ProxyManager::BuildProxySettingsString() {
   } else {
     proxy_string = this->proxy_type_;
   }
+  LOG(DEBUG) << "Built proxy settings string: '" << proxy_string << "'";
   return StringUtilities::ToWString(proxy_string);
 }
 
@@ -215,29 +216,27 @@ void ProxyManager::SetPerProcessProxySettings(HWND browser_window_handle) {
 void ProxyManager::SetGlobalProxySettings() {
   LOG(TRACE) << "ProxyManager::SetGlobalProxySettings";
   std::wstring proxy = this->BuildProxySettingsString();
-  std::vector<wchar_t> buffer;
-  StringUtilities::ToBuffer(proxy, &buffer);
 
   INTERNET_PER_CONN_OPTION_LIST option_list;
   unsigned long list_size = sizeof(INTERNET_PER_CONN_OPTION_LIST);
+  option_list.dwSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
 
+  INTERNET_PER_CONN_OPTION proxy_options[3];
   if (this->proxy_type_ == "direct") {
-    INTERNET_PER_CONN_OPTION direct_option[1];
-    direct_option[0].dwOption = INTERNET_PER_CONN_FLAGS;
-    direct_option[0].Value.dwValue = PROXY_TYPE_DIRECT;
-    option_list.pOptions = direct_option;
+    proxy_options[0].dwOption = INTERNET_PER_CONN_FLAGS;
+    proxy_options[0].Value.dwValue = PROXY_TYPE_DIRECT;
     option_list.dwOptionCount = 1;
   } else {
-    INTERNET_PER_CONN_OPTION proxy_option[2];
-    proxy_option[0].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
-    proxy_option[0].Value.pszValue = &buffer[0];
-    proxy_option[1].dwOption = INTERNET_PER_CONN_FLAGS;
-    proxy_option[1].Value.dwValue = PROXY_TYPE_PROXY;
-    option_list.pOptions = proxy_option;
-    option_list.dwOptionCount = 2;
+    proxy_options[0].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
+    proxy_options[0].Value.pszValue = const_cast<wchar_t*>(proxy.c_str());
+    proxy_options[1].dwOption = INTERNET_PER_CONN_FLAGS;
+    proxy_options[1].Value.dwValue = PROXY_TYPE_PROXY | PROXY_TYPE_DIRECT;
+    proxy_options[2].dwOption = INTERNET_PER_CONN_PROXY_BYPASS;
+    proxy_options[2].Value.pszValue = L"";
+    option_list.dwOptionCount = 3;
   }
 
-  option_list.dwSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
+  option_list.pOptions = proxy_options;
   option_list.pszConnection = NULL;
   option_list.dwOptionError = 0;
   BOOL success = ::InternetSetOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &option_list, list_size);

@@ -13,6 +13,11 @@ v2.34.0.0
 =========
  * Release to synchronize with release of Selenium project.
 
+v2.33.0.10
+==========
+ * Fixed memory allocation in ProxyManager class to work correctly under
+   Release builds.
+
 v2.33.0.9
 =========
  * Added error checking in DocumentHost::GetPageSource. Fixes issue #5967.
