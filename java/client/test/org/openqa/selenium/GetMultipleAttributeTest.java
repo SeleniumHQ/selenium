@@ -25,11 +25,12 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 
 public class GetMultipleAttributeTest extends JUnit4TestBase {
 
-  @Ignore({OPERA, IPHONE, ANDROID})
+  @Ignore({OPERA, IPHONE, ANDROID, MARIONETTE})
   @Test
   public void testMultipleAttributeShouldBeNullWhenNotSet() {
     driver.get(pages.selectPage);
@@ -45,21 +46,21 @@ public class GetMultipleAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testMultipleAttributeShouldBeTrueWhenSelectHasMutilpeWithValueAsBlank() {
+  public void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsBlank() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("selectWithEmptyStringMultiple"));
     assertEquals("true", element.getAttribute("multiple"));
   }
 
   @Test
-  public void testMultipleAttributeShouldBeTrueWhenSelectHasMutilpeWithoutAValue() {
+  public void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithoutAValue() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("selectWithMultipleWithoutValue"));
     assertEquals("true", element.getAttribute("multiple"));
   }
 
   @Test
-  public void testMultipleAttributeShouldBeTrueWhenSelectHasMutilpeWithValueAsSomethingElse() {
+  public void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsSomethingElse() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("selectWithRandomMultipleValue"));
     assertEquals("true", element.getAttribute("multiple"));

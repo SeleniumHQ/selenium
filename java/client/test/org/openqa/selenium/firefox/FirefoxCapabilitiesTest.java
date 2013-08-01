@@ -23,6 +23,7 @@ import static org.junit.Assume.assumeTrue;
 import static org.junit.Assume.assumeFalse;
 
 import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 import org.junit.After;
 import org.junit.Before;
@@ -35,12 +36,14 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @NeedsLocalEnvironment
+@Ignore(MARIONETTE)
 public class FirefoxCapabilitiesTest extends JUnit4TestBase {
 
   private WebDriver localDriver;

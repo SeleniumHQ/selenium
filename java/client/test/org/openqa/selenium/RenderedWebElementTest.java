@@ -42,6 +42,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
@@ -50,7 +51,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, OPERA})
+  @Ignore({ANDROID, HTMLUNIT, OPERA, MARIONETTE})
   @Test
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
@@ -67,7 +68,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, HTMLUNIT, OPERA})
+  @Ignore({ANDROID, HTMLUNIT, OPERA, MARIONETTE})
   @Test
   public void testGetCssValueShouldReturnStandardizedColour() {
     driver.get(pages.colorPage);
@@ -87,7 +88,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   // should handle sub-pixel rendering, and every browser seems to be different anyhow:
   // http://ejohn.org/blog/sub-pixel-problems-in-css/
   @JavascriptEnabled
-  @Ignore({IE, CHROME, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, PHANTOMJS})
+  @Ignore({IE, CHROME, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, PHANTOMJS, MARIONETTE})
   // Reason for Chrome: WebKit bug 28804
   @Test
   public void testShouldHandleNonIntegerPositionAndSize() {
@@ -107,7 +108,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, OPERA, HTMLUNIT})
+  @Ignore({ANDROID, IPHONE, OPERA, HTMLUNIT, MARIONETTE})
   @Test
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);
@@ -123,7 +124,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE,  OPERA, SAFARI},
+      value = {HTMLUNIT, IPHONE,  OPERA, SAFARI, MARIONETTE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers.",
       issues = {4136})
   @Test
@@ -152,7 +153,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {HTMLUNIT, IPHONE, OPERA, SAFARI},
+      value = {HTMLUNIT, IPHONE, OPERA, SAFARI, MARIONETTE},
       reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers",
       issues = {4136})
   @Test
@@ -251,7 +252,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {OPERA, OPERA_MOBILE, SAFARI}, issues = {4136})
+  @Ignore(value = {OPERA, OPERA_MOBILE, SAFARI, MARIONETTE}, issues = {4136})
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     assumeTrue(hasInputDevices());
 
@@ -309,7 +310,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = SAFARI, issues = {4136})
+  @Ignore(value = {SAFARI, MARIONETTE}, issues = {4136})
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
     assumeTrue(hasInputDevices());
 
@@ -329,7 +330,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, OPERA, SAFARI},
+  @Ignore(value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
       reason = "Advanced mouse actions only implemented in rendered browsers",
       issues = {4136})
   @Test
@@ -351,7 +352,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SAFARI},
+  @Ignore(value = {HTMLUNIT, SAFARI, MARIONETTE},
       reason = "Advanced mouse actions only implemented in rendered browsers",
       issues = {4136})
   @Test
@@ -370,7 +371,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SAFARI},
+  @Ignore(value = {HTMLUNIT, SAFARI, MARIONETTE},
       reason = "Advanced mouse actions only implemented in rendered browsers",
       issues = {4136})
   @Test
@@ -390,7 +391,7 @@ public class RenderedWebElementTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NeedsFreshDriver
-  @Ignore(value = {HTMLUNIT, OPERA, SAFARI},
+  @Ignore(value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
           reason = "Advanced mouse actions only implemented in rendered browsers",
           issues = {4136})
   @Test

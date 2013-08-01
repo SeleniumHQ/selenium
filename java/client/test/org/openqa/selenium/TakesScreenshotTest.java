@@ -29,6 +29,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import java.awt.*;
@@ -46,7 +47,7 @@ import java.util.TreeSet;
 
 import javax.imageio.ImageIO;
 
-@Ignore(value = {IPHONE})
+@Ignore(value = {IPHONE, MARIONETTE})
 public class TakesScreenshotTest extends JUnit4TestBase {
 
   private TakesScreenshot screenshoter;

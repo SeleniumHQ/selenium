@@ -35,6 +35,7 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementToBeHidden;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
@@ -42,7 +43,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 /**
  * Demonstrates how to use WebDriver with a file input element.
  */
-@Ignore(value = {IPHONE, ANDROID, SAFARI}, reason = "File uploads not allowed on the iPhone",
+@Ignore(value = {IPHONE, ANDROID, SAFARI, MARIONETTE}, reason = "File uploads not allowed on the iPhone",
         issues = {4220})
 public class UploadTest extends JUnit4TestBase {
 

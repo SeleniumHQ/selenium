@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class PartialLinkTextMatchTest extends JUnit4TestBase {
     assertEquals("link with trailing space", res.getText());
   }
 
-  @Ignore({REMOTE})
+  @Ignore({REMOTE, MARIONETTE})
   @Test
   public void testFindMultipleElements() {
     driver.get(pages.simpleTestPage);
@@ -77,6 +78,7 @@ public class PartialLinkTextMatchTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testDriverCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
     driver.get(pages.simpleTestPage);
     WebElement link = null;
@@ -89,6 +91,7 @@ public class PartialLinkTextMatchTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testElementCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));

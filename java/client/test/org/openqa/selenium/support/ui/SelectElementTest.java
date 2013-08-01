@@ -22,11 +22,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
+
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 public class SelectElementTest extends JUnit4TestBase {
 
@@ -201,6 +204,7 @@ public class SelectElementTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void shouldAllowUserToDeselectAllWhenSelectSupportsMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);

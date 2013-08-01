@@ -24,6 +24,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
@@ -41,6 +42,7 @@ import java.util.List;
 
 @NeedsLocalEnvironment(reason =
     "Executing these tests over the wire doesn't work, because they relies on 100ms-specific timing")
+@Ignore(MARIONETTE)
 public class ImplicitWaitTest extends JUnit4TestBase {
 
   @Before
