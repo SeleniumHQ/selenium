@@ -533,6 +533,10 @@ module CrazyFunJava
                 ant.sysproperty :key => 'java.net.preferIPv4Stack', :value => 'true'
               end
 
+              if ignored_only?
+                ant.sysproperty :key => 'ignored_only', :value => 'true'
+              end
+
               # Log levels can be any of {'DEBUG', 'INFO', 'WARNING', 'ERROR'}
               levels = Array.[]("INFO", "DEBUG", "WARNING", "ERROR")
               if log_level
@@ -616,6 +620,11 @@ module CrazyFunJava
     def ipv4only?
       # we set ipv4only true if the commandline argument is set and it is not 'false'
       !([nil, 'false'].include? ENV['ipv4only'])
+    end
+
+    def ignored_only?
+      # we set ignored_only true if the commandline argument is set and it is not 'false'
+      !([nil, 'false'].include? ENV['ignoredonly'])
     end
 
     def leave_running?
