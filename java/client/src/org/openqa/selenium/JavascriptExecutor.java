@@ -107,7 +107,7 @@ public interface JavascriptExecutor {
    *       "  if (xhr.readyState == 4) {" +
    *       "    callback(xhr.responseText);" +
    *       "  }" +
-   *       "}" +
+   *       "};" +
    *       "xhr.send();");
    *   JSONObject json = new JSONObject((String) response);
    *   assertEquals("cheese", json.getString("food"));
