@@ -206,8 +206,24 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(FIREFOX)
   @Test
+  @Ignore(FIREFOX)
+  public void shouldBeAbleToStartFromProfileWithLogFileSetToStdout() throws IOException {
+    FirefoxProfile profile = new FirefoxProfile();
+
+    profile.setPreference("webdriver.log.file", "/dev/stdout");
+
+    try {
+      WebDriver secondDriver = newFirefoxDriver(profile);
+      secondDriver.quit();
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("Expected driver to be created succesfully");
+    }
+  }
+
+  @Test
+  @Ignore(FIREFOX)
   public void shouldBeAbleToStartANamedProfile() {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
 
@@ -219,7 +235,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
   }
 
-  @Test
+  @Test(timeout = 60000)
   public void shouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
     FirefoxBinary binary = new FirefoxBinary();
     binary.setEnvironmentProperty("NSPR_LOG_MODULES", "all:5");
