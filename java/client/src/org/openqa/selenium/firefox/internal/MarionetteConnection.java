@@ -71,6 +71,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
       .put(DriverCommand.FIND_CHILD_ELEMENT, "findElement")
       .put(DriverCommand.FIND_CHILD_ELEMENTS, "findElements")
       .put(DriverCommand.GET_ELEMENT_LOCATION, "getElementPosition")
+      .put(DriverCommand.GET_ALL_COOKIES, "getAllCookies")
       .put(DriverCommand.QUIT, "deleteSession")
       .build();
 

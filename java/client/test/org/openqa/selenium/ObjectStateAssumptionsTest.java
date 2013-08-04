@@ -21,7 +21,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 /**
  * Bug 126 identified an instance where the HtmlUnitDriver threw a NullPointerException, {@see <a
@@ -49,7 +48,7 @@ public class ObjectStateAssumptionsTest extends JUnit4TestBase {
    * WebDriver with an initial call to get(). It also should not fail.
    */
   @Test
-  public void testinitializedWebDriverDoesNotThrowNPE() {
+  public void testInitializedWebDriverDoesNotThrowNPE() {
     driver.get(pages.simpleTestPage);
     try {
       variousMethodCallsToCheckAssumptions();
@@ -74,7 +73,7 @@ public class ObjectStateAssumptionsTest extends JUnit4TestBase {
   /**
    * Test the various options, again for an uninitialized driver, NPEs are thrown.
    */
-  @Ignore({IPHONE, MARIONETTE})
+  @Ignore({IPHONE})
   @Test
   public void testOptionsForUninitializedWebDriver() {
     WebDriver.Options options = driver.manage();
