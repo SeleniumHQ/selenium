@@ -64,8 +64,6 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
 
   private static Map<String, String> seleniumToMarionetteCommandMap = ImmutableMap.<String, String>builder()
       .put(DriverCommand.GET, "goUrl")
-      .put(DriverCommand.IMPLICITLY_WAIT, "setSearchTimeout")
-      .put(DriverCommand.SET_SCRIPT_TIMEOUT, "setScriptTimeout")
       .put(DriverCommand.GET_CURRENT_WINDOW_HANDLE, "getWindow")
       .put(DriverCommand.GET_WINDOW_HANDLES, "getWindows")
       .put(DriverCommand.CLOSE, "closeWindow")
@@ -269,6 +267,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
   }
 
   private String serializeCommand(Command command) {
+    System.out.println("Command " + command);
     String commandName = command.getName();
     Map<String, Object> params = Maps.newHashMap();
     params.putAll(command.getParameters());
@@ -279,10 +278,15 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
     } else if (DriverCommand.GET.equals(commandName)) {
       renameParameter(params, "url", "value");
 
-    } else if (DriverCommand.IMPLICITLY_WAIT.equals(commandName)) {
-      renameParameter(params, "ms", "value");
-
-    } else if (DriverCommand.SET_SCRIPT_TIMEOUT.equals(commandName)) {
+    } else if (DriverCommand.SET_TIMEOUT.equals(commandName)) {
+      String timeoutType = (String) params.get("type");
+      System.out.println("timeout type = " + timeoutType);
+      if ("implicit".equals(timeoutType)) {
+        commandName = "setSearchTimeout";
+      } else if ("script".equals(timeoutType)) {
+        commandName = "setScriptTimeout";
+      }
+      params.remove("type");
       renameParameter(params, "ms", "value");
 
     } else if (DriverCommand.EXECUTE_SCRIPT.equals(commandName)

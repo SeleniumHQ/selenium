@@ -42,7 +42,6 @@ import java.util.List;
 
 @NeedsLocalEnvironment(reason =
     "Executing these tests over the wire doesn't work, because they relies on 100ms-specific timing")
-@Ignore(MARIONETTE)
 public class ImplicitWaitTest extends JUnit4TestBase {
 
   @Before
@@ -94,6 +93,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
 
   @Test
   @JavascriptEnabled
+  @Ignore(MARIONETTE)
   public void testShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
@@ -140,7 +140,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
 
   @Test
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, IE, IPHONE, PHANTOMJS, SAFARI})
+  @Ignore({ANDROID, CHROME, IE, IPHONE, PHANTOMJS, SAFARI, MARIONETTE})
   public void testShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting() {
     driver.get(pages.dynamicPage);
 
