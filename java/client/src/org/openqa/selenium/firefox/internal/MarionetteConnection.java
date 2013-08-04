@@ -297,16 +297,15 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
       renameParameter(params, "name", "value");
 
     } else if (DriverCommand.SWITCH_TO_FRAME.equals(commandName)) {
-      // TODO:
-      //Dictionary<string, object> param = commandToExecute.Parameters["id"] as Dictionary<string, object>;
-      //if (param != null)
-      //{
-      //  commandToExecute.Parameters["element"] = param["ELEMENT"];
-      //}
-      //else
-      //{
-      //  RenameParameter(commandToExecute, "id", "frame");
-      //}
+      Object target = params.get("id");
+      if (target instanceof Map) {
+        String elementId = (String) ((Map<String,Object>) target).get("ELEMENT");
+        params.put("element", elementId);
+        params.remove("id");
+
+      } else {
+        renameParameter(params, "id", "value");
+      }
 
     } else if (DriverCommand.FIND_CHILD_ELEMENT.equals(commandName)
             || DriverCommand.FIND_CHILD_ELEMENTS.equals(commandName)
