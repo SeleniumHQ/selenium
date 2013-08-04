@@ -235,9 +235,10 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
         // executeScript command.
         // ***************************************************************
         response = new JsonToBeanConverter().convert(Response.class, rawResponse);
-        // TODO:
+
         if (DriverCommand.FIND_ELEMENT.equals(command.getName())
-            || DriverCommand.FIND_CHILD_ELEMENT.equals(command.getName()))
+            || DriverCommand.FIND_CHILD_ELEMENT.equals(command.getName())
+            || DriverCommand.GET_ACTIVE_ELEMENT.equals(command.getName()))
         {
           if (response.getStatus() == ErrorCodes.SUCCESS) {
             Map<String, Object> wrappedElement = Maps.newHashMap();
