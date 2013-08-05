@@ -323,6 +323,23 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
             || DriverCommand.GET_ELEMENT_LOCATION.equals(commandName)
             || DriverCommand.GET_ELEMENT_TAG_NAME.equals(commandName)) {
       renameParameter(params, "id", "element");
+
+    } else if (DriverCommand.CLICK.equals(commandName)
+            || DriverCommand.DOUBLE_CLICK.equals(commandName)
+            || DriverCommand.MOUSE_DOWN.equals(commandName)
+            || DriverCommand.MOUSE_UP.equals(commandName)
+            || DriverCommand.MOVE_TO.equals(commandName)) {
+      String actionName = commandName;
+      commandName = "actionChain";
+      List<Object> action = Lists.newArrayList();
+      action.add(actionName);
+      if (params.containsKey("element")) {
+        action.add(params.get("element"));
+        params.remove("element");
+      }
+      List<Object> actions = Lists.newArrayList();
+      actions.add(action);
+      params.put("chain", actions);
     }
 
     if (seleniumToMarionetteCommandMap.containsKey(commandName)) {
