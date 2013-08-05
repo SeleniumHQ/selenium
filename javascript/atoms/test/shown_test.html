@@ -311,7 +311,7 @@
     }
 
     function testThatItemsHiddenWithOverflowHiddenAreFalse() {
- 	  if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
         return;
       }
       var target = findElement({id: 'target'});
