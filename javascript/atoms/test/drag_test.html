@@ -171,6 +171,11 @@
 
 
     function testElementThatMovesDuringMouseMove(action) {
+      // IE6 does not render this test page properly,
+      // so we must skip this test for IE6.
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+          return;
+      }
       // Tests an element that moves when the mouse moves. Intended to mimic
       // an element that acts as a cursor. In bot.action.drag the sequence of
       // events is mousemove, mousedown, mousemove, and mouseup where the first
