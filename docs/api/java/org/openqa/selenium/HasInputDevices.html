@@ -84,12 +84,17 @@
 <ul class="blockList">
 <li class="blockList">
 <dl>
-<dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../org/openqa/selenium/android/AndroidDriver.html" title="class in org.openqa.selenium.android">AndroidDriver</a>, <a href="../../../org/openqa/selenium/chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome">ChromeDriver</a>, <a href="../../../org/openqa/selenium/support/events/EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">EventFiringWebDriver</a>, <a href="../../../org/openqa/selenium/firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox">FirefoxDriver</a>, <a href="../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html" title="class in org.openqa.selenium.htmlunit">HtmlUnitDriver</a>, <a href="../../../org/openqa/selenium/ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a>, <a href="../../../org/openqa/selenium/iphone/IPhoneDriver.html" title="class in org.openqa.selenium.iphone">IPhoneDriver</a>, <a href="../../../org/openqa/selenium/iphone/IPhoneSimulatorDriver.html" title="class in org.openqa.selenium.iphone">IPhoneSimulatorDriver</a>, <a href="../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>, <a href="../../../org/openqa/selenium/safari/SafariDriver.html" title="class in org.openqa.selenium.safari">SafariDriver</a></dd>
+<dt>All Superinterfaces:</dt>
+<dd><a href="../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></dd>
 </dl>
 <hr>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>Use <a href="../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions"><code>HasInputDevices</code></a> instead.</i></div>
+</div>
 <br>
-<pre>public interface <span class="strong">HasInputDevices</span></pre>
+<pre>@Deprecated
+public interface <span class="strong">HasInputDevices</span>
+extends <a href="../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></pre>
 <div class="block">Interface implemented by each driver that allows access to the raw input devices.</div>
 </li>
 </ul>
@@ -111,11 +116,15 @@
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a></code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/HasInputDevices.html#getKeyboard()">getKeyboard</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/HasInputDevices.html#getKeyboard()">getKeyboard</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</a></code></td>
-<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/HasInputDevices.html#getMouse()">getMouse</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../org/openqa/selenium/HasInputDevices.html#getMouse()">getMouse</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -139,6 +148,11 @@
 <li class="blockList">
 <h4>getKeyboard</h4>
 <pre><a href="../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a>&nbsp;getKeyboard()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../org/openqa/selenium/interactions/HasInputDevices.html#getKeyboard()">getKeyboard</a></code>&nbsp;in interface&nbsp;<code><a href="../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></code></dd>
+</dl>
 </li>
 </ul>
 <a name="getMouse()">
@@ -148,6 +162,11 @@
 <li class="blockList">
 <h4>getMouse</h4>
 <pre><a href="../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</a>&nbsp;getMouse()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../org/openqa/selenium/interactions/HasInputDevices.html#getMouse()">getMouse</a></code>&nbsp;in interface&nbsp;<code><a href="../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></code></dd>
+</dl>
 </li>
 </ul>
 </li>

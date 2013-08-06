@@ -121,7 +121,7 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected <a href="../../../../../org/openqa/selenium/TouchScreen.html" title="interface in org.openqa.selenium">TouchScreen</a></code></td>
+<td class="colFirst"><code>protected <a href="../../../../../org/openqa/selenium/interactions/TouchScreen.html" title="interface in org.openqa.selenium.interactions">TouchScreen</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#touchScreen">touchScreen</a></strong></code>&nbsp;</td>
 </tr>
 </table>
@@ -146,8 +146,8 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#TouchActions(org.openqa.selenium.Keyboard, org.openqa.selenium.TouchScreen)">TouchActions</a></strong>(<a href="../../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a>&nbsp;keyboard,
-            <a href="../../../../../org/openqa/selenium/TouchScreen.html" title="interface in org.openqa.selenium">TouchScreen</a>&nbsp;touchScreen)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#TouchActions(org.openqa.selenium.interactions.Keyboard, org.openqa.selenium.interactions.TouchScreen)">TouchActions</a></strong>(<a href="../../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard,
+            <a href="../../../../../org/openqa/selenium/interactions/TouchScreen.html" title="interface in org.openqa.selenium.interactions">TouchScreen</a>&nbsp;touchScreen)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#TouchActions(org.openqa.selenium.WebDriver)">TouchActions</a></strong>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>&nbsp;</td>
@@ -169,53 +169,73 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#doubleTap(org.openqa.selenium.WebElement)">doubleTap</a></strong>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#doubleTap(org.openqa.selenium.WebElement)">doubleTap</a></strong>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code>
+<div class="block">Allows the execution of double tapon the screen, analogous to double click using a Mouse.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#down(int, int)">down</a></strong>(int&nbsp;x,
-    int&nbsp;y)</code>&nbsp;</td>
+    int&nbsp;y)</code>
+<div class="block">Allows the execution of the gesture 'down' on the screen.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#flick(int, int)">flick</a></strong>(int&nbsp;xSpeed,
-     int&nbsp;ySpeed)</code>&nbsp;</td>
+     int&nbsp;ySpeed)</code>
+<div class="block">Sends a flick gesture to the current view.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#flick(org.openqa.selenium.WebElement, int, int, int)">flick</a></strong>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement,
      int&nbsp;xOffset,
      int&nbsp;yOffset,
-     int&nbsp;speed)</code>&nbsp;</td>
+     int&nbsp;speed)</code>
+<div class="block">Allows the execution of flick gestures starting in a location's element.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#longPress(org.openqa.selenium.WebElement)">longPress</a></strong>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#longPress(org.openqa.selenium.WebElement)">longPress</a></strong>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code>
+<div class="block">Allows the execution of long press gestures.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#move(int, int)">move</a></strong>(int&nbsp;x,
-    int&nbsp;y)</code>&nbsp;</td>
+    int&nbsp;y)</code>
+<div class="block">Allows the execution of the gesture 'move' on the screen.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#scroll(int, int)">scroll</a></strong>(int&nbsp;xOffset,
-      int&nbsp;yOffset)</code>&nbsp;</td>
+      int&nbsp;yOffset)</code>
+<div class="block">Allows the view to be scrolled by an x and y offset.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#scroll(org.openqa.selenium.WebElement, int, int)">scroll</a></strong>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement,
       int&nbsp;xOffset,
-      int&nbsp;yOffset)</code>&nbsp;</td>
+      int&nbsp;yOffset)</code>
+<div class="block">Creates a scroll gesture that starts on a particular screen location.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#singleTap(org.openqa.selenium.WebElement)">singleTap</a></strong>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#singleTap(org.openqa.selenium.WebElement)">singleTap</a></strong>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code>
+<div class="block">Allows the execution of single tap on the screen, analogous to click using a Mouse.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html#up(int, int)">up</a></strong>(int&nbsp;x,
-  int&nbsp;y)</code>&nbsp;</td>
+  int&nbsp;y)</code>
+<div class="block">Allows the execution of the gesture 'up' on the screen.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -252,7 +272,7 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <ul class="blockListLast">
 <li class="blockList">
 <h4>touchScreen</h4>
-<pre>protected&nbsp;<a href="../../../../../org/openqa/selenium/TouchScreen.html" title="interface in org.openqa.selenium">TouchScreen</a> touchScreen</pre>
+<pre>protected&nbsp;<a href="../../../../../org/openqa/selenium/interactions/TouchScreen.html" title="interface in org.openqa.selenium.interactions">TouchScreen</a> touchScreen</pre>
 </li>
 </ul>
 </li>
@@ -272,14 +292,14 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <pre>public&nbsp;TouchActions(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
 </li>
 </ul>
-<a name="TouchActions(org.openqa.selenium.Keyboard, org.openqa.selenium.TouchScreen)">
+<a name="TouchActions(org.openqa.selenium.interactions.Keyboard, org.openqa.selenium.interactions.TouchScreen)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>TouchActions</h4>
-<pre>public&nbsp;TouchActions(<a href="../../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a>&nbsp;keyboard,
-            <a href="../../../../../org/openqa/selenium/TouchScreen.html" title="interface in org.openqa.selenium">TouchScreen</a>&nbsp;touchScreen)</pre>
+<pre>public&nbsp;TouchActions(<a href="../../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard,
+            <a href="../../../../../org/openqa/selenium/interactions/TouchScreen.html" title="interface in org.openqa.selenium.interactions">TouchScreen</a>&nbsp;touchScreen)</pre>
 </li>
 </ul>
 </li>
@@ -297,6 +317,8 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <li class="blockList">
 <h4>singleTap</h4>
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a>&nbsp;singleTap(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</pre>
+<div class="block">Allows the execution of single tap on the screen, analogous to click using a Mouse.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>onElement</code> - the <a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> on the screen.</dd></dl>
 </li>
 </ul>
 <a name="down(int, int)">
@@ -307,6 +329,9 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <h4>down</h4>
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a>&nbsp;down(int&nbsp;x,
                 int&nbsp;y)</pre>
+<div class="block">Allows the execution of the gesture 'down' on the screen. It is typically the first of a
+ sequence of touch gestures.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - The x coordinate relative to the viewport</dd><dd><code>y</code> - The y coordinate relative to the viewport</dd></dl>
 </li>
 </ul>
 <a name="up(int, int)">
@@ -317,6 +342,9 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <h4>up</h4>
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a>&nbsp;up(int&nbsp;x,
               int&nbsp;y)</pre>
+<div class="block">Allows the execution of the gesture 'up' on the screen. It is typically the last of a sequence
+ of touch gestures.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - The x coordinate relative to the viewport</dd><dd><code>y</code> - The y coordinate relative to the viewport</dd></dl>
 </li>
 </ul>
 <a name="move(int, int)">
@@ -327,6 +355,8 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <h4>move</h4>
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a>&nbsp;move(int&nbsp;x,
                 int&nbsp;y)</pre>
+<div class="block">Allows the execution of the gesture 'move' on the screen.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - The x coordinate relative to the viewport</dd><dd><code>y</code> - The y coordinate relative to the viewport</dd></dl>
 </li>
 </ul>
 <a name="scroll(org.openqa.selenium.WebElement, int, int)">
@@ -338,6 +368,8 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a>&nbsp;scroll(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement,
                   int&nbsp;xOffset,
                   int&nbsp;yOffset)</pre>
+<div class="block">Creates a scroll gesture that starts on a particular screen location.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>onElement</code> - the <a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> where the scroll starts.</dd><dd><code>xOffset</code> - The x offset to scroll</dd><dd><code>yOffset</code> - The y offset to scroll</dd></dl>
 </li>
 </ul>
 <a name="doubleTap(org.openqa.selenium.WebElement)">
@@ -347,6 +379,8 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <li class="blockList">
 <h4>doubleTap</h4>
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a>&nbsp;doubleTap(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</pre>
+<div class="block">Allows the execution of double tapon the screen, analogous to double click using a Mouse.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>onElement</code> - The <a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> to double tap</dd></dl>
 </li>
 </ul>
 <a name="longPress(org.openqa.selenium.WebElement)">
@@ -356,6 +390,8 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <li class="blockList">
 <h4>longPress</h4>
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a>&nbsp;longPress(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</pre>
+<div class="block">Allows the execution of long press gestures.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>onElement</code> - The <a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> to long press</dd></dl>
 </li>
 </ul>
 <a name="scroll(int, int)">
@@ -366,6 +402,8 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <h4>scroll</h4>
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a>&nbsp;scroll(int&nbsp;xOffset,
                   int&nbsp;yOffset)</pre>
+<div class="block">Allows the view to be scrolled by an x and y offset.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>xOffset</code> - The horizontal offset relative to the viewport</dd><dd><code>yOffset</code> - The vertical offset relative to the viewport</dd></dl>
 </li>
 </ul>
 <a name="flick(int, int)">
@@ -376,6 +414,8 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
 <h4>flick</h4>
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a>&nbsp;flick(int&nbsp;xSpeed,
                  int&nbsp;ySpeed)</pre>
+<div class="block">Sends a flick gesture to the current view.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>xSpeed</code> - The horizontal speed in pixels/second</dd><dd><code>ySpeed</code> - The vertical speed in pixels/second</dd></dl>
 </li>
 </ul>
 <a name="flick(org.openqa.selenium.WebElement, int, int, int)">
@@ -388,6 +428,8 @@ extends <a href="../../../../../org/openqa/selenium/interactions/Actions.html" t
                  int&nbsp;xOffset,
                  int&nbsp;yOffset,
                  int&nbsp;speed)</pre>
+<div class="block">Allows the execution of flick gestures starting in a location's element.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>onElement</code> - The <a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a> to flick on</dd><dd><code>xOffset</code> - The x offset relative to the viewport</dd><dd><code>yOffset</code> - The y offset relative to the viewport</dd></dl>
 </li>
 </ul>
 </li>

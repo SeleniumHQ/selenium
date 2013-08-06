@@ -93,7 +93,7 @@
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a></dd>
+<dd><a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a></dd>
 </dl>
 <hr>
 <br>
@@ -133,17 +133,21 @@ implements <a href="../../../../org/openqa/selenium/Keyboard.html" title="interf
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html#performSingleKeyAction(com.gargoylesoftware.htmlunit.html.HtmlElement, org.openqa.selenium.Keys, java.lang.String)">performSingleKeyAction</a></strong>(com.gargoylesoftware.htmlunit.html.HtmlElement&nbsp;element,
-                      <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;modifierKey,
-                      java.lang.String&nbsp;eventDescription)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html#performSingleKeyAction(com.gargoylesoftware.htmlunit.html.HtmlElement, java.lang.CharSequence, java.lang.String)">performSingleKeyAction</a></strong>(com.gargoylesoftware.htmlunit.html.HtmlElement&nbsp;element,
+                      java.lang.CharSequence&nbsp;modifierKey,
+                      java.lang.String&nbsp;eventDescription)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>Visibility will soon be reduced.</i></div>
+</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html#pressKey(org.openqa.selenium.Keys)">pressKey</a></strong>(<a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;keyToPress)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html#pressKey(java.lang.CharSequence)">pressKey</a></strong>(java.lang.CharSequence&nbsp;keyToPress)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html#releaseKey(org.openqa.selenium.Keys)">releaseKey</a></strong>(<a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;keyToRelease)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html#releaseKey(java.lang.CharSequence)">releaseKey</a></strong>(java.lang.CharSequence&nbsp;keyToRelease)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -186,7 +190,7 @@ implements <a href="../../../../org/openqa/selenium/Keyboard.html" title="interf
 <pre>public&nbsp;void&nbsp;sendKeys(java.lang.CharSequence...&nbsp;keysToSend)</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../org/openqa/selenium/Keyboard.html#sendKeys(java.lang.CharSequence...)">sendKeys</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a></code></dd>
+<dd><code><a href="../../../../org/openqa/selenium/interactions/Keyboard.html#sendKeys(java.lang.CharSequence...)">sendKeys</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -201,41 +205,42 @@ implements <a href="../../../../org/openqa/selenium/Keyboard.html" title="interf
             <a href="../../../../org/openqa/selenium/htmlunit/InputKeysContainer.html" title="class in org.openqa.selenium.htmlunit">InputKeysContainer</a>&nbsp;keysToSend)</pre>
 </li>
 </ul>
-<a name="pressKey(org.openqa.selenium.Keys)">
+<a name="pressKey(java.lang.CharSequence)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>pressKey</h4>
-<pre>public&nbsp;void&nbsp;pressKey(<a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;keyToPress)</pre>
+<pre>public&nbsp;void&nbsp;pressKey(java.lang.CharSequence&nbsp;keyToPress)</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../org/openqa/selenium/Keyboard.html#pressKey(org.openqa.selenium.Keys)">pressKey</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a></code></dd>
+<dd><code><a href="../../../../org/openqa/selenium/interactions/Keyboard.html#pressKey(java.lang.CharSequence)">pressKey</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a></code></dd>
 </dl>
 </li>
 </ul>
-<a name="releaseKey(org.openqa.selenium.Keys)">
+<a name="releaseKey(java.lang.CharSequence)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>releaseKey</h4>
-<pre>public&nbsp;void&nbsp;releaseKey(<a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;keyToRelease)</pre>
+<pre>public&nbsp;void&nbsp;releaseKey(java.lang.CharSequence&nbsp;keyToRelease)</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../org/openqa/selenium/Keyboard.html#releaseKey(org.openqa.selenium.Keys)">releaseKey</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a></code></dd>
+<dd><code><a href="../../../../org/openqa/selenium/interactions/Keyboard.html#releaseKey(java.lang.CharSequence)">releaseKey</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a></code></dd>
 </dl>
 </li>
 </ul>
-<a name="performSingleKeyAction(com.gargoylesoftware.htmlunit.html.HtmlElement, org.openqa.selenium.Keys, java.lang.String)">
+<a name="performSingleKeyAction(com.gargoylesoftware.htmlunit.html.HtmlElement, java.lang.CharSequence, java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>performSingleKeyAction</h4>
 <pre>public&nbsp;void&nbsp;performSingleKeyAction(com.gargoylesoftware.htmlunit.html.HtmlElement&nbsp;element,
-                          <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;modifierKey,
+                          java.lang.CharSequence&nbsp;modifierKey,
                           java.lang.String&nbsp;eventDescription)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>Visibility will soon be reduced.</i></div>
 </li>
 </ul>
 <a name="isShiftPressed()">

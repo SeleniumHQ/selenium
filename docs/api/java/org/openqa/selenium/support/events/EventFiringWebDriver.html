@@ -93,7 +93,7 @@
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../../org/openqa/selenium/HasInputDevices.html" title="interface in org.openqa.selenium">HasInputDevices</a>, <a href="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</a>, <a href="../../../../../org/openqa/selenium/internal/WrapsDriver.html" title="interface in org.openqa.selenium.internal">WrapsDriver</a>, <a href="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
+<dd><a href="../../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../../org/openqa/selenium/interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a>, <a href="../../../../../org/openqa/selenium/internal/WrapsDriver.html" title="interface in org.openqa.selenium.internal">WrapsDriver</a>, <a href="../../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
 </dl>
 <hr>
 <br>
@@ -634,7 +634,7 @@ implements <a href="../../../../../org/openqa/selenium/WebDriver.html" title="in
        "  if (xhr.readyState == 4) {" +
        "    callback(xhr.responseText);" +
        "  }" +
-       "}" +
+       "};" +
        "xhr.send();");
    JSONObject json = new JSONObject((String) response);
    assertEquals("cheese", json.getString("food"));
@@ -741,7 +741,7 @@ implements <a href="../../../../../org/openqa/selenium/WebDriver.html" title="in
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a>&nbsp;getKeyboard()</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/HasInputDevices.html#getKeyboard()">getKeyboard</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/HasInputDevices.html" title="interface in org.openqa.selenium">HasInputDevices</a></code></dd>
+<dd><code><a href="../../../../../org/openqa/selenium/interactions/HasInputDevices.html#getKeyboard()">getKeyboard</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -754,7 +754,7 @@ implements <a href="../../../../../org/openqa/selenium/WebDriver.html" title="in
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</a>&nbsp;getMouse()</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/HasInputDevices.html#getMouse()">getMouse</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/HasInputDevices.html" title="interface in org.openqa.selenium">HasInputDevices</a></code></dd>
+<dd><code><a href="../../../../../org/openqa/selenium/interactions/HasInputDevices.html#getMouse()">getMouse</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -767,7 +767,7 @@ implements <a href="../../../../../org/openqa/selenium/WebDriver.html" title="in
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/TouchScreen.html" title="interface in org.openqa.selenium">TouchScreen</a>&nbsp;getTouch()</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/HasTouchScreen.html#getTouch()">getTouch</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">HasTouchScreen</a></code></dd>
+<dd><code><a href="../../../../../org/openqa/selenium/interactions/HasTouchScreen.html#getTouch()">getTouch</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a></code></dd>
 </dl>
 </li>
 </ul>
