@@ -276,7 +276,7 @@ public class FirefoxDriver extends RemoteWebDriver implements TakesScreenshot, K
       FirefoxBinary bin = binary == null ? new FirefoxBinary() : binary;
 
       if (USE_MARIONETTE) {
-        System.out.println("************************** Using marionette");
+//        System.out.println("************************** Using marionette");
         return new MarionetteConnection(lock, bin, profile, host);
       } else {
         return new NewProfileExtensionConnection(lock, bin, profile, host);

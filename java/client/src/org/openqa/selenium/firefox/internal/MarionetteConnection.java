@@ -269,7 +269,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
   }
 
   private String serializeCommand(Command command) {
-    System.out.println("Command " + command);
+//    System.out.println("Command " + command);
     String commandName = command.getName();
     Map<String, Object> params = Maps.newHashMap();
     params.putAll(command.getParameters());
@@ -282,7 +282,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
 
     } else if (DriverCommand.SET_TIMEOUT.equals(commandName)) {
       String timeoutType = (String) params.get("type");
-      System.out.println("timeout type = " + timeoutType);
+//      System.out.println("timeout type = " + timeoutType);
       if ("implicit".equals(timeoutType)) {
         commandName = "setSearchTimeout";
       } else if ("script".equals(timeoutType)) {
@@ -365,7 +365,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
 
   private void sendCommand(String commandAsString) {
     String line = "" + commandAsString.length() + ":" + commandAsString + " ";
-    System.out.println(line);
+//    System.out.println(line);
     writer.write(line);
     writer.flush();
   }
@@ -382,7 +382,7 @@ public class MarionetteConnection implements ExtensionConnection, NeedsLocalLogs
       response.append(buf, 0, len);
     }
 
-    System.out.println("<- |" + response.toString() + "|");
+//    System.out.println("<- |" + response.toString() + "|");
 
     String[] parts = response.toString().split(":", 2);
     int length = Integer.parseInt(parts[0]);
