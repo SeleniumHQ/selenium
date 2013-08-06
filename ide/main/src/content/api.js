@@ -1,5 +1,5 @@
 function API() {
-  this.version = 0.5;
+  this.version = 0.6;
   this.preferences = SeleniumIDE.Preferences;
   this.id = null;
   this.code = {
@@ -9,6 +9,70 @@ function API() {
   };
 }
 
+/**
+ * Registers a Selenium IDE plugin so that it can be managed by Selenium IDE
+ * Calling this is mandatory or the plugin will not be loaded by Selenium IDE
+ *
+ * @param id - this is the plugin id (not the name) that you specify in install.rdf of your plugin
+ */
+API.prototype.addPlugin = function (id) {
+  this.id = id;
+  this._save();
+};
+
+/**
+ * Request Selenium IDE to load the IDE extension provided by your plugin through its chrome url of
+ * the IDE extensions
+ * Don't forget to call the addPlugin function once for your plugin
+ *
+ * @param url - url to your bundled extension in the form of chrome://
+ */
+API.prototype.addPluginProvidedIdeExtension = function (url) {
+  this.code.ideExtensions.push(url);
+  this._save();
+};
+
+/**
+ * Request Selenium IDE to load the user extension provided by your plugin through its chrome url of
+ * the user extensions.
+ * Don't forget to call the addPlugin function once for your plugin!
+ *
+ * @param js_url - url to your bundled extension in the form of chrome://
+ * @param xml_url - url to your bundled companion xml in the form of chrome://
+ */
+API.prototype.addPluginProvidedUserExtension = function (js_url, xml_url) {
+  this.code.userExtensions.push(js_url + ';' + xml_url);
+  this._save();
+};
+
+/**
+ * Request Selenium IDE to load the formatter provided by your plugin through its chrome url of
+ * the formatter.
+ * Don't forget to call the addPlugin function once for your plugin!
+ *
+ * @param id - an id for your formatter, used internally, a combination of numbers, letters, underscores and atleast one letter
+ * @param name - the name shown to the users. It should have three parts like "language / test-framework / WebDriver or Remote Control"
+ * @param url - url to your bundled formatter in the form of chrome://
+ * @param type - optional, can be "webdriver" or "remotecontrol". Specifying the type
+ * automatically provides the given formatter type so it does not have to be
+ * loaded with subScriptLoader.loadSubScript() in your formatter.
+ */
+API.prototype.addPluginProvidedFormatter = function (id, name, url, type) {
+  this.code.formatters.push(id + ";" + name + ";" + url + ";" + type);
+  this._save();
+};
+
+
+//--------------------------------------------------------------------------
+// End of Selenium IDE Public API.
+// The following provides internal and cleanup stuff for the plugin system
+//--------------------------------------------------------------------------
+
+/**
+ * Internal function. Do not use.
+ *
+ * @private
+ */
 API.prototype._save = function () {
   if (this.id) { //Save only if ID has been set
     var found = false;
@@ -24,47 +88,20 @@ API.prototype._save = function () {
     }
     if (!found) {
       plugins.push({
-        id: this.id,
-        installed: true,
-        code: this.code,
-        options: {
-          disabled: false,
-          autoDisabled: false
-        }
-      });
+                     id: this.id,
+                     installed: true,
+                     code: this.code,
+                     options: {
+                       disabled: false,
+                       autoDisabled: false
+                     }
+                   });
     }
     this.preferences.save({pluginsData: JSON.stringify(plugins)}, 'pluginsData');
   }
 };
 
-// add our plugin to the main list of selenium plugins
-API.prototype.addPlugin = function (id) {
-  this.id = id;
-  this._save();
-};
 
-//add the provided chrome url to the list of IDE extensions provided through plugins
-//-- or not if it already exists
-API.prototype.addPluginProvidedIdeExtension = function (url) {
-  this.code.ideExtensions.push(url);
-  this._save();
-};
-
-// add the provided chrome url to the list of user extensions provided through plugins
-// -- or not if it already exists
-API.prototype.addPluginProvidedUserExtension = function (js_url, xml_url) {
-  this.code.userExtensions.push(js_url + ';' + xml_url);
-  this._save();
-};
-
-// add the formatter at the provided chrome url to the list of other formatters provided by plugins
-API.prototype.addPluginProvidedFormatter = function (id, name, url) {
-  this.code.formatters.push(id + ";" + name + ";" + url);
-  this._save();
-};
-
-// cleanup after ourselves
-//
 // this works because plugins re-register every time the browser restarts
 function initializeSeIDEAPIObserver() {
   seIDEAPIObserver.register();
