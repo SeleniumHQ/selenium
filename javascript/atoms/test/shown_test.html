@@ -394,12 +394,8 @@
       assertFalse(isShown(child));
     }
     function testNotFarShiftedChildOfAnElementWitOverflowHiddenIsVisible() {
-      expectedFailures.expectFailureFor(goog.userAgent.IE,
-          "IE doesn't understand hidden attribute");
       var child = findElement({id: "bug5140-3-child"});
-      expectedFailures.run(function() {
-        assertTrue(isShown(child));
-      });
+      assertTrue(isShown(child));
     }
 
     function testCanNotSeeElementWithHiddenAttribute() {
