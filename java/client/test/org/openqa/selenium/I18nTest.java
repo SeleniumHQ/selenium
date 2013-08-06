@@ -89,6 +89,24 @@ public class I18nTest extends JUnit4TestBase {
 
   @Test
   @Ignore(MARIONETTE)
+  public void testEnteringSupplementaryCharacters() {
+    driver.get(pages.chinesePage);
+
+    String input = "";
+    input += new String(Character.toChars(0x20000));
+    input += new String(Character.toChars(0x2070E));
+    input += new String(Character.toChars(0x2000B));
+    input += new String(Character.toChars(0x2A190));
+    input += new String(Character.toChars(0x2A6B2));
+
+    WebElement el = driver.findElement(By.name("i18n"));
+    el.sendKeys(input);
+
+    assertEquals(input, el.getAttribute("value"));
+  }
+
+  @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()
         .getAppServer()
