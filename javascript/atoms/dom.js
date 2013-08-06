@@ -603,6 +603,28 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
     return false;
   }
 
+  // Any element with the hidden attribute or has an ancestor with the hidden
+  // attribute is not shown
+  function isHidden(e) {
+    //IE does not support hidden attribute yet
+    if (goog.userAgent.IE) {
+      return true;
+    }
+    if (e.hasAttribute) {
+      if (e.hasAttribute('hidden')){
+        return false;
+      }
+    } else {
+      return true;
+    }
+    var parent = bot.dom.getParentElement(e);
+    return !parent || isHidden(parent);
+  }
+
+  if (!isHidden(elem)) {
+    return false;
+  }
+
   // Any element without positive size dimensions is not shown.
   function positiveSize(e) {
     var rect = bot.dom.getClientRect(e);

@@ -120,11 +120,21 @@ class VisibilityTests(unittest.TestCase):
         self._loadPage('cssTransform')
         zero_tranform = self.driver.find_element(By.ID, 'zero-tranform')
         self.assertTrue(zero_tranform.is_displayed())
-    
+
     def testShouldSayElementIsVisibleWhenItHasNegativeTransformButElementisntInANegativeSpace(self):
         self._loadPage('cssTransform2')
         zero_tranform = self.driver.find_element(By.ID, 'negative-percentage-transformY')
         self.assertTrue(zero_tranform.is_displayed())
+
+    def testShouldShowElementNotVisibleWithHiddenAttribute(self):
+        self._loadPage('hidden')
+        singleHidden = self.driver.find_element(By.ID, 'singleHidden')
+        self.assertFalse(singleHidden.is_displayed())
+
+    def testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute(self):
+        self._loadPage('hidden')
+        child = self.driver.find_element(By.ID, 'child')
+        self.assertFalse(child.is_displayed())
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)

@@ -273,4 +273,23 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
+  @Test
+  @Ignore({IE})
+  public void shouldShowElementNotVisibleWithHiddenAttribute() {
+    String url = appServer.whereIs("hidden.html");
+    driver.get(url);
+    WebElement element = driver.findElement(By.id("singleHidden"));
+    assertFalse(element.isDisplayed());
+  }
+
+  @Test
+  @Ignore({IE})
+  public void testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute() {
+    String url = appServer.whereIs("hidden.html");
+    driver.get(url);
+
+    WebElement element = driver.findElement(By.id("child"));
+    assertFalse(element.isDisplayed());
+  }
+
 }

@@ -394,8 +394,21 @@
       assertFalse(isShown(child));
     }
     function testNotFarShiftedChildOfAnElementWitOverflowHiddenIsVisible() {
+      expectedFailures.expectFailureFor(goog.userAgent.IE,
+          "IE doesn't understand hidden attribute");
       var child = findElement({id: "bug5140-3-child"});
-      assertTrue(isShown(child));
+      expectedFailures.run(function() {
+        assertTrue(isShown(child));
+      });
+    }
+
+    function testCanNotSeeElementWithHiddenAttribute() {
+      expectedFailures.expectFailureFor(goog.userAgent.IE,
+          "IE doesn't understand hidden attribute");
+      var elem = findElement({id: "html5hidden"});
+      expectedFailures.run(function() {
+        assertFalse(isShown(elem));
+      });
     }
   </script>
 
@@ -620,5 +633,6 @@
 <div id='bug5140-1' style="overflow:hidden; height:0; width:0;"><div id='bug5140-1-child' style="height:25px; width:25px;">.</div></div>
 <div id='bug5140-2' style="overflow:hidden; height:50px; width:50px;"><div id='bug5140-2-child' style="height:25px; width:25px; margin:50px; background-color:red;">.</div></div>
 <div id='bug5140-3' style="overflow:hidden; height:50px; width:50px;"><div id='bug5140-3-child' style="height:25px; width:25px; margin:49px; background-color:red;">.</div></div>
+<div id='html5hidden' hidden>This is not visible</div>
 </body>
 </html>
