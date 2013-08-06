@@ -1,3 +1,82 @@
+v2.34.0
+=======
+
+WebDriver:
+  * Updated Firefox native event components to support Firefox 22.
+  * Update synthesized mouse implementation. Mouse moves are
+    implemented using nsIDOMWindowUtils.
+  * Finding libX11.so.6 in a slightly more intelligent way: Check that
+    dlopen actually succeeds, if not found in one of the fixed paths,
+    look in the LD_LIBRARY_PATH.
+  * Added ExpectedConditions to check for the visibility of all
+    WebElements in a List
+  * Updated the wgxpath library.
+  * Updated our copy of the Closure compiler and library to the most
+    recent versions.
+  * Updated the atoms library, including support for MS pointer events
+    and refinements to element visibility tests.
+  * Close all open connections when stopping the SafariDriver server.
+  * Fall back to a loopback address if the current machine does not
+    have an external IP address (as will be the case when there is no
+    internet connection).
+  * Remove sizzle dependency from the firefox driver. We only needed
+    this for versions of firefox prior to 3.5, which we no longer
+    support.
+  * Fixed Select.escapeQuotes method.
+  * Added SafariOptions and support for custom Safari extensions.
+  * Moved Mouse, Keyboard and TouchScreen to the interactions package
+    where they belong. This has the benefit of also making our build
+    files simpler once we delete the original versions which have been
+    deprecated.
+  * Deprecated the HasTouchScreen interface.
+  * Fixed condition in Select.select_by_index method to fix case when
+    selection is performed by index on a multiple select element.
+  * Implemented an alpha version of a Marionette (WebDriver implemented
+    natively in Firefox) driver.
+  * Deprecated IPhoneDriver.
+  * Added support for the HTML5 "hidden" attribute. If an element, or
+    ancestor, has hidden attribute make, it is not shown.
+  * FIXED: 2285: Allow setting default logLevel for standalone-server.
+  * FIXED: 5609: Adding the ability to redirect firefox process output
+    to file.
+  * FIXED: 5669: Add Driver#remote_status for the Ruby remote driver.
+  * FIXED: 5715: Adding toString method for the event firing
+    webelement.
+
+WebDriver JS:
+  * When capturing console output, guard against user scripts that 
+    redefine the console global.
+  * Improved logging in the test client.
+  * Use goog.labs.testing.assertThat for the assertThat library.
+  * Improved stack trace handling
+  * Defined a webdriver.Capabilities class for webdriverjs.
+  * Added native ChromeDriver support to WebDriverJs.
+  * Mark discarded tasks as cancelled to prevent hanging on
+    asynchronously scheduled callbacks.
+  * Include the webdriverjs tests in the built npm package. Updated
+    the README with instructions for running the tests using npm.
+  * Add native PhantomJS support to webdriverjs.
+
+Grid:
+  * Update grid for change in behavior of WebDriver's new session
+    command.
+  * Fixed handling of JSON conversion errors at node.
+  * FIXED: 5942: Fix hang of hub when node machine is not available.
+
+RC:
+  * Fixed RC tests failing in Firefox beta builds. This has been fixed
+    in two ways:
+
+    * Rely on the automation atoms where possible.
+    * Obtain the document and window from the element the event is
+      firing from.
+
+    In the course of fixing this, all but one usage of "triggerEvent"
+    was replaced. Because of this, the method has been inlined to the last
+    call site.
+  * FIXED: 1646: UTF-8 encoded user-extensions.js support.
+
+
 v2.33.0
 =======
 
