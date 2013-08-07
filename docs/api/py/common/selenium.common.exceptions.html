@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -62,20 +60,20 @@
 <dl class="exception">
 <dt id="selenium.common.exceptions.ElementNotSelectableException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ElementNotSelectableException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotSelectableException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotSelectableException" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Thrown when trying to select an unselectable element.</p>
+</dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.ElementNotVisibleException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ElementNotVisibleException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotVisibleException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotVisibleException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Thrown to indicate that although an element is present on the
-DOM, it is not visible, and so is not able to be interacted
-with.</p>
+<dd><p>Thrown when although an element is present on the DOM, 
+it is not visible, and so is not able to be interacted with.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.ErrorInResponseException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ErrorInResponseException</tt><big>(</big><em>response</em>, <em>msg</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ErrorInResponseException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ErrorInResponseException" title="Permalink to this definition">¶</a></dt>
-<dd><p>An error has occurred on the server side.</p>
+<dd><p>Thrown when an error has occurred on the server side.</p>
 <p>This may happen when communicating with the firefox extension
 or the remote driver server.</p>
 </dd></dl>
@@ -83,13 +81,13 @@ or the remote driver server.</p>
 <dl class="exception">
 <dt id="selenium.common.exceptions.ImeActivationFailedException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ImeActivationFailedException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ImeActivationFailedException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ImeActivationFailedException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Indicates that activating an IME engine has failed.</p>
+<dd><p>Thrown when activating an IME engine has failed.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.ImeNotAvailableException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ImeNotAvailableException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ImeNotAvailableException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ImeNotAvailableException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Indicates that IME support is not available. This exception is thrown for every IME-related
+<dd><p>Thrown when IME support is not available. This exception is thrown for every IME-related
 method call if IME support is not available on the machine.</p>
 </dd></dl>
 
@@ -110,7 +108,7 @@ than the current URL.</p>
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">InvalidSelectorException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidSelectorException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidSelectorException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when the selector which is used to find an element does not return
 a WebElement. Currently this only happens when the selector is an xpath
-expression is used which is either syntactically invalid (i.e. it is not a
+expression and it is either syntactically invalid (i.e. it is not a
 xpath expression) or the expression does not select WebElements
 (e.g. &#8220;count(//input)&#8221;).</p>
 </dd></dl>
@@ -118,41 +116,45 @@ xpath expression) or the expression does not select WebElements
 <dl class="exception">
 <dt id="selenium.common.exceptions.InvalidSwitchToTargetException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">InvalidSwitchToTargetException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#InvalidSwitchToTargetException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.InvalidSwitchToTargetException" title="Permalink to this definition">¶</a></dt>
-<dd><p>The frame or window target to be switched doesn&#8217;t exist.</p>
+<dd><p>Thrown when frame or window target to be switched doesn&#8217;t exist.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.MoveTargetOutOfBoundsException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">MoveTargetOutOfBoundsException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#MoveTargetOutOfBoundsException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.MoveTargetOutOfBoundsException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Indicates that the target provided to the actions move() method is invalid</p>
+<dd><p>Thrown when the target provided to the <cite>ActionsChains</cite> move() 
+method is invalid, i.e. out of document.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.NoAlertPresentException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoAlertPresentException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoAlertPresentException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoAlertPresentException" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Thrown when switching to no presented alert.</p>
+</dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.NoSuchAttributeException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchAttributeException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchAttributeException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchAttributeException" title="Permalink to this definition">¶</a></dt>
-<dd><p>find_element_by_* can&#8217;t find the element.</p>
+<dd><p>Thrown when the attribute of element could not be found.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.NoSuchElementException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchElementException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchElementException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchElementException" title="Permalink to this definition">¶</a></dt>
-<dd><p>find_element_by_* can&#8217;t find the element.</p>
+<dd><p>Thrown when element could not be found.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.NoSuchFrameException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchFrameException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchFrameException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchFrameException" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Thrown when frame target to be switched doesn&#8217;t exist.</p>
+</dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.NoSuchWindowException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchWindowException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchWindowException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchWindowException" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Thrown when window target to be switched doesn&#8217;t exist.</p>
+</dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.RemoteDriverServerException">
@@ -162,8 +164,8 @@ xpath expression) or the expression does not select WebElements
 <dl class="exception">
 <dt id="selenium.common.exceptions.StaleElementReferenceException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">StaleElementReferenceException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#StaleElementReferenceException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.StaleElementReferenceException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Indicates that a reference to an element is now &#8220;stale&#8221; &#8212; the
-element no longer appears on the DOM of the page.</p>
+<dd><p>Thrown when a reference to an element is now &#8220;stale&#8221;.</p>
+<p>Stale means the element no longer appears on the DOM of the page.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -181,18 +183,20 @@ element no longer appears on the DOM of the page.</p>
 <dl class="exception">
 <dt id="selenium.common.exceptions.UnexpectedAlertPresentException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">UnexpectedAlertPresentException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#UnexpectedAlertPresentException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.UnexpectedAlertPresentException" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Thrown when an unexpected alert is appeared.</p>
+</dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.UnexpectedTagNameException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">UnexpectedTagNameException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#UnexpectedTagNameException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.UnexpectedTagNameException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Thrown when a support class did not get an expected web element</p>
+<dd><p>Thrown when a support class did not get an expected web element.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="selenium.common.exceptions.WebDriverException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">WebDriverException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#WebDriverException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.WebDriverException" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Base webdriver exception.</p>
+</dd></dl>
 
 </div>
 

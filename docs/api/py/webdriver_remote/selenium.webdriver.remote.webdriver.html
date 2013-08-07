@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -684,6 +682,29 @@ driver.add_cookie({&#8216;name&#8217; : &#8216;foo&#8217;, &#8216;value&#8217; :
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.get_log">
+<tt class="descname">get_log</tt><big>(</big><em>log_type</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the log for a given log type</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>log_type: type of log that which will be returned</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.get_log(&#8216;browser&#8217;)
+driver.get_log(&#8216;driver&#8217;)
+driver.get_log(&#8216;client&#8217;)
+driver.get_log(&#8216;server&#8217;)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_base64">
 <tt class="descname">get_screenshot_as_base64</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_screenshot_as_base64"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_base64" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
@@ -780,6 +801,20 @@ execute_async_script, see set_script_timeout.</dd>
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.is_online">
 <tt class="descname">is_online</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.is_online"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.is_online" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a boolean if the browser is online or offline</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.log_types">
+<tt class="descname">log_types</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.log_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.log_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a list of the available log types</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">driver.log_types</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

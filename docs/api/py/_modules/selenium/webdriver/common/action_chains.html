@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -65,7 +63,7 @@
 <span class="c"># limitations under the License.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The ActionChains implementation</span>
+<span class="sd">The ActionChains implementation,</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.remote.command</span> <span class="kn">import</span> <span class="n">Command</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
@@ -73,8 +71,8 @@
 <div class="viewcode-block" id="ActionChains"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains">[docs]</a><span class="k">class</span> <span class="nc">ActionChains</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate user actions.</span>
-<span class="sd">    All actions are stored in the ActionChains object. Call perform() to fire</span>
-<span class="sd">    stored actions.</span>
+<span class="sd">       All actions are stored in the ActionChains object. </span>
+<span class="sd">       Call perform() to fire stored actions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
@@ -147,7 +145,8 @@
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.drag_and_drop"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop">[docs]</a>    <span class="k">def</span> <span class="nf">drag_and_drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Holds down the left mouse button on the source element,</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Holds down the left mouse button on the source element,</span>
 <span class="sd">           then moves to the target element and releases the mouse button.</span>
 
 <span class="sd">        :Args:</span>
@@ -161,7 +160,7 @@
 <div class="viewcode-block" id="ActionChains.drag_and_drop_by_offset"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop_by_offset">[docs]</a>    <span class="k">def</span> <span class="nf">drag_and_drop_by_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Holds down the left mouse button on the source element,</span>
-<span class="sd">           then moves to the target element and releases the mouse button.</span>
+<span class="sd">           then moves to the target offset and releases the mouse button.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - source: The element to mouse down.</span>
@@ -174,12 +173,13 @@
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.key_down"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.key_down">[docs]</a>    <span class="k">def</span> <span class="nf">key_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sends a key press only, without releasing it.</span>
-<span class="sd">        Should only be used with modifier keys (Control, Alt and Shift).</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sends a key press only, without releasing it.</span>
+<span class="sd">           Should only be used with modifier keys (Control, Alt and Shift).</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - key: The modifier key to send. Values are defined in Keys class.</span>
-<span class="sd">         - target: The element to send keys.</span>
+<span class="sd">         - value: The modifier key to send. Values are defined in `Keys` class.</span>
+<span class="sd">         - element: The element to send keys.</span>
 <span class="sd">           If None, sends a key to current focused element.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">typing</span> <span class="o">=</span> <span class="p">[]</span>
@@ -205,8 +205,8 @@
 <span class="sd">        Releases a modifier key.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - key: The modifier key to send. Values are defined in Keys class.</span>
-<span class="sd">         - target: The element to send keys.</span>
+<span class="sd">         - value: The modifier key to send. Values are defined in Keys class.</span>
+<span class="sd">         - element: The element to send keys.</span>
 <span class="sd">           If None, sends a key to current focused element.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">typing</span> <span class="o">=</span> <span class="p">[]</span>
@@ -255,7 +255,7 @@
 <div class="viewcode-block" id="ActionChains.move_to_element_with_offset"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_element_with_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_element</span><span class="p">,</span> <span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Move the mouse by an offset of the specificed element.</span>
-<span class="sd">        Offsets are relative to the top-left corner of the element.</span>
+<span class="sd">           Offsets are relative to the top-left corner of the element.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - to_element: The element to move to.</span>
@@ -271,10 +271,11 @@
 </div>
 <div class="viewcode-block" id="ActionChains.release"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.release">[docs]</a>    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Releasing a held mouse button.</span>
+<span class="sd">        Releasing a held mouse button on an element.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - on_element: The element to mouse up.</span>
+<span class="sd">           If None, releases on current mouse position.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">on_element</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_to_element</span><span class="p">(</span><span class="n">on_element</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
@@ -282,7 +283,8 @@
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.send_keys"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.send_keys">[docs]</a>    <span class="k">def</span> <span class="nf">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">keys_to_send</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sends keys to current focused element.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sends keys to current focused element.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - keys_to_send: The keys to send.</span>
