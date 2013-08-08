@@ -40,7 +40,7 @@ namespace Selenium.Internal.SeleniumEmulation
         {
             string urlToOpen = path.Contains("://") ?
                                path :
-                               this.baseUrl.ToString() + (!path.StartsWith("/", StringComparison.Ordinal) ? "/" : string.Empty) + path;
+                               this.baseUrl.ToString().TrimEnd('/') + (!path.StartsWith("/", StringComparison.Ordinal) ? "/" : string.Empty) + path;
 
             return urlToOpen;
         }
