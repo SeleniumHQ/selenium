@@ -16,7 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
-import org.openqa.selenium.Keyboard;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -34,7 +33,7 @@ import java.io.IOException;
  * Implements keyboard operations using the HtmlUnit WebDriver.
  * 
  */
-public class HtmlUnitKeyboard implements Keyboard {
+public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboard {
   private KeyboardModifiersState modifiersState = new KeyboardModifiersState();
   private final HtmlUnitDriver parent;
 

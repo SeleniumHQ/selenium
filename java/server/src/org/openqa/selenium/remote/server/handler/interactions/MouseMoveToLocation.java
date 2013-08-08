@@ -16,9 +16,9 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.interactions;
 
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.server.JsonParametersAware;

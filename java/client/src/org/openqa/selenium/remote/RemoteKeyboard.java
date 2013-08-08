@@ -19,12 +19,10 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.Keyboard;
-
 /**
  * An implementation of the keyboard for use with the remote webdriver.
  */
-public class RemoteKeyboard implements Keyboard {
+public class RemoteKeyboard implements org.openqa.selenium.interactions.Keyboard {
   protected final ExecuteMethod executor;
 
   public RemoteKeyboard(ExecuteMethod executor) {

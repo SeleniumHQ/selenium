@@ -17,18 +17,16 @@
 package org.openqa.selenium.android;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.android.library.AndroidWebDriver;
-import org.openqa.selenium.HasTouchScreen;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Rotatable;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.android.app.MainActivity;
+import org.openqa.selenium.android.library.AndroidWebDriver;
 import org.openqa.selenium.html5.AppCacheStatus;
 import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.html5.BrowserConnection;
@@ -37,6 +35,8 @@ import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
+import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.TouchScreen;
 
 import java.util.List;
 import java.util.Set;
@@ -118,7 +118,7 @@ public class AndroidApkDriver implements BrowserConnection, HasTouchScreen, Java
     driver.setOnline(online);
   }
 
-  public org.openqa.selenium.TouchScreen getTouch() {
+  public TouchScreen getTouch() {
     return driver.getTouch();
   }
 

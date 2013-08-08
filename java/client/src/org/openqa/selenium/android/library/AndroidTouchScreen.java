@@ -23,7 +23,6 @@ import android.os.SystemClock;
 import android.view.MotionEvent;
 
 import org.openqa.selenium.Point;
-import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 import java.util.List;
@@ -32,7 +31,7 @@ import java.util.List;
  * Implements touch capabilities of a device.
  *
  */
-class AndroidTouchScreen implements TouchScreen {
+class AndroidTouchScreen implements org.openqa.selenium.interactions.TouchScreen {
 
   private final AndroidWebDriver driver;
 
