@@ -283,7 +283,10 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
         respond.value = Utils.wrapResult(result, doc);
         respond.status = unwrappedDoc['__webdriver_evaluate']['code'];
 
-        delete unwrappedDoc['__webdriver_evaluate'];
+        // I have no idea why this started happening. Roll on m-day
+        if (!bot.userAgent.isProductVersion(23)) {
+          delete unwrappedDoc['__webdriver_evaluate'];
+        }
 
         respond.send();
     };
