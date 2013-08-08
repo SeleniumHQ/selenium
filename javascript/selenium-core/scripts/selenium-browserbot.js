@@ -1661,7 +1661,7 @@ BrowserBot.prototype.locateElementByWebDriver.prefix = "webdriver";
  */
 BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow) {
     return this.xpathEvaluator.selectSingleNode(inDocument, xpath, null,
-        this._namespaceResolver);
+        inDocument.createNSResolver(inDocument.documentElement));
 };
 
 
@@ -1674,19 +1674,9 @@ BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow
  */
 BrowserBot.prototype.locateElementsByXPath = function(xpath, inDocument, inWindow) {
     return this.xpathEvaluator.selectNodes(inDocument, xpath, null,
-        this._namespaceResolver);
+        inDocument.createNSResolver(inDocument.documentElement));
 };
 
-
-BrowserBot.prototype._namespaceResolver = function(prefix) {
-    if (prefix == 'html' || prefix == 'xhtml' || prefix == 'x') {
-        return 'http://www.w3.org/1999/xhtml';
-    } else if (prefix == 'mathml') {
-        return 'http://www.w3.org/1998/Math/MathML';
-    } else {
-        throw new Error("Unknown namespace: " + prefix + ".");
-    }
-};
 
 /**
  * Returns the number of xpath results.
@@ -1694,7 +1684,7 @@ BrowserBot.prototype._namespaceResolver = function(prefix) {
 BrowserBot.prototype.evaluateXPathCount = function(selector, inDocument) {
     var locator = parse_locator(selector);
     var opts = {};
-    opts['namespaceResolver'] = this._namespaceResolver;
+    opts['namespaceResolver'] = inDocument.createNSResolver(inDocument.documentElement);
     if (locator.type == 'xpath' || locator.type == 'implicit') {
     	return eval_xpath(locator.string, inDocument, opts).length;
     } else {
