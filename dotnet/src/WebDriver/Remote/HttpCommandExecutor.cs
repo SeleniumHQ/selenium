@@ -210,6 +210,8 @@ namespace OpenQA.Selenium.Remote
                     // the values.
                     commandResponse.Value = ((string)commandResponse.Value).Replace("\r\n", "\n").Replace("\n", System.Environment.NewLine);
                 }
+
+                webResponse.Close();
             }
 
             return commandResponse;
