@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="operadriver">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-1.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-1.4.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-1.3-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-1.4-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
