@@ -82,7 +82,7 @@ void ProxyManager::Initialize(ProxySettings settings) {
 
 void ProxyManager::SetProxySettings(HWND browser_window_handle) {
   LOG(TRACE) << "ProxyManager::SetProxySettings";
-  if (this->proxy_type_ != "system") {
+  if (this->proxy_type_.size() > 0 && this->proxy_type_ != "system") {
     if (this->use_per_process_proxy_) {
       LOG(DEBUG) << "Setting proxy for individual IE instance.";
       this->SetPerProcessProxySettings(browser_window_handle);
