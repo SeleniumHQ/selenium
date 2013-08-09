@@ -172,7 +172,7 @@ namespace OpenQA.Selenium
         /// </exception>
         protected static string FindDriverServiceExecutable(string executableName, Uri downloadUrl)
         {
-            string serviceDirectory = FileUtilities.FindFile(executableName);
+            string serviceDirectory = FileUtilities.FindExecutableFile(executableName);
             if (string.IsNullOrEmpty(serviceDirectory))
             {
                 throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The {0} file does not exist in the current directory or in a directory on the PATH environment variable. The driver can be downloaded at {1}.", executableName, downloadUrl));
