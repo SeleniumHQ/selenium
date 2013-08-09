@@ -42,8 +42,16 @@ goog.require('goog.userAgent');
  * @return {Element} The active element, if any.
  */
 bot.dom.getActiveElement = function(nodeOrWindow) {
-  return goog.dom.getActiveElement(
+  var active = goog.dom.getActiveElement(
       goog.dom.getOwnerDocument(nodeOrWindow));
+  // IE has the habit of returning an empty object from
+  // goog.dom.getActiveElement instead of null.
+  if (goog.userAgent.IE &&
+      active &&
+      typeof active.prototype === 'undefined') {
+    return null;
+  }
+  return active;
 };
 
 
