@@ -390,7 +390,7 @@ this.configForm =
 	'<description>Template for command entries in the test html file</description>' +
 	'<textbox id="options_commandTemplate" multiline="true" flex="1" rows="3"/>' +
 	'<separator class="groove"/>' +
-	'<checkbox id="options_escapeDollar" label="Escape \'${\' as \'\\${\' (useful for JSP 2.0)"/>';
+  '<checkbox id="options_escapeDollar" label="Escape \'$' + '{\' as \'\\$' + '{\' (useful for JSP 2.0)"/>';
 	//'<separator class="thin"/>' +
 	//'<description>Template for comment entries in the test html file</description>' +
 	//'<textbox id="options_commentTemplate" multiline="true" flex="1"/>' +
