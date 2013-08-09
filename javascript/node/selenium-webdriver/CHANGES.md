@@ -1,3 +1,8 @@
+## v2.34.1
+
+* FIXED: 6079: The parent process should not wait for spawn driver service
+    processes (chromedriver, phantomjs, etc.)
+
 ## v2.34.0
 
 * Added the `selenium-webdriver/testing/assert` module. This module
