@@ -172,8 +172,15 @@ class ClickElementCommandHandler : public IECommandHandler {
     script_wrapper.AddArgument(element_wrapper);
     int status_code = script_wrapper.ExecuteAsync(ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS);
     if (status_code != WD_SUCCESS) {
-      std::wstring error = script_wrapper.result().bstrVal;
-      *error_msg = StringUtilities::ToString(error);
+      if (script_wrapper.ResultIsString()) {
+        std::wstring error = script_wrapper.result().bstrVal;
+        *error_msg = StringUtilities::ToString(error);
+      } else {
+        std::string error = "Executing JavaScript click function returned an";
+        error.append(" unexpected error, but no error could be returned from");
+        error.append(" Internet Explorer's JavaScript engine.");
+        *error_msg = error;
+      }
     }
     return status_code;
   }
