@@ -235,6 +235,8 @@ handler.</comment>
 </function>
 
 <function name="keyPress">
+  <deprecated/>
+  <alternatives>sendKeys</alternatives>
 
 <param name="locator">an <a href="#locators">element locator</a></param>
 
@@ -293,6 +295,8 @@ handler.</comment>
 </function>
 
 <function name="keyDown">
+  <deprecated/>
+  <alternatives>sendKeys</alternatives>
 
 <param name="locator">an <a href="#locators">element locator</a></param>
 
@@ -303,6 +307,8 @@ handler.</comment>
 </function>
 
 <function name="keyUp">
+  <deprecated/>
+  <alternatives>sendKeys</alternatives>
 
 <param name="locator">an <a href="#locators">element locator</a></param>
 
@@ -443,6 +449,9 @@ value should be the value of the option selected, not the visible text.</p></com
 
 <function name="typeKeys">
 
+  <deprecated/>
+  <alternatives>sendKeys</alternatives>
+
 <param name="locator">an <a href="#locators">element locator</a></param>
 
 <param name="value">the value to type</param>
@@ -467,7 +476,7 @@ send the keystroke events corresponding to what you just typed.</p></comment>
 
 <param name="value">the value to type</param>
 
-<comment>*Experimental* Simulates keystroke events on the specified element, as though you typed the value key-by-key.
+<comment>Simulates keystroke events on the specified element, as though you typed the value key-by-key.
 <p>This simulates a real user typing every character in the specified string; it is also bound by the limitations of a 
 real user, like not being able to type into a invisible or read only elements. This is useful for dynamic UI widgets 
 (like auto-completing combo boxes) that require explicit key events.</p>
@@ -1168,6 +1177,8 @@ example).</comment>
 </function>
 
 <function name="isTextPresent">
+  <deprecated>Use the ${alternatives} command with an element locator instead.</deprecated>
+  <alternatives>Text</alternatives>
 
 <return type="boolean">true if the pattern matches the text, false otherwise</return>
 
