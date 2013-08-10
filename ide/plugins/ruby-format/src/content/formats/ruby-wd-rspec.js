@@ -308,8 +308,8 @@ function defaultExtension() {
 this.options = {
   receiver: "@driver",
   showSelenese: 'false',
-  header:
-      'require "selenium-webdriver"\n' +
+  header: 'require "json"\n' +
+          'require "selenium-webdriver"\n' +
           'require "rspec"\n' +
           'include RSpec::Expectations\n' +
           '\n' +
@@ -329,8 +329,7 @@ this.options = {
           '  end\n' +
           '  \n' +
           '  it "${methodName}" do\n',
-  footer:
-      "  end\n" +
+  footer: "  end\n" +
           "  \n" +
           "  def element_present?(how, what)\n" +
           "    @driver.find_element(how, what)\n" +

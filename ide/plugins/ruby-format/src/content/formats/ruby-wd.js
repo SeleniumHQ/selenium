@@ -291,8 +291,8 @@ function defaultExtension() {
 this.options = {
   receiver: "@driver",
   showSelenese: 'false',
-  header:
-      'require "selenium-webdriver"\n' +
+  header: 'require "json"\n' +
+          'require "selenium-webdriver"\n' +
           'gem "test-unit"\n' + 
           'require "test/unit"\n' +
           '\n' +
@@ -312,8 +312,7 @@ this.options = {
           '  end\n' +
           '  \n' +
           '  def ${methodName}\n',
-  footer:
-      "  end\n" +
+  footer: "  end\n" +
           "  \n" +
           "  def element_present?(how, what)\n" +
           "    @driver.find_element(how, what)\n" +
