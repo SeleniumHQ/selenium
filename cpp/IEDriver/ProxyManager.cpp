@@ -28,6 +28,12 @@ wchar_t proxy_string[512];
 
 #pragma comment(linker, "/section:PROCSHARED,RWS")
 
+#define WD_PROXY_TYPE_DIRECT "direct"
+#define WD_PROXY_TYPE_SYSTEM "system"
+#define WD_PROXY_TYPE_MANUAL "manual"
+#define WD_PROXY_TYPE_AUTOCONFIGURE "pac"
+#define WD_PROXY_TYPE_AUTODETECT "autodetect"
+
 namespace webdriver {
 
 class CopyDataHolderWindow : public CWindowImpl<CopyDataHolderWindow> {
@@ -61,8 +67,10 @@ ProxyManager::~ProxyManager(void) {
 
 void ProxyManager::Initialize(ProxySettings settings) {
   LOG(TRACE) << "ProxyManager::Initialize";
-  this->use_per_process_proxy_ = settings.use_per_process_proxy;
-  // Must standardize the proxy type to a lowercase string.
+  // The wire protocol specifies lower case for the proxy type, but
+  // language bindings have been sending upper case forever. Handle
+  // both cases, thus we will normalize to a lower-case string for
+  // proxy type.
   this->proxy_type_ = settings.proxy_type;
   std::transform(this->proxy_type_.begin(),
                  this->proxy_type_.end(),
@@ -71,7 +79,17 @@ void ProxyManager::Initialize(ProxySettings settings) {
   this->http_proxy_ = settings.http_proxy;
   this->ftp_proxy_ = settings.ftp_proxy;
   this->ssl_proxy_ = settings.ssl_proxy;
+  this->proxy_autoconfigure_url_ = settings.proxy_autoconfig_url;
   this->is_proxy_modified_ = false;
+  if (this->proxy_type_ == WD_PROXY_TYPE_SYSTEM ||
+      this->proxy_type_ == WD_PROXY_TYPE_DIRECT ||
+      this->proxy_type_ == WD_PROXY_TYPE_MANUAL) {
+    this->use_per_process_proxy_ = settings.use_per_process_proxy;
+  } else {
+    // By definition, per-process proxy settings can only be used with the
+    // system proxy, direct connection, or with a manually specified proxy.
+    this->use_per_process_proxy_ = false;
+  }
 
   this->current_autoconfig_url_ = L"";
   this->current_proxy_auto_detect_flags_ = 0;
@@ -82,7 +100,7 @@ void ProxyManager::Initialize(ProxySettings settings) {
 
 void ProxyManager::SetProxySettings(HWND browser_window_handle) {
   LOG(TRACE) << "ProxyManager::SetProxySettings";
-  if (this->proxy_type_.size() > 0 && this->proxy_type_ != "system") {
+  if (this->proxy_type_.size() > 0 && this->proxy_type_ != WD_PROXY_TYPE_SYSTEM) {
     if (this->use_per_process_proxy_) {
       LOG(DEBUG) << "Setting proxy for individual IE instance.";
       this->SetPerProcessProxySettings(browser_window_handle);
@@ -105,7 +123,7 @@ Json::Value ProxyManager::GetProxyAsJson() {
   LOG(TRACE) << "ProxyManager::GetProxyAsJson";
   Json::Value proxy_value;
   proxy_value["proxyType"] = this->proxy_type_;
-  if (this->proxy_type_ == "manual") {
+  if (this->proxy_type_ == WD_PROXY_TYPE_MANUAL) {
     if (this->http_proxy_.size() > 0) {
       proxy_value["httpProxy"] = this->http_proxy_;
     }
@@ -115,6 +133,8 @@ Json::Value ProxyManager::GetProxyAsJson() {
     if (this->ssl_proxy_.size() > 0) {
       proxy_value["sslProxy"] = this->ssl_proxy_;
     }
+  } else if (this->proxy_type_ == WD_PROXY_TYPE_AUTOCONFIGURE) {
+    proxy_value["proxyAutoconfigUrl"] = this->proxy_autoconfigure_url_;
   }
   return proxy_value;
 }
@@ -122,7 +142,7 @@ Json::Value ProxyManager::GetProxyAsJson() {
 std::wstring ProxyManager::BuildProxySettingsString() {
   LOG(TRACE) << "ProxyManager::BuildProxySettingsString";
   std::string proxy_string = "";
-  if (this->proxy_type_ == "manual") {
+  if (this->proxy_type_ == WD_PROXY_TYPE_MANUAL) {
     if (this->http_proxy_.size() > 0) {
       proxy_string.append("http=").append(this->http_proxy_);
     }
@@ -138,6 +158,8 @@ std::wstring ProxyManager::BuildProxySettingsString() {
       }
       proxy_string.append("https=").append(this->ssl_proxy_);
     }
+  } else if (this->proxy_type_ == WD_PROXY_TYPE_AUTOCONFIGURE) {
+    proxy_string = this->proxy_autoconfigure_url_;
   } else {
     proxy_string = this->proxy_type_;
   }
@@ -179,11 +201,17 @@ void ProxyManager::RestoreProxySettings() {
     option_list.dwOptionError = 0;
     option_list.pOptions = &restore_options[0];
 
-    BOOL success = ::InternetSetOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &option_list, list_size);
+    BOOL success = ::InternetSetOption(NULL,
+                                       INTERNET_OPTION_PER_CONNECTION_OPTION,
+                                       &option_list,
+                                       list_size);
     if (!success) {
       LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PER_CONNECTION_OPTION";
     }
-    success = ::InternetSetOption(NULL, INTERNET_OPTION_PROXY_SETTINGS_CHANGED, NULL, 0);
+    success = ::InternetSetOption(NULL,
+                                  INTERNET_OPTION_PROXY_SETTINGS_CHANGED,
+                                  NULL,
+                                  0);
     this->is_proxy_modified_ = false;
     if (!success) {
       LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_SETTINGS_CHANGED";
@@ -222,10 +250,22 @@ void ProxyManager::SetGlobalProxySettings() {
   option_list.dwSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
 
   INTERNET_PER_CONN_OPTION proxy_options[3];
-  if (this->proxy_type_ == "direct") {
+  if (this->proxy_type_ == WD_PROXY_TYPE_DIRECT) {
     proxy_options[0].dwOption = INTERNET_PER_CONN_FLAGS;
     proxy_options[0].Value.dwValue = PROXY_TYPE_DIRECT;
     option_list.dwOptionCount = 1;
+  } else if (this->proxy_type_ == WD_PROXY_TYPE_AUTOCONFIGURE) {
+    proxy_options[0].dwOption = INTERNET_PER_CONN_AUTOCONFIG_URL;
+    proxy_options[0].Value.pszValue = const_cast<wchar_t*>(proxy.c_str());
+    proxy_options[1].dwOption = INTERNET_PER_CONN_FLAGS;
+    proxy_options[1].Value.dwValue = PROXY_TYPE_AUTO_PROXY_URL;
+    option_list.dwOptionCount = 2;
+  } else if (this->proxy_type_ == WD_PROXY_TYPE_AUTODETECT) {
+    proxy_options[0].dwOption = INTERNET_PER_CONN_AUTODISCOVERY_FLAGS;
+    proxy_options[0].Value.dwValue = AUTO_PROXY_FLAG_ALWAYS_DETECT;
+    proxy_options[1].dwOption = INTERNET_PER_CONN_FLAGS;
+    proxy_options[1].Value.dwValue = PROXY_TYPE_AUTO_DETECT;
+    option_list.dwOptionCount = 2;
   } else {
     proxy_options[0].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
     proxy_options[0].Value.pszValue = const_cast<wchar_t*>(proxy.c_str());
@@ -239,11 +279,17 @@ void ProxyManager::SetGlobalProxySettings() {
   option_list.pOptions = proxy_options;
   option_list.pszConnection = NULL;
   option_list.dwOptionError = 0;
-  BOOL success = ::InternetSetOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &option_list, list_size);
+  BOOL success = ::InternetSetOption(NULL,
+                                     INTERNET_OPTION_PER_CONNECTION_OPTION,
+                                     &option_list,
+                                     list_size);
   if (!success) {
     LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PER_CONNECTION_OPTION";
   }
-  success = ::InternetSetOption(NULL, INTERNET_OPTION_PROXY_SETTINGS_CHANGED, NULL, 0);
+  success = ::InternetSetOption(NULL,
+                                INTERNET_OPTION_PROXY_SETTINGS_CHANGED,
+                                NULL,
+                                0);
   if (!success) {
     LOGERR(WARN) << "InternetSetOption failed setting INTERNET_OPTION_PROXY_SETTINGS_CHANGED";
   }
@@ -267,7 +313,10 @@ void ProxyManager::GetCurrentProxySettings() {
   option_list.dwOptionError = 0;
   option_list.pOptions = &options_to_get[0];
 
-  BOOL success = ::InternetQueryOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &option_list, &list_size);
+  BOOL success = ::InternetQueryOption(NULL,
+                                       INTERNET_OPTION_PER_CONNECTION_OPTION,
+                                       &option_list,
+                                       &list_size);
   if (!success) {
     LOGERR(WARN) << "InternetQueryOption failed getting proxy settings";
   }
@@ -307,14 +356,20 @@ void ProxyManager::GetCurrentProxyType() {
   // First check for INTERNET_PER_CONN_FLAGS_UI, then if that fails
   // check again using INTERNET_PER_CONN_FLAGS. This is documented at
   // http://msdn.microsoft.com/en-us/library/windows/desktop/aa385145%28v=vs.85%29.aspx
-  BOOL success = ::InternetQueryOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &option_list, &list_size);
+  BOOL success = ::InternetQueryOption(NULL,
+                                       INTERNET_OPTION_PER_CONNECTION_OPTION,
+                                       &option_list,
+                                       &list_size);
   if (success) {
     this->current_proxy_type_ = proxy_type_options[0].Value.dwValue;
     return;
   }
 
   proxy_type_options[0].dwOption = INTERNET_PER_CONN_FLAGS;
-  success = ::InternetQueryOption(NULL, INTERNET_OPTION_PER_CONNECTION_OPTION, &option_list, &list_size);
+  success = ::InternetQueryOption(NULL,
+                                  INTERNET_OPTION_PER_CONNECTION_OPTION,
+                                  &option_list,
+                                  &list_size);
   if (success) {
     this->current_proxy_type_ = proxy_type_options[0].Value.dwValue;
   }

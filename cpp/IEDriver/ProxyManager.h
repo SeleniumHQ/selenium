@@ -25,6 +25,7 @@ struct ProxySettings {
   std::string http_proxy;
   std::string ftp_proxy;
   std::string ssl_proxy;
+  std::string proxy_autoconfig_url;
 };
 
 class ProxyManager {
@@ -62,6 +63,7 @@ class ProxyManager {
   std::string http_proxy_;
   std::string ftp_proxy_;
   std::string ssl_proxy_;
+  std::string proxy_autoconfigure_url_;
   bool use_per_process_proxy_;
   bool is_proxy_modified_;
 };

@@ -77,9 +77,6 @@ class NewSessionCommandHandler : public IECommandHandler {
       ProxySettings proxy_settings = { false, "", "", "", "" };
       Json::Value proxy = it->second.get(PROXY_CAPABILITY, Json::nullValue);
       if (!proxy.isNull()) {
-        // The wire protocol specifies lower case for the proxy type, but
-        // language bindings have been sending upper case forever. Handle
-        // both cases.
         std::string proxy_type = proxy.get("proxyType", "").asString();
         proxy_settings.proxy_type = proxy_type;
         std::string http_proxy = proxy.get("httpProxy", "").asString();
@@ -88,6 +85,8 @@ class NewSessionCommandHandler : public IECommandHandler {
         proxy_settings.ftp_proxy = ftp_proxy;
         std::string ssl_proxy = proxy.get("sslProxy", "").asString();
         proxy_settings.ssl_proxy = ssl_proxy;
+        std::string autoconfig_url = proxy.get("proxyAutoconfigUrl", "").asString();
+        proxy_settings.proxy_autoconfig_url = autoconfig_url;
         Json::Value use_per_process_proxy = it->second.get(USE_PER_PROCESS_PROXY_CAPABILITY, false);
         proxy_settings.use_per_process_proxy = use_per_process_proxy.asBool();
       }
