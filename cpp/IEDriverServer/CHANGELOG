@@ -9,7 +9,7 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
-v2.35.0.0
+v2.35.1.0
 =========
  * Updated to correct active element finding when using synthetic events. Fixes
    issue #6088.
