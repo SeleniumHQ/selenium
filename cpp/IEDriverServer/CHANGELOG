@@ -9,6 +9,17 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.35.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+ * Preventing crash in IE driver using synthetic events. In some cases
+   document.activeElement returns an empty object rather than null. This could
+   cause the IE driver to crash. This change fixes the crash, but not the
+   underlying JavaScript atoms issue. This is handled by another commit. Fixes
+   issue #6067.
+ * Added PAC and proxy autodetect (WPAD) support to IEDriverServer.exe.
+
 v2.34.0.0
 =========
  * Release to synchronize with release of Selenium project.
