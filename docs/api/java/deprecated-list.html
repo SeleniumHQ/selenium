@@ -86,31 +86,6 @@
      http://dev.w3.org/html5/webdatabase/</i></div>
 </td>
 </tr>
-<tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/HasInputDevices.html" title="interface in org.openqa.selenium">org.openqa.selenium.HasInputDevices</a>
-<div class="block"><i>Use <a href="org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions"><code>HasInputDevices</code></a> instead.</i></div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/HasTouchScreen.html" title="interface in org.openqa.selenium">org.openqa.selenium.HasTouchScreen</a>
-<div class="block"><i>Use <a href="org/openqa/selenium/interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions"><code>HasTouchScreen</code></a> instead.</i></div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">org.openqa.selenium.Keyboard</a>
-<div class="block"><i>Use <a href="org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions"><code>Keyboard</code></a> instead.</i></div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">org.openqa.selenium.Mouse</a>
-<div class="block"><i>Use <a href="org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions"><code>Mouse</code></a></i></div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/TouchScreen.html" title="interface in org.openqa.selenium">org.openqa.selenium.TouchScreen</a>
-<div class="block"><i>Use <a href="org/openqa/selenium/interactions/TouchScreen.html" title="interface in org.openqa.selenium.interactions"><code>TouchScreen</code></a> instead.</i></div>
-</td>
-</tr>
 </tbody>
 </table>
 </li>
@@ -191,6 +166,20 @@
 <td class="colOne"><a href="org/openqa/selenium/remote/CapabilityType.html#ENABLE_PERSISTENT_HOVERING">org.openqa.selenium.remote.CapabilityType.ENABLE_PERSISTENT_HOVERING</a></td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#IE_SET_PROXY_BY_SERVER">org.openqa.selenium.ie.InternetExplorerDriver.IE_SET_PROXY_BY_SERVER</a>
+<div class="block"><i>please set this option as True and allow IEDriverServer sets up proxy.
+ In next releases it will be set to True by default.
+
+ Capability that defines used proxy setter. Currently it's False by default.
+
+ False means WindowsProxyManager will be used for setting proxy settings.
+ True means IEDriverServer will be used for setting proxy settings.
+
+ Be note that using both variants in concurrent drivers at the same node
+ may lead to undefined behaviour.</i></div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/safari/SafariDriver.html#NO_INSTALL_EXTENSION_CAPABILITY">org.openqa.selenium.safari.SafariDriver.NO_INSTALL_EXTENSION_CAPABILITY</a>
 <div class="block"><i>use <a href="org/openqa/selenium/safari/SafariOptions.html#setSkipExtensionInstallation(boolean)"><code>SafariOptions.setSkipExtensionInstallation(boolean)</code></a> instead.</i></div>
 </td>
