@@ -17,11 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
+import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
@@ -32,6 +35,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
@@ -125,14 +130,45 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   public final static String FORCE_CREATE_PROCESS = "ie.forceCreateProcessApi";
 
   /**
+   * Capability that defines to clean browser cache before launching IE by IEDriverServer.
+   */
+  public final static String IE_ENSURE_CLEAN_SESSION = "ie.ensureCleanSession";
+
+  /**
+   * Capability that defines setting the proxy information for a single IE process
+   * without affecting the proxy settings of other instances of IE.
+   */
+  public final static String IE_USE_PRE_PROCESS_PROXY = "ie.usePerProcessProxy";
+
+  /**
    * Capability that defines used IE CLI switches.
    */
   public final static String IE_SWITCHES = "ie.browserCommandLineSwitches";
 
   /**
+   * @deprecated please set this option as True and allow IEDriverServer sets up proxy.
+   * In next releases it will be set to True by default.
+   *
+   * Capability that defines used proxy setter. Currently it's False by default.
+   *
+   * False means WindowsProxyManager will be used for setting proxy settings.
+   * True means IEDriverServer will be used for setting proxy settings.
+   *
+   * Be note that using both variants in concurrent drivers at the same node
+   * may lead to undefined behaviour.
+   */
+  @Deprecated
+  public final static String IE_SET_PROXY_BY_SERVER = "ie.setProxyByServer";
+
+  /**
    * Port which is used by default.
    */
   private final static int DEFAULT_PORT = 0;
+
+  /**
+   * To set proxy by server or not.
+   */
+  private final boolean setProxyByServer;
 
   /**
    * Proxy manager.
@@ -163,6 +199,9 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
     if (capabilities == null) {
       capabilities = DesiredCapabilities.internetExplorer();
     }
+
+    setProxyByServer = useServerForProxy(capabilities);
+
     if (proxy == null) {
       proxyManager = setupProxy(capabilities);
     } else {
@@ -181,7 +220,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
 
     setCommandExecutor(new DriverCommandExecutor(service));
 
-    startSession(capabilities);
+    startSession(updateCapabilities(capabilities));
   }
 
   @Override
@@ -261,7 +300,8 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
 
   private WindowsProxyManager setupProxy(Capabilities caps) {
     // do not create proxy manager if it's not requested. see issue 4135
-    if (caps == null || caps.getCapability(PROXY) == null) {
+    // also do not create proxy manager if it will be managed by server.
+    if (caps == null || caps.getCapability(PROXY) == null || setProxyByServer) {
       return null;
     }
 
@@ -273,7 +313,8 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   }
 
   private void prepareProxy(Capabilities caps) {
-    if (caps == null || caps.getCapability(PROXY) == null) {
+    // do not prepare proxy manager if it will be managed by server.
+    if (caps == null || caps.getCapability(PROXY) == null || setProxyByServer) {
       return;
     }
 
@@ -290,4 +331,35 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
     };
     Runtime.getRuntime().addShutdownHook(cleanupThread);
   }
+
+  /**
+   * Determine to use server for setting proxy or not.
+   *
+   * @param caps capabilties
+   * @return to use or not
+   */
+  private boolean useServerForProxy(Capabilities caps) {
+    if (caps == null || caps.getCapability(IE_SET_PROXY_BY_SERVER) == null) {
+      return false;
+    }
+
+    return (Boolean) caps.getCapability(IE_SET_PROXY_BY_SERVER);
+  }
+
+  /**
+   * if proxy will be not managed by server overwrite proxy capability so
+   * server will do nothing.
+   */
+  private Capabilities updateCapabilities(Capabilities capabilities) {
+    if (capabilities == null || capabilities.getCapability(PROXY) == null || setProxyByServer) {
+      return capabilities;
+    }
+
+    Proxy proxy = new Proxy();
+    proxy.setProxyType(Proxy.ProxyType.SYSTEM);
+    ((DesiredCapabilities) capabilities).setCapability(PROXY, proxy);
+
+    return capabilities;
+  }
+
 }
