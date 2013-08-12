@@ -33,16 +33,9 @@ class GetSessionCapabilitiesCommandHandler : public IECommandHandler {
                        const LocatorMap& locator_parameters,
                        const ParametersMap& command_parameters,
                        Response* response) {
-    // ASSUMPTION: Version string will never be larger than 2 characters
-    // (+1 for the null terminator).
-    int version = executor.browser_version();
-    char buffer[3];
-    _itoa_s(version, buffer, 3, 10);
-    std::string version_string = buffer;
-
     Json::Value capabilities;
     capabilities[BROWSER_NAME_CAPABILITY] = "internet explorer";
-    capabilities[BROWSER_VERSION_CAPABILITY] = version_string;
+    capabilities[BROWSER_VERSION_CAPABILITY] = std::to_string(static_cast<long long>(executor.browser_version()));
     capabilities[JAVASCRIPT_ENABLED_CAPABILITY] = true;
     capabilities[PLATFORM_CAPABILITY] = "WINDOWS";
     capabilities[NATIVE_EVENTS_CAPABILITY] = executor.input_manager()->enable_native_events();
