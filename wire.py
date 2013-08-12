@@ -1370,9 +1370,9 @@ location for correctly generating native events.''').
       SessionResource('session/:sessionId/touch/flick').
       Post('Flick on the touch screen using finger motion events. Use this '
            'flick command if you don\'t care where the flick starts on the screen.').
-      AddJsonParameter('xSpeed', '{number}', 'The x speed in pixels per '
+      AddJsonParameter('xspeed', '{number}', 'The x speed in pixels per '
                        'second.').
-      AddJsonParameter('ySpeed', '{number}', 'The y speed in pixels per '
+      AddJsonParameter('yspeed', '{number}', 'The y speed in pixels per '
                       'second.'))
 
   resources.append(
