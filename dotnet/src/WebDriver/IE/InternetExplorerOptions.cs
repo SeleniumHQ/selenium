@@ -245,8 +245,10 @@ namespace OpenQA.Selenium.IE
         /// <summary>
         /// Gets or sets a value indicating whether to use the supplied <see cref="Proxy"/>
         /// settings on a per-process basis, not updating the system installed proxy setting.
-        /// This property is only valid when setting a <see cref="Proxy"/>, and is otherwise
-        /// ignored. Defaults to <see langword="false"/>.
+        /// This property is only valid when setting a <see cref="Proxy"/>, where the
+        /// <see cref="OpenQA.Selenium.Proxy.Kind"/> property is either <see cref="ProxyKind.Direct"/>,
+        /// <see cref="ProxyKind.System"/>, or <see cref="ProxyKind.Manual"/>, and is
+        /// otherwise ignored. Defaults to <see langword="false"/>.
         /// </summary>
         public bool UsePerProcessProxy
         {
