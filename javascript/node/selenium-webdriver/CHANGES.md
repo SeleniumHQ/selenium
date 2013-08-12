@@ -1,3 +1,7 @@
+## v2.35.1
+
+* FIXED: 6090: Changed example scripts to use chromedriver.
+
 ## v2.35.0
 
 * Version bump to stay in sync with the Selenium project.
