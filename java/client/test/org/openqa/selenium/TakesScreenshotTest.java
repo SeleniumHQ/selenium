@@ -27,6 +27,7 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -66,12 +67,9 @@ import javax.imageio.ImageIO;
 // TODO(user): test screenshots at guaranteed minimized browsers
 // TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
 
-/**
- * FIREFOX
- */
-
-@Ignore(value = {IPHONE, MARIONETTE, ANDROID, OPERA_MOBILE},
-        reason = "untested properly")
+@Ignore(value = {IPHONE, MARIONETTE, ANDROID, OPERA_MOBILE, IE},
+        reason = "untested properly"
+                 + " IE: strange colors appeared")
 public class TakesScreenshotTest extends JUnit4TestBase {
 
   private TakesScreenshot screenshoter;
@@ -178,7 +176,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE},
+  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE, FIREFOX},
           reason = " IE: cuts captured image at driver level." +
                    " FF: captured image is cat at driver level." +
                    " SAFARI: takes only visible viewport." +
@@ -204,7 +202,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE},
+  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE, FIREFOX},
           reason = " IE: cuts captured image at driver level." +
                    " FF: captured image is cat at driver level." +
                    " SAFARI: takes only visible viewport." +
@@ -230,7 +228,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE},
+  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE, FIREFOX},
           reason = " IE: returns null." +
                    " FF: failed due NS_ERROR_FAILURE at context.drawWindow." +
                    " SAFARI: takes only visible viewport." +

@@ -19,6 +19,7 @@ package org.openqa.selenium;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -34,6 +35,7 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -88,8 +90,15 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(
+      value = {MARIONETTE, CHROME},
+      reason = "MAIONETTE: not checked, "
+               + "CHROME: ChromeDriver only supports characters in the BMP"
+  )
   public void testEnteringSupplementaryCharacters() {
+    assumeFalse("IE: versions less thank 10 have issue 5069",
+                TestUtilities.isInternetExplorer(driver) &&
+                TestUtilities.getIEVersion(driver) < 10);
     driver.get(pages.chinesePage);
 
     String input = "";

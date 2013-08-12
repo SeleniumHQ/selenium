@@ -151,6 +151,32 @@ public class TestUtilities {
     return Integer.parseInt(versionMatcher.group());
   }
 
+  /**
+   * Finds the IE major version of the given webdriver and returns it as an integer.
+   * For instance, '10.6' will translate to 10.
+   *
+   * @param driver The driver to find the version for.
+   * @return The found version, or 0 if no version could be found.
+   */
+  public static int getIEVersion(WebDriver driver) {
+    // extract browser string
+    Pattern browserPattern = Pattern.compile("MSIE\\s+\\d+\\.");
+    Matcher browserMatcher = browserPattern.matcher(getUserAgent(driver));
+    if (!browserMatcher.find()) {
+      return 0;
+    }
+    String browserStr = browserMatcher.group();
+
+    // extract version string
+    Pattern versionPattern = Pattern.compile("\\d+");
+    Matcher versionMatcher = versionPattern.matcher(browserStr);
+    if (!versionMatcher.find()) {
+      return 0;
+    }
+    return Integer.parseInt(versionMatcher.group());
+  }
+
+
   public static Platform getEffectivePlatform() {
     if (SauceDriver.shouldUseSauce()) {
       return SauceDriver.getEffectivePlatform();
