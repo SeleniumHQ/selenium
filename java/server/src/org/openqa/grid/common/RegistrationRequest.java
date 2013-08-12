@@ -518,6 +518,7 @@ public class RegistrationRequest {
     }
     DesiredCapabilities res = new DesiredCapabilities();
     for (String capabilityPair : s) {
+      capabilityPair = capabilityPair.trim();
       if (capabilityPair.split("=").length != 2) {
         throw new GridConfigurationException("-browser format is key1=value1,key2=value2 "
             + capabilityPair + " doesn't follow that format.");
