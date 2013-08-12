@@ -863,10 +863,15 @@ FirefoxDriver.prototype.screenshot = function(respond) {
   var window = respond.session.getBrowser().contentWindow;
   try {
     var canvas = fxdriver.screenshot.grab(window);
+  } catch (e) {
+    throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
+      'Could not take screenshot of current page - ' + e );
+  }
+  try {
     respond.value = fxdriver.screenshot.toBase64(canvas);
   } catch (e) {
     throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
-        'Could not take screenshot of current page - ' + e);
+      'Could not convert screenshot to base64 - ' + e ) ;
   }
   respond.send();
 };
