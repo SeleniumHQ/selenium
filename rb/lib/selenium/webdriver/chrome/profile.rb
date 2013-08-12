@@ -49,7 +49,7 @@ module Selenium
 
         def as_json(opts = nil)
           extensions = @extensions.map do |crx_path|
-            Base64.strict_encode64 File.read(crx_path)
+            File.open(crx_path, "rb") { |crx_file| Base64.strict_encode64 crx_file.read }
           end
 
           super.merge('extensions' => extensions)
