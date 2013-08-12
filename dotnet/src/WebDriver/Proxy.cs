@@ -160,10 +160,10 @@ namespace OpenQA.Selenium
             {
                 if (this.proxyKind == ProxyKind.ProxyAutoConfigure)
                 {
-                    return "pac";
+                    return "PAC";
                 }
 
-                return this.proxyKind.ToString().ToLowerInvariant();
+                return this.proxyKind.ToString().ToUpperInvariant();
             }
         }
 
