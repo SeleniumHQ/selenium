@@ -48,7 +48,7 @@ bot.dom.getActiveElement = function(nodeOrWindow) {
   // goog.dom.getActiveElement instead of null.
   if (goog.userAgent.IE &&
       active &&
-      typeof active.prototype === 'undefined') {
+      typeof active.nodeType === 'undefined') {
     return null;
   }
   return active;

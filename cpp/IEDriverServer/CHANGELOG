@@ -11,6 +11,11 @@ not made generally available on the downloads page.
 
 v2.35.0.0
 =========
+ * Updated to correct active element finding when using synthetic events. Fixes
+   issue #6088.
+
+v2.35.0.0
+=========
  * Release to synchronize with release of Selenium project.
  * Updates to JavaScript automation atoms.
  * Preventing crash in IE driver using synthetic events. In some cases
