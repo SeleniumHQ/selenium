@@ -1,3 +1,7 @@
+## v2.35.0
+
+* Version bump to stay in sync with the Selenium project.
+
 ## v2.34.1
 
 * FIXED: 6079: The parent process should not wait for spawn driver service
