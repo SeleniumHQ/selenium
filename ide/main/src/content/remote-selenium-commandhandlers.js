@@ -175,10 +175,10 @@ objectExtend(CommandHandlerFactory.prototype, {
         accessorResult = accessBlock();
       }
       return accessorResult.pipe(function(accessorResult) {
-        if (accessorResult) {
-          return new PredicateResult(true, "true");
+        if (accessorResult == "true" ) {
+          return new PredicateResult(true, accessorResult);
         }
-        return new PredicateResult(false, "false");
+        return new PredicateResult(false, accessorResult);
       });
     };
   },
