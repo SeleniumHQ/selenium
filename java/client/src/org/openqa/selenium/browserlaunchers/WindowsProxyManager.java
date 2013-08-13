@@ -57,6 +57,7 @@ public class WindowsProxyManager {
   private boolean changeMaxConnections;
   private static final Preferences prefs =
       Preferences.userNodeForPackage(WindowsProxyManager.class);
+  private Boolean registrySettingsAreChanged = false;
 
   public WindowsProxyManager(boolean customPACappropriate, String sessionId, int port,
       int portDriversShouldContact) {
@@ -153,6 +154,7 @@ public class WindowsProxyManager {
 
   public void changeRegistrySettings(Capabilities options) {
     log.info("Modifying registry settings...");
+    registrySettingsAreChanged = true;
     HudsuckrSettings settings;
     if (oldSettings == null) {
       backupHudsuckrSettings();
@@ -288,22 +290,24 @@ public class WindowsProxyManager {
   }
 
   public void restoreRegistrySettings(boolean ensureCleanSession) {
+    if (registrySettingsAreChanged) {
+      // restore pre-existing user cookies if -ensureCleanSession is set
+      if (ensureCleanSession) {
+        restorePreexistingCookies();
+      }
 
-    // restore pre-existing user cookies if -ensureCleanSession is set
-    if (ensureCleanSession) {
-      restorePreexistingCookies();
+      // Backup really should be ready, but if not, skip it
+      if (!backupIsReady()) {
+        return;
+      }
+      log.info("Restoring registry settings (won't affect running browsers)...");
+      for (RegKey key : RegKey.values()) {
+        key.restore();
+      }
+      restoreHudsuckrSettings();
+      backupReady(false);
+      registrySettingsAreChanged = false;
     }
-
-    // Backup really should be ready, but if not, skip it
-    if (!backupIsReady()) {
-      return;
-    }
-    log.info("Restoring registry settings (won't affect running browsers)...");
-    for (RegKey key : RegKey.values()) {
-      key.restore();
-    }
-    restoreHudsuckrSettings();
-    backupReady(false);
   }
 
   /**
