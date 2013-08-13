@@ -14,6 +14,8 @@ java_library(name = "grid",
     "//third_party/java/guava-libraries",
     "//third_party/java/jcip_annotations",
     "//third_party/java/yaml",
-    "//third_party/java/jetty"
+    "//third_party/java/jetty",
+    "//third_party/java/commons-fileupload",
+    "//third_party/java/commons-lang",
   ])
 

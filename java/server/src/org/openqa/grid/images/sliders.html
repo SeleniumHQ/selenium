@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+<!--
+/** 
+ * Slideshow style rules.
+ */
+#slideshow {
+	margin:0 auto;
+	background:transparent;
+	position:relative;
+}
+#slideshow #slidesContainer {
+  margin:0 auto;
+  overflow:auto; /* allow scrollbar */
+  position:relative;
+}
+#slideshow #slidesContainer .slide {
+  margin:0 auto;
+}
+
+/** 
+ * Slideshow controls style rules.
+ */
+.control {
+  display:block;
+  width:39px;
+  position:absolute;
+  cursor: pointer;
+  font-weight:bold;
+  font-size:30px;
+  background:#202020;
+  color: #fff;
+  top:0;
+  text-align:center;
+  font-family:Courier New;
+}
+#leftControl {
+  left:40px;
+}
+#rightControl {
+  right:40px;
+}
+#firstControl {
+  left:0;
+}
+#lastControl {
+  right:0;
+}
+
+/** 
+ * Style rules
+ */
+* {
+  margin:0;
+  padding:0;
+  color:#ccc;
+}
+
+body {
+  background:#393737;
+}
+
+.slide p {
+  margin:0px;
+  position:relative;
+}
+
+.slide img {
+  float:right;
+  margin:0 0px;
+}
+
+.slide a {
+  margin:0px;
+  position:absolute;
+  background: rgba(255, 0, 0, 0.5);
+}
+
+-->
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+var pathtopage = window.location.href;
+var datafileurl = pathtopage.replace(/\?sliders=/, '?file=') + '/sliders_data.html'
+$('#slidesContainer').load(datafileurl, function(){
+$('img')[0].onload = function(){
+  var currentPosition = 0;
+  var slideWidth = this.width;
+  var slideHeight = this.height
+  var currentPosition = 0;
+  var slides = $('.slide');
+  var numberOfSlides = slides.length;
+  $('#pageContainer').css('width', slideWidth);
+  $('img').css('width', slideWidth);
+  $('#slideshow').css('width', slideWidth + 40 * 4);
+  $('#slidesContainer').css('width', slideWidth);
+
+  // Remove scrollbar in JS
+  $('#slidesContainer').css('overflow', 'hidden');
+
+  // Wrap all .slides with #slideInner div
+  slides
+    .wrapAll('<div id="slideInner"></div>')
+    // Float left to display horizontally, readjust .slides width
+	.css({
+      'float' : 'left',
+      'width' : slideWidth
+    });
+
+  // Set #slideInner width equal to total width of all slides
+  $('#slideInner').css('width', slideWidth * numberOfSlides);
+
+  // Insert controls in the DOM
+  $('#slideshow')
+    .prepend('<div class="control" id="leftControl">&lt;</div>')
+    .prepend('<div class="control" id="firstControl">|&lt;</div>')
+    .append('<div class="control" id="rightControl">&gt;</div>')
+    .append('<div class="control" id="lastControl">&gt;|</div>');
+
+  $('.control').css({
+    'height' : slideHeight,
+    'line-height' : slideHeight + 'px'
+  });
+
+  // Hide left arrow control on first load
+  manageControls(currentPosition);
+
+  // Create event listeners for .controls clicks
+  $('.control')
+    .bind('click', function(){
+    // Determine new position
+	//currentPosition = ($(this).attr('id')=='rightControl') ? currentPosition+1 : currentPosition-1;
+
+    switch($(this).attr('id'))
+    {
+    case 'rightControl':
+      currentPosition = currentPosition+1 ;
+      break;
+    case 'leftControl':
+      currentPosition = currentPosition-1 ;
+      break;
+    case 'firstControl':
+      currentPosition = 0 ;
+      break;
+    case 'lastControl':
+      currentPosition = numberOfSlides-1 ;
+      break;
+    }
+    
+	// Hide / show controls
+    manageControls(currentPosition);
+    // Move slideInner using margin-left
+    $('#slideInner').animate({
+      'marginLeft' : slideWidth*(-currentPosition)
+    });
+  });
+
+  // manageControls: Hides and Shows controls depending on currentPosition
+  function manageControls(position){
+    // Hide left arrow if position is first slide
+	  if(position==0){
+      $('#leftControl').hide();
+      $('#firstControl').hide();
+    } else{
+      $('#leftControl').show();
+      $('#firstControl').show();
+    }
+	  // Hide right arrow if position is last slide
+    if(position==numberOfSlides-1){
+      $('#rightControl').hide();
+      $('#lastControl').hide();
+    } else{
+      $('#rightControl').show();
+      $('#lastControl').show();
+    }
+  }	
+}
+});
+});
+</script>
+</head>
+<body>
+<div id="pageContainer">
+  <!-- Slideshow HTML -->
+  <div id="slideshow">
+    <div id="slidesContainer">
+<!-- end of images -->
+    </div>
+  </div>
+  <!-- Slideshow HTML -->
+</div>
+</body>
+</html>

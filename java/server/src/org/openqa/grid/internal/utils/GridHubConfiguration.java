@@ -110,6 +110,8 @@ public class GridHubConfiguration {
   private String grid1Yml = null;
   private String grid2JSON = null;
 
+  private String screenSlidersPath = null;
+
   public GridHubConfiguration() {
     loadDefault();
   }
@@ -207,6 +209,9 @@ public class GridHubConfiguration {
     }
     if (helper.isParamPresent("-debug")) {
       isDebug = true;
+    }
+    if (helper.isParamPresent("-screenSliders")) {
+      screenSlidersPath =helper.getParamValue("-screenSliders");
     }
 
   }
@@ -336,7 +341,14 @@ public class GridHubConfiguration {
           e);
     }
   }
-
+  
+  public void setScreenSlidersPath(String value) {
+    screenSlidersPath = value;
+  }
+  
+  public String getScreenSlidersPath() {
+    return screenSlidersPath;
+  }
   public String getHost() {
     return host;
   }

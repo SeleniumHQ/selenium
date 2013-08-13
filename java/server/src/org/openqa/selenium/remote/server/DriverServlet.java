@@ -27,8 +27,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.SessionNotFoundException;
+import org.openqa.selenium.remote.server.handler.sliders.CaptureClickElement;
+import org.openqa.selenium.remote.server.handler.sliders.CaptureScreenshotSlider;
+import org.openqa.selenium.remote.server.handler.sliders.CaptureSendKeys;
+import org.openqa.selenium.remote.server.handler.sliders.ScreenSliders;
+import org.openqa.selenium.remote.server.renderer.EmptyResult;
+import org.openqa.selenium.remote.server.renderer.JsonResult;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
+import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 import org.openqa.selenium.remote.server.xdrpc.HttpServletRequestProxy;
@@ -38,6 +45,7 @@ import com.google.common.base.Supplier;
 
 public class DriverServlet extends HttpServlet {
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
+  public static final String SLIDERS_SERVER_URL = "webdriver.server.sliders.server.url";
 
   private static final String CROSS_DOMAIN_RPC_PATH = "/xdrpc";
 
@@ -71,6 +79,8 @@ public class DriverServlet extends HttpServlet {
     if (sessionTimeOutInMs > 0 || browserTimeoutInMs > 0) {
       createSessionCleaner(logger, driverSessions, sessionTimeOutInMs, browserTimeoutInMs);
     }
+    initSlidersExtension();
+
   }
 
   @VisibleForTesting
@@ -216,4 +226,24 @@ public class DriverServlet extends HttpServlet {
       return (DriverSessions) attribute;
     }
   }
+
+	public void initSlidersExtension() {
+		final EmptyResult emptyResponse = new EmptyResult();
+		final JsonResult jsonResponse = new JsonResult(":response");
+		String url = getServletContext().getInitParameter(SLIDERS_SERVER_URL);
+
+		if ( url != null && !"".equals(url)) {
+			ScreenSliders.setFilesServerUri(url);
+
+			mappings.addNewPostMapping("/session/:sessionId/element/:id/click",
+					CaptureClickElement.class).on(ResultType.SUCCESS,
+					emptyResponse);
+			mappings.addNewPostMapping("/session/:sessionId/element/:id/value",
+					CaptureSendKeys.class)
+					.on(ResultType.SUCCESS, emptyResponse);
+			mappings.addNewGetMapping("/session/:sessionId/screenshot",
+					CaptureScreenshotSlider.class)
+					.on(ResultType.SUCCESS, jsonResponse);
+		}
+	}
 }

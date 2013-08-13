@@ -14,29 +14,7 @@
 
 package org.openqa.grid.internal.utils;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.message.BasicHttpRequest;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.common.exception.GridException;
-import org.openqa.selenium.remote.internal.HttpClientFactory;
-import org.openqa.grid.web.servlet.ResourceServlet;
-import org.openqa.grid.web.utils.ExtraServletUtil;
-import org.openqa.jetty.http.HttpContext;
-import org.openqa.jetty.jetty.Server;
-import org.openqa.jetty.jetty.servlet.ServletHandler;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.remote.server.log.LoggingManager;
+import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,7 +29,32 @@ import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 
-import static org.openqa.grid.common.RegistrationRequest.AUTO_REGISTER;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.apache.http.message.BasicHttpRequest;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.web.Hub;
+import org.openqa.grid.web.servlet.FilesServlet;
+import org.openqa.grid.web.servlet.ResourceServlet;
+import org.openqa.grid.web.utils.ExtraServletUtil;
+import org.openqa.jetty.http.HttpContext;
+import org.openqa.jetty.jetty.Server;
+import org.openqa.jetty.jetty.servlet.ServletHandler;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.internal.HttpClientFactory;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.SeleniumServer;
 
 public class SelfRegisteringRemote {
 
@@ -91,6 +94,10 @@ public class SelfRegisteringRemote {
     try {
       final String CLIENT_TIMEOUT = "timeout";
       final String BROWSER_TIMEOUT = "browserTimeout";
+      final String SCREEN_SLIDERS = "screenSliders";
+    	  
+      //TODO if hub is not started, it can not get hubParameters
+      
       JSONObject hubParameters = getHubConfiguration(CLIENT_TIMEOUT, BROWSER_TIMEOUT);
       if (hubParameters.has(CLIENT_TIMEOUT)){
         int timeout = hubParameters.getInt(CLIENT_TIMEOUT) / 1000;
@@ -100,6 +107,20 @@ public class SelfRegisteringRemote {
         int browserTimeout = hubParameters.getInt(BROWSER_TIMEOUT);
         remoteControlConfiguration.setBrowserTimeoutInMs(browserTimeout);
       }
+      if (hubParameters.has(SCREEN_SLIDERS)) {
+    	  
+    	    String host = (String) nodeConfig.getConfiguration().get(RegistrationRequest.HUB_HOST);
+    	    int port = (Integer) nodeConfig.getConfiguration().get(RegistrationRequest.HUB_PORT);
+    	     	  
+    	  
+    	  URIBuilder builder = new URIBuilder();
+    	  builder.setScheme("http")
+    	         .setHost(host)
+    	  		 .setPort(port)	  
+    	         .setPath("/" + FilesServlet.class.getSimpleName());
+          remoteControlConfiguration.setScreenSlidersServerUrl(builder.toString());
+          
+        }
     }catch (Exception e) {
       log.warning("error getting the parameters from the hub. The node may end up with wrong timeouts."+e.getMessage());
     }
