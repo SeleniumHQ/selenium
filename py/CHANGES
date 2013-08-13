@@ -1,3 +1,7 @@
+Selenium 2.35
+* Remove duplicate 'get screenshot as file' methods.  Add method 'get_screenshot_as_png'
+* fixing UnicodeEncodeError on get attribute of webelement
+
 Selenium 2.34
 * Corrected webdriverbackedselenium session handling. Fixes issue 4283
 * Corrected use of basestring for python 3. Fixes issue 5924
