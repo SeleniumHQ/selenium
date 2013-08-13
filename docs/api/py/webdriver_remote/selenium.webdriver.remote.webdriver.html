@@ -745,6 +745,20 @@ driver.get_log(&#8216;server&#8217;)</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_png">
+<tt class="descname">get_screenshot_as_png</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_screenshot_as_png"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_png" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the screenshot of the current window as a binary data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">driver.get_screenshot_as_png()</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.get_window_position">
 <tt class="descname">get_window_position</tt><big>(</big><em>windowHandle='current'</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_window_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_window_position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the x,y position of the current window.</p>
@@ -898,9 +912,25 @@ execute_async_script, see set_script_timeout.</dd>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.save_screenshot">
-<tt class="descname">save_screenshot</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.save_screenshot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.save_screenshot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the screenshot of the current window. Returns False if there is
-any IOError, else returns True. Use full paths in your filename.</p>
+<tt class="descname">save_screenshot</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.save_screenshot" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Gets the screenshot of the current window. Returns False if there is</dt>
+<dd>any IOError, else returns True. Use full paths in your filename.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>filename: The full path you wish to save your screenshot to.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><p class="first last">driver.get_screenshot_as_file(&#8216;/Screenshots/foo.png&#8217;)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
