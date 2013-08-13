@@ -43,27 +43,27 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
 public class InternetExplorerDriver extends RemoteWebDriver implements TakesScreenshot {
 
   /**
-   * Capability that defines to ignore or not browser zoom level.
+   * Capability that defines whether to ignore the browser zoom level or not.
    */
   public final static String IGNORE_ZOOM_SETTING = "ignoreZoomSetting";
 
   /**
-   * Capability that defines to use native or javascript events during operations..
+   * Capability that defines to use whether to use native or javascript events during operations.
    */
   public final static String NATIVE_EVENTS = "nativeEvents";
 
   /**
-   * Capability that defines to ignore or not browser zoom level.
+   * Capability that defines the initial URL to be used when IE is launched.
    */
   public final static String INITIAL_BROWSER_URL = "initialBrowserUrl";
 
   /**
-   * Capability that defines initial browser URL.
+   * Capability that defines how elements are scrolled into view in the InternetExplorerDriver.
    */
   public final static String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
 
   /**
-   * Capability that defines which behaviour will be used if unexpected Alert is found.
+   * Capability that defines which behaviour will be used if an unexpected Alert is found.
    */
   public final static String UNEXPECTED_ALERT_BEHAVIOR = "unexpectedAlertBehaviour";
 
@@ -130,7 +130,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   public final static String FORCE_CREATE_PROCESS = "ie.forceCreateProcessApi";
 
   /**
-   * Capability that defines to clean browser cache before launching IE by IEDriverServer.
+   * Capability that defines to clean or not browser cache before launching IE by IEDriverServer.
    */
   public final static String IE_ENSURE_CLEAN_SESSION = "ie.ensureCleanSession";
 
@@ -141,7 +141,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   public final static String IE_USE_PRE_PROCESS_PROXY = "ie.usePerProcessProxy";
 
   /**
-   * Capability that defines used IE CLI switches.
+   * Capability that defines used IE CLI switches when {@link #FORCE_CREATE_PROCESS} is enabled.
    */
   public final static String IE_SWITCHES = "ie.browserCommandLineSwitches";
 
