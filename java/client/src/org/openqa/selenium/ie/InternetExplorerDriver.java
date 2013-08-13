@@ -323,6 +323,8 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
     proxyManager.backupRegistrySettings();
     proxyManager.changeRegistrySettings(caps);
 
+    // Handle registry cleanup if a grid node is killed without
+    // #quit() being called first.
     Thread cleanupThread = new Thread() { // Thread safety reviewed
       @Override
       public void run() {
@@ -330,6 +332,20 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
       }
     };
     Runtime.getRuntime().addShutdownHook(cleanupThread);
+  }
+
+  @Override
+  public void quit() {
+    try {
+      super.quit();
+    } finally {
+      // Always clean up the proxy settings when the browser (driver) quits,
+      // or we'll have problems when running on a grid as setting the proxy
+      // once would otherwise affect all future runs on a single node.
+      if (proxyManager != null && !setProxyByServer) {
+        proxyManager.restoreRegistrySettings(true);
+      }
+    }
   }
 
   /**
