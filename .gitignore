@@ -74,7 +74,6 @@ py/selenium/webdriver/firefox/webdriver.xpi
 py/selenium/webdriver/firefox/x86/
 py/docs/build/
 selenium.egg-info/
-
 *.user
 *.cache
 obj/
@@ -87,3 +86,7 @@ ipch/
 /phantomjsdriver.log
 .tags
 .ruby-version
+GPATH
+GRTAGS
+GSYMS
+GTAGS
