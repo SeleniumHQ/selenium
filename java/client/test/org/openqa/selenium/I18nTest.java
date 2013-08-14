@@ -91,14 +91,19 @@ public class I18nTest extends JUnit4TestBase {
 
   @Test
   @Ignore(
-      value = {MARIONETTE, CHROME},
+      value = {MARIONETTE, CHROME, OPERA},
       reason = "MAIONETTE: not checked, "
                + "CHROME: ChromeDriver only supports characters in the BMP"
+               + "OPERA: doesn't work - see issue 5069"
   )
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",
                 TestUtilities.isInternetExplorer(driver) &&
                 TestUtilities.getIEVersion(driver) < 10);
+    assumeFalse("FF: native events at linux broke it - see issue 5069",
+                TestUtilities.isFirefox(driver) &&
+                TestUtilities.isNativeEventsEnabled(driver) &&
+                TestUtilities.getEffectivePlatform().is(Platform.LINUX));
     driver.get(pages.chinesePage);
 
     String input = "";
@@ -114,6 +119,7 @@ public class I18nTest extends JUnit4TestBase {
     assertEquals(input, el.getAttribute("value"));
   }
 
+  @NeedsFreshDriver
   @Test
   @Ignore(MARIONETTE)
   public void testShouldBeAbleToReturnTheTextInAPage() {

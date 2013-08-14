@@ -381,10 +381,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
       byte[] imageData = screenshoter.getScreenshotAs(OutputType.BYTES);
       assertTrue(imageData != null);
       assertTrue(imageData.length > 0);
-      System.out.println("Length   -> " + imageData.length);
       image = ImageIO.read(new ByteArrayInputStream(imageData));
       assertTrue(image != null);
-      System.out.println("Sizes  -> " + image.getWidth() + "x" + image.getHeight());
     } catch (IOException e) {
       fail("Image screenshot file is invalid: " + e.getMessage());
     }
@@ -517,6 +515,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
     File outputfile = new File( testName.getMethodName() + "_image.png");
     System.out.println("Image file is at " + outputfile.getAbsolutePath());
+    System.out.println("Sizes  -> " + im.getWidth() + "x" + im.getHeight());
     try {
       ImageIO.write(im, "png", outputfile);
     } catch (IOException e) {
