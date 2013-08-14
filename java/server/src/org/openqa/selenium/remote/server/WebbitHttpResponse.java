@@ -23,6 +23,8 @@ public class WebbitHttpResponse implements HttpResponse {
 
   private final org.webbitserver.HttpResponse response;
 
+  private boolean ended = false;
+
   public WebbitHttpResponse(org.webbitserver.HttpResponse response) {
     this.response = response;
   }
@@ -50,10 +52,17 @@ public class WebbitHttpResponse implements HttpResponse {
   public void sendRedirect(String to) {
     response.status(HttpStatusCodes.SEE_OTHER);
     response.header("Location", to);
-    response.end();
+    endResponse();
   }
 
   public void end() {
-    response.end();
+    endResponse();
+  }
+
+  private void endResponse() {
+    if(!ended) {
+      response.end();
+      ended = true;
+    }
   }
 }
