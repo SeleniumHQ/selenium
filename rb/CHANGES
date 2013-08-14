@@ -1,5 +1,8 @@
-2.35.0 (???)
-============
+2.35.0 (2013-08-14)
+===================
+
+Firefox:
+  * Updated Firefox native event components to support Firefox 23.
 
 2.34.0 (2013-08-06)
 ===================
