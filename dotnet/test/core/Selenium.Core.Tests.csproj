@@ -116,7 +116,7 @@
     <Compile Include="SeleniumIntegrationTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Selenium.Core\Selenium.Core.csproj">
+    <ProjectReference Include="..\..\src\core\Selenium.Core.csproj">
       <Project>{69F4FF0E-13DE-4AF6-B8AF-572A36239083}</Project>
       <Name>Selenium.Core</Name>
     </ProjectReference>

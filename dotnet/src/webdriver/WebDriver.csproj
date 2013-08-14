@@ -215,7 +215,6 @@
     <Compile Include="Remote\ErrorResponse.cs" />
     <Compile Include="Remote\HttpCommandExecutor.cs" />
     <Compile Include="Remote\ICommandExecutor.cs" />
-    <Compile Include="Remote\JsonConverters\CharArrayJsonConverter.cs" />
     <Compile Include="Remote\JsonConverters\CookieJsonConverter.cs" />
     <Compile Include="Remote\JsonConverters\DesiredCapabilitiesJsonConverter.cs" />
     <Compile Include="Remote\JsonConverters\PlatformJsonConverter.cs" />

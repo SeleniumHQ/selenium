@@ -1,15 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{68CF4628-4148-4627-ACA1-D4C225365D3F}</ProjectGuid>
+    <ProjectGuid>{1B70379B-5325-4243-8629-5C32802E9826}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Selenium.Tests</RootNamespace>
-    <AssemblyName>Selenium.WebDriverBackedSelenium.Tests</AssemblyName>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenQA.Selenium.Support</RootNamespace>
+    <AssemblyName>WebDriver.Support.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -36,7 +38,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -45,95 +47,75 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\..\build\cli\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
   <ItemGroup>
+    <Reference Include="NMock2, Version=2.0.0.44, Culture=neutral, PublicKeyToken=37d3be0adc87c2b7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\third_party\nmock\NMock2.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\third_party\dotnet\nunit-2.6.2\framework\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Selenium.Core\Selenium.Core.csproj">
-      <Project>{69F4FF0E-13DE-4AF6-B8AF-572A36239083}</Project>
-      <Name>Selenium.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Selenium.WebDriverBackedSelenium\Selenium.WebDriverBackedSelenium.csproj">
-      <Project>{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}</Project>
-      <Name>Selenium.WebDriverBackedSelenium</Name>
+    <Compile Include="Events\EventFiringWebDriverTest.cs" />
+    <Compile Include="PageObjects\ByChainedBrowserTests.cs" />
+    <Compile Include="PageObjects\ByChainedTests.cs" />
+    <Compile Include="PageObjects\FindsByAttributeTests.cs" />
+    <Compile Include="PageObjects\PageFactoryBrowserTest.cs" />
+    <Compile Include="PageObjects\PageFactoryTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\SelectBrowserTests.cs" />
+    <Compile Include="UI\DefaultWaitTest.cs" />
+    <Compile Include="UI\FakeClock.cs" />
+    <Compile Include="UI\LoadableComponentTests.cs" />
+    <Compile Include="UI\PopupWindowFinderTest.cs" />
+    <Compile Include="UI\SelectTests.cs" />
+    <Compile Include="UI\SlowLoadableComponentTest.cs" />
+    <Compile Include="UI\WebDriverWaitTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\support\WebDriver.Support.csproj">
+      <Project>{A9779443-E254-47E9-B733-8AC6D3662CA6}</Project>
+      <Name>WebDriver.Support</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\WebDriver\WebDriver.csproj">
       <Project>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</Project>
       <Name>WebDriver</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WebDriver.Common.Tests\WebDriver.Common.Tests.csproj">
+      <Project>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</Project>
+      <Name>WebDriver.Common.Tests</Name>
+    </ProjectReference>
   </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CompoundMutator.cs" />
-    <Compile Include="TestXPathLocators.cs" />
-    <Compile Include="TestWaitForNot.cs" />
-    <Compile Include="TestWait.cs" />
-    <Compile Include="TestVisibility.cs" />
-    <Compile Include="TestVerifications.cs" />
-    <Compile Include="TestTypeRichText.cs" />
-    <Compile Include="TestSelect.cs" />
-    <Compile Include="TestQuickOpen.cs" />
-    <Compile Include="TestPause.cs" />
-    <Compile Include="TestPatternMatching.cs" />
-    <Compile Include="TestOpenInTargetFrame.cs" />
-    <Compile Include="TestOpen.cs" />
-    <Compile Include="TestMultiSelect.cs" />
-    <Compile Include="TestLocators.cs" />
-    <Compile Include="TestHtmlSource.cs" />
-    <Compile Include="TestGoBack.cs" />
-    <Compile Include="TestGettingValueOfCheckbox.cs" />
-    <Compile Include="TestFunkyEventHandling.cs" />
-    <Compile Include="TestFramesOpen.cs" />
-    <Compile Include="TestFramesClick.cs" />
-    <Compile Include="TestImplicitLocators.cs" />
-    <Compile Include="TestClickAt.cs" />
-    <Compile Include="TestErrorChecking.cs" />
-    <Compile Include="TestElementPresent.cs" />
-    <Compile Include="TestElementOrder.cs" />
-    <Compile Include="TestConfirmations.cs" />
-    <Compile Include="TestComments.cs" />
-    <Compile Include="TestCommandError.cs" />
-    <Compile Include="TestClickJavascriptHrefChrome.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Environment\EnvironmentManager.cs" />
-    <Compile Include="GlobalSetup.cs" />
-    <Compile Include="Environment\SeleniumServer.cs" />
-    <Compile Include="SeleniumTestCaseBase.cs" />
-    <Compile Include="TestAddSelection.cs" />
-    <Compile Include="TestAlerts.cs" />
-    <Compile Include="TestCheckUncheck.cs" />
-    <Compile Include="TestClick.cs" />
-    <Compile Include="TestClickBlankTarget.cs" />
-    <Compile Include="TestClickJavascriptHref.cs" />
-    <Compile Include="TestEditable.cs" />
-    <Compile Include="TestElementIndex.cs" />
-    <Compile Include="TestEval.cs" />
-    <Compile Include="TestType.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="testHelpers.js">
+    <None Include="WebDriver.Support.Tests.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Selenium.WebDriverBackedSelenium.Tests.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
     </None>
-    <None Include="Selenium.WebDriverBackedSelenium.Tests.nunit">
+    <None Include="WebDriver.Support.Tests.nunit">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -154,9 +136,4 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
 </Project>

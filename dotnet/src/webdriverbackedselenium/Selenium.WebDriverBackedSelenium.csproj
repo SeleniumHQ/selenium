@@ -99,7 +99,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Selenium.Core\Selenium.Core.csproj">
+    <ProjectReference Include="..\core\Selenium.Core.csproj">
       <Project>{69F4FF0E-13DE-4AF6-B8AF-572A36239083}</Project>
       <Name>Selenium.Core</Name>
     </ProjectReference>
