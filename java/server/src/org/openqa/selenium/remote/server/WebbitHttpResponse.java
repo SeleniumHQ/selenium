@@ -22,6 +22,7 @@ import java.nio.charset.Charset;
 public class WebbitHttpResponse implements HttpResponse {
 
   private final org.webbitserver.HttpResponse response;
+  private boolean closed;
 
   public WebbitHttpResponse(org.webbitserver.HttpResponse response) {
     this.response = response;
@@ -50,10 +51,14 @@ public class WebbitHttpResponse implements HttpResponse {
   public void sendRedirect(String to) {
     response.status(HttpStatusCodes.SEE_OTHER);
     response.header("Location", to);
-    response.end();
+    end();
   }
 
   public void end() {
+    if (closed) {
+      return;
+    }
+    closed = true;
     response.end();
   }
 }
