@@ -103,17 +103,11 @@ public class FormHandlingTest extends JUnit4TestBase {
     waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
-  @Test
-  @Ignore(value = {ANDROID, CHROME, IE, IPHONE, OPERA, PHANTOMJS, SAFARI, OPERA_MOBILE, MARIONETTE})
+  @Test(expected = NoSuchElementException.class)
+  @Ignore(value = {ANDROID, IPHONE, OPERA, PHANTOMJS, SAFARI, OPERA_MOBILE, MARIONETTE})
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
-
-    try {
-      driver.findElement(By.name("SearchableText")).submit();
-      fail("Should not have succeeded");
-    } catch (RuntimeException e) {
-      assertThat(e, is(instanceOf(NoSuchElementException.class)));
-    }
+    driver.findElement(By.name("SearchableText")).submit();
   }
 
   @Test
