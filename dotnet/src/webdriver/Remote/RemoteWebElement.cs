@@ -296,7 +296,7 @@ namespace OpenQA.Selenium.Remote
             // to get the same effect.
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
-            parameters.Add("value", text.ToCharArray());
+            parameters.Add("value", new object[] { text });
             this.Execute(DriverCommand.SendKeysToElement, parameters);
         }
 
