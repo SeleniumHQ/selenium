@@ -18,9 +18,9 @@
  * FormatCollection: manages collection of formats.
  */
 
-function FormatCollection(options) {
+function FormatCollection(options, pluginManager) {
     this.options = options;
-    
+    this.pluginManager = pluginManager;
     this.presetFormats = [new InternalFormat(options, "default", "HTML", "html.js", true)];
     this.reloadFormats();
 }
@@ -83,7 +83,7 @@ FormatCollection.saveUserFormats = function(formats) {
 }
 
 // this is called on se-ide startup for the current formatter, or when you change formatters
-FormatCollection.loadFormatter = function(url) {
+FormatCollection.loadFormatter = function(url, type) {
     const subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
       .getService(Components.interfaces.mozIJSSubScriptLoader);
     
@@ -107,6 +107,16 @@ FormatCollection.loadFormatter = function(url) {
     for (var prop in StringUtils) {
         // copy functions from StringUtils
         format[prop] = StringUtils[prop];
+    }
+      if (type && (type == "webdriver" || type == "remotecontrol")) {
+      this.log.debug('loading format type ' + type);
+      format.formatterType = type;
+      subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/formatCommandOnlyAdapter.js', format);
+      if (type == "webdriver") {
+        subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/webdriver.js', format);
+      } else {
+        subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/remoteControl.js', format);
+      }
     }
     this.log.debug('loading format from ' + url);
     subScriptLoader.loadSubScript(url, format);
@@ -149,7 +159,7 @@ FormatCollection.prototype.reloadFormats = function() {
     this.formats = this.presetFormats.concat(this.userFormats);
     
     // plugin formats
-    this.pluginFormats = FormatCollection.loadPluginFormats(this.options);
+    this.pluginFormats = FormatCollection.loadPluginFormats(this.options, this.pluginManager);
     this.formats = this.formats.concat(this.pluginFormats);
 }
 
@@ -193,19 +203,31 @@ FormatCollection.prototype.getDefaultFormat = function() {
     return this.findFormat("default");
 }
 
-FormatCollection.loadPluginFormats = function(options) {
+FormatCollection.loadPluginFormats = function(options, pluginManager) {
     var formats = [];
-    var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedFormatters");
-
-    if (pluginProvided) {
-        var split_pluginProvided = pluginProvided.split(",");
-        for (var ppf = 0; ppf < split_pluginProvided.length; ppf++) {
-            var split_ppf = split_pluginProvided[ppf].split(";");
-            formats.push(new PluginFormat(options, split_ppf[0], split_ppf[1], split_ppf[2]));
-        }
+//    var pluginProvided = SeleniumIDE.Preferences.getString("pluginProvidedFormatters");
+//    if (pluginProvided) {
+//        var split_pluginProvided = pluginProvided.split(",");
+//        for (var ppf = 0; ppf < split_pluginProvided.length; ppf++) {
+//            var split_ppf = split_pluginProvided[ppf].split(";");
+//            formats.push(new PluginFormat(options, split_ppf[0], split_ppf[1], split_ppf[2]));
+//        }
+//    }
+  pluginManager.getEnabledFormatters().forEach(function (plugin) {
+    for (var i = 0; i < plugin.code.length; i++) {
+      try {
+        var split_ppf = plugin.code[i].split(";");
+        formats.push(new PluginFormat(options, split_ppf[0], split_ppf[1], split_ppf[2], split_ppf[3]));
+        //TODO catch plugin formatter errors, need to modify the guts of the formatters :(
+      } catch (error) {
+        pluginManager.setPluginError(plugin.id, plugin.code[i], error);
+        break;
+      }
     }
+  });
+
     return formats;
-}
+};
 
 /*
  * Format
@@ -504,17 +526,18 @@ UserFormat.prototype.isReversible = function(){
 /**
  * Format for plugin provided formats
  */
-function PluginFormat(options, id, name, url) {
+function PluginFormat(options, id, name, url, type) {
     this.options = options;
     this.id = id;
     this.name = name;
     this.url = url;
+    this.type = type;
 }
 
 PluginFormat.prototype = new Format;
 
 PluginFormat.prototype.loadFormatter = function() {
-    return FormatCollection.loadFormatter(this.url);
+    return FormatCollection.loadFormatter(this.url, this.type);
 }
 
 PluginFormat.prototype.getSource = function() {
@@ -530,7 +553,6 @@ PluginFormat.prototype.getFormatURI = function() {
  * @return true if it implements the parse method, false if not
  */
 PluginFormat.prototype.isReversible = function(){
-    var parseRegExp = new RegExp("function parse\\(", 'g');
-
+    var parseRegExp = new RegExp("function\\s*parse\\(", 'g');
     return parseRegExp.test(this.getSource());
-}
+};

@@ -67,7 +67,7 @@ module CrazyFunJava
       :classpath => 'third_party/java/jarjar/jarjar-1.4.jar'
       ant.taskdef :resource  => 'testngtasks' do |t|
         t.classpath do |cp|
-          cp.pathelement :location => 'third_party/java/testng/testng-6.8.jar'
+          cp.pathelement :location => 'third_party/java/testng/testng-6.8.5.jar'
           cp.pathelement :location => 'third_party/java/jcommander/jcommander-1.29.jar'
           cp.pathelement :location => 'third_party/java/beanshell/bsh-1.3.0.jar'
         end
@@ -521,6 +521,22 @@ module CrazyFunJava
                 ant.sysproperty :key => 'webdriver.chrome.binary', :value => chrome
               end
 
+              if firefox
+                ant.sysproperty :key => 'webdriver.firefox.bin', :value => firefox
+              end
+
+              if marionette?
+                ant.sysproperty :key => 'webdriver.firefox.marionette', :value => 'true'
+              end
+
+              if ipv4only?
+                ant.sysproperty :key => 'java.net.preferIPv4Stack', :value => 'true'
+              end
+
+              if ignored_only?
+                ant.sysproperty :key => 'ignored_only', :value => 'true'
+              end
+
               # Log levels can be any of {'DEBUG', 'INFO', 'WARNING', 'ERROR'}
               levels = Array.[]("INFO", "DEBUG", "WARNING", "ERROR")
               if log_level
@@ -541,6 +557,10 @@ module CrazyFunJava
 
               if shorten_log_messages?
                 ant.sysproperty :key => 'webdriver.remote.shorten_log_messages', :value => 'true'
+              end
+
+              if grid_test_browser
+                ant.sysproperty :key => 'webdriver.gridtest.browser', :value => grid_test_browser
               end
 
               if (args[:args])
@@ -588,6 +608,25 @@ module CrazyFunJava
       return ENV['chrome']
     end
 
+    def firefox
+      return ENV['firefox']
+    end
+
+    def marionette?
+      # we set marionette true if the commandline argument is set and it is not 'false'
+      !([nil, 'false'].include? ENV['marionette'])
+    end
+
+    def ipv4only?
+      # we set ipv4only true if the commandline argument is set and it is not 'false'
+      !([nil, 'false'].include? ENV['ipv4only'])
+    end
+
+    def ignored_only?
+      # we set ignored_only true if the commandline argument is set and it is not 'false'
+      !([nil, 'false'].include? ENV['ignoredonly'])
+    end
+
     def leave_running?
       # we set leaverunning true if the commandline argument is set and it is not 'false'
       !([nil, 'false'].include? ENV['leaverunning'])
@@ -596,6 +635,10 @@ module CrazyFunJava
     def shorten_log_messages?
       # we set shorten_log_messages true if the commandline argument is set and it is not 'false'
       !([nil, 'false'].include? ENV['shortenlogmessages'])
+    end
+
+    def grid_test_browser
+      return ENV['gridtestbrowser']
     end
 
   end

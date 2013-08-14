@@ -102,8 +102,8 @@ webdriver.WebDriver.attachToSession = function(executor, sessionId) {
  * Creates a new WebDriver session.
  * @param {!webdriver.CommandExecutor} executor The executor to create the new
  *     session with.
- * @param {!Object.<*>} desiredCapabilities The desired capabilities for the
- *     new session.
+ * @param {!webdriver.Capabilities} desiredCapabilities The desired
+ *     capabilities for the new session.
  * @return {!webdriver.WebDriver} The driver for the newly created session.
  */
 webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
@@ -162,7 +162,7 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
   switch (goog.typeOf(obj)) {
     case 'array':
       return webdriver.promise.fullyResolved(
-          goog.array.map((/** @type {!Array} */obj),
+          goog.array.map(/** @type {!Array} */ (obj),
               webdriver.WebDriver.toWireValue_));
     case 'object':
       if (goog.isFunction(obj.toWireValue)) {
@@ -177,7 +177,7 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
         ].join(''));
       }
       return webdriver.promise.fullyResolved(
-          goog.object.map((/** @type {!Object} */obj),
+          goog.object.map(/** @type {!Object} */ (obj),
               webdriver.WebDriver.toWireValue_));
     case 'function':
       return webdriver.promise.fulfilled('' + obj);
@@ -204,14 +204,14 @@ webdriver.WebDriver.toWireValue_ = function(obj) {
  */
 webdriver.WebDriver.fromWireValue_ = function(driver, value) {
   if (goog.isArray(value)) {
-    value = goog.array.map((/**@type {goog.array.ArrayLike}*/value),
+    value = goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
         goog.partial(webdriver.WebDriver.fromWireValue_, driver));
-  } else if (value && goog.isObject(value)) {
+  } else if (value && goog.isObject(value) && !goog.isFunction(value)) {
     if (webdriver.WebElement.ELEMENT_KEY in value) {
       value = new webdriver.WebElement(driver,
           value[webdriver.WebElement.ELEMENT_KEY]);
     } else {
-      value = goog.object.map((/**@type {!Object}*/value),
+      value = goog.object.map(/**@type {!Object}*/ (value),
           goog.partial(webdriver.WebDriver.fromWireValue_, driver));
     }
   }
@@ -296,14 +296,27 @@ webdriver.WebDriver.prototype.getSession = function() {
 
 
 /**
+ * @return {!webdriver.promise.Promise} A promise that will resolve with the
+ *     this instance's capabilities.
+ */
+webdriver.WebDriver.prototype.getCapabilities = function() {
+  return webdriver.promise.when(this.session_, function(session) {
+    return session.getCapabilities();
+  });
+};
+
+
+/**
  * Returns a promise for one of this driver's capabilities.
  * @param {string} name The name of the capability to query.
  * @return {!webdriver.promise.Promise} A promise that will resolve with the
  *     given capability once its value is ready.
+ * @deprecated Use {@link #getCapabilities()}; this function will be removed
+ *     in 2.35.0.
  */
 webdriver.WebDriver.prototype.getCapability = function(name) {
   return webdriver.promise.when(this.session_, function(session) {
-    return session.capabilities[name];
+    return session.getCapabilities().get(name);
   });
 };
 
@@ -655,7 +668,7 @@ webdriver.WebDriver.prototype.findElement = function(locatorOrElement,
                                                      var_args) {
   var id;
   if (locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument) {
-    var element = (/** @type {!Element} */locatorOrElement);
+    var element = /** @type {!Element} */ (locatorOrElement);
     id = this.findDomElement_(element).
         then(function(elements) {
           if (!elements.length) {
@@ -756,7 +769,7 @@ webdriver.WebDriver.prototype.isElementPresent = function(locatorOrElement,
                                                           var_args) {
   var findElement =
       locatorOrElement.nodeType === 1 && locatorOrElement.ownerDocument ?
-          this.findDomElement_((/** @type {!Element} */locatorOrElement)) :
+          this.findDomElement_(/** @type {!Element} */ (locatorOrElement)) :
           this.findElements.apply(this, arguments);
   return findElement.then(function(result) {
     return !!result.length;
@@ -957,7 +970,7 @@ webdriver.WebDriver.Options.prototype.addCookie = function(
     if (goog.isNumber(opt_expiry)) {
       expiryDate = new Date(opt_expiry);
     } else {
-      expiryDate = (/** @type {!Date} */opt_expiry);
+      expiryDate = /** @type {!Date} */ (opt_expiry);
       opt_expiry = expiryDate.getTime();
     }
     cookieString += ';expires=' + expiryDate.toUTCString();

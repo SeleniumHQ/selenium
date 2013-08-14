@@ -21,8 +21,6 @@
 
 #define INVALID_CONTROL_ID -1
 
-using namespace std;
-
 namespace webdriver {
 
 class Alert {

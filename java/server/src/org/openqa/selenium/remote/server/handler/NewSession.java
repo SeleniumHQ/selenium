@@ -61,9 +61,17 @@ public class NewSession implements RestishHandler, JsonParametersAware {
   public ResultType handle() throws Exception {
     // Handle the case where the client does not send any desired capabilities.
     sessionId = allSessions.newSession(desiredCapabilities != null
-        ? desiredCapabilities : new DesiredCapabilities());
+                                       ? desiredCapabilities : new DesiredCapabilities());
+
+    Map<String, Object> capabilities =
+        Maps.newHashMap(allSessions.get(sessionId).getCapabilities().asMap());
+
+    // Only servers implementing the server-side webdriver-backed selenium need
+    // to return this particular value
+    capabilities.put("webdriver.remote.sessionid", sessionId.toString());
+
     response.setSessionId(sessionId.toString());
-    response.setValue(allSessions.get(sessionId).getCapabilities().asMap());
+    response.setValue(capabilities);
 
     if (desiredCapabilities != null) {
       LoggingManager.perSessionLogHandler().configureLogging(

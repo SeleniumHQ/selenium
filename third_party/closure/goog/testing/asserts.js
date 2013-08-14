@@ -278,6 +278,7 @@ var assertThrows = function(a, opt_b) {
  * @param {!(string|Function)} a The assertion comment or the function to call.
  * @param {!Function=} opt_b The function to call (if the first argument of
  *     {@code assertNotThrows} was the comment).
+ * @return {*} The return value of the function.
  * @throws {goog.testing.JsUnitException} If the assertion failed.
  */
 var assertNotThrows = function(a, opt_b) {
@@ -288,7 +289,7 @@ var assertNotThrows = function(a, opt_b) {
       'Argument passed to assertNotThrows is not a function');
 
   try {
-    func();
+    return func();
   } catch (e) {
     comment = comment ? (comment + '\n') : '';
     comment += 'A non expected exception was thrown from function passed to ' +
@@ -543,22 +544,20 @@ goog.testing.asserts.findDifferences = function(expected, actual,
   // To avoid infinite recursion when the two parameters are self-referential
   // along the same path of properties, keep track of the object pairs already
   // seen in this call subtree, and abort when a cycle is detected.
-  // TODO(gboyer,user): The algorithm still does not terminate in cases
-  // with exponential recursion, e.g. a binary tree with leaf->root links.
-  // Investigate ways to solve this without significant performance loss
-  // for the common case.
   function innerAssert(var1, var2, path) {
-    var depth = seen1.length;
-    if (depth % 2) {
-      // Compare with midpoint of seen ("Tortoise and hare" loop detection).
-      // http://en.wikipedia.org/wiki/Cycle_detection#Tortoise_and_hare
-      // TODO(gboyer,user): For cases with complex cycles the algorithm
-      // can take a long time to terminate, look into ways to terminate sooner
-      // without adding more than constant-time work in non-cycle cases.
-      var mid = depth >> 1;
-      // Use === to avoid cases like ['x'] == 'x', which is true.
-      var match1 = seen1[mid] === var1;
-      var match2 = seen2[mid] === var2;
+    // This is used for testing, so we can afford to be slow (but more
+    // accurate). So we just check whether var1 is in seen1. If we
+    // found var1 in index i, we simply need to check whether var2 is
+    // in seen2[i]. If it is, we do not recurse to check var1/var2. If
+    // it isn't, we know that the structures of the two objects must be
+    // different.
+    //
+    // This is based on the fact that values at index i in seen1 and
+    // seen2 will be checked for equality eventually (when
+    // innerAssert_(seen1[i], seen2[i], path) finishes).
+    for (var i = 0; i < seen1.length; ++i) {
+      var match1 = seen1[i] === var1;
+      var match2 = seen2[i] === var2;
       if (match1 || match2) {
         if (!match1 || !match2) {
           // Asymmetric cycles, so the objects have different structure.
@@ -567,6 +566,7 @@ goog.testing.asserts.findDifferences = function(expected, actual,
         return;
       }
     }
+
     seen1.push(var1);
     seen2.push(var2);
     innerAssert_(var1, var2, path);
@@ -823,9 +823,9 @@ var assertArrayEquals = function(a, b, opt_c) {
  * @param {string|Object} a Failure message (3 arguments)
  *     or object #1 (2 arguments).
  * @param {Object} b Object #1 (2 arguments) or object #2 (3 arguments).
- * @param {Object} c Object #2 (3 arguments).
+ * @param {Object=} opt_c Object #2 (3 arguments).
  */
-var assertElementsEquals = function(a, b, c) {
+var assertElementsEquals = function(a, b, opt_c) {
   _validateArguments(2, arguments);
 
   var v1 = nonCommentArg(1, 2, arguments);
@@ -936,6 +936,19 @@ var assertEvaluatesToFalse = function(a, opt_b) {
 
 
 /**
+ * Compares two HTML snippets.
+ *
+ * Take extra care if attributes are involved. {@code assertHTMLEquals}'s
+ * implementation isn't prepared for complex cases. For example, the following
+ * comparisons erroneously fail:
+ * <pre>
+ * assertHTMLEquals('<a href="x" target="y">', '<a target="y" href="x">');
+ * assertHTMLEquals('<div classname="a b">', '<div classname="b a">');
+ * assertHTMLEquals('<input disabled>', '<input disabled="disabled">');
+ * </pre>
+ *
+ * When in doubt, use {@code goog.testing.dom.assertHtmlMatches}.
+ *
  * @param {*} a The expected value (2 args) or the debug message (3 args).
  * @param {*} b The actual value (2 args) or the expected value (3 args).
  * @param {*=} opt_c The actual value (3 args only).
@@ -1170,6 +1183,7 @@ goog.testing.asserts.isArrayIndexProp_ = function(prop) {
  * @param {string} comment A summary for the exception.
  * @param {?string=} opt_message A description of the exception.
  * @constructor
+ * @extends {Error}
  */
 goog.testing.JsUnitException = function(comment, opt_message) {
   this.isJsUnitException = true;
@@ -1180,7 +1194,15 @@ goog.testing.JsUnitException = function(comment, opt_message) {
   // These fields are for compatibility with jsUnitTestManager.
   this.comment = comment || null;
   this.jsUnitMessage = opt_message || '';
+
+  // Ensure there is a stack trace.
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, goog.testing.JsUnitException);
+  } else {
+    this.stack = new Error().stack || '';
+  }
 };
+goog.inherits(goog.testing.JsUnitException, Error);
 
 
 /** @override */

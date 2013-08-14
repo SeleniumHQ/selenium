@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -77,8 +75,18 @@
 
     <span class="n">NO_FOCUS_LIBRARY_NAME</span> <span class="o">=</span> <span class="s">&quot;x_ignore_nofocus.so&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firefox_path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firefox_path</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">log_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new instance of Firefox binary.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - firefox_path - Path to the Firefox executable. By default, it will be detected from the standard locations.</span>
+<span class="sd">         - log_file - A file object to redirect the firefox process output to. It can be sys.stdout.</span>
+<span class="sd">                      Please note that with parallel run the output won&#39;t be synchronous.</span>
+<span class="sd">                      By default, it will be redirected to subprocess.PIPE.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="o">=</span> <span class="n">firefox_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="o">=</span> <span class="n">log_file</span> <span class="ow">or</span> <span class="n">PIPE</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_firefox_start_cmd</span><span class="p">()</span>
@@ -120,11 +128,11 @@
             <span class="k">for</span> <span class="n">cli</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_line</span><span class="p">:</span>
                 <span class="n">command</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
 
-        <span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
+        <span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
               <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">)</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
         <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;-foreground&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span>
-            <span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
+            <span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">STDOUT</span><span class="p">,</span>
             <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_firefox_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

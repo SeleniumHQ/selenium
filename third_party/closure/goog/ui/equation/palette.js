@@ -29,8 +29,9 @@ goog.provide('goog.ui.equation.PaletteRenderer');
 
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.events.Event');
 goog.require('goog.ui.Palette');
-goog.require('goog.ui.equation.ImageRenderer');
+goog.require('goog.ui.PaletteRenderer');
 
 
 
@@ -78,7 +79,8 @@ goog.ui.equation.Palette = function(paletteManager, type, spriteX,
   var x = - spriteX;
   var y = - spriteY;
   for (var i = 0; i < opt_actions.length; i++) {
-    elements.push(goog.dom.createDom(goog.dom.TagName.DIV,
+    elements.push(paletteManager.getDomHelper().createDom(
+        goog.dom.TagName.DIV,
         {'class': renderer.getItemCssClass(),
           'style': 'width:' + itemWidth +
               'px;height:' + itemHeight +
@@ -95,7 +97,7 @@ goog.ui.equation.Palette = function(paletteManager, type, spriteX,
    */
   this.paletteManager_ = paletteManager;
 
-  goog.ui.Palette.call(this, elements, renderer);
+  goog.ui.Palette.call(this, elements, renderer, paletteManager.getDomHelper());
 };
 goog.inherits(goog.ui.equation.Palette, goog.ui.Palette);
 

@@ -17,26 +17,29 @@ limitations under the License.
 
 package org.openqa.selenium.lift.find;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
-import org.openqa.selenium.WebDriver;
-
 import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 import java.util.Collections;
 
-public class XPathFinderTest extends MockTestBase {
+public class XPathFinderTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+
   @Test
   public void shouldReturnManyElements() {
     final String xpath = "//body";
 
     XPathFinder finder = new XPathFinder(xpath);
 
-    final WebDriver driver = mock(WebDriver.class);
-    checking(new Expectations() {
+    final WebDriver driver = mockery.mock(WebDriver.class);
+    mockery.checking(new Expectations() {
       {
-        one(driver).findElements(By.xpath(xpath));
+        oneOf(driver).findElements(By.xpath(xpath));
         will(returnValue(Collections.EMPTY_LIST));
       }
     });

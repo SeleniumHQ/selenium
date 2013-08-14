@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -82,6 +80,12 @@
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">TimeoutException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">MoveTargetOutOfBoundsException</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="nb">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>  <span class="c"># Python 3.x</span>
+    <span class="nb">basestring</span> <span class="o">=</span> <span class="nb">str</span>
+
 
 <div class="viewcode-block" id="ErrorCode"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode">[docs]</a><span class="k">class</span> <span class="nc">ErrorCode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -175,7 +179,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">exception_class</span> <span class="o">==</span> <span class="n">ErrorInResponseException</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">exception_class</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">exception_class</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>

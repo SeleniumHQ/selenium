@@ -66,12 +66,9 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.HasInputDevices;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
@@ -86,6 +83,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.browserlaunchers.Proxies;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -617,7 +617,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       parentElement = parentElement.getParentNode();
     }
 
-    System.err.println("" + element + " -> " + parentElement);
     if (parentElement == null) {
       throw new StaleElementReferenceException(
           "The element seems to be disconnected from the DOM. "

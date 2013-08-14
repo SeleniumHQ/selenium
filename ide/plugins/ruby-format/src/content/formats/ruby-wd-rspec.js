@@ -2,8 +2,13 @@
  * Formatter for Selenium 2 / WebDriver RSpec client.
  */
 
-var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/webdriver.js', this);
+if (!this.formatterType) {  // this.formatterType is defined for the new Formatter system
+  // This method (the if block) of loading the formatter type is deprecated.
+  // For new formatters, simply specify the type in the addPluginProvidedFormatter() and omit this
+  // if block in your formatter.
+  var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+  subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/webdriver.js', this);
+}
 
 function testClassName(testName) {
   return testName.split(/[^0-9A-Za-z]+/).map(
@@ -184,6 +189,91 @@ function formatComment(comment) {
   });
 }
 
+function keyVariable(key) {
+  return ":" + key;
+}
+
+this.sendKeysMaping = {
+  BACK_SPACE: "backspace",
+  BACKSPACE: "backspace",
+  TAB: "tab",
+  ENTER: "enter",
+  SHIFT: "shift",
+  LEFT_SHIFT: "left_shift",
+  CONTROL: "control",
+  LEFT_CONTROL: "left_control",
+  ALT: "alt",
+  LEFT_ALT: "left_alt",
+  PAUSE: "pause",
+  ESCAPE: "escape",
+  ESC: "escape",
+  SPACE: "space",
+  PAGE_UP: "page_up",
+  PAGE_DOWN: "page_down",
+  END: "end",
+  HOME: "home",
+  LEFT: "left",
+  ARROW_LEFT: "arrow_left",
+  UP: "up",
+  ARROW_UP: "arrow_up",
+  RIGHT: "right",
+  ARROW_RIGHT: "arrow_right",
+  DOWN: "down",
+  ARROW_DOWN: "arrow_down",
+  INSERT: "insert",
+  DELETE: "delete",
+  SEMICOLON: "semicolon",
+  EQUALS: "equals",
+
+  NUMPAD0: "numpad0",
+  NUM_ZERO: "numpad0",
+  NUMPAD1: "numpad1",
+  NUM_ONE: "numpad1",
+  NUMPAD2: "numpad2",
+  NUM_TWO: "numpad2",
+  NUMPAD3: "numpad3",
+  NUM_THREE: "numpad3",
+  NUMPAD4: "numpad4",
+  NUM_FOUR: "numpad4",
+  NUMPAD5: "numpad5",
+  NUM_FIVE: "numpad5",
+  NUMPAD6: "numpad6",
+  NUM_SIX: "numpad6",
+  NUMPAD7: "numpad7",
+  NUM_SEVEN: "numpad7",
+  NUMPAD8: "numpad8",
+  NUM_EIGHT: "numpad8",
+  NUMPAD9: "numpad9",
+  NUM_NINE: "numpad9",
+  MULTIPLY: "multiply",
+  NUM_MULTIPLY: "multiply",
+  ADD: "add",
+  NUM_PLUS: "add",
+  SEPARATOR: "separator",
+  SUBTRACT: "subtract",
+  NUM_MINUS: "subtract",
+  DECIMAL: "decimal",
+  NUM_PERIOD: "decimal",
+  DIVIDE: "divide",
+  NUM_DIVISION: "divide",
+
+  F1: "f1",
+  F2: "f2",
+  F3: "f3",
+  F4: "f4",
+  F5: "f5",
+  F6: "f6",
+  F7: "f7",
+  F8: "f8",
+  F9: "f9",
+  F10: "f10",
+  F11: "f11",
+  F12: "f12",
+
+  META: "meta",
+  COMMAND: "command"
+};
+
 /**
  * Returns a string representing the suite for this formatter language.
  *
@@ -218,8 +308,8 @@ function defaultExtension() {
 this.options = {
   receiver: "@driver",
   showSelenese: 'false',
-  header:
-      'require "selenium-webdriver"\n' +
+  header: 'require "json"\n' +
+          'require "selenium-webdriver"\n' +
           'require "rspec"\n' +
           'include RSpec::Expectations\n' +
           '\n' +
@@ -239,8 +329,7 @@ this.options = {
           '  end\n' +
           '  \n' +
           '  it "${methodName}" do\n',
-  footer:
-      "  end\n" +
+  footer: "  end\n" +
           "  \n" +
           "  def element_present?(how, what)\n" +
           "    @driver.find_element(how, what)\n" +
@@ -406,7 +495,7 @@ WDAPI.Element.prototype.isSelected = function() {
 };
 
 WDAPI.Element.prototype.sendKeys = function(text) {
-  return this.ref + ".send_keys " + xlateArgument(text) + "";
+  return this.ref + ".send_keys " + xlateArgument(text, 'args') + "";
 };
 
 WDAPI.Element.prototype.submit = function() {

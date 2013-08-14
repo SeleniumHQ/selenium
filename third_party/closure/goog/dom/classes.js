@@ -13,7 +13,11 @@
 // limitations under the License.
 
 /**
- * @fileoverview Utilities for adding, removing and setting classes.
+ * @fileoverview Utilities for adding, removing and setting classes.  Prefer
+ * {@link goog.dom.classlist} over these utilities since goog.dom.classlist
+ * conforms closer to the semantics of Element.classList, is faster (uses
+ * native methods rather than parsing strings on every call) and compiles
+ * to smaller code as a result.
  *
  * Note: these utilities are meant to operate on HTMLElements and
  * will not work on elements with differing interfaces (such as SVGElements).
@@ -62,7 +66,7 @@ goog.dom.classes.add = function(element, var_args) {
   var args = goog.array.slice(arguments, 1);
   var expectedCount = classes.length + args.length;
   goog.dom.classes.add_(classes, args);
-  element.className = classes.join(' ');
+  goog.dom.classes.set(element, classes.join(' '));
   return classes.length == expectedCount;
 };
 
@@ -78,7 +82,7 @@ goog.dom.classes.remove = function(element, var_args) {
   var classes = goog.dom.classes.get(element);
   var args = goog.array.slice(arguments, 1);
   var newClasses = goog.dom.classes.getDifference_(classes, args);
-  element.className = newClasses.join(' ');
+  goog.dom.classes.set(element, newClasses.join(' '));
   return newClasses.length == classes.length - args.length;
 };
 
@@ -138,7 +142,7 @@ goog.dom.classes.swap = function(element, fromClass, toClass) {
 
   if (removed) {
     classes.push(toClass);
-    element.className = classes.join(' ');
+    goog.dom.classes.set(element, classes.join(' '));
   }
 
   return removed;
@@ -176,7 +180,7 @@ goog.dom.classes.addRemove = function(element, classesToRemove, classesToAdd) {
     goog.dom.classes.add_(classes, classesToAdd);
   }
 
-  element.className = classes.join(' ');
+  goog.dom.classes.set(element, classes.join(' '));
 };
 
 

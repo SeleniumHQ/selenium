@@ -9,7 +9,6 @@ namespace OpenQA.Selenium
     public class ClearTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         public void WritableTextInputShouldClear()
         {
@@ -20,7 +19,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         [ExpectedException(typeof(InvalidElementStateException))]
         public void TextInputShouldNotClearWhenDisabled()
@@ -32,7 +30,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Opera, "Untested feature")]
         [ExpectedException(typeof(InvalidElementStateException))]
@@ -44,7 +41,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         public void WritableTextAreaShouldClear()
         {
@@ -55,7 +51,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         [ExpectedException(typeof(InvalidElementStateException))]
         public void TextAreaShouldNotClearWhenDisabled()
@@ -66,7 +61,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Opera, "Untested feature")]
         [ExpectedException(typeof(InvalidElementStateException))]
@@ -78,7 +72,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Untested feature")]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.HtmlUnit, "Untested feature")]
         [IgnoreBrowser(Browser.IPhone, "Untested feature")]

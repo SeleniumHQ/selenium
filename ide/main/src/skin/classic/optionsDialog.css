@@ -8,6 +8,10 @@
   font-weight: bold;
 }
 
+#plugin-name.pluginError {
+  background-color: #e00;
+}
+
 .error { 
   color: #EE0000;
 }

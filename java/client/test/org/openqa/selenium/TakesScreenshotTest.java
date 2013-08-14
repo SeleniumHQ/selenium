@@ -16,440 +16,394 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
+import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
-import static org.openqa.selenium.OutputType.BASE64;
-import static org.openqa.selenium.OutputType.BYTES;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
 import javax.imageio.ImageIO;
 
-@Ignore(value = {IPHONE})
+/**
+ * Test screenshot feature.
+ *
+ * 1. check output for all possible types
+ *
+ * 2. check screenshot image
+ *
+ * Logic of screenshot check test is simple: * open page with fixed amount of fixed sized and
+ * coloured areas * take screenshot * calculate expected colors similary as in tested HTML page *
+ * scan screenshot for actial colors * compare
+ *
+ */
+
+// TODO(user): verify expected behaviour after frame switching
+
+// TODO(user): test screenshots at guaranteed maximized browsers
+// TODO(user): test screenshots at guaranteed non maximized browsers
+// TODO(user): test screenshots at guaranteed minimized browsers
+// TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
+
+@Ignore(value = {IPHONE, MARIONETTE, ANDROID, OPERA_MOBILE, IE},
+        reason = "untested properly"
+                 + " IE: strange colors appeared")
 public class TakesScreenshotTest extends JUnit4TestBase {
 
+  private TakesScreenshot screenshoter;
   private File tempFile = null;
 
-  @After()
+  @Before
+  public void setUp() throws Exception {
+    assumeTrue(driver instanceof TakesScreenshot);
+    screenshoter = (TakesScreenshot) driver;
+  }
+
+  @After
   public void tearDown() {
     if (tempFile != null) {
-//      // use it locally only to help debugging
-//      try {
-//        File tmp = File.createTempFile("scr_" + this.testName.getMethodName(), ".png");
-//        FileUtils.copyFile(tempFile, tmp);
-//        System.out.println("Screenshot image file: " + tmp.getAbsolutePath());
-//      } catch (Exception e) {}
-
-      tempFile.delete();
+      boolean deleted = tempFile.delete();
       tempFile = null;
     }
   }
 
-  //
-  // TODO(user): test screenshots at guaranteed maximized browsers
-  //
-
-  //
-  // TODO(user): test screenshots at guaranteed non maximized browsers
-  //
-
-  //
-  // TODO(user): test screenshots at guaranteed minimized browsers
-  //
-
-  //
-  // TODO(user): test screenshots at guaranteed fullscreened browsers (WINDOWS platform specific)
-  //
-
-
   @Test
-  public void testSaveScreenshotAsFile() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
-
+  public void testGetScreenshotAsFile() throws Exception {
     driver.get(pages.simpleTestPage);
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
+    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
   }
 
   @Test
-  public void testCaptureToBase64() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
-
+  public void testGetScreenshotAsBase64() throws Exception {
     driver.get(pages.simpleTestPage);
-    String screenshot = getScreenshot().getScreenshotAs(OutputType.BASE64);
+    String screenshot = screenshoter.getScreenshotAs(OutputType.BASE64);
     assertTrue(screenshot.length() > 0);
   }
 
   @Test
-  public void testShouldCaptureScreenshot() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+  public void testGetScreenshotAsBinary() throws Exception {
+    driver.get(pages.simpleTestPage);
+    byte[] screenshot = screenshoter.getScreenshotAs(OutputType.BYTES);
+    assertTrue(screenshot.length > 0);
+  }
 
-    String url = appServer.whereIs("screen/screen.html");
-    driver.get(url);
+  @Test
+  public void testShouldCaptureScreenshotOfCurrentViewport() throws Exception {
+    driver.get(appServer.whereIs("screen/screen.html"));
 
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
-    assertTrue(tempFile.exists());
-    assertTrue(tempFile.length() > 0);
+    BufferedImage screenshot = getImage();
 
-    BufferedImage screenshot = (BufferedImage) getImage(tempFile);
-    assertTrue(screenshot != null);
+    Set<String> actualColors = scanActualColors(screenshot,
+                                                /* stepX in pixels */ 5,
+                                                /* stepY in pixels */ 5);
 
-    Set<String> expectedColors = getExpectedColors(0x0F0F0F, 1000, 6, 6);
-
-    Set<String> actualColors = new HashSet<String>();
-    try {
-      actualColors = getColors(screenshot, 5, 5);
-    } catch (IOException e) {
-      fail("Invalid screenshot image");
-    }
+    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
+                                                         /* color step */ 1000,
+                                                         /* grid X size */ 6,
+                                                         /* grid Y size */ 6);
 
     compareColors(expectedColors, actualColors);
   }
 
   @Test
-  @Ignore(value = {SAFARI, CHROME},
-          reason = " SAFARI: take only visible viewport."
-                   + " CHROME: (v1) ok, (v2) take only visible viewport."
+  @Ignore(value = {OPERA, SAFARI, CHROME},
+          reason = " SAFARI: takes only visible viewport." +
+                   " CHROME: takes only visible viewport." +
+                   " OPERA: takes only visible viewport."
   )
-  public void testShouldCaptureScreenshotWithLongX() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+  public void testShouldCaptureScreenshotOfPageWithLongX() throws Exception {
+    driver.get(appServer.whereIs("screen/screen_x_long.html"));
 
-    String url = appServer.whereIs("screen/screen_x_long.html");
-    driver.get(url);
+    BufferedImage screenshot = getImage();
 
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
-    assertTrue(tempFile.exists());
-    assertTrue(tempFile.length() > 0);
+    Set<String> actualColors = scanActualColors(screenshot,
+                                               /* stepX in pixels */ 50,
+                                               /* stepY in pixels */ 5);
 
-    BufferedImage screenshot = (BufferedImage) getImage(tempFile);
-    assertTrue(screenshot != null);
-
-    Set<String> expectedColors = getExpectedColors(0x0F0F0F, 1000, 6, 6);
-
-    Set<String> actualColors = new HashSet<String>();
-    try {
-      actualColors = getColors(screenshot, 50, 5);
-    } catch (IOException e) {
-      fail("Invalid screenshot image");
-    }
+    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
+                                                    /* color step*/ 1000,
+                                                    /* grid X size */ 6,
+                                                    /* grid Y size */ 6);
 
     compareColors(expectedColors, actualColors);
   }
 
   @Test
-  @Ignore(value = {SAFARI, CHROME},
-          reason = " SAFARI: take only visible viewport."
-                   + " CHROME: (v1) ok, (v2) take only visible viewport."
+  @Ignore(value = {OPERA, SAFARI, CHROME},
+          reason = " SAFARI: takes only visible viewport." +
+                   " CHROME: takes only visible viewport." +
+                   " OPERA: takes only visible viewport."
   )
-  public void testShouldCaptureScreenshotWithLongY() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+  public void testShouldCaptureScreenshotOfPageWithLongY() throws Exception {
+    driver.get(appServer.whereIs("screen/screen_y_long.html"));
 
-    String url = appServer.whereIs("screen/screen_y_long.html");
-    driver.get(url);
+    BufferedImage screenshot = getImage();
 
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
-    assertTrue(tempFile.exists());
-    assertTrue(tempFile.length() > 0);
+    Set<String> actualColors = scanActualColors(screenshot,
+                                               /* stepX in pixels */ 5,
+                                               /* stepY in pixels */ 50);
 
-    BufferedImage screenshot = (BufferedImage) getImage(tempFile);
-    assertTrue(screenshot != null);
-
-    Set<String> expectedColors = getExpectedColors(0x0F0F0F, 1000, 6, 6);
-
-    Set<String> actualColors = new HashSet<String>();
-    try {
-      actualColors = getColors(screenshot, 5, 50);
-    } catch (IOException e) {
-      fail("Invalid screenshot image");
-    }
+    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
+                                                    /* color step*/ 1000,
+                                                    /* grid X size */ 6,
+                                                    /* grid Y size */ 6);
 
     compareColors(expectedColors, actualColors);
   }
 
   @Test
-  @Ignore(value = {IE, FIREFOX, SAFARI},
-          reason = "IE9: captured image is cat at driver level. it's not yet supported."
-                   + " FF: unable to grab screenshot with too long size (NS_ERROR_FAILURE)."
-                   + " SAFARI: take only visible viewport."
-                   + " CHROME: (v1) partially black, (v2) take only visible viewport."
-                   + ", anothers: untested")
-  public void testShouldCaptureScreenshotWithTooLongX() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE, FIREFOX},
+          reason = " IE: cuts captured image at driver level." +
+                   " FF: captured image is cat at driver level." +
+                   " SAFARI: takes only visible viewport." +
+                   " CHROME: takes only visible viewport." +
+                   " PHANTOMJS: diffs at colors - small dimensions or coloring problem." +
+                   " OPERA: takes only visible viewport."
+  )
+  public void testShouldCaptureScreenshotOfPageWithTooLongX() throws Exception {
+    driver.get(appServer.whereIs("screen/screen_x_too_long.html"));
 
-    String url = appServer.whereIs("screen/screen_x_too_long.html");
-    driver.get(url);
+    BufferedImage screenshot = getImage();
 
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
-    assertTrue(tempFile.exists());
-    assertTrue(tempFile.length() > 0);
+    Set<String> actualColors = scanActualColors(screenshot,
+                                               /* stepX in pixels */ 100,
+                                               /* stepY in pixels */ 5);
 
-    BufferedImage screenshot = (BufferedImage) getImage(tempFile);
-    assertTrue(screenshot != null);
-
-    Set<String> expectedColors = getExpectedColors(0x0F0F0F, 1000, 6, 6);
-
-    Set<String> actualColors = new HashSet<String>();
-    try {
-      actualColors = getColors(screenshot, 100, 5);
-    } catch (IOException e) {
-      fail("Invalid screenshot image");
-    }
+    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
+                                                    /* color step*/ 1000,
+                                                    /* grid X size */ 6,
+                                                    /* grid Y size */ 6);
 
     compareColors(expectedColors, actualColors);
   }
 
   @Test
-  @Ignore(value = {IE, FIREFOX, SAFARI, CHROME},
-          reason = "IE: captured image is cat at driver level. it's not yet supported."
-                   + " FF: unable to grab screenshot with too long size (NS_ERROR_FAILURE)."
-                   + " SAFARI: take only visible viewport."
-                   + " CHROME: (v1) partially black, (v2) take only visible viewport."
-                   + ", anothers: untested")
-  public void testShouldCaptureScreenshotWithTooLongY() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE, FIREFOX},
+          reason = " IE: cuts captured image at driver level." +
+                   " FF: captured image is cat at driver level." +
+                   " SAFARI: takes only visible viewport." +
+                   " CHROME: takes only visible viewport." +
+                   " PHANTOMJS: diffs at colors - small dimensions or coloring problem." +
+                   " OPERA: takes only visible viewport."
+  )
+  public void testShouldCaptureScreenshotOfPageWithTooLongY() throws Exception {
+    driver.get(appServer.whereIs("screen/screen_y_too_long.html"));
 
-    String url = appServer.whereIs("screen/screen_y_too_long.html");
-    driver.get(url);
+    BufferedImage screenshot = getImage();
 
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
-    assertTrue(tempFile.exists());
-    assertTrue(tempFile.length() > 0);
+    Set<String> actualColors = scanActualColors(screenshot,
+                                               /* stepX in pixels */ 5,
+                                               /* stepY in pixels */ 100);
 
-    BufferedImage screenshot = (BufferedImage) getImage(tempFile);
-    assertTrue(screenshot != null);
-
-    Set<String> expectedColors = getExpectedColors(0x0F0F0F, 1000, 6, 6);
-
-    Set<String> actualColors = new HashSet<String>();
-    try {
-      actualColors = getColors(screenshot, 5, 100);
-    } catch (IOException e) {
-      fail("Invalid screenshot image");
-    }
+    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
+                                                    /* color step*/ 1000,
+                                                    /* grid X size */ 6,
+                                                    /* grid Y size */ 6);
 
     compareColors(expectedColors, actualColors);
   }
 
   @Test
+  @Ignore(value = {PHANTOMJS, OPERA, SAFARI, CHROME, IE, FIREFOX},
+          reason = " IE: returns null." +
+                   " FF: failed due NS_ERROR_FAILURE at context.drawWindow." +
+                   " SAFARI: takes only visible viewport." +
+                   " CHROME: takes only visible viewport." +
+                   " PHANTOMJS: takes empty data of byte[], no errors. " +
+                   " OPERA: takes only visible viewport."
+  )
+  public void testShouldCaptureScreenshotOfPageWithTooLongXandY() throws Exception {
+    driver.get(appServer.whereIs("screen/screen_too_long.html"));
+
+    BufferedImage screenshot = getImage();
+
+    Set<String> actualColors = scanActualColors(screenshot,
+                                               /* stepX in pixels */ 100,
+                                               /* stepY in pixels */ 100);
+
+    Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
+                                                    /* color step*/ 1000,
+                                                    /* grid X size */ 6,
+                                                    /* grid Y size */ 6);
+
+    compareColors(expectedColors, actualColors);
+  }
+
+  @Test
+  @Ignore(
+      value = {OPERA, IE},
+      reason = " OPERA: takes empty 1x1 screenshot." +
+               " IE: v9 shows strange border which broke color comparison"
+  )
   public void testShouldCaptureScreenshotAtFramePage() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+    driver.get(appServer.whereIs("screen/screen_frames.html"));
 
-    String url = appServer.whereIs("screen/screen_frames.html");
-    driver.get(url);
+    BufferedImage screenshot = getImage();
 
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
-    assertTrue(tempFile.exists());
-    assertTrue(tempFile.length() > 0);
+    Set<String> actualColors = scanActualColors(screenshot,
+                                               /* stepX in pixels */ 5,
+                                               /* stepY in pixels */ 5);
 
-    BufferedImage screenshot = (BufferedImage) getImage(tempFile);
-    assertTrue(screenshot != null);
+    Set<String> expectedColors = new HashSet<String>();
+    expectedColors.addAll(generateExpectedColors( /* initial color */ 0x0F0F0F,
+                                             /* color step*/ 1000,
+                                             /* grid X size */ 6,
+                                             /* grid Y size */ 6));
+    expectedColors.addAll(generateExpectedColors( /* initial color */ 0xDFDFDF,
+                                             /* color step*/ 1000,
+                                             /* grid X size */ 6,
+                                             /* grid Y size */ 6));
 
-    Set<String> expectedColors = getExpectedColors(0x0F0F0F, 1000, 6, 6);
-    expectedColors.addAll(getExpectedColors(0xDFDFDF, 1000, 6, 6));
-
-    Set<String> actualColors = new HashSet<String>();
-    try {
-      actualColors = getColors(screenshot, 5, 5);
-    } catch (IOException e) {
-      fail("Invalid screenshot image");
-    }
-
+    // expectation is that screenshot at page with frames will be taken for full page
     compareColors(expectedColors, actualColors);
   }
 
   @Test
   public void testShouldCaptureScreenshotAtIFramePage() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+    driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
-    String url = appServer.whereIs("screen/screen_iframes.html");
-    driver.get(url);
+    BufferedImage screenshot = getImage();
 
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
-    assertTrue(tempFile.exists());
-    assertTrue(tempFile.length() > 0);
+    Set<String> actualColors = scanActualColors(screenshot,
+                                               /* stepX in pixels */ 5,
+                                               /* stepY in pixels */ 5);
 
-    BufferedImage screenshot = (BufferedImage) getImage(tempFile);
-    assertTrue(screenshot != null);
+    Set<String> expectedColors = new HashSet<String>();
+    expectedColors.addAll(generateExpectedColors( /* initial color */ 0x0F0F0F,
+                                             /* color step*/ 1000,
+                                             /* grid X size */ 6,
+                                             /* grid Y size */ 6));
+    expectedColors.addAll(generateExpectedColors( /* initial color */ 0xDFDFDF,
+                                             /* color step*/ 1000,
+                                             /* grid X size */ 6,
+                                             /* grid Y size */ 6));
 
-    Set<String> expectedColors = getExpectedColors(0x0F0F0F, 1000, 6, 6);
-    expectedColors.addAll(getExpectedColors(0xDFDFDF, 1000, 6, 6));
-
-    Set<String> actualColors = new HashSet<String>();
-    try {
-      actualColors = getColors(screenshot, 5, 5);
-    } catch (IOException e) {
-      fail("Invalid screenshot image");
-    }
-
+    // expectation is that screenshot at page with Iframes will be taken for full page
     compareColors(expectedColors, actualColors);
   }
 
   @Test
+  @Ignore(
+      value = {OPERA, IE},
+      reason = " OPERA: takes screenshot only of switched-in frame." +
+               " IE: v9 shows strange border which broke color comparison"
+  )
   public void testShouldCaptureScreenshotAtFramePageAfterSwitching() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+    driver.get(appServer.whereIs("screen/screen_frames.html"));
 
-    String url = appServer.whereIs("screen/screen_frames.html");
-    driver.get(url);
+    driver.switchTo().frame(driver.findElement(By.id("frame2")));
 
-    driver.switchTo().frame(driver.findElement(By.id("frame1")));
+    BufferedImage screenshot = getImage();
 
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
-    assertTrue(tempFile.exists());
-    assertTrue(tempFile.length() > 0);
+    Set<String> actualColors = scanActualColors(screenshot,
+                                               /* stepX in pixels */ 5,
+                                               /* stepY in pixels */ 5);
 
-    System.out.println(tempFile.getAbsolutePath());
+    Set<String> expectedColors = new HashSet<String>();
+    expectedColors.addAll(generateExpectedColors( /* initial color */ 0x0F0F0F,
+                                             /* color step*/ 1000,
+                                             /* grid X size */ 6,
+                                             /* grid Y size */ 6));
+    expectedColors.addAll(generateExpectedColors( /* initial color */ 0xDFDFDF,
+                                             /* color step*/ 1000,
+                                             /* grid X size */ 6,
+                                             /* grid Y size */ 6));
 
-    BufferedImage screenshot = (BufferedImage) getImage(tempFile);
-    assertTrue(screenshot != null);
-
-    Set<String> expectedColors = getExpectedColors(0x0F0F0F, 1000, 6, 6);
-    expectedColors.addAll(getExpectedColors(0xDFDFDF, 1000, 6, 6));
-
-    Set<String> actualColors = new HashSet<String>();
-    try {
-      actualColors = getColors(screenshot, 5, 5);
-    } catch (IOException e) {
-      fail("Invalid screenshot image");
-    }
-
+    // expectation is that screenshot at page with frames after switching to a frame
+    // will be taken for full page
     compareColors(expectedColors, actualColors);
   }
 
   @Test
+  @Ignore(
+      value = {OPERA, IE},
+      reason = " OPERA: takes screenshot only of switched-in frame." +
+               " IE: v9 takes screesnhot only of switched-in frame area"
+  )
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws Exception {
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
+    driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
-    String url = appServer.whereIs("screen/screen_iframes.html");
-    driver.get(url);
+    driver.switchTo().frame(driver.findElement(By.id("iframe2")));
 
-    driver.switchTo().frame(driver.findElement(By.id("iframe1")));
+    BufferedImage screenshot = getImage();
 
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
-    assertTrue(tempFile.exists());
-    assertTrue(tempFile.length() > 0);
+    Set<String> actualColors = scanActualColors(screenshot,
+                                               /* stepX in pixels */ 5,
+                                               /* stepY in pixels */ 5);
 
-    BufferedImage screenshot = (BufferedImage) getImage(tempFile);
-    assertTrue(screenshot != null);
+    Set<String> expectedColors = new HashSet<String>();
+    expectedColors.addAll(generateExpectedColors( /* initial color */ 0x0F0F0F,
+                                             /* color step*/ 1000,
+                                             /* grid X size */ 6,
+                                             /* grid Y size */ 6));
+    expectedColors.addAll(generateExpectedColors( /* initial color */ 0xDFDFDF,
+                                             /* color step*/ 1000,
+                                             /* grid X size */ 6,
+                                             /* grid Y size */ 6));
 
-    Set<String> expectedColors = getExpectedColors(0x0F0F0F, 1000, 6, 6);
-    expectedColors.addAll(getExpectedColors(0xDFDFDF, 1000, 6, 6));
-
-    Set<String> actualColors = new HashSet<String>();
-    try {
-      actualColors = getColors(screenshot, 5, 5);
-    } catch (IOException e) {
-      fail("Invalid screenshot image");
-    }
-
+    // expectation is that screenshot at page with Iframes after switching to a Iframe
+    // will be taken for full page
     compareColors(expectedColors, actualColors);
   }
 
-  @Test
-  @Ignore(value = {IE, FIREFOX, SAFARI, CHROME},
-          reason = "IE9: unable to capture such image due Image initialization failure"
-                   + " FF: unable to grab screenshot with too long size (NS_ERROR_FAILURE)."
-                   + " SAFARI: take only visible viewport."
-                   + " CHROME: (v1) browser oopsed, (v2) untested."
-                   + ", anothers: untested")
-  public void testShouldCaptureScreenshotWithTooLong() throws Exception {
-    //TODO(user): need to understand it's necessary to run volume tests
-    //because from my point of view there are not enough memory to init 49*10**8 bytes
-    if (!isAbleToTakeScreenshots(driver)) {
-      return;
-    }
-
-    String url = appServer.whereIs("screen/screen_too_long.html");
-    driver.get(url);
-
-    tempFile = getScreenshot().getScreenshotAs(OutputType.FILE);
-    assertTrue(tempFile.exists());
-    assertTrue(tempFile.length() > 0);
-
-    BufferedImage screenshot = (BufferedImage) getImage(tempFile);
-    assertTrue(screenshot != null);
-
-    Set<String> expectedColors = getExpectedColors(0x0F0F0F, 1000, 6, 6);
-
-    Set<String> actualColors = new HashSet<String>();
+  /**
+   * get actual image screenshot
+   *
+   * @return Image object
+   */
+  private BufferedImage getImage() {
+    BufferedImage image = null;
     try {
-      actualColors = getColors(screenshot, 100, 100);
+      byte[] imageData = screenshoter.getScreenshotAs(OutputType.BYTES);
+      assertTrue(imageData != null);
+      assertTrue(imageData.length > 0);
+      System.out.println("Length   -> " + imageData.length);
+      image = ImageIO.read(new ByteArrayInputStream(imageData));
+      assertTrue(image != null);
+      System.out.println("Sizes  -> " + image.getWidth() + "x" + image.getHeight());
     } catch (IOException e) {
-      fail("Invalid screenshot image");
+      fail("Image screenshot file is invalid: " + e.getMessage());
     }
 
-    compareColors(expectedColors, actualColors);
+    //saveImageToTmpFile(image);
+    return image;
   }
 
-  private TakesScreenshot getScreenshot() {
-    return (TakesScreenshot) driver;
-  }
-
-  private boolean isAbleToTakeScreenshots(WebDriver d) throws Exception {
-    return d instanceof TakesScreenshot;
-  }
-
-  private Image getImage(File path)  {
-    try {
-      InputStream is = new BufferedInputStream(new FileInputStream(path));
-      return ImageIO.read(is);
-    } catch (FileNotFoundException e) {
-      fail("Not existed image screenshot file");
-    } catch (IOException e) {
-    }
-    fail("Invalid image screenshot file");
-    return null;
-  }
-
-  private Set<String> getExpectedColors(final int initialColor, final int stepColor, final int nX, final int nY) {
+  /**
+   * generate expected colors as in checked page.
+   *
+   * @param initialColor - initial color of first (right top) cell of grid
+   * @param stepColor    - step b/w grid colors as number
+   * @param nX           - grid size at X dimension
+   * @param nY           - grid size at Y dimension
+   * @return set of colors in string hex presentation
+   */
+  private Set<String> generateExpectedColors(final int initialColor, final int stepColor,
+                                             final int nX, final int nY) {
     Set<String> colors = new TreeSet<String>();
     int color = 0;
     String hex = "";
@@ -457,52 +411,116 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     for (int i = 1; i < nX; i++) {
       for (int j = 1; j < nY; j++) {
         color = initialColor + (cnt * stepColor);
-        hex = String.format("#%02x%02x%02x", ((color & 0xFF0000) >> 16), ((color & 0x00FF00) >> 8), ((color & 0x0000FF)));
+        hex =
+            String.format("#%02x%02x%02x", ((color & 0xFF0000) >> 16), ((color & 0x00FF00) >> 8),
+                          ((color & 0x0000FF)));
         colors.add(hex);
         cnt++;
       }
     }
 
+    // each cell has black colored point so add it to expected colors
+    // for checking of full black image case special comparison is added
+    colors.add("#000000");
+
+    // sometimes cell has white colored points
+    // for checking of full white image case special comparison is added
+    colors.add("#ffffff");
+
     return colors;
   }
 
-  private Set<String> getColors(BufferedImage image, final int stepX, final int stepY) throws IOException {
+  /**
+   * Get colors from image from each point at grid defined by stepX/stepY.
+   *
+   * @param image - image
+   * @param stepX - interval in pixels b/w point in X dimension
+   * @param stepY - interval in pixels b/w point in Y dimension
+   * @return set of colors in string hex presentation
+   */
+  private Set<String> scanActualColors(BufferedImage image, final int stepX, final int stepY) {
     Set<String> colors = new TreeSet<String>();
 
-    int height = image.getHeight();
-    int width = image.getWidth();
-    assertTrue(width > 0 );
-    assertTrue(height > 0 );
+    try {
+      int height = image.getHeight();
+      int width = image.getWidth();
+      assertTrue(width > 0);
+      assertTrue(height > 0);
 
-    Raster raster = image.getRaster();
-    String hex = "";
-    int color = 0;
-    for (int i = 0; i < width; i = i + stepX) {
-      for (int j = 0; j < height; j = j + stepY) {
-        hex = String.format("#%02x%02x%02x",
-                            (raster.getSample(i, j, 0)),
-                            (raster.getSample(i, j, 1)),
-                            (raster.getSample(i, j, 2)));
-        colors.add(hex);
+      Raster raster = image.getRaster();
+      String hex = "";
+      for (int i = 0; i < width; i = i + stepX) {
+        for (int j = 0; j < height; j = j + stepY) {
+          hex = String.format("#%02x%02x%02x",
+                              (raster.getSample(i, j, 0)),
+                              (raster.getSample(i, j, 1)),
+                              (raster.getSample(i, j, 2)));
+          colors.add(hex);
+        }
       }
+    } catch (Exception e) {
+      fail("Unable to get actual colors from screenshot: " + e.getMessage());
     }
+
+    assertTrue(colors.size() > 0);
+
     return colors;
   }
 
+  /**
+   * Compares sets of colors.
+   *
+   * @param expectedColors - set of expected colors
+   * @param actualColors   - set of actual colors
+   */
   private void compareColors(Set<String> expectedColors, Set<String> actualColors) {
-    TreeSet<String> c  = new TreeSet<String>(expectedColors);
-    c.removeAll(actualColors);
-    if (!c.isEmpty()) {
-      fail("Unknown expected color is generated: " + c.toString() + ", \n"
-           + " actual colors are: " + actualColors.toString());
+
+    TreeSet<String> notBlackColors = new TreeSet<String>(actualColors);
+    notBlackColors.remove("#000000");
+    if (notBlackColors.isEmpty()) {
+      fail("Actual image has only black color");
     }
 
-    if (actualColors.containsAll(expectedColors)) {
-      // all is ok
-    } else {
-      actualColors.removeAll(expectedColors);
-      fail("Unknown colors are presented at screenshot: " + actualColors.toString() + " \n"
-           + " expected colors are excluded: " + expectedColors.toString());
+    TreeSet<String> notWhiteColors = new TreeSet<String>(actualColors);
+    notWhiteColors.remove("#ffffff");
+    if (notWhiteColors.isEmpty()) {
+      fail("Actual image has only white color");
+    }
+
+    TreeSet<String> notFoundColors = new TreeSet<String>(expectedColors);
+    notFoundColors.removeAll(actualColors);
+    // sometimes scan can skip block dots at images (based on current window size etc)
+    // full black image case is checked before so just drop it
+    notFoundColors.remove("#000000");
+    notFoundColors.remove("#ffffff");
+    if (!notFoundColors.isEmpty()) {
+      fail("Unknown expected colors are generated or actual image has not the following colors: " +
+           notFoundColors.toString() + ", \n" + " actual colors are excluded: " + actualColors
+          .toString());
+    }
+
+    TreeSet<String> newFoundColors = new TreeSet<String>(actualColors);
+    newFoundColors.removeAll(expectedColors);
+    if (!newFoundColors.isEmpty()) {
+      fail("Unknown actual colors are presented at screenshot: " +
+           newFoundColors.toString() + ", \n" + " expected colors are excluded: " + expectedColors
+          .toString());
+    }
+  }
+
+  /**
+   * Simple helper to save screenshot to tmp file. For debug purposes.
+   *
+   * @param im image
+   */
+  private void saveImageToTmpFile(BufferedImage im) {
+
+    File outputfile = new File( testName.getMethodName() + "_image.png");
+    System.out.println("Image file is at " + outputfile.getAbsolutePath());
+    try {
+      ImageIO.write(im, "png", outputfile);
+    } catch (IOException e) {
+      fail("Unable to write image to file: " + e.getMessage());
     }
   }
 

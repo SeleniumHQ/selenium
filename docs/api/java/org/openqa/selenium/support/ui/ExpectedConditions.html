@@ -239,6 +239,20 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#visibilityOfAllElements(java.util.List)">visibilityOfAllElements</a></strong>(java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;elements)</code>
+<div class="block">An expectation for checking that all elements present on the web page that
+ match the locator are visible.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#visibilityOfAllElementsLocatedBy(org.openqa.selenium.By)">visibilityOfAllElementsLocatedBy</a></strong>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code>
+<div class="block">An expectation for checking that all elements present on the web page that
+ match the locator are visible.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/support/ui/ExpectedConditions.html#visibilityOfElementLocated(org.openqa.selenium.By)">visibilityOfElementLocated</a></strong>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</code>
 <div class="block">An expectation for checking that an element is present on the DOM of a page
@@ -317,6 +331,34 @@ extends java.lang.Object</pre>
  also has a height and width that is greater than 0.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - used to find the element</dd>
 <dt><span class="strong">Returns:</span></dt><dd>the WebElement once it is located and visible</dd></dl>
+</li>
+</ul>
+<a name="visibilityOfAllElementsLocatedBy(org.openqa.selenium.By)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>visibilityOfAllElementsLocatedBy</h4>
+<pre>public static&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;&nbsp;visibilityOfAllElementsLocatedBy(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;locator)</pre>
+<div class="block">An expectation for checking that all elements present on the web page that
+ match the locator are visible. Visibility means that the elements are not
+ only displayed but also have a height and width that is greater than 0.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>locator</code> - used to find the element</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the list of WebElements once they are located</dd></dl>
+</li>
+</ul>
+<a name="visibilityOfAllElements(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>visibilityOfAllElements</h4>
+<pre>public static&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&gt;&nbsp;visibilityOfAllElements(java.util.List&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;elements)</pre>
+<div class="block">An expectation for checking that all elements present on the web page that
+ match the locator are visible. Visibility means that the elements are not
+ only displayed but also have a height and width that is greater than 0.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>elements</code> - list of WebElements</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the list of WebElements once they are located</dd></dl>
 </li>
 </ul>
 <a name="visibilityOf(org.openqa.selenium.WebElement)">
@@ -503,8 +545,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>not</h4>
 <pre>public static&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;java.lang.Boolean&gt;&nbsp;not(<a href="../../../../../org/openqa/selenium/support/ui/ExpectedCondition.html" title="interface in org.openqa.selenium.support.ui">ExpectedCondition</a>&lt;?&gt;&nbsp;condition)</pre>
-<div class="block">An expectation with the logical opposite condition of the given condition.
- In case of null, it will return false.</div>
+<div class="block">An expectation with the logical opposite condition of the given condition.</div>
 </li>
 </ul>
 </li>

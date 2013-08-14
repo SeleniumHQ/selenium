@@ -22,7 +22,8 @@ import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.fail;
 
-import org.openqa.selenium.testing.MockTestBase;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
@@ -43,8 +44,10 @@ import java.util.Collections;
  * @author rchatley (Robert Chatley)
  * 
  */
-public class WebDriverTestContextTest extends MockTestBase {
+public class WebDriverTestContextTest {
 
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+  
   WebDriver webdriver;
   TestContext context;
   WebElement element;
@@ -55,9 +58,9 @@ public class WebDriverTestContextTest extends MockTestBase {
 
   @Before
   public void createMocks() {
-    webdriver = mock(WebDriver.class);
+    webdriver = mockery.mock(WebDriver.class);
     context = new WebDriverTestContext(webdriver);
-    element = mock(WebElement.class);
+    element = mockery.mock(WebElement.class);
     finder = mockFinder();
     clock = new TickingClock(CLOCK_INCREMENT);
   }
@@ -71,8 +74,8 @@ public class WebDriverTestContextTest extends MockTestBase {
   public void canNavigateToAGivenUrl() throws Exception {
     final String url = "http://www.example.com";
 
-    checking(new Expectations() {{
-      one(webdriver).get(url);
+    mockery.checking(new Expectations() {{
+      oneOf(webdriver).get(url);
     }});
 
     context.goTo(url);
@@ -80,8 +83,8 @@ public class WebDriverTestContextTest extends MockTestBase {
 
   @Test
   public void canAssertPresenceOfWebElements() throws Exception {
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
+    mockery.checking(new Expectations() {{
+      oneOf(finder).findFrom(webdriver);
       will(returnValue(oneElement()));
     }});
 
@@ -90,7 +93,7 @@ public class WebDriverTestContextTest extends MockTestBase {
 
   @Test
   public void canCheckQuantitiesOfWebElementsAndThrowsExceptionOnMismatch() throws Exception {
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(finder).findFrom(webdriver);
       will(returnValue(oneElement()));
       exactly(2).of(finder).describeTo(with(any(Description.class))); // in producing the error
@@ -110,10 +113,10 @@ public class WebDriverTestContextTest extends MockTestBase {
   public void canDirectTextInputToSpecificElements() throws Exception {
     final String inputText = "test";
 
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
+    mockery.checking(new Expectations() {{
+      oneOf(finder).findFrom(webdriver);
       will(returnValue(oneElement()));
-      one(element).sendKeys(inputText);
+      oneOf(element).sendKeys(inputText);
     }});
 
     context.type(inputText, finder);
@@ -122,10 +125,10 @@ public class WebDriverTestContextTest extends MockTestBase {
   @Test
   public void canTriggerClicksOnSpecificElements() throws Exception {
 
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
+    mockery.checking(new Expectations() {{
+      oneOf(finder).findFrom(webdriver);
       will(returnValue(oneElement()));
-      one(element).click();
+      oneOf(element).click();
     }});
 
     context.clickOn(finder);
@@ -133,8 +136,8 @@ public class WebDriverTestContextTest extends MockTestBase {
 
   @Test
   public void throwsAnExceptionIfTheFinderReturnsAmbiguousResults() throws Exception {
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
+    mockery.checking(new Expectations() {{
+      oneOf(finder).findFrom(webdriver);
       will(returnValue(twoElements()));
     }});
 
@@ -151,10 +154,10 @@ public class WebDriverTestContextTest extends MockTestBase {
   public void supportsWaitingForElementToAppear() throws Exception {
     context = new WebDriverTestContext(webdriver, clock, clock);
 
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
+    mockery.checking(new Expectations() {{
+      oneOf(finder).findFrom(webdriver);
       will(returnValue(oneElement()));
-      one(element).isDisplayed();
+      oneOf(element).isDisplayed();
       will(returnValue(true));
     }});
 
@@ -165,7 +168,7 @@ public class WebDriverTestContextTest extends MockTestBase {
   public void supportsWaitingForElementToAppearWithTimeout() throws Exception {
     context = new WebDriverTestContext(webdriver, clock, clock);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(2).of(finder).findFrom(webdriver);
       will(returnValue(oneElement()));
       exactly(2).of(element).isDisplayed();
@@ -179,7 +182,7 @@ public class WebDriverTestContextTest extends MockTestBase {
   public void failsAssertionIfElementNotDisplayedBeforeTimeout() throws Exception {
     context = new WebDriverTestContext(webdriver, clock, clock);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       atLeast(1).of(finder).findFrom(webdriver);
       will(returnValue(oneElement()));
       atLeast(1).of(element).isDisplayed();
@@ -198,7 +201,7 @@ public class WebDriverTestContextTest extends MockTestBase {
 
   @SuppressWarnings("unchecked")
   Finder<WebElement, WebDriver> mockFinder() {
-    return mock(Finder.class);
+    return mockery.mock(Finder.class);
   }
 
   private Collection<? extends WebElement> oneElement() {

@@ -47,8 +47,8 @@ contract @googlecode.com/webdriver/modifierkeys;1 {2E4B69B9-21FE-48ad-A2F6-AB355
 
 contract @googlecode.com/webdriver/syntheticmouse;1 {E8F9FEFE-C513-4097-98BE-BE00A41D3645}
 
-binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll ABI=WINNT_x86-msvc appversion>=20
-binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll ABI=WINNT_x86-msvc appversion>=19 appversion<20
+binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll ABI=WINNT_x86-msvc appversion>=23
+binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll ABI=WINNT_x86-msvc appversion>=22 appversion<23
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-esr-latest.dll ABI=WINNT_x86-msvc appversion>=17 appversion<18
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox-esr-previous.dll ABI=WINNT_x86-msvc appversion>=10a1 appversion<11
 binary-component platform/WINNT_x86-msvc/components/webdriver-firefox.dll ABI=WINNT_x86-msvc appversion<4
@@ -57,11 +57,11 @@ binary-component platform/WINNT_x86-msvc/components/imehandler.dll ABI=WINNT_x86
 
 binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-latest.so ABI=Linux_x86_64-gcc3 appversion>=17 appversion<18
 binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-previous.so ABI=Linux_x86_64-gcc3 appversion>=10a1 appversion<11
-binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86_64-gcc3 appversion>=20
-binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so ABI=Linux_x86_64-gcc3 appversion>=19 appversion<20
+binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86_64-gcc3 appversion>=23
+binary-component platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so ABI=Linux_x86_64-gcc3 appversion>=22 appversion<23
 
 binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-latest.so ABI=Linux_x86-gcc3 appversion>=17 appversion<18
 binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-previous.so ABI=Linux_x86-gcc3 appversion>=10a1 appversion<11
-binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86-gcc3 appversion>=20
-binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-previous.so ABI=Linux_x86-gcc3 appversion>=19 appversion<20
+binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so ABI=Linux_x86-gcc3 appversion>=23
+binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-previous.so ABI=Linux_x86-gcc3 appversion>=22 appversion<23
 binary-component platform/Linux_x86-gcc3/components/libwebdriver-firefox-ff3.so ABI=Linux_x86-gcc3 appversion<4

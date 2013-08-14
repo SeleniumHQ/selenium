@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview A base menu bar factory. Can be bound to an existing 
+ * @fileoverview A base menu bar factory. Can be bound to an existing
  * HTML structure or can generate its own DOM.
  *
  * To decorate, the menu bar should be bound to an element containing children
@@ -24,8 +24,8 @@
 
 goog.provide('goog.ui.menuBar');
 
+goog.require('goog.ui.Container');
 goog.require('goog.ui.MenuBarRenderer');
-
 
 
 /**
@@ -34,7 +34,7 @@ goog.require('goog.ui.MenuBarRenderer');
  *     decorate the menu bar; defaults to {@link goog.ui.MenuBarRenderer}.
  * @param {goog.dom.DomHelper=} opt_domHelper DOM helper, used for document
  *     interaction.
- * @return {goog.ui.Container}
+ * @return {goog.ui.Container} The created menu bar.
  */
 goog.ui.menuBar.create = function(opt_renderer, opt_domHelper) {
   return new goog.ui.Container(

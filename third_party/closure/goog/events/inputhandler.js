@@ -40,7 +40,6 @@ goog.provide('goog.events.InputHandler.EventType');
 
 goog.require('goog.Timer');
 goog.require('goog.dom');
-goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
@@ -77,7 +76,7 @@ goog.events.InputHandler = function(element) {
   // IE9 supports input events when characters are inserted, but not deleted.
   // WebKit before version 531 did not support input events for textareas.
   var emulateInputEvents = goog.userAgent.IE ||
-      (goog.userAgent.WEBKIT && !goog.userAgent.isVersion('531') &&
+      (goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher('531') &&
           element.tagName == 'TEXTAREA');
 
   /**

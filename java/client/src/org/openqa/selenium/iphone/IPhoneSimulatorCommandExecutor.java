@@ -39,7 +39,10 @@ import java.util.logging.Logger;
  * is not.
  * 
  * @author jmleyba@gmail.com (Jason Leyba)
+ *
+ * @deprecated use ios-driver or appium instead
  */
+@Deprecated
 public class IPhoneSimulatorCommandExecutor implements CommandExecutor {
 
   private static final Logger LOG =

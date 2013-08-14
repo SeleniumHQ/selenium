@@ -22,8 +22,12 @@
 
 goog.provide('goog.ui.FlatMenuButtonRenderer');
 
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.State');
+goog.require('goog.asserts');
+goog.require('goog.dom');
+goog.require('goog.string');
 goog.require('goog.style');
-goog.require('goog.ui.ControlContent');
 goog.require('goog.ui.FlatButtonRenderer');
 goog.require('goog.ui.INLINE_BLOCK_CLASSNAME');
 goog.require('goog.ui.Menu');
@@ -76,12 +80,14 @@ goog.ui.FlatMenuButtonRenderer.prototype.createDom = function(control) {
   var button = /** @type {goog.ui.Button} */ (control);
   var classNames = this.getClassNames(button);
   var attributes = {
-    'class': goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' '),
-    'title': button.getTooltip() || ''
+    'class': goog.ui.INLINE_BLOCK_CLASSNAME + ' ' + classNames.join(' ')
   };
-  return button.getDomHelper().createDom('div', attributes,
+  var element = button.getDomHelper().createDom('div', attributes,
       [this.createCaption(button.getContent(), button.getDomHelper()),
        this.createDropdown(button.getDomHelper())]);
+  this.setTooltip(
+      element, /** @type {!string}*/ (button.getTooltip()));
+  return element;
 };
 
 
@@ -95,6 +101,33 @@ goog.ui.FlatMenuButtonRenderer.prototype.createDom = function(control) {
  */
 goog.ui.FlatMenuButtonRenderer.prototype.getContentElement = function(element) {
   return element && /** @type {Element} */ (element.firstChild);
+};
+
+
+/**
+ * Updates the flat menu button's ARIA (accessibility) state so that
+ * aria-expanded does not appear when the button is "opened."
+ * @param {Element} element Element whose ARIA state is to be updated.
+ * @param {goog.ui.Component.State} state Component state being enabled or
+ *     disabled.
+ * @param {boolean} enable Whether the state is being enabled or disabled.
+ * @protected
+ * @override
+ */
+goog.ui.FlatMenuButtonRenderer.prototype.updateAriaState = function(
+    element, state, enable) {
+  // If button has OPENED state, do not assign an ARIA state. Usually
+  // aria-expanded would be assigned, but aria-expanded is not a valid state
+  // for a menu button.
+  goog.asserts.assertObject(
+      element, 'The flat button menu DOM element cannot be null.');
+  goog.asserts.assert(goog.string.isEmpty(
+      goog.a11y.aria.getState(element, goog.a11y.aria.State.EXPANDED)),
+      'Menu buttons do not support the ARIA expanded attribute. ' +
+      'Please use ARIA disabled instead.');
+  if (state != goog.ui.Component.State.OPENED) {
+    goog.base(this, 'updateAriaState', element, state, enable);
+  }
 };
 
 
@@ -116,7 +149,7 @@ goog.ui.FlatMenuButtonRenderer.prototype.decorate = function(button, element) {
   if (menuElem) {
     // Move the menu element directly under the body, but hide it first; see
     // bug 1089244.
-    goog.style.showElement(menuElem, false);
+    goog.style.setElementShown(menuElem, false);
     button.getDomHelper().getDocument().body.appendChild(menuElem);
 
     // Decorate the menu and attach it to the button.

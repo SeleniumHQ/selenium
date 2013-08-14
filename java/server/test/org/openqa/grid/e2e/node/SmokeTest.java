@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
+import org.junit.Ignore;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
@@ -38,7 +39,6 @@ import com.thoughtworks.selenium.Selenium;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-//@Test(groups = {"slow", "firefox"})
 public class SmokeTest {
 
   private static Hub hub;
@@ -51,7 +51,7 @@ public class SmokeTest {
 
     SelfRegisteringRemote remote =
         GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
-    remote.addBrowser(DesiredCapabilities.firefox(), 1);
+    remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
     
     DesiredCapabilities firefoxOnSeleniumCapability = new DesiredCapabilities();
     firefoxOnSeleniumCapability.setBrowserName("*firefox");
@@ -70,10 +70,10 @@ public class SmokeTest {
   public void firefoxOnWebDriver() throws MalformedURLException {
     WebDriver driver = null;
     try {
-      DesiredCapabilities ff = DesiredCapabilities.firefox();
-      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), ff);
-      driver.get(hub.getUrl() + "/grid/console");
-      Assert.assertEquals(driver.getTitle(), "Grid Console");
+      DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
+      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
+      driver.get(hub.getUrl() + "/grid/old/console");
+      Assert.assertEquals(driver.getTitle(), "Grid overview");
     } finally {
       if (driver != null) {
         driver.quit();
@@ -81,7 +81,8 @@ public class SmokeTest {
     }
   }
   
-  
+
+  @Ignore
   @Test
   public void firefoxOnSelenium() throws MalformedURLException {
     Selenium selenium = null;

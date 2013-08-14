@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+import static org.openqa.selenium.testing.TestUtilities.isOldChromedriver;
 
 import java.util.Set;
 
@@ -38,13 +39,13 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.isOldChromedriver;
 
-@Ignore({ANDROID, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+@Ignore({ANDROID, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, MARIONETTE})
 public class AvailableLogsTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
@@ -58,7 +59,6 @@ public class AvailableLogsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({CHROME})  // Remove when chromedriver2 has it
   public void browserLogShouldBeEnabledByDefault() {
     assumeFalse(isOldChromedriver(driver));
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
@@ -68,7 +68,6 @@ public class AvailableLogsTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @Test
-  @Ignore({CHROME})  // Remove when chromedriver2 has it
   public void clientLogShouldBeEnabledByDefault() {
     assumeFalse(isOldChromedriver(driver));
     // Do one action to have *something* in the client logs.
@@ -105,8 +104,9 @@ public class AvailableLogsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({CHROME})  // Profiler log is getting deprecated, chromedriver2 will not implement.
+  @Ignore(value = {SAFARI}, reason = "Safari does not support profiler logs")
   public void shouldBeAbleToEnableProfilerLog() {
+    assumeFalse(isOldChromedriver(driver));
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(ENABLE_PROFILING_CAPABILITY, true);
     WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(caps);

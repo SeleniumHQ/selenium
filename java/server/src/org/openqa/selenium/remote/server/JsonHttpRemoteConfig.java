@@ -252,7 +252,7 @@ public class JsonHttpRemoteConfig {
         .on(ResultType.SUCCESS, jsonResponse);
 
     postMapper.bind("/session", NewSession.class)
-        .on(ResultType.SUCCESS, new RedirectResult("/session/:sessionId"));
+        .on(ResultType.SUCCESS, jsonResponse);
     getMapper.bind("/session/:sessionId", GetSessionCapabilities.class)
         .on(ResultType.SUCCESS, new ForwardResult("/WEB-INF/views/sessionCapabilities.jsp"))
         .on(ResultType.SUCCESS, jsonResponse, "application/json");

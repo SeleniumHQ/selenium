@@ -37,17 +37,19 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
-@Ignore(value = {IPHONE, OPERA, ANDROID, OPERA_MOBILE, PHANTOMJS},
+@Ignore(value = {IPHONE, OPERA, ANDROID, OPERA_MOBILE, PHANTOMJS, MARIONETTE},
         reason = "Opera: not implemented yet")
 public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
@@ -55,9 +57,8 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Before
   public void setUp() throws Exception {
-    if (driver instanceof JavascriptExecutor) {
-      executor = (JavascriptExecutor) driver;
-    }
+    assumeTrue(driver instanceof JavascriptExecutor);
+    executor = (JavascriptExecutor) driver;
     driver.manage().timeouts().setScriptTimeout(0, TimeUnit.MILLISECONDS);
   }
 

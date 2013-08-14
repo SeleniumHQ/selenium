@@ -255,9 +255,11 @@ public class AlertTests extends SafariTestBase {
 
     JavascriptExecutor executor = (JavascriptExecutor) driver;
     WebElement body = (WebElement) executor.executeScript(
+        "var newPage = arguments[0];" +
         "window.onbeforeunload = function() { return 'one two three'; };" +
-        "document.body.onclick = function() { window.location.reload(); };" +
-        "return document.body;");
+        "document.body.onclick = function() { window.location.href = newPage; };" +
+        "return document.body;",
+        pages.simpleTestPage);
 
     body.click();
     try {

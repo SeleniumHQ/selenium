@@ -15,16 +15,15 @@
 #define WEBDRIVER_IE_SCRIPT_H_
 
 #include <string>
+#include <vector>
 #include "json.h"
 #include "Element.h"
-
-using namespace std;
+#include "VariantUtilities.h"
 
 namespace webdriver {
 
 // Forward declaration of classes to avoid
 // circular include files.
-class Browser;
 class IECommandExecutor;
 
 class Script {
@@ -71,15 +70,6 @@ class Script {
   bool ConvertResultToString(std::string* value);
 
  private:
-  int GetArrayLength(long* length);
-  int GetArrayItem(const IECommandExecutor& executor,
-                   long index,
-                   Json::Value* item);
-  int GetPropertyNameList(std::wstring* property_names);
-  int GetPropertyValue(const IECommandExecutor& executor,
-                       const std::wstring& property_name,
-                       Json::Value* property_value);
-  std::wstring GetResultObjectTypeName(void);
   bool CreateAnonymousFunction(VARIANT* result);
   void Initialize(IHTMLDocument2* document,
                   const std::wstring& script_source,
@@ -90,7 +80,7 @@ class Script {
   std::wstring source_code_;
   long current_arg_index_;
   
-  vector<CComVariant> argument_array_;
+  std::vector<CComVariant> argument_array_;
   CComVariant result_;
 };
 

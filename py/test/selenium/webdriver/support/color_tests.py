@@ -100,3 +100,8 @@ class ColorTests(unittest.TestCase):
         hash1 = hash(Color.from_string("#f00"))
         hash2 = hash(Color.from_string("rgb(255, 0, 0)"))
         assert hash1 == hash2
+
+    def test_string_representations(self):
+        hex_ = "#01Ff03"
+        assert str(Color.from_string(hex_)) == "Color: rgba(1, 255, 3, 1)"
+        assert repr(Color.from_string(hex_)) == "Color(red=1, green=255, blue=3, alpha=1)"

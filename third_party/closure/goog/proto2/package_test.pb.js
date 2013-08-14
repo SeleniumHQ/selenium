@@ -26,6 +26,7 @@ goog.require('proto2.TestAllTypes');
 goog.setTestOnly('package_test.pb');
 
 
+
 /**
  * Message TestPackageTypes.
  * @constructor

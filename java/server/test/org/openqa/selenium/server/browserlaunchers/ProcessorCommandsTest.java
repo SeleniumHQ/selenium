@@ -23,11 +23,14 @@ import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 
 import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.junit.Test;
-import org.openqa.selenium.testing.MockTestBase;
 
-public class ProcessorCommandsTest extends MockTestBase {
+public class ProcessorCommandsTest {
 
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+  
   @Test(expected = SeleniumException.class)
   public void shouldThrowASeleniumExceptionIfTheMethodDoesNotExistOnSelenium() {
     ProcessorCommands commands = new ProcessorCommands();
@@ -39,11 +42,11 @@ public class ProcessorCommandsTest extends MockTestBase {
   public void shouldExecuteValidVoidMethod() {
     ProcessorCommands commands = new ProcessorCommands();
 
-    final CommandProcessor processor = mock(CommandProcessor.class);
+    final CommandProcessor processor = mockery.mock(CommandProcessor.class);
     final String[] args = new String[] { "foo", "bar" };
 
-    checking(new Expectations() {{
-      one(processor).doCommand("showContextualBanner", args);
+    mockery.checking(new Expectations() {{
+      oneOf(processor).doCommand("showContextualBanner", args);
     }});
 
     commands.execute(processor, "showContextualBanner", args);
@@ -53,10 +56,10 @@ public class ProcessorCommandsTest extends MockTestBase {
   public void shouldExecuteValidStringMethod() {
     ProcessorCommands commands = new ProcessorCommands();
 
-    final CommandProcessor processor = mock(CommandProcessor.class);
+    final CommandProcessor processor = mockery.mock(CommandProcessor.class);
 
-    checking(new Expectations() {{
-      one(processor).getString("getBodyText", new String[0]);
+    mockery.checking(new Expectations() {{
+      oneOf(processor).getString("getBodyText", new String[0]);
       will(returnValue("cheese"));
     }});
 
@@ -69,11 +72,11 @@ public class ProcessorCommandsTest extends MockTestBase {
   public void shouldExecuteValidStringArrayMethod() {
     ProcessorCommands commands = new ProcessorCommands();
 
-    final CommandProcessor processor = mock(CommandProcessor.class);
+    final CommandProcessor processor = mockery.mock(CommandProcessor.class);
     final String[] args = {"cheese"};
 
-    checking(new Expectations() {{
-      one(processor).getStringArray("getSelectedLabels", args);
+    mockery.checking(new Expectations() {{
+      oneOf(processor).getStringArray("getSelectedLabels", args);
       will(returnValue(new String[] {"cheddar", "brie", "gouda"}));
     }});
 
@@ -86,11 +89,11 @@ public class ProcessorCommandsTest extends MockTestBase {
   public void shouldExecuteValidBooleanMethod() {
     ProcessorCommands commands = new ProcessorCommands();
 
-    final CommandProcessor processor = mock(CommandProcessor.class);
+    final CommandProcessor processor = mockery.mock(CommandProcessor.class);
     final String[] args = {"cheese"};
 
-    checking(new Expectations() {{
-      one(processor).getBoolean("isTextPresent", args);
+    mockery.checking(new Expectations() {{
+      oneOf(processor).getBoolean("isTextPresent", args);
       will(returnValue(true));
     }});
 
@@ -103,11 +106,11 @@ public class ProcessorCommandsTest extends MockTestBase {
   public void shouldExecuteValidNumberMethod() {
     ProcessorCommands commands = new ProcessorCommands();
 
-    final CommandProcessor processor = mock(CommandProcessor.class);
+    final CommandProcessor processor = mockery.mock(CommandProcessor.class);
     final String[] args = {"cheese"};
 
-    checking(new Expectations() {{
-      one(processor).getNumber("getCssCount", args);
+    mockery.checking(new Expectations() {{
+      oneOf(processor).getNumber("getCssCount", args);
       will(returnValue(42));
     }});
 

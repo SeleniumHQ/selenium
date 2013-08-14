@@ -51,6 +51,18 @@ SeleniumIDE.Preferences = {
     this.branch.setBoolPref(name, value);
   },
 
+  getInt: function(name, defaultValue) {
+    if (this.branch && this.branch.prefHasUserValue(name)) {
+      return this.branch.getIntPref(name);
+    } else {
+      return defaultValue;
+    }
+  },
+
+  setInt: function(name, value) {
+    this.branch.setIntPref(name, value);
+  },
+
   getArray: function(name) {
     var length = this.getString(name + ".length");
     if (length == null) return [];
@@ -72,6 +84,10 @@ SeleniumIDE.Preferences = {
     return this.branch.getPrefType(name);
   },
 
+  clear: function(name) {
+    this.branch.clearUserPref(name);
+  },
+
   load: function() {
     var options = {};
     var name;
@@ -83,6 +99,8 @@ SeleniumIDE.Preferences = {
       name = names[i];
       if (this.getType(name) == this.branch.PREF_BOOL) {
         options[name] = this.getBool(name);
+      } else if (this.getType(name) == this.branch.PREF_INT) {
+        options[name] = this.getInt(name, this.DEFAULT_OPTIONS[name] || 0);
       } else {
         options[name] = this.getString(name, this.DEFAULT_OPTIONS[name] || '');
       }
@@ -94,6 +112,8 @@ SeleniumIDE.Preferences = {
     if (prop_name) {
       if (this.getType(prop_name) == this.branch.PREF_BOOL) {
         this.setBool(prop_name, options[prop_name]);
+      } else if (this.getType(prop_name) == this.branch.PREF_INT) {
+        this.setInt(prop_name, options[prop_name]);
       } else {
         this.setString(prop_name, options[prop_name]);
       }
@@ -103,6 +123,8 @@ SeleniumIDE.Preferences = {
       for (name in options) {
         if (this.getType(name) == this.branch.PREF_BOOL) {
           this.setBool(name, options[name]);
+        } else if (this.getType(name) == this.branch.PREF_INT) {
+          this.setInt(name, options[name]);
         } else {
           this.setString(name, options[name]);
         }
@@ -129,13 +151,11 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
 
   recordAbsoluteURL: "false",
 
-  pluginProvidedIDEExtensions: "",
+  pluginsData: "[]",
 
-  pluginProvidedUserExtensions: "",
+  disableBadPluginCode: "true",
 
-  pluginProvidedFormatters: "",
-
-  plugins: "",
+  disableBadPluginAddon: "true",
 
   showDeveloperTools: "false",
 

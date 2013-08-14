@@ -25,12 +25,15 @@
 
 goog.provide('goog.dom.browserrange.AbstractRange');
 
+goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.RangeEndpoint');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.TextRangeIterator');
 goog.require('goog.iter');
+goog.require('goog.math.Coordinate');
 goog.require('goog.string');
 goog.require('goog.string.StringBuffer');
 goog.require('goog.userAgent');
@@ -88,6 +91,22 @@ goog.dom.browserrange.AbstractRange.prototype.getStartOffset =
 
 
 /**
+ * @return {goog.math.Coordinate} The coordinate of the selection start node
+ *     and offset.
+ */
+goog.dom.browserrange.AbstractRange.prototype.getStartPosition = function() {
+  goog.asserts.assert(this.range_.getClientRects,
+      'Getting selection coordinates is not supported.');
+
+  var rects = this.range_.getClientRects();
+  if (rects.length) {
+    return new goog.math.Coordinate(rects[0]['left'], rects[0]['top']);
+  }
+  return null;
+};
+
+
+/**
  * Returns the node the range ends in.
  * @return {Node} The element or text node the range ends in.
  */
@@ -103,6 +122,23 @@ goog.dom.browserrange.AbstractRange.prototype.getEndNode =
  */
 goog.dom.browserrange.AbstractRange.prototype.getEndOffset =
     goog.abstractMethod;
+
+
+/**
+ * @return {goog.math.Coordinate} The coordinate of the selection end node
+ *     and offset.
+ */
+goog.dom.browserrange.AbstractRange.prototype.getEndPosition = function() {
+  goog.asserts.assert(this.range_.getClientRects,
+      'Getting selection coordinates is not supported.');
+
+  var rects = this.range_.getClientRects();
+  if (rects.length) {
+    var lastRect = goog.array.peek(rects);
+    return new goog.math.Coordinate(lastRect['right'], lastRect['bottom']);
+  }
+  return null;
+};
 
 
 /**

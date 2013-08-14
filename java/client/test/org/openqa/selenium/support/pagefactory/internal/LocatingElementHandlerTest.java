@@ -16,8 +16,9 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory.internal;
 
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -31,17 +32,20 @@ import org.junit.Test;
 
 import java.lang.reflect.Proxy;
 
-public class LocatingElementHandlerTest extends MockTestBase {
+public class LocatingElementHandlerTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+  
   @Test
   public void shouldAlwaysLocateTheElementPerCall() {
-    final ElementLocator locator = mock(ElementLocator.class);
-    final WebElement element = mock(WebElement.class);
+    final ElementLocator locator = mockery.mock(ElementLocator.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(2).of(locator).findElement();
       will(returnValue(element));
-      one(element).sendKeys("Fishy");
-      one(element).submit();
+      oneOf(element).sendKeys("Fishy");
+      oneOf(element).submit();
     }});
 
     LocatingElementHandler handler = new LocatingElementHandler(locator);
@@ -55,16 +59,16 @@ public class LocatingElementHandlerTest extends MockTestBase {
 
   @Test
   public void shouldUseAnnotationsToLookUpByAlternativeMechanisms() {
-    final WebDriver driver = mock(WebDriver.class);
-    final WebElement element = mock(WebElement.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
     final By by = By.xpath("//input[@name='q']");
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(driver).findElement(by);
       will(returnValue(element));
-      one(element).clear();
-      one(element).sendKeys("cheese");
+      oneOf(element).clear();
+      oneOf(element).sendKeys("cheese");
     }});
 
     Page page = PageFactory.initElements(driver, Page.class);
@@ -73,14 +77,14 @@ public class LocatingElementHandlerTest extends MockTestBase {
 
   @Test
   public void shouldNotRepeatedlyLookUpElementsMarkedAsNeverChanging() throws Exception {
-    final ElementLocator locator = mock(ElementLocator.class);
-    final WebElement element = mock(WebElement.class);
+    final ElementLocator locator = mockery.mock(ElementLocator.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(locator).findElement();
       will(returnValue(element));
-      one(element).isEnabled();
-      one(element).sendKeys("Cheese");
+      oneOf(element).isEnabled();
+      oneOf(element).sendKeys("Cheese");
     }});
 
     LocatingElementHandler handler = new LocatingElementHandler(locator);
@@ -96,13 +100,13 @@ public class LocatingElementHandlerTest extends MockTestBase {
   public void findByAnnotationShouldBeInherited() {
     ChildPage page = new ChildPage();
 
-    final WebDriver driver = mock(WebDriver.class);
-    final WebElement element = mock(WebElement.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(driver).findElement(By.xpath("//input[@name='q']"));
       will(returnValue(element));
-      one(element).getAttribute("value");
+      oneOf(element).getAttribute("value");
       will(returnValue(""));
     }});
 

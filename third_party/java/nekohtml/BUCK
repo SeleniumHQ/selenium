@@ -1,0 +1,6 @@
+prebuilt_jar(name = 'nekohtml',
+  binary_jar = 'nekohtml-1.9.17.jar',
+  visibility = [
+    '//third_party/java/...',
+  ],
+)

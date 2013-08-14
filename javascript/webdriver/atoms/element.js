@@ -129,14 +129,14 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
   var value = null;
   var name = attribute.toLowerCase();
 
-  if ('style' == attribute.toLowerCase()) {
+  if ('style' == name) {
     value = element.style;
 
     if (value && !goog.isString(value)) {
       value = value.cssText;
     }
 
-    return (/** @type {?string} */value);
+    return /** @type {?string} */ (value);
   }
 
   if (('selected' == name || 'checked' == name) &&
@@ -158,7 +158,7 @@ webdriver.atoms.element.getAttribute = function(element, attribute) {
       // We want the full URL if present
       value = bot.dom.getProperty(element, name);
     }
-    return (/** @type {?string} */value);
+    return /** @type {?string} */ (value);
   }
 
   var propName = webdriver.atoms.element.PROPERTY_ALIASES_[attribute] ||

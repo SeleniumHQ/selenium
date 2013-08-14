@@ -11,12 +11,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <ctime>
 #include "errorcodes.h"
 #include "InputManager.h"
 #include "interactions.h"
 #include "logging.h"
 #include "Script.h"
 #include "Generated/atoms.h"
+
+#pragma data_seg("INPUTS")
+int input_message_count = 0;
+#pragma data_seg()
+
+#pragma comment(linker, "/section:INPUTS,RWS")
 
 namespace webdriver {
 
@@ -54,6 +61,7 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     return EUNHANDLEDERROR;
   }
 
+  int status_code = WD_SUCCESS;
   // Use a single mutex, so that all instances synchronize on the same object 
   // for focus purposes.
   HANDLE mutex_handle = ::CreateMutex(NULL, FALSE, USER_INTERACTION_MUTEX_NAME);
@@ -89,32 +97,58 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     std::string action_name = action["action"].asString();
     if (action_name == "moveto") {
       bool offset_specified = action.isMember("xoffset") && action.isMember("yoffset");
-      this->MouseMoveTo(browser_wrapper,
-                        action.get("element", "").asString(),
-                        offset_specified,
-                        action.get("xoffset", 0).asInt(),
-                        action.get("yoffset", 0).asInt());
+      status_code = this->MouseMoveTo(browser_wrapper,
+                                      action.get("element", "").asString(),
+                                      offset_specified,
+                                      action.get("xoffset", 0).asInt(),
+                                      action.get("yoffset", 0).asInt());
     } else if (action_name == "buttondown") {
-      this->MouseButtonDown(browser_wrapper);
+      status_code = this->MouseButtonDown(browser_wrapper);
     } else if (action_name == "buttonup") {
-      this->MouseButtonUp(browser_wrapper);
+      status_code = this->MouseButtonUp(browser_wrapper);
     } else if (action_name == "click") {
-      this->MouseClick(browser_wrapper, action.get("button", 0).asInt());
+      status_code = this->MouseClick(browser_wrapper, action.get("button", 0).asInt());
     } else if (action_name == "doubleclick") {
-      this->MouseDoubleClick(browser_wrapper);
+      status_code = this->MouseDoubleClick(browser_wrapper);
     } else if (action_name == "keys") {
       if (action.isMember("value")) {
         Json::Value keystroke_array = action.get("value", Json::Value(Json::arrayValue));
         bool auto_release_modifiers = action.get("releaseModifiers", false).asBool();
-        this->SendKeystrokes(browser_wrapper, keystroke_array, auto_release_modifiers);
+        status_code = this->SendKeystrokes(browser_wrapper, keystroke_array, auto_release_modifiers);
       }
+    }
+    if (status_code != WD_SUCCESS) {
+      // Received an error for one of the actions in the sequence.
+      // Abort the sequence.
+      break;
     }
   }
 
   // If there are inputs in the array, then we've queued up input actions
   // to be played back. So play them back.
-  if (this->inputs_.size() > 0) {
-    ::SendInput(static_cast<UINT>(this->inputs_.size()), &this->inputs_[0], sizeof(INPUT));
+  int sent_event_count = 0;
+  if (status_code == WD_SUCCESS && this->inputs_.size() > 0) {
+    // SendInput simulates mouse and keyboard events at a very low level, so
+    // low that there is no guarantee that IE will have processed the resulting
+    // windows messages before this method returns. Therefore, we'll install
+    // keyboard and mouse hooks that will count the number of Windows messages
+    // processed by any application the system. There is a potential for this
+    // code to be wrong if the user is interacting with the system via mouse and
+    // keyboard during this process. Since this code path should only be hit if
+    // the requireWindowFocus capability is turned on, and since SendInput is 
+    // documented to not allow other input events to be interspersed into the
+    // input queue, the risk is hopefully minimized.
+    this->InstallInputEventHooks();
+    sent_event_count = ::SendInput(static_cast<UINT>(this->inputs_.size()), &this->inputs_[0], sizeof(INPUT));
+    LOG(DEBUG) << "Sent " << sent_event_count << " events via SendInput()";
+    bool wait_succeeded = this->WaitForInputEventProcessing(sent_event_count);
+    std::string success = wait_succeeded ? "true" : "false";
+    LOG(DEBUG) << "Wait for input event processing returned " << success;
+    this->UninstallInputEventHooks();
+    // A small sleep after all messages have been detected by an application
+    // event loop is appropriate here. This value (50 milliseconds is chosen
+    // as it's probably undetectable by most people observing the test running. 
+    ::Sleep(50);
   }
 
   // Must always release the mutex.
@@ -122,7 +156,76 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
     ::ReleaseMutex(mutex_handle);
     ::CloseHandle(mutex_handle);
   }
-  return WD_SUCCESS;
+  return status_code;
+}
+
+void InputManager::InstallInputEventHooks() {
+  LOG(TRACE) << "Entering InputManager::InstallInputEventHooks";
+  this->keyboard_hook_handle_ = this->InstallWindowsHook("KeyboardHookProc", WH_KEYBOARD);
+  if (this->keyboard_hook_handle_ == NULL) {
+    LOG(WARN) << "Installing hook for keyboard messages failed";
+  }
+  this->mouse_hook_handle_ = this->InstallWindowsHook("MouseHookProc", WH_MOUSE);
+  if (this->mouse_hook_handle_ == NULL) {
+    LOG(WARN) << "Installing hook for mouse messages failed";
+  }
+}
+
+void InputManager::UninstallInputEventHooks() {
+  LOG(TRACE) << "Entering InputManager::UninstallInputEventHooks";
+  if (this->keyboard_hook_handle_ != NULL) {
+    ::UnhookWindowsHookEx(this->keyboard_hook_handle_);
+    this->keyboard_hook_handle_ = NULL;
+  }
+  if (this->mouse_hook_handle_ != NULL) {
+    ::UnhookWindowsHookEx(this->mouse_hook_handle_);
+    this->mouse_hook_handle_ = NULL;
+  }
+  input_message_count = 0;
+}
+
+HHOOK InputManager::InstallWindowsHook(std::string hook_procedure_name, int hook_type) {
+  LOG(TRACE) << "Entering InputManager::InstallWindowsHook";
+
+  HHOOK hook_handle = NULL;
+  HINSTANCE instance_handle = _AtlBaseModule.GetModuleInstance();
+
+  FARPROC hook_procedure_address = ::GetProcAddress(instance_handle, hook_procedure_name.c_str());
+  if (hook_procedure_address == NULL || hook_procedure_address == 0) {
+    LOGERR(WARN) << "Unable to get address of hook procedure to catch input events";
+    return NULL;
+  }
+  HOOKPROC hook_procedure = reinterpret_cast<HOOKPROC>(hook_procedure_address);
+
+  // Install the Windows hook.
+  hook_handle = ::SetWindowsHookEx(hook_type,
+                                   hook_procedure,
+                                   instance_handle,
+                                   0);
+  if (hook_handle == NULL) {      
+    LOGERR(WARN) << "Unable to set windows hook to catch WM_GETMINMAXINFO";
+  }
+  return hook_handle;
+}
+
+bool InputManager::WaitForInputEventProcessing(int input_count) {
+  LOG(TRACE) << "Entering InputManager::WaitForInputEventProcessing";
+  // Adaptive wait. The total wait time is the number of input messages
+  // expected by the hook multiplied by a static wait time for each
+  // message to be processed (currently 50 milliseconds). We should
+  // exit out of this loop once the number of processed windows keyboard
+  // or mouse messages processed by the system exceeds the number of
+  // input events created by the call to SendInput.
+  int total_timeout_in_milliseconds = input_count * WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT;
+  clock_t end = clock() + (total_timeout_in_milliseconds / 1000 * CLOCKS_PER_SEC);
+
+  bool inputs_processed = input_message_count >= input_count;
+  while (!inputs_processed && clock() < end) {
+    // Sleep a short amount of time to prevent starving the processor.
+    ::Sleep(25);
+    inputs_processed = input_message_count >= input_count;
+  }
+  return inputs_processed;
 }
 
 bool InputManager::SetFocusToBrowser(BrowserHandle browser_wrapper) {
@@ -224,7 +327,7 @@ int InputManager::MouseButtonDown(BrowserHandle browser_wrapper) {
       LOG(DEBUG) << "Queuing SendInput structure for mouse button down";
       this->AddMouseInput(browser_window_handle, MOUSEEVENTF_LEFTDOWN, this->last_known_mouse_x_, this->last_known_mouse_y_);
     } else { 
-    LOG(DEBUG) << "Using SendMessage method for mouse button down";
+      LOG(DEBUG) << "Using SendMessage method for mouse button down";
       //TODO: json wire protocol allows 3 mouse button types for this command
       mouseDownAt(browser_window_handle,
                   this->last_known_mouse_x_,
@@ -344,31 +447,26 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
     long end_x = start_x;
     long end_y = start_y;
     if (element_specified) {
-      bool displayed;
-      status_code = target_element->IsDisplayed(&displayed);
-      if (status_code != WD_SUCCESS) {
-        LOG(WARN) << "Unable to determine element is displayed";
-        return status_code;
-      } 
-
-      if (!displayed) {
-        LOG(WARN) << "Element is not displayed";
-        return EELEMENTNOTDISPLAYED;
-      }
-
       LocationInfo element_location;
-      std::vector<LocationInfo> frame_locations;
-      status_code = target_element->GetLocationOnceScrolledIntoView(this->scroll_behavior_,
-                                                                    &element_location,
-                                                                    &frame_locations);
-      // We can't use the status code alone here. GetLocationOnceScrolledIntoView
-      // returns EELEMENTNOTDISPLAYED if the element is visible, but the click
-      // point (the center of the element) is not within the viewport. However,
-      // we might still be able to move to whatever portion of the element *is*
-      // visible in the viewport, so we have to have an extra check.
-      if (status_code != WD_SUCCESS && element_location.width == 0 && element_location.height == 0) {
-        LOG(WARN) << "Unable to get location after scrolling or element sizes are zero";
-        return status_code;
+      LocationInfo move_location;
+      status_code = target_element->GetClickLocation(this->scroll_behavior_,
+                                                     &element_location,
+                                                     &move_location);
+      // We can't use the status code alone here. Even though the center of the
+      // element may not reachable via the mouse, we might still be able to move
+      // to whatever portion of the element *is* visible in the viewport, especially
+      // if we have an offset specifed, so we have to have an extra check.
+      if (status_code != WD_SUCCESS) {
+        if (status_code == EELEMENTCLICKPOINTNOTSCROLLED && !offset_specified) {
+          // If no offset is specified (meaning "move to the element's center"),
+          // and the "could not scroll center point into view" status code is
+          // returned, bail out here.
+          LOG(WARN) <<  "No offset was specified, and the center point of the element could not be scrolled into view.";
+          return status_code;
+        } else {
+          LOG(WARN) << "Element::CalculateClickPoint() returned an error code indicating the element is not reachable.";
+          return status_code;
+        }
       }
 
       // An element was specified as the starting point, so we know the end of the mouse
@@ -376,22 +474,9 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
       end_x = element_location.x;
       end_y = element_location.y;
       if (!offset_specified) {
-        // No offset was specified, which means move to the center of the element. All
-        // that remains is to determine whether that's the center of a block element,
-        // or the center of a the text (if the element's children only contain a single
-        // text node).
-        LOG(INFO) << "Checking whether element has single text node.";
-        if (target_element->HasOnlySingleTextNodeChild()) {
-          LOG(INFO) << "Element has single text node. Will use the middle of that.";
-          LocationInfo text_info;
-          target_element->GetTextBoundaries(&text_info);
-          // Get middle of selection if there's only one text node.
-          end_x += text_info.width / 2;
-          end_y += text_info.height / 2;
-        } else {
-          end_x += element_location.width / 2;
-          end_y += element_location.height / 2;
-        }
+        // No offset was specified, which means move to the center of the element. 
+        end_x = move_location.x;
+        end_y = move_location.y;
       }
     }
 
@@ -406,8 +491,12 @@ int InputManager::MouseMoveTo(BrowserHandle browser_wrapper, std::string element
 
     HWND browser_window_handle = browser_wrapper->GetWindowHandle();
     if (this->require_window_focus_) {
-      LOG(DEBUG) << "Queueing SendInput structure for mouse move";
-      this->AddMouseInput(browser_window_handle, MOUSEEVENTF_MOVE, end_x, end_y);
+      if (end_x == this->last_known_mouse_x_ && end_y == this->last_known_mouse_y_) {
+        LOG(DEBUG) << "Omitting SendInput structure for mouse move; no movement required";
+      } else {
+        LOG(DEBUG) << "Queueing SendInput structure for mouse move";
+        this->AddMouseInput(browser_window_handle, MOUSEEVENTF_MOVE, end_x, end_y);
+      }
     } else {
       LOG(DEBUG) << "Using SendMessage method for mouse move";
       LRESULT move_result = mouseMoveTo(browser_window_handle,
@@ -880,3 +969,21 @@ void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character) {
 }
 
 } // namespace webdriver
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+LRESULT CALLBACK KeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
+  ++input_message_count;
+  return ::CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+
+LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
+  ++input_message_count;
+  return ::CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+
+#ifdef __cplusplus
+}
+#endif

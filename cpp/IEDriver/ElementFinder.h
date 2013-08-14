@@ -17,8 +17,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 namespace webdriver {
 
 // Forward declaration of classes to avoid
@@ -49,10 +47,6 @@ class ElementFinder {
                               const ElementHandle parent_wrapper,
                               const std::wstring& criteria,
                               Json::Value* found_elements);
-  void SanitizeCriteria(const std::wstring& mechanism, std::wstring* criteria);
-  void ReplaceAllSubstrings(const std::wstring& to_replace,
-                            const std::wstring& replace_with,
-                            std::wstring* str);
   bool HasNativeCssSelectorEngine(const IECommandExecutor& executor);
 };
 

@@ -48,7 +48,7 @@ bot.response.isResponseObject = function(value) {
  */
 bot.response.createResponse = function(value) {
   if (bot.response.isResponseObject(value)) {
-    return (/** @type {!bot.response.ResponseObject} */value);
+    return /** @type {!bot.response.ResponseObject} */ (value);
   }
   return {
     'status': bot.ErrorCode.SUCCESS,
@@ -65,13 +65,13 @@ bot.response.createResponse = function(value) {
  */
 bot.response.createErrorResponse = function(error) {
   if (bot.response.isResponseObject(error)) {
-    return (/** @type {!bot.response.ResponseObject} */error);
+    return /** @type {!bot.response.ResponseObject} */ (error);
   }
 
   var statusCode = error && goog.isNumber(error.code) ? error.code :
       bot.ErrorCode.UNKNOWN_ERROR;
   return {
-    'status': (/** @type {bot.ErrorCode} */statusCode),
+    'status': /** @type {bot.ErrorCode} */ (statusCode),
     'value': {
       'message': (error && error.message || error) + ''
     }

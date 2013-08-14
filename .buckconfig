@@ -1,0 +1,16 @@
+[java]
+
+[project]
+  ignore = \
+      .git, \
+      .buckd, \
+      build
+
+[test]
+  # Maximum timeout of 1 minute per test.
+  timeout = 60000
+
+[alias]
+  chrome   = //java/client/src/org/openqa/selenium/chrome:chrome
+  htmlunit = //java/client/src/org/openqa/selenium/htmlunit:htmlunit
+  remote   = //java/client/src/org/openqa/selenium/remote:remote

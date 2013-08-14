@@ -23,9 +23,9 @@ goog.provide('core.LocatorStrategies');
 
 goog.require('bot.inject.cache');
 goog.require('bot.locators');
-goog.require('core.Error');
 goog.require('core.filters');
 goog.require('core.text');
+goog.require('goog.dom');
 goog.require('goog.string');
 
 
@@ -101,7 +101,7 @@ core.LocatorStrategies.dom_ = function(locator, opt_doc) {
     return null;
   }
 
-  return element ? (/**@type{Element}*/ element) : null;
+  return element ? /**@type{Element}*/ (element) : null;
 };
 
 
@@ -168,8 +168,8 @@ core.LocatorStrategies.name_ = function(locator, opt_doc) {
  */
 core.LocatorStrategies.stored_ = function(locator, opt_doc) {
   try {
-    return /** @type {!Element}*/ (
-        bot.inject.cache.getElement(locator, opt_doc));
+    return /** @type {!Element}*/ (bot.inject.cache.getElement(
+        locator, opt_doc));
   } catch (e) {
     return null;
   }

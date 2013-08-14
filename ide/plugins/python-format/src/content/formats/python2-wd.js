@@ -2,8 +2,13 @@
  * Formatter for Selenium 2 / WebDriver Python client.
  */
 
-var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/webdriver.js', this);
+if (!this.formatterType) {  // this.formatterType is defined for the new Formatter system
+  // This method (the if block) of loading the formatter type is deprecated.
+  // For new formatters, simply specify the type in the addPluginProvidedFormatter() and omit this
+  // if block in your formatter.
+  var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+  subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/webdriver.js', this);
+}
 
 function testClassName(testName) {
   return testName.split(/[^0-9A-Za-z]+/).map(
@@ -192,6 +197,91 @@ function formatComment(comment) {
   });
 }
 
+function keyVariable(key) {
+  return "Keys." + key;
+}
+
+this.sendKeysMaping = {
+  BACK_SPACE: "BACK_SPACE",
+  BACKSPACE: "BACK_SPACE",
+  TAB: "TAB",
+  ENTER: "ENTER",
+  SHIFT: "SHIFT",
+  LEFT_SHIFT: "LEFT_SHIFT",
+  CONTROL: "CONTROL",
+  LEFT_CONTROL: "LEFT_CONTROL",
+  ALT: "ALT",
+  LEFT_ALT: "LEFT_ALT",
+  PAUSE: "PAUSE",
+  ESCAPE: "ESCAPE",
+  ESC: "ESCAPE",
+  SPACE: "SPACE",
+  PAGE_UP: "PAGE_UP",
+  PAGE_DOWN: "PAGE_DOWN",
+  END: "END",
+  HOME: "HOME",
+  LEFT: "LEFT",
+  ARROW_LEFT: "ARROW_LEFT",
+  UP: "UP",
+  ARROW_UP: "ARROW_UP",
+  RIGHT: "RIGHT",
+  ARROW_RIGHT: "ARROW_RIGHT",
+  DOWN: "DOWN",
+  ARROW_DOWN: "ARROW_DOWN",
+  INSERT: "INSERT",
+  DELETE: "DELETE",
+  SEMICOLON: "SEMICOLON",
+  EQUALS: "EQUALS",
+
+  NUMPAD0: "NUMPAD0",
+  NUM_ZERO: "NUMPAD0",
+  NUMPAD1: "NUMPAD1",
+  NUM_ONE: "NUMPAD1",
+  NUMPAD2: "NUMPAD2",
+  NUM_TWO: "NUMPAD2",
+  NUMPAD3: "NUMPAD3",
+  NUM_THREE: "NUMPAD3",
+  NUMPAD4: "NUMPAD4",
+  NUM_FOUR: "NUMPAD4",
+  NUMPAD5: "NUMPAD5",
+  NUM_FIVE: "NUMPAD5",
+  NUMPAD6: "NUMPAD6",
+  NUM_SIX: "NUMPAD6",
+  NUMPAD7: "NUMPAD7",
+  NUM_SEVEN: "NUMPAD7",
+  NUMPAD8: "NUMPAD8",
+  NUM_EIGHT: "NUMPAD8",
+  NUMPAD9: "NUMPAD9",
+  NUM_NINE: "NUMPAD9",
+  MULTIPLY: "MULTIPLY",
+  NUM_MULTIPLY: "MULTIPLY",
+  ADD: "ADD",
+  NUM_PLUS: "ADD",
+  SEPARATOR: "SEPARATOR",
+  SUBTRACT: "SUBTRACT",
+  NUM_MINUS: "SUBTRACT",
+  DECIMAL: "DECIMAL",
+  NUM_PERIOD: "DECIMAL",
+  DIVIDE: "DIVIDE",
+  NUM_DIVISION: "DIVIDE",
+
+  F1: "F1",
+  F2: "F2",
+  F3: "F3",
+  F4: "F4",
+  F5: "F5",
+  F6: "F6",
+  F7: "F7",
+  F8: "F8",
+  F9: "F9",
+  F10: "F10",
+  F11: "F11",
+  F12: "F12",
+
+  META: "META",
+  COMMAND: "COMMAND"
+};
+
 function defaultExtension() {
   return this.options.defaultExtension;
 }
@@ -205,6 +295,7 @@ this.options = {
   header:
       'from selenium import webdriver\n' +
           'from selenium.webdriver.common.by import By\n' +
+          'from selenium.webdriver.common.keys import Keys\n' +
           'from selenium.webdriver.support.ui import Select\n' +
           'from selenium.common.exceptions import NoSuchElementException\n' +
           'import unittest, time, re\n' +
@@ -404,7 +495,7 @@ WDAPI.Element.prototype.isSelected = function() {
 };
 
 WDAPI.Element.prototype.sendKeys = function(text) {
-  return this.ref + ".send_keys(" + xlateArgument(text) + ")";
+  return this.ref + ".send_keys(" + xlateArgument(text, 'args') + ")";
 };
 
 WDAPI.Element.prototype.submit = function() {

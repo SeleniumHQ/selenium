@@ -20,6 +20,7 @@
  */
 
 goog.provide('core.patternMatcher');
+goog.provide('core.patternMatcher.Strategy');
 
 goog.require('core.Error');
 
@@ -168,7 +169,8 @@ core.patternMatcher.against = function(pattern) {
   if (result) {
     var possibleNewStrategyName = result[1];
     var possibleNewPattern = result[2];
-    if (core.patternMatcher.KNOWN_STRATEGIES_[possibleNewStrategyName.toLowerCase()]) {
+    if (core.patternMatcher.KNOWN_STRATEGIES_[
+        possibleNewStrategyName.toLowerCase()]) {
       strategyName = possibleNewStrategyName.toLowerCase();
       pattern = possibleNewPattern;
     }

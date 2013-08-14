@@ -32,6 +32,8 @@ function saveOptions() {
   }
   updateFormatOptions();
   options['locatorBuildersOrder'] = this.locatorBuilderList.getListItems().join(',');
+  this.pluginManager.updatePlugins(this.plugins);
+  this.pluginManager.save(options);
   SeleniumIDE.Loader.getEditors().forEach(function(editor) {
     editor.app.setOptions(options);
   });
@@ -40,19 +42,19 @@ function saveOptions() {
 }
 
 function loadFromOptions(options) {
-  var name;
-  for (name in options) {
-    var e = document.getElementById(name);
+  var key;
+  for (key in options) {
+    var e = document.getElementById(key);
     if (e != null) {
       if (e.checked != undefined) {
-        e.checked = options[name] == 'true';
+        e.checked = options[key] == 'true';
 
         //initialize the reload-button state
-        if (name == "showDeveloperTools") {
+        if (key == "showDeveloperTools") {
           updateReloadButton(e.checked);
         }
       } else {
-        e.value = options[name];
+        e.value = options[key];
       }
     }
   }
@@ -61,9 +63,9 @@ function loadFromOptions(options) {
 function loadDefaultOptions() {
   if (confirm(Message("options.confirmLoadDefaultOptions"))) {
     loadFromOptions(Preferences.DEFAULT_OPTIONS);
-    for (name in this.options) {
-      if (/^formats\./.test(name)) {
-        delete this.options[name];
+    for (key in this.options) {
+      if (/^formats\./.test(key)) {
+        delete this.options[key];
       }
     }
     if (this.format) {
@@ -73,14 +75,24 @@ function loadDefaultOptions() {
       //By design the new locators will be temporarily lost. The missing locators will be automatically added when the options are saved
       this.locatorBuilderList.reload(options['locatorBuildersOrder'].split(','));
     }
+    //TODO set plugin defaults
   }
+}
+
+function getPluginManager(options) {
+  var editor = SeleniumIDE.Loader.getTopEditor();
+  if (editor && editor.pluginManager) {
+    return editor.pluginManager;
+  }
+  return new PluginManager(options);
 }
 
 function loadOptions() {
   var options = Preferences.load();
-  loadFromOptions(options);
-  this.formats = new FormatCollection(options);
   this.options = options;
+  loadFromOptions(options);
+  this.pluginManager = getPluginManager(options);
+  this.formats = new FormatCollection(options, this.pluginManager);
 
   loadFormatList();
   //Samit: Enh: Selected the options of the current format if available
@@ -92,9 +104,20 @@ function loadOptions() {
 
   //Convert our normal listbox into a drag and drop reordered listbox
   this.locatorBuilderList = new DnDReorderedListbox(window.document.getElementById('locatorBuilder-list'), options['locatorBuildersOrder'].split(','));
+  this.pluginErrors = this.pluginManager.errors;
+  this.plugins = this.pluginManager.getPluginCollection();
+//  this.plugins.callWhenReady(loadPluginList, this); //Samit: Enh: Work with async Addon Manager for Firefox 4
+  loadPluginsWhenReady(this.plugins, this); //For some reason the above call stopped working, my guess is it is due to a different window context
+}
 
-  this.plugins = new PluginCollection(this.Preferences.getString("plugins"));
-  this.plugins.callWhenReady(loadPluginList, this); //Samit: Enh: Work with async Addon Manager for Firefox 4
+function loadPluginsWhenReady(plugins, win) {
+  if (!plugins.isReady()) {
+    setTimeout(function() {
+      loadPluginsWhenReady(plugins, win);
+    }, 100);
+  } else {
+    win.loadPluginList();
+  }
 }
 
 function loadFormatList() {
@@ -125,13 +148,13 @@ function chooseFile(target) {
 
 function updateFormatOptions() {
   if (this.format && this.format.options) {
-    for (name in this.format.options) {
-      var e = document.getElementById("options_" + name);
+    for (key in this.format.options) {
+      var e = document.getElementById("options_" + key);
       if (e) {
         if (e.checked != undefined) {
-          this.options["formats." + this.formatInfo.id + "." + name] = e.checked.toString();
+          this.options["formats." + this.formatInfo.id + "." + key] = e.checked.toString();
         } else {
-          this.options["formats." + this.formatInfo.id + "." + name] = e.value;
+          this.options["formats." + this.formatInfo.id + "." + key] = e.value;
         }
       }
     }
@@ -185,12 +208,12 @@ function showFormatDialog() {
   configBox.parentNode.replaceChild(newConfigBox, configBox);
   configBox = newConfigBox;
   if (format.options) {
-    for (name in format.options) {
-      var e = document.getElementById("options_" + name);
+    for (key in format.options) {
+      var e = document.getElementById("options_" + key);
       if (e) {
-        var value = this.options["formats." + formatInfo.id + "." + name];
+        var value = this.options["formats." + formatInfo.id + "." + key];
         if (value == null) {
-          value = format.options[name];
+          value = format.options[key];
         }
         if (e.checked != undefined) {
           e.checked = 'true' == value;
@@ -337,14 +360,13 @@ function updateReloadButton(show) {
 //
 function loadPluginList() {
   var list = getClearedList("plugin-list");
-  var p;
-  for (var j = 0; j < this.plugins.plugins.length; j++) {
-    p = this.plugins.plugins[j];
+  this.plugins.forEach(function(p) {
     list.appendItem(p.name, p.id);
-  }
+  });
 
-  list = document.getElementById("plugin-list");
-  selectPlugin(list.getItemAtIndex(0).value);
+  if (list.itemCount > 0) {
+    selectPlugin(list.getItemAtIndex(0).value);
+  }
 }
 
 function selectPlugin(id) {
@@ -379,7 +401,9 @@ function showPluginInfo() {
   var pluginId = document.getElementById("plugin-list").value;
   var pluginInfo = this.plugins.findPlugin(pluginId);
 
-  document.getElementById("plugin-name").value = pluginInfo.name;
+  var pluginName = document.getElementById("plugin-name");
+  pluginName.value = pluginInfo.name;
+  pluginName.className = '';
   var content = '<description>' + pluginInfo.description + '</description>';
   content += '<separator class="thin"/><description>Version ' + pluginInfo.version + '</description>';
   content += '<separator class="thin"/>' + '<description>Created By ' + pluginInfo.creator + '</description>';
@@ -389,6 +413,16 @@ function showPluginInfo() {
   if (pluginInfo.homepageURL && pluginInfo.homepageURL.length > 0) {
     content += '<label class="text-link" href="' + pluginInfo.homepageURL + '" value="Visit website" />';
   }
+  content += '<separator class="thin"/><checkbox id="disablePlugin" label="Disable code provided by this plugin"/>';
+  content += '<description>A restart of Selenium IDE is required if changed.</description>';
+  if (pluginInfo.data.options.autoDisabled) {
+    pluginName.className = 'pluginError';
+    content += '<description class="error">There were errors loading this plugin. The plugin provided code has been disabled. Clear the disabled checkbox if you think the problem has been solved. Please contact the plugin author for fixing this issue.</description>';
+  }
+  var errors = this.pluginErrors.getPluginErrors(pluginInfo.id);
+  if (errors.length > 0) {
+    content += '<textbox id="pluginErrors" multiline="true" readonly="true" rows="5" />';
+  }
   var infoBox = document.getElementById("plugin-info");
   var xml = '<vbox id="plugin-info" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">' + content + '</vbox>';
   var parser = new DOMParser();
@@ -397,4 +431,14 @@ function showPluginInfo() {
   // when the user clicks on the buttons or textboxes. I haven't figured out the reason, 
   // but as a workaround I'll just re-create the element and make a deep copy.
   infoBox.parentNode.replaceChild(copyElement(document, element), infoBox);
+
+  if (errors.length > 0) {
+    //TODO improve error reporting by showing more errors and details
+    document.getElementById('pluginErrors').value = errors[0].error;
+  }
+  var checkbox = document.getElementById('disablePlugin');
+  checkbox.checked = pluginInfo.data.options.disabled;
+  checkbox.addEventListener("click", function(event) {
+    pluginInfo.data.options.disabled = checkbox.checked;
+  }, false);
 }

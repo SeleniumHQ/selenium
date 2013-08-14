@@ -20,8 +20,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
@@ -36,10 +37,13 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ByChainedTest extends MockTestBase {
+public class ByChainedTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+  
   @Test
   public void findElementZeroBy() {
-    final AllDriver driver = mock(AllDriver.class);
+    final AllDriver driver = mockery.mock(AllDriver.class);
 
     ByChained by = new ByChained();
     try {
@@ -52,7 +56,7 @@ public class ByChainedTest extends MockTestBase {
 
   @Test
   public void findElementsZeroBy() {
-    final AllDriver driver = mock(AllDriver.class);
+    final AllDriver driver = mockery.mock(AllDriver.class);
 
     ByChained by = new ByChained();
     assertThat(by.findElements(driver),
@@ -61,15 +65,15 @@ public class ByChainedTest extends MockTestBase {
 
   @Test
   public void findElementOneBy() {
-    final AllDriver driver = mock(AllDriver.class);
-    final WebElement elem1 = mock(WebElement.class, "webElement1");
-    final WebElement elem2 = mock(WebElement.class, "webElement2");
+    final AllDriver driver = mockery.mock(AllDriver.class);
+    final WebElement elem1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement elem2 = mockery.mock(WebElement.class, "webElement2");
     final List<WebElement> elems12 = new ArrayList<WebElement>();
     elems12.add(elem1);
     elems12.add(elem2);
 
-    checking(new Expectations() {{
-      one(driver).findElementsByName("cheese");
+    mockery.checking(new Expectations() {{
+      oneOf(driver).findElementsByName("cheese");
       will(returnValue(elems12));
     }});
 
@@ -79,15 +83,15 @@ public class ByChainedTest extends MockTestBase {
 
   @Test
   public void findElementsOneBy() {
-    final AllDriver driver = mock(AllDriver.class);
-    final WebElement elem1 = mock(WebElement.class, "webElement1");
-    final WebElement elem2 = mock(WebElement.class, "webElement2");
+    final AllDriver driver = mockery.mock(AllDriver.class);
+    final WebElement elem1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement elem2 = mockery.mock(WebElement.class, "webElement2");
     final List<WebElement> elems12 = new ArrayList<WebElement>();
     elems12.add(elem1);
     elems12.add(elem2);
 
-    checking(new Expectations() {{
-      one(driver).findElementsByName("cheese");
+    mockery.checking(new Expectations() {{
+      oneOf(driver).findElementsByName("cheese");
       will(returnValue(elems12));
     }});
 
@@ -97,11 +101,11 @@ public class ByChainedTest extends MockTestBase {
 
   @Test
   public void findElementOneByEmpty() {
-    final AllDriver driver = mock(AllDriver.class);
+    final AllDriver driver = mockery.mock(AllDriver.class);
     final List<WebElement> elems = new ArrayList<WebElement>();
 
-    checking(new Expectations() {{
-      one(driver).findElementsByName("cheese");
+    mockery.checking(new Expectations() {{
+      oneOf(driver).findElementsByName("cheese");
       will(returnValue(elems));
     }});
 
@@ -116,11 +120,11 @@ public class ByChainedTest extends MockTestBase {
 
   @Test
   public void findElementsOneByEmpty() {
-    final AllDriver driver = mock(AllDriver.class);
+    final AllDriver driver = mockery.mock(AllDriver.class);
     final List<WebElement> elems = new ArrayList<WebElement>();
 
-    checking(new Expectations() {{
-      one(driver).findElementsByName("cheese");
+    mockery.checking(new Expectations() {{
+      oneOf(driver).findElementsByName("cheese");
       will(returnValue(elems));
     }});
 
@@ -130,12 +134,12 @@ public class ByChainedTest extends MockTestBase {
 
   @Test
   public void findElementTwoBy() {
-    final AllDriver driver = mock(AllDriver.class);
-    final WebElement elem1 = mock(AllElement.class, "webElement1");
-    final WebElement elem2 = mock(AllElement.class, "webElement2");
-    final WebElement elem3 = mock(AllElement.class, "webElement3");
-    final WebElement elem4 = mock(AllElement.class, "webElement4");
-    final WebElement elem5 = mock(AllElement.class, "webElement5");
+    final AllDriver driver = mockery.mock(AllDriver.class);
+    final WebElement elem1 = mockery.mock(AllElement.class, "webElement1");
+    final WebElement elem2 = mockery.mock(AllElement.class, "webElement2");
+    final WebElement elem3 = mockery.mock(AllElement.class, "webElement3");
+    final WebElement elem4 = mockery.mock(AllElement.class, "webElement4");
+    final WebElement elem5 = mockery.mock(AllElement.class, "webElement5");
     final List<WebElement> elems12 = new ArrayList<WebElement>();
     elems12.add(elem1);
     elems12.add(elem2);
@@ -148,12 +152,12 @@ public class ByChainedTest extends MockTestBase {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    checking(new Expectations() {{
-      one(driver).findElementsByName("cheese");
+    mockery.checking(new Expectations() {{
+      oneOf(driver).findElementsByName("cheese");
       will(returnValue(elems12));
-      one(elem1).findElements(By.name("photo"));
+      oneOf(elem1).findElements(By.name("photo"));
       will(returnValue(elems34));
-      one(elem2).findElements(By.name("photo"));
+      oneOf(elem2).findElements(By.name("photo"));
       will(returnValue(elems5));
     }});
 
@@ -163,12 +167,12 @@ public class ByChainedTest extends MockTestBase {
 
   @Test
   public void findElementTwoByEmptyParent() {
-    final AllDriver driver = mock(AllDriver.class);
-    final WebElement elem1 = mock(WebElement.class, "webElement1");
-    final WebElement elem2 = mock(AllElement.class, "webElement2");
-    final WebElement elem3 = mock(AllElement.class, "webElement3");
-    final WebElement elem4 = mock(AllElement.class, "webElement4");
-    final WebElement elem5 = mock(AllElement.class, "webElement5");
+    final AllDriver driver = mockery.mock(AllDriver.class);
+    final WebElement elem1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement elem2 = mockery.mock(AllElement.class, "webElement2");
+    final WebElement elem3 = mockery.mock(AllElement.class, "webElement3");
+    final WebElement elem4 = mockery.mock(AllElement.class, "webElement4");
+    final WebElement elem5 = mockery.mock(AllElement.class, "webElement5");
 
     final List<WebElement> elems = new ArrayList<WebElement>();
     final List<WebElement> elems12 = new ArrayList<WebElement>();
@@ -183,8 +187,8 @@ public class ByChainedTest extends MockTestBase {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    checking(new Expectations() {{
-      one(driver).findElementsByName("cheese");
+    mockery.checking(new Expectations() {{
+      oneOf(driver).findElementsByName("cheese");
       will(returnValue(elems));
     }});
 
@@ -199,12 +203,12 @@ public class ByChainedTest extends MockTestBase {
 
   @Test
   public void findElementsTwoByEmptyParent() {
-    final AllDriver driver = mock(AllDriver.class);
-    final WebElement elem1 = mock(WebElement.class, "webElement1");
-    final WebElement elem2 = mock(AllElement.class, "webElement2");
-    final WebElement elem3 = mock(AllElement.class, "webElement3");
-    final WebElement elem4 = mock(AllElement.class, "webElement4");
-    final WebElement elem5 = mock(AllElement.class, "webElement5");
+    final AllDriver driver = mockery.mock(AllDriver.class);
+    final WebElement elem1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement elem2 = mockery.mock(AllElement.class, "webElement2");
+    final WebElement elem3 = mockery.mock(AllElement.class, "webElement3");
+    final WebElement elem4 = mockery.mock(AllElement.class, "webElement4");
+    final WebElement elem5 = mockery.mock(AllElement.class, "webElement5");
 
     final List<WebElement> elems = new ArrayList<WebElement>();
     final List<WebElement> elems12 = new ArrayList<WebElement>();
@@ -219,8 +223,8 @@ public class ByChainedTest extends MockTestBase {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    checking(new Expectations() {{
-      one(driver).findElementsByName("cheese");
+    mockery.checking(new Expectations() {{
+      oneOf(driver).findElementsByName("cheese");
       will(returnValue(elems));
     }});
 
@@ -230,12 +234,12 @@ public class ByChainedTest extends MockTestBase {
 
   @Test
   public void findElementTwoByEmptyChild() {
-    final AllDriver driver = mock(AllDriver.class);
-    final WebElement elem1 = mock(WebElement.class, "webElement1");
-    final WebElement elem2 = mock(AllElement.class, "webElement2");
-    final WebElement elem3 = mock(AllElement.class, "webElement3");
-    final WebElement elem4 = mock(AllElement.class, "webElement4");
-    final WebElement elem5 = mock(AllElement.class, "webElement5");
+    final AllDriver driver = mockery.mock(AllDriver.class);
+    final WebElement elem1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement elem2 = mockery.mock(AllElement.class, "webElement2");
+    final WebElement elem3 = mockery.mock(AllElement.class, "webElement3");
+    final WebElement elem4 = mockery.mock(AllElement.class, "webElement4");
+    final WebElement elem5 = mockery.mock(AllElement.class, "webElement5");
 
     final List<WebElement> elems = new ArrayList<WebElement>();
     final List<WebElement> elems12 = new ArrayList<WebElement>();
@@ -250,12 +254,12 @@ public class ByChainedTest extends MockTestBase {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    checking(new Expectations() {{
-      one(driver).findElementsByName("cheese");
+    mockery.checking(new Expectations() {{
+      oneOf(driver).findElementsByName("cheese");
       will(returnValue(elems12));
-      one(elem1).findElements(By.name("photo"));
+      oneOf(elem1).findElements(By.name("photo"));
       will(returnValue(elems));
-      one(elem2).findElements(By.name("photo"));
+      oneOf(elem2).findElements(By.name("photo"));
       will(returnValue(elems5));
     }});
 
@@ -265,12 +269,12 @@ public class ByChainedTest extends MockTestBase {
 
   @Test
   public void findElementsTwoByEmptyChild() {
-    final AllDriver driver = mock(AllDriver.class);
-    final WebElement elem1 = mock(WebElement.class, "webElement1");
-    final WebElement elem2 = mock(AllElement.class, "webElement2");
-    final WebElement elem3 = mock(AllElement.class, "webElement3");
-    final WebElement elem4 = mock(AllElement.class, "webElement4");
-    final WebElement elem5 = mock(AllElement.class, "webElement5");
+    final AllDriver driver = mockery.mock(AllDriver.class);
+    final WebElement elem1 = mockery.mock(WebElement.class, "webElement1");
+    final WebElement elem2 = mockery.mock(AllElement.class, "webElement2");
+    final WebElement elem3 = mockery.mock(AllElement.class, "webElement3");
+    final WebElement elem4 = mockery.mock(AllElement.class, "webElement4");
+    final WebElement elem5 = mockery.mock(AllElement.class, "webElement5");
 
     final List<WebElement> elems = new ArrayList<WebElement>();
     final List<WebElement> elems12 = new ArrayList<WebElement>();
@@ -285,12 +289,12 @@ public class ByChainedTest extends MockTestBase {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    checking(new Expectations() {{
-      one(driver).findElementsByName("cheese");
+    mockery.checking(new Expectations() {{
+      oneOf(driver).findElementsByName("cheese");
       will(returnValue(elems12));
-      one(elem1).findElements(By.name("photo"));
+      oneOf(elem1).findElements(By.name("photo"));
       will(returnValue(elems));
-      one(elem2).findElements(By.name("photo"));
+      oneOf(elem2).findElements(By.name("photo"));
       will(returnValue(elems5));
     }});
 

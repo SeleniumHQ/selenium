@@ -28,7 +28,6 @@ goog.provide('goog.fx.Dragger.EventType');
 
 goog.require('goog.dom');
 goog.require('goog.events');
-goog.require('goog.events.BrowserEvent.MouseButton');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
@@ -61,6 +60,7 @@ goog.fx.Dragger = function(target, opt_handle, opt_limits) {
 
   this.document_ = goog.dom.getOwnerDocument(target);
   this.eventHandler_ = new goog.events.EventHandler(this);
+  this.registerDisposable(this.eventHandler_);
 
   // Add listener. Do not use the event handler here since the event handler is
   // used for listeners added and removed during the drag operation.
@@ -80,7 +80,7 @@ goog.fx.Dragger.HAS_SET_CAPTURE_ =
     // IE and Gecko after 1.9.3 has setCapture
     // WebKit does not yet: https://bugs.webkit.org/show_bug.cgi?id=27330
     goog.userAgent.IE ||
-    goog.userAgent.GECKO && goog.userAgent.isVersion('1.9.3');
+    goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9.3');
 
 
 /**
@@ -237,14 +237,6 @@ goog.fx.Dragger.prototype.document_;
 
 
 /**
- * Event handler used to simplify managing events.
- * @type {goog.events.EventHandler}
- * @private
- */
-goog.fx.Dragger.prototype.eventHandler_;
-
-
-/**
  * The SCROLL event target used to make drag element follow scrolling.
  * @type {EventTarget}
  * @private
@@ -376,7 +368,6 @@ goog.fx.Dragger.prototype.disposeInternal = function() {
 
   this.target = null;
   this.handle = null;
-  this.eventHandler_ = null;
 };
 
 
@@ -531,13 +522,6 @@ goog.fx.Dragger.prototype.endDrag = function(e, opt_dragCanceled) {
         dragCanceled));
   } else {
     this.dispatchEvent(goog.fx.Dragger.EventType.EARLY_CANCEL);
-  }
-
-  // Call preventDefault to prevent mouseup from being raised if this is a
-  // touchend event.
-  if (e.type == goog.events.EventType.TOUCHEND ||
-      e.type == goog.events.EventType.TOUCHCANCEL) {
-    e.preventDefault();
   }
 };
 

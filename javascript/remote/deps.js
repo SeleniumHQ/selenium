@@ -29,6 +29,7 @@ goog.addDependency(
     // dependency graph.
     [
       'goog.debug.ErrorHandler',
+      'goog.events.EventWrapper',
       'goog.testing.JsUnitException'
     ],
     // And symbols we require, which is always empty here.

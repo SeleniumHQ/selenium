@@ -59,11 +59,9 @@ wgxpath.FilterExpr.prototype.evaluate = function(ctx) {
 /**
  * @override
  */
-wgxpath.FilterExpr.prototype.toString = function(opt_indent) {
-  var indent = opt_indent || '';
-  var text = indent + 'Filter: ' + '\n';
-  indent += wgxpath.Expr.INDENT;
-  text += this.primary_.toString(indent);
-  text += this.predicates_.toString(indent);
+wgxpath.FilterExpr.prototype.toString = function() {
+  var text = 'Filter:';
+  text += wgxpath.Expr.indent(this.primary_);
+  text += wgxpath.Expr.indent(this.predicates_);
   return text;
 };

@@ -28,13 +28,10 @@ goog.provide('goog.dom.browserrange.IeRange');
 goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
-goog.require('goog.dom.NodeIterator');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.RangeEndpoint');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.browserrange.AbstractRange');
-goog.require('goog.iter');
-goog.require('goog.iter.StopIteration');
 goog.require('goog.string');
 
 
@@ -436,7 +433,7 @@ goog.dom.browserrange.IeRange.prototype.findDeepestContainer_ = function(node) {
       var inChildRange = isNativeInRangeErratic ?
           (this.compareBrowserRangeEndpoints(childRange, start, start) >= 0 &&
               this.compareBrowserRangeEndpoints(childRange, start, end) <= 0) :
-           this.range_.inRange(childRange);
+          this.range_.inRange(childRange);
       if (inChildRange) {
         return this.findDeepestContainer_(child);
       }

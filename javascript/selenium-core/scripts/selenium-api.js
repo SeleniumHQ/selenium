@@ -415,14 +415,24 @@ Selenium.prototype.doContextMenuAt = function(locator, coordString) {
 
 Selenium.prototype.doFireEvent = function(locator, eventName) {
     /**
-   * Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot;
-   * handler.
-   *
-   * @param locator an <a href="#locators">element locator</a>
-   * @param eventName the event name, e.g. "focus" or "blur"
-   */
+     * Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot;
+     * handler.
+     *
+     * @param locator an <a href="#locators">element locator</a>
+     * @param eventName the event name, e.g. "focus" or "blur"
+     */
     var element = this.browserbot.findElement(locator);
-    triggerEvent(element, eventName, false);
+    var doc = goog.dom.getOwnerDocument(element);
+    var view = goog.dom.getWindow(doc);
+
+    if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { // IE
+        var ieEvent = createEventObject(element, false, false, false, false);
+        element.fireEvent('on' + eventName, ieEvent);
+    } else {
+        var evt = doc.createEvent('HTMLEvents');
+        evt.initEvent(eventName, true, true);
+        element.dispatchEvent(evt);
+    }
 };
 
 Selenium.prototype.doFocus = function(locator) {
@@ -434,7 +444,7 @@ Selenium.prototype.doFocus = function(locator) {
     if (element.focus) {
         element.focus();
     } else {
-         triggerEvent(element, "focus", false);
+         bot.events.fire(element, bot.events.EventType.FOCUS);
     }
 }
 
@@ -2122,7 +2132,7 @@ Selenium.prototype.doSetCursorPosition = function(locator, position) {
         element.setSelectionRange(/*start*/position,/*end*/position);
    }
    else if( element.createTextRange ) {
-      triggerEvent(element, 'focus', false);
+      bot.events.fire(element, bot.events.EventType.FOCUS);
       var range = element.createTextRange();
       range.collapse(true);
       range.moveEnd('character',position);

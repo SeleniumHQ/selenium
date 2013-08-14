@@ -39,7 +39,7 @@
  * re-encoding.
  *
  * Uses features of RFC 3986 for parsing/formatting URIs:
- *   http://gbiv.com/protocols/uri/rfc/rfc3986.html
+ *   http://www.ietf.org/rfc/rfc3986.txt
  *
  * @author gboyer@google.com (Garrett Boyer) - The "lightened" design.
  * @author msamuel@google.com (Mike Samuel) - Domain knowledge and regexes.
@@ -127,7 +127,7 @@ goog.uri.utils.buildFromEncodedParts = function(opt_scheme, opt_userInfo,
 /**
  * A regular expression for breaking a URI into its component parts.
  *
- * {@link http://www.gbiv.com/protocols/uri/rfc/rfc3986.html#RFC2234} says
+ * {@link http://www.ietf.org/rfc/rfc3986.txt} says in Appendix B
  * As the "first-match-wins" algorithm is identical to the "greedy"
  * disambiguation method used by POSIX regular expressions, it is natural and
  * commonplace to use a regular expression for parsing the potential five
@@ -195,10 +195,9 @@ goog.uri.utils.splitRe_ = new RegExp(
     ':)?' +
     '(?://' +
       '(?:([^/?#]*)@)?' +                 // userInfo
-      '([\\w\\d\\-\\u0100-\\uffff.%]*)' + // domain - restrict to letters,
-                                          // digits, dashes, dots, percent
-                                          // escapes, and unicode characters.
+      '([^/#?]*?)' +                      // domain
       '(?::([0-9]+))?' +                  // port
+      '(?=[/#?]|$)' +                     // authority-terminating character
     ')?' +
     '([^?#]+)?' +                         // path
     '(?:\\?([^#]*))?' +                   // query
@@ -237,6 +236,7 @@ goog.uri.utils.ComponentIndex = {
  *     arbitrary strings may still look like path names.
  */
 goog.uri.utils.split = function(uri) {
+  goog.uri.utils.phishingProtection_();
 
   // See @return comment -- never null.
   return /** @type {!Array.<string|undefined>} */ (
@@ -244,6 +244,56 @@ goog.uri.utils.split = function(uri) {
 };
 
 
+/**
+ * Safari has a nasty bug where if you have an http URL with a username, e.g.,
+ * http://evil.com%2F@google.com/
+ * Safari will report that window.location.href is
+ * http://evil.com/google.com/
+ * so that anyone who tries to parse the domain of that URL will get
+ * the wrong domain. We've seen exploits where people use this to trick
+ * Safari into loading resources from evil domains.
+ *
+ * To work around this, we run a little "Safari phishing check", and throw
+ * an exception if we see this happening.
+ *
+ * There is no convenient place to put this check. We apply it to
+ * anyone doing URI parsing on Webkit. We're not happy about this, but
+ * it fixes the problem.
+ *
+ * This should be removed once Safari fixes their bug.
+ *
+ * Exploit reported by Masato Kinugawa.
+ *
+ * @type {boolean}
+ * @private
+ */
+goog.uri.utils.needsPhishingProtection_ = goog.userAgent.WEBKIT;
+
+
+/**
+ * Check to see if the user is being phished.
+ * @private
+ */
+goog.uri.utils.phishingProtection_ = function() {
+  if (goog.uri.utils.needsPhishingProtection_) {
+    // Turn protection off, so that we don't recurse.
+    goog.uri.utils.needsPhishingProtection_ = false;
+
+    // Use quoted access, just in case the user isn't using location externs.
+    var location = goog.global['location'];
+    if (location) {
+      var href = location['href'];
+      if (href) {
+        var domain = goog.uri.utils.getDomain(href);
+        if (domain && domain != location['hostname']) {
+          // Phishing attack
+          goog.uri.utils.needsPhishingProtection_ = true;
+          throw Error();
+        }
+      }
+    }
+  }
+};
 
 
 /**
@@ -746,13 +796,17 @@ goog.uri.utils.appendParamsFromMap = function(uri, map) {
  *
  * @param {string} uri The original URI, which may already have query data.
  * @param {string} key The key, which must already be URI encoded.
- * @param {*} value The value, which will be stringized and encoded (assumed
- *     not already to be encoded).
+ * @param {*=} opt_value The value, which will be stringized and encoded
+ *     (assumed not already to be encoded).  If omitted, undefined, or null, the
+ *     key will be added as a valueless parameter.
  * @return {string} The URI with the query parameter added.
  */
-goog.uri.utils.appendParam = function(uri, key, value) {
-  return goog.uri.utils.appendQueryData_(
-      [uri, '&', key, '=', goog.string.urlEncode(value)]);
+goog.uri.utils.appendParam = function(uri, key, opt_value) {
+  var paramArr = [uri, '&', key];
+  if (goog.isDefAndNotNull(opt_value)) {
+    paramArr.push('=', goog.string.urlEncode(opt_value));
+  }
+  return goog.uri.utils.appendQueryData_(paramArr);
 };
 
 

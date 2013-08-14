@@ -1,0 +1,13 @@
+java_library(name = 'doubles',
+  srcs = [
+    'StubDriver.java',
+    'StubElement.java',
+  ],
+  deps = [
+    '//java/client/src/org/openqa/selenium:webdriver-api',
+  ],
+  visibility = [
+    '//java/client/test/...',
+    '//java/server/test/...',
+  ],
+)

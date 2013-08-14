@@ -81,7 +81,7 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    SeleniumMouseTest.class, // fails in IE
+    SeleniumMouseTest.class,
     TestAddLocationStrategy.class,
     TestAddSelection.class,
 //    TestAlerts.class, // alerts
@@ -89,7 +89,7 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
     TestBrowserVersion.class,
     TestCheckUncheck.class,
     TestClick.class,
-    TestClickAt.class, // fails in IE
+    TestClickAt.class,
 //    TestClickBlankTarget.class,
     TestClickJavascriptHref.class, // fails in IE
 //    TestClickJavascriptHrefChrome.class, // alerts
@@ -100,7 +100,7 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
 //    TestCookie.class,
     TestCssLocators.class,
 //    TestCursorPosition.class,
-    TestDojoDragAndDrop.class,
+    TestDojoDragAndDrop.class, // fails in IE
 //    TestDomainCookie.class,
 //    TestDragAndDrop.class,
     TestEditable.class,
@@ -156,7 +156,7 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
 //    TestUseXpathLibrary.class,
     TestVerifications.class,
     TestVisibility.class,
-    TestWait.class, // fails in IE
+    TestWait.class,
     TestWaitFor.class,
     TestWaitForNot.class,
     TestWaitInPopupWindow.class,

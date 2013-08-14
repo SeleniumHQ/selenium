@@ -127,11 +127,11 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#action">action</a></strong></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a></code></td>
+<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyboard">keyboard</a></strong></code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</a></code></td>
+<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#mouse">mouse</a></strong></code>&nbsp;</td>
 </tr>
 </table>
@@ -149,13 +149,13 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#Actions(org.openqa.selenium.Keyboard)">Actions</a></strong>(<a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a>&nbsp;keyboard)</code>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#Actions(org.openqa.selenium.interactions.Keyboard)">Actions</a></strong>(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard)</code>
 <div class="block">Only used by the TouchActions class.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#Actions(org.openqa.selenium.Keyboard, org.openqa.selenium.Mouse)">Actions</a></strong>(<a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a>&nbsp;keyboard,
-       <a href="../../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</a>&nbsp;mouse)</code>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#Actions(org.openqa.selenium.interactions.Keyboard, org.openqa.selenium.interactions.Mouse)">Actions</a></strong>(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard,
+       <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a>&nbsp;mouse)</code>
 <div class="block">A constructor that should only be used when the keyboard or mouse were extended to provide
  additional functionality (for example, dragging-and-dropping from the desktop).</div>
 </td>
@@ -362,7 +362,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>mouse</h4>
-<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</a> mouse</pre>
+<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a> mouse</pre>
 </li>
 </ul>
 <a name="keyboard">
@@ -371,7 +371,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>keyboard</h4>
-<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a> keyboard</pre>
+<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a> keyboard</pre>
 </li>
 </ul>
 <a name="action">
@@ -402,26 +402,26 @@ extends java.lang.Object</pre>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>driver</code> - the driver providing the implementations to use.</dd></dl>
 </li>
 </ul>
-<a name="Actions(org.openqa.selenium.Keyboard, org.openqa.selenium.Mouse)">
+<a name="Actions(org.openqa.selenium.interactions.Keyboard, org.openqa.selenium.interactions.Mouse)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>Actions</h4>
-<pre>public&nbsp;Actions(<a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a>&nbsp;keyboard,
-       <a href="../../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</a>&nbsp;mouse)</pre>
+<pre>public&nbsp;Actions(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard,
+       <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a>&nbsp;mouse)</pre>
 <div class="block">A constructor that should only be used when the keyboard or mouse were extended to provide
  additional functionality (for example, dragging-and-dropping from the desktop).</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>keyboard</code> - the <a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium"><code>Keyboard</code></a> implementation to delegate to.</dd><dd><code>mouse</code> - the <a href="../../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium"><code>Mouse</code></a> implementation to delegate to.</dd></dl>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>keyboard</code> - the <a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions"><code>Keyboard</code></a> implementation to delegate to.</dd><dd><code>mouse</code> - the <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions"><code>Mouse</code></a> implementation to delegate to.</dd></dl>
 </li>
 </ul>
-<a name="Actions(org.openqa.selenium.Keyboard)">
+<a name="Actions(org.openqa.selenium.interactions.Keyboard)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Actions</h4>
-<pre>public&nbsp;Actions(<a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a>&nbsp;keyboard)</pre>
+<pre>public&nbsp;Actions(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard)</pre>
 <div class="block">Only used by the TouchActions class.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>keyboard</code> - implementation to delegate to.</dd></dl>
 </li>

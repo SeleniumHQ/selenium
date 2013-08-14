@@ -50,7 +50,7 @@ bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
     var text = bot.dom.getVisibleText(element);
     return (opt_isPartial && text.indexOf(target) != -1) || text == target;
   });
-  return (/**@type{Element}*/element);
+  return /**@type{Element}*/ (element);
 };
 
 

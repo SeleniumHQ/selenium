@@ -89,7 +89,7 @@ goog.crypt.Aes = function(key) {
  * @define {boolean} Whether to call test method stubs.  This can be enabled
  *     for unit testing.
  */
-goog.crypt.Aes.ENABLE_TEST_MODE = false;
+goog.define('goog.crypt.Aes.ENABLE_TEST_MODE', false);
 
 
 /**
@@ -231,7 +231,7 @@ goog.crypt.Aes.assertKeyArray_ = function(arr) {
  * Tests can populate this with a callback, and that callback will get called
  * at the start of each round *in both functions encrypt() and decrypt()*.
  * @param {number} roundNum Round number.
- * @param {!Array.<number>} Current state.
+ * @param {!Array.<Array.<number>>} Current state.
  * @private
  */
 goog.crypt.Aes.prototype.testStartRound_ = goog.nullFunction;
@@ -242,7 +242,7 @@ goog.crypt.Aes.prototype.testStartRound_ = goog.nullFunction;
  * each round right after the SubBytes step gets executed *in both functions
  * encrypt() and decrypt()*.
  * @param {number} roundNum Round number.
- * @param {!Array.<number>} Current state.
+ * @param {!Array.<Array.<number>>} Current state.
  * @private
  */
 goog.crypt.Aes.prototype.testAfterSubBytes_ = goog.nullFunction;
@@ -253,7 +253,7 @@ goog.crypt.Aes.prototype.testAfterSubBytes_ = goog.nullFunction;
  * each round right after the ShiftRows step gets executed *in both functions
  * encrypt() and decrypt()*.
  * @param {number} roundNum Round number.
- * @param {!Array.<number>} Current state.
+ * @param {!Array.<Array.<number>>} Current state.
  * @private
  */
 goog.crypt.Aes.prototype.testAfterShiftRows_ = goog.nullFunction;
@@ -264,7 +264,7 @@ goog.crypt.Aes.prototype.testAfterShiftRows_ = goog.nullFunction;
  * each round right after the MixColumns step gets executed *but only in the
  * decrypt() function*.
  * @param {number} roundNum Round number.
- * @param {!Array.<number>} Current state.
+ * @param {!Array.<Array.<number>>} Current state.
  * @private
  */
 goog.crypt.Aes.prototype.testAfterMixColumns_ = goog.nullFunction;
@@ -274,7 +274,7 @@ goog.crypt.Aes.prototype.testAfterMixColumns_ = goog.nullFunction;
  * Tests can populate this with a callback, and that callback will get called
  * each round right after the AddRoundKey step gets executed  encrypt().
  * @param {number} roundNum Round number.
- * @param {!Array.<number>} Current state.
+ * @param {!Array.<Array.<number>>} Current state.
  * @private
  */
 goog.crypt.Aes.prototype.testAfterAddRoundKey_ = goog.nullFunction;
@@ -285,7 +285,7 @@ goog.crypt.Aes.prototype.testAfterAddRoundKey_ = goog.nullFunction;
  * before each round on the round key.  *Gets called in both the encrypt() and
  * decrypt() functions.*
  * @param {number} roundNum Round number.
- * @param {!Array.<Array.<number>>} Computed key schedule.
+ * @param {!Array.<number>} Computed key schedule.
  * @param {number} index The index into the key schedule to test. This is not
  *     necessarily roundNum because the key schedule is used in reverse
  *     in the case of decryption.

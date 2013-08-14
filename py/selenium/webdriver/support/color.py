@@ -119,7 +119,7 @@ class Color(object):
         self.red = int(red)
         self.green = int(green)
         self.blue = int(blue)
-        self.alpha = float(alpha) or 0
+        self.alpha = "1" if float(alpha) == 1 else str(float(alpha) or 0)
 
     @property
     def rgb(self):
@@ -127,8 +127,7 @@ class Color(object):
 
     @property
     def rgba(self):
-        a = "1" if self.alpha == 1 else str(self.alpha)
-        return "rgba(%d, %d, %d, %s)" % (self.red, self.green, self.blue, a)
+        return "rgba(%d, %d, %d, %s)" % (self.red, self.green, self.blue, self.alpha)
 
     @property
     def hex(self):
@@ -147,6 +146,12 @@ class Color(object):
 
     def __hash__(self):
         return hash((self.red, self.green, self.blue, self.alpha))
+
+    def __repr__(self):
+        return "Color(red=%d, green=%d, blue=%d, alpha=%s)" % (self.red, self.green, self.blue, self.alpha)
+
+    def __str__(self):
+        return "Color: %s" % self.rgba
 
 
 # Basic, extended and transparent colour keywords as defined by the W3C HTML4 spec

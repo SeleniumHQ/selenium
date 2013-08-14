@@ -72,27 +72,39 @@ safaridriver.logging.ForwardingHandler.prototype.captureConsoleOutput =
   }
   this.captureConsole_ = true;
 
-  var target = this.target_;
-  console.debug = wrap(console.debug, webdriver.logging.Level.DEBUG);
-  console.error = wrap(console.error, webdriver.logging.Level.SEVERE);
-  console.group = wrap(console.group, webdriver.logging.Level.INFO);
-  console.info = wrap(console.info, webdriver.logging.Level.INFO);
-  console.log = wrap(console.log, webdriver.logging.Level.INFO);
-  console.warn = wrap(console.warn, webdriver.logging.Level.WARNING);
+  if (!window.console) {
+    return;
+  }
 
-  function wrap(nativeFn, level) {
+  var target = this.target_;
+  wrap('debug', webdriver.logging.Level.DEBUG);
+  wrap('error', webdriver.logging.Level.SEVERE);
+  wrap('group', webdriver.logging.Level.INFO);
+  wrap('info', webdriver.logging.Level.INFO);
+  wrap('log', webdriver.logging.Level.INFO);
+  wrap('warn', webdriver.logging.Level.WARNING);
+
+  function wrap(fnName, level) {
+    var nativeFn = console[fnName];
+    if (!nativeFn) {
+      return;
+    }
+
     var fn = function() {
       var args = goog.array.slice(arguments, 0);
-      var message = new safaridriver.message.Log(
-          webdriver.logging.Type.BROWSER,
-          new webdriver.logging.Entry(level, args.join(' ')));
+      var message = new safaridriver.message.Log([
+        new webdriver.logging.Entry(level, args.join(' '),
+            goog.now(), webdriver.logging.Type.BROWSER)
+      ]);
       message.send(target);
       return nativeFn.apply(console, arguments);
     };
+
     fn.toString = function() {
       return nativeFn.toString();
     };
-    return fn;
+
+    console[fnName] = fn;
   }
 };
 
@@ -112,8 +124,8 @@ safaridriver.logging.ForwardingHandler.prototype.forward = function(message) {
  */
 safaridriver.logging.ForwardingHandler.prototype.handleLogRecord_ = function(
     logRecord) {
-  var entry = webdriver.logging.Entry.fromClosureLogRecord(logRecord);
-  var message = new safaridriver.message.Log(
-      webdriver.logging.Type.DRIVER, entry);
+  var entry = webdriver.logging.Entry.fromClosureLogRecord(
+      logRecord, webdriver.logging.Type.DRIVER);
+  var message = new safaridriver.message.Log([entry]);
   this.forward(message);
 };

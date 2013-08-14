@@ -41,7 +41,6 @@ wgxpath.Number.prototype.evaluate = function(ctx) {
 /**
  * @override
  */
-wgxpath.Number.prototype.toString = function(opt_indent) {
-  var indent = opt_indent || '';
-  return indent + 'number: ' + this.value_;
+wgxpath.Number.prototype.toString = function() {
+  return 'Number: ' + this.value_;
 };

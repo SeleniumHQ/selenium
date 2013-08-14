@@ -267,7 +267,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Chrome, "untested user agents")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
         public void ShouldReportKeyCodeOfArrowKeysUpDownEvents()
         {
@@ -624,6 +623,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 allows typing into elements that prevent keydown")]
         public void ShouldNotTypeIntoElementsThatPreventKeyDownEvents()
         {
             driver.Url = javascriptPage;
@@ -663,6 +663,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not support contentEditable yet")]
         public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
         {
             driver.Url = richTextPage;
@@ -685,6 +686,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver 2 does not support contentEditable")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {
             driver.Url = richTextPage;
@@ -722,6 +724,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not support contentEditable yet")]
         public void testShouldBeAbleToTypeIntoEmptyContentEditableElement()
         {
             driver.Url = readOnlyPage;

@@ -69,7 +69,22 @@ class SubmitElementCommandHandler : public IECommandHandler {
 
           if (_wcsicmp(L"submit", type.c_str()) == 0 ||
               _wcsicmp(L"image", type.c_str()) == 0) {
-            element_wrapper->Click(executor.input_manager()->scroll_behavior());
+            Json::Value move_action;
+            move_action["action"] = "moveto";
+            move_action["element"] = element_wrapper->element_id();
+
+            Json::Value click_action;
+            click_action["action"] = "click";
+            click_action["button"] = 0;
+            
+            Json::UInt index = 0;
+            Json::Value actions(Json::arrayValue);
+            actions[index] = move_action;
+            ++index;
+            actions[index] = click_action;
+            
+            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+            status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
             handled_with_native_events = true;
           }
         }
@@ -131,8 +146,15 @@ class SubmitElementCommandHandler : public IECommandHandler {
     script_wrapper.AddArgument(element_wrapper);
     int status_code = script_wrapper.ExecuteAsync(ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS);
     if (status_code != WD_SUCCESS) {
-      std::wstring error = script_wrapper.result().bstrVal;
-      *error_msg = StringUtilities::ToString(error);
+      if (script_wrapper.ResultIsString()) {
+        std::wstring error = script_wrapper.result().bstrVal;
+        *error_msg = StringUtilities::ToString(error);
+      } else {
+        std::string error = "Executing JavaScript submit function returned an";
+        error.append(" unexpected error, but no error could be returned from");
+        error.append(" Internet Explorer's JavaScript engine.");
+        *error_msg = error;
+      }
     }
     return status_code;
   }

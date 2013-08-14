@@ -134,6 +134,78 @@ class TestFirefoxProfile:
         # Default is true. Should remain so.
         assert self.profile2.default_preferences["webdriver_accept_untrusted_certs"] == 'true'
 
+    def test_none_proxy_is_set(self):
+        # The setup gave us a browser but we dont need it
+        self.driver.quit()
+
+        self.profile = webdriver.FirefoxProfile()
+        proxy = None
+
+        try:
+            self.profile.set_proxy(proxy)
+            assert False, "exception after passing empty proxy is expected"
+        except ValueError as e:
+            pass
+
+        assert "network.proxy.type" not in self.profile.default_preferences
+
+    def test_unspecified_proxy_is_set(self):
+        # The setup gave us a browser but we dont need it
+        self.driver.quit()
+
+        self.profile = webdriver.FirefoxProfile()
+        proxy = Proxy()
+
+        self.profile.set_proxy(proxy)
+
+        assert "network.proxy.type" not in self.profile.default_preferences
+
+    def test_manual_proxy_is_set_in_profile(self):
+        # The setup gave us a browser but we dont need it
+        self.driver.quit()
+
+        self.profile = webdriver.FirefoxProfile()
+        proxy = Proxy()
+        proxy.no_proxy = 'localhost, foo.localhost'
+        proxy.http_proxy = 'some.url:1234'
+        proxy.ftp_proxy = None
+        proxy.sslProxy = 'some2.url'
+
+        self.profile.set_proxy(proxy)
+
+        assert self.profile.default_preferences["network.proxy.type"] == '1'
+        assert self.profile.default_preferences["network.proxy.no_proxies_on"] == '"localhost, foo.localhost"'
+        assert self.profile.default_preferences["network.proxy.http"] == '"some.url"'
+        assert self.profile.default_preferences["network.proxy.http_port"] == '1234'
+        assert self.profile.default_preferences["network.proxy.ssl"] == '"some2.url"'
+        assert "network.proxy.ssl_port" not in self.profile.default_preferences
+        assert "network.proxy.ftp" not in self.profile.default_preferences
+
+    def test_pac_proxy_is_set_in_profile(self):
+        # The setup gave us a browser but we dont need it
+        self.driver.quit()
+
+        self.profile = webdriver.FirefoxProfile()
+        proxy = Proxy()
+        proxy.proxy_autoconfig_url = 'http://some.url:12345/path'
+
+        self.profile.set_proxy(proxy)
+
+        assert self.profile.default_preferences["network.proxy.type"] == '2'
+        assert self.profile.default_preferences["network.proxy.autoconfig_url"] == '"http://some.url:12345/path"'
+
+    def test_autodetect_proxy_is_set_in_profile(self):
+        # The setup gave us a browser but we dont need it
+        self.driver.quit()
+
+        self.profile = webdriver.FirefoxProfile()
+        proxy = Proxy()
+        proxy.auto_detect = True
+
+        self.profile.set_proxy(proxy)
+
+        assert self.profile.default_preferences["network.proxy.type"] == '4'
+
     def teardown_method(self, method):
         try:
             self.driver.quit()

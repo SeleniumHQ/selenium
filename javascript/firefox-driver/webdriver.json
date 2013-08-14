@@ -52,6 +52,6 @@
     "javascript.options.showInConsole": true,
     "network.http.max-connections-per-server": 10,
     "webdriver_accept_untrusted_certs": true,
-    "webdriver_assume_untrusted_issuer": true,
+    "webdriver_assume_untrusted_issuer": true
   }
 }

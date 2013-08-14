@@ -29,13 +29,13 @@ module Selenium
           @executable_path = path
         end
 
-        def self.default_service
-          new executable_path, PortProber.above(DEFAULT_PORT)
+        def self.default_service(*extra_args)
+          new executable_path, PortProber.above(DEFAULT_PORT), *extra_args
         end
 
-        def initialize(executable_path, port)
+        def initialize(executable_path, port, *extra_args)
           @uri           = URI.parse "http://#{Platform.localhost}:#{port}"
-          server_command = [executable_path, "--port=#{port}"]
+          server_command = [executable_path, "--port=#{port}", *extra_args]
 
           @process       = ChildProcess.build(*server_command)
           @socket_poller = SocketPoller.new Platform.localhost, port, START_TIMEOUT

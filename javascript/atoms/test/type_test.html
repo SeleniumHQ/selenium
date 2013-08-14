@@ -4,9 +4,9 @@
   <title>type_test</title>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
+    goog.require('bot.Keyboard.Keys');
     goog.require('bot.action');
     goog.require('bot.events');
-    goog.require('bot.Keyboard.Keys');
     goog.require('bot.userAgent');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
@@ -52,6 +52,7 @@
     var expectedFailures;
 
     function setUp() {
+      goog.testing.AsyncTestCase.ControlBreakingException.prototype.isJsUnitException = function() { return true; };
       expectedFailures = new goog.testing.ExpectedFailures();
     }
 
@@ -122,7 +123,7 @@
         // checking IE.
         if (goog.userAgent.IE) {
           assertTrue(inputCount - 4 < parseInt(inputCountBox.value));
-          assertTrue(inputCount >= parseInt(inputCountBox.value));
+          assertTrue(inputCount + 1 >= parseInt(inputCountBox.value));
         } else {
           assertEquals(inputCount, parseInt(inputCountBox.value));
         }
@@ -236,7 +237,8 @@
       runTypingTest(['abcd', HOME, RIGHT, SHIFT, END, DELETE], 'a', 5, 4);
       runTypingTest(['abcd', HOME, END, LEFT, SHIFT, HOME, DELETE], 'd', 5, 4);
       runTypingTest(['abcd', SHIFT, LEFT, LEFT, LEFT, DELETE], 'a', 5, 4);
-      runTypingTest(['abcd', HOME, SHIFT, RIGHT, RIGHT, RIGHT, DELETE], 'd', 5, 4);
+      runTypingTest(
+          ['abcd', HOME, SHIFT, RIGHT, RIGHT, RIGHT, DELETE], 'd', 5, 4);
     }
 
     function testEventCancel() {
@@ -355,7 +357,8 @@
     }
 
     function testEnterTextArea() {
-      var newline = bot.userAgent.IE_DOC_PRE9 ? '\r\n' : '\n';
+      var newline = (bot.userAgent.IE_DOC_PRE9 || (goog.userAgent.OPERA && !goog.userAgent.product.isVersion(12))) ?
+          '\r\n' : '\n';
       var finalText = 'asdf' + newline + 'qwer';
       runTypingTest(['asdf', ENTER, 'qwer'], finalText, 9, 9, ['textarea']);
     }
@@ -452,21 +455,20 @@
       assertFalse(keyboard.isPressed(META));
       assertTrue(keyboard.isPressed(SHIFT));
 
-      expectedFailures.expectFailureFor(
-        goog.userAgent.GECKO &&
-        bot.userAgent.isProductVersion(10) &&
-        !bot.userAgent.isProductVersion(17),
-        'Selection is not updated on LEFT while shift is pressed');
-      expectedFailures.run(function() {
-        bot.action.type(textBox, [LEFT, 'ghi', SHIFT, 'j'], keyboard,
-                        persitModifierKeys);
+      bot.action.type(textBox, [LEFT, 'ghi', SHIFT, 'j'], keyboard,
+                      persitModifierKeys);
 
+      // On Gecko < 17, selection is not updated on LEFT while shift is pressed.
+      if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(17)) {
+        assertEquals('abcdEGHIjF', textBox.value);
+      } else {
         assertEquals('abcdEGHIj', textBox.value);
-        assertFalse(keyboard.isPressed(ALT));
-        assertFalse(keyboard.isPressed(CONTROL));
-        assertFalse(keyboard.isPressed(META));
-        assertFalse(keyboard.isPressed(SHIFT));
-      });
+      }
+
+      assertFalse(keyboard.isPressed(ALT));
+      assertFalse(keyboard.isPressed(CONTROL));
+      assertFalse(keyboard.isPressed(META));
+      assertFalse(keyboard.isPressed(SHIFT));
     }
 
     function browserImplementsDateInputWidget() {
@@ -475,36 +477,39 @@
     }
 
     function testTypeDate() {
-      expectedFailures.expectFailureFor(goog.userAgent.OPERA);
-      expectedFailures.run(function() {
-        var dateInput = document.getElementById("date");
-        dateInput.value = "";
-        bot.action.type(dateInput, "2013-01-01");
-        assertEquals(dateInput.value, "2013-01-01");
-        dateInput.value = "";
-      });
+      if (goog.userAgent.OPERA) {
+        return;
+      }
+
+      var dateInput = document.getElementById("date");
+      dateInput.value = "";
+      bot.action.type(dateInput, "2013-01-01");
+      assertEquals(dateInput.value, "2013-01-01");
+      dateInput.value = "";
     }
     function testTypeDateWithTimestamp() {
-      expectedFailures.expectFailureFor(goog.userAgent.OPERA);
-      expectedFailures.run(function() {
-        var dateInput = document.getElementById("date");
-        dateInput.value = "";
-        bot.action.type(dateInput, "2013-01-01T12:10:12.000Z");
-        assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "2013-01-01" : "2013-01-01T12:10:12.000Z");
-        dateInput.value = "";
-      });
+      if (goog.userAgent.OPERA) {
+        return;
+      }
+
+      var dateInput = document.getElementById("date");
+      dateInput.value = "";
+      bot.action.type(dateInput, "2013-01-01T12:10:12.000Z");
+      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "2013-01-01" : "2013-01-01T12:10:12.000Z");
+      dateInput.value = "";
     }
     function testTypeInvalidDate() {
-      expectedFailures.expectFailureFor(goog.userAgent.OPERA);
-      expectedFailures.run(function() {
-        var dateInput = document.getElementById("date");
-        dateInput.value = "";
-        bot.action.type(dateInput, "2013-13-01");
-        assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "2013-13-01");
-        dateInput.value = "";
-        bot.action.type(dateInput, "February 28, 2013");
-        assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "February 28, 2013");
-      });
+      if (goog.userAgent.OPERA) {
+        return;
+      }
+
+      var dateInput = document.getElementById("date");
+      dateInput.value = "";
+      bot.action.type(dateInput, "2013-13-01");
+      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "2013-13-01");
+      dateInput.value = "";
+      bot.action.type(dateInput, "February 28, 2013");
+      assertEquals(dateInput.value, browserImplementsDateInputWidget() ? "" : "February 28, 2013");
     }
   </script>
 </head>
@@ -523,8 +528,6 @@
   </form>
 </body>
 <script type="text/javascript">
-  if (goog.userAgent.IE && !bot.userAgent.isEngineVersion(8)) {
-    asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
-  }
+  asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
 </script>
 </html>

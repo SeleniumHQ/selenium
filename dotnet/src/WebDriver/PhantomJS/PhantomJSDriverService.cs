@@ -39,6 +39,8 @@ namespace OpenQA.Selenium.PhantomJS
         private static readonly Uri PhantomJSDownloadUrl = new Uri("http://phantomjs.org/download.html");
 
         private List<string> additionalArguments = new List<string>();
+        private string ghostDriverPath = string.Empty;
+        private string logFile = string.Empty;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="PhantomJSDriverService"/> class from being created.
@@ -177,6 +179,29 @@ namespace OpenQA.Selenium.PhantomJS
         public bool WebSecurity { get; set; }
 
         /// <summary>
+        /// Gets or sets the location where the GhostDriver JavaScript file is located. This
+        /// allows the use of an external implementation of GhostDriver instead of the
+        /// implementation embedded inside the PhantomJS executable.
+        /// </summary>
+        [JsonIgnore]
+        public string GhostDriverPath
+        {
+            get { return this.ghostDriverPath; }
+            set { this.ghostDriverPath = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the location of the log file to which PhantomJS will write log
+        /// output. If this value is <see langword="null"/> or an empty string, the log
+        /// output will be written to the console window.
+        /// </summary>
+        public string LogFile
+        {
+            get { return this.logFile; }
+            set { this.logFile = value; }
+        }
+
+        /// <summary>
         /// Gets the list of arguments appended to the PhantomJS command line as a string array.
         /// </summary>
         [JsonIgnore]
@@ -233,14 +258,15 @@ namespace OpenQA.Selenium.PhantomJS
             get
             {
                 StringBuilder argsBuilder = new StringBuilder();
-                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver={0}", this.Port);
-
                 if (!string.IsNullOrEmpty(this.ConfigFile))
                 {
                     argsBuilder.AppendFormat(" --config={0}", this.ConfigFile);
                 }
                 else
                 {
+                    // These are all command-line args for PhantomJS proper, and
+                    // must be placed before the "main.js" file argument if running
+                    // with a non-embedded version of GhostDriver.
                     var properties = typeof(PhantomJSDriverService).GetProperties();
                     foreach (PropertyInfo info in properties)
                     {
@@ -255,6 +281,24 @@ namespace OpenQA.Selenium.PhantomJS
                                 argsBuilder.AppendFormat(" --{0}={1}", argumentName, argumentValue);
                             }
                         }
+                    }
+                }
+
+                if (string.IsNullOrEmpty(this.ghostDriverPath))
+                {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver={0}", this.Port);
+                    if (!string.IsNullOrEmpty(this.logFile))
+                    {
+                        argsBuilder.AppendFormat(" --webdriver-logfile={0}", this.logFile);
+                    }
+                }
+                else
+                {
+                    argsBuilder.AppendFormat(" \"{0}\"", this.ghostDriverPath);
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --port={0}", this.Port);
+                    if (!string.IsNullOrEmpty(this.logFile))
+                    {
+                        argsBuilder.AppendFormat(" --logFile={0}", this.logFile);
                     }
                 }
 

@@ -19,6 +19,7 @@
  */
 
 goog.provide('bot.Device');
+goog.provide('bot.Device.EventEmitter');
 
 goog.require('bot');
 goog.require('bot.dom');
@@ -36,10 +37,11 @@ goog.require('goog.userAgent.product');
  * A Device class that provides common functionality for input devices.
  * @param {bot.Device.ModifiersState=} opt_modifiersState state of modifier
  * keys. The state is shared, not copied from this parameter.
+ * @param {bot.Device.EventEmitter=} opt_eventEmitter An object that should be used to fire events.
  *
  * @constructor
  */
-bot.Device = function(opt_modifiersState) {
+bot.Device = function(opt_modifiersState, opt_eventEmitter) {
   /**
    * Element being interacted with.
    * @private {!Element}
@@ -60,10 +62,12 @@ bot.Device = function(opt_modifiersState) {
 
   /**
    * State of modifier keys for this device.
-   * @type {bot.Device.ModifiersState}
-   * @protected
+   * @protected {bot.Device.ModifiersState}
    */
   this.modifiersState = opt_modifiersState || new bot.Device.ModifiersState();
+
+  /** @protected {!bot.Device.EventEmitter} */
+  this.eventEmitter = opt_eventEmitter || new bot.Device.EventEmitter();
 };
 
 
@@ -105,7 +109,7 @@ bot.Device.prototype.setElement = function(element) {
  * @protected
  */
 bot.Device.prototype.fireHtmlEvent = function(type) {
-  return bot.events.fire(this.element_, type);
+  return this.eventEmitter.fireHtmlEvent(this.element_, type);
 };
 
 
@@ -119,7 +123,7 @@ bot.Device.prototype.fireHtmlEvent = function(type) {
  * @protected
  */
 bot.Device.prototype.fireKeyboardEvent = function(type, args) {
-  return bot.events.fire(this.element_, type, args);
+  return this.eventEmitter.fireKeyboardEvent(this.element_, type, args);
 };
 
 
@@ -135,11 +139,12 @@ bot.Device.prototype.fireKeyboardEvent = function(type, args) {
  * @param {boolean=} opt_force Whether the event should be fired even if the
  *     element is not interactable, such as the case of a mousemove or
  *     mouseover event that immediately follows a mouseout.
+ * @param {?number=} opt_pointerId The pointerId associated with the event.
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
  */
 bot.Device.prototype.fireMouseEvent = function(type, coord, button,
-    opt_related, opt_wheelDelta, opt_force) {
+    opt_related, opt_wheelDelta, opt_force, opt_pointerId)  {
   if (!opt_force && !bot.dom.isInteractable(this.element_)) {
     return false;
   }
@@ -163,9 +168,19 @@ bot.Device.prototype.fireMouseEvent = function(type, coord, button,
     relatedTarget: opt_related || null
   };
 
-  var target = this.select_ ?
-      this.getTargetOfOptionMouseEvent_(type) : this.element_;
-  return target ? bot.events.fire(target, type, args) : true;
+  var pointerId = opt_pointerId || bot.Device.MOUSE_MS_POINTER_ID;
+
+  var target = this.element_;
+  // On click and mousedown events, captured pointers are ignored and the
+  // event always fires on the original element.
+  if (type != bot.events.EventType.CLICK &&
+      type != bot.events.EventType.MOUSEDOWN &&
+      pointerId in bot.Device.pointerElementMap_) {
+    target = bot.Device.pointerElementMap_[pointerId];
+  } else if (this.select_) {
+    target = this.getTargetOfOptionMouseEvent_(type);
+  }
+  return target ? this.eventEmitter.fireMouseEvent(target, type, args) : true;
 };
 
 
@@ -222,7 +237,7 @@ bot.Device.prototype.fireTouchEvent = function(type, id, coord, opt_id2,
     addTouch(opt_id2, opt_coord2);
   }
 
-  return bot.events.fire(this.element_, type, args);
+  return this.eventEmitter.fireTouchEvent(this.element_, type, args);
 };
 
 
@@ -279,7 +294,28 @@ bot.Device.prototype.fireMSPointerEvent = function(type, coord, button,
 
   var target = this.select_ ?
       this.getTargetOfOptionMouseEvent_(type) : this.element_;
-  return target ? bot.events.fire(target, type, args) : true;
+  if (bot.Device.pointerElementMap_[pointerId]) {
+    target = bot.Device.pointerElementMap_[pointerId];
+  }
+  var owner = goog.dom.getWindow(goog.dom.getOwnerDocument(this.element_));
+  var originalMsSetPointerCapture;
+  if (owner && type == bot.events.EventType.MSPOINTERDOWN) {
+    // Overwrite msSetPointerCapture on the Element's msSetPointerCapture
+    // because synthetic pointer events cause an access denied exception.
+    // The prototype is modified because the pointer event will bubble up and
+    // we do not know which element will handle the pointer event.
+    originalMsSetPointerCapture =
+        owner['Element'].prototype.msSetPointerCapture;
+    owner['Element'].prototype.msSetPointerCapture = function(id) {
+      bot.Device.pointerElementMap_[id] = this;
+    };
+  }
+  var result = target ? this.eventEmitter.fireMSPointerEvent(target, type, args) : true;
+  if (originalMsSetPointerCapture) {
+    owner['Element'].prototype.msSetPointerCapture =
+        originalMsSetPointerCapture;
+  }
+  return result;
 };
 
 
@@ -343,9 +379,10 @@ bot.Device.prototype.getTargetOfOptionMouseEvent_ = function(type) {
  *
  * @param {!goog.math.Coordinate} coord The coordinate where event will fire.
  * @param {number} button The mouse button value for the event.
+ * @param {?number=} opt_pointerId The pointer id associated with the click.
  * @protected
  */
-bot.Device.prototype.clickElement = function(coord, button) {
+bot.Device.prototype.clickElement = function(coord, button, opt_pointerId) {
   if (!bot.dom.isInteractable(this.element_)) {
     return;
   }
@@ -369,17 +406,12 @@ bot.Device.prototype.clickElement = function(coord, button) {
     }
   }
 
-  var selectable = bot.dom.isSelectable(this.element_);
-  var wasSelected = selectable && bot.dom.isSelected(this.element_);
-
   // When an element is toggled as the result of a click, the toggling and the
-  // change event happens before the click event. However, on radio buttons and
-  // checkboxes, the click handler can prevent the toggle from happening, so
-  // for those we need to fire a click before toggling to see if the click was
-  // cancelled. For option elements, we toggle unconditionally before the click.
-  if (this.select_) {
-    this.toggleOption_(wasSelected);
-  }
+  // change event happens before the click event on some browsers. However, on
+  // radio buttons and checkboxes, the click handler can prevent the toggle from
+  // happening, so we must fire the click first to see if it is cancelled.
+  var isRadioOrCheckbox = !this.select_ && bot.dom.isSelectable(this.element_);
+  var wasChecked = isRadioOrCheckbox && bot.dom.isSelected(this.element_);
 
   // NOTE(user): Clicking on a form submit button is a little broken:
   // (1) When clicking a form submit button in IE, firing a click event or
@@ -398,15 +430,15 @@ bot.Device.prototype.clickElement = function(coord, button) {
   }
 
   var performDefault = this.fireMouseEvent(
-      bot.events.EventType.CLICK, coord, button);
+      bot.events.EventType.CLICK, coord, button, null, 0, false, opt_pointerId);
   if (!performDefault) {
     return;
   }
 
   if (targetLink && bot.Device.shouldFollowHref_(targetLink)) {
     bot.Device.followHref_(targetLink);
-  } else if (selectable && !this.select_) {
-    this.toggleRadioButtonOrCheckbox_(wasSelected);
+  } else if (isRadioOrCheckbox) {
+    this.toggleRadioButtonOrCheckbox_(wasChecked);
   }
 };
 
@@ -437,13 +469,13 @@ bot.Device.prototype.focusOnElement = function() {
     // the atoms actions will often be in the wrong order on IE. Firing a blur
     // out of order sometimes causes IE to throw an "Unspecified error", so we
     // wrap it in a try-catch and catch and ignore the error in this case.
-    try {
-      if (activeElement.tagName.toLowerCase() !== 'body') {
+    if (!bot.dom.isElement(activeElement, goog.dom.TagName.BODY)) {
+      try {
         activeElement.blur();
-      }
-    } catch (e) {
-      if (!(goog.userAgent.IE && e.message == 'Unspecified error.')) {
-        throw e;
+      } catch (e) {
+        if (!(goog.userAgent.IE && e.message == 'Unspecified error.')) {
+          throw e;
+        }
       }
     }
 
@@ -479,7 +511,6 @@ bot.Device.prototype.focusOnElement = function() {
 /**
  * Whether links must be manually followed when clicking (because firing click
  * events doesn't follow them).
- *
  * @private {boolean}
  * @const
  */
@@ -575,14 +606,19 @@ bot.Device.followHref_ = function(anchorElement) {
 
 
 /**
- * Toggles the selected state of an option element. This is a noop if the option
- * is selected and belongs to a single-select, because it can't be toggled off.
+ * Toggles the selected state of the current element if it is an option. This
+ * is a noop if the element is not an option, or if it is selected and belongs
+ * to a single-select, because it can't be toggled off.
  *
- * @param {boolean} wasSelected Whether the element was originally selected.
- * @private
+ * @protected
  */
-bot.Device.prototype.toggleOption_ = function(wasSelected) {
+bot.Device.prototype.maybeToggleOption = function() {
+  // If this is not an <option> or not interactable, exit.
+  if (!this.select_ || !bot.dom.isInteractable(this.element_)) {
+    return;
+  }
   var select = /** @type {!Element} */ (this.select_);
+  var wasSelected = bot.dom.isSelected(this.element_);
   // Cannot toggle off options in single-selects.
   if (wasSelected && !select.multiple) {
     return;
@@ -598,22 +634,22 @@ bot.Device.prototype.toggleOption_ = function(wasSelected) {
 
 
 /**
- * Toggles the selected state of a radio button or checkbox. This is a noop if
- * it is a radio button that is selected, because it can't be toggled off.
+ * Toggles the checked state of a radio button or checkbox. This is a noop if
+ * it is a radio button that is checked, because it can't be toggled off.
  *
- * @param {boolean} wasSelected Whether the element was originally selected.
+ * @param {boolean} wasChecked Whether the element was originally checked.
  * @private
  */
-bot.Device.prototype.toggleRadioButtonOrCheckbox_ = function(wasSelected) {
+bot.Device.prototype.toggleRadioButtonOrCheckbox_ = function(wasChecked) {
   // Gecko and WebKit toggle the element as a result of a click.
   if (goog.userAgent.GECKO || goog.userAgent.WEBKIT) {
     return;
   }
   // Cannot toggle off radio buttons.
-  if (wasSelected && this.element_.type.toLowerCase() == 'radio') {
+  if (wasChecked && this.element_.type.toLowerCase() == 'radio') {
     return;
   }
-  this.element_.checked = !wasSelected;
+  this.element_.checked = !wasChecked;
   // Only Opera versions < 11 do not fire the change event themselves.
   if (goog.userAgent.OPERA && !bot.userAgent.isEngineVersion(11)) {
     bot.events.fire(this.element_, bot.events.EventType.CHANGE);
@@ -628,7 +664,7 @@ bot.Device.prototype.toggleRadioButtonOrCheckbox_ = function(wasSelected) {
  * @protected
  */
 bot.Device.findAncestorForm = function(node) {
-  return (/** @type {Element} */ goog.dom.getAncestor(
+  return /** @type {Element} */ (goog.dom.getAncestor(
       node, bot.Device.isForm_, /*includeNode=*/true));
 };
 
@@ -668,7 +704,7 @@ bot.Device.prototype.submitForm = function(form) {
     if (!bot.dom.isElement(form.submit)) {
       form.submit();
     } else if (!goog.userAgent.IE || bot.userAgent.isEngineVersion(8)) {
-      /** @type {!Object} */ (form.constructor.prototype).submit.call(form);
+      /** @type {Function} */ (form.constructor.prototype['submit']).call(form);
     } else {
       var idMasks = bot.locators.findElements({'id': 'submit'}, form);
       var nameMasks = bot.locators.findElements({'name': 'submit'}, form);
@@ -829,4 +865,117 @@ bot.Device.ModifiersState.prototype.isAltPressed = function() {
  */
 bot.Device.ModifiersState.prototype.isMetaPressed = function() {
   return this.isPressed(bot.Device.Modifier.META);
+};
+
+
+/**
+ * The pointer id used for MSPointer events initiated through a mouse device.
+ * @type {number}
+ * @const
+ */
+bot.Device.MOUSE_MS_POINTER_ID = 1;
+
+
+/**
+ * A map of pointer id to Elements.
+ * @private {!Object.<number, !Element>}
+ */
+bot.Device.pointerElementMap_ = {};
+
+
+/**
+ * Gets the element associated with a pointer id.
+ * @param {number} pointerId The pointer Id.
+ * @return {?Element} The element associated with the pointer id.
+ * @protected
+ */
+bot.Device.getPointerElement = function(pointerId) {
+  return bot.Device.pointerElementMap_[pointerId];
+};
+
+
+/**
+ * Clear the pointer map.
+ * @protected
+ */
+bot.Device.clearPointerMap = function() {
+  bot.Device.pointerElementMap_ = {};
+};
+
+
+/**
+ * Fires events, a driver can replace it with a custom implementation
+ *
+ * @constructor
+ */
+bot.Device.EventEmitter = function() {
+};
+
+
+/**
+ * Fires an HTML event given the state of the device.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type HTML Event type.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+bot.Device.EventEmitter.prototype.fireHtmlEvent = function(target, type) {
+  return bot.events.fire(target, type);
+};
+
+
+/**
+ * Fires a keyboard event given the state of the device and the given arguments.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type Keyboard event type.
+ * @param {bot.events.KeyboardArgs} args Keyboard event arguments.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+bot.Device.EventEmitter.prototype.fireKeyboardEvent = function(target, type, args) {
+  return bot.events.fire(target, type, args);
+};
+
+
+/**
+ * Fires a mouse event given the state of the device and the given arguments.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type Mouse event type.
+ * @param {bot.events.MouseArgs} args Mouse event arguments.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+bot.Device.EventEmitter.prototype.fireMouseEvent = function(target, type, args) {
+  return bot.events.fire(target, type, args);
+};
+
+
+/**
+ * Fires a mouse event given the state of the device and the given arguments.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type Touch event type.
+ * @param {bot.events.TouchArgs} args Touch event arguments.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+bot.Device.EventEmitter.prototype.fireTouchEvent = function(target, type, args) {
+  return bot.events.fire(target, type, args);
+};
+
+
+/**
+ * Fires an MSPointer event given the state of the device and the given arguments.
+ *
+ * @param {!Element} target The element on which to fire the event.
+ * @param {bot.events.EventType} type MSPointer event type.
+ * @param {bot.events.MSPointerArgs} args MSPointer event arguments.
+ * @return {boolean} Whether the event fired successfully; false if cancelled.
+ * @protected
+ */
+bot.Device.EventEmitter.prototype.fireMSPointerEvent = function(target, type, args) {
+  return bot.events.fire(target, type, args);
 };

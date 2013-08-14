@@ -48,7 +48,10 @@ import java.net.URL;
  * be pre-installed.
  * 
  * @author dawagner@gmail.com (Daniel Wagner-Hall)
+ *
+ * @deprecated use ios-driver or appium instead
  */
+@Deprecated
 public class IPhoneSimulatorBinary {
   private static final String IPHONE_LOG_FILE_PROPERTY = "webdriver.iphone.logFile";
 

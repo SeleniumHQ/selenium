@@ -38,13 +38,18 @@ goog.require('webdriver.testing.asserts');
  * Constructs a test case that synchronizes each test case with the singleton
  * {@code webdriver.promise.ControlFlow}.
  *
+ * @param {!webdriver.testing.Client} client The test client to use for
+ *     reporting test results.
  * @param {string=} opt_name The name of the test case, defaults to
  *     'Untitled Test Case'.
  * @constructor
  * @extends {goog.testing.TestCase}
  */
-webdriver.testing.TestCase = function(opt_name) {
+webdriver.testing.TestCase = function(client, opt_name) {
   goog.base(this, opt_name);
+
+  /** @private {!webdriver.testing.Client} */
+  this.client_ = client;
 };
 goog.inherits(webdriver.testing.TestCase, goog.testing.TestCase);
 
@@ -63,6 +68,7 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
   goog.testing.TestCase.currentTestName = test.name;
   this.result_.runCount++;
   this.log('Running test: ' + test.name);
+  this.client_.sendTestStartedEvent(test.name);
 
   var self = this;
   var hadError = false;
@@ -78,6 +84,10 @@ webdriver.testing.TestCase.prototype.cycleTests = function() {
   function onError(e) {
     hadError = true;
     self.doError(test, app.annotateError(e));
+    // Note: result_ is a @protected field but still uses the trailing
+    // underscore.
+    var err = self.result_.errors[self.result_.errors.length - 1];
+    self.client_.sendErrorEvent(err.toString());
   }
 };
 

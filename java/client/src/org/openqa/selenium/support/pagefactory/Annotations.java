@@ -19,6 +19,7 @@ package org.openqa.selenium.support.pagefactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.CacheLookup;
+import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.How;
@@ -45,8 +46,13 @@ public class Annotations {
     By ans = null;
 
     FindBys findBys = field.getAnnotation(FindBys.class);
-    if (ans == null && findBys != null) {
+    if (findBys != null) {
       ans = buildByFromFindBys(findBys);
+    }
+
+    FindAll findAll = field.getAnnotation(FindAll.class);
+    if (ans == null && findAll != null) {
+      ans = buildBysFromFindByOneOf(findAll);
     }
 
     FindBy findBy = field.getAnnotation(FindBy.class);
@@ -79,6 +85,18 @@ public class Annotations {
     }
 
     return new ByChained(byArray);
+  }
+
+  protected By buildBysFromFindByOneOf(FindAll findBys) {
+    assertValidFindAll(findBys);
+
+    FindBy[] findByArray = findBys.value();
+    By[] byArray = new By[findByArray.length];
+    for (int i = 0; i < findByArray.length; i++) {
+      byArray[i] = buildByFromFindBy(findByArray[i]);
+    }
+
+    return new ByAll(byArray);
   }
 
   protected By buildByFromFindBy(FindBy findBy) {
@@ -162,14 +180,29 @@ public class Annotations {
 
   private void assertValidAnnotations() {
     FindBys findBys = field.getAnnotation(FindBys.class);
+    FindAll findAll = field.getAnnotation(FindAll.class);
     FindBy findBy = field.getAnnotation(FindBy.class);
     if (findBys != null && findBy != null) {
-      throw new IllegalArgumentException("If you use a '@FindBys' annotation, "
-          + "you must not also use a '@FindBy' annotation");
+      throw new IllegalArgumentException("If you use a '@FindBys' annotation, " +
+           "you must not also use a '@FindBy' annotation");
+    }
+    if (findAll != null && findBy != null) {
+      throw new IllegalArgumentException("If you use a '@FindAll' annotation, " +
+           "you must not also use a '@FindBy' annotation");
+    }
+    if (findAll != null && findBys != null) {
+      throw new IllegalArgumentException("If you use a '@FindAll' annotation, " +
+           "you must not also use a '@FindBys' annotation");
     }
   }
 
   private void assertValidFindBys(FindBys findBys) {
+    for (FindBy findBy : findBys.value()) {
+      assertValidFindBy(findBy);
+    }
+  }
+
+  private void assertValidFindAll(FindAll findBys) {
     for (FindBy findBy : findBys.value()) {
       assertValidFindBy(findBy);
     }

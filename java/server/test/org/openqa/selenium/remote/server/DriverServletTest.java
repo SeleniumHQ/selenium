@@ -21,6 +21,7 @@ import com.google.common.collect.Iterators;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.lib.concurrent.Synchroniser;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -28,6 +29,8 @@ import org.junit.Test;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.testing.FakeHttpServletRequest;
 import org.openqa.selenium.remote.server.testing.FakeHttpServletResponse;
@@ -61,7 +64,9 @@ public class DriverServletTest {
 
   @Before
   public void setUp() throws ServletException {
-    mockery = new Mockery();
+    mockery = new Mockery() {{
+      setThreadingPolicy(new Synchroniser());
+    }};
     testSessions = new TestSessions(mockery);
 
     // Override log methods for testing.
@@ -170,7 +175,8 @@ public class DriverServletTest {
     assertFalse(jsonResponse.isNull("sessionId"));
 
     JSONObject value = jsonResponse.getJSONObject("value");
-    assertEquals(2, Iterators.size(value.keys()));
+    // values: browsername, version, remote session id.
+    assertEquals(3, Iterators.size(value.keys()));
     assertEquals(BrowserType.FIREFOX, value.getString(CapabilityType.BROWSER_NAME));
     assertTrue(value.getBoolean(CapabilityType.VERSION));
   }
@@ -178,13 +184,13 @@ public class DriverServletTest {
   private SessionId createSession() throws IOException, ServletException {
     FakeHttpServletResponse response = sendCommand("POST", "/session", null);
 
-    assertEquals(HttpServletResponse.SC_SEE_OTHER, response.getStatus());
+    assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 
-    String location = response.getHeader("location");
-    assertNotNull(location);
-    assertTrue(location.startsWith("/wd/hub/session/"));
-    
-    String sessionId = location.substring("/wd/hub/session/".length());
+    Response resp = new JsonToBeanConverter().convert(
+      Response.class, response.getBody());
+
+    String sessionId = resp.getSessionId();
+    assertNotNull(sessionId);
     assertFalse(sessionId.isEmpty());
     return new SessionId(sessionId);
   }

@@ -6,7 +6,7 @@ Copyright 2012 Google Inc. All Rights Reserved.
 <head>
   <title>parser_test</title>
   <script src="../closure-library/closure/goog/base.js"></script>
-  <script src="test_js_deps.js"></script>
+  <script src="./test_js_deps.js"></script>
   <script>
     goog.require('goog.dom.NodeType');
     goog.require('goog.testing.jsunit');
@@ -16,35 +16,70 @@ Copyright 2012 Google Inc. All Rights Reserved.
 </head>
 <body>
   <script>
+    function createParser(tokens, opt_nsResolver) {
+      var lexer = new wgxpath.Lexer(tokens);
+      var nsResolver = opt_nsResolver || function() { return null; };
+      return new wgxpath.Parser(lexer, nsResolver);
+    }
+
     function testKindTest() {
-      var nodeTypeName = ['text', '(', ')'];
-      var lexer = new wgxpath.Lexer(nodeTypeName);
-      var resultKindTest = (new wgxpath.Parser(lexer)).parseKindTest_();
-      assertEquals(goog.dom.NodeType.TEXT, resultKindTest.type_);
+      var parser = createParser(['text', '(', ')']);
+      var kindTest = parser.parseKindTest_();
+      assertEquals(goog.dom.NodeType.TEXT, kindTest.getType());
     }
 
-    function testNameTestWithoutNamespace() {
-      var nodeName = ['nodename'];
-      var lexer = new wgxpath.Lexer(nodeName);
-      var resultNameTest = (new wgxpath.Parser(lexer)).parseNameTest_();
-      assertEquals(nodeName.join(''), resultNameTest.name_);
+    function testNameTestWithWildcard() {
+      var parser = createParser(['*']);
+      var nameTest = parser.parseNameTest_();
+      assertEquals('*', nameTest.getName());
+      assertEquals('http://www.w3.org/1999/xhtml', nameTest.getNamespaceUri());
     }
 
-    function testNameTestWithNamespace() {
-      var nodeName = ['namespace', ':', '*'];
-      var lexer = new wgxpath.Lexer(nodeName);
-      var resultNameTest = (new wgxpath.Parser(lexer)).parseNameTest_();
-      assertEquals(nodeName.join(''), resultNameTest.name_);
+    function testNameTestWithName() {
+      var parser = createParser(['nodename']);
+      var nameTest = parser.parseNameTest_();
+      assertEquals('nodename', nameTest.getName());
+      assertEquals('http://www.w3.org/1999/xhtml', nameTest.getNamespaceUri());
+    }
+
+    function testNameTestWithWildcardAndNamespace() {
+      var nsResolver = function(ns) {
+        return ns == 'ns' ? 'http://scheme/uri' : null;
+      };
+      var parser = createParser(['ns:*'], nsResolver);
+      var nameTest = parser.parseNameTest_();
+      assertEquals('*', nameTest.getName());
+      assertEquals('http://scheme/uri', nameTest.getNamespaceUri());
+    }
+
+    function testNameTestWithNameAndNamespace() {
+      var nsResolver = function(ns) {
+        return ns == 'ns' ? 'http://scheme/uri' : null;
+      };
+      var parser = createParser(['ns:nodename'], nsResolver);
+      var nameTest = parser.parseNameTest_();
+      assertEquals('nodename', nameTest.getName());
+      assertEquals('http://scheme/uri', nameTest.getNamespaceUri());
+    }
+
+    function testUnknownNamespaceRaisesError() {
+      var parser = createParser(['ns:nodename']);
+      try {
+        parser.parseNameTest_();
+        fail();
+      } catch (e) {
+        assertContains('ns', e.message);
+      }
     }
 
     function parsePredicates(tokens) {
-      //A fake Expr parser for Predicates to use internally.
+      // A fake Expr parser for Predicates to use internally.
       wgxpath.Parser.parseExpr_ = function(lexer) {
           lexer.next();
           return {};
       };
-      var lexer = new wgxpath.Lexer(tokens);
-      return (new wgxpath.Parser(lexer)).parsePredicates_();
+      var parser = createParser(tokens);
+      return parser.parsePredicates_();
     }
 
     function testPredicatesNoPredicates() {

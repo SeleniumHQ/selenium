@@ -15,6 +15,7 @@
 #include "Generated/cookies.h"
 #include "logging.h"
 #include "messages.h"
+#include "RegistryUtilities.h"
 
 namespace webdriver {
 
@@ -83,7 +84,11 @@ std::string DocumentHost::GetPageSource() {
 
   CComPtr<IHTMLDocument2> doc;
   this->GetDocument(&doc);
-    
+  if (!doc) {
+    LOG(WARN) << "Unable to get document object, DocumentHost::GetDocument did not return a valid IHTMLDocument2 pointer";
+    return "";
+  }
+
   CComPtr<IHTMLDocument3> doc3;
   HRESULT hr = doc->QueryInterface<IHTMLDocument3>(&doc3);
   if (FAILED(hr) || !doc3) {
@@ -293,10 +298,10 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
   }
 
   std::wstring document_type_key_name= L"";
-  if (this->factory_.GetRegistryValue(HKEY_CURRENT_USER,
-                                      L"Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice",
-                                      L"Progid",
-                                      &document_type_key_name)) {
+  if (RegistryUtilities::GetRegistryValue(HKEY_CURRENT_USER,
+                                          L"Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice",
+                                          L"Progid",
+                                          &document_type_key_name)) {
     // Look for the user-customization under Vista/Windows 7 first. If it's
     // IE, set the document friendly name lookup key to 'htmlfile'. If not,
     // set it to blank so that we can look up the proper HTML type.
@@ -319,10 +324,10 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
     // value of which should contain the browser-specific friendly name of
     // the MIME type for HTML documents, which is what 
     // IHTMLDocument2::get_mimeType() returns.
-    if (!this->factory_.GetRegistryValue(HKEY_CLASSES_ROOT,
-                                         L".htm",
-                                         L"",
-                                         &document_type_key_name)) {
+    if (!RegistryUtilities::GetRegistryValue(HKEY_CLASSES_ROOT,
+                                             L".htm",
+                                             L"",
+                                             &document_type_key_name)) {
       LOG(WARN) << "Unable to read document type from registry for '.htm'";
       return false;
     }
@@ -332,14 +337,14 @@ bool DocumentHost::IsHtmlPage(IHTMLDocument2* doc) {
   // do not write this information in the (default) value, so if that fails,
   // try the FriendlyTypeName value.
   std::wstring mime_type_name;
-  if (!this->factory_.GetRegistryValue(HKEY_CLASSES_ROOT,
-                                       document_type_key_name,
-                                       L"",
-                                       &mime_type_name)) {
-    if (!this->factory_.GetRegistryValue(HKEY_CLASSES_ROOT,
-                                         document_type_key_name,
-                                         L"FriendlyTypeName",
-                                         &mime_type_name)) {
+  if (!RegistryUtilities::GetRegistryValue(HKEY_CLASSES_ROOT,
+                                           document_type_key_name,
+                                           L"",
+                                           &mime_type_name)) {
+    if (!RegistryUtilities::GetRegistryValue(HKEY_CLASSES_ROOT,
+                                             document_type_key_name,
+                                             L"FriendlyTypeName",
+                                             &mime_type_name)) {
       LOG(WARN) << "Unable to read mime type from registry for document type";
       return false;
     }
@@ -396,7 +401,8 @@ int DocumentHost::GetDocumentMode(IHTMLDocument2* doc) {
     LOGHR(WARN, hr) << "get_documentMode failed.";
     return 5;
   }
-  return mode.lVal;
+  int document_mode = static_cast<int>(mode.fltVal);
+  return document_mode;
 }
 
 bool DocumentHost::IsStandardsMode(IHTMLDocument2* doc) {

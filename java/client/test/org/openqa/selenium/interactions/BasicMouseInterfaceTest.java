@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
@@ -44,6 +46,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
@@ -56,7 +59,7 @@ import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 /**
  * Tests operations that involve mouse and keyboard.
  */
-@Ignore(value = {SAFARI},
+@Ignore(value = {SAFARI, MARIONETTE},
     reason = "Safari: not implemented (issue 4136)",
     issues = {4136})
 public class BasicMouseInterfaceTest extends JUnit4TestBase {
@@ -234,7 +237,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, CHROME, IE, IPHONE, FIREFOX})
+  @Ignore({ANDROID, CHROME, IE, IPHONE})
   @Test
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
@@ -268,17 +271,16 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, FIREFOX, OPERA},
+  @Ignore(value = {ANDROID, IE, HTMLUNIT, IPHONE, REMOTE, OPERA},
           reason = "Behaviour not finalized yet regarding linked images.")
   @Test
   public void testMovingIntoAnImageEnclosedInALink() {
+    assumeFalse("No way to compensate for accessibility-provided offsets on Firefox 3.0 or 3.5",
+                isFirefox30(driver) || isFirefox35(driver));
+    assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
+
     driver.get(pages.linkedImage);
 
-    if (isFirefox30(driver) || isFirefox35(driver)) {
-      System.out.println("Not performing testMovingIntoAnImageEnclosedInALink - no way to " +
-                         "compensate for accessibility-provided offsets on Firefox 3.0 or 3.5");
-      return;
-    }
     // Note: For some reason, the Accessibility API in Firefox will not be available before we
     // click on something. As a work-around, click on a different element just to get going.
     driver.findElement(By.id("linkToAnchorOnThisPage")).click();
@@ -316,10 +318,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
           reason = "Not implemented yet.")
   @Test
   public void testMovingMousePastViewPort() {
-    if (!isNativeEventsEnabled(driver)) {
-      System.out.println("Skipping testMovingMousePastViewPort: Native events are disabled.");
-      return;
-    }
+    assumeTrue(isNativeEventsEnabled(driver));
 
     driver.get(pages.javascriptPage);
 
@@ -355,12 +354,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
           reason = "Not implemented yet.")
   @Test
   public void testMovingMouseBackAndForthPastViewPort() {
-
-    if (isFirefox(driver) && !isNativeEventsEnabled(driver)) {
-      System.out.println("Skipping testMovingMouseBackAndForthPastViewPort: " +
-                         "Native events are disabled.");
-      return;
-    }
+    assumeTrue(!isFirefox(driver) || isNativeEventsEnabled(driver));
 
     driver.get(pages.veryLargeCanvas);
 

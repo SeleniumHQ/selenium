@@ -2,6 +2,9 @@ projectFilesBackup/
 *.iws
 .DS_Store
 .svn
+.buckd
+.nobuckcheck
+buck-out
 mockpiframe.log
 mockpiframe.log.lck
 junitvmwatcher*.properties
@@ -71,7 +74,6 @@ py/selenium/webdriver/firefox/webdriver.xpi
 py/selenium/webdriver/firefox/x86/
 py/docs/build/
 selenium.egg-info/
-
 *.user
 *.cache
 obj/
@@ -84,3 +86,8 @@ ipch/
 /phantomjsdriver.log
 .tags
 .ruby-version
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+.project

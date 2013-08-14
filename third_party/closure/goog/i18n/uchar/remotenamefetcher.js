@@ -92,19 +92,19 @@ goog.inherits(goog.i18n.uChar.RemoteNameFetcher, goog.Disposable);
 /**
  * Key to the listener on XHR for prefetch(). Used to clear previous listeners.
  *
- * @type {?number}
+ * @type {goog.events.Key}
  * @private
  */
-goog.i18n.uChar.RemoteNameFetcher.prototype.prefetchLastListenerKey_ = 0;
+goog.i18n.uChar.RemoteNameFetcher.prototype.prefetchLastListenerKey_;
 
 
 /**
  * Key to the listener on XHR for getName(). Used to clear previous listeners.
  *
- * @type {?number}
+ * @type {goog.events.Key}
  * @private
  */
-goog.i18n.uChar.RemoteNameFetcher.prototype.getNameLastListenerKey_ = 0;
+goog.i18n.uChar.RemoteNameFetcher.prototype.getNameLastListenerKey_;
 
 
 /**
@@ -135,7 +135,7 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.prefetch = function(characters) {
         info('Aborted previous prefetch() call for new incoming request');
     this.prefetchXhrIo_.abort();
   }
-  if (this.prefetchLastListenerKey_ != 0) {
+  if (this.prefetchLastListenerKey_) {
     goog.events.unlistenByKey(this.prefetchLastListenerKey_);
   }
 
@@ -176,7 +176,7 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.getName = function(character,
         info('Aborted previous getName() call for new incoming request');
     this.getNameXhrIo_.abort();
   }
-  if (this.getNameLastListenerKey_ != 0) {
+  if (this.getNameLastListenerKey_) {
     goog.events.unlistenByKey(this.getNameLastListenerKey_);
   }
 

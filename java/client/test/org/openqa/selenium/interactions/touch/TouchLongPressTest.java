@@ -17,18 +17,21 @@ limitations under the License.
 package org.openqa.selenium.interactions.touch;
 
 import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.StubRenderedWebElement;
-import org.openqa.selenium.TouchScreen;
+import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.testing.MockTestBase;
 
 /**
  * Tests the long press action.
  */
-public class TouchLongPressTest extends MockTestBase {
+public class TouchLongPressTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
   private TouchScreen dummyTouch;
   private Locatable locatableElement;
@@ -36,8 +39,8 @@ public class TouchLongPressTest extends MockTestBase {
 
   @Before
   public void setUp() {
-    dummyTouch = mock(TouchScreen.class);
-    dummyCoordinates = mock(Coordinates.class);
+    dummyTouch = mockery.mock(TouchScreen.class);
+    dummyCoordinates = mockery.mock(Coordinates.class);
 
     locatableElement = new StubRenderedWebElement() {
       @Override
@@ -49,8 +52,8 @@ public class TouchLongPressTest extends MockTestBase {
 
   @Test
   public void testCanLongPress() {
-    checking(new Expectations() {{
-      one(dummyTouch).longPress(dummyCoordinates);
+    mockery.checking(new Expectations() {{
+      oneOf(dummyTouch).longPress(dummyCoordinates);
     }});
 
     LongPressAction longPress = new LongPressAction(dummyTouch, locatableElement);

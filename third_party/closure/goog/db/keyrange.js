@@ -54,7 +54,7 @@ goog.db.KeyRange.IDB_KEY_RANGE_ = goog.global.IDBKeyRange ||
 /**
  * Creates a new key range for a single value.
  *
- * @param {Object} key The single value in the range.
+ * @param {IDBKeyType} key The single value in the range.
  * @return {!goog.db.KeyRange} The key range.
  */
 goog.db.KeyRange.only = function(key) {
@@ -65,8 +65,8 @@ goog.db.KeyRange.only = function(key) {
 /**
  * Creates a key range with upper and lower bounds.
  *
- * @param {Object} lower The value of the lower bound.
- * @param {Object} upper The value of the upper bound.
+ * @param {IDBKeyType} lower The value of the lower bound.
+ * @param {IDBKeyType} upper The value of the upper bound.
  * @param {boolean=} opt_lowerOpen If true, the range excludes the lower bound
  *     value.
  * @param {boolean=} opt_upperOpen If true, the range excludes the upper bound
@@ -82,7 +82,7 @@ goog.db.KeyRange.bound = function(lower, upper, opt_lowerOpen, opt_upperOpen) {
 /**
  * Creates a key range with a lower bound only, finishes at the last record.
  *
- * @param {Object} lower The value of the lower bound.
+ * @param {IDBKeyType} lower The value of the lower bound.
  * @param {boolean=} opt_lowerOpen If true, the range excludes the lower bound
  *     value.
  * @return {!goog.db.KeyRange} The key range.
@@ -96,7 +96,7 @@ goog.db.KeyRange.lowerBound = function(lower, opt_lowerOpen) {
 /**
  * Creates a key range with a upper bound only, starts at the first record.
  *
- * @param {Object} upper The value of the upper bound.
+ * @param {IDBKeyType} upper The value of the upper bound.
  * @param {boolean=} opt_upperOpen If true, the range excludes the upper bound
  *     value.
  * @return {!goog.db.KeyRange} The key range.
@@ -104,4 +104,14 @@ goog.db.KeyRange.lowerBound = function(lower, opt_lowerOpen) {
 goog.db.KeyRange.upperBound = function(upper, opt_upperOpen) {
   return new goog.db.KeyRange(goog.db.KeyRange.IDB_KEY_RANGE_.upperBound(
       upper, opt_upperOpen));
+};
+
+
+/**
+ * Returns underlying key range object. This is used in ObjectStore's openCursor
+ * and count methods.
+ * @return {!IDBKeyRange}
+ */
+goog.db.KeyRange.prototype.range = function() {
+  return this.range_;
 };

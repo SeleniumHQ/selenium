@@ -160,6 +160,7 @@ goog.require('goog.userAgent');
  * @extends {goog.events.EventTarget}
  */
 goog.net.IframeIo = function() {
+  goog.base(this);
 
   /**
    * Name for this IframeIo and frame
@@ -490,6 +491,14 @@ goog.net.IframeIo.prototype.errorHandled_;
 
 
 /**
+ * Whether to suppress the listeners that determine when the iframe loads.
+ * @type {boolean}
+ * @private
+ */
+goog.net.IframeIo.prototype.ignoreResponse_ = false;
+
+
+/**
  * Sends a request via an iframe.
  *
  * A HTML form is used and submitted to the iframe, this simplifies the
@@ -597,7 +606,7 @@ goog.net.IframeIo.prototype.sendFromForm = function(form, opt_uri,
 goog.net.IframeIo.prototype.abort = function(opt_failureCode) {
   if (this.active_) {
     this.logger_.info('Request aborted');
-    goog.events.removeAll(this.getRequestIframe_());
+    goog.events.removeAll(this.getRequestIframe());
     this.complete_ = false;
     this.active_ = false;
     this.success_ = false;
@@ -790,6 +799,28 @@ goog.net.IframeIo.prototype.setTimeoutInterval = function(ms) {
 
 
 /**
+ * @return {boolean} Whether the server response is being ignored.
+ */
+goog.net.IframeIo.prototype.isIgnoringResponse = function() {
+  return this.ignoreResponse_;
+};
+
+
+/**
+ * Sets whether to ignore the response from the server by not adding any event
+ * handlers to fire when the iframe loads. This is necessary when using IframeIo
+ * to submit to a server on another domain, to avoid same-origin violations when
+ * trying to access the response. If this is set to true, the IframeIo instance
+ * will be a single-use instance that is only usable for one request.  It will
+ * only clean up its resources (iframes and forms) when it is disposed.
+ * @param {boolean} ignore Whether to ignore the server response.
+ */
+goog.net.IframeIo.prototype.setIgnoreResponse = function(ignore) {
+  this.ignoreResponse_ = ignore;
+};
+
+
+/**
  * Submits the internal form to the iframe.
  * @private
  */
@@ -808,8 +839,10 @@ goog.net.IframeIo.prototype.sendFormInternal_ = function() {
     // Set the target to the iframe's name
     this.form_.target = this.iframeName_ || '';
     this.appendIframe_();
-    goog.events.listen(this.iframe_, goog.events.EventType.READYSTATECHANGE,
-        this.onIeReadyStateChange_, false, this);
+    if (!this.ignoreResponse_) {
+      goog.events.listen(this.iframe_, goog.events.EventType.READYSTATECHANGE,
+          this.onIeReadyStateChange_, false, this);
+    }
 
     /** @preserveTry */
     try {
@@ -822,8 +855,14 @@ goog.net.IframeIo.prototype.sendFormInternal_ = function() {
       // exception.  IE also throws an exception when it is working offline and
       // the URL is not available.
 
-      goog.events.unlisten(this.iframe_, goog.events.EventType.READYSTATECHANGE,
-          this.onIeReadyStateChange_, false, this);
+      if (!this.ignoreResponse_) {
+        goog.events.unlisten(
+            this.iframe_,
+            goog.events.EventType.READYSTATECHANGE,
+            this.onIeReadyStateChange_,
+            false,
+            this);
+      }
 
       this.handleError_(goog.net.ErrorCode.ACCESS_DENIED);
     }
@@ -857,8 +896,10 @@ goog.net.IframeIo.prototype.sendFormInternal_ = function() {
     }
 
     // Listen for the iframe's load
-    goog.events.listen(doc.getElementById(innerFrameName),
-        goog.events.EventType.LOAD, this.onIframeLoaded_, false, this);
+    if (!this.ignoreResponse_) {
+      goog.events.listen(doc.getElementById(innerFrameName),
+          goog.events.EventType.LOAD, this.onIframeLoaded_, false, this);
+    }
 
     // Fix text areas, since importNode won't clone changes to the value
     var textareas = this.form_.getElementsByTagName('textarea');
@@ -933,8 +974,10 @@ goog.net.IframeIo.prototype.sendFormInternal_ = function() {
       this.logger_.severe(
           'Error when submitting form: ' + goog.debug.exposeException(e));
 
-      goog.events.unlisten(doc.getElementById(innerFrameName),
-          goog.events.EventType.LOAD, this.onIframeLoaded_, false, this);
+      if (!this.ignoreResponse_) {
+        goog.events.unlisten(doc.getElementById(innerFrameName),
+            goog.events.EventType.LOAD, this.onIframeLoaded_, false, this);
+      }
 
       doc.close();
 
@@ -986,7 +1029,7 @@ goog.net.IframeIo.prototype.onIframeLoaded_ = function(e) {
       this.getContentDocument_().location == 'about:blank') {
     return;
   }
-  goog.events.unlisten(this.getRequestIframe_(),
+  goog.events.unlisten(this.getRequestIframe(),
       goog.events.EventType.LOAD, this.onIframeLoaded_, false, this);
   this.handleLoad_(this.getContentDocument_());
 };
@@ -1122,6 +1165,9 @@ goog.net.IframeIo.prototype.createIframe_ = function() {
   var s = this.iframe_.style;
   s.visibility = 'hidden';
   s.width = s.height = '10px';
+  // Chrome sometimes shows scrollbars when visibility is hidden, but not when
+  // display is none.
+  s.display = 'none';
 
   // There are reports that safari 2.0.3 has a bug where absolutely positioned
   // iframes can't have their src set.
@@ -1231,7 +1277,7 @@ goog.net.IframeIo.prototype.disposeForm_ = function() {
 goog.net.IframeIo.prototype.getContentDocument_ = function() {
   if (this.iframe_) {
     return /** @type {HTMLDocument} */(goog.dom.getFrameContentDocument(
-        this.getRequestIframe_()));
+        this.getRequestIframe()));
   }
   return null;
 };
@@ -1240,9 +1286,8 @@ goog.net.IframeIo.prototype.getContentDocument_ = function() {
 /**
  * @return {HTMLIFrameElement} The appropriate iframe to use for requests
  *     (created in sendForm_).
- * @private
  */
-goog.net.IframeIo.prototype.getRequestIframe_ = function() {
+goog.net.IframeIo.prototype.getRequestIframe = function() {
   if (this.iframe_) {
     return /** @type {HTMLIFrameElement} */(goog.userAgent.IE ? this.iframe_ :
         goog.dom.getFrameContentDocument(this.iframe_).getElementById(
@@ -1265,8 +1310,10 @@ goog.net.IframeIo.prototype.testForFirefoxSilentError_ = function() {
     // we can't access, such as a network error, that won't report onload
     // or onerror events.
     if (doc && !goog.reflect.canAccessProperty(doc, 'documentUri')) {
-      goog.events.unlisten(this.getRequestIframe_(),
-          goog.events.EventType.LOAD, this.onIframeLoaded_, false, this);
+      if (!this.ignoreResponse_) {
+        goog.events.unlisten(this.getRequestIframe(),
+            goog.events.EventType.LOAD, this.onIframeLoaded_, false, this);
+      }
 
       if (navigator.onLine) {
         this.logger_.warning('Silent Firefox error detected');

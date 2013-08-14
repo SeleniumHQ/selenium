@@ -18,22 +18,25 @@ package org.openqa.selenium.interactions;
 
 import static org.junit.Assert.assertEquals;
 
-import org.openqa.selenium.testing.MockTestBase;
-
 import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * Tests the CompositeAction class
  * 
  */
-public class CompositeActionTest extends MockTestBase {
+public class CompositeActionTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+
   @Test
   public void addingActions() {
     CompositeAction sequence = new CompositeAction();
-    final Action dummyAction1 = mock(Action.class);
-    final Action dummyAction2 = mock(Action.class, "dummy2");
-    final Action dummyAction3 = mock(Action.class, "dummy3");
+    final Action dummyAction1 = mockery.mock(Action.class);
+    final Action dummyAction2 = mockery.mock(Action.class, "dummy2");
+    final Action dummyAction3 = mockery.mock(Action.class, "dummy3");
 
     sequence.addAction(dummyAction1)
         .addAction(dummyAction2)
@@ -45,18 +48,18 @@ public class CompositeActionTest extends MockTestBase {
   @Test
   public void invokingActions() {
     CompositeAction sequence = new CompositeAction();
-    final Action dummyAction1 = mock(Action.class);
-    final Action dummyAction2 = mock(Action.class, "dummy2");
-    final Action dummyAction3 = mock(Action.class, "dummy3");
+    final Action dummyAction1 = mockery.mock(Action.class);
+    final Action dummyAction2 = mockery.mock(Action.class, "dummy2");
+    final Action dummyAction3 = mockery.mock(Action.class, "dummy3");
 
     sequence.addAction(dummyAction1);
     sequence.addAction(dummyAction2);
     sequence.addAction(dummyAction3);
 
-    checking(new Expectations() {{
-      one(dummyAction1).perform();
-      one(dummyAction2).perform();
-      one(dummyAction3).perform();
+    mockery.checking(new Expectations() {{
+      oneOf(dummyAction1).perform();
+      oneOf(dummyAction2).perform();
+      oneOf(dummyAction3).perform();
     }});
 
     sequence.perform();

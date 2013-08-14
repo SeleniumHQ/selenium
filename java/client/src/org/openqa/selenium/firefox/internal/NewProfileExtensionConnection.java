@@ -138,7 +138,7 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
     // If we can't connect, then we're good to use it
     int newport;
 
-    for (newport = port; newport < port + 200; newport++) {
+    for (newport = port; newport < port + 2000; newport++) {
       Socket socket = new Socket();
       InetSocketAddress address = new InetSocketAddress(networkUtils.obtainLoopbackIp4Address(),
                                                         newport);

@@ -16,7 +16,7 @@ namespace OpenQA.Selenium
         {
             if (TestUtilities.IsOldIE(driver))
             {
-                return;
+                Assert.Ignore("SVG support only exists in IE9+");
             }
 
             driver.Url = svgPage;
@@ -43,7 +43,7 @@ namespace OpenQA.Selenium
         {
             if (TestUtilities.IsOldIE(driver))
             {
-                return;
+                Assert.Ignore("SVG support only exists in IE9+");
             }
 
             driver.Url = svgPage;

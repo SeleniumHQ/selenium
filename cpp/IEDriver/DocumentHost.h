@@ -23,8 +23,6 @@
 
 #define EELEMENTCLICKPOINTNOTSCROLLED 100
 
-using namespace std;
-
 namespace webdriver {
 
 class DocumentHost {
@@ -96,7 +94,6 @@ class DocumentHost {
   bool IsHtmlPage(IHTMLDocument2* doc);
   int SetFocusedFrameByIdentifier(VARIANT frame_identifier);
 
-  BrowserFactory factory_;
   CComPtr<IHTMLWindow2> focused_frame_window_;
   HWND window_handle_;
   HWND executor_handle_;

@@ -40,6 +40,7 @@ goog.require('goog.module.AbstractModuleLoader');
 goog.require('goog.net.BulkLoader');
 goog.require('goog.net.EventType');
 goog.require('goog.net.jsloader');
+goog.require('goog.userAgent.product');
 
 
 
@@ -95,8 +96,27 @@ goog.module.ModuleLoader.prototype.sourceUrlInjection_ = false;
 
 
 /**
+ * @return {boolean} Whether sourceURL affects stack traces.
+ *     Chrome is currently the only browser that does this, but
+ *     we believe other browsers are working on this.
+ * @see http://bugzilla.mozilla.org/show_bug.cgi?id=583083
+ */
+goog.module.ModuleLoader.supportsSourceUrlStackTraces = function() {
+  return goog.userAgent.product.CHROME;
+};
+
+
+/**
+ * @return {boolean} Whether sourceURL affects the debugger.
+ */
+goog.module.ModuleLoader.supportsSourceUrlDebugger = function() {
+  return goog.userAgent.product.CHROME || goog.userAgent.GECKO;
+};
+
+
+/**
  * Gets the debug mode for the loader.
- * @return {boolean} debugMode Whether the debug mode is enabled.
+ * @return {boolean} Whether the debug mode is enabled.
  */
 goog.module.ModuleLoader.prototype.getDebugMode = function() {
   return this.debugMode_;
@@ -116,32 +136,35 @@ goog.module.ModuleLoader.prototype.setDebugMode = function(debugMode) {
  * When enabled, we will add a sourceURL comment to the end of all scripts
  * to mark their origin.
  *
- * Notice that in most cases, this is far superior to debug mode, because
- * the scripts will load faster on most browsers. (Debug mode is very slow.
- * See the comment at the top of this file.)
- *
- * On WebKit, stack traces will refect the sourceURL comment, so this is also
+ * On WebKit, stack traces will refect the sourceURL comment, so this is
  * useful for debugging webkit stack traces in production.
  *
- * There is some performance overhead to doing this.
+ * Notice that in debug mode, we will use source url injection + eval rather
+ * then appending script nodes to the DOM, because the scripts will load far
+ * faster.  (Appending script nodes is very slow, because we can't parallelize
+ * the downloading and evaling of the script).
  *
- * TODO(nicksantos): Measure the performance cost, and figure out a decision
- * tree for when users should turn this on. I'm not sure if most users are
- * sophisticated enough to know whether they want this or not, because
- * there are a couple different trade-offs involved. We might want to make
- * debug mode do this on browsers that support sourceURL.
+ * The cost of appending sourceURL information is negligible when compared to
+ * the cost of evaling the script. Almost all clients will want this on.
+ *
+ * TODO(nicksantos): Turn this on by default. We may want to turn this off
+ * for clients that inject their own sourceURL.
  *
  * @param {boolean} enabled Whether source url injection is enabled.
- * @see http://bugzilla.mozilla.org/show_bug.cgi?id=583083
  */
 goog.module.ModuleLoader.prototype.setSourceUrlInjection = function(enabled) {
   this.sourceUrlInjection_ = enabled;
 };
 
 
-/** @return {boolean} Whether we're using source url injection. */
-goog.module.ModuleLoader.prototype.usingSourceUrlInjection = function() {
-  return this.sourceUrlInjection_;
+/**
+ * @return {boolean} Whether we're using source url injection.
+ * @private
+ */
+goog.module.ModuleLoader.prototype.usingSourceUrlInjection_ = function() {
+  return this.sourceUrlInjection_ ||
+      (this.getDebugMode() &&
+       goog.module.ModuleLoader.supportsSourceUrlStackTraces());
 };
 
 
@@ -184,7 +207,7 @@ goog.module.ModuleLoader.prototype.evaluateCode_ = function(moduleIds) {
   var uris = loadStatus.requestUris;
   var texts = loadStatus.responseTexts;
   try {
-    if (this.usingSourceUrlInjection()) {
+    if (this.usingSourceUrlInjection_()) {
       for (var i = 0; i < uris.length; i++) {
         var uri = uris[i];
         goog.globalEval(texts[i] + ' //@ sourceURL=' + uri);
@@ -275,11 +298,14 @@ goog.module.ModuleLoader.prototype.downloadModules_ = function(
   }
   this.logger.info('downloadModules ids:' + ids + ' uris:' + uris);
 
-  if (this.getDebugMode()) {
+  if (this.getDebugMode() &&
+      !this.usingSourceUrlInjection_()) {
     // In debug mode use <script> tags rather than XHRs to load the files.
     // This makes it possible to debug and inspect stack traces more easily.
     // It's also possible to use it to load JavaScript files that are hosted on
     // another domain.
+    // The scripts need to load serially, so this is much slower than parallel
+    // script loads with source url injection.
     goog.net.jsloader.loadMany(uris);
   } else {
     var loadStatus = this.loadingModulesStatus_[ids];

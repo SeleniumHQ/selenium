@@ -12,7 +12,6 @@
 // limitations under the License.
 
 #include "StringUtilities.h"
-#include <vector>
 
 namespace webdriver {
 
@@ -110,6 +109,40 @@ std::string StringUtilities::ToString(const std::wstring& input) {
     output = &string_buffer[0];
   }
   return output;
+}
+
+std::string StringUtilities::Format(const char* format, ...) {
+  va_list args;
+  va_start(args, format);
+  size_t buffer_size = _vscprintf(format, args);
+  std::vector<char> buffer(buffer_size + 1);
+  _vsnprintf_s(&buffer[0], buffer.size(), buffer_size + 1, format, args);
+  va_end(args);
+  std::string formatted = &buffer[0];
+  return formatted;
+}
+
+std::wstring StringUtilities::Format(const wchar_t* format, ...) {
+  va_list args;
+  va_start(args, format);
+  size_t buffer_size = _vscwprintf(format, args);
+  std::vector<wchar_t> buffer(buffer_size + 1);
+  _vsnwprintf_s(&buffer[0], buffer.size(), buffer_size + 1, format, args);
+  va_end(args);
+  std::wstring formatted = &buffer[0];
+  return formatted;
+}
+
+void StringUtilities::ToBuffer(const std::string& input, std::vector<char>* buffer) {
+  buffer->resize(input.size() + 1);
+  strcpy_s(&((*buffer)[0]), buffer->size(), input.c_str());
+  (*buffer)[buffer->size() - 1] = L'\0';
+}
+
+void StringUtilities::ToBuffer(const std::wstring& input, std::vector<wchar_t>* buffer) {
+  buffer->resize(input.size() + 1);
+  wcscpy_s(&((*buffer)[0]), buffer->size(), input.c_str());
+  (*buffer)[buffer->size() - 1] = L'\0';
 }
 
 } // namespace webdriver

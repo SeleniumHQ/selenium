@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shfbBuild product="Sandcastle Help File Builder" version="1.9.6.0" projectFile="C:\Projects\WebDriver\trunk\dotnet\docgen\docs.shfbproj" started="1/18/2013 11:02:19 AM">
+<shfbBuild product="Sandcastle Help File Builder" version="1.9.6.0" projectFile="C:\Projects\WebDriver\trunk\dotnet\docgen\docs.shfbproj" started="8/12/2013 1:30:33 PM">
 <buildStep step="Initializing">
 Finding tools...
 Found Sandcastle tools in &#39;C:\Program Files (x86)\Sandcastle\&#39;
@@ -40,24 +40,24 @@ Generating reflection information...
 [c:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe]
   MRefBuilder (v2.7.2.0)
   Copyright c 2006-2012, Microsoft Corporation, All Rights Reserved
-  Info: Loaded 4 assemblies for reflection and 0 dependency assemblies.
-  Info: Wrote information on 17 namespaces, 174 types, and 1540 members
+  Info: Loaded 4 assemblies for reflection and 1 dependency assemblies.
+  Info: Wrote information on 17 namespaces, 175 types, and 1589 members
   XslTransform (v2.7.2.0)
   Copyright c 2006-2012, Microsoft Corporation, All Rights Reserved
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\MergeDuplicates.xsl&#39;.
-    Last step completed in 00:00:02.5938
+    Last step completed in 00:00:02.4375
 </buildStep>
 <buildStep step="GenerateNamespaceSummaries">
 Generating namespace summary information...
-    Last step completed in 00:00:00.0313
+    Last step completed in 00:00:00.0469
 </buildStep>
 <buildStep step="ApplyVisibilityProperties">
 Applying visibility properties to reflection information file
-    10 attribute nodes removed
+    21 attribute nodes removed
     1 explicit interface implementations removed
     10 local and base class EII elements removed
     23 protected members removed from sealed classes
-    Last step completed in 00:00:00.3125
+    Last step completed in 00:00:00.3594
 </buildStep>
 <buildStep step="TransformReflectionInfo">
 Transforming reflection output...
@@ -69,7 +69,7 @@ Transforming reflection output...
   XslTransform (v2.7.2.0)
   Copyright c 2006-2012, Microsoft Corporation, All Rights Reserved
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\ReflectionToManifest.xsl&#39;.
-    Last step completed in 00:00:02.4375
+    Last step completed in 00:00:02.1875
 </buildStep>
 <buildStep step="ModifyHelpTopicFilenames">
 Modifying help topic filenames in reflection information file
@@ -175,12 +175,14 @@ Modifying help topic filenames in reflection information file
     Unique name M_OpenQA_Selenium_Interactions_Actions_SendKeys_1 generated for M:OpenQA.Selenium.Interactions.Actions.SendKeys(System.String)
     Unique name M_OpenQA_Selenium_Interactions_TouchActions_Flick_1 generated for M:OpenQA.Selenium.Interactions.TouchActions.Flick(System.Int32,System.Int32)
     Unique name M_OpenQA_Selenium_Interactions_TouchActions_Scroll_1 generated for M:OpenQA.Selenium.Interactions.TouchActions.Scroll(System.Int32,System.Int32)
-    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_1 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(OpenQA.Selenium.PhantomJS.PhantomJSDriverService,OpenQA.Selenium.PhantomJS.PhantomJSOptions)
-    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_2 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(OpenQA.Selenium.PhantomJS.PhantomJSDriverService,OpenQA.Selenium.PhantomJS.PhantomJSOptions,System.TimeSpan)
-    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_3 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(OpenQA.Selenium.PhantomJS.PhantomJSOptions)
-    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_4 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(System.String)
-    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_5 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(System.String,OpenQA.Selenium.PhantomJS.PhantomJSOptions)
-    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_6 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(System.String,OpenQA.Selenium.PhantomJS.PhantomJSOptions,System.TimeSpan)
+    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_1 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(OpenQA.Selenium.PhantomJS.PhantomJSDriverService)
+    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_2 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(OpenQA.Selenium.PhantomJS.PhantomJSDriverService,OpenQA.Selenium.PhantomJS.PhantomJSOptions)
+    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_3 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(OpenQA.Selenium.PhantomJS.PhantomJSDriverService,OpenQA.Selenium.PhantomJS.PhantomJSOptions,System.TimeSpan)
+    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_4 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(OpenQA.Selenium.PhantomJS.PhantomJSOptions)
+    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_5 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(System.String)
+    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_6 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(System.String,OpenQA.Selenium.PhantomJS.PhantomJSOptions)
+    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriver__ctor_7 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriver.#ctor(System.String,OpenQA.Selenium.PhantomJS.PhantomJSOptions,System.TimeSpan)
+    Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriverService_AddArguments_1 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriverService.AddArguments(System.String[])
     Unique name M_OpenQA_Selenium_PhantomJS_PhantomJSDriverService_CreateDefaultService_1 generated for M:OpenQA.Selenium.PhantomJS.PhantomJSDriverService.CreateDefaultService(System.String)
     Unique name M_OpenQA_Selenium_Remote_Command__ctor_1 generated for M:OpenQA.Selenium.Remote.Command.#ctor(System.String,System.String)
     Unique name M_OpenQA_Selenium_Remote_DesiredCapabilities__ctor_1 generated for M:OpenQA.Selenium.Remote.DesiredCapabilities.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object})
@@ -198,8 +200,9 @@ Modifying help topic filenames in reflection information file
     Unique name M_OpenQA_Selenium_Remote_RemoteWebElement_FindElements_1 generated for M:OpenQA.Selenium.Remote.RemoteWebElement.FindElements(System.String,System.String)
     Unique name M_OpenQA_Selenium_Remote_Response__ctor_1 generated for M:OpenQA.Selenium.Remote.Response.#ctor(OpenQA.Selenium.Remote.SessionId)
     Unique name M_OpenQA_Selenium_Remote_StackTraceElement__ctor_1 generated for M:OpenQA.Selenium.Remote.StackTraceElement.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object})
-    Unique name M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor__ctor_1 generated for M:OpenQA.Selenium.Safari.SafariDriverCommandExecutor.#ctor(System.Int32,System.String)
+    Unique name M_OpenQA_Selenium_Safari_SafariDriver__ctor_1 generated for M:OpenQA.Selenium.Safari.SafariDriver.#ctor(OpenQA.Selenium.Safari.SafariOptions)
     Unique name M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor_Dispose_1 generated for M:OpenQA.Selenium.Safari.SafariDriverCommandExecutor.Dispose(System.Boolean)
+    Unique name M_OpenQA_Selenium_Safari_SafariDriverExtension__ctor_1 generated for M:OpenQA.Selenium.Safari.SafariDriverExtension.#ctor(System.String,System.Boolean)
     Unique name M_OpenQA_Selenium_Safari_SafariDriverServer__ctor_1 generated for M:OpenQA.Selenium.Safari.SafariDriverServer.#ctor(System.Int32)
     Unique name M_OpenQA_Selenium_Safari_SafariDriverServer_Dispose_1 generated for M:OpenQA.Selenium.Safari.SafariDriverServer.Dispose(System.Boolean)
     Unique name M_OpenQA_Selenium_Safari_Internal_HandshakeException__ctor_1 generated for M:OpenQA.Selenium.Safari.Internal.HandshakeException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
@@ -243,7 +246,7 @@ Modifying help topic filenames in reflection information file
     Unique name M_Selenium_WebDriverCommandProcessor__ctor_1 generated for M:Selenium.WebDriverCommandProcessor.#ctor(System.Uri,OpenQA.Selenium.IWebDriver)
     Unique name M_Selenium_WebDriverCommandProcessor_Start_1 generated for M:Selenium.WebDriverCommandProcessor.Start(System.Object)
     Unique name M_Selenium_WebDriverCommandProcessor_Start_2 generated for M:Selenium.WebDriverCommandProcessor.Start(System.String)
-    Last step completed in 00:00:00.2188
+    Last step completed in 00:00:00.2031
 </buildStep>
 <buildStep step="CopyStandardContent">
 Copying standard help content...
@@ -635,7 +638,7 @@ C:\Program Files (x86)\Sandcastle\\Presentation\VS2010\branding -&gt; C:\Project
     C:\Program Files (x86)\Sandcastle\Presentation\VS2010\branding\ps-instrumentedLink.xslt -> C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\branding\ps-instrumentedLink.xslt
     C:\Program Files (x86)\Sandcastle\Presentation\VS2010\branding\ps-languageSpecificText.xslt -> C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\branding\ps-languageSpecificText.xslt
     C:\Program Files (x86)\Sandcastle\Presentation\VS2010\branding\ps-codesnippet.xslt -> C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\branding\ps-codesnippet.xslt
-    Last step completed in 00:00:00.5313
+    Last step completed in 00:00:00.7500
 </buildStep>
 <buildStep step="CopyAdditionalContent">
 Copying additional content files...
@@ -653,7 +656,7 @@ Generating intermediate table of contents file...
   Copyright c 2006-2012, Microsoft Corporation, All Rights Reserved
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\\ProductionTransforms\CreateVSToc.xsl&#39;.
 Generating conceptual content intermediate TOC file...
-    Last step completed in 00:00:00.4219
+    Last step completed in 00:00:00.5156
 </buildStep>
 <buildStep step="CreateBuildAssemblerConfigs">
 Creating Sandcastle configuration files...
@@ -663,7 +666,7 @@ Creating Sandcastle configuration files...
 <buildStep step="MergeCustomConfigs">
 Merging custom build component configurations
 C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\sandcastle.config
-    Last step completed in 00:00:00.1875
+    Last step completed in 00:00:00.0469
 </buildStep>
 <buildStep step="BuildReferenceTopics">
 Building reference help topics...
@@ -681,14 +684,14 @@ Building reference help topics...
   Warn: ShowMissingComponent: [M:Selenium.HttpCommandProcessor.SetExtensionJs(System.String)] Missing &lt;param name=&quot;extensionJs&quot;/&gt; documentation
   Warn: ShowMissingComponent: [M:Selenium.ICommandProcessor.SetExtensionJs(System.String)] Missing &lt;param name=&quot;extensionJs&quot;/&gt; documentation
   Warn: ShowMissingComponent: [M:Selenium.ISelenium.SetExtensionJs(System.String)] Missing &lt;param name=&quot;extensionJs&quot;/&gt; documentation
-  Info: Processed 2217 topics
-    Last step completed in 00:03:16.2344
+  Info: Processed 2272 topics
+    Last step completed in 00:03:00.6719
 </buildStep>
 <buildStep step="CombiningIntermediateTocFiles">
 Combining conceptual and API intermediate TOC files...
 
 Clearing any prior web output
-    Last step completed in 00:00:00.0156
+    Last step completed in 00:00:00.0313
 </buildStep>
 <buildStep step="ExtractingHtmlInfo">
 Extracting HTML info for HTML Help 1 and/or website...
@@ -700,17 +703,17 @@ E-Mail: Eric@EWoodruff.us
 Using LCID &#39;1033&#39;, code page &#39;65001&#39;, encoding charset &#39;UTF-8&#39;.
 
 Processing Help 1 files in C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\HtmlHelp1
-Processed 2217 HTML files
+Processed 2272 HTML files
 Sorting keywords and generating See Also indices
 Saving HTML Help 1 keyword index to C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebDriver.hhk
 Saving HTML Help 1 table of contents to C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebDriver.hhc
 
 Processing website files in C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\Website
-Processed 2217 HTML files
+Processed 2272 HTML files
 Sorting keywords and generating See Also indices
 Saving website keyword index to C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebKI.xml
 Saving website table of contents to C:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\WebTOC.xml
-    Last step completed in 00:00:26.9688
+    Last step completed in 00:00:28.7969
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating HTML Help 1 table of contents file...
@@ -737,13 +740,13 @@ Compiling HTML Help 1 file...
   
   
   
-  Compile time: 0 minutes, 18 seconds
+  Compile time: 0 minutes, 17 seconds
   
-  2,219	Topics
+  2,274	Topics
   
-  30,608	Local links
+  31,355	Local links
   
-  11,648	Internet links
+  11,140	Internet links
   
   0	Graphics
   
@@ -751,11 +754,11 @@ Compiling HTML Help 1 file...
   
   
   
-  Created c:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\HtmlHelp1\WebDriver.chm, 2,345,156 bytes
+  Created c:\Projects\WebDriver\trunk\build\docs\dotnet\web\Working\Output\HtmlHelp1\WebDriver.chm, 2,411,334 bytes
   
-  Compression decreased file by 21,604,195 bytes.
+  Compression decreased file by 22,025,830 bytes.
   
-    Last step completed in 00:00:18.8906
+    Last step completed in 00:00:18.5781
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating website table of contents file...
@@ -764,7 +767,7 @@ Generating website table of contents file...
 <buildStep step="GenerateFullTextIndex">
 Generating full-text index for the website...
 
-    Last step completed in 00:00:06.9688
+    Last step completed in 00:00:06.7813
 </buildStep>
 <buildStep step="CopyingWebsiteFiles">
 Copying website files to output folder...
@@ -792,16 +795,16 @@ Copied 2000 files
 Copied 2100 files
 Copied 2200 files
 Copied 2300 files
-Copied 2319 files for the website content
-    Last step completed in 00:00:04.8281
+Copied 2374 files for the website content
+    Last step completed in 00:00:05.3594
 </buildStep>
 <buildStep step="CleanIntermediates">
 Removing intermediate files...
-    Last step completed in 00:00:03.4375
+    Last step completed in 00:00:01.8750
 </buildStep>
 <buildStep step="Completed">
 
-Build completed successfully at 01/18/2013 11:06 AM.  Total time: 00:04:24.3594
+Build completed successfully at 08/12/2013 01:34 PM.  Total time: 00:04:08.9063
 
 </buildStep>
 </shfbBuild>

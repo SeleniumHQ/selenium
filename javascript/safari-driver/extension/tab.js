@@ -82,7 +82,8 @@ safaridriver.extension.Tab.prototype.onLoad_ = function() {
 safaridriver.extension.Tab.prototype.onPendingFrame_ = function(message, e) {
   goog.asserts.assert(e.name === 'canLoad',
       'Received an async pending frame query');
-  this.log('onPendingFrame_(frameIsLoading=' + this.frameIsLoading_ + ')');
+  this.logConfig(
+      'onPendingFrame_(frameIsLoading=' + this.frameIsLoading_ + ')');
   e.message = this.frameIsLoading_;
   e.stopPropagation();
 };
@@ -93,8 +94,8 @@ safaridriver.extension.Tab.prototype.onPendingFrame_ = function(message, e) {
  * @private
  */
 safaridriver.extension.Tab.prototype.onUnload_ = function(message) {
-  this.log('Received unload notification: ' + message);
-  this.log('Is frame currently ready? ' + this.isReady());
+  this.logConfig('Received unload notification: ' + message);
+  this.logConfig('Is frame currently ready? ' + this.isReady());
   if (message.isFrame() && this.isReady()) {
     this.frameIsLoading_ = true;
   } else {

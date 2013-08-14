@@ -219,7 +219,6 @@
     <Compile Include="Remote\JsonConverters\CookieJsonConverter.cs" />
     <Compile Include="Remote\JsonConverters\DesiredCapabilitiesJsonConverter.cs" />
     <Compile Include="Remote\JsonConverters\PlatformJsonConverter.cs" />
-    <Compile Include="Remote\JsonConverters\ProxyJsonConverter.cs" />
     <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Remote\RemoteAlert.cs" />
     <Compile Include="Remote\RemoteCookieJar.cs" />

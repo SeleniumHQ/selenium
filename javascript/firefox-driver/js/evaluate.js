@@ -17,10 +17,10 @@ limitations under the License.
 
 (function() {
   var handleEvaluateEvent = function(event) {
-    var script = document.getUserData('webdriver-evaluate-script');
-    var args = document.getUserData('webdriver-evaluate-args');
-    var isAsync = document.getUserData('webdriver-evaluate-async');
-    var timeout = document.getUserData('webdriver-evaluate-timeout');
+    var script = document.__webdriver_evaluate['script'];
+    var args = document.__webdriver_evaluate['args'];
+    var isAsync = document.__webdriver_evaluate['async'];
+    var timeout = document.__webdriver_evaluate['timeout'];
     var timeoutId;
 
     function sendResponse(value, status) {
@@ -29,14 +29,14 @@ limitations under the License.
         window.removeEventListener('unload', onunload, false);
       }
 
-      document.setUserData('webdriver-evaluate-args', null, null);
-      document.setUserData('webdriver-evaluate-async', null, null);
-      document.setUserData('webdriver-evaluate-script', null, null);
-      document.setUserData('webdriver-evaluate-timeout', null, null);
+      document.__webdriver_evaluate['args'] = null;
+      document.__webdriver_evaluate['async'] = null;
+      document.__webdriver_evaluate['script'] = null;
+      document.__webdriver_evaluate['timeout'] = null;
 
       // Respond
-      document.setUserData('webdriver-evaluate-result', value, null);
-      document.setUserData('webdriver-evaluate-code', status, null);
+      document.__webdriver_evaluate['result'] = value;
+      document.__webdriver_evaluate['code'] = status;
 
       var response = document.createEvent('Events');
       response.initEvent('webdriver-evaluate-response', true, false);
@@ -78,5 +78,11 @@ limitations under the License.
   document.addEventListener('webdriver-evaluate', handleEvaluateEvent, true);
 
   // Make it clear that we're here.
-  document.setUserData('webdriver-evaluate-attached', true, null);
+  document.__webdriver_evaluate = {
+    attached: true,
+    args: null,
+    script: null,
+    timeout: null,
+    async: null
+  };
 })();

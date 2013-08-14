@@ -23,23 +23,27 @@ import java.util.logging.Level;
 
 import com.google.common.collect.ImmutableSet;
 import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.RemoteLogs;
-import org.openqa.selenium.testing.MockTestBase;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-public class PerformanceLoggingMockTest extends MockTestBase {
+public class PerformanceLoggingMockTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+
   @Test
   public void testMergesRemoteLogs() {
-    final ExecuteMethod executeMethod = mock(ExecuteMethod.class);
+    final ExecuteMethod executeMethod = mockery.mock(ExecuteMethod.class);
 
-    checking(new Expectations() {
+    mockery.checking(new Expectations() {
       {
-        one(executeMethod).execute(DriverCommand.GET_LOG,
+        oneOf(executeMethod).execute(DriverCommand.GET_LOG,
           ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER));
         will(returnValue(ImmutableList.of(ImmutableMap.of(
           "level", Level.INFO.getName(),

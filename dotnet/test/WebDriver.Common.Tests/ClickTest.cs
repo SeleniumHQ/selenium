@@ -31,7 +31,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Not tested")]
         [IgnoreBrowser(Browser.Opera, "Not tested")]
         public void CanClickOnALinkThatOverflowsAndFollowIt()
         {

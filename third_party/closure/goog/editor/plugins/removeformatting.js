@@ -29,6 +29,7 @@ goog.require('goog.editor.Plugin');
 goog.require('goog.editor.node');
 goog.require('goog.editor.range');
 goog.require('goog.string');
+goog.require('goog.userAgent');
 
 
 
@@ -172,7 +173,8 @@ goog.editor.plugins.RemoveFormatting.prototype.removeFormatting_ = function() {
       // breaking spaces.
       // Old versions of WebKit (Safari 3, Chrome 1) incorrectly match /u00A0
       // and newer versions properly match &nbsp;.
-      var nbspRegExp = goog.userAgent.isVersion('528') ? /&nbsp;/g : /\u00A0/g;
+      var nbspRegExp =
+          goog.userAgent.isVersionOrHigher('528') ? /&nbsp;/g : /\u00A0/g;
       return text.replace(nbspRegExp, ' ');
     });
   }
@@ -185,9 +187,16 @@ goog.editor.plugins.RemoveFormatting.prototype.removeFormatting_ = function() {
  * @return {Node} The table, or null if one was not found.
  * @private
  */
-goog.editor.plugins.RemoveFormatting.getTableAncestor_ = function(nodeToCheck) {
-  return goog.dom.getAncestor(nodeToCheck,
-      function(node) { return node.tagName == goog.dom.TagName.TABLE; }, true);
+goog.editor.plugins.RemoveFormatting.prototype.getTableAncestor_ = function(
+    nodeToCheck) {
+  var fieldElement = this.getFieldObject().getElement();
+  while (nodeToCheck && nodeToCheck != fieldElement) {
+    if (nodeToCheck.tagName == goog.dom.TagName.TABLE) {
+      return nodeToCheck;
+    }
+    nodeToCheck = nodeToCheck.parentNode;
+  }
+  return null;
 };
 
 
@@ -276,11 +285,11 @@ goog.editor.plugins.RemoveFormatting.prototype.pasteHtml_ = function(html) {
     // remove parentNodes of the span while they are empty.
 
     if (goog.userAgent.GECKO) {
-      parent.innerHTML =
-          parent.innerHTML.replace(dummyImageNodePattern, html);
+      goog.editor.node.replaceInnerHtml(parent,
+          parent.innerHTML.replace(dummyImageNodePattern, html));
     } else {
-      parent.innerHTML =
-          parent.innerHTML.replace(dummyImageNodePattern, dummySpanText);
+      goog.editor.node.replaceInnerHtml(parent,
+          parent.innerHTML.replace(dummyImageNodePattern, dummySpanText));
       var dummySpan = dh.getElement(dummyNodeId);
       parent = dummySpan;
       while ((parent = dummySpan.parentNode) &&
@@ -300,8 +309,8 @@ goog.editor.plugins.RemoveFormatting.prototype.pasteHtml_ = function(html) {
         goog.dom.insertSiblingAfter(dummySpan, parent);
         goog.dom.removeNode(parent);
       }
-      parent.innerHTML =
-          parent.innerHTML.replace(new RegExp(dummySpanText, 'i'), html);
+      goog.editor.node.replaceInnerHtml(parent,
+          parent.innerHTML.replace(new RegExp(dummySpanText, 'i'), html));
     }
   }
 
@@ -495,10 +504,8 @@ goog.editor.plugins.RemoveFormatting.prototype.convertSelectedHtmlText_ =
     var expandedRange = goog.editor.range.expand(range,
         this.getFieldObject().getElement());
 
-    var startInTable = goog.editor.plugins.RemoveFormatting.getTableAncestor_(
-        expandedRange.getStartNode());
-    var endInTable = goog.editor.plugins.RemoveFormatting.getTableAncestor_(
-        expandedRange.getEndNode());
+    var startInTable = this.getTableAncestor_(expandedRange.getStartNode());
+    var endInTable = this.getTableAncestor_(expandedRange.getEndNode());
 
     if (startInTable || endInTable) {
       if (startInTable == endInTable) {

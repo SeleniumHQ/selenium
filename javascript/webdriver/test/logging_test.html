@@ -31,7 +31,7 @@ limitations under the License.
   }
 
   function checkRecord(record, level, msg, time) {
-    assertEquals('wrong level', level.name, record.level);
+    assertEquals('wrong level', level.value, record.level.value);
     assertEquals('wrong message', msg, record.message);
     assertEquals('wrong time', time, record.timestamp);
   }

@@ -19,11 +19,10 @@ package org.openqa.selenium.support;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.HasTouchScreen;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ThreadGuard;
+import org.openqa.selenium.interactions.HasTouchScreen;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

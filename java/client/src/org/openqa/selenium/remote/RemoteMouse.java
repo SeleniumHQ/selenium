@@ -19,7 +19,6 @@ package org.openqa.selenium.remote;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 import java.util.Map;
@@ -27,7 +26,7 @@ import java.util.Map;
 /**
  * Executes wire commands for mouse interaction.
  */
-class RemoteMouse implements Mouse {
+class RemoteMouse implements org.openqa.selenium.interactions.Mouse {
   protected final ExecuteMethod executor;
 
   public RemoteMouse(ExecuteMethod executor) {

@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace OpenQA.Selenium
 {
@@ -65,15 +66,16 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Describes proxy settings to be used with a driver instance.
     /// </summary>
+    [JsonObject(MemberSerialization.OptIn)]
     public class Proxy
     {
-        private ProxyKind proxyType = ProxyKind.Unspecified;
-        private bool autoDetect;
-        private string ftpProxy;
-        private string httpProxy;
+        private ProxyKind proxyKind = ProxyKind.Unspecified;
+        private bool isAutoDetect;
+        private string ftpProxyLocation;
+        private string httpProxyLocation;
         private string noProxy;
         private string proxyAutoConfigUrl;
-        private string sslProxy;
+        private string sslProxyLocation;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Proxy"/> class.
@@ -133,82 +135,104 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets or sets the type of proxy.
         /// </summary>
+        [JsonIgnore]
         public ProxyKind Kind
         {
             get 
             {
-                return this.proxyType; 
+                return this.proxyKind; 
             }
 
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.AutoDetect);
-                this.proxyType = value;
+                this.proxyKind = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the type of proxy as a string for JSON serialization.
+        /// </summary>
+        [JsonProperty("proxyType")]
+        public string SerializableProxyKind
+        {
+            get
+            {
+                if (this.proxyKind == ProxyKind.ProxyAutoConfigure)
+                {
+                    return "PAC";
+                }
+
+                return this.proxyKind.ToString().ToUpperInvariant();
             }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether the proxy uses automatic detection.
         /// </summary>
+        [JsonIgnore]
         public bool IsAutoDetect
         {
             get
             {
-                return this.autoDetect;
+                return this.isAutoDetect;
             }
 
             set
             {
-                if (this.autoDetect == value)
+                if (this.isAutoDetect == value)
                 {
                     return;
                 }
 
                 this.VerifyProxyTypeCompatilibily(ProxyKind.AutoDetect);
-                this.proxyType = ProxyKind.AutoDetect;
-                this.autoDetect = value;
+                this.proxyKind = ProxyKind.AutoDetect;
+                this.isAutoDetect = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the value of the proxy for the FTP protocol.
         /// </summary>
+        [JsonProperty("ftpProxy", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public string FtpProxy
         {
             get
             {
-                return this.ftpProxy;
+                return this.ftpProxyLocation;
             }
 
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
-                this.proxyType = ProxyKind.Manual;
-                this.ftpProxy = value;
+                this.proxyKind = ProxyKind.Manual;
+                this.ftpProxyLocation = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the value of the proxy for the HTTP protocol.
         /// </summary>
+        [JsonProperty("httpProxy", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public string HttpProxy
         {
             get
             {
-                return this.httpProxy;
+                return this.httpProxyLocation;
             }
 
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
-                this.proxyType = ProxyKind.Manual;
-                this.httpProxy = value;
+                this.proxyKind = ProxyKind.Manual;
+                this.httpProxyLocation = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the value for when no proxy is specified.
         /// </summary>
+        [JsonIgnore]
         public string NoProxy
         {
             get
@@ -219,7 +243,7 @@ namespace OpenQA.Selenium
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
-                this.proxyType = ProxyKind.Manual;
+                this.proxyKind = ProxyKind.Manual;
                 this.noProxy = value;
             }
         }
@@ -227,6 +251,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets or sets the URL used for proxy automatic configuration.
         /// </summary>
+        [JsonProperty("proxyAutoconfigUrl", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public string ProxyAutoConfigUrl
         {
             get
@@ -237,7 +262,7 @@ namespace OpenQA.Selenium
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.ProxyAutoConfigure);
-                this.proxyType = ProxyKind.ProxyAutoConfigure;
+                this.proxyKind = ProxyKind.ProxyAutoConfigure;
                 this.proxyAutoConfigUrl = value;
             }
         }
@@ -245,24 +270,25 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets or sets the value of the proxy for the SSL protocol.
         /// </summary>
+        [JsonProperty("sslProxy", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public string SslProxy
         {
             get
             {
-                return this.sslProxy;
+                return this.sslProxyLocation;
             }
 
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
-                this.proxyType = ProxyKind.Manual;
-                this.sslProxy = value;
+                this.proxyKind = ProxyKind.Manual;
+                this.sslProxyLocation = value;
             }
         }
 
         private void VerifyProxyTypeCompatilibily(ProxyKind compatibleProxy)
         {
-            if (this.proxyType != ProxyKind.Unspecified && this.proxyType != compatibleProxy)
+            if (this.proxyKind != ProxyKind.Unspecified && this.proxyKind != compatibleProxy)
             {
                 throw new InvalidOperationException("Proxy autodetect is incompatible with manual settings");
             }

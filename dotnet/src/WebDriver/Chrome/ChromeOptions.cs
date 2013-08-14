@@ -66,6 +66,7 @@ namespace OpenQA.Selenium.Chrome
         private List<string> arguments = new List<string>();
         private List<string> extensionFiles = new List<string>();
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
+        private Proxy proxy;
 
         /// <summary>
         /// Gets or sets the location of the Chrome browser's binary executable file.
@@ -75,6 +76,16 @@ namespace OpenQA.Selenium.Chrome
         {
             get { return this.binaryLocation; }
             set { this.binaryLocation = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the proxy to use with this instance of Chrome.
+        /// </summary>
+        [JsonIgnore]
+        public Proxy Proxy
+        {
+            get { return this.proxy; }
+            set { this.proxy = value; }
         }
 
         /// <summary>
@@ -225,7 +236,7 @@ namespace OpenQA.Selenium.Chrome
         /// reflected in the returned capabilities.
         /// </summary>
         /// <returns>The DesiredCapabilities for Chrome with these options.</returns>
-        internal ICapabilities ToCapabilities()
+        public ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = DesiredCapabilities.Chrome();
             capabilities.SetCapability(ChromeOptions.Capability, this);
@@ -238,6 +249,11 @@ namespace OpenQA.Selenium.Chrome
             if (!string.IsNullOrEmpty(this.binaryLocation))
             {
                 capabilities.SetCapability("chrome.binary", this.binaryLocation);
+            }
+
+            if (this.proxy != null)
+            {
+                capabilities.SetCapability(CapabilityType.Proxy, this.proxy);
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)

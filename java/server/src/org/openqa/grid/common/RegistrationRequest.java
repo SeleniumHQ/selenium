@@ -84,8 +84,12 @@ public class RegistrationRequest {
 
   public static final String MAX_SESSION = "maxSession";
   public static final String AUTO_REGISTER = "register";
+
+  // polling nodes params
   public static final String NODE_POLLING = "nodePolling";
   public static final String UNREGISTER_IF_STILL_DOWN_AFTER = "unregisterIfStillDownAfter";
+  public static final String DOWN_POLLING_LIMIT = "downPollingLimit";
+  public static final String STATUS_CHECK_TIMEOUT = "nodeStatusCheckTimeout";
 
   public static final String MAX_TESTS_BEFORE_CLEAN = "maxTestBeforeClean";
   public static final String CLEAN_SNAPSHOT = "cleanSnapshot";
@@ -194,7 +198,7 @@ public class RegistrationRequest {
     try {
       return Integer.parseInt(o.toString());
     } catch (Throwable t) {
-      log.warning("Error." + name + " is supposed to be an int. Keeping default of " + defaultValue);
+      log.warning("Error. " + param + " is supposed to be an int. Keeping default of " + defaultValue);
       return defaultValue;
     }
 
@@ -514,6 +518,7 @@ public class RegistrationRequest {
     }
     DesiredCapabilities res = new DesiredCapabilities();
     for (String capabilityPair : s) {
+      capabilityPair = capabilityPair.trim();
       if (capabilityPair.split("=").length != 2) {
         throw new GridConfigurationException("-browser format is key1=value1,key2=value2 "
             + capabilityPair + " doesn't follow that format.");

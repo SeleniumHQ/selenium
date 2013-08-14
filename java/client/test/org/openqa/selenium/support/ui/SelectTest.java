@@ -16,30 +16,33 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
+public class SelectTest{
 
-import org.jmock.Expectations;
-import org.junit.Test;
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-public class SelectTest extends MockTestBase {
   @Test
   public void shouldThrowAnExceptionIfTheElementIsNotASelectElement() {
-    final WebElement element = mock(WebElement.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(1).of(element).getTagName();
       will(returnValue("a"));
     }});
@@ -53,9 +56,9 @@ public class SelectTest extends MockTestBase {
   }
 
   private Select selectElementWithMultipleEqualTo(final String value) {
-    final WebElement element = mock(WebElement.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       exactly(1).of(element).getAttribute("multiple");
@@ -86,10 +89,10 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldReturnAllOptionsWhenAsked() {
-    final WebElement element = mock(WebElement.class);
+    final WebElement element = mockery.mock(WebElement.class);
     final List<WebElement> options = Collections.emptyList();
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
@@ -106,12 +109,12 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldReturnOptionsWhichAreSelected() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement optionGood = mock(WebElement.class, "good");
-    final WebElement optionBad = mock(WebElement.class, "bad");
+    final WebElement element = mockery.mock(WebElement.class);
+    final WebElement optionGood = mockery.mock(WebElement.class, "good");
+    final WebElement optionBad = mockery.mock(WebElement.class, "bad");
     final List<WebElement> options = Arrays.asList(optionBad, optionGood);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
@@ -133,12 +136,12 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldReturnFirstSelectedOptions() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
+    final WebElement element = mockery.mock(WebElement.class);
+    final WebElement firstOption = mockery.mock(WebElement.class, "first");
+    final WebElement secondOption = mockery.mock(WebElement.class, "second");
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
@@ -159,11 +162,11 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldThrowANoSuchElementExceptionIfNothingIsSelected() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
+    final WebElement element = mockery.mock(WebElement.class);
+    final WebElement firstOption = mockery.mock(WebElement.class, "first");
     final List<WebElement> options = Arrays.asList(firstOption);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
@@ -186,11 +189,11 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldAllowOptionsToBeSelectedByVisibleText() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
+    final WebElement element = mockery.mock(WebElement.class);
+    final WebElement firstOption = mockery.mock(WebElement.class, "first");
     final List<WebElement> options = Arrays.asList(firstOption);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
@@ -208,12 +211,12 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldAllowOptionsToBeSelectedByIndex() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
+    final WebElement element = mockery.mock(WebElement.class);
+    final WebElement firstOption = mockery.mock(WebElement.class, "first");
+    final WebElement secondOption = mockery.mock(WebElement.class, "second");
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
@@ -238,11 +241,11 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldAllowOptionsToBeSelectedByReturnedValue() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
+    final WebElement element = mockery.mock(WebElement.class);
+    final WebElement firstOption = mockery.mock(WebElement.class, "first");
     final List<WebElement> options = Arrays.asList(firstOption);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
@@ -260,12 +263,12 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldAllowUserToDeselectAllWhenSelectSupportsMultipleSelections() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
+    final WebElement element = mockery.mock(WebElement.class);
+    final WebElement firstOption = mockery.mock(WebElement.class, "first");
+    final WebElement secondOption = mockery.mock(WebElement.class, "second");
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
@@ -299,12 +302,12 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldAllowUserToDeselectOptionsByVisibleText() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
+    final WebElement element = mockery.mock(WebElement.class);
+    final WebElement firstOption = mockery.mock(WebElement.class, "first");
+    final WebElement secondOption = mockery.mock(WebElement.class, "second");
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
@@ -325,12 +328,12 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldAllowOptionsToBeDeselectedByIndex() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
+    final WebElement element = mockery.mock(WebElement.class);
+    final WebElement firstOption = mockery.mock(WebElement.class, "first");
+    final WebElement secondOption = mockery.mock(WebElement.class, "second");
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
@@ -353,12 +356,12 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldAllowOptionsToBeDeselectedByReturnedValue() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "third");
+    final WebElement element = mockery.mock(WebElement.class);
+    final WebElement firstOption = mockery.mock(WebElement.class, "first");
+    final WebElement secondOption = mockery.mock(WebElement.class, "third");
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
@@ -379,70 +382,22 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldConvertAnUnquotedStringIntoOneWithQuotes() {
-    final WebElement element = mock(WebElement.class);
-
-    checking(new Expectations() {{
-      allowing(element).getTagName();
-      will(returnValue("select"));
-      allowing(element).getAttribute("multiple");
-      will(returnValue("multiple"));
-    }});
-
-    Select select = new Select(element);
-    String result = select.escapeQuotes("foo");
-
-    assertEquals("\"foo\"", result);
+    assertEquals("\"foo\"", escapeQuotes("foo"));
   }
 
   @Test
   public void shouldConvertAStringWithATickIntoOneWithQuotes() {
-    final WebElement element = mock(WebElement.class);
-
-    checking(new Expectations() {{
-      allowing(element).getTagName();
-      will(returnValue("select"));
-      allowing(element).getAttribute("multiple");
-      will(returnValue("multiple"));
-    }});
-
-    Select select = new Select(element);
-    String result = select.escapeQuotes("f'oo");
-
-    assertEquals("\"f'oo\"", result);
+    assertEquals("\"f'oo\"", escapeQuotes("f'oo"));
   }
 
   @Test
   public void shouldConvertAStringWithAQuotIntoOneWithTicks() {
-    final WebElement element = mock(WebElement.class);
-
-    checking(new Expectations() {{
-      allowing(element).getTagName();
-      will(returnValue("select"));
-      allowing(element).getAttribute("multiple");
-      will(returnValue("multiple"));
-    }});
-
-    Select select = new Select(element);
-    String result = select.escapeQuotes("f\"oo");
-
-    assertEquals("'f\"oo'", result);
+    assertEquals("'f\"oo'", escapeQuotes("f\"oo"));
   }
 
   @Test
   public void shouldProvideConcatenatedStringsWhenStringToEscapeContainsTicksAndQuotes() {
-    final WebElement element = mock(WebElement.class);
-
-    checking(new Expectations() {{
-      allowing(element).getTagName();
-      will(returnValue("select"));
-      allowing(element).getAttribute("multiple");
-      will(returnValue("multiple"));
-    }});
-
-    Select select = new Select(element);
-    String result = select.escapeQuotes("f\"o'o");
-
-    assertEquals("concat(\"f\", '\"', \"o'o\")", result);
+    assertEquals("concat(\"f\", '\"', \"o'o\")", escapeQuotes("f\"o'o"));
   }
 
   /**
@@ -451,42 +406,30 @@ public class SelectTest extends MockTestBase {
    */
   @Test
   public void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
-    final WebElement element = mock(WebElement.class);
-
-    checking(new Expectations() {{
-      allowing(element).getTagName();
-      will(returnValue("select"));
-      allowing(element).getAttribute("multiple");
-      will(returnValue("multiple"));
-    }});
-
-    Select select = new Select(element);
-    String result = select.escapeQuotes("'\"");
-
-    assertEquals("concat(\"'\", '\"')", result);
+    assertEquals("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')", escapeQuotes("Bar \"Rock'n'Roll\""));
   }
 
   @Test
   public void shouldFallBackToSlowLooksUpsWhenGetByVisibleTextFailsAndThereIsASpace() {
-    final WebElement element = mock(WebElement.class);
-    final WebElement firstOption = mock(WebElement.class, "first");
+    final WebElement element = mockery.mock(WebElement.class);
+    final WebElement firstOption = mockery.mock(WebElement.class, "first");
     final By xpath1 = By.xpath(".//option[normalize-space(.) = \"foo bar\"]");
     final By xpath2 = By.xpath(".//option[contains(., \"foo\")]");
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
       will(returnValue("false"));
-      one(element).findElements(xpath1);
+      oneOf(element).findElements(xpath1);
       will(returnValue(Collections.EMPTY_LIST));
-      one(element).findElements(xpath2);
+      oneOf(element).findElements(xpath2);
       will(returnValue(Collections.singletonList(firstOption)));
-      one(firstOption).getText();
+      oneOf(firstOption).getText();
       will(returnValue("foo bar"));
-      one(firstOption).isSelected();
+      oneOf(firstOption).isSelected();
       will(returnValue(false));
-      one(firstOption).click();
+      oneOf(firstOption).click();
     }});
 
     Select select = new Select(element);
@@ -495,12 +438,12 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldIndicateWhetherASelectIsMultipleCorrectly() {
-    final WebElement element1 = mock(WebElement.class, "false1");
-    final WebElement element2 = mock(WebElement.class, "false2");
-    final WebElement element3 = mock(WebElement.class, "true1");
-    final WebElement element4 = mock(WebElement.class, "true2");
+    final WebElement element1 = mockery.mock(WebElement.class, "false1");
+    final WebElement element2 = mockery.mock(WebElement.class, "false2");
+    final WebElement element3 = mockery.mock(WebElement.class, "true1");
+    final WebElement element4 = mockery.mock(WebElement.class, "true2");
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element1).getTagName();
       will(returnValue("select"));
       allowing(element1).getAttribute("multiple");
@@ -537,9 +480,9 @@ public class SelectTest extends MockTestBase {
 
   @Test
   public void shouldThrowAnExceptionIfThereAreNoElementsToSelect() {
-    final WebElement element = mock(WebElement.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(element).getTagName();
       will(returnValue("select"));
       allowing(element).getAttribute("multiple");
@@ -567,5 +510,18 @@ public class SelectTest extends MockTestBase {
       fail("Was not meant to pass");
     } catch (NoSuchElementException ignored) {
     }
+  }
+
+  private String escapeQuotes(String text) {
+    final WebElement element = mockery.mock(WebElement.class);
+
+    mockery.checking(new Expectations() {{
+      allowing(element).getTagName();
+      will(returnValue("select"));
+      allowing(element).getAttribute("multiple");
+      will(returnValue("multiple"));
+    }});
+
+    return new Select(element).escapeQuotes(text);
   }
 }

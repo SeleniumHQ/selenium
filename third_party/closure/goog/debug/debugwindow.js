@@ -44,53 +44,44 @@ goog.require('goog.userAgent');
 goog.debug.DebugWindow = function(opt_identifier, opt_prefix) {
   /**
    * Identifier for this logging class
-   * @type {string}
-   * @protected
-   * @suppress {underscore}
+   * @protected {string}
    */
-  this.identifier_ = opt_identifier || '';
+  this.identifier = opt_identifier || '';
+
+  /**
+   * Array used to buffer log output
+   * @protected {!Array}
+   */
+  this.outputBuffer = [];
 
   /**
    * Optional prefix to be prepended to error strings
-   * @type {string}
-   * @private
+   * @private {string}
    */
   this.prefix_ = opt_prefix || '';
 
   /**
-   * Array used to buffer log output
-   * @type {Array}
-   * @protected
-   * @suppress {underscore}
-   */
-  this.outputBuffer_ = [];
-
-  /**
    * Buffer for saving the last 1000 messages
-   * @type {goog.structs.CircularBuffer}
-   * @private
+   * @private {!goog.structs.CircularBuffer}
    */
   this.savedMessages_ =
       new goog.structs.CircularBuffer(goog.debug.DebugWindow.MAX_SAVED);
 
   /**
    * Save the publish handler so it can be removed
-   * @type {Function}
-   * @private
+   * @private {!Function}
    */
   this.publishHandler_ = goog.bind(this.addLogRecord, this);
 
   /**
    * Formatter for formatted output
-   * @type {goog.debug.Formatter}
-   * @private
+   * @private {goog.debug.Formatter}
    */
   this.formatter_ = new goog.debug.HtmlFormatter(this.prefix_);
 
   /**
    * Loggers that we shouldn't output
-   * @type {Object}
-   * @private
+   * @private {!Object}
    */
   this.filteredLoggers_ = {};
 
@@ -102,10 +93,9 @@ goog.debug.DebugWindow = function(opt_identifier, opt_prefix) {
    * to keep its window open. When it's disabled, it can still be capturing log
    * output if, but it won't try to write them to the DebugWindow window until
    * it's enabled.
-   * @type {boolean}
-   * @private
+   * @private {boolean}
    */
-  this.enabled_ = goog.debug.DebugWindow.isEnabled(this.identifier_);
+  this.enabled_ = goog.debug.DebugWindow.isEnabled(this.identifier);
 
   // timer to save the DebugWindow's window position in a cookie
   goog.global.setInterval(goog.bind(this.saveWindowPositionSize_, this), 7500);
@@ -186,11 +176,9 @@ goog.debug.DebugWindow.prototype.bufferTimeout_ = null;
 
 /**
  * Timestamp for the last time the log was written to.
- * @type {number}
- * @protected
- * @suppress {underscore}
+ * @protected {number}
  */
-goog.debug.DebugWindow.prototype.lastCall_ = goog.now();
+goog.debug.DebugWindow.prototype.lastCall = goog.now();
 
 
 /**
@@ -322,9 +310,8 @@ goog.debug.DebugWindow.prototype.hasActiveWindow = function() {
 /**
  * Clears the contents of the debug window
  * @protected
- * @suppress {underscore}
  */
-goog.debug.DebugWindow.prototype.clear_ = function() {
+goog.debug.DebugWindow.prototype.clear = function() {
   this.savedMessages_.clear();
   if (this.hasActiveWindow()) {
     this.writeInitialDocument();
@@ -375,10 +362,10 @@ goog.debug.DebugWindow.prototype.write_ = function(html) {
  * @private
  */
 goog.debug.DebugWindow.prototype.writeToLog_ = function(html) {
-  this.outputBuffer_.push(html);
+  this.outputBuffer.push(html);
   goog.global.clearTimeout(this.bufferTimeout_);
 
-  if (goog.now() - this.lastCall_ > 750) {
+  if (goog.now() - this.lastCall > 750) {
     this.writeBufferToLog();
   } else {
     this.bufferTimeout_ =
@@ -392,14 +379,14 @@ goog.debug.DebugWindow.prototype.writeToLog_ = function(html) {
  * @protected
  */
 goog.debug.DebugWindow.prototype.writeBufferToLog = function() {
-  this.lastCall_ = goog.now();
+  this.lastCall = goog.now();
   if (this.hasActiveWindow()) {
     var body = this.win_.document.body;
     var scroll = body &&
         body.scrollHeight - (body.scrollTop + body.clientHeight) <= 100;
 
-    this.win_.document.write(this.outputBuffer_.join(''));
-    this.outputBuffer_.length = 0;
+    this.win_.document.write(this.outputBuffer.join(''));
+    this.outputBuffer.length = 0;
 
     if (scroll) {
       this.win_.scrollTo(0, 1000000);
@@ -411,9 +398,8 @@ goog.debug.DebugWindow.prototype.writeBufferToLog = function() {
 /**
  * Writes all saved messages to the DebugWindow.
  * @protected
- * @suppress {underscore}
  */
-goog.debug.DebugWindow.prototype.writeSavedMessages_ = function() {
+goog.debug.DebugWindow.prototype.writeSavedMessages = function() {
   var messages = this.savedMessages_.getValues();
   for (var i = 0; i < messages.length; i++) {
     this.writeToLog_(messages[i]);
@@ -466,7 +452,7 @@ goog.debug.DebugWindow.prototype.openWindow_ = function() {
  */
 goog.debug.DebugWindow.prototype.getWindowName_ = function() {
   return goog.userAgent.IE ?
-      this.identifier_.replace(/[\s\-\.\,]/g, '_') : this.identifier_;
+      this.identifier.replace(/[\s\-\.\,]/g, '_') : this.identifier;
 };
 
 
@@ -499,10 +485,10 @@ goog.debug.DebugWindow.prototype.writeInitialDocument = function() {
   var html = '<style>' + this.getStyleRules() + '</style>' +
              '<hr><div class="dbg-ev" style="text-align:center">' +
              this.welcomeMessage + '<br><small>Logger: ' +
-             this.identifier_ + '</small></div><hr>';
+             this.identifier + '</small></div><hr>';
 
   this.writeToLog_(html);
-  this.writeSavedMessages_();
+  this.writeSavedMessages();
 };
 
 
@@ -514,7 +500,7 @@ goog.debug.DebugWindow.prototype.writeInitialDocument = function() {
  * @private
  */
 goog.debug.DebugWindow.prototype.setCookie_ = function(key, value) {
-  var fullKey = goog.debug.DebugWindow.getCookieKey_(this.identifier_, key);
+  var fullKey = goog.debug.DebugWindow.getCookieKey_(this.identifier, key);
   document.cookie = fullKey + '=' + encodeURIComponent(value) +
       ';path=/;expires=' +
       (new Date(goog.now() + goog.debug.DebugWindow.COOKIE_TIME)).toUTCString();
@@ -530,7 +516,7 @@ goog.debug.DebugWindow.prototype.setCookie_ = function(key, value) {
  */
 goog.debug.DebugWindow.prototype.getCookie_ = function(key, opt_default) {
   return goog.debug.DebugWindow.getCookieValue_(
-      this.identifier_, key, opt_default);
+      this.identifier, key, opt_default);
 };
 
 
@@ -624,7 +610,7 @@ goog.debug.DebugWindow.prototype.removeFilter = function(loggerName) {
  */
 goog.debug.DebugWindow.prototype.resetBufferWithNewSize = function(size) {
   if (size > 0 && size < 50000) {
-    this.clear_();
+    this.clear();
     this.savedMessages_ = new goog.structs.CircularBuffer(size);
   }
 };

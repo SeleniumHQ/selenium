@@ -14,9 +14,9 @@
 // limitations under the License.
 
 /**
- * @fileoverview An example WebDriver script.
- * Usage: node selenium-webdriver/example/google_search.js selenium_jar
- * where selenium_jar is the path to the standalone Selenium server jar to use.
+ * @fileoverview An example WebDriver script. This requires the chromedriver
+ * to be present on the system PATH.
+ * Usage: node selenium-webdriver/example/google_search.js
  */
 
 var fs = require('fs');
@@ -24,23 +24,8 @@ var fs = require('fs');
 var webdriver = require('..'),
     remote = require('../remote');
 
-
-if (process.argv.length !== 3) {
-  console.log('Usage: node ' + __filename + ' selenium_server_jar');
-  process.exit(1);
-}
-
-var jar = process.argv[2];
-if (!fs.existsSync(jar)) {
-  throw Error('The specified jar does not exist: ' + jar);
-}
-
-var server = new remote.SeleniumServer({jar: jar});
-server.start();
-
 var driver = new webdriver.Builder().
-    usingServer(server.address()).
-    withCapabilities({'browserName': 'firefox'}).
+    withCapabilities(webdriver.Capabilities.chrome()).
     build();
 
 driver.get('http://www.google.com');
@@ -53,4 +38,3 @@ driver.wait(function() {
 }, 1000);
 
 driver.quit();
-server.stop();

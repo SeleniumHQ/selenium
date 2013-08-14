@@ -92,7 +92,7 @@ goog.ui.editor.Bubble = function(parent, zIndex) {
       this.dom_.createDom(goog.dom.TagName.DIV,
           {'className': goog.ui.editor.Bubble.BUBBLE_CLASSNAME});
 
-  goog.style.showElement(this.bubbleContainer_, false);
+  goog.style.setElementShown(this.bubbleContainer_, false);
   goog.dom.appendChild(parent, this.bubbleContainer_);
   goog.style.setStyle(this.bubbleContainer_, 'zIndex', zIndex);
 

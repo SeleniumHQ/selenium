@@ -516,6 +516,14 @@ limitations under the License.
   }
 
 
+  function testFromWireValue_passesThroughFunctionProperties() {
+    var json = [{'foo': {'bar': 123}, 'func': goog.nullFunction}];
+    var out = webdriver.WebDriver.fromWireValue_({}, json);
+    webdriver.test.testutil.assertObjectEquals(json, out);
+    verifyAll();  // Expected by tear down.
+  }
+
+
   function testDoesNotExecuteCommandIfSessionDoesNotResolve() {
     var session = webdriver.promise.rejected(STUB_ERROR);
     var testHelper = TestHelper.
@@ -1858,8 +1866,9 @@ limitations under the License.
 
     var driver = testHelper.createDriver();
     var element = driver.findElement(By.id('foo'));
-    element.sendKeys(webdriver.promise.resolved('abc'), 123,
-                     webdriver.promise.resolved('def'));
+    element.sendKeys(
+        webdriver.promise.fulfilled('abc'), 123,
+        webdriver.promise.fulfilled('def'));
     testHelper.execute();
   }
 
@@ -2064,7 +2073,7 @@ limitations under the License.
         expect(CName.GET_LOG, {'type': 'browser'}).
         andReturnSuccess([
           new webdriver.logging.Entry(
-              'INFO', 'hello', 1234),
+              webdriver.logging.Level.INFO, 'hello', 1234),
           {'level': 'DEBUG', 'message': 'abc123', 'timestamp': 5678}
         ]).
         replayAll();
@@ -2073,12 +2082,12 @@ limitations under the License.
       assertEquals(2, entries.length);
 
       assertTrue(entries[0] instanceof webdriver.logging.Entry);
-      assertEquals('INFO', entries[0].level);
+      assertEquals(webdriver.logging.Level.INFO.value, entries[0].level.value);
       assertEquals('hello', entries[0].message);
       assertEquals(1234, entries[0].timestamp);
 
       assertTrue(entries[1] instanceof webdriver.logging.Entry);
-      assertEquals('DEBUG', entries[1].level);
+      assertEquals(webdriver.logging.Level.DEBUG.value, entries[1].level.value);
       assertEquals('abc123', entries[1].message);
       assertEquals(5678, entries[1].timestamp);
     });

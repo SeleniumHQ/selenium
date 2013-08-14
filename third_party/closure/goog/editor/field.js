@@ -25,6 +25,8 @@
 goog.provide('goog.editor.Field');
 goog.provide('goog.editor.Field.EventType');
 
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.Role');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.async.Delay');
@@ -253,10 +255,15 @@ goog.editor.Field.EventType = {
    */
   BLUR: 'blur',
   /**
-   * Dispach before tab is handled by the field.  This is a legacy way
+   * Dispatched before tab is handled by the field.  This is a legacy way
    * of controlling tab behavior.  Use trog.plugins.AbstractTabHandler now.
    */
   BEFORETAB: 'beforetab',
+  /**
+   * Dispatched after the iframe containing the field is resized, so that UI
+   * components which contain it can respond.
+   */
+  IFRAME_RESIZED: 'ifrsz',
   /**
    * Dispatched when the selection changes.
    * Use handleSelectionChange from plugin API instead of listening
@@ -446,8 +453,10 @@ goog.editor.Field.prototype.getOriginalElement = function() {
 goog.editor.Field.prototype.addListener = function(type, listener, opt_capture,
                                                    opt_handler) {
   var elem = this.getElement();
-  // On Gecko, keyboard events only reliably fire on the document element.
-  if (elem && goog.editor.BrowserFeature.USE_DOCUMENT_FOR_KEY_EVENTS) {
+  // On Gecko, keyboard events only reliably fire on the document element when
+  // using an iframe.
+  if (goog.editor.BrowserFeature.USE_DOCUMENT_FOR_KEY_EVENTS && elem &&
+      this.usesIframe()) {
     elem = elem.ownerDocument;
   }
   this.eventRegister.listen(elem, type, listener, opt_capture, opt_handler);
@@ -534,6 +543,7 @@ goog.editor.Field.prototype.resetOriginalElemProperties = function() {
   var field = this.getOriginalElement();
   field.removeAttribute('contentEditable');
   field.removeAttribute('g_editable');
+  field.removeAttribute('role');
 
   if (!this.id) {
     field.removeAttribute('id');
@@ -637,9 +647,9 @@ goog.editor.Field.CTRL_KEYS_CAUSING_CHANGES_ = {
   88: true // X
 };
 
-if (goog.userAgent.IE) {
-  // In IE input from IME (Input Method Editor) does not generate keypress
-  // event so we have to rely on the keydown event. This way we have
+if (goog.userAgent.WINDOWS && !goog.userAgent.GECKO) {
+  // In IE and Webkit, input from IME (Input Method Editor) does not generate a
+  // keypress event so we have to rely on the keydown event. This way we have
   // false positives while the user is using keyboard to select the
   // character to input, but it is still better than the false negatives
   // that ignores user's final input at all.
@@ -740,6 +750,7 @@ goog.editor.Field.prototype.setupFieldObject = function(field) {
   this.isModified_ = false;
   this.isEverModified_ = false;
   field.setAttribute('g_editable', 'true');
+  goog.a11y.aria.setRole(field, goog.a11y.aria.Role.TEXTBOX);
 };
 
 
@@ -1011,7 +1022,10 @@ goog.editor.Field.MUTATION_EVENTS_GECKO = [
  * @protected
  */
 goog.editor.Field.prototype.setupMutationEventHandlersGecko = function() {
-  if (goog.editor.BrowserFeature.HAS_DOM_SUBTREE_MODIFIED_EVENT) {
+  // Always use DOMSubtreeModified on Gecko when not using an iframe so that
+  // DOM mutations outside the Field do not trigger handleMutationEventGecko_.
+  if (goog.editor.BrowserFeature.HAS_DOM_SUBTREE_MODIFIED_EVENT ||
+      !this.usesIframe()) {
     this.eventRegister.listen(this.getElement(), 'DOMSubtreeModified',
         this.handleMutationEventGecko_);
   } else {
@@ -1220,7 +1234,7 @@ goog.editor.Field.prototype.injectContents = function(contents, field) {
   var styles = {};
   var newHtml = this.getInjectableContents(contents, styles);
   goog.style.setStyle(field, styles);
-  field.innerHTML = newHtml;
+  goog.editor.node.replaceInnerHtml(field, newHtml);
 };
 
 
@@ -2321,6 +2335,24 @@ goog.editor.Field.prototype.placeCursorAtStartOrEnd_ = function(isStart) {
 
 
 /**
+ * Restore a saved range, and set the focus on the field.
+ * If no range is specified, we simply set the focus.
+ * @param {goog.dom.SavedRange=} opt_range A previously saved selected range.
+ */
+goog.editor.Field.prototype.restoreSavedRange = function(opt_range) {
+  if (goog.userAgent.IE) {
+    this.focus();
+  }
+  if (opt_range) {
+    opt_range.restore();
+  }
+  if (!goog.userAgent.IE) {
+    this.focus();
+  }
+};
+
+
+/**
  * Makes a field editable.
  *
  * @param {string=} opt_iframeSrc URL to set the iframe src to if necessary.
@@ -2431,7 +2463,7 @@ goog.editor.Field.prototype.makeUneditable = function(opt_skipRestore) {
   // so that the original node will have the same properties as it did before
   // it was made editable.
   if (goog.isString(html)) {
-    field.innerHTML = html;
+    goog.editor.node.replaceInnerHtml(field, html);
     this.resetOriginalElemProperties();
   }
 

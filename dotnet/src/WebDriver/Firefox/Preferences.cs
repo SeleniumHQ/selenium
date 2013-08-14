@@ -59,7 +59,7 @@ namespace OpenQA.Selenium.Firefox
         /// the value will be updated.</remarks>
         internal void SetPreference(string key, int value)
         {
-            this.additionalPrefs[key] =  value.ToString(CultureInfo.InvariantCulture);
+            this.additionalPrefs[key] = value.ToString(CultureInfo.InvariantCulture);
         }
 
         /// <summary>

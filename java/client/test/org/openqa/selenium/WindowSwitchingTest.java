@@ -34,6 +34,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.alertToBePresent;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
@@ -43,15 +44,15 @@ import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
 
 @Ignore(value = {IPHONE}, reason = "The iPhone only supports one window")
 public class WindowSwitchingTest extends JUnit4TestBase {
 
-  @Ignore({OPERA_MOBILE})
+  @Ignore({OPERA_MOBILE, MARIONETTE})
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -95,7 +96,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window(current);
   }
 
-  @Ignore({OPERA, CHROME, OPERA_MOBILE})
+  @Ignore({OPERA, CHROME, OPERA_MOBILE, MARIONETTE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
     driver.get(pages.xhtmlTestPage);
@@ -119,7 +120,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA, CHROME, OPERA_MOBILE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -152,7 +153,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({OPERA, CHROME, OPERA_MOBILE})
+  @Ignore({OPERA, OPERA_MOBILE, MARIONETTE})
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
@@ -203,6 +204,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     assumeFalse(Browser.detect() == Browser.opera &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
@@ -237,6 +239,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testCanCallGetWindowHandlesAfterClosingAWindow() {
     assumeFalse(Browser.detect() == Browser.opera &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
@@ -357,6 +360,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldFocusOnTheTopMostFrameAfterSwitchingToAWindow() {
     driver.get(appServer.whereIs("window_switching_tests/page_with_frame.html"));
 

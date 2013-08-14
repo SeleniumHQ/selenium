@@ -23,6 +23,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using OpenQA.Selenium.Internal;
@@ -140,6 +141,7 @@ namespace OpenQA.Selenium.Safari
             return safariPath;
         }
 
+        [SecurityPermission(SecurityAction.Demand)]
         private void LaunchSafariProcess(string initialPage)
         {
             this.safariProcess = new Process();
@@ -148,6 +150,7 @@ namespace OpenQA.Selenium.Safari
             this.safariProcess.Start();
         }
 
+        [SecurityPermission(SecurityAction.Demand)]
         private void CloseSafariProcess()
         {
             if (this.safariProcess != null && !this.safariProcess.HasExited)

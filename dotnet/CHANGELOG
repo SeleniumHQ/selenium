@@ -1,3 +1,47 @@
+v2.35.0
+=======
+ * Issue #4506: (on behalf of Aaron Evans) Remove trailing slashes from baseUrl
+   in .NET to prevent double slashes in URL. This change is in the .NET
+   WebDriverBackedSelenium API.
+ * Removed unnecessary ProxyJsonConverter class.
+ * Updating InternetExplorerOptions documentation for UsePerProcessProxy
+   property.
+
+v2.34.0
+=======
+ * Added support for ie.ensureCleanSession capability to .NET bindings. The
+   .NET bindings do this by means of the EnsureCleanSession property on the
+   InternetExplorerOptions object. When set to true, this property instructs
+   the IE driver to clear the system cache for all instances of Internet
+   Explorer, even those already running when the driven instance is launched,
+   so care should be used when setting this property. The property defaults to
+   false.
+ * Added type-safe Proxy property to .NET InternetExplorerOptions class. Also
+   added support for the ie.usePerProcessProxy capability via the
+   UsePerProcessProxy propery.
+ * Issue #5999: Rearranged command line generated for PhantomJS. This
+   rearranges the order of arguments so that PhantomJS command line arguments
+   appear before the GhostScript main.js file (if any).
+ * Added JSON serialization info for .NET Proxy class. Also added Proxy
+   property to ChromeOptions class for type-safe adding of proxy to Chrome
+   capabilities.
+ * Added ability to set external GhostDriver implementation in .NET bindings.
+   Previously, it was not possible to set the path to the GhostDriver
+   JavaScript implementation in the .NET bindings; the user was forced to use
+   the implementation embedded in the PhantomJS executable. This change now
+   mimics the Java language bindings in functionality.
+ * Moved .NET IE driver command-line args into capabilities. This is to sync up
+   the .NET bindings with 2.33.0.7 of IEDriverServer.exe.
+ * Allow using global capability types for .NET InternetExplorerOptions.
+
+v2.33.0
+=======
+ * Issue #5549: Modified to use indexer for putting entry in .NET Firefox
+   Profile preferences Dictionary. Was previously using the .Add() method of
+   the Dictionary, which would throw an exception if the key already existed.
+ * Updated InternetExplorerDriverService to allow using new command line
+   options for IEDriverServer.exe
+
 v2.32.1
 =======
  * Removed strong-naming from released assemblies. No functional changes.

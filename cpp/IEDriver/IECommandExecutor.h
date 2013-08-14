@@ -30,6 +30,7 @@
 #include "ElementRepository.h"
 #include "HtmlDialog.h"
 #include "InputManager.h"
+#include "ProxyManager.h"
 #include "messages.h"
 #include "response.h"
 
@@ -42,17 +43,12 @@
 
 #define EVENT_NAME L"WD_START_EVENT"
 
-using namespace std;
-
 namespace webdriver {
 
 // Structure to be used for comunication between threads
-struct IECommandExecutorThreadContext
-{
+struct IECommandExecutorThreadContext {
   HWND hwnd;
   int port;
-  bool force_createprocess_api;
-  std::string ie_switches;
 };
 
 // We use a CWindowImpl (creating a hidden window) here because we
@@ -65,9 +61,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   BEGIN_MSG_MAP(Session)
     MESSAGE_HANDLER(WM_CREATE, OnCreate)
-    MESSAGE_HANDLER(WM_CLOSE, OnClose)
     MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
-    MESSAGE_HANDLER(WD_INIT, OnInit)
     MESSAGE_HANDLER(WD_SET_COMMAND, OnSetCommand)
     MESSAGE_HANDLER(WD_EXEC_COMMAND, OnExecCommand)
     MESSAGE_HANDLER(WD_GET_RESPONSE_LENGTH, OnGetResponseLength)
@@ -83,9 +77,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   END_MSG_MAP()
 
   LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-  LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-  LRESULT OnInit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnSetCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnExecCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnGetResponseLength(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -137,9 +129,6 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
                      const std::string& criteria,
                      Json::Value* found_elements) const;
 
-  int speed(void) const { return this->speed_; }
-  void set_speed(const int speed) { this->speed_ = speed; }
-
   int implicit_wait_timeout(void) const { 
     return this->implicit_wait_timeout_; 
   }
@@ -157,11 +146,6 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->page_load_timeout_ = timeout;
   }
 
-  int browser_attach_timeout(void) const { return this->browser_attach_timeout_; }
-  void set_browser_attach_timeout(const int timeout) {
-    this->browser_attach_timeout_ = timeout;
-  }
-
   bool is_valid(void) const { return this->is_valid_; }
   void set_is_valid(const bool session_is_valid) {
     this->is_valid_ = session_is_valid; 
@@ -170,20 +154,6 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   bool is_quitting(void) const { return this->is_quitting_; }
   void set_is_quitting(const bool session_is_quitting) {
     this->is_quitting_ = session_is_quitting; 
-  }
-
-  bool ignore_protected_mode_settings(void) const {
-    return this->ignore_protected_mode_settings_;
-  }
-  void set_ignore_protected_mode_settings(const bool ignore_settings) {
-    this->ignore_protected_mode_settings_ = ignore_settings;
-  }
-
-  bool ignore_zoom_setting(void) const {
-    return this->ignore_zoom_setting_;
-  }
-  void set_ignore_zoom_setting(const bool ignore_zoom) {
-    this->ignore_zoom_setting_ = ignore_zoom;
   }
 
   bool enable_element_cache_cleanup(void) const {
@@ -200,13 +170,6 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->enable_persistent_hover_ = enable_persistent_hover;
   }
 
-  std::string initial_browser_url(void) const {
-    return this->initial_browser_url_;
-  }
-  void set_initial_browser_url(const std::string& initial_browser_url) {
-    this->initial_browser_url_ = initial_browser_url;
-  }
-
   std::string unexpected_alert_behavior(void) const {
     return this->unexpected_alert_behavior_;
   }
@@ -216,8 +179,12 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   ElementFinder element_finder(void) const { return this->element_finder_; }
   InputManager* input_manager(void) const { return this->input_manager_; }
+  ProxyManager* proxy_manager(void) const { return this->proxy_manager_; }
+  BrowserFactory* browser_factory(void) const { return this->factory_; }
 
-  int browser_version(void) const { return this->factory_.browser_version(); }
+  int port(void) const { return this->port_; }
+
+  int browser_version(void) const { return this->factory_->browser_version(); }
   size_t managed_window_count(void) const {
     return this->managed_browsers_.size();
   }
@@ -243,12 +210,10 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   ElementRepository managed_elements_;
   ElementFindMethodMap element_find_methods_;
 
-  BrowserFactory factory_;
   std::string current_browser_id_;
 
   ElementFinder element_finder_;
 
-  int speed_;
   int implicit_wait_timeout_;
   int async_script_timeout_;
   int page_load_timeout_;
@@ -256,16 +221,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   std::string session_id_;
   int port_;
-  bool force_createprocess_api_;
-  std::string launch_api_;
-  std::string ie_switches_;
-  int browser_attach_timeout_;
-  bool ignore_protected_mode_settings_;
-  bool enable_native_events_;
   bool enable_persistent_hover_;
   bool enable_element_cache_cleanup_;
-  bool ignore_zoom_setting_;
-  std::string initial_browser_url_;
   std::string unexpected_alert_behavior_;
 
   Command current_command_;
@@ -275,7 +232,9 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   bool is_valid_;
   bool is_quitting_;
 
+  BrowserFactory* factory_;
   InputManager* input_manager_;
+  ProxyManager* proxy_manager_;
 };
 
 } // namespace webdriver

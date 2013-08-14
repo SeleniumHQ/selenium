@@ -16,12 +16,9 @@ limitations under the License.
 
 package org.openqa.selenium.testing;
 
-import static org.junit.Assume.assumeTrue;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Before;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -32,12 +29,11 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
 public class TestUtilities {
-  public static boolean isNativeEventsEnabled(WebDriver driver) {
-    if (!(driver instanceof HasCapabilities)) {
-      return false;
-    }
 
-    return ((HasCapabilities) driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS);
+  public static boolean isNativeEventsEnabled(WebDriver driver) {
+    return driver instanceof HasCapabilities &&
+           ((HasCapabilities) driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS);
+
   }
 
   private static String getUserAgent(WebDriver driver) {
@@ -75,6 +71,9 @@ public class TestUtilities {
   }
 
   public static boolean isOldIe(WebDriver driver) {
+    if (!isInternetExplorer(driver)) {
+      return false;
+    }
     try {
       String jsToExecute = "return parseInt(window.navigator.appVersion.split(' ')[0]);";
       // IE9 is trident version 5.  IE9 is the start of new IE.
@@ -152,6 +151,32 @@ public class TestUtilities {
     return Integer.parseInt(versionMatcher.group());
   }
 
+  /**
+   * Finds the IE major version of the given webdriver and returns it as an integer.
+   * For instance, '10.6' will translate to 10.
+   *
+   * @param driver The driver to find the version for.
+   * @return The found version, or 0 if no version could be found.
+   */
+  public static int getIEVersion(WebDriver driver) {
+    // extract browser string
+    Pattern browserPattern = Pattern.compile("MSIE\\s+\\d+\\.");
+    Matcher browserMatcher = browserPattern.matcher(getUserAgent(driver));
+    if (!browserMatcher.find()) {
+      return 0;
+    }
+    String browserStr = browserMatcher.group();
+
+    // extract version string
+    Pattern versionPattern = Pattern.compile("\\d+");
+    Matcher versionMatcher = versionPattern.matcher(browserStr);
+    if (!versionMatcher.find()) {
+      return 0;
+    }
+    return Integer.parseInt(versionMatcher.group());
+  }
+
+
   public static Platform getEffectivePlatform() {
     if (SauceDriver.shouldUseSauce()) {
       return SauceDriver.getEffectivePlatform();
@@ -162,9 +187,5 @@ public class TestUtilities {
 
   public static boolean isLocal() {
     return !Boolean.getBoolean("selenium.browser.remote") && !SauceDriver.shouldUseSauce();
-  }
-
-  public static void assumeFalse(boolean b) {
-    assumeTrue(!b);
   }
 }

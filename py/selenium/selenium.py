@@ -193,8 +193,7 @@ class selenium(object):
         if browserConfigurationOptions:
           start_args.append(browserConfigurationOptions)
         if driver:
-          id = driver.desired_capabilities['webdriver.remote.sessionid']
-          start_args.append('webdriver.remote.sessionid=%s' % id)
+          start_args.append('webdriver.remote.sessionid=%s' % driver.session_id)
         result = self.get_string("getNewBrowserSession", start_args)
         try:
             self.sessionId = result

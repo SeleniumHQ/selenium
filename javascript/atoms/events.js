@@ -52,9 +52,8 @@ bot.events.SUPPORTS_TOUCH_EVENTS = !(goog.userAgent.IE &&
 
 /**
  * Whether the browser supports a native touch api.
- *
- * @const
  * @private {boolean}
+ * @const
  */
 bot.events.BROKEN_TOUCH_API_ = (function() {
   if (goog.userAgent.product.ANDROID) {
@@ -211,7 +210,7 @@ bot.events.EventFactory_ = function(type, bubbles, cancelable) {
 /**
  * Creates an event.
  *
- * @param {!Element} target Target element of the event.
+ * @param {!Element|!Window} target Target element of the event.
  * @param {bot.events.EventArgs=} opt_args Event arguments.
  * @return {!Event} Newly created event.
  */
@@ -268,7 +267,7 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
         'Browser does not support a mouse pixel scroll event.');
   }
 
-  var args = (/** @type {!bot.events.MouseArgs} */ opt_args);
+  var args = /** @type {!bot.events.MouseArgs} */ (opt_args);
   var doc = goog.dom.getOwnerDocument(target);
   var event;
 
@@ -362,7 +361,7 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
     if (goog.userAgent.IE &&
         event.pageX === 0 && event.pageY === 0 && Object.defineProperty) {
       var scrollElem = goog.dom.getDomHelper(target).getDocumentScrollElement();
-      var clientElem = goog.style.getClientViewportElement(target);
+      var clientElem = goog.style.getClientViewportElement(doc);
       var pageX = args.clientX + scrollElem.scrollLeft - clientElem.clientLeft;
       var pageY = args.clientY + scrollElem.scrollTop - clientElem.clientTop;
 
@@ -404,7 +403,7 @@ goog.inherits(bot.events.KeyboardEventFactory_, bot.events.EventFactory_);
  * @override
  */
 bot.events.KeyboardEventFactory_.prototype.create = function(target, opt_args) {
-  var args = (/** @type {!bot.events.KeyboardArgs} */ opt_args);
+  var args = /** @type {!bot.events.KeyboardArgs} */ (opt_args);
   var doc = goog.dom.getOwnerDocument(target);
   var event;
 
@@ -467,7 +466,7 @@ bot.events.TouchEventFactory_.prototype.create = function(target, opt_args) {
         'Browser does not support firing touch events.');
   }
 
-  var args = (/** @type {!bot.events.TouchArgs} */ opt_args);
+  var args = /** @type {!bot.events.TouchArgs} */ (opt_args);
   var doc = goog.dom.getOwnerDocument(target);
   var view = goog.dom.getWindow(doc);
 
@@ -576,7 +575,7 @@ bot.events.MSGestureEventFactory_.prototype.create = function(target,
         'Browser does not support MSGesture events.');
   }
 
-  var args = (/** @type {!bot.events.MSGestureArgs} */ opt_args);
+  var args = /** @type {!bot.events.MSGestureArgs} */ (opt_args);
   var doc = goog.dom.getOwnerDocument(target);
   var view = goog.dom.getWindow(doc);
   var event = doc.createEvent('MSGestureEvent');
@@ -623,7 +622,7 @@ bot.events.MSPointerEventFactory_.prototype.create = function(target,
         'Browser does not support MSPointer events.');
   }
 
-  var args = (/** @type {!bot.events.MSPointerArgs} */ opt_args);
+  var args = /** @type {!bot.events.MSPointerArgs} */ (opt_args);
   var doc = goog.dom.getOwnerDocument(target);
   var view = goog.dom.getWindow(doc);
   var event = doc.createEvent('MSPointerEvent');
@@ -646,7 +645,8 @@ bot.events.MSPointerEventFactory_.prototype.create = function(target,
  * The types of events this modules supports firing.
  *
  * <p>To see which events bubble and are cancelable, see:
- * http://en.wikipedia.org/wiki/DOM_events
+ * http://en.wikipedia.org/wiki/DOM_events and
+ * http://www.w3.org/Submission/pointer-events/#pointer-event-types
  *
  * @enum {!Object}
  */
@@ -656,7 +656,9 @@ bot.events.EventType = {
   FOCUS: new bot.events.EventFactory_('focus', false, false),
   FOCUSIN: new bot.events.EventFactory_('focusin', true, false),
   FOCUSOUT: new bot.events.EventFactory_('focusout', true, false),
-  INPUT: new bot.events.EventFactory_('input', false, false),
+  INPUT: new bot.events.EventFactory_('input', true, false),
+  ORIENTATIONCHANGE: new bot.events.EventFactory_(
+      'orientationchange', false, false),
   PROPERTYCHANGE: new bot.events.EventFactory_('propertychange', false, false),
   SELECT: new bot.events.EventFactory_('select', true, false),
   SUBMIT: new bot.events.EventFactory_('submit', true, true),
@@ -701,6 +703,12 @@ bot.events.EventType = {
       'MSInertiaStart', true, true),
 
   // MSPointer events
+  MSGOTPOINTERCAPTURE: new bot.events.MSPointerEventFactory_(
+      'MSGotPointerCapture', true, false),
+  MSLOSTPOINTERCAPTURE: new bot.events.MSPointerEventFactory_(
+      'MSLostPointerCapture', true, false),
+  MSPOINTERCANCEL: new bot.events.MSPointerEventFactory_(
+      'MSPointerCancel', true, true),
   MSPOINTERDOWN: new bot.events.MSPointerEventFactory_(
       'MSPointerDown', true, true),
   MSPOINTERMOVE: new bot.events.MSPointerEventFactory_(
@@ -717,7 +725,7 @@ bot.events.EventType = {
 /**
  * Fire a named event on a particular element.
  *
- * @param {!Element} target The element on which to fire the event.
+ * @param {!Element|!Window} target The element on which to fire the event.
  * @param {!bot.events.EventType} type Event type.
  * @param {bot.events.EventArgs=} opt_args Arguments to initialize the event.
  * @return {boolean} Whether the event fired successfully or was cancelled.

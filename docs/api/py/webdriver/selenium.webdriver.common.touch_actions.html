@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -58,71 +56,114 @@
             
   <div class="section" id="module-selenium.webdriver.common.touch_actions">
 <span id="selenium-webdriver-common-touch-actions"></span><h1>selenium.webdriver.common.touch_actions<a class="headerlink" href="#module-selenium.webdriver.common.touch_actions" title="Permalink to this headline">¶</a></h1>
-<p>&#8221;
-Touch Actions implementation</p>
+<p>The Touch Actions implementation</p>
 <dl class="class">
 <dt id="selenium.webdriver.common.touch_actions.TouchActions">
 <em class="property">class </em><tt class="descclassname">selenium.webdriver.common.touch_actions.</tt><tt class="descname">TouchActions</tt><big>(</big><em>driver</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/touch_actions.html#TouchActions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.touch_actions.TouchActions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate touch actions. Works like ActionChains; actions are stored in the
 TouchActions object and are fired with perform().</p>
 <p>Creates a new TouchActions object.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>-driver: The WebDriver instance, which must be touchscreen enabled.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>driver: The WebDriver instance which performs user actions.
+It should be with touchscreen enabled.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="selenium.webdriver.common.touch_actions.TouchActions.double_tap">
 <tt class="descname">double_tap</tt><big>(</big><em>on_element</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/touch_actions.html#TouchActions.double_tap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.touch_actions.TouchActions.double_tap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Double taps on a given element.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>-element: The element to tap.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>on_element: The element to tap.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.common.touch_actions.TouchActions.flick">
 <tt class="descname">flick</tt><big>(</big><em>xspeed</em>, <em>yspeed</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/touch_actions.html#TouchActions.flick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.touch_actions.TouchActions.flick" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flicks, starting anywhere on the screen.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>-xspeed: The X speed in pixels per second.
--yspeed: The Y speed in pixels per second.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>xspeed: The X speed in pixels per second.</li>
+<li>yspeed: The Y speed in pixels per second.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.common.touch_actions.TouchActions.flick_element">
 <tt class="descname">flick_element</tt><big>(</big><em>on_element</em>, <em>xoffset</em>, <em>yoffset</em>, <em>speed</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/touch_actions.html#TouchActions.flick_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.touch_actions.TouchActions.flick_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>Flick starting at on_element, and moving by the xoffset and yoffset.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>-on_element: Flick will start at center of element.
--xoffset: X offset to flick to.
--yoffset: Y offset to flick to.
--speed: Pixels per second to flick.</dd>
-</dl>
+<dd><p>Flick starting at on_element, and moving by the xoffset and yoffset
+with specified speed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>on_element: Flick will start at center of element.</li>
+<li>xoffset: X offset to flick to.</li>
+<li>yoffset: Y offset to flick to.</li>
+<li>speed: Pixels per second to flick.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.common.touch_actions.TouchActions.long_press">
 <tt class="descname">long_press</tt><big>(</big><em>on_element</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/touch_actions.html#TouchActions.long_press"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.touch_actions.TouchActions.long_press" title="Permalink to this definition">¶</a></dt>
 <dd><p>Long press on an element.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>-on_element: The element to long press.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>on_element: The element to long press.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.common.touch_actions.TouchActions.move">
 <tt class="descname">move</tt><big>(</big><em>xcoord</em>, <em>ycoord</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/touch_actions.html#TouchActions.move"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.touch_actions.TouchActions.move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move held tap to specified location.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>-xcoord: X Coordinates.
--ycoord: Y Coordinates.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>xcoord: X Coordinate to move.</li>
+<li>ycoord: Y Coordinate to move.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -134,56 +175,91 @@ TouchActions object and are fired with perform().</p>
 <dl class="method">
 <dt id="selenium.webdriver.common.touch_actions.TouchActions.release">
 <tt class="descname">release</tt><big>(</big><em>xcoord</em>, <em>ycoord</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/touch_actions.html#TouchActions.release"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.touch_actions.TouchActions.release" title="Permalink to this definition">¶</a></dt>
-<dd><p>Release previously issued tap and hold command, at specified location.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>-xcoord: X Coordinates.
--ycoord: Y Coordinates.</dd>
-</dl>
+<dd><p>Release previously issued tap &#8216;and hold&#8217; command at specified location.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>xcoord: X Coordinate to release.</li>
+<li>ycoord: Y Coordinate to release.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.common.touch_actions.TouchActions.scroll">
 <tt class="descname">scroll</tt><big>(</big><em>xoffset</em>, <em>yoffset</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/touch_actions.html#TouchActions.scroll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.touch_actions.TouchActions.scroll" title="Permalink to this definition">¶</a></dt>
 <dd><p>Touch and scroll, moving by xoffset and yoffset.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>-xoffset: X offset to move to.
--yoffset: Y offset to move to.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>xoffset: X offset to scroll to.</li>
+<li>yoffset: Y offset to scroll to.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.common.touch_actions.TouchActions.scroll_from_element">
 <tt class="descname">scroll_from_element</tt><big>(</big><em>on_element</em>, <em>xoffset</em>, <em>yoffset</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/touch_actions.html#TouchActions.scroll_from_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.touch_actions.TouchActions.scroll_from_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Touch and scroll starting at on_element, moving by xoffset and yoffset.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>-on_element: Element where scroll starts.
--xoffset: X offset to move to.
--yoffset: Y offset to move to.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>on_element: The element where scroll starts.</li>
+<li>xoffset: X offset to scroll to.</li>
+<li>yoffset: Y offset to scroll to.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.common.touch_actions.TouchActions.tap">
 <tt class="descname">tap</tt><big>(</big><em>on_element</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/touch_actions.html#TouchActions.tap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.touch_actions.TouchActions.tap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Taps on a given element.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>-element: The element to tap.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>on_element: The element to tap.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.common.touch_actions.TouchActions.tap_and_hold">
 <tt class="descname">tap_and_hold</tt><big>(</big><em>xcoord</em>, <em>ycoord</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/touch_actions.html#TouchActions.tap_and_hold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.touch_actions.TouchActions.tap_and_hold" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tap and hold a given element.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>-xcoord: X Coordinates.
--ycoord: Y Coordinates.</dd>
-</dl>
+<dd><p>Touch down at given coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>xcoord: X Coordinate to touch down.</li>
+<li>ycoord: Y Coordinate to touch down.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

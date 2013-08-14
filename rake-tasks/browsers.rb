@@ -26,11 +26,7 @@ BROWSERS = {
       :ignore => "ie",
       :dir => "ie",
       :file_string => "ie",
-      :class => "Ie",
-      :resources => [
-        {"//cpp:ie_win32_dll" => "selenium\\webdriver\\ie\\win32\\IEDriver.dll"},
-        {"//cpp:ie_x64_dll" => "selenium\\webdriver\\ie\\x64\\IEDriver.dll"}
-      ]
+      :class => "Ie"
     },
     :java => {
       :class => "org.openqa.selenium.ie.InternetExplorerDriver",
@@ -87,5 +83,13 @@ BROWSERS = {
       :class => "Remote",
       :constructor_args => "desired_capabilities=webdriver.DesiredCapabilities.FIREFOX"
     }
+  },
+  "safari" => {
+    :java => {
+      :class => "org.openqa.selenium.safari.SafariDriver",
+      :deps => [ "//java/client/src/org/openqa/selenium/safari:safari" ]
+    },
+    :browser_name => "safari",
+    :available => mac?
   }
 }

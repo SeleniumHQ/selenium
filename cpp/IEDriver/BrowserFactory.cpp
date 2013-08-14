@@ -14,13 +14,31 @@
 #include "BrowserFactory.h"
 #include <ctime>
 #include <iostream>
+#include <WinInet.h>
 #include "logging.h"
 #include "psapi.h"
+#include "RegistryUtilities.h"
 
 namespace webdriver {
 
 BrowserFactory::BrowserFactory(void) {
-  LOG(TRACE) << "Entering BrowserFactory::BrowserFactory";
+}
+
+BrowserFactory::~BrowserFactory(void) {
+  if (this->oleacc_instance_handle_) {
+    ::FreeLibrary(this->oleacc_instance_handle_);
+  }
+}
+
+void BrowserFactory::Initialize(BrowserFactorySettings settings) {
+  LOG(TRACE) << "Entering BrowserFactory::Initialize";
+  this->ignore_protected_mode_settings_ = settings.ignore_protected_mode_settings;
+  this->ignore_zoom_setting_ = settings.ignore_zoom_setting;
+  this->browser_attach_timeout_ = settings.browser_attach_timeout;
+  this->force_createprocess_api_ = settings.force_create_process_api;
+  this->clear_cache_ = settings.clear_cache_before_launch;
+  this->browser_command_line_switches_ = StringUtilities::ToWString(settings.browser_command_line_switches);
+  this->initial_browser_url_ = StringUtilities::ToWString(settings.initial_browser_url);
 
   this->GetExecutableLocation();
   this->GetIEVersion();
@@ -31,33 +49,32 @@ BrowserFactory::BrowserFactory(void) {
   this->oleacc_instance_handle_ = ::LoadLibrary(OLEACC_LIBRARY_NAME);
 }
 
-BrowserFactory::~BrowserFactory(void) {
-  if (this->oleacc_instance_handle_) {
-    ::FreeLibrary(this->oleacc_instance_handle_);
+void BrowserFactory::ClearCache() {
+  if (this->clear_cache_) {
+    if (this->windows_major_version_ >= 6) {
+      this->InvokeClearCacheUtility(true);
+    }
+    this->InvokeClearCacheUtility(false);
   }
 }
 
-DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
-                                           const bool ignore_protected_mode_settings,
-                                           const bool force_createprocess_api,
-                                           const std::string& ie_switches,
-                                           std::string* error_message) {
+DWORD BrowserFactory::LaunchBrowserProcess(std::string* error_message) {
   LOG(TRACE) << "Entering BrowserFactory::LaunchBrowserProcess";
 
   DWORD process_id = NULL;
   bool has_valid_protected_mode_settings = false;
   LOG(DEBUG) << "Ignoring Protected Mode Settings: "
-             << ignore_protected_mode_settings;
-  if (!ignore_protected_mode_settings) {
+             << this->ignore_protected_mode_settings_;
+  if (!this->ignore_protected_mode_settings_) {
     LOG(DEBUG) << "Checking validity of Protected Mode settings.";
     has_valid_protected_mode_settings = this->ProtectedModeSettingsAreValid();
   }
   LOG(DEBUG) << "Has Valid Protected Mode Settings: "
              << has_valid_protected_mode_settings;
-  if (ignore_protected_mode_settings || has_valid_protected_mode_settings) {
+  if (this->ignore_protected_mode_settings_ || has_valid_protected_mode_settings) {
     // Determine which launch API to use.
     bool use_createprocess_api = false;
-    if (force_createprocess_api) {
+    if (this->force_createprocess_api_) {
       if (this->IsCreateProcessApiAvailable()) {
         use_createprocess_api = true;
       } else {
@@ -76,13 +93,15 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
       }
     }
 
+    this->ClearCache();
+
     PROCESS_INFORMATION proc_info;
     ::ZeroMemory(&proc_info, sizeof(proc_info));
 
     if (!use_createprocess_api) {
-      this->LaunchBrowserUsingIELaunchURL(initial_url, &proc_info, error_message);
+      this->LaunchBrowserUsingIELaunchURL(&proc_info, error_message);
     } else {
-      this->LaunchBrowserUsingCreateProcess(initial_url, ie_switches, &proc_info, error_message);
+      this->LaunchBrowserUsingCreateProcess(&proc_info, error_message);
     }
 
     process_id = proc_info.dwProcessId;
@@ -95,13 +114,13 @@ DWORD BrowserFactory::LaunchBrowserProcess(const std::string& initial_url,
       // the browser launch API returned a success code), but we still have a
       // NULL process ID.
       if (error_message->size() == 0) {
-        string launch_api_name = use_createprocess_api ? "The CreateProcess API" : "The IELaunchURL API";
+        std::string launch_api_name = use_createprocess_api ? "The CreateProcess API" : "The IELaunchURL API";
         *error_message = launch_api_name + NULL_PROCESS_ID_ERROR_MESSAGE;
       }
     } else {
       ::WaitForInputIdle(proc_info.hProcess, 2000);
       LOG(DEBUG) << "IE launched successfully with process ID " << process_id;
-      vector<wchar_t> image_buffer(MAX_PATH);
+      std::vector<wchar_t> image_buffer(MAX_PATH);
       int buffer_count = ::GetProcessImageFileName(proc_info.hProcess, &image_buffer[0], MAX_PATH);
       std::wstring full_image_path = &image_buffer[0];
       size_t last_delimiter = full_image_path.find_last_of('\\');
@@ -143,29 +162,18 @@ bool BrowserFactory::IsIELaunchURLAvailable() {
   return api_is_available;
 }
 
-void BrowserFactory::LaunchBrowserUsingIELaunchURL(const std::string& initial_url,
-                                                   PROCESS_INFORMATION* proc_info,
+void BrowserFactory::LaunchBrowserUsingIELaunchURL(PROCESS_INFORMATION* proc_info,
                                                    std::string* error_message) {
-  LOG(TRACE) << "Entering BrowserFactory::IsIELaunchURLAvailable";
+  LOG(TRACE) << "Entering BrowserFactory::LaunchBrowserUsingIELaunchURL";
   LOG(DEBUG) << "Starting IE using the IELaunchURL API";
-  std::wstring wide_initial_url = StringUtilities::ToWString(initial_url);
-
-  HRESULT launch_result = ::IELaunchURL(wide_initial_url.c_str(),
+  HRESULT launch_result = ::IELaunchURL(this->initial_browser_url_.c_str(),
                                         proc_info,
                                         NULL);
   if (FAILED(launch_result)) {
-    size_t launch_msg_count = _scprintf(IELAUNCHURL_ERROR_MESSAGE,
-                                        launch_result,
-                                        initial_url.c_str());
-    vector<char> launch_result_msg(launch_msg_count + 1);
-    _snprintf_s(&launch_result_msg[0],
-                launch_result_msg.size(),
-                launch_msg_count + 1,
-                IELAUNCHURL_ERROR_MESSAGE,
-                launch_result,
-                initial_url.c_str());
-    std::string launch_error = &launch_result_msg[0];
-    *error_message = launch_error;
+    LOGHR(WARN, launch_result) << "Error using IELaunchURL to start IE";
+    *error_message = StringUtilities::Format(IELAUNCHURL_ERROR_MESSAGE,
+                                             launch_result,
+                                             this->initial_browser_url().c_str());
   }
 }
 
@@ -177,10 +185,10 @@ bool BrowserFactory::IsCreateProcessApiAvailable() {
     // Such behaviour is not supported by AttachToBrowser().
     // FYI, IELaunchURL() returns correct 'frame' process (but sometimes not).
     std::wstring tab_proc_growth;
-    if (this->GetRegistryValue(HKEY_CURRENT_USER,
-                               IE_TABPROCGROWTH_REGISTRY_KEY,
-                               L"TabProcGrowth",
-                               &tab_proc_growth)) {
+    if (RegistryUtilities::GetRegistryValue(HKEY_CURRENT_USER,
+                                            IE_TABPROCGROWTH_REGISTRY_KEY,
+                                            L"TabProcGrowth",
+                                            &tab_proc_growth)) {
       if (tab_proc_growth != L"0") {
         // Registry value has wrong value, return false
         return false;
@@ -193,9 +201,7 @@ bool BrowserFactory::IsCreateProcessApiAvailable() {
   return true;
 }
 
-void BrowserFactory::LaunchBrowserUsingCreateProcess(const std::string& initial_url,
-                                                     const std::string& command_line_switches,
-                                                     PROCESS_INFORMATION* proc_info,
+void BrowserFactory::LaunchBrowserUsingCreateProcess(PROCESS_INFORMATION* proc_info,
                                                      std::string* error_message) {
   LOG(TRACE) << "Entering BrowserFactory::LaunchBrowserUsingCreateProcess";
   LOG(DEBUG) << "Starting IE using the CreateProcess API";
@@ -204,16 +210,13 @@ void BrowserFactory::LaunchBrowserUsingCreateProcess(const std::string& initial_
   ::ZeroMemory(&start_info, sizeof(start_info));
   start_info.cb = sizeof(start_info);
 
-  std::wstring wide_initial_url = StringUtilities::ToWString(initial_url);
-  std::wstring wide_ie_switches = StringUtilities::ToWString(command_line_switches);
-
   std::wstring executable_and_url = this->ie_executable_location_;
-  if (wide_ie_switches.size() != 0) {
+  if (this->browser_command_line_switches_.size() != 0) {
     executable_and_url.append(L" ");
-    executable_and_url.append(wide_ie_switches);
+    executable_and_url.append(this->browser_command_line_switches_);
   }
   executable_and_url.append(L" ");
-  executable_and_url.append(wide_initial_url);
+  executable_and_url.append(this->initial_browser_url_);
 
   LOG(TRACE) << "IE starting command line is: '" << LOGWSTRING(executable_and_url) << "'.";
 
@@ -233,16 +236,8 @@ void BrowserFactory::LaunchBrowserUsingCreateProcess(const std::string& initial_
                                                &start_info,
                                                proc_info);
   if (!create_process_result) {
-    int create_proc_msg_count = _scwprintf(CREATEPROCESS_ERROR_MESSAGE,
-                                           command_line);
-    vector<wchar_t> create_proc_result_msg(create_proc_msg_count + 1);
-    _snwprintf_s(&create_proc_result_msg[0],
-                  create_proc_result_msg.size(),
-                  create_proc_msg_count,
-                  CREATEPROCESS_ERROR_MESSAGE,
-                  command_line);
-    std::string launch_error = StringUtilities::ToString(&create_proc_result_msg[0]);
-    *error_message = launch_error;
+    *error_message = StringUtilities::Format(CREATEPROCESS_ERROR_MESSAGE,
+                                             StringUtilities::ToString(command_line));
   }
   delete[] command_line;
 }
@@ -283,13 +278,11 @@ bool BrowserFactory::GetDocumentFromWindowHandle(HWND window_handle,
 }
 
 bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
-                                     const int timeout_in_milliseconds,
-                                     const bool ignore_zoom_setting,
                                      std::string* error_message) {
   LOG(TRACE) << "Entering BrowserFactory::AttachToBrowser";
-  clock_t end = clock() + (timeout_in_milliseconds / 1000 * CLOCKS_PER_SEC);
+  clock_t end = clock() + (this->browser_attach_timeout_ / 1000 * CLOCKS_PER_SEC);
   while (process_window_info->hwndBrowser == NULL) {
-    if (timeout_in_milliseconds > 0 && (clock() > end)) {
+    if (this->browser_attach_timeout_ > 0 && (clock() > end)) {
       break;
     }
     ::EnumWindows(&BrowserFactory::FindBrowserWindow,
@@ -300,18 +293,9 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
   }
 
   if (process_window_info->hwndBrowser == NULL) {
-    int attach_fail_msg_count = _scprintf(ATTACH_TIMEOUT_ERROR_MESSAGE,
-                                          process_window_info->dwProcessId,
-                                          timeout_in_milliseconds);
-    vector<char> attach_fail_msg_buffer(attach_fail_msg_count + 1);
-    _snprintf_s(&attach_fail_msg_buffer[0],
-                attach_fail_msg_buffer.size(),
-                attach_fail_msg_count,
-                ATTACH_TIMEOUT_ERROR_MESSAGE,
-                process_window_info->dwProcessId,
-                timeout_in_milliseconds);
-    std::string attach_fail_msg = &attach_fail_msg_buffer[0];
-    *error_message = attach_fail_msg;
+    *error_message = StringUtilities::Format(ATTACH_TIMEOUT_ERROR_MESSAGE,
+                                             process_window_info->dwProcessId,
+                                             this->browser_attach_timeout_);
     return false;
   }
 
@@ -323,15 +307,13 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
 
     // Test for zoom level = 100%
     int zoom_level = 100;
-    LOG(DEBUG) << "Ignoring zoom setting: " << ignore_zoom_setting;
-    if (!ignore_zoom_setting) {
+    LOG(DEBUG) << "Ignoring zoom setting: " << this->ignore_zoom_setting_;
+    if (!this->ignore_zoom_setting_) {
       zoom_level = this->GetZoomLevel(document, window);
     }
     if (zoom_level != 100) {
-      vector<char> zoom_level_buffer(10);
-      _itoa_s(zoom_level, &zoom_level_buffer[0], 10, 10);
-      std::string zoom(&zoom_level_buffer[0]);
-      *error_message = "Browser zoom level was set to " + zoom + "%. It should be set to 100%";
+      *error_message = StringUtilities::Format(ZOOM_SETTING_ERROR_MESSAGE,
+                                               zoom_level);
       return false;
     }
     if (SUCCEEDED(hr)) {
@@ -487,59 +469,184 @@ IWebBrowser2* BrowserFactory::CreateBrowser() {
   return browser;
 }
 
+bool BrowserFactory::CreateLowIntegrityLevelToken(HANDLE* process_token_handle,
+                                                  HANDLE* mic_token_handle,
+                                                  PSID* sid) {
+  LOG(TRACE) << "Entering BrowserFactory::CreateLowIntegrityLevelToken";
+  BOOL result = TRUE;
+  TOKEN_MANDATORY_LABEL tml = {0};
+
+  HANDLE process_handle = ::GetCurrentProcess();
+  result = ::OpenProcessToken(process_handle,
+                              MAXIMUM_ALLOWED,
+                              process_token_handle);
+
+  if (result) {
+    result = ::DuplicateTokenEx(*process_token_handle,
+                                MAXIMUM_ALLOWED,
+                                NULL,
+                                SecurityImpersonation,
+                                TokenPrimary,
+                                mic_token_handle);
+    if (!result) {
+      ::CloseHandle(*process_token_handle);
+    }
+   }
+
+  if (result) {     
+    result = ::ConvertStringSidToSid(SDDL_ML_LOW, sid);
+    if (result) {
+      tml.Label.Attributes = SE_GROUP_INTEGRITY;
+      tml.Label.Sid = *sid;
+    } else {
+      ::CloseHandle(*process_token_handle);
+      ::CloseHandle(*mic_token_handle);
+    }
+  }
+
+  if(result) {
+    result = ::SetTokenInformation(*mic_token_handle,
+                                   TokenIntegrityLevel,
+                                   &tml,
+                                   sizeof(tml) + ::GetLengthSid(*sid));
+    if (!result) {
+      ::CloseHandle(*process_token_handle);
+      ::CloseHandle(*mic_token_handle);
+      ::LocalFree(*sid);
+    }
+  }
+
+  ::CloseHandle(process_handle);
+  return result == TRUE;
+}
+
 void BrowserFactory::SetThreadIntegrityLevel() {
   LOG(TRACE) << "Entering BrowserFactory::SetThreadIntegrityLevel";
 
-  // TODO: Error handling and return value checking.
   HANDLE process_token = NULL;
-  HANDLE process_handle = ::GetCurrentProcess();
-  BOOL result = ::OpenProcessToken(process_handle,
-                                   TOKEN_DUPLICATE,
-                                   &process_token);
-
   HANDLE thread_token = NULL;
-  result = ::DuplicateTokenEx(
-    process_token, 
-    TOKEN_QUERY | TOKEN_IMPERSONATE | TOKEN_ADJUST_DEFAULT,
-    NULL, 
-    SecurityImpersonation,
-    TokenImpersonation,
-    &thread_token);
-
   PSID sid = NULL;
-  result = ::ConvertStringSidToSid(SDDL_ML_LOW, &sid);
+  bool token_created = this->CreateLowIntegrityLevelToken(&process_token,
+                                                          &thread_token,
+                                                          &sid);
+  if (token_created) {
+    HANDLE thread_handle = ::GetCurrentThread();
+    BOOL result = ::SetThreadToken(&thread_handle, thread_token);
+    if (!result) {
+      // If we encounter an error, not bloody much we can do about it.
+      // Just log it and continue.
+      LOG(WARN) << "SetThreadToken returned FALSE";
+    }
+    result = ::ImpersonateLoggedOnUser(thread_token);
+    if (!result) {
+      // If we encounter an error, not bloody much we can do about it.
+      // Just log it and continue.
+      LOG(WARN) << "ImpersonateLoggedOnUser returned FALSE";
+    }
 
-  TOKEN_MANDATORY_LABEL tml;
-  tml.Label.Attributes = SE_GROUP_INTEGRITY | SE_GROUP_INTEGRITY_ENABLED;
-  tml.Label.Sid = sid;
-
-  result = ::SetTokenInformation(thread_token,
-                                 TokenIntegrityLevel,
-                                 &tml,
-                                 sizeof(tml) + ::GetLengthSid(sid));
-  ::LocalFree(sid);
-
-  HANDLE thread_handle = ::GetCurrentThread();
-  result = ::SetThreadToken(&thread_handle, thread_token);
-  if (!result) {
-    // If we encounter an error, not bloody much we can do about it.
-    // Just log it and continue.
-    LOG(WARN) << "SetThreadToken returned FALSE";
+    ::CloseHandle(thread_token);
+    ::CloseHandle(process_token);
+    ::LocalFree(sid);
   }
-  result = ::ImpersonateLoggedOnUser(thread_token);
-  if (!result) {
-    // If we encounter an error, not bloody much we can do about it.
-    // Just log it and continue.
-    LOG(WARN) << "ImpersonateLoggedOnUser returned FALSE";
-  }
-
-  result = ::CloseHandle(thread_token);
-  result = ::CloseHandle(process_token);
 }
 
 void BrowserFactory::ResetThreadIntegrityLevel() {
   LOG(TRACE) << "Entering BrowserFactory::ResetThreadIntegrityLevel";
   ::RevertToSelf();
+}
+
+void BrowserFactory::InvokeClearCacheUtility(bool use_low_integrity_level) {
+  HRESULT hr = S_OK;
+  std::vector<wchar_t> system_path_buffer(MAX_PATH);
+  std::vector<wchar_t> rundll_exe_path_buffer(MAX_PATH);
+  std::vector<wchar_t> inetcpl_path_buffer(MAX_PATH);
+  std::wstring args = L"";
+
+  UINT system_path_size = ::GetSystemDirectory(&system_path_buffer[0], MAX_PATH);
+
+  HANDLE  process_token = NULL;
+  HANDLE  mic_token = NULL;
+  PSID    sid = NULL;
+
+  bool can_create_process = true;
+  if (!use_low_integrity_level || 
+      this->CreateLowIntegrityLevelToken(&process_token, &mic_token, &sid)) {
+    if (0 != system_path_size &&
+        system_path_size <= static_cast<int>(system_path_buffer.size())) {
+      if (::PathCombine(&rundll_exe_path_buffer[0],
+                        &system_path_buffer[0],
+                        RUNDLL_EXE_NAME) && 
+          ::PathCombine(&inetcpl_path_buffer[0],
+                        &system_path_buffer[0],
+                        INTERNET_CONTROL_PANEL_APPLET_NAME)) {
+        // PathCombine will return NULL if the buffer would be exceeded.
+        ::PathQuoteSpaces(&rundll_exe_path_buffer[0]);
+        ::PathQuoteSpaces(&inetcpl_path_buffer[0]);
+        args = StringUtilities::Format(CLEAR_CACHE_COMMAND_LINE_ARGS,
+                                       &inetcpl_path_buffer[0],
+                                       CLEAR_CACHE_OPTIONS);
+      } else {
+        can_create_process = false;
+      }
+    } else {
+      can_create_process = false;
+    }
+
+    if (can_create_process) {
+      STARTUPINFO start_info;
+      ::ZeroMemory(&start_info, sizeof(start_info));
+      start_info.cb = sizeof(start_info);
+
+      PROCESS_INFORMATION process_info;
+      BOOL is_process_created = FALSE;
+      start_info.dwFlags = STARTF_USESHOWWINDOW;
+      start_info.wShowWindow = SW_SHOWNORMAL;
+
+      std::vector<wchar_t> args_buffer(0);
+      StringUtilities::ToBuffer(args, &args_buffer);
+      // Create the process to run with low or medium rights
+      if (use_low_integrity_level) {
+        is_process_created = CreateProcessAsUser(mic_token,
+                                                 &rundll_exe_path_buffer[0],
+                                                 &args_buffer[0],
+                                                 NULL,
+                                                 NULL,
+                                                 FALSE,
+                                                 0,
+                                                 NULL,
+                                                 NULL,
+                                                 &start_info,
+                                                 &process_info);
+      } else {
+        is_process_created = CreateProcess(&rundll_exe_path_buffer[0],
+                                           &args_buffer[0],
+                                           NULL,
+                                           NULL,
+                                           FALSE,
+                                           0,
+                                           NULL,
+                                           NULL,
+                                           &start_info,
+                                           &process_info);
+      }
+
+      if (is_process_created) {
+        // Wait for the rundll32.exe process to exit.
+        ::WaitForInputIdle(process_info.hProcess, 5000);
+        ::WaitForSingleObject(process_info.hProcess, 30000);
+        ::CloseHandle(process_info.hProcess);
+        ::CloseHandle(process_info.hThread);
+      }
+    }
+
+    // Close the handles opened when creating the
+    // low integrity level token
+    if (use_low_integrity_level) {
+      ::CloseHandle(process_token);
+      ::CloseHandle(mic_token);
+      ::LocalFree(sid);
+    }
+  }    
 }
 
 BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
@@ -634,24 +741,24 @@ void BrowserFactory::GetExecutableLocation() {
   LOG(TRACE) << "Entering BrowserFactory::GetExecutableLocation";
 
   std::wstring class_id;
-  if (this->GetRegistryValue(HKEY_LOCAL_MACHINE,
-                             IE_CLSID_REGISTRY_KEY,
-                             L"",
-                             &class_id)) {
+  if (RegistryUtilities::GetRegistryValue(HKEY_LOCAL_MACHINE,
+                                          IE_CLSID_REGISTRY_KEY,
+                                          L"",
+                                          &class_id)) {
     std::wstring location_key = L"SOFTWARE\\Classes\\CLSID\\" + 
                                 class_id +
                                 L"\\LocalServer32";
     std::wstring executable_location;
 
-    if (this->GetRegistryValue(HKEY_LOCAL_MACHINE,
-                               location_key,
-                               L"",
-                               &executable_location)) {
+    if (RegistryUtilities::GetRegistryValue(HKEY_LOCAL_MACHINE,
+                                            location_key,
+                                            L"",
+                                            &executable_location)) {
       // If the executable location in the registry has an environment
       // variable in it, expand the environment variable to an absolute
       // path.
       DWORD expanded_location_size = ::ExpandEnvironmentStrings(executable_location.c_str(), NULL, 0);
-      vector<WCHAR> expanded_location(expanded_location_size);
+      std::vector<wchar_t> expanded_location(expanded_location_size);
       ::ExpandEnvironmentStrings(executable_location.c_str(), &expanded_location[0], expanded_location_size);
       executable_location = &expanded_location[0];
       this->ie_executable_location_ = executable_location;
@@ -669,98 +776,6 @@ void BrowserFactory::GetExecutableLocation() {
   } else {
     LOG(WARN) << "Unable to get IE class id from registry";
   }
-}
-
-bool BrowserFactory::GetRegistryValue(const HKEY root_key,
-                                      const std::wstring& subkey,
-                                      const std::wstring& value_name,
-                                      std::wstring *value) {
-  LOG(TRACE) << "Entering BrowserFactory::GetRegistryValue";
-
-  std::string root_key_description = "HKEY_CURRENT_USER";
-  if (root_key == HKEY_CLASSES_ROOT) {
-    root_key_description = "HKEY_CLASSES_ROOT";
-  } else if (root_key == HKEY_LOCAL_MACHINE) {
-    root_key_description = "HKEY_LOCAL_MACHINE";
-  }
-
-  bool value_retrieved = false;
-  DWORD required_buffer_size;
-  DWORD value_type;
-  HKEY key_handle;
-  long registry_call_result = ::RegOpenKeyEx(root_key,
-                                             subkey.c_str(),
-                                             0,
-                                             KEY_QUERY_VALUE,
-                                             &key_handle);
-  if (ERROR_SUCCESS == registry_call_result) {
-    registry_call_result = ::RegQueryValueEx(key_handle,
-                                             value_name.c_str(),
-                                             NULL,
-                                             &value_type,
-                                             NULL,
-                                             &required_buffer_size);
-    if (ERROR_SUCCESS == registry_call_result) {
-      if (value_type == REG_SZ || value_type == REG_EXPAND_SZ || value_type == REG_MULTI_SZ) {
-        std::vector<wchar_t> value_buffer(required_buffer_size);
-        registry_call_result = ::RegQueryValueEx(key_handle,
-                                                value_name.c_str(),
-                                                NULL,
-                                                &value_type,
-                                                reinterpret_cast<LPBYTE>(&value_buffer[0]),
-                                                &required_buffer_size);
-        if (ERROR_SUCCESS == registry_call_result) {
-          *value = &value_buffer[0];
-          value_retrieved = true;
-        }
-      } else if (value_type == REG_DWORD) {
-        DWORD numeric_value = 0;
-        registry_call_result = ::RegQueryValueEx(key_handle,
-                                                 value_name.c_str(),
-                                                 NULL,
-                                                 &value_type,
-                                                 reinterpret_cast<LPBYTE>(&numeric_value),
-                                                 &required_buffer_size);
-        if (ERROR_SUCCESS == registry_call_result) {
-          // Coerce the numeric value to a string to return back.
-          // Assume 10 characters will be enough to hold the size
-          // of the value.
-          std::vector<wchar_t> numeric_value_buffer(10);
-          _ltow_s(numeric_value, &numeric_value_buffer[0], numeric_value_buffer.size(), 10);
-          *value = &numeric_value_buffer[0];
-          value_retrieved = true;
-        }
-      } else {
-        LOG(WARN) << "Unexpected value type of " << value_type
-                  << " for RegQueryValueEx was found for value with name "
-                  << LOGWSTRING(value_name) << " in subkey "
-                  << LOGWSTRING(subkey) << " in hive "
-                  << root_key_description;
-      }
-      if (ERROR_SUCCESS != registry_call_result) {
-        LOG(WARN) << "RegQueryValueEx failed with error code "
-                  << registry_call_result << " retrieving value with name "
-                  << LOGWSTRING(value_name) << " in subkey "
-                  << LOGWSTRING(subkey) << "in hive "
-                  << root_key_description;
-      }
-    } else {
-      LOG(WARN) << "RegQueryValueEx failed with error code "
-                << registry_call_result
-                << " retrieving required buffer size for value with name "
-                << LOGWSTRING(value_name) << " in subkey "
-                << LOGWSTRING(subkey) << " in hive "
-                << root_key_description;
-    }
-    ::RegCloseKey(key_handle);
-  } else {
-    LOG(WARN) << "RegOpenKeyEx failed with error code "
-              << registry_call_result <<  " attempting to open subkey "
-              << LOGWSTRING(subkey) << " in hive "
-              << root_key_description;
-
-  }
-  return value_retrieved;
 }
 
 void BrowserFactory::GetIEVersion() {
@@ -858,7 +873,7 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
                                              NULL,
                                              NULL)) {
         int protected_mode_value = -1;
-        std::vector<TCHAR> subkey_name_buffer(max_subkey_name_length + 1);
+        std::vector<wchar_t> subkey_name_buffer(max_subkey_name_length + 1);
         for (size_t index = 0; index < subkey_count; ++index) {
           DWORD number_of_characters_copied = max_subkey_name_length + 1;
           ::RegEnumKeyEx(key_handle,

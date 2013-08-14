@@ -36,9 +36,6 @@ wgxpath.NodeTest.prototype.getName = goog.abstractMethod;
 
 
 /**
- * Returns the string representation of the NodeTest for debugging.
- *
- * @param {string=} opt_indent Optional indentation.
- * @return {string} The string representation.
+ * @override
  */
 wgxpath.NodeTest.prototype.toString = goog.abstractMethod;

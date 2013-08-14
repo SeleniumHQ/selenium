@@ -25,16 +25,20 @@ goog.require('goog.asserts');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.console');
+goog.require('safaridriver.extension.LogDb');
 goog.require('safaridriver.extension.Server');
 goog.require('safaridriver.extension.Session');
 goog.require('safaridriver.extension.TabManager');
 goog.require('safaridriver.logging.ForwardingHandler');
 goog.require('safaridriver.message');
 goog.require('safaridriver.message.Alert');
+goog.require('safaridriver.message.Command');
 goog.require('safaridriver.message.Connect');
 goog.require('safaridriver.message.LoadModule');
+goog.require('safaridriver.message.Response');
 goog.require('webdriver.Session');
 goog.require('webdriver.WebDriver');
+goog.require('webdriver.logging');
 
 
 /**
@@ -44,12 +48,28 @@ safaridriver.extension.init = function() {
   goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.ALL);
   safaridriver.console.init();
 
-  safaridriver.extension.LOG_.info('Creating global session...');
+  // Wait for the logging database to initialize before continuing. This will
+  // ensure we can capture all of the logging output. This should be no more
+  // than a setTimeout(fn, 0) wait (depends on the current machine though).
+  safaridriver.extension.LogDb.getInstance().isReady().
+      then(safaridriver.extension.postLogInit_);
+};
+
+
+/** @private */
+safaridriver.extension.postLogInit_ = function() {
+  goog.debug.LogManager.getRoot().addHandler(function(logRecord) {
+    var entry = webdriver.logging.Entry.fromClosureLogRecord(
+        logRecord, webdriver.logging.Type.DRIVER);
+    safaridriver.extension.LogDb.getInstance().save([entry]);
+  });
+
+  safaridriver.extension.LOG_.fine('Creating global session...');
   safaridriver.extension.tabManager_ = new safaridriver.extension.TabManager();
   safaridriver.extension.session_ = new safaridriver.extension.Session(
       safaridriver.extension.tabManager_);
 
-  safaridriver.extension.LOG_.info('Creating debug driver...');
+  safaridriver.extension.LOG_.fine('Creating debug driver...');
   var server = safaridriver.extension.createSessionServer_();
   safaridriver.extension.driver = new webdriver.WebDriver(
       new webdriver.Session('debug', {}), server);
@@ -144,6 +164,8 @@ safaridriver.extension.openLogWindow_ = function() {
 
   if (safaridriver.extension.loggingTab_.url !==
       safaridriver.extension.LOG_PAGE_URL_) {
+    safaridriver.extension.loggingTab_.addEventListener(
+        'navigate', onLoad, true);
     safaridriver.extension.loggingTab_.url =
         safaridriver.extension.LOG_PAGE_URL_;
   }
@@ -155,6 +177,22 @@ safaridriver.extension.openLogWindow_ = function() {
 
     safaridriver.extension.logHandler_.dispose();
     safaridriver.extension.logHandler_ = null;
+  }
+
+  function onLoad() {
+    safaridriver.extension.loggingTab_.removeEventListener(
+        'navigate', onLoad, true);
+
+    if (safaridriver.extension.loggingTab_.url !==
+        safaridriver.extension.LOG_PAGE_URL_) {
+      return;  // Navigated to another page.
+    }
+
+    safaridriver.extension.LogDb.getInstance().get().
+        then(function(entries) {
+          var message = new safaridriver.message.Log(entries);
+          message.send(safaridriver.extension.loggingTab_.page);
+        });
   }
 };
 
@@ -183,6 +221,28 @@ safaridriver.extension.onMessage_ = function(e) {
   var message = safaridriver.message.fromEvent(e);
   var type = message.getType();
   switch (type) {
+    case safaridriver.message.Command.TYPE:
+      var command = /** @type {!safaridriver.message.Command} */ (message).
+          getCommand();
+
+      var server = safaridriver.extension.createSessionServer_();
+      server.execute(command, function(error, responseObj) {
+        // Only send responses to the logging window. If the window is no longer
+        // open, there's nothing to send the response to.
+        if (!safaridriver.extension.loggingTab_) {
+          return;
+        }
+
+        if (error) {
+          responseObj = bot.response.createErrorResponse(error);
+        }
+
+        var response = new safaridriver.message.Response(command.getId(),
+            /** @type {bot.response.ResponseObject} */ (responseObj));
+        response.send(safaridriver.extension.loggingTab_.page);
+      });
+      break;
+
     case safaridriver.message.Connect.TYPE:
       var url = /** @type {!safaridriver.message.Connect} */ (message).getUrl();
 
@@ -227,6 +287,8 @@ safaridriver.extension.onMessage_ = function(e) {
         safaridriver.extension.logHandler_.forward(
             /** @type {!safaridriver.message.Log} */ (message));
       }
+      safaridriver.extension.LogDb.getInstance().save(
+          /** @type {!safaridriver.message.Log} */ (message).getEntries());
       break;
 
     case safaridriver.message.LoadModule.TYPE:
@@ -259,7 +321,7 @@ safaridriver.extension.createSessionServer_ = function() {
  * @private
  */
 safaridriver.extension.loadModule_ = function(moduleId) {
-  safaridriver.extension.LOG_.info('Loading module(' + moduleId + ')');
+  safaridriver.extension.LOG_.config('Loading module(' + moduleId + ')');
   var moduleFn = safaridriver.extension.modules_[moduleId];
   if (moduleFn) {
     return bot.response.createResponse(moduleFn.toString());

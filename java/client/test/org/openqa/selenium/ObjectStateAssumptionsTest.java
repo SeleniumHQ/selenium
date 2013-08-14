@@ -48,7 +48,7 @@ public class ObjectStateAssumptionsTest extends JUnit4TestBase {
    * WebDriver with an initial call to get(). It also should not fail.
    */
   @Test
-  public void testinitializedWebDriverDoesNotThrowNPE() {
+  public void testInitializedWebDriverDoesNotThrowNPE() {
     driver.get(pages.simpleTestPage);
     try {
       variousMethodCallsToCheckAssumptions();

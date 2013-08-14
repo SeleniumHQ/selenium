@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -120,7 +118,7 @@
             <span class="n">attributeValue</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">attributeValue</span> <span class="o">=</span> <span class="n">resp</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">attributeValue</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;true&#39;</span><span class="p">,</span> <span class="s">&#39;false&#39;</span><span class="p">):</span>
                 <span class="n">attributeValue</span> <span class="o">=</span> <span class="n">attributeValue</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">attributeValue</span>

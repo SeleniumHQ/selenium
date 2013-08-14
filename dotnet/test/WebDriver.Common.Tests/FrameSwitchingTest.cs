@@ -335,7 +335,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
-        public void ShouldBeAbleToCarryOnWorkingIfTheFrameIsDeletedFromUnderUs()
+        public void ShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs()
         {
             driver.Url = deletingFrame;
             driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(1000));
@@ -343,6 +343,7 @@ namespace OpenQA.Selenium
 
             IWebElement killIframe = driver.FindElement(By.Id("killIframe"));
             killIframe.Click();
+            driver.SwitchTo().DefaultContent();
 
             bool frameExists = true;
             DateTime timeout = DateTime.Now.Add(TimeSpan.FromMilliseconds(4000));
@@ -361,7 +362,6 @@ namespace OpenQA.Selenium
 
             Assert.IsFalse(frameExists);
 
-            driver.SwitchTo().DefaultContent();
             IWebElement addIFrame = driver.FindElement(By.Id("addBackFrame"));
             addIFrame.Click();
 

@@ -107,6 +107,86 @@ Selenium.prototype.doStore = function(value, varName) {
 storedVars.nbsp = String.fromCharCode(160);
 storedVars.space = ' ';
 
+var unicodeToKeys = {};
+
+function build_sendkeys_maps() {
+
+//  add_sendkeys_key("NULL", '\uE000');
+//  add_sendkeys_key("CANCEL", '\uE001'); // ^break
+//  add_sendkeys_key("HELP", '\uE002');
+  add_sendkeys_key("BACK_SPACE", '\uE003', null, "BACKSPACE");
+  add_sendkeys_key("TAB", '\uE004');
+//  add_sendkeys_key("CLEAR", '\uE005');
+//  add_sendkeys_key("RETURN", '\uE006');
+  add_sendkeys_key("ENTER", '\uE007');
+  add_sendkeys_key("SHIFT", '\uE008', "LEFT_SHIFT");
+  add_sendkeys_key("CONTROL", '\uE009', "LEFT_CONTROL");
+  add_sendkeys_key("ALT", '\uE00A', "LEFT_ALT");
+  add_sendkeys_key("PAUSE", '\uE00B');
+  add_sendkeys_key("ESCAPE", '\uE00C', null, "ESC");
+  add_sendkeys_key("SPACE", '\uE00D');
+  add_sendkeys_key("PAGE_UP", '\uE00E');
+  add_sendkeys_key("PAGE_DOWN", '\uE00F');
+  add_sendkeys_key("END", '\uE010');
+  add_sendkeys_key("HOME", '\uE011');
+  add_sendkeys_key("LEFT", '\uE012', "ARROW_LEFT");
+  add_sendkeys_key("UP", '\uE013', "ARROW_UP");
+  add_sendkeys_key("RIGHT", '\uE014', "ARROW_RIGHT");
+  add_sendkeys_key("DOWN", '\uE015', "ARROW_DOWN");
+  add_sendkeys_key("INSERT", '\uE016');
+  add_sendkeys_key("DELETE", '\uE017');
+  add_sendkeys_key("SEMICOLON", '\uE018');
+  add_sendkeys_key("EQUALS", '\uE019');
+
+  add_sendkeys_key("NUMPAD0", '\uE01A', null, "NUM_ZERO");  // number pad keys
+  add_sendkeys_key("NUMPAD1", '\uE01B', null, "NUM_ONE");
+  add_sendkeys_key("NUMPAD2", '\uE01C', null, "NUM_TWO");
+  add_sendkeys_key("NUMPAD3", '\uE01D', null, "NUM_THREE");
+  add_sendkeys_key("NUMPAD4", '\uE01E', null, "NUM_FOUR");
+  add_sendkeys_key("NUMPAD5", '\uE01F', null, "NUM_FIVE");
+  add_sendkeys_key("NUMPAD6", '\uE020', null, "NUM_SIX");
+  add_sendkeys_key("NUMPAD7", '\uE021', null, "NUM_SEVEN");
+  add_sendkeys_key("NUMPAD8", '\uE022', null, "NUM_EIGHT");
+  add_sendkeys_key("NUMPAD9", '\uE023', null, "NUM_NINE");
+  add_sendkeys_key("MULTIPLY", '\uE024', null, "NUM_MULTIPLY");
+  add_sendkeys_key("ADD", '\uE025', null, "NUM_PLUS");
+  add_sendkeys_key("SEPARATOR", '\uE026');
+  add_sendkeys_key("SUBTRACT", '\uE027', null, "NUM_MINUS");
+  add_sendkeys_key("DECIMAL", '\uE028', null, "NUM_PERIOD");
+  add_sendkeys_key("DIVIDE", '\uE029', null, "NUM_DIVISION");
+
+  add_sendkeys_key("F1", '\uE031');  // function keys
+  add_sendkeys_key("F2", '\uE032');
+  add_sendkeys_key("F3", '\uE033');
+  add_sendkeys_key("F4", '\uE034');
+  add_sendkeys_key("F5", '\uE035');
+  add_sendkeys_key("F6", '\uE036');
+  add_sendkeys_key("F7", '\uE037');
+  add_sendkeys_key("F8", '\uE038');
+  add_sendkeys_key("F9", '\uE039');
+  add_sendkeys_key("F10", '\uE03A');
+  add_sendkeys_key("F11", '\uE03B');
+  add_sendkeys_key("F12", '\uE03C');
+
+  add_sendkeys_key("META", '\uE03D', "COMMAND");
+
+}
+
+function add_sendkeys_key(key, unicodeChar, alias, botKey) {
+  botKey = botKey || key;
+  if (bot.Keyboard.Keys[botKey]) {
+    storedVars['KEY_' + key] = unicodeChar;
+    if (alias) {
+      storedVars['KEY_' + alias] = unicodeChar;
+    }
+    unicodeToKeys[unicodeChar] = bot.Keyboard.Keys[botKey];
+    return true;
+  }
+  return false;
+}
+
+build_sendkeys_maps();
+
 var IDETestLoop = classCreate();
 objectExtend(IDETestLoop.prototype, TestLoop.prototype);
 objectExtend(IDETestLoop.prototype, {
@@ -227,7 +307,7 @@ function Logger() {
   this.observers = [];
 
   this.exception = function(exception) {
-    var msg = "Unexpected Exception: " + describe(exception, ', ');
+    var msg = "Unexpected Exception: " + exception + ". " + describe(exception, ', ');
     this.error(msg);
   }
 

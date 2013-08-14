@@ -21,16 +21,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
-public class SauceDriver extends RemoteWebDriver {
+public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
+
   private static final String SAUCE_JOB_NAME_ENV_NAME = "SAUCE_JOB_NAME";
   private static final String SELENIUM_VERSION_ENV_NAME = "SAUCE_SELENIUM_VERSION";
   private static final String SELENIUM_IEDRIVER_ENV_NAME = "SAUCE_IEDRIVER_VERSION";
@@ -125,6 +129,7 @@ public class SauceDriver extends RemoteWebDriver {
       if (ieDriverVersion != null) {
         mungedCapabilities.setCapability("iedriver-version", ieDriverVersion);
       }
+      mungedCapabilities.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, true);
     }
 
     String requireFocus = System.getenv(SAUCE_REQUIRE_FOCUS_ENV_NAME);
@@ -146,5 +151,12 @@ public class SauceDriver extends RemoteWebDriver {
 
   public static Platform getEffectivePlatform() {
     return Platform.extractFromSysProperty(getDesiredOS());
+  }
+
+  public <X> X getScreenshotAs(OutputType<X> target) {
+    // Get the screenshot as base64.
+    String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();
+    // ... and convert it.
+    return target.convertFromBase64Png(base64);
   }
 }

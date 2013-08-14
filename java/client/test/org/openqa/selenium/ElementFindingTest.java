@@ -27,9 +27,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
@@ -460,6 +462,7 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
     driver.get(pages.javascriptPage);
 
@@ -571,7 +574,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertEquals("two", element.getAttribute("value"));
   }
 
-  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE}, reason = "Just not working")
+  @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE, MARIONETTE}, reason = "Just not working")
   @Test
   public void testAnElementFoundInADifferentFrameIsStale() {
     driver.get(pages.missedJsReferencePage);
@@ -587,7 +590,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE})
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
   @Test
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     driver.get(pages.missedJsReferencePage);
@@ -613,12 +616,10 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({OPERA})
+  @Ignore({OPERA, MARIONETTE})
   public void findsByLinkTextOnXhtmlPage() {
-    if (isOldIe(driver)) {
-      // Old IE doesn't render XHTML pages, don't try loading XHTML pages in it
-      return;
-    }
+    assumeFalse("Old IE doesn't render XHTML pages, don't try loading XHTML pages in it", isOldIe(driver));
+
     driver.get(appServer.whereIs("actualXhtmlPage.xhtml"));
     String linkText = "Foo";
     WebElement element = driver.findElement(By.linkText(linkText));

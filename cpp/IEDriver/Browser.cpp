@@ -484,14 +484,14 @@ bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
       CComVariant result;
       hr = frames->item(&index, &result);
       if (FAILED(hr)) {
-        LOGHR(DEBUG, hr) << "Could not get frame item for index " << i << ", call to IHTMLFramesCollection2::item failed";
-        return true;
+        LOGHR(DEBUG, hr) << "Could not get frame item for index " << i << ", call to IHTMLFramesCollection2::item failed, frame/frameset is broken";
+        continue;
       }
 
       CComPtr<IHTMLWindow2> window;
       result.pdispVal->QueryInterface<IHTMLWindow2>(&window);
-      if (!window) {
-        // Frame is not an HTML frame.
+      if (!window) {        
+        LOG(DEBUG) << "Could not get window for frame item with index " << i << ", cast to IHTMLWindow2 failed, frame is not an HTML frame";
         continue;
       }
 
@@ -509,7 +509,7 @@ bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
         is_navigating = this->IsDocumentNavigating(frame_document);
         if (is_navigating) {
           break;
-      }
+        }
       }
     }
   } else {
@@ -617,7 +617,7 @@ HWND Browser::GetActiveDialogWindowHandle() {
 void Browser::CheckDialogType(HWND dialog_window_handle) {
   LOG(TRACE) << "Entering Browser::CheckDialogType";
 
-  vector<char> window_class_name(34);
+  std::vector<char> window_class_name(34);
   if (GetClassNameA(dialog_window_handle, &window_class_name[0], 34)) {
     if (strcmp(HTML_DIALOG_WINDOW_CLASS,
         &window_class_name[0]) == 0) {

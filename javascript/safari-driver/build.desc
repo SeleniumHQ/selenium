@@ -67,7 +67,10 @@ js_binary(
 # Binary for the debug/logging window.
 js_binary(
     name = "debug",
-    srcs = ["debug/debug.js"],
+    srcs = [
+        "deps.js",
+        "debug/debug.js",
+    ],
     defines = [
         "goog.userAgent.ASSUME_WEBKIT=true",
         "goog.userAgent.product.ASSUME_SAFARI=true",
@@ -116,7 +119,7 @@ js_binary(
         "deps.js",
         "extension/commands.js",
         "extension/extension.js",
-        "extension/extensionbar.js",
+        "extension/logdb.js",
         "extension/server.js",
         "extension/session.js",
         "extension/tab.js",
@@ -238,6 +241,7 @@ js_module_binary(
     ],
     flags = [
         "--define=bot.json.NATIVE_JSON=false",
+        "--define=goog.NATIVE_ARRAY_PROTOTYPES=false",
         "--define=goog.userAgent.ASSUME_WEBKIT=true",
         "--define=goog.userAgent.product.ASSUME_SAFARI=true",
         "--define=safaridriver.message.ASSUME_DOM_WINDOW=true",
@@ -294,3 +298,15 @@ folder(
       ":page",
     ],
     out = "SafariDriver.safariextension")
+
+js_test(
+    name = "test",
+    srcs = [
+        "test/**/*.js",
+        "test/**/*_test.html",
+    ],
+    browsers = ["safari"],
+    deps = [
+        "//java/client/test/org/openqa/selenium/javascript",
+        "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    ])

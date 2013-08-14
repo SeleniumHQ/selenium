@@ -18,16 +18,16 @@ limitations under the License.
 
 package org.openqa.selenium.support.events.internal;
 
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 /**
  * A mouse that fires events.
  */
-public class EventFiringMouse implements Mouse {
+public class EventFiringMouse implements org.openqa.selenium.interactions.Mouse {
   private final WebDriver driver;
   private final WebDriverEventListener dispatcher;
   private final Mouse mouse;

@@ -17,6 +17,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
@@ -26,6 +27,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 
 public class ChildrenFindingTest extends JUnit4TestBase {
@@ -69,7 +71,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementsByXPath() {
+  public void testFindElementsByXPath() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     List<WebElement> children = element.findElements(By.xpath("select/option"));
@@ -79,7 +81,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementsByXPathWhenNoMatch() {
+  public void testFindElementsByXPathWhenNoMatch() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     List<WebElement> children = element.findElements(By.xpath(".//select/x"));
@@ -87,7 +89,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementByName() {
+  public void testFindElementByName() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     WebElement child = element.findElement(By.name("selectomatic"));
@@ -95,7 +97,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementsByName() {
+  public void testFindElementsByName() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     List<WebElement> children = element.findElements(By.name("selectomatic"));
@@ -103,7 +105,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementById() {
+  public void testFindElementById() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     WebElement child = element.findElement(By.id("2"));
@@ -111,7 +113,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementByIdWhenMultipleMatchesExist() {
+  public void testFindElementByIdWhenMultipleMatchesExist() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_id_div"));
     WebElement child = element.findElement(By.id("test_id"));
@@ -119,7 +121,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementByIdWhenNoMatchInContext() {
+  public void testFindElementByIdWhenNoMatchInContext() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_id_div"));
     try {
@@ -131,7 +133,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testfindElementsById() {
+  public void testFindElementsById() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     List<WebElement> children = element.findElements(By.id("2"));
@@ -147,6 +149,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testFindElementsByLinkTest() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("div1"));
@@ -155,15 +158,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertEquals(2, elements.size());
     assertThat(elements.get(0).getAttribute("name"), is("link1"));
     assertThat(elements.get(1).getAttribute("name"), is("link2"));
-  }
-
-  @Test
-  public void testfindElementsByLinkText() {
-    driver.get(pages.nestedPage);
-    WebElement element = driver.findElement(By.name("div1"));
-    List<WebElement> children = element.findElements(
-        By.linkText("hello world"));
-    assertThat(children.size(), is(2));
   }
 
   @Test

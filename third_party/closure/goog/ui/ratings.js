@@ -32,7 +32,10 @@
 goog.provide('goog.ui.Ratings');
 goog.provide('goog.ui.Ratings.EventType');
 
-goog.require('goog.dom.a11y');
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.Role');
+goog.require('goog.a11y.aria.State');
+goog.require('goog.asserts');
 goog.require('goog.dom.classes');
 goog.require('goog.events.EventType');
 goog.require('goog.ui.Component');
@@ -153,21 +156,22 @@ goog.ui.Ratings.prototype.decorateInternal = function(el) {
  */
 goog.ui.Ratings.prototype.enterDocument = function() {
   var el = this.getElement();
+  goog.asserts.assert(el, 'The DOM element for ratings cannot be null.');
   el.tabIndex = 0;
   goog.dom.classes.add(el, this.getCssClass());
-  goog.dom.a11y.setRole(el, 'slider');
-  goog.dom.a11y.setState(el, 'valuemin', 0);
+  goog.a11y.aria.setRole(el, goog.a11y.aria.Role.SLIDER);
+  goog.a11y.aria.setState(el, goog.a11y.aria.State.VALUEMIN, 0);
   var max = this.ratings_.length - 1;
-  goog.dom.a11y.setState(el, 'valuemax', max);
+  goog.a11y.aria.setState(el, goog.a11y.aria.State.VALUEMAX, max);
   var handler = this.getHandler();
   handler.listen(el, 'keydown', this.onKeyDown_);
 
   // Create the elements for the stars
   for (var i = 0; i < this.ratings_.length; i++) {
     var star = this.getDomHelper().createDom('span', {
-        'title': this.ratings_[i],
-        'class': this.getClassName_(i, false),
-        'index': i});
+      'title': this.ratings_[i],
+      'class': this.getClassName_(i, false),
+      'index': i});
     this.stars_.push(star);
     el.appendChild(star);
   }
@@ -229,9 +233,12 @@ goog.ui.Ratings.prototype.setSelectedIndex = function(index) {
         this.attachedFormField_.value =
             /** @type {string} */ (this.getValue());
       }
-      goog.dom.a11y.setState(this.getElement(),
-        'valuenow',
-        this.ratings_[index]);
+      var ratingsElement = this.getElement();
+      goog.asserts.assert(ratingsElement,
+          'The DOM ratings element cannot be null.');
+      goog.a11y.aria.setState(ratingsElement,
+          goog.a11y.aria.State.VALUENOW,
+          this.ratings_[index]);
     }
     this.dispatchEvent(goog.ui.Ratings.EventType.CHANGE);
   }

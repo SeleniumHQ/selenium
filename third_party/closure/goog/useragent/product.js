@@ -25,46 +25,46 @@ goog.require('goog.userAgent');
 /**
  * @define {boolean} Whether the code is running on the Firefox web browser.
  */
-goog.userAgent.product.ASSUME_FIREFOX = false;
+goog.define('goog.userAgent.product.ASSUME_FIREFOX', false);
 
 
 /**
  * @define {boolean} Whether the code is running on the Camino web browser.
  */
-goog.userAgent.product.ASSUME_CAMINO = false;
+goog.define('goog.userAgent.product.ASSUME_CAMINO', false);
 
 
 /**
  * @define {boolean} Whether we know at compile-time that the product is an
  *     iPhone.
  */
-goog.userAgent.product.ASSUME_IPHONE = false;
+goog.define('goog.userAgent.product.ASSUME_IPHONE', false);
 
 
 /**
  * @define {boolean} Whether we know at compile-time that the product is an
  *     iPad.
  */
-goog.userAgent.product.ASSUME_IPAD = false;
+goog.define('goog.userAgent.product.ASSUME_IPAD', false);
 
 
 /**
  * @define {boolean} Whether we know at compile-time that the product is an
  *     Android phone.
  */
-goog.userAgent.product.ASSUME_ANDROID = false;
+goog.define('goog.userAgent.product.ASSUME_ANDROID', false);
 
 
 /**
  * @define {boolean} Whether the code is running on the Chrome web browser.
  */
-goog.userAgent.product.ASSUME_CHROME = false;
+goog.define('goog.userAgent.product.ASSUME_CHROME', false);
 
 
 /**
  * @define {boolean} Whether the code is running on the Safari web browser.
  */
-goog.userAgent.product.ASSUME_SAFARI = false;
+goog.define('goog.userAgent.product.ASSUME_SAFARI', false);
 
 
 /**

@@ -39,7 +39,7 @@
   border-color: #444;
 }
 
-.goog-css3-button-active, .goog-css3-button-open {
+.goog-css3-button-active, .goog-css3-button-open, .goog-css3-button-checked {
   border-color: #444 !important;
   background: -webkit-gradient(linear, 0% 40%, 0% 70%, from(#e3e3e3),
       to(#f9f9f9));

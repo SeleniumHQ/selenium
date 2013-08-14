@@ -39,7 +39,6 @@ class ClearElementCommandHandler : public IECommandHandler {
       response->SetErrorResponse(400, "Missing parameter in URL: id");
       return;
     } else {
-      std::wstring text = L"";
       int status_code = WD_SUCCESS;
       std::string element_id = id_parameter_iterator->second;
 

@@ -21,6 +21,7 @@
 goog.provide('goog.db.Transaction');
 goog.provide('goog.db.Transaction.TransactionMode');
 
+goog.require('goog.async.Deferred');
 goog.require('goog.db.Error');
 goog.require('goog.db.ObjectStore');
 goog.require('goog.events.EventHandler');
@@ -35,10 +36,11 @@ goog.require('goog.events.EventTarget');
  * @see goog.db.IndexedDb#createTransaction
  *
  * @param {!IDBTransaction} tx IndexedDB transaction to back this wrapper.
+ * @param {!goog.db.IndexedDb} db The database that this transaction modifies.
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-goog.db.Transaction = function(tx) {
+goog.db.Transaction = function(tx, db) {
   goog.base(this);
 
   /**
@@ -48,6 +50,14 @@ goog.db.Transaction = function(tx) {
    * @private
    */
   this.tx_ = tx;
+
+  /**
+   * The database that this transaction modifies.
+   *
+   * @type {!goog.db.IndexedDb}
+   * @private
+   */
+  this.db_ = db;
 
   /**
    * Event handler for this transaction.
@@ -60,21 +70,21 @@ goog.db.Transaction = function(tx) {
   // TODO(user): remove these casts once the externs file is updated to
   // correctly reflect that IDBTransaction extends EventTarget
   this.eventHandler_.listen(
-      (/** @type {EventTarget} */ this.tx_),
+      /** @type {EventTarget} */ (this.tx_),
       'complete',
       goog.bind(
           this.dispatchEvent,
           this,
           goog.db.Transaction.EventTypes.COMPLETE));
   this.eventHandler_.listen(
-      (/** @type {EventTarget} */ this.tx_),
+      /** @type {EventTarget} */ (this.tx_),
       'abort',
       goog.bind(
           this.dispatchEvent,
           this,
           goog.db.Transaction.EventTypes.ABORT));
   this.eventHandler_.listen(
-      (/** @type {EventTarget} */ this.tx_),
+      /** @type {EventTarget} */ (this.tx_),
       'error',
       this.dispatchError_);
 };
@@ -97,9 +107,8 @@ goog.db.Transaction.prototype.dispatchError_ = function(ev) {
   } else {
     this.dispatchEvent({
       type: goog.db.Transaction.EventTypes.ERROR,
-      target: new goog.db.Error(
-          (/** @type {IDBRequest} */ (ev.target)).errorCode,
-          'in transaction')
+      target: goog.db.Error.fromRequest(
+          /** @type {!IDBRequest} */ (ev.target), 'in transaction')
     });
   }
 };
@@ -129,6 +138,14 @@ goog.db.Transaction.prototype.getMode = function() {
 
 
 /**
+ * @return {!goog.db.IndexedDb} The database that this transaction modifies.
+ */
+goog.db.Transaction.prototype.getDatabase = function() {
+  return this.db_;
+};
+
+
+/**
  * Opens an object store to do operations on in this transaction. The requested
  * object store must be one that is in this transaction's scope.
  * @see goog.db.IndexedDb#createTransaction
@@ -140,9 +157,35 @@ goog.db.Transaction.prototype.getMode = function() {
 goog.db.Transaction.prototype.objectStore = function(name) {
   try {
     return new goog.db.ObjectStore(this.tx_.objectStore(name));
-  } catch (err) {
-    throw new goog.db.Error(err.code, 'getting object store ' + name);
+  } catch (ex) {
+    throw goog.db.Error.fromException(ex, 'getting object store ' + name);
   }
+};
+
+
+/**
+ * @return {!goog.async.Deferred} A deferred that will fire once the
+ *     transaction is complete. It fires the errback chain if an error occurs
+ *     in the transaction, or if it is aborted.
+ */
+goog.db.Transaction.prototype.wait = function() {
+  var d = new goog.async.Deferred();
+  goog.events.listenOnce(
+      this, goog.db.Transaction.EventTypes.COMPLETE, goog.bind(d.callback, d));
+  goog.events.listenOnce(
+      this, goog.db.Transaction.EventTypes.ABORT, function() {
+        d.errback(new goog.db.Error(goog.db.Error.ErrorCode.ABORT_ERR,
+            'waiting for transaction to complete'));
+      });
+  goog.events.listenOnce(
+      this, goog.db.Transaction.EventTypes.ERROR, function(e) {
+        d.errback(e.target);
+      });
+
+  var db = this.getDatabase();
+  return d.addCallback(function() {
+    return db;
+  });
 };
 
 
@@ -166,10 +209,10 @@ goog.db.Transaction.prototype.disposeInternal = function() {
  * The three possible transaction modes.
  * @see http://www.w3.org/TR/IndexedDB/#idl-def-IDBTransaction
  *
- * @enum {number}
+ * @enum {string}
  */
 goog.db.Transaction.TransactionMode = {
-  READ_ONLY: 0,
-  READ_WRITE: 1,
-  VERSION_CHANGE: 2
+  READ_ONLY: 'readonly',
+  READ_WRITE: 'readwrite',
+  VERSION_CHANGE: 'versionchange'
 };

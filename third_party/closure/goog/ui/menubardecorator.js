@@ -19,11 +19,12 @@
  * @see ../demos/menubar.html
  */
 
+/** @suppress {extraProvide} */
 goog.provide('goog.ui.menuBarDecorator');
 
-goog.require('goog.ui.Container');
+goog.require('goog.ui.MenuBarRenderer');
 goog.require('goog.ui.menuBar');
-
+goog.require('goog.ui.registry');
 
 
 /**

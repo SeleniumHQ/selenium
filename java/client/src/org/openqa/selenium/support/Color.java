@@ -82,6 +82,11 @@ public class Color {
   }
 
   @Override
+  public String toString() {
+    return "Color: " + asRgba();
+  }
+
+  @Override
   public boolean equals(Object other) {
     if (other == null) {
       return false;

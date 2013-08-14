@@ -7,6 +7,7 @@ class Selenium::WebDriver::Remote::Bridge
 
   command :newSession,                             :post,    "session"
   command :getCapabilities,                        :get,     "session/:session_id"
+  command :status,                                 :get,     "status"
 
   #
   # basic driver

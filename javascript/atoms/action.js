@@ -127,11 +127,10 @@ bot.action.focusOnElement = function(element) {
  *                           bot.Keyboard.Key.SHIFT, 'cd']);
  *
  * @param {!Element} element The element receiving the event.
- * @param {(string|!bot.Keyboard.Key|
- *          !Array.<(string|!bot.Keyboard.Key)>)} values Value or values to
- *     type on the element.
+ * @param {(string|!bot.Keyboard.Key|!Array.<(string|!bot.Keyboard.Key)>)}
+ *    values Value or values to type on the element.
  * @param {bot.Keyboard=} opt_keyboard Keyboard to use; if not provided,
- *     constructs one.
+ *    constructs one.
  * @param {boolean=} opt_persistModifiers Whether modifier keys should remain
  *     pressed when this function ends.
  * @throws {bot.Error} If the element cannot be interacted with.
@@ -322,29 +321,36 @@ bot.action.scrollMouse = function(element, ticks, opt_coords, opt_mouse) {
  * @param {!Element} element The element to drag.
  * @param {number} dx Increment in x coordinate.
  * @param {number} dy Increment in y coordinate.
+ * @param {number=} opt_steps The number of steps that should occur as part of
+ *     the drag, default is 2.
  * @param {goog.math.Coordinate=} opt_coords Drag start position relative to the
  *   element.
  * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
-bot.action.drag = function(element, dx, dy, opt_coords, opt_mouse) {
+bot.action.drag = function(element, dx, dy, opt_steps, opt_coords, opt_mouse) {
   var coords = bot.action.prepareToInteractWith_(element, opt_coords);
+  var initRect = bot.dom.getClientRect(element);
   var mouse = opt_mouse || new bot.Mouse();
   mouse.move(element, coords);
   mouse.pressButton(bot.Mouse.Button.LEFT);
-
-  // Fire two mousemoves (middle and destination) to trigger a drag action.
-  var initPos = goog.style.getClientPosition(element);
-  var midXY = new goog.math.Coordinate(coords.x + Math.floor(dx / 2),
-                                       coords.y + Math.floor(dy / 2));
-  mouse.move(element, midXY);
-
-  var midPos = goog.style.getClientPosition(element);
-  var finalXY = new goog.math.Coordinate(initPos.x + coords.x + dx - midPos.x,
-                                         initPos.y + coords.y + dy - midPos.y);
-  mouse.move(element, finalXY);
-
+  var steps = goog.isDef(opt_steps) ? opt_steps : 2;
+  if (steps < 1) {
+    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+                        'There must be at least one step as part of a drag.');
+  }
+  for (var i = 1; i <= steps; i++) {
+    moveTo(Math.floor(i * dx / steps), Math.floor(i * dy / steps));
+  }
   mouse.releaseButton();
+
+  function moveTo(x, y) {
+    var currRect = bot.dom.getClientRect(element);
+    var newPos = new goog.math.Coordinate(
+        coords.x + initRect.left + x - currRect.left,
+        coords.y + initRect.top + y - currRect.top);
+    mouse.move(element, newPos);
+  }
 };
 
 
@@ -373,30 +379,38 @@ bot.action.tap = function(element, opt_coords, opt_touchscreen) {
  * @param {!Element} element The element to swipe.
  * @param {number} dx Increment in x coordinate.
  * @param {number} dy Increment in y coordinate.
+ * @param {number=} opt_steps The number of steps that should occurs as part of
+ *     the swipe, default is 2.
  * @param {goog.math.Coordinate=} opt_coords Swipe start position relative to
  *   the element.
  * @param {bot.Touchscreen=} opt_touchscreen Touchscreen to use; if not
  *    provided, constructs one.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
-bot.action.swipe = function(element, dx, dy, opt_coords, opt_touchscreen) {
+bot.action.swipe = function(element, dx, dy, opt_steps, opt_coords,
+    opt_touchscreen) {
   var coords = bot.action.prepareToInteractWith_(element, opt_coords);
   var touchscreen = opt_touchscreen || new bot.Touchscreen();
+  var initRect = bot.dom.getClientRect(element);
   touchscreen.move(element, coords);
   touchscreen.press();
-
-  // Fire two touchmoves (middle and destination) to trigger a drag action.
-  var initPos = goog.style.getClientPosition(element);
-  var midXY = new goog.math.Coordinate(coords.x + Math.floor(dx / 2),
-                                       coords.y + Math.floor(dy / 2));
-  touchscreen.move(element, midXY);
-
-  var midPos = goog.style.getClientPosition(element);
-  var finalXY = new goog.math.Coordinate(initPos.x + coords.x + dx - midPos.x,
-                                         initPos.y + coords.y + dy - midPos.y);
-  touchscreen.move(element, finalXY);
-
+  var steps = goog.isDef(opt_steps) ? opt_steps : 2;
+  if (steps < 1) {
+    throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+                        'There must be at least one step as part of a swipe.');
+  }
+  for (var i = 1; i <= steps; i++) {
+    moveTo(Math.floor(i * dx / steps), Math.floor(i * dy / steps));
+  }
   touchscreen.release();
+
+  function moveTo(x, y) {
+    var currRect = bot.dom.getClientRect(element);
+    var newPos = new goog.math.Coordinate(
+        coords.x + initRect.left + x - currRect.left,
+        coords.y + initRect.top + y - currRect.top);
+    touchscreen.move(element, newPos);
+  }
 };
 
 
@@ -507,14 +521,16 @@ bot.action.multiTouchAction_ = function(element, transformStart, transformHalf,
   touchScreen.move(element, start1, start2);
   touchScreen.press(/*Two Finger Press*/ true);
 
-  var initPos = goog.style.getClientPosition(element);
+  var initRect = bot.dom.getClientRect(element);
   transformHalf(offsetVec);
   var mid1 = goog.math.Vec2.sum(center, offsetVec);
   var mid2 = goog.math.Vec2.difference(center, offsetVec);
   touchScreen.move(element, mid1, mid2);
 
+  var midRect = bot.dom.getClientRect(element);
   var movedVec = goog.math.Vec2.difference(
-      goog.style.getClientPosition(element), initPos);
+      new goog.math.Vec2(midRect.left, midRect.top),
+      new goog.math.Vec2(initRect.left, initRect.top));
   transformHalf(offsetVec);
   var end1 = goog.math.Vec2.sum(center, offsetVec).subtract(movedVec);
   var end2 = goog.math.Vec2.difference(center, offsetVec).subtract(movedVec);
@@ -634,10 +650,10 @@ bot.action.LegacyDevice_.findAncestorForm = function(element) {
  * @return {boolean} Whether the element is in view after scrolling.
  */
 bot.action.scrollIntoView = function(element, opt_coords) {
-  if (!bot.dom.isScrolledIntoView(element, opt_coords) && !bot.dom.isInParentOverflow(element, opt_coords)) {
+  if (!bot.dom.isScrolledIntoView(element, opt_coords)) {
     // Some elements may not have a scrollIntoView function - for example,
     // elements under an SVG element. Call those only if they exist.
-    if (typeof element.scrollIntoView == 'function') {
+    if (element.scrollIntoView) {
       element.scrollIntoView();
     }
     // In Opera 10, scrollIntoView only scrolls the element into the viewport of
@@ -663,9 +679,10 @@ bot.action.scrollIntoView = function(element, opt_coords) {
     // It's possible that the element has been scrolled in to view, but the
     // coords passed aren't in view; if this is the case, scroll those
     // coordinates into view.
-    var elementCoordsInViewport = goog.style.getClientPosition(element);
-    var desiredPointInViewport =
-        goog.math.Coordinate.sum(elementCoordsInViewport, opt_coords);
+    var elementRect = bot.dom.getClientRect(element);
+    var desiredPointInViewport = goog.math.Coordinate.sum(
+        new goog.math.Coordinate(elementRect.left, elementRect.top),
+        opt_coords);
     try {
       bot.dom.getInViewLocation(
           desiredPointInViewport,

@@ -73,16 +73,9 @@
 #include "CommandHandlers/SubmitElementCommandHandler.h"
 #include "CommandHandlers/SwitchToFrameCommandHandler.h"
 #include "CommandHandlers/SwitchToWindowCommandHandler.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
-
-LRESULT IECommandExecutor::OnInit(UINT uMsg,
-                                  WPARAM wParam,
-                                  LPARAM lParam,
-                                  BOOL& bHandled) {
-  LOG(TRACE) << "Entering IECommandExecutor::OnInit";
-  return 0;
-}
 
 LRESULT IECommandExecutor::OnCreate(UINT uMsg,
                                     WPARAM wParam,
@@ -93,8 +86,6 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   CREATESTRUCT* create = reinterpret_cast<CREATESTRUCT*>(lParam);
   IECommandExecutorThreadContext* context = reinterpret_cast<IECommandExecutorThreadContext*>(create->lpCreateParams);
   this->port_ = context->port;
-  this->force_createprocess_api_ = context->force_createprocess_api;
-  this->ie_switches_ = context->ie_switches;
 
   // NOTE: COM should be initialized on this thread, so we
   // could use CoCreateGuid() and StringFromGUID2() instead.
@@ -118,32 +109,18 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->PopulateElementFinderMethods();
   this->current_browser_id_ = "";
   this->serialized_response_ = "";
-  this->initial_browser_url_ = "";
-  this->ignore_protected_mode_settings_ = false;
-  this->ignore_zoom_setting_ = false;
   this->enable_element_cache_cleanup_ = true;
   this->enable_persistent_hover_ = true;
   this->unexpected_alert_behavior_ = IGNORE_UNEXPECTED_ALERTS;
-  this->speed_ = 0;
   this->implicit_wait_timeout_ = 0;
   this->async_script_timeout_ = -1;
   this->page_load_timeout_ = -1;
-  this->browser_attach_timeout_ = 0;
 
   this->input_manager_ = new InputManager();
   this->input_manager_->Initialize(&this->managed_elements_);
+  this->proxy_manager_ = new ProxyManager();
+  this->factory_ = new BrowserFactory();
 
-  return 0;
-}
-
-LRESULT IECommandExecutor::OnClose(UINT uMsg,
-                                   WPARAM wParam,
-                                   LPARAM lParam,
-                                   BOOL& bHandled) {
-  LOG(TRACE) << "Entering IECommandExecutor::OnClose";
-  this->managed_elements_.Clear();
-  delete this->input_manager_;
-  this->DestroyWindow();
   return 0;
 }
 
@@ -151,9 +128,19 @@ LRESULT IECommandExecutor::OnDestroy(UINT uMsg,
                                      WPARAM wParam,
                                      LPARAM lParam,
                                      BOOL& bHandled) {
-  LOG(TRACE) << "Entering IECommandExecutor::OnDestroy";
+  LOG(DEBUG) << "Entering IECommandExecutor::OnDestroy";
 
+  LOG(DEBUG) << "Clearing managed element cache";
+  this->managed_elements_.Clear();
+  LOG(DEBUG) << "Closing input manager";
+  delete this->input_manager_;
+  LOG(DEBUG) << "Closing proxy manager";
+  delete this->proxy_manager_;
+  LOG(DEBUG) << "Closing browser factory";
+  delete this->factory_;
+  LOG(DEBUG) << "Posting quit message";
   ::PostQuitMessage(0);
+  LOG(DEBUG) << "Leaving IECommandExecutor::OnDestroy";
   return 0;
 }
 
@@ -256,8 +243,13 @@ LRESULT IECommandExecutor::OnBrowserNewWindow(UINT uMsg,
                                               BOOL& bHandled) {
   LOG(TRACE) << "Entering IECommandExecutor::OnBrowserNewWindow";
 
-  IWebBrowser2* browser = this->factory_.CreateBrowser();
+  IWebBrowser2* browser = this->factory_->CreateBrowser();
   BrowserHandle new_window_wrapper(new Browser(browser, NULL, this->m_hWnd));
+  // TODO: This is a big assumption that this will work. We need a test case
+  // to validate that it will or won't.
+  SHANDLE_PTR hwnd;
+  browser->get_HWND(&hwnd);
+  this->proxy_manager_->SetProxySettings(reinterpret_cast<HWND>(hwnd));
   this->AddManagedBrowser(new_window_wrapper);
   LPSTREAM* stream = reinterpret_cast<LPSTREAM*>(lParam);
   HRESULT hr = ::CoMarshalInterThreadInterfaceInStream(IID_IWebBrowser2,
@@ -316,7 +308,7 @@ LRESULT IECommandExecutor::OnNewHtmlDialog(UINT uMsg,
   }
 
   CComPtr<IHTMLDocument2> document;
-  if (this->factory_.GetDocumentFromWindowHandle(dialog_handle, &document)) {
+  if (this->factory_->GetDocumentFromWindowHandle(dialog_handle, &document)) {
     CComPtr<IHTMLWindow2> window;
     document->get_parentWindow(&window);
     this->AddManagedBrowser(BrowserHandle(new HtmlDialog(window,
@@ -380,13 +372,11 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
   // but use ThreadContext for code minimization
   IECommandExecutorThreadContext* session_context = new IECommandExecutorThreadContext();
   session_context->port = thread_context->port;
-  session_context->ie_switches = thread_context->ie_switches;
-  session_context->force_createprocess_api = thread_context->force_createprocess_api;
 
   DWORD error = 0;
   HRESULT hr = ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
   if (FAILED(hr)) {
-    LOGHR(DEBUG, hr) << "COM library initialization has some problem";
+    LOGHR(DEBUG, hr) << "COM library initialization encountered an error";
   }
 
   IECommandExecutor new_session;
@@ -416,11 +406,25 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
   }
 
   // Run the message loop
-  while (::GetMessage(&msg, NULL, 0, 0) > 0) {
-    ::TranslateMessage(&msg);
-    ::DispatchMessage(&msg);
+  BOOL get_message_return_value;
+  while ((get_message_return_value = ::GetMessage(&msg, NULL, 0, 0)) != 0) {
+    if (get_message_return_value == -1) {
+      LOGERR(WARN) << "Windows GetMessage() API returned error";
+      break;
+    } else {
+      if (msg.message == WD_SHUTDOWN) {
+        LOG(DEBUG) << "Shutdown message received";
+        new_session.DestroyWindow();
+        LOG(DEBUG) << "Returned from DestroyWindow()";
+        break;
+      } else {
+        ::TranslateMessage(&msg);
+        ::DispatchMessage(&msg);
+      }
+    }
   }
 
+  LOG(DEBUG) << "Exited IECommandExecutor thread message loop";
   ::CoUninitialize();
   delete session_context;
   return 0;
@@ -504,7 +508,7 @@ bool IECommandExecutor::IsAlertActive(BrowserHandle browser, HWND* alert_handle)
   if (dialog_handle != NULL) {
     // Found a window handle, make sure it's an actual alert,
     // and not a showModalDialog() window.
-    vector<char> window_class_name(34);
+    std::vector<char> window_class_name(34);
     ::GetClassNameA(dialog_handle, &window_class_name[0], 34);
     if (strcmp(ALERT_WINDOW_CLASS, &window_class_name[0]) == 0) {
       *alert_handle = dialog_handle;
@@ -597,20 +601,7 @@ void IECommandExecutor::AddManagedBrowser(BrowserHandle browser_wrapper) {
 int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   LOG(TRACE) << "Entering IECommandExecutor::CreateNewBrowser";
 
-  vector<char> port_buffer(10);
-  _itoa_s(this->port_, &port_buffer[0], 10, 10);
-  std::string port(&port_buffer[0]);
-
-  std::string initial_url = this->initial_browser_url_;
-  if (this->initial_browser_url_ == "") {
-    initial_url = "http://localhost:" + port + "/";
-  }
-
-  DWORD process_id = this->factory_.LaunchBrowserProcess(initial_url,
-                                                         this->ignore_protected_mode_settings_, 
-                                                         this->force_createprocess_api_,
-                                                         this->ie_switches_,
-                                                         error_message);
+  DWORD process_id = this->factory_->LaunchBrowserProcess(error_message);
   if (process_id == NULL) {
     LOG(WARN) << "Unable to launch browser, received NULL process ID";
     this->is_waiting_ = false;
@@ -621,10 +612,8 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   process_window_info.dwProcessId = process_id;
   process_window_info.hwndBrowser = NULL;
   process_window_info.pBrowser = NULL;
-  bool attached = this->factory_.AttachToBrowser(&process_window_info,
-                                                 this->browser_attach_timeout_,
-                                                 this->ignore_zoom_setting_,
-                                                 error_message);
+  bool attached = this->factory_->AttachToBrowser(&process_window_info,
+                                                  error_message);
   if (!attached) { 
     LOG(WARN) << "Unable to attach to browser COM object";
     this->is_waiting_ = false;
@@ -638,6 +627,7 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
     stopPersistentEventFiring();
   }
 
+  this->proxy_manager_->SetProxySettings(process_window_info.hwndBrowser);
   BrowserHandle wrapper(new Browser(process_window_info.pBrowser,
                                     process_window_info.hwndBrowser,
                                     this->m_hWnd));

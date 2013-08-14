@@ -107,7 +107,7 @@
       </DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;comsuppw.lib;wininet.lib;urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>NotSet</SubSystem>
@@ -137,7 +137,7 @@
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;comsuppw.lib;wininet.lib;urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>NotSet</SubSystem>
@@ -163,7 +163,7 @@
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;comsuppw.lib;wininet.lib;urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -190,7 +190,7 @@
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;comsuppw.lib;wininet.lib;urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -237,6 +237,7 @@
     <ClCompile Include="IEServer.cpp" />
     <ClCompile Include="IESession.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="RegistryUtilities.cpp" />
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -245,7 +246,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StringUtilities.cpp" />
+    <ClCompile Include="VariantUtilities.cpp" />
     <ClCompile Include="WebDriver.cpp" />
+    <ClCompile Include="ProxyManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Alert.h" />
@@ -271,10 +274,12 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="LocationInfo.h" />
     <ClInclude Include="messages.h" />
+    <ClInclude Include="RegistryUtilities.h" />
     <ClInclude Include="Script.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringUtilities.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="VariantUtilities.h" />
     <ClInclude Include="WebDriver.h" />
     <ClInclude Include="CommandHandlers\AcceptAlertCommandHandler.h" />
     <ClInclude Include="CommandHandlers\AddCookieCommandHandler.h" />
@@ -332,6 +337,7 @@
     <ClInclude Include="Generated\atoms.h" />
     <ClInclude Include="Generated\cookies.h" />
     <ClInclude Include="Generated\sizzle.h" />
+    <ClInclude Include="ProxyManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="IEDriver.def" />

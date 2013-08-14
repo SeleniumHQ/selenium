@@ -21,14 +21,10 @@ IEServer::IEServer(int port,
                    const std::string& host,
                    const std::string& log_level,
                    const std::string& log_file,
-                   const bool force_createprocess,
-                   const std::string& ie_switches,
                    const std::string& version) : Server(port, host, log_level, log_file) {
   LOG(TRACE) << "Entering IEServer::IEServer";
 
   this->version_ = version;
-  this->force_createprocess_ = force_createprocess;
-  this->ie_switches_ = ie_switches;
 }
 
 IEServer::~IEServer(void) {
@@ -39,8 +35,6 @@ SessionHandle IEServer::InitializeSession() {
   SessionHandle session_handle(new IESession());
   SessionParameters params;
   params.port = this->port();
-  params.force_createprocess_api = this->force_createprocess_;
-  params.ie_switches = this->ie_switches_;
   session_handle->Initialize(reinterpret_cast<void*>(&params));
   return session_handle;
 }
@@ -56,18 +50,9 @@ std::string IEServer::GetStatus() {
   os_version_info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   ::GetVersionEx(&os_version_info);
 
-  // Allocate only 2 characters for the major and minor versions
-  // and 5 characters for the build number (+1 for null char)
-  vector<char> major_buffer(3);
-  _itoa_s(os_version_info.dwMajorVersion, &major_buffer[0], 3, 10);
-  vector<char> minor_buffer(3);
-  _itoa_s(os_version_info.dwMinorVersion, &minor_buffer[0], 3, 10);
-  vector<char> build_buffer(6);
-  _itoa_s(os_version_info.dwBuildNumber, &build_buffer[0], 6, 10);
-
-  std::string major_version(&major_buffer[0]);
-  std::string minor_version(&minor_buffer[0]);
-  std::string build_version(&build_buffer[0]);
+  std::string major_version = std::to_string(static_cast<long long>(os_version_info.dwMajorVersion));
+  std::string minor_version = std::to_string(static_cast<long long>(os_version_info.dwMinorVersion));
+  std::string build_version = std::to_string(static_cast<long long>(os_version_info.dwBuildNumber));
   std::string os_version = major_version + "." + minor_version + "." + build_version;
 
   std::string arch = "x86";
@@ -94,9 +79,7 @@ std::string IEServer::GetStatus() {
 void IEServer::ShutDown() {
   LOG(TRACE) << "Entering IEServer::ShutDown";  
   DWORD process_id = ::GetCurrentProcessId();
-  vector<wchar_t> process_id_buffer(10);
-  _ltow_s(process_id, &process_id_buffer[0], process_id_buffer.size(), 10);
-  std::wstring process_id_string(&process_id_buffer[0]);
+  std::wstring process_id_string = std::to_wstring(static_cast<long long>(process_id));
   std::wstring event_name = IESERVER_SHUTDOWN_EVENT_NAME + process_id_string;
   HANDLE event_handle = ::OpenEvent(EVENT_MODIFY_STATE,
                                     FALSE, 

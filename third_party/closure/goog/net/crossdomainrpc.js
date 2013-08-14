@@ -66,7 +66,7 @@
 
 goog.provide('goog.net.CrossDomainRpc');
 
-goog.require('goog.Uri.QueryData');
+goog.require('goog.Uri');
 goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.events');
@@ -75,6 +75,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.json');
 goog.require('goog.net.EventType');
 goog.require('goog.net.HttpStatus');
+goog.require('goog.string');
 goog.require('goog.userAgent');
 
 
@@ -740,12 +741,12 @@ goog.net.CrossDomainRpc.sendResponse =
         dummyUri, numChunksToSend, isDataJson, status, headers);
   } else {
     var numChunksSent = 0;
-    function checkToCreateResponseInfo_() {
+    var checkToCreateResponseInfo_ = function() {
       if (++numChunksSent == numChunksToSend) {
         goog.net.CrossDomainRpc.createResponseInfo_(
             dummyUri, numChunksToSend, isDataJson, status, headers);
       }
-    }
+    };
 
     for (var i = 0; i < numChunksToSend; i++) {
       var chunkStart = i * chunkSize;

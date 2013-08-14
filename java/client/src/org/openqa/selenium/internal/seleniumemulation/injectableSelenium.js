@@ -126,7 +126,7 @@ var browserbot = {
         var screenY = 0;
 
         canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
-        if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { //IE
+        if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject && this.getInternetExplorerVersion() < 9) { //IE
             var evt = this.createEventObject(element, this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown);
             evt.detail = 0;
             evt.button = button ? button : 1;
@@ -336,6 +336,21 @@ var browserbot = {
                 altKeyDown,
                 shiftKeyDown,
                 metaKeyDown);
+    },
+
+    getInternetExplorerVersion : function() {
+        // Returns the version of Internet Explorer or a -1 (indicating the use of another browser).
+        // See http://msdn.microsoft.com/en-us/library/ms537509(v=vs.85).aspx
+        var rv = -1; // Return value assumes failure.
+        if (navigator.appName == 'Microsoft Internet Explorer') {
+            var ua = navigator.userAgent;
+            var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+            if (re.exec(ua) != null) {
+                rv = parseFloat( RegExp.$1 );
+            }
+        }
+        return rv;
     }
+
 };
 

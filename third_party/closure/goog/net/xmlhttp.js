@@ -40,7 +40,7 @@ goog.net.XmlHttp = function() {
  * @define {boolean} Whether to assume XMLHttpRequest exists. Setting this to
  *     true strips the ActiveX probing code.
  */
-goog.net.XmlHttp.ASSUME_NATIVE_XHR = false;
+goog.define('goog.net.XmlHttp.ASSUME_NATIVE_XHR', false);
 
 
 /**
@@ -123,8 +123,8 @@ goog.net.XmlHttp.factory_;
  */
 goog.net.XmlHttp.setFactory = function(factory, optionsFactory) {
   goog.net.XmlHttp.setGlobalFactory(new goog.net.WrapperXmlHttpFactory(
-      (/** @type {function() : !(XMLHttpRequest|GearsHttpRequest)} */ factory),
-      (/** @type {function() : !Object}*/ optionsFactory)));
+      /** @type {function() : !(XMLHttpRequest|GearsHttpRequest)} */ (factory),
+      /** @type {function() : !Object}*/ (optionsFactory)));
 };
 
 

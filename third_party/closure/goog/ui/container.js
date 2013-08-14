@@ -28,20 +28,19 @@ goog.provide('goog.ui.Container');
 goog.provide('goog.ui.Container.EventType');
 goog.provide('goog.ui.Container.Orientation');
 
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.State');
+goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.a11y');
-goog.require('goog.dom.a11y.State');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
-goog.require('goog.events.KeyHandler.EventType');
+goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
-goog.require('goog.ui.Component.Error');
-goog.require('goog.ui.Component.EventType');
-goog.require('goog.ui.Component.State');
 goog.require('goog.ui.ContainerRenderer');
 goog.require('goog.ui.Control');
+
 
 
 /**
@@ -520,8 +519,15 @@ goog.ui.Container.prototype.handleHighlightItem = function(e) {
       }
     }
   }
-  goog.dom.a11y.setState(this.getElement(),
-      goog.dom.a11y.State.ACTIVEDESCENDANT, e.target.getElement().id);
+
+  var element = this.getElement();
+  goog.asserts.assert(element,
+      'The DOM element for the container cannot be null.');
+  if (e.target.getElement() != null) {
+    goog.a11y.aria.setState(element,
+        goog.a11y.aria.State.ACTIVEDESCENDANT,
+        e.target.getElement().id);
+  }
 };
 
 
@@ -534,8 +540,12 @@ goog.ui.Container.prototype.handleUnHighlightItem = function(e) {
   if (e.target == this.getHighlighted()) {
     this.highlightedIndex_ = -1;
   }
-  goog.dom.a11y.setState(this.getElement(),
-      goog.dom.a11y.State.ACTIVEDESCENDANT, '');
+  var element = this.getElement();
+  goog.asserts.assert(element,
+      'The DOM element for the container cannot be null.');
+  // Setting certain ARIA attributes to empty strings is problematic.
+  // Just remove the attribute instead.
+  goog.a11y.aria.removeState(element, goog.a11y.aria.State.ACTIVEDESCENDANT);
 };
 
 
@@ -996,7 +1006,7 @@ goog.ui.Container.prototype.setVisible = function(visible, opt_force) {
 
     var elem = this.getElement();
     if (elem) {
-      goog.style.showElement(elem, visible);
+      goog.style.setElementShown(elem, visible);
       if (this.isFocusable()) {
         // Enable keyboard access only for enabled & visible containers.
         this.renderer_.enableTabIndex(this.getKeyEventTarget(),

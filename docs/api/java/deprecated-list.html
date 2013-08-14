@@ -65,7 +65,6 @@
 <ul>
 <li><a href="#interface">Deprecated Interfaces</a></li>
 <li><a href="#class">Deprecated Classes</a></li>
-<li><a href="#exception">Deprecated Exceptions</a></li>
 <li><a href="#field">Deprecated Fields</a></li>
 <li><a href="#method">Deprecated Methods</a></li>
 </ul>
@@ -103,31 +102,33 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/SeleneseCommandExecutor.html" title="class in org.openqa.selenium">org.openqa.selenium.SeleneseCommandExecutor</a>&nbsp;</td>
+<td class="colOne"><a href="org/openqa/selenium/iphone/IPhoneDriver.html" title="class in org.openqa.selenium.iphone">org.openqa.selenium.iphone.IPhoneDriver</a>
+<div class="block"><i>please use ios-driver or appium instead</i></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/iphone/IPhoneSimulatorBinary.html" title="class in org.openqa.selenium.iphone">org.openqa.selenium.iphone.IPhoneSimulatorBinary</a>
+<div class="block"><i>use ios-driver or appium instead</i></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/iphone/IPhoneSimulatorCommandExecutor.html" title="class in org.openqa.selenium.iphone">org.openqa.selenium.iphone.IPhoneSimulatorCommandExecutor</a>
+<div class="block"><i>use ios-driver or appium instead</i></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/iphone/IPhoneSimulatorDriver.html" title="class in org.openqa.selenium.iphone">org.openqa.selenium.iphone.IPhoneSimulatorDriver</a>
+<div class="block"><i>use ios-driver or appium instead</i></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/htmlunit/KeyboardModifiersState.html" title="class in org.openqa.selenium.htmlunit">org.openqa.selenium.htmlunit.KeyboardModifiersState</a>
+<div class="block"><i>This class will soon be marked private</i></div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><a href="com/thoughtworks/selenium/SeleneseTestCase.html" title="class in com.thoughtworks.selenium">com.thoughtworks.selenium.SeleneseTestCase</a>
 <div class="block"><i>Please consider updating to junit 4 or above</i></div>
-</td>
-</tr>
-</tbody>
-</table>
-</li>
-</ul>
-<a name="exception">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<table border="0" cellpadding="3" cellspacing="0" summary="Deprecated Exceptions table, listing deprecated exceptions, and an explanation">
-<caption><span>Deprecated Exceptions</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colOne" scope="col">Exceptions and Description</th>
-</tr>
-<tbody>
-<tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/XPathLookupException.html" title="class in org.openqa.selenium">org.openqa.selenium.XPathLookupException</a>
-<div class="block"><i>Use InvalidSelectorException instead</i></div>
 </td>
 </tr>
 </tbody>
@@ -152,7 +153,36 @@
 <td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#ASSUME_UNTRUSTED_ISSUER">org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER</a></td>
 </tr>
 <tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/safari/SafariDriver.html#CLEAN_SESSION_CAPABILITY">org.openqa.selenium.safari.SafariDriver.CLEAN_SESSION_CAPABILITY</a>
+<div class="block"><i>use <a href="org/openqa/selenium/safari/SafariOptions.html#setUseCleanSession(boolean)"><code>SafariOptions.setUseCleanSession(boolean)</code></a> instead.</i></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/safari/SafariDriver.html#DATA_DIR_CAPABILITY">org.openqa.selenium.safari.SafariDriver.DATA_DIR_CAPABILITY</a>
+<div class="block"><i>use <a href="org/openqa/selenium/safari/SafariOptions.html#setDataDir(java.io.File)"><code>SafariOptions.setDataDir(java.io.File)</code></a> instead.</i></div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/remote/CapabilityType.html#ENABLE_PERSISTENT_HOVERING">org.openqa.selenium.remote.CapabilityType.ENABLE_PERSISTENT_HOVERING</a></td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#IE_SET_PROXY_BY_SERVER">org.openqa.selenium.ie.InternetExplorerDriver.IE_SET_PROXY_BY_SERVER</a>
+<div class="block"><i>please set this option as True and allow IEDriverServer sets up proxy.
+ In next releases it will be set to True by default.
+
+ Capability that defines used proxy setter. Currently it's False by default.
+
+ False means WindowsProxyManager will be used for setting proxy settings.
+ True means IEDriverServer will be used for setting proxy settings.
+
+ Be note that using both variants in concurrent drivers at the same node
+ may lead to undefined behaviour.</i></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/safari/SafariDriver.html#NO_INSTALL_EXTENSION_CAPABILITY">org.openqa.selenium.safari.SafariDriver.NO_INSTALL_EXTENSION_CAPABILITY</a>
+<div class="block"><i>use <a href="org/openqa/selenium/safari/SafariOptions.html#setSkipExtensionInstallation(boolean)"><code>SafariOptions.setSkipExtensionInstallation(boolean)</code></a> instead.</i></div>
+</td>
 </tr>
 </tbody>
 </table>
@@ -175,46 +205,21 @@
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/UnhandledAlertException.html#getAlert()">org.openqa.selenium.UnhandledAlertException.getAlert()</a>
-<div class="block"><i>To be removed in 2.31, use <a href="org/openqa/selenium/UnhandledAlertException.html#getAlertText()"><code>UnhandledAlertException.getAlertText()</code></a> instead.</i></div>
+<td class="colOne"><a href="org/openqa/selenium/htmlunit/HtmlUnitKeyboard.html#performSingleKeyAction(com.gargoylesoftware.htmlunit.html.HtmlElement, java.lang.CharSequence, java.lang.String)">org.openqa.selenium.htmlunit.HtmlUnitKeyboard.performSingleKeyAction(HtmlElement, CharSequence, String)</a>
+<div class="block"><i>Visibility will soon be reduced.</i></div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/interactions/internal/Coordinates.html#getLocationInDOM()">org.openqa.selenium.interactions.internal.Coordinates.getLocationInDOM()</a>
-<div class="block"><i>To be removed in 2.31. Use <a href="org/openqa/selenium/interactions/internal/Coordinates.html#onPage()"><code>Coordinates.onPage()</code></a> instead</i></div>
+<td class="colOne"><a href="org/openqa/selenium/htmlunit/HtmlUnitWebElement.html#sendKeyDownEvent(java.lang.CharSequence)">org.openqa.selenium.htmlunit.HtmlUnitWebElement.sendKeyDownEvent(CharSequence)</a>
+<div class="block"><i>Visibility will soon be reduced.</i></div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/interactions/internal/Coordinates.html#getLocationInViewPort()">org.openqa.selenium.interactions.internal.Coordinates.getLocationInViewPort()</a>
-<div class="block"><i>To be removed in 2.31. Use <a href="org/openqa/selenium/interactions/internal/Coordinates.html#inViewPort()"><code>Coordinates.inViewPort()</code></a> instead</i></div>
+<td class="colOne"><a href="org/openqa/selenium/htmlunit/HtmlUnitWebElement.html#sendKeyUpEvent(java.lang.CharSequence)">org.openqa.selenium.htmlunit.HtmlUnitWebElement.sendKeyUpEvent(CharSequence)</a>
+<div class="block"><i>Visibility will soon be reduced.</i></div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/interactions/internal/Coordinates.html#getLocationOnScreen()">org.openqa.selenium.interactions.internal.Coordinates.getLocationOnScreen()</a>
-<div class="block"><i>To be removed in 2.31. Use <a href="org/openqa/selenium/interactions/internal/Coordinates.html#onScreen()"><code>Coordinates.onScreen()</code></a> instead</i></div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/android/library/AndroidWebElement.html#getLocationOnScreenOnceScrolledIntoView()">org.openqa.selenium.android.library.AndroidWebElement.getLocationOnScreenOnceScrolledIntoView()</a>
-<div class="block"><i>To be removed in 2.31. Use <a href="org/openqa/selenium/android/library/AndroidWebElement.html#getCoordinates()"><code>AndroidWebElement.getCoordinates()</code></a> instead</i></div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/htmlunit/HtmlUnitWebElement.html#getLocationOnScreenOnceScrolledIntoView()">org.openqa.selenium.htmlunit.HtmlUnitWebElement.getLocationOnScreenOnceScrolledIntoView()</a>
-<div class="block"><i>To be removed in 2.31. Use <a href="org/openqa/selenium/htmlunit/HtmlUnitWebElement.html#getCoordinates()"><code>HtmlUnitWebElement.getCoordinates()</code></a> instead</i></div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/internal/Locatable.html#getLocationOnScreenOnceScrolledIntoView()">org.openqa.selenium.internal.Locatable.getLocationOnScreenOnceScrolledIntoView()</a>
-<div class="block"><i>To be removed in 2.31. Use <a href="org/openqa/selenium/internal/Locatable.html#getCoordinates()"><code>Locatable.getCoordinates()</code></a> instead</i></div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/remote/RemoteWebElement.html#getLocationOnScreenOnceScrolledIntoView()">org.openqa.selenium.remote.RemoteWebElement.getLocationOnScreenOnceScrolledIntoView()</a>
-<div class="block"><i>To be removed in 2.31. Use <a href="org/openqa/selenium/remote/RemoteWebElement.html#getCoordinates()"><code>RemoteWebElement.getCoordinates()</code></a> instead</i></div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setProxyPreferences(org.openqa.selenium.Proxy)">org.openqa.selenium.firefox.FirefoxProfile.setProxyPreferences(Proxy)</a>
 <div class="block"><i>This is now handled by the driver itself.</i></div>
 </td>

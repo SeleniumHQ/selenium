@@ -16,10 +16,11 @@ limitations under the License.
 
 package org.openqa.selenium.support.ui;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-
-import org.openqa.selenium.testing.MockTestBase;
+import org.jmock.Expectations;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
@@ -27,17 +28,17 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
-public class WebDriverWaitTest extends MockTestBase {
+public class WebDriverWaitTest {
 
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
   private WebDriver mockDriver;
 
   @Before
   public void createMocks() {
-    mockDriver = mock(WebDriver.class);
+    mockDriver = mockery.mock(WebDriver.class);
   }
 
   @Test
@@ -56,13 +57,13 @@ public class WebDriverWaitTest extends MockTestBase {
   @SuppressWarnings("unchecked")
   @Test
   public void shouldSilentlyCaptureNoSuchElementExceptions() {
-    final WebElement element = mock(WebElement.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
-    final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
-    checking(new Expectations() {{
-      one(condition).apply(mockDriver);
+    final ExpectedCondition<WebElement> condition = mockery.mock(ExpectedCondition.class);
+    mockery.checking(new Expectations() {{
+      oneOf(condition).apply(mockDriver);
       will(throwException(new NoSuchElementException("foo")));
-      one(condition).apply(mockDriver);
+      oneOf(condition).apply(mockDriver);
       will(returnValue(element));
     }});
 
@@ -74,12 +75,11 @@ public class WebDriverWaitTest extends MockTestBase {
   @SuppressWarnings("unchecked")
   @Test
   public void shouldSilentlyCaptureNoSuchFrameExceptions() {
-
-    final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
-    checking(new Expectations() {{
-      one(condition).apply(mockDriver);
+    final ExpectedCondition<WebElement> condition = mockery.mock(ExpectedCondition.class);
+    mockery.checking(new Expectations() {{
+      oneOf(condition).apply(mockDriver);
       will(throwException(new NoSuchFrameException("foo")));
-      one(condition).apply(mockDriver);
+      oneOf(condition).apply(mockDriver);
       will(returnValue(true));
     }});
 
@@ -92,11 +92,11 @@ public class WebDriverWaitTest extends MockTestBase {
   @Test
   public void shouldSilentlyCaptureNoSuchWindowExceptions() {
 
-    final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
-    checking(new Expectations() {{
-      one(condition).apply(mockDriver);
+    final ExpectedCondition<WebElement> condition = mockery.mock(ExpectedCondition.class);
+    mockery.checking(new Expectations() {{
+      oneOf(condition).apply(mockDriver);
       will(throwException(new NoSuchWindowException("foo")));
-      one(condition).apply(mockDriver);
+      oneOf(condition).apply(mockDriver);
       will(returnValue(true));
     }});
 

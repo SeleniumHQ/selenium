@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
@@ -61,7 +62,7 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, IE, SAFARI, OPERA, OPERA_MOBILE},
+  @Ignore(value = {ANDROID, CHROME, IE, SAFARI, OPERA, OPERA_MOBILE, MARIONETTE},
           reason = "Chrome, Safari: returns XML content formatted for display as HTML document"
                    + "Opera: includes XML doctype"
                    + "Others: untested")
@@ -88,6 +89,7 @@ public class MiscTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testClickingShouldNotTrampleWOrHInGlobalScope() throws Throwable {
     driver.get(appServer.whereIs("globalscope.html"));
     String[] vars = new String[]{"w", "h"};

@@ -23,16 +23,19 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.FieldDecorator;
-import org.openqa.selenium.testing.MockTestBase;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
-public class PageFactoryTest extends MockTestBase {
+public class PageFactoryTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
   private WebDriver driver = null;
 
@@ -87,7 +90,7 @@ public class PageFactoryTest extends MockTestBase {
 
   @Test
   public void shouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
-    driver = mock(WebDriver.class);
+    driver = mockery.mock(WebDriver.class);
 
     ConstructedPage page = PageFactory.initElements(driver, ConstructedPage.class);
 
@@ -98,7 +101,7 @@ public class PageFactoryTest extends MockTestBase {
   public void shouldNotDecorateFieldsWhenTheFieldDecoratorReturnsNull() {
     PublicPage page = new PublicPage();
     // Assign not-null values
-    WebElement q = mock(WebElement.class);
+    WebElement q = mockery.mock(WebElement.class);
     page.q = q;
 
     PageFactory.initElements(new FieldDecorator() {

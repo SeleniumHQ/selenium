@@ -23,17 +23,17 @@
 goog.provide('goog.ui.PlainTextSpellChecker');
 
 goog.require('goog.Timer');
+goog.require('goog.a11y.aria');
+goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.a11y');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler');
-goog.require('goog.events.KeyHandler.EventType');
+goog.require('goog.spell.SpellCheck');
 goog.require('goog.style');
 goog.require('goog.ui.AbstractSpellChecker');
-goog.require('goog.ui.AbstractSpellChecker.AsyncResult');
-goog.require('goog.ui.Component.EventType');
+goog.require('goog.ui.Component');
 goog.require('goog.userAgent');
 
 
@@ -90,7 +90,7 @@ goog.ui.PlainTextSpellChecker.prototype.invalidWordClassName =
  * @type {string}
  */
 goog.ui.PlainTextSpellChecker.prototype.correctedWordClassName =
-  goog.getCssName('goog-spellcheck-correctedword');
+    goog.getCssName('goog-spellcheck-correctedword');
 
 
 /**
@@ -205,7 +205,7 @@ goog.ui.PlainTextSpellChecker.prototype.check = function() {
   if (this.getElement().parentNode != this.overlay_.parentNode) {
     this.getElement().parentNode.appendChild(this.overlay_);
   }
-  goog.style.showElement(this.overlay_, false);
+  goog.style.setElementShown(this.overlay_, false);
 
   this.preChargeDictionary_(text);
 };
@@ -218,8 +218,8 @@ goog.ui.PlainTextSpellChecker.prototype.check = function() {
 goog.ui.PlainTextSpellChecker.prototype.finishCheck_ = function() {
   // Show correction UI.
   this.positionOverlay_();
-  goog.style.showElement(this.getElement(), false);
-  goog.style.showElement(this.overlay_, true);
+  goog.style.setElementShown(this.getElement(), false);
+  goog.style.setElementShown(this.overlay_, true);
 
   var eh = this.eventHandler_;
   eh.listen(this.overlay_, goog.events.EventType.CLICK, this.onWordClick_);
@@ -243,7 +243,7 @@ goog.ui.PlainTextSpellChecker.prototype.finishCheck_ = function() {
  * @private
  */
 goog.ui.PlainTextSpellChecker.prototype.preChargeDictionary_ = function(text) {
-  this.eventHandler_.listen(this.handler_,
+  this.eventHandler_.listen(this.spellCheck,
       goog.spell.SpellCheck.EventType.READY, this.onDictionaryCharged_, true);
 
   this.populateDictionary(text, this.dictionaryPreScanSize_);
@@ -258,7 +258,7 @@ goog.ui.PlainTextSpellChecker.prototype.preChargeDictionary_ = function(text) {
  */
 goog.ui.PlainTextSpellChecker.prototype.onDictionaryCharged_ = function(e) {
   e.stopPropagation();
-  this.eventHandler_.unlisten(this.handler_,
+  this.eventHandler_.unlisten(this.spellCheck,
       goog.spell.SpellCheck.EventType.READY, this.onDictionaryCharged_, true);
   this.checkAsync_(this.getElement().value);
 };
@@ -383,8 +383,8 @@ goog.ui.PlainTextSpellChecker.prototype.continueAsync_ = function() {
  * @override
  */
 goog.ui.PlainTextSpellChecker.prototype.processWord = function(node, word,
-                                                                status) {
-  node.appendChild(this.createWordElement_(word, status));
+    status) {
+  node.appendChild(this.createWordElement(word, status));
 };
 
 
@@ -419,8 +419,8 @@ goog.ui.PlainTextSpellChecker.prototype.resume = function() {
 
   goog.ui.PlainTextSpellChecker.superClass_.resume.call(this);
 
-  goog.style.showElement(this.overlay_, false);
-  goog.style.showElement(this.getElement(), true);
+  goog.style.setElementShown(this.overlay_, false);
+  goog.style.setElementShown(this.getElement(), true);
   this.getElement().readOnly = false;
 
   if (wasVisible) {
@@ -485,8 +485,8 @@ goog.ui.PlainTextSpellChecker.prototype.onWindowResize_ = function(event) {
 
   if (size.width != this.winSize_.width ||
       size.height != this.winSize_.height) {
-    goog.style.showElement(this.overlay_, false);
-    goog.style.showElement(this.getElement(), true);
+    goog.style.setElementShown(this.overlay_, false);
+    goog.style.setElementShown(this.getElement(), true);
 
     // IE requires a slight delay, allowing the resize operation to take effect.
     if (goog.userAgent.IE) {
@@ -506,9 +506,9 @@ goog.ui.PlainTextSpellChecker.prototype.onWindowResize_ = function(event) {
  * @private
  */
 goog.ui.PlainTextSpellChecker.prototype.resizeOverlay_ = function() {
-   this.positionOverlay_();
-   goog.style.showElement(this.getElement(), false);
-   goog.style.showElement(this.overlay_, true);
+  this.positionOverlay_();
+  goog.style.setElementShown(this.getElement(), false);
+  goog.style.setElementShown(this.overlay_, true);
 };
 
 
@@ -539,8 +539,10 @@ goog.ui.PlainTextSpellChecker.prototype.disposeInternal = function() {
  * @private
  */
 goog.ui.PlainTextSpellChecker.prototype.initAccessibility_ = function() {
-  goog.dom.a11y.setRole(this.overlay_, 'region');
-  goog.dom.a11y.setState(this.overlay_, 'live', 'assertive');
+  goog.asserts.assert(this.overlay_,
+      'The plain text spell checker DOM element cannot be null.');
+  goog.a11y.aria.setRole(this.overlay_, 'region');
+  goog.a11y.aria.setState(this.overlay_, 'live', 'assertive');
   this.overlay_.tabIndex = 0;
 
   /** @desc Title for Spell Checker's overlay.*/

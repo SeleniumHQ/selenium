@@ -28,6 +28,7 @@ goog.addDependency(
     // the files that actually goog.provide them are ever pulled into the
     // dependency graph.
     [
+      'goog.debug.LogRecord',
       'goog.testing.JsUnitException'
     ],
     // And symbols we require, which is always empty here.

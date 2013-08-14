@@ -32,6 +32,8 @@ import java.util.regex.Pattern;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -39,14 +41,14 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.assumeFalse;
 
 @Ignore(
-    value = {ANDROID, HTMLUNIT, IPHONE, SAFARI, OPERA_MOBILE},
+    value = {ANDROID, HTMLUNIT, IPHONE, SAFARI, OPERA_MOBILE, MARIONETTE},
     reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers" +
              "Safari: not implemented (issue 4136)",
     issues = {4136})
@@ -54,11 +56,8 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  public void testDragAndDrop() {
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      System.out.println("Skipping testDragAndDrop on Mac: See issue 2281.");
-      return;
-    }
+  public void testDragAndDropRelative() {
+    assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
     assumeFalse(Browser.detect() == Browser.opera &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
@@ -104,10 +103,8 @@ public class DragAndDropTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testElementInDiv() {
-    if (Platform.getCurrent().is(Platform.MAC)) {
-      System.out.println("Skipping testElementInDiv on Mac: See issue 2281.");
-      return;
-    }
+    assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
+
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
     Point expectedLocation = img.getLocation();
@@ -119,6 +116,8 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Ignore({CHROME, IE, OPERA, PHANTOMJS})
   @Test
   public void testDragTooFar() {
+    assumeTrue(TestUtilities.isNativeEventsEnabled(driver));
+
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
 

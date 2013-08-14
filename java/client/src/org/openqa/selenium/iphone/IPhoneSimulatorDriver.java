@@ -22,7 +22,10 @@ import java.net.URL;
 
 /**
  * @author jmleyba@gmail.com (Jason Leyba)
+ *
+ * @deprecated use ios-driver or appium instead
  */
+@Deprecated
 public class IPhoneSimulatorDriver extends IPhoneDriver {
 
   public IPhoneSimulatorDriver(URL iWebDriverUrl, IPhoneSimulatorBinary iphoneSimulator)

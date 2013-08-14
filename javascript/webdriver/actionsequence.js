@@ -45,9 +45,7 @@ webdriver.ActionSequence = function(driver) {
   /** @private {!webdriver.WebDriver} */
   this.driver_ = driver;
 
-  /**
-   * @private {!Array.<{description: string, command: !webdriver.Command}>}
-   */
+  /** @private {!Array.<{description: string, command: !webdriver.Command}>} */
   this.actions_ = [];
 };
 
@@ -107,7 +105,7 @@ webdriver.ActionSequence.prototype.mouseMove = function(location, opt_offset) {
   } else {
     // The interactions API expect the element ID to be encoded as a simple
     // string, not the usual JSON object.
-    var id = (/** @type {!webdriver.WebElement} */location).toWireValue().
+    var id = /** @type {!webdriver.WebElement} */ (location).toWireValue().
         then(function(value) {
           return value['ELEMENT'];
         });
@@ -144,7 +142,8 @@ webdriver.ActionSequence.prototype.scheduleMouseAction_ = function(
     button = opt_elementOrButton;
   } else {
     if (opt_elementOrButton) {
-      this.mouseMove((/** @type {!webdriver.WebElement} */opt_elementOrButton));
+      this.mouseMove(
+          /** @type {!webdriver.WebElement} */ (opt_elementOrButton));
     }
     button = goog.isDef(opt_button) ? opt_button : webdriver.Button.LEFT;
   }

@@ -22,7 +22,7 @@ limitations under the License.
 goog.provide('core.text');
 
 
-goog.require('bot.dom');
+goog.require('bot');
 goog.require('bot.userAgent');
 goog.require('core.patternMatcher');
 goog.require('goog.dom');
@@ -41,8 +41,8 @@ goog.require('goog.userAgent');
  * @private
  */
 core.text.getTextContent_ = function(element, preformatted) {
-  if (element.style && (element.style.visibility == 'hidden'
-      || element.style.display == 'none')) {
+  if (element.style && (element.style.visibility == 'hidden' ||
+      element.style.display == 'none')) {
     return '';
   }
 
@@ -55,7 +55,8 @@ core.text.getTextContent_ = function(element, preformatted) {
     }
     return text.replace(/&nbsp/, ' ');
   }
-  if (element.nodeType == goog.dom.NodeType.ELEMENT && element.nodeName != 'SCRIPT') {
+  if (element.nodeType == goog.dom.NodeType.ELEMENT &&
+      element.nodeName != 'SCRIPT') {
     var childrenPreformatted = preformatted || (element.tagName == 'PRE');
     text = '';
     for (var i = 0; i < element.childNodes.length; i++) {
@@ -91,7 +92,8 @@ core.text.getTextContent_ = function(element, preformatted) {
  * line endings for Mac, Windows or UNIX.
  *
  * @param {string} text The text to normalize.
- * @return {string} The converted text, with all line endings replaced with '\n'.
+ * @return {string} The converted text, with all line endings replaced
+ *     with '\n'.
  * @private
  */
 core.text.normalizeNewlines_ = function(text) {
@@ -103,7 +105,8 @@ core.text.normalizeNewlines_ = function(text) {
  * @param {string} text The text to perform the replacement on.
  * @param {string} oldText The string to replace.
  * @param {string} newText The replacement text.
- * @return 'text' with all occurances of 'oldText' replaced by 'newText'.
+ * @return {string} 'text' with all occurances of 'oldText' replaced by
+ *     'newText'.
  * @private
  */
 core.text.replaceAll_ = function(text, oldText, newText) {
@@ -178,7 +181,8 @@ core.text.getBodyText = function() {
 
 
 /**
- * Verifies that the specified text pattern appears somewhere on the rendered page shown to the user.
+ * Verifies that the specified text pattern appears somewhere on the rendered
+ * page shown to the user.
  *
  * @param {string} pattern A <a href="#patterns">pattern</a> to match with the
  *    text of the page.
@@ -198,6 +202,11 @@ core.text.isTextPresent = function(pattern) {
 };
 
 
+/**
+ * @param {string} locator The link text to search for.
+ * @param {Document=} opt_doc The document to search in.
+ * @return {Element} The located element or {@code null}.
+ */
 core.text.linkLocator = function(locator, opt_doc) {
   var doc = opt_doc || goog.dom.getOwnerDocument(bot.getWindow());
 

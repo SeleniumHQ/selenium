@@ -26,9 +26,11 @@ goog.require('goog.array');
 goog.require('goog.debug.Logger');
 goog.require('goog.string');
 goog.require('safaridriver.alert');
+goog.require('safaridriver.extension.LogDb');
 goog.require('safaridriver.extension.Tab');
 goog.require('safaridriver.message.Alert');
 goog.require('safaridriver.message.Load');
+goog.require('webdriver.logging');
 goog.require('webdriver.promise');
 
 
@@ -38,6 +40,29 @@ goog.require('webdriver.promise');
  */
 safaridriver.extension.commands.LOG_ = goog.debug.Logger.getLogger(
     'safaridriver.extension.commands');
+
+
+/**
+ * Creates a "new" session. The SafariDriver only supports a single session,
+ * but will process new session commands for configuration changes from the
+ * provided capabilities (e.g. logging).
+ * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
+ * @return {!Object.<*>} The session capabilities.
+ */
+safaridriver.extension.commands.newSession = function(session, command) {
+  var caps = command.getParameter('desiredCapabilities');
+  var loggingPrefs = caps['loggingPrefs'];
+  if (loggingPrefs) {
+    for (var type in loggingPrefs) {
+      if (loggingPrefs.hasOwnProperty(type)) {
+        loggingPrefs[type] = webdriver.logging.getLevel(loggingPrefs[type]);
+      }
+    }
+    safaridriver.extension.LogDb.getInstance().setPreferences(loggingPrefs);
+  }
+  return session.getCapabilities();
+};
 
 
 /**
@@ -468,4 +493,23 @@ safaridriver.extension.commands.handleNoAlertsPresent = function() {
           'from handing when an alert is opened, they are always immediately ' +
           'dismissed. For more information, see ' +
           'http://code.google.com/p/selenium/issues/detail?id=3862');
+};
+
+
+/** @return {!Array.<string>} The available log types. */
+safaridriver.extension.commands.getAvailableLogTypes = function() {
+  return [webdriver.logging.Type.BROWSER, webdriver.logging.Type.DRIVER];
+};
+
+
+/**
+ * @param {!safaridriver.extension.Session} session The session object.
+ * @param {!safaridriver.Command} command The command object.
+ * @return {!webdriver.promise.Promise} A promise that will be resolved with
+ *     the command response.
+ */
+safaridriver.extension.commands.getLogs = function(session, command) {
+  var type = /** @type {string} */ (command.getParameter('type'));
+  var pruneEntries = true;
+  return safaridriver.extension.LogDb.getInstance().get(type, pruneEntries);
 };

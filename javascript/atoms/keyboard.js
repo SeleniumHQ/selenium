@@ -72,7 +72,6 @@ goog.inherits(bot.Keyboard, bot.Device);
 /**
  * Maps characters to (key,boolean) pairs, where the key generates the
  * character and the boolean is true when the shift must be pressed.
- *
  * @private {!Object.<string, {key: !bot.Keyboard.Key, shift: boolean}>}
  * @const
  */
@@ -327,6 +326,7 @@ bot.Keyboard.MODIFIERS = [
   bot.Keyboard.Keys.SHIFT
 ];
 
+
 /**
  * Map of modifier to key.
  * @private {!goog.structs.Map.<!bot.Device.Modifier, !bot.Keyboard.Key>}
@@ -353,7 +353,7 @@ bot.Keyboard.MODIFIER_TO_KEY_MAP_ = (function() {
 bot.Keyboard.KEY_TO_MODIFIER_ = (function(modifiersMap) {
   var keyToModifierMap = new goog.structs.Map();
   goog.array.forEach(modifiersMap.getKeys(), function(m) {
-      keyToModifierMap.set(modifiersMap.get(m).code, m);
+    keyToModifierMap.set(modifiersMap.get(m).code, m);
   });
 
   return keyToModifierMap;
@@ -363,8 +363,8 @@ bot.Keyboard.KEY_TO_MODIFIER_ = (function(modifiersMap) {
 /**
  * Set the modifier state if the provided key is one, otherwise just add
  * to the list of pressed keys.
- * @param {bot.Keyboard.Key} key
- * @param {boolean} isPressed
+ * @param {bot.Keyboard.Key} key The key to update.
+ * @param {boolean} isPressed Whether the key is pressed.
  * @private
  */
 bot.Keyboard.prototype.setKeyPressed_ = function(key, isPressed) {
@@ -577,9 +577,8 @@ bot.Keyboard.prototype.getChar_ = function(key) {
 /**
  * Whether firing a keypress event causes text to be edited without any
  * additional logic to surgically apply the edit.
- *
- * @const
  * @private {boolean}
+ * @const
  */
 bot.Keyboard.KEYPRESS_EDITS_TEXT_ = goog.userAgent.GECKO &&
     !bot.userAgent.isEngineVersion(12);
@@ -620,7 +619,7 @@ bot.Keyboard.prototype.updateOnEnter_ = function() {
     this.fireHtmlEvent(bot.events.EventType.TEXTINPUT);
   }
   if (bot.dom.isElement(this.getElement(), goog.dom.TagName.TEXTAREA)) {
-    var newPos = goog.dom.selection.getStart(this.getElement()) + 
+    var newPos = goog.dom.selection.getStart(this.getElement()) +
         bot.Keyboard.NEW_LINE_.length;
     goog.dom.selection.setText(this.getElement(), bot.Keyboard.NEW_LINE_);
     goog.dom.selection.setStart(this.getElement(), newPos);
@@ -760,7 +759,7 @@ bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
       goog.dom.selection.setStart(element, 0);
       // If current position is at the end of the selection, typing home
       // changes the selection to begin at the beginning of the text, running
-      // to the where the current selection begins. 
+      // to the where the current selection begins.
       var endPos = this.currentPos_ == start ? end : start;
       // On IE, changing goog.dom.selection.setStart also changes the end.
       goog.dom.selection.setEnd(element, endPos);
@@ -772,8 +771,8 @@ bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
     if (this.isPressed(bot.Keyboard.Keys.SHIFT)) {
       if (this.currentPos_ == start) {
         // Current position is at the beginning of the selection. Typing end
-        // changes the selection to begin where the current selection ends, 
-        // running to the end of the text. 
+        // changes the selection to begin where the current selection ends,
+        // running to the end of the text.
         goog.dom.selection.setStart(element, end);
       }
       goog.dom.selection.setEnd(element, element.value.length);
@@ -784,8 +783,9 @@ bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
   }
 };
 
+
 /**
-* @param {number} pos New position of the cursor
+* @param {number} pos New position of the cursor.
 * @private
 */
 bot.Keyboard.prototype.updateCurrentPos_ = function(pos) {
@@ -843,10 +843,10 @@ bot.Keyboard.prototype.moveCursor = function(element) {
 /**
  * Serialize the current state of the keyboard.
  *
- * @return {{pressed: !Array.<!bot.Keyboard.Key>, currentPos: number}} The 
+ * @return {{pressed: !Array.<!bot.Keyboard.Key>, currentPos: number}} The
  *     current keyboard state.
  */
-bot.Keyboard.prototype.getState = function () {
+bot.Keyboard.prototype.getState = function() {
   // Need to use quoted literals here, so the compiler will not rename the
   // properties of the emitted object. When the object is created via the
   // "constructor", we will look for these *specific* properties. Everywhere
@@ -857,6 +857,7 @@ bot.Keyboard.prototype.getState = function () {
     'currentPos': this.currentPos_
   };
 };
+
 
 /**
  * Returns the state of the modifier keys, to be shared with other input

@@ -32,7 +32,6 @@ goog.require('bot.userAgent');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
-goog.require('goog.style');
 goog.require('goog.userAgent');
 
 
@@ -42,12 +41,13 @@ goog.require('goog.userAgent');
  * supports having one button pressed at a time.
  * @param {bot.Mouse.State=} opt_state The mouse's initial state.
  * @param {bot.Device.ModifiersState=} opt_modifiersState State of the keyboard.
+ * @param {bot.Device.EventEmitter=} opt_eventEmitter An object that should be used to fire events.
  *
  * @constructor
  * @extends {bot.Device}
  */
-bot.Mouse = function(opt_state, opt_modifiersState) {
-  goog.base(this, opt_modifiersState);
+bot.Mouse = function(opt_state, opt_modifiersState, opt_eventEmitter) {
+  goog.base(this, opt_modifiersState, opt_eventEmitter);
 
   /** @private {?bot.Mouse.Button} */
   this.buttonPressed_ = null;
@@ -63,7 +63,6 @@ bot.Mouse = function(opt_state, opt_modifiersState) {
 
   /**
    * Whether this Mouse has ever explicitly interacted with any element.
-   *
    * @private {boolean}
    */
   this.hasEverInteracted_ = false;
@@ -85,7 +84,7 @@ bot.Mouse = function(opt_state, opt_modifiersState) {
 
     try {
       if (bot.dom.isElement(opt_state.element)) {
-        this.setElement((/** @type {!Element} */opt_state.element));
+        this.setElement(/** @type {!Element} */ (opt_state.element));
       }
     } catch (ignored) {
       this.buttonPressed_ = null;
@@ -120,7 +119,6 @@ bot.Mouse.Button = {
 
 /**
  * Index to indicate no button pressed in bot.Mouse.MOUSE_BUTTON_VALUE_MAP_.
- *
  * @private {number}
  * @const
  */
@@ -132,11 +130,10 @@ bot.Mouse.NO_BUTTON_VALUE_INDEX_ = 3;
  * The array is indexed by the bot.Mouse.Button values. It encodes this table,
  * where each cell contains the (left/middle/right/none) button values.
  *               click/    mouseup/   mouseout/  mousemove  contextmenu
- *               dblclick/ mousedown  mouseover
+ *               dblclick  mousedown  mouseover
  * IE_DOC_PRE9   0 0 0 X   1 4 2 X    0 0 0 0    1 4 2 0    X X 0 X
  * WEBKIT/IE9    0 1 2 X   0 1 2 X    0 1 2 0    0 1 2 0    X X 2 X
  * GECKO/OPERA   0 1 2 X   0 1 2 X    0 0 0 0    0 0 0 0    X X 2 X
- *
  * @private {!Object.<bot.events.EventType, !Array.<?number>>}
  * @const
  */
@@ -190,13 +187,15 @@ bot.Mouse.MOUSE_BUTTON_VALUE_MAP_ = (function() {
  * Maps mouse events to corresponding MSPointer event.
  * @private {!Object.<bot.events.EventType, bot.events.EventType>}
  */
-bot.Mouse.MOUSE_EVENT_MAP_ = {
-  mousedown: bot.events.EventType.MSPOINTERDOWN,
-  mousemove: bot.events.EventType.MSPOINTERMOVE,
-  mouseout: bot.events.EventType.MSPOINTEROUT,
-  mouseover: bot.events.EventType.MSPOINTEROVER,
-  mouseup: bot.events.EventType.MSPOINTERUP
-};
+bot.Mouse.MOUSE_EVENT_MAP_ = (function() {
+  var map = {};
+  map[bot.events.EventType.MOUSEDOWN] = bot.events.EventType.MSPOINTERDOWN;
+  map[bot.events.EventType.MOUSEMOVE] = bot.events.EventType.MSPOINTERMOVE;
+  map[bot.events.EventType.MOUSEOUT] = bot.events.EventType.MSPOINTEROUT;
+  map[bot.events.EventType.MOUSEOVER] = bot.events.EventType.MSPOINTEROVER;
+  map[bot.events.EventType.MOUSEUP] = bot.events.EventType.MSPOINTERUP;
+  return map;
+})();
 
 
 /**
@@ -251,6 +250,13 @@ bot.Mouse.prototype.pressButton = function(button) {
 
   var performFocus = this.fireMousedown_();
   if (performFocus) {
+    if (bot.userAgent.IE_DOC_10 &&
+        this.buttonPressed_ == bot.Mouse.Button.LEFT &&
+        bot.dom.isElement(this.elementPressed_, goog.dom.TagName.OPTION)) {
+      this.fireMSPointerEvent(bot.events.EventType.MSGOTPOINTERCAPTURE,
+          this.clientXY_, 0, bot.Device.MOUSE_MS_POINTER_ID,
+          MSPointerEvent.MSPOINTER_TYPE_MOUSE, true);
+    }
     this.focusOnElement();
   }
 };
@@ -266,6 +272,7 @@ bot.Mouse.prototype.releaseButton = function() {
         'Cannot release a button when no button is pressed.');
   }
 
+  this.maybeToggleOption();
   this.fireMouseEvent_(bot.events.EventType.MOUSEUP);
 
   // TODO(user): Middle button can also trigger click.
@@ -274,11 +281,18 @@ bot.Mouse.prototype.releaseButton = function() {
     this.clickElement(this.clientXY_,
         this.getButtonValue_(bot.events.EventType.CLICK));
     this.maybeDoubleClickElement_();
-
+    if (bot.userAgent.IE_DOC_10 &&
+        this.buttonPressed_ == bot.Mouse.Button.LEFT &&
+        bot.dom.isElement(this.elementPressed_, goog.dom.TagName.OPTION)) {
+      this.fireMSPointerEvent(bot.events.EventType.MSLOSTPOINTERCAPTURE,
+          new goog.math.Coordinate(0, 0), 0, bot.Device.MOUSE_MS_POINTER_ID,
+          MSPointerEvent.MSPOINTER_TYPE_MOUSE, false);
+    }
   // TODO(user): In Linux, this fires after mousedown event.
   } else if (this.buttonPressed_ == bot.Mouse.Button.RIGHT) {
     this.fireMouseEvent_(bot.events.EventType.CONTEXTMENU);
   }
+  bot.Device.clearPointerMap();
   this.buttonPressed_ = null;
   this.elementPressed_ = null;
 };
@@ -310,9 +324,9 @@ bot.Mouse.prototype.move = function(element, coords) {
   // full event sequence, even if hidden by an element mid sequence.
   var toElemWasInteractable = bot.dom.isInteractable(element);
 
-  var pos = goog.style.getClientPosition(element);
-  this.clientXY_.x = coords.x + pos.x;
-  this.clientXY_.y = coords.y + pos.y;
+  var rect = bot.dom.getClientRect(element);
+  this.clientXY_.x = coords.x + rect.left;
+  this.clientXY_.y = coords.y + rect.top;
   var fromElement = this.getElement();
 
   if (element != fromElement) {
@@ -413,7 +427,7 @@ bot.Mouse.prototype.fireMouseEvent_ = function(type, opt_related,
       // The pointerId for mouse events is always 1 and the mouse event is never
       // fired if the MSPointer event fails.
       if (!this.fireMSPointerEvent(msPointerEvent, this.clientXY_,
-          this.getButtonValue_(msPointerEvent),  /* pointerId */ 1,
+          this.getButtonValue_(msPointerEvent), bot.Device.MOUSE_MS_POINTER_ID,
           MSPointerEvent.MSPOINTER_TYPE_MOUSE, /* isPrimary */ true,
           opt_related, opt_force)) {
         return false;

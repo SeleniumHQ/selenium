@@ -21,8 +21,9 @@
 goog.provide('goog.ui.Checkbox');
 goog.provide('goog.ui.Checkbox.State');
 
-goog.require('goog.dom.a11y');
-goog.require('goog.dom.a11y.State');
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.State');
+goog.require('goog.asserts');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.ui.CheckboxRenderer');
@@ -206,8 +207,12 @@ goog.ui.Checkbox.prototype.enterDocument = function() {
     if (!this.label_.id) {
       this.label_.id = this.makeId('lbl');
     }
-    goog.dom.a11y.setState(this.getElement(),
-        goog.dom.a11y.State.LABELLEDBY, this.label_.id);
+    var checkboxElement = this.getElement();
+    goog.asserts.assert(checkboxElement,
+        'The checkbox DOM element cannot be null.');
+    goog.a11y.aria.setState(checkboxElement,
+        goog.a11y.aria.State.LABELLEDBY,
+        this.label_.id);
   }
 };
 

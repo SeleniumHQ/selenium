@@ -9,6 +9,171 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.35.1.0
+=========
+ * Updated to correct active element finding when using synthetic events. Fixes
+   issue #6088.
+
+v2.35.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+ * Preventing crash in IE driver using synthetic events. In some cases
+   document.activeElement returns an empty object rather than null. This could
+   cause the IE driver to crash. This change fixes the crash, but not the
+   underlying JavaScript atoms issue. This is handled by another commit. Fixes
+   issue #6067.
+ * Added PAC and proxy autodetect (WPAD) support to IEDriverServer.exe.
+
+v2.34.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
+v2.33.0.10
+==========
+ * Fixed memory allocation in ProxyManager class to work correctly under
+   Release builds.
+
+v2.33.0.9
+=========
+ * Added error checking in DocumentHost::GetPageSource. Fixes issue #5967.
+ * Removed StringUtilities methods to create strings from longs. The C++
+   standard type libary already provides std::to_string() and std::to_wstring()
+   for this purpose.
+ * Introduced ability to clean browser cache before launching IE. This version
+   introduces the ie.ensureCleanSession capability, which will clear the
+   browser cache, history, and cookies before launching IE. When using this
+   capability, be aware that this clears the cache for all running instances of
+   Internet Explorer. Using this capability while attempting to run multiple
+   instances of the IE driver may cause unexpected behavior. Note this also
+   will cause a performance drop when launching the browser, as the driver will
+   wait for the cache clearing process to complete before actually launching
+   IE.
+ * Refactored Proxy setting handling in IE driver. We no longer need to replace
+   the window procedure to accomplish setting the proxy on a per-process basis,
+   simplifying the process considerably. This version also modifies the
+   ProxyManager class to let it build the proxy setting string instead of
+   prebuilding it in the new session command handler. Finally, this version
+   allows the proxy settings to be passed back to the language bindings via the
+   return from the getSessionCapabilities command handler.
+
+v2.33.0.8
+=========
+ * Added Proxy support to the IE driver native code. This commit adds proxy
+   support to the native code of the IE driver, having it recognize the proxy
+   capability in the WebDriver JSON wire protocol. The default behavior will
+   change the system proxy when a new instance of the IE driver is created.
+   This means that from that point forward, all IE instances, including those
+   *not* started by WebDriver, will use the same proxy information. The driver
+   will attempt to reset the system proxy to the previous settings when the 
+   session is properly exited by use of the quit method. Be aware that this 
+   means that crashes in the driver may leave the system's proxy settings in an
+   inconsistent state, and it further implies that attempting to drive multiple
+   instances of IE using proxy settings will likely do the same.
+   
+   The driver sets the proxy settings by means of the Windows WinINet API,
+   which explicitly cannot be used from within a Windows service. This implies
+   that IEDriverServer.exe cannot be used from within a Windows service.
+   
+   This commit also introduces a new capability, "ie.usePerProcessProxy". This
+   capability takes a boolean value, and defaults to false. When set to true,
+   it attempts to only set the proxy information for a single IE process, and
+   does not affect the proxy settings of other instances of IE. Use of this 
+   capability should be considered extremely experimental at present,and may
+   cause IE to behave inconsistently when attempting to use a proxy with this
+   capability set.
+
+v2.33.0.7
+=========
+ * Refactored IE driver to take advantage of new StringUtilities methods.
+ * Refactored BrowserFactory class to use member variables. Previously, most
+   functionality was passed into the methods of the BrowserFactory, breaking
+   the principle of encapsulation. This change also moves the ability to force
+   the use of the Windows CreateProcess API and to pass command-line parameters
+   to the CreateProcess API to capabilities of the IE driver, rather than
+   arguments passed via the command line of IEDriverServer.exe.
+
+v2.33.0.6
+=========
+ * Refactored IE driver registry access methods to RegistryUtilities class.
+   This eliminates the need for an unnecessary extra instance of the
+   BrowserFactory class.
+ * Implemented logging for IE driver HtmlDialog class.
+ * Cleaned up IEDriver logging on asynchronous script execution.
+
+v2.33.0.5
+=========
+ * Corrected logic for invisible element coordinate calculation on IE6 and 7.
+
+v2.33.0.4
+=========
+ * Reverting logic change for invisible element coordinate calculation on IE6
+   and 7.
+
+v2.33.0.3
+=========
+ * Corrected logic for invisible element coordinate calculation on IE6 and 7.
+ * Fixed logic error in Script::ExecuteAsync() waiting for exclusive access to
+   event.
+ * Added IE-specific atoms to eliminate round-trips through IE's JS engine. The
+   findElement and findElements atoms take a JavaScript object as their first
+   parameter. Until now, that facilitated a round-trip through the IE
+   JavaScript engine to be able to create the JavaScript object to pass into
+   the atom function. We are now creating IE-specific JavaScript functions that
+   wrap those two atoms, and take simple strings as arguments, which lets the
+   IE driver call the atom directly without having to call a separate script
+   that simply creates the JavaScript criteria object.
+ * Removed extra round-trips through JavaScript engine when executing
+   JavaScript. This should provide a slight performance boost when executing
+   JavaScript that returns arrays or JavaScript objects.
+
+v2.33.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Corrected logic in getting location of element after scrolling into view.
+   For IE 6 and 7, an additional 2-pixel offset must be added for every frame
+   on the page when calculating element location.
+
+v2.33.0.1
+=========
+ * Refactored session shutdown code to properly wait for thread termination.
+   Fixes issue #5543.
+
+v2.33.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
+v2.32.3.13
+==========
+ * Modified to better detect focus on incorrect UI elements when
+   requireWindowFocus is specified.
+
+v2.32.3.12
+==========
+ * Updates to JavaScript automation atoms.
+ * Prevent double-clicks when using WebElement.click(). When using the 
+   requireWindowFocus capability, it's possible that multiple calls to 
+   WebElement.click() might happen too quickly, and they might be interpreted
+   as a double-click. This change inspects the last time an element was clicked
+   on, and if it is within the system double-click time, it waits until that
+   time passes before performing the second click.
+ * Made InputManager more robust in the requireWindowFocus case. Previously, 
+   using the Windows SendInput API could cause keystrokes and mouse events to
+   be added to the system message queue, but would return back to the caller
+   before those events were processed by Internet Explorer's message loop.
+   This change adds a Windows mouse hook and keyboard hook to monitor when
+   the messages are processed by an applications message loop. There is still a
+   potential race condition, and users may still need to execute some local
+   synchronization code.
+
+v2.32.3.11
+==========
+ * Refactored IE driver element click code to all use InputManager class. 
+   Previously, WebElement.click() used a different code path than the Advanced
+   User Interactions API. These code paths are now unified for the native
+   events case.
+
 v2.32.3.10
 ==========
  * Reinstated separate-thread execution of JavaScript on Windows 8. This

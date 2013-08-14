@@ -367,7 +367,8 @@ goog.gears.Database.prototype.executeVarArgs_ = function(sql, params,
     if (goog.isArray(params[startIndex])) {
       return this.execute(sql, params[startIndex]);
     }
-    var args = Array.prototype.slice.call(params, startIndex);
+    var args = Array.prototype.slice.call(
+        /** @type {{length:number}} */ (params), startIndex);
     return this.execute(sql, args);
   }
 };

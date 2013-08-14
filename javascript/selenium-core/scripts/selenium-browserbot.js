@@ -296,17 +296,18 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
         }
     }
     else {
-        evt = document.createEvent('MouseEvents');
-        if (evt.initMouseEvent)
-        {
+        var doc = goog.dom.getOwnerDocument(element);
+        var view = goog.dom.getWindow(doc);
+
+        evt = doc.createEvent('MouseEvents');
+        if (evt.initMouseEvent) {
             // see http://developer.mozilla.org/en/docs/DOM:event.button and
             // http://developer.mozilla.org/en/docs/DOM:event.initMouseEvent for button ternary logic logic
             //Safari
-            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY,
+            evt.initMouseEvent(eventType, canBubble, true, view, 1, screenX, screenY, clientX, clientY,
                 this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown, button ? button : 0, null);
-        }
-        else {
-            LOG.warn("element doesn't have initMouseEvent; firing an event which should -- but doesn't -- have other mouse-event related attributes here, as well as controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown");
+        } else {
+          LOG.warn("element doesn't have initMouseEvent; firing an event which should -- but doesn't -- have other mouse-event related attributes here, as well as controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown");
             evt.initEvent(eventType, canBubble, true);
 
             evt.shiftKey = this.shiftKeyDown;
@@ -1660,7 +1661,7 @@ BrowserBot.prototype.locateElementByWebDriver.prefix = "webdriver";
  */
 BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow) {
     return this.xpathEvaluator.selectSingleNode(inDocument, xpath, null,
-        this._namespaceResolver);
+        inDocument.createNSResolver(inDocument.documentElement));
 };
 
 
@@ -1673,19 +1674,9 @@ BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow
  */
 BrowserBot.prototype.locateElementsByXPath = function(xpath, inDocument, inWindow) {
     return this.xpathEvaluator.selectNodes(inDocument, xpath, null,
-        this._namespaceResolver);
+        inDocument.createNSResolver(inDocument.documentElement));
 };
 
-
-BrowserBot.prototype._namespaceResolver = function(prefix) {
-    if (prefix == 'html' || prefix == 'xhtml' || prefix == 'x') {
-        return 'http://www.w3.org/1999/xhtml';
-    } else if (prefix == 'mathml') {
-        return 'http://www.w3.org/1998/Math/MathML';
-    } else {
-        throw new Error("Unknown namespace: " + prefix + ".");
-    }
-};
 
 /**
  * Returns the number of xpath results.
@@ -1693,7 +1684,7 @@ BrowserBot.prototype._namespaceResolver = function(prefix) {
 BrowserBot.prototype.evaluateXPathCount = function(selector, inDocument) {
     var locator = parse_locator(selector);
     var opts = {};
-    opts['namespaceResolver'] = this._namespaceResolver;
+    opts['namespaceResolver'] = inDocument.createNSResolver(inDocument.documentElement);
     if (locator.type == 'xpath' || locator.type == 'implicit') {
     	return eval_xpath(locator.string, inDocument, opts).length;
     } else {
@@ -1752,7 +1743,7 @@ BrowserBot.prototype.findAttribute = function(locator) {
 * Select the specified option and trigger the relevant events of the element.
 */
 BrowserBot.prototype.selectOption = function(element, optionToSelect) {
-    triggerEvent(element, 'focus', false);
+    bot.events.fire(element, bot.events.EventType.FOCUS);
     var changed = false;
     for (var i = 0; i < element.options.length; i++) {
         var option = element.options[i];
@@ -1767,7 +1758,7 @@ BrowserBot.prototype.selectOption = function(element, optionToSelect) {
     }
 
     if (changed) {
-        triggerEvent(element, 'change', true);
+        bot.events.fire(element, bot.events.EventType.CHANGE);
     }
 };
 
@@ -1776,10 +1767,10 @@ BrowserBot.prototype.selectOption = function(element, optionToSelect) {
 */
 BrowserBot.prototype.addSelection = function(element, option) {
     this.checkMultiselect(element);
-    triggerEvent(element, 'focus', false);
+    bot.events.fire(element, bot.events.EventType.FOCUS);
     if (!option.selected) {
         option.selected = true;
-        triggerEvent(element, 'change', true);
+        bot.events.fire(element, bot.events.EventType.CHANGE);
     }
 };
 
@@ -1788,10 +1779,10 @@ BrowserBot.prototype.addSelection = function(element, option) {
 */
 BrowserBot.prototype.removeSelection = function(element, option) {
     this.checkMultiselect(element);
-    triggerEvent(element, 'focus', false);
+    bot.events.fire(element, bot.events.EventType.FOCUS);
     if (option.selected) {
         option.selected = false;
-        triggerEvent(element, 'change', true);
+        bot.events.fire(element, bot.events.EventType.CHANGE);
     }
 };
 
@@ -1804,8 +1795,8 @@ BrowserBot.prototype.checkMultiselect = function(element) {
 };
 
 BrowserBot.prototype.replaceText = function(element, stringValue) {
-    triggerEvent(element, 'focus', false);
-    triggerEvent(element, 'select', true);
+    bot.events.fire(element, bot.events.EventType.FOCUS);
+    bot.events.fire(element, bot.events.EventType.SELECT);
     var maxLengthAttr = element.getAttribute("maxLength");
     var actualValue = stringValue;
     if (maxLengthAttr != null) {
@@ -1828,7 +1819,7 @@ BrowserBot.prototype.replaceText = function(element, stringValue) {
     }
     // DGF this used to be skipped in chrome URLs, but no longer.  Is xpcnativewrappers to blame?
     try {
-        triggerEvent(element, 'change', true);
+        bot.events.fire(element, bot.events.EventType.CHANGE);
     } catch (e) {}
 };
 
@@ -2471,7 +2462,7 @@ SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToM
 
 MozillaBrowserBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
     var win = this.getCurrentWindow();
-    triggerEvent(element, 'focus', false);
+    bot.events.fire(element, bot.events.EventType.FOCUS);
 
     // Add an event listener that detects if the default action has been prevented.
     // (This is caused by a javascript onclick handler returning false)
@@ -2509,7 +2500,7 @@ MozillaBrowserBot.prototype._fireEventOnElement = function(eventType, element, c
 
 OperaBrowserBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
     var win = this.getCurrentWindow();
-    triggerEvent(element, 'focus', false);
+    bot.events.fire(element, bot.events.EventType.FOCUS);
 
     this._modifyElementTarget(element);
 
@@ -2525,7 +2516,7 @@ OperaBrowserBot.prototype._fireEventOnElement = function(eventType, element, cli
 
 KonquerorBrowserBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
     var win = this.getCurrentWindow();
-    triggerEvent(element, 'focus', false);
+    bot.events.fire(element, bot.events.EventType.FOCUS);
 
     this._modifyElementTarget(element);
 
@@ -2543,7 +2534,7 @@ KonquerorBrowserBot.prototype._fireEventOnElement = function(eventType, element,
 };
 
 SafariBrowserBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
-    triggerEvent(element, 'focus', false);
+    bot.events.fire(element, bot.events.EventType.FOCUS);
     var wasChecked = element.checked;
 
     this._modifyElementTarget(element);
@@ -2578,7 +2569,7 @@ SafariBrowserBot.prototype.refresh = function() {
 
 IEBrowserBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
     var win = this.getCurrentWindow();
-    triggerEvent(element, 'focus', false);
+    bot.events.fire(element, bot.events.EventType.FOCUS);
 
     var wasChecked = element.checked;
 
@@ -2609,7 +2600,7 @@ IEBrowserBot.prototype._fireEventOnElement = function(eventType, element, client
 
         // Onchange event is not triggered automatically in IE.
         if (isDefined(element.checked) && wasChecked != element.checked) {
-            triggerEvent(element, 'change', true);
+            bot.events.fire(element, bot.events.EventType.CHANGE);
         }
 
     }

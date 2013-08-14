@@ -187,17 +187,7 @@ goog.editor.range.placeCursorNextTo = function(node, toLeft) {
   var offset = goog.array.indexOf(parent.childNodes, node) +
       (toLeft ? 0 : 1);
   var point = goog.editor.range.Point.createDeepestPoint(
-      parent, offset, toLeft);
-  // NOTE: It's for fixing bug that selecting HR tag breaks
-  // the cursor position In IE9. See http://b/6040468.
-  if (goog.userAgent.IE && goog.userAgent.isVersion('9') &&
-      point.node.nodeType == goog.dom.NodeType.ELEMENT &&
-      point.node.tagName == goog.dom.TagName.HR) {
-    var hr = point.node;
-    point.node = hr.parentNode;
-    point.offset = goog.array.indexOf(point.node.childNodes, hr) +
-        (toLeft ? 0 : 1);
-  }
+      parent, offset, toLeft, true);
   var range = goog.dom.Range.createCaret(point.node, point.offset);
   range.select();
   return range;
@@ -513,31 +503,60 @@ goog.editor.range.Point.prototype.getParentPoint = function() {
  *     By default, we trend rightward. If this parameter is true, then we
  *     trend leftward. The tendency to fall rightward by default is for
  *     consistency with other range APIs (like placeCursorNextTo).
+ * @param {boolean=} opt_stopOnChildlessElement If true, and we encounter
+ *     a Node which is an Element that cannot have children, we return a Point
+ *     based on its parent rather than that Node itself.
  * @return {goog.editor.range.Point} A new point.
  */
 goog.editor.range.Point.createDeepestPoint =
-    function(node, offset, opt_trendLeft) {
+    function(node, offset, opt_trendLeft, opt_stopOnChildlessElement) {
   while (node.nodeType == goog.dom.NodeType.ELEMENT) {
     var child = node.childNodes[offset];
     if (!child && !node.lastChild) {
       break;
-    }
-    if (child) {
+    } else if (child) {
       var prevSibling = child.previousSibling;
       if (opt_trendLeft && prevSibling) {
+        if (opt_stopOnChildlessElement &&
+            goog.editor.range.Point.isTerminalElement_(prevSibling)) {
+          break;
+        }
         node = prevSibling;
         offset = goog.editor.node.getLength(node);
       } else {
+        if (opt_stopOnChildlessElement &&
+            goog.editor.range.Point.isTerminalElement_(child)) {
+          break;
+        }
         node = child;
         offset = 0;
       }
     } else {
+      if (opt_stopOnChildlessElement &&
+          goog.editor.range.Point.isTerminalElement_(node.lastChild)) {
+        break;
+      }
       node = node.lastChild;
       offset = goog.editor.node.getLength(node);
     }
   }
 
   return new goog.editor.range.Point(node, offset);
+};
+
+
+/**
+ * Return true if the specified node is an Element that is not expected to have
+ * children. The createDeepestPoint() method should not traverse into
+ * such elements.
+ * @param {Node} node .
+ * @return {boolean} True if the node is an Element that does not contain
+ *     child nodes (e.g. BR, IMG).
+ * @private
+ */
+goog.editor.range.Point.isTerminalElement_ = function(node) {
+  return (node.nodeType == goog.dom.NodeType.ELEMENT &&
+          !goog.dom.canHaveChildren(node));
 };
 
 

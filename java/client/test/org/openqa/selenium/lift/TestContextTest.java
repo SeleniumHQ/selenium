@@ -23,7 +23,8 @@ import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.fail;
 
-import org.openqa.selenium.testing.MockTestBase;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
@@ -43,7 +44,9 @@ import java.util.Collections;
  * @author rchatley (Robert Chatley)
  * 
  */
-public class TestContextTest extends MockTestBase {
+public class TestContextTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
   private WebDriver webdriver;
   private TestContext context;
@@ -51,9 +54,9 @@ public class TestContextTest extends MockTestBase {
 
   @Before
   public void createMocks() {
-    webdriver = mock(WebDriver.class);
+    webdriver = mockery.mock(WebDriver.class);
     context = new WebDriverTestContext(webdriver);
-    element = mock(WebElement.class);
+    element = mockery.mock(WebElement.class);
   }
 
   @Test
@@ -66,8 +69,8 @@ public class TestContextTest extends MockTestBase {
 
     final String url = "http://www.example.com";
 
-    checking(new Expectations() {{
-      one(webdriver).get(url);
+    mockery.checking(new Expectations() {{
+      oneOf(webdriver).get(url);
     }});
 
     context.goTo(url);
@@ -77,10 +80,10 @@ public class TestContextTest extends MockTestBase {
   @Test
   public void canAssertPresenceOfWebElements() throws Exception {
 
-    final Finder<WebElement, WebDriver> finder = mock(Finder.class);
+    final Finder<WebElement, WebDriver> finder = mockery.mock(Finder.class);
 
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
+    mockery.checking(new Expectations() {{
+      oneOf(finder).findFrom(webdriver);
       will(returnValue(oneElement()));
     }});
 
@@ -91,9 +94,9 @@ public class TestContextTest extends MockTestBase {
   @Test
   public void canCheckQuantitiesOfWebElementsAndThrowsExceptionOnMismatch() throws Exception {
 
-    final Finder<WebElement, WebDriver> finder = mock(Finder.class);
+    final Finder<WebElement, WebDriver> finder = mockery.mock(Finder.class);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       allowing(finder).findFrom(webdriver);
       will(returnValue(oneElement()));
       exactly(2).of(finder).describeTo(with(any(Description.class))); // in producing the error
@@ -112,13 +115,13 @@ public class TestContextTest extends MockTestBase {
   @SuppressWarnings("unchecked")
   @Test
   public void canDirectTextInputToSpecificElements() throws Exception {
-    final Finder<WebElement, WebDriver> finder = mock(Finder.class);
+    final Finder<WebElement, WebDriver> finder = mockery.mock(Finder.class);
     final String inputText = "test";
 
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
+    mockery.checking(new Expectations() {{
+      oneOf(finder).findFrom(webdriver);
       will(returnValue(oneElement()));
-      one(element).sendKeys(inputText);
+      oneOf(element).sendKeys(inputText);
     }});
 
     context.type(inputText, finder);
@@ -127,12 +130,12 @@ public class TestContextTest extends MockTestBase {
   @SuppressWarnings("unchecked")
   @Test
   public void canTriggerClicksOnSpecificElements() throws Exception {
-    final Finder<WebElement, WebDriver> finder = mock(Finder.class);
+    final Finder<WebElement, WebDriver> finder = mockery.mock(Finder.class);
 
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
+    mockery.checking(new Expectations() {{
+      oneOf(finder).findFrom(webdriver);
       will(returnValue(oneElement()));
-      one(element).click();
+      oneOf(element).click();
     }});
 
     context.clickOn(finder);
@@ -141,12 +144,12 @@ public class TestContextTest extends MockTestBase {
   @SuppressWarnings("unchecked")
   @Test
   public void canTriggerClicksOnFirstElement() throws Exception {
-    final Finder<WebElement, WebDriver> finder = mock(Finder.class);
+    final Finder<WebElement, WebDriver> finder = mockery.mock(Finder.class);
 
-    checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
+    mockery.checking(new Expectations() {{
+      oneOf(finder).findFrom(webdriver);
       will(returnValue(twoElements()));
-      one(element).click();
+      oneOf(element).click();
     }});
 
     context.clickOn(first(finder));
@@ -155,10 +158,10 @@ public class TestContextTest extends MockTestBase {
   @SuppressWarnings("unchecked")
   @Test
   public void throwsAnExceptionIfTheFinderReturnsAmbiguousResults() throws Exception {
-    final Finder<WebElement, WebDriver> finder = mock(Finder.class);
+    final Finder<WebElement, WebDriver> finder = mockery.mock(Finder.class);
 
-  checking(new Expectations() {{
-      one(finder).findFrom(webdriver);
+    mockery.checking(new Expectations() {{
+      oneOf(finder).findFrom(webdriver);
       will(returnValue(twoElements()));
     }});
 
@@ -176,6 +179,6 @@ public class TestContextTest extends MockTestBase {
   }
 
   private Collection<WebElement> twoElements() {
-    return Arrays.asList(new WebElement[] {element, element});
+    return Arrays.asList(element, element);
   }
 }

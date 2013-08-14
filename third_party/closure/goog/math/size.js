@@ -174,13 +174,17 @@ goog.math.Size.prototype.round = function() {
 
 
 /**
- * Scales the size uniformly by a factor.
- * @param {number} s The scale factor.
+ * Scales this size by the given scale factors. The width and height are scaled
+ * by {@code sx} and {@code opt_sy} respectively.  If {@code opt_sy} is not
+ * given, then {@code sx} is used for both the width and height.
+ * @param {number} sx The scale factor to use for the width.
+ * @param {number=} opt_sy The scale factor to use for the height.
  * @return {!goog.math.Size} This Size object after scaling.
  */
-goog.math.Size.prototype.scale = function(s) {
-  this.width *= s;
-  this.height *= s;
+goog.math.Size.prototype.scale = function(sx, opt_sy) {
+  var sy = goog.isNumber(opt_sy) ? opt_sy : sx;
+  this.width *= sx;
+  this.height *= sy;
   return this;
 };
 

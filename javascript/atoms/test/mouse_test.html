@@ -22,6 +22,12 @@
 <div id="red" style="background-color:red; width:50px; height:25px;
 position: relative; top:25px;">Red</div>
 </div>
+<div id="capture" style="background-color:blue; width:100px; height:50px">
+  <div id="innerCapture" style="background-color:cyan;
+                                width:50px;
+                                height:25px;">
+  </div>
+</div>
 <script type="text/javascript">
   var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
 
@@ -32,7 +38,7 @@ position: relative; top:25px;">Red</div>
   goog.events.EventType.MOUSEPIXELSCROLL = 'MozMousePixelScroll';
 
   var events = [];
-  var greenDiv, redDiv;
+  var greenDiv, redDiv, captureDiv, innerCaptureDiv;
   var MOUSE_EVENTS = [
     goog.events.EventType.MOUSEOUT,
     goog.events.EventType.MOUSEOVER,
@@ -54,17 +60,28 @@ position: relative; top:25px;">Red</div>
   function setUpPage() {
     greenDiv = bot.locators.findElement({id: 'green'});
     redDiv = bot.locators.findElement({id: 'red'});
+    captureDiv = bot.locators.findElement({id: 'capture'});
+    innerCaptureDiv = bot.locators.findElement({id: 'innerCapture'});
   }
 
   function setUp() {
     bot.getDocument().documentElement.focus();
     events = [];
-    goog.events.removeAll();
+    goog.events.removeAllNativeListeners();
 
     goog.events.listen(greenDiv, MOUSE_EVENTS, function(e) {
       events.push(e.type);
       events.push(e.target);
       events.push(e.button);
+    });
+
+    goog.events.listen(captureDiv, MOUSE_EVENTS, function(e) {
+      events.push(e.type);
+      events.push(e.target);
+      events.push(e.button);
+      if (e.type == goog.events.EventType.MSPOINTERDOWN) {
+        captureDiv.msSetPointerCapture(e.getBrowserEvent().pointerId);
+      }
     });
   }
 
@@ -386,6 +403,51 @@ position: relative; top:25px;">Red</div>
         goog.events.EventType.MOUSEWHEEL, greenDiv, 0
       );
     }
+  }
+
+  function testMsSetPointerCapture() {
+    if (!bot.userAgent.IE_DOC_10) {
+      return;
+    }
+    var coords = new goog.math.Coordinate(75, 5);
+    var mouse = new bot.Mouse();
+    mouse.move(captureDiv, coords);
+    mouse.pressButton(bot.Mouse.Button.LEFT);
+    mouse.move(greenDiv, coords);
+    mouse.releaseButton();
+
+    // The captureDiv will call msSetPointerCapture on MSPointerDown and as a
+    // result, subsequent events should be fired on captureDiv instead of
+    // greenDiv.
+    assertEvents(
+      mouseoverAndMoveEvents(captureDiv, 0),
+      mousedownEvents(captureDiv, 0),
+      mouseoutEvents(captureDiv, 0),
+      mouseoverAndMoveEvents(captureDiv, 0),
+      mouseupEvents(captureDiv, 0)
+    );
+  }
+
+  function testClickDoesNotFireOnCapturedPointer() {
+    if (!bot.userAgent.IE_DOC_10) {
+      return;
+    }
+    var mouse = new bot.Mouse();
+    mouse.move(innerCaptureDiv, new goog.math.Coordinate(5, 5));
+    mouse.pressButton(bot.Mouse.Button.LEFT);
+    mouse.move(innerCaptureDiv, new goog.math.Coordinate(6, 6));
+    mouse.releaseButton();
+
+    // The MSPointerDown event on innerCaptureDiv bubbles up to the
+    // captureDiv element which calls msSetPointerCapture, so subsequent
+    // events should fire on captureTarget except for the click event.
+    assertEvents(
+      mouseoverAndMoveEvents(innerCaptureDiv, 0),
+      mousedownEvents(innerCaptureDiv, 0),
+      mousemoveEvents(captureDiv, 0),
+      mouseupEvents(captureDiv, 0),
+      goog.events.EventType.CLICK, innerCaptureDiv, 0
+    );
   }
 </script>
 </body>

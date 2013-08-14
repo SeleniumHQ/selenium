@@ -1,0 +1,25 @@
+java_library(name = 'jmock',
+  export_deps = True,
+  deps = [
+    ':core',
+    ':junit4',
+    ':legacy',
+    '//third_party/java/objenesis:objenesis',
+  ],
+  visibility = [
+    '//java/client/test/...',
+    '//java/server/test/...',
+  ],
+)
+
+prebuilt_jar(name = 'core',
+  binary_jar = 'jmock-2.6.0.jar',
+)
+
+prebuilt_jar(name = 'junit4',
+  binary_jar = 'jmock-junit4-2.6.0.jar',
+)
+
+prebuilt_jar(name = 'legacy',
+  binary_jar = 'jmock-legacy-2.6.0.jar',
+)

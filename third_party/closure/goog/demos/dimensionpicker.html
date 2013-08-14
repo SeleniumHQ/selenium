@@ -101,7 +101,7 @@ See the COPYING file for details.
     p2.decorate(goog.dom.getElement('decorateTarget'));
 
     goog.events.listen(window, 'unload', function() {
-      goog.events.removeAll();
+      goog.events.removeAllNativeListeners();
     });
   </script>
 </body>

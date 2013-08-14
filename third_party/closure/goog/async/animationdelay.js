@@ -20,7 +20,8 @@
 
 goog.provide('goog.async.AnimationDelay');
 
-goog.require('goog.async.Delay');
+goog.require('goog.Disposable');
+goog.require('goog.events');
 goog.require('goog.functions');
 
 
@@ -29,6 +30,8 @@ goog.require('goog.functions');
 // goog.async.Delay? I'm not sure if there's enough code for this to really
 // make sense. Subclassing seems like the wrong approach for a variety of
 // reasons. Maybe there should be a common interface?
+
+
 
 /**
  * A delayed callback that pegs to the next animation frame
@@ -86,7 +89,7 @@ goog.inherits(goog.async.AnimationDelay, goog.Disposable);
 /**
  * Identifier of the active delay timeout, or event listener,
  * or null when inactive.
- * @type {?number}
+ * @type {goog.events.Key|number|null}
  * @private
  */
 goog.async.AnimationDelay.prototype.id_ = null;
@@ -173,7 +176,7 @@ goog.async.AnimationDelay.prototype.stop = function() {
     } else if (raf && cancelRaf) {
       cancelRaf.call(this.win_, /** @type {number} */ (this.id_));
     } else {
-      this.win_.clearTimeout(this.id_);
+      this.win_.clearTimeout(/** @type {number} */ (this.id_));
     }
   }
   this.id_ = null;
@@ -265,4 +268,3 @@ goog.async.AnimationDelay.prototype.getCancelRaf_ = function() {
       win.msCancelRequestAnimationFrame ||
       null;
 };
-

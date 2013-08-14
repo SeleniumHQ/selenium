@@ -169,7 +169,7 @@ core.inject.ELEMENT_ID_PREFIX = 'stored=';
  */
 core.inject.removeElementIdPrefix_ = function(value) {
   if (goog.isArray(value)) {
-    return goog.array.map((/**@type {goog.array.ArrayLike}*/value),
+    return goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
         core.inject.removeElementIdPrefix_ );
   } else if (value && goog.isObject(value) && !goog.isFunction(value)) {
     if (goog.object.containsKey(value, bot.inject.ELEMENT_KEY)) {
@@ -194,7 +194,7 @@ core.inject.removeElementIdPrefix_ = function(value) {
  */
 core.inject.addElementIdPrefix_ = function(value) {
   if (goog.isArray(value)) {
-    return goog.array.map((/**@type {goog.array.ArrayLike}*/value),
+    return goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
         core.inject.addElementIdPrefix_ );
   } else if (value && goog.isObject(value) && !goog.isFunction(value)) {
     if (goog.object.containsKey(value, bot.inject.ELEMENT_KEY)) {

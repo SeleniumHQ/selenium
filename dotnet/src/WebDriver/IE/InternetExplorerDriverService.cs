@@ -37,8 +37,6 @@ namespace OpenQA.Selenium.IE
         private string host = string.Empty;
         private string logFile = string.Empty;
         private string libraryExtractionPath = string.Empty;
-        private bool forceCreateProcessApi;
-        private string internetExplorerCommandLineSwitches = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the InternetExplorerDriverService class.
@@ -93,27 +91,6 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the service should force the use of
-        /// the Windows CreateProcess API when launching Internet Explorer. Defaults to false.
-        /// </summary>
-        public bool ForceCreateProcessApi
-        {
-            get { return this.forceCreateProcessApi; }
-            set { this.forceCreateProcessApi = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the switches to be used on the command line when launching
-        /// Internet Explorer. This property is only used when <see cref="ForceCreateProcessApi"/>
-        /// is set to <see langword="true"/>.
-        /// </summary>
-        public string InternetExplorerCommandLineSwitches
-        {
-            get { return this.internetExplorerCommandLineSwitches; }
-            set { this.internetExplorerCommandLineSwitches = value; }
-        }
-
-        /// <summary>
         /// Gets the command-line arguments for the driver service.
         /// </summary>
         protected override string CommandLineArguments
@@ -144,15 +121,6 @@ namespace OpenQA.Selenium.IE
                 if (this.SuppressInitialDiagnosticInformation)
                 {
                     argsBuilder.Append(" -silent");
-                }
-
-                if (this.forceCreateProcessApi)
-                {
-                    argsBuilder.Append(" -force-createprocess");
-                    if (!string.IsNullOrEmpty(this.internetExplorerCommandLineSwitches))
-                    {
-                        argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -ie-switches={0}", this.internetExplorerCommandLineSwitches));
-                    }
                 }
 
                 return argsBuilder.ToString();

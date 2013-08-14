@@ -257,6 +257,7 @@ limitations under the License.
     function testCanFindElementByLinkText() {
       var link = bot.locators.findElement({linkText: 'this is a link'});
 
+      assertNotNull(link);
       assertEquals('link', bot.dom.getAttribute(link, 'id'));
     }
 

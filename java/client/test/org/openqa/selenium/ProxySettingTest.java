@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.ProxyServer;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -36,11 +37,13 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
+@Ignore(MARIONETTE)
 public class ProxySettingTest extends JUnit4TestBase {
 
   private ProxyServer proxyServer;
@@ -50,13 +53,25 @@ public class ProxySettingTest extends JUnit4TestBase {
     proxyServer = new ProxyServer();
   }
 
-  @Before
-  public void avoidRemote() {
-    // TODO: Resolve why these tests don't work on the remote server
-    assumeTrue(TestUtilities.isLocal());
+  @Ignore(value = {ANDROID, IPHONE, OPERA_MOBILE, PHANTOMJS, SAFARI},
+          reason = "Android/Iphone/PhantomJS - not tested,"
+                   + "Opera mobile/Safari - not implemented")
+  @NeedsLocalEnvironment
+  @Test
+  public void canConfigureProxyWithDesiredCapability() {
+    Proxy proxyToUse = proxyServer.asProxy();
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(PROXY, proxyToUse);
+
+    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+    driver.get(pages.simpleTestPage);
+    driver.quit();
+
+    assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
   @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+  @NeedsLocalEnvironment
   @Test
   public void canConfigureProxyWithRequiredCapability() {
     Proxy proxyToUse = proxyServer.asProxy();
@@ -71,6 +86,7 @@ public class ProxySettingTest extends JUnit4TestBase {
   }
 
   @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI})
+  @NeedsLocalEnvironment
   @Test
   public void requiredProxyCapabilityShouldHavePriority() {
     ProxyServer desiredProxyServer = new ProxyServer();

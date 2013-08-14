@@ -73,68 +73,6 @@ FirefoxDriver = function(server, enableNativeEvents, win) {
   // Current state of modifier keys (for synthenized events).
   this.modifierKeysState = Utils.newInstance('@googlecode.com/webdriver/modifierkeys;1', 'wdIModifierKeys');
   this.mouse.initialize(this.modifierKeysState);
-
-  if (!bot.userAgent.isProductVersion('3.5')) {
-    fxdriver.logging.info('Replacing CSS lookup mechanism with Sizzle');
-    var cssSelectorFunction = (function() {
-      var sizzle = [
-        'var originalSizzle = window.Sizzle;',
-        Utils.loadUrl('resource://fxdriver/sizzle.js') + ';',
-        'var results = Sizzle(arguments[0], arguments[1]);',
-        'window.Sizzle = originalSizzle;'
-      ].join('\n');
-
-      function compileScript(script, root) {
-        var win = goog.dom.getOwnerDocument(root).defaultView;
-        win = fxdriver.moz.unwrap(win);
-        return new win.Function(script);
-      }
-
-      return {
-        single: function(target, root) {
-          var fn = compileScript(sizzle + ' return results[0] || null;', root);
-          root = fxdriver.moz.unwrap(root);
-          return fn.call(null, target, root);
-        },
-        many: function(target, root) {
-          var fn = compileScript(sizzle + ' return results;', root);
-          root = fxdriver.moz.unwrap(root);
-          return fn.call(null, target, root);
-        }
-      };
-    })();
-
-    var linkTextFunction = (function() {
-      return {
-        single: function(target, root, opt_isPartial) {
-          var elements = cssSelectorFunction.many('a', root);
-
-          var element = goog.array.find(elements, function(element) {
-            var text = bot.dom.getVisibleText(element);
-            return (opt_isPartial && text.indexOf(target) != -1) ||
-                text == target;
-          });
-          return (/**@type{Element}*/element);
-        },
-        many: function(target, root, opt_isPartial) {
-          var elements = cssSelectorFunction.many('a', root);
-          return goog.array.filter(elements, function(element) {
-            var text = bot.dom.getVisibleText(element);
-            return (opt_isPartial && text.indexOf(target) != -1) ||
-                text == target;
-          });
-        }
-      };
-    })();
-
-
-    bot.locators.add('css', cssSelectorFunction);
-    bot.locators.add('css selector', cssSelectorFunction);
-    bot.locators.add('linkText', linkTextFunction);
-    bot.locators.add('link text', linkTextFunction);
-    bot.locators.add('partialLinkText', linkTextFunction);
-    bot.locators.add('partial link text', linkTextFunction);
-  }
 };
 
 
@@ -249,7 +187,7 @@ FirefoxDriver.prototype.close = function(respond) {
 
 function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   var doc = respond.session.getDocument();
-
+  var unwrappedDoc = fxdriver.moz.unwrap(doc);
   var script = parameters['script'];
   var converted = Utils.unwrapParameters(parameters['args'], doc);
 
@@ -307,11 +245,11 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
   };
 
   var checkScriptLoaded = function() {
-    return !!doc.getUserData('webdriver-evaluate-attached');
+    return unwrappedDoc['__webdriver_evaluate'] && !!unwrappedDoc['__webdriver_evaluate']['attached'];
   };
 
   var runScript = function() {
-    // Since Firefox 15 we have to populate __exposedProps__ 
+    // Since Firefox 15 we have to populate __exposedProps__
     // when passing objects from chrome to content due to security reasons
     if (bot.userAgent.isProductVersion(4)) {
       for (var i = 0; i < converted.length; i++) {
@@ -326,11 +264,11 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
         }
       }
     }
-    doc.setUserData('webdriver-evaluate-args', converted, null);
-    doc.setUserData('webdriver-evaluate-async', isAsync, null);
-    doc.setUserData('webdriver-evaluate-script', script, null);
-    doc.setUserData('webdriver-evaluate-timeout',
-        respond.session.getScriptTimeout(), null);
+
+    unwrappedDoc['__webdriver_evaluate']['args'] = converted;
+    unwrappedDoc['__webdriver_evaluate']['async'] = isAsync;
+    unwrappedDoc['__webdriver_evaluate']['script'] = script;
+    unwrappedDoc['__webdriver_evaluate']['timeout'] = respond.session.getScriptTimeout();
 
     var handler = function(event) {
         doc.removeEventListener('webdriver-evaluate-response', handler, true);
@@ -341,13 +279,14 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
           return;
         }
 
-        var unwrapped = fxdriver.moz.unwrap(doc);
-        var result = unwrapped.getUserData('webdriver-evaluate-result');
+        var result = unwrappedDoc['__webdriver_evaluate']['result'];
         respond.value = Utils.wrapResult(result, doc);
-        respond.status = doc.getUserData('webdriver-evaluate-code');
+        respond.status = unwrappedDoc['__webdriver_evaluate']['code'];
 
-        doc.setUserData('webdriver-evaluate-result', null, null);
-        doc.setUserData('webdriver-evaluate-code', null, null);
+        // I have no idea why this started happening. Roll on m-day
+        if (!bot.userAgent.isProductVersion(23)) {
+          delete unwrappedDoc['__webdriver_evaluate'];
+        }
 
         respond.send();
     };
@@ -360,7 +299,7 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
 
   // Attach the listener to the DOM
   var addListener = function() {
-    if (!doc.getUserData('webdriver-evaluate-attached')) {
+    if (!doc['__webdriver_evaluate'] || !doc['__webdriver_evaluate']['attached']) {
       var parentNode = Utils.getMainDocumentElement(doc);
       var element = Utils.isSVG(doc) ? doc.createElementNS("http://www.w3.org/2000/svg", "script") : doc.createElement('script');
       element.setAttribute('type', 'text/javascript');
@@ -924,10 +863,15 @@ FirefoxDriver.prototype.screenshot = function(respond) {
   var window = respond.session.getBrowser().contentWindow;
   try {
     var canvas = fxdriver.screenshot.grab(window);
+  } catch (e) {
+    throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
+      'Could not take screenshot of current page - ' + e );
+  }
+  try {
     respond.value = fxdriver.screenshot.toBase64(canvas);
   } catch (e) {
     throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
-        'Could not take screenshot of current page - ' + e);
+      'Could not convert screenshot to base64 - ' + e ) ;
   }
   respond.send();
 };
@@ -1117,12 +1061,13 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   //     the mouse is released.
 
   var doc = respond.session.getDocument();
+  var coords = fxdriver.events.buildCoordinates(parameters, doc);
 
   // Fast path first
   if (!this.enableNativeEvents) {
-    var target = parameters['element'] ? Utils.getElementAt(parameters['element'], doc) : null;
-    fxdriver.logging.info('Calling move with: ' + parameters['xoffset'] + ', ' + parameters['yoffset'] + ', ' + target);
-    var result = this.mouse.move(target, parameters['xoffset'], parameters['yoffset']);
+    var target = coords.auxiliary || doc;
+    fxdriver.logging.info('Calling move with: ' + coords.x + ', ' + coords.y + ', ' + target);
+    var result = this.mouse.move(target, coords.x, coords.y);
     this.sendResponseFromSyntheticMouse_(result, respond);
 
     return;
@@ -1195,22 +1140,23 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
   };
 
-  var coords = fxdriver.events.buildCoordinates(parameters, doc);
   mouseMoveTo(coords, this.enableNativeEvents, this.jsTimer);
 
   respond.send();
 };
 
 FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
+  var doc = respond.session.getDocument();
+
   if (!this.enableNativeEvents) {
-    var coords = fxdriver.utils.newCoordinates(null, 0, 0);
+    var coords = fxdriver.events.buildCoordinates(parameters, doc);
+    fxdriver.logging.info('Calling down with: ' + coords.x + ', ' + coords.y + ', ' + coords.auxiliary);
     var result = this.mouse.down(coords);
 
     this.sendResponseFromSyntheticMouse_(result, respond);
     return;
   }
 
-  var doc = respond.session.getDocument();
   var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
 
   var nativeMouse = Utils.getNativeMouse();
@@ -1238,15 +1184,17 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
 };
 
 FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
+  var doc = respond.session.getDocument();
+
   if (!this.enableNativeEvents) {
-    var coords = fxdriver.utils.newCoordinates(null, 0, 0);
+    var coords = fxdriver.events.buildCoordinates(parameters, doc);
+    fxdriver.logging.info('Calling up with: ' + coords.x + ', ' + coords.y + ', ' + coords.auxiliary);
     var result = this.mouse.up(coords);
 
     this.sendResponseFromSyntheticMouse_(result, respond);
     return;
   }
 
-  var doc = respond.session.getDocument();
   var elementForNode = getElementFromLocation(respond.session.getMousePosition(), doc);
 
   var nativeMouse = Utils.getNativeMouse();
@@ -1401,7 +1349,7 @@ FirefoxDriver.prototype.sendKeysToActiveElement = function(respond, parameters) 
 FirefoxDriver.prototype.getWindowSize = function(respond, parameters) {
   this.assertTargetsCurrentWindow_(parameters);
 
-  var size = bot.window.getSize(respond.session.getWindow());
+  var size = bot.window.getSize(respond.session.getWindow().top);
   respond.value = { width: size.width, height: size.height };
   respond.send();
 };
@@ -1419,7 +1367,7 @@ FirefoxDriver.prototype.setWindowSize = function(respond, parameters) {
 FirefoxDriver.prototype.getWindowPosition = function(respond, parameters) {
   this.assertTargetsCurrentWindow_(parameters);
 
-  var position = bot.window.getPosition(respond.session.getWindow());
+  var position = bot.window.getPosition(respond.session.getWindow().top);
 
   respond.value = { x: position.x, y: position.y };
   respond.send();
@@ -1429,7 +1377,7 @@ FirefoxDriver.prototype.setWindowPosition = function(respond, parameters) {
   this.assertTargetsCurrentWindow_(parameters);
 
   var position = new goog.math.Coordinate(parameters.x, parameters.y);
-  var win = respond.session.getWindow();
+  var win = respond.session.getWindow().top;
 
   bot.window.setPosition(position, win);
 

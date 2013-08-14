@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -27,7 +25,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Selenium 2.0 documentation" href="../index.html" />
     <link rel="up" title="Selenium Documentation" href="../api.html" />
-    <link rel="next" title="selenium.webdriver.support.abstract_event_listener" href="../webdriver_support/selenium.webdriver.support.abstract_event_listener.html" />
+    <link rel="next" title="selenium.webdriver.common.proxy" href="selenium.webdriver.common.proxy.html" />
     <link rel="prev" title="selenium.webdriver.common.touch_actions" href="selenium.webdriver.common.touch_actions.html" /> 
   </head>
   <body>
@@ -41,7 +39,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../webdriver_support/selenium.webdriver.support.abstract_event_listener.html" title="selenium.webdriver.support.abstract_event_listener"
+          <a href="selenium.webdriver.common.proxy.html" title="selenium.webdriver.common.proxy"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="selenium.webdriver.common.touch_actions.html" title="selenium.webdriver.common.touch_actions"
@@ -58,21 +56,47 @@
             
   <div class="section" id="module-selenium.webdriver.common.utils">
 <span id="selenium-webdriver-common-utils"></span><h1>selenium.webdriver.common.utils<a class="headerlink" href="#module-selenium.webdriver.common.utils" title="Permalink to this headline">¶</a></h1>
+<p>The Utils methods.</p>
 <dl class="function">
 <dt id="selenium.webdriver.common.utils.free_port">
 <tt class="descclassname">selenium.webdriver.common.utils.</tt><tt class="descname">free_port</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#free_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.free_port" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Determines a free port using sockets.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="selenium.webdriver.common.utils.is_connectable">
 <tt class="descclassname">selenium.webdriver.common.utils.</tt><tt class="descname">is_connectable</tt><big>(</big><em>port</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#is_connectable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.is_connectable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trys to connect to the server to see if it is running.</p>
+<dd><p>Tries to connect to the server at port to see if it is running.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>port: The port to connect.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="selenium.webdriver.common.utils.is_url_connectable">
 <tt class="descclassname">selenium.webdriver.common.utils.</tt><tt class="descname">is_url_connectable</tt><big>(</big><em>port</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#is_url_connectable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.is_url_connectable" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Tries to connect to the HTTP server at /status path
+and specified port to see if it responds successfully.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>port: The port to connect.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 
@@ -86,8 +110,8 @@
   <p class="topless"><a href="selenium.webdriver.common.touch_actions.html"
                         title="previous chapter">selenium.webdriver.common.touch_actions</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../webdriver_support/selenium.webdriver.support.abstract_event_listener.html"
-                        title="next chapter">selenium.webdriver.support.abstract_event_listener</a></p>
+  <p class="topless"><a href="selenium.webdriver.common.proxy.html"
+                        title="next chapter">selenium.webdriver.common.proxy</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/webdriver/selenium.webdriver.common.utils.txt"
@@ -120,7 +144,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../webdriver_support/selenium.webdriver.support.abstract_event_listener.html" title="selenium.webdriver.support.abstract_event_listener"
+          <a href="selenium.webdriver.common.proxy.html" title="selenium.webdriver.common.proxy"
              >next</a> |</li>
         <li class="right" >
           <a href="selenium.webdriver.common.touch_actions.html" title="selenium.webdriver.common.touch_actions"

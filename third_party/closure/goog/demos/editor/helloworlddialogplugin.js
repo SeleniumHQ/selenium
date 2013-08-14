@@ -25,10 +25,12 @@ goog.require('goog.dom.TagName');
 goog.require('goog.editor.plugins.AbstractDialogPlugin');
 goog.require('goog.editor.range');
 goog.require('goog.functions');
-goog.require('goog.ui.editor.AbstractDialog.EventType');
+goog.require('goog.ui.editor.AbstractDialog');
 
 
 // *** Public interface ***************************************************** //
+
+
 
 /**
  * A plugin that opens the hello world dialog.
@@ -42,6 +44,7 @@ goog.demos.editor.HelloWorldDialogPlugin = function() {
 goog.inherits(goog.demos.editor.HelloWorldDialogPlugin,
               goog.editor.plugins.AbstractDialogPlugin);
 
+
 /**
  * Commands implemented by this plugin.
  * @enum {string}
@@ -50,12 +53,14 @@ goog.demos.editor.HelloWorldDialogPlugin.Command = {
   HELLO_WORLD_DIALOG: 'helloWorldDialog'
 };
 
+
 /** @override */
 goog.demos.editor.HelloWorldDialogPlugin.prototype.getTrogClassId =
     goog.functions.constant('HelloWorldDialog');
 
 
 // *** Protected interface ************************************************** //
+
 
 /**
  * Creates a new instance of the dialog and registers for the relevant events.
@@ -77,6 +82,7 @@ goog.demos.editor.HelloWorldDialogPlugin.prototype.createDialog = function(
 
 
 // *** Private implementation *********************************************** //
+
 
 /**
  * Handles the OK event from the dialog by inserting the hello world message

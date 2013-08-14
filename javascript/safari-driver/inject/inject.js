@@ -20,6 +20,7 @@
 goog.provide('safaridriver.inject');
 
 goog.require('bot.inject');
+goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
 goog.require('safaridriver.inject.Tab');
 goog.require('safaridriver.inject.commands.module');
@@ -40,6 +41,8 @@ safaridriver.inject.LOG = goog.debug.Logger.getLogger('safaridriver.inject');
 
 /** Initializes this injected script. */
 safaridriver.inject.init = function() {
+  goog.debug.LogManager.getRoot().setLevel(goog.debug.Logger.Level.INFO);
+
   var handler = new safaridriver.logging.ForwardingHandler(safari.self.tab);
   window.addEventListener('unload', function() {
     handler.dispose();

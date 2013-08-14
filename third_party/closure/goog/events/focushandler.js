@@ -57,18 +57,18 @@ goog.events.FocusHandler = function(element) {
   /**
    * Store the listen key so it easier to unlisten in dispose.
    * @private
-   * @type {number}
+   * @type {goog.events.Key}
    */
-  this.listenKeyIn_ = (/** @type {number} */
-      goog.events.listen(this.element_, typeIn, this, !goog.userAgent.IE));
+  this.listenKeyIn_ =
+      goog.events.listen(this.element_, typeIn, this, !goog.userAgent.IE);
 
   /**
    * Store the listen key so it easier to unlisten in dispose.
    * @private
-   * @type {number}
+   * @type {goog.events.Key}
    */
-  this.listenKeyOut_ = (/** @type {number} */
-      goog.events.listen(this.element_, typeOut, this, !goog.userAgent.IE));
+  this.listenKeyOut_ =
+      goog.events.listen(this.element_, typeOut, this, !goog.userAgent.IE);
 };
 goog.inherits(goog.events.FocusHandler, goog.events.EventTarget);
 

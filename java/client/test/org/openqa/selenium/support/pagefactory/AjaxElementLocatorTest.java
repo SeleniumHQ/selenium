@@ -19,8 +19,9 @@ package org.openqa.selenium.support.pagefactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.openqa.selenium.By;
-import org.openqa.selenium.testing.MockTestBase;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -35,7 +36,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AjaxElementLocatorTest extends MockTestBase {
+public class AjaxElementLocatorTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+
   private FakeClock clock = new FakeClock();
 
   protected ElementLocator newLocator(WebDriver driver, Field field) {
@@ -45,11 +49,11 @@ public class AjaxElementLocatorTest extends MockTestBase {
   @Test
   public void shouldContinueAttemptingToFindElement() throws Exception {
     Field f = Page.class.getDeclaredField("first");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = new ByIdOrName("first");
-    final WebElement element = mock(WebElement.class);
+    final WebElement element = mockery.mock(WebElement.class);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(1).of(driver).findElement(by);
       will(throwException(new NoSuchElementException("bar")));
       exactly(1).of(driver).findElement(by);
@@ -65,13 +69,13 @@ public class AjaxElementLocatorTest extends MockTestBase {
   @Test
   public void shouldContinueAttemptingToFindElements() throws Exception {
     Field f = Page.class.getDeclaredField("first");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = new ByIdOrName("first");
-    final WebElement element = mock(WebElement.class);
+    final WebElement element = mockery.mock(WebElement.class);
     final List<WebElement> elementList = new ArrayList<WebElement>();
     elementList.add(element);
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(1).of(driver).findElements(by);
       will(throwException(new NoSuchElementException("bar")));
       exactly(1).of(driver).findElements(by);
@@ -87,11 +91,17 @@ public class AjaxElementLocatorTest extends MockTestBase {
   @Test
   public void shouldThrowNoSuchElementExceptionIfElementTakesTooLongToAppear() throws Exception {
     Field f = Page.class.getDeclaredField("first");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = new ByIdOrName("first");
 
-    checking(new Expectations() {{
-      exactly(3).of(driver).findElement(by);
+    mockery.checking(new Expectations() {{
+      // Look ups:
+      // 1. In "isLoaded"
+      // 2. Immediately after call of load. (clock is 0)
+      // 3. First sleep, then third call.   (clock is 1)
+      // 4. Main loop is now over. Final call as we exit to see if we've loaded.
+      // The last call guarantees we've called "isLoaded" at least once after a load.
+      exactly(4).of(driver).findElement(by);
       will(throwException(new NoSuchElementException("bar")));
     }});
 
@@ -108,10 +118,10 @@ public class AjaxElementLocatorTest extends MockTestBase {
   @Test
   public void shouldAlwaysDoAtLeastOneAttemptAtFindingTheElement() throws Exception {
     Field f = Page.class.getDeclaredField("first");
-    final WebDriver driver = mock(WebDriver.class);
+    final WebDriver driver = mockery.mock(WebDriver.class);
     final By by = new ByIdOrName("first");
 
-    checking(new Expectations() {{
+    mockery.checking(new Expectations() {{
       exactly(2).of(driver).findElement(by);
       will(throwException(new NoSuchElementException("bar")));
     }});

@@ -55,7 +55,7 @@ public class LoggingManager {
     resetLoggerToOriginalState();
     overrideSimpleFormatterWithTerseOneForConsoleHandler(currentLogger, debugMode);
     addInMemoryLogger(currentLogger, options);
-    addPerSessionLogger(currentLogger, options, debugMode);
+    //addPerSessionLogger(currentLogger, options, debugMode);
     if (debugMode) {
       currentLogger.setLevel(Level.FINE);
     }

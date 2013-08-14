@@ -65,13 +65,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 @RunWith(SeleniumTestRunner.class)
+@Ignore(MARIONETTE)
 public class FirefoxDriverTest extends JUnit4TestBase {
   @Test
   public void shouldContinueToWorkIfUnableToFindElementById() {
@@ -103,11 +107,10 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void shouldGetMeaningfulExceptionOnBrowserDeath() {
-    if (TestUtilities.getEffectivePlatform().is(Platform.LINUX) && 
-        (TestUtilities.isFirefox30(driver) || TestUtilities.isFirefox35(driver))) {
-        // This test does not work on firefox 3.0, 3.5 on linux.
-        return;
-    }
+    assumeFalse("This test does not work on firefox 3.0, 3.5 on linux",
+                TestUtilities.getEffectivePlatform().is(Platform.LINUX) &&
+                (TestUtilities.isFirefox30(driver) || TestUtilities.isFirefox35(driver)));
+
     ConnectionCapturingDriver driver2 = new ConnectionCapturingDriver();
     driver2.get(pages.formPage);
 
@@ -203,8 +206,24 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(FIREFOX)
   @Test
+  @Ignore(FIREFOX)
+  public void shouldBeAbleToStartFromProfileWithLogFileSetToStdout() throws IOException {
+    FirefoxProfile profile = new FirefoxProfile();
+
+    profile.setPreference("webdriver.log.file", "/dev/stdout");
+
+    try {
+      WebDriver secondDriver = newFirefoxDriver(profile);
+      secondDriver.quit();
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("Expected driver to be created succesfully");
+    }
+  }
+
+  @Test
+  @Ignore(FIREFOX)
   public void shouldBeAbleToStartANamedProfile() {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
 
@@ -216,7 +235,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
   }
 
-  @Test
+  @Test(timeout = 60000)
   public void shouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
     FirefoxBinary binary = new FirefoxBinary();
     binary.setEnvironmentProperty("NSPR_LOG_MODULES", "all:5");
@@ -261,9 +280,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   public void focusRemainsInOriginalWindowWhenOpeningNewWindow() {
-    if (platformHasNativeEvents() == false) {
-      return;
-    }
+    assumeTrue(platformHasNativeEvents());
+
     // Scenario: Open a new window, make sure the current window still gets
     // native events (keyboard events in this case).
 
@@ -285,9 +303,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   public void switchingWindowSwitchesFocus() {
-    if (platformHasNativeEvents() == false) {
-      return;
-    }
+    assumeTrue(platformHasNativeEvents());
+
     // Scenario: Open a new window, switch to it, make sure it gets native events.
     // Then switch back to the original window, make sure it gets native events.
 
@@ -330,9 +347,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   public void closingWindowAndSwitchingToOriginalSwitchesFocus() {
-    if (platformHasNativeEvents() == false) {
-      return;
-    }
+    assumeTrue(platformHasNativeEvents());
+
     // Scenario: Open a new window, switch to it, close it, switch back to the
     // original window - make sure it gets native events.
 
@@ -481,12 +497,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void multipleFirefoxDriversRunningConcurrently() throws Exception {
-    // Unfortunately native events on linux mean mucking around with the
-    // window's focus. this breaks multiple drivers.
-    if (TestUtilities.isNativeEventsEnabled(driver) &&
-        Platform.getCurrent().is(Platform.LINUX)) {
-      return;
-    }
+    assumeFalse("Unfortunately native events on linux mean mucking around with the window's focus",
+                TestUtilities.getEffectivePlatform().is(Platform.LINUX) && TestUtilities.isNativeEventsEnabled(driver));
 
     int numThreads;
     if (!SauceDriver.shouldUseSauce()) {

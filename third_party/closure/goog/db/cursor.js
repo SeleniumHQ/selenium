@@ -52,13 +52,13 @@ goog.db.Cursor.prototype.cursor_ = null;
 
 /**
  * Advances the cursor to the next position along its direction. When new data
- * is availible, the NEW_DATA event will be fired. If the cursor has reached the
+ * is available, the NEW_DATA event will be fired. If the cursor has reached the
  * end of the range it will fire the COMPLETE event. If opt_key is specified it
  * will advance to the key it matches in its direction.
  *
  * This wraps the native #continue method on the underlying object.
  *
- * @param {!Object=} opt_key The optional key to advance to.
+ * @param {IDBKeyType=} opt_key The optional key to advance to.
  */
 goog.db.Cursor.prototype.next = function(opt_key) {
   if (opt_key) {
@@ -74,7 +74,7 @@ goog.db.Cursor.prototype.next = function(opt_key) {
  * If the cursor points to a value that has just been deleted, a new value is
  * created.
  *
- * @param {!Object} value The value to be stored.
+ * @param {*} value The value to be stored.
  * @return {!goog.async.Deferred} The resulting deferred request.
  */
 goog.db.Cursor.prototype.update = function(value) {
@@ -86,7 +86,7 @@ goog.db.Cursor.prototype.update = function(value) {
     request = this.cursor_.update(value);
   } catch (err) {
     msg += goog.debug.deepExpose(value);
-    d.errback(new goog.db.Error(err.code, msg));
+    d.errback(goog.db.Error.fromException(err, msg));
     return d;
   }
   request.onsuccess = function(ev) {
@@ -94,8 +94,7 @@ goog.db.Cursor.prototype.update = function(value) {
   };
   request.onerror = function(ev) {
     msg += goog.debug.deepExpose(value);
-    d.errback(new goog.db.Error(
-        (/** @type {IDBRequest} */ (ev.target)).errorCode, msg));
+    d.errback(goog.db.Error.fromRequest(ev.target, msg));
   };
   return d;
 };
@@ -115,22 +114,21 @@ goog.db.Cursor.prototype.remove = function() {
   try {
     request = this.cursor_['delete']();
   } catch (err) {
-    d.errback(new goog.db.Error(err.code, msg));
+    d.errback(goog.db.Error.fromException(err, msg));
     return d;
   }
   request.onsuccess = function(ev) {
     d.callback();
   };
   request.onerror = function(ev) {
-    d.errback(new goog.db.Error(
-        (/** @type {IDBRequest} */ (ev.target)).errorCode, msg));
+    d.errback(goog.db.Error.fromRequest(ev.target, msg));
   };
   return d;
 };
 
 
 /**
- * @return {Object} The value for the value at the cursor's position. Undefined
+ * @return {*} The value for the value at the cursor's position. Undefined
  *     if no current value, or null if value has just been deleted.
  */
 goog.db.Cursor.prototype.getValue = function() {
@@ -139,8 +137,8 @@ goog.db.Cursor.prototype.getValue = function() {
 
 
 /**
- * @return {*} The key for the value at the cursor's position. If the
- *     cursor is outside its range, this is undefined.
+ * @return {IDBKeyType} The key for the value at the cursor's position. If
+ *     the cursor is outside its range, this is undefined.
  */
 goog.db.Cursor.prototype.getKey = function() {
   return this.cursor_.key;
@@ -148,23 +146,64 @@ goog.db.Cursor.prototype.getKey = function() {
 
 
 /**
+ * Opens a value cursor from IDBObjectStore or IDBIndex over the specified key
+ * range. Returns a cursor object which is able to iterate over the given range.
+ * @param {!(IDBObjectStore|IDBIndex)} source Data source to open cursor.
+ * @param {!goog.db.KeyRange=} opt_range The key range. If undefined iterates
+ *     over the whole data source.
+ * @param {!goog.db.Cursor.Direction=} opt_direction The direction. If undefined
+ *     moves in a forward direction with duplicates.
+ * @return {!goog.db.Cursor} The cursor.
+ * @throws {goog.db.Error} If there was a problem opening the cursor.
+ */
+goog.db.Cursor.openCursor = function(source, opt_range, opt_direction) {
+  var cursor = new goog.db.Cursor();
+  var request;
+
+  try {
+    var range = opt_range ? opt_range.range() : null;
+    if (opt_direction) {
+      request = source.openCursor(range, opt_direction);
+    } else {
+      request = source.openCursor(range);
+    }
+  } catch (ex) {
+    cursor.dispose();
+    throw goog.db.Error.fromException(ex, source.name);
+  }
+  request.onsuccess = function(e) {
+    cursor.cursor_ = e.target.result || null;
+    if (cursor.cursor_) {
+      cursor.dispatchEvent(goog.db.Cursor.EventType.NEW_DATA);
+    } else {
+      cursor.dispatchEvent(goog.db.Cursor.EventType.COMPLETE);
+    }
+  };
+  request.onerror = function(e) {
+    cursor.dispatchEvent(goog.db.Cursor.EventType.ERROR);
+  };
+  return cursor;
+};
+
+
+/**
  * Possible cursor directions.
  * @see http://www.w3.org/TR/IndexedDB/#idl-def-IDBCursor
  *
- * @enum {number}
+ * @enum {string}
  */
 goog.db.Cursor.Direction = {
-  NEXT: 0,
-  NEXT_NO_DUPLICATE: 1,
-  PREV: 2,
-  PREV_NO_DUPLICATE: 3
+  NEXT: 'next',
+  NEXT_NO_DUPLICATE: 'nextunique',
+  PREV: 'prev',
+  PREV_NO_DUPLICATE: 'prevunique'
 };
 
 
 /**
  * Event types that the cursor can dispatch. COMPLETE events are dispatched when
  * a cursor is depleted of values, a NEW_DATA event if there is new data
- * availible, and ERROR if an error occurred.
+ * available, and ERROR if an error occurred.
  *
  * @enum {string}
  */

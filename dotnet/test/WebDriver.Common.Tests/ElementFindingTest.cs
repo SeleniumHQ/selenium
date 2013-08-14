@@ -440,7 +440,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        public void ShouldBeAbleToFindAnElementsByCssSelector()
+        public void ShouldBeAbleToFindElementsByCssSelector()
         {
             if (!SupportsSelectorApi())
             {
@@ -453,7 +453,26 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void FindingByXPathShouldNotIncludeParentElementIfSameTagType()
+        [Category("Javascript")]
+        public void ShouldBeAbleToFindAnElementByCompoundCssSelector()
+        {
+            driver.Url = xhtmlTestPage;
+            IWebElement element = driver.FindElement(By.CssSelector("div.extraDiv, div.content"));
+            Assert.AreEqual("content", element.GetAttribute("class"));
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToFindElementsByCompoundCssSelector()
+        {
+            driver.Url = xhtmlTestPage;
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.CssSelector("div.extraDiv, div.content"));
+            Assert.AreEqual("content", elements[0].GetAttribute("class"));
+            Assert.AreEqual("extraDiv", elements[1].GetAttribute("class"));
+        }
+
+        [Test]
+        public void FindingByTagNameShouldNotIncludeParentElementIfSameTagType()
         {
             driver.Url = xhtmlTestPage;
             IWebElement parent = driver.FindElement(By.Id("my_span"));
@@ -461,6 +480,64 @@ namespace OpenQA.Selenium
             Assert.AreEqual(2, parent.FindElements(By.TagName("div")).Count);
             Assert.AreEqual(2, parent.FindElements(By.TagName("span")).Count);
         }
+
+        [Test]
+        public void FindingByCssShouldNotIncludeParentElementIfSameTagType()
+        {
+            driver.Url = xhtmlTestPage;
+            IWebElement parent = driver.FindElement(By.CssSelector("div#parent"));
+            IWebElement child = parent.FindElement(By.CssSelector("div"));
+
+            Assert.AreEqual("child", child.GetAttribute("id"));
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToFindAnElementByBooleanAttributeUsingCssSelector()
+        {
+            if (!TestUtilities.IsIE10OrHigher(driver))
+            {
+                return;
+            }
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("locators_tests/boolean_attribute_selected.html");
+            IWebElement element = driver.FindElement(By.CssSelector("option[selected='selected']"));
+            Assert.AreEqual("two", element.GetAttribute("value"));
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelector()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("locators_tests/boolean_attribute_selected.html");
+            IWebElement element = driver.FindElement(By.CssSelector("option[selected]"));
+            Assert.AreEqual("two", element.GetAttribute("value"));
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void ShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelectorOnHtml4Page()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("locators_tests/boolean_attribute_selected_html4.html");
+            IWebElement element = driver.FindElement(By.CssSelector("option[selected]"));
+            Assert.AreEqual("two", element.GetAttribute("value"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Opera)]
+        public void FindsByLinkTextOnXhtmlPage()
+        {
+            if (TestUtilities.IsOldIE(driver))
+            {
+                // Old IE doesn't render XHTML pages, don't try loading XHTML pages in it
+                return;
+            }
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("actualXhtmlPage.xhtml");
+            string linkText = "Foo";
+            IWebElement element = driver.FindElement(By.LinkText(linkText));
+            Assert.AreEqual(linkText, element.Text);
+        }
+
 
         [Test]
         [ExpectedException(typeof(StaleElementReferenceException))]
@@ -508,6 +585,15 @@ namespace OpenQA.Selenium
         /////////////////////////////////////////////////
         // Tests unique to the .NET bindings
         /////////////////////////////////////////////////
+        [Test]
+        public void FindingByXPathShouldNotIncludeParentElementIfSameTagType()
+        {
+            driver.Url = xhtmlTestPage;
+            IWebElement parent = driver.FindElement(By.Id("my_span"));
+
+            Assert.AreEqual(2, parent.FindElements(By.TagName("div")).Count);
+            Assert.AreEqual(2, parent.FindElements(By.TagName("span")).Count);
+        }
 
         [Test]
         public void ShouldBeAbleToInjectXPathEngineIfNeeded()

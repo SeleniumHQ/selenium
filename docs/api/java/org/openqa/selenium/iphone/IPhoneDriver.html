@@ -98,15 +98,19 @@
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/HasInputDevices.html" title="interface in org.openqa.selenium">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
+<dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
 <dd><a href="../../../../org/openqa/selenium/iphone/IPhoneSimulatorDriver.html" title="class in org.openqa.selenium.iphone">IPhoneSimulatorDriver</a></dd>
 </dl>
 <hr>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>please use ios-driver or appium instead</i></div>
+</div>
 <br>
-<pre>public class <span class="strong">IPhoneDriver</span>
+<pre>@Deprecated
+public class <span class="strong">IPhoneDriver</span>
 extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>
 implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></pre>
 <div class="block">IPhoneDriver is a driver for running tests on Mobile Safari on the iPhone, iPad and iPod Touch.
@@ -133,7 +137,9 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.STORAGE_TYPE.html" title="enum in org.openqa.selenium.iphone">IPhoneDriver.STORAGE_TYPE</a></strong></code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.STORAGE_TYPE.html" title="enum in org.openqa.selenium.iphone">IPhoneDriver.STORAGE_TYPE</a></strong></code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -167,6 +173,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <tr class="altColor">
 <td class="colFirst"><code>protected static java.lang.String</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#DEFAULT_IWEBDRIVER_URL">DEFAULT_IWEBDRIVER_URL</a></strong></code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">This is the default port and URL for iWebDriver.</div>
 </td>
 </tr>
@@ -186,25 +193,31 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#IPhoneDriver()">IPhoneDriver</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Create an IPhoneDriver connected to an iphone simulator running on the local machine.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#IPhoneDriver(org.openqa.selenium.Capabilities)">IPhoneDriver</a></strong>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;ignored)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#IPhoneDriver(org.openqa.selenium.Capabilities)">IPhoneDriver</a></strong>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;ignored)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#IPhoneDriver(org.openqa.selenium.remote.CommandExecutor)">IPhoneDriver</a></strong>(<a href="../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a>&nbsp;executor)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Create an IPhoneDriver that will use the given <code>executor</code> to communicate with the
  iWebDriver app.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#IPhoneDriver(java.lang.String)">IPhoneDriver</a></strong>(java.lang.String&nbsp;remoteAddress)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Create an IPhoneDriver connected to the remote address passed in.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#IPhoneDriver(java.net.URL)">IPhoneDriver</a></strong>(java.net.URL&nbsp;remoteAddress)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Create an IPhoneDriver connected to the remote address passed in.</div>
 </td>
 </tr>
@@ -226,32 +239,40 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#close()">close</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Close the current window, quitting the browser if it's the last window currently open.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#getLocalStorage()">getLocalStorage</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#getLocalStorage()">getLocalStorage</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>&lt;X&gt;&nbsp;X</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a></strong>(<a href="../../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Capture the screenshot and store it in the specified location.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#getSessionStorage()">getSessionStorage</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#getSessionStorage()">getSessionStorage</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#setFileDetector(org.openqa.selenium.remote.FileDetector)">setFileDetector</a></strong>(<a href="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Set the file detector to be used when sending keyboard input.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/iphone/IPhoneDriver.html#switchTo()">switchTo</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Send future commands to a different frame or window.</div>
 </td>
 </tr>
@@ -291,6 +312,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>DEFAULT_IWEBDRIVER_URL</h4>
 <pre>protected static final&nbsp;java.lang.String DEFAULT_IWEBDRIVER_URL</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">This is the default port and URL for iWebDriver. Eventually it would be nice to use DNS-SD to
  detect iWebDriver instances running non locally or on non-default ports.</div>
 <dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../constant-values.html#org.openqa.selenium.iphone.IPhoneDriver.DEFAULT_IWEBDRIVER_URL">Constant Field Values</a></dd></dl>
@@ -311,6 +333,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>IPhoneDriver</h4>
 <pre>public&nbsp;IPhoneDriver(<a href="../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a>&nbsp;executor)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Create an IPhoneDriver that will use the given <code>executor</code> to communicate with the
  iWebDriver app.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>executor</code> - The executor to use for communicating with the iPhone.</dd></dl>
@@ -324,6 +347,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <h4>IPhoneDriver</h4>
 <pre>public&nbsp;IPhoneDriver(java.net.URL&nbsp;remoteAddress)
              throws java.lang.Exception</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Create an IPhoneDriver connected to the remote address passed in.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>remoteAddress</code> - The full URL of the remote client (device or simulator).</dd>
 <dt><span class="strong">Throws:</span></dt>
@@ -338,6 +362,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <h4>IPhoneDriver</h4>
 <pre>public&nbsp;IPhoneDriver(java.lang.String&nbsp;remoteAddress)
              throws java.lang.Exception</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Create an IPhoneDriver connected to the remote address passed in.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>remoteAddress</code> - The full URL of the remote client running iWebDriver.</dd>
 <dt><span class="strong">Throws:</span></dt>
@@ -352,6 +377,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <h4>IPhoneDriver</h4>
 <pre>public&nbsp;IPhoneDriver()
              throws java.lang.Exception</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">Create an IPhoneDriver connected to an iphone simulator running on the local machine.</div>
 <dl><dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code></dd></dl>
@@ -365,6 +391,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <h4>IPhoneDriver</h4>
 <pre>public&nbsp;IPhoneDriver(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;ignored)
              throws java.lang.Exception</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl><dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code></dd></dl>
 </li>
@@ -384,6 +411,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>setFileDetector</h4>
 <pre>public&nbsp;void&nbsp;setFileDetector(<a href="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><strong>Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFileDetector(org.openqa.selenium.remote.FileDetector)">RemoteWebDriver</a></code></strong></div>
 <div class="block">Set the file detector to be used when sending keyboard input. By default, this is set to a file
  detector that does nothing.</div>
@@ -402,6 +430,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>close</h4>
 <pre>public&nbsp;void&nbsp;close()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/WebDriver.html#close()">WebDriver</a></code></strong></div>
 <div class="block">Close the current window, quitting the browser if it's the last window currently open.</div>
 <dl>
@@ -419,6 +448,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>switchTo</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;switchTo()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/WebDriver.html#switchTo()">WebDriver</a></code></strong></div>
 <div class="block">Send future commands to a different frame or window.</div>
 <dl>
@@ -436,6 +466,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>getScreenshotAs</h4>
 <pre>public&nbsp;&lt;X&gt;&nbsp;X&nbsp;getScreenshotAs(<a href="../../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)">TakesScreenshot</a></code></strong></div>
 <div class="block">Capture the screenshot and store it in the specified location.
 
@@ -466,6 +497,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>getLocalStorage</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</a>&nbsp;getLocalStorage()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/html5/WebStorage.html#getLocalStorage()">getLocalStorage</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code></dd>
@@ -479,6 +511,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>getSessionStorage</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</a>&nbsp;getSessionStorage()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/html5/WebStorage.html#getSessionStorage()">getSessionStorage</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code></dd>

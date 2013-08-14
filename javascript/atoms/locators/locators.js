@@ -48,9 +48,8 @@ bot.locators.strategy;
  * Note that the versions with spaces are synonyms for those without spaces,
  * and are specified at:
  * https://code.google.com/p/selenium/wiki/JsonWireProtocol
- *
- * @const
  * @private {Object.<string,bot.locators.strategy>}
+ * @const
  */
 bot.locators.STRATEGIES_ = {
   'className': bot.locators.className,

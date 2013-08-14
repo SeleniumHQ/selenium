@@ -34,6 +34,17 @@ goog.require('goog.net.ChannelDebug');
 goog.net.tmpnetwork.GOOGLECOM_TIMEOUT = 10000;
 
 
+/**
+ * Pings the network to check if an error is a server error or user's network
+ * error.
+ *
+ * @param {Function} callback The function to call back with results.
+ * @param {goog.Uri?=} opt_imageUri The URI of an image to use for the network
+ *     test. You *must* provide an image URI; the default behavior is provided
+ *     for compatibility with existing code, but the search team does not want
+ *     people using images served off of google.com for this purpose. The
+ *     default will go away when all usages have been changed.
+ */
 goog.net.tmpnetwork.testGoogleCom = function(callback, opt_imageUri) {
   // We need to add a 'rand' to make sure the response is not fulfilled
   // by browser cache.

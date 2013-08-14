@@ -15,10 +15,7 @@
 
 /**
  * @fileoverview An example test that may be run using Mocha. To run, you must
- * set the path to the standalone Selenium server jar through the SELENIUM
- * environment variable:
- *     SELENIUM=path/to/selenium-server-standalone.jar \
- *         mocha selenium-webdriver/example/google_search_test.js
+ * have the chromedriver installed on the system PATH.
  */
 
 var assert = require('assert'),
@@ -30,19 +27,11 @@ var webdriver = require('..'),
 
 
 test.describe('Google Search', function() {
-  var driver, server;
+  var driver;
 
   test.before(function() {
-    var jar = process.env.SELENIUM;
-    assert.ok(!!jar, 'SELENIUM environment variable not set');
-    assert.ok(fs.existsSync(jar), 'The specified jar does not exist: ' + jar);
-
-    server = new remote.SeleniumServer({jar: jar});
-    server.start();
-
     driver = new webdriver.Builder().
-        usingServer(server.address()).
-        withCapabilities({'browserName': 'firefox'}).
+        withCapabilities(webdriver.Capabilities.chrome()).
         build();
   });
 
@@ -58,5 +47,4 @@ test.describe('Google Search', function() {
   });
 
   test.after(function() { driver.quit(); });
-  test.after(function() { server.stop(); });
 });

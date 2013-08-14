@@ -53,6 +53,23 @@ goog.debug.ErrorHandler = function(handler) {
    * @private
    */
   this.errorHandlerFn_ = handler;
+
+  /**
+   * Whether errors should be wrapped in
+   * goog.debug.ErrorHandler.ProtectedFunctionError before rethrowing.
+   * @type {boolean}
+   * @private
+   */
+  this.wrapErrors_ = true;  // TODO(user) Change default.
+
+  /**
+   * Whether to add a prefix to all error messages. The prefix is
+   * goog.debug.ErrorHandler.ProtectedFunctionError.MESSAGE_PREFIX. This option
+   * only has an effect if this.wrapErrors_  is set to false.
+   * @type {boolean}
+   * @private
+   */
+  this.prefixErrorMessages_ = false;
 };
 goog.inherits(goog.debug.ErrorHandler, goog.Disposable);
 
@@ -164,6 +181,34 @@ goog.debug.ErrorHandler.prototype.getProtectedFunction = function(fn) {
       return fn.apply(this, arguments);
     } catch (e) {
       that.errorHandlerFn_(e);
+      if (!that.wrapErrors_) {
+        // Add the prefix to the existing message.
+        if (that.prefixErrorMessages_) {
+          if (typeof e === 'object') {
+            e.message =
+                goog.debug.ErrorHandler.ProtectedFunctionError.MESSAGE_PREFIX +
+                e.message;
+          } else {
+            e = goog.debug.ErrorHandler.ProtectedFunctionError.MESSAGE_PREFIX +
+                e;
+          }
+        }
+        if (goog.DEBUG) {
+          // Work around for https://code.google.com/p/v8/issues/detail?id=2625
+          // and https://code.google.com/p/chromium/issues/detail?id=237059
+          // Custom errors and errors with custom stack traces show the wrong
+          // stack trace
+          // If it has a stack and Error.captureStackTrace is supported (only
+          // supported in V8 as of May 2013) log the stack to the console.
+          if (e && e.stack && Error.captureStackTrace &&
+              goog.global['console']) {
+            goog.global['console']['error'](e.message, e.stack);
+          }
+        }
+        // Re-throw original error. This is great for debugging as it makes
+        // browser JS dev consoles show the correct error and stack trace.
+        throw e;
+      }
       // Re-throw it since this may be expected by the caller.
       throw new goog.debug.ErrorHandler.ProtectedFunctionError(e);
     } finally {
@@ -177,6 +222,7 @@ goog.debug.ErrorHandler.prototype.getProtectedFunction = function(fn) {
 };
 
 
+// TODO(user): Allow these functions to take in the window to protect.
 /**
  * Installs exception protection for window.setTimeout to handle exceptions.
  */
@@ -192,6 +238,28 @@ goog.debug.ErrorHandler.prototype.protectWindowSetTimeout =
 goog.debug.ErrorHandler.prototype.protectWindowSetInterval =
     function() {
   this.protectWindowFunctionsHelper_('setInterval');
+};
+
+
+/**
+ * Install exception protection for window.requestAnimationFrame to handle
+ * exceptions.
+ */
+goog.debug.ErrorHandler.prototype.protectWindowRequestAnimationFrame =
+    function() {
+  var win = goog.getObjectByName('window');
+  var fnNames = [
+    'requestAnimationFrame',
+    'mozRequestAnimationFrame',
+    'webkitAnimationFrame',
+    'msRequestAnimationFrame'
+  ];
+  for (var i = 0; i < fnNames.length; i++) {
+    var fnName = fnNames[i];
+    if (fnNames[i] in win) {
+      win[fnName] = this.protectEntryPoint(win[fnName]);
+    }
+  }
 };
 
 
@@ -224,6 +292,28 @@ goog.debug.ErrorHandler.prototype.protectWindowFunctionsHelper_ =
     }
   };
   win[fnName][this.getFunctionIndex_(false)] = originalFn;
+};
+
+
+/**
+ * Set whether to wrap errors that occur in protected functions in a
+ * goog.debug.ErrorHandler.ProtectedFunctionError.
+ * @param {boolean} wrapErrors Whether to wrap errors.
+ */
+goog.debug.ErrorHandler.prototype.setWrapErrors = function(wrapErrors) {
+  this.wrapErrors_ = wrapErrors;
+};
+
+
+/**
+ * Set whether to add a prefix to all error messages that occur in protected
+ * functions.
+ * @param {boolean} prefixErrorMessages Whether to add a prefix to error
+ *     messages.
+ */
+goog.debug.ErrorHandler.prototype.setPrefixErrorMessages =
+    function(prefixErrorMessages) {
+  this.prefixErrorMessages_ = prefixErrorMessages;
 };
 
 

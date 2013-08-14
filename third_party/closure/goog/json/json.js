@@ -188,10 +188,10 @@ goog.json.Serializer.prototype.serialize = function(object) {
 goog.json.Serializer.prototype.serialize_ = function(object, sb) {
   switch (typeof object) {
     case 'string':
-      this.serializeString_((/** @type {string} */ object), sb);
+      this.serializeString_(/** @type {string} */ (object), sb);
       break;
     case 'number':
-      this.serializeNumber_((/** @type {number} */ object), sb);
+      this.serializeNumber_(/** @type {number} */ (object), sb);
       break;
     case 'boolean':
       sb.push(object);
@@ -205,13 +205,13 @@ goog.json.Serializer.prototype.serialize_ = function(object, sb) {
         break;
       }
       if (goog.isArray(object)) {
-        this.serializeArray((/** @type {!Array} */ object), sb);
+        this.serializeArray(/** @type {!Array} */ (object), sb);
         break;
       }
       // should we allow new String, new Number and new Boolean to be treated
       // as string, number and boolean? Most implementations do not and the
       // need is not very big
-      this.serializeObject_((/** @type {Object} */ object), sb);
+      this.serializeObject_(/** @type {Object} */ (object), sb);
       break;
     case 'function':
       // Skip functions.

@@ -87,7 +87,7 @@ bot.inject.wrapValue = function(value) {
       return value.toString();
 
     case 'array':
-      return goog.array.map((/**@type {goog.array.ArrayLike}*/value),
+      return goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
           bot.inject.wrapValue);
 
     case 'object':
@@ -95,7 +95,7 @@ bot.inject.wrapValue = function(value) {
       // JSCompiler complains that it is too broad a type for the remainder of
       // this block where {!Object} is expected. Downcast to prevent generating
       // a ton of compiler warnings.
-      value = (/**@type {!Object}*/value);
+      value = /**@type {!Object}*/ (value);
 
       // Sniff out DOM elements. We're using duck-typing instead of an
       // instanceof check since the instanceof might not always work
@@ -105,7 +105,7 @@ bot.inject.wrapValue = function(value) {
            value['nodeType'] == goog.dom.NodeType.DOCUMENT)) {
         var ret = {};
         ret[bot.inject.ELEMENT_KEY] =
-            bot.inject.cache.addElement((/**@type {!Element}*/value));
+            bot.inject.cache.addElement(/**@type {!Element}*/ (value));
         return ret;
       }
 
@@ -113,12 +113,12 @@ bot.inject.wrapValue = function(value) {
       if (goog.object.containsKey(value, 'document')) {
         var ret = {};
         ret[bot.inject.WINDOW_KEY] =
-            bot.inject.cache.addElement((/**@type{!Window}*/value));
+            bot.inject.cache.addElement(/**@type{!Window}*/ (value));
         return ret;
       }
 
       if (goog.isArrayLike(value)) {
-        return goog.array.map((/**@type {goog.array.ArrayLike}*/value),
+        return goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
             bot.inject.wrapValue);
       }
 
@@ -143,7 +143,7 @@ bot.inject.wrapValue = function(value) {
  */
 bot.inject.unwrapValue_ = function(value, opt_doc) {
   if (goog.isArray(value)) {
-    return goog.array.map((/**@type {goog.array.ArrayLike}*/value),
+    return goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
         function(v) { return bot.inject.unwrapValue_(v, opt_doc); });
   } else if (goog.isObject(value)) {
     if (typeof value == 'function') {
@@ -232,7 +232,7 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
   var ret;
   try {
     fn = bot.inject.recompileFunction_(fn, win);
-    var unwrappedArgs = (/**@type {Object}*/bot.inject.unwrapValue_(args,
+    var unwrappedArgs = /**@type {Object}*/ (bot.inject.unwrapValue_(args,
         win.document));
     ret = bot.inject.wrapResponse(fn.apply(null, unwrappedArgs));
   } catch (ex) {
@@ -384,8 +384,8 @@ bot.inject.wrapError = function(err) {
  * when it is injected into the page. Since compiling each browser atom results
  * in a different symbol table, we must use this known key to access the cache.
  * This ensures the same object is used between injections of different atoms.
- * @const
  * @private {string}
+ * @const
  */
 bot.inject.cache.CACHE_KEY_ = '$wdc_';
 

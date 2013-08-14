@@ -23,6 +23,7 @@ import com.google.common.base.Supplier;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.LocalFileDetector;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 
 public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
 
@@ -37,8 +38,19 @@ public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
       return null;
     }
 
-    SauceDriver driver = new SauceDriver(capabilities);
-    driver.setFileDetector(new LocalFileDetector());
-    return driver;
+    // Make several attempt to init a driver
+    UnreachableBrowserException lastException = null;
+    for (int i = 0; i < 3; i++) {
+      try {
+        SauceDriver driver = new SauceDriver(capabilities);
+        driver.setFileDetector(new LocalFileDetector());
+        return driver;
+      } catch (UnreachableBrowserException ex) {
+        lastException = ex;
+      }
+    }
+
+    // Fallback, all atempts were unsuccessfull
+    throw lastException;
   }
 }

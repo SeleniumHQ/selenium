@@ -106,7 +106,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
    * the element to be displayed:
    * 
    * <pre class="code>
-   *   return ((RenderedWebElement) element).isDisplayed();
+   *   return element.isDisplayed();
    * </pre>
    * 
    * @param element The element to use

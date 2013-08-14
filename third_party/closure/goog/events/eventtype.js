@@ -85,6 +85,7 @@ goog.events.EventType = {
   // Misc
   BEFOREUNLOAD: 'beforeunload',
   CONTEXTMENU: 'contextmenu',
+  DOMCONTENTLOADED: 'DOMContentLoaded',
   ERROR: 'error',
   HELP: 'help',
   LOAD: 'load',
@@ -133,11 +134,19 @@ goog.events.EventType = {
   MSGESTUREHOLD: 'MSGestureHold',
   MSGESTURESTART: 'MSGestureStart',
   MSGESTURETAP: 'MSGestureTap',
+  MSGOTPOINTERCAPTURE: 'MSGotPointerCapture',
   MSINERTIASTART: 'MSInertiaStart',
+  MSLOSTPOINTERCAPTURE: 'MSLostPointerCapture',
   MSPOINTERCANCEL: 'MSPointerCancel',
   MSPOINTERDOWN: 'MSPointerDown',
   MSPOINTERMOVE: 'MSPointerMove',
   MSPOINTEROVER: 'MSPointerOver',
   MSPOINTEROUT: 'MSPointerOut',
-  MSPOINTERUP: 'MSPointerUp'
+  MSPOINTERUP: 'MSPointerUp',
+
+  // Native IMEs/input tools events.
+  TEXTINPUT: 'textinput',
+  COMPOSITIONSTART: 'compositionstart',
+  COMPOSITIONUPDATE: 'compositionupdate',
+  COMPOSITIONEND: 'compositionend'
 };

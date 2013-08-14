@@ -16,16 +16,16 @@ limitations under the License.
 
 package org.openqa.selenium.support.events.internal;
 
-import org.openqa.selenium.HasTouchScreen;
-import org.openqa.selenium.TouchScreen;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 /**
  * A touch screen that fires events.
  */
-public class EventFiringTouch implements TouchScreen {
+public class EventFiringTouch implements org.openqa.selenium.interactions.TouchScreen {
 
   private final WebDriver driver;
   private final WebDriverEventListener dispatcher;

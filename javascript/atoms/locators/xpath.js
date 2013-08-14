@@ -27,8 +27,6 @@
  * because the latter silently return nothing when the xpath resolves to a
  * non-Node type, limiting the error-checking the implementation can provide.
  * </ol>
- *
- * TODO(user): Add support for browsers without native xpath
  */
 
 goog.provide('bot.locators.xpath');
@@ -92,7 +90,7 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   var doc = goog.dom.getOwnerDocument(node);
 
   // Let the wgxpath library be compiled away unless we are on IE or Android.
-  // TODO(gdennis): Restrict this to just IE when we drop support for Froyo.
+  // TODO(user): Restrict this to just IE when we drop support for Froyo.
   if (goog.userAgent.IE || goog.userAgent.product.ANDROID) {
     wgxpath.install(goog.dom.getWindow(doc));
   }
@@ -101,7 +99,7 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
     var resolver = doc.createNSResolver ?
         doc.createNSResolver(doc.documentElement) :
         bot.locators.xpath.DEFAULT_RESOLVER_;
-    if (goog.userAgent.IE && !goog.userAgent.isVersion(7)) {
+    if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(7)) {
       // IE6, and only IE6, has an issue where calling a custom function
       // directly attached to the document object does not correctly propagate
       // thrown errors. So in that case *only* we will use apply().
@@ -168,7 +166,7 @@ bot.locators.xpath.single = function(target, root) {
   if (!goog.isNull(node)) {
     bot.locators.xpath.checkElement_(node, target);
   }
-  return (/** @type {Element} */node);
+  return /** @type {Element} */ (node);
 };
 
 
@@ -210,5 +208,5 @@ bot.locators.xpath.many = function(target, root) {
   goog.array.forEach(nodes, function(n) {
     bot.locators.xpath.checkElement_(n, target);
   });
-  return (/** @type {!goog.array.ArrayLike} */nodes);
+  return /** @type {!goog.array.ArrayLike} */ (nodes);
 };

@@ -113,14 +113,14 @@ goog.dom.TextRange.createFromNodes = function(anchorNode, anchorOffset,
   range.isReversed_ = goog.dom.Range.isReversed(anchorNode, anchorOffset,
       focusNode, focusOffset);
 
-  // Avoid selecting BRs directly
-  if (anchorNode.tagName == 'BR') {
+  // Avoid selecting terminal elements directly
+  if (goog.dom.isElement(anchorNode) && !goog.dom.canHaveChildren(anchorNode)) {
     var parent = anchorNode.parentNode;
     anchorOffset = goog.array.indexOf(parent.childNodes, anchorNode);
     anchorNode = parent;
   }
 
-  if (focusNode.tagName == 'BR') {
+  if (goog.dom.isElement(focusNode) && !goog.dom.canHaveChildren(focusNode)) {
     var parent = focusNode.parentNode;
     focusOffset = goog.array.indexOf(parent.childNodes, focusNode);
     focusNode = parent;
@@ -302,6 +302,14 @@ goog.dom.TextRange.prototype.getStartOffset = function() {
 
 
 /** @override */
+goog.dom.TextRange.prototype.getStartPosition = function() {
+  return this.isReversed() ?
+      this.getBrowserRangeWrapper_().getEndPosition() :
+      this.getBrowserRangeWrapper_().getStartPosition();
+};
+
+
+/** @override */
 goog.dom.TextRange.prototype.getEndNode = function() {
   return this.endNode_ ||
       (this.endNode_ = this.getBrowserRangeWrapper_().getEndNode());
@@ -312,6 +320,14 @@ goog.dom.TextRange.prototype.getEndNode = function() {
 goog.dom.TextRange.prototype.getEndOffset = function() {
   return this.endOffset_ != null ? this.endOffset_ :
       (this.endOffset_ = this.getBrowserRangeWrapper_().getEndOffset());
+};
+
+
+/** @override */
+goog.dom.TextRange.prototype.getEndPosition = function() {
+  return this.isReversed() ?
+      this.getBrowserRangeWrapper_().getStartPosition() :
+      this.getBrowserRangeWrapper_().getEndPosition();
 };
 
 
@@ -365,7 +381,7 @@ goog.dom.TextRange.prototype.containsRange = function(otherRange,
  * @return {boolean} Whether the given node is in the given document.
  */
 goog.dom.TextRange.isAttachedNode = function(node) {
-  if (goog.userAgent.IE && !goog.userAgent.isDocumentMode(9)) {
+  if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) {
     var returnValue = false;
     /** @preserveTry */
     try {
@@ -391,7 +407,7 @@ goog.dom.TextRange.prototype.isRangeInDocument = function() {
           goog.dom.TextRange.isAttachedNode(this.startNode_)) &&
          (!this.endNode_ ||
           goog.dom.TextRange.isAttachedNode(this.endNode_)) &&
-         (!(goog.userAgent.IE && !goog.userAgent.isDocumentMode(9)) ||
+         (!(goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) ||
           this.getBrowserRangeWrapper_().isRangeInDocument());
 };
 

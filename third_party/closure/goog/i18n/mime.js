@@ -19,6 +19,8 @@
 goog.provide('goog.i18n.mime');
 goog.provide('goog.i18n.mime.encode');
 
+goog.require('goog.array');
+
 
 /**
  * Regular expression for matching those characters that are outside the
@@ -63,38 +65,47 @@ goog.i18n.mime.encode = function(str, opt_noquote) {
             // Special case for space, which can be encoded as _ not =20
             return '_';
           }
-
-          var a = [''];  // start with empty string to get = before every char
-          // First convert the UCS-2 character into its UTF-8 bytes
-          if (i < 128) {
-            a.push(i);
-          } else if (i <= 0x7ff) {
-            a.push(
-                0xc0 + ((i >> 6) & 0x3f),
-                0x80 + (i & 0x3f));
-          } else if (i <= 0xffff) {
-            a.push(
-                0xe0 + ((i >> 12) & 0x3f),
-                0x80 + ((i >> 6) & 0x3f),
-                0x80 + (i & 0x3f));
-          } else {
-            // (This is defensive programming, since ecmascript isn't supposed
-            // to handle code points that take more than 16 bits.)
-            a.push(
-                0xf0 + ((i >> 18) & 0x3f),
-                0x80 + ((i >> 12) & 0x3f),
-                0x80 + ((i >> 6) & 0x3f),
-                0x80 + (i & 0x3f));
-          }
-          // Now convert those bytes into hex strings (don't do anything with
-          // a[0] as that's got the empty string that lets us use join(),
-          // below).
-          for (i = a.length - 1; i > 0; --i) {
-            a[i] = a[i].toString(16);
-          }
-          // Form the string with = before each byte.
+          var a = goog.array.concat('', goog.i18n.mime.getHexCharArray(c));
           return a.join('=');
         }) + '?=';
   }
   return str;
+};
+
+
+/**
+ * Get an array of UTF-8 hex codes for a given character.
+ * @param {string} c The matched character.
+ * @return {!Array.<string>} A hex array representing the character.
+ */
+goog.i18n.mime.getHexCharArray = function(c) {
+  var i = c.charCodeAt(0);
+  var a = [];
+  // First convert the UCS-2 character into its UTF-8 bytes
+  if (i < 128) {
+    a.push(i);
+  } else if (i <= 0x7ff) {
+    a.push(
+        0xc0 + ((i >> 6) & 0x3f),
+        0x80 + (i & 0x3f));
+  } else if (i <= 0xffff) {
+    a.push(
+        0xe0 + ((i >> 12) & 0x3f),
+        0x80 + ((i >> 6) & 0x3f),
+        0x80 + (i & 0x3f));
+  } else {
+    // (This is defensive programming, since ecmascript isn't supposed
+    // to handle code points that take more than 16 bits.)
+    a.push(
+        0xf0 + ((i >> 18) & 0x3f),
+        0x80 + ((i >> 12) & 0x3f),
+        0x80 + ((i >> 6) & 0x3f),
+        0x80 + (i & 0x3f));
+  }
+  // Now convert those bytes into hex strings (don't do anything with
+  // a[0] as that's got the empty string that lets us use join())
+  for (i = a.length - 1; i >= 0; --i) {
+    a[i] = a[i].toString(16);
+  }
+  return a;
 };

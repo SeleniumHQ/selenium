@@ -13,9 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+The Keys implementation.
+"""
+
 from __future__ import unicode_literals
 
 class Keys(object):
+    """
+    Set of special keys codes.
+    """
 
     NULL         = '\ue000'
     CANCEL       = '\ue001' #  ^break

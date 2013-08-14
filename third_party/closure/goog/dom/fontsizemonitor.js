@@ -132,7 +132,8 @@ goog.dom.FontSizeMonitor.prototype.disposeInternal = function() {
   this.resizeTarget_ = null;
 
   // Firefox 2 crashes if the iframe is removed during the unload phase.
-  if (!goog.userAgent.GECKO || goog.userAgent.isVersion('1.9')) {
+  if (!goog.userAgent.GECKO ||
+      goog.userAgent.isVersionOrHigher('1.9')) {
     goog.dom.removeNode(this.sizeElement_);
   }
   delete this.sizeElement_;

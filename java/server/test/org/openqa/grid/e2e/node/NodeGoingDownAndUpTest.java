@@ -34,28 +34,32 @@ import org.junit.Test;
 
 import static org.openqa.selenium.TestWaiter.waitFor;
 
-//@Test(groups = {"slow", "firefox"})
 public class NodeGoingDownAndUpTest {
 
   private static Hub hub;
   private static Registry registry;
   private static SelfRegisteringRemote remote;
-  
 
   @BeforeClass
   public static void prepare() throws Exception {
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
 
-
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
-    
-    remote.getConfiguration().put(RegistrationRequest.NODE_POLLING, 250);
+
+    // check if the node is up every 900 ms
+    remote.getConfiguration().put(RegistrationRequest.NODE_POLLING, 900);
+    // unregister the proxy is it's down for more than 10 sec in a row.
+    remote.getConfiguration().put(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER, 10000);
+    // mark as down after 3 tries
+    remote.getConfiguration().put(RegistrationRequest.DOWN_POLLING_LIMIT, 3);
+    // limit connection and socket timeout for node alive check up to
+    remote.getConfiguration().put(RegistrationRequest.STATUS_CHECK_TIMEOUT, 100);
+    // add browser
+    remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
   
     remote.startRemoteServer();
-  
     remote.sendRegistrationRequest();
-  
     RegistryTestHelper.waitForNode(registry, 1);
   }
 
@@ -65,15 +69,19 @@ public class NodeGoingDownAndUpTest {
     for (RemoteProxy proxy : registry.getAllProxies()) {
       waitFor(isUp((DefaultRemoteProxy) proxy));
     }
+
     // killing the nodes
     remote.stopRemoteServer();
+
     // should be down
     for (RemoteProxy proxy : registry.getAllProxies()) {
       waitFor(isDown((DefaultRemoteProxy) proxy));
     }
+
     // and back up
     remote.startRemoteServer();
-    // should be down
+
+    // should be up
     for (RemoteProxy proxy : registry.getAllProxies()) {
       waitFor(isUp((DefaultRemoteProxy) proxy));
     }

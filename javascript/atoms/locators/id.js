@@ -46,7 +46,7 @@ bot.locators.id.single = function(target, root) {
     return bot.dom.getAttribute(element, 'id') == target &&
         goog.dom.contains(root, element);
   });
-  return (/**@type{Element}*/element);
+  return /**@type{Element}*/ (element);
 };
 
 

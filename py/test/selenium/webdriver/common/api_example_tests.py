@@ -20,7 +20,8 @@ import pytest
 import time
 import unittest
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 def not_available_on_remote(func):
@@ -125,15 +126,12 @@ class ApiExampleTest (unittest.TestCase):
     def testSwitchToWindow(self):
         title_1 = "XHTML Test Page"
         title_2 = "We Arrive Here"
+        switch_to_window_timeout = 5
+        wait = WebDriverWait(self.driver, switch_to_window_timeout, ignored_exceptions=[NoSuchWindowException])
         self._loadPage("xhtmlTest")
         self.driver.find_element_by_link_text("Open new window").click()
         self.assertEquals(title_1, self.driver.title)
-        try:
-            self.driver.switch_to_window("result")
-        except:
-            # This may fail because the window is not loading fast enough, so try again
-            time.sleep(1)
-            self.driver.switch_to_window("result")
+        wait.until(lambda dr: dr.switch_to_window("result") is None)
         self.assertEquals(title_2, self.driver.title)
 
     def testSwitchFrameByName(self):
@@ -254,6 +252,17 @@ class ApiExampleTest (unittest.TestCase):
         self.assertEquals(size['width'], newSize[0])
         self.assertEquals(size['height'], newSize[1])
 
+    def testGetLogTypes(self):
+        self._loadPage("blank")
+        self.assertTrue(isinstance(self.driver.log_types, list))
+
+    def testGetLog(self):
+        self._loadPage("blank")
+        for log_type in self.driver.log_types:
+            log = self.driver.get_log(log_type)
+            self.assertTrue(isinstance(log, list))
+            self.assertTrue(log)
+
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
 
@@ -262,4 +271,3 @@ class ApiExampleTest (unittest.TestCase):
 
     def _loadPage(self, name):
         self.driver.get(self._pageURL(name))
-

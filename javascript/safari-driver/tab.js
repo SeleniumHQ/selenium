@@ -87,7 +87,7 @@ safaridriver.Tab.prototype.whenReady = function(callback) {
  * Notifies the registered listeners that this tab is ready to continue.
  */
 safaridriver.Tab.prototype.notifyReady = function() {
-  this.log('Tab may be ready; waiting for idle state');
+  this.logConfig('Tab may be ready; waiting for idle state');
   var self = this;
   if (!self.idleStateWaitKey_) {
     self.idleStateWaitKey_ = setTimeout(function() {
@@ -96,7 +96,7 @@ safaridriver.Tab.prototype.notifyReady = function() {
       self.log('Tab looks ready; notifying listeners');
       while (self.readyListeners_.length) {
         if (!self.isReady_) {
-          self.log('Tab is no longer ready');
+          self.logConfig('Tab is no longer ready');
           return;
         }
         var callback = self.readyListeners_.shift();

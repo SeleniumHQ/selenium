@@ -92,22 +92,29 @@ namespace OpenQA.Selenium.IE
         private const string IgnoreProtectedModeSettingsCapability = "ignoreProtectedModeSettings";
         private const string IgnoreZoomSettingCapability = "ignoreZoomSetting";
         private const string InitialBrowserUrlCapability = "initialBrowserUrl";
-        private const string EnableNativeEventsCapability = "nativeEvents";
         private const string EnablePersistentHoverCapability = "enablePersistentHover";
         private const string ElementScrollBehaviorCapability = "elementScrollBehavior";
-        private const string UnexpectedAlertBehaviorCapability = "unexpectedAlertBehaviour";
         private const string RequireWindowFocusCapability = "requireWindowFocus";
         private const string BrowserAttachTimeoutCapability = "browserAttachTimeout";
+        private const string BrowserCommandLineSwitchesCapability = "ie.browserCommandLineSwitches";
+        private const string ForceCreateProcessApiCapability = "ie.forceCreateProcessApi";
+        private const string UsePerProcessProxyCapability = "ie.usePerProcessProxy";
+        private const string EnsureCleanSessionCapability = "ie.ensureCleanSession";
 
         private bool ignoreProtectedModeSettings;
         private bool ignoreZoomLevel;
         private bool enableNativeEvents = true;
         private bool requireWindowFocus;
         private bool enablePersistentHover = true;
+        private bool forceCreateProcessApi;
+        private bool usePerProcessProxy;
+        private bool ensureCleanSession;
         private TimeSpan browserAttachTimeout = TimeSpan.MinValue;
         private string initialBrowserUrl = string.Empty;
+        private string browserCommandLineArguments = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
         private InternetExplorerUnexpectedAlertBehavior unexpectedAlertBehavior = InternetExplorerUnexpectedAlertBehavior.Default;
+        private Proxy proxy;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
 
         /// <summary>
@@ -203,6 +210,65 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to force the use of the Windows CreateProcess API
+        /// when launching Internet Explorer. The default value is <see langword="false"/>.
+        /// </summary>
+        public bool ForceCreateProcessApi
+        {
+            get { return this.forceCreateProcessApi; }
+            set { this.forceCreateProcessApi = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the command line arguments used in launching Internet Explorer when the 
+        /// Windows CreateProcess API is used. This property only has an effect when the
+        /// <see cref="ForceCreateProcessApi"/> is <see langword="true"/>.
+        /// </summary>
+        public string BrowserCommandLineArguments
+        {
+            get { return this.browserCommandLineArguments; }
+            set { this.browserCommandLineArguments = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="Proxy"/> to be used with Internet Explorer. By default,
+        /// will install the specified proxy to be the system proxy, used by all instances of
+        /// Internet Explorer. To change this default behavior, change the <see cref="UsePerProcessProxy"/>
+        /// property.
+        /// </summary>
+        public Proxy Proxy
+        {
+            get { return this.proxy; }
+            set { this.proxy = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use the supplied <see cref="Proxy"/>
+        /// settings on a per-process basis, not updating the system installed proxy setting.
+        /// This property is only valid when setting a <see cref="Proxy"/>, where the
+        /// <see cref="OpenQA.Selenium.Proxy.Kind"/> property is either <see cref="ProxyKind.Direct"/>,
+        /// <see cref="ProxyKind.System"/>, or <see cref="ProxyKind.Manual"/>, and is
+        /// otherwise ignored. Defaults to <see langword="false"/>.
+        /// </summary>
+        public bool UsePerProcessProxy
+        {
+            get { return this.usePerProcessProxy; }
+            set { this.usePerProcessProxy = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to clear the Internet Explorer cache
+        /// before launching the browser. When set to <see langword="true"/>, clears the
+        /// system cache for all instances of Internet Explorer, even those already running
+        /// when the driven instance is launched. Defaults to <see langword="false"/>.
+        /// </summary>
+        public bool EnsureCleanSession
+        {
+            get { return ensureCleanSession; }
+            set { ensureCleanSession = value; }
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options 
         /// for the Internet Explorer driver.
         /// </summary>
@@ -218,13 +284,18 @@ namespace OpenQA.Selenium.IE
         {
             if (capabilityName == IgnoreProtectedModeSettingsCapability ||
                 capabilityName == IgnoreZoomSettingCapability ||
-                capabilityName == EnableNativeEventsCapability ||
+                capabilityName == CapabilityType.HasNativeEvents ||
                 capabilityName == InitialBrowserUrlCapability ||
                 capabilityName == ElementScrollBehaviorCapability ||
-                capabilityName == UnexpectedAlertBehaviorCapability ||
+                capabilityName == CapabilityType.UnexpectedAlertBehavior ||
                 capabilityName == EnablePersistentHoverCapability ||
                 capabilityName == RequireWindowFocusCapability ||
-                capabilityName == BrowserAttachTimeoutCapability)
+                capabilityName == BrowserAttachTimeoutCapability ||
+                capabilityName == ForceCreateProcessApiCapability ||
+                capabilityName == BrowserCommandLineSwitchesCapability ||
+                capabilityName == CapabilityType.Proxy ||
+                capabilityName == UsePerProcessProxyCapability ||
+                capabilityName == EnsureCleanSessionCapability)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
@@ -247,7 +318,7 @@ namespace OpenQA.Selenium.IE
         public ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = DesiredCapabilities.InternetExplorer();
-            capabilities.SetCapability(EnableNativeEventsCapability, this.enableNativeEvents);
+            capabilities.SetCapability(CapabilityType.HasNativeEvents, this.enableNativeEvents);
             capabilities.SetCapability(EnablePersistentHoverCapability, this.enablePersistentHover);
 
             if (this.requireWindowFocus)
@@ -289,12 +360,32 @@ namespace OpenQA.Selenium.IE
                         break;
                 }
 
-                capabilities.SetCapability(UnexpectedAlertBehaviorCapability, unexpectedAlertBehaviorSetting);
+                capabilities.SetCapability(CapabilityType.UnexpectedAlertBehavior, unexpectedAlertBehaviorSetting);
             }
 
             if (this.browserAttachTimeout != TimeSpan.MinValue)
             {
                 capabilities.SetCapability(BrowserAttachTimeoutCapability, Convert.ToInt32(this.browserAttachTimeout.TotalMilliseconds));
+            }
+
+            if (this.forceCreateProcessApi)
+            {
+                capabilities.SetCapability(ForceCreateProcessApiCapability, true);
+                if (!string.IsNullOrEmpty(this.browserCommandLineArguments))
+                {
+                    capabilities.SetCapability(BrowserCommandLineSwitchesCapability, this.browserCommandLineArguments);
+                }
+            }
+
+            if (this.proxy != null)
+            {
+                capabilities.SetCapability(CapabilityType.Proxy, this.proxy);
+                capabilities.SetCapability(UsePerProcessProxyCapability, this.usePerProcessProxy);
+            }
+
+            if (this.ensureCleanSession)
+            {
+                capabilities.SetCapability(EnsureCleanSessionCapability, true);
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)

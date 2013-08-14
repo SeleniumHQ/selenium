@@ -801,13 +801,9 @@ Utils.getLocationRelativeToWindowHandle = function(element, opt_onlyFirstRect) {
   if (bot.userAgent.isProductVersion(3.6)) {
     // Get the ultimate parent frame
     var currentParent = element.ownerDocument.defaultView;
-    var ultimateParent = element.ownerDocument.defaultView.parent;
-    while (ultimateParent != currentParent) {
-      currentParent = ultimateParent;
-      ultimateParent = currentParent.parent;
-    }
+    var ultimateParent = currentParent.top;
 
-    var offX = element.ownerDocument.defaultView.mozInnerScreenX - ultimateParent.mozInnerScreenX;
+    var offX = currentParent.mozInnerScreenX - ultimateParent.mozInnerScreenX;
     var offY = element.ownerDocument.defaultView.mozInnerScreenY - ultimateParent.mozInnerScreenY;
 
     location.x += offX;

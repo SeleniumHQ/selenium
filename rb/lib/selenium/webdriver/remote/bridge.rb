@@ -82,7 +82,8 @@ module Selenium
             DriverExtensions::TakesScreenshot,
             DriverExtensions::HasSessionId,
             DriverExtensions::Rotatable,
-            DriverExtensions::HasTouchScreen
+            DriverExtensions::HasTouchScreen,
+            DriverExtensions::HasRemoteStatus
           ]
         end
 
@@ -99,6 +100,10 @@ module Selenium
           @session_id = resp['sessionId'] or raise Error::WebDriverError, 'no sessionId in returned payload'
 
           Capabilities.json_create resp['value']
+        end
+
+        def status
+          execute :status
         end
 
         def get(url)

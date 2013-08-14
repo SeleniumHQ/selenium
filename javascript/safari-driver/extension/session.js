@@ -19,6 +19,8 @@ goog.provide('safaridriver.extension.Session');
 goog.require('goog.string');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
+goog.require('webdriver.Capability');
+goog.require('webdriver.Capabilities');
 goog.require('webdriver.Session');
 
 
@@ -42,20 +44,16 @@ goog.inherits(safaridriver.extension.Session, webdriver.Session);
 
 /**
  * The capabilites of the SafariDriver.
- * @type {!Object.<*>}
+ * @type {!webdriver.Capabilities}
  * @const
  */
-safaridriver.extension.Session.CAPABILITIES = {
-  'browserName': 'safari',
-  'version': goog.userAgent.product.VERSION,
-  'platform': goog.userAgent.MAC ? 'MAC' : 'WINDOWS',
-  'javascriptEnabled': true,
-  'takesScreenshot': true,
-  'cssSelectorsEnabled': true,
-  // The SafariDriver cannot handle insecure SSL, so indicate that in the
-  // returned capabilities.
-  'secureSsl': true
-};
+safaridriver.extension.Session.CAPABILITIES = webdriver.Capabilities.safari().
+    set(webdriver.Capability.VERSION, goog.userAgent.product.VERSION).
+    set(webdriver.Capability.PLATFORM, goog.userAgent.MAC ? 'MAC' : 'WINDOWS').
+    set(webdriver.Capability.SUPPORTS_JAVASCRIPT, true).
+    set(webdriver.Capability.TAKES_SCREENSHOT, true).
+    set(webdriver.Capability.SUPPORTS_CSS_SELECTORS, true).
+    set(webdriver.Capability.SECURE_SSL, true);
 
 
 /**

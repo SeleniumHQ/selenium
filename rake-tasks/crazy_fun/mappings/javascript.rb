@@ -196,7 +196,7 @@ end
 module Javascript
   # CrazyFunJava.ant.taskdef :name      => "jscomp",
   #                          :classname => "com.google.javascript.jscomp.ant.CompileTask",
-  #                          :classpath => "third_party/closure/bin/compiler-20130227.jar"
+  #                          :classpath => "third_party/closure/bin/compiler-20130603.jar"
 
   class BaseJs < Tasks
     attr_reader :calcdeps
@@ -207,7 +207,7 @@ module Javascript
         py = "python"
       end
       @calcdeps = "#{py} third_party/closure/bin/calcdeps.py " +
-                  "-c third_party/closure/bin/compiler-20130227.jar "
+                  "-c third_party/closure/bin/compiler-20130603.jar "
     end
 
     def js_name(dir, name)
@@ -500,7 +500,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20130227.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler-20130603.jar"
           end
           arg :line => cmd
         end
@@ -669,7 +669,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20130227.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler-20130603.jar"
           end
           arg :line => flags.join(" ")
         end
@@ -792,7 +792,7 @@ module Javascript
 
         CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :fork => false, :failonerror => true do
           classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler-20130227.jar"
+            pathelement :path =>  "third_party/closure/bin/compiler-20130603.jar"
           end
           arg :line => cmd
         end
@@ -1237,10 +1237,14 @@ module Javascript
           roots = args[:content_roots].collect {|root| File.join(Dir.pwd, root)}
 
           resources = []
+          exclude_resources = []
           (args[:resources] || []).each do |resource|
             resource.each do |from, to|
               resources.push(" --resource=#{from}:#{to}")
             end
+          end
+          (args[:exclude_resources] || []).each do |pattern|
+            exclude_resources.push(" --exclude_resource=#{pattern}")
           end
 
           mkdir_p "#{folder_name}"
@@ -1251,7 +1255,8 @@ module Javascript
               " --lib=third_party/closure/goog" <<
               " --root=" << roots.join(" --root=") <<
               " --src=" << srcdir <<
-              resources.join("")
+              resources.join("") <<
+              exclude_resources.join("")
 
           sh cmd
         end

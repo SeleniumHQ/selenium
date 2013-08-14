@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -64,7 +62,6 @@
 <span class="c"># See the License for the specific language governing permissions and</span>
 <span class="c"># limitations under the License.</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">with_statement</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 
 <span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">copy</span>
@@ -75,14 +72,13 @@
 <span class="kn">import</span> <span class="nn">zipfile</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">cStringIO</span> <span class="kn">import</span> <span class="n">StringIO</span> <span class="k">as</span> <span class="n">BytesIO</span>
     <span class="nb">bytes</span> <span class="o">=</span> <span class="nb">str</span>
     <span class="nb">str</span> <span class="o">=</span> <span class="nb">unicode</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
 
 <span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">minidom</span>
-<span class="kn">from</span> <span class="nn">distutils</span> <span class="kn">import</span> <span class="n">dir_util</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.proxy</span> <span class="kn">import</span> <span class="n">ProxyType</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
 
@@ -295,7 +291,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_manual_proxy_preference</span><span class="p">(</span><span class="s">&quot;ftp&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">ftp_proxy</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_manual_proxy_preference</span><span class="p">(</span><span class="s">&quot;http&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">http_proxy</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_manual_proxy_preference</span><span class="p">(</span><span class="s">&quot;ssl&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">ssl_proxy</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">proxy</span><span class="o">.</span><span class="n">proxy_type</span> <span class="ow">is</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">AUTODETECT</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">proxy</span><span class="o">.</span><span class="n">proxy_type</span> <span class="ow">is</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">PAC</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;network.proxy.autoconfig_url&quot;</span><span class="p">,</span> <span class="n">proxy</span><span class="o">.</span><span class="n">proxy_autoconfig_url</span><span class="p">)</span>
 
     <span class="c">#Private Methods</span></div>
@@ -306,14 +302,15 @@
             <span class="k">return</span> <span class="bp">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">item</span>
+
     <span class="k">def</span> <span class="nf">_set_manual_proxy_preference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">setting</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">setting</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">setting</span> <span class="ow">is</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="n">host_details</span> <span class="o">=</span> <span class="n">setting</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;:&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;network.proxy.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">,</span> <span class="n">host_details</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;network.proxy.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">,</span> <span class="n">host_details</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">host_details</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;network.proxy.</span><span class="si">%s</span><span class="s">_port&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">host_details</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;network.proxy.</span><span class="si">%s</span><span class="s">_port&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">host_details</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
     <span class="k">def</span> <span class="nf">_create_tempfolder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -381,11 +378,11 @@
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">extensions_path</span><span class="p">)</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">xpifile</span><span class="p">,</span> <span class="n">addon_path</span> <span class="o">+</span> <span class="s">&#39;.xpi&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">dir_util</span><span class="o">.</span><span class="n">copy_tree</span><span class="p">(</span><span class="n">addon</span><span class="p">,</span> <span class="n">addon_path</span><span class="p">,</span> <span class="n">preserve_symlinks</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">addon</span><span class="p">,</span> <span class="n">addon_path</span><span class="p">,</span> <span class="n">symlinks</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
         <span class="c"># remove the temporary directory, if any</span>
         <span class="k">if</span> <span class="n">tmpdir</span><span class="p">:</span>
-            <span class="n">dir_util</span><span class="o">.</span><span class="n">remove_tree</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_addon_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addon_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

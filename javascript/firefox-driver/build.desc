@@ -67,7 +67,6 @@ mozilla_extension(name = "webdriver",
     { "js/timer.js" : "resource/modules/timer.js" },
     { "js/evaluate.js" : "resource/evaluate.js" },
     { "js/json2.js" : "resource/json2.js" },
-    { "//third_party/js/sizzle" : "resource/sizzle.js" }
   ],
   chrome = "extension/chrome.manifest",
   install = "extension/install.rdf")

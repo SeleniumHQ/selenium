@@ -18,8 +18,6 @@
 #include "DocumentHost.h"
 #include "Element.h"
 
-using namespace std;
-
 namespace webdriver {
 
 class ElementRepository {

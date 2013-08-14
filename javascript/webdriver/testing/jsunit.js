@@ -29,14 +29,15 @@ goog.require('webdriver.testing.TestCase');
 
 /**
  * Constructs a test runner.
+ * @param {!webdriver.testing.Client} client .
  * @constructor
  * @extends {goog.testing.TestRunner}
  */
-webdriver.testing.jsunit.TestRunner = function() {
+webdriver.testing.jsunit.TestRunner = function(client) {
   goog.base(this);
 
   /** @private {!webdriver.testing.Client} */
-  this.client_ = new webdriver.testing.Client();
+  this.client_ = client;
 };
 goog.inherits(webdriver.testing.jsunit.TestRunner, goog.testing.TestRunner);
 
@@ -267,7 +268,8 @@ webdriver.testing.jsunit.TestRunner.prototype.takeScreenshot = function(
 
 
 (function() {
-  var tr = new webdriver.testing.jsunit.TestRunner();
+  var client = new webdriver.testing.Client();
+  var tr = new webdriver.testing.jsunit.TestRunner(client);
 
   // Export our test runner so it can be accessed by Selenium/WebDriver. This
   // will only work if webdriver.WebDriver is using a pure-JavaScript
@@ -320,7 +322,7 @@ webdriver.testing.jsunit.TestRunner.prototype.takeScreenshot = function(
       onload();
     }
 
-    var testCase = new webdriver.testing.TestCase(document.title);
+    var testCase = new webdriver.testing.TestCase(client, document.title);
     testCase.autoDiscoverTests();
 
     tr.initialize(testCase);

@@ -33,7 +33,6 @@ std::wstring CommandLineArguments::GetValue(std::wstring arg_name,
 
 void CommandLineArguments::ParseArguments(int argc, _TCHAR* argv[]) {
   this->is_help_requested_ = false;
-  std::map<std::string, std::string> args;
   for (int i = 1; i < argc; ++i) {
     std::wstring raw_arg(argv[i]);
     int switch_delimiter_length = GetSwitchDelimiterLength(raw_arg);

@@ -61,7 +61,7 @@ limitations under the License.
       frameDoc[bot.inject.cache.CACHE_KEY_] = null;
 
       // Remove any event listeners.
-      goog.events.removeAll();
+      goog.events.removeAllNativeListeners();
     }
 
     function testAddWindowToCache() {

@@ -18,13 +18,11 @@ limitations under the License.
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
-import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.Keys;
 
 /**
  * An implementation of the keyboard for use with the remote webdriver.
  */
-public class RemoteKeyboard implements Keyboard {
+public class RemoteKeyboard implements org.openqa.selenium.interactions.Keyboard {
   protected final ExecuteMethod executor;
 
   public RemoteKeyboard(ExecuteMethod executor) {
@@ -36,19 +34,20 @@ public class RemoteKeyboard implements Keyboard {
         ImmutableMap.of("value", keysToSend));
   }
 
-  public void pressKey(Keys keyToPress) {
+  @Override
+  public void pressKey(CharSequence keyToPress) {
     // The wire protocol requires an array of keys.
     CharSequence[] sequence = {keyToPress};
     executor.execute(DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT,
-        ImmutableMap.of("value", sequence));
+                     ImmutableMap.of("value", sequence));
   }
 
-  public void releaseKey(Keys keyToRelease) {
+  @Override
+  public void releaseKey(CharSequence keyToRelease) {
     // The wire protocol requires an array of keys.
     CharSequence[] sequence = {keyToRelease};
     executor.execute(DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT,
-        ImmutableMap.of("value", sequence));
-
+                     ImmutableMap.of("value", sequence));
   }
 
 }

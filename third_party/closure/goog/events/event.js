@@ -19,10 +19,22 @@
 
 
 goog.provide('goog.events.Event');
+goog.provide('goog.events.EventLike');
 
 // goog.events.Event no longer depends on goog.Disposable. Keep requiring
 // goog.Disposable here to not break projects which assume this dependency.
 goog.require('goog.Disposable');
+
+
+/**
+ * A typedef for event like objects that are dispatchable via the
+ * goog.events.dispatchEvent function. strings are treated as the type for a
+ * goog.events.Event. Objects are treated as an extension of a new
+ * goog.events.Event with the type property of the object being used as the type
+ * of the Event.
+ * @typedef {string|Object|goog.events.Event}
+ */
+goog.events.EventLike;
 
 
 

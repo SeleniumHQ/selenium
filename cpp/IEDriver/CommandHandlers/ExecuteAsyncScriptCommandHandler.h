@@ -60,9 +60,7 @@ class ExecuteAsyncScriptCommandHandler : public ExecuteScriptCommandHandler {
       Json::Value json_args = args_parameter_iterator->second;
 
       int timeout_value = executor.async_script_timeout();
-      wchar_t timeout_buffer[12] = {0};
-      _itow_s(timeout_value, &timeout_buffer[0], 12, 10);
-      std::wstring timeout = &timeout_buffer[0];
+      std::wstring timeout = std::to_wstring(static_cast<long long>(timeout_value));
 
       std::wstring script_body = StringUtilities::ToWString(script_parameter_iterator->second.asString());
 

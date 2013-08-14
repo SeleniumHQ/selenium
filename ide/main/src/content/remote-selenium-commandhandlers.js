@@ -132,7 +132,7 @@ objectExtend(CommandHandlerFactory.prototype, {
 
   _predicateForSingleArgAccessor: function(accessBlock) {
     // Given an accessor function getBlah(target),
-    // return a "predicate" equivalient to isBlah(target, value) that
+    // return a "predicate" equivalent to isBlah(target, value) that
     // is true when the value returned by the accessor matches the specified value.
     return function(target, value) {
       return accessBlock(target).pipe(function(accessorResult) {
@@ -175,10 +175,10 @@ objectExtend(CommandHandlerFactory.prototype, {
         accessorResult = accessBlock();
       }
       return accessorResult.pipe(function(accessorResult) {
-        if (accessorResult) {
-          return new PredicateResult(true, "true");
+        if (accessorResult == "true" ) {
+          return new PredicateResult(true, accessorResult);
         }
-        return new PredicateResult(false, "false");
+        return new PredicateResult(false, accessorResult);
       });
     };
   },
@@ -227,14 +227,28 @@ objectExtend(CommandHandlerFactory.prototype, {
   _waitForActionForPredicate: function(predicateBlock) {
     // Convert an isBlahBlah(target, value) function into a waitForBlahBlah(target, value) function.
     return function(target, value) {
+      var deferred = null;
       var terminationCondition = function () {
         try {
-          return predicateBlock(target, value).isTrue;
+          if (!deferred) {
+            deferred = predicateBlock(target, value);
+          }
+          if (!deferred.isPending()) {
+            var pResult = deferred.value()[0];
+            if (deferred.isRejected()) {
+              throw pResult;
+            }
+            deferred = null;
+            return pResult.isTrue;
+          }
+          return false;
+
         } catch (e) {
           // Treat exceptions as meaning the condition is not yet met.
           // Useful, for example, for waitForValue when the element has
           // not even been created yet.
           // TODO: possibly should rethrow some types of exception.
+          deferred = null;
           return false;
         }
       };
@@ -320,10 +334,14 @@ ActionHandler.prototype.execute = function(seleniumApi, command) {
   var terminationCondition = function() {
     //TODO Samit: need to handle wait for page to load?
     if (handlerCondition) {
-      if (handlerCondition.isRejected()) {
-        throw handlerCondition.value()[0];
+      if (Deferred.isPromise(handlerCondition)) {
+        if (handlerCondition.isRejected()) {
+          throw handlerCondition.value()[0];
+        }
+        return !handlerCondition.isPending();
+      } else {
+        return handlerCondition();
       }
-      return !handlerCondition.isPending();
     }
     return true;
   };

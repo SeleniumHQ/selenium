@@ -28,20 +28,19 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.either;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 /**
@@ -63,6 +62,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testDocumentShouldReflectLatestDom() throws Exception {
     driver.get(pages.javascriptPage);
     String currentText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
@@ -78,7 +78,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, ANDROID},
+  @Ignore(value = {IPHONE, ANDROID, MARIONETTE},
           reason = "iPhone: does not detect that a new page loaded.")
   @Test
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
@@ -91,7 +91,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, ANDROID},
+  @Ignore(value = {IPHONE, ANDROID, MARIONETTE},
           reason = "iPhone: does not detect that a new page loaded.")
   @Test
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
@@ -196,10 +196,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, REMOTE, SAFARI},
-          reason = "Firefox: Window demands focus to work." +
-              " Safari: issue 4061." +
-              " Other platforms: not properly tested")
+  @Ignore(value = {SAFARI, MARIONETTE}, reason = " Safari: issue 4061. Other platforms: not properly tested")
   @Test
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
@@ -238,21 +235,17 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IPHONE})
+  @Ignore({IPHONE, MARIONETTE})
   @Test
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
-    driver.get(pages.javascriptPage);
+    assumeTrue(driver instanceof JavascriptExecutor);
 
-    if (!(driver instanceof JavascriptExecutor)) {
-      return;
-    }
+    driver.get(pages.javascriptPage);
 
     ((JavascriptExecutor) driver).executeScript("window.focus();");
     WebElement element = driver.findElement(By.id("keyUp"));
 
-    if (!(element instanceof Locatable)) {
-      return;
-    }
+    assumeTrue(element instanceof Locatable);
 
     Point point = ((Locatable) element).getCoordinates().inViewPort();
 
@@ -270,7 +263,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
    * running: "ImplicitWaitTest", "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
    * SimonStewart 2010-10-04
    */
-  @Ignore(value = {IPHONE, OPERA, SAFARI}, reason = "Safari: issue 3693")
+  @Ignore(value = {IPHONE, OPERA, SAFARI, MARIONETTE}, reason = "Safari: issue 3693")
   @JavascriptEnabled
   @NeedsFreshDriver
   @Test

@@ -19,8 +19,8 @@
 
 goog.provide('goog.ui.emoji.EmojiPaletteRenderer');
 
+goog.require('goog.a11y.aria');
 goog.require('goog.dom');
-goog.require('goog.dom.a11y');
 goog.require('goog.ui.PaletteRenderer');
 goog.require('goog.ui.emoji.Emoji');
 goog.require('goog.ui.emoji.SpriteInfo');
@@ -114,7 +114,7 @@ goog.ui.emoji.EmojiPaletteRenderer.prototype.updateAnimatedPaletteItem =
   // now being updated. See createPaletteItem for the structure of the palette
   // items we're modifying.
 
-  var inner = (/** @type {Element} */ item.firstChild);
+  var inner = /** @type {Element} */ (item.firstChild);
 
   // The first case is a palette item with a CSS class representing the sprite,
   // and an animated emoji.
@@ -180,7 +180,7 @@ goog.ui.emoji.EmojiPaletteRenderer.prototype.createCell = function(node, dom) {
     'id': this.getCssClass() + '-cell-' +
         goog.ui.emoji.EmojiPaletteRenderer.cellId_++
   }, node);
-  goog.dom.a11y.setRole(cell, 'gridcell');
+  goog.a11y.aria.setRole(cell, 'gridcell');
   return cell;
 };
 

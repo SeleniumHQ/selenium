@@ -240,11 +240,8 @@ goog.editor.plugins.AbstractDialogPlugin.prototype.handleAfterHide = function(
  */
 goog.editor.plugins.AbstractDialogPlugin.prototype.restoreOriginalSelection =
     function() {
-  this.getFieldObject().focus();
-  if (this.savedRange_) {
-    this.savedRange_.restore();
-    this.savedRange_ = null;
-  }
+  this.getFieldObject().restoreSavedRange(this.savedRange_);
+  this.savedRange_ = null;
 };
 
 

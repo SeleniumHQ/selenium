@@ -20,7 +20,6 @@
 
 goog.provide('goog.ui.ac.ArrayMatcher');
 
-goog.require('goog.iter');
 goog.require('goog.string');
 
 
@@ -81,12 +80,12 @@ goog.ui.ac.ArrayMatcher.prototype.getPrefixMatches =
     var escapedToken = goog.string.regExpEscape(token);
     var matcher = new RegExp('(^|\\W+)' + escapedToken, 'i');
 
-    goog.iter.some(this.rows_, function(row) {
+    for (var i = 0; i < this.rows_.length && matches.length < maxMatches; i++) {
+      var row = this.rows_[i];
       if (String(row).match(matcher)) {
         matches.push(row);
       }
-      return matches.length >= maxMatches;
-    });
+    }
   }
   return matches;
 };
@@ -99,12 +98,11 @@ goog.ui.ac.ArrayMatcher.prototype.getPrefixMatches =
  * @param {number} maxMatches Max number of matches to return.
  * @return {Array} The best maxMatches rows.
  */
-goog.ui.ac.ArrayMatcher.prototype.getSimilarRows =
-    function(token, maxMatches) {
-
+goog.ui.ac.ArrayMatcher.prototype.getSimilarRows = function(token, maxMatches) {
   var results = [];
 
-  goog.iter.forEach(this.rows_, function(row, index) {
+  for (var index = 0; index < this.rows_.length; index++) {
+    var row = this.rows_[index];
     var str = token.toLowerCase();
     var txt = String(row).toLowerCase();
     var score = 0;
@@ -145,7 +143,7 @@ goog.ui.ac.ArrayMatcher.prototype.getSimilarRows =
         index: index
       });
     }
-  });
+  }
 
   results.sort(function(a, b) {
     var diff = a.score - b.score;

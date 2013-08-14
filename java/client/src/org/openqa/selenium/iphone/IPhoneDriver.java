@@ -44,7 +44,10 @@ import com.google.common.collect.ImmutableMap;
  * 
  * The driver uses WebDriver's remote REST interface to communicate with the iphone. The iphone (or
  * iphone simulator) must be running the iWebDriver app.
+ *
+ * @deprecated please use ios-driver or appium instead
  */
+@Deprecated
 public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot, WebStorage {
 
   /**

@@ -19,7 +19,8 @@ package org.openqa.selenium.lift;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.openqa.selenium.testing.MockTestBase;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
@@ -37,8 +38,10 @@ import org.junit.Test;
  * 
  */
 @SuppressWarnings("unchecked")
-public class HamcrestWebdriverTestCaseTest extends MockTestBase {
+public class HamcrestWebdriverTestCaseTest {
 
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
+  
   final String text = "abcde";
   final String url = "http://www.example.com";
   Finder<WebElement, WebDriver> something;
@@ -50,28 +53,28 @@ public class HamcrestWebdriverTestCaseTest extends MockTestBase {
   public void createMocks() {
     testcase = createTestCase();
 
-    something = mock(Finder.class);
-    someNumberOf = mock(Matcher.class);
+    something = mockery.mock(Finder.class);
+    someNumberOf = mockery.mock(Matcher.class);
   }
 
   @Test
   public void delegatesAllCallsToItsTestContext() {
 
-    final TestContext testContext = mock(TestContext.class);
+    final TestContext testContext = mockery.mock(TestContext.class);
     testcase.setContext(testContext);
 
-    final Sequence given = sequence("given here");
+    final Sequence given = mockery.sequence("given here");
 
-    checking(new Expectations() {{
-      one(testContext).goTo(url);
+    mockery.checking(new Expectations() {{
+      oneOf(testContext).goTo(url);
       inSequence(given);
-      one(testContext).clickOn(something);
+      oneOf(testContext).clickOn(something);
       inSequence(given);
-      one(testContext).type(text, something);
+      oneOf(testContext).type(text, something);
       inSequence(given);
-      one(testContext).assertPresenceOf(something);
+      oneOf(testContext).assertPresenceOf(something);
       inSequence(given);
-      one(testContext).assertPresenceOf(someNumberOf, something);
+      oneOf(testContext).assertPresenceOf(someNumberOf, something);
       inSequence(given);
     }});
 
@@ -94,7 +97,7 @@ public class HamcrestWebdriverTestCaseTest extends MockTestBase {
 
       @Override
       protected WebDriver createDriver() {
-        return mock(WebDriver.class);
+        return mockery.mock(WebDriver.class);
       }
     };
     return testcase;

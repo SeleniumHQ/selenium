@@ -23,6 +23,7 @@ this.Preferences = SeleniumIDE.Preferences;
 function Application() {
     this.baseURL = "";
     this.options = Preferences.load();
+    this.pluginManager = new PluginManager(this.options);
     this.baseURLHistory = new StoredHistory("baseURLHistory", 20);
     this.testCase = null;
     this.testSuite = null;
@@ -81,7 +82,8 @@ Application.prototype = {
 
     setOptions: function(options) {
         this.options = options;
-        this.formats = new FormatCollection(options);
+        this.pluginManager.load(options);
+        this.formats = new FormatCollection(options, this.pluginManager);
         this.currentFormat = this.formats.selectFormat(options.selectedFormat || null);
         this.clipboardFormat = this.formats.selectFormat(options.clipboardFormat || null);
         this.notify("optionsChanged", options);

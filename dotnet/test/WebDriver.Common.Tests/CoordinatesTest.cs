@@ -39,14 +39,14 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Invisible elements report position of [0, 0] in IE")]
         public void ShouldGetCoordinatesOfAnInvisibleElement()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_invisible_element.html");
-            Assert.AreEqual(new Point(10, 10), GetLocationInViewPort(By.Id("box")));
+            Assert.AreEqual(new Point(0, 0), GetLocationInViewPort(By.Id("box")));
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not scroll correctly yet")]
         public void ShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_element_out_of_view.html");
@@ -83,10 +83,30 @@ namespace OpenQA.Selenium
             Assert.AreEqual(new Point(40, 40), GetLocationInViewPort(By.Id("box")));
         }
 
+        [Test]
+        [IgnoreBrowser(Browser.Firefox)]
+        [IgnoreBrowser(Browser.Safari)]
+        public void ShouldGetCoordinatesOfAnElementWithFixedPosition()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/page_with_fixed_element.html");
+            Assert.AreEqual(0, GetLocationInViewPort(By.Id("fixed")).Y);
+            Assert.AreEqual(0, GetLocationOnPage(By.Id("fixed")).Y);
+
+            driver.FindElement(By.Id("bottom")).Click();
+            Assert.AreEqual(0, GetLocationInViewPort(By.Id("fixed")).Y);
+            Assert.Greater(GetLocationOnPage(By.Id("fixed")).Y, 0);
+        }
+
         private Point GetLocationInViewPort(By locator)
         {
             IWebElement element = driver.FindElement(locator);
             return ((ILocatable)element).Coordinates.LocationInViewport;
+        }
+
+        private Point GetLocationOnPage(By locator)
+        {
+            IWebElement element = driver.FindElement(locator);
+            return ((ILocatable)element).Coordinates.LocationInDom;
         }
     }
 }

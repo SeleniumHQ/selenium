@@ -7,13 +7,12 @@ using System.Text.RegularExpressions;
 namespace OpenQA.Selenium.Interactions
 {
     [TestFixture]
+    [IgnoreBrowser(Browser.Safari, "Not implemented (issue 4136)")]
     public class BasicMouseInterfaceTest : DriverTestFixture
     {
         [Test]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowDraggingElementWithMouseMovesItToAnotherList()
         {
             PerformDragAndDropWithMouse();
@@ -25,9 +24,7 @@ namespace OpenQA.Selenium.Interactions
         // difference is that this test also verifies the correct events were fired.
         [Test]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void DraggingElementWithMouseFiresEvents()
         {
             PerformDragAndDropWithMouse();
@@ -38,9 +35,23 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
+        public void ShouldAllowDoubleClickThenNavigate()
+        {
+            driver.Url = javascriptPage;
+
+            IWebElement toDoubleClick = driver.FindElement(By.Id("doubleClickField"));
+
+            Actions actionProvider = new Actions(driver);
+            IAction dblClick = actionProvider.DoubleClick(toDoubleClick).Build();
+
+            dblClick.Perform();
+            driver.Url = droppableItems;
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldAllowDragAndDrop()
         {
             driver.Url = droppableItems;
@@ -80,9 +91,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowDoubleClick()
         {
             driver.Url = javascriptPage;
@@ -97,10 +106,9 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not perform this yet")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowContextClick()
         {
             driver.Url = javascriptPage;
@@ -162,6 +170,27 @@ namespace OpenQA.Selenium.Interactions
             catch (Exception)
             {
                 // expected
+            }
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
+        [IgnoreBrowser(Browser.Opera, "API not implemented in driver")]
+        public void ShouldClickElementInIFrame()
+        {
+            driver.Url = clicksPage;
+            try
+            {
+                driver.SwitchTo().Frame("source");
+                IWebElement element = driver.FindElement(By.Id("otherframe"));
+                new Actions(driver).MoveToElement(element).Click().Perform();
+                driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
+                WaitFor(() => { return driver.FindElement(By.Id("span")).Text == "An inline element"; });
+            }
+            finally
+            {
+                driver.SwitchTo().DefaultContent();
             }
         }
 

@@ -26,7 +26,6 @@
 goog.provide('goog.vec.Mat3');
 
 goog.require('goog.vec');
-goog.require('goog.vec.Vec3');
 
 
 /** @typedef {goog.vec.Float32} */ goog.vec.Mat3.Float32;

@@ -115,15 +115,12 @@ goog.math.Vec2.prototype.squaredMagnitude = function() {
 
 
 /**
- * Scales the current vector by a constant.
- * @param {number} s The scale factor.
- * @return {!goog.math.Vec2} The scaled vector.
+ * @return {!goog.math.Vec2} This coordinate after scaling.
+ * @override
  */
-goog.math.Vec2.prototype.scale = function(s) {
-  this.x *= s;
-  this.y *= s;
-  return this;
-};
+goog.math.Vec2.prototype.scale =
+    /** @type {function(number, number=):!goog.math.Vec2} */
+    (goog.math.Coordinate.prototype.scale);
 
 
 /**

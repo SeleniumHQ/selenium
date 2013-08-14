@@ -32,6 +32,7 @@
 #define UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY "unexpectedAlertBehaviour"
 #define CSS_SELECTOR_ENABLED_CAPABILITY "cssSelectorsEnabled"
 #define NATIVE_EVENTS_CAPABILITY "nativeEvents"
+#define PROXY_CAPABILITY "proxy"
 #define IGNORE_PROTECTED_MODE_CAPABILITY "ignoreProtectedModeSettings"
 #define IGNORE_ZOOM_SETTING_CAPABILITY "ignoreZoomSetting"
 #define INITIAL_BROWSER_URL_CAPABILITY "initialBrowserUrl"
@@ -40,8 +41,10 @@
 #define ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY "enableElementCacheCleanup"
 #define REQUIRE_WINDOW_FOCUS_CAPABILITY "requireWindowFocus"
 #define BROWSER_ATTACH_TIMEOUT_CAPABILITY "browserAttachTimeout"
-
-using namespace std;
+#define BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY "ie.browserCommandLineSwitches"
+#define FORCE_CREATE_PROCESS_API_CAPABILITY "ie.forceCreateProcessApi"
+#define USE_PER_PROCESS_PROXY_CAPABILITY "ie.usePerProcessProxy"
+#define ENSURE_CLEAN_SESSION_CAPABILITY "ie.ensureCleanSession"
 
 namespace webdriver {
 

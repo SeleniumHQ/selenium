@@ -47,15 +47,19 @@ goog.require('goog.userAgent');
  * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
  * @return {goog.graphics.AbstractGraphics} The created instance.
+ * @deprecated goog.graphics is deprecated. It existed to abstract over browser
+ *     differences before the canvas tag was widely supported.  See
+ *     http://en.wikipedia.org/wiki/Canvas_element for details.
  */
 goog.graphics.createGraphics = function(width, height, opt_coordWidth,
     opt_coordHeight, opt_domHelper) {
   var graphics;
-  if (goog.userAgent.IE && !goog.userAgent.isVersion('9')) {
+  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9')) {
     graphics = new goog.graphics.VmlGraphics(width, height,
         opt_coordWidth, opt_coordHeight, opt_domHelper);
-  } else if (goog.userAgent.WEBKIT && (!goog.userAgent.isVersion('420') ||
-      goog.userAgent.MOBILE)) {
+  } else if (goog.userAgent.WEBKIT &&
+             (!goog.userAgent.isVersionOrHigher('420') ||
+              goog.userAgent.MOBILE)) {
     graphics = new goog.graphics.CanvasGraphics(width, height,
         opt_coordWidth, opt_coordHeight, opt_domHelper);
   } else {
@@ -85,11 +89,14 @@ goog.graphics.createGraphics = function(width, height, opt_coordWidth,
  * @param {goog.dom.DomHelper=} opt_domHelper The DOM helper object for the
  *     document we want to render in.
  * @return {goog.graphics.AbstractGraphics} The created instance.
+ * @deprecated goog.graphics is deprecated. It existed to abstract over browser
+ *     differences before the canvas tag was widely supported.  See
+ *     http://en.wikipedia.org/wiki/Canvas_element for details.
  */
 goog.graphics.createSimpleGraphics = function(width, height,
     opt_coordWidth, opt_coordHeight, opt_domHelper) {
   if (goog.userAgent.MAC && goog.userAgent.GECKO &&
-      !goog.userAgent.isVersion('1.9a')) {
+      !goog.userAgent.isVersionOrHigher('1.9a')) {
     // Canvas is 6x faster than SVG on Mac FF 2.0
     var graphics = new goog.graphics.CanvasGraphics(
         width, height, opt_coordWidth, opt_coordHeight,
@@ -107,19 +114,22 @@ goog.graphics.createSimpleGraphics = function(width, height,
 /**
  * Static function to check if the current browser has Graphics support.
  * @return {boolean} True if the current browser has Graphics support.
+ * @deprecated goog.graphics is deprecated. It existed to abstract over browser
+ *     differences before the canvas tag was widely supported.  See
+ *     http://en.wikipedia.org/wiki/Canvas_element for details.
  */
 goog.graphics.isBrowserSupported = function() {
   if (goog.userAgent.IE) {
-    return goog.userAgent.isVersion('5.5');
+    return goog.userAgent.isVersionOrHigher('5.5');
   }
   if (goog.userAgent.GECKO) {
-    return goog.userAgent.isVersion('1.8');
+    return goog.userAgent.isVersionOrHigher('1.8');
   }
   if (goog.userAgent.OPERA) {
-    return goog.userAgent.isVersion('9.0');
+    return goog.userAgent.isVersionOrHigher('9.0');
   }
   if (goog.userAgent.WEBKIT) {
-    return goog.userAgent.isVersion('412');
+    return goog.userAgent.isVersionOrHigher('412');
   }
   return false;
 };

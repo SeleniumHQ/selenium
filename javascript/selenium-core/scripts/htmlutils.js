@@ -284,32 +284,6 @@ function getInputValue(inputElement) {
     return inputElement.value;
 }
 
-/* Fire an event in a browser-compatible manner */
-function triggerEvent(element, eventType, canBubble, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {
-    canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
-    if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { // IE
-        var evt = createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);        
-        element.fireEvent('on' + eventType, evt);
-    }
-    else {
-        var evt = document.createEvent('HTMLEvents');
-        
-        try {
-            evt.shiftKey = shiftKeyDown;
-            evt.metaKey = metaKeyDown;
-            evt.altKey = altKeyDown;
-            evt.ctrlKey = controlKeyDown;
-        } catch (e) {
-            // On Firefox 1.0, you can only set these during initMouseEvent or initKeyEvent
-            // we'll have to ignore them here
-            LOG.exception(e);
-        }
-        
-        evt.initEvent(eventType, canBubble, true);
-        element.dispatchEvent(evt);
-    }
-}
-
 function getKeyCodeFromKeySequence(keySequence) {
     var match = /^\\(\d{1,3})$/.exec(keySequence);
     if (match != null) {
@@ -348,8 +322,10 @@ function triggerKeyEvent(element, eventType, keySequence, canBubble, controlKeyD
     else {
         var evt;
         if (window.KeyEvent) {
-            evt = document.createEvent('KeyEvents');
-            evt.initKeyEvent(eventType, true, true, window, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown, keycode, keycode);
+            var doc = goog.dom.getOwnerDocument(element);
+            var view = goog.dom.getWindow(doc);
+            evt = doc.createEvent('KeyEvents');
+            evt.initKeyEvent(eventType, true, true, view, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown, keycode, keycode);
         } else {
             evt = document.createEvent('UIEvents');
             

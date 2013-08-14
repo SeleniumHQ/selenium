@@ -18,10 +18,9 @@ package org.openqa.selenium.interactions;
 
 import static org.junit.Assert.assertEquals;
 
-import org.openqa.selenium.Keyboard;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.testing.MockTestBase;
-import org.openqa.selenium.Mouse;
 import org.openqa.selenium.StubRenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -34,7 +33,9 @@ import org.junit.Test;
 /**
  * Tests the builder for advanced user interaction, the Actions class.
  */
-public class ActionsTest extends MockTestBase {
+public class ActionsTest {
+
+  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
   private WebElement dummyLocatableElement;
   private Mouse dummyMouse;
@@ -44,9 +45,9 @@ public class ActionsTest extends MockTestBase {
 
   @Before
   public void setUp() {
-    dummyMouse = mock(Mouse.class);
-    dummyKeyboard = mock(Keyboard.class);
-    dummyCoordinates = mock(Coordinates.class);
+    dummyMouse = mockery.mock(Mouse.class);
+    dummyKeyboard = mockery.mock(Keyboard.class);
+    dummyCoordinates = mockery.mock(Coordinates.class);
     dummyLocatableElement = new StubRenderedWebElement() {
       @Override
       public Coordinates getCoordinates() {
@@ -70,10 +71,10 @@ public class ActionsTest extends MockTestBase {
 
   @Test
   public void creatingAllKeyboardActions() {
-    checking(new Expectations() {{
-      one(dummyKeyboard).pressKey(Keys.SHIFT);
-      one(dummyKeyboard).sendKeys("abc");
-      one(dummyKeyboard).releaseKey(Keys.CONTROL);
+    mockery.checking(new Expectations() {{
+      oneOf(dummyKeyboard).pressKey(Keys.SHIFT);
+      oneOf(dummyKeyboard).sendKeys("abc");
+      oneOf(dummyKeyboard).releaseKey(Keys.CONTROL);
     }});
 
     Actions builder = new Actions(driver);
@@ -88,9 +89,9 @@ public class ActionsTest extends MockTestBase {
 
   @Test
   public void providingAnElementToKeyboardActions() {
-    checking(new Expectations() {{
-      one(dummyMouse).click(dummyCoordinates);
-      one(dummyKeyboard).pressKey(Keys.SHIFT);
+    mockery.checking(new Expectations() {{
+      oneOf(dummyMouse).click(dummyCoordinates);
+      oneOf(dummyKeyboard).pressKey(Keys.SHIFT);
     }});
 
     Actions builder = new Actions(driver);
@@ -105,8 +106,8 @@ public class ActionsTest extends MockTestBase {
 
   @Test
   public void supplyingIndividualElementsToKeyboardActions() {
-    final Coordinates dummyCoordinates2 = mock(Coordinates.class, "dummy2");
-    final Coordinates dummyCoordinates3 = mock(Coordinates.class, "dummy3");
+    final Coordinates dummyCoordinates2 = mockery.mock(Coordinates.class, "dummy2");
+    final Coordinates dummyCoordinates3 = mockery.mock(Coordinates.class, "dummy3");
 
     final WebElement dummyElement2 = new StubRenderedWebElement() {
       @Override
@@ -122,13 +123,13 @@ public class ActionsTest extends MockTestBase {
       }
     };
 
-    checking(new Expectations() {{
-      one(dummyMouse).click(dummyCoordinates);
-      one(dummyKeyboard).pressKey(Keys.SHIFT);
-      one(dummyMouse).click(dummyCoordinates2);
-      one(dummyKeyboard).sendKeys("abc");
-      one(dummyMouse).click(dummyCoordinates3);
-      one(dummyKeyboard).releaseKey(Keys.CONTROL);
+    mockery.checking(new Expectations() {{
+      oneOf(dummyMouse).click(dummyCoordinates);
+      oneOf(dummyKeyboard).pressKey(Keys.SHIFT);
+      oneOf(dummyMouse).click(dummyCoordinates2);
+      oneOf(dummyKeyboard).sendKeys("abc");
+      oneOf(dummyMouse).click(dummyCoordinates3);
+      oneOf(dummyKeyboard).releaseKey(Keys.CONTROL);
     }});
 
     Actions builder = new Actions(driver);
@@ -145,18 +146,18 @@ public class ActionsTest extends MockTestBase {
 
   @Test
   public void creatingAllMouseActions() {
-    checking(new Expectations() {{
-      one(dummyMouse).mouseMove(dummyCoordinates);
-      one(dummyMouse).mouseDown(dummyCoordinates);
-      one(dummyMouse).mouseMove(dummyCoordinates);
-      one(dummyMouse).mouseUp(dummyCoordinates);
-      one(dummyMouse).mouseMove(dummyCoordinates);
-      one(dummyMouse).click(dummyCoordinates);
-      one(dummyMouse).mouseMove(dummyCoordinates);
-      one(dummyMouse).doubleClick(dummyCoordinates);
-      one(dummyMouse).mouseMove(dummyCoordinates);
-      one(dummyMouse).mouseMove(dummyCoordinates);
-      one(dummyMouse).contextClick(dummyCoordinates);
+    mockery.checking(new Expectations() {{
+      oneOf(dummyMouse).mouseMove(dummyCoordinates);
+      oneOf(dummyMouse).mouseDown(dummyCoordinates);
+      oneOf(dummyMouse).mouseMove(dummyCoordinates);
+      oneOf(dummyMouse).mouseUp(dummyCoordinates);
+      oneOf(dummyMouse).mouseMove(dummyCoordinates);
+      oneOf(dummyMouse).click(dummyCoordinates);
+      oneOf(dummyMouse).mouseMove(dummyCoordinates);
+      oneOf(dummyMouse).doubleClick(dummyCoordinates);
+      oneOf(dummyMouse).mouseMove(dummyCoordinates);
+      oneOf(dummyMouse).mouseMove(dummyCoordinates);
+      oneOf(dummyMouse).contextClick(dummyCoordinates);
     }});
 
     Actions builder = new Actions(driver);

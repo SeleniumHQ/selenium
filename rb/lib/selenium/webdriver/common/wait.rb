@@ -52,7 +52,7 @@ module Selenium
           msg = "timed out after #{@timeout} seconds"
         end
 
-        msg << " (#{last_error.message})}" if last_error
+        msg << " (#{last_error.message})" if last_error
 
         raise Error::TimeOutError, msg
       end

@@ -307,9 +307,11 @@ goog.editor.Link.isLikelyUrl = function(str) {
     return true;
   }
 
-  // Require domains to contain a '.', unless the domain is fully qualified.
+  // Require domains to contain a '.', unless the domain is fully qualified and
+  // forbids domains from containing invalid characters.
   var domain = parts[goog.uri.utils.ComponentIndex.DOMAIN];
-  if (!domain || (addedScheme && domain.indexOf('.') == -1)) {
+  if (!domain || (addedScheme && domain.indexOf('.') == -1) ||
+      (/[^\w\d\-\u0100-\uffff.%]/.test(domain))) {
     return false;
   }
 

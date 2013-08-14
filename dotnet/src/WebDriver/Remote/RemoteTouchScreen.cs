@@ -177,8 +177,8 @@ namespace OpenQA.Selenium.Remote
         public void Flick(int speedX, int speedY)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("xSpeed", speedX);
-            parameters.Add("ySpeed", speedY);
+            parameters.Add("xspeed", speedX);
+            parameters.Add("yspeed", speedY);
             this.driver.InternalExecute(DriverCommand.TouchFlick, parameters);
         }
 

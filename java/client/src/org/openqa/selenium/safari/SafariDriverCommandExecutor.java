@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  */
 class SafariDriverCommandExecutor implements CommandExecutor {
 
-  private final SafariDriverExtension extension;
+  private final SafariExtensions safariExtensions;
   private final SafariDriverServer server;
   private final BrowserLocator browserLocator;
   private final SessionData sessionData;
@@ -57,18 +57,14 @@ class SafariDriverCommandExecutor implements CommandExecutor {
   private SafariDriverConnection connection;
 
   /**
-   * @param port The port the {@link SafariDriverServer} should be started on,
-   *     or 0 if the server should select a free port.
-   * @param cleanSession Whether all system data should be cleared before
-   *     starting a new session.
-   * @param extension The extension to use.
+   * @param options The {@link SafariOptions} instance
    */
-  SafariDriverCommandExecutor(int port, boolean cleanSession, SafariDriverExtension extension) {
-    this.extension = checkNotNull(extension, "null extension");
-    server = new SafariDriverServer(port);
-    browserLocator = new SafariLocator();
-    sessionData = SessionData.forCurrentPlatform();
-    this.cleanSession = cleanSession;
+  SafariDriverCommandExecutor(SafariOptions options) {
+    this.safariExtensions = new SafariExtensions(options);
+    this.server = new SafariDriverServer(options.getPort());
+    this.browserLocator = new SafariLocator();
+    this.sessionData = SessionData.forCurrentPlatform();
+    this.cleanSession = options.getUseCleanSession();
   }
 
   /**
@@ -84,7 +80,7 @@ class SafariDriverCommandExecutor implements CommandExecutor {
 
     server.start();
 
-    extension.install();
+    safariExtensions.install();
     if (cleanSession) {
       sessionData.clear();
     }
@@ -142,9 +138,9 @@ class SafariDriverCommandExecutor implements CommandExecutor {
     connection = null;
 
     try {
-      extension.uninstall();
+      safariExtensions.uninstall();
     } catch (IOException e) {
-      throw new WebDriverException("Unable to uninstall extension", e);
+      throw new WebDriverException("Unable to uninstall extensions", e);
     }
   }
 

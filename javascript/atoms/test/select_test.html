@@ -10,13 +10,13 @@
     goog.require('bot.locators');
     goog.require('bot.userAgent');
     goog.require('goog.array');
-    goog.require('goog.dom');
     goog.require('goog.events');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
   </script>
   <script type="text/javascript">
     var singleSelect, multiSelect, radioButtons, checkboxes, changeCount;
+    var gotPointerCaptureCount, lostPointerCaptureCount;
 
     function setUpPage() {
       singleSelect = bot.locators.findElement({id: 'singleSelect'});
@@ -26,7 +26,7 @@
     }
 
     function setUp() {
-      goog.events.removeAll();
+      goog.events.removeAllNativeListeners();
       singleSelect.selectedIndex = 0;
       goog.array.forEach(multiSelect.options, function(e) {
         e.selected = false;
@@ -57,16 +57,41 @@
       assertEquals('Unexpected number of changes', expectedCount, changeCount);
     }
 
+    function expectPointerCaptures(target) {
+      gotPointerCaptureCount = 0;
+      lostPointerCaptureCount = 0;
+      goog.events.listen(target, goog.events.EventType.MSGOTPOINTERCAPTURE,
+          function(e) {
+        gotPointerCaptureCount++;
+      });
+      goog.events.listen(target, goog.events.EventType.MSLOSTPOINTERCAPTURE,
+          function(e) {
+        lostPointerCaptureCount++;
+      });
+    }
+
+    function assertPointerCaptures(expectedCount) {
+      assertEquals('Unexpected number of got captures', expectedCount,
+          gotPointerCaptureCount);
+      assertEquals('Unexpected number of lost captures', expectedCount,
+          lostPointerCaptureCount);
+    }
+
     function canSelectAnOptionFromASingleSelect(action) {
       if (!checkActionCompatibility(action)) {
         return;
       }
       assertFalse(bot.dom.isSelected(singleSelect.options[1]));
       expectChanges(singleSelect);
-
+      if (bot.userAgent.IE_DOC_10) {
+        expectPointerCaptures(singleSelect);
+      }
       action(singleSelect.options[1]);
 
       assertChanges(1);
+      if (bot.userAgent.IE_DOC_10) {
+        assertPointerCaptures(1);
+      }
       assertTrue(bot.dom.isSelected(singleSelect.options[1]));
     }
 
@@ -166,13 +191,13 @@
       if (!checkActionCompatibility(action)) {
         return;
       }
-      // IE fires a change event on the next click after the change.
+      // IE <= 8 fires a change event on the next click after the change.
       checkboxes[0].checked = true;
       expectChanges(checkboxes[0]);
       action(checkboxes[0]);
       assertChanges(bot.userAgent.IE_DOC_PRE9 ? 0 : 1);
 
-      if (!goog.userAgent.IE) {
+      if (!bot.userAgent.IE_DOC_PRE9) {
         expectChanges(checkboxes[1]);
       }
       action(checkboxes[1]);
@@ -197,14 +222,14 @@
       if (!checkActionCompatibility(action)) {
         return;
       }
-      // IE fires a change event on the next click after the change.
+      // IE <= 8 fires a change event on the next click after the change.
       expectChanges(radioButtons[0]);
       action(radioButtons[0]);
       assertChanges(bot.userAgent.IE_DOC_PRE9 ? 0 : 1);
 
       assertTrue(bot.dom.isSelected(radioButtons[0]));
 
-      if (!goog.userAgent.IE) {
+      if (!bot.userAgent.IE_DOC_PRE9) {
         expectChanges(radioButtons[1]);
       }
       action(radioButtons[1]);
@@ -383,8 +408,8 @@
         goog.partial(canSelectOptionFromTransparentSelect, bot.action.tap);
 
     function noErrorAfterSelectWhenOnChangePreventsDefault(action) {
-      if (!checkActionCompatibility(action)  ||
-              (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
+      if (!checkActionCompatibility(action) ||
+          (goog.userAgent.IE && !bot.userAgent.isProductVersion(7))) {
         return;
       }
       goog.events.listen(radioButtons[1], 'change', function(e) {
@@ -426,6 +451,67 @@
     var testTapSelectOptionTriggersJQueryChangeHandler =
         goog.partial(selectOptionTriggersJQueryChangeHandler, bot.action.tap);
 
+   function pointerCaptureFiresOnCheckboxToggle(action) {
+      if (!bot.userAgent.IE_DOC_10) {
+        return;
+      }
+      checkboxes[0].checked = true;
+      expectPointerCaptures(checkboxes[0]);
+      action(checkboxes[0]);
+      // For input elements, the got/lost pointer capture events only fire for
+      // a tap and not for mouse clicks.
+      if (action == bot.action.tap) {
+        assertPointerCaptures(1);
+      } else {
+        assertPointerCaptures(0);
+      }
+      assertFalse(bot.dom.isSelected(checkboxes[0]));
+   }
+
+    var testClickPointerCaptureFiresOnCheckboxToggle =
+        goog.partial(pointerCaptureFiresOnCheckboxToggle, bot.action.click);
+
+    var testTapPointerCaptureFiresOnCheckboxToggle =
+        goog.partial(pointerCaptureFiresOnCheckboxToggle, bot.action.tap);
+
+    function togglesByTheTimeChangeEventFires(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+
+      singleSelect.options[0].selected = true;
+      checkToggleAtChange(action, singleSelect, singleSelect.options[1]);
+
+      multiSelect.options[0].selected = false;
+      checkToggleAtChange(action, multiSelect, multiSelect.options[0]);
+
+      radioButtons[0].checked = false;
+      checkToggleAtChange(action, radioButtons[0], radioButtons[0]);
+
+      checkboxes[0].checked = false;
+      checkToggleAtChange(action, checkboxes[0], checkboxes[0]);
+
+      function checkToggleAtChange(action, targetElem, toggleElem) {
+        var preState = bot.dom.isSelected(toggleElem);
+        var postState = null;
+        goog.events.listen(targetElem, 'change', function(e) {
+          postState = bot.dom.isSelected(toggleElem);
+        });
+        action(toggleElem);
+        // IE <= 8 fires a change event on the next click after the change.
+        if (bot.userAgent.IE_DOC_PRE9) {
+          bot.action.click(document.body);
+        }
+        assertNotNull('change event did not fire', postState);
+        assertNotEquals('element did not toggle', postState, preState);
+      }
+    }
+
+    var testClickTogglesByTheTimeChangeEventFires =
+        goog.partial(togglesByTheTimeChangeEventFires, bot.action.click);
+
+    var testTapTogglesByTheTimeChangeEventFires =
+        goog.partial(togglesByTheTimeChangeEventFires, bot.action.tap);
   </script>
 </head>
 <body>

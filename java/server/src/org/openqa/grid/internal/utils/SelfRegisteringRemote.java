@@ -187,14 +187,13 @@ public class SelfRegisteringRemote {
     if (!register) {
       log.info("no registration sent ( " + AUTO_REGISTER + " = false )");
     } else {
-      final Integer o =
-          (Integer) nodeConfig.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE);
-      if (o != null && o.intValue() > 0) {
+      final int registerCycleInterval = nodeConfig.getConfigAsInt(RegistrationRequest.REGISTER_CYCLE, 0);
+      if (registerCycleInterval > 0) {
         new Thread(new Runnable() { // Thread safety reviewed
 
               public void run() {
                 boolean first = true;
-                log.info("starting auto register thread. Will try to register every " + o + " ms.");
+                log.info("Starting auto register thread. Will try to register every " + registerCycleInterval + " ms.");
                 while (true) {
                   try {
                     boolean checkForPresence = true;
@@ -207,7 +206,7 @@ public class SelfRegisteringRemote {
                     log.info("couldn't register this node : " + e.getMessage());
                   }
                   try {
-                    Thread.sleep(o.intValue());
+                    Thread.sleep(registerCycleInterval);
                   } catch (InterruptedException e) {
                     e.printStackTrace();
                   }
@@ -261,7 +260,7 @@ public class SelfRegisteringRemote {
         throw new GridException("Error sending the registration request.", e);
       }
     } else {
-      log.fine("hub is already present on the hub. Skipping registration.");
+      log.fine("The node is already present on the hub. Skipping registration.");
     }
 
   }
@@ -312,12 +311,12 @@ public class SelfRegisteringRemote {
 
       HttpResponse response = client.execute(host, r);
       if (response.getStatusLine().getStatusCode() != 200) {
-        throw new GridException("hub down or not responding.");
+        throw new GridException("Hub is down or not responding.");
       }
       JSONObject o = extractObject(response);
       return (Boolean) o.get("success");
     } catch (Exception e) {
-      throw new GridException("hub down or not responding.");
+      throw new GridException("Hub is down or not responding: " + e.getMessage());
     }
   }
 
