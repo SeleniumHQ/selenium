@@ -4,10 +4,6 @@
       <root url="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-1.4-5-g0310e9d.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <!--
-    <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/opera-driver/operadriver-1.4-sources.jar!/" />
-    </SOURCES>
-    -->
+    <SOURCES />
   </library>
 </component>
