@@ -24,8 +24,8 @@ visualc_release(name = "x64",
 
 rake_task(name = "sizzle",
   task_name = "sizzle_header",
-  out = "cpp/IEDriver/Generated/sizzle.h")
+  out = "cpp/iedriver/Generated/sizzle.h")
 
 rake_task(name = "ie_result_type_cpp",
   task_name = "ie_result_type_cpp",
-  out = "cpp/IEDriver/Generated/IEReturnTypes.h")
+  out = "cpp/iedriver/Generated/IEReturnTypes.h")

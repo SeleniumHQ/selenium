@@ -595,10 +595,10 @@ file "iphone/src/objc/atoms.h" => ["//iphone:atoms"] do |task|
 end
 task :iphone_atoms => ["iphone/src/objc/atoms.h"]
 
-file "cpp/IEDriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
-  cp "build/third_party/js/sizzle/sizzle.h", "cpp/IEDriver/sizzle.h"
+file "cpp/iedriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
+  cp "build/third_party/js/sizzle/sizzle.h", "cpp/iedriver/sizzle.h"
 end
-task :sizzle_header => [ "cpp/IEDriver/sizzle.h" ]
+task :sizzle_header => [ "cpp/iedriver/sizzle.h" ]
 
 file "build/javascript/deps.js" => FileList[
     "third_party/closure/goog/**/*.js",
