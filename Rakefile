@@ -280,14 +280,14 @@ task :dotnet => [ "//dotnet", "//dotnet:support", "//dotnet:core", "//dotnet:web
 # Generate a C++ Header file for mapping between magic numbers and #defines
 # in the C++ code.
 ie_generate_type_mapping(:name => "ie_result_type_cpp",
-                         :src => "cpp/IEDriver/result_types.txt",
+                         :src => "cpp/iedriver/result_types.txt",
                          :type => "cpp",
-                         :out => "cpp/IEDriver/IEReturnTypes.h")
+                         :out => "cpp/iedriver/IEReturnTypes.h")
 
 # Generate a Java class for mapping between magic numbers and Java static
 # class members describing them.
 ie_generate_type_mapping(:name => "ie_result_type_java",
-                         :src => "cpp/IEDriver/result_types.txt",
+                         :src => "cpp/iedriver/result_types.txt",
                          :type => "java",
                          :out => "java/client/src/org/openqa/selenium/ie/IeReturnTypes.java")
 
