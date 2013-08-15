@@ -33,7 +33,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -168,7 +167,7 @@ public class VisibilityTest extends JUnit4TestBase {
     assertTrue(element.isDisplayed());
   }
 
-  @Ignore({IE, CHROME, HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore({IE, HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
   @Test
   public void testElementHiddenByOverflowXIsNotVisible() {
     String[] pages = new String[]{
@@ -185,7 +184,7 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({CHROME, HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS})
+  @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE, PHANTOMJS})
   @Test
   public void testElementHiddenByOverflowYIsNotVisible() {
     String[] pages = new String[]{
