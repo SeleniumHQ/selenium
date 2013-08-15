@@ -64,7 +64,7 @@ java_test(name = "ie-emulation-test",
   ],
   deps = [
     ":rc-tests",
-    "//cpp:ie_win32_exe",
+    "//cpp/iedriverserver:win32",
   ])
 
 java_test(name = "opera-emulation-test",
