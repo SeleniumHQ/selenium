@@ -1,38 +1,3 @@
-visualc_library(name = "firefox_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox.vcxproj",
-  file_deps = "third_party/gecko-2/win32",
-  out = "Win32/Release/webdriver-firefox.dll"
-)
-
-visualc_library(name = "firefoxprevious_esr_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox-esr-previous.vcxproj",
-  file_deps = "third_party/gecko-10/win32",
-  out = "Win32/Release/webdriver-firefox-esr-previous.dll"
-)
-
-visualc_library(name = "firefoxlatest_esr_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox-esr-latest.vcxproj",
-  file_deps = "third_party/gecko-17/win32",
-  out = "Win32/Release/webdriver-firefox-esr-latest.dll"
-)
-
-visualc_library(name = "firefoxprevious_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox-previous.vcxproj",
-  file_deps = "third_party/gecko-22/win32",
-  out = "Win32/Release/webdriver-firefox-previous.dll"
-)
-
-visualc_library(name = "firefoxlatest_dll",
-  platform = "Win32",
-  project = "webdriver-firefox/webdriver-firefox-latest.vcxproj",
-  file_deps = "third_party/gecko-23/win32",
-  out = "Win32/Release/webdriver-firefox-latest.dll"
-)
-
 mozilla_xpt(name = "native_events_xpt",
   srcs = [ "webdriver-firefox/nsINativeEvents.idl" ])
 
@@ -144,35 +109,3 @@ visualc_library(name = "imehandler_dll",
   project = "imehandler/imehandler.vcxproj",
   out = "Win32/Release/imehandler.dll"
 )
-
-visualc_release(name = "ie_win32_exe",
-  deps = [
-    "//javascript/ie-driver:atoms",
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "Win32",
-  project = "IEDriverServer/IEDriverServer.vcxproj",
-  desc = "InternetExplorerDriver standalone server for 32-bit IE",
-  out = "Win32/Release/IEDriverServer.exe"
-)
-
-visualc_release(name = "ie_x64_exe",
-  deps = [
-    "//javascript/ie-driver:atoms",
-    ":ie_result_type_cpp",
-    ":sizzle"
-  ],
-  platform = "x64",
-  project = "IEDriverServer/IEDriverServer.vcxproj",
-  desc = "InternetExplorerDriver standalone server for 64-bit IE",
-  out = "x64/Release/IEDriverServer.exe"
-)
-
-rake_task(name = "sizzle",
-  task_name = "sizzle_header",
-  out = "cpp/IEDriver/Generated/sizzle.h")
-
-rake_task(name = "ie_result_type_cpp",
-  task_name = "ie_result_type_cpp",
-  out = "cpp/IEDriver/Generated/IEReturnTypes.h")

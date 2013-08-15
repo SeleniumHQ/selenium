@@ -28,7 +28,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-interactions", "c
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox", "cpp\webdriver-firefox\webdriver-firefox.vcxproj", "{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriver", "cpp\IEDriver\IEDriver.vcxproj", "{BB72383B-427F-4191-B692-E4345A30E33C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriver", "cpp\iedriver\IEDriver.vcxproj", "{BB72383B-427F-4191-B692-E4345A30E33C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "json-cpp", "third_party\json-cpp\json-cpp.vcxproj", "{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}"
 EndProject
@@ -70,7 +70,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-previous"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Safari.Tests", "dotnet\test\safari\WebDriver.Safari.Tests.csproj", "{92551430-7C30-421B-A81E-0B08163AC59C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriverServer", "cpp\IEDriverServer\IEDriverServer.vcxproj", "{08C3286F-F132-44EC-80F0-2DF30D87A5D3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriverServer", "cpp\iedriverserver\IEDriverServer.vcxproj", "{08C3286F-F132-44EC-80F0-2DF30D87A5D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.PhantomJS.Tests", "dotnet\test\phantomjs\WebDriver.PhantomJS.Tests.csproj", "{2329720E-A694-4A6F-B4E6-EDEA911298E0}"
 EndProject

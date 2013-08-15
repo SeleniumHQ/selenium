@@ -648,7 +648,7 @@ end
 module CrazyFunVisualC
   class VisualCLibrary < Tasks
     def handle(fun, dir, args)
-      full_path = File.join("build", dir, args[:out])
+      full_path = File.join("build/cpp", args[:out])
       desc_path = full_path.gsub("/", Platform.dir_separator)
       desc "Build #{desc_path}"
 
