@@ -65,6 +65,7 @@ namespace OpenQA.Selenium.Chrome
         private string binaryLocation;
         private List<string> arguments = new List<string>();
         private List<string> extensionFiles = new List<string>();
+        private List<string> encodedExtensions = new List<string>();
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private Proxy proxy;
 
@@ -105,15 +106,14 @@ namespace OpenQA.Selenium.Chrome
         {
             get
             {
-                List<string> encodedExtensions = new List<string>();
                 foreach (string extensionFile in this.extensionFiles)
                 {
                     byte[] extensionByteArray = File.ReadAllBytes(extensionFile);
                     string encodedExtension = Convert.ToBase64String(extensionByteArray);
-                    encodedExtensions.Add(encodedExtension);
+                    this.encodedExtensions.Add(encodedExtension);
                 }
 
-                return encodedExtensions.AsReadOnly();
+                return this.encodedExtensions.AsReadOnly();
             }
         }
 
@@ -203,6 +203,61 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Adds a base64-encoded string representing a Chrome extension to the list of extensions 
+        /// to be installed in the instance of Chrome.
+        /// </summary>
+        /// <param name="extension">A base64-encoded string representing the extension to add.</param>
+        public void AddEncodedExtension(string extension)
+        {
+            if (string.IsNullOrEmpty(extension))
+            {
+                throw new ArgumentException("extension must not be null or empty", "extension");
+            }
+
+            this.AddExtensions(extension);
+        }
+
+        /// <summary>
+        /// Adds a list of base64-encoded strings representing Chrome extensions to the list of extensions 
+        /// to be installed in the instance of Chrome.
+        /// </summary>
+        /// <param name="extensions">An array of base64-encoded strings representing the extensions to add.</param>
+        public void AddEncodedExtensions(params string[] extensions)
+        {
+            this.AddEncodedExtensions(new List<string>(extensions));
+        }
+
+        /// <summary>
+        /// Adds a list of base64-encoded strings representing Chrome extensions to be installed
+        /// in the instance of Chrome.
+        /// </summary>
+        /// <param name="extensions">An <see cref="IEnumerable{T}"/> of base64-encoded strings
+        /// representing the extensions to add.</param>
+        public void AddEncodedExtensions(IEnumerable<string> extensions)
+        {
+            if (extensions == null)
+            {
+                throw new ArgumentNullException("extensions", "extensions must not be null");
+            }
+
+            foreach (string extension in extensions)
+            {
+                // Run the extension through the base64 converter to test that the
+                // string is not malformed.
+                try
+                {
+                    Convert.FromBase64String(extension);
+                }
+                catch (FormatException ex)
+                {
+                    throw new WebDriverException("Could not properly decode the base64 string", ex);
+                }
+
+                this.encodedExtensions.Add(extension);
+            }
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options 
         /// for the Chrome driver.
         /// </summary>
@@ -216,7 +271,7 @@ namespace OpenQA.Selenium.Chrome
         /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
         public void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
-            if (capabilityName == ChromeOptions.Capability)
+            if (capabilityName == ChromeOptions.Capability || capabilityName == CapabilityType.Proxy)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
