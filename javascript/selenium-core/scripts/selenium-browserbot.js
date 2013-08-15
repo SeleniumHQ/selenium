@@ -1661,7 +1661,9 @@ BrowserBot.prototype.locateElementByWebDriver.prefix = "webdriver";
  */
 BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow) {
     return this.xpathEvaluator.selectSingleNode(inDocument, xpath, null,
-        inDocument.createNSResolver(inDocument.documentElement));
+        inDocument.createNSResolver
+          ? inDocument.createNSResolver(inDocument.documentElement)
+          : this._namespaceResolver);
 };
 
 
@@ -1674,9 +1676,23 @@ BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow
  */
 BrowserBot.prototype.locateElementsByXPath = function(xpath, inDocument, inWindow) {
     return this.xpathEvaluator.selectNodes(inDocument, xpath, null,
-        inDocument.createNSResolver(inDocument.documentElement));
+        inDocument.createNSResolver
+          ? inDocument.createNSResolver(inDocument.documentElement)
+          : this._namespaceResolver);
 };
 
+
+BrowserBot.prototype._namespaceResolver = function(prefix) {
+    if (prefix == 'html' || prefix == 'xhtml' || prefix == 'x') {
+        return 'http://www.w3.org/1999/xhtml';
+    } else if (prefix == 'mathml') {
+        return 'http://www.w3.org/1998/Math/MathML';
+    } else if (prefix == 'svg') {
+        return 'http://www.w3.org/2000/svg';
+    } else {
+        throw new Error("Unknown namespace: " + prefix + ".");
+    }
+};
 
 /**
  * Returns the number of xpath results.
@@ -1684,7 +1700,10 @@ BrowserBot.prototype.locateElementsByXPath = function(xpath, inDocument, inWindo
 BrowserBot.prototype.evaluateXPathCount = function(selector, inDocument) {
     var locator = parse_locator(selector);
     var opts = {};
-    opts['namespaceResolver'] = inDocument.createNSResolver(inDocument.documentElement);
+    opts['namespaceResolver'] =
+        inDocument.createNSResolver
+          ? inDocument.createNSResolver(inDocument.documentElement)
+          : this._namespaceResolver;
     if (locator.type == 'xpath' || locator.type == 'implicit') {
     	return eval_xpath(locator.string, inDocument, opts).length;
     } else {
