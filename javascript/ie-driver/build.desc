@@ -32,5 +32,5 @@ js_fragment_header(name = "atoms",
     "//javascript/webdriver/atoms:submit:ie",
     "//javascript/webdriver/atoms:inputs"
   ],
-  out = "cpp/IEDriver/Generated/atoms.h"
+  out = "cpp/iedriver/Generated/atoms.h"
 )
