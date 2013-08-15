@@ -14,11 +14,13 @@
 
 goog.provide('webdriver.Builder');
 
+goog.require('goog.userAgent');
 goog.require('webdriver.AbstractBuilder');
 goog.require('webdriver.FirefoxDomExecutor');
 goog.require('webdriver.WebDriver');
 goog.require('webdriver.http.CorsClient');
 goog.require('webdriver.http.Executor');
+goog.require('webdriver.http.XhrClient');
 goog.require('webdriver.process');
 
 
@@ -83,10 +85,33 @@ webdriver.Builder.prototype.getSession = function() {
  * @override
  */
 webdriver.Builder.prototype.build = function() {
-  var client = new webdriver.http.CorsClient(
-      this.getServerUrl() || webdriver.AbstractBuilder.DEFAULT_SERVER_URL);
-  var executor = new webdriver.http.Executor(client);
-  return this.getSession() ?
-         webdriver.WebDriver.attachToSession(executor, this.getSession()) :
-         webdriver.WebDriver.createSession(executor, this.getCapabilities());
+  if (goog.userAgent.GECKO && document.readyState != 'complete') {
+    throw Error('Cannot create driver instance before window.onload');
+  }
+
+  var executor;
+
+  if (webdriver.FirefoxDomExecutor.isAvailable()) {
+    executor = new webdriver.FirefoxDomExecutor();
+    return webdriver.WebDriver.createSession(executor, this.getCapabilities());
+  } else {
+    var url = this.getServerUrl() ||
+        webdriver.AbstractBuilder.DEFAULT_SERVER_URL;
+    var client;
+    if (url[0] == '/') {
+      var origin = window.location.origin ||
+          (window.location.protocol + '//' + window.location.host);
+      client = new webdriver.http.XhrClient(origin + url);
+    } else {
+      client = new webdriver.http.CorsClient(url);
+    }
+    executor = new webdriver.http.Executor(client);
+
+    if (this.getSession()) {
+      return webdriver.WebDriver.attachToSession(executor, this.getSession());
+    } else {
+      throw new Error('Unable to create a new client for this browser. The ' +
+          'WebDriver session ID has not been defined.');
+    }
+  }
 };
