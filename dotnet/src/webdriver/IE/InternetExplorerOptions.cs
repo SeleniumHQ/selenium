@@ -264,8 +264,8 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         public bool EnsureCleanSession
         {
-            get { return ensureCleanSession; }
-            set { ensureCleanSession = value; }
+            get { return this.ensureCleanSession; }
+            set { this.ensureCleanSession = value; }
         }
 
         /// <summary>
