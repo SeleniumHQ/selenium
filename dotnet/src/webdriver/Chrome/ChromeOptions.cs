@@ -106,14 +106,15 @@ namespace OpenQA.Selenium.Chrome
         {
             get
             {
+                List<string> allExtensions = new List<string>(this.encodedExtensions);
                 foreach (string extensionFile in this.extensionFiles)
                 {
                     byte[] extensionByteArray = File.ReadAllBytes(extensionFile);
                     string encodedExtension = Convert.ToBase64String(extensionByteArray);
-                    this.encodedExtensions.Add(encodedExtension);
+                    allExtensions.Add(encodedExtension);
                 }
 
-                return this.encodedExtensions.AsReadOnly();
+                return allExtensions.AsReadOnly();
             }
         }
 
