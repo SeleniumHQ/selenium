@@ -102,7 +102,7 @@
       <Project>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</Project>
       <Name>WebDriver</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WebDriver.Common.Tests\WebDriver.Common.Tests.csproj">
+    <ProjectReference Include="..\common\WebDriver.Common.Tests.csproj">
       <Project>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</Project>
       <Name>WebDriver.Common.Tests</Name>
     </ProjectReference>
