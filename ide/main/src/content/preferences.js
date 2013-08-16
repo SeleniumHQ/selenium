@@ -108,6 +108,11 @@ SeleniumIDE.Preferences = {
     return options;
   },
 
+  setAndSave: function(options, prop_name, prop_value) {
+    options[prop_name] = prop_value;
+    this.save(options, prop_name);
+  },
+
   save: function(options, prop_name) {
     if (prop_name) {
       if (this.getType(prop_name) == this.branch.PREF_BOOL) {
@@ -136,43 +141,34 @@ SeleniumIDE.Preferences = {
 SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
   encoding: "UTF-8",
 
-  // This should be called 'userExtensionsPaths', but it is left for backward compatibility.
-  userExtensionsURL: "",
-
-  ideExtensionsPaths: "",
-
-  rememberBaseURL: "true",
-
-  baseURL: "",
-
+  //Recording related options
+  recordOnOpen: "true",
   recordAssertTitle: "false",
-
-  timeout: "30000",
-
   recordAbsoluteURL: "false",
-
-  pluginsData: "[]",
-
-  disableBadPluginCode: "true",
-
-  disableBadPluginAddon: "true",
-
-  showDeveloperTools: "false",
-
+  locatorBuildersOrder: "ui,id,link,name,css,dom:name,xpath:link,xpath:img,xpath:attributes,xpath:idRelative,xpath:href,dom:index,xpath:position",
+  rememberBaseURL: "true",
+  baseURL: "",
   selectedFormat: "default",
-
-  enableExperimentalFeatures: "false",
-
   disableFormatChangeMsg: "false",
 
-  currentVersion: "",
-
-  locatorBuildersOrder: "ui,id,link,name,css,dom:name,xpath:link,xpath:img,xpath:attributes,xpath:idRelative,xpath:href,dom:index,xpath:position",
-
+  //Playback related options
+  timeout: "30000",
   executeUsingWebDriver: "false",
-
   webDriverBrowserString: "firefox",
 
-  recordOnOpen: "true"
+  //Other options
+  // This should be called 'userExtensionsPaths', but it is left for backward compatibility.
+  userExtensionsURL: "",
+  ideExtensionsPaths: "",
+  disableBadPluginCode: "true",
+  disableBadPluginAddon: "true",
+  enableExperimentalFeatures: "false",
+  showDeveloperTools: "false",
+
+  //Internal data
+  pluginsData: "[]",
+  currentVersion: "",
+  lastSavedTestCase: "",
+  lastSavedTestSuite: ""
 };
 

@@ -182,11 +182,15 @@ function Editor(window) {
 
   //window.controllers.appendController(controller);
 
-  this.app.newTestSuite();
-  if (this.app.options.recordOnOpen && this.app.options.recordOnOpen == 'true') {
-    this.toggleRecordingEnabled(true);
-  } else {
+  if (this.app.getBooleanOption('showDeveloperTools') && this.app.reopenLastTestCaseOrSuite()) {
     this.toggleRecordingEnabled(false);
+  } else {
+    this.app.newTestSuite();
+    if (this.app.options.recordOnOpen && this.app.options.recordOnOpen == 'true') {
+      this.toggleRecordingEnabled(true);
+    } else {
+      this.toggleRecordingEnabled(false);
+    }
   }
 
   this.updateViewTabs();

@@ -148,6 +148,8 @@ Application.prototype = {
         testSuite.addTestCaseFromContent(testCase);
         this.setTestSuite(testSuite);
         this.setTestCase(testCase);
+        Preferences.setAndSave(this.options, 'lastSavedTestSuite', '');
+        Preferences.setAndSave(this.options, 'lastSavedTestCase', '');
     },
 
     setTestSuite: function(testSuite) {
@@ -164,6 +166,34 @@ Application.prototype = {
 
     addRecentTestSuite: function(testSuite) {
         this.recentTestSuites.add(testSuite.file.path);
+        Preferences.setAndSave(this.options, 'lastSavedTestSuite', testSuite.file.path);
+        Preferences.setAndSave(this.options, 'lastSavedTestCase', '');
+    },
+
+    addRecentTestCase: function(testCase, isNewSuite) {
+        this.recentTestCases.add(testCase.file.path);
+        if (isNewSuite) {
+            Preferences.setAndSave(this.options, 'lastSavedTestSuite', '');
+        }
+        if (this.options.lastSavedTestSuite.length === 0) {
+            Preferences.setAndSave(this.options, 'lastSavedTestCase', testCase.file.path);
+        }
+    },
+
+    reopenLastTestCaseOrSuite: function() {
+        try {
+            if (FileUtils.fileExists(this.options.lastSavedTestSuite)) {
+                this.loadTestSuite(this.options.lastSavedTestSuite);
+                return true;
+            } else if (FileUtils.fileExists(this.options.lastSavedTestCase)) {
+                this.loadTestCaseWithNewSuite(this.options.lastSavedTestCase);
+                return true;
+            }
+        } catch (e) {
+            //error occurred
+            alert("Error reopening test suite / case " + e);
+        }
+        return false;
     },
 
     setTestCase: function(testCase) {
@@ -256,6 +286,7 @@ Application.prototype = {
         testSuite.addTestCaseFromContent(testCase);
         this.setTestSuite(testSuite);
         this.setTestCase(testCase);
+        this.addRecentTestCase(testCase, true);
     },
     
     // show specified TestSuite.TestCase object.
@@ -290,7 +321,7 @@ Application.prototype = {
             if (testCase != null) {
                 if (testCaseHandler) testCaseHandler(testCase);
                 this.setTestCase(testCase);
-                this.recentTestCases.add(testCase.file.path);
+                this.addRecentTestCase(testCase);
                 return true;
             }
             return false;
@@ -371,7 +402,7 @@ Application.prototype = {
     saveTestCase: function() {
         var result = this.getCurrentFormat().save(this.getTestCase());
         if (result) {
-            this.recentTestCases.add(this.getTestCase().file.path);
+            this.addRecentTestCase(this.getTestCase());
         }
         return result;
     },
@@ -379,7 +410,7 @@ Application.prototype = {
     saveNewTestCase: function() {
         var result = this.getCurrentFormat().saveAsNew(this.getTestCase());
         if (result) {
-            this.recentTestCases.add(this.getTestCase().file.path);
+            this.addRecentTestCase(this.getTestCase());
         }
     }
 };
