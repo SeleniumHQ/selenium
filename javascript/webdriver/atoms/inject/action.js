@@ -20,7 +20,6 @@
 goog.provide('webdriver.atoms.inject.action');
 
 goog.require('bot.action');
-goog.require('goog.dom.selection');
 goog.require('webdriver.atoms.element');
 goog.require('webdriver.atoms.inject');
 

@@ -67,7 +67,10 @@ position: relative; top:25px;">Red</div>
   function setUp() {
     bot.getDocument().documentElement.focus();
     events = [];
-    goog.events.removeAllNativeListeners();
+    goog.events.removeAll(greenDiv);
+    goog.events.removeAll(redDiv);
+    goog.events.removeAll(captureDiv);
+    goog.events.removeAll(innerCaptureDiv);
 
     goog.events.listen(greenDiv, MOUSE_EVENTS, function(e) {
       events.push(e.type);

@@ -37,8 +37,8 @@ goog.require('goog.userAgent.product');
  * A Device class that provides common functionality for input devices.
  * @param {bot.Device.ModifiersState=} opt_modifiersState state of modifier
  * keys. The state is shared, not copied from this parameter.
- * @param {bot.Device.EventEmitter=} opt_eventEmitter An object that should be used to fire events.
- *
+ * @param {bot.Device.EventEmitter=} opt_eventEmitter An object that should be
+ *     used to fire events.
  * @constructor
  */
 bot.Device = function(opt_modifiersState, opt_eventEmitter) {
@@ -115,7 +115,7 @@ bot.Device.prototype.fireHtmlEvent = function(type) {
 
 /**
  * Fires a keyboard event given the state of the device and the given arguments.
- * TODO(user): Populate the modifier keys in this method.
+ * TODO: Populate the modifier keys in this method.
  *
  * @param {bot.events.EventType} type Keyboard event type.
  * @param {bot.events.KeyboardArgs} args Keyboard event arguments.
@@ -129,7 +129,7 @@ bot.Device.prototype.fireKeyboardEvent = function(type, args) {
 
 /**
  * Fires a mouse event given the state of the device and the given arguments.
- * TODO(user): Populate the modifier keys in this method.
+ * TODO: Populate the modifier keys in this method.
  *
  * @param {bot.events.EventType} type Mouse event type.
  * @param {!goog.math.Coordinate} coord The coordinate where event will fire.
@@ -310,7 +310,8 @@ bot.Device.prototype.fireMSPointerEvent = function(type, coord, button,
       bot.Device.pointerElementMap_[id] = this;
     };
   }
-  var result = target ? this.eventEmitter.fireMSPointerEvent(target, type, args) : true;
+  var result =
+      target ? this.eventEmitter.fireMSPointerEvent(target, type, args) : true;
   if (originalMsSetPointerCapture) {
     owner['Element'].prototype.msSetPointerCapture =
         originalMsSetPointerCapture;
@@ -413,7 +414,7 @@ bot.Device.prototype.clickElement = function(coord, button, opt_pointerId) {
   var isRadioOrCheckbox = !this.select_ && bot.dom.isSelectable(this.element_);
   var wasChecked = isRadioOrCheckbox && bot.dom.isSelected(this.element_);
 
-  // NOTE(user): Clicking on a form submit button is a little broken:
+  // NOTE: Clicking on a form submit button is a little broken:
   // (1) When clicking a form submit button in IE, firing a click event or
   // calling Form.submit() will not by itself submit the form, so we call
   // Element.click() explicitly, but as a result, the coordinates of the click
@@ -422,7 +423,7 @@ bot.Device.prototype.clickElement = function(coord, button, opt_pointerId) {
   // (2) When clicking a form submit button in GECKO, while the coordinates of
   // the click event are correct, those submitted with the form are always (0,0)
   // .
-  // TODO(user): See if either of these can be resolved, perhaps by adding
+  // TODO: See if either of these can be resolved, perhaps by adding
   // hidden form elements with the coordinates before the form is submitted.
   if (goog.userAgent.IE && targetButton) {
     targetButton.click();
@@ -623,10 +624,15 @@ bot.Device.prototype.maybeToggleOption = function() {
   if (wasSelected && !select.multiple) {
     return;
   }
+
+  // TODO: in a multiselect, clicking an option without the shift key down
+  // should deselect all other selected options.
+
   this.element_.selected = !wasSelected;
   // Only WebKit fires the change event itself and only for multi-selects,
-  // except for Android versions >= 4.0.
+  // except for Android versions >= 4.0 and Chrome >= 28.
   if (!(goog.userAgent.WEBKIT && select.multiple) ||
+      (goog.userAgent.product.CHROME && bot.userAgent.isProductVersion(28)) ||
       (goog.userAgent.product.ANDROID && bot.userAgent.isProductVersion(4))) {
     bot.events.fire(select, bot.events.EventType.CHANGE);
   }
@@ -934,7 +940,8 @@ bot.Device.EventEmitter.prototype.fireHtmlEvent = function(target, type) {
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
  */
-bot.Device.EventEmitter.prototype.fireKeyboardEvent = function(target, type, args) {
+bot.Device.EventEmitter.prototype.fireKeyboardEvent = function(
+    target, type, args) {
   return bot.events.fire(target, type, args);
 };
 
@@ -948,7 +955,8 @@ bot.Device.EventEmitter.prototype.fireKeyboardEvent = function(target, type, arg
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
  */
-bot.Device.EventEmitter.prototype.fireMouseEvent = function(target, type, args) {
+bot.Device.EventEmitter.prototype.fireMouseEvent = function(
+    target, type, args) {
   return bot.events.fire(target, type, args);
 };
 
@@ -962,13 +970,15 @@ bot.Device.EventEmitter.prototype.fireMouseEvent = function(target, type, args) 
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
  */
-bot.Device.EventEmitter.prototype.fireTouchEvent = function(target, type, args) {
+bot.Device.EventEmitter.prototype.fireTouchEvent = function(
+    target, type, args) {
   return bot.events.fire(target, type, args);
 };
 
 
 /**
- * Fires an MSPointer event given the state of the device and the given arguments.
+ * Fires an MSPointer event given the state of the device and the given
+ * arguments.
  *
  * @param {!Element} target The element on which to fire the event.
  * @param {bot.events.EventType} type MSPointer event type.
@@ -976,6 +986,7 @@ bot.Device.EventEmitter.prototype.fireTouchEvent = function(target, type, args) 
  * @return {boolean} Whether the event fired successfully; false if cancelled.
  * @protected
  */
-bot.Device.EventEmitter.prototype.fireMSPointerEvent = function(target, type, args) {
+bot.Device.EventEmitter.prototype.fireMSPointerEvent = function(
+    target, type, args) {
   return bot.events.fire(target, type, args);
 };

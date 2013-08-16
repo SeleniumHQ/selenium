@@ -26,7 +26,14 @@
     }
 
     function setUp() {
-      goog.events.removeAllNativeListeners();
+      goog.events.removeAll(singleSelect);
+      goog.events.removeAll(multiSelect);
+      for (var i = 0; i < checkboxes.length; ++i) {
+        goog.events.removeAll(checkboxes[i]);
+      }
+      for (var i = 0; i < radioButtons.length; ++i) {
+        goog.events.removeAll(radioButtons[i]);
+      }
       singleSelect.selectedIndex = 0;
       goog.array.forEach(multiSelect.options, function(e) {
         e.selected = false;

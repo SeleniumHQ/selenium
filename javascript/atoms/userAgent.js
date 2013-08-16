@@ -226,3 +226,21 @@ bot.userAgent.IE_DOC_PRE10 = goog.userAgent.IE &&
  */
 bot.userAgent.ANDROID_PRE_GINGERBREAD = goog.userAgent.product.ANDROID &&
     !bot.userAgent.isProductVersion(2.3);
+
+
+/**
+ * Whether the current browser is Android pre-icecreamsandwich
+ * @type {boolean}
+ * @const
+ */
+bot.userAgent.ANDROID_PRE_ICECREAMSANDWICH = goog.userAgent.product.ANDROID &&
+    !bot.userAgent.isProductVersion(4);
+
+
+/**
+ * Whether the current browser is Safari 6.
+ * @type {boolean}
+ * @const
+ */
+bot.userAgent.SAFARI_6 = goog.userAgent.product.SAFARI &&
+    bot.userAgent.isProductVersion(6);

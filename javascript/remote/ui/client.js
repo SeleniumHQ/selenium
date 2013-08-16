@@ -94,7 +94,7 @@ goog.inherits(remote.ui.Client, goog.Disposable);
  * this array match the keys recognized as valid values for the "browserName"
  * field in a capabilities object in the WebDriver wire protocol.
  *
- * TODO(jleyba): It should be possible to query the server for the list of
+ * TODO: It should be possible to query the server for the list of
  * supported browsers. See:
  * http://code.google.com/p/selenium/issues/detail?id=6
  *

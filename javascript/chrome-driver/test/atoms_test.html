@@ -97,8 +97,9 @@ limitations under the License.
       var elem = frames[0].document.getElementById('elem');
       var coord = webdriver.chrome.getLocationInView(
           elem, false, new goog.math.Rect(0,0,4,4));
-      assertEquals(296, coord.x);
-      assertEquals(296, coord.y);
+      var tolerance = 1;
+      assertRoughlyEquals(281, coord.x, tolerance);
+      assertRoughlyEquals(281, coord.y, tolerance);
       assertEquals(408, frames[0].document.body.scrollLeft);
       assertEquals(408, frames[0].document.body.scrollTop);
     }
@@ -160,4 +161,3 @@ limitations under the License.
   <iframe width=300 height=300 src='location_in_view.html'></iframe>
 </body>
 </html>
-

@@ -220,7 +220,7 @@ bot.window.getFrame_ = function(win) {
 bot.window.getSize = function(opt_win) {
   var win = opt_win || bot.getWindow();
   var frame = bot.window.getFrame_(win);
-  if (bot.userAgent.ANDROID_PRE_GINGERBREAD) {
+  if (bot.userAgent.ANDROID_PRE_ICECREAMSANDWICH) {
     if (frame) {
       // Early Android browsers do not account for border width.
       var box = goog.style.getBorderBox(frame);

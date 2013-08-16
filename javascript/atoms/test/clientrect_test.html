@@ -7,8 +7,11 @@
     goog.require('bot');
     goog.require('bot.dom');
     goog.require('bot.locators');
+    goog.require('bot.userAgent');
     goog.require('goog.dom');
+    goog.require('goog.style');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
   </script>
 
   <script type="text/javascript">
@@ -88,7 +91,70 @@
       assertTrue(clientRect.width > 0);
       assertTrue(clientRect.height > 0);
     }
+
+    function testOrphanElement() {
+      var e = document.createElement('DIV');
+      assertClientRect(e, 0, 0, 0, 0);
+    }
+
+    function testCssTransforms() {
+      // IE < 9 does not support CSS transforms.
+      if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(9)) {
+        return;
+      }
+
+      var e = document.getElementById('rotate');
+      goog.style.setSize(e, 200, 300);
+      var clientRect = bot.dom.getClientRect(e);
+      assertRoughlyEquals(300, clientRect.width, 1);
+      assertRoughlyEquals(200, clientRect.height, 1);
+
+      var e = document.getElementById('rotateTwice');
+      goog.style.setSize(e, 200, 300);
+      clientRect = bot.dom.getClientRect(e);
+      assertRoughlyEquals(200, clientRect.width, 2);
+      assertRoughlyEquals(300, clientRect.height, 2);
+
+      var e = document.getElementById('scale');
+      goog.style.setSize(e, 200, 300);
+      clientRect = bot.dom.getClientRect(e);
+      assertRoughlyEquals(400, clientRect.width, 1);
+      assertRoughlyEquals(900, clientRect.height, 1);
+
+      var e = document.getElementById('translate');
+      goog.style.setPosition(e, 100, 200);
+      goog.style.setSize(e, 200, 300);
+      clientRect = bot.dom.getClientRect(e);
+      assertEquals(110, clientRect.left);
+      assertEquals(220, clientRect.top);
+      assertEquals(200, clientRect.width);
+      assertEquals(300, clientRect.height);
+    }
   </script>
+  <style>
+    #rotate, #rotateTwice {
+      transform: rotate(90deg);
+      -webkit-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+      -o-transform: rotate(90deg);
+      -moz-transform: rotate(90deg);
+    }
+    #scale {
+       transform: scale(2, 3);
+      -webkit-transform: scale(2, 3);
+      -ms-transform: scale(2, 3);
+      -o-transform: scale(2, 3);
+      -moz-transform: scale(2, 3);
+    }
+    #translate {
+       position: fixed;
+       transform: translate(10px, 20px);
+      -webkit-transform: translate(10px, 20px);
+      -ms-transform: translate(10px, 20px);
+      -o-transform: translate(10px, 20px);
+      -moz-transform: translate(10px, 20px);
+    }
+  </style>
 </head>
 <body>
 <div id="relative" style="width: 34px; height: 47px;">
@@ -106,7 +172,12 @@
   <area id="poly" shape="poly" coords="50, 60, 75, 80, 30, 90">
 </map>
 <div id="div-display-inline" style="display:inline;">
-<div>I have positive size</div>
+  <div>I have positive size</div>
 </div>
+<div id="rotate">
+  <div id="rotateTwice" class="rotate"></div>
+</div>
+<div id="scale"></div>
+<div id="translate"></div>
 </body>
 </html>

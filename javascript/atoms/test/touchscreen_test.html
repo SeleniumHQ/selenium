@@ -50,7 +50,11 @@
     function setUp() {
       touchscreen = new bot.Touchscreen();
       events = [];
-      goog.events.removeAllNativeListeners();
+      goog.events.removeAll(target);
+      goog.events.removeAll(lowerTarget);
+      goog.events.removeAll(captureTarget);
+      goog.events.removeAll(innerCaptureTarget);
+      goog.events.removeAll(noTouchTarget);
 
       goog.events.listen(target, TOUCH_EVENTS, function(e) {
         events.push(e.type);

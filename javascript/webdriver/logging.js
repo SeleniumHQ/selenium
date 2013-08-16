@@ -14,6 +14,7 @@
 // limitations under the License.
 
 goog.provide('webdriver.logging');
+goog.provide('webdriver.logging.Preferences');
 
 goog.require('goog.object');
 

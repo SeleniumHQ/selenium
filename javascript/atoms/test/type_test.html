@@ -52,7 +52,8 @@
     var expectedFailures;
 
     function setUp() {
-      goog.testing.AsyncTestCase.ControlBreakingException.prototype.isJsUnitException = function() { return true; };
+      goog.testing.AsyncTestCase.ControlBreakingException.prototype.
+          isJsUnitException = function() { return true; };
       expectedFailures = new goog.testing.ExpectedFailures();
     }
 
@@ -357,8 +358,10 @@
     }
 
     function testEnterTextArea() {
-      var newline = (bot.userAgent.IE_DOC_PRE9 || (goog.userAgent.OPERA && !goog.userAgent.product.isVersion(12))) ?
-          '\r\n' : '\n';
+      var newline =
+          (bot.userAgent.IE_DOC_PRE9 ||
+           (goog.userAgent.OPERA &&
+            !goog.userAgent.isVersionOrHigher(12))) ? '\r\n' : '\n';
       var finalText = 'asdf' + newline + 'qwer';
       runTypingTest(['asdf', ENTER, 'qwer'], finalText, 9, 9, ['textarea']);
     }

@@ -12,10 +12,26 @@ js_fragment(name = "find_elements",
   function = "webdriver.ie.findElements",
   deps = [ ":deps" ])
 
+js_fragment(name = "is_in_parent_overflow",
+  module = "webdriver.ie",
+  function = "webdriver.ie.isInParentOverflow",
+  deps = [ ":deps" ])
+
+js_test(name = "test",
+  srcs = [ "test/*_test.html" ],
+  deps = [
+    ":deps",
+    "//java/client/test/org/openqa/selenium/javascript",
+    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+  ],
+  browsers = [ "ie" ])
+
+
 js_fragment_header(name = "atoms",
   deps = [
     "//javascript/ie-driver:find_element:ie",
     "//javascript/ie-driver:find_elements:ie",
+    "//javascript/ie-driver:is_in_parent_overflow:ie",
     "//javascript/webdriver/atoms:click:ie",
     "//javascript/webdriver/atoms:clear:ie",
     "//javascript/webdriver/atoms:get_attribute:ie",
@@ -28,7 +44,6 @@ js_fragment_header(name = "atoms",
     "//javascript/webdriver/atoms:is_enabled:ie",
     "//javascript/webdriver/atoms:is_interactable:ie",
     "//javascript/webdriver/atoms:is_selected:ie",
-    "//javascript/webdriver/atoms:is_in_parent_overflow:ie",
     "//javascript/webdriver/atoms:submit:ie",
     "//javascript/webdriver/atoms:inputs"
   ],

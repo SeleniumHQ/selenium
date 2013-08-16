@@ -172,5 +172,5 @@ webdriver.testing.Client.prototype.sendEvent_ = function(type, opt_data) {
   var xhr = new goog.net.XmlHttp;
   xhr.open('POST', this.url_, true);
   xhr.send(payload);
-  // TODO(jleyba): Log if the event was not sent properly.
+  // TODO: Log if the event was not sent properly.
 };

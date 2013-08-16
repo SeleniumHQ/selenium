@@ -4,10 +4,9 @@
   <title>scrolling_test.html</title>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
-    goog.require('bot');
     goog.require('bot.action');
     goog.require('bot.dom');
-    goog.require('goog.events');
+    goog.require('goog.dom');
     goog.require('goog.testing.ExpectedFailures');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
@@ -19,15 +18,7 @@
     var findElement = bot.locators.findElement;
     var expectedFailures;
 
-    function shouldRunTests() {
-      if (goog.userAgent.product.ANDROID) {
-        // Disabling tests for Android jellybean
-        return !bot.userAgent.isProductVersion(4.1);
-      }
-    }
-
     function setUp() {
-      goog.events.removeAllNativeListeners();
       window.scrollTo(0, 0);
       assertEquals(document.body.scrollLeft, 0);
       assertEquals(document.body.scrollTop, 0);
@@ -40,8 +31,7 @@
     }
 
     function getTopLevelParent() {
-      var document = bot.getDocument();
-      return goog.userAgent.WEBKIT ? document.body : document.documentElement;
+      return goog.dom.getDocumentScrollElement();
     }
 
     function testScrollsElementInToViewIfRequired() {
@@ -87,20 +77,9 @@
 
     function testReturnsFalseIfElementHiddenByOverflow() {
       var element = findElement({id: 'hidden-by-overflow'});
-      expectedFailures.expectFailureFor(
-        true, // All browsers
-        'This test checks that an element is not scrolled into view if its ' +
-        'container has no scrollbars (overflow hidden). However, we ' +
-        'currently allow this behaviour to get around cases where an ' +
-        'element can be brought into view via other means.\n' +
-        'Once we verify that there are other means (like moving inside a ' +
-        'scrollable container by holding down the mouse button and moving) ' +
-        'we should re-renable this test.');
-      expectedFailures.run(function() {
-        assertFalse(bot.action.scrollIntoView(element));
-        var container = findElement({id: 'hidden-by-overflow-container'})
-        assertEquals(0, container.scrollLeft);
-      });
+      assertFalse(bot.action.scrollIntoView(element));
+      var container = findElement({id: 'hidden-by-overflow-container'})
+      assertEquals(0, container.scrollLeft);
     }
 
     function testScrollsNestedScrollContainers() {
@@ -150,8 +129,9 @@
 
       bot.action.scrollIntoView(element);
 
-      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID,
-        'Android doesn\'t currently provide scrolling information');
+      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID && 
+          !bot.userAgent.isProductVersion(4.1),
+          'Android pre-Jellybean doesn\'t provide scrolling information');
       expectedFailures.run(function() {
         assertNotEquals(0, frameDocument.body.scrollLeft);
         assertNotEquals(0, top.scrollLeft);

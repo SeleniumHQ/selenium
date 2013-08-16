@@ -41,8 +41,8 @@ goog.require('goog.userAgent');
  * supports having one button pressed at a time.
  * @param {bot.Mouse.State=} opt_state The mouse's initial state.
  * @param {bot.Device.ModifiersState=} opt_modifiersState State of the keyboard.
- * @param {bot.Device.EventEmitter=} opt_eventEmitter An object that should be used to fire events.
- *
+ * @param {bot.Device.EventEmitter=} opt_eventEmitter An object that should be
+ *     used to fire events.
  * @constructor
  * @extends {bot.Device}
  */
@@ -209,7 +209,7 @@ bot.Mouse.prototype.fireMousedown_ = function() {
   // On some browsers, a mouse down event on an OPTION or SELECT element cause
   // the SELECT to open, blocking further JS execution. This is undesirable,
   // and so needs to be detected. We always focus in this case.
-  // TODO(simon): This is a nasty way to avoid locking the browser
+  // TODO: This is a nasty way to avoid locking the browser
   var isFirefox3 = goog.userAgent.GECKO && !bot.userAgent.isProductVersion(4);
   var blocksOnMousedown = (goog.userAgent.WEBKIT || isFirefox3) &&
       (bot.dom.isElement(this.getElement(), goog.dom.TagName.OPTION) ||
@@ -275,7 +275,7 @@ bot.Mouse.prototype.releaseButton = function() {
   this.maybeToggleOption();
   this.fireMouseEvent_(bot.events.EventType.MOUSEUP);
 
-  // TODO(user): Middle button can also trigger click.
+  // TODO: Middle button can also trigger click.
   if (this.buttonPressed_ == bot.Mouse.Button.LEFT &&
       this.getElement() == this.elementPressed_) {
     this.clickElement(this.clientXY_,
@@ -288,7 +288,7 @@ bot.Mouse.prototype.releaseButton = function() {
           new goog.math.Coordinate(0, 0), 0, bot.Device.MOUSE_MS_POINTER_ID,
           MSPointerEvent.MSPOINTER_TYPE_MOUSE, false);
     }
-  // TODO(user): In Linux, this fires after mousedown event.
+  // TODO: In Linux, this fires after mousedown event.
   } else if (this.buttonPressed_ == bot.Mouse.Button.RIGHT) {
     this.fireMouseEvent_(bot.events.EventType.CONTEXTMENU);
   }

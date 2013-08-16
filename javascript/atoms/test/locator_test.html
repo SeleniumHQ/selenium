@@ -257,7 +257,6 @@ limitations under the License.
     function testCanFindElementByLinkText() {
       var link = bot.locators.findElement({linkText: 'this is a link'});
 
-      assertNotNull(link);
       assertEquals('link', bot.dom.getAttribute(link, 'id'));
     }
 
@@ -325,17 +324,22 @@ limitations under the License.
     }
 
     function testShouldSurviveObjectPrototypeBeingModified() {
-      Object.prototype.cheese = 'brie';
-      Object.prototype.Inherits = function() { /* does nothing */ };
+      try {
+        Object.prototype.cheese = 'brie';
+        Object.prototype.Inherits = function() { /* does nothing */ };
 
-      var first = bot.locators.findElement({name: 'tiger'});
-      assertEquals('tiger', first.getAttribute('name'));
+        var first = bot.locators.findElement({name: 'tiger'});
+        assertEquals('tiger', first.getAttribute('name'));
 
-      var locator = new Object();
-      locator.name = 'tiger';
+        var locator = new Object();
+        locator.name = 'tiger';
 
-      var second = bot.locators.findElement(locator);
-      assertEquals('tiger', second.getAttribute('name'));
+        var second = bot.locators.findElement(locator);
+        assertEquals('tiger', second.getAttribute('name'));
+      } finally {
+        delete Object.prototype.cheese;
+        delete Object.prototype.Inherits;
+      }
     }
 
     function testShouldReturnNullIfXPathResolverThrowsNsError_Gecko() {

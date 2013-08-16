@@ -70,7 +70,7 @@
         fn();
       // Firefox 6 currently needs a fairly long timeout before a hashchange is
       // completed, while other browsers complete it on the next event cycle.
-      // TODO(user): Remove superfluous link following from device.js and
+      // TODO: Remove superfluous link following from device.js and
       // then check whether this longer timeout is still necessary.
       }, GECKO6 ? 250 : 0);
     }

@@ -116,7 +116,7 @@ webdriver.http.Executor.buildPath_ = function(path, parameters) {
       var key = pathParameters[i].substring(2);  // Trim the /:
       if (key in parameters) {
         var value = parameters[key];
-        // TODO(jleyba): move webdriver.WebElement.ELEMENT definition to a
+        // TODO: move webdriver.WebElement.ELEMENT definition to a
         // common file so we can reference it here without pulling in all of
         // webdriver.WebElement's dependencies.
         if (value && value['ELEMENT']) {

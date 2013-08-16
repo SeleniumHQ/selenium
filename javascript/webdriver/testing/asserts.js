@@ -24,13 +24,10 @@ goog.provide('webdriver.testing.assert');
 goog.provide('webdriver.testing.asserts');
 
 goog.require('goog.array');
-goog.require('goog.string');
-goog.require('goog.labs.testing.AnyOfMatcher');
 goog.require('goog.labs.testing.CloseToMatcher');
-goog.require('goog.labs.testing.ContainsStringMatcher');
 goog.require('goog.labs.testing.EndsWithMatcher');
-goog.require('goog.labs.testing.EqualsMatcher');
 goog.require('goog.labs.testing.EqualToMatcher');
+goog.require('goog.labs.testing.EqualsMatcher');
 goog.require('goog.labs.testing.GreaterThanEqualToMatcher');
 goog.require('goog.labs.testing.GreaterThanMatcher');
 goog.require('goog.labs.testing.LessThanEqualToMatcher');
@@ -40,11 +37,12 @@ goog.require('goog.labs.testing.IsNotMatcher');
 goog.require('goog.labs.testing.IsNullMatcher');
 goog.require('goog.labs.testing.IsNullOrUndefinedMatcher');
 goog.require('goog.labs.testing.IsUndefinedMatcher');
-goog.require('goog.labs.testing.ObjectEqualsMatcher');
 goog.require('goog.labs.testing.Matcher');
+goog.require('goog.labs.testing.ObjectEqualsMatcher');
 goog.require('goog.labs.testing.RegexMatcher');
 goog.require('goog.labs.testing.StartsWithMatcher');
 goog.require('goog.labs.testing.assertThat');
+goog.require('goog.string');
 goog.require('webdriver.promise');
 
 
@@ -62,9 +60,13 @@ webdriver.testing.ContainsMatcher = function(value) {
 
 /** @override */
 webdriver.testing.ContainsMatcher.prototype.matches = function(actualValue) {
-  return goog.isString(actualValue) ?
-         goog.string.contains(actualValue, this.value_) :
-         goog.array.contains(actualValue, this.value_);
+  if (goog.isString(actualValue)) {
+    return goog.string.contains(
+        actualValue, /** @type {string} */(this.value_));
+  } else {
+    return goog.array.contains(
+        /** @type {goog.array.ArrayLike} */(actualValue), this.value_);
+  }
 };
 
 
@@ -131,21 +133,26 @@ webdriver.testing.Assertion.DelegatingMatcher_ = function(obj) {
 
 /**
  * Asserts that the given {@code matcher} accepts the value wrapped by this
- * instance.
+ * instance. If the wrapped value is a promise, this function will defer
+ * applying the assertion until the value has been resolved. Otherwise, it
+ * will be applied immediately.
  * @param {!goog.labs.testing.Matcher} matcher The matcher to apply
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
- * @private
+ * @return {webdriver.promise.Promise} The deferred assertion result, or
+ *     {@code null} if the assertion was immediately applied.
+ * @protected
  */
-webdriver.testing.Assertion.prototype.apply_ = function(matcher, opt_message) {
+webdriver.testing.Assertion.prototype.apply = function(matcher, opt_message) {
+  var result = null;
   if (webdriver.promise.isPromise(this.value_)) {
-    return webdriver.promise.when(this.value_, function(value) {
+    result = webdriver.promise.when(this.value_, function(value) {
       goog.labs.testing.assertThat(value, matcher, opt_message);
     });
   } else {
     goog.labs.testing.assertThat(this.value_, matcher, opt_message);
   }
+  return result;
 };
 
 
@@ -155,11 +162,11 @@ webdriver.testing.Assertion.prototype.apply_ = function(matcher, opt_message) {
  * @param {number} value The minimum value.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.greaterThan = function(
     value, opt_message) {
-  return this.apply_(
+  return this.apply(
       new goog.labs.testing.GreaterThanMatcher(value), opt_message);
 };
 
@@ -170,11 +177,11 @@ webdriver.testing.Assertion.prototype.greaterThan = function(
  * @param {number} value The minimum value.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.greaterThanEqualTo = function(
     value, opt_message) {
-  return this.apply_(
+  return this.apply(
       new goog.labs.testing.GreaterThanEqualToMatcher(value), opt_message);
 };
 
@@ -185,10 +192,10 @@ webdriver.testing.Assertion.prototype.greaterThanEqualTo = function(
  * @param {number} value The maximum value.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.lessThan = function(value, opt_message) {
-  return this.apply_(
+  return this.apply(
       new goog.labs.testing.LessThanMatcher(value), opt_message);
 };
 
@@ -199,11 +206,11 @@ webdriver.testing.Assertion.prototype.lessThan = function(value, opt_message) {
  * @param {number} value The maximum value.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.lessThanEqualTo = function(
     value, opt_message) {
-  return this.apply_(
+  return this.apply(
       new goog.labs.testing.LessThanEqualToMatcher(value), opt_message);
 };
 
@@ -216,11 +223,11 @@ webdriver.testing.Assertion.prototype.lessThanEqualTo = function(
  *     differ from the expected value.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.closeTo = function(
     value, range, opt_message) {
-  return this.apply_(
+  return this.apply(
       new goog.labs.testing.CloseToMatcher(value, range), opt_message);
 };
 
@@ -230,10 +237,10 @@ webdriver.testing.Assertion.prototype.closeTo = function(
  * @param {!Function} ctor The expected class constructor.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.instanceOf = function(ctor, opt_message) {
-  return this.apply_(
+  return this.apply(
       new goog.labs.testing.InstanceOfMatcher(ctor), opt_message);
 };
 
@@ -242,10 +249,10 @@ webdriver.testing.Assertion.prototype.instanceOf = function(ctor, opt_message) {
  * Asserts that the wrapped value is null.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.isNull = function(opt_message) {
-  return this.apply_(new goog.labs.testing.IsNullMatcher(), opt_message);
+  return this.apply(new goog.labs.testing.IsNullMatcher(), opt_message);
 };
 
 
@@ -253,10 +260,10 @@ webdriver.testing.Assertion.prototype.isNull = function(opt_message) {
  * Asserts that the wrapped value is undefined.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.isUndefined = function(opt_message) {
-  return this.apply_(new goog.labs.testing.IsUndefinedMatcher(), opt_message);
+  return this.apply(new goog.labs.testing.IsUndefinedMatcher(), opt_message);
 };
 
 
@@ -264,11 +271,11 @@ webdriver.testing.Assertion.prototype.isUndefined = function(opt_message) {
  * Asserts that the wrapped value is null or undefined.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.isNullOrUndefined = function(
     opt_message) {
-  return this.apply_(
+  return this.apply(
       new goog.labs.testing.IsNullOrUndefinedMatcher(), opt_message);
 };
 
@@ -279,10 +286,10 @@ webdriver.testing.Assertion.prototype.isNullOrUndefined = function(
  * @param {*} value The expected value.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.contains = function(value, opt_message) {
-  return this.apply_(
+  return this.apply(
       new webdriver.testing.ContainsMatcher(value), opt_message);
 };
 
@@ -292,12 +299,12 @@ webdriver.testing.Assertion.prototype.contains = function(value, opt_message) {
  * @param {string} suffix The expected suffix.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.endsWith = function(
     suffix, opt_message) {
-  return this.apply_(
-      new goog.labs.testing.LessThanEqualToMatcher(value), opt_message);
+  return this.apply(
+      new goog.labs.testing.EndsWithMatcher(suffix), opt_message);
 };
 
 
@@ -306,11 +313,11 @@ webdriver.testing.Assertion.prototype.endsWith = function(
  * @param {string} prefix The expected prefix.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.startsWith = function(
     prefix, opt_message) {
-  return this.apply_(
+  return this.apply(
       new goog.labs.testing.StartsWithMatcher(prefix), opt_message);
 };
 
@@ -320,10 +327,10 @@ webdriver.testing.Assertion.prototype.startsWith = function(
  * @param {!RegExp} regex The regex to test.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.matches = function(regex, opt_message) {
-  return this.apply_(new goog.labs.testing.RegexMatcher(regex), opt_message);
+  return this.apply(new goog.labs.testing.RegexMatcher(regex), opt_message);
 };
 
 
@@ -333,16 +340,16 @@ webdriver.testing.Assertion.prototype.matches = function(regex, opt_message) {
  * @param {*} value The expected value.
  * @param {string=} opt_message A message to include if the matcher does not
  *     accept the value wrapped by this assertion.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.equalTo = function(value, opt_message) {
-  return this.apply_(webdriver.testing.asserts.equalTo(value), opt_message);
+  return this.apply(webdriver.testing.asserts.equalTo(value), opt_message);
 };
 
 
 /**
  * Asserts that the value managed by this assertion is strictly true.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.isTrue = function() {
   return this.equalTo(true);
@@ -351,7 +358,7 @@ webdriver.testing.Assertion.prototype.isTrue = function() {
 
 /**
  * Asserts that the value managed by this assertion is strictly false.
- * @return {!webdriver.promise.Promise} The assertion result.
+ * @return {webdriver.promise.Promise} The assertion result.
  */
 webdriver.testing.Assertion.prototype.isFalse = function() {
   return this.equalTo(false);
@@ -374,10 +381,10 @@ goog.inherits(
 
 
 /** @override */
-webdriver.testing.NegatedAssertion.prototype.apply_ = function(
+webdriver.testing.NegatedAssertion.prototype.apply = function(
     matcher, opt_message) {
   matcher = new goog.labs.testing.IsNotMatcher(matcher);
-  return goog.base(this, 'apply_', matcher, opt_message);
+  return goog.base(this, 'apply', matcher, opt_message);
 };
 
 
@@ -411,23 +418,41 @@ webdriver.testing.assert.register = function(name, matcherTemplate) {
     } else {
       matcher = new webdriver.testing.Assertion.DelegatingMatcher_(value);
     }
-    return this.apply_(matcher, opt_message);
+    return this.apply(matcher, opt_message);
   };
 };
 
 
 /**
- * Asserts that a matcher accepts a given value.
- * @param {*} value The value to apply a matcher to. If this value is a
- *     promise, will wait for the promise to resolve before applying the
- *     matcher.
- * @param {!goog.labs.testing.Matcher} matcher The matcher to apply.
- * @param {string=} opt_message An optional error message.
+ * Asserts that a matcher accepts a given value.  This function has two
+ * signatures based on the number of arguments:
+ *
+ * Two arguments:
+ *   assertThat(actualValue, matcher)
+ * Three arguments:
+ *   assertThat(failureMessage, actualValue, matcher)
+ *
+ * @param {*} failureMessageOrActualValue Either a failure message or the value
+ *     to apply to the given matcher.
+ * @param {*} actualValueOrMatcher Either the value to apply to the given
+ *     matcher, or the matcher itself.
+ * @param {goog.labs.testing.Matcher=} opt_matcher The matcher to use;
+ *     ignored unless this function is invoked with three arguments.
  * @return {!webdriver.promise.Promise} The assertion result.
+ * @deprecated Use webdriver.testing.asserts.assert instead.
  */
-webdriver.testing.asserts.assertThat = function(value, matcher, opt_message) {
-  return webdriver.promise.when(value, function(value) {
-    goog.labs.testing.assertThat(value, matcher, opt_message);
+webdriver.testing.asserts.assertThat = function(
+    failureMessageOrActualValue, actualValueOrMatcher, opt_matcher) {
+  var args = goog.array.slice(arguments, 0);
+
+  var message = args.length > 2 ? args.shift() : '';
+  if (message) message += '\n';
+
+  var actualValue = args.shift();
+  var matcher = args.shift();
+
+  return webdriver.promise.when(actualValue, function(value) {
+    goog.labs.testing.assertThat(value, matcher, message);
   });
 };
 
@@ -443,7 +468,8 @@ webdriver.testing.asserts.equalTo = function(expected) {
   } else if (goog.isNumber(expected)) {
     return new goog.labs.testing.EqualToMatcher(expected);
   } else {
-    return new goog.labs.testing.ObjectEqualsMatcher(expected);
+    return new goog.labs.testing.ObjectEqualsMatcher(
+        /** @type {!Object} */ (expected));
   }
 };
 
