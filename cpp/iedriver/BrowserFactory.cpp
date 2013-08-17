@@ -426,7 +426,7 @@ bool BrowserFactory::AttachToBrowserUsingShellWindows(
 
           if (process_id == process_window_info->dwProcessId) {
             browser = svar.pdispVal;
-            hwnd_browser = hwnd;
+            hwnd_browser = FindBrowserHostWindow(hwnd);
             break;
           }
         }
@@ -782,7 +782,31 @@ void BrowserFactory::InvokeClearCacheUtility(bool use_low_integrity_level) {
       ::CloseHandle(mic_token);
       ::LocalFree(sid);
     }
-  }    
+  }
+}
+
+HWND BrowserFactory::FindBrowserHostWindow(HWND hwnd) {
+  HWND browserHostWindow = 0;
+  EnumChildWindows(hwnd, FindServerChildWindow, (LPARAM)&browserHostWindow);
+  return browserHostWindow;
+}
+
+BOOL CALLBACK BrowserFactory::FindServerChildWindow(HWND hwnd, LPARAM arg) {
+  // Could this be an Internet Explorer Server window?
+  // 25 == "Internet Explorer_Server\0"
+  char name[25];
+  if (::GetClassNameA(hwnd, name, 25) == 0) {
+    // No match found. Skip
+    return TRUE;
+  }
+
+  if (strcmp(IE_SERVER_CHILD_WINDOW_CLASS, name) != 0) {
+	return TRUE;
+  } else {
+    HWND* browserHostWindow = reinterpret_cast<HWND*>(arg);
+    *browserHostWindow = hwnd;
+    return FALSE;
+  }
 }
 
 BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
@@ -794,7 +818,7 @@ BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
     // No match found. Skip
     return TRUE;
   }
-  
+
   if (strcmp(IE_FRAME_WINDOW_CLASS, name) != 0 && 
       strcmp(SHELL_DOCOBJECT_VIEW_WINDOW_CLASS, name) != 0) {
     return TRUE;
@@ -813,7 +837,7 @@ BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
     // No match found. Skip
     return TRUE;
   }
-  
+
   if (strcmp(IE_SERVER_CHILD_WINDOW_CLASS, name) != 0) {
     return TRUE;
   } else {

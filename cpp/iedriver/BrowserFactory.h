@@ -138,6 +138,8 @@ class BrowserFactory {
 
  private:
   static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
+  static BOOL CALLBACK FindServerChildWindow(HWND hwnd, LPARAM arg);
+
   UINT html_getobject_msg_;
   HINSTANCE oleacc_instance_handle_;
 
@@ -146,6 +148,8 @@ class BrowserFactory {
   bool CreateLowIntegrityLevelToken(HANDLE* process_token_handle,
                                     HANDLE* mic_token_handle,
                                     PSID* sid);
+
+  HWND FindBrowserHostWindow(HWND hwnd);
 
   bool AttachToBrowserUsingShellWindows(
                        ProcessWindowInfo* process_window_info,
