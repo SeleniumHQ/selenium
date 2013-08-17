@@ -114,8 +114,7 @@ function Editor(window) {
           self.updateState();
           self.alreadySaved = false;
           self.app.currentFormat = format;
-          self.app.options.selectedFormat = format.id;
-          Preferences.save(self.app.options, 'selectedFormat');
+          Preferences.setAndSave(self.app.options, 'selectedFormat', format.id);
         }
       }
     },
@@ -141,8 +140,7 @@ function Editor(window) {
 
   LocatorBuilders.addObserver({
     preferredOrderChanged: function (preferredOrder) {
-      self.app.options.locatorBuildersOrder = preferredOrder.join(',');
-      Preferences.save(self.app.options, 'locatorBuildersOrder');
+      Preferences.setAndSave(self.app.options, 'locatorBuildersOrder', preferredOrder.join(','));
     }
   });
 
@@ -213,8 +211,7 @@ function Editor(window) {
   var versionString = Editor.getString('selenium-ide.version');
   if (!this.app.options.currentVersion || this.app.options.currentVersion != versionString) {
     openTabOrWindow('http://code.google.com/p/selenium/wiki/SeIDEReleaseNotes');
-    this.app.options.currentVersion = versionString;
-    Preferences.save(this.app.options, 'currentVersion');
+    Preferences.setAndSave(this.app.options, 'currentVersion', versionString);
   }
 }
 

@@ -37,8 +37,7 @@ function Application() {
 Application.prototype = {
     saveState: function() {
         if (this.options.rememberBaseURL == 'true'){
-            this.options.baseURL = this.baseURL;
-            Preferences.save(this.options, 'baseURL');
+            Preferences.setAndSave(this.options, 'baseURL', this.baseURL);
         }
     },
 
@@ -113,8 +112,7 @@ Application.prototype = {
          //sync the testcase with the data view
         this.notify("currentFormatChanging");
         this.currentFormat = format;
-        this.options.selectedFormat = format.id;
-        Preferences.save(this.options, 'selectedFormat');
+        Preferences.setAndSave(this.options, 'selectedFormat', format.id);
         this.notify("currentFormatChanged", format);
     },
 
@@ -128,8 +126,7 @@ Application.prototype = {
 
     setClipboardFormat: function(format) {
         this.clipboardFormat = format;
-        this.options.clipboardFormat = format.id;
-        Preferences.save(this.options, 'clipboardFormat');
+        Preferences.setAndSave(this.options, 'clipboardFormat', format.id);
         this.notify("clipboardFormatChanged", format);
     },
 
