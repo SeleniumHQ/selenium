@@ -167,7 +167,9 @@ public class ErrorHandler {
       Object alertText = rawErrorData.get("alertText");
       if (alertText == null) {
         Map<String, Object> alert = (Map<String, Object>) rawErrorData.get("alert");
-        alertText = alert.get("text");
+        if (alert != null) {
+          alertText = alert.get("text");
+        }
       }
       return createThrowable(UnhandledAlertException.class,
           new Class<?>[] {String.class, String.class},
