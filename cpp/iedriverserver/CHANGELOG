@@ -9,6 +9,21 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.35.2.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Refactored calculations to the size of the visible view port. There are
+   circumstances where IE can have no vertical scroll bar. In these cases, the
+   IE driver would assume there was a vertical scroll bar, which would make the
+   actual width of the document larger than the computed width of the window.
+   This, in turn, would make the driver assume there was a horizontal scroll
+   bar, which would imply that absolutely-positioned elements at the bottom of
+   the page would not be seen as clickable.
+ * Modified to ignore frames which can not be retrieved by
+   IHTMLFramesCollection2::item while waiting for page load complete. This
+   change prevents infinite page load on IE9 for pages with frameset that do
+   not specify column or row counts. Fixes issue #3211.
+
 v2.35.1.0
 =========
  * Updated to correct active element finding when using synthetic events. Fixes
