@@ -66,6 +66,8 @@ public class InputKeysContainer {
   @Override
   public String toString() {
     String toReturn = builder.toString();
+    toReturn = toReturn.replaceAll(ENTER.toString(), "\r");
+    toReturn = toReturn.replaceAll(RETURN.toString(), "\r");
     if (capitalize) {
       return toReturn.toUpperCase();
     }
