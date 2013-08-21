@@ -118,8 +118,10 @@ Then run your Python client scripts.
 Use The Source Luke!
 ====================
 
-+-----------+--------------------------------------------+
-| official: | https://code.google.com/p/selenium/source/ |
-+-----------+--------------------------------------------+
-| mirror:   | https://github.com/SeleniumHQ/selenium     |
-+-----------+--------------------------------------------+
+View source code online:
+
++-----------+-------------------------------------------------------+
+| official: | https://code.google.com/p/selenium/source/browse/py   |
++-----------+-------------------------------------------------------+
+| mirror:   | https://github.com/SeleniumHQ/selenium/tree/master/py |
++-----------+-------------------------------------------------------+
