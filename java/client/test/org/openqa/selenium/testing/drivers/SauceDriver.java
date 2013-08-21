@@ -138,6 +138,7 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
       if (chromeDriverVersion == null) {
         chromeDriverVersion = "2.2";
       }
+      System.out.println("Setting chromedriver-version capability to " + chromeDriverVersion);
       mungedCapabilities.setCapability("chromedriver-version", chromeDriverVersion);
     }
 
