@@ -25,6 +25,7 @@ import org.junit.Rule;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -300,6 +301,39 @@ public class ByChainedTest {
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
     assertThat(by.findElements(driver), equalTo(elems5));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void findElementWithStaleReferenceException() {
+    final AllDriver driver = mockery.mock(AllDriver.class);
+    final WebElement elem1 = mockery.mock(AllElement.class, "webElement1");
+    final WebElement elem2 = mockery.mock(AllElement.class, "webElement2");
+    final WebElement elem3 = mockery.mock(AllElement.class, "webElement3");
+    final WebElement elem4 = mockery.mock(AllElement.class, "webElement4");
+    final WebElement elem5 = mockery.mock(AllElement.class, "webElement5");
+    final List<WebElement> elems12 = new ArrayList<WebElement>();
+    elems12.add(elem1);
+    elems12.add(elem2);
+    final List<WebElement> elems34 = new ArrayList<WebElement>();
+    elems34.add(elem3);
+    elems34.add(elem4);
+    final List<WebElement> elems5 = new ArrayList<WebElement>();
+    elems5.add(elem5);
+    final List<WebElement> elems345 = new ArrayList<WebElement>();
+    elems345.addAll(elems34);
+    elems345.addAll(elems5);
+
+    mockery.checking(new Expectations() {{
+      oneOf(driver).findElementsByName("cheese");
+      will(returnValue(elems12));
+      oneOf(elem1).findElements(By.name("photo"));
+      will(returnValue(elems34));
+      oneOf(elem2).findElements(By.name("photo"));
+      will(throwException(new StaleElementReferenceException("stale")));
+    }});
+
+    ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
+    by.findElements(driver);
   }
 
   @Test

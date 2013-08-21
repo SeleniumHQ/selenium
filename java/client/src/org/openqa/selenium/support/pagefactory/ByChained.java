@@ -19,6 +19,7 @@ package org.openqa.selenium.support.pagefactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
@@ -58,17 +59,21 @@ public class ByChained extends By {
     }
 
     List<WebElement> elems = null;
-    for (By by : bys) {
-      List<WebElement> newElems = new ArrayList<WebElement>();
+    try {
+      for (By by : bys) {
+        List<WebElement> newElems = new ArrayList<WebElement>();
 
-      if (elems == null) {
-        newElems.addAll(by.findElements(context));
-      } else {
-        for (WebElement elem : elems) {
-          newElems.addAll(elem.findElements(by));
+        if (elems == null) {
+          newElems.addAll(by.findElements(context));
+        } else {
+          for (WebElement elem : elems) {
+            newElems.addAll(elem.findElements(by));
+          }
         }
+        elems = newElems;
       }
-      elems = newElems;
+    } catch (StaleElementReferenceException ex) {
+      throw new NoSuchElementException(ex.getMessage(), ex);
     }
 
     return elems;
