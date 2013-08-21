@@ -787,6 +787,7 @@ bool Element::GetClickableViewPortLocation(const bool document_contains_frames, 
     return false;
   }
 
+
   long window_width = window_info.rcClient.right - window_info.rcClient.left;
   long window_height = window_info.rcClient.bottom - window_info.rcClient.top;
 
@@ -797,20 +798,22 @@ bool Element::GetClickableViewPortLocation(const bool document_contains_frames, 
   if (!document_contains_frames) {
     CComPtr<IHTMLDocument2> doc;
     this->GetContainingDocument(false, &doc);
+    int document_mode = DocumentHost::GetDocumentMode(doc);
     CComPtr<IHTMLDocument3> document_element_doc;
     HRESULT hr = doc->QueryInterface<IHTMLDocument3>(&document_element_doc);
-    if (SUCCEEDED(hr) && document_element_doc) {
+    if (SUCCEEDED(hr) && document_element_doc && document_mode > 5) {
       CComPtr<IHTMLElement> document_element;
-      document_element_doc->get_documentElement(&document_element);
+      hr = document_element_doc->get_documentElement(&document_element);
       CComPtr<IHTMLElement2> size_element;
-      document_element->QueryInterface<IHTMLElement2>(&size_element);
+      hr = document_element->QueryInterface<IHTMLElement2>(&size_element);
       size_element->get_clientHeight(&window_height);
       size_element->get_clientWidth(&window_width);
     } else {
       // This branch is only included if getting documentElement fails.
       LOG(WARN) << "Document containing element does not contains frames, "
-                << "but getting the documentElement property failed. The "
-                << "view port calculation may be inaccurate";
+                << "but getting the documentElement property failed, or the "
+                << "doctype has thrown the browser into pre-IE6 rendering. "
+                << "The view port calculation may be inaccurate";
       int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
       window_width -= vertical_scrollbar_width;
       LocationInfo document_info;

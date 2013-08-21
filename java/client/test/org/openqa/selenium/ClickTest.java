@@ -330,4 +330,30 @@ public class ClickTest extends JUnit4TestBase {
     waitFor(WaitingConditions.pageTitleToBe(driver, "clicks"));
   }
 
+  @Test
+  @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
+      = "not tested")
+  public void testShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooter() {
+    String url = appServer.whereIs("fixedFooterNoScroll.html");
+    driver.get(url);
+
+    WebElement element = driver.findElement(By.id("link"));
+    element.click();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
+  @Test
+  @Ignore(value = {HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
+      = "not tested")
+  public void testShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooterInQuirksMode() {
+    String url = appServer.whereIs("fixedFooterNoScrollQuirksMode.html");
+    driver.get(url);
+
+    WebElement element = driver.findElement(By.id("link"));
+    element.click();
+
+    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
 }
