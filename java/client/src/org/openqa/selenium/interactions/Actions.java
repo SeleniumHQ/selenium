@@ -73,8 +73,9 @@ public class Actions {
    * Note that the modifier key is <b>never</b> released implicitly - either
    * <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i>
    * must be called to release the modifier.
-   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
-   * provided key is none of those, {@link IllegalArgumentException} is thrown.
+   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT}, {@link Keys#CONTROL}
+   * or {@link Keys#COMMAND}. If the provided key is none of those, 
+   * {@link IllegalArgumentException} is thrown.
    * @return A self reference.
    */
   public Actions keyDown(Keys theKey) {
@@ -86,8 +87,9 @@ public class Actions {
    * <i>Actions.click(element).sendKeys(theKey);</i>
    * @see #keyDown(org.openqa.selenium.Keys)
    *
-   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
-   * provided key is none of those, {@link IllegalArgumentException} is thrown.
+   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT}, {@link Keys#CONTROL}
+   * or {@link Keys#COMMAND}. If the provided key is none of those, 
+   * {@link IllegalArgumentException} is thrown.
    * @return A self reference.
    */
   public Actions keyDown(WebElement element, Keys theKey) {
@@ -99,7 +101,8 @@ public class Actions {
    * Performs a modifier key release. Releasing a non-depressed modifier key will yield undefined
    * behaviour.
    *
-   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT}, {@link Keys#CONTROL}
+   * or {@link Keys#COMMAND}.
    * @return A self reference.
    */
   public Actions keyUp(Keys theKey) {
@@ -111,7 +114,8 @@ public class Actions {
    * <i>Actions.click(element).sendKeys(theKey);</i>
    * @see #keyUp(org.openqa.selenium.Keys) on behaviour regarding non-depressed modifier keys.
    *
-   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT}, {@link Keys#CONTROL}
+   * or {@link Keys#COMMAND}.
    * @return A self reference.
    */
   public Actions keyUp(WebElement element, Keys theKey) {

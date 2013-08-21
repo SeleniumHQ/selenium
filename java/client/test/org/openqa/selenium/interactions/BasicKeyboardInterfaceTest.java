@@ -204,4 +204,39 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
         TestUtilities.getEffectivePlatform().is(Platform.WINDOWS) &&
         TestUtilities.isNativeEventsEnabled(driver));
   }
+  
+  @JavascriptEnabled
+  @Ignore({ANDROID, HTMLUNIT, IPHONE, OPERA, OPERA_MOBILE, IE})
+  @Test
+  @SuppressWarnings("unused")
+  public void testSendingCommandKey() throws InterruptedException {
+	ignoreOnFfWindowsWithNativeEvents(); // Issue 3722
+
+    driver.get(pages.modifierKeyPage);
+
+    WebElement sourceA = driver.findElement(By.id("sourceA"));
+    WebElement sourceB = driver.findElement(By.id("sourceB"));
+
+    WebElement shiftwatcher = driver.findElement(By.id("shiftbox"));
+    WebElement ctrlwatcher = driver.findElement(By.id("ctrlbox"));
+    WebElement altwatcher = driver.findElement(By.id("altbox"));
+    WebElement cmdwatcher = driver.findElement(By.id("cmdbox"));
+
+    
+    
+    sourceA.click();
+    
+    assertThat(cmdwatcher.getAttribute("value"), is("key UP")); // check that the state is good beforehand
+    
+    Action pressCommand = getBuilder(driver).keyDown(sourceA, Keys.COMMAND).build();
+    pressCommand.perform();
+
+    assertThat(cmdwatcher.getAttribute("value"), is("key DOWN: sourceA")); // check that the state has changed
+    
+    Action releaseCommand = getBuilder(driver).keyUp(sourceA, Keys.COMMAND).build();
+    releaseCommand.perform();
+
+    assertThat(cmdwatcher.getAttribute("value"), is("key UP")); // check that the state returns after key is released
+
+  }
 }

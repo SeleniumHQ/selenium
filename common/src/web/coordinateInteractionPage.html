@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+<title>Test Page for Complex Mouse Interactions</title>
+<script language="JavaScript">
+function point_up(event, element_id){
+	pos_x = event.offsetX?(event.offsetX):event.pageX-document.getElementById(element_id).offsetLeft;
+	pos_y = event.offsetY?(event.offsetY):event.pageY-document.getElementById(element_id).offsetTop;
+	document.pointform.up_x.value = pos_x;
+	document.pointform.up_y.value = pos_y;
+}
+function point_down(event, element_id){
+	pos_x = event.offsetX?(event.offsetX):event.pageX-document.getElementById(element_id).offsetLeft;
+	pos_y = event.offsetY?(event.offsetY):event.pageY-document.getElementById(element_id).offsetTop;
+	document.pointform.down_x.value = pos_x;
+	document.pointform.down_y.value = pos_y;
+}
+</script>
+</head>
+<body>
+<h1>Test Page for Complex Mouse Interactions</h1>
+<form name="pointform" method="post" width='100%'>
+<p width="100%"> This is our image for testing interaction coordinates: <p>
+<div id="pointer_div" onmousedown="point_down(event,'pointer_div')" onmouseup="point_up(event,'pointer_div')" style = "background-image:url('./images/samplepicture_1.jpg');width:309px;height:40px;" />
+<p>Mouseup and Mousedown coordinates:</p>
+Mousedown at x = <input type="text" id="down_x" name="down_x" size="4" disabled="disabled" /> - y = <input type="text" id="down_y" name="down_y" size="4" disabled="disabled" />
+Mouseup at x = <input type="text" id="up_x" name="up_x" size="4" disabled="disabled" /> - y = <input type="text" id="up_y" name="up_y" size="4" disabled="disabled" />
+<p>This is how we verify that interaction's coordinates are relative to their elements origin (as opposed to the window origin)</p>
+<div id="lower_div" onmousedown="point_down(event,'lower_div')" onmouseup="point_up(event,'lower_div')" style = "background-image:url('./images/samplepicture_2.jpg');width:309px;height:40px;" />
+<p>Far below is another image placed there to detect if we can use complex interactions far off-screen and Selenium will properly scroll to it</p>
+<IMG id="offscreen_div" STYLE="position:absolute; TOP:3000px; LEFT:170px;" onmouseup="point_up(event,'offscreen_div')" SRC="./images/samplepicture_2.jpg" />
+</form> 
+</body>
+</html>

@@ -53,6 +53,7 @@ public class Pages {
   public String mapVisibilityPage;
   public String metaRedirectPage;
   public String missedJsReferencePage;
+  public String modifierKeyPage;
   public String mouseTrackerPage;
   public String nestedPage;
   public String readOnlyPage;
@@ -112,6 +113,7 @@ public class Pages {
     mapVisibilityPage = appServer.whereIs("map_visibility.html");
     metaRedirectPage = appServer.whereIs("meta-redirect.html");
     missedJsReferencePage = appServer.whereIs("missedJsReference.html");
+    modifierKeyPage = appServer.whereIs("modifierKeyPage.html");
     mouseTrackerPage = appServer.whereIs("mousePositionTracker.html");
     nestedPage = appServer.whereIs("nestedElements.html");
     readOnlyPage = appServer.whereIs("readOnlyPage.html");
