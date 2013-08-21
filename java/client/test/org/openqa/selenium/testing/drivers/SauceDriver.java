@@ -133,7 +133,7 @@ public class SauceDriver extends RemoteWebDriver implements TakesScreenshot {
       mungedCapabilities.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, true);
     }
 
-    if (DesiredCapabilities.internetExplorer().getBrowserName().equals(desiredCapabilities.getBrowserName())) {
+    if (DesiredCapabilities.chrome().getBrowserName().equals(desiredCapabilities.getBrowserName())) {
       String chromeDriverVersion = System.getenv(SELENIUM_CHROMEDRIVER_ENV_NAME);
       if (chromeDriverVersion == null) {
         chromeDriverVersion = "2.2";
