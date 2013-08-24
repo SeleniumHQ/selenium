@@ -40,6 +40,6 @@ java_test(name = "small_tests",
     "//java/client/test/org/openqa/selenium:base",
     "//java/client/test/org/openqa/selenium/testing:junit_4",
     "//java/client/test/org/openqa/selenium/v1/internal/seleniumemulation:small_tests",
-    "//third_party/java/jmock",
     "//third_party/java/junit",
+    "//third_party/java/mockito",
   ])

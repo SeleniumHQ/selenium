@@ -18,16 +18,14 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import com.thoughtworks.selenium.SeleniumException;
-
-import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.thoughtworks.selenium.SeleniumException;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -135,8 +133,8 @@ public class FirefoxChromeLauncherUnitTest {
     Capabilities browserOptions = BrowserOptions.newBrowserOptions();
     RemoteControlConfiguration configuration = new RemoteControlConfiguration();
     File firefoxProfileTemplate = new File("x");
-    final File certFile = createMock(File.class);
-    final BrowserInstallation browserInstallation = createMock(BrowserInstallation.class);
+    final File certFile = mock(File.class);
+    final BrowserInstallation browserInstallation = mock(BrowserInstallation.class);
 
     FirefoxChromeLauncher launcher =
         new FirefoxChromeLauncher(browserOptions, configuration, "session", browserInstallation) {
@@ -152,17 +150,15 @@ public class FirefoxChromeLauncherUnitTest {
         };
 
     // Expecting the call for exists()
-    expect(certFile.exists()).andReturn(true);
-    replay(certFile);
-    launcher.copyCert8db(firefoxProfileTemplate);
-    verify(certFile);
+    when(certFile.exists()).thenReturn(true);
 
+    launcher.copyCert8db(firefoxProfileTemplate);
   }
 
   @Test
   public void initProfileTemplate_usesBrowserOptionIfNoProfilesLocationSpecified() throws Exception {
 
-    final BrowserInstallation browserInstallation = createMock(BrowserInstallation.class);
+    final BrowserInstallation browserInstallation = mock(BrowserInstallation.class);
 
     ((DesiredCapabilities) browserOptions).setCapability("firefoxProfileTemplate",
         "profileTemplate");
@@ -183,11 +179,10 @@ public class FirefoxChromeLauncherUnitTest {
   public void initProfileTemplate_usesProfilesLocationAlongWithRelativeProfileIfTheirAbsoluteTemplateExists()
       throws Exception {
 
-    final BrowserInstallation browserInstallation = createMock(BrowserInstallation.class);
-    final File profileTemplate = createMock(File.class);
+    final BrowserInstallation browserInstallation = mock(BrowserInstallation.class);
+    final File profileTemplate = mock(File.class);
 
-    expect(profileTemplate.exists()).andReturn(true);
-    replay(profileTemplate);
+    when(profileTemplate.exists()).thenReturn(true);
 
     configuration.setProfilesLocation(profileTemplate);
     ((DesiredCapabilities) browserOptions).setCapability("profile", "profile");
@@ -206,7 +201,6 @@ public class FirefoxChromeLauncherUnitTest {
         };
 
     File result = launcher.initProfileTemplate();
-    verify(profileTemplate);
     assertEquals(profileTemplate, result);
 
   }

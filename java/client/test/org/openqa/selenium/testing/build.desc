@@ -28,8 +28,8 @@ java_library(name = "tests",
     ":junit",
     ":junit_4",
     "//third_party/java/guava-libraries",
-    "//third_party/java/jmock",
     "//third_party/java/junit",
+    "//third_party/java/mockito",
   ])
 
 java_library(name = "dev_mode",
@@ -66,8 +66,8 @@ java_library(name = "junit_4",
   deps = [
     ":junit",
     "//java/client/test/org/openqa/selenium:base",
-    "//third_party/java/jmock",
     "//third_party/java/junit",
+    "//third_party/java/mockito",
   ])
   
 java_library(name = "proxy",

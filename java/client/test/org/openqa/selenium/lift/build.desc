@@ -11,6 +11,6 @@ java_test(name = "test",
     "//java/client/test/org/openqa/selenium:base",
     "//java/client/test/org/openqa/selenium/testing:junit_4",
     "//third_party/java/hamcrest",
-    "//third_party/java/jmock",
     "//third_party/java/junit",
+    "//third_party/java/mockito",
   ])

@@ -1,7 +1,0 @@
-java_library(name = "jmock",
-  deps = [
-    "jmock-2.6.0.jar",
-    "jmock-junit4-2.6.0.jar",
-    "jmock-legacy-2.6.0.jar",
-    "//third_party/java/objenesis",
-  ])

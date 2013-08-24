@@ -18,10 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.classextension.EasyMock.createStrictMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -48,9 +46,7 @@ public class SafariCustomProfileLauncherUnitTest {
   public void launchRemoteSession_generatesSslCertsIfBrowserSideLogEnabled() throws Exception {
     String location = null;
 
-    generator = createStrictMock(SslCertificateGenerator.class);
-    generator.generateSSLCertsForLoggingHosts();
-    expectLastCall().once();
+    generator = mock(SslCertificateGenerator.class);
 
     remoteConfiguration.setSeleniumServer(generator);
     ((DesiredCapabilities) browserOptions).setCapability("browserSideLog", true);
@@ -67,9 +63,8 @@ public class SafariCustomProfileLauncherUnitTest {
           }
         };
 
-    replay(generator);
     launcher.launchRemoteSession("http://url");
-    verify(generator);
+    verify(generator).generateSSLCertsForLoggingHosts();
   }
 
 }

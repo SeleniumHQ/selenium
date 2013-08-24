@@ -77,9 +77,8 @@ java_library(name = "tests",
     "//java/client/test/org/openqa/selenium/testing:util",
     "//java/client/test/org/openqa/selenium/v1:small_tests",
     "//third_party/java/commons-io",
-    "//third_party/java/easymock",
-    "//third_party/java/jmock",
     "//third_party/java/junit",
+    "//third_party/java/mockito",
   ])
 
 java_test(name = "SmallTests",

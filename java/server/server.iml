@@ -22,9 +22,9 @@
     <orderEntry type="library" name="servlet-api" level="project" />
     <orderEntry type="library" name="snakeyaml" level="project" />
     <orderEntry type="library" name="webbit" level="project" />
-    <orderEntry type="library" scope="TEST" name="easymock" level="project" />
     <orderEntry type="library" scope="TEST" name="hamcrest" level="project" />
-    <orderEntry type="library" scope="TEST" name="jmock" level="project" />
+    <orderEntry type="library" name="mockito-core-1.9.5-srcs" level="project" />
+    <orderEntry type="library" name="objenesis-1.0" level="project" />
   </component>
 </module>
 

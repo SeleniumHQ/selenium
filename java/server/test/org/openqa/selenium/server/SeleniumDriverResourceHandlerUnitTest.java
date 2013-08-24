@@ -17,16 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.createNiceMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -104,8 +102,8 @@ public class SeleniumDriverResourceHandlerUnitTest {
     String fileName = "toDownload";
     String locator = "field";
 
-    final SeleniumServer server = createMock(SeleniumServer.class);
-    final FrameGroupCommandQueueSet queueSet = createMock(FrameGroupCommandQueueSet.class);
+    final SeleniumServer server = mock(SeleniumServer.class);
+    final FrameGroupCommandQueueSet queueSet = mock(FrameGroupCommandQueueSet.class);
 
     SeleniumDriverResourceHandler handler = new SeleniumDriverResourceHandler(server, null) {
       @Override
@@ -119,9 +117,6 @@ public class SeleniumDriverResourceHandlerUnitTest {
 
     };
 
-    queueSet.addTemporaryFile((File) anyObject());
-    expectLastCall().once();
-
     // Hack for windows...
     String tmpDir = System.getProperty("java.io.tmpdir");
 
@@ -131,8 +126,8 @@ public class SeleniumDriverResourceHandlerUnitTest {
     }
     // This is where the previously downloaded file will be referenced with the same name as in the
     // call to attachFile
-    expect(queueSet.doCommand("type", locator, tmpDir + File.separator + fileName)).andReturn("OK");
-    replay(queueSet);
+    when(queueSet.doCommand("type", locator, tmpDir + File.separator + fileName))
+        .thenReturn("OK");
 
     Vector<String> values = new Vector<String>();
     values.add(locator);
@@ -142,27 +137,24 @@ public class SeleniumDriverResourceHandlerUnitTest {
 
     assertEquals("OK", result);
 
-    verify(queueSet);
+    verify(queueSet, times(1)).addTemporaryFile(any(File.class));
   }
 
   // Running this test nukes the JVM with a System.exit. Hilarious.
   @Test @Ignore
   public void shutDownSeleniumServer_willBeProcessedInDoCommand() throws Exception {
-    SeleniumServer server = createNiceMock(SeleniumServer.class);
-    HttpResponse response = createNiceMock(HttpResponse.class);
-    OutputStream stream = createNiceMock(OutputStream.class);
+    SeleniumServer server = mock(SeleniumServer.class);
+    HttpResponse response = mock(HttpResponse.class);
+    OutputStream stream = mock(OutputStream.class);
 
     SeleniumDriverResourceHandler handler = new SeleniumDriverResourceHandler(server, null);
 
-    expect(response.getOutputStream()).andReturn(stream);
-    response.commit();
-    expectLastCall().once();
-    replay(response);
+    when(response.getOutputStream()).thenReturn(stream);
 
     String result =
         handler.doCommand(SpecialCommand.shutDownSeleniumServer.toString(), new Vector<String>(),
             "sessionId", response);
-    verify(response);
+    verify(response).commit();
 
     assertEquals("OK", result);
 

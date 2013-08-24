@@ -18,7 +18,14 @@ limitations under the License.
 
 package org.openqa.selenium.server.commands;
 
-import org.easymock.classextension.ConstructorArgs;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -28,14 +35,6 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 public class CaptureScreenshotCommandUnitTest {
 
   private CaptureScreenshotCommand command;
@@ -44,41 +43,20 @@ public class CaptureScreenshotCommandUnitTest {
   private String tempDirName = System.getProperty("java.io.tmpdir");
 
   @Test
-  public void testDumbJUnit() {
-    // this test is needed to make JUnit happy since the rest of the tests are disabled temporarily
-  }
-
-  @Test
-  @Ignore
   public void testExecuteReturnsOKWhencaptureSystemScreenshotSucceeds() throws Exception {
-    final ConstructorArgs args;
+    command = spy(new CaptureScreenshotCommand("foo"));
+    doNothing().when(command).captureSystemScreenshot();
 
-    args =
-        new ConstructorArgs(CaptureScreenshotCommand.class.getConstructor(String.class), fileName);
-    command = createMock(CaptureScreenshotCommand.class,
-        args,
-        CaptureScreenshotCommand.class.getDeclaredMethod("captureSystemScreenshot"));
-    command.captureSystemScreenshot();
-
-    replay(command);
     assertEquals("OK", command.execute());
-    verify(command);
+    verify(command).captureSystemScreenshot();
   }
 
   @Test
-  @Ignore
   public void testExecuteReturnsAnErrorWhencaptureSystemScreenshotRaise() throws Exception {
-
-    final ConstructorArgs args;
-
-    args =
-        new ConstructorArgs(CaptureScreenshotCommand.class.getConstructor(String.class), fileName);
-    command = createMock(CaptureScreenshotCommand.class,
-        args,
-        CaptureScreenshotCommand.class.getDeclaredMethod("captureSystemScreenshot"));
-    command.captureSystemScreenshot();
-    expectLastCall().andThrow(new RuntimeException("an error message"));
-    replay(command);
+    command = spy(new CaptureScreenshotCommand("foo"));
+    doThrow(new RuntimeException("an error message"))
+        .when(command)
+        .captureSystemScreenshot();
 
     assertEquals("ERROR: Problem capturing screenshot: an error message", command.execute());
     verify(command);

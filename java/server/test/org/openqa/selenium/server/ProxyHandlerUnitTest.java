@@ -25,12 +25,13 @@ import org.openqa.jetty.util.URI;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class ProxyHandlerUnitTest {
 
@@ -39,12 +40,10 @@ public class ProxyHandlerUnitTest {
   @Test
   public void sendNotFoundSends404ResponseCode() throws Exception {
     ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false, port, new Object());
-    HttpResponse httpResponseMock = createMock(HttpResponse.class);
-    httpResponseMock.sendError(HttpResponse.__404_Not_Found, "Not found");
-    expectLastCall().once();
-    replay(httpResponseMock);
+    HttpResponse httpResponseMock = mock(HttpResponse.class);
+
     proxyHandler.sendNotFound(httpResponseMock);
-    verify(httpResponseMock);
+    verify(httpResponseMock).sendError(HttpResponse.__404_Not_Found, "Not found");
   }
 
   @Test
@@ -120,9 +119,9 @@ public class ProxyHandlerUnitTest {
   @Test
   public void handleCallsSendNotFoundWhenAskingForNonExistentResource()
       throws Exception {
-    ProxyHandler proxyHandlerMock = createMock(ProxyHandler.class,
-        ProxyHandler.class.getDeclaredMethod(
-            "sendNotFound", HttpResponse.class));
+    ProxyHandler proxyHandlerMock = spy(new ProxyHandler(
+        true, "", "", true, true, 0, new Object()));
+    doNothing().when(proxyHandlerMock).sendNotFound(any(HttpResponse.class));
 
     String pathInContext = "/invalid";
     String pathParams = "";
@@ -130,13 +129,8 @@ public class ProxyHandlerUnitTest {
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setAttribute("NotFound", "True");
 
-    proxyHandlerMock.sendNotFound(httpResponse);
-    expectLastCall().once();
-    replay(proxyHandlerMock);
-
-    proxyHandlerMock.handle(pathInContext, pathParams, httpRequest,
-        httpResponse);
+    proxyHandlerMock.handle(pathInContext, pathParams, httpRequest, httpResponse);
     assertNull(httpResponse.getAttribute("NotFound"));
-    verify(proxyHandlerMock);
+    verify(proxyHandlerMock).sendNotFound(httpResponse);
   }
 }
