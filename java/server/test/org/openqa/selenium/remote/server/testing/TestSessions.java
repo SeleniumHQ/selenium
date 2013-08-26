@@ -16,9 +16,10 @@
 
 package org.openqa.selenium.remote.server.testing;
 
+import static org.mockito.Mockito.mock;
+
 import com.google.common.collect.Maps;
 
-import org.jmock.Mockery;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;
@@ -32,21 +33,15 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class TestSessions implements DriverSessions {
   
-  private final Mockery mockery;
   private final AtomicLong sessionKeyFactory = new AtomicLong(0);
   private final Map<SessionId, Session> sessionIdToDriver = Maps.newHashMap();
-
-  public TestSessions(Mockery mockery) {
-    this.mockery = mockery;
-  }
 
   public SessionId newSession(Capabilities desiredCapabilities)
       throws Exception {
     SessionId sessionId = new SessionId(String.valueOf(
         sessionKeyFactory.getAndIncrement()));
 
-    WebDriver driver = mockery.mock(WebDriver.class,
-        "webdriver(" + sessionId + ")");
+    WebDriver driver = mock(WebDriver.class, "webdriver(" + sessionId + ")");
 
     Session session = new TestSession(sessionId, driver, desiredCapabilities);
     sessionIdToDriver.put(sessionId, session);

@@ -38,10 +38,24 @@ public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
 
   // 0x00000800
   int JOB_OBJECT_LIMIT_BREAKAWAY_OK = 2048;
+
   // 0x00002000
   int JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 8192;
 
+  // see SetInformationJobObject at msdn
   int JobObjectExtendedLimitInformation = 9;
+
+  // see SetInformationJobObject at msdn
+  int JobObjectBasicUIRestrictions = 4;
+
+  // 0x00000020
+  int JOB_OBJECT_UILIMIT_GLOBALATOMS = 0x00000020;
+
+  // 0x00000004
+  int CREATE_SUSPENDED = 4;
+
+  // 0x01000000
+  int CREATE_BREAKAWAY_FROM_JOB = 16777216;
 
   static class JOBJECT_BASIC_LIMIT_INFORMATION extends Structure {
     public LARGE_INTEGER PerProcessUserTimeLimit;
@@ -86,4 +100,23 @@ public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
       }
     }
   }
+
+  static class JOBOBJECT_BASIC_UI_RESTRICTIONS extends Structure {
+    public JOBOBJECT_BASIC_UI_RESTRICTIONS() {}
+
+    public JOBOBJECT_BASIC_UI_RESTRICTIONS(Pointer memory) {
+      super(memory);
+    }
+
+    public int UIRestrictionsClass;
+
+    public static class ByReference extends JOBOBJECT_BASIC_UI_RESTRICTIONS implements Structure.ByReference {
+      public ByReference() {}
+
+      public ByReference(Pointer memory) {
+        super(memory);
+      }
+    }
+  }
+
 }

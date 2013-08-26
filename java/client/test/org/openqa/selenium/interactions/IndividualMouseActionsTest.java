@@ -16,13 +16,15 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
-import org.openqa.selenium.StubRenderedWebElement;
+import static org.mockito.Mockito.when;
+
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 
-import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,147 +34,138 @@ import org.junit.Test;
  */
 public class IndividualMouseActionsTest {
 
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
-  
-  private Mouse dummyMouse;
-  private Locatable locatableElement;
-  private Coordinates dummyCoordinates;
+  @Mock private Mouse mockMouse;
+  @Mock private Coordinates mockCoordinates;
+  @Mock private Locatable locatableStub;
 
   @Before
   public void setUp() {
-    dummyMouse = mockery.mock(Mouse.class);
-    dummyCoordinates = mockery.mock(Coordinates.class);
-
-    locatableElement = new StubRenderedWebElement() {
-      @Override
-      public Coordinates getCoordinates() {
-        return dummyCoordinates;
-      }
-    };
+    MockitoAnnotations.initMocks(this);
+    when(locatableStub.getCoordinates()).thenReturn(mockCoordinates);
   }
 
   @Test
   public void mouseClickAndHoldAction() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyMouse).mouseMove(dummyCoordinates);
-      oneOf(dummyMouse).mouseDown(dummyCoordinates);
-    }});
-
-    ClickAndHoldAction action = new ClickAndHoldAction(dummyMouse, locatableElement);
+    ClickAndHoldAction action = new ClickAndHoldAction(mockMouse, locatableStub);
     action.perform();
+
+    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+    order.verify(mockMouse).mouseMove(mockCoordinates);
+    order.verify(mockMouse).mouseDown(mockCoordinates);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void mouseClickAndHoldActionOnCurrentLocation() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyMouse).mouseDown(null);
-    }});
-
-    ClickAndHoldAction action = new ClickAndHoldAction(dummyMouse, null);
+    ClickAndHoldAction action = new ClickAndHoldAction(mockMouse, null);
     action.perform();
+
+    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+    order.verify(mockMouse).mouseDown(null);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void mouseReleaseAction() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyMouse).mouseMove(dummyCoordinates);
-      oneOf(dummyMouse).mouseUp(dummyCoordinates);
-    }});
-
-    ButtonReleaseAction action = new ButtonReleaseAction(dummyMouse, locatableElement);
+    ButtonReleaseAction action = new ButtonReleaseAction(mockMouse, locatableStub);
     action.perform();
+
+    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+    order.verify(mockMouse).mouseMove(mockCoordinates);
+    order.verify(mockMouse).mouseUp(mockCoordinates);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void mouseReleaseActionOnCurrentLocation() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyMouse).mouseUp(null);
-    }});
-
-    ButtonReleaseAction action = new ButtonReleaseAction(dummyMouse, null);
+    ButtonReleaseAction action = new ButtonReleaseAction(mockMouse, null);
     action.perform();
+
+    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+    order.verify(mockMouse).mouseUp(null);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void mouseClickAction() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyMouse).mouseMove(dummyCoordinates);
-      oneOf(dummyMouse).click(dummyCoordinates);
-    }});
-
-    ClickAction action = new ClickAction(dummyMouse, locatableElement);
+    ClickAction action = new ClickAction(mockMouse, locatableStub);
     action.perform();
+
+    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+    order.verify(mockMouse).mouseMove(mockCoordinates);
+    order.verify(mockMouse).click(mockCoordinates);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void mouseClickActionOnCurrentLocation() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyMouse).click(null);
-    }});
-
-    ClickAction action = new ClickAction(dummyMouse, null);
+    ClickAction action = new ClickAction(mockMouse, null);
     action.perform();
+
+    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+    order.verify(mockMouse).click(null);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void mouseDoubleClickAction() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyMouse).mouseMove(dummyCoordinates);
-      oneOf(dummyMouse).doubleClick(dummyCoordinates);
-    }});
-
-    DoubleClickAction action = new DoubleClickAction(dummyMouse, locatableElement);
+    DoubleClickAction action = new DoubleClickAction(mockMouse, locatableStub);
     action.perform();
+
+    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+    order.verify(mockMouse).mouseMove(mockCoordinates);
+    order.verify(mockMouse).doubleClick(mockCoordinates);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void mouseDoubleClickActionOnCurrentLocation() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyMouse).doubleClick(null);
-    }});
-
-    DoubleClickAction action = new DoubleClickAction(dummyMouse, null);
+    DoubleClickAction action = new DoubleClickAction(mockMouse, null);
     action.perform();
+
+    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+    order.verify(mockMouse).doubleClick(null);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void mouseMoveAction() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyMouse).mouseMove(dummyCoordinates);
-    }});
-
-    MoveMouseAction action = new MoveMouseAction(dummyMouse, locatableElement);
+    MoveMouseAction action = new MoveMouseAction(mockMouse, locatableStub);
     action.perform();
+
+    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+    order.verify(mockMouse).mouseMove(mockCoordinates);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void mouseMoveActionToCoordinatesInElement() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyMouse).mouseMove(dummyCoordinates, 20, 20);
-    }});
-
-    MoveToOffsetAction action = new MoveToOffsetAction(dummyMouse, locatableElement, 20, 20);
+    MoveToOffsetAction action = new MoveToOffsetAction(mockMouse, locatableStub, 20, 20);
     action.perform();
+
+    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+    order.verify(mockMouse).mouseMove(mockCoordinates, 20, 20);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void mouseContextClickAction() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyMouse).mouseMove(dummyCoordinates);
-      oneOf(dummyMouse).contextClick(dummyCoordinates);
-    }});
-
-    ContextClickAction action = new ContextClickAction(dummyMouse, locatableElement);
+    ContextClickAction action = new ContextClickAction(mockMouse, locatableStub);
     action.perform();
+
+    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+    order.verify(mockMouse).mouseMove(mockCoordinates);
+    order.verify(mockMouse).contextClick(mockCoordinates);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void mouseContextClickActionOnCurrentLocation() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyMouse).contextClick(null);
-    }});
-
-    ContextClickAction action = new ContextClickAction(dummyMouse, null);
+    ContextClickAction action = new ContextClickAction(mockMouse, null);
     action.perform();
+
+    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+    order.verify(mockMouse).contextClick(null);
+    order.verifyNoMoreInteractions();
   }
 }

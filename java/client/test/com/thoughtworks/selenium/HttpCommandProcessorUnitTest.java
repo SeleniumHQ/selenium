@@ -18,21 +18,23 @@ limitations under the License.
 
 package com.thoughtworks.selenium;
 
-import org.easymock.classextension.ConstructorArgs;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 /**
  * {@link com.thoughtworks.selenium.HttpCommandProcessor} unit test class.
@@ -191,32 +193,19 @@ public class HttpCommandProcessorUnitTest {
 
   @Test
   public void testGetBooleanArray() throws Exception {
-    final HttpCommandProcessor processor;
-    final ConstructorArgs constArgs =
-        new ConstructorArgs(
-            HttpCommandProcessor.class.getConstructor(String.class, int.class, String.class,
-                String.class),
-            "localhost", 4444, "*chrome", "http://www.openqa.org");
-    Method getStringArray =
-        HttpCommandProcessor.class
-            .getDeclaredMethod("getStringArray", String.class, String[].class);
-    processor =
-        org.easymock.classextension.EasyMock.createMock(HttpCommandProcessor.class, constArgs,
-            getStringArray);
+    HttpCommandProcessor processor =
+        new HttpCommandProcessor("localhost", 4444, "*chrome", "http://www.openqa.org");
+    processor = spy(processor);
 
     String[] cmdArgs = new String[] {"1", "2"};
     String[] cmdResults = new String[] {"true", "false"};
     boolean[] boolCmdResults = new boolean[] {true, false};
 
-    org.easymock.classextension.EasyMock.expect(processor.getStringArray("command", cmdArgs))
-        .andReturn(
-            cmdResults);
-    org.easymock.classextension.EasyMock.replay(processor);
+    doReturn(cmdResults).when(processor).getStringArray("command", cmdArgs);
 
     boolean[] methodResults = processor.getBooleanArray("command", cmdArgs);
     assertEquals(boolCmdResults[0], methodResults[0]);
     assertEquals(boolCmdResults[1], methodResults[1]);
-    org.easymock.classextension.EasyMock.verify(processor);
   }
 
 }

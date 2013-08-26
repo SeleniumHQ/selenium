@@ -17,14 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import org.junit.After;
 import org.junit.Before;
@@ -115,25 +114,19 @@ public class StaticContentHandlerUnitTest {
 
   @Test
   public void testHandleSetsNoResponseStatusCodeInCaseOfAvailableResource() throws Exception {
-
-    StaticContentHandler mock =
-        createMock(StaticContentHandler.class,
-            StaticContentHandler.class.getDeclaredMethod("getResource", String.class),
-            StaticContentHandler.class.getDeclaredMethod("callSuperHandle", String.class,
-                String.class, HttpRequest.class, HttpResponse.class));
+    StaticContentHandler handler = spy(new StaticContentHandler("", true));
 
     String pathInContext = "/driver/?cmd=getNewBrowserSession&1=*chrome&2=http://www.google.com";
     String pathParams = "";
     HttpRequest httpRequest = new HttpRequest();
     HttpResponse httpResponse = new HttpResponse();
 
-    expect(mock.getResource(pathInContext)).andReturn(Resource.newResource("found_resource"));
-    mock.callSuperHandle(pathInContext, pathParams, httpRequest, httpResponse);
-    expectLastCall().once();
-    replay(mock);
+    doReturn(Resource.newResource("found_resource")).when(handler).getResource(pathInContext);
+    doNothing().when(handler)
+        .callSuperHandle(pathInContext, pathParams, httpRequest, httpResponse);
 
-    mock.handle(pathInContext, pathParams, httpRequest, httpResponse);
+    handler.handle(pathInContext, pathParams, httpRequest, httpResponse);
     assertEquals(HttpResponse.__200_OK, httpResponse.getStatus());
-    verify(mock);
+    verify(handler).callSuperHandle(pathInContext, pathParams, httpRequest, httpResponse);
   }
 }

@@ -16,9 +16,8 @@ java_test(name = "RcServerUnitTests",
     "//java/server/test/org/openqa/selenium/remote/server:test",
     "//java/server/test/org/openqa/selenium/remote/server/log:test",
     "//java/server/test/org/openqa/selenium/testworker",
-    "//third_party/java/easymock",
-    "//third_party/java/jmock",
     "//third_party/java/junit",
+    "//third_party/java/mockito",
   ])
 
 java_test(name = "RcServerLargeTests",

@@ -17,10 +17,6 @@
 	<classpathentry kind="lib" path="/third-party/java/cglib/cglib-nodep-2.1_3.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/json/json-20080701.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/servlet-api/servlet-api-2.5-6.1.9.jar" sourcepath="/third-party/java/servlet-api/servlet-api-2.5-6.1.9-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/easymock/easymock-2.4.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/easymock/easymockclassextension-2.4.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/jmock/jmock-2.6.0.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/jmock/jmock-junit4-2.6.0.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/opera-driver/operadriver-1.4-5-g0310e9d.jar" /><!-- sourcepath="/third-party/java/opera-driver/operadriver-1.4-sources.jar"/>-->
 	<classpathentry kind="lib" path="/third-party/java/phantomjs-driver/phantomjsdriver-1.0.4.jar" sourcepath="/third-party/java/phantomjs-driver/phantomjsdriver-1.0.4-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/apache-httpclient/httpclient-4.2.1.jar" sourcepath="/third-party/java/apache-httpclient/httpclient-4.2.1-sources.jar"/>

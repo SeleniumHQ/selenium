@@ -16,8 +16,13 @@ limitations under the License.
 
 package org.openqa.selenium.support.pagefactory.internal;
 
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -27,26 +32,16 @@ import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 
-import org.jmock.Expectations;
-import org.junit.Test;
-
 import java.lang.reflect.Proxy;
 
 public class LocatingElementHandlerTest {
 
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
-  
   @Test
   public void shouldAlwaysLocateTheElementPerCall() {
-    final ElementLocator locator = mockery.mock(ElementLocator.class);
-    final WebElement element = mockery.mock(WebElement.class);
+    final ElementLocator locator = mock(ElementLocator.class);
+    final WebElement element = mock(WebElement.class);
 
-    mockery.checking(new Expectations() {{
-      exactly(2).of(locator).findElement();
-      will(returnValue(element));
-      oneOf(element).sendKeys("Fishy");
-      oneOf(element).submit();
-    }});
+    when(locator.findElement()).thenReturn(element);
 
     LocatingElementHandler handler = new LocatingElementHandler(locator);
     WebElement proxy =
@@ -55,37 +50,36 @@ public class LocatingElementHandlerTest {
 
     proxy.sendKeys("Fishy");
     proxy.submit();
+
+    verify(locator, times(2)).findElement();
+    verify(element).sendKeys("Fishy");
+    verify(element).submit();
+    verifyNoMoreInteractions(locator, element);
   }
 
   @Test
   public void shouldUseAnnotationsToLookUpByAlternativeMechanisms() {
-    final WebDriver driver = mockery.mock(WebDriver.class);
-    final WebElement element = mockery.mock(WebElement.class);
+    final WebDriver driver = mock(WebDriver.class);
+    final WebElement element = mock(WebElement.class);
 
     final By by = By.xpath("//input[@name='q']");
 
-    mockery.checking(new Expectations() {{
-      allowing(driver).findElement(by);
-      will(returnValue(element));
-      oneOf(element).clear();
-      oneOf(element).sendKeys("cheese");
-    }});
+    when(driver.findElement(by)).thenReturn(element);
 
     Page page = PageFactory.initElements(driver, Page.class);
     page.doQuery("cheese");
+
+    verify(element).clear();
+    verify(element).sendKeys("cheese");
+    verifyNoMoreInteractions(element);
   }
 
   @Test
   public void shouldNotRepeatedlyLookUpElementsMarkedAsNeverChanging() throws Exception {
-    final ElementLocator locator = mockery.mock(ElementLocator.class);
-    final WebElement element = mockery.mock(WebElement.class);
+    final ElementLocator locator = mock(ElementLocator.class);
+    final WebElement element = mock(WebElement.class);
 
-    mockery.checking(new Expectations() {{
-      allowing(locator).findElement();
-      will(returnValue(element));
-      oneOf(element).isEnabled();
-      oneOf(element).sendKeys("Cheese");
-    }});
+    when(locator.findElement()).thenReturn(element);
 
     LocatingElementHandler handler = new LocatingElementHandler(locator);
     WebElement proxy =
@@ -94,24 +88,24 @@ public class LocatingElementHandlerTest {
 
     proxy.isEnabled();
     proxy.sendKeys("Cheese");
+
+    verify(element).isEnabled();
+    verify(element).sendKeys("Cheese");
   }
 
   @Test
   public void findByAnnotationShouldBeInherited() {
     ChildPage page = new ChildPage();
 
-    final WebDriver driver = mockery.mock(WebDriver.class);
-    final WebElement element = mockery.mock(WebElement.class);
+    final WebDriver driver = mock(WebDriver.class);
+    final WebElement element = mock(WebElement.class);
 
-    mockery.checking(new Expectations() {{
-      allowing(driver).findElement(By.xpath("//input[@name='q']"));
-      will(returnValue(element));
-      oneOf(element).getAttribute("value");
-      will(returnValue(""));
-    }});
+    when(driver.findElement(By.xpath("//input[@name='q']"))).thenReturn(element);
 
     PageFactory.initElements(driver, page);
     page.doChildQuery();
+
+    verify(element).getAttribute("value");
   }
 
   public static class Page {

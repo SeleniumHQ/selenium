@@ -16,9 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -33,7 +32,7 @@ public class TypeKeysTest {
 
   @Before
   public void setUp() {
-    element = createNiceMock(WebElement.class);
+    element = mock(WebElement.class);
 
     elementFinder = new ElementFinder() {
       @Override
@@ -48,12 +47,9 @@ public class TypeKeysTest {
     String expected = newString(Keys.ARROW_DOWN, Keys.ARROW_LEFT, Keys.ARROW_RIGHT, Keys.ARROW_UP);
     String input = "\\40\\37\\39\\38";
 
-    element.sendKeys(expected);
-
-    replay(element);
     new TypeKeys(new AlertOverrideStub(), elementFinder).apply(null, new String[] {"foo", input});
 
-    verify(element);
+    verify(element).sendKeys(expected);
   }
 
   @Test
@@ -61,12 +57,9 @@ public class TypeKeysTest {
     String expected = newString(Keys.ENTER, Keys.RETURN, Keys.ESCAPE);
     String input = "\\10\\13\\27";
 
-    element.sendKeys(expected);
-
-    replay(element);
     new TypeKeys(new AlertOverrideStub(), elementFinder).apply(null, new String[] {"foo", input});
 
-    verify(element);
+    verify(element).sendKeys(expected);
   }
 
   private String newString(CharSequence... toType) {

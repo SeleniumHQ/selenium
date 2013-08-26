@@ -12,7 +12,7 @@ java_library(name = "tests",
     "//java/client/test/org/openqa/selenium/support/pagefactory:test",
     "//java/client/test/org/openqa/selenium/support/ui:test",
     "//java/client/test/org/openqa/selenium/testing:tests",
-    "//third_party/java/jmock",
+    "//third_party/java/mockito",
   ])
 
 java_test(name = "SmallTests",

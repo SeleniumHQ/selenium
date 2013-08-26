@@ -18,15 +18,10 @@ limitations under the License.
 
 package org.openqa.selenium.server.htmlrunner;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.createNiceMock;
-import static org.easymock.classextension.EasyMock.createStrictMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
-import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,11 +44,11 @@ public class HtmlLauncherUnitTest {
 
   @Before
   public void setUp() throws Exception {
-    remoteControl = createNiceMock(SeleniumServer.class);
-    configuration = createNiceMock(RemoteControlConfiguration.class);
-    results = createNiceMock(HTMLTestResults.class);
+    remoteControl = mock(SeleniumServer.class);
+    configuration = mock(RemoteControlConfiguration.class);
+    results = mock(HTMLTestResults.class);
     launcher = new HTMLLauncher(remoteControl) {
-      final BrowserLauncher browserLauncher = createNiceMock(BrowserLauncher.class);
+      final BrowserLauncher browserLauncher = mock(BrowserLauncher.class);
 
       @Override
       protected BrowserLauncher getBrowserLauncher(String browser, String sessionId,
@@ -70,26 +65,24 @@ public class HtmlLauncherUnitTest {
       }
 
     };
-    expect(remoteControl.getConfiguration()).andReturn(configuration);
+    when(remoteControl.getConfiguration()).thenReturn(configuration);
   }
 
   private void expectOutputFileBehavior() throws Exception {
     // Expecting behavior on strict mock
-    outputFile = createStrictMock(File.class);
-    expect(outputFile.createNewFile()).andReturn(true);
-    expect(outputFile.canWrite()).andReturn(true);
-    replay(outputFile);
+    outputFile = mock(File.class);
+    when(outputFile.createNewFile()).thenReturn(true);
+    when(outputFile.canWrite()).thenReturn(true);
   }
 
   @Test(expected = IOException.class)
   public void runHTMLSuite_throwsExceptionPriorToExecutionWhenOutputFileDoesntExist()
       throws Exception {
     // Expecting behavior on strict mock
-    outputFile = createStrictMock(File.class);
-    expect(outputFile.createNewFile()).andReturn(true);
-    expect(outputFile.canWrite()).andReturn(false);
-    expect(outputFile.getAbsolutePath()).andReturn("");
-    replay(outputFile);
+    outputFile = mock(File.class);
+    when(outputFile.createNewFile()).thenReturn(true);
+    when(outputFile.canWrite()).thenReturn(false);
+    when(outputFile.getAbsolutePath()).thenReturn("");
 
     executeAndVerify();
   }
@@ -97,14 +90,8 @@ public class HtmlLauncherUnitTest {
   @Test
   public void runHTMLSuite_copiesRemoteControlConfigurationToBrowserOptions() throws Exception {
     expectOutputFileBehavior();
-
-    // Expect copying options
-    // configuration.copySettingsIntoBrowserOptions((Capabilities) anyObject());
-    // expectLastCall().once();
-    //
-    // executeAndVerify();
-
-    fail("Please fix me");
+    executeAndVerify();
+    verify(configuration).copySettingsIntoBrowserOptions(any(Capabilities.class));
   }
 
   @Test
@@ -112,8 +99,8 @@ public class HtmlLauncherUnitTest {
     expectOutputFileBehavior();
 
     launcher = new HTMLLauncher(remoteControl) {
-      final BrowserLauncher browserLauncher = createNiceMock(BrowserLauncher.class);
-      final FileWriter writer = createMock(FileWriter.class);
+      final BrowserLauncher browserLauncher = mock(BrowserLauncher.class);
+      final FileWriter writer = mock(FileWriter.class);
 
       @Override
       protected BrowserLauncher getBrowserLauncher(String browser, String sessionId,
@@ -133,29 +120,15 @@ public class HtmlLauncherUnitTest {
 
     };
 
-    // Expect writing results
-    results.write((FileWriter) anyObject());
-    expectLastCall().once();
-
     executeAndVerify();
-
+    verify(results).write(any(FileWriter.class));
   }
 
   private void executeAndVerify() throws Exception {
-
-    expect(results.getResult()).andReturn("");
-    replay(results);
+    when(results.getResult()).thenReturn("");
 
     launcher.setResults(results);
-    replay(configuration);
-    replay(remoteControl);
-
     launcher.runHTMLSuite("", "", "", outputFile, 5, true);
-
-    verify(results);
-    verify(configuration);
-    verify(remoteControl);
-    verify(outputFile);
   }
 
 }

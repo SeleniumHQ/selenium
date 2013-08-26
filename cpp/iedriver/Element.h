@@ -66,13 +66,18 @@ class Element {
   void set_last_click_time(clock_t click_time) { this->last_click_time_ = click_time; }
 
  private:
-  int GetLocation(LocationInfo* location, std::vector<LocationInfo>* frame_locations);
-  LocationInfo CalculateClickPoint(const LocationInfo location, const bool document_contains_frames);
-  bool GetClickableViewPortLocation(const bool document_contains_frames, LocationInfo* location);
-  bool IsLocationInViewPort(const LocationInfo location, const bool document_contains_frames);
-  bool IsLocationVisibleInFrames(const LocationInfo location, const std::vector<LocationInfo> frame_locations);
+  int GetLocation(LocationInfo* location,
+                  std::vector<LocationInfo>* frame_locations);
+  LocationInfo CalculateClickPoint(const LocationInfo location,
+                                   const bool document_contains_frames);
+  bool GetClickableViewPortLocation(const bool document_contains_frames,
+                                    LocationInfo* location);
+  bool IsLocationInViewPort(const LocationInfo location,
+                            const bool document_contains_frames);
+  bool IsLocationVisibleInFrames(const LocationInfo location,
+                                 const std::vector<LocationInfo> frame_locations);
   bool IsHiddenByOverflow();
-  bool GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>* frame_locations);
+  bool AppendFrameDetails(std::vector<LocationInfo>* frame_locations);
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
   int GetDocumentFromWindow(IHTMLWindow2* parent_window,
                             IHTMLDocument2** parent_doc);

@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -24,7 +26,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.jmock.Mockery;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.internal.ExternalSessionKey;
@@ -110,8 +111,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
 
   
   private SeleniumBasedRequest getNewRequest(Map<String, Object> desiredCapability) {
-    Mockery context = new Mockery();
-    HttpServletRequest hhtpreq = context.mock(HttpServletRequest.class);
+    HttpServletRequest hhtpreq = mock(HttpServletRequest.class);
     return new SeleniumBasedRequest(hhtpreq, registry, RequestType.START_SESSION, desiredCapability) {
       public String getNewSessionRequestedCapability(TestSession session) {
         return null;

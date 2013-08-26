@@ -1,4 +1,3 @@
-require 'iconv'
 require 'albacore'
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/checks'

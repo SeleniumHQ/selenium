@@ -298,5 +298,27 @@ namespace OpenQA.Selenium
 
             WaitFor(() => { return driver.Title == "clicks"; });
         }
+
+        [Test]
+        public void ShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooter()
+        {
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("fixedFooterNoScroll.html");
+            driver.Url = url;
+
+            driver.FindElement(By.Id("link")).Click();
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+        }
+
+        [Test]
+        public void ShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooterInQuirksMode()
+        {
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("fixedFooterNoScrollQuirksMode.html");
+            driver.Url = url;
+
+            driver.FindElement(By.Id("link")).Click();
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; });
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+        }
     }
 }

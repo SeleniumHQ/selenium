@@ -532,6 +532,7 @@ int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* fram
   long w = right - left;
   long h = bottom - top;
 
+  bool element_is_in_frame = this->AppendFrameDetails(frame_locations);
   if (!hasAbsolutePositionReadyToReturn) {
     // On versions of IE prior to 8 on Vista, if the element is out of the 
     // viewport this would seem to return 0,0,0,0. IE 8 returns position in 
@@ -543,12 +544,10 @@ int Element::GetLocation(LocationInfo* location, std::vector<LocationInfo>* fram
     top += scroll_top;
 
     // Only add the frame offset if the element is actually in a frame.
-    LocationInfo frame_location = {};
-    bool element_is_in_frame = this->GetFrameDetails(&frame_location, frame_locations);
     if (element_is_in_frame) {
+      LocationInfo frame_location = frame_locations->back();
       left += frame_location.x;
       top += frame_location.y;
-      frame_locations->push_back(frame_location);
     } else {
       LOG(DEBUG) << "Element is not in a frame";
     }
@@ -599,7 +598,7 @@ bool Element::RectHasNonZeroDimensions(IHTMLRect* rect) {
   return w > 0 && h > 0;
 }
 
-bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>* frame_locations) {
+bool Element::AppendFrameDetails(std::vector<LocationInfo>* frame_locations) {
   LOG(TRACE) << "Entering Element::GetFrameDetails";
 
   CComPtr<IHTMLDocument2> owner_doc;
@@ -736,37 +735,36 @@ bool Element::GetFrameDetails(LocationInfo* location, std::vector<LocationInfo>*
           status_code = element_wrapper.GetLocation(&frame_location,
                                                     frame_locations);
 
-          // Take the border of the frame element into account.
-          // N.B. We don't have to do this for non-frame elements,
-          // because the border is part of the hit-test region. For
-          // finding offsets to get absolute position of elements 
-          // within frames, the origin of the frame document is offset
-          // by the border width.
-          CComPtr<IHTMLElement2> border_width_element;
-          frame_element->QueryInterface<IHTMLElement2>(&border_width_element);
-          long left_border_width = 0;
-          border_width_element->get_clientLeft(&left_border_width);
-          long top_border_width = 0;
-          border_width_element->get_clientTop(&top_border_width);
-
           if (status_code == WD_SUCCESS) {
+            // Take the border of the frame element into account.
+            // N.B. We don't have to do this for non-frame elements,
+            // because the border is part of the hit-test region. For
+            // finding offsets to get absolute position of elements 
+            // within frames, the origin of the frame document is offset
+            // by the border width.
+            CComPtr<IHTMLElement2> border_width_element;
+            frame_element->QueryInterface<IHTMLElement2>(&border_width_element);
+
+            long left_border_width = 0;
+            border_width_element->get_clientLeft(&left_border_width);
+            frame_location.x += left_border_width;
+
+            long top_border_width = 0;
+            border_width_element->get_clientTop(&top_border_width);
+            frame_location.y += top_border_width;
+
             // Take into account the presence of scrollbars in the frame.
-            long frame_element_width = frame_location.width;
-            long frame_element_height = frame_location.height;
             if (doc_dimensions_success) {
-              if (frame_doc_info.height > frame_element_height) {
+              if (frame_doc_info.height > frame_location.height) {
                 int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
-                frame_element_height -= horizontal_scrollbar_height;
+                frame_location.height -= horizontal_scrollbar_height;
               }
-              if (frame_doc_info.width > frame_element_width) {
+              if (frame_doc_info.width > frame_location.width) {
                 int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
-                frame_element_width -= vertical_scrollbar_width;
+                frame_location.width -= vertical_scrollbar_width;
               }
             }
-            location->x = frame_location.x + left_border_width;
-            location->y = frame_location.y + top_border_width;
-            location->width = frame_element_width;
-            location->height = frame_element_height;
+            frame_locations->push_back(frame_location);
           }
           return true;
         }
@@ -789,25 +787,41 @@ bool Element::GetClickableViewPortLocation(const bool document_contains_frames, 
     return false;
   }
 
+
   long window_width = window_info.rcClient.right - window_info.rcClient.left;
   long window_height = window_info.rcClient.bottom - window_info.rcClient.top;
 
+  // If we're not on the top-level document, we can assume that the view port
+  // includes the entire client window, since scrollIntoView should do the
+  // right thing and make it visible. Otherwise, we prefer getting the view
+  // port size by getting documentElement.clientHeight and .clientWidth.
   if (!document_contains_frames) {
-    // ASSUMPTION! IE **always** draws a vertical scroll bar, even if it's not
-    // required. This means the viewport width is always smaller than the window
-    // width by at least the width of the vertical scroll bar.
-    int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
-    window_width -= vertical_scrollbar_width;
-
-    // Horizontal scrollbar will only appear if the document is wider than the
-    // viewport.
     CComPtr<IHTMLDocument2> doc;
     this->GetContainingDocument(false, &doc);
-    LocationInfo document_info;
-    DocumentHost::GetDocumentDimensions(doc, &document_info);
-    if (document_info.width > window_width) {
-      int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
-      window_height -= horizontal_scrollbar_height;
+    int document_mode = DocumentHost::GetDocumentMode(doc);
+    CComPtr<IHTMLDocument3> document_element_doc;
+    HRESULT hr = doc->QueryInterface<IHTMLDocument3>(&document_element_doc);
+    if (SUCCEEDED(hr) && document_element_doc && document_mode > 5) {
+      CComPtr<IHTMLElement> document_element;
+      hr = document_element_doc->get_documentElement(&document_element);
+      CComPtr<IHTMLElement2> size_element;
+      hr = document_element->QueryInterface<IHTMLElement2>(&size_element);
+      size_element->get_clientHeight(&window_height);
+      size_element->get_clientWidth(&window_width);
+    } else {
+      // This branch is only included if getting documentElement fails.
+      LOG(WARN) << "Document containing element does not contains frames, "
+                << "but getting the documentElement property failed, or the "
+                << "doctype has thrown the browser into pre-IE6 rendering. "
+                << "The view port calculation may be inaccurate";
+      int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
+      window_width -= vertical_scrollbar_width;
+      LocationInfo document_info;
+      DocumentHost::GetDocumentDimensions(doc, &document_info);
+      if (document_info.width > window_width) {
+        int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
+        window_height -= horizontal_scrollbar_height;
+      }
     }
   }
 
@@ -818,7 +832,6 @@ bool Element::GetClickableViewPortLocation(const bool document_contains_frames, 
   // a wild guess, not based on any research.
   location->width = window_width - 2;
   location->height = window_height - 2;
-
   return true;
 }
 

@@ -16,15 +16,14 @@ limitations under the License.
 
 package org.openqa.selenium.support;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -34,8 +33,6 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public class PageFactoryTest {
-
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
   private WebDriver driver = null;
 
@@ -90,7 +87,7 @@ public class PageFactoryTest {
 
   @Test
   public void shouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
-    driver = mockery.mock(WebDriver.class);
+    driver = mock(WebDriver.class);
 
     ConstructedPage page = PageFactory.initElements(driver, ConstructedPage.class);
 
@@ -101,7 +98,7 @@ public class PageFactoryTest {
   public void shouldNotDecorateFieldsWhenTheFieldDecoratorReturnsNull() {
     PublicPage page = new PublicPage();
     // Assign not-null values
-    WebElement q = mockery.mock(WebElement.class);
+    WebElement q = mock(WebElement.class);
     page.q = q;
 
     PageFactory.initElements(new FieldDecorator() {

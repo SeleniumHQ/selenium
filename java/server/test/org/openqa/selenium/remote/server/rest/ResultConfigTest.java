@@ -16,10 +16,16 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.After;
-import org.junit.Before;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
@@ -32,29 +38,9 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
 public class ResultConfigTest {
   private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
   private static final SessionId dummySessionId = new SessionId("Test");
-
-  private JUnit4Mockery context;
-
-  @Before
-  public void setUp() {
-    context = new JUnit4Mockery();
-  }
-
-  @After
-  public void tearDown() {
-    context.assertIsSatisfied();
-  }
 
   @Test
   public void testShouldMatchBasicUrls() throws Exception {
@@ -140,9 +126,7 @@ public class ResultConfigTest {
   @Test
   public void testFailsWhenUnableToDetermineResultTypeForRequest_noHandlersRegistered() {
     ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger);
-    final HttpRequest mockRequest = context.mock(HttpRequest.class);
-
-    context.checking(new Expectations());
+    final HttpRequest mockRequest = mock(HttpRequest.class);
 
     try {
       config.getRenderer(ResultType.EXCEPTION, mockRequest);
@@ -152,33 +136,27 @@ public class ResultConfigTest {
   }
 
   @Test
-  public void testSelectsFirstAvailableRendererWhenThereAreNoMimeTypesSpecified() {
-    Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
-    Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
-    final HttpRequest mockRequest = context.mock(HttpRequest.class);
+  public void testSelectsFirstAvailableRendererWhenThereAreNoMimeTypeMatches() {
+    Renderer mockRenderer1 = mock(Renderer.class, "renderer1");
+    Renderer mockRenderer2 = mock(Renderer.class, "renderer2");
+    final HttpRequest mockRequest = mock(HttpRequest.class);
 
-    context.checking(new Expectations() {{
-      allowing(mockRequest).getHeader("Accept");
-      will(returnValue("application/json"));
-    }});
+    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
 
     ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
-        .on(ResultType.SUCCESS, mockRenderer1)
-        .on(ResultType.SUCCESS, mockRenderer2);
+        .on(ResultType.SUCCESS, mockRenderer1, "text/plain")
+        .on(ResultType.SUCCESS, mockRenderer2, "text/html");
 
     assertEquals(mockRenderer1, config.getRenderer(ResultType.SUCCESS, mockRequest));
   }
 
   @Test
   public void testSelectsRenderWithMimeTypeMatch() {
-    Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
-    Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
-    final HttpRequest mockRequest = context.mock(HttpRequest.class);
+    Renderer mockRenderer1 = mock(Renderer.class, "renderer1");
+    Renderer mockRenderer2 = mock(Renderer.class, "renderer2");
+    final HttpRequest mockRequest = mock(HttpRequest.class);
 
-    context.checking(new Expectations() {{
-      one(mockRequest).getHeader("Accept");
-      will(returnValue("application/json"));
-    }});
+    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
 
     ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
         .on(ResultType.SUCCESS, mockRenderer1)
@@ -189,14 +167,11 @@ public class ResultConfigTest {
 
   @Test
   public void testUsesFirstRegisteredRendererWhenNoMimeTypeMatches() {
-    Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
-    Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
-    final HttpRequest mockRequest = context.mock(HttpRequest.class);
+    Renderer mockRenderer1 = mock(Renderer.class, "renderer1");
+    Renderer mockRenderer2 = mock(Renderer.class, "renderer2");
+    final HttpRequest mockRequest = mock(HttpRequest.class);
 
-    context.checking(new Expectations() {{
-      one(mockRequest).getHeader("Accept");
-      will(returnValue("application/json"));
-    }});
+    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
 
     ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
         .on(ResultType.SUCCESS, mockRenderer1, "text/html")
@@ -207,14 +182,11 @@ public class ResultConfigTest {
 
   @Test
   public void testSkipsRenderersThatRequireASpecificTypeOfMimeType() {
-    Renderer mockRenderer1 = context.mock(Renderer.class, "renderer1");
-    Renderer mockRenderer2 = context.mock(Renderer.class, "renderer2");
-    final HttpRequest mockRequest = context.mock(HttpRequest.class);
+    Renderer mockRenderer1 = mock(Renderer.class, "renderer1");
+    Renderer mockRenderer2 = mock(Renderer.class, "renderer2");
+    final HttpRequest mockRequest = mock(HttpRequest.class);
 
-    context.checking(new Expectations() {{
-      one(mockRequest).getHeader("Accept");
-      will(returnValue("application/json"));
-    }});
+    when(mockRequest.getHeader("Accept")).thenReturn("application/json");
 
     ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger)
         .on(ResultType.SUCCESS, new Result("text/html", mockRenderer1, true))
