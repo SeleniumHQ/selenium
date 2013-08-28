@@ -8,8 +8,6 @@ java_library(name = 'api',
   srcs = API_SRCS,
   deps = [
     '//java/client/src/org/openqa/selenium:beta',
-    '//third_party/java/json:json',
-    '//third_party/java/guava-libraries:guava-libraries',
   ],
   visibility = ['PUBLIC'],
 )

@@ -25,18 +25,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.json.JSONObject;
-
 /**
  * Represents a single log statement.
  */
 public class LogEntry {
 
   private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT =
-      new ThreadLocal<SimpleDateFormat>();
-  private static final String DATE_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ssZ";
-//  private static final SimpleDateFormat DATE_FORMAT =
-//      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+      new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+          return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        }
+      };
 
   private final Level level;
   private final long timestamp;
@@ -83,25 +83,15 @@ public class LogEntry {
   @Override
   public String toString() {
     return String.format("[%s] [%s] %s",
-        getDateFormat().format(new Date(timestamp)), level, message);
+                         DATE_FORMAT.get().format(new Date(timestamp)), level, message);
   }
 
-  private SimpleDateFormat getDateFormat() {
-    SimpleDateFormat format = DATE_FORMAT.get();
-    if (format == null) {
-      format = new SimpleDateFormat(DATE_FORMAT_STRING);
-      DATE_FORMAT.set(format);
-    }
-
-    return format;
-  }
-  
-  public JSONObject toJson() {
+  public Map<String, Object> toMap() {
     Map<String, Object> map = new HashMap<String, Object>();
     map.put("timestamp", timestamp);
     map.put("level", level);
     map.put("message", message);
-    return new JSONObject(map);
+    return map;
   }
 
 }
