@@ -723,17 +723,19 @@ Utils.getBrowserSpecificOffset = function(inBrowser) {
 };
 
 
-Utils.getLocationOnceScrolledIntoView = function(element, opt_onlyFirstRect) {
-  // Some elements may not a scrollIntoView function - for example,
-  // elements under an SVG element. Call those only if they exist.
-  if (typeof element.scrollIntoView == 'function') {
-    // This method does the scrolling as a side-effect. This is less than
-    // ideal, which is why I document it here.
-    //TODO: Fix bot.dom.getLocationInView(element) so that it scrolls elements
-    // which are in iframes as well. See issue 2497.
-    element.scrollIntoView();
+Utils.scrollIntoView = function(element, opt_coords) {
+  var win = goog.dom.getWindow(goog.dom.getOwnerDocument(element));
+  for (var frame = win.frameElement; frame; frame = win.frameElement) {
+    bot.action.scrollIntoView(frame);
+    win = goog.dom.getWindow(goog.dom.getOwnerDocument(frame));
   }
 
+  return bot.action.scrollIntoView(element, opt_coords);
+};
+
+
+Utils.getLocationOnceScrolledIntoView = function(element, opt_onlyFirstRect) {
+  Utils.scrollIntoView(element);
   return Utils.getLocationRelativeToWindowHandle(element, opt_onlyFirstRect);
 };
 
