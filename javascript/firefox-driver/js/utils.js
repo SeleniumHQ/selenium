@@ -656,27 +656,6 @@ Utils.getElementLocation = function(element) {
 };
 
 
-Utils.getLocationViaAccessibilityInterface = function(element) {
-  var retrieval = Utils.newInstance(
-    '@mozilla.org/accessibleRetrieval;1', 'nsIAccessibleRetrieval');
-  var accessible = retrieval.getAccessibleFor(element);
-
-  if (! accessible) {
-    return;
-  }
-
-  var x = {}, y = {}, width = {}, height = {};
-  accessible.getBounds(x, y, width, height);
-
-  return {
-    x: x.value,
-    y: y.value,
-    width: width.value,
-    height: height.value
-  };
-};
-
-
 Utils.getLocation = function(element, opt_onlyFirstRect) {
   element = element.wrappedJSObject ? element.wrappedJSObject : element;
   var rect = undefined;
