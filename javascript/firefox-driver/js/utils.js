@@ -647,12 +647,11 @@ Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
 
 
 Utils.getElementLocation = function(element) {
-  var rect = bot.dom.getClientRect(element)
-
-  var location = new Object();
-  location.x = rect.left;
-  location.y = rect.top;
-  return location;
+  var rect = bot.dom.getClientRect(element);
+  return {
+    x: rect.left,
+    y: rect.top
+  };
 };
 
 
@@ -933,7 +932,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
     } catch(e) {
       // dead object
       currentWindowGone = true;
-    };
+    }
 
     if (currentWindowGone) {
      fxdriver.logging.info('Detected page load in top window; changing session focus from ' +
