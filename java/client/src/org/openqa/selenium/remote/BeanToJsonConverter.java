@@ -211,7 +211,20 @@ public class BeanToJsonConverter {
       return ((File) toConvert).getAbsolutePath();
     }
 
-    Method toJson = getToJsonMethod(toConvert);
+    Method toMap = getMethod(toConvert, "toMap");
+    if (toMap != null) {
+      try {
+        return convertObject(toMap.invoke(toConvert), maxDepth);
+      } catch (IllegalArgumentException e) {
+        throw new WebDriverException(e);
+      } catch (IllegalAccessException e) {
+        throw new WebDriverException(e);
+      } catch (InvocationTargetException e) {
+        throw new WebDriverException(e);
+      }
+    }
+
+    Method toJson = getMethod(toConvert, "toJson");
     if (toJson != null) {
       try {
         return toJson.invoke(toConvert);
@@ -231,9 +244,9 @@ public class BeanToJsonConverter {
     }
   }
 
-  private Method getToJsonMethod(Object toConvert) {
+  private Method getMethod(Object toConvert, String methodName) {
     try {
-      return toConvert.getClass().getMethod("toJson");
+      return toConvert.getClass().getMethod(methodName);
     } catch (SecurityException e) {
       // fall through
     } catch (NoSuchMethodException e) {
@@ -241,6 +254,7 @@ public class BeanToJsonConverter {
     }
 
     return null;
+
   }
 
   private Object mapObject(Object toConvert, int maxDepth, boolean skipNulls) throws Exception {

@@ -37,8 +37,7 @@ function Application() {
 Application.prototype = {
     saveState: function() {
         if (this.options.rememberBaseURL == 'true'){
-            this.options.baseURL = this.baseURL;
-            Preferences.save(this.options, 'baseURL');
+            Preferences.setAndSave(this.options, 'baseURL', this.baseURL);
         }
     },
 
@@ -113,8 +112,7 @@ Application.prototype = {
          //sync the testcase with the data view
         this.notify("currentFormatChanging");
         this.currentFormat = format;
-        this.options.selectedFormat = format.id;
-        Preferences.save(this.options, 'selectedFormat');
+        Preferences.setAndSave(this.options, 'selectedFormat', format.id);
         this.notify("currentFormatChanged", format);
     },
 
@@ -128,8 +126,7 @@ Application.prototype = {
 
     setClipboardFormat: function(format) {
         this.clipboardFormat = format;
-        this.options.clipboardFormat = format.id;
-        Preferences.save(this.options, 'clipboardFormat');
+        Preferences.setAndSave(this.options, 'clipboardFormat', format.id);
         this.notify("clipboardFormatChanged", format);
     },
 
@@ -148,6 +145,8 @@ Application.prototype = {
         testSuite.addTestCaseFromContent(testCase);
         this.setTestSuite(testSuite);
         this.setTestCase(testCase);
+        Preferences.setAndSave(this.options, 'lastSavedTestSuite', '');
+        Preferences.setAndSave(this.options, 'lastSavedTestCase', '');
     },
 
     setTestSuite: function(testSuite) {
@@ -164,6 +163,34 @@ Application.prototype = {
 
     addRecentTestSuite: function(testSuite) {
         this.recentTestSuites.add(testSuite.file.path);
+        Preferences.setAndSave(this.options, 'lastSavedTestSuite', testSuite.file.path);
+        Preferences.setAndSave(this.options, 'lastSavedTestCase', '');
+    },
+
+    addRecentTestCase: function(testCase, isNewSuite) {
+        this.recentTestCases.add(testCase.file.path);
+        if (isNewSuite) {
+            Preferences.setAndSave(this.options, 'lastSavedTestSuite', '');
+        }
+        if (this.options.lastSavedTestSuite.length === 0) {
+            Preferences.setAndSave(this.options, 'lastSavedTestCase', testCase.file.path);
+        }
+    },
+
+    reopenLastTestCaseOrSuite: function() {
+        try {
+            if (FileUtils.fileExists(this.options.lastSavedTestSuite)) {
+                this.loadTestSuite(this.options.lastSavedTestSuite);
+                return true;
+            } else if (FileUtils.fileExists(this.options.lastSavedTestCase)) {
+                this.loadTestCaseWithNewSuite(this.options.lastSavedTestCase);
+                return true;
+            }
+        } catch (e) {
+            //error occurred
+            alert("Error reopening test suite / case " + e);
+        }
+        return false;
     },
 
     setTestCase: function(testCase) {
@@ -256,6 +283,7 @@ Application.prototype = {
         testSuite.addTestCaseFromContent(testCase);
         this.setTestSuite(testSuite);
         this.setTestCase(testCase);
+        this.addRecentTestCase(testCase, true);
     },
     
     // show specified TestSuite.TestCase object.
@@ -290,7 +318,7 @@ Application.prototype = {
             if (testCase != null) {
                 if (testCaseHandler) testCaseHandler(testCase);
                 this.setTestCase(testCase);
-                this.recentTestCases.add(testCase.file.path);
+                this.addRecentTestCase(testCase);
                 return true;
             }
             return false;
@@ -371,7 +399,7 @@ Application.prototype = {
     saveTestCase: function() {
         var result = this.getCurrentFormat().save(this.getTestCase());
         if (result) {
-            this.recentTestCases.add(this.getTestCase().file.path);
+            this.addRecentTestCase(this.getTestCase());
         }
         return result;
     },
@@ -379,7 +407,7 @@ Application.prototype = {
     saveNewTestCase: function() {
         var result = this.getCurrentFormat().saveAsNew(this.getTestCase());
         if (result) {
-            this.recentTestCases.add(this.getTestCase().file.path);
+            this.addRecentTestCase(this.getTestCase());
         }
     }
 };

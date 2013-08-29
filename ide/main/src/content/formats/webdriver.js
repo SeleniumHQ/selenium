@@ -2,8 +2,13 @@
  * Common classes / functions for Selenium RC format.
  */
 
-var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/formatCommandOnlyAdapter.js', this);
+if (!this.formatterType) {  // this.formatterType is defined for the new Formatter system
+  // This method (the if block) of loading the formatter type is deprecated.
+  // For new formatters, simply specify the type in the addPluginProvidedFormatter() and omit this
+  // if block in your formatter.
+  var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+  subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/formatCommandOnlyAdapter.js', this);
+}
 
 /* @override
  * This function filters the command list and strips away the commands we no longer need
@@ -95,10 +100,9 @@ function formatHeader(testCase) {
   }
   className = testClassName(className);
   var formatLocal = testCase.formatLocal(this.name);
-  methodName = testMethodName(className.replace(/Test$/i, "").replace(/^Test/i, "").
-      replace(/^[A-Z]/, function(str) {
-        return str.toLowerCase();
-      }));
+  methodName = testMethodName(className.replace(/Test$/i, "").replace(/^Test/i, "").replace(/^[A-Z]/, function(str) {
+    return str.toLowerCase();
+  }));
   var header = (options.getHeader ? options.getHeader() : options.header).
       replace(/\$\{className\}/g, className).
       replace(/\$\{methodName\}/g, methodName).
@@ -243,6 +247,27 @@ function concatString(array) {
   return array.join(" + ");
 }
 
+function toArgumentList(array) {
+  return array.join(", ");
+}
+
+function keyVariable(key) {
+  return variableName(key);
+}
+
+this.sendKeysMaping = {};
+
+function xlateKeyVariable(variable) {
+  var r;
+  if ((r = /^KEY_(.+)$/.exec(variable))) {
+    var key = this.sendKeysMaping[r[1]];
+    if (key) {
+      return keyVariable(key);
+    }
+  }
+  return null;
+}
+
 function xlateArgument(value, type) {
   value = value.replace(/^\s+/, '');
   value = value.replace(/\s+$/, '');
@@ -264,11 +289,12 @@ function xlateArgument(value, type) {
     var regexp = /\$\{(.*?)\}/g;
     var lastIndex = 0;
     while (r2 = regexp.exec(value)) {
-      if (this.declaredVars && this.declaredVars[r2[1]]) {
+      var key = xlateKeyVariable(r2[1]);
+      if (key || (this.declaredVars && this.declaredVars[r2[1]])) {
         if (r2.index - lastIndex > 0) {
           parts.push(string(value.substring(lastIndex, r2.index)));
         }
-        parts.push(variableName(r2[1]));
+        parts.push(key ? key : variableName(r2[1]));
         lastIndex = regexp.lastIndex;
       } else if (r2[1] == "nbsp") {
         if (r2.index - lastIndex > 0) {
@@ -281,7 +307,7 @@ function xlateArgument(value, type) {
     if (lastIndex < value.length) {
       parts.push(string(value.substring(lastIndex, value.length)));
     }
-    return concatString(parts);
+    return (type && type.toLowerCase() == 'args') ? toArgumentList(parts) : concatString(parts);
   } else if (type && type.toLowerCase() == 'number') {
     return value;
   } else {

@@ -12,6 +12,7 @@ module Selenium
         def initialize(model = nil)
           @model      = verify_model(model)
           @extensions = []
+          @encoded_extensions = []
         end
 
         def add_extension(path)
@@ -20,6 +21,10 @@ module Selenium
           end
 
           @extensions << path
+        end
+
+        def add_encoded_extension(encoded)
+          @encoded_extensions << encoded
         end
 
         #
@@ -49,8 +54,10 @@ module Selenium
 
         def as_json(opts = nil)
           extensions = @extensions.map do |crx_path|
-            Base64.strict_encode64 File.read(crx_path)
+            File.open(crx_path, "rb") { |crx_file| Base64.strict_encode64 crx_file.read }
           end
+
+          extensions.concat(@encoded_extensions)
 
           super.merge('extensions' => extensions)
         end

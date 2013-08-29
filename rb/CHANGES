@@ -1,7 +1,37 @@
-2.34.0 (???)
+2.36.0 (???)
 ============
 
-* Add `Driver#remote_status` to the remote driver (#5669)
+* Depend on rubyzip ~> 1.0.0
+
+2.35.1 (2013-08-26)
+===================
+
+* Depend on rubyzip < 1.0.0
+
+2.35.0 (2013-08-14)
+===================
+
+Firefox:
+  * Updated Firefox native event components to support Firefox 23.
+
+2.34.0 (2013-08-06)
+===================
+
+Remote:
+  * Add `Driver#remote_status` (remote driver only) (#5669)
+Firefox:
+  * Updated Firefox native event components to support Firefox 22.
+iPhone:
+  * The driver is now deprecated (see http://appium.io/ or http://ios-driver.github.io/ios-driver/ for a replacement)
+Various:
+  * Updated our copy of the Closure compiler and library to the most
+    recent versions.
+  * Updated the atoms library, including support for MS pointer events
+    and refinements to element visibility tests.
+  * Update synthesized mouse implementation. Mouse moves are
+    implemented using nsIDOMWindowUtils.
+  * Added support for the HTML5 "hidden" attribute. If an element, or
+    ancestor, has hidden attribute make, it is not shown.
 
 2.33.0 (2013-05-26)
 ===================

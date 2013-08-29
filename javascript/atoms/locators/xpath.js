@@ -50,7 +50,7 @@ goog.require('wgxpath');
  * @see http://www.w3.org/TR/DOM-Level-3-XPath/xpath.html#XPathResult
  * @private
  */
-// TODO(berrada): Move this enum back to bot.locators.xpath namespace.
+// TODO: Move this enum back to bot.locators.xpath namespace.
 // The problem is that we alias bot.locators.xpath in locators.js, while
 // we set the flag --collapse_properties (http://goo.gl/5W6cP).
 // The compiler should have thrown the error anyways, it's a bug that it fails
@@ -90,7 +90,7 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   var doc = goog.dom.getOwnerDocument(node);
 
   // Let the wgxpath library be compiled away unless we are on IE or Android.
-  // TODO(user): Restrict this to just IE when we drop support for Froyo.
+  // TODO: Restrict this to just IE when we drop support for Froyo.
   if (goog.userAgent.IE || goog.userAgent.product.ANDROID) {
     wgxpath.install(goog.dom.getWindow(doc));
   }

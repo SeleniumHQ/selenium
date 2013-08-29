@@ -47,8 +47,7 @@ public class InputKeysContainerTest {
   public void testShouldTerminateStringAtSubmissionKey() {
     InputKeysContainer container = new InputKeysContainer(true, "abc", Keys.ENTER, "def");
 
-    assertEquals("Should not get a string past Keys.ENTER", "abc",
-        container.toString());
+    assertEquals("Should not get a string past Keys.ENTER", "abc", container.toString());
     assertTrue("Was supposed to identify submit key.", container.wasSubmitKeyFound());
   }
 
@@ -56,8 +55,7 @@ public class InputKeysContainerTest {
   public void testShouldNotTerminateAStringIfNotRequested() {
     InputKeysContainer container = new InputKeysContainer(false, "abc", Keys.ENTER, "def");
 
-    assertEquals("Should get the entire string", "abc" + '\uE007' + "def",
-        container.toString());
+    assertEquals("Should get the entire string", "abc\rdef", container.toString());
     assertTrue("Was supposed to identify submit key.", container.wasSubmitKeyFound());
   }
 
@@ -66,7 +64,6 @@ public class InputKeysContainerTest {
     InputKeysContainer container = new InputKeysContainer(false, "abc", Keys.ENTER, "def");
     container.setCapitalization(true);
 
-    assertEquals("Should get the a capitalized string", "ABC" + '\uE007' + "DEF",
-        container.toString());
+    assertEquals("Should get the a capitalized string", "ABC\rDEF", container.toString());
   }
 }

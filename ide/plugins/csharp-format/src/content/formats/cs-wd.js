@@ -2,8 +2,13 @@
  * Formatter for Selenium 2 / WebDriver .NET (C#) client.
  */
 
-var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
-subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/webdriver.js', this);
+if (!this.formatterType) {  // this.formatterType is defined for the new Formatter system
+  // This method (the if block) of loading the formatter type is deprecated.
+  // For new formatters, simply specify the type in the addPluginProvidedFormatter() and omit this
+  // if block in your formatter.
+  var subScriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+  subScriptLoader.loadSubScript('chrome://selenium-ide/content/formats/webdriver.js', this);
+}
 
 function testClassName(testName) {
   return testName.split(/[^0-9A-Za-z]+/).map(
@@ -154,6 +159,91 @@ function formatComment(comment) {
     return "// " + str;
   });
 }
+
+function keyVariable(key) {
+  return "Keys." + key;
+}
+
+this.sendKeysMaping = {
+  BACK_SPACE: "Backspace",
+  BACKSPACE: "Backspace",
+  TAB: "Tab",
+  ENTER: "Enter",
+  SHIFT: "Shift",
+  LEFT_SHIFT: "LeftShift",
+  CONTROL: "Control",
+  LEFT_CONTROL: "LeftControl",
+  ALT: "Alt",
+  LEFT_ALT: "LeftAlt",
+  PAUSE: "Pause",
+  ESCAPE: "Escape",
+  ESC: "Escape",
+  SPACE: "Space",
+  PAGE_UP: "PageUp",
+  PAGE_DOWN: "PageDown",
+  END: "End",
+  HOME: "Home",
+  LEFT: "Left",
+  ARROW_LEFT: "ArrowLeft",
+  UP: "Up",
+  ARROW_UP: "ArrowUp",
+  RIGHT: "Right",
+  ARROW_RIGHT: "ArrowRight",
+  DOWN: "Down",
+  ARROW_DOWN: "ArrowDown",
+  INSERT: "Insert",
+  DELETE: "Delete",
+  SEMICOLON: "Semicolon",
+  EQUALS: "Equal",
+
+  NUMPAD0: "NumberPad0",
+  NUM_ZERO: "NumberPad0",
+  NUMPAD1: "NumberPad1",
+  NUM_ONE: "NumberPad1",
+  NUMPAD2: "NumberPad2",
+  NUM_TWO: "NumberPad2",
+  NUMPAD3: "NumberPad3",
+  NUM_THREE: "NumberPad3",
+  NUMPAD4: "NumberPad4",
+  NUM_FOUR: "NumberPad4",
+  NUMPAD5: "NumberPad5",
+  NUM_FIVE: "NumberPad5",
+  NUMPAD6: "NumberPad6",
+  NUM_SIX: "NumberPad6",
+  NUMPAD7: "NumberPad7",
+  NUM_SEVEN: "NumberPad7",
+  NUMPAD8: "NumberPad8",
+  NUM_EIGHT: "NumberPad8",
+  NUMPAD9: "NumberPad9",
+  NUM_NINE: "NumberPad9",
+  MULTIPLY: "Multiply",
+  NUM_MULTIPLY: "Multiply",
+  ADD: "Add",
+  NUM_PLUS: "Add",
+  SEPARATOR: "Separator",
+  SUBTRACT: "Subtract",
+  NUM_MINUS: "Subtract",
+  DECIMAL: "Decimal",
+  NUM_PERIOD: "Decimal",
+  DIVIDE: "Divide",
+  NUM_DIVISION: "Divide",
+
+  F1: "F1",
+  F2: "F2",
+  F3: "F3",
+  F4: "F4",
+  F5: "F5",
+  F6: "F6",
+  F7: "F7",
+  F8: "F8",
+  F9: "F9",
+  F10: "F10",
+  F11: "F11",
+  F12: "F12",
+
+  META: "Meta",
+  COMMAND: "Command"
+};
 
 /**
  * Returns a string representing the suite for this formatter language.

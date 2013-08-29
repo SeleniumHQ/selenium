@@ -16,23 +16,23 @@ limitations under the License.
 
 package org.openqa.selenium.lift;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.openqa.selenium.lift.Finders.first;
 import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.fail;
-
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
+import org.hamcrest.Description;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
-
-import org.hamcrest.Description;
-import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,17 +46,17 @@ import java.util.Collections;
  */
 public class TestContextTest {
 
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
-
   private WebDriver webdriver;
   private TestContext context;
-  private WebElement element;
+  private WebElement element1;
+  private WebElement element2;
 
   @Before
   public void createMocks() {
-    webdriver = mockery.mock(WebDriver.class);
+    webdriver = mock(WebDriver.class);
     context = new WebDriverTestContext(webdriver);
-    element = mockery.mock(WebElement.class);
+    element1 = mock(WebElement.class);
+    element2 = mock(WebElement.class);
   }
 
   @Test
@@ -69,23 +69,17 @@ public class TestContextTest {
 
     final String url = "http://www.example.com";
 
-    mockery.checking(new Expectations() {{
-      oneOf(webdriver).get(url);
-    }});
-
     context.goTo(url);
+    verify(webdriver).get(url);
   }
 
   @SuppressWarnings("unchecked")
   @Test
   public void canAssertPresenceOfWebElements() throws Exception {
 
-    final Finder<WebElement, WebDriver> finder = mockery.mock(Finder.class);
+    final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
-    mockery.checking(new Expectations() {{
-      oneOf(finder).findFrom(webdriver);
-      will(returnValue(oneElement()));
-    }});
+    when(finder.findFrom(webdriver)).thenReturn(oneElement());
 
     context.assertPresenceOf(finder);
   }
@@ -94,14 +88,9 @@ public class TestContextTest {
   @Test
   public void canCheckQuantitiesOfWebElementsAndThrowsExceptionOnMismatch() throws Exception {
 
-    final Finder<WebElement, WebDriver> finder = mockery.mock(Finder.class);
+    final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
-    mockery.checking(new Expectations() {{
-      allowing(finder).findFrom(webdriver);
-      will(returnValue(oneElement()));
-      exactly(2).of(finder).describeTo(with(any(Description.class))); // in producing the error
-                                                                      // msg
-    }});
+    when(finder.findFrom(webdriver)).thenReturn(oneElement());
 
     try {
       context.assertPresenceOf(atLeast(2), finder);
@@ -110,60 +99,51 @@ public class TestContextTest {
       // expected
       assertThat(error.getMessage(), containsString("a value greater than <1>"));
     }
+
+    // From producing the error message.
+    verify(finder, times(2)).describeTo(any(Description.class));
   }
 
   @SuppressWarnings("unchecked")
   @Test
   public void canDirectTextInputToSpecificElements() throws Exception {
-    final Finder<WebElement, WebDriver> finder = mockery.mock(Finder.class);
+    final Finder<WebElement, WebDriver> finder = mock(Finder.class);
     final String inputText = "test";
 
-    mockery.checking(new Expectations() {{
-      oneOf(finder).findFrom(webdriver);
-      will(returnValue(oneElement()));
-      oneOf(element).sendKeys(inputText);
-    }});
+    when(finder.findFrom(webdriver)).thenReturn(oneElement());
 
     context.type(inputText, finder);
+    verify(element1).sendKeys(inputText);
   }
 
   @SuppressWarnings("unchecked")
   @Test
   public void canTriggerClicksOnSpecificElements() throws Exception {
-    final Finder<WebElement, WebDriver> finder = mockery.mock(Finder.class);
+    final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
-    mockery.checking(new Expectations() {{
-      oneOf(finder).findFrom(webdriver);
-      will(returnValue(oneElement()));
-      oneOf(element).click();
-    }});
+    when(finder.findFrom(webdriver)).thenReturn(oneElement());
 
     context.clickOn(finder);
+    verify(element1).click();
   }
 
   @SuppressWarnings("unchecked")
   @Test
   public void canTriggerClicksOnFirstElement() throws Exception {
-    final Finder<WebElement, WebDriver> finder = mockery.mock(Finder.class);
+    final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
-    mockery.checking(new Expectations() {{
-      oneOf(finder).findFrom(webdriver);
-      will(returnValue(twoElements()));
-      oneOf(element).click();
-    }});
+    when(finder.findFrom(webdriver)).thenReturn(twoElements());
 
     context.clickOn(first(finder));
+    verify(element1).click();
   }
 
   @SuppressWarnings("unchecked")
   @Test
   public void throwsAnExceptionIfTheFinderReturnsAmbiguousResults() throws Exception {
-    final Finder<WebElement, WebDriver> finder = mockery.mock(Finder.class);
+    final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
-    mockery.checking(new Expectations() {{
-      oneOf(finder).findFrom(webdriver);
-      will(returnValue(twoElements()));
-    }});
+    when(finder.findFrom(webdriver)).thenReturn(twoElements());
 
     try {
       context.clickOn(finder);
@@ -175,10 +155,10 @@ public class TestContextTest {
   }
 
   private Collection<WebElement> oneElement() {
-    return Collections.singleton(element);
+    return Collections.singleton(element1);
   }
 
   private Collection<WebElement> twoElements() {
-    return Arrays.asList(element, element);
+    return Arrays.asList(element1, element2);
   }
 }

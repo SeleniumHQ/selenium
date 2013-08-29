@@ -34,6 +34,9 @@ Webdriver.common
    selenium.webdriver.common.keys
    selenium.webdriver.common.touch_actions
    selenium.webdriver.common.utils
+   selenium.webdriver.common.proxy
+   selenium.webdriver.common.html5.application_cache
+
 
 Webdriver.support
 -----------------

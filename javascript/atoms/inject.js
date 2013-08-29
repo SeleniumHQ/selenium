@@ -19,7 +19,7 @@
  * Instead, it is intended to be used in its compiled form when injecting
  * script from another language (e.g. C++).
  *
- * TODO(jleyba): Add an example
+ * TODO: Add an example
  */
 
 goog.provide('bot.inject');
@@ -367,11 +367,11 @@ bot.inject.wrapResponse = function(value) {
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Failed_Commands
  */
 bot.inject.wrapError = function(err) {
-  // TODO(user): Parse stackTrace
+  // TODO: Parse stackTrace
   return {
     'status': goog.object.containsKey(err, 'code') ?
         err['code'] : bot.ErrorCode.UNKNOWN_ERROR,
-    // TODO(user): Parse stackTrace
+    // TODO: Parse stackTrace
     'value': {
       'message': err.message
     }

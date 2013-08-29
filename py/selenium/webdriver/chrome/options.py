@@ -26,6 +26,7 @@ class Options(object):
         self._binary_location = ''
         self._arguments = []
         self._extension_files = []
+        self._extensions = []
         self._experimental_options = {}
 
     @property
@@ -79,7 +80,7 @@ class Options(object):
             encoded_extensions.append(base64.b64encode(file_.read()))
 
             file_.close()
-        return encoded_extensions
+        return encoded_extensions + self._extensions
 
     def add_extension(self, extension):
         """
@@ -94,6 +95,19 @@ class Options(object):
                 self._extension_files.append(extension)
             else:
                 raise IOError("Path to the extension doesn't exist")
+        else:
+            raise ValueError("argument can not be null")
+
+    def add_encoded_extension(self, extension):
+        """
+        Adds Base64 encoded string with extension data to a list that will be used to extract it
+        to the ChromeDriver
+
+        :Args:
+         - extension: Base64 encoded string with extension data
+        """
+        if extension:
+            self._extensions.append(extension)
         else:
             raise ValueError("argument can not be null")
 

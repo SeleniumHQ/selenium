@@ -18,26 +18,23 @@ limitations under the License.
 
 package org.openqa.selenium.testing;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
+
 import com.google.common.collect.Sets;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore.Driver;
 
 import java.util.Set;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-
 public class IgnoreComparitorUnitTest {
-
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
   private static final Platform CURRENT_PLATFORM = Platform.MAC;
   private static final Platform OTHER_PLATFORM = Platform.WINDOWS;
@@ -122,15 +119,11 @@ public class IgnoreComparitorUnitTest {
 
   private Ignore ignoreForDriver(final Set<Driver> drivers,
                                  final Set<Platform> platforms) {
-    final Ignore ignore = mockery.mock(Ignore.class);
-    
-    mockery.checking(new Expectations() {{
-      allowing(ignore).value();
-      will(returnValue(drivers.toArray(new Driver[drivers.size()])));
-      allowing(ignore).platforms();
-      will(returnValue(platforms.toArray(new Platform[platforms.size()])));
-    }});
-    
+    final Ignore ignore = mock(Ignore.class);
+
+    when(ignore.value()).thenReturn(drivers.toArray(new Driver[drivers.size()]));
+    when(ignore.platforms()).thenReturn(platforms.toArray(new Platform[platforms.size()]));
+
     return ignore;
   }
 }

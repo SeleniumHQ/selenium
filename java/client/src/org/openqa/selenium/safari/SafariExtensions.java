@@ -143,7 +143,7 @@ class SafariExtensions {
   SafariExtensions(SafariOptions options) {
     this.runtime = Runtime.getRuntime();
     this.backup = new Backup();
-    this.customDataDir = Optional.fromNullable(options.getDataDir());
+    this.customDataDir = options.getDataDir();
     this.installExtension = !Boolean.getBoolean(NO_INSTALL_EXTENSION_PROPERTY) &&
                             !options.getUseCustomDriverExtension();
     this.safariExtensionFiles = options.getExtensions();

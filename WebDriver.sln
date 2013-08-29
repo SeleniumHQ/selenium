@@ -28,39 +28,39 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-interactions", "c
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox", "cpp\webdriver-firefox\webdriver-firefox.vcxproj", "{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriver", "cpp\IEDriver\IEDriver.vcxproj", "{BB72383B-427F-4191-B692-E4345A30E33C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriver", "cpp\iedriver\IEDriver.vcxproj", "{BB72383B-427F-4191-B692-E4345A30E33C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "json-cpp", "third_party\json-cpp\json-cpp.vcxproj", "{320F3BBE-8223-4E7F-ABEE-18D3BD57B1FD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mongoose", "third_party\mongoose\mongoose.vcxproj", "{9AEBD612-232D-40CB-BE2C-F2B911FD6228}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.Core", "dotnet\src\Selenium.Core\Selenium.Core.csproj", "{69F4FF0E-13DE-4AF6-B8AF-572A36239083}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.Core", "dotnet\src\core\Selenium.Core.csproj", "{69F4FF0E-13DE-4AF6-B8AF-572A36239083}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.WebDriverBackedSelenium", "dotnet\src\Selenium.WebDriverBackedSelenium\Selenium.WebDriverBackedSelenium.csproj", "{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.WebDriverBackedSelenium", "dotnet\src\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.csproj", "{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Support", "dotnet\src\WebDriver.Support\WebDriver.Support.csproj", "{A9779443-E254-47E9-B733-8AC6D3662CA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Support", "dotnet\src\support\WebDriver.Support.csproj", "{A9779443-E254-47E9-B733-8AC6D3662CA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Common.Tests", "dotnet\test\WebDriver.Common.Tests\WebDriver.Common.Tests.csproj", "{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Common.Tests", "dotnet\test\common\WebDriver.Common.Tests.csproj", "{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Remote.Tests", "dotnet\test\WebDriver.Remote.Tests\WebDriver.Remote.Tests.csproj", "{1D3DF4DB-6C11-480D-9774-F489B2EF62D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Remote.Tests", "dotnet\test\remote\WebDriver.Remote.Tests.csproj", "{1D3DF4DB-6C11-480D-9774-F489B2EF62D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Chrome.Tests", "dotnet\test\WebDriver.Chrome.Tests\WebDriver.Chrome.Tests.csproj", "{81D664AA-FC03-425E-98A8-B4EAF8236776}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Chrome.Tests", "dotnet\test\chrome\WebDriver.Chrome.Tests.csproj", "{81D664AA-FC03-425E-98A8-B4EAF8236776}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Firefox.Tests", "dotnet\test\WebDriver.Firefox.Tests\WebDriver.Firefox.Tests.csproj", "{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Firefox.Tests", "dotnet\test\firefox\WebDriver.Firefox.Tests.csproj", "{630FC167-169E-4CFD-83ED-9BA4AA8A0FB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.IE.Tests", "dotnet\test\WebDriver.IE.Tests\WebDriver.IE.Tests.csproj", "{ECF3B49F-68B0-4A2A-8559-6D7FB906AA88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.IE.Tests", "dotnet\test\ie\WebDriver.IE.Tests.csproj", "{ECF3B49F-68B0-4A2A-8559-6D7FB906AA88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Support.Tests", "dotnet\test\WebDriver.Support.Tests\WebDriver.Support.Tests.csproj", "{1B70379B-5325-4243-8629-5C32802E9826}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Support.Tests", "dotnet\test\support\WebDriver.Support.Tests.csproj", "{1B70379B-5325-4243-8629-5C32802E9826}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.Core.Tests", "dotnet\test\Selenium.Core.Tests\Selenium.Core.Tests.csproj", "{42D1B587-9544-452F-8B76-4F2A65BC9BE5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.Core.Tests", "dotnet\test\core\Selenium.Core.Tests.csproj", "{42D1B587-9544-452F-8B76-4F2A65BC9BE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.WebDriverBackedSelenium.Tests", "dotnet\test\Selenium.WebDriverBackedSelenium.Tests\Selenium.WebDriverBackedSelenium.Tests.csproj", "{68CF4628-4148-4627-ACA1-D4C225365D3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.WebDriverBackedSelenium.Tests", "dotnet\test\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.Tests.csproj", "{68CF4628-4148-4627-ACA1-D4C225365D3F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imehandler", "cpp\imehandler\imehandler.vcxproj", "{37F9EF6B-F69C-4764-9687-C63C608C476B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Android.Tests", "dotnet\test\WebDriver.Android.Tests\WebDriver.Android.Tests.csproj", "{3102A61F-3025-482C-9515-9FC239746658}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Android.Tests", "dotnet\test\android\WebDriver.Android.Tests.csproj", "{3102A61F-3025-482C-9515-9FC239746658}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver", "dotnet\src\WebDriver\WebDriver.csproj", "{83C13931-B27C-425C-AAF0-5F96EEA4F173}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver", "dotnet\src\webdriver\WebDriver.csproj", "{83C13931-B27C-425C-AAF0-5F96EEA4F173}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-server", "cpp\webdriver-server\webdriver-server.vcxproj", "{35A23A16-EF17-4CC3-8854-785025A304F3}"
 EndProject
@@ -68,11 +68,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-latest", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-previous", "cpp\webdriver-firefox\webdriver-firefox-previous.vcxproj", "{322CD167-C8F9-4E13-8F8A-DFAE834255AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Safari.Tests", "dotnet\test\WebDriver.Safari.Tests\WebDriver.Safari.Tests.csproj", "{92551430-7C30-421B-A81E-0B08163AC59C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Safari.Tests", "dotnet\test\safari\WebDriver.Safari.Tests.csproj", "{92551430-7C30-421B-A81E-0B08163AC59C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriverServer", "cpp\IEDriverServer\IEDriverServer.vcxproj", "{08C3286F-F132-44EC-80F0-2DF30D87A5D3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IEDriverServer", "cpp\iedriverserver\IEDriverServer.vcxproj", "{08C3286F-F132-44EC-80F0-2DF30D87A5D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.PhantomJS.Tests", "dotnet\test\WebDriver.PhantomJS.Tests\WebDriver.PhantomJS.Tests.csproj", "{2329720E-A694-4A6F-B4E6-EDEA911298E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.PhantomJS.Tests", "dotnet\test\phantomjs\WebDriver.PhantomJS.Tests.csproj", "{2329720E-A694-4A6F-B4E6-EDEA911298E0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox-esr-previous", "cpp\webdriver-firefox\webdriver-firefox-esr-previous.vcxproj", "{D137A27D-8324-4024-97FC-D2D29E3EFE60}"
 EndProject

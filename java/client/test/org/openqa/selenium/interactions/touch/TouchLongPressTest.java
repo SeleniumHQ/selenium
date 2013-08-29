@@ -16,12 +16,15 @@ limitations under the License.
 
 package org.openqa.selenium.interactions.touch;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.openqa.selenium.StubRenderedWebElement;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
@@ -31,32 +34,23 @@ import org.openqa.selenium.internal.Locatable;
  */
 public class TouchLongPressTest {
 
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
-
-  private TouchScreen dummyTouch;
-  private Locatable locatableElement;
-  private Coordinates dummyCoordinates;
+  @Mock private TouchScreen mockTouch;
+  @Mock private Coordinates mockCoordinates;
+  @Mock private Locatable locatableStub;
 
   @Before
   public void setUp() {
-    dummyTouch = mockery.mock(TouchScreen.class);
-    dummyCoordinates = mockery.mock(Coordinates.class);
-
-    locatableElement = new StubRenderedWebElement() {
-      @Override
-      public Coordinates getCoordinates() {
-        return dummyCoordinates;
-      }
-    };
+    MockitoAnnotations.initMocks(this);
+    when(locatableStub.getCoordinates()).thenReturn(mockCoordinates);
   }
 
   @Test
   public void testCanLongPress() {
-    mockery.checking(new Expectations() {{
-      oneOf(dummyTouch).longPress(dummyCoordinates);
-    }});
-
-    LongPressAction longPress = new LongPressAction(dummyTouch, locatableElement);
+    LongPressAction longPress = new LongPressAction(mockTouch, locatableStub);
     longPress.perform();
+
+    verify(mockTouch).longPress(mockCoordinates);
+    verifyNoMoreInteractions(mockTouch);
+    verifyZeroInteractions(mockCoordinates);
   }
 }

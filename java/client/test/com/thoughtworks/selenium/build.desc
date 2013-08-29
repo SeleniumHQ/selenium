@@ -30,7 +30,7 @@ java_library(name = "rc-tests",
      "//java/client/src/org/openqa/selenium/remote",
      "//java/client/test/org/openqa/selenium/v1:environment",
      "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-     "//third_party/java/easymock",
+     "//third_party/java/mockito",
    ])
 
 java_test(name = "firefox-emulation-test",
@@ -64,7 +64,7 @@ java_test(name = "ie-emulation-test",
   ],
   deps = [
     ":rc-tests",
-    "//cpp:ie_win32_exe",
+    "//cpp/iedriverserver:win32",
   ])
 
 java_test(name = "opera-emulation-test",

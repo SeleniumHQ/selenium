@@ -709,14 +709,26 @@ class WebDriver(object):
         :Usage:
             driver.get_screenshot_as_file('/Screenshots/foo.png')
         """
-        png = self.execute(Command.SCREENSHOT)['value']
+        png = self.get_screenshot_as_png()
         try:
             with open(filename, 'wb') as f:
-                f.write(base64.b64decode(png.encode('ascii')))
+                f.write(png)
         except IOError:
             return False
-        del png
+        finally:
+            del png
         return True
+
+    save_screenshot = get_screenshot_as_file
+
+    def get_screenshot_as_png(self):
+        """
+        Gets the screenshot of the current window as a binary data.
+
+        :Usage:
+            driver.get_screenshot_as_png()
+        """
+        return base64.b64decode(self.get_screenshot_as_base64().encode('ascii'))
 
     def get_screenshot_as_base64(self):
         """
@@ -811,22 +823,6 @@ class WebDriver(object):
     def application_cache(self):
         """ Returns a ApplicationCache Object to interact with the browser app cache"""
         return ApplicationCache(self)
-
-    def save_screenshot(self, filename):
-        """
-        Gets the screenshot of the current window. Returns False if there is
-        any IOError, else returns True. Use full paths in your filename.
-        """
-        png = self.execute(Command.SCREENSHOT)['value']
-        try:
-            f = open(filename, 'wb')
-            f.write(base64.b64decode(png.encode('ascii')))
-            f.close()
-        except IOError:
-            return False
-        finally:
-            del png
-        return True
 
     @property
     def log_types(self):

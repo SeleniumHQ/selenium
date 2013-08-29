@@ -1,0 +1,7 @@
+prebuilt_jar(name = 'sac',
+  binary_jar = 'sac-1.3.jar',
+  visibility = [
+    '//third_party/java/...',
+  ],
+)
+

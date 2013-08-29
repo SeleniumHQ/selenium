@@ -19,7 +19,6 @@
     goog.require('goog.style');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
-    goog.require('goog.userAgent.product');
   </script>
   <script type="text/javascript">
     var clicker;
@@ -230,7 +229,7 @@
         return;
       }
       if (goog.userAgent.IE) {
-        // TODO(jleyba): Test must be async to handle focus events properly.
+        // TODO: Test must be async to handle focus events properly.
         return;
       }
 
@@ -396,8 +395,7 @@
       bot.action.click(target);
       // In Safari 6, the affects of window.scrollTo are applied
       // applied asynchronously, so we cannot verify scrolling here.
-      if (!goog.userAgent.product.SAFARI ||
-          !goog.userAgent.isVersionOrHigher(6)) {
+      if (!bot.userAgent.SAFARI_6) {
         var newPos = goog.style.getClientPosition(target);
         assertNotEquals(oldPos.y, newPos.y);
       }

@@ -38,45 +38,7 @@ import java.io.IOException;
  *
  * This driver can be configured using the {@link SafariOptions} class.
  */
-public class SafariDriver extends RemoteWebDriver
-    implements TakesScreenshot {
-
-  /**
-   * A boolean capability that instructs the SafariDriver to delete all existing
-   * session data when starting a new session. This includes browser history,
-   * cache, cookies, HTML5 local storage, and HTML5 databases.
-   *
-   * <p><strong>Warning:</strong> Since Safari uses a single profile for the
-   * current user, enabling this capability will permanently erase any existing
-   * session data.
-   * @deprecated use {@link SafariOptions#setUseCleanSession(boolean)} instead.
-   */
-  @Deprecated
-  public static final String CLEAN_SESSION_CAPABILITY = "safari.cleanSession";
-
-  /**
-   * Capability that defines the path to a Safari installations data
-   * directory. If omitted, the default installation location for the current
-   * platform will be used:
-   * <ul>
-   *   <li>OS X: /Users/$USER/Library/Safari
-   *   <li>Windows: %APPDATA%\Apple Computer\Safari
-   * </ul>
-   *
-   * <p>This capability may be set either as a String or File object.
-   * @deprecated use {@link SafariOptions#setDataDir(java.io.File)} instead.
-   */
-  @Deprecated
-  public static final String DATA_DIR_CAPABILITY = "safari.dataDir";
-
-  /**
-   * Boolean capability that specifies whether to skip installing the SafariDriver extension.
-   * When using this capability, a copy of the extension must be pre-installed with Safari or
-   * the driver will not function.
-   * @deprecated use {@link SafariOptions#setSkipExtensionInstallation(boolean)} instead.
-   */
-  @Deprecated
-  public static final String NO_INSTALL_EXTENSION_CAPABILITY = "safari.extension.noInstall";
+public class SafariDriver extends RemoteWebDriver implements TakesScreenshot {
 
   /**
    * Initializes a new SafariDriver} class with default {@link SafariOptions}.

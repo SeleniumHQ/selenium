@@ -507,11 +507,17 @@ public class BaseRemoteProxy implements RemoteProxy {
       int code = response.getStatusLine().getStatusCode();
 
       if (code == 200) {
-        JSONObject status = extractObject(response);
+        JSONObject status = new JSONObject();
+        try {
+          status = extractObject(response);
+        } catch (Exception e) {
+          // ignored due it's not required from node to return anything. Just 200 code is enough.
+        }
         EntityUtils.consume(response.getEntity());
         return status;
       } else if (code == 404) { // selenium RC case
         JSONObject status = new JSONObject();
+        EntityUtils.consume(response.getEntity());
         return status;
       } else {
         EntityUtils.consume(response.getEntity());

@@ -20,16 +20,18 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
+import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -37,12 +39,10 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
-
-import org.jmock.Expectations;
-import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -50,8 +50,6 @@ import java.util.List;
 /**
  */
 public class DefaultFieldDecoratorTest {
-
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
   // Unusued fields are used by tests. Do not remove!
   @SuppressWarnings("unused") private WebElement element1;
@@ -177,21 +175,21 @@ public class DefaultFieldDecoratorTest {
 
   @Test
   public void testDecoratingProxyImplementsRequiredInterfaces() throws Exception {
-    final AllDriver driver = mockery.mock(AllDriver.class);
-    final AllElement element = mockery.mock(AllElement.class);
-    final Mouse mouse = mockery.mock(Mouse.class);
-    mockery.checking(new Expectations() {{
-      exactly(1).of(driver).getKeyboard();
-      exactly(1).of(driver).getMouse();
-      will(returnValue(mouse));
-      exactly(1).of(driver).findElement(By.id("foo"));
-      will(returnValue(element));
-      exactly(1).of(element).getCoordinates();
-      exactly(1).of(mouse).mouseMove(with(any(Coordinates.class)));
-    }});
+    final AllDriver driver = mock(AllDriver.class);
+    final AllElement element = mock(AllElement.class);
+    final Mouse mouse = mock(Mouse.class);
+
+    when(driver.getMouse()).thenReturn(mouse);
+    when(driver.findElement(By.id("foo"))).thenReturn(element);
+
     Page page = new Page();
     PageFactory.initElements(driver, page);
     new Actions(driver).moveToElement(page.foo).build().perform();
+
+    verify(driver).getKeyboard();
+    verify(driver).getMouse();
+    verify(element).getCoordinates();
+    verify(mouse).mouseMove(any(Coordinates.class));
   }
 
   private static class Page {

@@ -17,11 +17,11 @@ limitations under the License.
 package org.openqa.selenium.interactions;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 
 /**
  * Tests the CompositeAction class
@@ -29,14 +29,12 @@ import org.junit.Test;
  */
 public class CompositeActionTest {
 
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
-
   @Test
   public void addingActions() {
     CompositeAction sequence = new CompositeAction();
-    final Action dummyAction1 = mockery.mock(Action.class);
-    final Action dummyAction2 = mockery.mock(Action.class, "dummy2");
-    final Action dummyAction3 = mockery.mock(Action.class, "dummy3");
+    final Action dummyAction1 = mock(Action.class);
+    final Action dummyAction2 = mock(Action.class, "dummy2");
+    final Action dummyAction3 = mock(Action.class, "dummy3");
 
     sequence.addAction(dummyAction1)
         .addAction(dummyAction2)
@@ -48,20 +46,19 @@ public class CompositeActionTest {
   @Test
   public void invokingActions() {
     CompositeAction sequence = new CompositeAction();
-    final Action dummyAction1 = mockery.mock(Action.class);
-    final Action dummyAction2 = mockery.mock(Action.class, "dummy2");
-    final Action dummyAction3 = mockery.mock(Action.class, "dummy3");
+    final Action dummyAction1 = mock(Action.class);
+    final Action dummyAction2 = mock(Action.class, "dummy2");
+    final Action dummyAction3 = mock(Action.class, "dummy3");
 
     sequence.addAction(dummyAction1);
     sequence.addAction(dummyAction2);
     sequence.addAction(dummyAction3);
-
-    mockery.checking(new Expectations() {{
-      oneOf(dummyAction1).perform();
-      oneOf(dummyAction2).perform();
-      oneOf(dummyAction3).perform();
-    }});
-
     sequence.perform();
+
+    InOrder order = Mockito.inOrder(dummyAction1, dummyAction2, dummyAction3);
+    order.verify(dummyAction1).perform();
+    order.verify(dummyAction2).perform();
+    order.verify(dummyAction3).perform();
+    order.verifyNoMoreInteractions();
   }
 }

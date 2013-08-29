@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -243,8 +241,7 @@
         <span class="k">if</span> <span class="n">browserConfigurationOptions</span><span class="p">:</span>
           <span class="n">start_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">browserConfigurationOptions</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">driver</span><span class="p">:</span>
-          <span class="nb">id</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">desired_capabilities</span><span class="p">[</span><span class="s">&#39;webdriver.remote.sessionid&#39;</span><span class="p">]</span>
-          <span class="n">start_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;webdriver.remote.sessionid=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">id</span><span class="p">)</span>
+          <span class="n">start_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;webdriver.remote.sessionid=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">driver</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="s">&quot;getNewBrowserSession&quot;</span><span class="p">,</span> <span class="n">start_args</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sessionId</span> <span class="o">=</span> <span class="n">result</span>

@@ -1,3 +1,25 @@
+v2.35.0
+=======
+WebDriver:
+  * Updated Firefox native event components to support Firefox 23.
+  * Removing deprecated interactions interfaces (Keyboard, Mouse,
+    TouchScreen).
+  * Updated operadriver to 1.4.
+  * Introduced ie.setProxyByServer capability to select how IE browser
+    proxy will be set up, either by old Java code using Windows
+	registry or inside IEDriverServer using WinINet methods. This
+	capability is marked as deprecated and will be removed in future
+	versions. In the future, IE proxy settings will be set up only by
+	IEDriverServer. Current default value of ie.setProxyByServer is
+	false so Windows registry will be used for IE proxy setup.
+  * Guarded around IE returning an empty object for the active element.
+  * FIXED: 6055: Fixing "invalid xpath" issue, actually invalid NS
+    resolver.
+
+WebDriver JS:
+  * FIXED: 6079: The parent process should not wait for spawned driver
+    service processes (chromedriver, phantomjs, etc.)
+
 v2.34.0
 =======
 

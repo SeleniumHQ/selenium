@@ -125,11 +125,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
 
   public boolean isAlive() {
     try {
-      JSONObject o = getStatus();
-      return o.getString("state").equals("success");
-    } catch (JSONException e) {
-      // suppose that if json exception is raised
-      // it's selenium RC case
+      getStatus();
       return true;
     } catch (Exception e) {
       log.warning("Failed to check status of node: " + e.getMessage());

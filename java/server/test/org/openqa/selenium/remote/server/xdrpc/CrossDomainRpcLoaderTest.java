@@ -16,11 +16,13 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,26 +32,16 @@ import java.io.StringReader;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 /**
  * Unit tests for {@link CrossDomainRpcLoader}.
  */
 public class CrossDomainRpcLoaderTest {
 
-  private Mockery mockery;
   private HttpServletRequest mockRequest;
 
   @Before
   public void setUp() {
-    mockery = new Mockery();
-    mockRequest = mockery.mock(HttpServletRequest.class);
-  }
-
-  @After
-  public void tearDown() {
-    mockery.assertIsSatisfied();
+    mockRequest = mock(HttpServletRequest.class);
   }
 
   @Test
@@ -94,18 +86,13 @@ public class CrossDomainRpcLoaderTest {
 
   private HttpServletRequest createJsonRequest(final String method,
       final String path, final Object data) throws IOException, JSONException {
-    mockery.checking(new Expectations() {{
-      allowing(mockRequest).getHeader("content-type");
-      will(returnValue("application/json"));
-      
-      allowing(mockRequest).getReader();
-      will(returnValue(new BufferedReader(new StringReader(
-          new JSONObject()
-              .put("method", method)
-              .put("path", path)
-              .put("data", data)
-              .toString()))));
-    }});
+    when(mockRequest.getHeader("content-type")).thenReturn("application/json");
+    when(mockRequest.getReader()).thenReturn(new BufferedReader(new StringReader(
+        new JSONObject()
+            .put("method", method)
+            .put("path", path)
+            .put("data", data)
+            .toString())));
 
     return mockRequest;
   }

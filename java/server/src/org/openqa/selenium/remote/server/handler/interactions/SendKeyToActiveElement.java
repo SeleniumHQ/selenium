@@ -16,8 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.interactions;
 
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.Keyboard;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;

@@ -255,7 +255,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME}, issues = {2764})
   @Test
   public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
     String mainWindow = driver.getWindowHandle();

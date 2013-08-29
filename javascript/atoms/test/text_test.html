@@ -219,6 +219,12 @@ limitations under the License.
       assertEquals("this is the second element", text);
     }
 
+    function testRemovesZeroWidthCharacters() {
+      var text = getVisibleTextByElementId("zerowidth");
+
+      assertEquals("This line has a bunch of zero-width characters in it.", text);
+    }
+
     function testTransparentTextIsIgnored() {
       var text = getVisibleTextByElementId("opaque");
 
@@ -379,6 +385,8 @@ limitations under the License.
   <a id="id2" >this is the&nbsp;<b>second</b> <span>element</span></a>
 
   <div id="opaque">Some <span class="transparent">transparent</span> text</div>
+
+  <span id="zerowidth">This line has a bunch of ze&#8203;ro-width&lrm; characters&rlm; in it.</span>
 
 </body>
 </html>

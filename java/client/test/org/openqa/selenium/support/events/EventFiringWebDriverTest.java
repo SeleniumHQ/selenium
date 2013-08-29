@@ -16,10 +16,22 @@ limitations under the License.
 
 package org.openqa.selenium.support.events;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.stub;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+
 import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -33,33 +45,20 @@ import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * @author Michael Tamm
  */
 public class EventFiringWebDriverTest {
 
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
-  
   @Test
   public void navigationEvents() {
-    final WebDriver mockedDriver = mockery.mock(WebDriver.class);
-    final Navigation mockedNavigation = mockery.mock(Navigation.class);
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final Navigation mockedNavigation = mock(Navigation.class);
     final StringBuilder log = new StringBuilder();
 
-    mockery.checking(new Expectations() {{
-      oneOf(mockedDriver).get("http://www.get.com");
-      exactly(3).of(mockedDriver).navigate();
-      will(returnValue(mockedNavigation));
-      oneOf(mockedNavigation).to("http://www.navigate-to.com");
-      oneOf(mockedNavigation).back();
-      oneOf(mockedNavigation).forward();
-    }});
+    when(mockedDriver.navigate()).thenReturn(mockedNavigation);
 
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
@@ -109,19 +108,22 @@ public class EventFiringWebDriverTest {
             "beforeNavigateForward\n" +
             "afterNavigateForward\n",
         log.toString());
+
+    InOrder order = Mockito.inOrder(mockedDriver, mockedNavigation);
+    order.verify(mockedDriver).get("http://www.get.com");
+    order.verify(mockedNavigation).to("http://www.navigate-to.com");
+    order.verify(mockedNavigation).back();
+    order.verify(mockedNavigation).forward();
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void clickEvent() {
-    final WebDriver mockedDriver = mockery.mock(WebDriver.class);
-    final WebElement mockedElement = mockery.mock(WebElement.class);
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebElement mockedElement = mock(WebElement.class);
     final StringBuilder log = new StringBuilder();
 
-    mockery.checking(new Expectations() {{
-      oneOf(mockedDriver).findElement(By.name("foo"));
-      will(returnValue(mockedElement));
-      oneOf(mockedElement).click();
-    }});
+    when(mockedDriver.findElement(By.name("foo"))).thenReturn(mockedElement);
 
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
@@ -142,21 +144,20 @@ public class EventFiringWebDriverTest {
         "beforeClickOn\n" +
             "afterClickOn\n",
         log.toString());
+
+    InOrder order = Mockito.inOrder(mockedDriver, mockedElement);
+    order.verify(mockedDriver).findElement(By.name("foo"));
+    order.verify(mockedElement).click();
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void changeValueEvent() {
-    final WebDriver mockedDriver = mockery.mock(WebDriver.class);
-    final WebElement mockedElement = mockery.mock(WebElement.class);
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebElement mockedElement = mock(WebElement.class);
     final StringBuilder log = new StringBuilder();
 
-    mockery.checking(new Expectations() {{
-      exactly(3).of(mockedDriver).findElement(By.name("foo"));
-      will(returnValue(mockedElement));
-      oneOf(mockedElement).clear();
-      oneOf(mockedElement).sendKeys("some text");
-      oneOf(mockedElement).click();
-    }});
+    when(mockedDriver.findElement(By.name("foo"))).thenReturn(mockedElement);
 
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
@@ -181,21 +182,26 @@ public class EventFiringWebDriverTest {
             "beforeChangeValueOf\n" +
             "afterChangeValueOf\n",
         log.toString());
+
+    InOrder order = Mockito.inOrder(mockedElement);
+    order.verify(mockedElement).clear();
+    order.verify(mockedElement).sendKeys("some text");
+    order.verify(mockedElement).click();
+    order.verifyNoMoreInteractions();
+
+    verify(mockedDriver, times(3)).findElement(By.name("foo"));
+    verifyNoMoreInteractions(mockedDriver);
   }
 
   @Test
   public void findByEvent() {
-    final WebDriver mockedDriver = mockery.mock(WebDriver.class);
-    final WebElement mockedElement = mockery.mock(WebElement.class);
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final WebElement mockedElement = mock(WebElement.class);
+    final WebElement mockedChildElement = mock(WebElement.class);
     final StringBuilder log = new StringBuilder();
 
-    mockery.checking(new Expectations() {{
-      oneOf(mockedDriver).findElement(By.id("foo"));
-      will(returnValue(mockedElement));
-      oneOf(mockedElement).findElement(By.linkText("bar"));
-      oneOf(mockedElement).findElements(By.name("xyz"));
-      oneOf(mockedDriver).findElements(By.xpath("//link[@type = 'text/css']"));
-    }});
+    when(mockedDriver.findElement(By.id("foo"))).thenReturn(mockedElement);
+    when(mockedElement.findElement(Mockito.<By>any())).thenReturn(mockedChildElement);
 
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
@@ -227,19 +233,22 @@ public class EventFiringWebDriverTest {
             "beforeFindBy from WebDriver By.xpath: //link[@type = 'text/css']\n" +
             "afterFindBy from WebDriver By.xpath: //link[@type = 'text/css']\n",
         log.toString());
+
+    InOrder order = Mockito.inOrder(mockedElement, mockedDriver);
+    order.verify(mockedElement).findElement(By.linkText("bar"));
+    order.verify(mockedElement).findElements(By.name("xyz"));
+    order.verify(mockedDriver).findElements(By.xpath("//link[@type = 'text/css']"));
+    order.verifyNoMoreInteractions();
   }
 
   @Test
   public void shouldCallListenersWhenAnExceptionIsThrown() {
-    final WebDriver mockedDriver = mockery.mock(WebDriver.class);
+    final WebDriver mockedDriver = mock(WebDriver.class);
     final StringBuilder log = new StringBuilder();
 
     final NoSuchElementException exception = new NoSuchElementException("argh");
 
-    mockery.checking(new Expectations() {{
-      oneOf(mockedDriver).findElement(By.id("foo"));
-      will(throwException(exception));
-    }});
+    when(mockedDriver.findElement(By.id("foo"))).thenThrow(exception);
 
     EventFiringWebDriver testedDriver =
         new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
@@ -261,69 +270,80 @@ public class EventFiringWebDriverTest {
 
   @Test
   public void shouldUnpackElementArgsWhenCallingScripts() {
-    final ExececutingDriver mockedDriver = mockery.mock(ExececutingDriver.class);
-    final WebElement stubbedElement = mockery.mock(WebElement.class);
+    final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
+    final WebElement stubbedElement = mock(WebElement.class);
 
-    mockery.checking(new Expectations() {{
-      oneOf(mockedDriver).findElement(By.id("foo"));
-      will(returnValue(stubbedElement));
-      allowing(stubbedElement);
-      oneOf(mockedDriver).executeScript("foo", stubbedElement);
-      will(returnValue("foo"));
-    }});
+    when(mockedDriver.findElement(By.id("foo"))).thenReturn(stubbedElement);
 
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
     testedDriver.register(new AbstractWebDriverEventListener() {});
 
     WebElement element = testedDriver.findElement(By.id("foo"));
-    try {
-      testedDriver.executeScript("foo", element);
-    } catch (RuntimeException e) {
-      // This is the error we're trying to fix
-      throw e;
-    }
+    testedDriver.executeScript("foo", element);
+    verify(mockedDriver).executeScript("foo", element);
   }
 
   @Test
   public void testShouldUnpackListOfElementArgsWhenCallingScripts() {
-    final ExececutingDriver mockedDriver = mockery.mock(ExececutingDriver.class);
-    final List<?> aList = mockery.mock(List.class);
+    final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
+    final WebElement mockElement = mock(WebElement.class);
 
-    mockery.checking(new Expectations() {{
-      oneOf(aList).size();
-      oneOf(mockedDriver).executeScript("foo", new Object[] {new ArrayList<Object>()});
-    }});
+    when(mockedDriver.findElement(By.id("foo"))).thenReturn(mockElement);
 
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
     testedDriver.register(new AbstractWebDriverEventListener() {});
 
-    try {
-      testedDriver.executeScript("foo", aList);
-    } catch (RuntimeException e) {
-      // This is the error we're trying to fix
-      throw e;
-    }
+    final WebElement foundElement = testedDriver.findElement(By.id("foo"));
+    assertTrue(foundElement instanceof WrapsElement);
+    assertSame(mockElement, ((WrapsElement) foundElement).getWrappedElement());
+
+    testedDriver.executeScript("foo", new ArrayList<Object>() {{
+      add("before");
+      add(foundElement);
+      add("after");
+    }});
+
+    verify(mockedDriver).executeScript("foo", new ArrayList<Object>() {{
+      add("before");
+      add(mockElement);
+      add("after");
+    }});
   }
 
   @Test
   public void testShouldUnpackMapOfElementArgsWhenCallingScripts() {
-    final ExececutingDriver mockedDriver = mockery.mock(ExececutingDriver.class);
-    final Map<?,?> aMap = mockery.mock(Map.class);
+    final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
+    final WebElement mockElement = mock(WebElement.class);
 
-    mockery.checking(new Expectations() {{
-      oneOf(aMap).keySet();
-      oneOf(mockedDriver).executeScript("foo", new Object[] {new HashMap<Object, Object>()});
-    }});
+    when(mockedDriver.findElement(By.id("foo"))).thenReturn(mockElement);
 
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
-    testedDriver.register(new AbstractWebDriverEventListener() {});
+    testedDriver.register(new AbstractWebDriverEventListener() {
+    });
 
-    try {
-      testedDriver.executeScript("foo", aMap);
-    } catch (RuntimeException e) {
-      // This is the error we're trying to fix
-      throw e;
-    }
+    final WebElement foundElement = testedDriver.findElement(By.id("foo"));
+    assertTrue(foundElement instanceof WrapsElement);
+    assertSame(mockElement, ((WrapsElement) foundElement).getWrappedElement());
+
+    testedDriver.executeScript("foo", new HashMap<String, Object>() {{
+      put("foo", "bar");
+      put("element", foundElement);
+      put("nested", new ArrayList<Object>() {{
+        add("before");
+        add(foundElement);
+        add("after");
+      }});
+    }});
+
+    verify(mockedDriver).executeScript("foo", new HashMap<String, Object>() {{
+      put("foo", "bar");
+      put("element", mockElement);
+      put("nested", new ArrayList<Object>() {{
+        add("before");
+        add(mockElement);
+        add("after");
+      }});
+    }});
   }
 
   @Test

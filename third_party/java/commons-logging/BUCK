@@ -1,0 +1,6 @@
+prebuilt_jar(name = 'commons-logging',
+  binary_jar = 'commons-logging-1.1.1.jar',
+  visibility = [
+    '//third_party/java/...',
+  ],
+)

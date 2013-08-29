@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
@@ -34,9 +35,7 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -66,18 +65,21 @@ public class SafariOptions {
    */
   public static final String CAPABILITY = "safari.options";
 
-  // Bunch of constants used for the serialization and deserialization of the options
-  private static final String JSON_KEY_DATADIR = "dataDir";
-  private static final String JSON_KEY_EXTENSIONS = "extensions";
-  private static final String JSON_KEY_SKIPEXTENSIONINSTALL = "skipExtensionInstallation";
-  private static final String JSON_KEY_USECLEANSESSION = "cleanSession";
-  private static final String JSON_KEY_USECUSTOMDRIVEREXTENSION = "customDriverExtension";
-  private static final String JSON_KEY_PORT = "port";
+  private static class Option {
+    private Option() {}  // Utility class.
+
+    private static final String CLEAN_SESSION = "cleanSession";
+    private static final String CUSTOM_DRIVER_EXENSION = "customDriverExtension";
+    private static final String DATA_DIR = "dataDir";
+    private static final String EXTENSIONS = "extensions";
+    private static final String PORT = "port";
+    private static final String SKIP_EXTENSION_INSTALLATION = "skipExtensionInstallation";
+  }
 
   /**
    * @see #setDataDir(File)
    */
-  private File dataDir;
+  private Optional<File> dataDir = Optional.absent();
 
   /**
    * If {@link #useCustomDriverExtension} is {@code true}, then the first element of this list
@@ -126,25 +128,9 @@ public class SafariOptions {
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
+    } else {
+      return new SafariOptions();
     }
-
-    // Backwards-compatiblity / defaults
-    SafariOptions options = new SafariOptions();
-
-    options.setUseCleanSession(capabilities.is(SafariDriver.CLEAN_SESSION_CAPABILITY));
-
-    cap = capabilities.getCapability(SafariDriver.DATA_DIR_CAPABILITY);
-    if (cap instanceof String) {
-      options.setDataDir(new File((String) cap));
-    } else if (cap instanceof File) {
-      options.setDataDir((File) cap);
-    }
-
-    if (capabilities.is(SafariDriver.NO_INSTALL_EXTENSION_CAPABILITY)) {
-      options.setSkipExtensionInstallation(true);
-    }
-
-    return options;
   }
 
   // Setters
@@ -160,7 +146,9 @@ public class SafariOptions {
   /**
    * Adds a new Safari extension to install on browser startup. Each path should
    * specify a signed Safari extension (safariextz file).
-   * Use {@link #setDriverExtension(File)} if you want to install a custom Safari Driver extension.
+   *
+   * <p>Use {@link #setDriverExtension(File)} if you want to install a custom Safari Driver
+   * extension.
    *
    * @param paths Paths to the extensions to install.
    */
@@ -178,11 +166,12 @@ public class SafariOptions {
    *      <li>OS X: /Users/$USER/Library/Safari
    *      <li>Windows: %APPDATA%\Apple Computer\Safari
    *    </ul>
+   *
    * @param dataDir A File object pointing to the Safari installation's data directory.
    *    If {@code null}, the default installation location for the current platform will be used.
    */
   public void setDataDir(File dataDir) {
-    this.dataDir = dataDir;
+    this.dataDir = Optional.fromNullable(dataDir);
   }
 
   /**
@@ -238,6 +227,7 @@ public class SafariOptions {
    * <p><strong>Warning:</strong> Since Safari uses a single profile for the
    * current user, enabling this capability will permanently erase any existing
    * session data.
+   *
    * @param useCleanSession If true, the SafariDriver will erase all existing session data.
    */
   public void setUseCleanSession(boolean useCleanSession) {
@@ -250,7 +240,7 @@ public class SafariOptions {
    * @return The location of the data dir where the extensions ought to be installed.
    * @see #setDataDir(File)
    */
-  public File getDataDir() {
+  public Optional<File> getDataDir() {
     return dataDir;
   }
 
@@ -311,14 +301,14 @@ public class SafariOptions {
   public JSONObject toJson() throws IOException, JSONException {
     JSONObject options = new JSONObject();
 
-    if (dataDir != null) {
-      options.put(JSON_KEY_DATADIR, dataDir.getPath());
+    if (dataDir.isPresent()) {
+      options.put(Option.DATA_DIR, dataDir.get().getPath());
     }
-    options.put(JSON_KEY_EXTENSIONS, extensionsToJson());
-    options.put(JSON_KEY_PORT, port);
-    options.put(JSON_KEY_SKIPEXTENSIONINSTALL, skipExtensionInstallation);
-    options.put(JSON_KEY_USECLEANSESSION, useCleanSession);
-    options.put(JSON_KEY_USECUSTOMDRIVEREXTENSION, useCustomDriverExtension);
+    options.put(Option.EXTENSIONS, extensionsToJson());
+    options.put(Option.PORT, port);
+    options.put(Option.SKIP_EXTENSION_INSTALLATION, skipExtensionInstallation);
+    options.put(Option.CLEAN_SESSION, useCleanSession);
+    options.put(Option.CUSTOM_DRIVER_EXENSION, useCustomDriverExtension);
 
     return options;
   }
@@ -335,34 +325,36 @@ public class SafariOptions {
   @SuppressWarnings("unchecked")
   private static SafariOptions fromJsonMap(Map options) throws IOException {
     SafariOptions safariOptions = new SafariOptions();
-    Object path = options.get(JSON_KEY_DATADIR);
+
+    String path = (String) options.get(Option.DATA_DIR);
     if (path != null) {
-      safariOptions.setDataDir(new File((String) path));
+      safariOptions.setDataDir(new File(path));
     }
 
-    Object extensions = options.get(JSON_KEY_EXTENSIONS);
+    List<Map<String, String>> extensions =
+        (List<Map<String, String>>) options.get(Option.EXTENSIONS);
     if (extensions != null) {
-      safariOptions.addExtensionsFromJsonList((List<Map<String,String>>) extensions);
+      safariOptions.addExtensionsFromJsonList(extensions);
     }
 
-    Object port = options.get(JSON_KEY_PORT);
+    Number port = (Number) options.get(Option.PORT);
     if (port != null) {
-      safariOptions.setPort(((Long) port).intValue());
+      safariOptions.setPort(port.intValue());
     }
 
-    Object skipExtensionInstallation = options.get(JSON_KEY_SKIPEXTENSIONINSTALL);
+    Boolean skipExtensionInstallation = (Boolean) options.get(Option.SKIP_EXTENSION_INSTALLATION);
     if (skipExtensionInstallation != null) {
-      safariOptions.setSkipExtensionInstallation((Boolean) skipExtensionInstallation);
+      safariOptions.setSkipExtensionInstallation(skipExtensionInstallation);
     }
 
-    Object useCleanSession = options.get(JSON_KEY_USECLEANSESSION);
+    Boolean useCleanSession = (Boolean) options.get(Option.CLEAN_SESSION);
     if (useCleanSession != null) {
-      safariOptions.setUseCleanSession((Boolean) useCleanSession);
+      safariOptions.setUseCleanSession(useCleanSession);
     }
 
-    Object useCustomDriverExtension = options.get(JSON_KEY_USECUSTOMDRIVEREXTENSION);
+    Boolean useCustomDriverExtension = (Boolean) options.get(Option.CUSTOM_DRIVER_EXENSION);
     if (useCustomDriverExtension != null) {
-      safariOptions.useCustomDriverExtension = (Boolean) useCustomDriverExtension;
+      safariOptions.useCustomDriverExtension = useCustomDriverExtension;
     }
     return safariOptions;
   }
@@ -370,7 +362,7 @@ public class SafariOptions {
   /**
    * Verify that a given path is a file and ends with ".safariextz".
    */
-  private void verifyPathIsSafariextz(File path) {
+  private static void verifyPathIsSafariextz(File path) {
     checkNotNull(path);
     checkArgument(path.exists(), "%s does not exist", path.getAbsolutePath());
     checkArgument(!path.isDirectory(), "%s is a directory", path.getAbsolutePath());
@@ -391,7 +383,6 @@ public class SafariOptions {
    *    ]</code>
    */
   private JSONArray extensionsToJson() throws IOException, JSONException {
-    // Format:  [{ "filename": "...safariextz data...", "filename2": ... }
     JSONArray extensionsList = new JSONArray();
     for (File path : extensionFiles) {
       JSONObject extensionInfo = new JSONObject();
@@ -406,15 +397,16 @@ public class SafariOptions {
 
   /**
    * Parses a list of extension filename-content pairs (expected to be derived from
-   * {@link #getJsonSerializableExtensions()}, writes the extensions to a temporary directory
+   * {@link #extensionsToJson()}, writes the extensions to a temporary directory
    * and adds them to the SafariOptions instance.
    *
    * @throws IOException If an error occurred while writing the safari extensions to a
    *    temporary directory.
    */
   private void addExtensionsFromJsonList(List<Map<String,String>> extensions) throws IOException {
-    File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("SafariOptions", "safaridriver");
-    for (Map<String,String> extensionInfo : extensions) {
+    File dir = TemporaryFilesystem.getDefaultTmpFS()
+        .createTempDir("SafariOptions", "safaridriver");
+    for (Map<String, String> extensionInfo : extensions) {
       String path = extensionInfo.get("filename");
       String encoded = extensionInfo.get("contents");
       byte[] decoded = new Base64Encoder().decode(encoded);
@@ -434,12 +426,6 @@ public class SafariOptions {
   DesiredCapabilities toCapabilities() {
     DesiredCapabilities capabilities = DesiredCapabilities.safari();
     capabilities.setCapability(CAPABILITY, this);
-
-    // Backwards-compatibility
-    capabilities.setCapability(SafariDriver.CLEAN_SESSION_CAPABILITY, getUseCleanSession());
-    capabilities.setCapability(SafariDriver.DATA_DIR_CAPABILITY, getDataDir());
-    capabilities.setCapability(SafariDriver.NO_INSTALL_EXTENSION_CAPABILITY, getSkipExtensionInstallation());
-
     return capabilities;
   }
 

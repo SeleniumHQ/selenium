@@ -105,7 +105,7 @@ core.events.fire = function(locator, eventName) {
 core.events.parseCoordinates_ = function(coordString) {
 
   if (goog.isString(coordString)) {
-    // TODO(simon): Tighten constraints on what a valid coordString is.
+    // TODO: Tighten constraints on what a valid coordString is.
     var pieces = coordString.split(/,/);
     var x = parseInt(pieces[0], 0);
     var y = parseInt(pieces[1], 0);
@@ -210,7 +210,7 @@ core.events.setValue = function(locator, value) {
         'controlKeyDown() or altKeyDown() or metaKeyDown()');
   }
 
-  // TODO(simon): fail if it can't be typed into.
+  // TODO: fail if it can't be typed into.
   var element = core.locators.findElement(locator);
 
   var newValue = core.events.shiftKeyDown_ ?

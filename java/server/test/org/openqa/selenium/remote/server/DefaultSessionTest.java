@@ -17,37 +17,25 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.Before;
-import org.junit.Rule;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import org.junit.Test;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class DefaultSessionTest {
 
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
-
-  @Before
-  public void addImposteriser() {
-    mockery.setImposteriser(ClassImposteriser.INSTANCE);
-  }
-
   @Test
   public void shouldClearTempFsWhenSessionCloses() throws Exception {
     final DriverFactory factory = new StubDriverFactory();
-    final TemporaryFilesystem tempFs = mockery.mock(TemporaryFilesystem.class);
-
-    mockery.checking(new Expectations() {{
-      oneOf(tempFs).deleteTemporaryFiles();
-      oneOf(tempFs).deleteBaseDir();
-    }});
+    final TemporaryFilesystem tempFs = mock(TemporaryFilesystem.class);
 
     Session session = DefaultSession.createSession(factory, tempFs, null, DesiredCapabilities.firefox());
 
     session.close();
+    verify(tempFs).deleteTemporaryFiles();
+    verify(tempFs).deleteBaseDir();
   }
 
 }

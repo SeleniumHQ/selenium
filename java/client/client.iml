@@ -22,12 +22,10 @@
     <orderEntry type="library" scope="RUNTIME" name="commons-lang" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-logging" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="cssparser" level="project" />
-    <orderEntry type="library" name="easymock" level="project" />
     <orderEntry type="library" exported="" name="guava-libraries" level="project" />
     <orderEntry type="library" name="google-protobuffers" level="project" />
     <orderEntry type="library" name="hamcrest" level="project" />
     <orderEntry type="library" name="htmlunit" level="project" />
-    <orderEntry type="library" name="jmock" level="project" />
     <orderEntry type="library" name="jna" level="project" />
     <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="library" name="netty" level="project" />
@@ -46,6 +44,8 @@
     <orderEntry type="library" scope="TEST" name="jetty" level="project" />
     <orderEntry type="library" scope="TEST" name="little_proxy" level="project" />
     <orderEntry type="library" scope="TEST" name="slf4j" level="project" />
+    <orderEntry type="library" name="mockito-core-1.9.5-srcs" level="project" />
+    <orderEntry type="library" name="objenesis-1.0" level="project" />
   </component>
 </module>
 

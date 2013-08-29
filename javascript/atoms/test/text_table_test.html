@@ -22,6 +22,7 @@ limitations under the License.
   <script src="text_util.js"></script>
   <script type="text/javascript">
     goog.require('bot.dom');
+    goog.require('bot.userAgent');
     goog.require('goog.array');
     goog.require('goog.dom');
     goog.require('goog.testing.jsunit');
@@ -58,17 +59,22 @@ limitations under the License.
 
 
   function testEmptyRow() {
-    assertTextIs(TABLE(TR(), ''));
+    assertTextIs(TABLE(TBODY(TR(), '')));
   }
 
 
   function testOneEmptyCell() {
-    assertTextIs(TABLE(TR(TD()), ''));
+    assertTextIs(TABLE(TBODY(TR(TD()), '')));
   }
 
 
   function testTwoEmptyCells() {
-    assertTextIs(TABLE(TR(TD(), TD()), ''));
+    assertTextIs(TABLE(TBODY(TR(TD(), TD()), '')));
+  }
+
+  function testTableWithoutTBody() {
+    // IE < 8 does not render cells in a dynamically-added table with a <tbody>.
+    assertTextIs(TABLE(TR(TD('a'))), bot.userAgent.IE_DOC_PRE8 ? '' : 'a');
   }
 
   function testOneLineTable() {
@@ -123,10 +129,10 @@ limitations under the License.
 
   function testATableWithACaption() {
     assertTextIs(
-        TABLE(
+        TABLE(TBODY(
             CAPTION('This is a caption'),
             TR(TD('a'), TD('b')),
-            TR(TD('c'), TD('d'))),
+            TR(TD('c'), TD('d')))),
         'This is a caption',
         'a b',
         'c d');
@@ -134,18 +140,18 @@ limitations under the License.
 
   function testATableWithEmptyCells() {
     assertTextIs(
-        TABLE(
+        TABLE(TBODY(
             TR(TD('a'), TD('b'), TD('c')),
-            TR(TD(), TD(), TD('Previous two cells were empty'))),
+            TR(TD(), TD(), TD('Previous two cells were empty')))),
         'a b c',
         'Previous two cells were empty');
   }
 
   function testATableWithParagraphs() {
     assertTextIs(
-        TABLE(TR(
+        TABLE(TBODY(TR(
             TD(P('table cell '), P('with '), P('paragraphs')),
-            TD('Cell #2'))),
+            TD('Cell #2')))),
         'table cell',
         'with',
         'paragraphs',
@@ -154,13 +160,13 @@ limitations under the License.
 
   function testNestedTables() {
     assertTextIs(
-        TABLE(
+        TABLE(TBODY(
             TR(TD("Table 1, Row 1, Cell 1"), TD("Table 1, Row 1, Cell 2")),
             TR(TD("Table 1, Row 2, Cell 1"),
                TD("Table 1, Row 2, Cell 2",
-                  TABLE(
+                  TABLE(TBODY(
                       TR(TD("Table 2, Row 1, Cell 1"),
-                         TD("Table 2, Row 1, Cell 2")))))),
+                         TD("Table 2, Row 1, Cell 2")))))))),
         "Table 1, Row 1, Cell 1 Table 1, Row 1, Cell 2",
         "Table 1, Row 2, Cell 1 Table 1, Row 2, Cell 2",
         "Table 2, Row 1, Cell 1 Table 2, Row 1, Cell 2");
@@ -169,14 +175,14 @@ limitations under the License.
 
   function testNestedTables_rowsInOuterTableAfterInnerTable() {
     assertTextIs(
-        TABLE(
+        TABLE(TBODY(
             TR(TD("Table 1, Row 1, Cell 1"), TD("Table 1, Row 1, Cell 2")),
             TR(TD("Table 1, Row 2, Cell 1"),
                TD("Table 1, Row 2, Cell 2",
-                  TABLE(
+                  TABLE(TBODY(
                       TR(TD("Table 2, Row 1, Cell 1"),
-                         TD("Table 2, Row 1, Cell 2"))))),
-            TR(TD("Table 1, Row 3, Cell 1"), TD("Table 1, Row 3, Cell 2"))),
+                         TD("Table 2, Row 1, Cell 2")))))),
+            TR(TD("Table 1, Row 3, Cell 1"), TD("Table 1, Row 3, Cell 2")))),
         "Table 1, Row 1, Cell 1 Table 1, Row 1, Cell 2",
         "Table 1, Row 2, Cell 1 Table 1, Row 2, Cell 2",
         "Table 2, Row 1, Cell 1 Table 2, Row 1, Cell 2",

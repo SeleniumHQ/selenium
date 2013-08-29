@@ -22,13 +22,11 @@
     // WebDriver does not enable geolocation for Firefox (b/5787180).
     // WebDriver does not enable geolocation for IE 9 (b/5817463).
     // WebDriver does not enable geolocation for Safari.
-    // Opera requires site-specific settings that can't be set automatically (?).
     var GEOLOCATION_NOT_WORKING =
         !bot.html5.isSupported(bot.html5.API.GEOLOCATION) ||
         goog.userAgent.product.ANDROID ||
         goog.userAgent.product.FIREFOX ||
         goog.userAgent.product.SAFARI ||
-        goog.userAgent.product.OPERA ||
         bot.userAgent.IE_DOC_9;
 
 
@@ -110,7 +108,7 @@
       }
     }
 
-    // TODO(user): Add more tests to check the returned value.
+    // TODO: Add more tests to check the returned value.
   </script>
 </head>
 <body>

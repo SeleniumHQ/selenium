@@ -1,0 +1,803 @@
+Version number notation guide: 
+The version number of the IEDriverServer.exe is in the pattern as follows:
+
+  major.minor.build.revision
+
+The "major" and "minor" fields are synchronized to releases of the Selenium
+project. Changes in the "build" field indicate interim releases made publicly
+available via the project downloads page. Changes in "revision" field indicate
+private releases checked into the prebuilts directory of the source tree, but
+not made generally available on the downloads page.
+
+v2.35.3.0
+=========
+ * Version number change only for public release to downloads page.
+
+v2.35.2.1
+=========
+ * Take document mode into account when getting size of view port for element
+   clicks.
+
+v2.35.2.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Refactored calculations to the size of the visible view port. There are
+   circumstances where IE can have no vertical scroll bar. In these cases, the
+   IE driver would assume there was a vertical scroll bar, which would make the
+   actual width of the document larger than the computed width of the window.
+   This, in turn, would make the driver assume there was a horizontal scroll
+   bar, which would imply that absolutely-positioned elements at the bottom of
+   the page would not be seen as clickable.
+ * Modified to ignore frames which can not be retrieved by
+   IHTMLFramesCollection2::item while waiting for page load complete. This
+   change prevents infinite page load on IE9 for pages with frameset that do
+   not specify column or row counts. Fixes issue #3211.
+
+v2.35.1.0
+=========
+ * Updated to correct active element finding when using synthetic events. Fixes
+   issue #6088.
+
+v2.35.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+ * Preventing crash in IE driver using synthetic events. In some cases
+   document.activeElement returns an empty object rather than null. This could
+   cause the IE driver to crash. This change fixes the crash, but not the
+   underlying JavaScript atoms issue. This is handled by another commit. Fixes
+   issue #6067.
+ * Added PAC and proxy autodetect (WPAD) support to IEDriverServer.exe.
+
+v2.34.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
+v2.33.0.10
+==========
+ * Fixed memory allocation in ProxyManager class to work correctly under
+   Release builds.
+
+v2.33.0.9
+=========
+ * Added error checking in DocumentHost::GetPageSource. Fixes issue #5967.
+ * Removed StringUtilities methods to create strings from longs. The C++
+   standard type libary already provides std::to_string() and std::to_wstring()
+   for this purpose.
+ * Introduced ability to clean browser cache before launching IE. This version
+   introduces the ie.ensureCleanSession capability, which will clear the
+   browser cache, history, and cookies before launching IE. When using this
+   capability, be aware that this clears the cache for all running instances of
+   Internet Explorer. Using this capability while attempting to run multiple
+   instances of the IE driver may cause unexpected behavior. Note this also
+   will cause a performance drop when launching the browser, as the driver will
+   wait for the cache clearing process to complete before actually launching
+   IE.
+ * Refactored Proxy setting handling in IE driver. We no longer need to replace
+   the window procedure to accomplish setting the proxy on a per-process basis,
+   simplifying the process considerably. This version also modifies the
+   ProxyManager class to let it build the proxy setting string instead of
+   prebuilding it in the new session command handler. Finally, this version
+   allows the proxy settings to be passed back to the language bindings via the
+   return from the getSessionCapabilities command handler.
+
+v2.33.0.8
+=========
+ * Added Proxy support to the IE driver native code. This commit adds proxy
+   support to the native code of the IE driver, having it recognize the proxy
+   capability in the WebDriver JSON wire protocol. The default behavior will
+   change the system proxy when a new instance of the IE driver is created.
+   This means that from that point forward, all IE instances, including those
+   *not* started by WebDriver, will use the same proxy information. The driver
+   will attempt to reset the system proxy to the previous settings when the 
+   session is properly exited by use of the quit method. Be aware that this 
+   means that crashes in the driver may leave the system's proxy settings in an
+   inconsistent state, and it further implies that attempting to drive multiple
+   instances of IE using proxy settings will likely do the same.
+   
+   The driver sets the proxy settings by means of the Windows WinINet API,
+   which explicitly cannot be used from within a Windows service. This implies
+   that IEDriverServer.exe cannot be used from within a Windows service.
+   
+   This commit also introduces a new capability, "ie.usePerProcessProxy". This
+   capability takes a boolean value, and defaults to false. When set to true,
+   it attempts to only set the proxy information for a single IE process, and
+   does not affect the proxy settings of other instances of IE. Use of this 
+   capability should be considered extremely experimental at present,and may
+   cause IE to behave inconsistently when attempting to use a proxy with this
+   capability set.
+
+v2.33.0.7
+=========
+ * Refactored IE driver to take advantage of new StringUtilities methods.
+ * Refactored BrowserFactory class to use member variables. Previously, most
+   functionality was passed into the methods of the BrowserFactory, breaking
+   the principle of encapsulation. This change also moves the ability to force
+   the use of the Windows CreateProcess API and to pass command-line parameters
+   to the CreateProcess API to capabilities of the IE driver, rather than
+   arguments passed via the command line of IEDriverServer.exe.
+
+v2.33.0.6
+=========
+ * Refactored IE driver registry access methods to RegistryUtilities class.
+   This eliminates the need for an unnecessary extra instance of the
+   BrowserFactory class.
+ * Implemented logging for IE driver HtmlDialog class.
+ * Cleaned up IEDriver logging on asynchronous script execution.
+
+v2.33.0.5
+=========
+ * Corrected logic for invisible element coordinate calculation on IE6 and 7.
+
+v2.33.0.4
+=========
+ * Reverting logic change for invisible element coordinate calculation on IE6
+   and 7.
+
+v2.33.0.3
+=========
+ * Corrected logic for invisible element coordinate calculation on IE6 and 7.
+ * Fixed logic error in Script::ExecuteAsync() waiting for exclusive access to
+   event.
+ * Added IE-specific atoms to eliminate round-trips through IE's JS engine. The
+   findElement and findElements atoms take a JavaScript object as their first
+   parameter. Until now, that facilitated a round-trip through the IE
+   JavaScript engine to be able to create the JavaScript object to pass into
+   the atom function. We are now creating IE-specific JavaScript functions that
+   wrap those two atoms, and take simple strings as arguments, which lets the
+   IE driver call the atom directly without having to call a separate script
+   that simply creates the JavaScript criteria object.
+ * Removed extra round-trips through JavaScript engine when executing
+   JavaScript. This should provide a slight performance boost when executing
+   JavaScript that returns arrays or JavaScript objects.
+
+v2.33.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Corrected logic in getting location of element after scrolling into view.
+   For IE 6 and 7, an additional 2-pixel offset must be added for every frame
+   on the page when calculating element location.
+
+v2.33.0.1
+=========
+ * Refactored session shutdown code to properly wait for thread termination.
+   Fixes issue #5543.
+
+v2.33.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
+v2.32.3.13
+==========
+ * Modified to better detect focus on incorrect UI elements when
+   requireWindowFocus is specified.
+
+v2.32.3.12
+==========
+ * Updates to JavaScript automation atoms.
+ * Prevent double-clicks when using WebElement.click(). When using the 
+   requireWindowFocus capability, it's possible that multiple calls to 
+   WebElement.click() might happen too quickly, and they might be interpreted
+   as a double-click. This change inspects the last time an element was clicked
+   on, and if it is within the system double-click time, it waits until that
+   time passes before performing the second click.
+ * Made InputManager more robust in the requireWindowFocus case. Previously, 
+   using the Windows SendInput API could cause keystrokes and mouse events to
+   be added to the system message queue, but would return back to the caller
+   before those events were processed by Internet Explorer's message loop.
+   This change adds a Windows mouse hook and keyboard hook to monitor when
+   the messages are processed by an applications message loop. There is still a
+   potential race condition, and users may still need to execute some local
+   synchronization code.
+
+v2.32.3.11
+==========
+ * Refactored IE driver element click code to all use InputManager class. 
+   Previously, WebElement.click() used a different code path than the Advanced
+   User Interactions API. These code paths are now unified for the native
+   events case.
+
+v2.32.3.10
+==========
+ * Reinstated separate-thread execution of JavaScript on Windows 8. This
+   functionality had been disabled in 2.26.1.2, because of crashes in the IE
+   driver on Windows 8. It seems likely that the COM object lifetime cleanup
+   that happened in 2.31.0.2 corrected these problems. There is a possibililty,
+   however, that the root cause of the Windows 8 crashes is still in place. If
+   that is the case, this change should be rolled back.
+
+v2.32.3.9
+=========
+ * Modified to check the editable state of an element before clearing.
+   The clear Automation Atom normally checks that an element is interactable
+   and editable before attempting to clear it. A previous change fixed the case
+   for checking the interactable state, but not the editable state. The driver
+   will now check the editable state as well. To facilitate this, a new atom
+   has been exposed for checking the editable state.
+
+v2.32.3.8
+=========
+ * Modified to check the interactable state of an element before clearing.
+   The clear Automation Atom normally checks that an element is interactable
+   before attempting to clear it. Unfortunately, when the atom is run on a
+   separate thread in legacy IE, the error states do not get propagated back to
+   the calling thread properly. To avoid this problem, the driver will check
+   the interactable state before calling the clear atom. To facilitate this, a
+   new atom has been exposed for checking the interactable state.
+
+v2.32.3.7
+=========
+ * Increased timeout for asynchronous JavaScript execution. This allows more
+   time for automation atoms to complete their operations before timing out.
+ * Modified to throw if an element is not enclosed within a form in IE.
+
+v2.32.3.6
+=========
+ * Updates to JavaScript automation atoms.
+ * Refactoring asynchronous execution of JavaScript in IE driver. This
+   introduces a new method for executing JavaScript functions asynchronously
+   via a new thread. This centralizes the code used to execute automation atoms
+   that may cause an alert to display (like click or submit or clear). Fixes
+   issue #5556.
+
+v2.32.3.5
+=========
+ * Corrected logic error in implementing loop. The code was intended to use a
+   loop, but instead used a simple if statement.
+
+v2.32.3.4
+=========
+ * Updates to JavaScript automation atoms.
+ * Added retry loop for handling alerts on shutdown. Previously the IE session
+   would only check twice for alerts on shutdown. This handles the case of
+   repeated alerts, and will check up to six times, for a total of 30 seconds.
+
+v2.32.3.3
+=========
+ * Corrected dismissal of dialogs on browser quit. The IESession object already
+   had code to check that the IECommandExecutor had fully quit before shutting
+   down the thread on which the executor was running. However, it had no code
+   to handle the case where all browser instances for that session were not
+   properly shut down. Now the session will ask the executor to check one final
+   time and make one last-ditch effort to dismiss any dialogs and shut down
+   the browser instances. Please note that the best practice is to handle any
+   alerts that may appear in web pages being automated before executing
+   driver.quit(); this should only be used as a last resort.
+
+v2.32.3.2
+=========
+ * Corrected dismissal of onBeforeUnload dialogs. We now notify the button's
+   immediate parent, instead of sending a message to the button. Sending the
+   BM_CLICK message to the button can fail if the dialog doesn't have the 
+   system focus.
+
+v2.32.3.1
+=========
+ * Corrected logic error in alert handling. A slight logic error in the alert
+   handling code was causing the alert handling to not wait for the alert to be
+   completely dismissed before continuing. This was causing a race condition
+   that could lead to crashes when quitting the browser if certain types of
+   alerts were active. Fixes issue #5489.
+
+v2.32.3.0
+=========
+ * Corrected number of script arguments in InputManager::SendKeystrokes. In a
+   recent refactor, this code was slightly changed, and the declaration of a
+   Script object was expecting three arguments instead of the required four.
+   Fixes issue #5502.
+
+v2.32.2.0
+=========
+ * Corrected logic error in reading TabProcGrowth registry value. The
+   TabProcGrowth registry value can be a DWORD or a string. If it is a string,
+   it can be a numeric string (e.g., "0"), and still be treated by Internet
+   Explorer as if it were an actual numeric value. This change to
+   BrowserFactory::GetRegistryValue() correctly handles both cases, coercing
+   the value to a string type for comparison.
+
+v2.32.1.0
+=========
+ * Modified IEDriverServer to take new command-line switches to allow click on
+   users to force the use of the Windows CreateProcess API for launching IE.
+   For some cases, it may be necessary to launch IE in Private mode for
+   testing in parallel on a single node. To support this, there must be a way
+   to force the IE driver to use the Windows CreateProcess() API to launch IE
+   so that the user can specify command-line switches. To preserve the
+   ability to locate the correct process for IE versions 8 and higher, a
+   registry value must be set to a specific value, and the IE driver checks for
+   the registry value before launching IE. Patch for this fix provided by Alex
+   Savchuk.The registry settings are:
+
+     Key: HKEY_CURRENT_USER\Software\Microsoft\InternetExplorer\Main
+     Value Name: TabProcGrowth
+     Value: "0"
+
+ * Fixed Element::IsAttachedToDom() when used with SVG for IEDriver.
+   Patch for this fix provided by Patrick Gansterer.
+
+v2.32.0.1
+=========
+ * Fixed to allow click on visible portion of element if center point cannot be
+   scrolled into view. This fixes issue #4390 for IE. There is still a fix that
+   needs to be made for Firefox for the issue to be closed. Patch provided by
+   Alex Savchuk.
+
+v2.32.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
+v2.31.0.3
+=========
+ * Updates to JavaScript automation atoms.
+ * Fixing to no longer allow stale element references to be used in JavaScript
+   execution. The driver now checks the return value when recursively walking
+   JavaScript arrays and objects. Fixes issue #4769. Patch provided by Alex
+   Savchuk.
+
+v2.31.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Refactored IE element finder to make clearer when Sizzle is used.
+   Previously, it was not as easy to determine from IEDriverServer.exe logs
+   when Sizzle was being used for finding elements by CSS selector. It is now
+   explicitly called out and logged. Also, automation atoms are being used when
+   Sizzle is not necessary.
+ * Simplified COM object handling code in IE driver. COM objects are now
+   correctly referenced everywhere via smart pointers, and use of some aliased
+   types is now replaced by the C++ primitives.
+
+v2.31.0.1
+=========
+ * Added ability to get current URL from IWebBrowser2 if IHTMLDocument2 fails.
+   Under normal circumstances, the IE driver gets the current URL from the
+   document loaded in the browser. When IE browses to a non-HTML page, such as
+   a PDF file with the Adobe Reader plugin installed, getting the document
+   fails, since there is no "document" in the browser. In that case, fall back
+   to getting the LocationURL property of the IWebBrowser2 interface. It's
+   arguable that this is the wrong thing to do, since the driver is useless
+   without an actual document, but we'll let this work anyway. Fixes issue
+   #5361.
+ * Updated logic in IE driver to correctly wait for the document. Fixes issue
+   #5326.
+ * Submit should throw NoSuchElementException if the target element is not
+   within a form. Implemented in atoms, Firefox and HtmlUnit.
+ * Reinstated execution of JavaScript on separate thread for IE10 on Windows 7.
+ * Removed use of CComQIPtr from IE driver native code. The use of CComQIPtr is
+   not needed, as we are substituting a call to the QueryInterface method
+   instead. This is what CComQIPtr does under the covers anyway.
+
+v2.31.0.0
+=========
+ * Release to synchronize with release of Selenium project.
+
+v2.30.2.3
+=========
+ * Introduced "browserAttachTimeout" capability. This allows the user to set a
+   capability to control how long the IE driver will attempt to locate an IE
+   browser window belonging to the iexplore.exe process launched by the driver.
+   This is to overcome the bug reported by some users that the IELaunchURL
+   Windows API reports the incorrect process ID for the launched iexplore.exe
+   process. In this case, there is nothing the IE driver can do about the
+   problem as the bug is inside IE itself. However, this will allow a user
+   to exit the offending situation early, and attempt to recover. The 
+   capability expects an integer value, representing the number of milliseconds
+   the driver will contininue to look for the newly-launched IE window. Setting
+   the capability to 0 (which is its default value) will cause the IE driver to
+   wait indefinitely. Fixes issue #4541.
+
+v2.30.2.2
+=========
+ * Fixed issues found via static code analysis.
+
+v2.30.2.1
+=========
+ * Simplified element scroll calculation code by using the new
+   isInParentOverflow atom.
+
+v2.30.2.0
+=========
+ * Hacked around the case where McAfee SiteAdvisor is installed as a plugin for
+   IE. Modal dialogs are now checked for existence of the WS_CAPTION style.
+   Note that if IE ever decides to change how it displays alerts, this may
+   begin to cause failures in alert detection. Fixes issue #4839.
+
+v2.30.1.0
+=========
+ * Updates to version resources. No functional changes.
+
+v2.30.0.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Fixed incorrect JSON return values for findElements when an error occurs.
+   This is a "best-faith" effort at resolving reports of NullPointerExceptions
+   in Java. If future occurrances of the symptoms are found, please open a new
+   issue. Fixes issue #3800.
+
+v2.29.1.2
+=========
+ * Fixed auto-release of modifier keys when using element.SendKeys with 
+   requireWindowFocus capability. 
+
+v2.29.1.1
+=========
+ * Enabled synthetic events mouse clicks to work even when the click triggers
+   a JavaScript alert. 
+
+v2.29.1.0
+=========
+ * Updated to use correct parameter in message loop for executing asynchronous
+   JavaScript. Fixes issue #5137.
+
+v2.29.0.4
+=========
+ * Allowed the IE driver to get the text of a prompt() dialog window. Fixes
+   issue #4594.
+
+v2.29.0.3
+=========
+ * Updates to JavaScript automation atoms.
+ * Removed checking for element visibility and non-zero size from method used
+   for scrolling elements into view and getting their location.
+ * Fixed unexpected occurrences of UnhandledAlertException after closing modal
+   dialogs created using showModalDialog().
+
+v2.29.0.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Modified method for checking whether modifier keys should be automatically
+   released when calling sendKeys, either from an element or from the actions
+   class.
+
+v2.29.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Modified findElement implementations to fail without waiting for the
+   implicit wait timeout to expire if finding on a closed window. Fixes issue
+   #5057.
+
+v2.29.0.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Dampened excessive noise in IE driver logging.
+ * Modified to initialize value_ member of Response to Json::Value::null upon
+   creation.
+ * Updated IEDriverServer.exe to correctly return the current version in the 
+   JSON response for the /status end point of the JSON wire protocol.
+ * Added usage info to IEDriverServer.exe when using /? /h or /help.
+ * Removed dead code from ScreenshotCommandHandler.
+
+v2.28.0.4
+=========
+ * Initialized value_ member of Response to Json::Value::null upon creation.
+ * Suppressed warnings written to console during browser startup and shutdown.
+ * Updated to correctly return the current version in the JSON response for the
+   /status end point of the JSON wire protocol.
+ * Added usage info to IEDriverServer.exe when using /? /h or /help. Also
+   removed dead code from ScreenshotCommandHandler.
+
+v2.28.0.3
+=========
+ * Introduced the "requireWindowFocus" capability into the IE driver. When used
+   in conjunction with the "nativeEvents" capability, the driver will attempt 
+   to bring the current IE window to the foreground before executing a mouse
+   or keyboard event. Also, when the requireWindowFocus capability is set to
+   true, advanced user interactions will now use the Windows SendInput() API to
+   execute the interactions. To enable this behavior, set the value of the
+   requiresWindowFocus capability to "true" when creating an instance of the IE
+   driver. The default for this new capability is "false". This functionality
+   is currently considered extremely experimental; use at your own risk.
+
+v2.28.0.2
+=========
+ * Changed view port calculations to allow for always-present vertical scroll
+   bar, and to test for horizontal scroll bar and adjust as required by page
+   content. Fixes issue #3602.
+ * Changed IE GetLocationOnceScrolledIntoView behavior to take the 2-pixel
+   border of the <html> element used by IE7 and below (and document modes that
+   emulate that).
+ * Extracted map of managed elements in IE driver to ElementRepository class.
+   First step in a potentially larger refactor.
+
+v2.28.0.1
+=========
+ * Attempted to change coordinate calculations due to frame offsets to handle
+   the cross-domain frame case. This change rests on the assumption that the
+   order of frames returned by the JavaScript document.frames collection is
+   the same as that returned by document.getElementByTagName("frame") or
+   document.getElementByTagName("iframe"). Fixes issue #4948.
+
+v2.28.0.0
+=========
+ * Changed the shared WebDriver C++ server component to use strings in
+   serialized commands instead of integers. Testing does not seem to indicate
+   this will introduce a performance issue, and it makes logs more intelligible
+   when logging the raw JSON of a received command. As far as anyone can
+   determine, the only consumer of this component is the IEDriverServer.exe, so
+   this should be a completely internal change.
+
+v2.27.0.0
+=========
+ * Release to coincide with full Selenium release.
+
+v2.26.3.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Define document on goog.global for fragments, as the closure library now
+   depends on it. Fixes issue #4802.
+
+v2.26.2.6
+=========
+ * Fixed SendKeysCommandHandler to check that the focus is in the HTML display
+   pane, and not some other UI element (like the address bar) before sending
+   the keystrokes.
+
+v2.26.2.5
+=========
+ * Added new capability "enableElementCacheCleanup". When set to true, the
+   IE driver will clean the known-element cache of invalid elements after
+   every page load. This is intended to keep memory usage down and improve
+   performance. However, it is an intrusive change, so this capability is
+   provided temporarily to allow disabling this behavior if problems arise.
+   The default of this new capability is "true", meaning this behavior is
+   turned on by default.
+ * Refactored IE driver Element class to contain IsAttachedToDom() method,
+   and IECommandHandler::GetElement() to use it.
+ * Modified to avoid logging the tag name of the element if getting the tag
+   name fails in the IE driver. Fixes issue #4811.
+
+v2.26.2.4
+=========
+ * Corrected fix to issue #4800 to better handle nested frames.
+ * Refactored native code to return the location of each frame containing an
+   element.
+ * Refactored location methods of native IE driver code to take a LocationInfo
+   struct instead of separate args for x, y, width and height.
+
+v2.26.2.3
+=========
+ * On behalf of AdamWu: Fixed calculation of coordinates for elements in 
+   frames/iframes where the element is scrolled out of view within the frame.
+   Fixes issue #4800.
+
+v2.26.2.2
+=========
+ * Disabled execution of JavaScript code on a separate thread for IE10. This
+   reverts the behavior of the driver to that before 2.26.1.0 for IE10 *only*.
+ * Updates to JavaScript automation atoms.
+
+v2.26.2.1
+=========
+ * Modified to return ENOSUCHDRIVER if a session is not available.
+
+v2.26.2.0
+=========
+ * Fixed synchronization issues. These issues were always present, but never
+   manifested until the IE driver was used with IE 10.
+ * Reinstating functionality to run JavaScript on a separate thread on Windows
+   8.
+
+v2.26.1.2
+=========
+ * Removed functionality to run JavaScript on a separate thread on Windows 8.
+
+v2.26.1.1
+=========
+ * Attempted to resolve crash on Windows 8 introduced by JavaScript execution
+   on a separate thread. Added checks for proper interface marshaling on the
+   worker thread.
+
+v2.26.1.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Modified to no longer hang on alerts triggered by onchange of <select>
+   elements or by onsubmit of <form> elements. Fixes issue #3508. Fixes 
+   issue #2103.
+
+v2.26.0.9
+=========
+ * Modified scroll behavior in IE driver SendKeysCommandHandler to call 
+   Element::GetLocationOnceScrolledIntoView() instead of calling the DOM 
+   scrollIntoView() function. Fixes issue #4393.
+ * Modified to not call blur() on focusing element if the active element is
+   the <body> element. This should no longer cause the IE window to drop to
+   the bottom of the Z-order. Fixes issue #2353 and related.
+
+v2.26.0.8
+=========
+ * Updates to JavaScript automation atoms.
+ * Release to coincide with full Selenium release.
+
+v2.26.0.7
+=========
+ * Modified so that closing a window (or quitting a browser) now sets the 
+   focused frame to NULL, as if switchTo().defaultContent() had been called.
+   This is to prevent crashes of the executable when quitting the driver. Fixes
+   issue #4178.
+
+v2.26.0.6
+=========
+ * Added use of a mutex when creating a session. This should allow multiple
+   threads to create and use different instances of IEDriverServer.exe,
+   enabling multiple instances under most language bindings.
+ * Added enablePersistentHover capability to allow users to turn off persistent
+   mouse hover within the IE driver.
+
+v2.26.0.5
+=========
+ * Refactored alert handling to allow handling of OnBeforeUnload dialogs. This
+   is a slightly incomplete solution, as the dialog is not automatically
+   handled on window close/browser exit. To work around this limitation,
+   navigate to a different page (handling the OnBeforeUnload dialog), then
+   call the quit() method.
+
+v2.26.0.4
+=========
+ * Updates to JavaScript automation atoms.
+
+v2.26.0.3
+=========
+ * Allowed buttons on alerts with control IDs of IDRETRY to be handled as 
+   "OK" buttons, which should allow them to be handled by Alert.accept().
+
+v2.26.0.2
+=========
+ * Modified find-by-XPath code to correctly escape embedded quotes before
+   invoking the findElement atom.
+
+v2.26.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Updated to use Wicked Good XPath (http://code.google.com/p/wicked-good-xpath)
+   as the XPath engine for the IE driver.
+
+v2.26.0.0
+=========
+ * Updates to JavaScript automation atoms.
+
+v2.25.3.6
+=========
+ * Modified behavior such that sending a Quit command on a non-existent
+   session is now a no-op, and does not return an error code.
+
+v2.25.3.5
+=========
+ * Added command-line switch to control to where the IEDriver.dll is extracted.
+   Not specifying the switch causes the file to be extracted to the temp 
+   directory.
+
+v2.25.3.4
+=========
+ * Corrected searching for alert windows from windows opened by 
+   showModalDialog().
+
+v2.25.3.3
+=========
+ * Implemented "silent" command-line switch on IEDriverServer.exe to suppress
+   printing to console of initial diagnostic information.
+
+v2.25.3.2
+=========
+ * Implemented check in GetCurrentWindowHandleCommandHandler to verify that
+   window handle is a valid window, returning a NoSuchWindowException if it
+   is not. This was originally broken in r17651.
+
+v2.25.3.1
+=========
+ * Implemented checks to ensure alerts are completely dismissed by IE before
+   continuing to the next command.
+
+v2.25.3.0
+=========
+ * Implemented automatic dismissal of alerts, settable by capability.
+ * Implemented navigation back and forward through browser history on a
+   separate thread, so as to no longer hang on alerts.
+
+v2.25.2.3
+=========
+ * Fixed the case verifying whether a page in the browser is an HTML page, and
+   the default browser does not register its MIME type in the (default) value
+   at HKEY_CLASSES_ROOT\<browser HTML page class name>. Fixes issue #4307.
+
+v2.25.2.2
+=========
+ * Increased logging when getting registry values.
+ * Fixed spacing in log messages 
+
+v2.25.2.1
+=========
+ * Updated to return ENOSUCHWINDOW if trying to switch to a window ID that does
+   not exist.
+
+v2.25.2.0
+=========
+ * Fixed IE6 case for checking browser zoom level.
+ * Now repeatedly sending WM_MOUSEMOVE messages on a separate thread to try to
+   quell mouse hover issues.
+
+v2.25.1.0
+=========
+ * Added error checking for zoom level for IE. The IE driver will now throw an
+   exception if the zoom level isn't 100%. This behavior can be disabled in the
+   IE driver by setting the "ignoreZoomLevel" capability. Fixes Issue #4272.
+ * Stop execution when a call to IWebBrowser2::Navigate2() fails in the IE
+   driver. This prevents a hang when we weren't checking for an error
+   condition. Fixes issue #4279.
+
+v2.25.0.0
+=========
+ * Handle quirky handling of mime types if Firefox was ever the default browser
+   on a Windows installation, but now a different (non-IE) browser has stepped
+   into that role.
+ * Increased timeout for finding file upload dialog in uploading file. Fixes
+   issue #3858.
+ * Updated initialization of variables in MouseMoveToCommandHandler.h and in
+   GetElementLocationOnceScrolledIntoViewCommandHandler.h. Fixes issue #4205.
+ * Updates to JavaScript automation atoms.
+ * Release to coincide with full Selenium release.
+
+v2.24.2.0
+=========
+ * Refactoring command line argument handling in IEDriverServer.exe, now that
+   the number of valid arguments is growing.
+ * Added ability to control log level and log file via command line switches to
+   IEDriverServer.exe (on behalf of AlexandrSavchuk).
+ * Re-added else-if for GetSessionList command inadvertently removed in r15345.
+   Fixes issue #4160.
+ * Added logging message to a large portion of the IE driver (on behalf of 
+   AlexandrSavchuk). Set the log file with
+
+       --log-file="C:\full\path\to\filename.log"
+
+   (default is to log to the console). Set the logging level with
+
+       --log-level=LOGLEVEL
+
+   where LOGLEVEL is one of TRACE, DEBUG, INFO, WARN, ERROR, or FATAL (default
+   is FATAL). Fixes issue #4159
+
+v2.24.1.0
+=========
+ * Added elementScrollBehavior capability to allow users to specify how
+   elements scroll into the viewport for interaction. Default behavior is
+   unchanged (the capability is set to 0), but can be set to scroll to align
+   to the bottom of the viewport by setting the capability to 1.
+ * Updates to JavaScript automation atoms.
+
+v2.24.0.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Release to coincide with full Selenium release.
+
+v2.23.2.0
+=========
+ * Crash prevention for when there is no "current" browser window, like when
+   the current window is closed without the user switching to another window.
+   Fixes issue #4071.
+
+v2.23.1.1
+=========
+ * Crash prevention for when IWebBrowser2::get_Document() returns S_FALSE.
+   Fixes issue #4064.
+
+v2.23.1.0
+=========
+ * Updated error messaging for certain conditions of Element.Click()
+
+v2.23.0.0
+=========
+ * Updates to JavaScript automation atoms.
+ * Release to coincide with full Selenium release.
+
+v2.22.1.1
+=========
+ * Updates to JavaScript automation atoms.
+
+v2.22.1.0
+=========
+ * Re-enabling native code driver to understand "nativeEvents" capability.
+   This was disabled due to CI-build restrictions which have now been resolved.
+
+v2.22.0.0
+=========
+ * Initial release required by client language bindings.

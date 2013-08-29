@@ -127,13 +127,13 @@ webdriver.WebDriver.createSession = function(executor, desiredCapabilities) {
  * @private
  */
 webdriver.WebDriver.acquireSession_ = function(executor, command, description) {
-  var fn = goog.bind(executor.execute, executor, command);
   var session = webdriver.promise.controlFlow().execute(function() {
-    return webdriver.promise.checkedNodeCall(fn).then(function(response) {
-      bot.response.checkResponse(response);
-      return new webdriver.Session(response['sessionId'],
-          response['value']);
-    });
+    return webdriver.WebDriver.executeCommand_(executor, command).
+        then(function(response) {
+          bot.response.checkResponse(response);
+          return new webdriver.Session(response['sessionId'],
+              response['value']);
+        });
   }, description);
   return new webdriver.WebDriver(session, executor);
 };
@@ -220,6 +220,26 @@ webdriver.WebDriver.fromWireValue_ = function(driver, value) {
 
 
 /**
+ * Translates a command to its wire-protocol representation before passing it
+ * to the given {@code executor} for execution.
+ * @param {!webdriver.CommandExecutor} executor The executor to use.
+ * @param {!webdriver.Command} command The command to execute.
+ * @return {!webdriver.promise.Promise} A promise that will resolve with the
+ *     command response.
+ * @private
+ */
+webdriver.WebDriver.executeCommand_ = function(executor, command) {
+  return webdriver.promise.fullyResolved(command.getParameters()).
+      then(webdriver.WebDriver.toWireValue_).
+      then(function(parameters) {
+        command.setParameters(parameters);
+        return webdriver.promise.checkedNodeCall(
+            goog.bind(executor.execute, executor, command));
+      });
+};
+
+
+/**
  * @return {!webdriver.promise.ControlFlow} The control flow used by this
  *     instance.
  */
@@ -249,14 +269,7 @@ webdriver.WebDriver.prototype.schedule = function(command, description) {
     // driver has quit above.  Therefore, we need to make another quick check.
     // We still check above so we can fail as early as possible.
     checkHasNotQuit();
-
-    return webdriver.promise.fullyResolved(command.getParameters()).
-        then(webdriver.WebDriver.toWireValue_).
-        then(function(parameters) {
-          command.setParameters(parameters);
-          return webdriver.promise.checkedNodeCall(
-              goog.bind(self.executor_.execute, self.executor_, command));
-        });
+    return webdriver.WebDriver.executeCommand_(self.executor_, command);
   }, description).then(function(response) {
     try {
       bot.response.checkResponse(response);

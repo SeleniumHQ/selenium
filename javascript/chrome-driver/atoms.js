@@ -141,12 +141,12 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
  *
  * @param {!Element} elem The element to use.
  * @param {boolean} center If true, center the region when it is too big
- *     to fit in the view
+ *     to fit in the view.
  * @param {!goog.math.Rect} opt_region The region relative to the element's
  *     border box to be scrolled into view. If null, the border box will be
  *     used.
  * @return {!goog.math.Coordinate} The top-left coordinate of the element's
- *     region in client space
+ *     region in client space.
  */
 webdriver.chrome.getLocationInView = function(elem, center, opt_region) {
   var region = opt_region;
@@ -190,13 +190,14 @@ webdriver.chrome.getFirstClientRect = function(elem) {
  * @param {!goog.math.Coordinate} coord, The coordinate to use.
  * @return {{clickable:boolean, message: (string|undefined)}} Object containing
  *     a boolean "clickable" property, as to whether it can be clicked, and an
- *     optional "message" string property, which contains any warning/error 
+ *     optional "message" string property, which contains any warning/error
  *     message.
  */
 webdriver.chrome.isElementClickable = function(elem, coord) {
   /**
    * @param {boolean} clickable .
    * @param {string=} opt_msg .
+   * @return {{clickable: boolean, message: (string|undefined)}} .
    */
   function makeResult(clickable, opt_msg) {
     var dict = {'clickable': clickable};
@@ -255,4 +256,3 @@ webdriver.chrome.getPageZoom = function(elem) {
       docElem.clientWidth, docElem.offsetWidth, docElem.scrollWidth);
   return doc.width / width;
 };
-

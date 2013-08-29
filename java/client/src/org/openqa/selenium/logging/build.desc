@@ -7,7 +7,6 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:beta",
-        "//third_party/java/json",
     ])
 
 java_library(

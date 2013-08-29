@@ -408,7 +408,13 @@ SyntheticMouse.EventEmitter.prototype.fireMouseEvent = function(target, type, ar
   var wind = goog.dom.getWindow(doc);
   var utils = this._getDOMWindowUtils(wind);
   var modifiers = this._parseModifiers(args);
-  utils.sendMouseEventToWindow(type, Math.round(args.clientX), Math.round(args.clientY), args.button, 1, modifiers);
+  if (utils.sendMouseEventToWindow) {
+    // Firefox 4+
+    utils.sendMouseEventToWindow(type, Math.round(args.clientX), Math.round(args.clientY), args.button, 1, modifiers);
+  } else {
+    // Firefox 3
+    utils.sendMouseEvent(type, Math.round(args.clientX), Math.round(args.clientY), args.button, 1, modifiers);
+  }
   fxdriver.logging.info('Called fireMouseEvent ' + type + ' ' + args.clientX + ', ' + args.clientY + ', ' + target);
   return true;
 };

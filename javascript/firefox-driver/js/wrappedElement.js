@@ -83,7 +83,7 @@ WebElement.clickElement = function(respond, parameters) {
   if (!isOption && this.enableNativeEvents && nativeMouse && node && useNativeClick && thmgr_cls) {
     fxdriver.logging.info('Using native events for click');
 
-    var inViewAfterScroll = bot.action.scrollIntoView(
+    var inViewAfterScroll = Utils.scrollIntoView(
         unwrapped,
         new goog.math.Coordinate(elementHalfWidth, elementHalfHeight));
 

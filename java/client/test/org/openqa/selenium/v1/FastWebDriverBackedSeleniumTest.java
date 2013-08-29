@@ -17,81 +17,58 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import org.junit.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
 
-import org.jmock.Expectations;
-import org.junit.Test;
-
 public class FastWebDriverBackedSeleniumTest {
-
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
 
   @Test
   public void openPrefixARelativeURLWithTheBaseURL() {
     final WebDriverBackedSelenium selenium;
-    final WebDriver driver;
-
-    driver = mockery.mock(WebDriverWithJs.class);
-    mockery.checking(new Expectations() {{
-        allowing(driver).getWindowHandle();
-        oneOf(driver).get("http://a.base.url:3000/a/relative/path");
-      }
-    });
+    final WebDriver driver = mock(WebDriverWithJs.class);
 
     selenium = new WebDriverBackedSelenium(driver, "http://a.base.url:3000");
     selenium.open("a/relative/path");
+
+    verify(driver).get("http://a.base.url:3000/a/relative/path");
   }
 
   @Test
   public void openPrefixARelativeURLWithTheBaseURLEvenWhenItStartsWithASlash() {
     final WebDriverBackedSelenium selenium;
-    final WebDriver driver;
-
-    driver = mockery.mock(WebDriverWithJs.class);
-    mockery.checking(new Expectations() {{
-        allowing(driver).getWindowHandle();
-        oneOf(driver).get("http://a.base.url:3000/relative/path/starting_with_a_slash");
-      }
-    });
+    final WebDriver driver = mock(WebDriverWithJs.class);
 
     selenium = new WebDriverBackedSelenium(driver, "http://a.base.url:3000");
     selenium.open("/relative/path/starting_with_a_slash");
+
+    verify(driver).get("http://a.base.url:3000/relative/path/starting_with_a_slash");
   }
 
   @Test
   public void openDoesNotPrefixAURLIncludingHttpProtocol() {
     final WebDriverBackedSelenium selenium;
-    final WebDriver driver;
-
-    driver = mockery.mock(WebDriverWithJs.class);
-    mockery.checking(new Expectations() {{
-        allowing(driver).getWindowHandle();
-        oneOf(driver).get("http://a.url/with/protocol.info");
-      }
-    });
+    final WebDriver driver = mock(WebDriverWithJs.class);
 
     selenium = new WebDriverBackedSelenium(driver, "http://a.base.url:3000");
     selenium.open("http://a.url/with/protocol.info");
+
+    verify(driver).get("http://a.url/with/protocol.info");
   }
 
   @Test
   public void openDoesNotPrefixAURLIncludingHttpsProtocol() {
     final WebDriverBackedSelenium selenium;
-    final WebDriver driver;
-
-    driver = mockery.mock(WebDriverWithJs.class);
-    mockery.checking(new Expectations() {{
-        allowing(driver).getWindowHandle();
-        oneOf(driver).get("https://a.url/with/protocol.info");
-      }
-    });
+    final WebDriver driver = mock(WebDriverWithJs.class);
 
     selenium = new WebDriverBackedSelenium(driver, "http://a.base.url:3000");
     selenium.open("https://a.url/with/protocol.info");
+
+    verify(driver).get("https://a.url/with/protocol.info");
   }
 
   public static interface WebDriverWithJs extends WebDriver, JavascriptExecutor {

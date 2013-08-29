@@ -112,7 +112,7 @@ remote.ui.SessionView.prototype.sessionIdSpan_;
 
 /**
  * Place holder for the bulk of the view content.
- * TODO(jleyba): Figure out what we want this to be. A REPL for interacting
+ * TODO: Figure out what we want this to be. A REPL for interacting
  * with the session? A view of recent session commands?
  * @private {Element}
  */
@@ -151,7 +151,7 @@ remote.ui.SessionView.prototype.createDom = function() {
 
   this.sessionIdSpan_ = dom.createElement(goog.dom.TagName.SPAN);
 
-  // TODO(jleyba): What more to add?
+  // TODO: What more to add?
   this.todoBlock_ = dom.createDom(goog.dom.TagName.DIV, 'todo', '\xa0');
   this.todoBlock_.disabled = true;
 

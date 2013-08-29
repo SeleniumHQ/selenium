@@ -1,3 +1,16 @@
+## v2.35.1
+
+* FIXED: 6090: Changed example scripts to use chromedriver.
+
+## v2.35.0
+
+* Version bump to stay in sync with the Selenium project.
+
+## v2.34.1
+
+* FIXED: 6079: The parent process should not wait for spawn driver service
+    processes (chromedriver, phantomjs, etc.)
+
 ## v2.34.0
 
 * Added the `selenium-webdriver/testing/assert` module. This module

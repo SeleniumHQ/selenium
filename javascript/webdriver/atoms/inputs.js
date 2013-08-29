@@ -22,7 +22,6 @@ goog.provide('webdriver.atoms.inputs');
 goog.require('bot.Keyboard');
 goog.require('bot.Mouse');
 goog.require('bot.action');
-goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
@@ -35,11 +34,12 @@ goog.require('webdriver.atoms.element');
  * @param {Element} element The element to send the keyboard input to, or
  *     {@code null} to use the document's active element.
  * @param {!Array.<string>} keys The keys to type on the element.
- * @param {Array.<!bot.Keyboard.Key>=} opt_state The keyboard to use, or
- *     construct one.
+ * @param {{currentPos: number, pressed: !Array.<!bot.Keyboard.Key>}=} opt_state
+ *     The predefined keyboard state to use.
  * @param {boolean=} opt_persistModifiers Whether modifier keys should remain
  *     pressed when this function ends.
- * @return {Array.<!bot.Keyboard.Key>} The keyboard state.
+ * @return {{currentPos: number, pressed: !Array.<!bot.Keyboard.Key>}} The
+ *     keyboard state.
  */
 webdriver.atoms.inputs.sendKeys = function(
     element, keys, opt_state, opt_persistModifiers) {

@@ -101,11 +101,11 @@ limitations under the License.
     viewSession(session);
     assertFalse('Should be disabled', view.screenshotButton_.isEnabled());
 
-    session.getCapabilities()['takesScreenshot'] = false;
+    session.getCapabilities().set('takesScreenshot', false);
     view.update(session);
     assertFalse('Should be disabled', view.screenshotButton_.isEnabled());
 
-    session.getCapabilities()['takesScreenshot'] = true;
+    session.getCapabilities().set('takesScreenshot', true);
     view.update(session);
     assertTrue('Should be enabled', view.screenshotButton_.isEnabled());
   }

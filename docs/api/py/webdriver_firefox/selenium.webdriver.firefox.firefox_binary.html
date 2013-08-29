@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -60,8 +58,28 @@
 <span id="selenium-webdriver-firefox-firefox-binary"></span><h1>selenium.webdriver.firefox.firefox_binary<a class="headerlink" href="#module-selenium.webdriver.firefox.firefox_binary" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary">
-<em class="property">class </em><tt class="descclassname">selenium.webdriver.firefox.firefox_binary.</tt><tt class="descname">FirefoxBinary</tt><big>(</big><em>firefox_path=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_binary.html#FirefoxBinary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.firefox.firefox_binary.</tt><tt class="descname">FirefoxBinary</tt><big>(</big><em>firefox_path=None</em>, <em>log_file=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/firefox_binary.html#FirefoxBinary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new instance of Firefox binary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last">
+<li><p class="first">firefox_path - Path to the Firefox executable. By default, it will be detected from the standard locations.</p>
+</li>
+<li><dl class="first docutils">
+<dt>log_file - A file object to redirect the firefox process output to. It can be sys.stdout.</dt>
+<dd><p class="first last">Please note that with parallel run the output won&#8217;t be synchronous.
+By default, it will be redirected to subprocess.PIPE.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
 <dt id="selenium.webdriver.firefox.firefox_binary.FirefoxBinary.NO_FOCUS_LIBRARY_NAME">
 <tt class="descname">NO_FOCUS_LIBRARY_NAME</tt><em class="property"> = 'x_ignore_nofocus.so'</em><a class="headerlink" href="#selenium.webdriver.firefox.firefox_binary.FirefoxBinary.NO_FOCUS_LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>

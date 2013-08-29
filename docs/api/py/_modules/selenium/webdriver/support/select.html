@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -141,13 +139,14 @@
 <span class="sd">            - index - The option at this index will be selected </span>
 <span class="sd">           &quot;&quot;&quot;</span>
         <span class="n">match</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">matched</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s">&quot;index&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">match</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_setSelected</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
                     <span class="k">return</span>
-                <span class="n">match</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="k">if</span> <span class="n">match</span> <span class="o">!=</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="n">matched</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">matched</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s">&quot;Could not locate element with index </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">index</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Select.select_by_visible_text"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select.select_by_visible_text">[docs]</a>    <span class="k">def</span> <span class="nf">select_by_visible_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>

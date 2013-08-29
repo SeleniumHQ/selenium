@@ -37,7 +37,7 @@ safaridriver.message.ASSUME_DOM_WINDOW = false;
  * @define {(string|number)} Compile time constant that may be used to identify
  *     where messages originate from. We permit strings or numbers since the
  *     Selenium build system currently does not support constant string
- *     expressions. TODO(jleyba): Fix this.
+ *     expressions. TODO: Fix this.
  */
 safaridriver.message.ORIGIN = 'webdriver';
 
@@ -339,7 +339,7 @@ safaridriver.message.Message.prototype.sendSync = function(target) {
         document, 'createEvent', 'Events'));
     stubEvent.initEvent('beforeload', false, false);
     return target.canLoad(stubEvent, this.data_);
-    // TODO(jleyba): Do something more intelligent with the response.
+    // TODO: Do something more intelligent with the response.
   }
 };
 

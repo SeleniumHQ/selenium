@@ -29,9 +29,9 @@
   var callback = null;
 
   // We have been unable to make the async tests non-flaky on IE9 / Win7.
-  // TODO(user): Re-enable for IE9 if stability improves.
-  var SKIP_ASYNC = goog.userAgent.IE && goog.userAgent.isVersion(9) &&
-      !goog.userAgent.isVersion(10) && goog.userAgent.platform.isVersion(6.1);
+  // TODO: Re-enable for IE9 if stability improves.
+  var SKIP_ASYNC = goog.userAgent.IE && goog.userAgent.isVersionOrHigher(9) &&
+      !goog.userAgent.isVersionOrHigher(10) && goog.userAgent.platform.isVersion(6.1);
 
   if (!SKIP_ASYNC) {
     asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
@@ -45,8 +45,8 @@
     // is too slow to test using popups without substantial flakiness. For these
     // browsers, we test history in an iframe instead of a popup, which limits
     // the history properties we can reliably check.
-    // TODO (user): Use popups on Opera once b/7684695 is fixed.
-    // TODO (user): Enable for IE 10 if image speed is improved.
+    // TODO: Use popups on Opera once b/7684695 is fixed.
+    // TODO: Enable for IE 10 if image speed is improved.
     if (goog.userAgent.product.ANDROID ||
         goog.userAgent.OPERA ||
         bot.userAgent.IE_DOC_10) {

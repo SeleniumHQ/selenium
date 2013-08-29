@@ -1,4 +1,3 @@
-require 'iconv'
 require 'albacore'
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/checks'
@@ -80,10 +79,14 @@ module CrazyFunVisualStudio
       end
 
       if ENV["googlecodeusername"].nil?
-        print "Enter your googlecode username:"
+        print "Enter your googlecode username (or <Enter> to avoid upload):"
         googlecode_username = STDIN.gets.chomp
       else
         googlecode_username = ENV["googlecodeusername"]
+      end
+      if googlecode_username == ""
+        print "googlecode user name not specified; not uploading file"
+        return
       end
       if ENV["googlecodepassword"].nil?
         print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):" 
@@ -156,6 +159,12 @@ module CrazyFunDotNet
       framework_ver = "net40"
       unless args[:framework_ver].nil?
         framework_ver = args[:framework_ver]
+      end
+
+      unless args[:keyfile].nil?
+        base_dir = File.join(base_dir, "strongnamed")
+      else
+        base_dir = File.join(base_dir, "dist")
       end
 
 	  output_dir = base_dir
@@ -276,6 +285,12 @@ module CrazyFunDotNet
         framework_ver = args[:framework_ver]
       end
 
+      unless args[:keyfile].nil?
+        base_dir = File.join(base_dir, "strongnamed")
+      else
+        base_dir = File.join(base_dir, "dist")
+      end
+
       output_dir = File.join(base_dir, framework_ver)
       unmerged_dir = File.join(base_dir, "unmerged")
 	  unmerged_dir = File.join(unmerged_dir, framework_ver)
@@ -357,7 +372,7 @@ module CrazyFunDotNet
   class RunDotNetTests < Tasks
     def handle(fun, dir, args)
       base_output_dir = 'build'
-      output_dir = base_output_dir + '/dotnet/net40'
+      output_dir = base_output_dir + '/dotnet/dist/net40'
       test_log_dir = base_output_dir + '/test_logs'
 
       task_name = task_name(dir, args[:name])
@@ -388,10 +403,10 @@ module CrazyFunDotNet
       web_documentation_path = args[:website]
       web_documentation_path_desc = web_documentation_path.gsub("/", Platform.dir_separator)
 
-      doc_sources = resolve_doc_sources(dir, args[:srcs])
-
       target_task = msbuild task_name do |msb|
         puts "Generating help website: at #{web_documentation_path_desc}"
+
+        doc_sources = resolve_doc_sources(dir, args[:srcs])
 
         if ENV['DXROOT'].nil?
           fail "Sandcastle documentation tools not found. Documentation will not be created."
@@ -457,7 +472,7 @@ module CrazyFunDotNet
 
   class CreateNuSpec < Tasks
     def handle(fun, dir, args)
-      output_dir = "build/dotnet"
+      output_dir = "build/dotnet/dist"
       spec_file = "#{output_dir}/nuget/#{args[:packageid]}.nuspec"
       task_name = task_name(dir, args[:name])
       desc "Creates and optionally publishes the NuGet package for #{args[:out]}"
@@ -540,7 +555,7 @@ module CrazyFunDotNet
 
   class PackNuGetPackage < Tasks
     def handle(fun, dir, args)
-      output_dir = "build/dotnet"
+      output_dir = "build/dotnet/dist"
       spec_file = "#{output_dir}/nuget/#{args[:packageid]}.nuspec"
       task_name = task_name(dir, args[:name])
       target = nugetpack "#{task_name}" do |nugetpack_task|
@@ -555,7 +570,7 @@ module CrazyFunDotNet
 
   class PublishNuGetPackage < Tasks
     def handle(fun, dir, args)
-      output_dir = "build/dotnet"
+      output_dir = "build/dotnet/dist"
       package_file = "#{output_dir}/nuget/#{args[:packageid]}.#{version}.nupkg".gsub("/", Platform.dir_separator)
       task_name = task_name(dir, args[:name])
       desc "Publishes NuGet package for #{task_name} to NuGet Gallery"
@@ -579,6 +594,11 @@ module CrazyFunDotNet
   class DotNetRelease < CrazyFunVisualStudio::UploadFile
     def handle(fun, dir, args)
       output_dir = 'build/dotnet'
+      unless args[:signed].nil?
+        output_dir = File.join(output_dir, "strongnamed")
+      else
+        output_dir = File.join(output_dir, "dist")
+      end
       file_name = args[:out].chomp(File.extname(args[:out])) + "-" + get_version(dir) + File.extname(args[:out])
       output_file = File.join(output_dir, file_name)
 
@@ -594,7 +614,6 @@ module CrazyFunDotNet
         tmp_dir = File.join(output_dir, "temp")
         mkdir_p tmp_dir
         lst = FileList[output_dir + "/*"].exclude(/.*(nuget|temp|unmerged).*/)
-		puts lst
         cp_r lst, tmp_dir
         zip(tmp_dir, output_file)
         rm_rf tmp_dir
@@ -628,7 +647,7 @@ end
 module CrazyFunVisualC
   class VisualCLibrary < Tasks
     def handle(fun, dir, args)
-      full_path = File.join("build", dir, args[:out])
+      full_path = File.join("build/cpp", args[:out])
       desc_path = full_path.gsub("/", Platform.dir_separator)
       desc "Build #{desc_path}"
 

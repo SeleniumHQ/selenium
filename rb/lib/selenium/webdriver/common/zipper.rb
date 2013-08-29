@@ -1,4 +1,4 @@
-require 'zip/zip'
+require 'zip'
 require 'tempfile'
 require 'find'
 
@@ -18,7 +18,7 @@ module Selenium
           destination = Dir.mktmpdir("webdriver-unzip")
           FileReaper << destination
 
-          Zip::ZipFile.open(path) do |zip|
+          Zip::File.open(path) do |zip|
             zip.each do |entry|
               to      = File.join(destination, entry.name)
               dirname = File.dirname(to)
@@ -62,7 +62,7 @@ module Selenium
           zip_path = File.join(tmp_dir, "webdriver-zip")
 
           begin
-            Zip::ZipFile.open(zip_path, Zip::ZipFile::CREATE, &blk)
+            Zip::File.open(zip_path, Zip::File::CREATE, &blk)
           ensure
             FileUtils.rm_rf tmp_dir
             FileUtils.rm_rf zip_path
@@ -70,7 +70,7 @@ module Selenium
         end
 
         def add_zip_entry(zip, file, entry_name)
-          entry = Zip::ZipEntry.new(zip.name, entry_name)
+          entry = Zip::Entry.new(zip.name, entry_name)
           entry.follow_symlinks = true
 
           zip.add entry, file

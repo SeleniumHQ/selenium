@@ -18,16 +18,15 @@ limitations under the License.
 
 package org.openqa.selenium.support.events.internal;
 
-import org.openqa.selenium.HasInputDevices;
-import org.openqa.selenium.Keyboard;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 /**
  * A keyboard firing events.
  */
-public class EventFiringKeyboard implements Keyboard {
+public class EventFiringKeyboard implements org.openqa.selenium.interactions.Keyboard {
   private final WebDriver driver;
   private final WebDriverEventListener dispatcher;
   private final Keyboard keyboard;

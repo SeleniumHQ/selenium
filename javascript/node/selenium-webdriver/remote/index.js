@@ -166,6 +166,9 @@ DriverService.prototype.start = function(opt_timeoutMs) {
         stdio: self.stdio_
       }).once('exit', onServerExit);
 
+      // This process should not wait on the spawned child, however, we do
+      // want to ensure the child is killed when this process exits.
+      self.process_.unref();
       process.once('exit', killServer);
 
       var serverUrl = url.format({

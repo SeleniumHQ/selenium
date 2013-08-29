@@ -93,7 +93,7 @@
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/HasInputDevices.html" title="interface in org.openqa.selenium">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
+<dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
@@ -103,7 +103,7 @@
 <br>
 <pre>public class <span class="strong">RemoteWebDriver</span>
 extends java.lang.Object
-implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/HasInputDevices.html" title="interface in org.openqa.selenium">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></pre>
+implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a></pre>
 </li>
 </ul>
 </div>
@@ -354,11 +354,11 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getFileDetector()">getFileDetector</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a></code></td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getKeyboard()">getKeyboard</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</a></code></td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getMouse()">getMouse</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -1220,7 +1220,7 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
        "  if (xhr.readyState == 4) {" +
        "    callback(xhr.responseText);" +
        "  }" +
-       "}" +
+       "};" +
        "xhr.send();");
    JSONObject json = new JSONObject((String) response);
    assertEquals("cheese", json.getString("food"));
@@ -1348,10 +1348,10 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <ul class="blockList">
 <li class="blockList">
 <h4>getKeyboard</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/Keyboard.html" title="interface in org.openqa.selenium">Keyboard</a>&nbsp;getKeyboard()</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;getKeyboard()</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../org/openqa/selenium/HasInputDevices.html#getKeyboard()">getKeyboard</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/HasInputDevices.html" title="interface in org.openqa.selenium">HasInputDevices</a></code></dd>
+<dd><code><a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html#getKeyboard()">getKeyboard</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -1361,10 +1361,10 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <ul class="blockList">
 <li class="blockList">
 <h4>getMouse</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/Mouse.html" title="interface in org.openqa.selenium">Mouse</a>&nbsp;getMouse()</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a>&nbsp;getMouse()</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../org/openqa/selenium/HasInputDevices.html#getMouse()">getMouse</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/HasInputDevices.html" title="interface in org.openqa.selenium">HasInputDevices</a></code></dd>
+<dd><code><a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html#getMouse()">getMouse</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></code></dd>
 </dl>
 </li>
 </ul>

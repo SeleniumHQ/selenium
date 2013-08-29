@@ -32,7 +32,6 @@ goog.require('bot.Touchscreen');
 goog.require('bot.dom');
 goog.require('bot.events');
 goog.require('bot.events.EventType');
-goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.math.Coordinate');
@@ -559,7 +558,7 @@ bot.action.prepareToInteractWith_ = function(element, opt_coords) {
   goog.style.scrollIntoContainerView(element,
       goog.userAgent.WEBKIT ? doc.body : doc.documentElement);
 
-  // NOTE(user): Ideally, we would check that any provided coordinates fall
+  // NOTE: Ideally, we would check that any provided coordinates fall
   // within the bounds of the element, but this has proven difficult, because:
   // (1) Browsers sometimes lie about the true size of elements, e.g. when text
   // overflows the bounding box of an element, browsers report the size of the
@@ -650,49 +649,27 @@ bot.action.LegacyDevice_.findAncestorForm = function(element) {
  * @return {boolean} Whether the element is in view after scrolling.
  */
 bot.action.scrollIntoView = function(element, opt_coords) {
-  if (!bot.dom.isScrolledIntoView(element, opt_coords)) {
-    // Some elements may not have a scrollIntoView function - for example,
-    // elements under an SVG element. Call those only if they exist.
-    if (element.scrollIntoView) {
-      element.scrollIntoView();
-    }
-    // In Opera 10, scrollIntoView only scrolls the element into the viewport of
-    // its immediate parent window, so we explicitly scroll the ancestor frames
-    // into view of their respective windows. Note that scrolling the top frame
-    // first --- and so on down to the element itself --- does not work, because
-    // Opera 10 apparently treats element.scrollIntoView() as a noop when it
-    // immediately follows a scrollIntoView() call on its parent frame.
-    if (goog.userAgent.OPERA && !bot.userAgent.isEngineVersion(11)) {
-      var win = goog.dom.getWindow(goog.dom.getOwnerDocument(element));
-      for (var frame = win.frameElement; frame; frame = win.frameElement) {
-        frame.scrollIntoView();
-        win = goog.dom.getWindow(goog.dom.getOwnerDocument(frame));
-      }
-    }
+  // If the element is already in view, return true; if hidden, return false.
+  var overflow = bot.dom.getOverflowState(element, opt_coords);
+  if (overflow != bot.dom.OverflowState.SCROLL) {
+    return overflow == bot.dom.OverflowState.NONE;
   }
-  if (opt_coords) {
-    var rect = new goog.math.Rect(opt_coords.x, opt_coords.y, 1, 1);
-    bot.dom.scrollElementRegionIntoClientView(element, rect);
-  }
-  var isInView = bot.dom.isScrolledIntoView(element, opt_coords);
-  if (!isInView && opt_coords) {
-    // It's possible that the element has been scrolled in to view, but the
-    // coords passed aren't in view; if this is the case, scroll those
-    // coordinates into view.
-    var elementRect = bot.dom.getClientRect(element);
-    var desiredPointInViewport = goog.math.Coordinate.sum(
-        new goog.math.Coordinate(elementRect.left, elementRect.top),
-        opt_coords);
-    try {
-      bot.dom.getInViewLocation(
-          desiredPointInViewport,
-          goog.dom.getWindow(goog.dom.getOwnerDocument(element)));
-      isInView = true;
-    } catch (ex) {
-      // Point couldn't be scrolled into view.
-      isInView = false;
+
+  // Some elements may not have a scrollIntoView function - for example,
+  // elements under an SVG element. Call those only if they exist.
+  if (element.scrollIntoView) {
+    element.scrollIntoView();
+    if (bot.dom.OverflowState.NONE ==
+        bot.dom.getOverflowState(element, opt_coords)) {
+      return true;
     }
   }
 
-  return isInView;
+  // There may have not been a scrollIntoView function, or the specified
+  // coordinate may not be in view, so scroll "manually".
+  var coords = opt_coords || new goog.math.Coordinate(0, 0);
+  var rect = new goog.math.Rect(coords.x, coords.y, 1, 1);
+  bot.dom.scrollElementRegionIntoClientView(element, rect);
+  return bot.dom.OverflowState.NONE ==
+      bot.dom.getOverflowState(element, opt_coords);
 };

@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -58,13 +56,15 @@
             
   <div class="section" id="module-selenium.webdriver.common.action_chains">
 <span id="selenium-webdriver-common-action-chains"></span><h1>selenium.webdriver.common.action_chains<a class="headerlink" href="#module-selenium.webdriver.common.action_chains" title="Permalink to this headline">¶</a></h1>
-<p>The ActionChains implementation</p>
+<p>The ActionChains implementation,</p>
 <dl class="class">
 <dt id="selenium.webdriver.common.action_chains.ActionChains">
 <em class="property">class </em><tt class="descclassname">selenium.webdriver.common.action_chains.</tt><tt class="descname">ActionChains</tt><big>(</big><em>driver</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate user actions.
-All actions are stored in the ActionChains object. Call perform() to fire
-stored actions.</p>
+<dd><dl class="docutils">
+<dt>Generate user actions.</dt>
+<dd>All actions are stored in the ActionChains object. 
+Call perform() to fire stored actions.</dd>
+</dl>
 <p>Creates a new ActionChains.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -152,8 +152,10 @@ If None, clicks on current mouse position.</li>
 <dl class="method">
 <dt id="selenium.webdriver.common.action_chains.ActionChains.drag_and_drop">
 <tt class="descname">drag_and_drop</tt><big>(</big><em>source</em>, <em>target</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.drag_and_drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Holds down the left mouse button on the source element,
-then moves to the target element and releases the mouse button.</p>
+<dd><dl class="docutils">
+<dt>Holds down the left mouse button on the source element,</dt>
+<dd>then moves to the target element and releases the mouse button.</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -173,7 +175,7 @@ then moves to the target element and releases the mouse button.</p>
 <tt class="descname">drag_and_drop_by_offset</tt><big>(</big><em>source</em>, <em>xoffset</em>, <em>yoffset</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.drag_and_drop_by_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.drag_and_drop_by_offset" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Holds down the left mouse button on the source element,</dt>
-<dd>then moves to the target element and releases the mouse button.</dd>
+<dd>then moves to the target offset and releases the mouse button.</dd>
 </dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -193,15 +195,17 @@ then moves to the target element and releases the mouse button.</p>
 <dl class="method">
 <dt id="selenium.webdriver.common.action_chains.ActionChains.key_down">
 <tt class="descname">key_down</tt><big>(</big><em>value</em>, <em>element=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.key_down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.key_down" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sends a key press only, without releasing it.
-Should only be used with modifier keys (Control, Alt and Shift).</p>
+<dd><dl class="docutils">
+<dt>Sends a key press only, without releasing it.</dt>
+<dd>Should only be used with modifier keys (Control, Alt and Shift).</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>key: The modifier key to send. Values are defined in Keys class.</li>
-<li>target: The element to send keys.
+<li>value: The modifier key to send. Values are defined in <cite>Keys</cite> class.</li>
+<li>element: The element to send keys.
 If None, sends a key to current focused element.</li>
 </ul>
 </td>
@@ -219,8 +223,8 @@ If None, sends a key to current focused element.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>key: The modifier key to send. Values are defined in Keys class.</li>
-<li>target: The element to send keys.
+<li>value: The modifier key to send. Values are defined in Keys class.</li>
+<li>element: The element to send keys.
 If None, sends a key to current focused element.</li>
 </ul>
 </td>
@@ -267,8 +271,10 @@ If None, sends a key to current focused element.</li>
 <dl class="method">
 <dt id="selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset">
 <tt class="descname">move_to_element_with_offset</tt><big>(</big><em>to_element</em>, <em>xoffset</em>, <em>yoffset</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.move_to_element_with_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Move the mouse by an offset of the specificed element.
-Offsets are relative to the top-left corner of the element.</p>
+<dd><dl class="docutils">
+<dt>Move the mouse by an offset of the specificed element.</dt>
+<dd>Offsets are relative to the top-left corner of the element.</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -293,13 +299,14 @@ Offsets are relative to the top-left corner of the element.</p>
 <dl class="method">
 <dt id="selenium.webdriver.common.action_chains.ActionChains.release">
 <tt class="descname">release</tt><big>(</big><em>on_element=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains.release"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains.release" title="Permalink to this definition">¶</a></dt>
-<dd><p>Releasing a held mouse button.</p>
+<dd><p>Releasing a held mouse button on an element.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>on_element: The element to mouse up.</li>
+<li>on_element: The element to mouse up.
+If None, releases on current mouse position.</li>
 </ul>
 </td>
 </tr>

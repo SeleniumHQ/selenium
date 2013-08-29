@@ -25,6 +25,7 @@ limitations under the License.
     goog.require('goog.testing.PropertyReplacer');
     goog.require('goog.testing.MockControl');
     goog.require('goog.testing.jsunit');
+    goog.require('webdriver.Capabilities');
     goog.require('webdriver.Command');
     goog.require('webdriver.CommandExecutor');
     goog.require('webdriver.CommandName');
@@ -283,7 +284,7 @@ limitations under the License.
   }
 
 
-  function testCreateSession_happyPath() {
+  function testCreateSession_happyPathWithCapabilitiesHashObject() {
     var testHelper = TestHelper.expectingSuccess().
         expect(CName.NEW_SESSION).
         withParameters({
@@ -296,6 +297,29 @@ limitations under the License.
     var driver = webdriver.WebDriver.createSession(testHelper.executor, {
       'browserName': 'firefox'
     });
+    driver.getSession().then(callback = callbackHelper(function(session) {
+      webdriver.test.testutil.assertObjectEquals({
+        'value':'test_session_id'
+      }, session.getId());
+      assertEquals('firefox', session.getCapability('browserName'));
+    }));
+    testHelper.execute();
+    callback.assertCalled();
+  }
+
+
+  function testCreateSession_happyPathWithCapabilitiesInstance() {
+    var testHelper = TestHelper.expectingSuccess().
+        expect(CName.NEW_SESSION).
+        withParameters({
+          'desiredCapabilities': {'browserName': 'firefox'}
+        }).
+        andReturnSuccess({'browserName': 'firefox'}).
+        replayAll();
+
+    var callback;
+    var driver = webdriver.WebDriver.createSession(
+        testHelper.executor, webdriver.Capabilities.firefox());
     driver.getSession().then(callback = callbackHelper(function(session) {
       webdriver.test.testutil.assertObjectEquals({
         'value':'test_session_id'

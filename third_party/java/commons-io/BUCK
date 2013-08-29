@@ -1,0 +1,6 @@
+prebuilt_jar(name = 'commons-io',
+  binary_jar = 'commons-io-2.2.jar',
+  visibility = [
+    '//third_party/java/...',
+  ],
+)

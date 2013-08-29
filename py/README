@@ -1,64 +1,127 @@
-============
+======================
+Selenium Client Driver
+======================
+
 Introduction
 ============
 
-:Author: David Burns
+Python language bindings for Selenium WebDriver.
 
-Selenium Python Client Driver is a Python language binding for Selenium Remote
-Control (version 1.0 and 2.0).
+The `selenium` package is used automate web browser interaction from Python.
 
-Currently the remote protocol, Firefox and Chrome for Selenium 2.0 are
-supported, as well as the Selenium 1.0 bindings. As work will progresses we'll
-add more "native" drivers.
++-----------+-----------------------------------------------------------------------------------+
+| **Home**: | http://www.seleniumhq.org                                                         |
++-----------+-----------------------------------------------------------------------------------+
+| **Docs**: | `selenium package API <http://selenium.googlecode.com/git/docs/api/py/api.html>`_ |
++-----------+-----------------------------------------------------------------------------------+
+| **Dev**:  | https://code.google.com/p/selenium/                                               |
++-----------+-----------------------------------------------------------------------------------+
+| **PyPI**: | https://pypi.python.org/pypi/selenium                                             |
++-----------+-----------------------------------------------------------------------------------+
+| **IRC**:  | **#selenium** channel on freenode                                                 |
++-----------+-----------------------------------------------------------------------------------+
 
-See here_ for more information.
+Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer, PhantomJS), as well as the Remote protocol.
 
-.. _here: http://code.google.com/p/selenium/
+Supported Python Versions
+=========================
+
+* Python 2.6, 2.7
+* Python 3.2, 3.3
 
 Installing
 ==========
 
-Python Client
--------------
-::
-
+If you have `pip <http://www.pip-installer.org>`_ on your system, you can simply install or upgrade the Python bindings::
+    
     pip install -U selenium
 
-Java Server
------------
+Alternately, you can download the source distribution from `PyPI <http://pypi.python.org/pypi/selenium>`_ (e.g. selenium-2.35.tar.gz), unarchive it, and run::
 
-Download the server from http://selenium.googlecode.com/files/selenium-server-standalone-2.33.0.jar
+    python setup.py install
+
+Note: both of the methods described above install `selenium` as a system-wide package  That will require administrative/root access to ther machine.  You may consider using a `virtualenv <http://www.virtualenv.org/>`_ to create isolated Python environments instead.
+
+Example 0:
+==========
+
+* open a new Firefox browser
+* load the page at the given URL
+
 ::
 
-    java -jar selenium-server-standalone-2.33.0.jar
+    from selenium import webdriver
 
-Example
-=======
+    browser = webdriver.Firefox()
+    browser.get('http://seleniumhq.org/')
+
+Example 1:
+==========
+
+* open a new Firefox browser
+* load the Yahoo homepage
+* search for "seleniumhq"
+* close the browser
+
 ::
 
     from selenium import webdriver 
-    from selenium.common.exceptions import NoSuchElementException
     from selenium.webdriver.common.keys import Keys
-    import time 
 
-    browser = webdriver.Firefox() # Get local session of firefox
-    browser.get("http://www.yahoo.com") # Load page
-    assert "Yahoo!" in browser.title
-    elem = browser.find_element_by_name("p") # Find the query box
-    elem.send_keys("seleniumhq" + Keys.RETURN)
-    time.sleep(0.2) # Let the page load, will be added to the API
-    try:
-        browser.find_element_by_xpath("//a[contains(@href,'http://seleniumhq.org')]")
-    except NoSuchElementException:
-        assert 0, "can't find seleniumhq"
-    browser.close()
+    browser = webdriver.Firefox()
+    
+    browser.get('http://www.yahoo.com)
+    assert 'Yahoo!' in browser.title
 
-Documentation
-=============
+    elem = browser.find_element_by_name('p')  # Find the search box
+    elem.send_keys('seleniumhq' + Keys.RETURN)
+    
+    browser.quit()
 
-`Auto Generated API <http://selenium.googlecode.com/svn/trunk/docs/api/py/api.html>`_
+Example 2:
+==========
+
+Selenium WebDriver is often used as a basis for testing web applications.  Here is a simple example uisng Python's standard `unittest <http://docs.python.org/3/library/unittest.html>`_ library:
+
+::
+
+    import unittest
+
+    class GoogleTestCase(unittest.TestCase):
+
+        def setUp(self):
+            self.browser = webdriver.Firefox()
+            self.addCleanup(self.browser.quit)
+
+        def testPageTitle(self):
+            self.browser.get('http://www.google.com')
+            self.assertIn('Google', self.browser.title)
+
+    if __name__ == '__main__':
+        unittest.main(verbosity=2)
+
+Selenium Server (optional)
+==========================
+
+For normal WebDriver scripts (non-Remote), the Java server is not needed.
+
+However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).  
+
+Download the server separately, from: http://selenium.googlecode.com/files/selenium-server-standalone-2.35.0.jar
+
+Run the server from the command line::
+
+    java -jar selenium-server-standalone-2.35.0.jar
+
+Then run your Python client scripts.
 
 Use The Source Luke!
 ====================
 
-https://code.google.com/p/selenium/source/browse/py/selenium/webdriver/remote/webdriver.py
+View source code online:
+
++-----------+-------------------------------------------------------+
+| official: | https://code.google.com/p/selenium/source/browse/py   |
++-----------+-------------------------------------------------------+
+| mirror:   | https://github.com/SeleniumHQ/selenium/tree/master/py |
++-----------+-------------------------------------------------------+

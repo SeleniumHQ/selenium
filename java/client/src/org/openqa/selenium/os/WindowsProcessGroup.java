@@ -93,12 +93,15 @@ public class WindowsProcessGroup implements OsProcess {
     Kernel32.JOBJECT_EXTENDED_LIMIT_INFORMATION jeli =
         new Kernel32.JOBJECT_EXTENDED_LIMIT_INFORMATION.ByReference();
     jeli.clear();
+    Kernel32.JOBOBJECT_BASIC_UI_RESTRICTIONS uli =
+        new Kernel32.JOBOBJECT_BASIC_UI_RESTRICTIONS.ByReference();
+    uli.clear();
 
     // Call SetHandleInformation. Take a look in SocketLock.cs
 
     hJob = Kernel32.CreateJobObject(null, null);
     if (hJob.getPointer() == null) {
-      throw new WebDriverException("Cannot create job object");
+      throw new WebDriverException("Cannot create job object: " + Kernel32.GetLastError());
     }
 
     // Hopefully, Windows will kill the job automatically if this process dies
@@ -108,8 +111,20 @@ public class WindowsProcessGroup implements OsProcess {
         Kernel32.JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
 
     if (!Kernel32.SetInformationJobObject(hJob, Kernel32.JobObjectExtendedLimitInformation, jeli.getPointer(), jeli.size())) {
-      throw new WebDriverException("Unable to set information on the job object");
+      throw new WebDriverException("Unable to set extended limit information on the job object: " + Kernel32.GetLastError());
     }
+
+    // crete job in sandbox with own global atom table
+    uli.UIRestrictionsClass = Kernel32.JOB_OBJECT_UILIMIT_GLOBALATOMS;
+
+    if (!Kernel32.SetInformationJobObject(hJob, Kernel32.JobObjectBasicUIRestrictions, uli.getPointer(), uli.size())) {
+      throw new WebDriverException("Unable to set ui limit information on the job object: " + Kernel32.GetLastError());
+    }
+
+    WinDef.DWORD creationFlags = new WinDef.DWORD(
+        Kernel32.CREATE_SUSPENDED |          // Suspend so we can add to job
+        Kernel32.CREATE_BREAKAWAY_FROM_JOB   // Allow ourselves to breakaway from Vista's PCA if necessary
+    );
 
     // Start the child process
     boolean result = Kernel32.CreateProcess(null, // No module name (use command line).
@@ -117,21 +132,21 @@ public class WindowsProcessGroup implements OsProcess {
         null,  // Process handle not inheritable.
         null,  // Thread handle not inheritable.
         false, // Set handle inheritance to FALSE.
-        new WinDef.DWORD(4 | 16777216), // Suspend so we can add to job | Allow ourselves to breakaway from Vista's PCA if necessary
+        creationFlags, // Set creation flags
         null,  // Use parent's environment block.
         workingDirectory,  // Use provided working directory, parent's directory if null.
         si,    // Pointer to STARTUPINFO structure.
         pi);   // Pointer to PROCESS_INFORMATION structure.
     if (!result) {
-      throw new WebDriverException("Failed to create the process");
+      throw new WebDriverException("Failed to create the process: " + Kernel32.GetLastError());
     }
 
     if (!Kernel32.AssignProcessToJobObject(hJob, pi.hProcess)) {
       throw new WebDriverException("Cannot assign process to job: " + Kernel32.GetLastError());
     }
 
-    if (Kernel32.ResumeThread(pi.hThread) == 0) {
-      throw new WebDriverException("Cannot resume thread");
+    if (Kernel32.ResumeThread(pi.hThread) <= 0) {
+      throw new WebDriverException("Cannot resume thread: " + Kernel32.GetLastError());
     }
 
     Kernel32.CloseHandle(pi.hThread);

@@ -18,18 +18,16 @@ package org.openqa.selenium.lift;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
+import org.hamcrest.Matcher;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
-
-import org.hamcrest.Matcher;
-import org.jmock.Expectations;
-import org.jmock.Sequence;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Unit test for {@link HamcrestWebDriverTestCase}.
@@ -40,8 +38,6 @@ import org.junit.Test;
 @SuppressWarnings("unchecked")
 public class HamcrestWebdriverTestCaseTest {
 
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
-  
   final String text = "abcde";
   final String url = "http://www.example.com";
   Finder<WebElement, WebDriver> something;
@@ -53,36 +49,29 @@ public class HamcrestWebdriverTestCaseTest {
   public void createMocks() {
     testcase = createTestCase();
 
-    something = mockery.mock(Finder.class);
-    someNumberOf = mockery.mock(Matcher.class);
+    something = mock(Finder.class);
+    someNumberOf = mock(Matcher.class);
   }
 
   @Test
   public void delegatesAllCallsToItsTestContext() {
 
-    final TestContext testContext = mockery.mock(TestContext.class);
+    final TestContext testContext = mock(TestContext.class);
     testcase.setContext(testContext);
-
-    final Sequence given = mockery.sequence("given here");
-
-    mockery.checking(new Expectations() {{
-      oneOf(testContext).goTo(url);
-      inSequence(given);
-      oneOf(testContext).clickOn(something);
-      inSequence(given);
-      oneOf(testContext).type(text, something);
-      inSequence(given);
-      oneOf(testContext).assertPresenceOf(something);
-      inSequence(given);
-      oneOf(testContext).assertPresenceOf(someNumberOf, something);
-      inSequence(given);
-    }});
 
     testcase.goTo(url);
     testcase.clickOn(something);
     testcase.type(text, something);
     testcase.assertPresenceOf(something);
     testcase.assertPresenceOf(someNumberOf, something);
+
+    InOrder order = Mockito.inOrder(testContext);
+    order.verify(testContext).goTo(url);
+    order.verify(testContext).clickOn(something);
+    order.verify(testContext).type(text, something);
+    order.verify(testContext).assertPresenceOf(something);
+    order.verify(testContext).assertPresenceOf(someNumberOf, something);
+    order.verifyNoMoreInteractions();
   }
 
   @Test
@@ -97,7 +86,7 @@ public class HamcrestWebdriverTestCaseTest {
 
       @Override
       protected WebDriver createDriver() {
-        return mockery.mock(WebDriver.class);
+        return mock(WebDriver.class);
       }
     };
     return testcase;

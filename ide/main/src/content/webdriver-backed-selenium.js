@@ -166,7 +166,6 @@ function webdriverBackedSeleniumFnBuilder(cmd, argsLen) {
       var cmdArgs = Array.prototype.slice.call(arguments);
       this.waitingForRemoteResult = true;
       function invokeCommand() {
-//        LOG.info("invoking: " + cmd);
         return self.remoteControlCommand(cmd, cmdArgs).done(function(response) {
           self.waitingForRemoteResult = false;
           //TODO do something with the response
@@ -184,11 +183,13 @@ function webdriverBackedSeleniumFnBuilder(cmd, argsLen) {
       }
     };
   }
+  //There is no difference between this and the above fn, except the argument list
+  // This argument list is required for correct dispatching of the call
   return function(arg1) {
     //TODO return a promise
-    this.waitingForRemoteResult = true;
     var self = this;
     var cmdArgs = Array.prototype.slice.call(arguments);
+    this.waitingForRemoteResult = true;
     function invokeCommand() {
       return self.remoteControlCommand(cmd, cmdArgs).done(function(response) {
         self.waitingForRemoteResult = false;
@@ -292,10 +293,17 @@ WebdriverBackedSelenium.prototype.webDriverCommand = function(url, opts, args) {
        url = url.replace(':' + opt, encodeURIComponent(opts[opt]));
      }
   }
-  var requestData = JSON.stringify(args);
+  var requestData = null;
+  var requestMethod = 'GET';
+  var contentType = {};
+  if (args) {
+    requestMethod = 'POST';
+    requestData = JSON.stringify(args);
+    contentType = {'Content-Type': 'application/json; charset=utf-8'};
+  }
 //  alert("Sending server request: " + requestData);
   return new Deferred(function(deferred) {
-    httpPost('http://localhost:4444/wd/hub/' + url, requestData, {'Content-Type': 'application/json; charset=utf-8'}, function(response, success, status) {
+    httpCommon(requestMethod, 'http://localhost:4444/wd/hub/' + url, requestData, contentType, function(response, success, status) {
       var result;
       if (response) {
 //          alert("Response: " + response);
@@ -331,16 +339,17 @@ function httpRequestFor(verb, args, sessionId) {
   return data;
 }
 
-function httpPost(url, data, headers, callback) {
+function httpCommon(method, url, data, headers, callback) {
   var httpRequest = new XMLHttpRequest();
-  httpRequest.open('POST', url);
+  //LOG.debug('Executing: ' + method + " " + url);
+  httpRequest.open(method, url);
   httpRequest.onreadystatechange = function() {
     try {
       if (httpRequest.readyState === 4) {
         if (httpRequest.status === 200 || (httpRequest.status > 200 && httpRequest.status < 300)) {
           callback(httpRequest.responseText, true, httpRequest.status);
         } else if (httpRequest.status === 500 ) {
-            callback(httpRequest.responseText, false, httpRequest.status);
+          callback(httpRequest.responseText, false, httpRequest.status);
         } else {
           //TODO eliminate alert and signal the failure
 //          alert('There was a problem with the request.\nUrl: ' + url + '\nHttp Status: ' + httpRequest.status + "\nResponse: " + httpRequest.responseText);
@@ -358,5 +367,17 @@ function httpPost(url, data, headers, callback) {
   for (var header in headers) {
     httpRequest.setRequestHeader(header, headers[header] + '');
   }
-  httpRequest.send(data);
+  if (data) {
+    httpRequest.send(data);
+  } else {
+    httpRequest.send();
+  }
+}
+
+function httpPost(url, data, headers, callback) {
+  httpCommon('POST',url, data, headers, callback);
+}
+
+function httpGet(url, headers, callback) {
+  httpCommon('GET',url, null, headers, callback);
 }

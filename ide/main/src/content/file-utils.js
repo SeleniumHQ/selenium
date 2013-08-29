@@ -79,6 +79,10 @@ var FileUtils = {
         return file;
     },
 
+    fileExists: function(path) {
+        return path !== null && path.length > 0 && this.getFile(path).exists();
+    },
+
     fileURI: function(file) {
         return Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService).
         newFileURI(file).spec;

@@ -17,41 +17,34 @@ limitations under the License.
 package org.openqa.selenium.logging;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.util.List;
-import java.util.logging.Level;
-
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
+
 import org.junit.Test;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.RemoteLogs;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import java.util.List;
+import java.util.logging.Level;
 
 public class PerformanceLoggingMockTest {
 
-  @Rule public JUnitRuleMockery mockery = new JUnitRuleMockery();
-
   @Test
   public void testMergesRemoteLogs() {
-    final ExecuteMethod executeMethod = mockery.mock(ExecuteMethod.class);
+    final ExecuteMethod executeMethod = mock(ExecuteMethod.class);
 
-    mockery.checking(new Expectations() {
-      {
-        oneOf(executeMethod).execute(DriverCommand.GET_LOG,
-          ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER));
-        will(returnValue(ImmutableList.of(ImmutableMap.of(
+    when(executeMethod.execute(
+        DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
+        .thenReturn(ImmutableList.of(ImmutableMap.of(
           "level", Level.INFO.getName(),
           "timestamp", 1L,
-          "message", "second"))));
-      }
-    });
-    
+          "message", "second")));
+
     LocalLogs localLogs = LocalLogs.getStoringLoggerInstance(ImmutableSet.<String>of(LogType.PROFILER));
     RemoteLogs logs = new RemoteLogs(executeMethod, localLogs);
     localLogs.addEntry(LogType.PROFILER, new LogEntry(Level.INFO, 0, "first"));

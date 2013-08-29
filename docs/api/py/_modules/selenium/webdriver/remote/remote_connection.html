@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -378,6 +376,10 @@
                 <span class="p">(</span><span class="s">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/session_storage&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_SESSION_STORAGE_SIZE</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span><span class="s">&#39;/session/$sessionId/session_storage/size&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_LOG</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span><span class="s">&#39;/session/$sessionId/log&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_AVAILABLE_LOG_TYPES</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span><span class="s">&#39;/session/$sessionId/log/types&#39;</span><span class="p">),</span>
             <span class="p">}</span>
 
 <div class="viewcode-block" id="RemoteConnection.execute"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>

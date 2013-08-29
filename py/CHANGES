@@ -1,3 +1,15 @@
+Selenium 2.35
+* Remove duplicate 'get screenshot as file' methods.  Add method 'get_screenshot_as_png'
+* fixing UnicodeEncodeError on get attribute of webelement
+
+Selenium 2.34
+* Corrected webdriverbackedselenium session handling. Fixes issue 4283
+* Corrected use of basestring for python 3. Fixes issue 5924
+* Support for Firefox 22
+* Added support for logging from the browser
+* corrected proxy handling on FirefoxProfile
+* Corrected handling of chrome extensions. Fixes issue 5762
+
 Selenium 2.33
 * getText() ignores elements in the <head>
 * Adding both official and informal string representations to Color object.

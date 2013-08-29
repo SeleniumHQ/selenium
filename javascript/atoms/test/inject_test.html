@@ -127,7 +127,8 @@ limitations under the License.
 
     function testShouldThrowIfCachedElementIsNoLongerAttachedToTheDom() {
       if (goog.userAgent.IE) {
-        // TODO(user): Don't skip this.
+        // skipping for now to enable the merge of OSS and google3 to proceed.
+        // TODO: Don't skip this.
         return;
       }
       var div = document.createElement('DIV');
@@ -422,8 +423,9 @@ limitations under the License.
       if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
           (goog.userAgent.product.ANDROID &&
            !bot.userAgent.isProductVersion(4))) {
+        // skipping for now to enable the merge of OSS and google3 to proceed.
         // Android prior to Ice Cream Sandwich has a known issue, b/5006213.
-        // TODO(user): Don't skip this.
+        // TODO: Don't skip this.
         return;
       }
 
@@ -461,8 +463,9 @@ limitations under the License.
       if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
           (goog.userAgent.product.ANDROID &&
            !bot.userAgent.isProductVersion(4))) {
+        // skipping for now to enable the merge of OSS and google3 to proceed.
         // Android prior to Ice Cream Sandwich has a known issue, b/5006213.
-        // TODO(user): Don't skip this.
+        // TODO: Don't skip this.
         return;
       }
 
@@ -518,7 +521,8 @@ limitations under the License.
 
     function testCorrectlyUnwrapsArgsForInjectedScripts() {
       if (goog.userAgent.IE) {
-        // TODO(user): Don't skip this.
+        // skipping for now to enable the merge of OSS and google3 to proceed.
+        // TODO: Don't skip this.
         return;
       }
       var wrapped = bot.inject.wrapValue(frameDoc.body);
@@ -543,7 +547,8 @@ limitations under the License.
 
     function testCorrectlyUnwrapsArgsForInjectedAsyncScripts() {
       if (goog.userAgent.IE) {
-        // TODO(user): Don't skip this.
+        // skipping for now to enable the merge of OSS and google3 to proceed.
+        // TODO: Don't skip this.
         return;
       }
       var wrapped = bot.inject.wrapValue(frameDoc.body);
@@ -573,7 +578,8 @@ limitations under the License.
 
     function testExecuteScriptShouldBeAbleToRecurseOnItself() {
       if (goog.userAgent.IE) {
-        // TODO(user): Don't skip this.
+        // skipping for now to enable the merge of OSS and google3 to proceed.
+        // TODO: Don't skip this.
         return;
       }
       var json = bot.inject.executeScript(bot.inject.executeScript,

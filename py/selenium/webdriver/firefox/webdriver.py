@@ -28,7 +28,6 @@ from selenium.webdriver.firefox.extension_connection import ExtensionConnection
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from selenium.webdriver.remote.webelement import WebElement
 
 class WebDriver(RemoteWebDriver):
 
@@ -61,10 +60,6 @@ class WebDriver(RemoteWebDriver):
             self.binary, timeout),
             desired_capabilities=capabilities)
         self._is_remote = False
-
-    def create_web_element(self, element_id):
-        """Override from RemoteWebDriver to use firefox.WebElement."""
-        return WebElement(self, element_id)
 
     def quit(self):
         """Quits the driver and close every associated window."""

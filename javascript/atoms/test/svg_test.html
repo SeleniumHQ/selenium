@@ -12,18 +12,18 @@
     goog.require('goog.userAgent');
   </script>
   <script type="text/javascript">
+    // This is called by the test runner prior to each test, preventing the
+    // tests from being run if the browser does not support inline SVG.
+    function shouldRunTests() {
+      return bot.test.SUPPORTS_INLINE_SVG;
+    }
+
     function testSvgElementsShouldBeVisible() {
-      if (!bot.test.SUPPORTS_INLINE_SVG) {
-        return;
-      }
       var element = bot.locators.findElement({id: 'rect'});
       assertTrue(bot.dom.isShown(element));
     }
 
     function testFocusingOnSvgElementDoesNotThrow() {
-      if (!bot.test.SUPPORTS_INLINE_SVG) {
-        return;
-      }
       var element = bot.locators.findElement({id: 'rect'});
       var otherElement = bot.locators.findElement({id: 'text'});
       bot.action.focusOnElement(otherElement);
@@ -31,17 +31,11 @@
     }
 
     function testGettingTextOfSvgElementDoesNotThrow() {
-      if (!bot.test.SUPPORTS_INLINE_SVG) {
-        return;
-      }
       var element = bot.locators.findElement({id: 'text'});
       bot.dom.getVisibleText(element);
     }
 
-    function testSvgLineWithZeroSizeBBoxIsShown() {
-      if (!bot.test.SUPPORTS_INLINE_SVG) {
-        return;
-      }
+    function testSvgLineWithZeroSizeBoundingBoxIsShown() {
       if ((goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher(536)) ||
           (goog.userAgent.GECKO && !goog.userAgent.isVersionOrHigher(17))) {
         // Older versions of WebKit report an incorrect bounding box for
@@ -53,23 +47,38 @@
     }
 
     function testSvgClientRect() {
-      if (!bot.test.SUPPORTS_INLINE_SVG) {
-        return;
-      }
       var e = bot.locators.findElement({id: 'rect'});
       var rect = bot.dom.getClientRect(e);
-      assertEquals('left value incorrect', 100, rect.left);
-      assertEquals('top value incorrect', 20, rect.top);
-      assertEquals('width value incorrect', 12, rect.width);
-      assertEquals('height value incorrect', 12, rect.height);
+      assertSvgRectApprox(10, 10, 10, 10, rect);
+    }
+
+    function testSvgClientRectOfTransformed() {
+      var e = bot.locators.findElement({id: 'transformed'});
+      var rect = bot.dom.getClientRect(e);
+      assertSvgRectApprox(-10, -10, 10, 10, rect);
+    }
+
+    function assertSvgRectApprox(left, top, width, height, rect) {
+      // The bounding box attributes of the SVG element won't be precisely
+      // obeyed by the browser.The rect should be at least offset by its x and y
+      // values, and the height and width should be around the specified values.
+      assertInRange('left', left, left + 10, rect.left);
+      assertInRange('top', top, top + 10, rect.top);
+      assertInRange('width', width - 1, width + 6, rect.width);
+      assertInRange('height', height - 1, height + 6, rect.height);
+
+      function assertInRange(desc, min, max, value) {
+        assertTrue(desc + ' too small', value >= min);
+        assertTrue(desc + ' too big', value < max);
+      }
     }
   </script>
 </head>
 <body>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1000 50" id="root">
-  <rect id="rect" fill="red" stroke="none" height="12" width="12" y="20" x="100"></rect>
-  <text id="text" fill="black" font-size="12" font-family="Arial" y="30" x="115">Apple</text>
-  <path id="path" d="M 200 26 L 600 26" stroke="red" stroke-width="1em"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+  <rect id="rect" fill="red" stroke="none" width="10" height="10" x="10" y="10"/>
+  <text id="text" fill="black" font-size="12" font-family="Arial" x="25" y="20">Apple</text>
+  <path id="path" d="M 100 15 L 200 15" stroke="red" stroke-width="10"/>
+  <rect id="transformed" transform="translate(-20, -20)" fill="green" stroke="none" width="10" height="10" x="10" y="10"/>
 </body>
 </html>

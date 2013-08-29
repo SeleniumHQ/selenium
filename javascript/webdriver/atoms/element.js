@@ -23,10 +23,8 @@ goog.provide('webdriver.atoms.element');
 goog.require('bot.Keyboard.Keys');
 goog.require('bot.action');
 goog.require('bot.dom');
-goog.require('goog.dom');
+goog.require('goog.array');
 goog.require('goog.dom.TagName');
-goog.require('goog.math');
-goog.require('goog.string');
 goog.require('goog.style');
 goog.require('webdriver.Key');
 

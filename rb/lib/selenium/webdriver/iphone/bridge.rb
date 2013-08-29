@@ -10,6 +10,8 @@ module Selenium
         DEFAULT_URL = "http://#{Platform.localhost}:3001/wd/hub/"
 
         def initialize(opts = {})
+          warn 'The iPhone driver is reprecated - please use http://appium.io/ or http://ios-driver.github.io/ios-driver/ instead'
+
           remote_opts = {
             :url                  => opts.fetch(:url, DEFAULT_URL),
             :desired_capabilities => opts.fetch(:desired_capabilities, capabilities),

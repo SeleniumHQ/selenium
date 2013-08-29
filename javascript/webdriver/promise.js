@@ -1857,7 +1857,7 @@ webdriver.promise.Task_.prototype.toString = function() {
     if (this.description_) {
       ret += '\n';
     }
-    ret += stack;
+    ret += stack.join('\n');
   }
   return ret;
 };

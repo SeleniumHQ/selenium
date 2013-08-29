@@ -95,11 +95,6 @@ js_fragment(name = "is_editable",
   function = "bot.dom.isEditable",
   deps = [ "//javascript/atoms:all_js" ])
 
-js_fragment(name = "is_in_parent_overflow",
-  module = "bot.dom",
-  function = "bot.dom.isInParentOverflow",
-  deps = [ "//javascript/atoms:all_js" ])
-
 js_fragment(name = "is_interactable",
   module = "bot.dom",
   function = "bot.dom.isInteractable",

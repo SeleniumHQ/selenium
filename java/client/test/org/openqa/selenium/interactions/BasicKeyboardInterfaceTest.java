@@ -32,7 +32,6 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -40,7 +39,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.Browser;
 
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
@@ -73,8 +71,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @Ignore({ANDROID, IPHONE, IE, OPERA, OPERA_MOBILE})
   @Test
   public void testSendingKeyDownOnly() {
-    ignoreOnFfWindowsWithNativeEvents(); // Issue 3722
-
     driver.get(pages.javascriptPage);
 
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
@@ -97,8 +93,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @Ignore({ANDROID, IPHONE, IE, OPERA, OPERA_MOBILE})
   @Test
   public void testSendingKeyUp() {
-    ignoreOnFfWindowsWithNativeEvents(); // Issue 3722
-
     driver.get(pages.javascriptPage);
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
 
@@ -124,8 +118,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @Ignore({ANDROID, HTMLUNIT, IPHONE, IE, OPERA, OPERA_MOBILE})
   @Test
   public void testSendingKeysWithShiftPressed() {
-    ignoreOnFfWindowsWithNativeEvents(); // Issue 3722
-
     driver.get(pages.javascriptPage);
 
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
@@ -197,11 +189,5 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   private void assertThatBodyEventsFiredAreExactly(String expected) {
     assertThat(driver.findElement(By.id("body_result")).getText().trim(), is(expected.trim()));
-  }
-
-  private void ignoreOnFfWindowsWithNativeEvents() {
-    assumeFalse(Browser.detect() == Browser.ff &&
-        TestUtilities.getEffectivePlatform().is(Platform.WINDOWS) &&
-        TestUtilities.isNativeEventsEnabled(driver));
   }
 }

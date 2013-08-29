@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -63,29 +61,48 @@
 <span class="c"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
 <span class="c"># See the License for the specific language governing permissions and</span>
 <span class="c"># limitations under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The Utils methods.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">socket</span>
 
 
 <div class="viewcode-block" id="free_port"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.free_port">[docs]</a><span class="k">def</span> <span class="nf">free_port</span><span class="p">():</span>
-        <span class="n">free_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-        <span class="n">free_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-        <span class="n">free_socket</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-        <span class="n">port</span> <span class="o">=</span> <span class="n">free_socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">free_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">port</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines a free port using sockets.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">free_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+    <span class="n">free_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">free_socket</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">free_socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">free_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">port</span>
 </div>
 <div class="viewcode-block" id="is_connectable"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.is_connectable">[docs]</a><span class="k">def</span> <span class="nf">is_connectable</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Trys to connect to the server to see if it is running.&quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">socket_</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-            <span class="n">socket_</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">socket_</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
-            <span class="n">socket_</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">return</span> <span class="bp">True</span>
-        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tries to connect to the server at port to see if it is running.</span>
+
+<span class="sd">    :Args:</span>
+<span class="sd">     - port: The port to connect.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">socket_</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+        <span class="n">socket_</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">socket_</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="n">socket_</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
 </div>
 <div class="viewcode-block" id="is_url_connectable"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.utils.html#selenium.webdriver.common.utils.is_url_connectable">[docs]</a><span class="k">def</span> <span class="nf">is_url_connectable</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tries to connect to the HTTP server at /status path</span>
+<span class="sd">    and specified port to see if it responds successfully.</span>
+
+<span class="sd">    :Args:</span>
+<span class="sd">     - port: The port to connect.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span> <span class="k">as</span> <span class="n">url_request</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>

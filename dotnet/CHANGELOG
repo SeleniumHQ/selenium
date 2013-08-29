@@ -1,3 +1,12 @@
+v2.35.0
+=======
+ * Issue #4506: (on behalf of Aaron Evans) Remove trailing slashes from baseUrl
+   in .NET to prevent double slashes in URL. This change is in the .NET
+   WebDriverBackedSelenium API.
+ * Removed unnecessary ProxyJsonConverter class.
+ * Updating InternetExplorerOptions documentation for UsePerProcessProxy
+   property.
+
 v2.34.0
 =======
  * Added support for ie.ensureCleanSession capability to .NET bindings. The

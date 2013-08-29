@@ -17,8 +17,8 @@
  */
 
 goog.provide('webdriver.Browser');
-goog.provide('webdriver.Capability');
 goog.provide('webdriver.Capabilities');
+goog.provide('webdriver.Capability');
 
 
 
@@ -100,7 +100,8 @@ webdriver.Capability = {
   SUPPORTS_APPLICATION_CACHE: 'applicationCacheEnabled',
 
   /**
-   * Whether the driver supports controlling the browser's internet connectivity.
+   * Whether the driver supports controlling the browser's internet
+   * connectivity.
    */
   SUPPORTS_BROWSER_CONNECTION: 'browserConnectionEnabled',
 

@@ -245,7 +245,7 @@ safaridriver.extension.Tab.prototype.send = function(command, opt_timeout) {
           'The window closed before a response was received.' +
               'returning a null-success response.',
           goog.debug.Logger.Level.WARNING);
-      // TODO(jleyba): Is a null success response always the correct action
+      // TODO: Is a null success response always the correct action
       // when the window closes before a response is received?
       response.fulfill(bot.response.createResponse(null));
     }

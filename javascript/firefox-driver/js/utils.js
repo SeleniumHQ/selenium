@@ -647,145 +647,35 @@ Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
 
 
 Utils.getElementLocation = function(element) {
-  var rect = element.getBoundingClientRect()
-
-  var location = new Object();
-  location.x = rect.left;
-  location.y = rect.top;
-  return location;
-};
-
-
-Utils.getLocationViaAccessibilityInterface = function(element) {
-  var retrieval = Utils.newInstance(
-    '@mozilla.org/accessibleRetrieval;1', 'nsIAccessibleRetrieval');
-  var accessible = retrieval.getAccessibleFor(element);
-
-  if (! accessible) {
-    return;
-  }
-
-  var x = {}, y = {}, width = {}, height = {};
-  accessible.getBounds(x, y, width, height);
-
+  var rect = bot.dom.getClientRect(element);
   return {
-    x: x.value,
-    y: y.value,
-    width: width.value,
-    height: height.value
+    x: rect.left,
+    y: rect.top
   };
 };
 
+
 Utils.getLocation = function(element, opt_onlyFirstRect) {
-  try {
-    element = element.wrappedJSObject ? element.wrappedJSObject : element;
-    var clientRect = undefined;
-    if (opt_onlyFirstRect && element.getClientRects().length > 1) {
-      for (var i = 0; i < element.getClientRects().length; i++) {
-        var candidate = element.getClientRects()[i];
-        if (candidate.width != 0 && candidate.height != 0) {
-          clientRect = candidate;
-          break;
-        }
+  element = element.wrappedJSObject ? element.wrappedJSObject : element;
+  var rect = undefined;
+  if (opt_onlyFirstRect && element.getClientRects().length > 1) {
+    for (var i = 0; i < element.getClientRects().length; i++) {
+      var candidate = element.getClientRects()[i];
+      if (candidate.width != 0 && candidate.height != 0) {
+        rect = candidate;
+        break;
       }
-      if (!clientRect) {
-        clientRect = element.getBoundingClientRect();
-      }
-    } else {
-      clientRect = element.getBoundingClientRect();
     }
-
-    // Firefox 3.5
-    if (clientRect['width']) {
-      if ('area' == element.tagName.toLowerCase()) {
-        // TODO: implement coordinates specified in percents
-        var coords = element.coords.split(',');
-        if (element.shape == 'rect') {
-          var leftX = Number(coords[0]);
-          var topY = Number(coords[1]);
-          var rightX = Number(coords[2]);
-          var bottomY = Number(coords[3]);
-          return {
-            x: clientRect.left + leftX,
-            y: clientRect.top + topY,
-            width: rightX - leftX,
-            height: bottomY - topY
-          };
-        } else if (element.shape == 'circle') {
-          var centerX = Number(coords[0]);
-          var centerY = Number(coords[1]);
-          var radius = Number(coords[2]);
-          return {
-            x: clientRect.left + centerX - radius,
-            y: clientRect.top + centerY - radius,
-            width: 2*radius,
-            height: 2*radius
-          };
-        } else if (element.shape == 'poly') {
-          var minX = Number(coords[0]);
-          var minY = Number(coords[1]);
-          var maxX = minX;
-          var maxY = minY;
-          for (i = 0; i < coords.length / 2; i++) {
-            var xi = Number(coords[i*2]);
-            var yi = Number(coords[i*2 + 1]);
-            minX = Math.min(minX, xi);
-            minY = Math.min(minY, yi);
-            maxX = Math.max(maxX, xi);
-            maxY = Math.max(maxY, yi);
-          }
-
-          return {
-            x: clientRect.left + minX,
-            y: clientRect.top + minY,
-            width: maxX - minX,
-            height: maxY - minY
-          };
-        }
-      }
-      
-      return {
-        x: clientRect.left,
-        y: clientRect.top,
-        width: clientRect.width,
-        height: clientRect.height
-      };
-    }
-
-    // Firefox 3.0.14 seems to have top, bottom attributes.
-    if (clientRect['top'] !== undefined) {
-      var retWidth = clientRect.right - clientRect.left;
-      var retHeight = clientRect.bottom - clientRect.top;
-      return {
-        x: clientRect.left,
-        y: clientRect.top,
-        width: retWidth,
-        height: retHeight
-      };
-    }
-
-    // Firefox 3.0, but lacking client rect
-    fxdriver.logging.info('Falling back to firefox3 mechanism');
-    var accessibleLocation = Utils.getLocationViaAccessibilityInterface(element);
-    accessibleLocation.x = clientRect.left;
-    accessibleLocation.y = clientRect.top;
-    return accessibleLocation;
-  } catch (e) {
-    // Element doesn't have an accessibility node
-    fxdriver.logging.warning('Falling back to using closure to find the location of the element');
-    fxdriver.logging.warning(e);
-
-    var position = goog.style.getClientPosition(element);
-    var size = goog.style.getBorderBoxSize(element);
-    var shown = bot.dom.isShown(element, /*ignoreOpacity=*/true);
-
-    return {
-      x: position.x,
-      y: position.y,
-      width: shown ? size.width : 0,
-      height: shown ? size.height : 0
-    };
   }
+  if (!rect) {
+    rect = bot.dom.getClientRect(element);
+  }
+  return {
+    x: rect.left,
+    y: rect.top,
+    width: rect.width,
+    height: rect.height
+  };
 };
 
 
@@ -832,17 +722,19 @@ Utils.getBrowserSpecificOffset = function(inBrowser) {
 };
 
 
-Utils.getLocationOnceScrolledIntoView = function(element, opt_onlyFirstRect) {
-  // Some elements may not a scrollIntoView function - for example,
-  // elements under an SVG element. Call those only if they exist.
-  if (typeof element.scrollIntoView == 'function') {
-    // This method does the scrolling as a side-effect. This is less than
-    // ideal, which is why I document it here.
-    //TODO: Fix bot.dom.getLocationInView(element) so that it scrolls elements
-    // which are in iframes as well. See issue 2497.
-    element.scrollIntoView();
+Utils.scrollIntoView = function(element, opt_coords) {
+  var win = goog.dom.getWindow(goog.dom.getOwnerDocument(element));
+  for (var frame = win.frameElement; frame; frame = win.frameElement) {
+    bot.action.scrollIntoView(frame);
+    win = goog.dom.getWindow(goog.dom.getOwnerDocument(frame));
   }
 
+  return bot.action.scrollIntoView(element, opt_coords);
+};
+
+
+Utils.getLocationOnceScrolledIntoView = function(element, opt_onlyFirstRect) {
+  Utils.scrollIntoView(element);
   return Utils.getLocationRelativeToWindowHandle(element, opt_onlyFirstRect);
 };
 
@@ -1040,7 +932,7 @@ Utils.installClickListener = function(respond, WebLoadingListener) {
     } catch(e) {
       // dead object
       currentWindowGone = true;
-    };
+    }
 
     if (currentWindowGone) {
      fxdriver.logging.info('Detected page load in top window; changing session focus from ' +

@@ -188,8 +188,23 @@ function suite(fn, opt_options) {
   inSuite = true;
 
   var suiteOptions = opt_options || {};
+  var browsers = suiteOptions.browsers;
+  if (browsers) {
+    // Filter out browser specific tests when that browser is not currently
+    // selected for testing.
+    browsers = browsers.filter(function(browser) {
+      if (browsersToTest.indexOf(browser) != -1) {
+        return true;
+      }
+      return browsersToTest.indexOf(
+          browser.substring('remote.'.length)) != -1;
+    });
+  } else {
+    browsers = browsersToTest;
+  }
+
   try {
-    (suiteOptions.browsers || browsersToTest).forEach(function(browser) {
+    browsers.forEach(function(browser) {
 
       testing.describe('[' + browser + ']', function() {
         var serverToUse = null;

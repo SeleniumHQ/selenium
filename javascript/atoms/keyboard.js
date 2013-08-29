@@ -444,7 +444,7 @@ bot.Keyboard.prototype.pressKey = function(key) {
 
 /**
  * Whether the given key currently requires a keypress.
- * TODO(user): Make this dependent on the state of the modifier keys.
+ * TODO: Make this dependent on the state of the modifier keys.
  *
  * @param {bot.Keyboard.Key} key Key.
  * @return {boolean} Whether it requires a keypress event.
