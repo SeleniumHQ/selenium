@@ -64,7 +64,7 @@ class Service(object):
         except:
             raise WebDriverException(
                 "ChromeDriver executable needs to be available in the path. \
-                Please download from http://code.google.com/p/selenium/downloads/list\
+                Please download from http://code.google.com/p/chromedriver/downloads/list\
                 and read up at http://code.google.com/p/selenium/wiki/ChromeDriver")
         count = 0
         while not utils.is_connectable(self.port):
