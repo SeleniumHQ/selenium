@@ -43,6 +43,14 @@ public class ClosureTestStatement extends Statement {
     
     WebDriver driver = driverSupplier.get();
 
+    // Attempt to make the window as big as possible.
+    try {
+      driver.manage().window().maximize();
+    } catch (RuntimeException ignored) {
+      // We tried.
+    }
+
+
     JavascriptExecutor executor = (JavascriptExecutor) driver;
     // Avoid Safari JS leak between tests.
     executor.executeScript("if (window && window.top) window.top.G_testRunner = null");
