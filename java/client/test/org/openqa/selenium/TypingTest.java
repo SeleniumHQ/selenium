@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import static org.hamcrest.Matchers.anyOf;
@@ -45,6 +44,9 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
+import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
+import static org.openqa.selenium.testing.drivers.SauceDriver.getEffectivePlatform;
 
 public class TypingTest extends JUnit4TestBase {
 
@@ -278,7 +280,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
     assumeFalse(Browser.detect() == Browser.opera &&
-                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
+                getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
 
@@ -313,7 +315,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     assumeFalse(Browser.detect() == Browser.opera &&
-                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
+                getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
 
@@ -440,7 +442,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                TestUtilities.getEffectivePlatform().is(Platform.MAC));
+                getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -539,7 +541,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testChordControlHomeShiftEndDelete() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                TestUtilities.getEffectivePlatform().is(Platform.MAC));
+                getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -562,7 +564,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testChordReveseShiftHomeSelectionDeletes() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                TestUtilities.getEffectivePlatform().is(Platform.MAC));
+                getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -596,7 +598,11 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                TestUtilities.getEffectivePlatform().is(Platform.MAC));
+                getEffectivePlatform().is(Platform.MAC));
+    assumeFalse("FIXME: Fails in Firefox on Linux with native events",
+                isFirefox(driver) &&
+                isNativeEventsEnabled(driver) &&
+                getEffectivePlatform().is(Platform.LINUX));
 
     driver.get(pages.javascriptPage);
 
@@ -704,7 +710,7 @@ public class TypingTest extends JUnit4TestBase {
   @Ignore(value = {HTMLUNIT, OPERA, ANDROID, OPERA_MOBILE, MARIONETTE})
   @Test
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
-    assumeFalse("not tested on mac", TestUtilities.getEffectivePlatform().is(Platform.MAC));
+    assumeFalse("not tested on mac", getEffectivePlatform().is(Platform.MAC));
 
     driver.get(pages.richTextPage);
 
