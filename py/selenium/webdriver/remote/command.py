@@ -26,7 +26,9 @@ class Command(object):
 
     # Keep in sync with org.openqa.selenium.remote.DriverCommand
 
+    STATUS = "status"
     NEW_SESSION = "newSession"
+    GET_ALL_SESSIONS = "getAllSessions"
     DELETE_SESSION = "deleteSession"
     CLOSE = "close"
     QUIT = "quit"
