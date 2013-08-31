@@ -212,3 +212,8 @@ ul a {
 
 #hubConfig{
 	min-width:55%;} 
+
+a#helplink {
+	text-decoration: none;
+	color: #FFF;
+}
