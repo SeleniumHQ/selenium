@@ -197,11 +197,11 @@ public class ConsoleServlet extends RegistryBasedServlet {
   private Object getHeader() {
     StringBuilder builder = new StringBuilder();
     builder.append("<div id='header'>");
-    builder.append("<h1><a href='http://code.google.com/p/selenium/wiki/Grid2' >Selenium</a></h1>");
+    builder.append("<h1><a href='/grid/console'>Selenium</a></h1>");
     builder.append("<h2>Grid Console v.");
     builder.append(coreVersion).append(coreRevision);
     builder.append("</h2>");
-    builder.append("<div>.</div>");
+    builder.append("<div><a id='helplink' target='_blank' href='http://code.google.com/p/selenium/wiki/Grid2'>Help</a></div>");
     builder.append("</div>");
     builder.append("");
     return builder.toString();
