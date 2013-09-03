@@ -1404,9 +1404,10 @@ bot.dom.scrollElementRegionIntoContainerView_ = function(elem, elemRegion,
   var relY = elemRect.top + elemRegion.top - containerRect.top -
              containerBorder.top;
 
-  // How much the element can move in the container.
-  var spaceX = containerRect.width - elemRegion.width;
-  var spaceY = containerRect.height - elemRegion.height;
+  // How much the element can move in the container. Use the container's
+  // clientWidth/clientHeight, not containerRect, to account for the scrollbar.
+  var spaceX = container.clientWidth - elemRegion.width;
+  var spaceY = container.clientHeight - elemRegion.height;
 
   // Scroll the element into view of the container.
   container.scrollLeft += Math.min(relX, Math.max(relX - spaceX, 0));
