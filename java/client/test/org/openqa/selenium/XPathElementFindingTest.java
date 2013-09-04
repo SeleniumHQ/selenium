@@ -39,18 +39,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 public class XPathElementFindingTest extends JUnit4TestBase {
 
   @Test
-  public void testShouldThrowAnExceptionWhenThereIsNoLinkToClickAndItIsFoundWithXPath() {
-    driver.get(pages.xhtmlTestPage);
-
-    try {
-      driver.findElement(By.xpath("//a[@id='Not here']"));
-      fail("Should not have succeeded");
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
-  }
-
-  @Test
   public void testShouldThrowAnExceptionWhenThereIsNoLinkToClick() {
     driver.get(pages.xhtmlTestPage);
 
