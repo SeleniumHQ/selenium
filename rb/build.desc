@@ -33,6 +33,7 @@ rubygem(
   author = ["Jari Bakken"],
   email = "jari.bakken@gmail.com",
   homepage = "http://selenium.googlecode.com",
+  license = "Apache",
   files = [
     "lib/**/*",
     "CHANGES",

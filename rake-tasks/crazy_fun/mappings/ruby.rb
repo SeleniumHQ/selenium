@@ -242,6 +242,7 @@ class RubyMappings
         s.email       = args[:email]
         s.homepage    = args[:homepage]
         s.files       = Dir[*args[:files]]
+        s.license     = args[:license]
 
         args[:gemdeps].each { |dep| s.add_dependency(*dep.shift) }
         args[:devdeps].each { |dep| s.add_development_dependency(*dep.shift) }
