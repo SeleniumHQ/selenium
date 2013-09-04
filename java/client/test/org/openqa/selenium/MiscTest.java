@@ -38,6 +38,15 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 public class MiscTest extends JUnit4TestBase {
 
   @Test
+  public void testShouldReturnTitleOfPageIfSet() {
+    driver.get(pages.xhtmlTestPage);
+    assertThat(driver.getTitle(), equalTo(("XHTML Test Page")));
+
+    driver.get(pages.simpleTestPage);
+    assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
+  }
+
+  @Test
   public void testShouldReportTheCurrentUrlCorrectly() {
     driver.get(pages.simpleTestPage);
     assertTrue(pages.simpleTestPage.equalsIgnoreCase(driver.getCurrentUrl()));
