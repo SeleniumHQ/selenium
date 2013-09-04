@@ -55,6 +55,13 @@ public class MiscTest extends JUnit4TestBase {
     assertTrue(pages.javascriptPage.equalsIgnoreCase(driver.getCurrentUrl()));
   }
 
+  @Test
+  public void shouldReturnInput() {
+    driver.get(pages.formPage);
+    WebElement selectBox = driver.findElement(By.id("cheese"));
+    assertThat(selectBox.getTagName().toLowerCase(), is("input"));
+  }
+
   @JavascriptEnabled
   @Test
   public void testShouldReturnTheSourceOfAPage() {

@@ -360,4 +360,41 @@ public class ElementAttributeTest extends JUnit4TestBase {
     WebElement element5 = driver.findElement(By.id("unwrappable"));
     assertEquals("true", element5.getAttribute("nowrap"));
   }
+
+  @Ignore({OPERA, IPHONE, ANDROID, MARIONETTE})
+  @Test
+  public void testMultipleAttributeShouldBeNullWhenNotSet() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.id("selectWithoutMultiple"));
+    assertEquals(null, element.getAttribute("multiple"));
+  }
+
+  @Test
+  public void testMultipleAttributeShouldBeTrueWhenSet() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.id("selectWithMultipleEqualsMultiple"));
+    assertEquals("true", element.getAttribute("multiple"));
+  }
+
+  @Test
+  public void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsBlank() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.id("selectWithEmptyStringMultiple"));
+    assertEquals("true", element.getAttribute("multiple"));
+  }
+
+  @Test
+  public void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithoutAValue() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.id("selectWithMultipleWithoutValue"));
+    assertEquals("true", element.getAttribute("multiple"));
+  }
+
+  @Test
+  public void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsSomethingElse() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.id("selectWithRandomMultipleValue"));
+    assertEquals("true", element.getAttribute("multiple"));
+  }
+
 }

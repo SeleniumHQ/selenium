@@ -21,7 +21,9 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -34,6 +36,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
@@ -616,4 +619,273 @@ public class ElementFindingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.linkText(linkText));
     assertEquals(linkText, element.getText());
   }
+
+  @Ignore({REMOTE})
+  @Test
+  public void testLinkWithFormattingTags() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement res =
+        elem.findElement(By.partialLinkText("link with formatting tags"));
+    assertNotNull(res);
+    assertEquals("link with formatting tags", res.getText());
+  }
+
+  @Ignore({REMOTE})
+  @Test
+  public void testLinkWithLeadingSpaces() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement res = elem.findElement(By.partialLinkText("link with leading space"));
+    assertNotNull(res);
+    assertEquals("link with leading space", res.getText());
+  }
+
+  @Ignore({REMOTE})
+  @Test
+  public void testLinkWithTrailingSpace() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement res =
+        elem.findElement(By.partialLinkText("link with trailing space"));
+    assertNotNull(res);
+    assertEquals("link with trailing space", res.getText());
+  }
+
+  @Ignore({REMOTE, MARIONETTE})
+  @Test
+  public void testFindMultipleElements() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    List<WebElement> elements =
+        elem.findElements(By.partialLinkText("link"));
+    assertNotNull(elements);
+    assertEquals(6, elements.size());
+  }
+
+  @Test
+  @Ignore(MARIONETTE)
+  public void testDriverCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
+    driver.get(pages.simpleTestPage);
+    WebElement link = null;
+    try {
+      link = driver.findElement(By.linkText("link with trailing space"));
+    } catch (NoSuchElementException e) {
+      fail("Should have found link");
+    }
+    assertEquals("linkWithTrailingSpace", link.getAttribute("id"));
+  }
+
+  @Test
+  @Ignore(MARIONETTE)
+  public void testElementCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement link = null;
+    try {
+      link = elem.findElement(By.linkText("link with trailing space"));
+    } catch (NoSuchElementException e) {
+      fail("Should have found link");
+    }
+    assertEquals("linkWithTrailingSpace", link.getAttribute("id"));
+  }
+
+  @Test
+  public void testShouldThrowAnExceptionWhenThereIsNoLinkToClick() {
+    driver.get(pages.xhtmlTestPage);
+
+    try {
+      driver.findElement(By.xpath("//a[@id='Not here']"));
+      fail("Should not have succeeded");
+    } catch (NoSuchElementException e) {
+      // this is expected
+    }
+  }
+
+  @Test
+  public void testShouldFindSingleElementByXPath() {
+    driver.get(pages.xhtmlTestPage);
+    WebElement element = driver.findElement(By.xpath("//h1"));
+    assertThat(element.getText(), equalTo("XHTML Might Be The Future"));
+  }
+
+  @Test
+  public void testShouldFindElementsByXPath() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> divs = driver.findElements(By.xpath("//div"));
+    assertThat(divs.size(), equalTo(13));
+  }
+
+  @Test
+  public void testShouldBeAbleToFindManyElementsRepeatedlyByXPath() {
+    driver.get(pages.xhtmlTestPage);
+    String xpathString = "//node()[contains(@id,'id')]";
+    assertThat(driver.findElements(By.xpath(xpathString)).size(), equalTo(3));
+
+    xpathString = "//node()[contains(@id,'nope')]";
+    assertThat(driver.findElements(By.xpath(xpathString)).size(), equalTo(0));
+  }
+
+  @Test
+  public void testShouldBeAbleToIdentifyElementsByClass() {
+    driver.get(pages.xhtmlTestPage);
+
+    String header = driver.findElement(By.xpath("//h1[@class='header']")).getText();
+    assertThat(header, equalTo("XHTML Might Be The Future"));
+  }
+
+  @Test
+  public void testShouldBeAbleToSearchForMultipleAttributes() {
+    driver.get(pages.formPage);
+
+    try {
+      driver.findElement(
+          By.xpath("//form[@name='optional']/input[@type='submit' and @value='Click!']")).click();
+    } catch (NoSuchElementException e) {
+      fail("Should be able to find the submit button");
+    }
+  }
+
+  @Test
+  public void testShouldLocateElementsWithGivenText() {
+    driver.get(pages.xhtmlTestPage);
+
+    try {
+      driver.findElement(By.xpath("//a[text()='click me']"));
+    } catch (NoSuchElementException e) {
+      e.printStackTrace();
+      fail("Cannot find the element");
+    }
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
+    driver.get(pages.formPage);
+
+    try {
+      driver.findElement(By.xpath("this][isnot][valid"));
+      fail("Should not have succeeded because the xpath expression is syntactically not correct");
+    } catch (RuntimeException e) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically invalid
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
+    assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
+
+    driver.get(pages.formPage);
+
+    try {
+      driver.findElements(By.xpath("this][isnot][valid"));
+      fail("Should not have succeeded because the xpath expression is syntactically not correct");
+    } catch (RuntimeException e) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically
+      // invalid
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
+    driver.get(pages.formPage);
+    WebElement body = driver.findElement(By.tagName("body"));
+    try {
+      body.findElement(By.xpath("this][isnot][valid"));
+      fail("Should not have succeeded because the xpath expression is syntactically not correct");
+    } catch (RuntimeException e) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically invalid
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
+    assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
+
+    driver.get(pages.formPage);
+    WebElement body = driver.findElement(By.tagName("body"));
+    try {
+      body.findElements(By.xpath("this][isnot][valid"));
+      fail("Should not have succeeded because the xpath expression is syntactically not correct");
+    } catch (RuntimeException e) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically invalid
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
+    driver.get(pages.formPage);
+
+    try {
+      driver.findElement(By.xpath("count(//input)"));
+      fail("Should not have succeeded because the xpath expression does not select an element");
+    } catch (RuntimeException e) {
+      // We expect an exception because the XPath expression results in a number, not in an element
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
+    assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
+
+    driver.get(pages.formPage);
+
+    try {
+      driver.findElements(By.xpath("count(//input)"));
+      fail("Should not have succeeded because the xpath expression does not select an element");
+    } catch (RuntimeException e) {
+      // We expect an exception because the XPath expression results in a number, not in an element
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement() {
+    driver.get(pages.formPage);
+
+    WebElement body = driver.findElement(By.tagName("body"));
+
+    try {
+      body.findElement(By.xpath("count(//input)"));
+      fail("Should not have succeeded because the xpath expression does not select an element");
+    } catch (RuntimeException e) {
+      // We expect an exception because the XPath expression results in a number, not in an element
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
+  }
+
+  @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test
+  public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
+    assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
+
+    driver.get(pages.formPage);
+
+    WebElement body = driver.findElement(By.tagName("body"));
+
+    try {
+      body.findElements(By.xpath("count(//input)"));
+      fail("Should not have succeeded because the xpath expression does not select an element");
+    } catch (RuntimeException e) {
+      // We expect an exception because the XPath expression results in a number, not in an element
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
+  }
+
 }
