@@ -22,6 +22,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import static org.hamcrest.Matchers.not;
@@ -289,6 +290,43 @@ public class VisibilityTest extends JUnit4TestBase {
 
     WebElement element = driver.findElement(By.id("child"));
     assertFalse(element.isDisplayed());
+  }
+
+  /**
+   * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1610">
+   *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
+   */
+  @JavascriptEnabled
+  @Ignore({IE, HTMLUNIT, OPERA, OPERA_MOBILE, MARIONETTE})
+  @Test
+  public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
+    driver.get(pages.clickJacker);
+
+    WebElement element = driver.findElement(By.id("clickJacker"));
+    assertEquals("Precondition failed: clickJacker should be transparent",
+                 "0", element.getCssValue("opacity"));
+    element.click();
+    assertEquals("1", element.getCssValue("opacity"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {ANDROID, MARIONETTE})
+  @Test
+  public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
+    driver.get(pages.formPage);
+
+    WebElement select = driver.findElement(By.id("invisi_select"));
+
+    List<WebElement> options = select.findElements(By.tagName("option"));
+    WebElement apples = options.get(0);
+    WebElement oranges = options.get(1);
+
+    assertTrue("Apples should be selected", apples.isSelected());
+    assertFalse("Oranges should be selected", oranges.isSelected());
+
+    oranges.click();
+    assertFalse("Apples should not be selected", apples.isSelected());
+    assertTrue("Oranges should be selected", oranges.isSelected());
   }
 
 }
