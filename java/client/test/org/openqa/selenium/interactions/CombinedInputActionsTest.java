@@ -18,6 +18,7 @@ package org.openqa.selenium.interactions;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WaitingConditions;
@@ -25,12 +26,14 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.TestWaiter.waitFor;
@@ -260,4 +263,58 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     WebElement shiftInfo = waitFor(elementToExist(driver, "shiftKey"));
     assertThat(shiftInfo.getText(), equalTo("true"));
   }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = {OPERA, OPERA_MOBILE, SAFARI, MARIONETTE}, issues = {4136})
+  public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
+    driver.get(pages.javascriptPage);
+
+    // This test passes on IE. When running in Firefox on Windows, the test
+    // will fail if the mouse cursor is not in the window. Solution: Maximize.
+    if ((TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) &&
+        TestUtilities.isFirefox(driver) && TestUtilities.isNativeEventsEnabled(driver)) {
+      driver.manage().window().maximize();
+    }
+
+    // Move to a different element to make sure the mouse is not over the
+    // element with id 'item1' (from a previous test).
+    new Actions(driver).moveToElement(driver.findElement(By.id("dynamo"))).build().perform();
+
+    WebElement element = driver.findElement(By.id("menu1"));
+
+    final WebElement item = driver.findElement(By.id("item1"));
+    assertEquals("", item.getText());
+
+    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
+    new Actions(driver).moveToElement(element).build().perform();
+
+    // Intentionally wait to make sure hover persists.
+    Thread.sleep(2000);
+
+    item.click();
+
+    WebElement result = driver.findElement(By.id("result"));
+    waitFor(WaitingConditions.elementTextToContain(result, "item 1"));
+  }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = {SAFARI, MARIONETTE}, issues = {4136})
+  public void testCanClickOnSuckerFishMenuItem() throws Exception {
+    driver.get(pages.javascriptPage);
+
+    WebElement element = driver.findElement(By.id("menu1"));
+
+    new Actions(driver).moveToElement(element).build().perform();
+
+    WebElement target = driver.findElement(By.id("item1"));
+
+    assertTrue(target.isDisplayed());
+    target.click();
+
+    String text = driver.findElement(By.id("result")).getText();
+    assertTrue(text.contains("item 1"));
+  }
+
 }

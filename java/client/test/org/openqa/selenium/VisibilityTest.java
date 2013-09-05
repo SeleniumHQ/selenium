@@ -329,4 +329,15 @@ public class VisibilityTest extends JUnit4TestBase {
     assertTrue("Oranges should be selected", oranges.isSelected());
   }
 
+  @JavascriptEnabled
+  @Test
+  public void testCorrectlyDetectMapElementsAreShown() {
+    driver.get(pages.mapVisibilityPage);
+
+    final WebElement area = driver.findElement(By.id("mtgt_unnamed_0"));
+
+    boolean isShown = area.isDisplayed();
+    assertTrue("The element and the enclosing map should be considered shown.", isShown);
+  }
+
 }

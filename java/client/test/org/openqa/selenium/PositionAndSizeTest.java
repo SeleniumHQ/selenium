@@ -21,12 +21,17 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -35,10 +40,11 @@ import org.junit.Test;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 @Ignore(value = {HTMLUNIT, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE},
         reason = "HtmlUnit: Getting coordinates requires rendering, others: not tested")
-public class CoordinatesTest extends JUnit4TestBase {
+public class PositionAndSizeTest extends JUnit4TestBase {
 
   @Test
   public void testShouldGetCoordinatesOfAnElementInViewPort() {
@@ -117,6 +123,40 @@ public class CoordinatesTest extends JUnit4TestBase {
     driver.findElement(By.id("bottom")).click();
     assertThat(getLocationInViewPort(By.id("fixed")).getY(), is(0));
     assertThat(getLocationOnPage(By.id("fixed")).getY(), greaterThan(0));
+  }
+
+  @JavascriptEnabled
+  @Test
+  public void testShouldCorrectlyIdentifyThatAnElementHasWidthAndHeight() {
+    driver.get(pages.xhtmlTestPage);
+
+    WebElement shrinko = driver.findElement(By.id("linkId"));
+    Dimension size = shrinko.getSize();
+    assertTrue("Width expected to be greater than 0", size.width > 0);
+    assertTrue("Height expected to be greater than 0", size.height > 0);
+  }
+
+  // TODO: This test's value seems dubious at best. The CSS spec does not define how browsers
+  // should handle sub-pixel rendering, and every browser seems to be different anyhow:
+  // http://ejohn.org/blog/sub-pixel-problems-in-css/
+  @JavascriptEnabled
+  @Ignore({IE, CHROME, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, PHANTOMJS, MARIONETTE})
+  // Reason for Chrome: WebKit bug 28804
+  @Test
+  public void testShouldHandleNonIntegerPositionAndSize() {
+    driver.get(pages.rectanglesPage);
+
+    WebElement r2 = driver.findElement(By.id("r2"));
+    String left = r2.getCssValue("left");
+    assertTrue("left (\"" + left + "\") should start with \"10.9\".", left.startsWith("10.9"));
+    String top = r2.getCssValue("top");
+    assertTrue("top (\"" + top + "\") should start with \"10.1\".", top.startsWith("10.1"));
+    assertEquals(new Point(11, 10), r2.getLocation());
+    String width = r2.getCssValue("width");
+    assertTrue("width (\"" + left + "\") should start with \"48.6\".", width.startsWith("48.6"));
+    String height = r2.getCssValue("height");
+    assertTrue("height (\"" + left + "\") should start with \"49.3\".", height.startsWith("49.3"));
+    assertEquals(r2.getSize(), new Dimension(49, 49));
   }
 
   private Point getLocationInViewPort(By locator) {
