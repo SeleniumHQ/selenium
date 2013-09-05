@@ -38,7 +38,10 @@ module Selenium
         end
 
         def driver_extensions
-          []
+          [
+            DriverExtensions::TakesScreenshot,
+            DriverExtensions::HasInputDevices
+          ]
         end
 
         private
