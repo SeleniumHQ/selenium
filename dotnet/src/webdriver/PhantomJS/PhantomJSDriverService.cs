@@ -436,7 +436,7 @@ namespace OpenQA.Selenium.PhantomJS
                 string actualValue = propertyValue.ToString();
                 if (actualValue.Contains(" "))
                 {
-                    return string.Format(CultureInfo.InvariantCulture, "\"{0}\"");
+                    return string.Format(CultureInfo.InvariantCulture, "\"{0}\"", actualValue);
                 }
                 else
                 {
