@@ -421,6 +421,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(reason = "Not all unicode whitespace characters are trimmed", issues = {6072})
   public void testShouldTrimTextWithMultiByteWhitespaces() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("trimmedSpace")).getText();
