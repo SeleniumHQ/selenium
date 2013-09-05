@@ -17,10 +17,16 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+
+import java.util.concurrent.Callable;
 
 public class StaleElementReferenceTest extends JUnit4TestBase {
 
@@ -63,5 +69,34 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     } catch (StaleElementReferenceException e) {
       // do nothing. this is what we expected.
     }
+  }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore(MARIONETTE)
+  public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
+    driver.get(pages.javascriptPage);
+
+    WebElement toBeDeleted = driver.findElement(By.id("deleted"));
+    assertTrue(toBeDeleted.isDisplayed());
+
+    driver.findElement(By.id("delete")).click();
+
+    boolean wasStale = waitFor(elementToBeStale(toBeDeleted));
+    assertTrue("Element should be stale at this point", wasStale);
+  }
+
+  private Callable<Boolean> elementToBeStale(final WebElement element) {
+    return new Callable<Boolean>() {
+
+      public Boolean call() throws Exception {
+        try {
+          element.isDisplayed();
+          return false;
+        } catch (StaleElementReferenceException e) {
+          return true;
+        }
+      }
+    };
   }
 }

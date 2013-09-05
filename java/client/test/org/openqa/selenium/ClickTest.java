@@ -34,6 +34,8 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
+import static org.openqa.selenium.WaitingConditions.pageSourceToContain;
+import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -60,7 +62,7 @@ public class ClickTest extends JUnit4TestBase {
   public void testCanClickOnALinkAndFollowIt() {
     driver.findElement(By.id("normal")).click();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   @Ignore(value = {OPERA, MARIONETTE}, reason = "Not tested.")
@@ -68,7 +70,7 @@ public class ClickTest extends JUnit4TestBase {
   public void testCanClickOnALinkThatOverflowsAndFollowIt() {
     driver.findElement(By.id("overflowLink")).click();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   @JavascriptEnabled
@@ -95,7 +97,7 @@ public class ClickTest extends JUnit4TestBase {
     driver.findElement(By.id("otherframe")).click();
     driver.switchTo().defaultContent().switchTo().frame("target");
 
-    waitFor(WaitingConditions.pageSourceToContain(driver, "Hello WebDriver"));
+    waitFor(pageSourceToContain(driver, "Hello WebDriver"));
   }
 
   @JavascriptEnabled
@@ -112,8 +114,7 @@ public class ClickTest extends JUnit4TestBase {
     toClick.click();
     driver.switchTo().defaultContent().switchTo().frame("target");
 
-    assertTrue("Target did not reload",
-               driver.getPageSource().contains("Hello WebDriver"));
+    waitFor(pageSourceToContain(driver, "Hello WebDriver"));
   }
 
   @JavascriptEnabled
@@ -133,8 +134,7 @@ public class ClickTest extends JUnit4TestBase {
     toClick.click();
     driver.switchTo().defaultContent().switchTo().frame("target");
 
-    assertTrue("Target did not reload",
-               driver.getPageSource().contains("Hello WebDriver"));
+    waitFor(pageSourceToContain(driver, "Hello WebDriver"));
   }
 
   @JavascriptEnabled
@@ -154,7 +154,7 @@ public class ClickTest extends JUnit4TestBase {
   @Test
   public void testShouldClickOnFirstBoundingClientRectWithNonZeroSize() {
     driver.findElement(By.id("twoClientRects")).click();
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   @JavascriptEnabled
@@ -217,34 +217,34 @@ public class ClickTest extends JUnit4TestBase {
   public void testCanClickOnALinkWithEnclosedImage() {
     driver.findElement(By.id("link-with-enclosed-image")).click();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   @Test
   public void testCanClickOnAnImageEnclosedInALink() {
     driver.findElement(By.id("link-with-enclosed-image")).findElement(By.tagName("img")).click();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   @Test
   public void testCanClickOnALinkThatContainsTextWrappedInASpan() {
     driver.findElement(By.id("link-with-enclosed-span")).click();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   @Test
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     driver.findElement(By.id("embeddedBlock")).click();
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   @Test
   public void testCanClickOnAnElementEnclosedInALink() {
     driver.findElement(By.id("link-with-enclosed-span")).findElement(By.tagName("span")).click();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   // See http://code.google.com/p/selenium/issues/attachmentText?id=2700
@@ -266,7 +266,7 @@ public class ClickTest extends JUnit4TestBase {
   public void testClicksASurroundingStrongTag() {
     driver.get(appServer.whereIs("ClickTest_testClicksASurroundingStrongTag.html"));
     driver.findElement(By.tagName("a")).click();
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   @Test
@@ -275,15 +275,15 @@ public class ClickTest extends JUnit4TestBase {
   public void testCanClickAnImageMapArea() {
     driver.get(appServer.whereIs("click_tests/google_map.html"));
     driver.findElement(By.id("rectG")).click();
-    waitFor(WaitingConditions.pageTitleToBe(driver, "Target Page 1"));
+    waitFor(pageTitleToBe(driver, "Target Page 1"));
 
     driver.get(appServer.whereIs("click_tests/google_map.html"));
     driver.findElement(By.id("circleO")).click();
-    waitFor(WaitingConditions.pageTitleToBe(driver, "Target Page 2"));
+    waitFor(pageTitleToBe(driver, "Target Page 2"));
 
     driver.get(appServer.whereIs("click_tests/google_map.html"));
     driver.findElement(By.id("polyLE")).click();
-    waitFor(WaitingConditions.pageTitleToBe(driver, "Target Page 3"));
+    waitFor(pageTitleToBe(driver, "Target Page 3"));
   }
 
   @Test
@@ -297,7 +297,7 @@ public class ClickTest extends JUnit4TestBase {
 
     element.click();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "clicks"));
+    waitFor(pageTitleToBe(driver, "clicks"));
   }
 
   @Test
@@ -315,7 +315,7 @@ public class ClickTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("click"));
     element.click();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "clicks"));
+    waitFor(pageTitleToBe(driver, "clicks"));
   }
 
   @Test
@@ -327,7 +327,7 @@ public class ClickTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("ar_link"));
     element.click();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "clicks"));
+    waitFor(pageTitleToBe(driver, "clicks"));
   }
 
   @Test
@@ -340,7 +340,7 @@ public class ClickTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("link"));
     element.click();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   @Test
@@ -353,7 +353,18 @@ public class ClickTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("link"));
     element.click();
 
-    waitFor(WaitingConditions.pageTitleToBe(driver, "XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
+  }
+
+  @JavascriptEnabled
+  @Test
+  public void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() {
+    driver.get(pages.javascriptPage);
+
+    WebElement element = driver.findElement(By.linkText("No href"));
+    element.click();
+
+    waitFor(pageTitleToBe(driver, "Changed"));
   }
 
 }

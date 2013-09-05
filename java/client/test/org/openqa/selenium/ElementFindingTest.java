@@ -45,7 +45,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class ElementFindingTest extends JUnit4TestBase {
 
@@ -83,7 +82,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testshouldBeAbleToClickOnLinkIdentifiedById() {
+  public void testShouldBeAbleToClickOnLinkIdentifiedById() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.id("linkId")).click();
 
@@ -123,24 +122,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     } catch (NoSuchElementException e) {
       // this is expected
     }
-  }
-
-  @Test
-  public void testShouldBeAbleToFindChildrenOfANode() {
-    driver.get(pages.selectableItemsPage);
-    List<WebElement> elements = driver.findElements(By.xpath("/html/head"));
-    WebElement head = elements.get(0);
-    List<WebElement> importedScripts = head.findElements(By.tagName("script"));
-    assertThat(importedScripts.size(), equalTo(3));
-  }
-
-  @Test
-  public void testReturnAnEmptyListWhenThereAreNoChildrenOfANode() {
-    driver.get(pages.xhtmlTestPage);
-    WebElement table = driver.findElement(By.id("table"));
-    List<WebElement> rows = table.findElements(By.tagName("tr"));
-
-    assertThat(rows.size(), equalTo(0));
   }
 
   @Test
@@ -340,24 +321,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldFindGrandChildren() {
-    driver.get(pages.formPage);
-    WebElement form = driver.findElement(By.id("nested_form"));
-    form.findElement(By.name("x"));
-  }
-
-  @Test
-  public void testShouldNotFindElementOutSideTree() {
-    driver.get(pages.formPage);
-    WebElement element = driver.findElement(By.name("login"));
-    try {
-      element.findElement(By.name("x"));
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
-  }
-
-  @Test
   public void testShouldReturnElementsThatDoNotSupportTheNameProperty() {
     driver.get(pages.nestedPage);
 
@@ -377,7 +340,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldfindAnElementBasedOnTagName() {
+  public void testShouldFindAnElementBasedOnTagName() {
     driver.get(pages.formPage);
 
     WebElement element = driver.findElement(By.tagName("input"));
@@ -386,7 +349,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldfindElementsBasedOnTagName() {
+  public void testShouldFindElementsBasedOnTagName() {
     driver.get(pages.formPage);
 
     List<WebElement> elements = driver.findElements(By.tagName("input"));
@@ -411,20 +374,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     } catch (InvalidSelectorException e) {
       // This is expected
     }
-  }
-
-  @JavascriptEnabled
-  @Test
-  public void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() {
-    driver.get(pages.javascriptPage);
-
-    WebElement element = driver.findElement(By.linkText("No href"));
-    element.click();
-
-    // if any exception is thrown, we won't get this far. Sanity check
-    waitFor(pageTitleToBe(driver, "Changed"));
-
-    assertEquals("Changed", driver.getTitle());
   }
 
   @Test
@@ -452,35 +401,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     } catch (NoSuchElementException e) {
       // this is expected
     }
-  }
-
-  @JavascriptEnabled
-  @Test
-  @Ignore(MARIONETTE)
-  public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
-    driver.get(pages.javascriptPage);
-
-    WebElement toBeDeleted = driver.findElement(By.id("deleted"));
-    assertTrue(toBeDeleted.isDisplayed());
-
-    driver.findElement(By.id("delete")).click();
-
-    boolean wasStale = waitFor(elementToBeStale(toBeDeleted));
-    assertTrue("Element should be stale at this point", wasStale);
-  }
-
-  private Callable<Boolean> elementToBeStale(final WebElement element) {
-    return new Callable<Boolean>() {
-
-      public Boolean call() throws Exception {
-        try {
-          element.isDisplayed();
-          return false;
-        } catch (StaleElementReferenceException e) {
-          return true;
-        }
-      }
-    };
   }
 
   @Test
@@ -523,24 +443,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     List<WebElement> elements = driver.findElements(By.cssSelector("div.extraDiv, div.content"));
     assertEquals("content", elements.get(0).getAttribute("class"));
     assertEquals("extraDiv", elements.get(1).getAttribute("class"));
-  }
-
-  @Test
-  public void testFindingByTagNameShouldNotIncludeParentElementIfSameTagType() {
-    driver.get(pages.xhtmlTestPage);
-    WebElement parent = driver.findElement(By.id("my_span"));
-
-    assertEquals(2, parent.findElements(By.tagName("div")).size());
-    assertEquals(2, parent.findElements(By.tagName("span")).size());
-  }
-
-  @Test
-  public void testFindingByCssShouldNotIncludeParentElementIfSameTagType() {
-    driver.get(pages.xhtmlTestPage);
-    WebElement parent = driver.findElement(By.cssSelector("div#parent"));
-    WebElement child = parent.findElement(By.cssSelector("div"));
-
-    assertEquals("child", child.getAttribute("id"));
   }
 
   @JavascriptEnabled
@@ -653,18 +555,6 @@ public class ElementFindingTest extends JUnit4TestBase {
         elem.findElement(By.partialLinkText("link with trailing space"));
     assertNotNull(res);
     assertEquals("link with trailing space", res.getText());
-  }
-
-  @Ignore({REMOTE, MARIONETTE})
-  @Test
-  public void testFindMultipleElements() {
-    driver.get(pages.simpleTestPage);
-    WebElement elem = driver.findElement(By.id("links"));
-
-    List<WebElement> elements =
-        elem.findElements(By.partialLinkText("link"));
-    assertNotNull(elements);
-    assertEquals(6, elements.size());
   }
 
   @Test
