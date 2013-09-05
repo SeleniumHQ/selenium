@@ -54,9 +54,11 @@ import javax.imageio.ImageIO;
  *
  * 2. check screenshot image
  *
- * Logic of screenshot check test is simple: * open page with fixed amount of fixed sized and
- * coloured areas * take screenshot * calculate expected colors similary as in tested HTML page *
- * scan screenshot for actial colors * compare
+ * Logic of screenshot check test is simple:
+ * - open page with fixed amount of fixed sized and coloured areas
+ * - take screenshot
+ * - calculate expected colors as in tested HTML page
+ * - scan screenshot for actual colors * compare
  *
  */
 
@@ -283,6 +285,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = {CHROME},
+          reason = " CHROME: Unknown actual colors are presented at screenshot")
   public void testShouldCaptureScreenshotAtIFramePage() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
@@ -340,9 +344,10 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(
-      value = {OPERA, IE},
+      value = {OPERA, IE, CHROME},
       reason = " OPERA: takes screenshot only of switched-in frame." +
-               " IE: v9 takes screesnhot only of switched-in frame area"
+               " IE: v9 takes screesnhot only of switched-in frame area " +
+               " CHROME: Unknown actual colors are presented at screenshot"
   )
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
