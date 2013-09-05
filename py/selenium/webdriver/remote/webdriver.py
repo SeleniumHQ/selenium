@@ -673,7 +673,7 @@ class WebDriver(object):
         :Usage:
             Use the corresponding find_element_by_* instead of this.
         """
-        if isinstance(by, tuple) or isinstance(value, int) or value==None:
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
         return self.execute(Command.FIND_ELEMENT,
@@ -686,7 +686,7 @@ class WebDriver(object):
         :Usage:
             Use the corresponding find_elements_by_* instead of this.
         """
-        if isinstance(by, tuple) or isinstance(value, int) or value==None:
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
         return self.execute(Command.FIND_ELEMENTS,

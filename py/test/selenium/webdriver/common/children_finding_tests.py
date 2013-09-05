@@ -18,7 +18,8 @@
 
 import unittest
 from selenium.common.exceptions import NoSuchElementException
-
+from selenium.common.exceptions import InvalidSelectorException
+from selenium.webdriver.common.by import By
 
 class ChildrenFindingTests(unittest.TestCase):
 
@@ -158,6 +159,78 @@ class ChildrenFindingTests(unittest.TestCase):
         elements = parent.find_elements_by_css_selector(
             '*[name="selectomatic"]')
         self.assertEqual(2, len(elements))
+
+    def testShouldThrowAnErrorIfUserPassesInInteger(self):
+        self._loadPage("nestedElements")
+        element = self.driver.find_element_by_name("form2")
+        try:
+           element.find_element(By.ID, 333333)
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInTuple(self):
+        self._loadPage("nestedElements")
+        element = self.driver.find_element_by_name("form2")
+        try:
+           element.find_element((By.ID, 333333))
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInNone(self):
+        self._loadPage("nestedElements")
+        element = self.driver.find_element_by_name("form2")
+        try:
+           element.find_element(By.ID, None)
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInInvalidBy(self):
+        self._loadPage("nestedElements")
+        element = self.driver.find_element_by_name("form2")
+        try:
+           element.find_element("css", "body")
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInIntegerWhenFindElements(self):
+        self._loadPage("nestedElements")
+        element = self.driver.find_element_by_name("form2")
+        try:
+           element.find_elements(By.ID, 333333)
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInTupleWhenFindElements(self):
+        self._loadPage("nestedElements")
+        element = self.driver.find_element_by_name("form2")
+        try:
+           element.find_elements((By.ID, 333333))
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInNoneWhenFindElements(self):
+        self._loadPage("nestedElements")
+        element = self.driver.find_element_by_name("form2")
+        try:
+           element.find_elements(By.ID, None)
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
+
+    def testShouldThrowAnErrorIfUserPassesInInvalidByWhenFindElements(self):
+        self._loadPage("nestedElements")
+        element = self.driver.find_element_by_name("form2")
+        try:
+           element.find_elements("css", "body")
+           self.fail("Should have thrown WebDriver Exception")
+        except InvalidSelectorException:
+            pass #This is expected
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)

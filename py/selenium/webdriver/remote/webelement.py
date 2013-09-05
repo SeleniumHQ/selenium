@@ -228,14 +228,14 @@ class WebElement(object):
         return self._parent.execute(command, params)
 
     def find_element(self, by=By.ID, value=None):
-        if isinstance(by, tuple) or isinstance(value, int) or value==None:
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
         
         return self._execute(Command.FIND_CHILD_ELEMENT,
                              {"using": by, "value": value})['value']
 
     def find_elements(self, by=By.ID, value=None):
-        if isinstance(by, tuple) or isinstance(value, int) or value==None:
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
         
         return self._execute(Command.FIND_CHILD_ELEMENTS,
