@@ -419,4 +419,13 @@ public class TextHandlingTest extends JUnit4TestBase {
     // That's the reason for the previous assert.
     assertEquals(expected, element.getText());
   }
+
+  @Test
+  public void testShouldTrimTextWithMultiByteWhitespaces() {
+    driver.get(pages.simpleTestPage);
+    String text = driver.findElement(By.id("trimmedSpace")).getText();
+
+    assertEquals("test", text);
+  }
+
 }
