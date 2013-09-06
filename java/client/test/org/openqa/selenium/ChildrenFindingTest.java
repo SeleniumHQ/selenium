@@ -302,4 +302,39 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertEquals(6, elements.size());
   }
 
+  @Ignore({REMOTE})
+  @Test
+  public void testLinkWithLeadingSpaces() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement res = elem.findElement(By.partialLinkText("link with leading space"));
+    assertEquals("link with leading space", res.getText());
+  }
+
+  @Ignore({REMOTE})
+  @Test
+  public void testLinkWithTrailingSpace() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement res = elem.findElement(By.partialLinkText("link with trailing space"));
+    assertEquals("link with trailing space", res.getText());
+  }
+
+  @Test
+  @Ignore(MARIONETTE)
+  public void testElementCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
+    driver.get(pages.simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+
+    WebElement link = null;
+    try {
+      link = elem.findElement(By.linkText("link with trailing space"));
+    } catch (NoSuchElementException e) {
+      fail("Should have found link");
+    }
+    assertEquals("linkWithTrailingSpace", link.getAttribute("id"));
+  }
+
 }
