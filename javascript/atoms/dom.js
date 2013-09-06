@@ -728,7 +728,8 @@ bot.dom.getOverflowState = function(elem, opt_coord) {
     // the overflow style of the body, and the body is really overflow:visible.
     var overflowElem = e;
     if (htmlOverflowStyle == 'visible') {
-      if (e == htmlElem) {
+      // Note: bodyElem will be null/undefined in SVG documents.
+      if (e == htmlElem && bodyElem) {
         overflowElem = bodyElem;
       } else if (e == bodyElem) {
         return {x: 'visible', y: 'visible'};
@@ -869,6 +870,8 @@ bot.dom.getClientRect = function(elem) {
   } else {
     var nativeRect;
     try {
+      // TODO: in IE and Firefox, getBoundingClientRect includes stroke width,
+      // but getBBox does not.
       nativeRect = elem.getBoundingClientRect();
     } catch (e) {
       // On IE < 9, calling getBoundingClientRect on an orphan element raises
@@ -881,7 +884,7 @@ bot.dom.getClientRect = function(elem) {
 
     // In IE, the element can additionally be offset by a border around the
     // documentElement or body element that we have to subtract.
-    if (goog.userAgent.IE) {
+    if (goog.userAgent.IE && goog.dom.getOwnerDocument(elem).body) {
       var doc = goog.dom.getOwnerDocument(elem);
       rect.left -= doc.documentElement.clientLeft + doc.body.clientLeft;
       rect.top -= doc.documentElement.clientTop + doc.body.clientTop;
