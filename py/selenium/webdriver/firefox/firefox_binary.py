@@ -127,6 +127,9 @@ class FirefoxBinary(object):
                 pass
         else:
             return ""
+
+        if not command:
+            return ""
  
         return shlex.split(command)[0]
 
