@@ -56,6 +56,14 @@ public class DefaultDriverSessions implements DriverSessions {
     this(Platform.getCurrent(), new DefaultDriverFactory());
   }
 
+  public DefaultDriverSessions(
+      DriverFactory factory, Map<Capabilities, Class<? extends WebDriver>> drivers) {
+    this.factory = factory;
+    for (Map.Entry<Capabilities, Class<? extends WebDriver>> entry : drivers.entrySet()) {
+      registerDriver(entry.getKey(), entry.getValue());
+    }
+  }
+
   protected DefaultDriverSessions(Platform runningOn, DriverFactory factory) {
     this.factory = factory;
     registerDefaults(runningOn);
