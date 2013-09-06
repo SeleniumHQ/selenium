@@ -77,7 +77,7 @@ class Options(object):
             # Should not use base64.encodestring() which inserts newlines every
             # 76 characters (per RFC 1521).  Chromedriver has to remove those
             # unnecessary newlines before decoding, causing performance hit.
-            encoded_extensions.append(base64.b64encode(file_.read()))
+            encoded_extensions.append(base64.b64encode(file_.read()).decode('UTF-8'))
 
             file_.close()
         return encoded_extensions + self._extensions
