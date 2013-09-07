@@ -1681,16 +1681,20 @@ A JSON object describing a Proxy configuration.
 || proxyType || string || (Required) The type of proxy being used. Possible \
 values are: *direct* - A direct connection - no proxy in use, *manual* - \
 Manual proxy settings configured, e.g. setting a proxy for HTTP, a proxy for \
-FTP, etc, *pac* - Proxy autoconfiguration from a URL), autodetect (proxy \
+FTP, etc, *pac* - Proxy autoconfiguration from a URL, *autodetect* - Proxy \
 autodetection, probably with WPAD, *system* - Use system settings ||
-|| proxyAutoconfigUrl || string || (Required if proxyType == pac, Ignored \
+|| proxyAutoconfigUrl || string || (Required if proxyType == *pac*, Ignored \
 otherwise) Specifies the URL to be used for proxy autoconfiguration. \
 Expected format example: http://hostname.com:1234/pacfile ||
-|| ftpProxy, httpProxy, sslProxy || string || (Optional, Ignored if proxyType \
-!= manual) Specifies the proxies to be used for FTP, HTTP and HTTPS requests \
+|| ftpProxy, httpProxy, sslProxy, socksProxy || string || (Optional, Ignored if proxyType \
+!= *manual*) Specifies the proxies to be used for FTP, HTTP, HTTPS and SOCKS requests \
 respectively. Behaviour is undefined if a request is made, where the proxy \
-for the particular protocol is undefined, if proxyType is manual. Expected \
+for the particular protocol is undefined, if proxyType is *manual*. Expected \
 format example: hostname.com:1234 ||
+|| socksUsername || string || (Optional, Ignored if proxyType != *manual* and \
+socksProxy is not set) Specifies SOCKS proxy username. || 
+|| socksPassword || string || (Optional, Ignored if proxyType != *manual* and \
+socksProxy is not set) Specifies SOCKS proxy password. || 
 
 </dd>
 </dl>
