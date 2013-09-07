@@ -12,6 +12,9 @@ module Selenium
       attr_reader :type,
                   :ftp,
                   :http,
+                  :socks,
+                  :socks_username,
+                  :socks_password,
                   :no_proxy,
                   :pac,
                   :ssl,
@@ -20,13 +23,16 @@ module Selenium
       def initialize(opts = {})
         opts = opts.dup
 
-        self.type        = opts.delete(:type) if opts.has_key? :type
-        self.ftp         = opts.delete(:ftp) if opts.has_key? :ftp
-        self.http        = opts.delete(:http) if opts.has_key? :http
-        self.no_proxy    = opts.delete(:no_proxy) if opts.has_key? :no_proxy
-        self.ssl         = opts.delete(:ssl) if opts.has_key? :ssl
-        self.pac         = opts.delete(:pac) if opts.has_key? :pac
-        self.auto_detect = opts.delete(:auto_detect) if opts.has_key? :auto_detect
+        self.type           = opts.delete(:type) if opts.has_key? :type
+        self.ftp            = opts.delete(:ftp) if opts.has_key? :ftp
+        self.http           = opts.delete(:http) if opts.has_key? :http
+        self.no_proxy       = opts.delete(:no_proxy) if opts.has_key? :no_proxy
+        self.ssl            = opts.delete(:ssl) if opts.has_key? :ssl
+        self.pac            = opts.delete(:pac) if opts.has_key? :pac
+        self.auto_detect    = opts.delete(:auto_detect) if opts.has_key? :auto_detect
+        self.socks          = opts.delete(:socks) if opts.has_key? :socks
+        self.socks_username = opts.delete(:socks_username) if opts.has_key? :socks_username
+        self.socks_password = opts.delete(:socks_password) if opts.has_key? :socks_password
 
         unless opts.empty?
           raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
@@ -68,6 +74,21 @@ module Selenium
         @auto_detect = bool
       end
 
+      def socks=(value)
+        self.type = :manual
+        @socks = value
+      end
+
+      def socks_username=(value)
+        self.type = :manual
+        @socks_username = value
+      end
+
+      def socks_password=(value)
+        self.type = :manual
+        @socks_password = value
+      end
+
       def type=(type)
         unless TYPES.has_key? type
           raise ArgumentError, "invalid proxy type: #{type.inspect}, expected one of #{TYPES.keys.inspect}"
@@ -91,6 +112,9 @@ module Selenium
         json_result["proxyAutoconfigUrl"] = pac if pac
         json_result["sslProxy"]           = ssl if ssl
         json_result["autodetect"]         = auto_detect if auto_detect
+        json_result["socksProxy"]         = socks if socks
+        json_result["socksUsername"]      = socks_username if socks_username
+        json_result["socksPassword"]      = socks_password if socks_password
 
         json_result if json_result.length > 1
       end
@@ -105,13 +129,16 @@ module Selenium
 
           proxy = new
 
-          proxy.type        = data['proxyType'].downcase.to_sym if data.has_key? 'proxyType'
-          proxy.ftp         = data['ftpProxy'] if data.has_key? 'ftpProxy'
-          proxy.http        = data['httpProxy'] if data.has_key? 'httpProxy'
-          proxy.no_proxy    = data['noProxy'] if data.has_key? 'noProxy'
-          proxy.pac         = data['proxyAutoconfigUrl'] if data.has_key? 'proxyAutoconfigUrl'
-          proxy.ssl         = data['sslProxy'] if data.has_key? 'sslProxy'
-          proxy.auto_detect = data['autodetect'] if data.has_key? 'autodetect'
+          proxy.type           = data['proxyType'].downcase.to_sym if data.has_key? 'proxyType'
+          proxy.ftp            = data['ftpProxy'] if data.has_key? 'ftpProxy'
+          proxy.http           = data['httpProxy'] if data.has_key? 'httpProxy'
+          proxy.no_proxy       = data['noProxy'] if data.has_key? 'noProxy'
+          proxy.pac            = data['proxyAutoconfigUrl'] if data.has_key? 'proxyAutoconfigUrl'
+          proxy.ssl            = data['sslProxy'] if data.has_key? 'sslProxy'
+          proxy.auto_detect    = data['autodetect'] if data.has_key? 'autodetect'
+          proxy.socks          = data['socksProxy'] if data.has_key? 'socksProxy'
+          proxy.socks_username = data['socksUsername'] if data.has_key? 'socksUsername'
+          proxy.socks_password = data['socksPassword'] if data.has_key? 'socksPassword'
 
           proxy
         end
