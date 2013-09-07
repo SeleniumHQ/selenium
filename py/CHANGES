@@ -1,3 +1,6 @@
+Selenium 2.36
+* Added Safari WebDriver. Fixes issue 5352.
+
 Selenium 2.35
 * Remove duplicate 'get screenshot as file' methods.  Add method 'get_screenshot_as_png'
 * fixing UnicodeEncodeError on get attribute of webelement
@@ -38,7 +41,7 @@ Selenium 2.29
 
 Selenium 2.28
 * "null" can now be passed to executeScript
-* Add transparent and extended colour keywords to color support module. Fixes issue 4866 
+* Add transparent and extended colour keywords to color support module. Fixes issue 4866
 
 Selenium 2.27
 * Added support for phantomjs / ghostdriver
@@ -80,7 +83,7 @@ Selenium 2.21.1
 * focusmanager.testmode messes with native events, removing it.
 
 Selenium 2.21
-* Local File upload capabilities for non-remote browser 
+* Local File upload capabilities for non-remote browser
 * Adding maximize_window api call
 * Updating default firefox profile to set focusmanager.testmode to true
     see https://bugzilla.mozilla.org/show_bug.cgi?id=704583

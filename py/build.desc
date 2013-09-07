@@ -46,6 +46,11 @@ py_test(
   deps = [ ":test_remote_firefox" ],
   browsers = [ "remote_firefox" ])
 
+py_test(
+  name = "safari_test",
+  deps = [ ":test_safari" ],
+  browsers = [ "safari" ])
+
 py_env(
   name = "test_env",
   packages = [
@@ -66,7 +71,8 @@ py_test(
     "ie",
     "phantomjs",
     "remote_firefox",
-    "opera"
+    "opera",
+    "safari",
   ])
 
 py_docs(
