@@ -81,7 +81,7 @@ class ProxyTests(unittest.TestCase):
         self.assertEqual(expected_capabilities, desired_capabilities)
 
     def testCanNotChangeInitializedProxyType(self):
-        proxy = Proxy(raw={'proxyType': ProxyType.DIRECT})
+        proxy = Proxy(raw={'proxyType': 'direct'})
         try:
             proxy.proxy_type = ProxyType.SYSTEM
             raise Exception("Change of already initialized proxy type should raise exception")

@@ -28,6 +28,15 @@ class ProxyType:
     SYSTEM = ProxyTypeFactory.make(5, 'SYSTEM')           # Use system settings (default on Linux).
     UNSPECIFIED = ProxyTypeFactory.make(6, 'UNSPECIFIED') # Not initialized (for internal use).
 
+    @classmethod
+    def load(cls, value):
+        value = str(value).upper()
+        for attr in dir(cls):
+            attr_value = getattr(cls, attr)
+            if isinstance(attr_value, dict) and attr_value.has_key('string') and \
+                attr_value['string'] is not None and attr_value['string'] == value:
+                return attr_value
+        raise Exception("No proxy type is found for %s" % (value))
 
 class Proxy(object):
     """
@@ -54,7 +63,7 @@ class Proxy(object):
         """
         if raw is not None:
             if 'proxyType' in raw and raw['proxyType'] is not None:
-                self.proxy_type = raw['proxyType']
+                self.proxy_type = ProxyType.load(raw['proxyType'])
             if 'ftpProxy' in raw and raw['ftpProxy'] is not None:
                 self.ftp_proxy = raw['ftpProxy']
             if 'httpProxy' in raw and raw['httpProxy'] is not None:
@@ -89,13 +98,13 @@ class Proxy(object):
         :Args:
          - value: The proxy type.
         """
-        self._verify_proxy_type_compatilibily(value)
+        self._verify_proxy_type_compatibility(value)
         self.proxyType = value
 
     @property
     def auto_detect(self):
         """
-        Returns autodect setting.
+        Returns autodetect setting.
         """
         return self.autodetect
 
@@ -109,7 +118,7 @@ class Proxy(object):
         """
         if isinstance(value, bool):
             if self.autodetect is not value:
-                self._verify_proxy_type_compatilibily(ProxyType.AUTODETECT)
+                self._verify_proxy_type_compatibility(ProxyType.AUTODETECT)
                 self.proxyType = ProxyType.AUTODETECT
                 self.autodetect = value
         else:
@@ -130,7 +139,7 @@ class Proxy(object):
         :Args:
          - value: The ftp proxy value.
         """
-        self._verify_proxy_type_compatilibily(ProxyType.MANUAL)
+        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
         self.proxyType = ProxyType.MANUAL
         self.ftpProxy = value
 
@@ -149,7 +158,7 @@ class Proxy(object):
         :Args:
          - value: The http proxy value.
         """
-        self._verify_proxy_type_compatilibily(ProxyType.MANUAL)
+        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
         self.proxyType = ProxyType.MANUAL
         self.httpProxy = value
 
@@ -168,7 +177,7 @@ class Proxy(object):
         :Args:
          - value: The noproxy value.
         """
-        self._verify_proxy_type_compatilibily(ProxyType.MANUAL)
+        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
         self.proxyType = ProxyType.MANUAL
         self.noProxy = value
 
@@ -187,7 +196,7 @@ class Proxy(object):
         :Args:
          - value: The proxy autoconfig url value.
         """
-        self._verify_proxy_type_compatilibily(ProxyType.PAC)
+        self._verify_proxy_type_compatibility(ProxyType.PAC)
         self.proxyType = ProxyType.PAC
         self.proxyAutoconfigUrl = value
 
@@ -206,7 +215,7 @@ class Proxy(object):
         :Args:
          - value: The https proxy value.
         """
-        self._verify_proxy_type_compatilibily(ProxyType.MANUAL)
+        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
         self.proxyType = ProxyType.MANUAL
         self.sslProxy = value
 
@@ -225,7 +234,7 @@ class Proxy(object):
         :Args:
          - value: The socks proxy value.
         """
-        self._verify_proxy_type_compatilibily(ProxyType.MANUAL)
+        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
         self.proxyType = ProxyType.MANUAL
         self.socksProxy = value
 
@@ -244,7 +253,7 @@ class Proxy(object):
         :Args:
          - value: The socks proxy username value.
         """
-        self._verify_proxy_type_compatilibily(ProxyType.MANUAL)
+        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
         self.proxyType = ProxyType.MANUAL
         self.socksUsername = value
 
@@ -263,11 +272,11 @@ class Proxy(object):
         :Args:
          - value: The socks proxy password value.
         """
-        self._verify_proxy_type_compatilibily(ProxyType.MANUAL)
+        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
         self.proxyType = ProxyType.MANUAL
         self.socksPassword = value
 
-    def _verify_proxy_type_compatilibily(self, compatibleProxy):
+    def _verify_proxy_type_compatibility(self, compatibleProxy):
         if self.proxyType != ProxyType.UNSPECIFIED and self.proxyType != compatibleProxy:
             raise Exception(" Specified proxy type (%s) not compatible with current setting (%s)" % \
                                                 (compatibleProxy, self.proxyType))
@@ -275,7 +284,7 @@ class Proxy(object):
 
     def add_to_capabilities(self, capabilities):
         """
-        Adds proxy information as capability in specified capabilties.
+        Adds proxy information as capability in specified capabilities.
 
         :Args:
          - capabilities: The capabilities to which proxy will be added.
