@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -76,6 +77,9 @@ namespace OpenQA.Selenium
         private string noProxy;
         private string proxyAutoConfigUrl;
         private string sslProxyLocation;
+        private string socksProxyLocation;
+        private string socksUsername;
+        private string socksPassword;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Proxy"/> class.
@@ -125,7 +129,22 @@ namespace OpenQA.Selenium
             {
                 this.SslProxy = settings["sslProxy"].ToString();
             }
-            
+
+            if (settings.ContainsKey("socksProxy"))
+            {
+                this.SocksProxy = settings["socksProxy"].ToString();
+            }
+
+            if (settings.ContainsKey("socksUsername"))
+            {
+                this.SocksUsername = settings["socksUsername"].ToString();
+            }
+
+            if (settings.ContainsKey("socksPassword"))
+            {
+                this.SocksPassword = settings["socksPassword"].ToString();
+            }
+
             if (settings.ContainsKey("autodetect"))
             {
                 this.IsAutoDetect = (bool)settings["autodetect"];
@@ -145,7 +164,7 @@ namespace OpenQA.Selenium
 
             set
             {
-                this.VerifyProxyTypeCompatilibily(ProxyKind.AutoDetect);
+                this.VerifyProxyTypeCompatilibily(value);
                 this.proxyKind = value;
             }
         }
@@ -230,9 +249,9 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Gets or sets the value for when no proxy is specified.
+        /// Gets or sets the value for bypass proxy addresses.
         /// </summary>
-        [JsonIgnore]
+        [JsonProperty("noProxy", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public string NoProxy
         {
             get
@@ -286,11 +305,72 @@ namespace OpenQA.Selenium
             }
         }
 
+        /// <summary>
+        /// Gets or sets the value of the proxy for the SOCKS protocol.
+        /// </summary>
+        [JsonProperty("socksProxy", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        public string SocksProxy
+        {
+            get
+            {
+                return this.socksProxyLocation;
+            }
+
+            set
+            {
+                this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
+                this.proxyKind = ProxyKind.Manual;
+                this.socksProxyLocation = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the value of username for the SOCKS proxy.
+        /// </summary>
+        [JsonProperty("socksUsername", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        public string SocksUsername
+        {
+            get
+            {
+                return this.socksUsername;
+            }
+
+            set
+            {
+                this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
+                this.proxyKind = ProxyKind.Manual;
+                this.socksUsername = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the value of password for the SOCKS proxy.
+        /// </summary>
+        [JsonProperty("socksPassword", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        public string SocksPassword
+        {
+            get
+            {
+                return this.socksPassword;
+            }
+
+            set
+            {
+                this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
+                this.proxyKind = ProxyKind.Manual;
+                this.socksPassword = value;
+            }
+        }
+
         private void VerifyProxyTypeCompatilibily(ProxyKind compatibleProxy)
         {
             if (this.proxyKind != ProxyKind.Unspecified && this.proxyKind != compatibleProxy)
             {
-                throw new InvalidOperationException("Proxy autodetect is incompatible with manual settings");
+                throw new InvalidOperationException(
+                    string.Format(CultureInfo.InvariantCulture,
+                        "Specified proxy type {0} is not compatible with current setting {1}", 
+                        compatibleProxy.ToString().ToUpperInvariant(), this.proxyKind.ToString().ToUpperInvariant())
+                );
             }
         }
     }
