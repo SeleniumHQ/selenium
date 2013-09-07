@@ -13,7 +13,9 @@ class ProxyTypeFactory:
 
 class ProxyType:
     """
-    Set of possible types of proxy. Proxy type has 2 property -
+    Set of possible types of proxy.
+
+    Each proxy type has 2 properties:
        'ff_value' is value of Firefox profile preference,
        'string' is id of proxy type.
     """
@@ -39,6 +41,9 @@ class Proxy(object):
     noProxy = ''
     proxyAutoconfigUrl = ''
     sslProxy = ''
+    socksProxy = ''
+    socksUsername = ''
+    socksPassword = ''
 
     def __init__(self, raw=None):
         """
@@ -62,6 +67,12 @@ class Proxy(object):
                 self.sslProxy = raw['sslProxy']
             if 'autodetect' in raw and raw['autodetect'] is not None:
                 self.auto_detect = raw['autodetect']
+            if 'socksProxy' in raw and raw['socksProxy'] is not None:
+                self.socksProxy = raw['socksProxy']
+            if 'socksUsername' in raw and raw['socksUsername'] is not None:
+                self.socksUsername = raw['socksUsername']
+            if 'socksPassword' in raw and raw['socksPassword'] is not None:
+                self.socksPassword = raw['socksPassword']
 
     @property
     def proxy_type(self):
@@ -76,7 +87,7 @@ class Proxy(object):
         Sets proxy type.
 
         :Args:
-         - value: Te proxy type.
+         - value: The proxy type.
         """
         self._verify_proxy_type_compatilibily(value)
         self.proxyType = value
@@ -199,6 +210,63 @@ class Proxy(object):
         self.proxyType = ProxyType.MANUAL
         self.sslProxy = value
 
+    @property
+    def socks_proxy(self):
+        """
+        Returns socks proxy setting.
+        """
+        return self.socksProxy
+
+    @socks_proxy.setter
+    def socks_proxy(self, value):
+        """
+        Sets socks proxy setting.
+
+        :Args:
+         - value: The socks proxy value.
+        """
+        self._verify_proxy_type_compatilibily(ProxyType.MANUAL)
+        self.proxyType = ProxyType.MANUAL
+        self.socksProxy = value
+
+    @property
+    def socks_username(self):
+        """
+        Returns socks proxy username setting.
+        """
+        return self.socksUsername
+
+    @socks_username.setter
+    def socks_username(self, value):
+        """
+        Sets socks proxy username setting.
+
+        :Args:
+         - value: The socks proxy username value.
+        """
+        self._verify_proxy_type_compatilibily(ProxyType.MANUAL)
+        self.proxyType = ProxyType.MANUAL
+        self.socksUsername = value
+
+    @property
+    def socks_password(self):
+        """
+        Returns socks proxy password setting.
+        """
+        return self.socksPassword
+
+    @socks_password.setter
+    def socks_password(self, value):
+        """
+        Sets socks proxy password setting.
+
+        :Args:
+         - value: The socks proxy password value.
+        """
+        self._verify_proxy_type_compatilibily(ProxyType.MANUAL)
+        self.proxyType = ProxyType.MANUAL
+        self.socksPassword = value
+
     def _verify_proxy_type_compatilibily(self, compatibleProxy):
         if self.proxyType != ProxyType.UNSPECIFIED and self.proxyType != compatibleProxy:
             raise Exception(" Specified proxy type (%s) not compatible with current setting (%s)" % \
@@ -226,4 +294,10 @@ class Proxy(object):
             proxy_caps['sslProxy'] = self.sslProxy
         if self.noProxy:
             proxy_caps['noProxy'] = self.noProxy
+        if self.socksProxy:
+            proxy_caps['socksProxy'] = self.socksProxy
+        if self.socksUsername:
+            proxy_caps['socksUsername'] = self.socksUsername
+        if self.socksPassword:
+            proxy_caps['socksPassword'] = self.socksPassword
         capabilities['proxy'] = proxy_caps
