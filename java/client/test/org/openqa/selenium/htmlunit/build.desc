@@ -4,6 +4,7 @@ java_library(name = "tests",
     "HtmlUnitSpecificTests.java",
     "InputKeysContainerTest.java",
     "ToStringTest.java",
+    "HtmlUnitProxyTest.java",
   ],
   deps = [
     "//java/client/src/org/openqa/selenium/htmlunit",
