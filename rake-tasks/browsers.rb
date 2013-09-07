@@ -85,6 +85,12 @@ BROWSERS = {
     }
   },
   "safari" => {
+    :python => {
+      :ignore => "safari",
+      :dir => "safari",
+      :file_string => "safari",
+      :class => "Safari"
+    },
     :java => {
       :class => "org.openqa.selenium.safari.SafariDriver",
       :deps => [ "//java/client/src/org/openqa/selenium/safari:safari" ]
