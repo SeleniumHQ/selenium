@@ -259,6 +259,7 @@ public class FirefoxProfile {
         setManualProxyPreference("ftp", proxy.getFtpProxy());
         setManualProxyPreference("http", proxy.getHttpProxy());
         setManualProxyPreference("ssl", proxy.getSslProxy());
+        setManualProxyPreference("socks", proxy.getSocksProxy());
         if (proxy.getNoProxy() != null) {
           setPreference("network.proxy.no_proxies_on", proxy.getNoProxy());
         }

@@ -242,6 +242,7 @@ class FirefoxProfile(object):
             self._set_manual_proxy_preference("ftp", proxy.ftp_proxy)
             self._set_manual_proxy_preference("http", proxy.http_proxy)
             self._set_manual_proxy_preference("ssl", proxy.ssl_proxy)
+            self._set_manual_proxy_preference("socks", proxy.socks_proxy)
         elif proxy.proxy_type is ProxyType.PAC:
             self.set_preference("network.proxy.autoconfig_url", proxy.proxy_autoconfig_url)
 

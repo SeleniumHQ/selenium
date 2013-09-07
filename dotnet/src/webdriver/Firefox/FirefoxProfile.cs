@@ -223,6 +223,7 @@ namespace OpenQA.Selenium.Firefox
                     this.SetManualProxyPreference("ftp", proxy.FtpProxy);
                     this.SetManualProxyPreference("http", proxy.HttpProxy);
                     this.SetManualProxyPreference("ssl", proxy.SslProxy);
+                    this.SetManualProxyPreference("socks", proxy.SocksProxy);
                     if (proxy.NoProxy != null)
                     {
                         this.SetPreference("network.proxy.no_proxies_on", proxy.NoProxy);
