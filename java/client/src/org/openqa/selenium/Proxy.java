@@ -113,7 +113,7 @@ public class Proxy {
    * @return reference to self
    */
   public Proxy setProxyType(ProxyType proxyType) {
-    verifyProxyTypeCompatibility(ProxyType.AUTODETECT);
+    verifyProxyTypeCompatibility(proxyType);
     this.proxyType = proxyType;
     return this;
   }
@@ -214,10 +214,21 @@ public class Proxy {
     return this;
   }
 
+  /**
+   * Gets proxy bypass (noproxy) addresses.
+   *
+   * @return The proxy bypass (noproxy) addresses
+   */
   public String getNoProxy() {
     return noProxy;
   }
 
+  /**
+   * Sets proxy bypass (noproxy) addresses
+   *
+   * @param noProxy The proxy bypass (noproxy) addresses
+   * @return reference to self
+   */
   public Proxy setNoProxy(String noProxy) {
     verifyProxyTypeCompatibility(ProxyType.MANUAL);
     this.proxyType = ProxyType.MANUAL;
@@ -257,13 +268,11 @@ public class Proxy {
   }
 
   /**
-   * Specifies which proxy to use for SOCKS.  Currently only supported in {@link
-   * com.opera.core.systems.OperaDriver}.
+   * Specifies which proxy to use for SOCKS.
    *
    * @param socksProxy the proxy host, expected format is <code>hostname.com:1234</code>
    * @return reference to self
    */
-  // TODO(andreastt): Implement this for Firefox
   public Proxy setSocksProxy(String socksProxy) {
     verifyProxyTypeCompatibility(ProxyType.MANUAL);
     this.proxyType = ProxyType.MANUAL;
@@ -281,16 +290,20 @@ public class Proxy {
   }
 
   /**
-   * Specifies a username for the SOCKS proxy.  Supported by SOCKS v5 and above.
+   * Specifies a username for the SOCKS proxy. Supported by SOCKS v5 and above.
    *
    * @param username username for the SOCKS proxy
+   * @return reference to self
    */
-  public void setSocksUsername(String username) {
-    socksUsername = username;
+  public Proxy setSocksUsername(String username) {
+    verifyProxyTypeCompatibility(ProxyType.MANUAL);
+    this.proxyType = ProxyType.MANUAL;
+    this.socksUsername = username;
+    return this;
   }
 
   /**
-   * Gets the SOCKS proxy's password.  Supported by SOCKS v5 and above.
+   * Gets the SOCKS proxy's password. Supported by SOCKS v5 and above.
    *
    * @return the SOCKS proxy's password
    */
@@ -299,12 +312,16 @@ public class Proxy {
   }
 
   /**
-   * Specifies a password for the SOCKS proxy.  Supported by SOCKS v5 and above.
+   * Specifies a password for the SOCKS proxy. Supported by SOCKS v5 and above.
    *
    * @param password password for the SOCKS proxy
+   * @return reference to self
    */
-  public void setSocksPassword(String password) {
-    socksPassword = password;
+  public Proxy setSocksPassword(String password) {
+    verifyProxyTypeCompatibility(ProxyType.MANUAL);
+    this.proxyType = ProxyType.MANUAL;
+    this.socksPassword = password;
+    return this;
   }
 
   /**
