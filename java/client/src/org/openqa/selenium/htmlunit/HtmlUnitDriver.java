@@ -202,23 +202,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     setJavascriptEnabled(capabilities.isJavascriptEnabled());
 
-    if (capabilities.getCapability(CapabilityType.PROXY) != null) {
-      Proxy proxy = Proxies.extractProxy(capabilities);
-      String fullProxy = proxy.getHttpProxy();
-      String pacfile = proxy.getProxyAutoconfigUrl();
-      if (fullProxy != null) {
-        int index = fullProxy.indexOf(":");
-        if (index != -1) {
-          String host = fullProxy.substring(0, index);
-          int port = Integer.parseInt(fullProxy.substring(index + 1));
-          setProxy(host, port);
-        } else {
-          setProxy(fullProxy, 0);
-        }
-      } else if(pacfile != null && !pacfile.equals("")) {
-        setAutoProxy(pacfile);
-      } 
-    }
+    setProxySettings(Proxies.extractProxy(capabilities));
   }
 
   // Package visibility for testing
@@ -317,11 +301,135 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     return client;
   }
 
+  /**
+   * Set proxy for WebClient using Proxy.
+   *
+   * @param proxy The proxy preferences.
+   */
+  public void setProxySettings(Proxy proxy) {
+    if (proxy == null || proxy.getProxyType() == Proxy.ProxyType.UNSPECIFIED) {
+      return;
+    }
+
+    switch (proxy.getProxyType()) {
+      case MANUAL:
+
+        ArrayList<String> noProxyHosts = new ArrayList<String>();
+        String noProxy = proxy.getNoProxy();
+        if (noProxy != null && !noProxy.equals("")) {
+          String[] hosts = noProxy.split(",");
+          for (int i = 0; i < hosts.length; i++) {
+            if (hosts[i].trim().length() > 0) {
+              noProxyHosts.add(hosts[i].trim());
+            }
+          }
+        }
+
+        String httpProxy = proxy.getHttpProxy();
+        if (httpProxy != null && !httpProxy.equals("")) {
+          String host = httpProxy;
+          int port = 0;
+
+          int index = httpProxy.indexOf(":");
+          if (index != -1) {
+            host = httpProxy.substring(0, index);
+            port = Integer.parseInt(httpProxy.substring(index + 1));
+          }
+
+          setHTTPProxy(host, port, noProxyHosts);
+        }
+
+        String socksProxy = proxy.getSocksProxy();
+        if (socksProxy != null && !socksProxy.equals("")) {
+          String host = socksProxy;
+          int port = 0;
+
+          int index = socksProxy.indexOf(":");
+          if (index != -1) {
+            host = socksProxy.substring(0, index);
+            port = Integer.parseInt(socksProxy.substring(index + 1));
+          }
+
+          setSocksProxy(host, port, noProxyHosts);
+        }
+
+        // sslProxy is not supported/implemented
+        // ftpProxy is not supported/implemented
+
+        break;
+      case PAC:
+        String pac = proxy.getProxyAutoconfigUrl();
+        if (pac != null && !pac.equals("")) {
+          setAutoProxy(pac);
+        }
+        break;
+    }
+  }
+
+  /**
+   * Sets HTTP proxy for WebClient
+   *
+   * @param host The hostname of HTTP proxy
+   * @param port The port of HTTP proxy, 0 means HTTP proxy w/o port
+   */
   public void setProxy(String host, int port) {
-    proxyConfig = new ProxyConfig(host, port);
+    setHTTPProxy(host, port, null);
+  }
+
+  /**
+   * Sets HTTP proxy for WebClient with bypass proxy hosts
+   *
+   * @param host The hostname of HTTP proxy
+   * @param port The port of HTTP proxy, 0 means HTTP proxy w/o port
+   * @param noProxyHosts The list of hosts which need to bypass HTTP proxy
+   */
+  public void setHTTPProxy(String host, int port, ArrayList<String> noProxyHosts) {
+    proxyConfig = new ProxyConfig();
+    proxyConfig.setProxyHost(host);
+    proxyConfig.setProxyPort(port);
+    if (noProxyHosts != null && noProxyHosts.size() > 0) {
+      for (String noProxyHost : noProxyHosts) {
+        proxyConfig.addHostsToProxyBypass(noProxyHost);
+      }
+    }
     getWebClient().getOptions().setProxyConfig(proxyConfig);
   }
 
+  /**
+   * Sets SOCKS proxy for WebClient
+   *
+   * @param host The hostname of SOCKS proxy
+   * @param port The port of SOCKS proxy, 0 means HTTP proxy w/o port
+   */
+  public void setSocksProxy(String host, int port) {
+    setSocksProxy(host, port, null);
+  }
+
+  /**
+   * Sets SOCKS proxy for WebClient with bypass proxy hosts
+   *
+   * @param host The hostname of SOCKS proxy
+   * @param port The port of SOCKS proxy, 0 means HTTP proxy w/o port
+   * @param noProxyHosts The list of hosts which need to bypass SOCKS proxy
+   */
+  public void setSocksProxy(String host, int port, ArrayList<String> noProxyHosts) {
+    proxyConfig = new ProxyConfig();
+    proxyConfig.setProxyHost(host);
+    proxyConfig.setProxyPort(port);
+    proxyConfig.setSocksProxy(true);
+    if (noProxyHosts != null && noProxyHosts.size() > 0) {
+      for (String noProxyHost : noProxyHosts) {
+        proxyConfig.addHostsToProxyBypass(noProxyHost);
+      }
+    }
+    getWebClient().getOptions().setProxyConfig(proxyConfig);
+  }
+
+  /**
+   * Sets Proxy Autoconfiguration URL for WebClient
+   *
+   * @param autoProxyUrl The Proxy Autoconfiguration URL
+   */
   public void setAutoProxy(String autoProxyUrl) {
     proxyConfig = new ProxyConfig();
     proxyConfig.setProxyAutoConfigUrl(autoProxyUrl);
