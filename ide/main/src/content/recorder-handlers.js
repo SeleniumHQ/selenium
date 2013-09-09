@@ -23,8 +23,8 @@ Recorder.addEventHandler('type', 'change', function(event) {
   var type = event.target.type;
   if ('input' == tagName && Recorder.inputTypes.indexOf(type) >= 0) {
     if (event.target.value.length > 0) {
-      //use sendKeys to type
-      this.record("sendKeys", this.findLocators(event.target), event.target.value);
+      // TODO figure out if we need sendKeys or type and record it
+      this.record("type", this.findLocators(event.target), event.target.value);
     } else {
       //use type to clear
       this.record("type", this.findLocators(event.target), event.target.value);
