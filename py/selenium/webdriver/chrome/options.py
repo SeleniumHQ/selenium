@@ -134,7 +134,7 @@ class Options(object):
 
             returns a dictionary with everything
         """
-        chrome = DesiredCapabilities.CHROME
+        chrome = DesiredCapabilities.CHROME.copy()
 
         chrome_options = self.experimental_options.copy()
         chrome_options["extensions"] = self.extensions
