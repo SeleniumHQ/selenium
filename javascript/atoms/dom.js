@@ -1348,9 +1348,13 @@ bot.dom.getInViewLocation =
   if ((scrollOffset.x + xScrolling != newScrollOffset.x) ||
       (scrollOffset.y + yScrolling != newScrollOffset.y)) {
     throw new bot.Error(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-        'The target location (' + (targetLocation.x + scrollOffset.x) +
-        ', ' + (targetLocation.y + scrollOffset.y) + ') is not on the ' +
-        'webpage.');
+        'The target location is not on the webpage. ' +
+        'The initial target location (' + targetLocation.x + ',' + targetLocation.y + ') ' +
+        'with scroll offset (' + scrollOffset.x + ',' + scrollOffset.y + ') is not scrolled to ' +
+        'expected scroll offset (' + newScrollOffset.x + ',' + newScrollOffset.y + ') ' +
+        'by (' + xScrolling + ',' + yScrolling + ') inside viewport with ' +
+        '(' + viewportSize.width + ',' + viewportSize.height + ') size.'
+    );
   }
 
   var inViewLocation = new goog.math.Coordinate(

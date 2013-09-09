@@ -42,6 +42,7 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -102,6 +103,28 @@ public class DragAndDropTest extends JUnit4TestBase {
     WebElement img2 = driver.findElement(By.id("test2"));
     new Actions(driver).dragAndDrop(img2, img1).perform();
     assertEquals(img1.getLocation(), img2.getLocation());
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {OPERA}, reason = "OPERA: ?")
+  @Test
+  public void testDragAndDropElementWithOffsetInIframeAtBottom() {
+    assumeFalse("See issue 6228", Browser.detect() == Browser.ff &&
+                TestUtilities.isNativeEventsEnabled(driver));
+
+    assumeTrue(TestUtilities.isNativeEventsEnabled(driver));
+
+    driver.get(appServer.whereIs("iframeAtBottom.html"));
+
+    final WebElement iframe = driver.findElement(By.tagName("iframe"));
+    driver.switchTo().frame(iframe);
+
+    WebElement img1 = driver.findElement(By.id("test1"));
+    Point initial = img1.getLocation();
+
+    new Actions(driver).dragAndDropBy(img1, 20, 20).perform();
+
+    assertEquals(initial.moveBy(20, 20), img1.getLocation());
   }
 
   @JavascriptEnabled
