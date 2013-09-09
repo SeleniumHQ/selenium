@@ -269,6 +269,9 @@ Editor.controller = {
       case "cmd_selenium_speed_faster":
       case "cmd_selenium_speed_slower":
       case "cmd_selenium_speed_slowest":
+      case "cmd_selenium_clear_base_URL_history":
+      case "cmd_selenium_clear_test_cases_history":
+      case "cmd_selenium_clear_test_suites_history":
         return true;
       default:
         return false;
@@ -286,6 +289,9 @@ Editor.controller = {
       case "cmd_save_suite":
       case "cmd_save_suite_as":
       case "cmd_selenium_testcase_clear":
+      case "cmd_selenium_clear_base_URL_history":
+      case "cmd_selenium_clear_test_cases_history":
+      case "cmd_selenium_clear_test_suites_history":
         return true;
       case "cmd_selenium_play":
         return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING;
@@ -400,6 +406,15 @@ Editor.controller = {
         break;
       case "cmd_selenium_speed_slowest":
         editor.updateInterval(1000);
+        break;
+      case "cmd_selenium_clear_base_URL_history":
+        editor.app.baseURLHistory.clear();
+        break;
+      case "cmd_selenium_clear_test_cases_history":
+        editor.app.recentTestCases.clear();
+        break;
+      case "cmd_selenium_clear_test_suites_history":
+        editor.app.recentTestSuites.clear();
         break;
       default:
     }
