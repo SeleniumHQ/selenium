@@ -161,14 +161,8 @@ public class FirefoxProfile {
     }
   }
 
-  protected void addWebDriverExtensionIfNeeded() {
-    if (extensions.containsKey("webdriver")) {
-      return;
-    }
-
-    ClasspathExtension extension = new ClasspathExtension(FirefoxProfile.class,
-        "/" + FirefoxProfile.class.getPackage().getName().replace(".", "/") + "/webdriver.xpi");
-    addExtension("webdriver", extension);
+  public boolean containsWebDriverExtension() {
+    return extensions.containsKey("webdriver");
   }
 
   public void addExtension(Class<?> loadResourcesUsing, String loadFrom) throws IOException {
@@ -192,7 +186,7 @@ public class FirefoxProfile {
     addExtension(extensionToInstall.getName(), new FileExtension(extensionToInstall));
   }
 
-  protected void addExtension(String key, Extension extension) {
+  public void addExtension(String key, Extension extension) {
     String name = deriveExtensionName(key);
     extensions.put(name, extension);
   }

@@ -67,6 +67,8 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
   }
 
   public void start() throws IOException {
+    addWebDriverExtensionIfNeeded();
+
     int port = 0;
 
     lock.lock(connectTimeout);
@@ -127,6 +129,16 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
     } finally {
       lock.unlock();
     }
+  }
+
+  protected void addWebDriverExtensionIfNeeded() {
+    if (profile.containsWebDriverExtension()) {
+      return;
+    }
+
+    ClasspathExtension extension = new ClasspathExtension(FirefoxProfile.class,
+                                                          "/" + FirefoxProfile.class.getPackage().getName().replace(".", "/") + "/webdriver.xpi");
+    profile.addExtension("webdriver", extension);
   }
 
   public Response execute(Command command) throws IOException {
