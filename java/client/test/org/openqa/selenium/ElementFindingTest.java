@@ -97,7 +97,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test(expected = NoSuchElementException.class)
-  public void testFindingMultipleElementsByWithSpaceShouldThrow() {
+  public void testFindingMultipleElementsByIdWithSpaceShouldThrow() {
     driver.get(pages.formPage);
     driver.findElement(By.id("nonexistent button"));
   }
@@ -125,6 +125,45 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("name"), is("div1"));
   }
 
+  // By.name negative
+
+  @Test(expected = NoSuchElementException.class)
+  public void testShouldNotBeAbleToLocateByNameASingleElementThatDoesNotExist() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name("nonExistentButton"));
+  }
+
+  @Test
+  public void testShouldNotBeAbleToLocateByNameMultipleElementsThatDoNotExist() {
+    driver.get(pages.formPage);
+    List<WebElement> elements = driver.findElements(By.name("nonExistentButton"));
+    assertThat(elements.size(), is(0));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByEmptyNameShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name(""));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingMultipleElementsByEmptyNameShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name(""));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByNameWithSpaceShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name("nonexistent button"));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingMultipleElementsByNameWithSpaceShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name("nonexistent button"));
+  }
+
   // By.tagName positive
 
   @Test
@@ -139,6 +178,45 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.tagName("input"));
     assertThat(elements.size(), greaterThan(1));
+  }
+
+  // By.name negative
+
+  @Test(expected = NoSuchElementException.class)
+  public void testShouldNotBeAbleToLocateByTagNameASingleElementThatDoesNotExist() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name("nonExistentButton"));
+  }
+
+  @Test
+  public void testShouldNotBeAbleToLocateByTagNameMultipleElementsThatDoNotExist() {
+    driver.get(pages.formPage);
+    List<WebElement> elements = driver.findElements(By.name("nonExistentButton"));
+    assertThat(elements.size(), is(0));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByEmptyTagNameShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name(""));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name(""));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByTagNameWithSpaceShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name("nonexistent button"));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingMultipleElementsByTagNameWithSpaceShouldThrow() {
+    driver.get(pages.formPage);
+    driver.findElement(By.name("nonexistent button"));
   }
 
   // By.className positive
