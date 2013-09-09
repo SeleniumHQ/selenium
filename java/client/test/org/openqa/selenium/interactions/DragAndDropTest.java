@@ -128,6 +128,23 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = {OPERA}, reason = "OPERA: ?")
+  @Test
+  public void testDragAndDropElementWithOffsetInScrolledDiv() {
+    assumeFalse("See issue 4241", Browser.detect() == Browser.ff &&
+                                  TestUtilities.isNativeEventsEnabled(driver));
+
+    driver.get(appServer.whereIs("dragAndDropInsideScrolledDiv.html"));
+
+    WebElement el = driver.findElement(By.id("test1"));
+    Point initial = el.getLocation();
+
+    new Actions(driver).dragAndDropBy(el, 3700, 3700).perform();
+
+    assertEquals(initial.moveBy(3700, 3700), el.getLocation());
+  }
+
+  @JavascriptEnabled
   @Test
   public void testElementInDiv() {
     assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
