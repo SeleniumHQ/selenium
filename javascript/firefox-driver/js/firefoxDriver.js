@@ -1083,7 +1083,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
       elementForNode = fxdriver.moz.unwrap(coordinates.auxiliary);
       clickPoint_ownerDocumentPreScroll = Utils.getLocationRelativeToWindowHandle(elementForNode);
     } else {
-      elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getChromeDocument());
+      elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getTopDocument());
       clickPoint_ownerDocumentPreScroll = respond.session.getMousePosition();
     }
 
@@ -1096,8 +1096,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
     var clickPoint_ownerDocumentPostScroll; //to
     try {
       clickPoint_ownerDocumentPostScroll = bot.dom.getInViewLocation(
-          clickPoint_ownerDocumentPreScroll, respond.session.getChromeWindow());
-      fxdriver.logging.info('clickPoint_ownerDocumentPostScroll: ' + clickPoint_ownerDocumentPostScroll.x + ', ' + clickPoint_ownerDocumentPostScroll.y);
+          clickPoint_ownerDocumentPreScroll, respond.session.getTopWindow());
     } catch (ex) {
       if (ex.code == bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS) {
         respond.sendError(new WebDriverError(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
@@ -1160,7 +1159,7 @@ FirefoxDriver.prototype.mouseDown = function(respond, parameters) {
     return;
   }
 
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getChromeDocument());
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getTopDocument());
 
   var nativeMouse = Utils.getNativeMouse();
   var node = Utils.getNodeForNativeEvents(elementForNode);
@@ -1198,7 +1197,7 @@ FirefoxDriver.prototype.mouseUp = function(respond, parameters) {
     return;
   }
 
-  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getChromeDocument());
+  var elementForNode = getElementFromLocation(respond.session.getMousePosition(), respond.session.getTopDocument());
 
   var nativeMouse = Utils.getNativeMouse();
   var node = Utils.getNodeForNativeEvents(elementForNode);

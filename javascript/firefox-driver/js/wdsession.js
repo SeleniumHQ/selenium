@@ -215,15 +215,21 @@ wdSession.prototype.getWindow = function() {
 };
 
 
+/** @return @return {?nsIDOMWindow} This session's top window. */
+wdSession.prototype.getTopWindow = function() {
+  return this.getWindow().top;
+};
+
+
 /** @return {nsIDOMDocument} This session's current document. */
 wdSession.prototype.getDocument = function() {
   return this.getWindow().document;
 };
 
 
-/** @return {nsIDOMDocument} The document of the chrome window for this session. */
-wdSession.prototype.getChromeDocument = function() {
-  return this.getChromeWindow().document;
+/** @return {nsIDOMDocument} The document of the top window for this session. */
+wdSession.prototype.getTopDocument = function() {
+  return this.getTopWindow().document;
 };
 
 
