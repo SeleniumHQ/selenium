@@ -109,9 +109,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Ignore(value = {OPERA}, reason = "OPERA: ?")
   @Test
   public void testDragAndDropElementWithOffsetInIframeAtBottom() {
-    assumeFalse("See issue 6228", Browser.detect() == Browser.ff &&
-                TestUtilities.isNativeEventsEnabled(driver));
-
     assumeTrue(TestUtilities.isNativeEventsEnabled(driver));
 
     driver.get(appServer.whereIs("iframeAtBottom.html"));

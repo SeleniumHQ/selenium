@@ -221,6 +221,12 @@ wdSession.prototype.getDocument = function() {
 };
 
 
+/** @return {nsIDOMDocument} The document of the chrome window for this session. */
+wdSession.prototype.getChromeDocument = function() {
+  return this.getChromeWindow().document;
+};
+
+
 /**
  * Set the chrome window for this session; will also set the current window to
  * the main content window inside the chrome window.
