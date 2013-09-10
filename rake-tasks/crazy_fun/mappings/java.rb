@@ -567,6 +567,10 @@ module CrazyFunJava
                 ant.jvmarg(:line => args[:args])
               end
 
+              if (jvm_args)
+                ant.jvmarg(:line => jvm_args)
+              end
+
               logfile = "TEST-#{args[:name]}-#{name}"
               ant.test(:name => name, :todir => 'build/test_logs', :outfile => logfile)
             end
@@ -610,6 +614,10 @@ module CrazyFunJava
 
     def firefox
       return ENV['firefox']
+    end
+
+    def jvm_args
+      return ENV['jvmargs']
     end
 
     def marionette?

@@ -83,6 +83,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
   private List<Supplier<WebDriver>> getSuppliers(Capabilities desiredCaps, 
       Capabilities requiredCaps) {
     List<Supplier<WebDriver>> suppliers = Lists.newArrayList();
+    suppliers.add(new ExternalDriverSupplier(desiredCaps, requiredCaps));
     suppliers.add(new SauceBackedDriverSupplier(desiredCaps));
     suppliers.add(new RemoteSupplier(desiredCaps, requiredCaps));
     suppliers.add(new OperaDriverSupplier(desiredCaps));
