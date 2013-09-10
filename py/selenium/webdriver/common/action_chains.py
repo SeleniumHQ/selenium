@@ -120,7 +120,7 @@ class ActionChains(object):
         """
         self.click_and_hold(source)
         self.move_by_offset(xoffset, yoffset)
-        self.release(source)
+        self.release()
         return self
 
     def key_down(self, value, element=None):
