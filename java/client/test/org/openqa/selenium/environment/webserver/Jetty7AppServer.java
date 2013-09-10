@@ -28,10 +28,12 @@ import org.seleniumhq.jetty7.server.nio.SelectChannelConnector;
 import org.seleniumhq.jetty7.server.ssl.SslSocketConnector;
 import org.seleniumhq.jetty7.servlet.ServletHolder;
 import org.seleniumhq.jetty7.servlets.MultiPartFilter;
+import org.seleniumhq.jetty7.util.ssl.SslContextFactory;
 import org.seleniumhq.jetty7.webapp.WebAppContext;
 
 import java.io.File;
 
+import javax.net.ssl.SSLContext;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
@@ -182,13 +184,15 @@ public class Jetty7AppServer implements AppServer {
           "Cannot find keystore for SSL cert: " + keyStore.getAbsolutePath());
     }
 
-    SslSocketConnector secureSocket = new SslSocketConnector();
+    SslContextFactory sslContextFactory = new SslContextFactory();
+    sslContextFactory.setKeyStorePath(keyStore.getAbsolutePath());
+    sslContextFactory.setKeyStorePassword("password");
+    sslContextFactory.setKeyManagerPassword("password");
+    sslContextFactory.setTrustStore(keyStore.getAbsolutePath());
+    sslContextFactory.setTrustStorePassword("password");
+
+    SslSocketConnector secureSocket = new SslSocketConnector(sslContextFactory);
     secureSocket.setPort(securePort);
-    secureSocket.setKeystore(keyStore.getAbsolutePath());
-    secureSocket.setPassword("password");
-    secureSocket.setKeyPassword("password");
-    secureSocket.setTruststore(keyStore.getAbsolutePath());
-    secureSocket.setTrustPassword("password");
     server.addConnector(secureSocket);
 
     try {
@@ -199,7 +203,7 @@ public class Jetty7AppServer implements AppServer {
   }
 
   protected File getKeyStore() {
-    return InProject.locate("java/client/test/keystore");
+    return InProject.locate("java/client/test/org/openqa/selenium/environment/webserver/keystore");
   }
 
   public void listenOn(int port) {
