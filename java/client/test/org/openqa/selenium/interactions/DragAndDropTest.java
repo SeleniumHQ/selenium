@@ -125,7 +125,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {OPERA}, reason = "OPERA: ?")
+  @Ignore(value = {OPERA, IE}, reason = "OPERA: ?")
   @Test
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
     assumeFalse("See issue 4241", Browser.detect() == Browser.ff &&
