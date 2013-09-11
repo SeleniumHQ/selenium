@@ -100,7 +100,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>nspr4.lib;xpcom.lib;xpcomglue_s_nomozalloc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xul.lib;nss3.lib;xpcomglue_s_nomozalloc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\third_party\gecko-24\win32\lib;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TargetMachine>MachineX86</TargetMachine>
@@ -121,7 +121,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>nspr4.lib;xpcom.lib;xpcomglue_s_nomozalloc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xul.lib;nss3.lib;xpcomglue_s_nomozalloc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\third_party\gecko-24\win32\lib;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TargetMachine>MachineX64</TargetMachine>
@@ -163,7 +163,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>nspr4.lib;xpcom.lib;xpcomglue_s_nomozalloc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>xul.lib;nss3.lib;xpcomglue_s_nomozalloc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\third_party\gecko-24\win32\lib;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OptimizeReferences>true</OptimizeReferences>
