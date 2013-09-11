@@ -170,7 +170,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   public void testShouldBeAbleToFindASingleElementByTagName() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.tagName("input"));
-    assertThat(element.getTagName(), is("input"));
+    assertThat(element.getTagName().toLowerCase(), is("input"));
   }
 
   @Test
@@ -329,7 +329,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(
         By.xpath("//form[@name='optional']/input[@type='submit' and @value='Click!']"));
-    assertThat(element.getTagName(), is("input"));
+    assertThat(element.getTagName().toLowerCase(), is("input"));
     assertThat(element.getAttribute("value"), is("Click!"));
   }
 
@@ -487,7 +487,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   public void testShouldBeAbleToFindASingleElementByCssSelector() {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By.cssSelector("div.content"));
-    assertThat(element.getTagName(), is("div"));
+    assertThat(element.getTagName().toLowerCase(), is("div"));
     assertThat(element.getAttribute("class"), is("content"));
   }
 
@@ -504,7 +504,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   public void testShouldBeAbleToFindASingleElementByCompoundCssSelector() {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By.cssSelector("div.extraDiv, div.content"));
-    assertThat(element.getTagName(), is("div"));
+    assertThat(element.getTagName().toLowerCase(), is("div"));
     assertThat(element.getAttribute("class"), is("content"));
   }
 
