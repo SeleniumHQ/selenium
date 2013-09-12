@@ -457,7 +457,7 @@ module Selenium
         end
 
         def touchScroll(element, x, y)
-          if element
+          unless element
             execute :touchScroll, {}, :xoffset => x, :yoffset => y
           else
             execute :touchScroll, {}, :element => element,
