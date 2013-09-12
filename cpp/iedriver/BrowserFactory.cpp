@@ -15,6 +15,7 @@
 #include <ctime>
 #include <iostream>
 #include <WinInet.h>
+#include <shlobj.h>
 #include "logging.h"
 #include "psapi.h"
 #include "RegistryUtilities.h"
@@ -36,6 +37,7 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
   this->ignore_zoom_setting_ = settings.ignore_zoom_setting;
   this->browser_attach_timeout_ = settings.browser_attach_timeout;
   this->force_createprocess_api_ = settings.force_create_process_api;
+  this->force_shell_windows_api_ = settings.force_shell_windows_api;
   this->clear_cache_ = settings.clear_cache_before_launch;
   this->browser_command_line_switches_ = StringUtilities::ToWString(settings.browser_command_line_switches);
   this->initial_browser_url_ = StringUtilities::ToWString(settings.initial_browser_url);
@@ -248,6 +250,7 @@ bool BrowserFactory::GetDocumentFromWindowHandle(HWND window_handle,
 
   if (window_handle != NULL && this->oleacc_instance_handle_) {
     LRESULT result;
+
     ::SendMessageTimeout(window_handle,
                          this->html_getobject_msg_,
                          0L,
@@ -280,6 +283,36 @@ bool BrowserFactory::GetDocumentFromWindowHandle(HWND window_handle,
 bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
                                      std::string* error_message) {
   LOG(TRACE) << "Entering BrowserFactory::AttachToBrowser";
+  bool ok = false;
+
+  // Attempt to attach to the browser using ActiveAccessibility API
+  // first, if this fails fallback to using ShellWindows API.
+  // ActiveAccessibility fails if the Windows Desktop runs out of
+  // free space for GlobalAtoms.
+  // ShellWindows might fail if there is an IE modal dialog blocking
+  // execution (unverified).
+  if (!this->force_shell_windows_api_) {
+    ok = AttachToBrowserUsingActiveAccessibility(process_window_info,
+                                                 error_message);
+    if (!ok) {
+      LOG(DEBUG) << "Failed to find IWebBrowser2 using ActiveAccessibility: " << *error_message;
+    }
+  }
+
+  if (!ok) {
+    LOG(DEBUG) << "Using IShellWindows to find IWebBrowser2 interface";
+    ok = AttachToBrowserUsingShellWindows(process_window_info,
+                                          error_message);
+  }
+
+  return ok;
+}
+
+bool BrowserFactory::AttachToBrowserUsingActiveAccessibility
+                                    (ProcessWindowInfo* process_window_info,
+                                     std::string* error_message) {
+  LOG(TRACE) << "Entering BrowserFactory::AttachToBrowserUsingActiveAccessibility";
+
   clock_t end = clock() + (this->browser_attach_timeout_ / 1000 * CLOCKS_PER_SEC);
   while (process_window_info->hwndBrowser == NULL) {
     if (this->browser_attach_timeout_ > 0 && (clock() > end)) {
@@ -349,6 +382,109 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
     *error_message = "Could not get document from window handle";
   }
   return false;
+}
+
+bool BrowserFactory::AttachToBrowserUsingShellWindows(
+                                     ProcessWindowInfo* process_window_info,
+                                     std::string* error_message) {
+  LOG(TRACE) << "Entering BrowserFactory::AttachToBrowserUsingShellWindows";
+
+  CComPtr<IShellWindows> shell_windows;
+  shell_windows.CoCreateInstance(CLSID_ShellWindows);
+
+  CComPtr<IUnknown> unk_enum;
+  HRESULT hr = shell_windows->_NewEnum(&unk_enum);
+  if (FAILED(hr)) return false;
+
+  HWND hwnd_browser = NULL;
+  CComQIPtr<IWebBrowser2> browser;
+
+  clock_t end = clock() + (this->browser_attach_timeout_ / 1000 * CLOCKS_PER_SEC);
+
+  CComQIPtr<IEnumVARIANT> spev(unk_enum);
+  while (hwnd_browser == NULL) {
+    if (this->browser_attach_timeout_ > 0 && (clock() > end)) {
+      break;
+    }
+    spev->Reset();
+    for (CComVariant svar; spev->Next(1, &svar, nullptr) == S_OK;
+         svar.Clear()) {
+
+      if (svar.vt != VT_DISPATCH) {
+        continue;
+      }
+
+      CComPtr<IShellBrowser> spsb;
+      hr = IUnknown_QueryService(svar.pdispVal, SID_STopLevelBrowser,
+                                 IID_PPV_ARGS(&spsb));
+      if (spsb) {
+        HWND hwnd;
+        hr = spsb->GetWindow(&hwnd);
+        if (SUCCEEDED(hr)) {
+          DWORD process_id = NULL;
+          ::GetWindowThreadProcessId(hwnd, &process_id);
+
+          if (process_id == process_window_info->dwProcessId) {
+            browser = svar.pdispVal;
+            hwnd_browser = FindBrowserHostWindow(hwnd);
+            break;
+          }
+        }
+      }
+    }
+    if (hwnd_browser == NULL) {
+      ::Sleep(250);
+    }
+  }
+
+  CComPtr<IDispatch> document_dispatch;
+  while (!document_dispatch) {
+    if (this->browser_attach_timeout_ > 0 && (clock() > end)) {
+      break;
+    }
+
+    browser->get_Document(&document_dispatch);
+
+    if (!document_dispatch) {
+      ::Sleep(250);
+    }
+  }
+
+  if (!document_dispatch) {
+    *error_message = "Could not get IHTMLDocument2 from IWebBrowser2.";
+    return false;
+  }
+
+  CComPtr<IHTMLDocument2> document;
+  document_dispatch->QueryInterface(&document);
+  if (!document) {
+    *error_message = "Could not get IHTMLDocument2 from IDispatch.";
+    return false;
+  }
+
+  CComPtr<IHTMLWindow2> window;
+  hr = document->get_parentWindow(&window);
+  if (FAILED(hr)) {
+    *error_message = "Could not get IHTMLWindow2 from IHTMLDocument2.";
+    return false;
+  }
+
+  // Test for zoom level = 100%
+  int zoom_level = 100;
+  LOG(DEBUG) << "Ignoring zoom setting: " << this->ignore_zoom_setting_;
+  if (!this->ignore_zoom_setting_) {
+    zoom_level = this->GetZoomLevel(document, window);
+  }
+  if (zoom_level != 100) {
+    *error_message = StringUtilities::Format(ZOOM_SETTING_ERROR_MESSAGE,
+                                             zoom_level);
+    return false;
+  }
+
+  process_window_info->pBrowser = browser.Detach();
+  process_window_info->hwndBrowser = hwnd_browser;
+
+  return true;
 }
 
 int BrowserFactory::GetZoomLevel(IHTMLDocument2* document, IHTMLWindow2* window) {
@@ -646,7 +782,31 @@ void BrowserFactory::InvokeClearCacheUtility(bool use_low_integrity_level) {
       ::CloseHandle(mic_token);
       ::LocalFree(sid);
     }
-  }    
+  }
+}
+
+HWND BrowserFactory::FindBrowserHostWindow(HWND hwnd) {
+  HWND browserHostWindow = 0;
+  EnumChildWindows(hwnd, FindServerChildWindow, (LPARAM)&browserHostWindow);
+  return browserHostWindow;
+}
+
+BOOL CALLBACK BrowserFactory::FindServerChildWindow(HWND hwnd, LPARAM arg) {
+  // Could this be an Internet Explorer Server window?
+  // 25 == "Internet Explorer_Server\0"
+  char name[25];
+  if (::GetClassNameA(hwnd, name, 25) == 0) {
+    // No match found. Skip
+    return TRUE;
+  }
+
+  if (strcmp(IE_SERVER_CHILD_WINDOW_CLASS, name) != 0) {
+	return TRUE;
+  } else {
+    HWND* browserHostWindow = reinterpret_cast<HWND*>(arg);
+    *browserHostWindow = hwnd;
+    return FALSE;
+  }
 }
 
 BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
@@ -658,7 +818,7 @@ BOOL CALLBACK BrowserFactory::FindBrowserWindow(HWND hwnd, LPARAM arg) {
     // No match found. Skip
     return TRUE;
   }
-  
+
   if (strcmp(IE_FRAME_WINDOW_CLASS, name) != 0 && 
       strcmp(SHELL_DOCOBJECT_VIEW_WINDOW_CLASS, name) != 0) {
     return TRUE;
@@ -677,7 +837,7 @@ BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
     // No match found. Skip
     return TRUE;
   }
-  
+
   if (strcmp(IE_SERVER_CHILD_WINDOW_CLASS, name) != 0) {
     return TRUE;
   } else {
