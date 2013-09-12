@@ -1,3 +1,7 @@
+## v2.36.0
+
+* FIXED: 6200: Pass arguments to the Selenium server instead of to the JVM.
+
 ## v2.35.1
 
 * FIXED: 6090: Changed example scripts to use chromedriver.

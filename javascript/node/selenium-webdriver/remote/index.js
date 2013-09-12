@@ -268,7 +268,7 @@ function SeleniumServer(jar, options) {
   var port = options.port || portprober.findFreePort();
   var args = promise.when(options.args || [], function(args) {
     return promise.when(port, function(port) {
-      return args.concat('-jar', jar, '-port', port);
+      return ['-jar', jar, '-port', port].concat(args);
     });
   });
 
