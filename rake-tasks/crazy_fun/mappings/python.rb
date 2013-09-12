@@ -149,8 +149,9 @@ module Python
         task task_name => deps do
           copy_source_to_env
 
-          tests = ["#{Python::lib_dir}/selenium/test/selenium/webdriver/#{browser_data[:dir]}/*_tests.py"]
-          pytest_args = [pytest_path] + tests
+          # Test file pattern has been specified in the pytest.ini file at project root dir
+          test_dir = ["#{Python::lib_dir}/selenium/test/selenium/webdriver/#{browser_data[:dir]}/"]
+          pytest_args = [pytest_path] + test_dir
           pytest_args += ["-k", "-ignore_#{browser_data[:ignore]}"] if browser_data[:ignore]
           pytest_args += ["-k" , ENV['method']] if ENV['method']
           pytest_args += ["--junitxml=build/test_logs/python-#{browser}-#{Time.now.to_i}.xml"]
