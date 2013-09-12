@@ -188,8 +188,8 @@ class ActionChains(object):
         """
         self._actions.append(lambda:
             self._driver.execute(Command.MOVE_TO, {
-                'xoffset': xoffset,
-                'yoffset': yoffset}))
+                'xoffset': int(xoffset),
+                'yoffset': int(yoffset)}))
         return self
 
     def move_to_element(self, to_element):
@@ -205,7 +205,7 @@ class ActionChains(object):
 
     def move_to_element_with_offset(self, to_element, xoffset, yoffset):
         """
-        Move the mouse by an offset of the specificed element.
+        Move the mouse by an offset of the specified element.
            Offsets are relative to the top-left corner of the element.
 
         :Args:
@@ -216,8 +216,8 @@ class ActionChains(object):
         self._actions.append(lambda:
             self._driver.execute(Command.MOVE_TO, {
                 'element': to_element.id,
-                'xoffset': xoffset,
-                'yoffset': yoffset}))
+                'xoffset': int(xoffset),
+                'yoffset': int(yoffset)}))
         return self
 
     def release(self, on_element=None):
