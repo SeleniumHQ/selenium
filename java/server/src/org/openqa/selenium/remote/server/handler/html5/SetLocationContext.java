@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler.html5;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.remote.server.JsonParametersAware;
@@ -40,9 +41,26 @@ public class SetLocationContext extends WebDriverHandler implements JsonParamete
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     Map<Object, Object> map = (Map<Object, Object>) allParameters.get("location");
 
-    double latitude = (Double) map.get("latitude");
-    double longitude = (Double) map.get("longitude");
-    double altitude = (Double) map.get("altitude");
+    double latitude;
+    try {
+      latitude = ((Number) allParameters.get("latitude")).doubleValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-double) latitude location passed: " + allParameters.get("latitude"), ex);
+    }
+
+    double longitude;
+    try {
+      longitude = ((Number) allParameters.get("longitude")).doubleValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-double) longitude location passed: " + allParameters.get("longitude"), ex);
+    }
+
+    double altitude;
+    try {
+      altitude = ((Number) allParameters.get("altitude")).doubleValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-double) altitude location passed: " + allParameters.get("altitude"), ex);
+    }
 
     location = new Location(latitude, longitude, altitude);
   }
