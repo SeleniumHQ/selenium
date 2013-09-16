@@ -30,7 +30,6 @@ public class Pages {
   public String clickJacker;
   public String clicksPage;
   public String colorPage;
-  public String deletingFrame;
   public String documentWrite;
   public String draggableLists;
   public String dragAndDropPage;
@@ -88,7 +87,6 @@ public class Pages {
     clickEventPage = appServer.whereIs("clickEventPage.html");
     clicksPage = appServer.whereIs("clicks.html");
     colorPage = appServer.whereIs("colorPage.html");
-    deletingFrame = appServer.whereIs("deletingFrame.htm");
     draggableLists = appServer.whereIs("draggableLists.html");
     dragAndDropPage = appServer.whereIs("dragAndDropTest.html");
     droppableItems = appServer.whereIs("droppableItems.html");

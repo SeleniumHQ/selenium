@@ -414,7 +414,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs() {
-    driver.get(pages.deletingFrame);
+    driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 
     driver.switchTo().frame("iframe1");
 
@@ -431,7 +431,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     driver.switchTo().frame("iframe1");
 
     try {
-      waitFor(elementToExist(driver, "checkbox"));
+      waitFor(elementToExist(driver, "success"));
     } catch (WebDriverException web) {
       fail("Could not find element after switching frame");
     }
@@ -441,7 +441,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
-    driver.get(pages.deletingFrame);
+    driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 
     driver.switchTo().frame("iframe1");
 
