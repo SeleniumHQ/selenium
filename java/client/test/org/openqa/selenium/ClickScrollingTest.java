@@ -260,8 +260,8 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {FIREFOX, OPERA, IPHONE, SAFARI, MARIONETTE},
-          reason = "Firefox: fails, others: not tested")
+  @Ignore(value = {OPERA, IPHONE, SAFARI, MARIONETTE},
+          reason = "Not tested")
   public void testShouldBeAbleToClickElementInATallFrame() {
     try {
       driver.get(appServer.whereIs("scrolling_tests/page_with_tall_frame.html"));

@@ -723,13 +723,38 @@ Utils.getBrowserSpecificOffset = function(inBrowser) {
 
 
 Utils.scrollIntoView = function(element, opt_coords) {
+  if (!Utils.isInView(element, opt_coords)) {
+    element.scrollIntoView();
+  }
+  return bot.action.scrollIntoView(element, opt_coords);
+};
+
+
+Utils.isInView = function(element, opt_coords) {
+  var location = Utils.getLocation(element, element.tagName == 'A');
+  var coords = opt_coords || new goog.math.Coordinate(0, 0);
+  location.x = location.x + coords.x;
+  location.y = location.y + coords.y;
+
   var win = goog.dom.getWindow(goog.dom.getOwnerDocument(element));
   for (var frame = win.frameElement; frame; frame = win.frameElement) {
-    bot.action.scrollIntoView(frame);
+    var frameLocation = Utils.getLocation(frame);
+    if (location.x < frameLocation.x || location.x > frameLocation.x + frameLocation.width
+        || location.y < frameLocation.y || location.y > frameLocation.y + frameLocation.height)
+    {
+      return false;
+    }
     win = goog.dom.getWindow(goog.dom.getOwnerDocument(frame));
   }
 
-  return bot.action.scrollIntoView(element, opt_coords);
+  var viewportSize = goog.dom.getViewportSize(win);
+  if (location.x < 0 || location.x > viewportSize.width
+      || location.y < 0 || location.y > viewportSize.height)
+  {
+    return false;
+  }
+
+  return true;
 };
 
 
