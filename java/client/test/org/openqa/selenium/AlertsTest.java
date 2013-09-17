@@ -43,13 +43,12 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
-import static org.openqa.selenium.testing.drivers.SauceDriver.getEffectivePlatform;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.TestUtilities;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -129,11 +128,6 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testShouldAllowAUserToAcceptAPrompt() {
-    assumeFalse("FIXME: Fails in Firefox on Linux with native events",
-                isFirefox(driver) &&
-                isNativeEventsEnabled(driver) &&
-                getEffectivePlatform().is(Platform.LINUX));
-
     driver.findElement(By.id("prompt")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -301,6 +295,11 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(ANDROID)
   @Test
   public void testPromptShouldHaveNullValueIfDismissed() {
+    assumeFalse("FIXME: Fails in Firefox on Linux with native events",
+                isFirefox(driver) &&
+                isNativeEventsEnabled(driver) &&
+                getEffectivePlatform().is(Platform.LINUX));
+
     driver.findElement(By.id("prompt-with-default")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
@@ -402,9 +401,9 @@ public class AlertsTest extends JUnit4TestBase {
       " when a window is closed.")
   @Test
   public void testShouldHandleAlertOnWindowClose() {
-    if (TestUtilities.isFirefox(driver) &&
-        TestUtilities.isNativeEventsEnabled(driver) &&
-        TestUtilities.getEffectivePlatform().is(Platform.LINUX)) {
+    if (isFirefox(driver) &&
+        isNativeEventsEnabled(driver) &&
+        getEffectivePlatform().is(Platform.LINUX)) {
       System.err.println("x_ignore_nofocus can cause a firefox crash here. Ignoring test. See issue 2987.");
       assumeTrue(false);
     }
