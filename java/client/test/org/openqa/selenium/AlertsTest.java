@@ -260,6 +260,11 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
+    assumeFalse("This test does not fail on itself, but it causes the subsequent tests to fail",
+                isFirefox(driver) &&
+                isNativeEventsEnabled(driver) &&
+                getEffectivePlatform().is(Platform.LINUX));
+
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-new-window")).click();
@@ -295,11 +300,6 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(ANDROID)
   @Test
   public void testPromptShouldHaveNullValueIfDismissed() {
-    assumeFalse("FIXME: Fails in Firefox on Linux with native events",
-                isFirefox(driver) &&
-                isNativeEventsEnabled(driver) &&
-                getEffectivePlatform().is(Platform.LINUX));
-
     driver.findElement(By.id("prompt-with-default")).click();
 
     Alert alert = waitFor(alertToBePresent(driver));
