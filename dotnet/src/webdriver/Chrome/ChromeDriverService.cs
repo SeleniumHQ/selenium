@@ -63,12 +63,12 @@ namespace OpenQA.Selenium.Chrome
                 StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
                 if (this.SuppressInitialDiagnosticInformation)
                 {
-                    argsBuilder.Append(" -silent");
+                    argsBuilder.Append(" --silent");
                 }
 
                 if (!string.IsNullOrEmpty(this.logPath))
                 {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -log-path={0}", this.logPath));
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-path={0}", this.logPath));
                 }
 
                 return argsBuilder.ToString();

@@ -62,11 +62,14 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public static readonly string Capability = "chromeOptions";
 
+        private bool leaveBrowserRunning;
         private string binaryLocation;
         private List<string> arguments = new List<string>();
         private List<string> extensionFiles = new List<string>();
         private List<string> encodedExtensions = new List<string>();
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
+        private Dictionary<string, object> userProfilePreferences;
+        private Dictionary<string, object> localStatePreferences;
         private Proxy proxy;
 
         /// <summary>
@@ -77,6 +80,17 @@ namespace OpenQA.Selenium.Chrome
         {
             get { return this.binaryLocation; }
             set { this.binaryLocation = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether Chrome should be left running after the
+        /// ChromeDriver instance is exited. Defaults to <see langword="false"/>.
+        /// </summary>
+        [JsonProperty("detach")]
+        public bool LeaveBrowserRunning
+        {
+            get { return leaveBrowserRunning; }
+            set { leaveBrowserRunning = value; }
         }
 
         /// <summary>
@@ -116,6 +130,18 @@ namespace OpenQA.Selenium.Chrome
 
                 return allExtensions.AsReadOnly();
             }
+        }
+
+        [JsonProperty("prefs", NullValueHandling = NullValueHandling.Ignore)]
+        private Dictionary<string, object> UserProfilePreferences
+        {
+            get { return userProfilePreferences; }
+        }
+
+        [JsonProperty("localState", NullValueHandling = NullValueHandling.Ignore)]
+        private Dictionary<string, object> LocalStatePreferences
+        {
+            get { return localStatePreferences; }
         }
 
         /// <summary>
@@ -259,6 +285,38 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Adds a preference for the user-specific profile or "user data directory."
+        /// If the specified preference already exists, it will be overwritten.
+        /// </summary>
+        /// <param name="preferenceName">The name of the preference to set.</param>
+        /// <param name="preferenceValue">The value of the preference to set.</param>
+        public void AddUserProfilePreference(string preferenceName, object preferenceValue)
+        {
+            if (this.userProfilePreferences == null)
+            {
+                this.userProfilePreferences = new Dictionary<string, object>();
+            }
+
+            this.userProfilePreferences[preferenceName] = preferenceValue;
+        }
+
+        /// <summary>
+        /// Adds a preference for the local state file in the user's data directory for Chrome.
+        /// If the specified preference already exists, it will be overwritten.
+        /// </summary>
+        /// <param name="preferenceName">The name of the preference to set.</param>
+        /// <param name="preferenceValue">The value of the preference to set.</param>
+        public void AddLocalStatePreference(string preferenceName, object preferenceValue)
+        {
+            if (this.localStatePreferences == null)
+            {
+                this.localStatePreferences = new Dictionary<string, object>();
+            }
+
+            this.localStatePreferences[preferenceName] = preferenceValue;
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options 
         /// for the Chrome driver.
         /// </summary>
@@ -296,16 +354,6 @@ namespace OpenQA.Selenium.Chrome
         {
             DesiredCapabilities capabilities = DesiredCapabilities.Chrome();
             capabilities.SetCapability(ChromeOptions.Capability, this);
-
-            // chromeOptions is only recognized by chromedriver 17.0.963.0 or newer.
-            // Provide backwards compatibility for capabilities supported by older
-            // versions of chromedriver.
-            // TODO: remove this once the deprecated capabilities are no longer supported.
-            capabilities.SetCapability("chrome.switches", this.arguments);
-            if (!string.IsNullOrEmpty(this.binaryLocation))
-            {
-                capabilities.SetCapability("chrome.binary", this.binaryLocation);
-            }
 
             if (this.proxy != null)
             {
