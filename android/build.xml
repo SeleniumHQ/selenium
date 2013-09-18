@@ -33,7 +33,7 @@
 
     <copy file="${build.location}/android/server-nodeps.jar" todir="libs" />
     <copy file="${build.location}/third_party/java/webbit/webbit-standalone.jar" tofile="libs/webbit-server.jar" />
-    <copy file="${third_party.location}/java/guava-libraries/guava-14.0.jar" todir="libs/"  />
+    <copy file="${third_party.location}/java/guava-libraries/guava-15.0.jar" todir="libs/"  />
     <copy file="${third_party.location}/java/json/json-20080701.jar" todir="libs/" />
 
     <import file="${sdk.dir}/tools/ant/build.xml" />
