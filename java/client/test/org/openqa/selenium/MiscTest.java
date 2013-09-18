@@ -56,7 +56,7 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldReturnInput() {
+  public void shouldReturnTagName() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.id("cheese"));
     assertThat(selectBox.getTagName().toLowerCase(), is("input"));
