@@ -26,7 +26,6 @@ import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.TestUtilities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -45,6 +44,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
+import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
 public class ClickTest extends JUnit4TestBase {
 
@@ -170,7 +171,7 @@ public class ClickTest extends JUnit4TestBase {
     // Note: It is not guaranteed that the relatedTarget property of the mouseover
     // event will be the parent, when using native events. Only check that the mouse
     // has moved to this element, not that the parent element was the related target.
-    if (TestUtilities.isNativeEventsEnabled(driver)) {
+    if (isNativeEventsEnabled(driver)) {
       assertTrue("Should have moved to this element.", log.startsWith("parent matches?"));
     } else {
       assertEquals("parent matches? true", log);
@@ -304,7 +305,7 @@ public class ClickTest extends JUnit4TestBase {
   @Ignore(value = {CHROME, HTMLUNIT, OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE}, reason
       = "Chrome: failed, Firefox: failed with native events, others: not tested")
   public void testShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports() {
-    assumeFalse(TestUtilities.isFirefox(driver) && TestUtilities.isNativeEventsEnabled(driver));
+    assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
 
     String url = appServer.whereIs("click_too_big_in_frame.html");
     driver.get(url);
@@ -365,6 +366,27 @@ public class ClickTest extends JUnit4TestBase {
     element.click();
 
     waitFor(pageTitleToBe(driver, "Changed"));
+  }
+
+  @JavascriptEnabled
+  @Test
+  public void testShouldBeAbleToClickOnALinkThatWrapsToTheNextLine() {
+    driver.get(appServer.whereIs("click_tests/link_that_wraps.html"));
+
+    driver.findElement(By.id("link")).click();
+
+    waitFor(pageTitleToBe(driver, "Submitted Successfully!"));
+  }
+
+  @JavascriptEnabled
+  @Test
+  public void testShouldBeAbleToClickOnASpanThatWrapsToTheNextLine() {
+    assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
+    driver.get(appServer.whereIs("click_tests/span_that_wraps.html"));
+
+    driver.findElement(By.id("span")).click();
+
+    waitFor(pageTitleToBe(driver, "Submitted Successfully!"));
   }
 
 }
