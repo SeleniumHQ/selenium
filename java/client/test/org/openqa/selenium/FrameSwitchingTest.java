@@ -358,7 +358,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     driver.switchTo().frame("search");
     driver.findElement(By.id("submit")).click();
     driver.switchTo().defaultContent();
-    waitFor(pageTitleToBe(driver, "Google"));
+    waitFor(pageTitleToBe(driver, "Target page for issue 5237"));
   }
 
   @Ignore({OPERA, ANDROID, OPERA_MOBILE, MARIONETTE})
