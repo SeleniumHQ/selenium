@@ -24,6 +24,9 @@ goog.require('fxdriver.moz');
 fxdriver.screenshot.grab = function(window) {
   var document = window.document;
   var documentElement = document.documentElement;
+  if (!documentElement) {
+    throw new Error('Page is not loaded yet, try later');
+  }
   var canvas = document.getElementById('fxdriver-screenshot-canvas');
   if (canvas == null) {
     canvas = document.createElement('canvas');
