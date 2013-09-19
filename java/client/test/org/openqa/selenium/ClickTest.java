@@ -370,6 +370,8 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = {OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE},
+          reason = "Opera: fails, others: not tested")
   public void testShouldBeAbleToClickOnALinkThatWrapsToTheNextLine() {
     driver.get(appServer.whereIs("click_tests/link_that_wraps.html"));
 
@@ -380,6 +382,8 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = {OPERA, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE},
+          reason = "Opera: fails, others: not tested")
   public void testShouldBeAbleToClickOnASpanThatWrapsToTheNextLine() {
     assumeFalse(isFirefox(driver) && isNativeEventsEnabled(driver));
     driver.get(appServer.whereIs("click_tests/span_that_wraps.html"));
