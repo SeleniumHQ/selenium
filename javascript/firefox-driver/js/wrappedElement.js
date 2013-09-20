@@ -345,12 +345,13 @@ WebElement.isElementDisplayed = function(respond, parameters) {
 WebElement.getElementLocation = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
+  var win = respond.session.getWindow();
 
-  var location = Utils.getElementLocation(element);
+  var location = Utils.getLocation(element);
 
   respond.value = {
-    x: Math.round(location.x),
-    y: Math.round(location.y)
+    x: Math.round(location.x + win.pageXOffset),
+    y: Math.round(location.y + win.pageYOffset)
   };
 
   respond.send();

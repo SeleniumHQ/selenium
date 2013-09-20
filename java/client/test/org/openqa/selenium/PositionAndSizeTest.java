@@ -47,27 +47,31 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 public class PositionAndSizeTest extends JUnit4TestBase {
 
   @Test
-  public void testShouldGetCoordinatesOfAnElementInViewPort() {
+  public void testShouldGetCoordinatesOfAnElement() {
     driver.get(appServer.whereIs("coordinates_tests/simple_page.html"));
     assertThat(getLocationInViewPort(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
   @Test
   public void testShouldGetCoordinatesOfAnEmptyElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_empty_element.html"));
     assertThat(getLocationInViewPort(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
   @Test
   public void testShouldGetCoordinatesOfATransparentElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_transparent_element.html"));
     assertThat(getLocationInViewPort(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
   @Test
   public void testShouldGetCoordinatesOfAHiddenElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_hidden_element.html"));
     assertThat(getLocationInViewPort(By.id("box")), is(new Point(10, 10)));
+    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
   @Test
@@ -75,6 +79,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   public void testShouldGetCoordinatesOfAnInvisibleElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_invisible_element.html"));
     assertThat(getLocationInViewPort(By.id("box")), is(new Point(0, 0)));
+    assertThat(getLocationOnPage(By.id("box")), is(new Point(0, 0)));
   }
 
   @Ignore(value = {OPERA, SAFARI}, reason = "Opera: window().getSize() is not implemented")
@@ -86,6 +91,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(location.getX(), is(10));
     assertThat(location.getY(), greaterThanOrEqualTo(0));
     assertThat(location.getY(), lessThanOrEqualTo(windowHeight - 100));
+    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 5010)));
   }
 
   @Test
@@ -94,6 +100,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     driver.switchTo().frame("ifr");
     WebElement box = driver.findElement(By.id("box"));
     assertThat(box.getLocation(), is(new Point(10, 10)));
+    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
   @Ignore({OPERA, SAFARI})
@@ -102,6 +109,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
     driver.switchTo().frame("ifr");
     assertThat(getLocationInViewPort(By.id("box")), is(new Point(25, 25)));
+    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
   @Ignore({OPERA, SAFARI})
@@ -111,6 +119,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     driver.switchTo().frame("ifr");
     driver.switchTo().frame("ifr");
     assertThat(getLocationInViewPort(By.id("box")), is(new Point(40, 40)));
+    assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
   @Ignore({FIREFOX, SAFARI})

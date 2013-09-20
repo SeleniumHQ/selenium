@@ -646,15 +646,6 @@ Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
 };
 
 
-Utils.getElementLocation = function(element) {
-  var rect = bot.dom.getClientRect(element);
-  return {
-    x: rect.left,
-    y: rect.top
-  };
-};
-
-
 Utils.getLocation = function(element, opt_onlyFirstRect) {
   element = element.wrappedJSObject ? element.wrappedJSObject : element;
   var rect = undefined;
