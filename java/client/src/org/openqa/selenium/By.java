@@ -24,6 +24,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -195,7 +196,10 @@ public abstract class By {
     return "[unknown locator]";
   }
 
-  public static class ById extends By {
+  public static class ById extends By implements Serializable {
+
+    private static final long serialVersionUID = 5341968046120372169L;
+
     private final String id;
 
     public ById(String id) {
@@ -224,7 +228,10 @@ public abstract class By {
     }
   }
 
-  public static class ByLinkText extends By {
+  public static class ByLinkText extends By implements Serializable {
+
+    private static final long serialVersionUID = 1967414585359739708L;
+
     private final String linkText;
 
     public ByLinkText(String linkText) {
@@ -247,7 +254,10 @@ public abstract class By {
     }
   }
 
-  public static class ByPartialLinkText extends By {
+  public static class ByPartialLinkText extends By implements Serializable {
+
+    private static final long serialVersionUID = 1163955344140679054L;
+
     private final String linkText;
 
     public ByPartialLinkText(String linkText) {
@@ -271,7 +281,10 @@ public abstract class By {
     }
   }
 
-  public static class ByName extends By {
+  public static class ByName extends By implements Serializable {
+
+    private static final long serialVersionUID = 376317282960469555L;
+
     private final String name;
 
     public ByName(String name) {
@@ -300,7 +313,10 @@ public abstract class By {
     }
   }
 
-  public static class ByTagName extends By {
+  public static class ByTagName extends By implements Serializable {
+
+    private static final long serialVersionUID = 4699295846984948351L;
+
     private final String name;
 
     public ByTagName(String name) {
@@ -327,7 +343,10 @@ public abstract class By {
     }
   }
 
-  public static class ByXPath extends By {
+  public static class ByXPath extends By implements Serializable {
+
+    private static final long serialVersionUID = -6727228887685051584L;
+
     private final String xpathExpression;
 
     public ByXPath(String xpathExpression) {
@@ -350,7 +369,10 @@ public abstract class By {
     }
   }
 
-  public static class ByClassName extends By {
+  public static class ByClassName extends By implements Serializable {
+
+    private static final long serialVersionUID = -8737882849130394673L;
+
     private final String className;
 
     public ByClassName(String className) {
@@ -393,7 +415,10 @@ public abstract class By {
     }
   }
 
-  public static class ByCssSelector extends By {
+  public static class ByCssSelector extends By implements Serializable {
+
+    private static final long serialVersionUID = -3910258723099459239L;
+
     private final String selector;
 
     public ByCssSelector(String selector) {
