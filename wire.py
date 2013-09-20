@@ -1694,7 +1694,9 @@ format example: hostname.com:1234 ||
 || socksUsername || string || (Optional, Ignored if proxyType != *manual* and \
 socksProxy is not set) Specifies SOCKS proxy username. || 
 || socksPassword || string || (Optional, Ignored if proxyType != *manual* and \
-socksProxy is not set) Specifies SOCKS proxy password. || 
+socksProxy is not set) Specifies SOCKS proxy password. ||
+|| noProxy || string || (Optional, Ignored if proxyType != *manual*) \
+Specifies proxy bypass addresses. Format is driver specific. ||
 
 </dd>
 </dl>
