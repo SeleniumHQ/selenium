@@ -48,7 +48,6 @@ public class Proxy {
   private boolean autodetect = false;
   private String ftpProxy;
   private String httpProxy;
-  private String httpsProxy;
   private String noProxy;
   private String sslProxy;
   private String socksProxy;
@@ -69,9 +68,6 @@ public class Proxy {
     }
     if (raw.containsKey("httpProxy") && raw.get("httpProxy") != null) {
       setHttpProxy((String) raw.get("httpProxy"));
-    }
-    if (raw.containsKey("httpsProxy") && raw.get("httpsProxy") != null) {
-      setHttpsProxy((String) raw.get("httpsProxy"));
     }
     if (raw.containsKey("noProxy") && raw.get("noProxy") != null) {
       setNoProxy((String) raw.get("noProxy"));
@@ -189,28 +185,6 @@ public class Proxy {
     verifyProxyTypeCompatibility(ProxyType.MANUAL);
     this.proxyType = ProxyType.MANUAL;
     this.httpProxy = httpProxy;
-    return this;
-  }
-
-  /**
-   * Gets the HTTPS proxy.
-   *
-   * @return the HTTPS proxy hostname if present, or null if not set
-   */
-  public String getHttpsProxy() {
-    return httpsProxy;
-  }
-
-  /**
-   * Specify which proxy to use for HTTPS connections.
-   *
-   * @param httpsProxy the proxy host, expected format is <code>hostname:1234</code>
-   * @return reference to self
-   */
-  public Proxy setHttpsProxy(String httpsProxy) {
-    verifyProxyTypeCompatibility(ProxyType.MANUAL);
-    this.proxyType = ProxyType.MANUAL;
-    this.httpsProxy = httpsProxy;
     return this;
   }
 

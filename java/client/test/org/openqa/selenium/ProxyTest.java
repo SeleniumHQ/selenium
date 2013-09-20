@@ -40,7 +40,6 @@ public class ProxyTest {
 
     assertNull(proxy.getFtpProxy());
     assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getHttpsProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
     assertNull(proxy.getSocksUsername());
@@ -54,13 +53,6 @@ public class ProxyTest {
   public void testCanNotChangeAlreadyInitializedProxyType() {
     Proxy proxy = new Proxy();
     proxy.setProxyType(ProxyType.DIRECT);
-
-    try {
-      proxy.setHttpsProxy("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
 
     try {
       proxy.setAutodetect(true);
@@ -151,7 +143,6 @@ public class ProxyTest {
         setHttpProxy("http.proxy:1234").
         setFtpProxy("ftp.proxy").
         setSslProxy("ssl.proxy").
-        setHttpsProxy("https.proxy").
         setNoProxy("localhost,127.0.0.*").
         setSocksProxy("socks.proxy:65555").
         setSocksUsername("test1").
@@ -160,7 +151,6 @@ public class ProxyTest {
     assertEquals(ProxyType.MANUAL, proxy.getProxyType());
     assertEquals("ftp.proxy", proxy.getFtpProxy());
     assertEquals("http.proxy:1234", proxy.getHttpProxy());
-    assertEquals("https.proxy", proxy.getHttpsProxy());
     assertEquals("ssl.proxy", proxy.getSslProxy());
     assertEquals("socks.proxy:65555", proxy.getSocksProxy());
     assertEquals("test1", proxy.getSocksUsername());
@@ -181,7 +171,6 @@ public class ProxyTest {
 
     assertNull(proxy.getFtpProxy());
     assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getHttpsProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
     assertNull(proxy.getSocksUsername());
@@ -200,7 +189,6 @@ public class ProxyTest {
 
     assertNull(proxy.getFtpProxy());
     assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getHttpsProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
     assertNull(proxy.getSocksUsername());
@@ -217,7 +205,6 @@ public class ProxyTest {
     proxyData.put("httpProxy", "http.proxy:1234");
     proxyData.put("ftpProxy", "ftp.proxy");
     proxyData.put("sslProxy", "ssl.proxy");
-    proxyData.put("httpsProxy", "https.proxy");
     proxyData.put("noProxy", "localhost,127.0.0.*");
     proxyData.put("socksProxy", "socks.proxy:65555");
     proxyData.put("socksUsername", "test1");
@@ -228,7 +215,6 @@ public class ProxyTest {
     assertEquals(ProxyType.MANUAL, proxy.getProxyType());
     assertEquals("ftp.proxy", proxy.getFtpProxy());
     assertEquals("http.proxy:1234", proxy.getHttpProxy());
-    assertEquals("https.proxy", proxy.getHttpsProxy());
     assertEquals("ssl.proxy", proxy.getSslProxy());
     assertEquals("socks.proxy:65555", proxy.getSocksProxy());
     assertEquals("test1", proxy.getSocksUsername());
@@ -252,7 +238,6 @@ public class ProxyTest {
 
     assertNull(proxy.getFtpProxy());
     assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getHttpsProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
     assertNull(proxy.getSocksUsername());
@@ -274,7 +259,6 @@ public class ProxyTest {
 
     assertNull(proxy.getFtpProxy());
     assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getHttpsProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
     assertNull(proxy.getSocksUsername());
@@ -294,7 +278,6 @@ public class ProxyTest {
 
     assertNull(proxy.getFtpProxy());
     assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getHttpsProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
     assertNull(proxy.getSocksUsername());
@@ -315,7 +298,6 @@ public class ProxyTest {
 
     assertNull(proxy.getFtpProxy());
     assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getHttpsProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
     assertNull(proxy.getSocksUsername());
