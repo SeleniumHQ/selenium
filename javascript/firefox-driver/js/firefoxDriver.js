@@ -1087,7 +1087,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
       clickPoint_ownerDocumentPreScroll = respond.session.getMousePosition();
     }
 
-    // The function bot.dom.getInViewLocation does not work coordinates that are
+    // The function getInViewLocation does not work on coordinates that are
     // not integers. The mouse positions can be doubles so we need to cut off
     // the decimals.
     clickPoint_ownerDocumentPreScroll.x = Math.floor(clickPoint_ownerDocumentPreScroll.x + coordinates.x);
@@ -1095,7 +1095,7 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
 
     var clickPoint_ownerDocumentPostScroll; //to
     try {
-      clickPoint_ownerDocumentPostScroll = bot.dom.getInViewLocation(
+      clickPoint_ownerDocumentPostScroll = getInViewLocation(
           clickPoint_ownerDocumentPreScroll, respond.session.getTopWindow());
     } catch (ex) {
       if (ex.code == bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS) {
@@ -1145,6 +1145,14 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   nativeMouseMoveTo(coords, this.jsTimer);
 
   respond.send();
+
+  function getInViewLocation(targetLocation, opt_currentWindow) {
+    var scrollOffset = bot.window.getScroll(opt_currentWindow);
+    var scrollLocation = goog.math.Coordinate.sum(scrollOffset, targetLocation);
+    bot.window.scrollIntoView(scrollLocation, opt_currentWindow);
+    var newScrollOffset = bot.window.getScroll(opt_currentWindow);
+    return goog.math.Coordinate.difference(scrollLocation, newScrollOffset);
+  }
 };
 
 FirefoxDriver.prototype.mouseDown = function(respond, parameters) {

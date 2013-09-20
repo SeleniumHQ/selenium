@@ -53,8 +53,8 @@ webdriver.atoms.inject.dom.isSelected = function(element) {
  *     string as defined by the wire protocol.
  */
 webdriver.atoms.inject.dom.getTopLeftCoordinates = function(element) {
-  return webdriver.atoms.inject.executeScript(bot.dom.getLocationInView,
-      [element]);
+  return webdriver.atoms.inject.executeScript(
+      webdriver.atoms.element.getLocationInView, [element]);
 };
 
 

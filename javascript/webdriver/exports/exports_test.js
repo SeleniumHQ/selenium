@@ -80,7 +80,6 @@ function checkBuilder() {
   console.log('Checking webdriver.Builder API...');
   assertFunction('webdriver', 'Builder');
   assertFunction('new webdriver.Builder()', 'usingServer');
-  assertFunction('new webdriver.Builder()', 'usingSession');
   assertFunction('new webdriver.Builder()', 'withCapabilities');
   assertFunction('new webdriver.Builder()', 'build');
   console.log('...OK');
@@ -234,7 +233,7 @@ function checkPromise() {
   assertObject('webdriver', 'promise');
   assertFunction('webdriver.promise', 'isPromise');
   assertFunction('webdriver.promise', 'delayed');
-  assertFunction('webdriver.promise', 'resolved');
+  assertFunction('webdriver.promise', 'fulfilled');
   assertFunction('webdriver.promise', 'rejected');
   assertFunction('webdriver.promise', 'when');
   assertFunction('webdriver.promise', 'asap');
@@ -278,7 +277,7 @@ function checkPromise() {
   assertFunction('new webdriver.promise.Deferred()', 'addCallbacks');
   assertFunction('new webdriver.promise.Deferred()', 'addErrback');
   assertFunction('new webdriver.promise.Deferred()', 'isPending');
-  assertFunction('new webdriver.promise.Deferred()', 'resolve');
+  assertFunction('new webdriver.promise.Deferred()', 'fulfill');
   assertFunction('new webdriver.promise.Deferred()', 'reject');
   assertObject('new webdriver.promise.Deferred()', 'promise');
 

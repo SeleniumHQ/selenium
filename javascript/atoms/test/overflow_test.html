@@ -409,6 +409,14 @@
           new goog.math.Coordinate(60, 60)));
     }
 
+    function testOverflowStateOfRelativeRectangle() {
+      var elem = document.getElementById('halfHidden');
+      assertEquals(NONE, bot.dom.getOverflowState(elem,
+          new goog.math.Rect(25, 25, 50, 50)));
+      assertEquals(HIDDEN, bot.dom.getOverflowState(elem,
+          new goog.math.Coordinate(60, 60, 50, 50)));
+    }
+
     function testFixedPositionOffscreenIsHidden() {
       var fixedOffscreen = document.getElementById('fixed-offscreen');
       assertEquals(HIDDEN, bot.dom.getOverflowState(fixedOffscreen));
@@ -420,6 +428,11 @@
 
       var childOfFixed = document.getElementById('child-of-fixed');
       assertEquals(HIDDEN, bot.dom.getOverflowState(childOfFixed));
+    }
+
+    function testElementHiddenByZeroSizedContainer() {
+      var elem = document.getElementById('hasZeroSizedContainer');
+      assertEquals(HIDDEN, bot.dom.getOverflowState(elem));
     }
   </script>
   <style>
@@ -515,6 +528,13 @@
 <div id="fixed-offscreen" style="position:fixed; left:10000px;top:0px">fixed offscreen</div>
 <div id="fixed-parent" style="position:fixed; left:10px;top:10px">
   <div id="child-of-fixed" style="position:absolute; left:10000px;top:0px">fixed offscreen</div>
+</div>
+
+<!-- div deliberately only has zero width but hidden in y dimension -->
+<div style="height:25px;width:0px;position:absolute;overflow-y:hidden;">
+  <div id="hasZeroSizedContainer" style="position:absolute;height:100px;width:100px;">
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  </div>
 </div>
 </body>
 </html>

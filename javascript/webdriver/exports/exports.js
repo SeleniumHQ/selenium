@@ -39,6 +39,8 @@ goog.require('webdriver.http.XhrClient');
 goog.require('webdriver.process');
 goog.require('webdriver.promise');
 goog.require('webdriver.stacktrace');
+goog.require('webdriver.testing.assert');
+goog.require('webdriver.testing.asserts');
 
 exports.ActionSequence = webdriver.ActionSequence;
 exports.Builder = webdriver.Builder;
@@ -72,3 +74,8 @@ exports.process = {
 
 exports.promise = webdriver.promise;
 exports.stacktrace = webdriver.stacktrace;
+
+exports.testing = {
+  assert: webdriver.testing.assert,
+  asserts: webdriver.testing.asserts
+};

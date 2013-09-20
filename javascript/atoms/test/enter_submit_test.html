@@ -36,10 +36,6 @@
     wasSubmitted = false;
   }
 
-  function tearDown() {
-    goog.events.removeAllNativeListeners();
-  }
-
   function submitForm(formName, opt_cancelSubmit) {
     var target = document.getElementById(formName + 'text1');
     var keyboard = new bot.Keyboard();

@@ -83,7 +83,8 @@ bot.Keyboard.CHAR_TO_KEY_ = {};
  * character to is in the CHAR_TO_KEY_ map. Using this factory function instead
  * of the new keyword, also helps reduce the size of the compiled Js fragment.
  *
- * @param {?number|{gecko: ?number, ieWebkit: ?number, opera: ?number}} code
+ * @param {null|number|
+ *         {gecko: (?number), ieWebkit: (?number), opera: (?number)}} code
  *     Either a single keycode or a record of per-browser keycodes.
  * @param {string=} opt_char Character when shift is not pressed.
  * @param {string=} opt_shiftChar Character when shift is pressed.

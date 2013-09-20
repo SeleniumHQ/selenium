@@ -59,9 +59,6 @@ limitations under the License.
 
       // Delete the cache in our test frame, if it was created.
       frameDoc[bot.inject.cache.CACHE_KEY_] = null;
-
-      // Remove any event listeners.
-      goog.events.removeAllNativeListeners();
     }
 
     function testAddWindowToCache() {

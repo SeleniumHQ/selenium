@@ -60,22 +60,22 @@
     }
 
     function testClickingOnElementInSvgDocument() {
-    var frame = window.frames[0];
-    var rect = bot.locators.findElement({id: 'rect'}, frame.document);
-    assertEquals('blue', rect.getAttribute('fill'));
-    bot.action.click(rect);
-    assertEquals('green', rect.getAttribute('fill'));
+      var frame = window.frames[0];
+      var rect = bot.locators.findElement({id: 'rect'}, frame.document);
+      assertEquals('blue', rect.getAttribute('fill'));
+      bot.action.click(rect);
+      assertEquals('green', rect.getAttribute('fill'));
     }
 
     function testExecutingScriptInSvgDocument() {
-    var frame = window.frames[0];
-    var bgEl = bot.locators.findElement({id: 'bg'}, frame.document);
+      var frame = window.frames[0];
+      var bgEl = bot.locators.findElement({id: 'bg'}, frame.document);
 
-    assertEquals('red', bgEl.getAttribute('fill'));
-    bot.inject.executeScript(
-    'document.getElementById("bg").setAttribute("fill", "yellow")',
-    [], false, frame);
-    assertEquals('yellow', bgEl.getAttribute('fill'));
+      assertEquals('red', bgEl.getAttribute('fill'));
+      bot.inject.executeScript(
+          'document.getElementById("bg").setAttribute("fill", "yellow")',
+          [], false, frame);
+      assertEquals('yellow', bgEl.getAttribute('fill'));
     }
 
     function assertSvgRectApprox(left, top, width, height, rect) {

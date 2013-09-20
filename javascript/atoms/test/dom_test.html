@@ -6,138 +6,11 @@
 <script type="text/javascript">
   goog.require('bot.dom');
   goog.require('bot.userAgent');
-  goog.require('goog.dom');
-  goog.require('goog.math.Coordinate');
   goog.require('goog.testing.jsunit');
   goog.require('goog.userAgent');
-  goog.require('goog.userAgent.product');
 </script>
 <body>
 <script type="text/javascript">
-  function setUp() {
-    window.scrollTo(0, 0);
-  }
-
-  function testGetInViewLocationWithPositiveOffset() {
-    if (bot.userAgent.MOBILE ||
-        (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) ||
-        bot.userAgent.SAFARI_6) {
-      // Scroll offsets are not reliable on mobile viewports.
-      // Safari 6 applies scroll effects asynchronously.
-      return;
-    }
-    // Scroll with positive offsets.
-    var inViewLocation = bot.dom.getInViewLocation(
-        new goog.math.Coordinate(2000, 1000),
-        window);
-
-    assertTrue(goog.dom.getDocumentScroll().x < 2000 &&
-        goog.dom.getDocumentScroll().x + goog.dom.getViewportSize().width >
-        2000);
-
-    assertEquals(2000, inViewLocation.x + goog.dom.getDocumentScroll().x);
-
-    assertTrue(goog.dom.getDocumentScroll().y < 1000 &&
-        goog.dom.getDocumentScroll().y + goog.dom.getViewportSize().height >
-        1000);
-
-    assertEquals(1000, inViewLocation.y + goog.dom.getDocumentScroll().y);
-  }
-
-  function testGetInViewLocationWithNegativeOffsetX() {
-    if (bot.userAgent.MOBILE ||
-        (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) ||
-        bot.userAgent.SAFARI_6) {
-      // Scroll offsets are not reliable on mobile viewports.
-      // Safari 6 applies scroll effects asynchronously.
-      return;
-    }
-    // Scroll down so that we can scroll up afterwards.
-    bot.dom.getInViewLocation(new goog.math.Coordinate(2000, 0), window);
-    var oldPageXOffset = goog.dom.getDocumentScroll().x;
-
-    // Scroll to a location with negative offset.
-    var inViewLocation = bot.dom.getInViewLocation(
-        new goog.math.Coordinate(-500, 0),
-        window);
-
-    assertTrue(goog.dom.getDocumentScroll().x <= oldPageXOffset - 500 &&
-        goog.dom.getDocumentScroll().x + goog.dom.getViewportSize().width >
-        oldPageXOffset - 500);
-    assertEquals(oldPageXOffset - 500, inViewLocation.x +
-        goog.dom.getDocumentScroll().x);
-  }
-
-  function testGetInViewLocationWithNegativeOffsetY() {
-    if (bot.userAgent.MOBILE ||
-        (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) ||
-        bot.userAgent.SAFARI_6) {
-      // Scroll offsets are not reliable on mobile viewports.
-      // Safari 6 applies scroll effects asynchronously.
-      return;
-    }
-    // Scroll down so that we can scroll up afterwards.
-    bot.dom.getInViewLocation(new goog.math.Coordinate(0, 2000), window);
-    var oldPageYOffset = goog.dom.getDocumentScroll().y;
-
-    // Scroll to a location with negative offset.
-    var inViewLocation = bot.dom.getInViewLocation(
-        new goog.math.Coordinate(0, -500),
-        window);
-
-    assertTrue(goog.dom.getDocumentScroll().y <= oldPageYOffset - 500 &&
-        goog.dom.getDocumentScroll().y + goog.dom.getViewportSize().height >
-        oldPageYOffset - 500);
-    assertEquals(oldPageYOffset - 500, inViewLocation.y +
-        goog.dom.getDocumentScroll().y);
-  }
-
-  function testShouldThrowAnErrorIfScrollingTooFar() {
-    if (bot.userAgent.MOBILE ||
-        (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) ||
-        bot.userAgent.SAFARI_6) {
-      // Scroll offsets are not reliable on mobile viewports.
-      // Safari 6 applies scroll effects asynchronously.
-      return;
-    }
-
-    try {
-      bot.dom.getInViewLocation(new goog.math.Coordinate(20000, 0),
-          window);
-      assertFalse('Should fail because the target is not on the page.');
-    }
-    catch (error) {
-      assertEquals(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, error.code);
-    }
-
-    try {
-      bot.dom.getInViewLocation(new goog.math.Coordinate(-20000, 0),
-          window);
-      assertFalse('Should fail because the target is not on the page.');
-    }
-    catch (error) {
-      assertEquals(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, error.code);
-    }
-
-    try {
-      bot.dom.getInViewLocation(new goog.math.Coordinate(0, 20000),
-          window);
-      assertFalse('Should fail because the target is not on the page.');
-    }
-    catch (error) {
-      assertEquals(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, error.code);
-    }
-
-    try {
-      bot.dom.getInViewLocation(new goog.math.Coordinate(0, -20000),
-          window);
-      assertFalse('Should fail because the target is not on the page.');
-    }
-    catch (error) {
-      assertEquals(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, error.code);
-    }
-  }
-
   function testStandardizeStyleAttributeReturnsIdenticalStringWithLowercasedPropertyNames() {
     var toTest = [
       {input: "Left: 0px; Text-align: center;",
@@ -196,7 +69,6 @@
     }
   }
 </script>
-<div style="width:3000px;height:3000px"></div>
 </body>
 </html>
 

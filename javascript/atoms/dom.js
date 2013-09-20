@@ -28,6 +28,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.DomHelper');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
+goog.require('goog.math');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
 goog.require('goog.string');
@@ -662,28 +663,22 @@ bot.dom.OverflowState = {
 
 
 /**
- * Returns the overflow state of the given element. If an optional coordinate
- * is provided, returns the overflow state of that coordinate; otherwise, it
- * only considers the element to have overflowed if it is entirely out of view.
+ * Returns the overflow state of the given element.
+ *
+ * If an optional coordinate or rectangle region is provided, returns the
+ * overflow state of that region relative to the element. A coordinate is
+ * treated as a 1x1 rectangle whose top-left corner is the coordinate.
  *
  * @param {!Element} elem Element.
- * @param {!goog.math.Coordinate=} opt_coord Coordinate in the element,
- *   relative to the top-left corner of the element, to check.
+ * @param {!(goog.math.Coordinate|goog.math.Rect)=} opt_region
+ *     Coordinate or rectangle relative to the top-left corner of the element.
  * @return {bot.dom.OverflowState} Overflow state of the element.
  */
-bot.dom.getOverflowState = function(elem, opt_coord) {
-  var elemRect = bot.dom.getClientRect(elem);
+bot.dom.getOverflowState = function(elem, opt_region) {
+  var region = bot.dom.getClientRegion(elem, opt_region);
   var ownerDoc = goog.dom.getOwnerDocument(elem);
   var htmlElem = ownerDoc.documentElement;
   var bodyElem = ownerDoc.body;
-
-  // Bail out early if given an element from a non-HTLML (e.g. SVG) document.
-  // TODO: Properly handle SVG overflow
-  // http://www.w3.org/TR/SVG/masking.html#OverflowProperty
-  if (!bodyElem) {
-    return bot.dom.OverflowState.NONE;
-  }
-
   var htmlOverflowStyle = bot.dom.getEffectiveStyle(htmlElem, 'overflow');
   var treatAsFixedPosition;
 
@@ -757,32 +752,27 @@ bot.dom.getOverflowState = function(elem, opt_coord) {
     }
   }
 
-  // Calculate the points we are checking for overflow and underflow.
-  var overflowCoordX, overflowCoordY, underflowCoordX, underflowCoordY;
-  if (opt_coord) {
-    overflowCoordX = underflowCoordX = elemRect.left + opt_coord.x;
-    overflowCoordY = underflowCoordY = elemRect.top + opt_coord.y;
-  } else {
-    overflowCoordX = elemRect.left;
-    overflowCoordY = elemRect.top;
-    underflowCoordX = elemRect.left + elemRect.width;
-    underflowCoordY = elemRect.top + elemRect.height;
-  }
-
   // Check if the element overflows any ancestor element.
   for (var container = getOverflowParent(elem);
        !!container;
        container = getOverflowParent(container)) {
     var containerOverflow = getOverflowStyles(container);
-    // Optimization: if the container has overflow:visible, skip the rest.
+
+    // If the container has overflow:visible, the element cannot overflow it.
     if (containerOverflow.x == 'visible' && containerOverflow.y == 'visible') {
       continue;
     }
+
     var containerRect = bot.dom.getClientRect(container);
 
+    // Zero-sized containers without overflow:visible hide all descendants.
+    if (containerRect.width == 0 || containerRect.height == 0) {
+      return bot.dom.OverflowState.HIDDEN;
+    }
+
     // Check "underflow": if an element is to the left or above the container
-    var underflowsX = underflowCoordX < containerRect.left;
-    var underflowsY = underflowCoordY < containerRect.top;
+    var underflowsX = region.right < containerRect.left;
+    var underflowsY = region.bottom < containerRect.top;
     if ((underflowsX && containerOverflow.x == 'hidden') ||
         (underflowsY && containerOverflow.y == 'hidden')) {
       return bot.dom.OverflowState.HIDDEN;
@@ -792,10 +782,8 @@ bot.dom.getOverflowState = function(elem, opt_coord) {
       // have to distinguish between the element being completely outside the
       // container and merely scrolled out of view within the container.
       var containerScroll = getScroll(container);
-      var unscrollableX = underflowCoordX <
-          containerRect.left - containerScroll.x;
-      var unscrollableY = underflowCoordY <
-          containerRect.top - containerScroll.y;
+      var unscrollableX = region.right < containerRect.left - containerScroll.x;
+      var unscrollableY = region.bottom < containerRect.top - containerScroll.y;
       if ((unscrollableX && containerOverflow.x != 'visible') ||
           (unscrollableY && containerOverflow.x != 'visible')) {
         return bot.dom.OverflowState.HIDDEN;
@@ -806,8 +794,8 @@ bot.dom.getOverflowState = function(elem, opt_coord) {
     }
 
     // Check "overflow": if an element is to the right or below a container
-    var overflowsX = overflowCoordX >= containerRect.left + containerRect.width;
-    var overflowsY = overflowCoordY >= containerRect.top + containerRect.height;
+    var overflowsX = region.left >= containerRect.left + containerRect.width;
+    var overflowsY = region.top >= containerRect.top + containerRect.height;
     if ((overflowsX && containerOverflow.x == 'hidden') ||
         (overflowsY && containerOverflow.y == 'hidden')) {
       return bot.dom.OverflowState.HIDDEN;
@@ -817,8 +805,8 @@ bot.dom.getOverflowState = function(elem, opt_coord) {
       // of the document, then it is hidden.
       if (treatAsFixedPosition) {
         var docScroll = getScroll(container);
-        if ((overflowCoordX >= htmlElem.scrollWidth - docScroll.x) ||
-            (overflowCoordY >= htmlElem.scrollHeight - docScroll.y)) {
+        if ((region.left >= htmlElem.scrollWidth - docScroll.x) ||
+            (region.right >= htmlElem.scrollHeight - docScroll.y)) {
           return bot.dom.OverflowState.HIDDEN;
         }
       }
@@ -884,7 +872,7 @@ bot.dom.getClientRect = function(elem) {
 
     // In IE, the element can additionally be offset by a border around the
     // documentElement or body element that we have to subtract.
-    if (goog.userAgent.IE && goog.dom.getOwnerDocument(elem).body) {
+    if (goog.userAgent.IE && elem.ownerDocument.body) {
       var doc = goog.dom.getOwnerDocument(elem);
       rect.left -= doc.documentElement.clientLeft + doc.body.clientLeft;
       rect.top -= doc.documentElement.clientTop + doc.body.clientTop;
@@ -1031,6 +1019,36 @@ bot.dom.getAreaRelativeRect_ = function(area) {
     return new goog.math.Rect(minX, minY, maxX - minX, maxY - minY);
   }
   return new goog.math.Rect(0, 0, 0, 0);
+};
+
+
+/**
+ * Gets the element's client rectangle as a box, optionally clipped to the
+ * given coordinate or rectangle relative to the client's position. A coordinate
+ * is treated as a 1x1 rectangle whose top-left corner is the coordinate.
+ *
+ * @param {!Element} elem The element.
+ * @param {!(goog.math.Coordinate|goog.math.Rect)=} opt_region
+ *     Coordinate or rectangle relative to the top-left corner of the element.
+ * @return {!goog.math.Box} The client region box.
+ */
+bot.dom.getClientRegion = function(elem, opt_region) {
+  var region = bot.dom.getClientRect(elem).toBox();
+
+  if (opt_region) {
+    var rect = opt_region instanceof goog.math.Rect ? opt_region :
+        new goog.math.Rect(opt_region.x, opt_region.y, 1, 1);
+    region.left = goog.math.clamp(
+        region.left + rect.left, region.left, region.right);
+    region.top = goog.math.clamp(
+        region.top + rect.top, region.top, region.bottom);
+    region.right = goog.math.clamp(
+        region.left + rect.width, region.left, region.right);
+    region.bottom = goog.math.clamp(
+        region.top + rect.height, region.top, region.bottom);
+  }
+
+  return region;
 };
 
 
@@ -1274,204 +1292,4 @@ bot.dom.getOpacityNonIE_ = function(elem) {
     elemOpacity = elemOpacity * bot.dom.getOpacityNonIE_(parentElement);
   }
   return elemOpacity;
-};
-
-
-/**
- * This function calculates the amount of scrolling necessary to bring the
- * target location into view.
- *
- * @param {number} targetLocation The target location relative to the current
- *     viewport.
- * @param {number} viewportDimension The size of the current viewport.
- * @return {number} Returns the scroll offset necessary to bring the given
- *     target location into view.
- * @private
- */
-bot.dom.calculateViewportScrolling_ =
-    function(targetLocation, viewportDimension) {
-
-  if (targetLocation >= viewportDimension) {
-    // Scroll until the target location appears on the right/bottom side of
-    // the viewport.
-    return targetLocation - (viewportDimension - 1);
-  }
-
-  if (targetLocation < 0) {
-    // Scroll until the target location appears on the left/top side of the
-    // viewport.
-    return targetLocation;
-  }
-
-  // The location is already within the viewport. No scrolling necessary.
-  return 0;
-};
-
-
-/**
- * This function takes a relative location according to the current viewport. If
- * this location is not visible in the viewport, it scrolls the location into
- * view. The function returns the new relative location after scrolling.
- *
- * @param {!goog.math.Coordinate} targetLocation The target location relative
- *     to (0, 0) coordinate of the viewport.
- * @param {Window=} opt_currentWindow The current browser window.
- * @return {!goog.math.Coordinate} The target location within the viewport
- *     after scrolling.
- */
-bot.dom.getInViewLocation =
-    function(targetLocation, opt_currentWindow) {
-  var currentWindow = opt_currentWindow || bot.getWindow();
-  var viewportSize = goog.dom.getViewportSize(currentWindow);
-
-  var xScrolling = bot.dom.calculateViewportScrolling_(
-      targetLocation.x,
-      viewportSize.width);
-
-  var yScrolling = bot.dom.calculateViewportScrolling_(
-      targetLocation.y,
-      viewportSize.height);
-
-  var scrollOffset =
-      goog.dom.getDomHelper(currentWindow.document).getDocumentScroll();
-
-  if (xScrolling != 0 || yScrolling != 0) {
-    currentWindow.scrollBy(xScrolling, yScrolling);
-  }
-
-  // It is difficult to determine the size of the web page in some browsers.
-  // We check if the scrolling we intended to do really happened. If not we
-  // assume that the target location is not on the web page.
-  var newScrollOffset =
-      goog.dom.getDomHelper(currentWindow.document).getDocumentScroll();
-
-  if ((scrollOffset.x + xScrolling != newScrollOffset.x) ||
-      (scrollOffset.y + yScrolling != newScrollOffset.y)) {
-    throw new bot.Error(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-        'The target location is not on the webpage. ' +
-        'The initial target location (' + targetLocation.x + ',' + targetLocation.y + ') ' +
-        'with scroll offset (' + scrollOffset.x + ',' + scrollOffset.y + ') is not scrolled to ' +
-        'expected scroll offset (' + newScrollOffset.x + ',' + newScrollOffset.y + ') ' +
-        'by (' + xScrolling + ',' + yScrolling + ') inside viewport with ' +
-        '(' + viewportSize.width + ',' + viewportSize.height + ') size.'
-    );
-  }
-
-  var inViewLocation = new goog.math.Coordinate(
-      targetLocation.x - xScrolling,
-      targetLocation.y - yScrolling);
-
-  // The target location should be within the viewport after scrolling.
-  // This is assertion code. We do not expect them ever to become true.
-  if (0 > inViewLocation.x || inViewLocation.x >= viewportSize.width) {
-    throw new bot.Error(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-        'The target location (' +
-        inViewLocation.x + ', ' + inViewLocation.y +
-        ') should be within the viewport (' +
-        viewportSize.width + ':' + viewportSize.height +
-        ') after scrolling.');
-  }
-
-  if (0 > inViewLocation.y || inViewLocation.y >= viewportSize.height) {
-    throw new bot.Error(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
-        'The target location (' +
-        inViewLocation.x + ', ' + inViewLocation.y +
-        ') should be within the viewport (' +
-        viewportSize.width + ':' + viewportSize.height +
-        ') after scrolling.');
-  }
-
-  return inViewLocation;
-};
-
-
-/**
- * Scrolls the region of an element into the container's view. If the
- * region is too large to fit in the view, it will be aligned to the
- * top-left of the container.
- *
- * The element and container should be attached to the current document.
- *
- * @param {!Element} elem The element to use.
- * @param {!goog.math.Rect} elemRegion The region relative to the element to be
- *     scrolled into view.
- * @param {!Element} container A container of the given element.
- * @private
- */
-bot.dom.scrollElementRegionIntoContainerView_ = function(elem, elemRegion,
-                                                         container) {
-  // Based largely from goog.style.scrollIntoContainerView.
-  var elemRect = bot.dom.getClientRect(elem);
-  var containerRect = bot.dom.getClientRect(container);
-  var containerBorder = goog.style.getBorderBox(container);
-
-  // Relative pos. of the element's border box to the container's content box.
-  var relX = elemRect.left + elemRegion.left - containerRect.left -
-             containerBorder.left;
-  var relY = elemRect.top + elemRegion.top - containerRect.top -
-             containerBorder.top;
-
-  // How much the element can move in the container. Use the container's
-  // clientWidth/clientHeight, not containerRect, to account for the scrollbar.
-  var spaceX = container.clientWidth - elemRegion.width;
-  var spaceY = container.clientHeight - elemRegion.height;
-
-  // Scroll the element into view of the container.
-  container.scrollLeft += Math.min(relX, Math.max(relX - spaceX, 0));
-  container.scrollTop += Math.min(relY, Math.max(relY - spaceY, 0));
-};
-
-
-/**
- * Scrolls the element into the client's view. If the element or region is
- * too large to fit in the view, it will be aligned to the top-left of the
- * container.
- *
- * The element should be attached to the current document.
- *
- * @param {!Element} elem The element to use.
- * @param {!goog.math.Rect} elemRegion The region relative to the element to be
- *     scrolled into view.
- */
-bot.dom.scrollElementRegionIntoClientView = function(elem, elemRegion) {
-  // Scroll all the ancestor containers as needed.
-  for (var container = bot.dom.getParentElement(elem); container;
-       container = bot.dom.getParentElement(container)) {
-    bot.dom.scrollElementRegionIntoContainerView_(elem, elemRegion, container);
-  }
-};
-
-
-/**
- * Scrolls the element into the client's view and returns its position
- * relative to the client viewport. If the element or region is too
- * large to fit in the view, it will be aligned to the top-left of the
- * container.
- *
- * The element should be attached to the current document.
- *
- * @param {!Element} elem The element to use.
- * @param {!goog.math.Rect=} opt_elemRegion The region relative to the element
- *     to be scrolled into view.
- * @return {!goog.math.Coordinate} The coordinate of the element in client
- *     space.
- */
-bot.dom.getLocationInView = function(elem, opt_elemRegion) {
-  var elemRegion;
-  if (opt_elemRegion) {
-    elemRegion = new goog.math.Rect(
-        opt_elemRegion.left, opt_elemRegion.top,
-        opt_elemRegion.width, opt_elemRegion.height);
-  } else {
-    elemRegion = new goog.math.Rect(0, 0, elem.offsetWidth, elem.offsetHeight);
-  }
-  bot.dom.scrollElementRegionIntoClientView(elem, elemRegion);
-
-  // This is needed for elements that are split across multiple lines.
-  var rect = elem.getClientRects ? elem.getClientRects()[0] : null;
-  var elemClientPos = rect ?
-      new goog.math.Coordinate(rect.left, rect.top) :
-      bot.dom.getClientRect(elem);
-  return new goog.math.Coordinate(elemClientPos.x + elemRegion.left,
-                                  elemClientPos.y + elemRegion.top);
 };
