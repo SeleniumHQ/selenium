@@ -57,8 +57,10 @@ class Service(object):
            or when it can't connect to the service
         """
         try:
-            self.process = subprocess.Popen(self.service_args,
-                                            stdout=self._log, stderr=self._log)
+            self.process = subprocess.Popen(self.service_args, stdin=subprocess.PIPE,
+                                            close_fds=True, stdout=self._log,
+                                            stderr=self._log)
+
         except Exception as e:
             raise WebDriverException("Unable to start phantomjs with ghostdriver.", e)
         count = 0
