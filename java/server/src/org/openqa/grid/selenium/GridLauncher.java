@@ -62,10 +62,6 @@ public class GridLauncher {
     }
     Logger.getLogger("").setLevel(logLevel);
 
-    for (Handler handler : Logger.getLogger("").getHandlers()) {
-      Logger.getLogger("").removeHandler(handler);
-    }
-
     String logFilename =
         helper.isParamPresent("-log")
         ? helper.getParamValue("-log")
