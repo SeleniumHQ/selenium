@@ -46,7 +46,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
-import static org.openqa.selenium.testing.drivers.SauceDriver.getEffectivePlatform;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 
 public class TypingTest extends JUnit4TestBase {
 
