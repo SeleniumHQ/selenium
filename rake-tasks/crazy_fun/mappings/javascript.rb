@@ -173,6 +173,21 @@ class JavascriptMappings
     fun.add_mapping("js_fragment_java", Javascript::AddDependencies.new)
     fun.add_mapping("js_fragment_java", Javascript::ConcatenateJava.new)
 
+    # Compiles a list of |js_fragments| into a static C# class with each fragment
+    # defined as a static readonly string.
+    #
+    # Arguments:
+    #   name: The name of target. Will be used as the generated class name.
+    #   deps: A list of |js_fragment| files the target depends on.
+    #   utf: Whether to output using UTF8.
+    #   package: The package the generated class should belong to.
+    # Outputs:
+    #   The generated java file.
+    fun.add_mapping("js_fragment_csharp", Javascript::CreateTask.new)
+    fun.add_mapping("js_fragment_csharp", Javascript::CreateTaskShortName.new)
+    fun.add_mapping("js_fragment_csharp", Javascript::AddDependencies.new)
+    fun.add_mapping("js_fragment_csharp", Javascript::ConcatenateCSharp.new)
+
     # Executes JavaScript tests in the browser.
     #
     # Arguments:
@@ -864,6 +879,10 @@ module Javascript
       puts "Generating header for #{atom_file}"
       atom_name = get_atom_name_from_file(dir, atom_file)
 
+      if language == :csharp
+        atom_name = atom_name.split('_').each{|part| part.capitalize!}.join('')
+      end
+
       # Each fragment file should be small (<= 20KB), so just read it all in.
       contents = IO.read(atom_file).strip
 
@@ -889,6 +908,8 @@ module Javascript
         line_format = utf8 ? "    \"%s\"" : "    L\"%s\""
       elsif language == :java
         line_format = "      .append\(\"%s\"\)"
+      elsif language == :csharp
+        line_format = "            .Append\(\"%s\"\)"
       end
 
       to_file << "\n"
@@ -897,6 +918,8 @@ module Javascript
         to_file << "const #{atom_type}* const #{atom_name}[] = {\n"
       elsif language == :java
         to_file << "  #{atom_name}(new StringBuilder()\n"
+      elsif language == :csharp
+        to_file << "        public static readonly string #{atom_name} = new StringBuilder()\n"
       end
 
       # Make the header file play nicely in a terminal: limit lines to 80
@@ -915,6 +938,9 @@ module Javascript
         elsif (language == :cpp)
           to_file << line_format % line
           to_file << ",\n"
+        elsif (language == :csharp)
+          to_file << line_format % line
+          to_file << "\n"
         end
       end
 
@@ -924,6 +950,8 @@ module Javascript
         to_file << "\n    .toString()),\n"
       elsif language == :cpp
         to_file << ",\n    NULL\n};\n"
+      elsif language == :csharp
+        to_file << "\n            .ToString();\n"
       end
     end
 
@@ -1056,6 +1084,42 @@ module Javascript
       end
     end
 
+    def generate_csharp(dir, name, task_name, output, js_files, package)
+      file output => js_files do
+        task_name =~ /([a-z]+)-driver/
+        implementation = $1.capitalize
+        output_dir = File.dirname(output)
+        mkdir_p output_dir unless File.exists?(output_dir)
+        class_name = "WebDriverAtoms"
+        output = output_dir + "/" + class_name + ".cs"
+
+        puts "Preparing #{task_name} as #{output}"
+
+        File.open(output, "w") do |out|
+          out << COPYRIGHT
+          out << "\n"
+          out << "using System.Text;\n"
+          out << "\n"
+          out << "namespace #{package}\n"
+          out << "{\n"
+          out << "    /**\n"
+          out << "     * The WebDriver atoms are used to ensure consistent behaviour cross-browser.\n"
+          out << "     * \n"
+          out << "     * AUTO GENERATED - DO NOT EDIT BY HAND\n"
+          out << "     */\n"
+          out << "    public static class #{class_name}\n"
+          out << "    {"
+
+          js_files.each do |js_file|
+            write_atom_string_literal(out, dir, js_file, :csharp)
+          end
+
+          out << "    }\n"
+          out << "}"
+        end
+      end
+    end
+
   end
 
   class ConcatenateHeaders < GenerateAtoms
@@ -1087,6 +1151,16 @@ module Javascript
       output = js.sub(/\.js$/, '.java')
       task_name = task_name(dir, args[:name])
       generate_java(dir, args[:name], task_name, output, args[:deps], args[:package])
+      task task_name => [output]
+    end
+  end
+
+  class ConcatenateCSharp < GenerateAtoms
+    def handle(fun, dir, args)
+      js = js_name(dir, args[:name])
+      output = js.sub(/\.js$/, '.cs')
+      task_name = task_name(dir, args[:name])
+      generate_csharp(dir, args[:name], task_name, output, args[:deps], args[:package])
       task task_name => [output]
     end
   end
