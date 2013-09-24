@@ -272,7 +272,7 @@ wgxpath.Step.nameToAxisMap_ = {};
  */
 wgxpath.Step.createAxis_ =
     function(name, func, reverse, opt_supportsQuickAttr) {
-  if (name in wgxpath.Step.nameToAxisMap_) {
+  if (wgxpath.Step.nameToAxisMap_.hasOwnProperty(name)) {
     throw Error('Axis already created: ' + name);
   }
   // The upcast and then downcast for the JSCompiler.

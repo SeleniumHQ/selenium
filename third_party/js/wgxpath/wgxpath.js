@@ -24,6 +24,7 @@ goog.require('wgxpath.IEAttrWrapper');
 goog.require('wgxpath.Lexer');
 goog.require('wgxpath.NodeSet');
 goog.require('wgxpath.Parser');
+goog.require('wgxpath.nsResolver');
 
 
 /**
@@ -187,6 +188,20 @@ wgxpath.XPathResult_['FIRST_ORDERED_NODE_TYPE'] =
     wgxpath.XPathResultType_.FIRST_ORDERED_NODE_TYPE;
 
 
+
+/**
+ * The exported XPathNSResolver type.
+ *
+ * @constructor
+ * @extends {XPathNSResolver}
+ * @param {!Node} node Context node for the namespace resolution.
+ * @private
+ */
+wgxpath.XPathNSResolver_ = function(node) {
+  this['lookupNamespaceURI'] = wgxpath.nsResolver.getResolver(node);
+};
+
+
 /**
  * Installs the library. This is a noop if native XPath is available.
  *
@@ -197,14 +212,19 @@ wgxpath.install = function(opt_win) {
   var doc = win.document;
 
   // Installation is a noop if native XPath is available.
-  if (!doc['evaluate']) {
-    win['XPathResult'] = wgxpath.XPathResult_;
-    doc['evaluate'] = function(expr, context, nsResolver, type, result) {
-      return new wgxpath.XPathExpression_(expr, nsResolver).
-          evaluate(context, type);
-    };
-    doc['createExpression'] = function(expr, nsResolver) {
-      return new wgxpath.XPathExpression_(expr, nsResolver);
-    };
+  if (doc['evaluate']) {
+    return;
   }
+
+  win['XPathResult'] = wgxpath.XPathResult_;
+  doc['evaluate'] = function(expr, context, nsResolver, type, result) {
+    return new wgxpath.XPathExpression_(expr, nsResolver).
+        evaluate(context, type);
+  };
+  doc['createExpression'] = function(expr, nsResolver) {
+    return new wgxpath.XPathExpression_(expr, nsResolver);
+  };
+  doc['createNSResolver'] = function(node) {
+    return new wgxpath.XPathNSResolver_(node);
+  };
 };

@@ -113,7 +113,7 @@ wgxpath.Node.attrMatches = function(node, name, value) {
   if (goog.isNull(name)) {
     return true;
   }
-  // TODO(user): If possible, figure out why this throws an exception in some
+  // TODO: If possible, figure out why this throws an exception in some
   // cases on IE < 9.
   try {
     if (!node.getAttribute) {
@@ -298,7 +298,7 @@ wgxpath.Node.getChildNodesIEPre9_ = function(test, node,
       }
     }
     if (attrName) {
-      // TODO(user): See if an optimization is possible.
+      // TODO: See if an optimization is possible.
       children = goog.array.filter(children, function(n) {
         return wgxpath.Node.attrMatches(n, attrName, attrValue);
       });

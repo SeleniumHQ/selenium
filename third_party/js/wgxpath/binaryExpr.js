@@ -243,7 +243,7 @@ wgxpath.BinaryExpr.stringToOpMap_ = {};
  */
 wgxpath.BinaryExpr.createOp_ = function(opString, precedence, dataType,
     evaluate) {
-  if (opString in wgxpath.BinaryExpr.stringToOpMap_) {
+  if (wgxpath.BinaryExpr.stringToOpMap_.hasOwnProperty(opString)) {
     throw new Error('Binary operator already created: ' + opString);
   }
   // The upcast and then downcast for the JSCompiler.
