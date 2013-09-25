@@ -85,6 +85,7 @@ WebElement.clickElement = function(respond, parameters) {
 
     var inViewAfterScroll = Utils.scrollIntoView(
         unwrapped,
+        (respond.session.elementScrollBehavior == 0),
         new goog.math.Coordinate(elementHalfWidth, elementHalfHeight));
 
     var isSVG = Utils.isSVG(element.ownerDocument);
@@ -388,7 +389,8 @@ WebElement.getElementLocationOnceScrolledIntoView = function(
 
   var theDoc = element.ownerDocument;
   Utils.getMainDocumentElement(theDoc).focus();
-  var elementLocation = Utils.getLocationOnceScrolledIntoView(element);
+  var elementLocation = Utils.getLocationOnceScrolledIntoView(
+      element, (respond.session.elementScrollBehavior == 0));
 
   respond.value = {
     x: Math.round(elementLocation.x),

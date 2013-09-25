@@ -38,6 +38,7 @@ public interface CapabilityType {
   String ACCEPT_SSL_CERTS = "acceptSslCerts";
   String HAS_NATIVE_EVENTS = "nativeEvents";
   String UNEXPECTED_ALERT_BEHAVIOUR = "unexpectedAlertBehaviour";
+  String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
 
   String LOGGING_PREFS = "loggingPrefs";
 

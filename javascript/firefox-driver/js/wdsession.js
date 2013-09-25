@@ -136,6 +136,15 @@ wdSession.prototype.mousePosition_ = {
 wdSession.prototype.scriptTimeout_ = 0;
 
 
+/**
+ * Allows the user to specify whether elements are scrolled into the viewport
+ * for interaction to align with the top (0) or bottom (1) of the viewport.
+ * The default value is to align with the top of the viewport.
+ * @private {number}
+ */
+wdSession.prototype.elementScrollBehavior = 0;
+
+
 /** @see nsISupports.QueryInterface */
 wdSession.prototype.QueryInterface = function(aIID) {
   if (aIID.equals(Components.interfaces.nsISupports)) {

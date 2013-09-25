@@ -713,9 +713,9 @@ Utils.getBrowserSpecificOffset = function(inBrowser) {
 };
 
 
-Utils.scrollIntoView = function(element, opt_coords) {
+Utils.scrollIntoView = function(element, opt_elementScrollBehavior, opt_coords) {
   if (!Utils.isInView(element, opt_coords)) {
-    element.scrollIntoView();
+    element.scrollIntoView(opt_elementScrollBehavior);
   }
   return bot.action.scrollIntoView(element, opt_coords);
 };
@@ -749,8 +749,8 @@ Utils.isInView = function(element, opt_coords) {
 };
 
 
-Utils.getLocationOnceScrolledIntoView = function(element, opt_onlyFirstRect) {
-  Utils.scrollIntoView(element);
+Utils.getLocationOnceScrolledIntoView = function(element, opt_elementScrollBehavior, opt_onlyFirstRect) {
+  Utils.scrollIntoView(element, opt_elementScrollBehavior);
   return Utils.getLocationRelativeToWindowHandle(element, opt_onlyFirstRect);
 };
 

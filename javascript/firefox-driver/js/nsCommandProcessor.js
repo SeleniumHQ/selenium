@@ -702,6 +702,9 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
 
     session = session.wrappedJSObject;  // XPConnect...
     session.setChromeWindow(win);
+    if ('elementScrollBehavior' in desiredCapabilities) {
+      session.elementScrollBehavior = desiredCapabilities['elementScrollBehavior'];
+    }
 
     response.session = session;
     response.sessionId = session.getId();

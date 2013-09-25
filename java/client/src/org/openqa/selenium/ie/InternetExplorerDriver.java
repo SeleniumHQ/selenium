@@ -28,6 +28,7 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
@@ -50,7 +51,7 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   /**
    * Capability that defines to use whether to use native or javascript events during operations.
    */
-  public final static String NATIVE_EVENTS = "nativeEvents";
+  public final static String NATIVE_EVENTS = CapabilityType.HAS_NATIVE_EVENTS;
 
   /**
    * Capability that defines the initial URL to be used when IE is launched.
@@ -60,12 +61,12 @@ public class InternetExplorerDriver extends RemoteWebDriver implements TakesScre
   /**
    * Capability that defines how elements are scrolled into view in the InternetExplorerDriver.
    */
-  public final static String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
+  public final static String ELEMENT_SCROLL_BEHAVIOR = CapabilityType.ELEMENT_SCROLL_BEHAVIOR;
 
   /**
    * Capability that defines which behaviour will be used if an unexpected Alert is found.
    */
-  public final static String UNEXPECTED_ALERT_BEHAVIOR = "unexpectedAlertBehaviour";
+  public final static String UNEXPECTED_ALERT_BEHAVIOR = CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
   /**
    * Capability that defines to use or not cleanup of element cache on document loading.
