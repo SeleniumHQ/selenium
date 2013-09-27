@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -89,38 +90,28 @@ public class HubStatusServlet extends RegistryBasedServlet {
   }
 
   private JSONObject getResponse(HttpServletRequest request) throws IOException, JSONException {
-    JSONObject requestJSON = null;
     JSONObject res = new JSONObject();
     res.put("success", true);
     try {
       if (request.getInputStream() != null) {
-        BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
-        StringBuilder s = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-          s.append(line);
-        }
-        rd.close();
-        String json = s.toString();
-        if (!"".equals(json)) {
-          requestJSON = new JSONObject(json);
-        }
-
-        JSONArray keys = requestJSON != null ? requestJSON.getJSONArray("configuration")
-                              : null;
+        JSONObject requestJSON = getRequestJSON(request);
+        JSONArray keys = requestJSON != null ? requestJSON.getJSONArray("configuration") : null;
 
         Set<String> paramsToReturn;
+        Registry registry = getRegistry();
+        Map<String,Object> allParams = registry.getConfiguration().getAllParams();
+
         if (requestJSON == null || keys.length() == 0) {
-          paramsToReturn = getRegistry().getConfiguration().getAllParams().keySet();
+          paramsToReturn = allParams.keySet();
         } else {
           paramsToReturn = new HashSet<String>();
           for (int i = 0; i < keys.length(); i++) {
             paramsToReturn.add(keys.getString(i));
           }
         }
-        for (String key : paramsToReturn) {
 
-          Object value = getRegistry().getConfiguration().getAllParams().get(key);
+        for (String key : paramsToReturn) {
+          Object value = allParams.get(key);
           if (value == null) {
             res.put(key, JSONObject.NULL);
           } else {
@@ -135,5 +126,21 @@ public class HubStatusServlet extends RegistryBasedServlet {
     }
     return res;
 
+  }
+
+  private JSONObject getRequestJSON(HttpServletRequest request) throws IOException, JSONException {
+    JSONObject requestJSON = null;
+    BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
+    StringBuilder s = new StringBuilder();
+    String line;
+    while ((line = rd.readLine()) != null) {
+      s.append(line);
+    }
+    rd.close();
+    String json = s.toString();
+    if (!"".equals(json)) {
+      requestJSON = new JSONObject(json);
+    }
+    return requestJSON;
   }
 }
