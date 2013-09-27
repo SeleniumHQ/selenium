@@ -1,4 +1,4 @@
-## v2.36.0
+## v2.35.2
 
 * FIXED: 6200: Pass arguments to the Selenium server instead of to the JVM.
 
