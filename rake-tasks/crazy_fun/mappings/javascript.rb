@@ -909,7 +909,7 @@ module Javascript
       elsif language == :java
         line_format = "      .append\(\"%s\"\)"
       elsif language == :csharp
-        line_format = "            .Append\(\"%s\"\)"
+        line_format = "                atom.Append\(\"%s\"\);"
       end
 
       to_file << "\n"
@@ -919,7 +919,11 @@ module Javascript
       elsif language == :java
         to_file << "  #{atom_name}(new StringBuilder()\n"
       elsif language == :csharp
-        to_file << "        public static readonly string #{atom_name} = new StringBuilder()\n"
+        to_file << "        public static string #{atom_name}\n"
+        to_file << "        {\n"
+        to_file << "            get\n"
+        to_file << "            {\n"
+        to_file << "                StringBuilder atom = new StringBuilder();\n"
       end
 
       # Make the header file play nicely in a terminal: limit lines to 80
@@ -951,7 +955,9 @@ module Javascript
       elsif language == :cpp
         to_file << ",\n    NULL\n};\n"
       elsif language == :csharp
-        to_file << "\n            .ToString();\n"
+        to_file << "\n                return atom.ToString();\n"
+        to_file << "            }\n"
+        to_file << "        }\n"
       end
     end
 
