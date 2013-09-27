@@ -22,9 +22,11 @@ limitations under the License.
   <script type="text/javascript">
     goog.require('bot.inject.cache');
     goog.require('bot.locators');
+    goog.require('bot.response');
     goog.require('goog.dom');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
+    goog.require('webdriver.atoms.inject.frame');
     goog.require('webdriver.atoms.inject.locators');
   </script>
 
@@ -36,14 +38,17 @@ limitations under the License.
         document[bot.inject.cache.CACHE_KEY_] = undefined;
       }
 
-      wrappedDocument = {'ELEMENT':
-          bot.inject.cache.addElement(document.body)};
+      wrappedDocument = {
+        'ELEMENT': bot.inject.cache.addElement(document.body)
+      };
     }
 
     function testInjectFindElementById() {
-      var e = webdriver.atoms.inject.locators.findElement("id", "x", wrappedDocument);
-      assertEquals(document.getElementById("x"),
-                   getElementFromCache(goog.json.parse(e)));
+      var e = webdriver.atoms.inject.locators.findElement(
+          'id', 'x', wrappedDocument);
+      assertEquals(
+          document.getElementById('x'),
+          getElementFromCache(checkResponse(e)));
     }
 
     function testInjectFindElementByCss() {
@@ -52,47 +57,50 @@ limitations under the License.
         return;
       }
 
-      var e = webdriver.atoms.inject.locators.findElement("css",
-                                                    "#wrong", wrappedDocument);
-      assertEquals(document.querySelector("#wrong"),
-                   getElementFromCache(goog.json.parse(e)));
+      var e = webdriver.atoms.inject.locators.findElement(
+          'css', '#wrong', wrappedDocument);
+      assertEquals(
+          document.querySelector('#wrong'),
+          getElementFromCache(checkResponse(e)));
     }
 
     function testInjectFindElementByClassName() {
-      var e = webdriver.atoms.inject.locators.findElement("className", "dogs",
-                                           wrappedDocument);
+      var e = webdriver.atoms.inject.locators.findElement(
+          'className', 'dogs', wrappedDocument);
       var expected = bot.locators.findElements({className: 'dogs'})[0];
-
-      assertEquals(expected,
-                   getElementFromCache(goog.json.parse(e)));
+      assertEquals(expected, getElementFromCache(checkResponse(e)));
     }
 
     function testInjectFindElementByName() {
-      var e = webdriver.atoms.inject.locators.findElement("name", "after",
-                                                    wrappedDocument);
-      assertEquals(bot.locators.findElements({name: 'after'})[0],
-                   getElementFromCache(goog.json.parse(e)));
+      var e = webdriver.atoms.inject.locators.findElement(
+          'name', 'after', wrappedDocument);
+      assertEquals(
+          bot.locators.findElements({name: 'after'})[0],
+          getElementFromCache(checkResponse(e)));
     }
 
       function testInjectFindElementByLinkText() {
-      var e = webdriver.atoms.inject.locators.findElement("linkText",
-                                           "this is a link", wrappedDocument);
-      assertEquals(goog.dom.$('link'),
-                   getElementFromCache(goog.json.parse(e)));
+      var e = webdriver.atoms.inject.locators.findElement(
+          'linkText', 'this is a link', wrappedDocument);
+      assertEquals(
+          goog.dom.$('link'),
+          getElementFromCache(checkResponse(e)));
     }
 
     function testInjectFindElementByPartialLinkText() {
-      var e = webdriver.atoms.inject.locators.findElement("partialLinkText",
-                                           "is", wrappedDocument);
-      assertEquals(document.getElementById("link"),
-                   getElementFromCache(goog.json.parse(e)));
+      var e = webdriver.atoms.inject.locators.findElement(
+          'partialLinkText', 'is', wrappedDocument);
+      assertEquals(
+          document.getElementById('link'),
+          getElementFromCache(checkResponse(e)));
     }
 
     function testInjectFindElementByTagName() {
-      var e = webdriver.atoms.inject.locators.findElement("tagName", "form",
-                                                    wrappedDocument);
-      assertEquals(document.getElementsByTagName("form")[0],
-                   getElementFromCache(goog.json.parse(e)));
+      var e = webdriver.atoms.inject.locators.findElement(
+          'tagName', 'form', wrappedDocument);
+      assertEquals(
+          document.getElementsByTagName('form')[0],
+          getElementFromCache(checkResponse(e)));
     }
 
     function testInjectFindElementByXpath() {
@@ -100,15 +108,16 @@ limitations under the License.
         return;
       }
 
-      var e = webdriver.atoms.inject.locators.findElement("xpath",
-          ".//*[@id='after']", wrappedDocument);
-      assertEquals(document.getElementById("after"),
-                   getElementFromCache(goog.json.parse(e)));
+      var e = webdriver.atoms.inject.locators.findElement(
+          'xpath', './/*[@id="after"]', wrappedDocument);
+      assertEquals(
+          document.getElementById('after'),
+          getElementFromCache(checkResponse(e)));
     }
 
     function testInjectFindElementsByTagName() {
-      var e = webdriver.atoms.inject.locators.findElements("tagName", "div");
-      assertEquals(4, goog.json.parse(e)["value"].length);
+      var e = webdriver.atoms.inject.locators.findElements('tagName', 'div');
+      assertEquals(4, checkResponse(e).length);
     }
 
     function testInjectFindElementsByXPath() {
@@ -116,12 +125,71 @@ limitations under the License.
         return;
       }
 
-      var e = webdriver.atoms.inject.locators.findElements("xpath", ".//a");
-      assertEquals(7, goog.json.parse(e)["value"].length);
+      var e = webdriver.atoms.inject.locators.findElements('xpath', './/a');
+      assertEquals(7, checkResponse(e).length);
     }
 
-    function getElementFromCache(parsed) {
-      return bot.inject.cache.getElement(parsed["value"].ELEMENT);
+    function testLocatingAnElementInAnotherFrame() {
+      var response = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = checkResponse(response);
+
+      response = webdriver.atoms.inject.locators.findElement(
+          'id', 'buttonText', null, frameWindow);
+      var found = checkResponse(response);
+
+      var el = getElementFromCache(found, window.frames[0].document);
+      assertEquals('strong', el.tagName.toLowerCase());
+      assertEquals('buttonText', el.id);
+    }
+
+    function testLocatingAChildElementInAnotherFrame() {
+      var response = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = checkResponse(response);
+
+      response = webdriver.atoms.inject.locators.findElement(
+          'id', 'buttonForm', null, frameWindow);
+      var root = checkResponse(response);
+
+      response = webdriver.atoms.inject.locators.findElement(
+          'tag name', 'strong', root, frameWindow);
+      var found = checkResponse(response);
+
+      var el = getElementFromCache(found, window.frames[0].document);
+      assertEquals('strong', el.tagName.toLowerCase());
+      assertEquals('buttonText', el.id);
+
+      response = webdriver.atoms.inject.locators.findElement(
+          'id', 'buttonText', null, frameWindow);
+      var found = checkResponse(response);
+
+      var el = getElementFromCache(found, window.frames[0].document);
+      assertEquals('strong', el.tagName.toLowerCase());
+      assertEquals('buttonText', el.id);
+    }
+
+    function testLocatingManyElementsInAnotherFrame() {
+      var response = webdriver.atoms.inject.frame.findFrameByIndex(0);
+      var frameWindow = checkResponse(response);
+
+      response = webdriver.atoms.inject.locators.findElements(
+          'tag name', 'form', null, frameWindow);
+      var found = checkResponse(response);
+      assertEquals(3, found.length);
+
+      var doc = window.frames[0].document;
+      assertEquals('form', getElementFromCache(found[0], doc).id);
+      assertEquals('otherForm', getElementFromCache(found[1], doc).id);
+      assertEquals('buttonForm', getElementFromCache(found[2], doc).id);
+    }
+
+    function checkResponse(strResponse) {
+      var response = goog.json.parse(strResponse);
+      bot.response.checkResponse(response);
+      return response['value'];
+    }
+
+    function getElementFromCache(parsed, opt_doc) {
+      return bot.inject.cache.getElement(parsed.ELEMENT, opt_doc);
     }
   </script>
 </head>
@@ -157,5 +225,7 @@ limitations under the License.
 
   <a href="#">unrelated</a>
   <a href="#" id="empty-link"></a>
+
+  <iframe id="frame" src="click_iframe.html"></iframe>
   </body>
 </html>

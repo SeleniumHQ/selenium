@@ -216,7 +216,8 @@ bot.inject.recompileFunction_ = function(fn, theWindow) {
  * @param {!(Function|string)} fn Either the function to execute, or a string
  *     defining the body of an anonymous function that should be executed. This
  *     function should only contain references to symbols defined in the context
- *     of the current window.
+ *     of the target window ({@code opt_window}). Any references to symbols
+ *     defined in this context will likely generate a ReferenceError.
  * @param {Array.<*>} args An array of wrapped script arguments, as defined by
  *     the WebDriver wire protocol.
  * @param {boolean=} opt_stringify Whether the result should be returned as a
@@ -261,8 +262,11 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
  * from an external source. It handles wrapping and unwrapping of input/output
  * values.
  *
- * @param {(function()|string)} fn Either the function to execute, or a string
- *     defining the body of an anonymous function that should be executed.
+ * @param {(!Function|string)} fn Either the function to execute, or a string
+ *     defining the body of an anonymous function that should be executed. This
+ *     function should only contain references to symbols defined in the context
+ *     of the target window ({@code opt_window}). Any references to symbols
+ *     defined in this context will likely generate a ReferenceError.
  * @param {Array.<*>} args An array of wrapped script arguments, as defined by
  *     the WebDriver wire protocol.
  * @param {number} timeout The amount of time, in milliseconds, the script
