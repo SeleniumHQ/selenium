@@ -110,6 +110,11 @@ public class HubStatusServlet extends RegistryBasedServlet {
           }
         }
 
+        if (paramsToReturn.contains("newSessionRequestCount")) {
+          res.put("newSessionRequestCount", getRegistry().getNewSessionRequestCount());
+          paramsToReturn.remove("newSessionRequestCount");
+        }
+
         for (String key : paramsToReturn) {
           Object value = allParams.get(key);
           if (value == null) {

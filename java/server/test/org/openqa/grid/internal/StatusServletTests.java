@@ -314,7 +314,30 @@ public class StatusServletTests {
     assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                  o.getString("capabilityMatcher"));
     assertEquals(JSONObject.NULL, o.opt("prioritizer"));
+  }
 
+  @Test
+  public void testHubGetNewSessionRequestCount() throws JSONException,
+                                                        IOException {
+    HttpClient client = httpClientFactory.getHttpClient();
+
+    String url = hubApi.toExternalForm();
+    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+
+    JSONObject j = new JSONObject();
+
+    JSONArray keys = new JSONArray();
+    keys.put("newSessionRequestCount");
+
+    j.put("configuration", keys);
+    r.setEntity(new StringEntity(j.toString()));
+
+    HttpResponse response = client.execute(host, r);
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    JSONObject o = extractObject(response);
+
+    assertTrue(o.getBoolean("success"));
+    assertEquals(0, o.getInt("newSessionRequestCount"));
   }
 
   @Test
