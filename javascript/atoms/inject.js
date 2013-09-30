@@ -139,7 +139,6 @@ bot.inject.wrapValue = function(value) {
  * @param {Document=} opt_doc The document whose cache to retrieve wrapped
  *     elements from. Defaults to the current document.
  * @return {*} The unwrapped value.
- * @private
  */
 bot.inject.unwrapValue = function(value, opt_doc) {
   if (goog.isArray(value)) {

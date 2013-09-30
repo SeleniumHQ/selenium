@@ -29,12 +29,12 @@ goog.require('webdriver.atoms.inject');
  *
  * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to submit.
  * @param {!Array.<string>} keys The keys to type.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The optional window
+ * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
  * @return {string} A stringified {@link bot.response.ResponseObject}.
  */
 webdriver.atoms.inject.action.type = function(element, keys, opt_window) {
-  return webdriver.atoms.inject.dom.executeActionFunction_(
+  return webdriver.atoms.inject.action.executeActionFunction_(
       webdriver.atoms.element.type, [element, keys], opt_window);
 };
 
@@ -43,13 +43,13 @@ webdriver.atoms.inject.action.type = function(element, keys, opt_window) {
  * Submits the form containing the given element.
  *
  * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to submit.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The optional window
+ * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
  * @return {string} A stringified {@link bot.response.ResponseObject}.
  * @deprecated Click on a submit button or type ENTER in a text box instead.
  */
 webdriver.atoms.inject.action.submit = function(element, opt_window) {
-  return webdriver.atoms.inject.dom.executeActionFunction_(bot.action.submit,
+  return webdriver.atoms.inject.action.executeActionFunction_(bot.action.submit,
       [element], opt_window);
 };
 
@@ -58,13 +58,13 @@ webdriver.atoms.inject.action.submit = function(element, opt_window) {
  * Clear an element.
  *
  * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to clear.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The optional window
+ * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
  * @return {string} A stringified {@link bot.response.ResponseObject}.
  * @see bot.action.clear
  */
 webdriver.atoms.inject.action.clear = function(element, opt_window) {
-  return webdriver.atoms.inject.dom.executeActionFunction_(bot.action.clear,
+  return webdriver.atoms.inject.action.executeActionFunction_(bot.action.clear,
       [element], opt_window);
 };
 
@@ -73,29 +73,30 @@ webdriver.atoms.inject.action.clear = function(element, opt_window) {
  * Click an element.
  *
  * @param {!{bot.inject.ELEMENT_KEY:string}} element The element to click.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The optional window
+ * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
  * @return {string} A stringified {@link bot.response.ResponseObject}.
  * @see bot.action.click
  */
-webdriver.atoms.inject.action.click = function(element, opt_window) {
-  return webdriver.atoms.inject.dom.executeActionFunction_(bot.action.click,
+webdriver.atoms.inject.action.click = function (element, opt_window) {
+  return webdriver.atoms.inject.action.executeActionFunction_(bot.action.click,
       [element], opt_window);
 };
 
 /**
 * @param {Function} fn The function to call.
 * @param {Array.<*>} args An array of function arguments for the function.
-* @param {{bot.inject.WINDOW_KEY: string}=} opt_window The window context for
+* @param {{WINDOW: string}=} opt_window The window context for
 *     the execution of the function.
 * @return {string} The serialized JSON wire protocol result of the function.
 */
-webdriver.atoms.inject.dom.executeActionFunction_ =
+webdriver.atoms.inject.action.executeActionFunction_ =
     function (fn, args, opt_window) {
   var response;
   try {
     var targetWindow = webdriver.atoms.inject.getWindow(opt_window);
-    var unwrappedArgs = bot.inject.unwrapValue(args, targetWindow.document);
+    var unwrappedArgs = /**@type {Object}*/(bot.inject.unwrapValue(args,
+        targetWindow.document));
     var functionResult = fn.apply(null, unwrappedArgs);
     response = bot.inject.wrapResponse(functionResult);
   } catch (ex) {

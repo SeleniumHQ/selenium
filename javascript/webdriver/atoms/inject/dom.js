@@ -27,7 +27,7 @@ goog.require('webdriver.atoms.inject');
 /**
  * Gets the visisble text for the given element.
  * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The optional window
+ * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
  * @return {string} The visible text wrapped in a JSON string as defined by the
  *     WebDriver wire protocol.
@@ -40,7 +40,7 @@ webdriver.atoms.inject.dom.getText = function(element, opt_window) {
 
 /**
  * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The optional window
+ * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
  * @return {string} A boolean describing whether the element is
  *     checked or selected wrapped in a JSON string as defined by
@@ -54,7 +54,7 @@ webdriver.atoms.inject.dom.isSelected = function(element, opt_window) {
 
 /**
  * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The optional window
+ * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
  * @return {string} The coordinates of the top left corner in a JSON
  *     string as defined by the wire protocol.
@@ -69,7 +69,7 @@ webdriver.atoms.inject.dom.getTopLeftCoordinates =
 /**
  * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
  * @param {string} attribute The attribute to look up.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The optional window
+ * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
  * @return {string} The requested attribute value in a JSON string
  *     as defined by the wire protocol.
@@ -83,7 +83,7 @@ webdriver.atoms.inject.dom.getAttributeValue =
 
 /**
  * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The optional window
+ * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
  * @return {string} The element size in a JSON string as
  *     defined by the wire protocol.
@@ -102,7 +102,7 @@ webdriver.atoms.inject.dom.getSize = function(element, opt_window) {
 /**
  * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
  * @param {string} property The property to look up.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The optional window
+ * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
  * @return {string} The value of the requested CSS property in a JSON
  *     string as defined by the wire protocol.
@@ -116,7 +116,7 @@ webdriver.atoms.inject.dom.getValueOfCssProperty =
 
 /**
  * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The optional window
+ * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
  * @return {string} A boolean describing whether the element is enabled
  *     in a JSON string as defined by the wire protocol.
@@ -124,13 +124,12 @@ webdriver.atoms.inject.dom.getValueOfCssProperty =
 webdriver.atoms.inject.dom.isEnabled = function(element, opt_window) {
   return webdriver.atoms.inject.dom.executeDomFunction_(
       bot.dom.isEnabled, [element], opt_window);
-  return webdriver.atoms.inject.executeScript(bot.dom.isEnabled, [element]);
 };
 
 
 /**
  * @param {{bot.inject.ELEMENT_KEY: string}} element The element to check.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The optional window
+ * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
  * @return {string} true if the element is visisble, false otherwise.
  *     The result is wrapped in a JSON string as defined by the wire
@@ -144,7 +143,7 @@ webdriver.atoms.inject.dom.isDisplayed = function(element, opt_window) {
 /**
  * @param {Function} fn The function to call.
  * @param {Array.<*>} args An array of function arguments for the function.
- * @param {{bot.inject.WINDOW_KEY: string}=} opt_window The window context for
+ * @param {{WINDOW: string}=} opt_window The window context for
  *     the execution of the function.
  * @return {string} The serialized JSON wire protocol result of the function.
  */
@@ -153,7 +152,8 @@ webdriver.atoms.inject.dom.executeDomFunction_ =
   var response;
   try {
     var targetWindow = webdriver.atoms.inject.getWindow(opt_window);
-    var unwrappedArgs = bot.inject.unwrapValue(args, targetWindow.document);
+    var unwrappedArgs = /**@type {Object}*/(bot.inject.unwrapValue(args,
+        targetWindow.document));
     var functionResult = fn.apply(null, unwrappedArgs);
     response = bot.inject.wrapResponse(functionResult);
   } catch (ex) {
