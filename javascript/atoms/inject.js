@@ -141,10 +141,10 @@ bot.inject.wrapValue = function(value) {
  * @return {*} The unwrapped value.
  * @private
  */
-bot.inject.unwrapValue_ = function(value, opt_doc) {
+bot.inject.unwrapValue = function(value, opt_doc) {
   if (goog.isArray(value)) {
     return goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
-        function(v) { return bot.inject.unwrapValue_(v, opt_doc); });
+        function(v) { return bot.inject.unwrapValue(v, opt_doc); });
   } else if (goog.isObject(value)) {
     if (typeof value == 'function') {
       return value;
@@ -161,7 +161,7 @@ bot.inject.unwrapValue_ = function(value, opt_doc) {
     }
 
     return goog.object.map(value, function(val) {
-      return bot.inject.unwrapValue_(val, opt_doc);
+      return bot.inject.unwrapValue(val, opt_doc);
     });
   }
   return value;
@@ -233,7 +233,7 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
   var ret;
   try {
     fn = bot.inject.recompileFunction_(fn, win);
-    var unwrappedArgs = /**@type {Object}*/ (bot.inject.unwrapValue_(args,
+    var unwrappedArgs = /**@type {Object}*/ (bot.inject.unwrapValue(args,
         win.document));
     ret = bot.inject.wrapResponse(fn.apply(null, unwrappedArgs));
   } catch (ex) {
@@ -314,7 +314,7 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
 
   fn = bot.inject.recompileFunction_(fn, win);
 
-  args = /** @type {Array.<*>} */ (bot.inject.unwrapValue_(args, win.document));
+  args = /** @type {Array.<*>} */ (bot.inject.unwrapValue(args, win.document));
   args.push(goog.partial(sendResponse, bot.ErrorCode.SUCCESS));
 
   if (win.addEventListener) {
