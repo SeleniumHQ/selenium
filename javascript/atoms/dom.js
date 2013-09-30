@@ -867,8 +867,19 @@ bot.dom.getClientRect = function(elem) {
       return new goog.math.Rect(0, 0, 0, 0);
     }
 
-    var rect = new goog.math.Rect(nativeRect.left, nativeRect.top,
-        nativeRect.right - nativeRect.left, nativeRect.bottom - nativeRect.top);
+    var left = nativeRect.left;
+    var right = nativeRect.right;
+    var top = nativeRect.top;
+    var bottom = nativeRect.bottom;
+    if (goog.userAgent.IE && bot.userAgent.IE_DOC_10) {
+      // On IE10, getBoundingClientRect returns floating point values.
+      left = Math.round(nativeRect.left);
+      right = Math.round(nativeRect.right);
+      top = Math.round(nativeRect.top);
+      bottom = Math.round(nativeRect.bottom);
+    }
+
+    var rect = new goog.math.Rect(left, top, right - left, bottom - top);
 
     // In IE, the element can additionally be offset by a border around the
     // documentElement or body element that we have to subtract.
