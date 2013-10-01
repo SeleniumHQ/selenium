@@ -4,6 +4,7 @@ java_library(
         "LogEntries.java",
         "LogEntry.java",
         "Logs.java",
+        "LoggingPreferences.java",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:beta",

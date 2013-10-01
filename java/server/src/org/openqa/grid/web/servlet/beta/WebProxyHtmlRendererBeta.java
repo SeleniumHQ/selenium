@@ -193,7 +193,7 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
 
   /**
    * return the platform for the proxy. It should be the same for all slots of the proxy, so checking that.
-   * @return
+   * @return Either the platform name, "Unknown", "mixed OS", or "not specified".
    */
   public static String getPlatform(RemoteProxy proxy) {
     Platform res = null;

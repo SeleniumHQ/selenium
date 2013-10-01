@@ -58,7 +58,7 @@ public class LoggingPreferences {
   /**
    * @param logType The log type.
    * @return the {@link Level} for the given {@link LogType} if enabled.
-   *     Otherwise returns {@link Level.OFF}.
+   *     Otherwise returns {@link Level#OFF}.
    */
   public Level getLevel(String logType) {
     return prefs.get(logType) == null ? Level.OFF : prefs.get(logType);

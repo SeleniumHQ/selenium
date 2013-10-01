@@ -336,7 +336,8 @@ public class FutureFileResource extends URLResource {
 
   /**
    * @param o
-   * @return
+   * @return <code>true</code> if passed object uses the same File object as
+   *         this instance or if the path to both files are equal.
    */
   @Override
   public boolean equals(Object o) {

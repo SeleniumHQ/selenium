@@ -60,8 +60,6 @@ public class HttpCommandProcessor implements CommandProcessor {
    *        "c:\\program files\\internet explorer\\iexplore.exe"
    * @param browserURL - the starting URL including just a domain name. We'll start the browser
    *        pointing at the Selenium resources on this URL,
-   * @param extensionJs - extension Javascript for this session e.g. "http://www.google.com" would
-   *        send the browser to "http://www.google.com/selenium-server/core/RemoteRunner.html"
    */
   public HttpCommandProcessor(String serverHost, int serverPort, String browserStartCommand,
       String browserURL) {
@@ -83,7 +81,6 @@ public class HttpCommandProcessor implements CommandProcessor {
    *        "c:\\program files\\internet explorer\\iexplore.exe"
    * @param browserURL - the starting URL including just a domain name. We'll start the browser
    *        pointing at the Selenium resources on this URL,
-   * @param extensionJs - extension Javascript for this session
    */
   public HttpCommandProcessor(String pathToServlet, String browserStartCommand, String browserURL) {
     this.pathToServlet = pathToServlet;

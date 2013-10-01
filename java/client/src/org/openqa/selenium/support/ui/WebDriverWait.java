@@ -34,7 +34,7 @@ public class WebDriverWait extends FluentWait<WebDriver> {
    *
    * @param driver The WebDriver instance to pass to the expected conditions
    * @param timeOutInSeconds The timeout in seconds when an expectation is called
-   * @see WebDriverWait#ignoring(Class) equals
+   * @see WebDriverWait#ignoring(java.lang.Class)
    */
   public WebDriverWait(WebDriver driver, long timeOutInSeconds) {
     this(driver, new SystemClock(), Sleeper.SYSTEM_SLEEPER, timeOutInSeconds, DEFAULT_SLEEP_TIMEOUT);
@@ -48,7 +48,7 @@ public class WebDriverWait extends FluentWait<WebDriver> {
    * @param driver The WebDriver instance to pass to the expected conditions
    * @param timeOutInSeconds The timeout in seconds when an expectation is called
    * @param sleepInMillis The duration in milliseconds to sleep between polls.
-   * @see WebDriverWait#ignoring(Class) equals
+   * @see WebDriverWait#ignoring(java.lang.Class)
    */
   public WebDriverWait(WebDriver driver, long timeOutInSeconds, long sleepInMillis) {
     this(driver, new SystemClock(), Sleeper.SYSTEM_SLEEPER, timeOutInSeconds, sleepInMillis);
