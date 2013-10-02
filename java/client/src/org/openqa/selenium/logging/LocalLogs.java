@@ -60,7 +60,7 @@ public abstract class LocalLogs implements Logs {
    * LocalLogs instance and the second one.
    * @param predefinedTypeLogger LocalLogs which pre-defines the log types it stores.
    * @param allTypesLogger LocalLogs which can store log entries for all log types.
-   * @return
+   * @return A LocalLogs instance.
    */
   public static LocalLogs getCombinedLogsHolder(LocalLogs predefinedTypeLogger,
                                                 LocalLogs allTypesLogger) {

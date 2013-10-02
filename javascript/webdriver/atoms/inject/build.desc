@@ -99,6 +99,16 @@ js_fragment(name = "active_element",
   function = "webdriver.atoms.inject.frame.activeElement",
   deps = [":deps"])
 
+js_fragment(name = "execute_script",
+  module = "webdriver.atoms.inject",
+  function = "webdriver.atoms.inject.executeScript",
+  deps = [":deps"])
+
+js_fragment(name = "execute_async_script",
+  module = "webdriver.atoms.inject",
+  function = "webdriver.atoms.inject.executeAsyncScript",
+  deps = [":deps"])
+
 # Local Storage
 js_fragment(name = "set_local_storage_item",
   module = "webdriver.atoms.inject.storage.local",

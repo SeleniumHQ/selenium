@@ -35,6 +35,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -104,6 +105,12 @@ public class PageLoadingTest extends JUnit4TestBase {
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be
     driver.get("http://localhost:3001");
+  }
+
+  @Test
+  public void testShouldReturnURLOnNotExistedPage() {
+    driver.get(appServer.whereIs("not_existed_page.html"));
+    assertEquals(appServer.whereIs("not_existed_page.html"), driver.getCurrentUrl());
   }
 
   @Ignore({IPHONE, ANDROID, MARIONETTE})

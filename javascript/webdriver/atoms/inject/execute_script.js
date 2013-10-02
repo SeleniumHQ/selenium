@@ -29,14 +29,14 @@ goog.require('bot.inject.cache');
  *
  * @param {!(string|Function)} fn The function to execute.
  * @param {Array.<*>} args Array of arguments to pass to fn.
- * @param {{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
- *     object to be read from the cache.
+ * @param {{WINDOW: string}=} opt_window The serialized window object to be
+ *     read from the cache.
  * @return {string} The response object, serialized and returned in string
  *     format.
  */
 webdriver.atoms.inject.executeScript = function(fn, args, opt_window) {
   return /**@type {string}*/(bot.inject.executeScript(fn, args, true,
-      webdriver.atoms.inject.getWindow_(opt_window)));
+      webdriver.atoms.inject.getWindow(opt_window)));
 };
 
 
@@ -48,26 +48,29 @@ webdriver.atoms.inject.executeScript = function(fn, args, opt_window) {
  * @param {function(string)|function(!bot.response.ResponseObject)} onDone
  *     The function to call when the given {@code fn} invokes its callback,
  *     or when an exception or timeout occurs. This will always be called.
- * @param {{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
+ * @param {{WINDOW: string}=} opt_window The serialized window
  *     object to be read from the cache.
  */
 webdriver.atoms.inject.executeAsyncScript =
     function(fn, args, timeout, onDone, opt_window) {
   bot.inject.executeAsyncScript(
       fn, args, timeout, onDone, true,
-      webdriver.atoms.inject.getWindow_(opt_window));
+      webdriver.atoms.inject.getWindow(opt_window));
 };
 
 
 /**
- * Get the window to use.
+ * Decodes a serialized {WINDOW: string} object using the current document's
+ * cache.
  *
- * @param {{bot.inject.WINDOW_KEY:string}=} opt_window The serialized window
- *     object to be read from the cache.
+ * @param {{WINDOW: string}=} opt_window The serialized window object to be
+ *     read from the cache. If undefined, this function will trivially return
+ *     the current window.
  * @return {!Window} A reference to a window.
- * @private
+ * @throws {bot.Error} If the serialized window cannot be found in the current
+ *     document's cache.
  */
-webdriver.atoms.inject.getWindow_ = function(opt_window) {
+webdriver.atoms.inject.getWindow = function(opt_window) {
   var win;
   if (opt_window) {
     win = bot.inject.cache.getElement(opt_window[bot.inject.WINDOW_KEY]);

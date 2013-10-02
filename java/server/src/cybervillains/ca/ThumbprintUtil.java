@@ -24,7 +24,7 @@ public class ThumbprintUtil {
    * Generates a SHA1 thumbprint of a certificate for long-term mapping.
    * 
    * @param cert
-   * @return
+   * @return String with base64 encoded digest bytes.
    * @throws CertificateEncodingException
    */
   public static String getThumbprint(final X509Certificate cert)

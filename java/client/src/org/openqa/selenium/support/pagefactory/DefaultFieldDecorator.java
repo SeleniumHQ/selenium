@@ -34,8 +34,8 @@ import java.util.List;
 
 /**
  * Default decorator for use with PageFactory. Will decorate 1) all of the
- * WebElement fields and 2) List<WebElement> fields that have @FindBy, @FindBys,
- * or @FindAll annotation with a proxy that locates the elements using the passed
+ * WebElement fields and 2) List<WebElement> fields that have {@literal @FindBy}, {@literal @FindBys},
+ * or {@literal @FindAll} annotation with a proxy that locates the elements using the passed
  * in ElementLocatorFactory.
  */
 public class DefaultFieldDecorator implements FieldDecorator {

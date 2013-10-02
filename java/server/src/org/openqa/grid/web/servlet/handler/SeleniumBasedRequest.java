@@ -71,9 +71,9 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
 
 
   /**
-   * check the request and finds out if that's a selenium legacy protocol( RC ) or a webdriver one.
+   * check the request and finds out if that's a selenium legacy protocol( RC ) or a WebDriver one.
    * @param request
-   * @return
+   * @return Either SeleniumProtocol.Selenium or SeleniumProtocol.WebDriver.
    */
   public static SeleniumProtocol getRequestProtocol(HttpServletRequest request) {
     if ("/selenium-server/driver".equals(request.getServletPath())) {

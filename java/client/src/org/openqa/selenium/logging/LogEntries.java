@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
- * Represent a pool of {@Link LogEntry}.  This class also provides filtering mechanisms based on
+ * Represent a pool of {@link LogEntry}.  This class also provides filtering mechanisms based on
  * levels.
  */
 @Beta

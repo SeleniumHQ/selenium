@@ -139,12 +139,11 @@ bot.inject.wrapValue = function(value) {
  * @param {Document=} opt_doc The document whose cache to retrieve wrapped
  *     elements from. Defaults to the current document.
  * @return {*} The unwrapped value.
- * @private
  */
-bot.inject.unwrapValue_ = function(value, opt_doc) {
+bot.inject.unwrapValue = function(value, opt_doc) {
   if (goog.isArray(value)) {
     return goog.array.map(/**@type {goog.array.ArrayLike}*/ (value),
-        function(v) { return bot.inject.unwrapValue_(v, opt_doc); });
+        function(v) { return bot.inject.unwrapValue(v, opt_doc); });
   } else if (goog.isObject(value)) {
     if (typeof value == 'function') {
       return value;
@@ -161,7 +160,7 @@ bot.inject.unwrapValue_ = function(value, opt_doc) {
     }
 
     return goog.object.map(value, function(val) {
-      return bot.inject.unwrapValue_(val, opt_doc);
+      return bot.inject.unwrapValue(val, opt_doc);
     });
   }
   return value;
@@ -216,7 +215,8 @@ bot.inject.recompileFunction_ = function(fn, theWindow) {
  * @param {!(Function|string)} fn Either the function to execute, or a string
  *     defining the body of an anonymous function that should be executed. This
  *     function should only contain references to symbols defined in the context
- *     of the current window.
+ *     of the target window ({@code opt_window}). Any references to symbols
+ *     defined in this context will likely generate a ReferenceError.
  * @param {Array.<*>} args An array of wrapped script arguments, as defined by
  *     the WebDriver wire protocol.
  * @param {boolean=} opt_stringify Whether the result should be returned as a
@@ -232,7 +232,7 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
   var ret;
   try {
     fn = bot.inject.recompileFunction_(fn, win);
-    var unwrappedArgs = /**@type {Object}*/ (bot.inject.unwrapValue_(args,
+    var unwrappedArgs = /**@type {Object}*/ (bot.inject.unwrapValue(args,
         win.document));
     ret = bot.inject.wrapResponse(fn.apply(null, unwrappedArgs));
   } catch (ex) {
@@ -261,8 +261,11 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
  * from an external source. It handles wrapping and unwrapping of input/output
  * values.
  *
- * @param {(function()|string)} fn Either the function to execute, or a string
- *     defining the body of an anonymous function that should be executed.
+ * @param {(!Function|string)} fn Either the function to execute, or a string
+ *     defining the body of an anonymous function that should be executed. This
+ *     function should only contain references to symbols defined in the context
+ *     of the target window ({@code opt_window}). Any references to symbols
+ *     defined in this context will likely generate a ReferenceError.
  * @param {Array.<*>} args An array of wrapped script arguments, as defined by
  *     the WebDriver wire protocol.
  * @param {number} timeout The amount of time, in milliseconds, the script
@@ -310,7 +313,7 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
 
   fn = bot.inject.recompileFunction_(fn, win);
 
-  args = /** @type {Array.<*>} */ (bot.inject.unwrapValue_(args, win.document));
+  args = /** @type {Array.<*>} */ (bot.inject.unwrapValue(args, win.document));
   args.push(goog.partial(sendResponse, bot.ErrorCode.SUCCESS));
 
   if (win.addEventListener) {

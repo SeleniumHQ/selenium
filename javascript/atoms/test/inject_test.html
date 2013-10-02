@@ -91,7 +91,7 @@ limitations under the License.
       var id = wrapped[bot.inject.WINDOW_KEY];
       var res = bot.inject.cache.getElement(id);
       assertEquals(frameWin, res);
-      assertEquals(frameWin, bot.inject.unwrapValue_(wrapped));
+      assertEquals(frameWin, bot.inject.unwrapValue(wrapped));
     }
 
 
@@ -196,7 +196,7 @@ limitations under the License.
     function testShouldBeAbleToUnWrapWrappedValues() {
       var unwrapped = [123, 'abc', null, document.body];
       var wrapped = bot.inject.wrapValue(unwrapped);
-      var roundTripped = bot.inject.unwrapValue_(wrapped);
+      var roundTripped = bot.inject.unwrapValue(wrapped);
       assertArrayEquals(unwrapped, roundTripped);
     }
 
@@ -205,7 +205,7 @@ limitations under the License.
       var unwrapped = [123, 'abc', null, [document.body, null,
           [document.body]]];
       var wrapped = bot.inject.wrapValue(unwrapped);
-      var roundTripped = bot.inject.unwrapValue_(wrapped);
+      var roundTripped = bot.inject.unwrapValue(wrapped);
       assertArrayEquals(unwrapped, roundTripped);
     }
 
@@ -213,7 +213,7 @@ limitations under the License.
     function testShouldBeAbleToUnWrapNestedObjects() {
       var unwrapped = {'foo': {'bar': document.body}};
       var wrapped = bot.inject.wrapValue(unwrapped);
-      var roundTripped = bot.inject.unwrapValue_(wrapped);
+      var roundTripped = bot.inject.unwrapValue(wrapped);
 
       assertTrue(goog.object.containsKey(roundTripped, 'foo'));
       var foo = roundTripped['foo'];
@@ -232,9 +232,9 @@ limitations under the License.
 
       // Should not be able to unwrap using our document since the element
       // was cached on its ownerDocument.
-      assertThrows(goog.partial(bot.inject.unwrapValue_, wrapped));
+      assertThrows(goog.partial(bot.inject.unwrapValue, wrapped));
 
-      var unwrapped = bot.inject.unwrapValue_(wrapped, frameDoc);
+      var unwrapped = bot.inject.unwrapValue(wrapped, frameDoc);
       assertEquals(frameDoc.body, unwrapped);
     }
 
