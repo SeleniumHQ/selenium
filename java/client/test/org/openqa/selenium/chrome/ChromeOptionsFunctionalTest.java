@@ -59,7 +59,7 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
         String.format(
             "This test requires chromedriver 17.0.963.0 or newer. You appear " +
                 "to be using %s; please download the latest chromedriver from" +
-                " http://code.google.com/p/chromedriver/downloads/list",
+                " http://chromedriver.storage.googleapis.com/index.html",
             chromeDriverVersion),
         "foo;bar", userAgent);
   }

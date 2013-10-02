@@ -50,7 +50,7 @@ var ServiceBuilder = function(opt_exe) {
     throw Error(
         'The ChromeDriver could not be found on the current PATH. Please ' +
         'download the latest version of the ChromeDriver from ' +
-        'http://code.google.com/p/chromedriver/downloads/list and ensure ' +
+        'http://chromedriver.storage.googleapis.com/index.html and ensure ' +
         'it can be found on your PATH.');
   }
 
