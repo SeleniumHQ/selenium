@@ -74,7 +74,7 @@ public class ChromeDriverService extends DriverService {
   public static ChromeDriverService createDefaultService() {
     File exe = findExecutable("chromedriver", CHROME_DRIVER_EXE_PROPERTY,
       "http://code.google.com/p/selenium/wiki/ChromeDriver",
-      "http://code.google.com/p/chromedriver/downloads/list");
+      "http://chromedriver.storage.googleapis.com/index.html");
     return new Builder().usingDriverExecutable(exe).usingAnyFreePort().build();
   }
 

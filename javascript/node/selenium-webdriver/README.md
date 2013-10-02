@@ -8,7 +8,7 @@ Install the latest published version using `npm`:
 
 In addition to the npm package, you will to download the WebDriver
 implementations you wish to utilize. As of 2.34.0, `selenium-webdriver`
-natively supports the [ChromeDriver](https://code.google.com/p/chromedriver/downloads/list).
+natively supports the [ChromeDriver](http://chromedriver.storage.googleapis.com/index.html).
 Simply download a copy and make sure it can be found on your `PATH`. The other
 drivers (e.g. Firefox, Internet Explorer, and Safari), still require the
 [standalone Selenium server](https://code.google.com/p/selenium/downloads/list).
@@ -16,7 +16,7 @@ drivers (e.g. Firefox, Internet Explorer, and Safari), still require the
 ### Running the tests
 
 _(New in 2.34.0)_ To run the tests, you will need to download a copy of the
-[ChromeDriver](https://code.google.com/p/chromedriver/downloads/list) and make
+[ChromeDriver](http://chromedriver.storage.googleapis.com/index.html) and make
 sure it can be found on your `PATH`.
 
     npm test selenium-webdriver

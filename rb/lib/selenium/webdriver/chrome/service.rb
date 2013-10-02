@@ -10,7 +10,7 @@ module Selenium
         START_TIMEOUT = 20
         STOP_TIMEOUT  = 5
         DEFAULT_PORT  = 9515
-        MISSING_TEXT  = "Unable to find the chromedriver executable. Please download the server from http://code.google.com/p/chromedriver/downloads/list and place it somewhere on your PATH. More info at http://code.google.com/p/selenium/wiki/ChromeDriver."
+        MISSING_TEXT  = "Unable to find the chromedriver executable. Please download the server from http://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH. More info at http://code.google.com/p/selenium/wiki/ChromeDriver."
 
         attr_reader :uri
 
