@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using NUnit.Framework;
 using NMock2;
@@ -91,9 +92,9 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchWindowException))]
         public void PropagatesUnIgnoredExceptions() {
-            var condition = GetCondition<object>(() => { throw new NoSuchWindowException(""); });
+            var ex = new NoSuchWindowException("");
+            var condition = GetCondition<object>(() => { NonInlineableThrow(ex); return null; });
             Expect.Once.On(mockClock).Method("LaterBy").With(TimeSpan.FromMilliseconds(0)).Will(Return.Value(startDate.Add(TimeSpan.FromSeconds(2))));
             Expect.Once.On(mockClock).Method("IsNowBefore").With(startDate.Add(TimeSpan.FromSeconds(2))).Will(Return.Value(true));
 
@@ -102,7 +103,11 @@ namespace OpenQA.Selenium.Support.UI
             wait.PollingInterval = TimeSpan.FromSeconds(2);
             wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(NoSuchFrameException));
 
-            wait.Until(condition);
+            var caughtException = Assert.Throws<NoSuchWindowException>(() => wait.Until(condition));
+            Assert.AreSame(ex, caughtException);
+
+            // Regression test for issue #6343
+            StringAssert.Contains("NonInlineableThrow", caughtException.StackTrace, "the stack trace must include the call to NonInlineableThrow()");
         }
 
         [Test]
@@ -134,6 +139,12 @@ namespace OpenQA.Selenium.Support.UI
             wait.Message = "Expected custom timeout message";
 
             wait.Until(condition);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)] // Prevent inlining, because there is an assertion for the stack frame of this method
+        private void NonInlineableThrow(Exception exception)
+        {
+            throw exception;
         }
 
         private Func<IWebDriver, T> GetCondition<T>(params Func<T>[] functions)
