@@ -107,7 +107,7 @@ namespace OpenQA.Selenium.Support.UI
 
         [Test]
         public void TimeoutMessageIncludesLastIgnoredException() {
-            NoSuchWindowException ex = new NoSuchWindowException("");
+            var ex = new NoSuchWindowException("");
             var condition = GetCondition<object>(() => { throw ex; });
             Expect.Once.On(mockClock).Method("LaterBy").With(TimeSpan.FromMilliseconds(0)).Will(Return.Value(startDate.Add(TimeSpan.FromSeconds(2))));
             Expect.Once.On(mockClock).Method("IsNowBefore").With(startDate.Add(TimeSpan.FromSeconds(2))).Will(Return.Value(false));
@@ -117,15 +117,8 @@ namespace OpenQA.Selenium.Support.UI
             wait.PollingInterval = TimeSpan.FromSeconds(2);
             wait.IgnoreExceptionTypes(typeof(NoSuchWindowException));
 
-            try
-            {
-                wait.Until(condition);
-            }
-            catch (WebDriverTimeoutException e)
-            {
-                Assert.AreEqual(ex, e.InnerException);
-            }
-
+            var caughtException = Assert.Throws<WebDriverTimeoutException>(() => wait.Until(condition));
+            Assert.AreSame(ex, caughtException.InnerException);
         }
 
         [Test]
