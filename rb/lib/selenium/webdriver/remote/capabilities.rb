@@ -85,7 +85,8 @@ module Selenium
               :browser_name          => "internet explorer",
               :platform              => :windows,
               :takes_screenshot      => true,
-              :css_selectors_enabled => true
+              :css_selectors_enabled => true,
+              :native_events         => true
             }.merge(opts))
           end
           alias_method :ie, :internet_explorer
