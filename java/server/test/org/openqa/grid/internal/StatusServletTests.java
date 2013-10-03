@@ -15,13 +15,10 @@
 
 package org.openqa.grid.internal;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -44,10 +41,13 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StatusServletTests {
 
@@ -341,6 +341,33 @@ public class StatusServletTests {
   }
 
   @Test
+  public void testHubGetSlotCounts() throws JSONException, IOException {
+    HttpClient client = httpClientFactory.getHttpClient();
+
+    String url = hubApi.toExternalForm();
+    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+
+    JSONObject j = new JSONObject();
+
+    JSONArray keys = new JSONArray();
+    keys.put("slotCounts");
+
+    j.put("configuration", keys);
+    r.setEntity(new StringEntity(j.toString()));
+
+    HttpResponse response = client.execute(host, r);
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    JSONObject o = extractObject(response);
+
+    assertTrue(o.getBoolean("success"));
+
+    JSONObject slotCounts = o.getJSONObject("slotCounts");
+    assertNotNull(slotCounts);
+    assertEquals(4, slotCounts.getInt("free"));
+    assertEquals(5, slotCounts.getInt("total"));
+  }
+
+  @Test
   public void testSessionApiNeg() throws IOException, JSONException {
     String s = "non-existing session";
     HttpClient client = httpClientFactory.getHttpClient();
@@ -373,6 +400,7 @@ public class StatusServletTests {
       s.append(line);
     }
     rd.close();
+
     return new JSONObject(s.toString());
   }
 

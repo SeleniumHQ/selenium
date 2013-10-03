@@ -18,6 +18,14 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.RemoteProxy;
+import org.openqa.grid.internal.TestSlot;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,12 +36,6 @@ import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.grid.common.exception.GridException;
-import org.openqa.grid.internal.Registry;
 
 /**
  * API to query the hub config remotely.
@@ -111,8 +113,13 @@ public class HubStatusServlet extends RegistryBasedServlet {
         }
 
         if (paramsToReturn.contains("newSessionRequestCount")) {
-          res.put("newSessionRequestCount", getRegistry().getNewSessionRequestCount());
+          res.put("newSessionRequestCount", registry.getNewSessionRequestCount());
           paramsToReturn.remove("newSessionRequestCount");
+        }
+
+        if (paramsToReturn.contains("slotCounts")) {
+          res.put("slotCounts", getSlotCounts());
+          paramsToReturn.remove("slotCounts");
         }
 
         for (String key : paramsToReturn) {
@@ -131,6 +138,28 @@ public class HubStatusServlet extends RegistryBasedServlet {
     }
     return res;
 
+  }
+
+  private JSONObject getSlotCounts() throws JSONException {
+    int freeSlots = 0;
+    int totalSlots = 0;
+
+    for (RemoteProxy proxy : getRegistry().getAllProxies()) {
+      for (TestSlot slot : proxy.getTestSlots()) {
+        if (slot.getSession() == null) {
+          freeSlots += 1;
+        }
+
+        totalSlots += 1;
+      }
+    }
+
+    JSONObject result = new JSONObject();
+
+    result.put("free", freeSlots);
+    result.put("total", totalSlots);
+
+    return result;
   }
 
   private JSONObject getRequestJSON(HttpServletRequest request) throws IOException, JSONException {
