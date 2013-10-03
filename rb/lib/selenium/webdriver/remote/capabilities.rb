@@ -73,6 +73,13 @@ module Selenium
             }.merge(opts))
           end
 
+          def htmlunitwithjs(opts = {})
+            new({
+              :browser_name => "htmlunit",
+              :javascript_enabled => true
+            }.merge(opts))
+          end
+
           def internet_explorer(opts = {})
             new({
               :browser_name          => "internet explorer",

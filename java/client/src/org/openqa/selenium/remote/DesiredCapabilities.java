@@ -191,6 +191,13 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
   }
 
+  public static DesiredCapabilities htmlUnitWithJs() {
+    DesiredCapabilities capabilities = new DesiredCapabilities(BrowserType.HTMLUNIT,
+                                                               "", Platform.ANY);
+    capabilities.setJavascriptEnabled(true);
+    return capabilities;
+  }
+
   public static DesiredCapabilities internetExplorer() {
     DesiredCapabilities capabilities = new DesiredCapabilities(
         BrowserType.IE, "", Platform.WINDOWS);

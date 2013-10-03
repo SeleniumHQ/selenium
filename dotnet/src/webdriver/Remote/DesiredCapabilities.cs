@@ -224,7 +224,9 @@ namespace OpenQA.Selenium.Remote
         /// <returns>New instance of DesiredCapabilities for use with HTMLUnit with JS</returns>
         public static DesiredCapabilities HtmlUnitWithJavaScript()
         {
-            return new DesiredCapabilities("htmlunit", "firefox", new Platform(PlatformType.Any));
+            DesiredCapabilities dc = new DesiredCapabilities("htmlunit", string.Empty, new Platform(PlatformType.Any));
+            dc.IsJavaScriptEnabled = true;
+            return dc;
         }
 
         /// <summary>
@@ -252,7 +254,7 @@ namespace OpenQA.Selenium.Remote
         public static DesiredCapabilities Chrome()
         {
             // This is strangely inconsistent.
-            DesiredCapabilities dc = new DesiredCapabilities("chrome", string.Empty, new Platform(PlatformType.Windows));
+            DesiredCapabilities dc = new DesiredCapabilities("chrome", string.Empty, new Platform(PlatformType.Any));
             dc.IsJavaScriptEnabled = true;
             return dc;
         }
