@@ -25,6 +25,7 @@ import org.openqa.selenium.testing.InProject;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
@@ -39,6 +40,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class CompiledAtomsNotLeakingTest {
@@ -46,6 +48,7 @@ public class CompiledAtomsNotLeakingTest {
   private static final String FRAGMENT_TASK = "//javascript/webdriver/atoms:execute_script";
   private static final String FRAGMENT_PATH =
       "build/javascript/webdriver/atoms/execute_script.js";
+  private static final String RESOURCE_PATH = "/org/openqa/selenium/atoms/execute_script.js";
 
   private static String fragment;
 
@@ -53,12 +56,17 @@ public class CompiledAtomsNotLeakingTest {
 
   @BeforeClass
   public static void loadFragment() throws IOException {
-    File topDir = InProject.locate("Rakefile").getParentFile();
-    File atomFile = new File(topDir, FRAGMENT_PATH);
-    if (!atomFile.exists()) {
-      new Build().of(FRAGMENT_TASK).go();
+    URL resourceUrl = CompiledAtomsNotLeakingTest.class.getResource(RESOURCE_PATH);
+    if (resourceUrl != null) {
+      fragment = Resources.toString(resourceUrl, Charsets.UTF_8);
+    } else {
+      File topDir = InProject.locate("Rakefile").getParentFile();
+      File atomFile = new File(topDir, FRAGMENT_PATH);
+      if (!atomFile.exists()) {
+        new Build().of(FRAGMENT_TASK).go();
+      }
+      fragment = Files.toString(atomFile, Charsets.UTF_8);
     }
-    fragment = Files.toString(atomFile, Charsets.UTF_8);
   }
 
   @Before
