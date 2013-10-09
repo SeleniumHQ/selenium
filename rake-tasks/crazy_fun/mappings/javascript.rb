@@ -1104,6 +1104,7 @@ module Javascript
         File.open(output, "w") do |out|
           out << COPYRIGHT
           out << "\n"
+          out << "using System.CodeDom.Compiler;\n"
           out << "using System.Text;\n"
           out << "\n"
           out << "namespace #{package}\n"
@@ -1113,6 +1114,7 @@ module Javascript
           out << "     * \n"
           out << "     * AUTO GENERATED - DO NOT EDIT BY HAND\n"
           out << "     */\n"
+          out << "    [GeneratedCode(\"WebDriver\", \"#{version}\")]\n"
           out << "    public static class #{class_name}\n"
           out << "    {"
 
