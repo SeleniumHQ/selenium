@@ -247,14 +247,8 @@ bot.userAgent.SAFARI_6 = goog.userAgent.product.SAFARI &&
 
 /**
  * Whether the current browser is Windows Phone.
+ * @type {boolean}
  * @const
  */
-bot.userAgent.WINDOWS_PHONE = (function () {
-  if (goog.userAgent.IE) {
-    var userAgentString = goog.userAgent.getUserAgentString();
-    var match = /IEMobile/.exec(userAgentString);
-    return match != null;
-  } else {
-    return false;
-  }
-})();
+bot.userAgent.WINDOWS_PHONE = goog.userAgent.IE &&
+    goog.userAgent.getUserAgentString().indexOf('IEMobile') != -1;
