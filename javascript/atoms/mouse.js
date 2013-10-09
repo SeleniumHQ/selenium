@@ -278,8 +278,11 @@ bot.Mouse.prototype.releaseButton = function() {
   // TODO: Middle button can also trigger click.
   if (this.buttonPressed_ == bot.Mouse.Button.LEFT &&
       this.getElement() == this.elementPressed_) {
-    this.clickElement(this.clientXY_,
-        this.getButtonValue_(bot.events.EventType.CLICK));
+    if (!(bot.userAgent.WINDOWS_PHONE &&
+        bot.dom.isElement(this.elementPressed_, goog.dom.TagName.OPTION))) {
+      this.clickElement(this.clientXY_,
+          this.getButtonValue_(bot.events.EventType.CLICK));
+    }
     this.maybeDoubleClickElement_();
     if (bot.userAgent.IE_DOC_10 &&
         this.buttonPressed_ == bot.Mouse.Button.LEFT &&
