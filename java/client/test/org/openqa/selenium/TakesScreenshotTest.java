@@ -86,7 +86,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @After
   public void tearDown() {
     if (tempFile != null) {
-      boolean deleted = tempFile.delete();
+      tempFile.delete();
       tempFile = null;
     }
   }
@@ -408,13 +408,11 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   private Set<String> generateExpectedColors(final int initialColor, final int stepColor,
                                              final int nX, final int nY) {
     Set<String> colors = new TreeSet<String>();
-    int color = 0;
-    String hex = "";
     int cnt = 1;
     for (int i = 1; i < nX; i++) {
       for (int j = 1; j < nY; j++) {
-        color = initialColor + (cnt * stepColor);
-        hex =
+        int color = initialColor + (cnt * stepColor);
+        String hex =
             String.format("#%02x%02x%02x", ((color & 0xFF0000) >> 16), ((color & 0x00FF00) >> 8),
                           ((color & 0x0000FF)));
         colors.add(hex);
@@ -451,10 +449,9 @@ public class TakesScreenshotTest extends JUnit4TestBase {
       assertTrue(height > 0);
 
       Raster raster = image.getRaster();
-      String hex = "";
       for (int i = 0; i < width; i = i + stepX) {
         for (int j = 0; j < height; j = j + stepY) {
-          hex = String.format("#%02x%02x%02x",
+          String hex = String.format("#%02x%02x%02x",
                               (raster.getSample(i, j, 0)),
                               (raster.getSample(i, j, 1)),
                               (raster.getSample(i, j, 2)));
