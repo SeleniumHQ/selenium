@@ -33,12 +33,15 @@ public class SetLocationContext extends WebDriverHandler implements JsonParamete
     super(session);
   }
 
+  @Override
   public ResultType call() throws Exception {
-    Utils.convert(getUnwrappedDriver(), LocationContext.class).setLocation(location);
+    Utils.getLocationContext(getUnwrappedDriver()).setLocation(location);
     return ResultType.SUCCESS;
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    @SuppressWarnings("unchecked")
     Map<Object, Object> map = (Map<Object, Object>) allParameters.get("location");
 
     double latitude;

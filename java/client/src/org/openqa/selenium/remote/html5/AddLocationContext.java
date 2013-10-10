@@ -16,40 +16,38 @@ limitations under the License.
 
 package org.openqa.selenium.remote.html5;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Throwables;
 
-import org.openqa.selenium.html5.Location;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.remote.AugmenterProvider;
-import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.InterfaceImplementation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 public class AddLocationContext implements AugmenterProvider {
 
+  @Override
   public Class<?> getDescribedInterface() {
     return LocationContext.class;
   }
 
+  @Override
   public InterfaceImplementation getImplementation(Object value) {
     return new InterfaceImplementation() {
 
+      @Override
       public Object invoke(ExecuteMethod executeMethod, Object self, Method method, Object... args) {
-        if ("location".equals(method.getName())) {
-          Map<Object, Object> map =
-              (Map<Object, Object>) executeMethod.execute(DriverCommand.GET_LOCATION, null);
-          double latitude = Long.valueOf((Long) map.get("latitude")).doubleValue();
-          double longitude = Long.valueOf((Long) map.get("longitude")).doubleValue();
-          double altitude = Long.valueOf((Long) map.get("altitude")).doubleValue();
-          return new Location(latitude, longitude, altitude);
-        } else if ("setLocation".equals(method.getName())) {
-          return executeMethod.execute(DriverCommand.SET_LOCATION,
-              ImmutableMap.of("location", args[0]));
+        LocationContext context = new RemoteLocationContext(executeMethod);
+        try {
+          return method.invoke(context, args);
+        } catch (IllegalAccessException e) {
+          throw new WebDriverException(e);
+        } catch (InvocationTargetException e) {
+          throw Throwables.propagate(e.getCause());
         }
-        return null;
       }
     };
   }

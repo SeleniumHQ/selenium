@@ -31,12 +31,14 @@ public class SetBrowserConnection extends WebDriverHandler implements JsonParame
     super(session);
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     online = (Boolean) allParameters.get("state");
   }
 
+  @Override
   public ResultType call() throws Exception {
-    Utils.convert(getUnwrappedDriver(), BrowserConnection.class).setOnline(online);
+    Utils.getBrowserConnection(getUnwrappedDriver()).setOnline(online);
     return ResultType.SUCCESS;
   }
 
