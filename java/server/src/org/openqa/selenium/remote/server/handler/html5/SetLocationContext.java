@@ -34,7 +34,7 @@ public class SetLocationContext extends WebDriverHandler implements JsonParamete
   }
 
   public ResultType call() throws Exception {
-    ((LocationContext) getUnwrappedDriver()).setLocation(location);
+    Utils.convert(getUnwrappedDriver(), LocationContext.class).setLocation(location);
     return ResultType.SUCCESS;
   }
 

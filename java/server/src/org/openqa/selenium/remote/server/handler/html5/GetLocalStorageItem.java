@@ -29,7 +29,8 @@ public class GetLocalStorageItem extends ResponseAwareWebDriverHandler {
   }
 
   public ResultType call() throws Exception {
-    Object value = ((WebStorage) getUnwrappedDriver()).getLocalStorage().getItem(key);
+    Object value = Utils.convert(getUnwrappedDriver(), WebStorage.class)
+        .getLocalStorage().getItem(key);
     response.setValue(value);
     return ResultType.SUCCESS;
   }

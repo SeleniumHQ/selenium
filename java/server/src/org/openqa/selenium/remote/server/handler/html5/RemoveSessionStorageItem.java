@@ -33,7 +33,8 @@ public class RemoveSessionStorageItem extends ResponseAwareWebDriverHandler {
   }
 
   public ResultType call() throws Exception {
-    Object value = ((WebStorage) getUnwrappedDriver()).getSessionStorage().removeItem(key);
+    Object value = Utils.convert(getUnwrappedDriver(), WebStorage.class)
+        .getSessionStorage().removeItem(key);
     response.setValue(value);
     return ResultType.SUCCESS;
   }

@@ -33,7 +33,8 @@ public class RemoveLocalStorageItem extends ResponseAwareWebDriverHandler {
   }
 
   public ResultType call() throws Exception {
-    Object value = ((WebStorage) getUnwrappedDriver()).getLocalStorage().removeItem(key);
+    Object value = Utils.convert(getUnwrappedDriver(), WebStorage.class)
+        .getLocalStorage().removeItem(key);
     response.setValue(value);
     return ResultType.SUCCESS;
   }

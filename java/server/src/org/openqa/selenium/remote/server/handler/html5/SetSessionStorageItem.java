@@ -33,7 +33,7 @@ public class SetSessionStorageItem extends WebDriverHandler implements JsonParam
   }
 
   public ResultType call() throws Exception {
-    ((WebStorage) getUnwrappedDriver()).getSessionStorage().setItem(key, value);
+    Utils.convert(getUnwrappedDriver(), WebStorage.class).getSessionStorage().setItem(key, value);
     return ResultType.SUCCESS;
   }
 

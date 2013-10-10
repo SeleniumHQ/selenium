@@ -33,7 +33,7 @@ public class SetLocalStorageItem extends WebDriverHandler implements JsonParamet
   }
 
   public ResultType call() throws Exception {
-    ((WebStorage) getUnwrappedDriver()).getLocalStorage().setItem(key, value);
+    Utils.convert(getUnwrappedDriver(), WebStorage.class).getLocalStorage().setItem(key, value);
     return ResultType.SUCCESS;
   }
 

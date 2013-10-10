@@ -28,7 +28,7 @@ public class GetLocationContext extends ResponseAwareWebDriverHandler {
   }
 
   public ResultType call() throws Exception {
-    response.setValue(((LocationContext) getUnwrappedDriver()).location());
+    response.setValue(Utils.convert(getUnwrappedDriver(), LocationContext.class).location());
     return ResultType.SUCCESS;
   }
 

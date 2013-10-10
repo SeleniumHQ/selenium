@@ -36,7 +36,7 @@ public class SetBrowserConnection extends WebDriverHandler implements JsonParame
   }
 
   public ResultType call() throws Exception {
-    ((BrowserConnection) getUnwrappedDriver()).setOnline(online);
+    Utils.convert(getUnwrappedDriver(), BrowserConnection.class).setOnline(online);
     return ResultType.SUCCESS;
   }
 

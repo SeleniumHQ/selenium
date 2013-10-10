@@ -30,7 +30,8 @@ public class GetSessionStorageKeys extends ResponseAwareWebDriverHandler {
   }
 
   public ResultType call() throws Exception {
-    Set<String> keys = ((WebStorage) getUnwrappedDriver()).getSessionStorage().keySet();
+    Set<String> keys = Utils.convert(getUnwrappedDriver(), WebStorage.class)
+        .getSessionStorage().keySet();
     response.setValue(keys);
     return ResultType.SUCCESS;
   }

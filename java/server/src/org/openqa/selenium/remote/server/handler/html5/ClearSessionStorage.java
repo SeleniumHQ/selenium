@@ -28,7 +28,7 @@ public class ClearSessionStorage extends WebDriverHandler {
   }
 
   public ResultType call() throws Exception {
-    ((WebStorage) getUnwrappedDriver()).getSessionStorage().clear();
+    Utils.convert(getUnwrappedDriver(), WebStorage.class).getSessionStorage().clear();
     return ResultType.SUCCESS;
   }
 

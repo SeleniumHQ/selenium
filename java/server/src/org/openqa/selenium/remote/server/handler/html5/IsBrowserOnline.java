@@ -28,7 +28,7 @@ public class IsBrowserOnline extends ResponseAwareWebDriverHandler {
   }
 
   public ResultType call() throws Exception {
-    response.setValue(((BrowserConnection) getUnwrappedDriver()).isOnline());
+    response.setValue(Utils.convert(getUnwrappedDriver(), BrowserConnection.class).isOnline());
     return ResultType.SUCCESS;
   }
 

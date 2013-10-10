@@ -28,7 +28,7 @@ public class GetAppCacheStatus extends ResponseAwareWebDriverHandler {
   }
 
   public ResultType call() throws Exception {
-    response.setValue(((ApplicationCache) getUnwrappedDriver()).getStatus());
+    response.setValue(Utils.convert(getUnwrappedDriver(), ApplicationCache.class).getStatus());
     return ResultType.SUCCESS;
   }
 

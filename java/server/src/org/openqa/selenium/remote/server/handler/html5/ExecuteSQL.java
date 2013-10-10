@@ -40,8 +40,8 @@ public class ExecuteSQL extends ResponseAwareWebDriverHandler implements JsonPar
   }
 
   public ResultType call() throws Exception {
-    Object value =
-        ((DatabaseStorage) getUnwrappedDriver()).executeSQL(dbName, query, args.toArray());
+    Object value = Utils.convert(getUnwrappedDriver(), DatabaseStorage.class)
+        .executeSQL(dbName, query, args.toArray());
     Object result = new ResultConverter(getKnownElements()).apply(value);
     response.setValue(result);
     return ResultType.SUCCESS;

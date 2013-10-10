@@ -28,7 +28,7 @@ public class ClearLocalStorage extends WebDriverHandler {
   }
 
   public ResultType call() throws Exception {
-    ((WebStorage) getUnwrappedDriver()).getLocalStorage().clear();
+    Utils.convert(getUnwrappedDriver(), WebStorage.class).getLocalStorage().clear();
     return ResultType.SUCCESS;
   }
 

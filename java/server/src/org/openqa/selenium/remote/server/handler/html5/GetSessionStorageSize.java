@@ -28,7 +28,8 @@ public class GetSessionStorageSize extends ResponseAwareWebDriverHandler {
   }
 
   public ResultType call() throws Exception {
-    Object value = ((WebStorage) getUnwrappedDriver()).getSessionStorage().size();
+    Object value = Utils.convert(getUnwrappedDriver(), WebStorage.class)
+        .getSessionStorage().size();
     response.setValue(value);
     return ResultType.SUCCESS;
   }
