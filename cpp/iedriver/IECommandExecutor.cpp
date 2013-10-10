@@ -307,13 +307,32 @@ LRESULT IECommandExecutor::OnNewHtmlDialog(UINT uMsg,
     }
   }
 
+  int retry_count = 0;
   CComPtr<IHTMLDocument2> document;
-  if (this->factory_->GetDocumentFromWindowHandle(dialog_handle, &document)) {
+  bool found_document = this->factory_->GetDocumentFromWindowHandle(dialog_handle, &document);
+  while (found_document && retry_count < MAX_HTML_DIALOG_RETRIES) {
     CComPtr<IHTMLWindow2> window;
-    document->get_parentWindow(&window);
-    this->AddManagedBrowser(BrowserHandle(new HtmlDialog(window,
-                                                         dialog_handle,
-                                                         this->m_hWnd)));
+    HRESULT hr = document->get_parentWindow(&window);
+    if (FAILED(hr)) {
+      // Getting the parent window of the dialog's document failed. This
+      // usually means that the document changed out from under us before we
+      // could get the window reference. The canonical case for this is a
+      // redirect using JavaScript. Sleep for a short time, then retry to
+      // obtain the reference.
+      LOGHR(DEBUG, hr) << "IHTMLDocument2::get_parentWindow failed. Retrying.";
+      ::Sleep(100);
+      document.Release();
+      found_document = this->factory_->GetDocumentFromWindowHandle(dialog_handle, &document);
+      ++retry_count;
+    } else {
+      this->AddManagedBrowser(BrowserHandle(new HtmlDialog(window,
+                                                           dialog_handle,
+                                                           this->m_hWnd)));
+      return 0;
+    }
+  }
+  if (found_document) {
+    LOG(WARN) << "Got document from dialog, but could not get window";
   } else {
     LOG(WARN) << "Unable to get document from dialog";
   }
