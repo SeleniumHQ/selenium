@@ -68,6 +68,8 @@ class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialo
   int NavigateForward(void);
   int Refresh(void);
 
+  bool IsValidWindow(void);
+
  private:
   static BOOL CALLBACK FindChildDialogWindow(HWND hwnd, LPARAM arg);
 

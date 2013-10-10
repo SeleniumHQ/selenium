@@ -600,7 +600,9 @@ void IECommandExecutor::GetManagedBrowserHandles(std::vector<std::string>* manag
 
   BrowserMap::const_iterator it = this->managed_browsers_.begin();
   for (; it != this->managed_browsers_.end(); ++it) {
-    managed_browser_handles->push_back(it->first);
+    if (it->second->IsValidWindow()) {
+      managed_browser_handles->push_back(it->first);
+    }
 
     // Look for browser windows created by showModalDialog().
     it->second->GetActiveDialogWindowHandle();

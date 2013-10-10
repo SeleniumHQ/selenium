@@ -103,6 +103,8 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   int NavigateForward(void);
   int Refresh(void);
 
+  bool IsValidWindow(void);
+
   IWebBrowser2* browser(void) { return this->browser_; }
 
  private:

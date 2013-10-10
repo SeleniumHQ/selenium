@@ -9,6 +9,23 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.35.3.3
+=========
+ * Fixing HTML dialog logic for self-closing documents. HTML dialog windows
+   opened using showModalDialog() have no way to properly notify of their
+   closing. The IE driver attempts to detect closing of these windows by
+   listening for user-initiated actions, either by calling the WebDriver close
+   method, or clicking on an element that causes the dialog to close. This
+   commit adds logic to the method used for getting all window handles to
+   validate the existence of any HTML dialog windows, properly notifying the
+   driver if the OS-level window handle is no longer valid. Fixes issue #6249.
+ * Fixing HTML dialog logic for redirected documents. Getting the parent window
+   of an HTML dialog's document can fail, especially if the document changed
+   out from under us before we could get the window reference. The canonical
+   case for this is a redirect using JavaScript. Now we will sleep for a short
+   time, then retry to obtain the reference to the window object. Fixes issue
+   #6224.
+
 v2.35.3.2
 =========
  * Updates to JavaScript automation atoms.

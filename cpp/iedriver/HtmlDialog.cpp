@@ -82,6 +82,19 @@ void HtmlDialog::Close() {
   }
 }
 
+bool HtmlDialog::IsValidWindow() {
+  LOG(TRACE) << "Entering HtmlDialog::IsValidWindow";
+  // If the window handle is no longer valid, the window is closing,
+  // and we must post the quit message.
+  if (!::IsWindow(this->GetTopLevelWindowHandle())) {
+    this->is_navigating_ = false;
+    this->DetachEvents();
+    this->PostQuitMessage();
+    return false;
+  }
+  return true;
+}
+
 bool HtmlDialog::IsBusy() {
   LOG(TRACE) << "Entering HtmlDialog::IsBusy";
   return false;
@@ -89,12 +102,9 @@ bool HtmlDialog::IsBusy() {
 
 bool HtmlDialog::Wait() {
   LOG(TRACE) << "Entering HtmlDialog::Wait";
-  // If the window handle is no longer valid, the window is closing,
-  // the wait is completed, and we must post the quit message.
-  if (!this->is_closing() && !::IsWindow(this->GetTopLevelWindowHandle())) {
-    this->is_navigating_ = false;
-    this->DetachEvents();
-    this->PostQuitMessage();
+  // If the window is no longer valid, the window is closing,
+  // and the wait is completed.
+  if (!this->is_closing() && !this->IsValidWindow()) {
     return true;
   }
 

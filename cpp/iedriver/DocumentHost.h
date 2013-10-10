@@ -51,6 +51,8 @@ class DocumentHost {
   virtual int NavigateForward(void) = 0;
   virtual int Refresh(void) = 0;
 
+  virtual bool IsValidWindow(void) = 0;
+
   std::string GetCurrentUrl(void);
   std::string GetPageSource(void);
 

@@ -385,6 +385,13 @@ HWND Browser::GetTopLevelWindowHandle() {
   return top_level_window_handle;
 }
 
+bool Browser::IsValidWindow() {
+  LOG(TRACE) << "Entering Browser::IsValidWindow";
+  // This is a no-op for this class. Full browser windows can properly notify
+  // of their window's validity by using the proper events.
+  return true;
+}
+
 bool Browser::IsBusy() {
   VARIANT_BOOL is_busy(VARIANT_FALSE);
   HRESULT hr = this->browser_->get_Busy(&is_busy);
