@@ -9,6 +9,12 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.35.3.2
+=========
+ * Updates to JavaScript automation atoms.
+ * Adding more accurate logging during waiting for browser navigation to
+   complete.
+
 v2.35.3.1
 =========
  * Updates to JavaScript automation atoms.
