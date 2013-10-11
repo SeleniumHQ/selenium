@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
@@ -35,6 +36,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
+import com.google.common.collect.Sets;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -420,14 +423,6 @@ public class TakesScreenshotTest extends JUnit4TestBase {
       }
     }
 
-    // each cell has black colored point so add it to expected colors
-    // for checking of full black image case special comparison is added
-    colors.add("#000000");
-
-    // sometimes cell has white colored points
-    // for checking of full white image case special comparison is added
-    colors.add("#ffffff");
-
     return colors;
   }
 
@@ -468,44 +463,37 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   /**
-   * Compares sets of colors.
+   * Compares sets of colors are same.
    *
    * @param expectedColors - set of expected colors
    * @param actualColors   - set of actual colors
    */
   private void compareColors(Set<String> expectedColors, Set<String> actualColors) {
+    assertFalse("Actual image has only black color", onlyBlack(actualColors));
+    assertFalse("Actual image has only white color", onlyWhite(actualColors));
 
-    TreeSet<String> notBlackColors = new TreeSet<String>(actualColors);
-    notBlackColors.remove("#000000");
-    if (notBlackColors.isEmpty()) {
-      fail("Actual image has only black color");
+    // Ignore black and white for further comparison
+    Set<String> cleanActualColors = Sets.newHashSet(actualColors);
+    cleanActualColors.remove("#000000");
+    cleanActualColors.remove("#ffffff");
+
+    if (! expectedColors.containsAll(cleanActualColors)) {
+      fail("There are unexpected colors on the screenshot: " +
+           Sets.difference(cleanActualColors, expectedColors));
     }
 
-    TreeSet<String> notWhiteColors = new TreeSet<String>(actualColors);
-    notWhiteColors.remove("#ffffff");
-    if (notWhiteColors.isEmpty()) {
-      fail("Actual image has only white color");
+    if (! cleanActualColors.containsAll(expectedColors)) {
+      fail("There are expected colors not present on the screenshot: " +
+           Sets.difference(expectedColors, cleanActualColors));
     }
+  }
 
-    TreeSet<String> notFoundColors = new TreeSet<String>(expectedColors);
-    notFoundColors.removeAll(actualColors);
-    // sometimes scan can skip block dots at images (based on current window size etc)
-    // full black image case is checked before so just drop it
-    notFoundColors.remove("#000000");
-    notFoundColors.remove("#ffffff");
-    if (!notFoundColors.isEmpty()) {
-      fail("Unknown expected colors are generated or actual image has not the following colors: " +
-           notFoundColors.toString() + ", \n" + " actual colors are excluded: " + actualColors
-          .toString());
-    }
+  private boolean onlyBlack(Set<String> colors) {
+    return colors.size() == 1 && "#000000".equals(colors.toArray()[0]);
+  }
 
-    TreeSet<String> newFoundColors = new TreeSet<String>(actualColors);
-    newFoundColors.removeAll(expectedColors);
-    if (!newFoundColors.isEmpty()) {
-      fail("Unknown actual colors are presented at screenshot: " +
-           newFoundColors.toString() + ", \n" + " expected colors are excluded: " + expectedColors
-          .toString());
-    }
+  private boolean onlyWhite(Set<String> colors) {
+    return colors.size() == 1 && "#ffffff".equals(colors.toArray()[0]);
   }
 
   /**
