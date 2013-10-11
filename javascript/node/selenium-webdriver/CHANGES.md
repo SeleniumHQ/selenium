@@ -1,3 +1,8 @@
+## v2.35.3
+
+* FIXED: 6346: The remote.SeleniumServer class now accepts JVM arguments using
+    the `jvmArgs` option.
+
 ## v2.35.2
 
 * FIXED: 6200: Pass arguments to the Selenium server instead of to the JVM.

@@ -256,7 +256,8 @@ DriverService.prototype.stop = function() {
  * Manages the life and death of the Selenium standalone server. The server
  * may be obtained from https://code.google.com/p/selenium/downloads/list.
  * @param {string} jar Path to the Selenium server jar.
- * @param {!ServiceOptions} options Configuration options for the server.
+ * @param {!SeleniumServer.Options} options Configuration options for the
+ *     server.
  * @throws {Error} If an invalid port is specified.
  * @constructor
  * @extends {DriverService}
@@ -266,9 +267,11 @@ function SeleniumServer(jar, options) {
     throw Error('Port must be >= 0: ' + options.port);
 
   var port = options.port || portprober.findFreePort();
-  var args = promise.when(options.args || [], function(args) {
-    return promise.when(port, function(port) {
-      return ['-jar', jar, '-port', port].concat(args);
+  var args = promise.when(options.jvmArgs || [], function(jvmArgs) {
+    return promise.when(options.args || [], function(args) {
+      return promise.when(port, function(port) {
+        return jvmArgs.concat(['-jar', jar, '-port', port]).concat(args);
+      });
     });
   });
 
@@ -281,6 +284,41 @@ function SeleniumServer(jar, options) {
   });
 }
 util.inherits(SeleniumServer, DriverService);
+
+
+/**
+ * Options for the Selenium server:
+ * <dl>
+ * <dt>port
+ * <dd>The port to start the server on (must be > 0). If the port is
+ *     provided as a promise, the service will wait for the promise to
+ *     resolve before starting.
+ * <dt>args
+ * <dd>The arguments to pass to the service. If a promise is provided,
+ *     the service will wait for it to resolve before starting.
+ * <dt>jvmArgs
+ * <dd>The arguments to pass to the JVM. If a promise is provided, the service
+ *     will wait for it to resolve before starting.
+ * <dt>env
+ * <dd>The environment variables that should be visible to the server
+ *     process. Defaults to inheriting the current process's environment.
+ * <dt>stdio
+ * <dd>IO configuration for the spawned server process. For more
+ *     information, refer to the documentation of
+ *     {@code child_process.spawn}.
+ * </dl>
+ *
+ * @typedef {{
+ *   port: (number|!webdriver.promise.Promise.<number>),
+ *   args: !(Array.<string>|webdriver.promise.Promise.<!Array.<string>>),
+ *   jvmArgs: (!Array.<string>|
+ *             !webdriver.promise.Promise.<!Array.<string>>|
+ *             undefined)
+ *   env: (!Object.<string, string>|undefined),
+ *   stdio: (string|!Array.<string|number|!Stream|null|undefined>|undefined)
+ * }}
+ */
+SeleniumServer.Options;
 
 
 // PUBLIC API
