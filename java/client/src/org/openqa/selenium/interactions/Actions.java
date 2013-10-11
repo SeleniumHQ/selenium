@@ -334,7 +334,18 @@ public class Actions {
   }
 
   /**
-   * Generates a composite action containinig all actions so far, ready to be performed (and
+   * Performs a pause.
+   *
+   * @param pause pause duration, in milliseconds.
+   * @return A self reference.
+   */
+  public Actions pause(long pause) {
+    action.addAction(new PauseAction(pause));
+    return this;
+  }
+
+  /**
+   * Generates a composite action containing all actions so far, ready to be performed (and
    * resets the internal builder state, so subsequent calls to build() will contain fresh
    * sequences).
    *
