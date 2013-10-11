@@ -17,26 +17,7 @@ limitations under the License.
 
 package org.openqa.grid.web;
 
-import com.google.common.collect.Maps;
-
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
-import org.openqa.grid.web.servlet.beta.ConsoleServlet;
-import org.openqa.grid.web.servlet.DisplayHelpServlet;
-import org.openqa.grid.web.servlet.DriverServlet;
-import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
-import org.openqa.grid.web.servlet.HubStatusServlet;
-import org.openqa.grid.web.servlet.LifecycleServlet;
-import org.openqa.grid.web.servlet.ProxyStatusServlet;
-import org.openqa.grid.web.servlet.RegistrationServlet;
-import org.openqa.grid.web.servlet.ResourceServlet;
-import org.openqa.grid.web.servlet.TestSessionStatusServlet;
-import org.openqa.grid.web.utils.ExtraServletUtil;
-import org.openqa.selenium.net.NetworkUtils;
-import org.seleniumhq.jetty7.server.Server;
-import org.seleniumhq.jetty7.server.bio.SocketConnector;
-import org.seleniumhq.jetty7.servlet.ServletContextHandler;
-
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -44,13 +25,34 @@ import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.web.servlet.DisplayHelpServlet;
+import org.openqa.grid.web.servlet.DriverServlet;
+import org.openqa.grid.web.servlet.FilesServlet;
+import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
+import org.openqa.grid.web.servlet.HubStatusServlet;
+import org.openqa.grid.web.servlet.LifecycleServlet;
+import org.openqa.grid.web.servlet.ProxyStatusServlet;
+import org.openqa.grid.web.servlet.RegistrationServlet;
+import org.openqa.grid.web.servlet.ResourceServlet;
+import org.openqa.grid.web.servlet.TestSessionStatusServlet;
+import org.openqa.grid.web.servlet.beta.ConsoleServlet;
+import org.openqa.grid.web.utils.ExtraServletUtil;
+import org.openqa.selenium.net.NetworkUtils;
+import org.seleniumhq.jetty7.server.Server;
+import org.seleniumhq.jetty7.server.bio.SocketConnector;
+import org.seleniumhq.jetty7.servlet.ServletContextHandler;
+
+import com.google.common.collect.Maps;
+
 /**
  * Jetty server. Main entry point for everything about the grid. <p/> Except for unit tests, this
  * should be a singleton.
  */
 public class Hub {
 
-  private static final Logger log = Logger.getLogger(Hub.class.getName());
+private static final Logger log = Logger.getLogger(Hub.class.getName());
 
   private final int port;
   private final String host;
@@ -90,6 +92,18 @@ public class Hub {
         log.info("binding " + servletClass.getCanonicalName() + " to " + path);
         addServlet(path, servletClass);
       }
+    }
+    
+    if(config.getScreenSlidersPath() != null){
+      File file = new File(config.getScreenSlidersPath());
+      if(!file.exists()){
+        file.mkdirs();
+      }
+      
+      String path = "/" + FilesServlet.class.getSimpleName() + "/*";
+      log.info("binding " + FilesServlet.class.getCanonicalName() + " to " + path);
+      addServlet(path, FilesServlet.class);
+      
     }
 
     initServer();

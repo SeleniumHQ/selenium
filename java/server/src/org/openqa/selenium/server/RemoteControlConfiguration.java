@@ -18,12 +18,12 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
+import java.io.File;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.log.LoggingOptions;
-
-import java.io.File;
 
 /**
  * Encapsulate Remote Control Configuration
@@ -82,6 +82,7 @@ public class RemoteControlConfiguration {
   private int jettyThreads = 512;
   private SslCertificateGenerator sslCertGenerator;
   private boolean singleWindow;
+  private String screenSlidersServerUrl = "";
 
 
   public RemoteControlConfiguration() {
@@ -408,5 +409,12 @@ public class RemoteControlConfiguration {
 
   public LoggingOptions getLoggingOptions() {
     return loggingOptions;
+  }
+  
+  public String getScreenSlidersServerUrl() {
+    return screenSlidersServerUrl;
+  }
+  public void setScreenSlidersServerUrl(String value) {
+    screenSlidersServerUrl = value;
   }
 }

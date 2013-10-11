@@ -389,8 +389,12 @@ public class SeleniumServer implements SslCertificateGenerator {
     } else {
       browserTimeout /= 1000;
     }
+    
     webdriverContext.setInitParameter("webdriver.server.session.timeout", String.valueOf(sessionTimeout));
     webdriverContext.setInitParameter("webdriver.server.browser.timeout", String.valueOf(browserTimeout));
+    // settings for screen shot sliders
+    webdriverContext.setInitParameter(DriverServlet.SLIDERS_SERVER_URL, configuration.getScreenSlidersServerUrl());
+
     webdriverContext.setAttribute(DriverServlet.SESSIONS_KEY, webDriverSessions);
     webdriverContext.setContextPath("/wd");
     ServletHandler handler = new ServletHandler();

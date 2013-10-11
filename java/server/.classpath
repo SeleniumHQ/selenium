@@ -21,5 +21,14 @@
 	<classpathentry kind="lib" path="/third-party/java/webbit/webbit-0.4.14.jar" sourcepath="/third-party/java/webbit/webbit-0.4.14-src.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/netty/netty-3.5.7.Final.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/guava-libraries/guava-15.0.jar" sourcepath="/third-party/java/guava-libraries/guava-15.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jmock/jmock-2.6.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jmock/jmock-junit4-2.6.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/jmock/jmock-legacy-2.6.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/easymock/easymock-2.4.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/easymock/easymockclassextension-2.4.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/apache-httpclient/httpmime-4.2.1.jar" sourcepath="/third-party/java/apache-httpclient/httpmime-4.2.1-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-fileupload/commons-fileupload-1.2.2.jar" sourcepath="/third-party/java/commons-fileupload/commons-fileupload-1.2.2-src.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-lang/commons-lang3-3.1.jar" sourcepath="/third-party/java/commons-lang/commons-lang3-3.1-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/commons-io/commons-io-2.2.jar" sourcepath="/third-party/java/commons-io/commons-io-2.2-src.zip"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
