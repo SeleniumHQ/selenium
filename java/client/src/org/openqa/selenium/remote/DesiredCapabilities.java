@@ -80,7 +80,9 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public String getBrowserName() {
-    return "" + capabilities.get(BROWSER_NAME);
+    Object browserName = capabilities.get(BROWSER_NAME);
+    return browserName == null ? "" : browserName.toString();
+
   }
 
   public void setBrowserName(String browserName) {
@@ -88,7 +90,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public String getVersion() {
-    return "" + capabilities.get(VERSION);
+    Object version = capabilities.get(VERSION);
+    return version == null ? "" : version.toString();
   }
 
   public void setVersion(String version) {
