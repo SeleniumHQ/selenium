@@ -293,7 +293,9 @@ function injectAndExecuteScript(respond, parameters, isAsync, timer) {
     doc.addEventListener('webdriver-evaluate-response', handler, true);
 
     var event = doc.createEvent('Events');
-    event.initEvent('webdriver-evaluate', true, false);
+    var bubbles = false;
+    var cancelable = true;
+    event.initEvent('webdriver-evaluate', bubbles, cancelable);
     doc.dispatchEvent(event);
   };
 

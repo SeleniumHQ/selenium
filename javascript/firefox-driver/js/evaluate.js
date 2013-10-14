@@ -17,6 +17,13 @@ limitations under the License.
 
 (function() {
   var handleEvaluateEvent = function(event) {
+    // NOTE: For some reason async scripts will trigger this evaluation handler
+    // twice, even if the event is set to not bubble. This can lead to very
+    // wonky behavior, so make sure we cancel the event.
+    event.preventDefault();
+    if (event.stopImmediatePropagation) {  // For older Firefoxen.
+      event.stopImmediatePropagation();
+    }
     var script = document.__webdriver_evaluate['script'];
     var args = document.__webdriver_evaluate['args'];
     var isAsync = document.__webdriver_evaluate['async'];
