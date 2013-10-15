@@ -422,7 +422,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(clientX, not(equalTo("0")));
     assertThat(clientY, not(equalTo("0")));
   }
-  
+
   @JavascriptEnabled
   @Ignore(value = {ANDROID, IPHONE, MARIONETTE}, reason = "Not tested")
   @Test

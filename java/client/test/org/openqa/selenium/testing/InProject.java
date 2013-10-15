@@ -24,7 +24,7 @@ import java.io.FileNotFoundException;
 public class InProject {
   /**
    * Locates a file in the current project
-   * 
+   *
    * @param path path to file to locate from root of project
    * @return file being sought, if it exists
    * @throws org.openqa.selenium.WebDriverException wrapped FileNotFoundException if file could not

@@ -27,7 +27,7 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 /**
  * A mouse that fires events.
  */
-public class EventFiringMouse implements org.openqa.selenium.interactions.Mouse {
+public class EventFiringMouse implements Mouse {
   private final WebDriver driver;
   private final WebDriverEventListener dispatcher;
   private final Mouse mouse;

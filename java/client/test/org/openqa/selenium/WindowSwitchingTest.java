@@ -355,7 +355,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.get(pages.xhtmlTestPage);
     driver.close();
   }
-  
+
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
@@ -374,7 +374,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window("newWindow");
     driver.close();
     driver.switchTo().window(mainWindow);
-    
+
     driver.findElement(By.name("myframe"));
   }
 

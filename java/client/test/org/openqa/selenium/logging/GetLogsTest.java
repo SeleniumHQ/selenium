@@ -74,7 +74,7 @@ public class GetLogsTest extends JUnit4TestBase {
           LogEntriesChecks.hasOverlappingLogEntries(firstEntries, secondEntries));
     }
   }
-  
+
   @Test
   public void differentLogsShouldNotContainTheSameLogEntries() {
     assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
@@ -105,7 +105,7 @@ public class GetLogsTest extends JUnit4TestBase {
       createWebDriverWithLogging(logType, Level.OFF);
       LogEntries entries = localDriver.manage().logs().get(logType);
       assertEquals(String.format("There should be no log entries for " +
-          "log type %s when logging is turned off.", logType), 
+          "log type %s when logging is turned off.", logType),
           0, entries.getAll().size());
       quitDriver();
     }

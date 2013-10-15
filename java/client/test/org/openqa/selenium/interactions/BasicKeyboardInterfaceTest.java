@@ -42,12 +42,13 @@ import org.openqa.selenium.testing.TestUtilities;
 
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
- * 
+ *
  */
 @Ignore(value = {SAFARI, MARIONETTE},
     reason = "Safari: not implemented (issue 4136)",
     issues = {4136})
 public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
+
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }

@@ -180,7 +180,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("preformatted")).getText();
-    
+
     assertThat(text, equalTo("   This section has a preformatted\n" +
         "    text block    \n" +
         "  split in four lines\n" +
@@ -196,7 +196,7 @@ public class TextHandlingTest extends JUnit4TestBase {
         "   This section has a preformatted\n" +
         "    text block    \n" +
         "  split in four lines\n" +
-        "         \n" + 
+        "         \n" +
         "after pre"));
   }
 

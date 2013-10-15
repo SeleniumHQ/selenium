@@ -82,7 +82,6 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   public String getBrowserName() {
     Object browserName = capabilities.get(BROWSER_NAME);
     return browserName == null ? "" : browserName.toString();
-
   }
 
   public void setBrowserName(String browserName) {

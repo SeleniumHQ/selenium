@@ -319,7 +319,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   public void testCanClickOnAnExternalImplicitSubmitButton() {
     checkSubmitButton("external_implicit_submit");
   }
-  
+
   private void checkSubmitButton(String buttonId) {
     driver.get(appServer.whereIs("click_tests/html5_submit_buttons.html"));
     String name = "Gromit";
@@ -331,6 +331,4 @@ public class FormHandlingTest extends JUnit4TestBase {
 
     assertThat(driver.getCurrentUrl(), containsString("name="+name));
   }
-  
-
 }

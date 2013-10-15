@@ -189,7 +189,7 @@ import static java.lang.String.format;
  * the "null" session. You may then similarly send commands to this browser by not specifying a
  * sessionId when issuing commands.
  * </p>
- * 
+ *
  * @author plightbo
  */
 public class SeleniumServer implements SslCertificateGenerator {
@@ -226,7 +226,7 @@ public class SeleniumServer implements SslCertificateGenerator {
   /**
    * Starts up the server on the specified port (or default if no port was specified) and then
    * starts interactive mode if specified.
-   * 
+   *
    * @param args - either "-port" followed by a number, or "-interactive"
    * @throws Exception - you know, just in case.
    */
@@ -259,7 +259,7 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   /**
    * Prepares a Jetty server with its HTTP handlers.
-   * 
+   *
    * @param slowResources should the webserver return static resources more slowly? (Note that this
    *        will not slow down ordinary RC test runs; this setting is used to debug Selenese HTML
    *        tests.)
@@ -476,7 +476,7 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   /**
    * Starts the Jetty server
-   * 
+   *
    * @throws Exception on error.
    */
   public void start() throws Exception {
@@ -570,7 +570,7 @@ public class SeleniumServer implements SslCertificateGenerator {
    * Exposes the internal Jetty server used by Selenium. This lets users add their own webapp to the
    * Selenium Server jetty instance. It is also a minor violation of encapsulation principles (what
    * if we stop using Jetty?) but life is too short to worry about such things.
-   * 
+   *
    * @return the internal Jetty server, pre-configured with the /selenium-server context as well as
    *         the proxy server on /
    */
@@ -598,7 +598,7 @@ public class SeleniumServer implements SslCertificateGenerator {
 
   /**
    * Get the number of threads that the server will use to configure the embedded Jetty instance.
-   * 
+   *
    * @return Returns the number of threads for Jetty.
    */
   public int getJettyThreads() {
