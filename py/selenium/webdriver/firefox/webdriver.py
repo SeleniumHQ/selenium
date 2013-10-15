@@ -20,6 +20,7 @@ except ImportError:
 
 import base64
 import shutil
+import socket
 import sys
 from .firefox_binary import FirefoxBinary
 from selenium.common.exceptions import ErrorInResponseException
@@ -65,7 +66,7 @@ class WebDriver(RemoteWebDriver):
         """Quits the driver and close every associated window."""
         try:
             RemoteWebDriver.quit(self)
-        except http_client.BadStatusLine:
+        except (http_client.BadStatusLine, socket.error):
             # Happens if Firefox shutsdown before we've read the response from
             # the socket.
             pass
