@@ -1,4 +1,4 @@
-## v2.35.3
+## v2.36.0
 
 * FIXED: 6346: The remote.SeleniumServer class now accepts JVM arguments using
     the `jvmArgs` option.
