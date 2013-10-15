@@ -217,7 +217,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
                    .or(is("focus blur change focus blur change"))
                    .or(is("focus change blur focus change blur"))); // What Chrome does
   }
-  
+
   /**
    * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.
    */
