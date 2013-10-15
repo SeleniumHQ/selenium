@@ -1,6 +1,5 @@
 $LOAD_PATH.unshift File.expand_path(".")
 
-
 require 'rake'
 require 'rake-tasks/files'
 require 'net/telnet'
