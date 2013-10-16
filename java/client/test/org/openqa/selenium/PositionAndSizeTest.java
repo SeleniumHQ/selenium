@@ -41,6 +41,7 @@ import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
 
 @Ignore(value = {HTMLUNIT, OPERA_MOBILE, ANDROID, IPHONE, MARIONETTE},
         reason = "HtmlUnit: Getting coordinates requires rendering, others: not tested")
