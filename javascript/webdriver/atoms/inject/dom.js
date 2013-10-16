@@ -20,6 +20,7 @@
 goog.provide('webdriver.atoms.inject.dom');
 
 goog.require('bot.dom');
+goog.require('bot.userAgent');
 goog.require('webdriver.atoms.element');
 goog.require('webdriver.atoms.inject');
 
@@ -94,7 +95,14 @@ webdriver.atoms.inject.dom.getSize = function(element, opt_window) {
 
   function getSize(e) {
     var rect = bot.dom.getClientRect(e);
-    return {'width': rect.width, 'height': rect.height};
+    var height = rect.height;
+    var width = rect.width;
+    if (!bot.userAgent.IE_DOC_PRE10) {
+      // On IE10, getBoundingClientRect returns floating point values.
+      width = Math.floor(width);
+      height = Math.floor(height);
+    }
+    return { 'width': width, 'height': height };
   }
 };
 
