@@ -125,6 +125,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   @Ignore({FIREFOX, SAFARI})
   @Test
   public void testShouldGetCoordinatesOfAnElementWithFixedPosition() {
+    assumeFalse("Ignoring fixed-position elements in IE6", TestUtilities.isIe6(driver));
     driver.get(appServer.whereIs("coordinates_tests/page_with_fixed_element.html"));
     assertThat(getLocationInViewPort(By.id("fixed")).getY(), is(0));
     assertThat(getLocationOnPage(By.id("fixed")).getY(), is(0));
