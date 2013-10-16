@@ -92,7 +92,8 @@
     <Compile Include="CookieImplementationTest.cs" />
     <Compile Include="CookieTest.cs" />
     <Compile Include="AtomsInjectionTest.cs" />
-    <Compile Include="CoordinatesTest.cs" />
+    <Compile Include="CssValueTest.cs" />
+    <Compile Include="PositionAndSizeTest.cs" />
     <Compile Include="SvgElementTest.cs" />
     <Compile Include="SvgDocumentTest.cs" />
     <Compile Include="DesiredCapabililtiesTest.cs" />
@@ -134,7 +135,6 @@
     <Compile Include="PageLoadingTest.cs" />
     <Compile Include="PartialLinkTextMatchTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RenderedWebElementTest.cs" />
     <Compile Include="SelectElementHandlingTest.cs" />
     <Compile Include="StaleElementReferenceTest.cs" />
     <Compile Include="StubDriver.cs" />

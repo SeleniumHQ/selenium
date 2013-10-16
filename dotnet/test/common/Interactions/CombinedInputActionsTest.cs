@@ -255,5 +255,60 @@ namespace OpenQA.Selenium.Interactions
             IWebElement shiftInfo = WaitFor(() => { return driver.FindElement(By.Id("shiftKey")); });
             Assert.AreEqual("true", shiftInfo.Text);
         }
+
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
+        public void CanClickOnSuckerFishStyleMenu()
+        {
+            driver.Url = javascriptPage;
+
+            // Move to a different element to make sure the mouse is not over the
+            // element with id 'item1' (from a previous test).
+            new Actions(driver).MoveToElement(driver.FindElement(By.Id("dynamo"))).Build().Perform();
+
+            IWebElement element = driver.FindElement(By.Id("menu1"));
+            if (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
+            {
+                Assert.Ignore("Skipping test: Simulating hover needs native events");
+            }
+
+            IWebElement target = driver.FindElement(By.Id("item1"));
+            Assert.AreEqual(string.Empty, target.Text);
+            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
+            new Actions(driver).MoveToElement(element).Build().Perform();
+
+            // Intentionally wait to make sure hover persists.
+            System.Threading.Thread.Sleep(2000);
+
+            target.Click();
+
+            IWebElement result = driver.FindElement(By.Id("result"));
+            WaitFor(() => { return result.Text.Contains("item 1"); });
+        }
+
+        [Test]
+        [Category("Javascript")]
+        public void CanClickOnSuckerFishMenuItem()
+        {
+
+            driver.Url = javascriptPage;
+
+            // Move to a different element to make sure the mouse is not over the
+            // element with id 'item1' (from a previous test).
+            new Actions(driver).MoveToElement(driver.FindElement(By.Id("dynamo"))).Build().Perform();
+
+            IWebElement element = driver.FindElement(By.Id("menu1"));
+
+            new Actions(driver).MoveToElement(element).Build().Perform();
+
+            IWebElement target = driver.FindElement(By.Id("item1"));
+
+            Assert.IsTrue(target.Displayed);
+            target.Click();
+
+            IWebElement result = driver.FindElement(By.Id("result"));
+            WaitFor(() => { return result.Text.Contains("item 1"); });
+        }
     }
 }

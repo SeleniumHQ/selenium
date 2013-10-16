@@ -254,5 +254,17 @@ namespace OpenQA.Selenium
                 window.Size = originalSize;
             }
         }
+
+        [Test]
+        [Category("Javascript")]
+        public void CorrectlyDetectMapElementsAreShown()
+        {
+            driver.Url = mapVisibilityPage;
+
+            IWebElement area = driver.FindElement(By.Id("mtgt_unnamed_0"));
+
+            bool isShown = area.Displayed;
+            Assert.IsTrue(isShown, "The element and the enclosing map should be considered shown.");
+        }
     }
 }
