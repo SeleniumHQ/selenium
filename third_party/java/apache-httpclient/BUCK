@@ -12,13 +12,13 @@ java_library(name = "apache-httpclient",
 )
 
 prebuilt_jar(name = 'client',
-  binary_jar = 'httpclient-4.2.1.jar',
+  binary_jar = 'httpclient-4.3.1.jar',
 )
 
 prebuilt_jar(name = 'core',
-  binary_jar = 'httpcore-4.2.1.jar',
+  binary_jar = 'httpcore-4.3.jar',
 )
 
 prebuilt_jar(name = 'mime',
-  binary_jar = 'httpmime-4.2.1.jar',
+  binary_jar = 'httpmime-4.3.1.jar',
 )
