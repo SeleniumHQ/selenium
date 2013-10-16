@@ -100,6 +100,12 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
+  @Ignore(value = {IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS})
+  @Test(expected = WebDriverException.class)
+  public void testShouldThrowIfUrlIsMalformed() {
+    driver.get("www.test.com");
+  }
+
   @Ignore(value = {IPHONE, SAFARI, MARIONETTE}, issues = {4062})
   @Test
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
