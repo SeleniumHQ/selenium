@@ -73,8 +73,10 @@ class GetElementLocationCommandHandler : public IECommandHandler {
 
         if (status_code == WD_SUCCESS) {
           script_wrapper.ConvertResultToJsonValue(executor, &location_array);
-          int x = location_array.get(1, 0).asInt();
-          int y = location_array.get(1, 0).asInt();
+          Json::UInt index = 0;
+          int x = location_array.get(index, 0).asInt();
+          ++index;
+          int y = location_array.get(index, 0).asInt();
 
           CComPtr<IHTMLDocument2> doc;
           browser_wrapper->GetDocument(&doc);
