@@ -110,7 +110,18 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   // Check to see if the given url is the same as the current one, but
   // with a different anchor tag.
   var current = respond.session.getWindow().location;
-  var loadEventExpected = fxdriver.io.isLoadExpected(current, url);
+  var loadEventExpected;
+  try {
+    loadEventExpected = fxdriver.io.isLoadExpected(current, url);
+  } catch (e) {
+    var converted = e.QueryInterface(Components.interfaces['nsIException']);
+    if ('NS_ERROR_MALFORMED_URI' == converted.name) {
+      fxdriver.logging.warning(converted.name);
+      respond.sendError(new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR,
+                                           'Target URL '+url+' is not well-formed.'));
+      return;
+    }
+  }
 
   if (loadEventExpected) {
     new WebLoadingListener(respond.session.getBrowser(), function(timedOut) {
