@@ -6,16 +6,20 @@
 * Added SOCKS proxy support
 * Fixed support for SVG documents in the atoms.
 * Fixed computing an element's container dimensions to account for  the scrollbar size when scrolling
+* Added Capabilities.htmlunitwithjs
 
 Chrome:
   * Pass through the prefs option as a Chrome capability (#5929).
-
 Firefox:
   * Updated Firefox native event components to support Firefox 24.
   * New elementScrollBehavior capability.
   * Fixed getLocation to work on scrolled pages.
   * Fixed autoscrolling for elements located in frames.
   * Fixed drag-n-drop for elements in frames with native events
+IE:
+  * Use native events by default, also for remote IE (#4695)
+Safari:
+  * Enable screenshots and input devices in the client.
 
 2.35.1 (2013-08-26)
 ===================
