@@ -44,7 +44,7 @@ module Selenium
 
           profile.as_json().should == {
             'zip' => "ignored",
-            'extensions' => [Base64.strict_encode64 "test"]
+            'extensions' => [Base64.strict_encode64("test")]
           }
         end
 
