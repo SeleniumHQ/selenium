@@ -1,3 +1,24 @@
+v2.36.0
+=======
+ * Added ability to set additional ChromeOptions in the .NET bindings. This
+   allows the ability to set user profile preferences and local state
+   preferences using the ChromeOptions class. The new AddUserProfilePreference
+   and AddLocalStatePreference methods correspond to the "prefs" and
+   "localState" capabilities documented in the chromedriver documentation. Note
+   that the values passed in to these methods must be JSON-serializable, and no
+   validation is done on these values at present. We now also allow setting the
+   "detach" capability, which allows the user to specify that Chrome remain
+   running after chromedriver.exe has quit.
+ * Removed support for the obsolete chrome.binary and chrome.switches
+   capabilities.
+ * Changed the command line arguments to chromedriver.exe to include two
+   hyphens, instead of one (e.g., "--silent" instead of "-silent").
+ * Issue #6163: Fixed quoting of cmd argument contains space for PhantomJS.
+ * Added ability to set Chrome extensions by using base64 encoded strings. 
+   Previously, you could only install extensions by using a path to a .crx
+   file. Now you can embed the extension as a base64-encoded string, without
+   having it persisted to the disk at all.
+
 v2.35.0
 =======
  * Issue #4506: (on behalf of Aaron Evans) Remove trailing slashes from baseUrl
