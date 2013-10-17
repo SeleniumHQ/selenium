@@ -183,7 +183,7 @@ extends java.lang.Object</pre>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#build()">build</a></strong>()</code>
-<div class="block">Generates a composite action containinig all actions so far, ready to be performed (and
+<div class="block">Generates a composite action containing all actions so far, ready to be performed (and
  resets the internal builder state, so subsequent calls to build() will contain fresh
  sequences).</div>
 </td>
@@ -301,30 +301,36 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#pause(long)">pause</a></strong>(long&nbsp;pause)</code>
+<div class="block">Performs a pause.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#perform()">perform</a></strong>()</code>
 <div class="block">A convenience method for performing the actions without calling build() first.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#release()">release</a></strong>()</code>
 <div class="block">Releases the depressed left mouse button at the current mouse location.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#release(org.openqa.selenium.WebElement)">release</a></strong>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code>
 <div class="block">Releases the depressed left mouse button, in the middle of the given element.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys(java.lang.CharSequence...)">sendKeys</a></strong>(java.lang.CharSequence...&nbsp;keysToSend)</code>
 <div class="block">Sends keys to the active element.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys(org.openqa.selenium.WebElement, java.lang.CharSequence...)">sendKeys</a></strong>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
         java.lang.CharSequence...&nbsp;keysToSend)</code>
@@ -730,6 +736,18 @@ extends java.lang.Object</pre>
 <dt><span class="strong">Returns:</span></dt><dd>A self reference.</dd></dl>
 </li>
 </ul>
+<a name="pause(long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>pause</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;pause(long&nbsp;pause)</pre>
+<div class="block">Performs a pause.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>pause</code> - pause duration, in milliseconds.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>A self reference.</dd></dl>
+</li>
+</ul>
 <a name="build()">
 <!--   -->
 </a>
@@ -737,7 +755,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>build</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>&nbsp;build()</pre>
-<div class="block">Generates a composite action containinig all actions so far, ready to be performed (and
+<div class="block">Generates a composite action containing all actions so far, ready to be performed (and
  resets the internal builder state, so subsequent calls to build() will contain fresh
  sequences).</div>
 <dl><dt><span class="strong">Returns:</span></dt><dd>the composite action</dd></dl>

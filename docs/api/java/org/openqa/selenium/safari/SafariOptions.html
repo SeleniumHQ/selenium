@@ -189,7 +189,7 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>java.io.File</code></td>
+<td class="colFirst"><code>com.google.common.base.Optional&lt;java.io.File&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getDataDir()">getDataDir</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -344,7 +344,9 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;void&nbsp;addExtensions(java.util.List&lt;java.io.File&gt;&nbsp;paths)</pre>
 <div class="block">Adds a new Safari extension to install on browser startup. Each path should
  specify a signed Safari extension (safariextz file).
- Use <a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setDriverExtension(java.io.File)"><code>setDriverExtension(File)</code></a> if you want to install a custom Safari Driver extension.</div>
+
+ <p>Use <a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setDriverExtension(java.io.File)"><code>setDriverExtension(File)</code></a> if you want to install a custom Safari Driver
+ extension.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>paths</code> - Paths to the extensions to install.</dd></dl>
 </li>
 </ul>
@@ -428,7 +430,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getDataDir</h4>
-<pre>public&nbsp;java.io.File&nbsp;getDataDir()</pre>
+<pre>public&nbsp;com.google.common.base.Optional&lt;java.io.File&gt;&nbsp;getDataDir()</pre>
 <dl><dt><span class="strong">Returns:</span></dt><dd>The location of the data dir where the extensions ought to be installed.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setDataDir(java.io.File)"><code>setDataDir(File)</code></a></dd></dl>
 </li>
 </ul>

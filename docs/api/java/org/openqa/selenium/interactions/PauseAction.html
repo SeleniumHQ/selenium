@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>DatabaseStorage</title>
+<title>PauseAction</title>
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="DatabaseStorage";
+        parent.document.title="PauseAction";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/interactions/MoveToOffsetAction.html" title="class in org.openqa.selenium.interactions"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/interactions/SendKeysAction.html" title="class in org.openqa.selenium.interactions"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/html5/DatabaseStorage.html" target="_top">Frames</a></li>
-<li><a href="DatabaseStorage.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/interactions/PauseAction.html" target="_top">Frames</a></li>
+<li><a href="PauseAction.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -60,13 +60,13 @@
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>
 </div>
@@ -76,31 +76,54 @@
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">org.openqa.selenium.html5</div>
-<h2 title="Interface DatabaseStorage" class="title">Interface DatabaseStorage</h2>
+<div class="subTitle">org.openqa.selenium.interactions</div>
+<h2 title="Class PauseAction" class="title">Class PauseAction</h2>
 </div>
 <div class="contentContainer">
+<ul class="inheritance">
+<li>java.lang.Object</li>
+<li>
+<ul class="inheritance">
+<li>org.openqa.selenium.interactions.PauseAction</li>
+</ul>
+</li>
+</ul>
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
 <dl>
-<dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../org/openqa/selenium/remote/html5/RemoteDatabaseStorage.html" title="class in org.openqa.selenium.remote.html5">RemoteDatabaseStorage</a></dd>
+<dt>All Implemented Interfaces:</dt>
+<dd><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a></dd>
 </dl>
 <hr>
-<div class="block"><strong>Deprecated.</strong>&nbsp;
-<div class="block"><i>Web SQL has been deprecated, see
-     http://dev.w3.org/html5/webdatabase/</i></div>
-</div>
 <br>
-<pre>@Deprecated
-public interface <span class="strong">DatabaseStorage</span></pre>
+<pre>public class <span class="strong">PauseAction</span>
+extends java.lang.Object
+implements <a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a></pre>
+<div class="block">Takes a pause.</div>
 </li>
 </ul>
 </div>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/interactions/PauseAction.html#PauseAction(long)">PauseAction</a></strong>(long&nbsp;pause)</code>&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method_summary">
@@ -114,15 +137,17 @@ public interface <span class="strong">DatabaseStorage</span></pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/html5/ResultSet.html" title="class in org.openqa.selenium.html5">ResultSet</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/html5/DatabaseStorage.html#executeSQL(java.lang.String, java.lang.String, java.lang.Object...)">executeSQL</a></strong>(java.lang.String&nbsp;databaseName,
-          java.lang.String&nbsp;query,
-          java.lang.Object...&nbsp;args)</code>
-<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
-<div class="block">Executes an SQL statement on the given database name.</div>
-</td>
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/interactions/PauseAction.html#perform()">perform</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.Object</h3>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+</ul>
 </li>
 </ul>
 </li>
@@ -131,28 +156,40 @@ public interface <span class="strong">DatabaseStorage</span></pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="PauseAction(long)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>PauseAction</h4>
+<pre>public&nbsp;PauseAction(long&nbsp;pause)</pre>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ============ METHOD DETAIL ========== -->
 <ul class="blockList">
 <li class="blockList"><a name="method_detail">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="executeSQL(java.lang.String, java.lang.String, java.lang.Object...)">
+<a name="perform()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>executeSQL</h4>
-<pre><a href="../../../../org/openqa/selenium/html5/ResultSet.html" title="class in org.openqa.selenium.html5">ResultSet</a>&nbsp;executeSQL(java.lang.String&nbsp;databaseName,
-                   java.lang.String&nbsp;query,
-                   java.lang.Object...&nbsp;args)
-                     throws <a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
-<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
-<div class="block">Executes an SQL statement on the given database name.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>databaseName</code> - The database name</dd><dd><code>query</code> - The SQL query</dd><dd><code>args</code> - Optional arguments to the SQL query</dd>
-<dt><span class="strong">Returns:</span></dt><dd>A <a href="../../../../org/openqa/selenium/html5/ResultSet.html" title="class in org.openqa.selenium.html5"><code>ResultSet</code></a> containing the result of the executed query</dd>
-<dt><span class="strong">Throws:</span></dt>
-<dd><code><a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></code></dd></dl>
+<h4>perform</h4>
+<pre>public&nbsp;void&nbsp;perform()</pre>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../org/openqa/selenium/interactions/Action.html#perform()">perform</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a></code></dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -180,12 +217,12 @@ public interface <span class="strong">DatabaseStorage</span></pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/interactions/MoveToOffsetAction.html" title="class in org.openqa.selenium.interactions"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/interactions/SendKeysAction.html" title="class in org.openqa.selenium.interactions"><span class="strong">Next Class</span></a></li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../index.html?org/openqa/selenium/html5/DatabaseStorage.html" target="_top">Frames</a></li>
-<li><a href="DatabaseStorage.html" target="_top">No Frames</a></li>
+<li><a href="../../../../index.html?org/openqa/selenium/interactions/PauseAction.html" target="_top">Frames</a></li>
+<li><a href="PauseAction.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../allclasses-noframe.html">All Classes</a></li>
@@ -207,13 +244,13 @@ public interface <span class="strong">DatabaseStorage</span></pre>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method_detail">Method</a></li>
 </ul>
 </div>

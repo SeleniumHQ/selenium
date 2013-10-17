@@ -2,13 +2,13 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>AddWebStorage</title>
+<title>RemoteWebStorage</title>
 <link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
 </head>
 <body>
 <script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="AddWebStorage";
+        parent.document.title="RemoteWebStorage";
     }
 //-->
 </script>
@@ -33,12 +33,12 @@
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../org/openqa/selenium/remote/html5/AddLocationContext.html" title="class in org.openqa.selenium.remote.html5"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../../org/openqa/selenium/remote/html5/RemoteApplicationCache.html" title="class in org.openqa.selenium.remote.html5"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/remote/html5/RemoteSessionStorage.html" title="class in org.openqa.selenium.remote.html5"><span class="strong">Prev Class</span></a></li>
+<li>Next Class</li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../../index.html?org/openqa/selenium/remote/html5/AddWebStorage.html" target="_top">Frames</a></li>
-<li><a href="AddWebStorage.html" target="_top">No Frames</a></li>
+<li><a href="../../../../../index.html?org/openqa/selenium/remote/html5/RemoteWebStorage.html" target="_top">Frames</a></li>
+<li><a href="RemoteWebStorage.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_top">
 <li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
@@ -77,14 +77,14 @@
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="subTitle">org.openqa.selenium.remote.html5</div>
-<h2 title="Class AddWebStorage" class="title">Class AddWebStorage</h2>
+<h2 title="Class RemoteWebStorage" class="title">Class RemoteWebStorage</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>org.openqa.selenium.remote.html5.AddWebStorage</li>
+<li>org.openqa.selenium.remote.html5.RemoteWebStorage</li>
 </ul>
 </li>
 </ul>
@@ -93,13 +93,14 @@
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../../org/openqa/selenium/remote/AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a></dd>
+<dd><a href="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></dd>
 </dl>
 <hr>
 <br>
-<pre>public class <span class="strong">AddWebStorage</span>
+<pre>public class <span class="strong">RemoteWebStorage</span>
 extends java.lang.Object
-implements <a href="../../../../../org/openqa/selenium/remote/AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a></pre>
+implements <a href="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></pre>
+<div class="block">Provides remote access to the <a href="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5"><code>WebStorage</code></a> API.</div>
 </li>
 </ul>
 </div>
@@ -118,7 +119,7 @@ implements <a href="../../../../../org/openqa/selenium/remote/AugmenterProvider.
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/remote/html5/AddWebStorage.html#AddWebStorage()">AddWebStorage</a></strong>()</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../../org/openqa/selenium/remote/html5/RemoteWebStorage.html#RemoteWebStorage(org.openqa.selenium.remote.ExecuteMethod)">RemoteWebStorage</a></strong>(<a href="../../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</a>&nbsp;executeMethod)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -136,14 +137,12 @@ implements <a href="../../../../../org/openqa/selenium/remote/AugmenterProvider.
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>java.lang.Class&lt;?&gt;</code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/remote/html5/AddWebStorage.html#getDescribedInterface()">getDescribedInterface</a></strong>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/remote/html5/RemoteWebStorage.html#getLocalStorage()">getLocalStorage</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/InterfaceImplementation.html" title="interface in org.openqa.selenium.remote">InterfaceImplementation</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/remote/html5/AddWebStorage.html#getImplementation(java.lang.Object)">getImplementation</a></strong>(java.lang.Object&nbsp;value)</code>
-<div class="block">For the interface that this provider describes, return an implementation.</div>
-</td>
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/openqa/selenium/remote/html5/RemoteWebStorage.html#getSessionStorage()">getSessionStorage</a></strong>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -167,13 +166,13 @@ implements <a href="../../../../../org/openqa/selenium/remote/AugmenterProvider.
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="AddWebStorage()">
+<a name="RemoteWebStorage(org.openqa.selenium.remote.ExecuteMethod)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>AddWebStorage</h4>
-<pre>public&nbsp;AddWebStorage()</pre>
+<h4>RemoteWebStorage</h4>
+<pre>public&nbsp;RemoteWebStorage(<a href="../../../../../org/openqa/selenium/remote/ExecuteMethod.html" title="interface in org.openqa.selenium.remote">ExecuteMethod</a>&nbsp;executeMethod)</pre>
 </li>
 </ul>
 </li>
@@ -184,33 +183,30 @@ implements <a href="../../../../../org/openqa/selenium/remote/AugmenterProvider.
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getDescribedInterface()">
+<a name="getLocalStorage()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getDescribedInterface</h4>
-<pre>public&nbsp;java.lang.Class&lt;?&gt;&nbsp;getDescribedInterface()</pre>
+<h4>getLocalStorage</h4>
+<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</a>&nbsp;getLocalStorage()</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/AugmenterProvider.html#getDescribedInterface()">getDescribedInterface</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a></code></dd>
-<dt><span class="strong">Returns:</span></dt><dd>The interface that this augmentor describes.</dd></dl>
+<dd><code><a href="../../../../../org/openqa/selenium/html5/WebStorage.html#getLocalStorage()">getLocalStorage</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code></dd>
+</dl>
 </li>
 </ul>
-<a name="getImplementation(java.lang.Object)">
+<a name="getSessionStorage()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>getImplementation</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/InterfaceImplementation.html" title="interface in org.openqa.selenium.remote">InterfaceImplementation</a>&nbsp;getImplementation(java.lang.Object&nbsp;value)</pre>
-<div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/AugmenterProvider.html#getImplementation(java.lang.Object)">AugmenterProvider</a></code></strong></div>
-<div class="block">For the interface that this provider describes, return an implementation.</div>
+<h4>getSessionStorage</h4>
+<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</a>&nbsp;getSessionStorage()</pre>
 <dl>
 <dt><strong>Specified by:</strong></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/AugmenterProvider.html#getImplementation(java.lang.Object)">getImplementation</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/AugmenterProvider.html" title="interface in org.openqa.selenium.remote">AugmenterProvider</a></code></dd>
-<dt><span class="strong">Parameters:</span></dt><dd><code>value</code> - The value from the capability map</dd>
-<dt><span class="strong">Returns:</span></dt><dd>An interface implementation</dd></dl>
+<dd><code><a href="../../../../../org/openqa/selenium/html5/WebStorage.html#getSessionStorage()">getSessionStorage</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code></dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -238,12 +234,12 @@ implements <a href="../../../../../org/openqa/selenium/remote/AugmenterProvider.
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../org/openqa/selenium/remote/html5/AddLocationContext.html" title="class in org.openqa.selenium.remote.html5"><span class="strong">Prev Class</span></a></li>
-<li><a href="../../../../../org/openqa/selenium/remote/html5/RemoteApplicationCache.html" title="class in org.openqa.selenium.remote.html5"><span class="strong">Next Class</span></a></li>
+<li><a href="../../../../../org/openqa/selenium/remote/html5/RemoteSessionStorage.html" title="class in org.openqa.selenium.remote.html5"><span class="strong">Prev Class</span></a></li>
+<li>Next Class</li>
 </ul>
 <ul class="navList">
-<li><a href="../../../../../index.html?org/openqa/selenium/remote/html5/AddWebStorage.html" target="_top">Frames</a></li>
-<li><a href="AddWebStorage.html" target="_top">No Frames</a></li>
+<li><a href="../../../../../index.html?org/openqa/selenium/remote/html5/RemoteWebStorage.html" target="_top">Frames</a></li>
+<li><a href="RemoteWebStorage.html" target="_top">No Frames</a></li>
 </ul>
 <ul class="navList" id="allclasses_navbar_bottom">
 <li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>

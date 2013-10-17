@@ -96,10 +96,15 @@
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd>java.io.Serializable</dd>
+</dl>
 <hr>
 <br>
 <pre>public class <span class="strong">ByAll</span>
-extends <a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a></pre>
+extends <a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>
+implements java.io.Serializable</pre>
 <div class="block">Mechanism used to locate elements within a document using a series of  lookups. This class will
  find all DOM elements that matches any of the locators in sequence, e.g.
 
@@ -109,6 +114,7 @@ extends <a href="../../../../../org/openqa/selenium/By.html" title="class in org
 
  will find all elements that match <var>by1</var> and then all elements that match <var>by2</var>.
  This means that the list of elements returned may not be in document order.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../serialized-form.html#org.openqa.selenium.support.pagefactory.ByAll">Serialized Form</a></dd></dl>
 </li>
 </ul>
 </div>

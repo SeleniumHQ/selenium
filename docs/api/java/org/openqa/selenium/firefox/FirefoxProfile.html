@@ -174,25 +174,25 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected void</code></td>
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#addExtension(java.lang.String, org.openqa.selenium.firefox.internal.Extension)">addExtension</a></strong>(java.lang.String&nbsp;key,
             <a href="../../../../org/openqa/selenium/firefox/internal/Extension.html" title="interface in org.openqa.selenium.firefox.internal">Extension</a>&nbsp;extension)</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#addWebDriverExtensionIfNeeded()">addWebDriverExtensionIfNeeded</a></strong>()</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#areNativeEventsEnabled()">areNativeEventsEnabled</a></strong>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#clean(java.io.File)">clean</a></strong>(java.io.File&nbsp;profileDir)</code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#cleanTemporaryModel()">cleanTemporaryModel</a></strong>()</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html#containsWebDriverExtension()">containsWebDriverExtension</a></strong>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
@@ -392,13 +392,13 @@ protected&nbsp;java.io.Reader&nbsp;onlyOverrideThisIfYouKnowWhatYouAreDoing()</p
 <div class="block"><strong>Internal method. This is liable to change at a moment's notice.</strong></div>
 </li>
 </ul>
-<a name="addWebDriverExtensionIfNeeded()">
+<a name="containsWebDriverExtension()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>addWebDriverExtensionIfNeeded</h4>
-<pre>protected&nbsp;void&nbsp;addWebDriverExtensionIfNeeded()</pre>
+<h4>containsWebDriverExtension</h4>
+<pre>public&nbsp;boolean&nbsp;containsWebDriverExtension()</pre>
 </li>
 </ul>
 <a name="addExtension(java.lang.Class, java.lang.String)">
@@ -434,7 +434,7 @@ protected&nbsp;java.io.Reader&nbsp;onlyOverrideThisIfYouKnowWhatYouAreDoing()</p
 <ul class="blockList">
 <li class="blockList">
 <h4>addExtension</h4>
-<pre>protected&nbsp;void&nbsp;addExtension(java.lang.String&nbsp;key,
+<pre>public&nbsp;void&nbsp;addExtension(java.lang.String&nbsp;key,
                 <a href="../../../../org/openqa/selenium/firefox/internal/Extension.html" title="interface in org.openqa.selenium.firefox.internal">Extension</a>&nbsp;extension)</pre>
 </li>
 </ul>

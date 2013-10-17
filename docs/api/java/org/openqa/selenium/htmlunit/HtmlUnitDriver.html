@@ -353,7 +353,7 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#getWindowHandles()">getWindowHandles</a></strong>()</code>
 <div class="block">Return a set of window handles which can be used to iterate over all open windows of this
- webdriver instance by passing them to <code>#switchTo().window(String)</code></div>
+ WebDriver instance by passing them to <a href="../../../../org/openqa/selenium/WebDriver.html#switchTo()"><code>WebDriver.switchTo()</code></a>.<a href="../../../../org/openqa/selenium/WebDriver.Options.html#window()"><code>WebDriver.Options.window()</code></a></div>
 </td>
 </tr>
 <tr class="altColor">
@@ -410,16 +410,49 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setAutoProxy(java.lang.String)">setAutoProxy</a></strong>(java.lang.String&nbsp;autoProxyUrl)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setAutoProxy(java.lang.String)">setAutoProxy</a></strong>(java.lang.String&nbsp;autoProxyUrl)</code>
+<div class="block">Sets Proxy Autoconfiguration URL for WebClient</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setJavascriptEnabled(boolean)">setJavascriptEnabled</a></strong>(boolean&nbsp;enableJavascript)</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setHTTPProxy(java.lang.String, int, java.util.ArrayList)">setHTTPProxy</a></strong>(java.lang.String&nbsp;host,
+            int&nbsp;port,
+            java.util.ArrayList&lt;java.lang.String&gt;&nbsp;noProxyHosts)</code>
+<div class="block">Sets HTTP proxy for WebClient with bypass proxy hosts</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setJavascriptEnabled(boolean)">setJavascriptEnabled</a></strong>(boolean&nbsp;enableJavascript)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setProxy(java.lang.String, int)">setProxy</a></strong>(java.lang.String&nbsp;host,
-        int&nbsp;port)</code>&nbsp;</td>
+        int&nbsp;port)</code>
+<div class="block">Sets HTTP proxy for WebClient</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setProxySettings(org.openqa.selenium.Proxy)">setProxySettings</a></strong>(<a href="../../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</code>
+<div class="block">Set proxy for WebClient using Proxy.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setSocksProxy(java.lang.String, int)">setSocksProxy</a></strong>(java.lang.String&nbsp;host,
+             int&nbsp;port)</code>
+<div class="block">Sets SOCKS proxy for WebClient</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/htmlunit/HtmlUnitDriver.html#setSocksProxy(java.lang.String, int, java.util.ArrayList)">setSocksProxy</a></strong>(java.lang.String&nbsp;host,
+             int&nbsp;port,
+             java.util.ArrayList&lt;java.lang.String&gt;&nbsp;noProxyHosts)</code>
+<div class="block">Sets SOCKS proxy for WebClient with bypass proxy hosts</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></td>
@@ -552,6 +585,17 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <dt><span class="strong">Returns:</span></dt><dd>The modified client</dd></dl>
 </li>
 </ul>
+<a name="setProxySettings(org.openqa.selenium.Proxy)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setProxySettings</h4>
+<pre>public&nbsp;void&nbsp;setProxySettings(<a href="../../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium">Proxy</a>&nbsp;proxy)</pre>
+<div class="block">Set proxy for WebClient using Proxy.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>proxy</code> - The proxy preferences.</dd></dl>
+</li>
+</ul>
 <a name="setProxy(java.lang.String, int)">
 <!--   -->
 </a>
@@ -560,6 +604,46 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <h4>setProxy</h4>
 <pre>public&nbsp;void&nbsp;setProxy(java.lang.String&nbsp;host,
             int&nbsp;port)</pre>
+<div class="block">Sets HTTP proxy for WebClient</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>host</code> - The hostname of HTTP proxy</dd><dd><code>port</code> - The port of HTTP proxy, 0 means HTTP proxy w/o port</dd></dl>
+</li>
+</ul>
+<a name="setHTTPProxy(java.lang.String, int, java.util.ArrayList)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setHTTPProxy</h4>
+<pre>public&nbsp;void&nbsp;setHTTPProxy(java.lang.String&nbsp;host,
+                int&nbsp;port,
+                java.util.ArrayList&lt;java.lang.String&gt;&nbsp;noProxyHosts)</pre>
+<div class="block">Sets HTTP proxy for WebClient with bypass proxy hosts</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>host</code> - The hostname of HTTP proxy</dd><dd><code>port</code> - The port of HTTP proxy, 0 means HTTP proxy w/o port</dd><dd><code>noProxyHosts</code> - The list of hosts which need to bypass HTTP proxy</dd></dl>
+</li>
+</ul>
+<a name="setSocksProxy(java.lang.String, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setSocksProxy</h4>
+<pre>public&nbsp;void&nbsp;setSocksProxy(java.lang.String&nbsp;host,
+                 int&nbsp;port)</pre>
+<div class="block">Sets SOCKS proxy for WebClient</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>host</code> - The hostname of SOCKS proxy</dd><dd><code>port</code> - The port of SOCKS proxy, 0 means HTTP proxy w/o port</dd></dl>
+</li>
+</ul>
+<a name="setSocksProxy(java.lang.String, int, java.util.ArrayList)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setSocksProxy</h4>
+<pre>public&nbsp;void&nbsp;setSocksProxy(java.lang.String&nbsp;host,
+                 int&nbsp;port,
+                 java.util.ArrayList&lt;java.lang.String&gt;&nbsp;noProxyHosts)</pre>
+<div class="block">Sets SOCKS proxy for WebClient with bypass proxy hosts</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>host</code> - The hostname of SOCKS proxy</dd><dd><code>port</code> - The port of SOCKS proxy, 0 means HTTP proxy w/o port</dd><dd><code>noProxyHosts</code> - The list of hosts which need to bypass SOCKS proxy</dd></dl>
 </li>
 </ul>
 <a name="setAutoProxy(java.lang.String)">
@@ -569,6 +653,8 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <li class="blockList">
 <h4>setAutoProxy</h4>
 <pre>public&nbsp;void&nbsp;setAutoProxy(java.lang.String&nbsp;autoProxyUrl)</pre>
+<div class="block">Sets Proxy Autoconfiguration URL for WebClient</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>autoProxyUrl</code> - The Proxy Autoconfiguration URL</dd></dl>
 </li>
 </ul>
 <a name="getCapabilities()">
@@ -764,7 +850,7 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <pre>public&nbsp;java.util.Set&lt;java.lang.String&gt;&nbsp;getWindowHandles()</pre>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/WebDriver.html#getWindowHandles()">WebDriver</a></code></strong></div>
 <div class="block">Return a set of window handles which can be used to iterate over all open windows of this
- webdriver instance by passing them to <code>#switchTo().window(String)</code></div>
+ WebDriver instance by passing them to <a href="../../../../org/openqa/selenium/WebDriver.html#switchTo()"><code>WebDriver.switchTo()</code></a>.<a href="../../../../org/openqa/selenium/WebDriver.Options.html#window()"><code>WebDriver.Options.window()</code></a></div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/WebDriver.html#getWindowHandles()">getWindowHandles</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
