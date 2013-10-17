@@ -85,7 +85,7 @@ module Selenium
                 end
               end
 
-            unless RUBY_VERSION > "2.1" # Ruby 2.1 does its own proxy handling in net/http, which breaks this behaviour
+            unless RUBY_VERSION > "2.0" # Ruby 2.0 does its own proxy handling in net/http, which breaks this behaviour
               it "understands an asterisk in #{no_proxy_var}" do
                 with_env("HTTP_PROXY" => "proxy.org:8080", no_proxy_var => "*") do
                   http = client.send :http
