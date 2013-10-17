@@ -214,7 +214,7 @@ class Build < BaseGcc
       if (args[:geckoversion].to_i < 22)
         linker_args = "-Wall -fshort-wchar -fno-rtti -fno-exceptions -shared -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -l#{xpcom_lib} -lxpcom -lnspr4 -lrt `pkg-config gtk+-2.0 --libs`"
       else
-        linker_args = "-Wall -fshort-wchar -fno-rtti -fno-exceptions -shared -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -l#{xpcom_lib} -lxul -lnss3 -lrt `pkg-config gtk+-2.0 --libs`"
+        linker_args = "-Wall -fshort-wchar -fno-rtti -fno-exceptions -shared -fPIC -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -l#{xpcom_lib} -lnss3 -lrt `pkg-config gtk+-2.0 --libs`"
       end
       gcc(fun, dir, args[:srcs], compiler_args, linker_args, out, is_32_bit)
     end
