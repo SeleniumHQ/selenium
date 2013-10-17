@@ -23,10 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" />
-    <link rel="up" title="Selenium Documentation" href="../api.html" />
-    <link rel="next" title="selenium.webdriver.common.html5.application_cache" href="selenium.webdriver.common.html5.application_cache.html" />
-    <link rel="prev" title="selenium.webdriver.common.utils" href="selenium.webdriver.common.utils.html" /> 
+    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,14 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.html5.application_cache.html" title="selenium.webdriver.common.html5.application_cache"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.utils.html" title="selenium.webdriver.common.utils"
-             accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
-          <li><a href="../api.html" accesskey="U">Selenium Documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -76,7 +66,7 @@
 <dl class="method">
 <dt id="selenium.webdriver.common.proxy.Proxy.add_to_capabilities">
 <tt class="descname">add_to_capabilities</tt><big>(</big><em>capabilities</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/proxy.html#Proxy.add_to_capabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.add_to_capabilities" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds proxy information as capability in specified capabilties.</p>
+<dd><p>Adds proxy information as capability in specified capabilities.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -93,7 +83,7 @@
 <dl class="attribute">
 <dt id="selenium.webdriver.common.proxy.Proxy.auto_detect">
 <tt class="descname">auto_detect</tt><a class="reference internal" href="../_modules/selenium/webdriver/common/proxy.html#Proxy.auto_detect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.auto_detect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns autodect setting.</p>
+<dd><p>Returns autodetect setting.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -157,6 +147,39 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="selenium.webdriver.common.proxy.Proxy.socksPassword">
+<tt class="descname">socksPassword</tt><em class="property"> = ''</em><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.socksPassword" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.proxy.Proxy.socksProxy">
+<tt class="descname">socksProxy</tt><em class="property"> = ''</em><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.socksProxy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.proxy.Proxy.socksUsername">
+<tt class="descname">socksUsername</tt><em class="property"> = ''</em><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.socksUsername" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.proxy.Proxy.socks_password">
+<tt class="descname">socks_password</tt><a class="reference internal" href="../_modules/selenium/webdriver/common/proxy.html#Proxy.socks_password"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.socks_password" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns socks proxy password setting.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.proxy.Proxy.socks_proxy">
+<tt class="descname">socks_proxy</tt><a class="reference internal" href="../_modules/selenium/webdriver/common/proxy.html#Proxy.socks_proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.socks_proxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns socks proxy setting.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.proxy.Proxy.socks_username">
+<tt class="descname">socks_username</tt><a class="reference internal" href="../_modules/selenium/webdriver/common/proxy.html#Proxy.socks_username"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.socks_username" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns socks proxy username setting.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="selenium.webdriver.common.proxy.Proxy.sslProxy">
 <tt class="descname">sslProxy</tt><em class="property"> = ''</em><a class="headerlink" href="#selenium.webdriver.common.proxy.Proxy.sslProxy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -172,8 +195,9 @@
 <dl class="class">
 <dt id="selenium.webdriver.common.proxy.ProxyType">
 <em class="property">class </em><tt class="descclassname">selenium.webdriver.common.proxy.</tt><tt class="descname">ProxyType</tt><a class="reference internal" href="../_modules/selenium/webdriver/common/proxy.html#ProxyType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.proxy.ProxyType" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Set of possible types of proxy. Proxy type has 2 property -</dt>
+<dd><p>Set of possible types of proxy.</p>
+<dl class="docutils">
+<dt>Each proxy type has 2 properties:</dt>
 <dd>&#8216;ff_value&#8217; is value of Firefox profile preference,
 &#8216;string&#8217; is id of proxy type.</dd>
 </dl>
@@ -212,6 +236,11 @@
 <tt class="descname">UNSPECIFIED</tt><em class="property"> = {'ff_value': 6, 'string': 'UNSPECIFIED'}</em><a class="headerlink" href="#selenium.webdriver.common.proxy.ProxyType.UNSPECIFIED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="classmethod">
+<dt id="selenium.webdriver.common.proxy.ProxyType.load">
+<em class="property">classmethod </em><tt class="descname">load</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/proxy.html#ProxyType.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.proxy.ProxyType.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -233,12 +262,6 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="selenium.webdriver.common.utils.html"
-                        title="previous chapter">selenium.webdriver.common.utils</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="selenium.webdriver.common.html5.application_cache.html"
-                        title="next chapter">selenium.webdriver.common.html5.application_cache</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/webdriver/selenium.webdriver.common.proxy.txt"
@@ -270,14 +293,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.html5.application_cache.html" title="selenium.webdriver.common.html5.application_cache"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="selenium.webdriver.common.utils.html" title="selenium.webdriver.common.utils"
-             >previous</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li>
-          <li><a href="../api.html" >Selenium Documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

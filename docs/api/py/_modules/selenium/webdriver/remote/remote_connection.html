@@ -205,7 +205,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="n">remote_server_addr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">STATUS</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/status&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">NEW_SESSION</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_ALL_SESSIONS</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/sessions&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">QUIT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_CURRENT_WINDOW_HANDLE</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window_handle&#39;</span><span class="p">),</span>

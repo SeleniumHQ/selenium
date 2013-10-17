@@ -169,7 +169,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">click_and_hold</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_by_offset</span><span class="p">(</span><span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.key_down"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.key_down">[docs]</a>    <span class="k">def</span> <span class="nf">key_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -237,8 +237,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">MOVE_TO</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="n">xoffset</span><span class="p">,</span>
-                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="n">yoffset</span><span class="p">}))</span>
+                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xoffset</span><span class="p">),</span>
+                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">yoffset</span><span class="p">)}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.move_to_element"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.move_to_element">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_element</span><span class="p">):</span>
@@ -254,7 +254,7 @@
 </div>
 <div class="viewcode-block" id="ActionChains.move_to_element_with_offset"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.move_to_element_with_offset">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_element_with_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_element</span><span class="p">,</span> <span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Move the mouse by an offset of the specificed element.</span>
+<span class="sd">        Move the mouse by an offset of the specified element.</span>
 <span class="sd">           Offsets are relative to the top-left corner of the element.</span>
 
 <span class="sd">        :Args:</span>
@@ -265,8 +265,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">MOVE_TO</span><span class="p">,</span> <span class="p">{</span>
                 <span class="s">&#39;element&#39;</span><span class="p">:</span> <span class="n">to_element</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="n">xoffset</span><span class="p">,</span>
-                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="n">yoffset</span><span class="p">}))</span>
+                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xoffset</span><span class="p">),</span>
+                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">yoffset</span><span class="p">)}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.release"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.release">[docs]</a>    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_element</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>

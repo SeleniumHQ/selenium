@@ -170,17 +170,16 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s">&quot; &quot;</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
             <span class="n">subStringWithoutSpace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_longest_token</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">subStringWithoutSpace</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
-                <span class="c"># seems weird to me that the java impl just selects the first or all if multiple</span>
-                <span class="c"># oh well... doing it here too.</span>
                 <span class="n">candidates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">xpath</span> <span class="o">=</span> <span class="s">&quot;.//option[contains(.,</span><span class="si">%s</span><span class="s">)]&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_escapeString</span><span class="p">(</span><span class="n">subStringWithoutSpace</span><span class="p">)</span>
                 <span class="n">candidates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">xpath</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_setSelected</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
-                    <span class="k">return</span>
-                <span class="n">matched</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">if</span> <span class="n">text</span> <span class="o">==</span> <span class="n">candidate</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_setSelected</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multiple</span><span class="p">:</span>
+                        <span class="k">return</span>
+                    <span class="n">matched</span> <span class="o">=</span> <span class="bp">True</span>
 
         <span class="k">if</span> <span class="n">matched</span> <span class="o">!=</span> <span class="bp">True</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s">&quot;Could not locate element with visible text: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">text</span><span class="p">)</span>
