@@ -39,6 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
@@ -103,6 +104,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = {IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS})
   @Test(expected = WebDriverException.class)
   public void testShouldThrowIfUrlIsMalformed() {
+    assumeFalse("Fails in Sauce Cloud", SauceDriver.shouldUseSauce());
     driver.get("www.test.com");
   }
 
