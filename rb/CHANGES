@@ -1,7 +1,18 @@
-2.36.0 (???)
-============
+2.36.0 (2013-10-17)
+===================
 
+* Dropped support for Ruby < 1.9.2
 * Depend on rubyzip ~> 1.0.0
+* Added SOCKS proxy support
+* Fixed support for SVG documents in the atoms.
+* Fixed computing an element's container dimensions to account for  the scrollbar size when scrolling
+
+Firefox:
+  * Updated Firefox native event components to support Firefox 24.
+  * New elementScrollBehavior capability.
+  * Fixed getLocation to work on scrolled pages.
+  * Fixed autoscrolling for elements located in frames.
+  * Fixed drag-n-drop for elements in frames with native events
 
 2.35.1 (2013-08-26)
 ===================
