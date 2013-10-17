@@ -1,5 +1,16 @@
 Selenium 2.36
 * Added Safari WebDriver. Fixes issue 5352.
+* fix platform for safari caps
+* Convert all offsets/coordinates/speeds into integers
+* Fix drag and drop by offset behaviour
+* Fix initialization of Proxy by capabilities when proxyType is set
+* Enable SOCKS proxy support
+* Validation of passed locator for find_element(s) methods #5690
+* Adding support for /status, /sessions commands
+* Doc fixes
+* ability to set Chrome extensions by using base64 encoded strings #4013
+* fix logic regarding Select.select_by_visible_text #3910
+* Bugs fixed: #6165, #6231
 
 Selenium 2.35
 * Remove duplicate 'get screenshot as file' methods.  Add method 'get_screenshot_as_png'
