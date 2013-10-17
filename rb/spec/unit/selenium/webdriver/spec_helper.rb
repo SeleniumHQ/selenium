@@ -4,6 +4,7 @@ require 'rspec'
 require 'ci/reporter/rspec'
 require 'webmock/rspec'
 require 'selenium-webdriver'
+require 'pry'
 
 module Selenium
   module WebDriver
