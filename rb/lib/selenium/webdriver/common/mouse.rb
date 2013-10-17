@@ -49,7 +49,7 @@ module Selenium
       def move_to(element, right_by = nil, down_by = nil)
         assert_element element
 
-        @bridge.mouseMoveTo element.ref, Integer(right_by), Integer(down_by)
+        @bridge.mouseMoveTo element.ref, right_by, down_by
       end
 
       def move_by(right_by, down_by)
