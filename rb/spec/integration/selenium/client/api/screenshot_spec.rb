@@ -24,6 +24,6 @@ describe "Screenshot" do
     encodedImage = page.capture_screenshot_to_string
     pngImage = Base64.decode64(encodedImage)
 
-    pngImage.should =~ /^\211PNG/
+    pngImage.should =~ /^\211PNG/n
   end
 end
