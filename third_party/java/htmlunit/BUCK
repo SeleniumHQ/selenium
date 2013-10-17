@@ -1,6 +1,6 @@
 prebuilt_jar(name = 'htmlunit',
-  binary_jar = 'htmlunit-2.12.jar',
-  source_jar = 'htmlunit-2.12-sources.jar',
+  binary_jar = 'htmlunit-2.13.jar',
+  source_jar = 'htmlunit-2.13-sources.jar',
   deps = [
     ':js-core',
     '//third_party/java/apache-httpclient:apache-httpclient',
@@ -17,7 +17,7 @@ prebuilt_jar(name = 'htmlunit',
 )
 
 prebuilt_jar(name = 'js-core',
-  binary_jar = 'htmlunit-core-js-2.12.jar',
+  binary_jar = 'htmlunit-core-js-2.13.jar',
   visibility = [
     '//java/client/src/org/openqa/selenium/htmlunit:htmlunit',
   ],
