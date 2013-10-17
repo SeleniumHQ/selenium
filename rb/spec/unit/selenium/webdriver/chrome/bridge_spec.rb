@@ -53,6 +53,13 @@ module Selenium
           caps['chrome.detach'].should be_true
         end
 
+        it "sets the prefs capability" do
+          Bridge.new(:http_client => http, :prefs => {:foo => "bar"})
+
+          caps['chromeOptions']['prefs'].should == {:foo => "bar"}
+          caps['chrome.prefs'].should == {:foo => "bar"}
+        end
+
         it "lets the user override chrome.detach" do
           Bridge.new(:http_client => http, :detach => false)
 

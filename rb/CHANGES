@@ -7,6 +7,9 @@
 * Fixed support for SVG documents in the atoms.
 * Fixed computing an element's container dimensions to account for  the scrollbar size when scrolling
 
+Chrome:
+  * Pass through the prefs option as a Chrome capability (#5929).
+
 Firefox:
   * Updated Firefox native event components to support Firefox 24.
   * New elementScrollBehavior capability.
