@@ -10,14 +10,14 @@ describe Selenium::Client::Protocol do
   describe "#remote_control_command" do
     it "returns the content of the HTTP response when the command succeeds" do
       client.instance_variable_set :@default_timeout_in_seconds, 1
-      client.stub!(:http_request_for).with(:a_verb, :some_args).and_return(:the_request)
+      client.stub(:http_request_for).with(:a_verb, :some_args).and_return(:the_request)
       client.should_receive(:http_post).with(:the_request).and_return(["OK", "OK,the response"])
       client.remote_control_command(:a_verb, :some_args).should == "the response"
     end
 
     it "raises a SeleniumCommandError when the command fails" do
       client.instance_variable_set :@default_timeout_in_seconds, 1
-      client.stub!(:http_request_for).with(:a_verb, :some_args).and_return(:the_request)
+      client.stub(:http_request_for).with(:a_verb, :some_args).and_return(:the_request)
       client.should_receive(:http_post).with(:the_request).and_return(["ER", "ERROR,the error message"])
       lambda { client.remote_control_command(:a_verb, :some_args) }.should raise_error(Selenium::Client::CommandError)
     end
@@ -25,7 +25,7 @@ describe Selenium::Client::Protocol do
     it "succeeds when given zero args" do
       client.instance_variable_set :@default_timeout_in_seconds, 1
       client.should_receive(:http_request_for).with(:a_verb, []).and_return(:the_request)
-      client.stub!(:http_post).with(:the_request).and_return(["OK", "OK,the response"])
+      client.stub(:http_post).with(:the_request).and_return(["OK", "OK,the response"])
       client.remote_control_command(:a_verb)
     end
   end
@@ -77,7 +77,7 @@ describe Selenium::Client::Protocol do
 
   describe "#boolean_command or #boolean_array_command" do
     it "returns true when string_command returns 'true'" do
-      client.stub!(:string_command).with(:a_verb, :some_args).and_return("true")
+      client.stub(:string_command).with(:a_verb, :some_args).and_return("true")
       client.boolean_command(:a_verb, :some_args).should == true
     end
 
@@ -87,12 +87,12 @@ describe Selenium::Client::Protocol do
     end
 
     it "returns false when string_command returns 'false'" do
-      client.stub!(:string_command).with(:a_verb, :some_args).and_return("false")
+      client.stub(:string_command).with(:a_verb, :some_args).and_return("false")
       client.boolean_command(:a_verb, :some_args).should == false
     end
 
     it "returns an array of evaluated boolean values" do
-      client.stub!(:string_array_command).with(:a_verb, :some_args).
+      client.stub(:string_array_command).with(:a_verb, :some_args).
                                           and_return(["true", "false", "true", "true", "false"])
 
       client.boolean_array_command(:a_verb, :some_args).should == [true, false, true, true, false]
@@ -109,7 +109,7 @@ describe Selenium::Client::Protocol do
     end
 
     it "adds a session_id parameter when client has a current session id" do
-      client.stub!(:session_id).and_return(24)
+      client.stub(:session_id).and_return(24)
       client.send(:http_request_for, "aCommand", []).should == "cmd=aCommand&sessionId=24"
     end
 

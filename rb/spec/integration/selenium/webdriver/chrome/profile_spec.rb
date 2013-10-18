@@ -37,7 +37,7 @@ module Selenium
 
           profile.add_extension(ext_path)
 
-          ext_file = mock('file')
+          ext_file = double('file')
           File.should_receive(:open).with(ext_path, "rb").and_yield ext_file
           ext_file.should_receive(:read).and_return "test"
 

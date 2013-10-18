@@ -11,13 +11,13 @@ module Selenium
         let(:model_profile) { Profile.new(model) }
 
         before do
-          File.stub!(:exist?).with(model).and_return true
-          File.stub!(:directory?).with(model).and_return true
+          File.stub(:exist?).with(model).and_return true
+          File.stub(:directory?).with(model).and_return true
 
-          Dir.stub!(:mktmpdir => "/tmp/some/path")
-          FileUtils.stub!(:rm_rf)
-          FileUtils.stub!(:mkdir_p)
-          FileUtils.stub!(:cp_r)
+          Dir.stub(:mktmpdir => "/tmp/some/path")
+          FileUtils.stub(:rm_rf)
+          FileUtils.stub(:mkdir_p)
+          FileUtils.stub(:cp_r)
         end
 
         it "should set and get preference paths" do

@@ -82,7 +82,7 @@ describe Selenium::Client::Base do
     it "executes a getNewBrowserSession command with the browser string an url" do
       client = BaseClient.new :host, 24, :the_browser, :the_url
 
-      client.stub!(:remote_control_command)
+      client.stub(:remote_control_command)
       client.should_receive(:string_command).with("getNewBrowserSession", [:the_browser, :the_url, "", ""])
 
       client.start_new_browser_session
@@ -92,7 +92,7 @@ describe Selenium::Client::Base do
       client = BaseClient.new :host, 24, :the_browser, :the_url
       client.javascript_extension = :the_javascript_extension
 
-      client.stub!(:remote_control_command)
+      client.stub(:remote_control_command)
       client.should_receive(:string_command).with("getNewBrowserSession", [:the_browser, :the_url, :the_javascript_extension, ""])
 
       client.start_new_browser_session
@@ -102,7 +102,7 @@ describe Selenium::Client::Base do
       client = BaseClient.new :host, 24, :the_browser, :the_url
       client.javascript_extension = :the_javascript_extension
 
-      client.stub!(:remote_control_command)
+      client.stub(:remote_control_command)
       client.should_receive(:string_command).with("getNewBrowserSession", [:the_browser, :the_url, :the_javascript_extension, "captureNetworkTraffic=true"])
 
       client.start_new_browser_session(:captureNetworkTraffic => true)
@@ -112,7 +112,7 @@ describe Selenium::Client::Base do
       client = BaseClient.new :host, 24, :the_browser, :the_url
       client.javascript_extension = :the_javascript_extension
 
-      client.stub!(:remote_control_command)
+      client.stub(:remote_control_command)
       client.should_receive(:string_command).with("getNewBrowserSession", [:the_browser, :the_url, :the_javascript_extension, "captureNetworkTraffic=true;quack=false"])
 
       client.start_new_browser_session(:captureNetworkTraffic => true, :quack => false)
@@ -121,7 +121,7 @@ describe Selenium::Client::Base do
     it "sets the current sessionId with getNewBrowserSession response" do
       client = BaseClient.new :host, 24, :the_browser, :the_url
 
-      client.stub!(:remote_control_command)
+      client.stub(:remote_control_command)
       client.should_receive(:string_command).with("getNewBrowserSession", instance_of(Array)).
         and_return("the new session id")
 
@@ -142,7 +142,7 @@ describe Selenium::Client::Base do
     it "sets up auto-higlight of located element when option is set" do
       client = BaseClient.new :highlight_located_element => true
 
-      client.stub!(:remote_control_command)
+      client.stub(:remote_control_command)
       client.should_receive(:highlight_located_element=).with(true)
 
       client.start_new_browser_session
@@ -151,7 +151,7 @@ describe Selenium::Client::Base do
     it "does not set up auto-higlight of located element when option is not set" do
       client = BaseClient.new :highlight_located_element => false
 
-      client.stub!(:remote_control_command)
+      client.stub(:remote_control_command)
       client.should_not_receive(:highlight_located_element=)
 
       client.start_new_browser_session
@@ -167,8 +167,8 @@ describe Selenium::Client::Base do
     it "returns true when session has been started" do
       client = BaseClient.new :host, 24, :browser, :url
 
-      client.stub!(:string_command).and_return("A Session Id")
-      client.stub!(:remote_control_command)
+      client.stub(:string_command).and_return("A Session Id")
+      client.stub(:remote_control_command)
 
       client.start_new_browser_session
 
@@ -178,8 +178,8 @@ describe Selenium::Client::Base do
     it "returns false when session has been stopped" do
       client = BaseClient.new :host, 24, :browser, :url
 
-      client.stub!(:string_command).and_return("A Session Id")
-      client.stub!(:remote_control_command)
+      client.stub(:string_command).and_return("A Session Id")
+      client.stub(:remote_control_command)
 
       client.start_new_browser_session
       client.stop

@@ -7,7 +7,7 @@ module Selenium
       describe Bridge do
         let(:default_url) { URI.parse(IPhone::Bridge::DEFAULT_URL) }
         let(:resp)        { {"sessionId" => "foo", "value" => Remote::Capabilities.iphone.as_json }}
-        let(:http)        { mock(Remote::Http::Default, :call => resp).as_null_object   }
+        let(:http)        { double(Remote::Http::Default, :call => resp).as_null_object   }
 
         it "uses the default iPhone driver URL" do
           http.should_receive(:server_url=).with default_url

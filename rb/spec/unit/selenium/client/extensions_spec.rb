@@ -63,31 +63,31 @@ describe Selenium::Client::Extensions do
 
   describe "#wait_for_ajax" do
     it "uses Ajax.activeRequestCount when default js framework is prototype" do
-      client.stub!(:default_javascript_framework).and_return(:prototype)
+      client.stub(:default_javascript_framework).and_return(:prototype)
       client.should_receive(:wait_for_condition).with("selenium.browserbot.getCurrentWindow().Ajax.activeRequestCount == 0;", anything)
       client.wait_for_ajax
     end
 
     it "uses jQuery.active when default js framework is jQuery" do
-      client.stub!(:default_javascript_framework).and_return(:jquery)
+      client.stub(:default_javascript_framework).and_return(:jquery)
       client.should_receive(:wait_for_condition).with("selenium.browserbot.getCurrentWindow().jQuery.active == 0;", anything)
       client.wait_for_ajax
     end
 
     it "can override default js framework" do
-      client.stub!(:default_javascript_framework).and_return(:prototype)
+      client.stub(:default_javascript_framework).and_return(:prototype)
       client.should_receive(:wait_for_condition).with("selenium.browserbot.getCurrentWindow().jQuery.active == 0;", anything)
       client.wait_for_ajax :javascript_framework => :jquery
     end
 
     it "uses default timeout when none is provided" do
-      client.stub!(:default_javascript_framework).and_return(:prototype)
+      client.stub(:default_javascript_framework).and_return(:prototype)
       client.should_receive(:wait_for_condition).with(anything, nil)
       client.wait_for_ajax
     end
 
     it "uses explicit timeout when provided" do
-      client.stub!(:default_javascript_framework).and_return(:prototype)
+      client.stub(:default_javascript_framework).and_return(:prototype)
       client.should_receive(:wait_for_condition).with(anything, :explicit_timeout)
       client.wait_for_ajax :timeout_in_seconds => :explicit_timeout
     end
@@ -96,19 +96,19 @@ describe Selenium::Client::Extensions do
 
   describe "#wait_for_effect" do
     it "uses Effect.Queue.size() when default js framework is prototype" do
-      client.stub!(:default_javascript_framework).and_return(:prototype)
+      client.stub(:default_javascript_framework).and_return(:prototype)
       client.should_receive(:wait_for_condition).with("selenium.browserbot.getCurrentWindow().Effect.Queue.size() == 0;", anything)
       client.wait_for_effects
     end
 
     it "uses default timeout when none is provided" do
-      client.stub!(:default_javascript_framework).and_return(:prototype)
+      client.stub(:default_javascript_framework).and_return(:prototype)
       client.should_receive(:wait_for_condition).with(anything, nil)
       client.wait_for_effects
     end
 
     it "uses explicit timeout when provided" do
-      client.stub!(:default_javascript_framework).and_return(:prototype)
+      client.stub(:default_javascript_framework).and_return(:prototype)
       client.should_receive(:wait_for_condition).with(anything, :explicit_timeout)
       client.wait_for_effects :timeout_in_seconds => :explicit_timeout
     end

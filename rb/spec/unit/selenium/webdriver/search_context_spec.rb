@@ -11,8 +11,8 @@ describe "SearchContext" do
     end
   end
 
-  let(:element)        { mock(:Element)}
-  let(:bridge)         { mock(:Bridge).as_null_object   }
+  let(:element)        { double(:Element)}
+  let(:bridge)         { double(:Bridge).as_null_object   }
   let(:search_context) { TestSearchContext.new(bridge)  }
 
   context "finding a single element" do

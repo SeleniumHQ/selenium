@@ -2,7 +2,7 @@ require File.expand_path("../../webdriver/spec_helper", __FILE__)
 require 'selenium/rake/server_task'
 
 describe Selenium::Rake::ServerTask do
-  let(:mock_server) { mock(Selenium::Server).as_null_object }
+  let(:mock_server) { double(Selenium::Server).as_null_object }
 
   it "raises an error if no jar file is specified" do
     lambda {

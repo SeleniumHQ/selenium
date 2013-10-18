@@ -30,7 +30,7 @@ describe Selenium::Client::Idiomatic do
 
     it "waits for a page to load with the default timeout when none is specified" do
       client.should_receive(:remote_control_command).with("waitForPageToLoad", [7000,])
-      client.stub!(:default_timeout_in_seconds).and_return(7)
+      client.stub(:default_timeout_in_seconds).and_return(7)
       client.wait_for_page
     end
 
@@ -63,7 +63,7 @@ describe Selenium::Client::Idiomatic do
 
     it "uses the default timeout when none is specified" do
       client.should_receive(:remote_control_command).with("waitForPopUp", [:the_window_id, 7000]).and_return(:the_value)
-      client.stub!(:default_timeout_in_seconds).and_return(7)
+      client.stub(:default_timeout_in_seconds).and_return(7)
       client.wait_for_popup :the_window_id
     end
   end
@@ -71,19 +71,19 @@ describe Selenium::Client::Idiomatic do
   describe "#wait_for_condition" do
     it "waits for a page to load using the default timeout when none is specified" do
       client.should_receive(:remote_control_command).with("waitForCondition", ["some javascript", 7000,])
-      client.stub!(:default_timeout_in_seconds).and_return(7)
+      client.stub(:default_timeout_in_seconds).and_return(7)
       client.wait_for_condition "some javascript"
     end
 
     it "waits for a page to load using the given timeout converted to milliseconds" do
       client.should_receive(:remote_control_command).with("waitForCondition", ["some javascript", 24000,])
-      client.stub!(:default_timeout_in_seconds).and_return(7)
+      client.stub(:default_timeout_in_seconds).and_return(7)
       client.wait_for_condition "some javascript", 24
     end
 
     it "accepts timeout as a string for backward compatibility" do
       client.should_receive(:remote_control_command).with("waitForCondition", ["some javascript", 64000,])
-      client.stub!(:default_timeout_in_seconds).and_return(7)
+      client.stub(:default_timeout_in_seconds).and_return(7)
       client.wait_for_condition "some javascript", "64"
     end
   end
