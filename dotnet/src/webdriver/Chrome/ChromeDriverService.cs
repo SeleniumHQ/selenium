@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.Chrome
     public sealed class ChromeDriverService : DriverService
     {
         private const string ChromeDriverServiceFileName = "chromedriver.exe";
-        private static readonly Uri ChromeDriverDownloadUrl = new Uri("http://code.google.com/p/chromium/downloads/list");
+        private static readonly Uri ChromeDriverDownloadUrl = new Uri("http://chromedriver.storage.googleapis.com/index.html");
         private string logPath = string.Empty;
 
         /// <summary>
