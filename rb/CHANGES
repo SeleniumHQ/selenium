@@ -1,4 +1,4 @@
-2.36.0 (2013-10-17)
+2.37.0 (2013-10-18)
 ===================
 
 * Dropped support for Ruby < 1.9.2
@@ -20,7 +20,7 @@ IE:
   * Use native events by default, also for remote IE (#4695)
 Safari:
   * Enable screenshots and input devices in the client.
-
+  
 2.35.1 (2013-08-26)
 ===================
 
