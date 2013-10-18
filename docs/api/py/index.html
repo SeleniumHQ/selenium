@@ -87,7 +87,7 @@
 <p>If you have <a class="reference external" href="http://www.pip-installer.org">pip</a> on your system, you can simply install or upgrade the Python bindings:</p>
 <div class="highlight-python"><pre>pip install -U selenium</pre>
 </div>
-<p>Alternately, you can download the source distribution from <a class="reference external" href="http://pypi.python.org/pypi/selenium">PyPI</a> (e.g. selenium-2.36.tar.gz), unarchive it, and run:</p>
+<p>Alternately, you can download the source distribution from <a class="reference external" href="http://pypi.python.org/pypi/selenium">PyPI</a> (e.g. selenium-2.37.tar.gz), unarchive it, and run:</p>
 <div class="highlight-python"><pre>python setup.py install</pre>
 </div>
 <p>Note: both of the methods described above install <cite>selenium</cite> as a system-wide package  That will require administrative/root access to ther machine.  You may consider using a <a class="reference external" href="http://www.virtualenv.org/">virtualenv</a> to create isolated Python environments instead.</p>
@@ -113,18 +113,19 @@
 <li>search for &#8220;seleniumhq&#8221;</li>
 <li>close the browser</li>
 </ul>
-<div class="highlight-python"><pre>from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
 
-browser = webdriver.Firefox()
+<span class="n">browser</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">()</span>
 
-browser.get('http://www.yahoo.com)
-assert 'Yahoo!' in browser.title
+<span class="n">browser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://www.yahoo.com&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="s">&#39;Yahoo!&#39;</span> <span class="ow">in</span> <span class="n">browser</span><span class="o">.</span><span class="n">title</span>
 
-elem = browser.find_element_by_name('p')  # Find the search box
-elem.send_keys('seleniumhq' + Keys.RETURN)
+<span class="n">elem</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">&#39;p&#39;</span><span class="p">)</span>  <span class="c"># Find the search box</span>
+<span class="n">elem</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s">&#39;seleniumhq&#39;</span> <span class="o">+</span> <span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
 
-browser.quit()</pre>
+<span class="n">browser</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+</pre></div>
 </div>
 </div>
 <div class="section" id="example-2">
@@ -151,9 +152,9 @@ browser.quit()</pre>
 <h2>Selenium Server (optional)<a class="headerlink" href="#selenium-server-optional" title="Permalink to this headline">¶</a></h2>
 <p>For normal WebDriver scripts (non-Remote), the Java server is not needed.</p>
 <p>However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).</p>
-<p>Download the server separately, from: <a class="reference external" href="http://selenium.googlecode.com/files/selenium-server-standalone-2.36.0.jar">http://selenium.googlecode.com/files/selenium-server-standalone-2.36.0.jar</a></p>
+<p>Download the server separately, from: <a class="reference external" href="http://selenium.googlecode.com/files/selenium-server-standalone-2.37.0.jar">http://selenium.googlecode.com/files/selenium-server-standalone-2.37.0.jar</a></p>
 <p>Run the server from the command line:</p>
-<div class="highlight-python"><pre>java -jar selenium-server-standalone-2.36.0.jar</pre>
+<div class="highlight-python"><pre>java -jar selenium-server-standalone-2.37.0.jar</pre>
 </div>
 <p>Then run your Python client scripts.</p>
 </div>
