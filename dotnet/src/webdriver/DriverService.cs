@@ -144,15 +144,16 @@ namespace OpenQA.Selenium
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.Start();
-            DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(20));
             Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri("status", UriKind.Relative));
-            HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
             bool processStarted = false;
+            DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(20));
             while (!processStarted && DateTime.Now < timeout)
             {
                 try
                 {
-                    request.GetResponse();
+                    HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
+                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                    response.Close();
                     processStarted = true;
                 }
                 catch (WebException)
@@ -202,14 +203,22 @@ namespace OpenQA.Selenium
             if (this.driverServiceProcess != null && !this.driverServiceProcess.HasExited)
             {
                 Uri shutdownUrl = new Uri(this.ServiceUrl, "/shutdown");
-                DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(3));
-                HttpWebRequest request = HttpWebRequest.Create(shutdownUrl) as HttpWebRequest;
+                DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(10));
                 bool processStopped = false;
                 while (!processStopped && DateTime.Now < timeout)
                 {
                     try
                     {
-                        request.GetResponse();
+                        // Issue the shutdown HTTP request, then wait a short while for
+                        // the process to have exited. If the process hasn't yet exited,
+                        // we'll retry. We wait for exit here, since catching the exception
+                        // for a failed HTTP request due to a closed socket is particularly
+                        // expensive.
+                        HttpWebRequest request = HttpWebRequest.Create(shutdownUrl) as HttpWebRequest;
+                        HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                        response.Close();
+                        this.driverServiceProcess.WaitForExit(3000);
+                        processStopped = this.driverServiceProcess.HasExited;
                     }
                     catch (WebException)
                     {
@@ -217,7 +226,18 @@ namespace OpenQA.Selenium
                     }
                 }
 
-                this.driverServiceProcess.WaitForExit();
+                // If at this point, the process still hasn't exited, wait for one
+                // last-ditch time, then, if it still hasn't exited, kill it. Note
+                // that falling into this branch of code should be exceedingly rare.
+                if (!this.driverServiceProcess.HasExited)
+                {
+                    this.driverServiceProcess.WaitForExit(5000);
+                    if (!this.driverServiceProcess.HasExited)
+                    {
+                        this.driverServiceProcess.Kill();
+                    }
+                }
+
                 this.driverServiceProcess.Dispose();
                 this.driverServiceProcess = null;
             }
