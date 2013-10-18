@@ -1,3 +1,7 @@
+v2.37.0
+=======
+  * Fix Firefox native event support on Linux for 23 & 24.
+
 v2.36.0
 =======
 WebDriver:
