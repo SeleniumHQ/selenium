@@ -26,10 +26,9 @@ from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
 try:
-    bytes
-except NameError: # Python 2.x compatibility
-    bytes = str
-    str = unicode
+    str = basestring
+except NameError:
+    pass
 
 class WebDriver(object):
     """
