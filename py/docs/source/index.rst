@@ -70,7 +70,7 @@ Example 1:
 
     browser = webdriver.Firefox()
     
-    browser.get('http://www.yahoo.com)
+    browser.get('http://www.yahoo.com')
     assert 'Yahoo!' in browser.title
 
     elem = browser.find_element_by_name('p')  # Find the search box
