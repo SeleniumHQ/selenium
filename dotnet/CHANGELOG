@@ -1,3 +1,12 @@
+v2.37.0
+=======
+ * Issue #6163: Refactored .NET DriverService-based shutdown code. Moved
+   waiting for the driver service process to end to immediately after sending
+   the shutdown HTTP request. Waiting to catch the exception for a failed HTTP
+   request due to a closed socket is very expensive. This cuts shutdown time
+   for a driver service executable to about 33% of what it used to be for the
+   IE driver, with larger savings for Chrome and PhantomJS.
+
 v2.36.0
 =======
  * Added ability to set additional ChromeOptions in the .NET bindings. This
