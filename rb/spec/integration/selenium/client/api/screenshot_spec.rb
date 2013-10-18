@@ -13,7 +13,7 @@ describe "Screenshot" do
     page.capture_screenshot tempfile
 
     File.exists?(tempfile).should be_true
-    File.open(tempfile, "r") do |io|
+    File.open(tempfile, "rb") do |io|
       magic = io.read(4)
       magic.should == "\211PNG"
     end
