@@ -185,9 +185,13 @@ module Selenium
             WebDriver::Chrome.driver_path = server
           end
 
+          args = []
+          args << "--no-sandbox" if ENV['TRAVIS']
+
           WebDriver::Driver.for :chrome,
-                                :native_events => native_events?
-                                # :http_client   => keep_alive_client || http_client
+                                :native_events => native_events?,
+                                :args          => args
+                                # :http_client => keep_alive_client || http_client
         end
 
         def create_phantomjs_driver
