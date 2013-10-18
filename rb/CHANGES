@@ -1,7 +1,7 @@
 2.37.0 (2013-10-18)
 ===================
 
-* Dropped support for Ruby < 1.9.2
+* As of this version, selenium-webdriver no longer supports Ruby < 1.9.2
 * Depend on rubyzip ~> 1.0.0
 * Added SOCKS proxy support
 * Fixed support for SVG documents in the atoms.
