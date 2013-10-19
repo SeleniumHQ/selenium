@@ -606,9 +606,6 @@ namespace OpenQA.Selenium
             EnvironmentManager.Instance.CloseCurrentDriver();
         }
 
-        //------------------------------------------------------------------
-        // Tests below here are not included in the Java test suite
-        //------------------------------------------------------------------
         [Test]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]
@@ -644,6 +641,9 @@ namespace OpenQA.Selenium
             driver = null;
         }
 
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
         [Test]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
         [IgnoreBrowser(Browser.Safari)]

@@ -397,6 +397,37 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
+  @Test
+  public void testShouldHandleAlertOnPageBeforeUnload() {
+    driver.get(appServer.whereIs("pageWithOnBeforeUnloadMessage.html"));
+
+    WebElement element = driver.findElement(By.id("navigate"));
+    element.click();
+
+    Alert alert = waitFor(alertToBePresent(driver));
+    alert.dismiss();
+    assertThat(driver.getCurrentUrl(), containsString("pageWithOnBeforeUnloadMessage.html"));
+
+    element.click();
+    alert = waitFor(alertToBePresent(driver));
+    alert.accept();
+    assertEquals("Testing Alerts", driver.getTitle());
+  }
+
+  @NoDriverAfterTest
+  @Test
+  public void testShouldHandleAlertOnPageBeforeUnloadAtQuit() {
+    driver.get(appServer.whereIs("pageWithOnBeforeUnloadMessage.html"));
+
+    WebElement element = driver.findElement(By.id("navigate"));
+    element.click();
+
+    waitFor(alertToBePresent(driver));
+
+    driver.quit();
+  }
+
+  @JavascriptEnabled
   @Ignore(value = {ANDROID, CHROME}, reason = "On Android, alerts do not pop up" +
       " when a window is closed.")
   @Test
