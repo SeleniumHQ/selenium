@@ -74,7 +74,7 @@ class WebElement(object):
             attributeValue = None
         else:
             attributeValue = resp['value']
-            if attributeValue.lower() in ('true', 'false'):
+            if name != 'value' and attributeValue.lower() in ('true', 'false'):
                 attributeValue = attributeValue.lower()
 
         return attributeValue

@@ -175,6 +175,13 @@ class ElementAttributeTests(unittest.TestCase):
         value = self.driver.find_element_by_id("withText").get_attribute("value")
         self.assertEqual("Example text", value)
         
+    def testShouldReturnTheContentsOfATextAreaAsItsValueWhenSetToNonNorminalTrue(self):
+        self._loadPage("formPage")
+        e = self.driver.find_element_by_id("withText")
+        self.driver.execute_script("arguments[0].value = 'tRuE'", e)
+        value = e.get_attribute("value")
+        self.assertEqual("tRuE", value)
+        
     def testShouldTreatReadonlyAsAValue(self):    
         self._loadPage("formPage")
         element = self.driver.find_element_by_name("readonly")
