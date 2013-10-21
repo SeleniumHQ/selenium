@@ -21,9 +21,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:svn:http://selenium.googlecode.com/svn</connection> 
-        <developerConnection>scm:svn:https://selenium.googlecode.com/svn</developerConnection>
-        <url>http://selenium.googlecode.com/svn</url>
+        <connection>scm:git:http://selenium.googlecode.com/git</connection> 
+        <developerConnection>scm:git:https://selenium.googlecode.com/git</developerConnection>
+        <url>http://selenium.googlecode.com/git</url>
     </scm>
 
     <developers>
