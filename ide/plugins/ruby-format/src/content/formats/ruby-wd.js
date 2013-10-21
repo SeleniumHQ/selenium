@@ -314,14 +314,14 @@ this.options = {
   footer: "  end\n" +
           "  \n" +
           "  def element_present?(how, what)\n" +
-          "    @driver.find_element(how, what)\n" +
+          "    ${receiver}.find_element(how, what)\n" +
           "    true\n" +
           "  rescue Selenium::WebDriver::Error::NoSuchElementError\n" +
           "    false\n" +
           "  end\n" +
           "  \n" +
           "  def alert_present?()\n" +
-          "    @driver.switch_to.alert\n" +
+          "    ${receiver}.switch_to.alert\n" +
           "    true\n" +
           "  rescue Selenium::WebDriver::Error::NoAlertPresentError\n" +
           "    false\n" +
@@ -334,7 +334,7 @@ this.options = {
           "  end\n" +
           "  \n" +
           "  def close_alert_and_get_its_text(how, what)\n" +
-          "    alert = @driver.switch_to().alert()\n" +
+          "    alert = ${receiver}.switch_to().alert()\n" +
           "    alert_text = alert.text\n" +
           "    if (@accept_next_alert) then\n" +
           "      alert.accept()\n" +
