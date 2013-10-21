@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
@@ -235,6 +236,26 @@ public class DragAndDropTest extends JUnit4TestBase {
     Matcher matcher = pattern.matcher(reporterText);
 
     assertTrue("Reporter text:" + reporterText, matcher.matches());
+  }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore({IE, OPERA, PHANTOMJS, SAFARI})
+  public void canDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow() {
+    driver.get(pages.dragDropOverflow);
+
+    WebElement toDrag = driver.findElement(By.id("time-marker"));
+    WebElement dragTo = driver.findElement(By.id("11am"));
+
+    Point srcLocation = toDrag.getLocation();
+    Point targetLocation = dragTo.getLocation();
+
+    int yOffset = targetLocation.getY() - srcLocation.getY();
+    assertNotEquals(0, yOffset);
+
+    new Actions(driver).dragAndDropBy(toDrag, 0, yOffset).perform();
+
+    assertEquals(dragTo.getLocation(), toDrag.getLocation());
   }
 
   private static void sleep(int ms) {

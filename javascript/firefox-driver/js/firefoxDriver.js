@@ -1076,13 +1076,27 @@ FirefoxDriver.prototype.mouseMove = function(respond, parameters) {
   var doc = respond.session.getDocument();
   var coords = fxdriver.events.buildCoordinates(parameters, doc);
 
+  // Prepare to move the mouse.  If the move is relative to an element, make sure the
+  // specified region is in the current viewport so we can actually move the mouse.
+  if (coords.auxiliary) {
+    var offset = new goog.math.Coordinate(coords.x, coords.y);
+    var inViewAfterScroll = bot.action.scrollIntoView(coords.auxiliary, offset);
+    if (!inViewAfterScroll &&
+        !Utils.isSVG(coords.auxiliary.ownerDocument) &&
+        !bot.dom.isElement(coords.auxiliary, goog.dom.TagName.OPTION)) {
+      respond.sendError(new WebDriverError(bot.ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS,
+          'Offset within element cannot be scrolled into view: ' + offset + ': ' +
+          coords.auxiliary));
+      return;
+    }
+  }
+
   // Fast path first
   if (!this.enableNativeEvents) {
     var target = coords.auxiliary || doc;
     fxdriver.logging.info('Calling move with: ' + coords.x + ', ' + coords.y + ', ' + target);
     var result = this.mouse.move(target, coords.x, coords.y);
     this.sendResponseFromSyntheticMouse_(result, respond);
-
     return;
   }
 

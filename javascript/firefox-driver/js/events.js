@@ -29,6 +29,9 @@ goog.require('goog.style');
  * no x and y offset are specified.
  *
  * @param {object} parameters The parameters to extract the coordinates from.
+ * @param {!Document} doc The document containing the reference element, if any.
+ * @return {{x: number, y: number, auxiliary: Element,
+ *           QueryInterface: !Function}} The event coordinates.
  */
 fxdriver.events.buildCoordinates = function(parameters, doc) {
   fxdriver.logging.info(parameters);
