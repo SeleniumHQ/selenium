@@ -39,7 +39,8 @@ rubygem(
     "CHANGES",
     "README.md",
     "COPYING"
-  ]
+  ],
+  required_ruby_version = ">= 1.9.2"
 )
 
 rubydocs(

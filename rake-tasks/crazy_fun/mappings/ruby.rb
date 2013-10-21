@@ -234,15 +234,16 @@ class RubyMappings
 
     def gemspec(args)
       Gem::Specification.new do |s|
-        s.name        = args[:name]
-        s.version     = args[:version]
-        s.summary     = args[:summary]
-        s.description = args[:description]
-        s.authors     = args[:author]
-        s.email       = args[:email]
-        s.homepage    = args[:homepage]
-        s.files       = Dir[*args[:files]]
-        s.license     = args[:license]
+        s.name                  = args[:name]
+        s.version               = args[:version]
+        s.summary               = args[:summary]
+        s.description           = args[:description]
+        s.authors               = args[:author]
+        s.email                 = args[:email]
+        s.homepage              = args[:homepage]
+        s.files                 = Dir[*args[:files]]
+        s.license               = args[:license]
+        s.required_ruby_version = args[:required_ruby_version]
 
         args[:gemdeps].each { |dep| s.add_dependency(*dep.shift) }
         args[:devdeps].each { |dep| s.add_development_dependency(*dep.shift) }

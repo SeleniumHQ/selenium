@@ -1,3 +1,9 @@
+2.38.0 (???)
+============
+
+* Enforce required ruby version in gemspec, not just through rubyzip.
+
+
 2.37.0 (2013-10-18)
 ===================
 
@@ -20,7 +26,7 @@ IE:
   * Use native events by default, also for remote IE (#4695)
 Safari:
   * Enable screenshots and input devices in the client.
-  
+
 2.35.1 (2013-08-26)
 ===================
 
