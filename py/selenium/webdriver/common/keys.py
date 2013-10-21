@@ -27,7 +27,8 @@ class Keys(object):
     NULL         = '\ue000'
     CANCEL       = '\ue001' #  ^break
     HELP         = '\ue002'
-    BACK_SPACE   = '\ue003'
+    BACKSPACE    = '\ue003'
+    BACK_SPACE   = '\ue003' #  alias
     TAB          = '\ue004'
     CLEAR        = '\ue005'
     RETURN       = '\ue006'
