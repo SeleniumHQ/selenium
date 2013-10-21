@@ -29,6 +29,11 @@ from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+try:
+    str = basestring
+except NameError:
+    pass
+
 
 class WebElement(object):
     """Represents an HTML element.
