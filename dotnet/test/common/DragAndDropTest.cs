@@ -175,6 +175,30 @@ namespace OpenQA.Selenium
             Assert.IsTrue(reporterText.Contains("move"), "Reporter text:" + reporterText);
         }
 
+        [Test]
+        [Category("Javascript")]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.Opera, "Untested")]
+        [IgnoreBrowser(Browser.PhantomJS, "Untested")]
+        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
+        public void CanDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow()
+        {
+            driver.Url = dragDropOverflowPage;
+
+            IWebElement toDrag = driver.FindElement(By.Id("time-marker"));
+            IWebElement dragTo = driver.FindElement(By.Id("11am"));
+
+            Point srcLocation = toDrag.Location;
+            Point targetLocation = dragTo.Location;
+
+            int yOffset = targetLocation.Y - srcLocation.Y;
+            Assert.AreNotEqual(0, yOffset);
+
+            new Actions(driver).DragAndDropToOffset(toDrag, 0, yOffset).Perform();
+
+            Assert.AreEqual(dragTo.Location, toDrag.Location);
+        }
+
         private Point drag(IWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy)
         {
             Point expectedLocation = new Point(initialLocation.X, initialLocation.Y);

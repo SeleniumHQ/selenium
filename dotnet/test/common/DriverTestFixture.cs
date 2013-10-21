@@ -74,6 +74,7 @@ namespace OpenQA.Selenium
         public string xhtmlFormPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("xhtmlFormPage.xhtml");
         public string svgTestPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("svgTest.svg");
         public string slowLoadingAlertPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("slowLoadingAlert.html");
+        public string dragDropOverflowPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("dragDropOverflow.html");
 
         protected IWebDriver driver;
 
