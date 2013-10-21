@@ -18,6 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.chrome;
 
+import com.google.common.base.Throwables;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -140,6 +142,17 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
   }
 
   /**
+   * Creates a new ChromeDriver instance with the specified options. The {@code service} will be
+   * started along with the driver, and shutdown upon calling {@link #quit()}.
+   *
+   * @param service The service to use.
+   * @param options The options to use.
+   */
+  public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
+    this(service, options.toCapabilities());
+  }
+
+  /**
    * Creates a new ChromeDriver instance. The {@code service} will be started along with the
    * driver, and shutdown upon calling {@link #quit()}.
    *
@@ -148,17 +161,6 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
    */
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
     super(new DriverCommandExecutor(service), capabilities);
-  }
-
-  /**
-   * Creates a new ChromeDriver instance with the specified options. The {@code service} will be
-   * started along with the driver, and shutdown upon calling {@link #quit()}.
-   *
-   * @param service The service to use.
-   * @param options The options to use.
-   */
-  public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
-    super(new DriverCommandExecutor(service), options.toCapabilities());
   }
 
   @Override
@@ -173,5 +175,16 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
     String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();
     // ... and convert it.
     return target.convertFromBase64Png(base64);
+  }
+
+  @Override
+  protected void startSession(Capabilities desiredCapabilities,
+                              Capabilities requiredCapabilities) {
+    try {
+      super.startSession(desiredCapabilities, requiredCapabilities);
+    } catch (WebDriverException e) {
+      quit();
+      Throwables.propagate(e);
+    }
   }
 }
