@@ -321,8 +321,8 @@ bot.Device.prototype.fireMSPointerEvent = function(type, coord, button,
 
 
 /**
- * A mouse event fired "on" an <option> element, doesn't always fire on the
- * <option> element itself. Sometimes it fires on the parent <select> element
+ * A mouse event fired "on" an option element, doesn't always fire on the
+ * option element itself. Sometimes it fires on the parent select element
  * and sometimes not at all, depending on the browser and event type. This
  * returns the true target element of the event, or null if none is fired.
  *
@@ -687,7 +687,7 @@ bot.Device.isForm_ = function(node) {
 
 /**
  * Submits the specified form. Unlike the public function, it expects to be
- * given a <form> element and fails if it is not.
+ * given a form element and fails if it is not.
  * @param {!Element} form The form to submit.
  * @protected
  */

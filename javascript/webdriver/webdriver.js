@@ -52,7 +52,7 @@ goog.require('webdriver.promise');
  * object to manipulate the command result or catch an expected error. Any
  * commands scheduled with a callback are considered sub-commands and will
  * execute before the next command in the current frame. For example:
- *
+ * <pre><code>
  *   var message = [];
  *   driver.call(message.push, message, 'a').then(function() {
  *     driver.call(message.push, message, 'b');
@@ -61,6 +61,7 @@ goog.require('webdriver.promise');
  *   driver.call(function() {
  *     alert('message is abc? ' + (message.join('') == 'abc'));
  *   });
+ * </code></pre>
  *
  * @param {!(webdriver.Session|webdriver.promise.Promise)} session Either a
  *     known session or a promise that will be resolved to a session.
@@ -1450,22 +1451,24 @@ webdriver.Key.chord = function(var_args) {
  * Represents a DOM element. WebElements can be found by searching from the
  * document root using a {@code webdriver.WebDriver} instance, or by searching
  * under another {@code webdriver.WebElement}:
- *
+ * <pre><code>
  *   driver.get('http://www.google.com');
  *   var searchForm = driver.findElement(By.tagName('form'));
  *   var searchBox = searchForm.findElement(By.name('q'));
  *   searchBox.sendKeys('webdriver');
+ * </code></pre>
  *
  * The WebElement is implemented as a promise for compatibility with the promise
  * API. It will always resolve itself when its internal state has been fully
  * resolved and commands may be issued against the element. This can be used to
  * catch errors when an element cannot be located on the page:
- *
+ * <pre><code>
  *   driver.findElement(By.id('not-there')).then(function(element) {
  *     alert('Found an element that was not expected to be there!');
  *   }, function(error) {
  *     alert('The element was not found, as expected');
  *   });
+ * </code></pre>
  *
  * @param {!webdriver.WebDriver} driver The parent WebDriver instance for this
  *     element.
@@ -1711,7 +1714,7 @@ webdriver.WebElement.prototype.click = function() {
  * this key is encountered, all modifier keys current in the down state are
  * released (with accompanying keyup events). The NULL key can be used to
  * simulate common keyboard shortcuts:
- * <code>
+ * <code><pre>
  *     element.sendKeys("text was",
  *                      webdriver.Key.CONTROL, "a", webdriver.Key.NULL,
  *                      "now text is");
@@ -1719,7 +1722,7 @@ webdriver.WebElement.prototype.click = function() {
  *     element.sendKeys("text was",
  *                      webdriver.Key.chord(webdriver.Key.CONTROL, "a"),
  *                      "now text is");
- * </code></li>
+ * </pre></code></li>
  * <li>The end of the keysequence is encountered. When there are no more keys
  * to type, all depressed modifier keys are released (with accompanying keyup
  * events).

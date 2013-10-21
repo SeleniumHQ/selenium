@@ -129,11 +129,13 @@ bot.Mouse.NO_BUTTON_VALUE_INDEX_ = 3;
  * Maps mouse events to an array of button argument value for each mouse button.
  * The array is indexed by the bot.Mouse.Button values. It encodes this table,
  * where each cell contains the (left/middle/right/none) button values.
+ * <pre>
  *               click/    mouseup/   mouseout/  mousemove  contextmenu
  *               dblclick  mousedown  mouseover
  * IE_DOC_PRE9   0 0 0 X   1 4 2 X    0 0 0 0    1 4 2 0    X X 0 X
  * WEBKIT/IE9    0 1 2 X   0 1 2 X    0 1 2 0    0 1 2 0    X X 2 X
  * GECKO/OPERA   0 1 2 X   0 1 2 X    0 0 0 0    0 0 0 0    X X 2 X
+ * </pre>
  * @private {!Object.<bot.events.EventType, !Array.<?number>>}
  * @const
  */
