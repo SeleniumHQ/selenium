@@ -1,3 +1,6 @@
+Selenium 2.37.1
+* fix find_elements on webelement using unicode locators and py 2.7
+
 Selenium 2.37
 * repackage with fix for Firefox native events on Linux
 * fix issue with unicode By locators w/ python 2.7 #6430

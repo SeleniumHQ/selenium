@@ -75,10 +75,9 @@
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.html5.application_cache</span> <span class="kn">import</span> <span class="n">ApplicationCache</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="nb">bytes</span>
-<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span> <span class="c"># Python 2.x compatibility</span>
-    <span class="nb">bytes</span> <span class="o">=</span> <span class="nb">str</span>
-    <span class="nb">str</span> <span class="o">=</span> <span class="nb">unicode</span>
+    <span class="nb">str</span> <span class="o">=</span> <span class="nb">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="k">pass</span>
 
 <div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

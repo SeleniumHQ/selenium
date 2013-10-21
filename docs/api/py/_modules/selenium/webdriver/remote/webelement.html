@@ -78,6 +78,11 @@
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="nb">str</span> <span class="o">=</span> <span class="nb">basestring</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="k">pass</span>
+
 
 <div class="viewcode-block" id="WebElement"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement">[docs]</a><span class="k">class</span> <span class="nc">WebElement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents an HTML element.</span>
