@@ -84,7 +84,6 @@ class FirefoxProfile(object):
 
     def update_preferences(self):
         for key, value in FirefoxProfile.DEFAULT_PREFERENCES['frozen'].items():
-            if key == 'browser.startup.homepage':
             self.default_preferences[key] = value
         self._write_user_prefs(self.default_preferences)
 
