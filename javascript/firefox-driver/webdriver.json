@@ -51,6 +51,7 @@
     "dom.report_all_js_exceptions": true,
     "javascript.options.showInConsole": true,
     "network.http.max-connections-per-server": 10,
+    "startup.homepage_welcome_url": "about:blank",
     "webdriver_accept_untrusted_certs": true,
     "webdriver_assume_untrusted_issuer": true
   }

@@ -34,7 +34,6 @@ from selenium import webdriver
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.test.selenium.webdriver.common.webserver import SimpleWebServer
 
-
 class TestFirefoxProfile:
 
     def setup_method(self, method):
@@ -43,17 +42,15 @@ class TestFirefoxProfile:
         self.webserver.start()
 
     def test_that_we_can_accept_a_profile(self):
-        # The setup gave us a browser but we dont need it since we are doing our own thing
-        self.driver.quit()
+        profile1 = webdriver.FirefoxProfile()
+        profile1.set_preference("startup.homepage_welcome_url",
+            "http://localhost:%d/%s.html" % (self.webserver.port, "simpleTest"))
+        profile1.update_preferences()
 
-        self.profile1 = webdriver.FirefoxProfile()
-        self.profile1.set_preference("startup.homepage_welcome_url",
-            "%s" % "http://localhost:%d/%s.html" % (self.webserver.port, "simpleTest"))
-        self.profile1.update_preferences()
-
-        self.profile2 = webdriver.FirefoxProfile(self.profile1.path)
-        self.driver = webdriver.Firefox(firefox_profile=self.profile2)
-        title = self.driver.title
+        profile2 = webdriver.FirefoxProfile(profile1.path)
+        driver = webdriver.Firefox(firefox_profile=profile2)
+        title = driver.title
+        driver.quit()
         assert "Hello WebDriver" == title
 
     def test_that_prefs_are_written_in_the_correct_format(self):
@@ -64,7 +61,7 @@ class TestFirefoxProfile:
         profile.set_preference("sample.preference", "hi there")
         profile.update_preferences()
 
-        assert '"hi there"' == profile.default_preferences["sample.preference"]
+        assert 'hi there' == profile.default_preferences["sample.preference"]
 
         encoded = profile.encoded
         decoded = base64.decodestring(encoded)
@@ -75,7 +72,7 @@ class TestFirefoxProfile:
                 user_js = zip.read(entry)
                 for line in user_js.splitlines():
                     if line.startswith(b'user_pref("sample.preference",'):
-                        assert True == line.endswith(b'"hi there");')
+                        assert True == line.endswith(b'hi there");')
             # there should be only one user.js
             break
         fp.close()
@@ -88,7 +85,7 @@ class TestFirefoxProfile:
         profile.set_preference('sample.preference.2', unicode('hi there'))
         profile.update_preferences()
 
-        assert '"hi there"' == profile.default_preferences["sample.preference.2"]
+        assert 'hi there' == profile.default_preferences["sample.preference.2"]
 
         encoded = profile.encoded
         decoded = base64.decodestring(encoded)
@@ -99,7 +96,7 @@ class TestFirefoxProfile:
                 user_js = zip.read(entry)
                 for line in user_js.splitlines():
                     if line.startswith(b'user_pref("sample.preference.2",'):
-                        assert True == line.endswith(b'"hi there");')
+                        assert True == line.endswith(b'hi there");')
             # there should be only one user.js
             break
         fp.close()
@@ -111,7 +108,7 @@ class TestFirefoxProfile:
         profile = webdriver.FirefoxProfile()
         profile.set_preference("sample.int.preference", 12345)
         profile.update_preferences()
-        assert "12345" == profile.default_preferences["sample.int.preference"]
+        assert 12345 == profile.default_preferences["sample.int.preference"]
 
     def test_that_boolean_prefs_are_written_in_the_correct_format(self):
         # The setup gave us a browser but we dont need it
@@ -120,7 +117,7 @@ class TestFirefoxProfile:
         profile = webdriver.FirefoxProfile()
         profile.set_preference("sample.bool.preference", True)
         profile.update_preferences()
-        assert "true" == profile.default_preferences["sample.bool.preference"]
+        assert True == profile.default_preferences["sample.bool.preference"]
 
     def test_that_we_delete_the_profile(self):
         path = self.driver.firefox_profile.path
@@ -132,7 +129,7 @@ class TestFirefoxProfile:
         self.profile1.accept_untrusted_certs = False
         self.profile2 = webdriver.FirefoxProfile()
         # Default is true. Should remain so.
-        assert self.profile2.default_preferences["webdriver_accept_untrusted_certs"] == 'true'
+        assert self.profile2.default_preferences["webdriver_accept_untrusted_certs"] == True
 
     def test_none_proxy_is_set(self):
         # The setup gave us a browser but we dont need it
@@ -173,11 +170,11 @@ class TestFirefoxProfile:
 
         self.profile.set_proxy(proxy)
 
-        assert self.profile.default_preferences["network.proxy.type"] == '1'
-        assert self.profile.default_preferences["network.proxy.no_proxies_on"] == '"localhost, foo.localhost"'
-        assert self.profile.default_preferences["network.proxy.http"] == '"some.url"'
-        assert self.profile.default_preferences["network.proxy.http_port"] == '1234'
-        assert self.profile.default_preferences["network.proxy.ssl"] == '"some2.url"'
+        assert self.profile.default_preferences["network.proxy.type"] == ProxyType.MANUAL['ff_value']
+        assert self.profile.default_preferences["network.proxy.no_proxies_on"] == 'localhost, foo.localhost'
+        assert self.profile.default_preferences["network.proxy.http"] == 'some.url'
+        assert self.profile.default_preferences["network.proxy.http_port"] == 1234
+        assert self.profile.default_preferences["network.proxy.ssl"] == 'some2.url'
         assert "network.proxy.ssl_port" not in self.profile.default_preferences
         assert "network.proxy.ftp" not in self.profile.default_preferences
 
@@ -191,8 +188,8 @@ class TestFirefoxProfile:
 
         self.profile.set_proxy(proxy)
 
-        assert self.profile.default_preferences["network.proxy.type"] == '2'
-        assert self.profile.default_preferences["network.proxy.autoconfig_url"] == '"http://some.url:12345/path"'
+        assert self.profile.default_preferences["network.proxy.type"] == ProxyType.PAC['ff_value']
+        assert self.profile.default_preferences["network.proxy.autoconfig_url"] == 'http://some.url:12345/path'
 
     def test_autodetect_proxy_is_set_in_profile(self):
         # The setup gave us a browser but we dont need it
@@ -204,7 +201,7 @@ class TestFirefoxProfile:
 
         self.profile.set_proxy(proxy)
 
-        assert self.profile.default_preferences["network.proxy.type"] == '4'
+        assert self.profile.default_preferences["network.proxy.type"] == ProxyType.AUTODETECT['ff_value']
 
     def teardown_method(self, method):
         try:
