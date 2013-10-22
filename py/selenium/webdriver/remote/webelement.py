@@ -158,7 +158,7 @@ class WebElement(object):
             if isinstance(val, Keys):
                 typing.append(val)
             elif isinstance(val, int):
-                val = str(val)
+                val = val.__str__()
                 for i in range(len(val)):
                     typing.append(val[i])
             else:
@@ -274,7 +274,7 @@ class LocalFileDetector(object):
             if isinstance(val, Keys):
                 typing.append(val)
             elif isinstance(val, int):
-                val = str(val)
+                val = val.__str__()
                 for i in range(len(val)):
                     typing.append(val[i])
             else:
