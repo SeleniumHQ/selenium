@@ -651,7 +651,7 @@ webdriver.promise.when = function(value, opt_callback, opt_errback) {
 /**
  * Invokes the appropriate callback function as soon as a promised
  * {@code value} is resolved. This function is similar to
- * {@code webdriver.promise.when}, except it does not return a new promise.
+ * {@link webdriver.promise.when}, except it does not return a new promise.
  * @param {*} value The value to observe.
  * @param {Function} callback The function to call when the value is
  *     resolved successfully.
@@ -684,10 +684,11 @@ webdriver.promise.asap = function(value, callback, opt_errback) {
  *
  * Warning: This function makes no checks against objects that contain
  * cyclical references:
- *
+ * <pre><code>
  *   var value = {};
  *   value['self'] = value;
  *   webdriver.promise.fullyResolved(value);  // Stack overflow.
+ * </code></pre>
  *
  * @param {*} value The value to fully resolve.
  * @return {!webdriver.promise.Promise} A promise for a fully resolved version
