@@ -147,7 +147,11 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
 
   public WebDriver getWrappedDriver() {
-    return driver;
+    if (driver instanceof WrapsDriver) {
+      return ((WrapsDriver) driver).getWrappedDriver();
+    } else {
+      return driver;
+    }
   }
 
   public void get(String url) {
