@@ -133,22 +133,10 @@ class ActionChains(object):
          - element: The element to send keys.
            If None, sends a key to current focused element.
         """
-        typing = []
-        for val in value:
-            if isinstance(val, Keys):
-                typing.append(val)
-            elif isinstance(val, int):
-                val = str(val)
-                for i in range(len(val)):
-                    typing.append(val[i])
-            else:
-                for i in range(len(val)):
-                    typing.append(val[i])
-
         if element: self.click(element)
         self._actions.append(lambda:
             self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {
-                "value": typing }))
+                "value": self._keys_to_typing(value) }))
         return self
 
     def key_up(self, value, element=None):
@@ -160,22 +148,10 @@ class ActionChains(object):
          - element: The element to send keys.
            If None, sends a key to current focused element.
         """
-        typing = []
-        for val in value:
-            if isinstance(val, Keys):
-                typing.append(val)
-            elif isinstance(val, int):
-                val = str(val)
-                for i in range(len(val)):
-                    typing.append(val[i])
-            else:
-                for i in range(len(val)):
-                    typing.append(val[i])
-
         if element: self.click(element)
         self._actions.append(lambda:
             self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {
-                "value": typing }))
+                "value": self._keys_to_typing(value) }))
         return self
 
     def move_by_offset(self, xoffset, yoffset):
@@ -241,7 +217,8 @@ class ActionChains(object):
          - keys_to_send: The keys to send.
         """
         self._actions.append(lambda:
-            self._driver.switch_to_active_element().send_keys(*keys_to_send))
+            self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, 
+              { 'value': self._keys_to_typing(keys_to_send)}))
         return self
 
     def send_keys_to_element(self, element, *keys_to_send):
@@ -255,3 +232,18 @@ class ActionChains(object):
         self._actions.append(lambda:
             element.send_keys(*keys_to_send))
         return self
+
+    def _keys_to_typing(self, value):
+        typing = []
+        for val in value:
+            if isinstance(val, Keys):
+                typing.append(val)
+            elif isinstance(val, int):
+                val = str(val)
+                for i in range(len(val)):
+                    typing.append(val[i])
+            else:
+                for i in range(len(val)):
+                    typing.append(val[i])
+        return typing
+

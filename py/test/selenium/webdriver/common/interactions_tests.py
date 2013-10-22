@@ -18,14 +18,19 @@
 """Tests for advanced user interactions."""
 import unittest
 import pytest
+import sys
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 
-@pytest.mark.skipif('sys.platform == "darwin"')
 class AdvancedUserInteractionTest(unittest.TestCase):
+    def _before(self):
+        if self.driver.capabilities['browserName'] == 'firefox' and sys.platform == 'darwin':
+            pytest.skip("native events not supported on Mac for Firefox")
+
     def performDragAndDropWithMouse(self):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        #self._before()
         self._loadPage("draggableLists")
         dragReporter = self.driver.find_element_by_id("dragging_reports")
         toDrag = self.driver.find_element_by_id("rightitem-3")
@@ -96,7 +101,7 @@ class AdvancedUserInteractionTest(unittest.TestCase):
 
     def testDoubleClick(self):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        pytest.skip("doubleClick is failing server-side")
+        #pytest.skip("doubleClick is failing server-side")
         self._loadPage("javascriptPage")
         toDoubleClick = self.driver.find_element_by_id("doubleClickField")
 
@@ -189,6 +194,7 @@ class AdvancedUserInteractionTest(unittest.TestCase):
 
     @pytest.mark.ignore_chrome
     def testMovingMouseBackAndForthPastViewPort(self):
+        self._before()
         self._loadPage("veryLargeCanvas")
 
         firstTarget = self.driver.find_element_by_id("r1")
@@ -226,6 +232,20 @@ class AdvancedUserInteractionTest(unittest.TestCase):
           .perform()
         expectedEvents += " Fourth"
         wait.until(expectedEventsFired)
+    
+    def testSendingKeysToActiveElementWithModifier(self):
+        self._loadPage("formPage")
+        e = self.driver.find_element_by_id("working")
+        e.click()
+
+        ActionChains(self.driver) \
+          .key_down(Keys.SHIFT) \
+          .send_keys("abc")\
+          .key_up(Keys.SHIFT)\
+          .perform()
+        
+        self.assertEqual("ABC", e.get_attribute('value'))
+
 
     def _pageURL(self, name):
         return "http://localhost:%d/%s.html" % (self.webserver.port, name)
