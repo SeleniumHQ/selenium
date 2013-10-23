@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium.Interactions;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium.Interactions
 {
     [TestFixture]
     public class DragAndDropTest : DriverTestFixture

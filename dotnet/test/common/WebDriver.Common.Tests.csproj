@@ -93,6 +93,7 @@
     <Compile Include="CookieTest.cs" />
     <Compile Include="AtomsInjectionTest.cs" />
     <Compile Include="CssValueTest.cs" />
+    <Compile Include="Interactions\DragAndDropTest.cs" />
     <Compile Include="PositionAndSizeTest.cs" />
     <Compile Include="SvgElementTest.cs" />
     <Compile Include="SvgDocumentTest.cs" />
@@ -104,7 +105,6 @@
     <Compile Include="OpacityTest.cs" />
     <Compile Include="SlowLoadingPageTest.cs" />
     <Compile Include="CorrectEventFiringTest.cs" />
-    <Compile Include="DragAndDropTest.cs" />
     <Compile Include="DriverElementFindingTest.cs" />
     <Compile Include="DriverTestFixture.cs" />
     <Compile Include="ElementAttributeTest.cs" />
