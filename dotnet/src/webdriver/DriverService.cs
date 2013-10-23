@@ -121,7 +121,7 @@ namespace OpenQA.Selenium
         /// </summary>
         protected virtual string CommandLineArguments
         {
-            get { return string.Format(CultureInfo.InvariantCulture, "-port={0}", this.driverServicePort); }
+            get { return string.Format(CultureInfo.InvariantCulture, "--port={0}", this.driverServicePort); }
         }
 
         /// <summary>

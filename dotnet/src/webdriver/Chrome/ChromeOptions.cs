@@ -89,8 +89,8 @@ namespace OpenQA.Selenium.Chrome
         [JsonProperty("detach")]
         public bool LeaveBrowserRunning
         {
-            get { return leaveBrowserRunning; }
-            set { leaveBrowserRunning = value; }
+            get { return this.leaveBrowserRunning; }
+            set { this.leaveBrowserRunning = value; }
         }
 
         /// <summary>
@@ -135,13 +135,13 @@ namespace OpenQA.Selenium.Chrome
         [JsonProperty("prefs", NullValueHandling = NullValueHandling.Ignore)]
         private Dictionary<string, object> UserProfilePreferences
         {
-            get { return userProfilePreferences; }
+            get { return this.userProfilePreferences; }
         }
 
         [JsonProperty("localState", NullValueHandling = NullValueHandling.Ignore)]
         private Dictionary<string, object> LocalStatePreferences
         {
-            get { return localStatePreferences; }
+            get { return this.localStatePreferences; }
         }
 
         /// <summary>

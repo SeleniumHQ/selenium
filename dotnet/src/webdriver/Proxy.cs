@@ -78,7 +78,7 @@ namespace OpenQA.Selenium
         private string proxyAutoConfigUrl;
         private string sslProxyLocation;
         private string socksProxyLocation;
-        private string socksUsername;
+        private string socksUserName;
         private string socksPassword;
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace OpenQA.Selenium
 
             if (settings.ContainsKey("socksUsername"))
             {
-                this.SocksUsername = settings["socksUsername"].ToString();
+                this.SocksUserName = settings["socksUsername"].ToString();
             }
 
             if (settings.ContainsKey("socksPassword"))
@@ -328,18 +328,18 @@ namespace OpenQA.Selenium
         /// Gets or sets the value of username for the SOCKS proxy.
         /// </summary>
         [JsonProperty("socksUsername", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        public string SocksUsername
+        public string SocksUserName
         {
             get
             {
-                return this.socksUsername;
+                return this.socksUserName;
             }
 
             set
             {
                 this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
                 this.proxyKind = ProxyKind.Manual;
-                this.socksUsername = value;
+                this.socksUserName = value;
             }
         }
 
@@ -366,11 +366,13 @@ namespace OpenQA.Selenium
         {
             if (this.proxyKind != ProxyKind.Unspecified && this.proxyKind != compatibleProxy)
             {
-                throw new InvalidOperationException(
-                    string.Format(CultureInfo.InvariantCulture,
-                        "Specified proxy type {0} is not compatible with current setting {1}", 
-                        compatibleProxy.ToString().ToUpperInvariant(), this.proxyKind.ToString().ToUpperInvariant())
-                );
+                string errorMessage = string.Format(
+                    CultureInfo.InvariantCulture,
+                    "Specified proxy type {0} is not compatible with current setting {1}",
+                    compatibleProxy.ToString().ToUpperInvariant(),
+                    this.proxyKind.ToString().ToUpperInvariant());
+
+                throw new InvalidOperationException(errorMessage);
             }
         }
     }
