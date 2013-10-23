@@ -33,6 +33,10 @@ namespace OpenQA.Selenium.Chrome
         private const string ChromeDriverServiceFileName = "chromedriver.exe";
         private static readonly Uri ChromeDriverDownloadUrl = new Uri("http://chromedriver.storage.googleapis.com/index.html");
         private string logPath = string.Empty;
+        private string urlPathPrefix = string.Empty;
+        private string portServerAddress = string.Empty;
+        private int adbPort = -1;
+        private bool enableVerboseLogging;
 
         /// <summary>
         /// Initializes a new instance of the ChromeDriverService class.
@@ -54,6 +58,43 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Gets or sets the base URL path prefix for commands (e.g., "wd/url").
+        /// </summary>
+        public string UrlPathPrefix
+        {
+            get { return this.urlPathPrefix; }
+            set { this.urlPathPrefix = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the address of a server to contact for reserving a port.
+        /// </summary>
+        public string PortServerAddress
+        {
+            get { return this.portServerAddress; }
+            set { this.portServerAddress = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the port on which the Android Debug Bridge is listening for commands.
+        /// </summary>
+        public int AndroidDebugBridgePort
+        {
+            get { return this.adbPort; }
+            set { this.adbPort = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to enable verbose logging for the ChromeDriver executable.
+        /// Defaults to <see langword="false"/>.
+        /// </summary>
+        public bool EnableVerboseLogging
+        {
+            get { return this.enableVerboseLogging; }
+            set { this.enableVerboseLogging = value; }
+        }
+
+        /// <summary>
         /// Gets the command-line arguments for the driver service.
         /// </summary>
         protected override string CommandLineArguments
@@ -61,14 +102,34 @@ namespace OpenQA.Selenium.Chrome
             get
             {
                 StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
+                if (this.adbPort > 0)
+                {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --adb-port={0}", this.adbPort);
+                }
+
                 if (this.SuppressInitialDiagnosticInformation)
                 {
                     argsBuilder.Append(" --silent");
                 }
 
+                if (this.enableVerboseLogging)
+                {
+                    argsBuilder.Append(" --verbose");
+                }
+
                 if (!string.IsNullOrEmpty(this.logPath))
                 {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log-path={0}", this.logPath));
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --log-path={0}", this.logPath);
+                }
+
+                if (!string.IsNullOrEmpty(this.urlPathPrefix))
+                {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --url-base={0}", this.urlPathPrefix);
+                }
+
+                if (!string.IsNullOrEmpty(this.portServerAddress))
+                {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --port-server={0}", this.portServerAddress);
                 }
 
                 return argsBuilder.ToString();
