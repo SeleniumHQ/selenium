@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 # we want jruby-complete to take care of all things ruby
 unset GEM_HOME
