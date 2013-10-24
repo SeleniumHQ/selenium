@@ -105,7 +105,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             // Check our extra env vars for the same var, and use it too.
             if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
             {
-                libraryPath.Append(env).Append(Path.PathSeparator);
+                libraryPath.Append(builder.StartInfo.EnvironmentVariables[propertyName]).Append(Path.PathSeparator);
             }
 
             // Last, add the contents of the specified system property, defaulting to the binary's path.
@@ -113,11 +113,13 @@ namespace OpenQA.Selenium.Firefox.Internal
             string firefoxLibraryPath = Path.GetFullPath(this.binaryLocation);
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Mac) && Platform.CurrentPlatform.MinorVersion > 5)
             {
-                libraryPath.Append(libraryPath).Append(Path.PathSeparator);
+                libraryPath.Append(Path.PathSeparator);
             }
             else
             {
-                libraryPath.Append(firefoxLibraryPath).Append(Path.PathSeparator).Append(libraryPath);
+                // Insert the Firefox library path and the path separator at the beginning
+                // of the path.
+                libraryPath.Insert(0, Path.PathSeparator).Insert(0, firefoxLibraryPath);
             }
 
             // Add the library path to the builder.
