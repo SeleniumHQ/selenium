@@ -21,9 +21,31 @@ from selenium.webdriver.common.keys import Keys
 
 class ActionChains(object):
     """
+    ActionChains are a way to automate low level interactions such as 
+    mouse movements, mouse button actions, key press, and context menu interactions.
+    This is useful for doing more complex actions like hover over and drag and drop. 
+
     Generate user actions.
        All actions are stored in the ActionChains object. 
        Call perform() to fire stored actions.
+
+    Actions can be done in a chain pattern::
+        menu = driver.find_element_by_css_selector(".nav")
+        hidden_submenu = driver.find_element_by_css_selector(".nav #submenu1")
+        ActionChains(driver).move_to_element(menu).click(hidden_submenu).perform()
+
+    Or actions can be queued up and performed.::
+
+        menu = driver.find_element_by_css_selector(".nav")
+        hidden_submenu = driver.find_element_by_css_selector(".nav #submenu1")
+
+        actions = ActionChains(driver)
+        actions.move_to_element(menu)
+        actions.click(hidden_submenu)
+        actions.perform()
+
+    Either way, the actions are performed in the order they are called, one after 
+    another.
     """
 
     def __init__(self, driver):
@@ -214,7 +236,8 @@ class ActionChains(object):
         Sends keys to current focused element.
 
         :Args:
-         - keys_to_send: The keys to send.
+         - keys_to_send: The keys to send.  Modifier keys constants can be found in the 
+         'Keys' class.
         """
         self._actions.append(lambda:
             self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, 
@@ -227,7 +250,8 @@ class ActionChains(object):
 
         :Args:
          - element: The element to send keys.
-         - keys_to_send: The keys to send.
+         - keys_to_send: The keys to send.  Modifier keys constants can be found in the 
+         'Keys' class.
         """
         self._actions.append(lambda:
             element.send_keys(*keys_to_send))
