@@ -57,7 +57,8 @@ class ExtensionConnection(RemoteConnection):
 
     def connect(self):
         """Connects to the extension and retrieves the session id."""
-        return self.execute(Command.NEW_SESSION, {'desiredCapabilities': DesiredCapabilities.FIREFOX})
+        return self.execute(Command.NEW_SESSION,
+                            {'desiredCapabilities': DesiredCapabilities.FIREFOX})
     
     @classmethod
     def connect_and_quit(self):
