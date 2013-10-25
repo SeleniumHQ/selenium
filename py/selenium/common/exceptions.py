@@ -63,18 +63,34 @@ class NoSuchFrameException(InvalidSwitchToTargetException):
 class NoSuchWindowException(InvalidSwitchToTargetException):
     """
     Thrown when window target to be switched doesn't exist.
+
+    To find the current set of active window handles, you can get a list 
+    of the active window handles in the following way::
+
+        print driver.window_handles
+
     """
     pass
 
 class NoSuchElementException(WebDriverException):
     """
     Thrown when element could not be found.
+
+    If you encounter this exception, you may want to check the following:
+        * Check your selector used in your find_by...
+        * Element may not yet be on the screen at the time of the find operation,
+        (webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait() 
+        for how to write a wait wrapper to wait for an element to appear.
     """
     pass
 
 class NoSuchAttributeException(WebDriverException):
     """
     Thrown when the attribute of element could not be found.
+
+    You may want to check if the attribute exists in the particular browser you are 
+    testing against.  Some browsers may have different property names for the same 
+    property.  (IE8's .innerText vs. Firefox .textContent)
     """
     pass
 
@@ -83,6 +99,16 @@ class StaleElementReferenceException(WebDriverException):
     Thrown when a reference to an element is now "stale".
 
     Stale means the element no longer appears on the DOM of the page.
+
+
+    Possible causes of StaleElementReferenceException include, but not limited to:
+        * You are no longer on the same page, or the page may have refreshed since the element 
+        was located.
+        * The element may have been removed and re-added to the screen, since it was located.
+        Such as an element being relocated. 
+        This can happen typically with a javascript framework when values are updated and the 
+        node is rebuilt.
+        * Element may have been inside an iframe or another context which was refreshed.
     """
     pass
 
@@ -94,25 +120,36 @@ class InvalidElementStateException(WebDriverException):
 class UnexpectedAlertPresentException(WebDriverException):
     """
     Thrown when an unexpected alert is appeared.
+    
+    Usually raised when when an expected modal is blocking webdriver form executing any 
+    more commands.
     """
     pass
 
 class NoAlertPresentException(WebDriverException):
     """
     Thrown when switching to no presented alert.
+
+    This can be caused by calling an operation on the Alert() class when an alert is 
+    not yet on the screen.
     """
     pass
 
 class ElementNotVisibleException(InvalidElementStateException):
     """
-    Thrown when although an element is present on the DOM, 
+    Thrown when an element is present on the DOM, but  
     it is not visible, and so is not able to be interacted with.
+
+    Most commonly encountered when trying to click or read text 
+    of an element that is hidden from view.
     """
     pass
 
 class ElementNotSelectableException(InvalidElementStateException):
     """
     Thrown when trying to select an unselectable element.
+    
+    For example, selecting a 'script' element.
     """
     pass
 

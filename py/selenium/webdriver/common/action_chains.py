@@ -21,9 +21,35 @@ from selenium.webdriver.common.keys import Keys
 
 class ActionChains(object):
     """
+    ActionChains are a way to automate low level interactions such as 
+    mouse movements, mouse button actions, key press, and context menu interactions.
+    This is useful for doing more complex actions like hover over and drag and drop. 
+
     Generate user actions.
-       All actions are stored in the ActionChains object. 
-       Call perform() to fire stored actions.
+       When you call methods for actions on the ActionChains object, 
+       the actions are stored in a queue in the ActionChains object. 
+       When you call perform(), the events are fired in the order they 
+       are queued up.
+
+    ActionChains can be used in a chain pattern::
+
+        menu = driver.find_element_by_css_selector(".nav")
+        hidden_submenu = driver.find_element_by_css_selector(".nav #submenu1")
+
+        ActionChains(driver).move_to_element(menu).click(hidden_submenu).perform()
+
+    Or actions can be queued up one by one, then performed.::
+
+        menu = driver.find_element_by_css_selector(".nav")
+        hidden_submenu = driver.find_element_by_css_selector(".nav #submenu1")
+
+        actions = ActionChains(driver)
+        actions.move_to_element(menu)
+        actions.click(hidden_submenu)
+        actions.perform()
+
+    Either way, the actions are performed in the order they are called, one after 
+    another.
     """
 
     def __init__(self, driver):
@@ -132,6 +158,11 @@ class ActionChains(object):
          - value: The modifier key to send. Values are defined in `Keys` class.
          - element: The element to send keys.
            If None, sends a key to current focused element.
+        
+        Example, pressing ctrl+c::
+
+            ActionsChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
+
         """
         if element: self.click(element)
         self._actions.append(lambda:
@@ -147,6 +178,11 @@ class ActionChains(object):
          - value: The modifier key to send. Values are defined in Keys class.
          - element: The element to send keys.
            If None, sends a key to current focused element.
+
+        Example, pressing ctrl+c::
+
+            ActionsChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
+
         """
         if element: self.click(element)
         self._actions.append(lambda:
@@ -159,8 +195,8 @@ class ActionChains(object):
         Moving the mouse to an offset from current mouse position.
 
         :Args:
-         - xoffset: X offset to move to.
-         - yoffset: Y offset to move to.
+         - xoffset: X offset to move to, as a positive or negative integer.
+         - yoffset: Y offset to move to, as a positive or negative integer.
         """
         self._actions.append(lambda:
             self._driver.execute(Command.MOVE_TO, {
@@ -173,7 +209,7 @@ class ActionChains(object):
         Moving the mouse to the middle of an element.
 
         :Args:
-         - to_element: The element to move to.
+         - to_element: The WebElement to move to.
         """
         self._actions.append(lambda:
             self._driver.execute(Command.MOVE_TO, {'element': to_element.id}))
@@ -185,7 +221,7 @@ class ActionChains(object):
            Offsets are relative to the top-left corner of the element.
 
         :Args:
-         - to_element: The element to move to.
+         - to_element: The WebElement to move to.
          - xoffset: X offset to move to.
          - yoffset: Y offset to move to.
         """
@@ -214,7 +250,8 @@ class ActionChains(object):
         Sends keys to current focused element.
 
         :Args:
-         - keys_to_send: The keys to send.
+         - keys_to_send: The keys to send.  Modifier keys constants can be found in the 
+         'Keys' class.
         """
         self._actions.append(lambda:
             self._driver.execute(Command.SEND_KEYS_TO_ACTIVE_ELEMENT, 
@@ -227,7 +264,8 @@ class ActionChains(object):
 
         :Args:
          - element: The element to send keys.
-         - keys_to_send: The keys to send.
+         - keys_to_send: The keys to send.  Modifier keys constants can be found in the 
+         'Keys' class.
         """
         self._actions.append(lambda:
             element.send_keys(*keys_to_send))
@@ -247,3 +285,9 @@ class ActionChains(object):
                     typing.append(val[i])
         return typing
 
+    # Context manager so ActionChains can be used in a 'with .. as' statements.
+    def __enter__(self):
+        return self # Return created instance of self.
+
+    def __exit__(self, _type, _value, _traceback):
+        pass # Do nothing, does not require additional cleanup.

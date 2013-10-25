@@ -165,3 +165,10 @@ class TouchActions(object):
                 'yoffset': int(yoffset),
                 'speed': int(speed)}))
         return self
+
+    # Context manager so TouchActions can be used in a 'with .. as' statements.
+    def __enter__(self):
+        return self # Return created instance of self.
+
+    def __exit__(self, _type, _value, _traceback):
+        pass # Do nothing, does not require additional cleanup.
