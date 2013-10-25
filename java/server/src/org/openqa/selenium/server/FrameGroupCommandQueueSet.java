@@ -652,7 +652,7 @@ public class FrameGroupCommandQueueSet {
     }
     boolean windowJustLoaded = justLoaded(uniqueId);
     FrameAddress frameAddress = queue.getFrameAddress();
-    if (!frameAddress.getLocalFrameAddress().equals(localFrame)) {
+    if (frameAddress == null || !frameAddress.getLocalFrameAddress().equals(localFrame)) {
       return false;
     }
     // DGF Windows that have just loaded may not know their true identity
