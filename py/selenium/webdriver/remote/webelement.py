@@ -29,11 +29,10 @@ from selenium.common.exceptions import InvalidSelectorException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-# Handle string differences between python 2/3 strings.
 try:
-    __str = basestring
+    str = basestring
 except NameError:
-    __str = str
+    pass
 
 
 class WebElement(object):
@@ -370,14 +369,14 @@ class WebElement(object):
         return self._parent.execute(command, params)
 
     def find_element(self, by=By.ID, value=None):
-        if not By.is_valid(by) or not isinstance(value, __str):
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
         return self._execute(Command.FIND_CHILD_ELEMENT,
                              {"using": by, "value": value})['value']
 
     def find_elements(self, by=By.ID, value=None):
-        if not By.is_valid(by) or not isinstance(value, __str):
+        if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
         return self._execute(Command.FIND_CHILD_ELEMENTS,
