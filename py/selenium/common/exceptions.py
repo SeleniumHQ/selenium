@@ -83,6 +83,14 @@ class StaleElementReferenceException(WebDriverException):
     Thrown when a reference to an element is now "stale".
 
     Stale means the element no longer appears on the DOM of the page.
+    Possible causes of StaleElementReferenceException include, but not limited to:
+    * You are no longer on the page, or the page may have refreshed since the element 
+    was located.
+    * The element may have been removed and re-added to the screen, since it was located. 
+    This can happen typically with a javascript framework when values are updated and the 
+    node is rebuilt.
+    * The element was moved to another part of the screen.  Removed and readded under a 
+    different node. 
     """
     pass
 

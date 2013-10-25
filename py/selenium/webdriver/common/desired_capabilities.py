@@ -20,6 +20,23 @@ The Desired Capabilities implementation.
 class DesiredCapabilities(object):
     """
     Set of supported desired capabilities.
+    
+    Use this as a starting point for creating a desired capabilities object for 
+    requesting remote webdrivers from selenium server, or selenium grid.
+
+
+    Usage Example:
+
+        from selenium import webdriver
+
+        selenim_grid_url = "http://198.0.0.1:4444/wd/hub"
+        # Create a desired capabilities object as a starting point.
+        capabilities = DesiredCapabilities.FIREFOX 
+        capabilities['platform'] = "WINDOWS"
+        capabilities['version'] = "10"
+        driver = webdriver.Remote(capabilities, selenium_grid_url) # Request a remote webdriver with our capabilities.
+
+
     """
 
     FIREFOX = {
