@@ -98,3 +98,53 @@ class DesiredCapabilities(object):
         "javascriptEnabled": True,
     }
 
+
+class AllowDesiredCapabilitesOverrides(object):
+    '''This is a decorator class intended to decorate the __init__ method for
+    all webdrivers.  It allows the caller to override any argument in the init
+    method with similarly named key in desired_capabilities.  This way
+    desired_capabilities can be used as a standard way to completely setup 
+    / configure a webdriver instance.
+    '''
+    
+    def _get_list_of_function_arguments(self, f):
+        from inspect import getargspec
+        return getargspec(f)[0][1:]
+
+    def _get_desired_capabilities_index(self,arg_list):
+        return arg_list.index("desired_capabilities")
+
+    def __call__ (self, f):
+        '''The decorator main entry point.
+        Stores the various argument names for the function we are
+        decorating removing the self argument.
+        '''
+        decorated_func_args = self._get_list_of_function_arguments(f)
+        caps_arg_index = self._get_desired_capabilities_index(decorated_func_args)
+
+
+        def wrap(init_self,*args,**kwargs):
+            #find desired_capabilities
+            if caps_arg_index < len(args):
+                caps = args[caps_arg_index]
+            else:
+                caps = kwargs.get("desired_capabilities") 
+
+            if caps:
+                for count, val in enumerate(decorated_func_args):
+                    if caps.has_key(val):
+                        #we shouldn't overwrite parameters if they have
+                        #allready been passed in
+                        if kwargs.get(val):
+                            raise TypeError(f.__name__ + " got multiple values"
+                                            " for keyword " + val)
+                        kwargs[val] = caps.pop(val)
+            f(init_self, *args, **kwargs)
+
+
+        #make the decorate play nice
+        wrap.__doc__ = f.__doc__
+        wrap.__name__ = f.__name__
+        wrap.__dict__.update(f.__dict__)
+
+        return wrap
