@@ -3004,6 +3004,21 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
         width: doc.scrollWidth,
         height: doc.scrollHeight
     };
+
+    // CanvasRenderingContext2D::DrawWindow limits width and height up to 65535
+    //  > 65535 leads to NS_ERROR_FAILURE
+    //
+    // HTMLCanvasElement::ToDataURLImpl limits width and height up to 32767
+    //  >= 32769 leads to NS_ERROR_FAILURE
+    //  >= 32767 leads to transparent image (moz issue?).
+    //
+    var limit = 32766;
+    if (box.width > limit) {
+      box.width = limit;
+    }
+    if (box.height > limit) {
+      box.height = limit;
+    }
     LOG.debug('computed dimensions');
     
     var originalBackground = doc.style.background;
