@@ -30,11 +30,15 @@ class DesiredCapabilities(object):
         from selenium import webdriver
 
         selenim_grid_url = "http://198.0.0.1:4444/wd/hub"
+
         # Create a desired capabilities object as a starting point.
         capabilities = DesiredCapabilities.FIREFOX 
         capabilities['platform'] = "WINDOWS"
         capabilities['version'] = "10"
-        driver = webdriver.Remote(capabilities, selenium_grid_url) # Request a remote webdriver with our capabilities.
+
+        # Request a remote webdriver the the desired capabilities.
+        driver = webdriver.Remote(desired_capabilities=capabilities, 
+                                  command_executor=selenium_grid_url) 
 
 
     """
