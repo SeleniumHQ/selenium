@@ -148,6 +148,8 @@ class ElementNotVisibleException(InvalidElementStateException):
 class ElementNotSelectableException(InvalidElementStateException):
     """
     Thrown when trying to select an unselectable element.
+    
+    For example, selecting a 'script' element.
     """
     pass
 
