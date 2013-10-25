@@ -25,10 +25,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
+# Handle string differences between python 2/3 strings.
 try:
-    str = basestring
+    __str = basestring
 except NameError:
-    pass
+    __str = str
 
 class WebDriver(object):
     """
@@ -45,7 +46,7 @@ class WebDriver(object):
     """
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
-        desired_capabilities=None, browser_profile=None, proxy=None, keep_alive=False):
+        desired_capabilities=None, browser_profile=None, proxy=None):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -61,8 +62,8 @@ class WebDriver(object):
         if proxy is not None:
             proxy.add_to_capabilities(desired_capabilities)
         self.command_executor = command_executor
-        if type(self.command_executor) is bytes or type(self.command_executor) is str:
-            self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
+        if type(self.command_executor) is bytes or type(self.command_executor) is __str:
+            self.command_executor = RemoteConnection(command_executor)
         self._is_remote = True
         self.session_id = None
         self.capabilities = {}
@@ -674,7 +675,7 @@ class WebDriver(object):
 
         :rtype: WebElement
         """
-        if not By.is_valid(by) or not isinstance(value, str):
+        if not By.is_valid(by) or not isinstance(value, __str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
         return self.execute(Command.FIND_ELEMENT,
@@ -689,7 +690,7 @@ class WebDriver(object):
 
         :rtype: list of WebElement
         """
-        if not By.is_valid(by) or not isinstance(value, str):
+        if not By.is_valid(by) or not isinstance(value, __str):
             raise InvalidSelectorException("Invalid locator values passed in")
 
         return self.execute(Command.FIND_ELEMENTS,
