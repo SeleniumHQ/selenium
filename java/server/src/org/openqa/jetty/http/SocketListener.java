@@ -51,7 +51,7 @@ public class SocketListener
     private int _integralPort=0;
     private int _confidentialPort=0;
     private boolean _identifyListener=false;
-    private int _bufferSize=8192;
+    private int _bufferSize=Integer.getInteger("org.openqa.jetty.SocketListener.bufferSize", 8192);
     private int _bufferReserve=512;
     private HttpHandler _handler;
     private int _lowResources;
