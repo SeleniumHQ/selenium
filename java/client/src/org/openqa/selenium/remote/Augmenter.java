@@ -23,6 +23,7 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_SQL_DATABASE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
+import static org.openqa.selenium.remote.CapabilityType.TAKES_HEAP_SNAPSHOT;
 import static org.openqa.selenium.remote.CapabilityType.TAKES_SCREENSHOT;
 
 import com.google.common.base.Throwables;
@@ -65,6 +66,7 @@ public class Augmenter {
   public Augmenter() {
     addDriverAugmentation(SUPPORTS_FINDING_BY_CSS, new AddFindsByCss());
     addDriverAugmentation(TAKES_SCREENSHOT, new AddTakesScreenshot());
+    addDriverAugmentation(TAKES_HEAP_SNAPSHOT, new AddTakesHeapSnapshot());
     addDriverAugmentation(SUPPORTS_SQL_DATABASE, new AddDatabaseStorage());
     addDriverAugmentation(SUPPORTS_LOCATION_CONTEXT, new AddLocationContext());
     addDriverAugmentation(SUPPORTS_APPLICATION_CACHE, new AddApplicationCache());

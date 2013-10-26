@@ -21,7 +21,9 @@ package org.openqa.selenium.chrome;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HeapSnapshot;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesHeapSnapshot;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -97,7 +99,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  * 
  * @see ChromeDriverService#createDefaultService
  */
-public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
+public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot, TakesHeapSnapshot {
 
   /**
    * Creates a new ChromeDriver using the {@link ChromeDriverService#createDefaultService default}
@@ -186,5 +188,11 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
       quit();
       Throwables.propagate(e);
     }
+  }
+
+  @Override
+  public HeapSnapshot takeHeapSnapshot() {
+	Object data = execute(DriverCommand.HEAP_SNAPSHOT).getValue();
+	return HeapSnapshot.ParseHeapSnapshot(data);
   }
 }
