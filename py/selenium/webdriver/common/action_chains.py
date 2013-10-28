@@ -35,6 +35,7 @@ class ActionChains(object):
 
         menu = driver.find_element_by_css_selector(".nav")
         hidden_submenu = driver.find_element_by_css_selector(".nav #submenu1")
+
         ActionChains(driver).move_to_element(menu).click(hidden_submenu).perform()
 
     Or actions can be queued up one by one, then performed.::
@@ -157,6 +158,11 @@ class ActionChains(object):
          - value: The modifier key to send. Values are defined in `Keys` class.
          - element: The element to send keys.
            If None, sends a key to current focused element.
+        
+        Example, pressing ctrl+c::
+
+            ActionsChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
+
         """
         if element: self.click(element)
         self._actions.append(lambda:
@@ -172,6 +178,11 @@ class ActionChains(object):
          - value: The modifier key to send. Values are defined in Keys class.
          - element: The element to send keys.
            If None, sends a key to current focused element.
+
+        Example, pressing ctrl+c::
+
+            ActionsChains(driver).key_down(Keys.CONTROL).send_keys('c').key_up(Keys.CONTROL).perform()
+
         """
         if element: self.click(element)
         self._actions.append(lambda:
@@ -184,8 +195,8 @@ class ActionChains(object):
         Moving the mouse to an offset from current mouse position.
 
         :Args:
-         - xoffset: X offset to move to.
-         - yoffset: Y offset to move to.
+         - xoffset: X offset to move to, as a positive or negative integer.
+         - yoffset: Y offset to move to, as a positive or negative integer.
         """
         self._actions.append(lambda:
             self._driver.execute(Command.MOVE_TO, {
@@ -198,7 +209,7 @@ class ActionChains(object):
         Moving the mouse to the middle of an element.
 
         :Args:
-         - to_element: The element to move to.
+         - to_element: The WebElement to move to.
         """
         self._actions.append(lambda:
             self._driver.execute(Command.MOVE_TO, {'element': to_element.id}))
@@ -210,7 +221,7 @@ class ActionChains(object):
            Offsets are relative to the top-left corner of the element.
 
         :Args:
-         - to_element: The element to move to.
+         - to_element: The WebElement to move to.
          - xoffset: X offset to move to.
          - yoffset: Y offset to move to.
         """
@@ -274,3 +285,9 @@ class ActionChains(object):
                     typing.append(val[i])
         return typing
 
+    # Context manager so ActionChains can be used in a 'with .. as' statements.
+    def __enter__(self):
+        return self # Return created instance of self.
+
+    def __exit__(self, _type, _value, _traceback):
+        pass # Do nothing, does not require additional cleanup.
