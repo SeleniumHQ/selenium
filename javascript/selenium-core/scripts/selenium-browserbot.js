@@ -392,7 +392,12 @@ BrowserBot.prototype.selectWindow = function(target) {
     else if (locatorType == "name") {
         this._selectWindowByName(locatorValue);
     } else if (locatorType == "var") {
-        this._selectWindowByName(locatorValue);
+        var win = this.getCurrentWindow().eval(locatorValue);
+        if (win) {
+            this._selectWindowByName(win.name);
+        } else {
+            throw new SeleniumError("Window not found by var: " + locatorValue);
+        }
     } else {
         throw new SeleniumError("Window locator not recognized: " + locatorType);
     }
