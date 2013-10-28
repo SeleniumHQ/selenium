@@ -152,6 +152,7 @@ namespace OpenQA.Selenium
                 try
                 {
                     HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
+                    request.KeepAlive = false;
                     HttpWebResponse response = request.GetResponse() as HttpWebResponse;
                     response.Close();
                     processStarted = true;
@@ -215,6 +216,7 @@ namespace OpenQA.Selenium
                         // for a failed HTTP request due to a closed socket is particularly
                         // expensive.
                         HttpWebRequest request = HttpWebRequest.Create(shutdownUrl) as HttpWebRequest;
+                        request.KeepAlive = false;
                         HttpWebResponse response = request.GetResponse() as HttpWebResponse;
                         response.Close();
                         this.driverServiceProcess.WaitForExit(3000);
