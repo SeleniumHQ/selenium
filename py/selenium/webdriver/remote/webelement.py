@@ -371,14 +371,14 @@ class WebElement(object):
     def find_element(self, by=By.ID, value=None):
         if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
-        
+
         return self._execute(Command.FIND_CHILD_ELEMENT,
                              {"using": by, "value": value})['value']
 
     def find_elements(self, by=By.ID, value=None):
         if not By.is_valid(by) or not isinstance(value, str):
             raise InvalidSelectorException("Invalid locator values passed in")
-        
+
         return self._execute(Command.FIND_CHILD_ELEMENTS,
                              {"using": by, "value": value})['value']
 
@@ -422,9 +422,9 @@ class LocalFileDetector(object):
             return None
 
         try:
-          if os.path.isfile(file_path):
-              return file_path
+            if os.path.isfile(file_path):
+                return file_path
         except:
-          pass
+            pass
         return None
 
