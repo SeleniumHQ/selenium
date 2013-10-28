@@ -26,15 +26,18 @@ class ActionChains(object):
     This is useful for doing more complex actions like hover over and drag and drop. 
 
     Generate user actions.
-       All actions are stored in the ActionChains object. 
-       Call perform() to fire stored actions.
+       When you call methods for actions on the ActionChains object, 
+       the actions are stored in a queue in the ActionChains object. 
+       When you call perform(), the events are fired in the order they 
+       are queued up.
 
-    Actions can be done in a chain pattern::
+    ActionChains can be used in a chain pattern::
+
         menu = driver.find_element_by_css_selector(".nav")
         hidden_submenu = driver.find_element_by_css_selector(".nav #submenu1")
         ActionChains(driver).move_to_element(menu).click(hidden_submenu).perform()
 
-    Or actions can be queued up and performed.::
+    Or actions can be queued up one by one, then performed.::
 
         menu = driver.find_element_by_css_selector(".nav")
         hidden_submenu = driver.find_element_by_css_selector(".nav #submenu1")
