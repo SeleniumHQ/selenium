@@ -1912,7 +1912,9 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
     {
         try {
             win = selenium.browserbot.openedWindows[windowName];
-            attributes.push(eval("win."+attributeName));
+            if (! selenium.browserbot._windowClosed(win)) {
+              attributes.push(eval("win."+attributeName));
+            }
         } catch (e) {} // DGF If we miss one... meh. It's probably closed or inaccessible anyway.
     }
     return attributes;
