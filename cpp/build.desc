@@ -10,17 +10,6 @@ mozilla_xpt(name = "native_keyboard_xpt",
 mozilla_xpt(name = "native_ime_xpt",
   srcs = [ "webdriver-firefox/nsINativeIME.idl" ])
 
-mozilla_lib(name = "webdriver_firefox_ff3",
-  srcs = [ "webdriver-interactions/*_linux*.cpp",
-    "webdriver-interactions/interactions_common.*",
-    "webdriver-firefox/*.cpp"],
-  arch = "i386",
-  args = "-DGECKO_19_COMPATIBILITY",
-  xpcom_lib = "xpcomglue_s",
-  geckoversion="1.9.2")
-
-# Firefox 10 is an ESR release. We probably want to allow an overlap when the
-# next ESR release is made.
 mozilla_lib(name = "webdriver_firefox_esr_previous",
   srcs = [ 
     "webdriver-interactions/*_linux*.cpp",
@@ -59,28 +48,28 @@ mozilla_lib(name = "webdriver_firefox_previous",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "i386",
-  geckoversion="23")
+  geckoversion="24")
 
 mozilla_lib(name = "webdriver_firefox_previous_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
-  geckoversion="23")
+  geckoversion="24")
 
 mozilla_lib(name = "webdriver_firefox_latest",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "i386",
-  geckoversion="24")
+  geckoversion="25")
 
 mozilla_lib(name = "webdriver_firefox_latest_64",
   srcs = [ "webdriver-interactions/*_linux*.cpp",
     "webdriver-interactions/interactions_common.*",
     "webdriver-firefox/*.cpp"],
   arch = "amd64",
-  geckoversion="24")
+  geckoversion="25")
 
 gcc_library(name = "noblur",
   srcs = [ "linux-specific/*.c" ],

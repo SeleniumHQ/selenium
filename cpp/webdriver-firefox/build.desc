@@ -1,10 +1,3 @@
-visualc_library(name = "firefox",
-  platform = "Win32",
-  project = "webdriver-firefox.vcxproj",
-  file_deps = "third_party/gecko-2/win32",
-  out = "Win32/Release/webdriver-firefox.dll"
-)
-
 visualc_library(name = "previous_esr",
   platform = "Win32",
   project = "webdriver-firefox-esr-previous.vcxproj",
@@ -22,13 +15,13 @@ visualc_library(name = "latest_esr",
 visualc_library(name = "previous",
   platform = "Win32",
   project = "webdriver-firefox-previous.vcxproj",
-  file_deps = "third_party/gecko-23/win32",
+  file_deps = "third_party/gecko-24/win32",
   out = "Win32/Release/webdriver-firefox-previous.dll"
 )
 
 visualc_library(name = "latest",
   platform = "Win32",
   project = "webdriver-firefox-latest.vcxproj",
-  file_deps = "third_party/gecko-24/win32",
+  file_deps = "third_party/gecko-25/win32",
   out = "Win32/Release/webdriver-firefox-latest.dll"
 )
