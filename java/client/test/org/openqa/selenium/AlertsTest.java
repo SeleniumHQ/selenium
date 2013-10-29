@@ -28,6 +28,7 @@ import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.alertToBePresent;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
+import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -411,7 +412,7 @@ public class AlertsTest extends JUnit4TestBase {
     element.click();
     alert = waitFor(alertToBePresent(driver));
     alert.accept();
-    assertEquals("Testing Alerts", driver.getTitle());
+    waitFor(pageTitleToBe(driver, "Testing Alerts"));
   }
 
   @NoDriverAfterTest

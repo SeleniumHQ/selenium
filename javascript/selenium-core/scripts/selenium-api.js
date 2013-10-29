@@ -2998,11 +2998,12 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
     // compute dimensions
     var window = this.browserbot.getCurrentWindow();
     var doc = window.document.documentElement;
+    var body = window.document.body;
     var box = {
         x: 0,
         y: 0,
-        width: doc.scrollWidth,
-        height: doc.scrollHeight
+        width: Math.max(doc.scrollWidth, body.scrollWidth),
+        height: Math.max(doc.scrollHeight, body.scrollHeight)
     };
 
     // CanvasRenderingContext2D::DrawWindow limits width and height up to 65535
