@@ -192,7 +192,7 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot, Ta
 
   @Override
   public HeapSnapshot takeHeapSnapshot() {
-	Object data = execute(DriverCommand.HEAP_SNAPSHOT).getValue();
-	return HeapSnapshot.ParseHeapSnapshot(data);
+    bject data = execute(DriverCommand.HEAP_SNAPSHOT).getValue();
+    return HeapSnapshot.ParseHeapSnapshot(data);
   }
 }

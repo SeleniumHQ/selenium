@@ -36,3 +36,4 @@ class AddTakesHeapSnapshot implements AugmenterProvider {
     };
   }
 }
+
