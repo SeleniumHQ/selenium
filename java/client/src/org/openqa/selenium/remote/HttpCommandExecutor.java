@@ -248,7 +248,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         .put(GET_AVAILABLE_LOG_TYPES, get("/session/:sessionId/log/types"))
 
         .put(STATUS, get("/status"))
-        .put(HEAP_SNAPSHOT, get("/session/:sessionId/chromium/heapsnapshot"));
+        .put(HEAP_SNAPSHOT, get("/session/:sessionId/chromium/heap_snapshot"));
 
         nameToUrl = builder.build();
   }
