@@ -731,7 +731,7 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
     'browserName': 'firefox',
     'handlesAlerts': true,
     'javascriptEnabled': true,
-    'nativeEvents': Utils.useNativeEvents(),
+    'nativeEvents': Utils.getNativeEvents()?true:false,
     // See https://developer.mozilla.org/en/OS_TARGET
     'platform': xulRuntime.OS,
     'rotatable': false,
@@ -742,6 +742,7 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
   var prefStore = fxdriver.moz.getService('@mozilla.org/preferences-service;1',
       'nsIPrefService');
   for (var cap in wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING) {
+    if (cap == 'nativeEvents') continue;
     var pref = wdSessionStoreService.CAPABILITY_PREFERENCE_MAPPING[cap];
     try {
       response.value[cap] = prefStore.getBoolPref(pref);

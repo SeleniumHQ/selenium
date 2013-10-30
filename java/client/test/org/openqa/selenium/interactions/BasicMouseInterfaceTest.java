@@ -16,29 +16,6 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NeedsFreshDriver;
-import org.openqa.selenium.NoDriverAfterTest;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.TestWaiter;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
-import java.awt.Robot;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -65,6 +42,32 @@ import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox30;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox35;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
+
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NeedsFreshDriver;
+import org.openqa.selenium.NoDriverAfterTest;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.TestWaiter;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.Colors;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+
+import java.awt.*;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Tests operations that involve mouse and keyboard.
@@ -599,6 +602,31 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     } finally {
       new Actions(driver).moveByOffset(-50, -100).build().perform();
     }
+  }
+
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = {HTMLUNIT, OPERA, SAFARI, MARIONETTE},
+          reason = "Advanced mouse actions only implemented in rendered browsers",
+          issues = {4136})
+  @NoDriverAfterTest
+  public void canMouseOverAndOutOfAnElement() {
+    driver.get(pages.mouseOverPage);
+
+    WebElement redbox = driver.findElement(By.id("redbox"));
+    Dimension size = redbox.getSize();
+
+    assertEquals(
+        Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+
+    new Actions(driver).moveToElement(redbox).perform();
+    assertEquals(
+        Colors.RED.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+
+    new Actions(driver).moveToElement(redbox, size.getWidth() + 1, size.getHeight() + 1)
+        .perform();
+    assertEquals(
+        Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
   }
 
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {

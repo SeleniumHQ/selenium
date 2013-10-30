@@ -614,8 +614,9 @@ public class SeleniumServer implements SslCertificateGenerator {
         RemoteControlLauncher.usage("Can't find HTML Suite file:" + suiteFile);
         System.exit(1);
       }
-      if (!suiteFile.getName().endsWith(".html")) {
-        RemoteControlLauncher.usage("Suite file must have .html extension");
+      String fileName = suiteFile.getName();
+      if (! (fileName.endsWith(".html") || fileName.endsWith(".htm") || fileName.endsWith(".xhtml"))) {
+        RemoteControlLauncher.usage("Suite file must have extension .html or .htm or .xhtml");
         System.exit(1);
       }
       addNewStaticContent(suiteFile.getParentFile());
