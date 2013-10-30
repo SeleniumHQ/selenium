@@ -22,6 +22,8 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
+import com.google.common.collect.Maps;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -229,7 +231,19 @@ public class DesiredCapabilities implements Serializable, Capabilities {
 
   @Override
   public String toString() {
-    return String.format("Capabilities [%s]", capabilities);
+    Map<String, String> map = Maps.newHashMap();
+
+    for (Map.Entry<String, ?> entry : capabilities.entrySet()) {
+      String value = String.valueOf(entry.getValue());
+      if ("firefox_profile".equals(entry.getKey())) {
+        if (value.length() > 32) {
+          value = value.substring(0, 29) + "...";
+        }
+      }
+      map.put(entry.getKey(), value);
+    }
+
+    return String.format("Capabilities [%s]", map);
   }
 
   @Override
