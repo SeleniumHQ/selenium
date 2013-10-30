@@ -210,7 +210,11 @@ class Build < BaseGcc
       puts "Compiling an xpcom component: #{task_name(dir, args[:name])} as #{out}"
       is_32_bit = "amd64" != args[:arch]
       # g++ 2.6 and below need c++0x, above needs c++11
-      std = `g++ --version`.split("\n")[0].split()[-1].split(".")[1].to_i > 6 ? "11" : "0x"
+      begin
+        std = `g++ --version`.split("\n")[0].split()[-1].split(".")[1].to_i > 6 ? "11" : "0x"
+      rescue
+        std = ""
+      end
       base_compiler_args = "-Wall -fPIC -fshort-wchar -std=c++#{std} -Dunix -D__STDC_LIMIT_MACROS -I cpp/webdriver-interactions -I cpp/imehandler/common -I #{gecko_sdk}include -I #{gecko_sdk}include/nspr " + "`pkg-config gtk+-2.0 --cflags`"
       compiler_args = [args[:args], base_compiler_args].join " "
       if (args[:geckoversion].to_i < 22)
