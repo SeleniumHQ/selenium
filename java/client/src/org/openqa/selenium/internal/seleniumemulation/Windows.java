@@ -104,6 +104,12 @@ public class Windows {
       }
     }
 
+    if (locator.startsWith("id=")) {
+      locator = locator.substring("id=".length());
+    } else if (locator.startsWith("name=")) {
+      locator = locator.substring("name=".length());
+    }
+
     try {
       lastFrame.put(driver.getWindowHandle(), locator);
       driver.switchTo().frame(locator);
