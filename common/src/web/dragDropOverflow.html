@@ -1,15 +1,6 @@
 <html>
 <head>
   <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-  <script src="../third_party/closure/goog/base.js"></script>
-  <script src="../javascript/deps.js"></script>
-  <script>
-    goog.require('bot.action');
-    goog.require('bot.window');
-    goog.require('bot.dom');
-    goog.require('goog.dom');
-    goog.require('webdriver.atoms.element');
-  </script>
   <style type="text/css">
     body {
       color: #222;
@@ -38,7 +29,7 @@
 <div style="position: absolute; overflow: hidden; width: 250px; height: 470px;">
   <div style="position: relative;">
     <div style="overflow: auto; position: relative; height: 85%; border: 1px solid #ebebeb">
-      <div id="time-marker" style="top: 431px;"></div>
+      <div id="time-marker" style="top: 432;"></div>
       <div class="time-slot">12am</div>
       <div class="time-slot">1am</div>
       <div class="time-slot">2am</div>
@@ -78,7 +69,10 @@
 
   function movemouse(e) {
     if (isDrag) {
-      dragEl.style.top = nn6 ? ty + e.clientY - y : ty + event.clientY - y;
+      var dy = (nn6 ? e.clientY - y : event.clientY - y);
+      if (dy % 12 == 0) {
+        dragEl.style.top = ty + dy;
+      }
       return false;
     }
   }
@@ -105,31 +99,6 @@
 
   document.onmousedown = selectmouse;
   document.onmouseup = function() { isDrag = false; };
-
-  function getElementLocation(el) {
-    var rect = bot.dom.getClientRect(el);
-    return {
-      x: Math.round(rect.left),
-      y: Math.round(rect.top),
-      width: Math.round(rect.width),
-      height: Math.round(rect.height)
-    };
-  }
-
-  function getInViewLocation(targetLocation) {
-    var scrollOffset = bot.window.getScroll();
-    var scrollLocation = goog.math.Coordinate.sum(scrollOffset, targetLocation);
-    bot.window.scrollIntoView(scrollLocation);
-    var newScrollOffset = bot.window.getScroll();
-    return goog.math.Coordinate.difference(scrollLocation, newScrollOffset);
-  }
-
-  var srcLoc = getElementLocation(startTime);
-  var destLoc = getElementLocation(document.getElementById('11am'));
-  console.log('current location:', srcLoc);
-  console.log('target location: ', destLoc);
-
-
 </script>
 </body>
 </html>
