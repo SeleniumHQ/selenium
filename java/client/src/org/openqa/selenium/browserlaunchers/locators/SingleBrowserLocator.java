@@ -18,12 +18,13 @@ limitations under the License.
 
 package org.openqa.selenium.browserlaunchers.locators;
 
+import java.io.File;
+import java.util.logging.Logger;
+
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.LauncherUtils;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
-
-import java.io.File;
-import java.util.logging.Logger;
 
 /**
  * Discovers a valid browser installation on local system.
@@ -32,7 +33,25 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
 
   private static final Logger log = Logger.getLogger(BrowserLocator.class.getName());
 
-  public BrowserInstallation findBrowserLocationOrFail() {
+  private File binary;
+
+  public SingleBrowserLocator() {
+    this(null);
+  }
+
+  public SingleBrowserLocator(String binary) {
+    if (binary != null) {
+      this.binary = new File(binary);
+      if (!this.binary.exists() || !this.binary.isFile()) {
+        throw new WebDriverException(
+            "Specified safari binary location does not exist or is not a real file: "
+            + binary);
+      }
+    }
+  }
+
+  @Override
+public BrowserInstallation findBrowserLocationOrFail() {
     final BrowserInstallation location;
 
     location = findBrowserLocation();
@@ -45,6 +64,11 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
 
   public BrowserInstallation findBrowserLocation() {
     final BrowserInstallation defaultPath;
+
+    if (this.binary != null) {
+      log.fine("Returning user specified binary for " + browserName());
+      return new BrowserInstallation(binary.getAbsolutePath(), computeLibraryPath(binary));
+    }
 
     log.fine("Discovering " + browserName() + "...");
     defaultPath = findAtADefaultLocation();
@@ -147,7 +171,8 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
     return retrieveValidInstallationPath(new File(dirname, fileName));
   }
 
-  public BrowserInstallation retrieveValidInstallationPath(String launcher) {
+  @Override
+public BrowserInstallation retrieveValidInstallationPath(String launcher) {
     if (null == launcher) {
       return null;
     }
