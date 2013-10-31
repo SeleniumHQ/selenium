@@ -21,8 +21,10 @@ limitations under the License.
   <script>
     goog.require('goog.array');
     goog.require('goog.functions');
+    goog.require('goog.string');
     goog.require('goog.testing.FunctionMock');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
     goog.require('webdriver.promise.ControlFlow');
     goog.require('webdriver.stacktrace.Snapshot');
     goog.require('webdriver.test.testutil');
@@ -2164,6 +2166,126 @@ limitations under the License.
     assertFalse(task.isPending());
     pair = callbackPair();
     task.then(pair.callback, pair.errback);
+    pair.assertErrback();
+  }
+
+  function testAnnotatesRejectedPromiseErrorsWithFlowState() {
+    if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(8)) {
+      return;  // stacktrace parsing is off in IE7.
+    }
+    var error = Error('original message');
+    var originalStack = webdriver.stacktrace.format(error).stack;
+
+    var pair = callbackPair(null, function(e) {
+      assertEquals(error, e);
+      assertEquals('original message', e.message);
+      assertTrue(
+        'Expected to start with: ' + originalStack,
+        goog.string.startsWith(e.stack, originalStack));
+
+      var parts = e.stack.split('\n==== async task ====\n');
+      assertEquals(2, parts.length);
+      assertEquals(originalStack, parts[0]);
+    });
+
+    webdriver.promise.createFlow(function(flow) {
+      var d = webdriver.promise.defer();
+      d.reject(error);
+      d.then(pair.callback, pair.errback);
+    });
+
+    runAndExpectSuccess();
+    pair.assertErrback();
+  }
+
+  function testAnnotatesChainedErrors() {
+    if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(8)) {
+      return;  // stacktrace parsing is off in IE7.
+    }
+    var error = Error('original message');
+    var originalStack = webdriver.stacktrace.format(error).stack;
+
+    var pair = callbackPair(null, function(e) {
+      assertEquals(error, e);
+      assertEquals('original message', e.message);
+      assertTrue(
+        'Expected to start with: ' + originalStack,
+        goog.string.startsWith(e.stack, originalStack));
+
+      var parts = e.stack.split('\n==== async task ====\n');
+      assertEquals(2, parts.length);
+      assertEquals(originalStack, parts[0]);
+    });
+
+    webdriver.promise.createFlow(function(flow) {
+      var rejected = webdriver.promise.rejected(error);
+      webdriver.promise.fulfilled(rejected).
+          then(pair.callback, pair.errback);
+    });
+
+    runAndExpectSuccess();
+    pair.assertErrback();
+  }
+
+  function testAnnotatesRejectedPromiseErrorsWithFlowState_taskErrorBubblesUp() {
+    if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(8)) {
+      return;  // stacktrace parsing is off in IE7.
+    }
+    var error = Error('original message');
+    var originalStack = webdriver.stacktrace.format(error).stack;
+    var pair = callbackPair(null, function(e) {
+      assertEquals(error, e);
+      assertEquals('original message', e.message);
+      assertTrue(
+        'Expected to start with: ' + originalStack,
+        goog.string.startsWith(e.stack, originalStack));
+
+      var parts = e.stack.split('\n==== async task ====\n');
+      assertEquals(3, parts.length);
+      assertEquals(originalStack, parts[0]);
+    });
+
+    webdriver.promise.createFlow(function(flow) {
+      flow.execute(function() { throw error; });
+    }).then(pair.callback, pair.errback);
+
+    runAndExpectSuccess();
+    pair.assertErrback();
+  }
+
+  function testDoesNotAnnotatedRejectedPromisesIfGivenNonErrorValue() {
+    var error = {};
+
+    var pair = callbackPair(null, function(e) {
+      assertEquals(error, e);
+      for (var val in error) {
+        fail('Did not expect error to be modified');
+      }
+    });
+
+    webdriver.promise.createFlow(function(flow) {
+      var d = webdriver.promise.defer();
+      d.reject(error);
+      d.then(pair.callback, pair.errback);
+    });
+
+    runAndExpectSuccess();
+    pair.assertErrback();
+  }
+
+  function testDoesNotModifyRejectionErrorIfPromiseNotInsideAFlow() {
+    var error = Error('original message');
+    var originalStack = error.stack;
+    var originalStr = error.toString();
+
+    var pair = callbackPair(null, function(e) {
+      assertEquals(error, e);
+      assertEquals('original message', e.message);
+      assertEquals(originalStack, e.stack);
+      assertEquals(originalStr, e.toString());
+    });
+
+    webdriver.promise.rejected(error).then(pair.callback, pair.errback);
     pair.assertErrback();
   }
 </script>

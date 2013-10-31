@@ -1,3 +1,8 @@
+## v2.38.0-dev
+
+* When a promise is rejected, always annotate the stacktrace with the parent
+    flow state so users can identify the source of an error.
+
 ## v2.37.0
 
 * FIXED: 6346: The remote.SeleniumServer class now accepts JVM arguments using
