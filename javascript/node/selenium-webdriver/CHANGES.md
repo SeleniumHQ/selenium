@@ -2,6 +2,7 @@
 
 * When a promise is rejected, always annotate the stacktrace with the parent
     flow state so users can identify the source of an error.
+* FIXED: 6471: Updated documentation on `webdriver.WebElement#getAttribute`
 
 ## v2.37.0
 
