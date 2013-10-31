@@ -9,6 +9,13 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.37.0.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Modifying detection of HTML page. The method for retrieving the expected
+   type description for HTML pages was far more complex than it needed to be.
+   We now use the AssocQueryString API instead of trying to read the registry. 
+
 v2.37.0.0
 =========
  * Release to synchronize with release of Selenium project.
