@@ -2,6 +2,8 @@
 
 * When a promise is rejected, always annotate the stacktrace with the parent
     flow state so users can identify the source of an error.
+* FIXED: 6284: For mouse moves, correctly omit the x/y offsets if not
+    specified as a function argument (instead of passing (0,0)).
 * FIXED: 6471: Updated documentation on `webdriver.WebElement#getAttribute`
 
 ## v2.37.0
