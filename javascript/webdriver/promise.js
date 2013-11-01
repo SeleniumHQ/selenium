@@ -410,17 +410,23 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
    *     {@code Error} or a {@code string}.
    */
   function reject(opt_error) {
+    var handleRejection = function(error) {
+      // We cannot check instanceof Error since the object may have been
+      // created in a different JS context.
+      if (goog.isObject(error) && goog.isString(error.message)) {
+        error = flow.annotateError(/** @type {!Error} */(error));
+      }
+      notifyAll(webdriver.promise.Deferred.State_.REJECTED, error);
+    };
+
     if (webdriver.promise.isPromise(opt_error) && opt_error !== self) {
       if (opt_error instanceof webdriver.promise.Deferred) {
-        opt_error.then(
-            goog.partial(notifyAll, webdriver.promise.Deferred.State_.REJECTED),
-            goog.partial(notifyAll,
-                webdriver.promise.Deferred.State_.REJECTED));
+        opt_error.then(handleRejection, handleRejection);
         return;
       }
-      webdriver.promise.asap(opt_error, reject, reject);
+      webdriver.promise.asap(opt_error, handleRejection, handleRejection);
     } else {
-      notifyAll(webdriver.promise.Deferred.State_.REJECTED, opt_error);
+      handleRejection(opt_error);
     }
   }
 

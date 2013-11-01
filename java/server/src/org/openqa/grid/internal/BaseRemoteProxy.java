@@ -467,7 +467,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
   @Override
   public String toString() {
-    return "host :" + getRemoteHost() + (timeOutMs != -1 ? " time out : " + timeOutMs : "");
+    return "host :" + getRemoteHost();
   }
 
   private final HtmlRenderer renderer = new DefaultHtmlRenderer(this);

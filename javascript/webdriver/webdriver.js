@@ -1794,13 +1794,14 @@ webdriver.WebElement.prototype.getCssValue = function(cssStyleProperty) {
 
 /**
  * Schedules a command to query for the value of the given attribute of the
- * element. Will return the current value even if it has been modified after the
- * page has been loaded. More exactly, this method will return the value of the
- * given attribute, unless that attribute is not present, in which case the
+ * element. Will return the current value, even if it has been modified after
+ * the page has been loaded. More exactly, this method will return the value of
+ * the given attribute, unless that attribute is not present, in which case the
  * value of the property with the same name is returned. If neither value is
- * set, null is returned. The "style" attribute is converted as best can be to a
+ * set, null is returned (for example, the "value" property of a textarea
+ * element). The "style" attribute is converted as best can be to a
  * text representation with a trailing semi-colon. The following are deemed to
- * be "boolean" attributes and will be returned as thus:
+ * be "boolean" attributes and will return either "true" or null:
  *
  * <p>async, autofocus, autoplay, checked, compact, complete, controls, declare,
  * defaultchecked, defaultselected, defer, disabled, draggable, ended,
@@ -1817,7 +1818,8 @@ webdriver.WebElement.prototype.getCssValue = function(cssStyleProperty) {
  * </ul>
  * @param {string} attributeName The name of the attribute to query.
  * @return {!webdriver.promise.Promise} A promise that will be resolved with the
- *     attribute's value.
+ *     attribute's value. The returned value will always be either a string or
+ *     null.
  */
 webdriver.WebElement.prototype.getAttribute = function(attributeName) {
   return this.schedule_(

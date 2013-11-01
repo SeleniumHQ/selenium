@@ -205,7 +205,7 @@ class selenium(object):
         self.sessionId = None
 
     def do_command(self, verb, args):
-        conn = http_client.HTTPConnection(self.host, self.port)
+        conn = http_client.HTTPConnection(self.host, self.port, timeout=30)
         try:
             body = 'cmd=' + urllib_parse.quote_plus(unicode(verb).encode('utf-8'))
             for i in range(len(args)):
