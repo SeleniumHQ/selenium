@@ -87,6 +87,13 @@ class ProxyTests(unittest.TestCase):
             raise Exception("Change of already initialized proxy type should raise exception")
         except Exception as e:
             pass
+    
+        proxy = Proxy(raw={'proxyType': ProxyType.DIRECT})
+        try:
+            proxy.proxy_type = ProxyType.SYSTEM
+            raise Exception("Change of already initialized proxy type should raise exception")
+        except Exception as e:
+            pass
 
     def testCanInitManualProxy(self):
         proxy = Proxy(raw=self.MANUAL_PROXY)
