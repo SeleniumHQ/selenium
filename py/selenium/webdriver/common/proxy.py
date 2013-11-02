@@ -30,6 +30,8 @@ class ProxyType:
 
     @classmethod
     def load(cls, value):
+        if isinstance(value, dict) and value.has_key('string'):
+            value = value['string']
         value = str(value).upper()
         for attr in dir(cls):
             attr_value = getattr(cls, attr)
