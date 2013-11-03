@@ -34,7 +34,7 @@ class WebDriver(RemoteWebDriver):
     # There is no native event support on Mac
     NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
 
-    @AllowDesiredCapabilitesOverrides()
+    @AllowDesiredCapabilitesOverrides()#constructors={'firefox_profile':FirefoProfile})
     def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
                  capabilities=None, proxy=None, desired_capabilities=None):
         '''Creation function of firefox driver.  Note there are now two

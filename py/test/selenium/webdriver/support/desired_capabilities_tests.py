@@ -3,6 +3,7 @@ import logging
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.desired_capabilities import AllowDesiredCapabilitesOverrides
+from datetime import date
 
 
 class AllowDesiredCapbilitiesOverridesTests(unittest.TestCase):
@@ -47,14 +48,25 @@ class AllowDesiredCapbilitiesOverridesTests(unittest.TestCase):
         self.assertRaises(TypeError,
                 TestDriver, executable_path="some_path", desired_capabilities=caps)
 
+    def test_custom_constructors_with_list_params(self):
+        d = date(2007,12,5)
+        caps = {'date_time': [2007,12,5]}
+        td = TestDriver(desired_capabilities=caps)
+        self.assertEquals(d, td.date_time)
+
+    def test_custom_constructors_with_dictionary_params(self):
+        d = date(2007,12,5)
+        caps = {'date_time' : {'year' : 2007, 'month' : 12, 'day' : 5}}
+        td = TestDriver(desired_capabilities=caps)
+        self.assertEquals(d, td.date_time)
 
 
 class TestDriver(object):
 
-    @AllowDesiredCapabilitesOverrides()
+    @AllowDesiredCapabilitesOverrides(constructors={'date_time': date})
     def __init__( self, executable_path="chromedriver", port=0,
              chrome_options=None, service_args=None,
-             desired_capabilities=None, service_log_path=None):
+             desired_capabilities=None, service_log_path=None, date_time=None):
         '''this is the docstring'''
         
         self.executable_path = executable_path
@@ -63,6 +75,7 @@ class TestDriver(object):
         self.service_args = service_args
         self.desired_capabiliities=desired_capabilities
         self.service_log_path=service_log_path
+        self.date_time = date_time
 
     def normal_init_( self, executable_path="chromedriver", port=0,
              chrome_options=None, service_args=None,

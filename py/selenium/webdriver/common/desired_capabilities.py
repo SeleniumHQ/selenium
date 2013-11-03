@@ -106,7 +106,19 @@ class AllowDesiredCapabilitesOverrides(object):
     desired_capabilities can be used as a standard way to completely setup 
     / configure a webdriver instance.
     '''
-    
+   
+    def __init__(self, constructors={}):
+        '''handle keyword arguments for the decorator.  Currently we support
+        constructors which is a dictionary of argument_names -> callable.  Then
+        if the argument_name is found in the desired capabilities dictionary
+        the callable will be called and passed in the value of
+        desired_capabilities['argument_name'].  This allows for complex object
+        to be instantiated from passed in parameters in the
+        desired_capabilities
+        '''
+
+        self.constructors = constructors
+
     def _get_list_of_function_arguments(self, f):
         from inspect import getargspec
         return getargspec(f)[0][1:]
@@ -122,8 +134,7 @@ class AllowDesiredCapabilitesOverrides(object):
         decorated_func_args = self._get_list_of_function_arguments(f)
         caps_arg_index = self._get_desired_capabilities_index(decorated_func_args)
 
-
-        def wrap(init_self,*args,**kwargs):
+        def wrap(init_self, *args, **kwargs):
             #find desired_capabilities
             if caps_arg_index < len(args):
                 caps = args[caps_arg_index]
@@ -138,7 +149,16 @@ class AllowDesiredCapabilitesOverrides(object):
                         if kwargs.get(val):
                             raise TypeError(f.__name__ + " got multiple values"
                                             " for keyword " + val)
-                        kwargs[val] = caps.pop(val)
+                        #check for custom constructors
+                        constructor = self.constructors.get(val)
+                        if constructor:
+                            args = caps.pop(val)
+                            if isinstance(args, (list, tuple)):
+                                kwargs[val] = constructor(*args)
+                            else:
+                                kwargs[val] = constructor(**args)
+                        else:
+                            kwargs[val] = caps.pop(val)
             f(init_self, *args, **kwargs)
 
 
