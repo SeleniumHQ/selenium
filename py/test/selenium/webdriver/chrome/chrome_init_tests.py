@@ -38,7 +38,7 @@ class ChromeInitTests (unittest.TestCase):
         self.assertEquals('path',driver.service.path)
 
     def test_executable_path_from_desired_caps(self):
-        desired_caps = {"executable_path" : "path"}
+        desired_caps = {"init.executable_path" : "path"}
         driver = webdriver.Chrome(desired_capabilities=desired_caps)
         self.assertEquals("path", driver.service.path)
 
@@ -48,7 +48,7 @@ class ChromeInitTests (unittest.TestCase):
         self.assertIn('--log-path=' + self.log_file.name, driver.service.service_args)
 
     def test_service_log_path_from_desired_caps(self):
-        desired_caps = {"service_log_path" : self.log_file.name}
+        desired_caps = {"init.service_log_path" : self.log_file.name}
         driver = webdriver.Chrome(desired_capabilities=desired_caps)
         self.assertIn('--log-path=' + self.log_file.name,
                       driver.service.service_args)
@@ -58,7 +58,7 @@ class ChromeInitTests (unittest.TestCase):
         self.assertEquals(32333, driver.service.port)
 
     def test_port_from_desired_caps(self):
-        desired_caps = {"port" : 32333}
+        desired_caps = {"init.port" : 32333}
         driver = webdriver.Chrome(desired_capabilities=desired_caps)
         self.assertEquals(32333, driver.service.port)
         
@@ -75,7 +75,7 @@ class ChromeInitTests (unittest.TestCase):
                         'extensions' : ['ext1','ext2']}
                       }
 
-        desired_caps = {"chrome_options" : test_options}
+        desired_caps = {"init.chrome_options" : test_options}
         driver = webdriver.Chrome(desired_capabilities=desired_caps)
         self.assertEquals(self.desired_caps, expected_dc)
 
@@ -100,7 +100,7 @@ class ChromeInitTests (unittest.TestCase):
         self.assertEquals(driver.service.service_args, [1,2,3])
 
     def test_service_args_from_desired_caps(self):
-        desired_caps = {"service_args" : [1,2,3]}
+        desired_caps = {"init.service_args" : [1,2,3]}
         driver = webdriver.Chrome(desired_capabilities=desired_caps)
         self.assertEquals(driver.service.service_args,[1,2,3])
 

@@ -116,8 +116,8 @@ class AllowDesiredCapabilitesOverrides(object):
         to be instantiated from passed in parameters in the
         desired_capabilities
         '''
-
         self.constructors = constructors
+        self.prefix = 'init.'
 
     def _get_list_of_function_arguments(self, f):
         from inspect import getargspec
@@ -143,7 +143,8 @@ class AllowDesiredCapabilitesOverrides(object):
 
             if caps:
                 for count, val in enumerate(decorated_func_args):
-                    if caps.has_key(val):
+                    caps_val = 'init.' + val
+                    if caps.has_key(caps_val):
                         #we shouldn't overwrite parameters if they have
                         #allready been passed in
                         if kwargs.get(val):
@@ -152,13 +153,14 @@ class AllowDesiredCapabilitesOverrides(object):
                         #check for custom constructors
                         constructor = self.constructors.get(val)
                         if constructor:
-                            args = caps.pop(val)
+                            args = caps.pop(caps_val)
                             if isinstance(args, (list, tuple)):
                                 kwargs[val] = constructor(*args)
                             else:
                                 kwargs[val] = constructor(**args)
                         else:
-                            kwargs[val] = caps.pop(val)
+                            kwargs[val] = caps.pop(caps_val)
+            #call our function
             f(init_self, *args, **kwargs)
 
 

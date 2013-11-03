@@ -52,7 +52,7 @@ class FirefoxInitTests (unittest.TestCase):
     def test_overwrite_profile(self):
         testProfile = FirefoxProfile()
         testProfile.profile_dir = "test"
-        caps = {"firefox_profile" : testProfile}
+        caps = {"init.firefox_profile" : testProfile}
 
         driver = webdriver.Firefox(desired_capabilities=caps)
         self.assertEquals("test", self.profile.profile_dir)
@@ -60,19 +60,19 @@ class FirefoxInitTests (unittest.TestCase):
     def test_overwrite_binary(self):
         testBin = FirefoxBinary()
         testBin._start_cmd = "new cmd"
-        caps = {"firefox_binary" : testBin}
+        caps = {"init.firefox_binary" : testBin}
 
         driver = webdriver.Firefox(desired_capabilities=caps)
         self.assertEquals("new cmd", self.binary._start_cmd)
    
     def test_overwrite_timeout(self):
-        caps = {"timeout" : 99}
+        caps = {"init.timeout" : 99}
         driver = webdriver.Firefox(desired_capabilities=caps)
         self.assertEquals(99, self.timeout)
  
     def test_overwrite_proxy(self):
         from selenium.webdriver.common.proxy import Proxy
-        caps = {"proxy" : Proxy()}
+        caps = {"init.proxy" : Proxy()}
         driver = webdriver.Firefox(desired_capabilities=caps)
         self.assertEquals({'proxy': {'proxyType': 'UNSPECIFIED'}}, self.desired_caps)
 

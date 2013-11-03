@@ -28,7 +28,7 @@ class AllowDesiredCapbilitiesOverridesTests(unittest.TestCase):
         self.assertEquals(4,idx)
 
     def test_decorator_substitues_values_from_desired_capabilites(self):
-        caps = {"port" : 25, "service_args":[1, 2, 3]}
+        caps = {"init.port" : 25, "init.service_args":[1, 2, 3]}
         td = TestDriver("newpath",desired_capabilities=caps)
         self.assertEquals(td.executable_path, "newpath")
         self.assertEquals(td.port, 25)
@@ -39,24 +39,24 @@ class AllowDesiredCapbilitiesOverridesTests(unittest.TestCase):
         self.assertIsNone(td.chrome_options)
      
     def test_overwritting_passed_in_arg_value_throws_error(self):
-        caps = {"executable_path" : "newpath"}
+        caps = {"init.executable_path" : "newpath"}
         self.assertRaises(TypeError,
                 TestDriver, "some_path", desired_capabilities=caps)
 
     def test_overwritting_passed_in_keyword_value_throws_error(self):
-        caps = {"executable_path" : "newpath"}
+        caps = {"init.executable_path" : "newpath"}
         self.assertRaises(TypeError,
                 TestDriver, executable_path="some_path", desired_capabilities=caps)
 
     def test_custom_constructors_with_list_params(self):
         d = date(2007,12,5)
-        caps = {'date_time': [2007,12,5]}
+        caps = {'init.date_time': [2007,12,5]}
         td = TestDriver(desired_capabilities=caps)
         self.assertEquals(d, td.date_time)
 
     def test_custom_constructors_with_dictionary_params(self):
         d = date(2007,12,5)
-        caps = {'date_time' : {'year' : 2007, 'month' : 12, 'day' : 5}}
+        caps = {'init.date_time' : {'year' : 2007, 'month' : 12, 'day' : 5}}
         td = TestDriver(desired_capabilities=caps)
         self.assertEquals(d, td.date_time)
 
