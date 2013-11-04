@@ -731,7 +731,7 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
     'browserName': 'firefox',
     'handlesAlerts': true,
     'javascriptEnabled': true,
-    'nativeEvents': Utils.getNativeEvents()?true:false,
+    'nativeEvents': Utils.useNativeEvents(),
     // See https://developer.mozilla.org/en/OS_TARGET
     'platform': xulRuntime.OS,
     'rotatable': false,
