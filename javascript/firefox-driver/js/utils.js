@@ -820,6 +820,10 @@ Utils.wrapResult = function(result, doc) {
         return {'ELEMENT': Utils.addToKnownElements(result)};
       }
 
+      if (typeof result.getMonth === 'function') {
+        return result.toJSON();
+      }
+
       if (typeof result.length === 'number' &&
           !(result.propertyIsEnumerable('length'))) {
         var array = [];
