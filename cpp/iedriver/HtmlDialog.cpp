@@ -113,24 +113,25 @@ bool HtmlDialog::Wait() {
   // so we must set the flag indicating to the message loop not to call wait
   // anymore.
   if (!this->is_navigating_) {
+    ::Sleep(100);
     HWND child_dialog_handle = this->GetActiveDialogWindowHandle();
     if (child_dialog_handle != NULL) {
       // Check to see if the dialog opened is another HTML dialog. If so,
       // notify the IECommandExecutor that a new window exists.
-      std::vector<char> window_class_name(34);
-      if (::GetClassNameA(child_dialog_handle, &window_class_name[0], 34)) {
-        if (strcmp(HTML_DIALOG_WINDOW_CLASS, &window_class_name[0]) == 0) {
-          HWND content_window_handle = this->FindContentWindowHandle(child_dialog_handle);
-          if (content_window_handle != NULL) {
-            // Must have a sleep here to give IE a chance to draw the window.
-            ::Sleep(250);
-            ::PostMessage(this->executor_handle(),
-                          WD_NEW_HTML_DIALOG,
-                          NULL,
-                          reinterpret_cast<LPARAM>(content_window_handle));
-          }
-        }
-      }
+      //std::vector<char> window_class_name(34);
+      //if (::GetClassNameA(child_dialog_handle, &window_class_name[0], 34)) {
+      //  if (strcmp(HTML_DIALOG_WINDOW_CLASS, &window_class_name[0]) == 0) {
+      //    HWND content_window_handle = this->FindContentWindowHandle(child_dialog_handle);
+      //    if (content_window_handle != NULL) {
+      //      // Must have a sleep here to give IE a chance to draw the window.
+      //      ::Sleep(250);
+      //      ::PostMessage(this->executor_handle(),
+      //                    WD_NEW_HTML_DIALOG,
+      //                    NULL,
+      //                    reinterpret_cast<LPARAM>(content_window_handle));
+      //    }
+      //  }
+      //}
       this->set_wait_required(false);
       return true;
     }
@@ -184,6 +185,22 @@ HWND HtmlDialog::GetActiveDialogWindowHandle() {
   info.hwndDialog = NULL;
   if (info.hwndOwner != NULL) {
     ::EnumWindows(&HtmlDialog::FindChildDialogWindow, reinterpret_cast<LPARAM>(&info));
+  }
+  if (info.hwndDialog != NULL) {
+    std::vector<char> window_class_name(34);
+    if (::GetClassNameA(info.hwndDialog, &window_class_name[0], 34)) {
+      if (strcmp(HTML_DIALOG_WINDOW_CLASS, &window_class_name[0]) == 0) {
+        HWND content_window_handle = this->FindContentWindowHandle(info.hwndDialog);
+        if (content_window_handle != NULL) {
+          // Must have a sleep here to give IE a chance to draw the window.
+          ::Sleep(250);
+          ::PostMessage(this->executor_handle(),
+                        WD_NEW_HTML_DIALOG,
+                        NULL,
+                        reinterpret_cast<LPARAM>(content_window_handle));
+        }
+      }
+    }
   }
   return info.hwndDialog;
 }

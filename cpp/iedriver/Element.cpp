@@ -814,10 +814,12 @@ bool Element::GetClickableViewPortLocation(const bool document_contains_frames, 
                 << "but getting the documentElement property failed, or the "
                 << "doctype has thrown the browser into pre-IE6 rendering. "
                 << "The view port calculation may be inaccurate";
-      int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
-      window_width -= vertical_scrollbar_width;
       LocationInfo document_info;
       DocumentHost::GetDocumentDimensions(doc, &document_info);
+      if (document_info.height > window_height) {
+        int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
+        window_width -= vertical_scrollbar_width;
+      }
       if (document_info.width > window_width) {
         int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
         window_height -= horizontal_scrollbar_height;

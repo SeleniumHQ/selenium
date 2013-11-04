@@ -9,6 +9,16 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.37.0.2
+=========
+ * Refactoring notification of new showModalDialog windows. Previously, the
+   code notifying the command executor of new HTML dialog windows (opened by
+   the showModalDialog function) would not always fire in the case where a
+   second modal was opened from a first. We now notify of the existence of
+   the new modal whenever a modal is found. This has the potential to cause
+   mild performance degredation in the modal dialog case, but this is a small
+   price to pay for the correctness of the driver. Fixes issue #6416.
+
 v2.37.0.1
 =========
  * Updates to JavaScript automation atoms.
