@@ -613,8 +613,11 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   public void canMouseOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
+    WebElement greenbox = driver.findElement(By.id("greenbox"));
     WebElement redbox = driver.findElement(By.id("redbox"));
     Dimension size = redbox.getSize();
+
+    new Actions(driver).moveToElement(greenbox, 1, 1).perform();
 
     assertEquals(
         Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
