@@ -309,7 +309,7 @@ class RemoteConnection(object):
             Command.GET_LOCAL_STORAGE_ITEM:
                 ('GET', '/session/$sessionId/local_storage/key/$key'),
             Command.REMOVE_LOCAL_STORAGE_ITEM:
-                ('POST', '/session/$sessionId/local_storage/key/$key'),
+                ('DELETE', '/session/$sessionId/local_storage/key/$key'),
             Command.GET_LOCAL_STORAGE_KEYS:
                 ('GET', '/session/$sessionId/local_storage'),
             Command.SET_LOCAL_STORAGE_ITEM:
