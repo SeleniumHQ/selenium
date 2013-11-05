@@ -1,3 +1,5 @@
+# -*- mode: ruby -*-
+
 $LOAD_PATH.unshift File.expand_path(".")
 
 require 'rake'
@@ -41,7 +43,7 @@ require 'rake-tasks/ci'
 require 'rake-tasks/gecko_sdks'
 
 $DEBUG = orig_verbose != :default ? true : false
-if (ENV['debug'] == 'true') 
+if (ENV['debug'] == 'true')
   $DEBUG = true
 end
 verbose($DEBUG)
@@ -492,7 +494,7 @@ GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-24/win32',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/24.0/sdk/xulrunner-24.0.en-US.win32.sdk.zip',
            '29d8fcf397038930a4220b7d60bb3cbf'
-  
+
   sdks.add 'third_party/gecko-25/linux',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/25.0/sdk/xulrunner-25.0.en-US.linux-i686.sdk.tar.bz2',
            '879f79424299a14ede90032b2839ae2f'
@@ -565,7 +567,7 @@ task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :
 
         mkdir_p x86 unless File.exists?(x86)
         mkdir_p amd64 unless File.exists?(amd64)
-    
+
         cp "cpp/prebuilt/i386/libnoblur.so", x86+"x_ignore_nofocus.so", :verbose => true
         cp "cpp/prebuilt/amd64/libnoblur64.so", amd64+"x_ignore_nofocus.so", :verbose => true
 
@@ -717,7 +719,7 @@ task :push_release => [:release] do
 
   print "Enter your googlecode username:"
   googlecode_username = STDIN.gets.chomp
-  print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):" 
+  print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):"
   googlecode_password = STDIN.gets.chomp
 
   [
@@ -809,5 +811,3 @@ at_exit do
     sh "sh .git-fixfiles"
   end
 end
-
-
