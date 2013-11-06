@@ -397,4 +397,10 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("true", element.getAttribute("multiple"));
   }
 
+  @Test
+  public void testGetAttributeOfUserDefinedProperty() {
+    driver.get(pages.userDefinedProperty);
+    WebElement element = driver.findElement(By.id("d"));
+    assertEquals("sompleValue", element.getAttribute("dynamicProperty"));
+  }
 }

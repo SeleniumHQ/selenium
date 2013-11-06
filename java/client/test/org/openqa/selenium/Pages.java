@@ -73,6 +73,7 @@ public class Pages {
   public String underscorePage;
   public String unicodeLtrPage;
   public String uploadPage;
+  public String userDefinedProperty;
   public String veryLargeCanvas;
   public String xhtmlFormPage;
   public String xhtmlTestPage;
@@ -133,6 +134,7 @@ public class Pages {
     underscorePage = appServer.whereIs("underscore.html");
     unicodeLtrPage = appServer.whereIs("utf8/unicode_ltr.html");
     uploadPage = appServer.whereIs("upload.html");
+    userDefinedProperty = appServer.whereIs("userDefinedProperty.html");
     veryLargeCanvas = appServer.whereIs("veryLargeCanvas.html");
     xhtmlTestPage = appServer.whereIs("xhtmlTest.html");
   }
