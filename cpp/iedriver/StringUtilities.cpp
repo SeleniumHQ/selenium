@@ -13,6 +13,9 @@
 
 #include "StringUtilities.h"
 
+#define WHITESPACE " \n\r\t"
+#define WIDE_WHITESPACE L" \n\r\t"
+
 namespace webdriver {
 
 StringUtilities::StringUtilities(void) {
@@ -143,6 +146,34 @@ void StringUtilities::ToBuffer(const std::wstring& input, std::vector<wchar_t>* 
   buffer->resize(input.size() + 1);
   wcscpy_s(&((*buffer)[0]), buffer->size(), input.c_str());
   (*buffer)[buffer->size() - 1] = L'\0';
+}
+
+std::string StringUtilities::Trim(const std::string& input) {
+    return TrimRight(TrimLeft(input));
+}
+
+std::string StringUtilities::TrimLeft(const std::string& input) {
+    size_t startpos = input.find_first_not_of(WHITESPACE);
+    return (startpos == std::string::npos) ? "" : input.substr(startpos);
+}
+
+std::string StringUtilities::TrimRight(const std::string& input) {
+    size_t endpos = input.find_last_not_of(WHITESPACE);
+    return (endpos == std::string::npos) ? "" : input.substr(0, endpos + 1);
+}
+
+std::wstring StringUtilities::Trim(const std::wstring& input) {
+    return TrimRight(TrimLeft(input));
+}
+
+std::wstring StringUtilities::TrimLeft(const std::wstring& input) {
+    size_t startpos = input.find_first_not_of(WIDE_WHITESPACE);
+    return (startpos == std::wstring::npos) ? L"" : input.substr(startpos);
+}
+
+std::wstring StringUtilities::TrimRight(const std::wstring& input) {
+    size_t endpos = input.find_last_not_of(WIDE_WHITESPACE);
+    return (endpos == std::wstring::npos) ? L"" : input.substr(0, endpos + 1);
 }
 
 } // namespace webdriver
