@@ -15,6 +15,7 @@
 # limitations under the License.
 import subprocess
 import time
+import signal
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
@@ -91,7 +92,7 @@ class Service(object):
         #Tell the Server to properly die in case
         try:
             if self.process:
-                self.process.kill()
+                self.process.send_signal(signal.SIGTERM)
                 self.process.wait()
         except OSError:
             # kill may not be available under windows environment
