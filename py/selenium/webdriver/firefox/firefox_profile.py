@@ -57,6 +57,7 @@ class FirefoxProfile(object):
         """
         self.default_preferences = copy.deepcopy(
             FirefoxProfile.DEFAULT_PREFERENCES['mutable'])
+        self.native_events_enabled = True
         self.profile_dir = profile_directory
         self.tempfolder = None
         if self.profile_dir is None:

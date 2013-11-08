@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
+using System.Drawing;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -278,6 +279,29 @@ namespace OpenQA.Selenium.Interactions
             IWebElement reporter = driver.FindElement(By.Id("status"));
 
             WaitFor(FuzzyMatchingOfCoordinates(reporter, 40, 20));
+        }
+
+        [Test]
+        [Category("Javascript")]
+        [NeedsFreshDriver(BeforeTest = true)]
+        [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
+        [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
+        public void canMouseOverAndOutOfAnElement()
+        {
+            driver.Url = mouseOverPage;
+
+            IWebElement greenbox = driver.FindElement(By.Id("greenbox"));
+            IWebElement redbox = driver.FindElement(By.Id("redbox"));
+            Size size = redbox.Size;
+
+            new Actions(driver).MoveToElement(greenbox, 1, 1).Perform();
+            Assert.AreEqual("rgba(0, 128, 0, 1)", redbox.GetCssValue("background-color"));
+
+            new Actions(driver).MoveToElement(redbox).Perform();
+            Assert.AreEqual("rgba(255, 0, 0, 1)", redbox.GetCssValue("background-color"));
+
+            new Actions(driver).MoveToElement(redbox, size.Width + 1, size.Height + 1).Perform();
+            Assert.AreEqual("rgba(0, 128, 0, 1)", redbox.GetCssValue("background-color"));
         }
 
         private Func<bool> FuzzyMatchingOfCoordinates(IWebElement element, int x, int y)

@@ -18,6 +18,8 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.junit.Test;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -30,11 +32,11 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -44,6 +46,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
@@ -669,17 +672,19 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, CHROME, IE, IPHONE, SAFARI, OPERA, OPERA_MOBILE, PHANTOMJS, MARIONETTE},
-          reason = "firefox-specific")
+  @Ignore(value = {ANDROID, IPHONE, PHANTOMJS, MARIONETTE},
+          reason = "not tested")
   @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
+    assumeFalse(isFirefox(driver) && getFirefoxVersion(driver) < 25);
+    assumeTrue(((RemoteWebDriver)driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS));
     driver.get(pages.javascriptPage);
 
     WebElement silent = driver.findElement(By.name("suppress"));
     WebElement result = driver.findElement(By.id("result"));
 
     silent.sendKeys("s");
-    assertThat(result.getText(), containsString("press"));
+    assertThat(result.getText().trim(), is(""));
   }
 
   @JavascriptEnabled

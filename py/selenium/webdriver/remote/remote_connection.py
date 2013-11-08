@@ -202,14 +202,10 @@ class RemoteConnection(object):
                 ('GET', '/session/$sessionId/element/$id/selected'),
             Command.SET_ELEMENT_SELECTED:
                 ('POST', '/session/$sessionId/element/$id/selected'),
-            Command.TOGGLE_ELEMENT:
-                ('POST', '/session/$sessionId/element/$id/toggle'),
             Command.IS_ELEMENT_ENABLED:
                 ('GET', '/session/$sessionId/element/$id/enabled'),
             Command.IS_ELEMENT_DISPLAYED:
                 ('GET', '/session/$sessionId/element/$id/displayed'),
-            Command.HOVER_OVER_ELEMENT:
-                ('POST', '/session/$sessionId/element/$id/hover'),
             Command.GET_ELEMENT_LOCATION:
                 ('GET', '/session/$sessionId/element/$id/location'),
             Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW:
@@ -229,10 +225,6 @@ class RemoteConnection(object):
             Command.SWITCH_TO_FRAME: ('POST', '/session/$sessionId/frame'),
             Command.SWITCH_TO_WINDOW: ('POST', '/session/$sessionId/window'),
             Command.CLOSE: ('DELETE', '/session/$sessionId/window'),
-            Command.DRAG_ELEMENT:
-                ('POST', '/session/$sessionId/element/$id/drag'),
-            Command.GET_SPEED: ('GET', '/session/$sessionId/speed'),
-            Command.SET_SPEED: ('POST', '/session/$sessionId/speed'),
             Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY:
                 ('GET',  '/session/$sessionId/element/$id/css/$propertyName'),
             Command.IMPLICIT_WAIT:
@@ -309,7 +301,7 @@ class RemoteConnection(object):
             Command.GET_LOCAL_STORAGE_ITEM:
                 ('GET', '/session/$sessionId/local_storage/key/$key'),
             Command.REMOVE_LOCAL_STORAGE_ITEM:
-                ('POST', '/session/$sessionId/local_storage/key/$key'),
+                ('DELETE', '/session/$sessionId/local_storage/key/$key'),
             Command.GET_LOCAL_STORAGE_KEYS:
                 ('GET', '/session/$sessionId/local_storage'),
             Command.SET_LOCAL_STORAGE_ITEM:

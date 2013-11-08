@@ -41,6 +41,7 @@ import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
+import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -99,7 +100,7 @@ public class DragAndDropTest extends JUnit4TestBase {
     ((JavascriptExecutor) driver).executeScript("arguments[0].src = arguments[1]", iframe,
                                                 pages.dragAndDropPage);
     driver.switchTo().frame(0);
-    WebElement img1 = driver.findElement(By.id("test1"));
+    WebElement img1 = waitFor(elementToExist(driver, "test1"));
     WebElement img2 = driver.findElement(By.id("test2"));
     new Actions(driver).dragAndDrop(img2, img1).perform();
     assertEquals(img1.getLocation(), img2.getLocation());

@@ -67,6 +67,7 @@ namespace OpenQA.Selenium
         public string simpleXmlDocument = EnvironmentManager.Instance.UrlBuilder.WhereIs("simple.xml");
         public string mapVisibilityPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("map_visibility.html");
         public string mouseTrackerPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("mousePositionTracker.html");
+        public string mouseOverPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("mouseOver.html");
         public string readOnlyPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("readOnlyPage.html");
         public string clicksPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("clicks.html");
         public string booleanAttributes = EnvironmentManager.Instance.UrlBuilder.WhereIs("booleanAttributes.html");

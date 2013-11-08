@@ -1,8 +1,12 @@
+# -*- mode: ruby -*-
+
 $LOAD_PATH.unshift File.expand_path(".")
 
 require 'rake'
 require 'rake-tasks/files'
 require 'net/telnet'
+require 'stringio'
+require 'fileutils'
 
 include Rake::DSL if defined?(Rake::DSL)
 
@@ -41,7 +45,7 @@ require 'rake-tasks/ci'
 require 'rake-tasks/gecko_sdks'
 
 $DEBUG = orig_verbose != :default ? true : false
-if (ENV['debug'] == 'true') 
+if (ENV['debug'] == 'true')
   $DEBUG = true
 end
 verbose($DEBUG)
@@ -492,7 +496,7 @@ GeckoSDKs.new do |sdks|
   sdks.add 'third_party/gecko-24/win32',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/24.0/sdk/xulrunner-24.0.en-US.win32.sdk.zip',
            '29d8fcf397038930a4220b7d60bb3cbf'
-  
+
   sdks.add 'third_party/gecko-25/linux',
            'http://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/25.0/sdk/xulrunner-25.0.en-US.linux-i686.sdk.tar.bz2',
            '879f79424299a14ede90032b2839ae2f'
@@ -565,7 +569,7 @@ task :py_prep_for_install_release => ["//javascript/firefox-driver:webdriver", :
 
         mkdir_p x86 unless File.exists?(x86)
         mkdir_p amd64 unless File.exists?(amd64)
-    
+
         cp "cpp/prebuilt/i386/libnoblur.so", x86+"x_ignore_nofocus.so", :verbose => true
         cp "cpp/prebuilt/amd64/libnoblur64.so", amd64+"x_ignore_nofocus.so", :verbose => true
 
@@ -717,7 +721,7 @@ task :push_release => [:release] do
 
   print "Enter your googlecode username:"
   googlecode_username = STDIN.gets.chomp
-  print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):" 
+  print "Enter your googlecode password (NOT your gmail password, the one you use for svn, available at https://code.google.com/hosting/settings):"
   googlecode_password = STDIN.gets.chomp
 
   [
@@ -804,10 +808,54 @@ namespace :safari do
   end
 end
 
+namespace :marionette do
+  atoms_file = "build/javascript/marionette/atoms.js"
+  func_lookup = {"//javascript/atoms/fragments:clear:firefox" => "clearElement",
+                 "//javascript/webdriver/atoms/fragments:get_attribute:firefox" => "getElementAttribute",
+                 "//javascript/webdriver/atoms/fragments:get_text:firefox" => "getElementText",
+                 "//javascript/atoms/fragments:is_enabled:firefox" => "isElementEnabled",
+                 "//javascript/webdriver/atoms/fragments:is_selected:firefox" => "isElementSelected",
+                 "//javascript/atoms/fragments:is_displayed:firefox" => "isElementDisplayed"}
+
+  # This task takes all the relevant Marionette atom dependencies
+  # (listed in func_lookup) and concatenates them to a single atoms.js
+  # file, where each atom is assigned to a custom function name
+  # matching the Marionette protocol.
+  #
+  # The function names are defined in the func_lookup dictionary of
+  # target to name.
+  #
+  # Instead of having this custom behaviour in Selenium, Marionette
+  # should use the individually generated .js atom files directly in
+  # the future.
+  #
+  # (See Mozilla bug 936204.)
+
+  desc "Generate Marionette atoms"
+  task :atoms => func_lookup.keys do |task|
+    b = StringIO.new
+    b << File.read("javascript/marionette/COPYING") << "\n"
+    b << "\n"
+
+    task.prerequisites.each do |target|
+      out = Rake::Task[target].out
+      atom = File.read(out).chop
+
+      b << "// target #{target}\n"
+      b << "var #{func_lookup[target]} = #{atom};\n"
+      b << "\n"
+    end
+
+    puts "Generating uberatoms file: #{atoms_file}"
+    FileUtils.mkpath("build/javascript/marionette")
+    File.open("build/javascript/marionette/atoms.js", "w+") do |h|
+      h.write(b.string)
+    end
+  end
+end
+
 at_exit do
   if File.exist?(".git") && !Platform.windows?
     sh "sh .git-fixfiles"
   end
 end
-
-

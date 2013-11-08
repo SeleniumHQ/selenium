@@ -256,8 +256,8 @@ WebElement.getElementTagName = function(respond, parameters) {
 
 
 WebElement.getElementAttribute = function(respond, parameters) {
-  var element = Utils.getElementAt(parameters.id,
-                                  respond.session.getDocument());
+  var element = fxdriver.moz.unwrap((Utils.getElementAt(parameters.id,
+                                  respond.session.getDocument())));
   var attributeName = parameters.name;
 
   respond.value = webdriver.atoms.element.getAttribute(element, attributeName);
