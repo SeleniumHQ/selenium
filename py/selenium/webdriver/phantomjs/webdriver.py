@@ -20,6 +20,7 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import WebDriverException
 from .service import Service
+from selenium.webdriver.common.desired_capabilities import AllowDesiredCapabilitiesOverrides
 
 class WebDriver(RemoteWebDriver):
     """
@@ -28,7 +29,8 @@ class WebDriver(RemoteWebDriver):
     You will need to follow all the directions here:
     https://github.com/detro/ghostdriver
     """
-
+    
+    @AllowDesiredCapabilitiesOverrides()
     def __init__(self, executable_path="phantomjs",
                  port=0, desired_capabilities=DesiredCapabilities.PHANTOMJS,
                  service_args=None, service_log_path=None):
