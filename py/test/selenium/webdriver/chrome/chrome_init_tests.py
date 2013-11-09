@@ -5,7 +5,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import tempfile
 from selenium.webdriver.chrome.options import Options
 
-
+ 
 class ChromeInitTests (unittest.TestCase):
 
     @classmethod
@@ -64,9 +64,9 @@ class ChromeInitTests (unittest.TestCase):
         
 
     def test_chrome_options_from_desired_caps(self):
-        test_options = Options()
-        test_options._arguments = ['--debug-print','--disable-3d-apis']
-        test_options._extensions = ['ext1','ext2']
+        test_options = {}
+        test_options['arguments'] = ['--debug-print','--disable-3d-apis']
+        test_options['extensions'] = ['ext1','ext2']
 
         expected_dc = {'platform':'ANY','browserName':'chrome','version':'',
                        'javascriptEnabled' : True,
@@ -78,7 +78,6 @@ class ChromeInitTests (unittest.TestCase):
         desired_caps = {"init.chrome_options" : test_options}
         driver = webdriver.Chrome(desired_capabilities=desired_caps)
         self.assertEquals(self.desired_caps, expected_dc)
-
 
     def test_chrome_options_argument(self):
         test_options = Options()
@@ -94,6 +93,14 @@ class ChromeInitTests (unittest.TestCase):
 
         driver = webdriver.Chrome(chrome_options=test_options)
         self.assertEquals(self.desired_caps, expected_dc)
+
+    def test_chrome_options_init_to_empty_arguments(self):
+        newOptions = Options()
+        self.assertEquals('', newOptions.binary_location)
+        self.assertEquals([],newOptions.arguments)
+        self.assertEquals([],newOptions._extension_files)
+        self.assertEquals([],newOptions._extensions)
+        self.assertEquals({},newOptions.experimental_options)
 
     def test_service_args(self):
         driver = webdriver.Chrome(service_args=[1,2,3])

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python 
 #
 # Copyright 2012 Webdriver_name committers
 # Copyright 2012 Google Inc.
@@ -22,12 +22,22 @@ import base64
 
 class Options(object):
 
-    def __init__(self):
-        self._binary_location = ''
-        self._arguments = []
+    def __init__(self,binary_location='', arguments=[], extension_files=[],
+                 extensions=[], experimental_options={}):
+
+        self.binary_location = binary_location
+
+        self._arguments = arguments
+        
         self._extension_files = []
+        for ext_file in extension_files:
+            self.add_extension(ext_file)
+        
         self._extensions = []
-        self._experimental_options = {}
+        for ext in extensions:
+            self.add_encoded_extension(ext)
+
+        self._experimental_options = experimental_options
 
     @property
     def binary_location(self):

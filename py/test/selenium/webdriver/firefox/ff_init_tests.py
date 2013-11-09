@@ -78,7 +78,6 @@ class FirefoxInitTests (unittest.TestCase):
         self.assertEquals(99, self.timeout)
  
     def test_overwrite_proxy(self):
-        #from selenium.webdriver.common.proxy import Proxy
         caps = {"init.proxy" : [{'proxyType':'MANUAL','ftpProxy':'proxy'}]}
         driver = webdriver.Firefox(desired_capabilities=caps)
         self.assertEquals({'proxy': {'proxyType':'MANUAL','ftpProxy':'proxy'}}, self.desired_caps)

@@ -31,7 +31,7 @@ class WebDriver(RemoteWebDriver):
     http://chromedriver.storage.googleapis.com/index.html
     """
 
-    @AllowDesiredCapabilitesOverrides()
+    @AllowDesiredCapabilitesOverrides(constructors={'chrome_options':Options})
     def __init__(self, executable_path="chromedriver", port=0,
                  chrome_options=None, service_args=None,
                  desired_capabilities=None, service_log_path=None):
