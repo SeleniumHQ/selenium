@@ -105,6 +105,18 @@ class AllowDesiredCapabilitiesOverrides(object):
     method with similarly named key in desired_capabilities.  This way
     desired_capabilities can be used as a standard way to completely setup 
     / configure a webdriver instance.
+    Example:
+
+    caps = {'init.executable_path' : '/path/to/Safari'}
+    driver = webdriver.Safari(desired_capabilities=caps)
+    
+    is functionaly equivalent to
+
+    driver = webdriver.Safari(executable_path='/path/to/Safari'
+
+    while the example may seem simple the idea is to allow all options for all
+    webdrivers to be created through desired_capabilities so there is a
+    standard way to configure webdrivers.
     '''
    
     def __init__(self, constructors={}):
