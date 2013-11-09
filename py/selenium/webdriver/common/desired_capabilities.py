@@ -153,11 +153,11 @@ class AllowDesiredCapabilitesOverrides(object):
                         #check for custom constructors
                         constructor = self.constructors.get(val)
                         if constructor:
-                            args = caps.pop(caps_val)
-                            if isinstance(args, (list, tuple)):
-                                kwargs[val] = constructor(*args)
+                            cnstr_args = caps.pop(caps_val)
+                            if isinstance(cnstr_args, (list, tuple)):
+                                kwargs[val] = constructor(*cnstr_args)
                             else:
-                                kwargs[val] = constructor(**args)
+                                kwargs[val] = constructor(**cnstr_args)
                         else:
                             kwargs[val] = caps.pop(caps_val)
             #call our function

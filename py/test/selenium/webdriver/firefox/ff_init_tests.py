@@ -49,21 +49,28 @@ class FirefoxInitTests (unittest.TestCase):
         self.assertEqual(FirefoxBinary()._start_cmd, driver.binary._start_cmd)
         self.assertEqual(DesiredCapabilities.FIREFOX, self.desired_caps)
 
+    
     def test_overwrite_profile(self):
-        testProfile = FirefoxProfile()
-        testProfile.profile_dir = "test"
-        caps = {"init.firefox_profile" : testProfile}
+        
+        def new_init(self, profile_directory=None):
+            self.default_preferences = {}
+            assert profile_directory == 'test'
+        
+        old_init = FirefoxProfile.__init__
+        FirefoxProfile.__init__ = new_init
 
+        caps = {"init.firefox_profile" : ["test"] }
         driver = webdriver.Firefox(desired_capabilities=caps)
-        self.assertEquals("test", self.profile.profile_dir)
+
+        FirefoxProfile.__init__ = old_init
 
     def test_overwrite_binary(self):
-        testBin = FirefoxBinary()
-        testBin._start_cmd = "new cmd"
-        caps = {"init.firefox_binary" : testBin}
+        caps = {"init.firefox_binary" : {'firefox_path' : 'path',
+                                         'log_file':'log'}}
 
         driver = webdriver.Firefox(desired_capabilities=caps)
-        self.assertEquals("new cmd", self.binary._start_cmd)
+        self.assertEquals("path", driver.binary._start_cmd)
+        self.assertEquals("log", driver.binary._log_file)
    
     def test_overwrite_timeout(self):
         caps = {"init.timeout" : 99}
@@ -71,10 +78,10 @@ class FirefoxInitTests (unittest.TestCase):
         self.assertEquals(99, self.timeout)
  
     def test_overwrite_proxy(self):
-        from selenium.webdriver.common.proxy import Proxy
-        caps = {"init.proxy" : Proxy()}
+        #from selenium.webdriver.common.proxy import Proxy
+        caps = {"init.proxy" : [{'proxyType':'MANUAL','ftpProxy':'proxy'}]}
         driver = webdriver.Firefox(desired_capabilities=caps)
-        self.assertEquals({'proxy': {'proxyType': 'UNSPECIFIED'}}, self.desired_caps)
+        self.assertEquals({'proxy': {'proxyType':'MANUAL','ftpProxy':'proxy'}}, self.desired_caps)
 
 
 if __name__ == "__main__":
