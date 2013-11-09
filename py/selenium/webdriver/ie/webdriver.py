@@ -37,6 +37,9 @@ class WebDriver(RemoteWebDriver):
                  port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,
                  log_level=DEFAULT_LOG_LEVEL, log_file=DEFAULT_LOG_FILE,
                  desired_capabilities=None):
+        
+        if not desired_capabilities is None: capabilities = desired_capabilities
+        
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
