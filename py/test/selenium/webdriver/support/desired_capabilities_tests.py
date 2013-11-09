@@ -2,7 +2,7 @@ import unittest
 import logging
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.common.desired_capabilities import AllowDesiredCapabilitesOverrides
+from selenium.webdriver.common.desired_capabilities import AllowDesiredCapabilitiesOverrides
 from datetime import date
 
 
@@ -15,14 +15,14 @@ class AllowDesiredCapbilitiesOverridesTests(unittest.TestCase):
         self.assertEquals(TestDriver.__init__.__name__, "__init__")
 
     def test_gets_correct_list_of_function_arguments(self):
-        decor = AllowDesiredCapabilitesOverrides()
+        decor = AllowDesiredCapabilitiesOverrides()
         args = decor._get_list_of_function_arguments(TestDriver.normal_init_)
         self.assertEquals(['executable_path','port','chrome_options',
                            'service_args','desired_capabilities','service_log_path']
                           , args)             
 
     def test_decorator_finds_desired_capabilites(self):
-        decor = AllowDesiredCapabilitesOverrides()
+        decor = AllowDesiredCapabilitiesOverrides()
         idx = decor._get_desired_capabilities_index(['executable_path','port','chrome_options',
                            'service_args','desired_capabilities','service_log_path'])
         self.assertEquals(4,idx)
@@ -63,7 +63,7 @@ class AllowDesiredCapbilitiesOverridesTests(unittest.TestCase):
 
 class TestDriver(object):
 
-    @AllowDesiredCapabilitesOverrides(constructors={'date_time': date})
+    @AllowDesiredCapabilitiesOverrides(constructors={'date_time': date})
     def __init__( self, executable_path="chromedriver", port=0,
              chrome_options=None, service_args=None,
              desired_capabilities=None, service_log_path=None, date_time=None):

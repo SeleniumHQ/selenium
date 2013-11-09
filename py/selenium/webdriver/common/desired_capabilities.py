@@ -99,7 +99,7 @@ class DesiredCapabilities(object):
     }
 
 
-class AllowDesiredCapabilitesOverrides(object):
+class AllowDesiredCapabilitiesOverrides(object):
     '''This is a decorator class intended to decorate the __init__ method for
     all webdrivers.  It allows the caller to override any argument in the init
     method with similarly named key in desired_capabilities.  This way

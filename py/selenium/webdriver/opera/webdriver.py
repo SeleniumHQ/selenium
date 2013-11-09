@@ -26,7 +26,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
-from selenium.webdriver.common.desired_capabilities import AllowDesiredCapabilitesOverrides
+from selenium.webdriver.common.desired_capabilities import AllowDesiredCapabilitiesOverrides
 
 class WebDriver(RemoteWebDriver):
     """
@@ -34,7 +34,7 @@ class WebDriver(RemoteWebDriver):
     
     """
 
-    @AllowDesiredCapabilitesOverrides()
+    @AllowDesiredCapabilitiesOverrides()
     def __init__(self, executable_path=None, port=0,
                  desired_capabilities=DesiredCapabilities.OPERA):
         """

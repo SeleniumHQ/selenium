@@ -20,7 +20,7 @@ from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
 from .service import Service
 from .options import Options
-from selenium.webdriver.common.desired_capabilities import AllowDesiredCapabilitesOverrides
+from selenium.webdriver.common.desired_capabilities import AllowDesiredCapabilitiesOverrides
 
 
 class WebDriver(RemoteWebDriver):
@@ -31,7 +31,7 @@ class WebDriver(RemoteWebDriver):
     http://chromedriver.storage.googleapis.com/index.html
     """
 
-    @AllowDesiredCapabilitesOverrides(constructors={'chrome_options':Options})
+    @AllowDesiredCapabilitiesOverrides(constructors={'chrome_options':Options})
     def __init__(self, executable_path="chromedriver", port=0,
                  chrome_options=None, service_args=None,
                  desired_capabilities=None, service_log_path=None):

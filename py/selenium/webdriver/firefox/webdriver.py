@@ -26,7 +26,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.extension_connection import ExtensionConnection
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from selenium.webdriver.common.desired_capabilities import AllowDesiredCapabilitesOverrides
+from selenium.webdriver.common.desired_capabilities import AllowDesiredCapabilitiesOverrides
 from selenium.webdriver.common.proxy import Proxy
 
 
@@ -35,7 +35,7 @@ class WebDriver(RemoteWebDriver):
     # There is no native event support on Mac
     NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
 
-    @AllowDesiredCapabilitesOverrides(constructors={'firefox_profile':FirefoxProfile,
+    @AllowDesiredCapabilitiesOverrides(constructors={'firefox_profile':FirefoxProfile,
                                                     'firefox_binary':FirefoxBinary,
                                                     'proxy':Proxy})
     def __init__(self, firefox_profile=None, firefox_binary=None, timeout=30,
