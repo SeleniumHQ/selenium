@@ -16,6 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import java.util.logging.Logger;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.remote.SessionId;
@@ -24,9 +26,7 @@ import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
-import java.util.logging.Logger;
-
-class SessionCleaner extends Thread {   // Thread safety reviewed
+public class SessionCleaner extends Thread {   // Thread safety reviewed
 
   private final DriverSessions driverSessions;
   private final long clientGoneTimeout;
@@ -35,7 +35,7 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
   private final Logger log;
   private volatile boolean running = true;
 
-  SessionCleaner(DriverSessions driverSessions, Logger log, long clientGoneTimeout, long insideBrowserTimeout) {
+  public SessionCleaner(DriverSessions driverSessions, Logger log, long clientGoneTimeout, long insideBrowserTimeout) {
     super("DriverServlet Session Cleaner");
     this.log = log;
     this.clientGoneTimeout = clientGoneTimeout;
@@ -67,7 +67,7 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
     }
   }
 
-  void stopCleaner() {
+  public void stopCleaner() {
     running = false;
     synchronized (this) {
       this.interrupt();
