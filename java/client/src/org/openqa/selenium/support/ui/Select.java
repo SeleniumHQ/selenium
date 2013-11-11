@@ -22,7 +22,6 @@ import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Models a SELECT tag, providing helper methods to select and deselect options.
@@ -120,44 +119,9 @@ public class Select {
       matched = true;
     }
 
-    if (options.isEmpty() && text.contains(" ")) {
-      String subStringWithoutSpace = getLongestSubstringWithoutSpace(text);
-      List<WebElement> candidates;
-      if ("".equals(subStringWithoutSpace)) {
-        // hmm, text is either empty or contains only spaces - get all options ...
-        candidates = element.findElements(By.tagName("option"));
-      } else {
-        // get candidates via XPATH ...
-        candidates =
-            element.findElements(By.xpath(".//option[contains(., " +
-                escapeQuotes(subStringWithoutSpace) + ")]"));
-      }
-      for (WebElement option : candidates) {
-        if (text.equals(option.getText())) {
-          setSelected(option);
-          if (!isMultiple()) {
-            return;
-          }
-          matched = true;
-        }
-      }
-    }
-
     if (!matched) {
       throw new NoSuchElementException("Cannot locate element with text: " + text);
     }
-  }
-
-  private String getLongestSubstringWithoutSpace(String s) {
-    String result = "";
-    StringTokenizer st = new StringTokenizer(s, " ");
-    while (st.hasMoreTokens()) {
-      String t = st.nextToken();
-      if (t.length() > result.length()) {
-        result = t;
-      }
-    }
-    return result;
   }
 
   /**

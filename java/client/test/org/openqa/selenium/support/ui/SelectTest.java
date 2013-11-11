@@ -22,6 +22,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,17 +39,12 @@ import static org.mockito.Mockito.when;
 
 public class SelectTest{
 
-  @Test
+  @Test(expected = UnexpectedTagNameException.class)
   public void shouldThrowAnExceptionIfTheElementIsNotASelectElement() {
     final WebElement element = mock(WebElement.class);
     when(element.getTagName()).thenReturn("a");
-
-    try {
-      new Select(element);
-      fail("Should not have passed");
-    } catch (UnexpectedTagNameException e) {
-      // This is expected
-    }
+    
+    new Select(element);
   }
 
   private Select selectElementWithMultipleEqualTo(final String value) {
@@ -333,16 +329,14 @@ public class SelectTest{
   }
 
   @Test
-  public void shouldFallBackToSlowLooksUpsWhenGetByVisibleTextFailsAndThereIsASpace() {
+  public void shouldSelectElementByVisibleWithASpace() {
     final WebElement element = mock(WebElement.class);
     final WebElement firstOption = mock(WebElement.class, "first");
     final By xpath1 = By.xpath(".//option[normalize-space(.) = \"foo bar\"]");
-    final By xpath2 = By.xpath(".//option[contains(., \"foo\")]");
 
     when(element.getTagName()).thenReturn("select");
     when(element.getAttribute("multiple")).thenReturn("false");
-    when(element.findElements(xpath1)).thenReturn(Collections.<WebElement>emptyList());
-    when(element.findElements(xpath2)).thenReturn(Collections.singletonList(firstOption));
+    when(element.findElements(xpath1)).thenReturn(Arrays.asList(firstOption));
     when(firstOption.getText()).thenReturn("foo bar");
 
     Select select = new Select(element);
