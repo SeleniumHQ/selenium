@@ -20,23 +20,23 @@ package org.openqa.selenium.remote.service;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.os.CommandLine;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.os.CommandLine;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 /**
  * Manages the life and death of a native executable driver server.
- * 
+ *
  * It is expected that the driver server implements the
  * <a href="http://code.google.com/p/selenium/wiki/JsonWireProtocol">WebDriver Wire Protocol</a>.
  * In particular, it should implement /status command that is used to check if the server is alive.
@@ -65,6 +65,8 @@ public class DriverService {
   private final ImmutableList<String> args;
   private final ImmutableMap<String, String> environment;
 
+  private DriverServiceShutdownHook shutdownHook;
+
   /**
   *
   * @param executable The driver executable.
@@ -89,12 +91,12 @@ public class DriverService {
   }
 
   /**
-   * 
+   *
    * @param exeName Name of the executable file to look for in PATH
    * @param exeProperty Name of a system property that specifies the path to the executable file
    * @param exeDocs The link to the driver documentation page
    * @param exeDownload The link to the driver download page
-   * 
+   *
    * @return The driver executable as a {@link File} object
    * @throws IllegalStateException If the executable not found or cannot be executed
    */
@@ -158,6 +160,11 @@ public class DriverService {
       process.setEnvironmentVariables(environment);
       process.copyOutputTo(System.err);
       process.executeAsync();
+
+      if (shutdownHook == null) {
+          shutdownHook = new DriverServiceShutdownHook(this);
+          Runtime.getRuntime().addShutdownHook(shutdownHook);
+      }
 
       URL status = new URL(url.toString() + "/status");
       new UrlChecker().waitUntilAvailable(20, SECONDS, status);
