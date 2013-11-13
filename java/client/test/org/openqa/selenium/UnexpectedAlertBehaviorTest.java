@@ -92,24 +92,24 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
     runScenarioWithUnhandledAlert("This is a default value");
   }
-  
+
   @Test
   @Ignore(value = {IE}, reason = "IE: required capabilities not implemented")
   public void requiredUnhandledAlertCapabilityHasPriorityOverDesired() {
     // TODO: Resolve why this test doesn't work on the remote server
     assumeTrue(TestUtilities.isLocal());
-    
+
     desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.DISMISS);
     DesiredCapabilities requiredCaps = new DesiredCapabilities();
     requiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
     WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).
         setRequiredCapabilities(requiredCaps);
-    driver2 = builder.get();        
-    
+    driver2 = builder.get();
+
     runScenarioWithUnhandledAlert("This is a default value");
   }
 
-  private void runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour behaviour, 
+  private void runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour behaviour,
       String expectedAlertText) {
     if (behaviour != null) {
       desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
@@ -117,7 +117,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     driver2 = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).get();
     runScenarioWithUnhandledAlert(expectedAlertText);
   }
-  
+
   private void runScenarioWithUnhandledAlert(String expectedAlertText) {
     driver2.get(pages.alertsPage);
     driver2.findElement(By.id("prompt-with-default")).click();

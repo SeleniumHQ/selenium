@@ -30,7 +30,7 @@ import org.openqa.selenium.testing.SeleniumTestRunner;
 
 /**
  * If native events are enabled, make sure they work.
- * 
+ *
  * @author eran.mes@gmail.com (Eran Mes)
  */
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")

@@ -42,27 +42,27 @@ public class SetLocationContext extends WebDriverHandler implements JsonParamete
   @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     @SuppressWarnings("unchecked")
-    Map<Object, Object> map = (Map<Object, Object>) allParameters.get("location");
+    Map<Object, Object> locationMap = (Map<Object, Object>) allParameters.get("location");
 
     double latitude;
     try {
-      latitude = ((Number) allParameters.get("latitude")).doubleValue();
+      latitude = ((Number) locationMap.get("latitude")).doubleValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-double) latitude location passed: " + allParameters.get("latitude"), ex);
+      throw new WebDriverException("Illegal (non-double) latitude location passed: " + locationMap.get("latitude"), ex);
     }
 
     double longitude;
     try {
-      longitude = ((Number) allParameters.get("longitude")).doubleValue();
+      longitude = ((Number) locationMap.get("longitude")).doubleValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-double) longitude location passed: " + allParameters.get("longitude"), ex);
+      throw new WebDriverException("Illegal (non-double) longitude location passed: " + locationMap.get("longitude"), ex);
     }
 
     double altitude;
     try {
-      altitude = ((Number) allParameters.get("altitude")).doubleValue();
+      altitude = ((Number) locationMap.get("altitude")).doubleValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-double) altitude location passed: " + allParameters.get("altitude"), ex);
+      throw new WebDriverException("Illegal (non-double) altitude location passed: " + locationMap.get("altitude"), ex);
     }
 
     location = new Location(latitude, longitude, altitude);
