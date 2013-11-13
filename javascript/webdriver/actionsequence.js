@@ -101,7 +101,7 @@ webdriver.ActionSequence.prototype.mouseMove = function(location, opt_offset) {
   var command = new webdriver.Command(webdriver.CommandName.MOVE_TO);
 
   if (goog.isNumber(location.x)) {
-    setOffset(location);
+    setOffset(/** @type {{x: number, y: number}} */(location));
   } else {
     // The interactions API expect the element ID to be encoded as a simple
     // string, not the usual JSON object.

@@ -31,7 +31,7 @@ goog.require('webdriver.atoms.inject');
  * @param {?{ELEMENT: string}=} opt_root The WebElement reference for the
  *     element to perform the search under. If not specified, will use
  *     {@code document} for the target page.
- * @param {{WINDOW:string}=} opt_window The serialized window object for the
+ * @param {{WINDOW: string}=} opt_window The serialized window object for the
  *     page to find the element in. The referenced window must exist in the
  *     page executing this script's cache.
  * @return {string} A JSON serialized {@link bot.response.ResponseObject}.
@@ -50,7 +50,7 @@ webdriver.atoms.inject.locators.findElement = function(
  * @param {?{ELEMENT: string}=} opt_root The WebElement reference for the
  *     element to perform the search under. If not specified, will use
  *     {@code document} for the target page.
- * @param {{WINDOW:string}=} opt_window The serialized window object for the
+ * @param {{WINDOW: string}=} opt_window The serialized window object for the
  *     page to find the element in. The referenced window must exist in the
  *     page executing this script's cache.
  * @return {string} A JSON serialized {@link bot.response.ResponseObject}.
@@ -72,7 +72,7 @@ webdriver.atoms.inject.locators.findElements = function(
  * @param {?{ELEMENT: string}=} opt_root The WebElement reference for the
  *     element to perform the search under. If not specified, will use
  *     {@code document} for the target page.
- * @param {{WINDOW:string}=} opt_window The serialized window object for the
+ * @param {{WINDOW: string}=} opt_window The serialized window object for the
  *     page to find the element in. The referenced window must exist in the
  *     page executing this script's cache.
  * @return {string} A JSON serialized {@link bot.response.ResponseObject}.
@@ -80,7 +80,7 @@ webdriver.atoms.inject.locators.findElements = function(
  */
 webdriver.atoms.inject.locators.performSearch_ = function(
     strategy, target, searchFn, opt_root, opt_window) {
-    var locator = {};
+  var locator = {};
   locator[strategy] = target;
 
   var response;

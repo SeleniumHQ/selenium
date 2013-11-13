@@ -148,6 +148,7 @@ webdriver.atoms.inject.dom.isDisplayed = function(element, opt_window) {
       bot.dom.isShown, [element, /*ignoreOpacity=*/true], opt_window);
 };
 
+
 /**
  * @param {Function} fn The function to call.
  * @param {Array.<*>} args An array of function arguments for the function.

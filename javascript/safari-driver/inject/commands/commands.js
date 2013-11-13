@@ -274,10 +274,11 @@ safaridriver.inject.commands.getElementLocation =
 
 /**
  * @param {!safaridriver.Command} command The command to execute.
- * @see bot.dom.getLocationInView
+ * @see webdriver.atoms.element.getLocationInView
  */
 safaridriver.inject.commands.getLocationInView =
-    safaridriver.inject.commands.elementCommand_(bot.dom.getLocationInView);
+    safaridriver.inject.commands.elementCommand_(
+        webdriver.atoms.element.getLocationInView);
 
 
 /**

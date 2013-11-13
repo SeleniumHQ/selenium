@@ -193,9 +193,9 @@
       // This should fail on mobile since the scrollbars aren't shown.
       // This should also fail on IE6 since scrolling only happens to
       // exactly the scrollbar width, which is 17 by default on Windows XP.
-      expectedFailures.expectFailureFor(goog.userAgent.MOBILE);
-      expectedFailures.expectFailureFor(goog.userAgent.IE &&
-          !goog.userAgent.isVersion(7));
+      expectedFailures.expectFailureFor(
+          goog.userAgent.MOBILE ||
+          (goog.userAgent.IE && !goog.userAgent.isVersion(7)));
       expectedFailures.run(function() {
         assertTrue('horizontal scroll did not account for scrollbar',
             rectBefore.left - rectAfter.left > 26);

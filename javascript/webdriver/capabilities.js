@@ -233,6 +233,7 @@ webdriver.Capabilities.safari = function() {
       set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.SAFARI);
 };
 
+
 /**
  * @return {!webdriver.Capabilities} A basic set of capabilities for HTMLUnit.
  */
@@ -241,15 +242,17 @@ webdriver.Capabilities.htmlunit = function() {
       set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.HTMLUNIT);
 };
 
+
 /**
  * @return {!webdriver.Capabilities} A basic set of capabilities for HTMLUnit
- *                                   with enabled Javascript.
+ *     with enabled Javascript.
  */
 webdriver.Capabilities.htmlunitwithjs = function() {
   return new webdriver.Capabilities().
       set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.HTMLUNIT).
       set(webdriver.Capability.SUPPORTS_JAVASCRIPT, true);
 };
+
 
 /** @return {!Object} The JSON representation of this instance. */
 webdriver.Capabilities.prototype.toJSON = function() {
