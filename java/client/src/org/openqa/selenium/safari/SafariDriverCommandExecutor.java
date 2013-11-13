@@ -17,8 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.safari;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
@@ -36,10 +39,6 @@ import org.openqa.selenium.remote.UnreachableBrowserException;
 import com.google.common.base.Charsets;
 import com.google.common.base.Stopwatch;
 import com.google.common.io.Files;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A CommandExecutor that communicates with the SafariDriver extension using
@@ -62,7 +61,7 @@ class SafariDriverCommandExecutor implements CommandExecutor {
   SafariDriverCommandExecutor(SafariOptions options) {
     this.safariExtensions = new SafariExtensions(options);
     this.server = new SafariDriverServer(options.getPort());
-    this.browserLocator = new SafariLocator();
+    this.browserLocator = new SafariLocator(options.getBinary());
     this.sessionData = SessionData.forCurrentPlatform();
     this.cleanSession = options.getUseCleanSession();
   }

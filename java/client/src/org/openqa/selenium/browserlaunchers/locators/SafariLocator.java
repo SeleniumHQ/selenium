@@ -35,6 +35,14 @@ public class SafariLocator extends SingleBrowserLocator {
       WindowsUtils.getProgramFiles86Path() + "\\Safari"
   };
 
+  public SafariLocator() {
+    this(null);
+  }
+
+  public SafariLocator(String binary) {
+    super(binary);
+  }
+
   @Override
   protected String browserName() {
     return "Safari";

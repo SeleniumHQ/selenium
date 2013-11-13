@@ -19,11 +19,10 @@ package org.openqa.selenium.safari;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,10 +33,11 @@ import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import com.google.common.base.Objects;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 /**
  * Class to manage options specific to {@link SafariDriver}.
@@ -68,6 +68,7 @@ public class SafariOptions {
   private static class Option {
     private Option() {}  // Utility class.
 
+    private static final String BINARY = "binary";
     private static final String CLEAN_SESSION = "cleanSession";
     private static final String CUSTOM_DRIVER_EXENSION = "customDriverExtension";
     private static final String DATA_DIR = "dataDir";
@@ -75,6 +76,11 @@ public class SafariOptions {
     private static final String PORT = "port";
     private static final String SKIP_EXTENSION_INSTALLATION = "skipExtensionInstallation";
   }
+
+  /**
+   * @see #setBinary(String)
+   */
+  private String binary;
 
   /**
    * @see #setDataDir(File)
@@ -160,6 +166,16 @@ public class SafariOptions {
   }
 
   /**
+   * Sets the path to the Safari executable. This path should exist on the
+   * machine that will launch Safari. The path should be absolute.
+   *
+   * @param path Path to Safari executable.
+   */
+  public void setBinary(String path) {
+    binary = checkNotNull(path);
+  }
+
+  /**
    * Specifies the location of Safari installation's data directory.
    * The default location is:
    *    <ul>
@@ -237,6 +253,14 @@ public class SafariOptions {
   // Getters
 
   /**
+   * @return The location of the Safari binary.
+   * @see #setBinary(String)
+   */
+  public String getBinary() {
+    return binary;
+  }
+
+  /**
    * @return The location of the data dir where the extensions ought to be installed.
    * @see #setDataDir(File)
    */
@@ -309,6 +333,7 @@ public class SafariOptions {
     options.put(Option.SKIP_EXTENSION_INSTALLATION, skipExtensionInstallation);
     options.put(Option.CLEAN_SESSION, useCleanSession);
     options.put(Option.CUSTOM_DRIVER_EXENSION, useCustomDriverExtension);
+    options.put(Option.BINARY, binary);
 
     return options;
   }
@@ -356,6 +381,11 @@ public class SafariOptions {
     if (useCustomDriverExtension != null) {
       safariOptions.useCustomDriverExtension = useCustomDriverExtension;
     }
+
+    String binary = (String) options.get(Option.BINARY);
+    if (binary != null) {
+        safariOptions.binary = binary;
+    }
     return safariOptions;
   }
 
@@ -375,7 +405,7 @@ public class SafariOptions {
    *
    * @throws IOException If an error occurs while reading the
    *     {@link #addExtensions(java.util.List) extension files} from disk.
-   * @return A List of dictionaries with keys "filename" and "contents". 
+   * @return A List of dictionaries with keys "filename" and "contents".
    *    After JSON-serialization, it looks like
    *    <code>[
    *        { "filename":"name.safariextz", "contents": "file content" },

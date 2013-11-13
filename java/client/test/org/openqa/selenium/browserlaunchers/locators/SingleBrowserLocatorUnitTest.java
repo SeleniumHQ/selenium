@@ -18,9 +18,11 @@ limitations under the License.
 
 package org.openqa.selenium.browserlaunchers.locators;
 
-import org.junit.Test;
-
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
 
 /**
  * {@link org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncher} unit test class.
@@ -129,6 +131,44 @@ public class SingleBrowserLocatorUnitTest {
 
     };
     assertEquals("'a-browser' or 'another-one'", locator.humanFriendlyLauncherFileNames());
+  }
+
+  @Test
+  public void testUserSpecifiedBinaryReturned() {
+      final SingleBrowserLocator locator;
+      final String binary = "binary";
+
+      locator = new SingleBrowserLocator(binary) {
+
+          @Override
+          protected String[] standardlauncherFilenames() {
+              return new String[] {"a-browser", "another-one"};
+          }
+
+          @Override
+          protected String browserName() {
+              return null;
+          }
+
+          @Override
+          protected String seleniumBrowserName() {
+              return null;
+          }
+
+          @Override
+          protected String browserPathOverridePropertyName() {
+              return null;
+          }
+
+          @Override
+          protected String[] usualLauncherLocations() {
+              return new String[0];
+          }
+
+      };
+      BrowserInstallation installation = locator.findBrowserLocation();
+      assertThat(installation, notNullValue());
+      assertEquals(installation.launcherFilePath(), binary);
   }
 
 }
