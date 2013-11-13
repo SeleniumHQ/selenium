@@ -386,6 +386,8 @@ class RemoteConnection(object):
         try:
             if statuscode > 399 and statuscode < 500:
                 return {'status': statuscode, 'value': data}
+            if statuscode >= 300 and statuscode < 304:
+                return self._request(resp.getheader('location'), method='GET')
             body = data.decode('utf-8').replace('\x00', '').strip()
             content_type = []
             if resp.getheader('Content-Type') is not None:
