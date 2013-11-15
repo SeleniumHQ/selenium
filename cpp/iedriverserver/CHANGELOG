@@ -9,6 +9,13 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.37.0.4
+=========
+ * Updates to JavaScript automation atoms.
+ * Fixed crash encountered when taking screenshot of non-HTML page. This does
+   not throw an error, but fails silently, with no screenshot being generated.
+   Fixes issue #6576.
+
 v2.37.0.3
 =========
  * Refactored detection of single-text-node child elements in IE. In IE, a

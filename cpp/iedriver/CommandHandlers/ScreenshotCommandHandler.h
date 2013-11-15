@@ -114,6 +114,10 @@ class ScreenshotCommandHandler : public IECommandHandler {
 
     CComPtr<IHTMLDocument2> document;
     browser->GetDocument(&document);
+    if (!document) {
+      LOG(WARN) << "Unable to get document from browser. Are you viewing a non-HTML document?";
+      return E_ABORT;
+    }
 
     LocationInfo document_info;
     bool result = DocumentHost::GetDocumentDimensions(document, &document_info);
