@@ -98,6 +98,8 @@ limitations under the License.
     <command id="cmd_selenium_clear_base_URL_history" oncommand="goDoCommand('cmd_selenium_clear_base_URL_history')"/>
     <command id="cmd_selenium_clear_test_cases_history" oncommand="goDoCommand('cmd_selenium_clear_test_cases_history')"/>
     <command id="cmd_selenium_clear_test_suites_history" oncommand="goDoCommand('cmd_selenium_clear_test_suites_history')"/>
+    <command id="cmd_delete_suite" oncommand="goDoCommand('cmd_delete_suite')"/>
+    <command id="cmd_play_suite_from_here" oncommand="goDoCommand('cmd_play_suite_from_here')"/>
   </commandset>
 <!--  <commandset id="stateUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="alert('commandupdate: window.editor=' + window.editor);if (window.editor) { editor.updateSeleniumCommands() }"/>-->
   <commandset id="seleniumIDEUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="if (window.editor) { window.editor.updateSeleniumCommands() }"/>
@@ -129,17 +131,13 @@ limitations under the License.
       <menuitem label="&contextMenu.startpoint.label;" command="cmd_selenium_startpoint" key="startpoint-key" accesskey="S"/>
       <menuitem label="&contextMenu.execCommand.label;" command="cmd_selenium_exec_command" key="exec-key" accesskey="E"/>
     </menupopup>
-    <menupopup id="suiteContextMenu">
+    <menupopup id="suiteContextMenu" onpopupshowing="if (window.editor) { window.editor.updateSeleniumCommands() }">
       <menuitem label="&newTestCmd.label;" oncommand="window.editor.app.newTestCase();"/>
       <menuitem label="&addTestCmd.label;" command="cmd_add" key="add-key" />
-      <menuitem label="&contextMenu.delete.label;" command="cmd_delete" />
+      <menuitem label="&contextMenu.delete.label;" command="cmd_delete_suite" />
+      <menuitem label="Play test suite from here" command="cmd_play_suite_from_here"/>
       <menuitem label="&testCaseProperties.label;" oncommand="window.editor.suiteTreeView.editProperties()"/>
     </menupopup>
-      <!-- Samit: Ref: Commented as could not find any usages
-    <menupopup id="popupSeleniumCommands">
-      <menuitem label="&contextMenu.clear.label;" oncommand="window.editor.clear()" accesskey="A"/>
-    </menupopup>
-    -->
   </popupset>
 
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="F">

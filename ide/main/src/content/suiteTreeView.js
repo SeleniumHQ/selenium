@@ -23,11 +23,17 @@ objectExtend(SuiteTreeView.prototype, {
             this.editor = editor;
             this.rowCount = 0;
             this.currentTestCaseIndex = -1;
+            this.clickedTestCaseIndex = -1;
             var self = this;
             tree.addEventListener("dblclick", function(event) {
                     var testCase = self.getSelectedTestCase();
                     if (testCase) editor.app.showTestCaseFromSuite(testCase);
                 }, false);
+            tree.addEventListener("mousedown", function(event) {
+                if (event.button == 2) {
+                    self.clickedTestCaseIndex = tree.treeBoxObject.getRowAt(event.clientX, event.clientY);
+                }
+            }, false);
             editor.app.addObserver({
                     _testCaseObserver: {
                         modifiedStateUpdated: function() {
@@ -100,7 +106,9 @@ objectExtend(SuiteTreeView.prototype, {
                 supportsCommand : function(cmd) {
                     switch (cmd) {
                         case "cmd_delete":
-                        return true;
+                        case "cmd_delete_suite":
+                        case "cmd_play_suite_from_here":
+                            return true;
                     default:
                         return false;
                     }
@@ -109,14 +117,24 @@ objectExtend(SuiteTreeView.prototype, {
                     self.log.debug("isCommandEnabled " + cmd);
                     switch (cmd) {
                     case "cmd_delete":
+                    case "cmd_delete_suite":
                         return self.selection.getRangeCount() > 0;
+                    case "cmd_play_suite_from_here":
+                        return self.clickedTestCaseIndex >= 0 && self.editor.app.isPlayable() && self.editor.selDebugger.state != Debugger.PLAYING;
                     default:
                         return false;
                     }
                 },
                 doCommand : function(cmd) {
                     switch (cmd) {
-                    case "cmd_delete": self.deleteSelected(); break;
+                    case "cmd_delete":
+                    case "cmd_delete_suite":
+                        self.deleteSelected(); break;
+                    case "cmd_play_suite_from_here":
+                        if (self.clickedTestCaseIndex >= 0) {
+                            self.editor.playTestSuite(self.clickedTestCaseIndex);
+                        }
+                        break;
                     }
                 },
                 onEvent : function(evt) {}
