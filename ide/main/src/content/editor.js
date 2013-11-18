@@ -252,6 +252,7 @@ Editor.controller = {
       case "cmd_close":
       case "cmd_open":
       case "cmd_add":
+      case "cmd_new":
       case "cmd_new_suite":
       case "cmd_open_suite":
       case "cmd_save":
@@ -283,6 +284,7 @@ Editor.controller = {
       case "cmd_close":
       case "cmd_open":
       case "cmd_add":
+      case "cmd_new":
       case "cmd_new_suite":
       case "cmd_open_suite":
       case "cmd_save":
@@ -336,6 +338,9 @@ Editor.controller = {
         break;
       case "cmd_add":
         editor.app.addTestCase();
+        break;
+      case "cmd_new":
+        editor.app.newTestCase();
         break;
       case "cmd_open":
         editor.loadRecentTestCase();
