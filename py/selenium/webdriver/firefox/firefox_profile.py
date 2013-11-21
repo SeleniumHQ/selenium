@@ -42,9 +42,7 @@ EXTENSION_NAME = "fxdriver@googlecode.com"
 class FirefoxProfile(object):
 
     ANONYMOUS_PROFILE_NAME   = "WEBDRIVER_ANONYMOUS_PROFILE"
-    with open(os.path.join(os.path.dirname(__file__), WEBDRIVER_PREFERENCES)) as default_prefs:
-        DEFAULT_PREFERENCES = json.load(default_prefs)
-
+    DEFAULT_PREFERENCES = None
 
     def __init__(self,profile_directory=None):
         """
@@ -55,6 +53,11 @@ class FirefoxProfile(object):
            This defaults to None and will create a new
            directory when object is created.
         """
+        if not FirefoxProfile.DEFAULT_PREFERENCES:
+            with open(os.path.join(os.path.dirname(__file__),
+                                   WEBDRIVER_PREFERENCES)) as default_prefs:
+                FirefoxProfile.DEFAULT_PREFERENCES = json.load(default_prefs)
+
         self.default_preferences = copy.deepcopy(
             FirefoxProfile.DEFAULT_PREFERENCES['mutable'])
         self.native_events_enabled = True
