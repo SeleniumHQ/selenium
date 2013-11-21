@@ -368,7 +368,8 @@ class RemoteConnection(object):
         headers["Connection"] = "Keep-Alive"
         headers[method] = parsed_url.path
         headers["User-Agent"] = "Python http auth"
-        headers["Content-type"] = "text/html;charset=\"UTF-8\""
+        headers["Content-type"] = "application/json;charset=\"UTF-8\""
+        headers["Accept"] = "application/json"
         headers["Connection"] = "keep-alive"
 
         # for basic auth
