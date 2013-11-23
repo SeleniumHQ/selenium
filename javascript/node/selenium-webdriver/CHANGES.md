@@ -5,6 +5,8 @@
 * FIXED: 6284: For mouse moves, correctly omit the x/y offsets if not
     specified as a function argument (instead of passing (0,0)).
 * FIXED: 6471: Updated documentation on `webdriver.WebElement#getAttribute`
+* FIXED: 6612: On Unix, use the default IANA ephemeral port range if unable to
+    retrieve the current system's port range.
 
 ## v2.37.0
 
