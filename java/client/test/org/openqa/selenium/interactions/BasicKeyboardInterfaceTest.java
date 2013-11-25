@@ -178,7 +178,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is("abc def"));
   }
 
-  @Ignore(value = {ANDROID, IPHONE, IE, OPERA, SAFARI}, reason = "untested")
+  @Ignore(value = {ANDROID, IPHONE, IE, OPERA, SAFARI, HTMLUNIT}, reason = "untested")
   @JavascriptEnabled
   @Test
   public void canGenerateKeyboardShortcuts() {
