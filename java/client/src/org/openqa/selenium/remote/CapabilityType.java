@@ -24,6 +24,7 @@ public interface CapabilityType {
   String PLATFORM = "platform";
   String SUPPORTS_JAVASCRIPT = "javascriptEnabled";
   String TAKES_SCREENSHOT = "takesScreenshot";
+  String TAKES_HEAP_SNAPSHOT = "takesHeapSnapshot";
   String VERSION = "version";
   String SUPPORTS_ALERTS = "handlesAlerts";
   String SUPPORTS_SQL_DATABASE = "databaseEnabled";

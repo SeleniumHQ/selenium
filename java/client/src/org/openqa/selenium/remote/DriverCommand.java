@@ -162,4 +162,7 @@ public interface DriverCommand {
   // Logging API
   String GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes";
   String GET_LOG = "getLog";
+
+  // Performance related API
+  String HEAP_SNAPSHOT = "-chromium-take-heap-snapshot";
 }

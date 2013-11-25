@@ -1,6 +1,5 @@
 /*
-Copyright 2007-2009 Selenium committers
-Copyright 2007-2009 Software Freedom Conservancy
+Copyright 2013 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,17 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class,
-    ChromeHeapSnapshotTest.class
-})
-public class ChromeDriverTests {
+/**
+ * Interface implemented by each driver that supports heap snapshot of
+ * Javascript/Dart/etc engines.
+ */
+public interface TakesHeapSnapshot {
+  /***
+   * Take a heap snapshot of the Javascript/Dart/etc engine.
+   * 
+   * @return A heap snapshot.
+   */
+  HeapSnapshot takeHeapSnapshot();
 }
