@@ -83,13 +83,14 @@ webdriver.atoms.inject.action.click = function (element, opt_window) {
       [element], opt_window);
 };
 
+
 /**
-* @param {Function} fn The function to call.
-* @param {Array.<*>} args An array of function arguments for the function.
-* @param {{WINDOW: string}=} opt_window The window context for
-*     the execution of the function.
-* @return {string} The serialized JSON wire protocol result of the function.
-*/
+ * @param {Function} fn The function to call.
+ * @param {Array.<*>} args An array of function arguments for the function.
+ * @param {{WINDOW: string}=} opt_window The window context for
+ *     the execution of the function.
+ * @return {string} The serialized JSON wire protocol result of the function.
+ */
 webdriver.atoms.inject.action.executeActionFunction_ =
     function (fn, args, opt_window) {
   var response;

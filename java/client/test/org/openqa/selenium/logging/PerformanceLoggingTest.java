@@ -51,6 +51,8 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
+import java.util.Arrays;
+
 @Ignore({ANDROID, CHROME, HTMLUNIT, IE, IPHONE, OPERA, OPERA_MOBILE, PHANTOMJS, SAFARI, MARIONETTE})
 public class PerformanceLoggingTest extends JUnit4TestBase {
 
@@ -67,31 +69,31 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
   @Test
   public void testDisabledProfilingDoesNotLog() {
     driver.get(pages.simpleTestPage);
-    assertEquals("Profiler should not log when disabled", 
+    assertEquals("Profiler should not log when disabled",
         getProfilerEntries(driver).getAll().size(), 0);
   }
 
   @Test
   public void testLogsSingleHttpCommand() {
     startLoggingDriver();
-    ImmutableList<LogEntry> entries = getProfilerEntriesOfType(getProfilerEntries(localDriver), 
+    ImmutableList<LogEntry> entries = getProfilerEntriesOfType(getProfilerEntries(localDriver),
         EventType.HTTP_COMMAND);
-    // Expect start of newSession, end of newSession, start of getLogs, end of getLogs    
-    String[] expected = {"\"command\": \"newSession\",\"startorend\": \"start\"", 
-        "\"command\": \"newSession\",\"startorend\": \"end\"", 
-        "\"command\": \"getLog\",\"startorend\": \"start\"", 
+    // Expect start of newSession, end of newSession, start of getLogs, end of getLogs
+    String[] expected = {"\"command\": \"newSession\",\"startorend\": \"start\"",
+        "\"command\": \"newSession\",\"startorend\": \"end\"",
+        "\"command\": \"getLog\",\"startorend\": \"start\"",
         "\"command\": \"getLog\",\"startorend\": \"end\""};
-    assertTrue("Profiler entries should contain: " + expected, 
+    assertTrue("Profiler entries should contain: " + Arrays.toString(expected),
          containsExpectedEntries(entries, expected));
   }
-  
+
   /**
    * Checks if the given list of strings occur in the given order among the
    * given log messages (one string per message).
-   * 
+   *
    * @param entries The list of log entries.
    * @param expected The array of expected strings.
-   * @return true if a match was found for all expected strings, otherwise false. 
+   * @return true if a match was found for all expected strings, otherwise false.
    */
   private boolean containsExpectedEntries(ImmutableList<LogEntry> entries, String[] expected) {
     int index = 0;
@@ -111,21 +113,21 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
     startLoggingDriver();
     localDriver.get(pages.formPage);
     localDriver.findElement(By.id("submitButton")).click();
-    assertThat(getProfilerEntriesOfType(getProfilerEntries(localDriver), 
+    assertThat(getProfilerEntriesOfType(getProfilerEntries(localDriver),
         EventType.YIELD_TO_PAGE_LOAD).size(), greaterThan(0));
   }
-  
+
   private void startLoggingDriver() {
     WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(
         getCapabilitiesWithProfilerOn(true));
-    localDriver = builder.get();    
+    localDriver = builder.get();
   }
 
   private LogEntries getProfilerEntries(WebDriver driver) {
     return driver.manage().logs().get(LogType.PROFILER);
   }
 
-  private ImmutableList<LogEntry> getProfilerEntriesOfType(final LogEntries entries, 
+  private ImmutableList<LogEntry> getProfilerEntriesOfType(final LogEntries entries,
       final EventType eventType) {
     return ImmutableList.copyOf(Iterables.filter(entries, new Predicate<LogEntry>() {
       public boolean apply(LogEntry entry) {
@@ -144,13 +146,13 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
   public void testPriorityForProfilerCapability() {
     // TODO: Resolve why this test doesn't work on the remote server
     assumeTrue(TestUtilities.isLocal());
-    
+
     WebDriverBuilder builder = new WebDriverBuilder().
         setDesiredCapabilities(getCapabilitiesWithProfilerOn(false)).
         setRequiredCapabilities(getCapabilitiesWithProfilerOn(true));
-    localDriver = builder.get();        
+    localDriver = builder.get();
 
-    assertEquals("Start up should render four profiling entries", 4, 
+    assertEquals("Start up should render four profiling entries", 4,
         getProfilerEntriesOfType(getProfilerEntries(localDriver), EventType.HTTP_COMMAND).size());
   }
 }

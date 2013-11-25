@@ -672,8 +672,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {ANDROID, IPHONE, PHANTOMJS, MARIONETTE},
-          reason = "not tested")
+  @Ignore(value = {ANDROID, IPHONE, PHANTOMJS, MARIONETTE, HTMLUNIT},
+          reason = "HtmlUnit: failure, others: not tested")
   @Test
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     assumeFalse(isFirefox(driver) && getFirefoxVersion(driver) < 25);

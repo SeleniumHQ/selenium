@@ -23,7 +23,7 @@ var promise = require('../index').promise;
 
 
 /**
- * The IANA suggested epheremal port range.
+ * The IANA suggested ephemeral port range.
  * @type {{min: number, max: number}}
  * @const
  * @see http://en.wikipedia.org/wiki/Ephemeral_ports
@@ -95,6 +95,7 @@ function findUnixPortRange() {
   }
 
   return execute(cmd).then(function(stdout) {
+    if (!stdout || !stdout.length) return DEFAULT_IANA_RANGE;
     var range = stdout.trim().split(/\s+/).map(Number);
     if (range.some(isNaN)) return DEFAULT_IANA_RANGE;
     return {min: range[0], max: range[1]};

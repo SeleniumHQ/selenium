@@ -98,7 +98,8 @@ test.suite(function(env) {
     return function() {
       return driver.manage().window().getPosition().then(function(position) {
         return position.x === x &&
-            // On OSX, the window height may be bumped down 22px for the top status bar.
+            // On OSX, the window height may be bumped down 22px for the top
+            // status bar.
            (position.y >= y && position.y <= (y + 22));
       });
     };

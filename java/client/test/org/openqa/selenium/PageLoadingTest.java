@@ -21,6 +21,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -44,6 +45,7 @@ import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -77,7 +79,10 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   public void testShouldFollowMetaRedirects() throws Exception {
     driver.get(pages.metaRedirectPage);
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    new WebDriverWait(driver, 10)
+        .withMessage("Timed out waiting for the page to redirect")
+        .until(titleIs("We Arrive Here"));
+    // OK if we get here.
   }
 
   @Test
@@ -103,6 +108,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Ignore(value = {IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS})
   @Test(expected = WebDriverException.class)
+  @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformed() {
     assumeFalse("Fails in Sauce Cloud", SauceDriver.shouldUseSauce());
     driver.get("www.test.com");
@@ -158,46 +164,45 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = {ANDROID, SAFARI, MARIONETTE}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
+    WebDriverWait wait = new WebDriverWait(driver, 10);
     driver.get(pages.formPage);
 
     driver.findElement(By.id("imageButton")).submit();
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    wait.withMessage("Timed out waiting for page to load").until(titleIs("We Arrive Here"));
 
     driver.navigate().back();
-    assertThat(driver.getTitle(), equalTo("We Leave From Here"));
+    wait.withMessage("Timed out waiting to go back").until(titleIs("We Leave From Here"));
   }
 
   @Ignore(value = {SAFARI}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
+    WebDriverWait wait = new WebDriverWait(driver, 10);
     driver.get(pages.xhtmlTestPage);
 
     driver.findElement(By.name("sameWindow")).click();
 
-    waitFor(pageTitleToBe(driver, "This page has iframes"));
-
-    assertThat(driver.getTitle(), equalTo("This page has iframes"));
+    wait.withMessage("Timed out waiting for page to load").until(titleIs("This page has iframes"));
 
     driver.navigate().back();
-    assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+    wait.withMessage("Timed out waiting to go back").until(titleIs("XHTML Test Page"));
   }
 
   @Ignore(value = {ANDROID, SAFARI, MARIONETTE}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
+    WebDriverWait wait = new WebDriverWait(driver, 10);
     driver.get(pages.formPage);
 
     driver.findElement(By.id("imageButton")).submit();
-    waitFor(pageTitleToBe(driver, "We Arrive Here"));
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    wait.withMessage("Timed out waiting for submit navigation").until(titleIs("We Arrive Here"));
 
     driver.navigate().back();
     waitFor(pageTitleToBe(driver, "We Leave From Here"));
-    assertThat(driver.getTitle(), equalTo("We Leave From Here"));
+    wait.withMessage("Timed out waiting to go back").until(titleIs("We Leave From Here"));
 
     driver.navigate().forward();
-    waitFor(pageTitleToBe(driver, "We Arrive Here"));
-    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    wait.withMessage("Timed out waiting to go forward").until(titleIs("We Arrive Here"));
   }
 
   @Ignore(value = {IE, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, PHANTOMJS},

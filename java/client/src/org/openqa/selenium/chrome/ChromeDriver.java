@@ -18,8 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium.chrome;
 
-import com.google.common.base.Throwables;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -184,7 +182,7 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
       super.startSession(desiredCapabilities, requiredCapabilities);
     } catch (WebDriverException e) {
       quit();
-      Throwables.propagate(e);
+      throw e;
     }
   }
 }

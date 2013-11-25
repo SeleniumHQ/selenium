@@ -252,6 +252,7 @@ Editor.controller = {
       case "cmd_close":
       case "cmd_open":
       case "cmd_add":
+      case "cmd_new":
       case "cmd_new_suite":
       case "cmd_open_suite":
       case "cmd_save":
@@ -283,6 +284,7 @@ Editor.controller = {
       case "cmd_close":
       case "cmd_open":
       case "cmd_add":
+      case "cmd_new":
       case "cmd_new_suite":
       case "cmd_open_suite":
       case "cmd_save":
@@ -336,6 +338,9 @@ Editor.controller = {
         break;
       case "cmd_add":
         editor.app.addTestCase();
+        break;
+      case "cmd_new":
+        editor.app.newTestCase();
         break;
       case "cmd_open":
         editor.loadRecentTestCase();
@@ -515,7 +520,9 @@ Editor.prototype.updateSeleniumCommands = function () {
     "cmd_selenium_pause",
     "cmd_selenium_step",
     "cmd_selenium_rollup",
-    "cmd_selenium_reload"
+    "cmd_selenium_reload",
+    "cmd_delete_suite",
+    "cmd_play_suite_from_here"
   ].forEach(function (cmd) {
     goUpdateCommand(cmd);
   });
@@ -851,8 +858,11 @@ Editor.prototype.playCurrentTestCase = function (next, index, total) {
   }, index > 0 /* reuse last window if index > 0 */);
 };
 
-Editor.prototype.playTestSuite = function () {
-  var index = -1;
+Editor.prototype.playTestSuite = function (startIndex) {
+  if (!startIndex) {
+    startIndex = 0;
+  }
+  var index = startIndex - 1;
   this.app.getTestSuite().tests.forEach(function (test) {
     if (test.testResult) {
       delete test.testResult;
@@ -861,7 +871,7 @@ Editor.prototype.playTestSuite = function () {
   this.suiteTreeView.refresh();
   this.testSuiteProgress.reset();
   var self = this;
-  var total = this.app.getTestSuite().tests.length;
+  var total = this.app.getTestSuite().tests.length - startIndex;
   (function () {
     if (++index < self.app.getTestSuite().tests.length) {
       self.suiteTreeView.scrollToRow(index);

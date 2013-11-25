@@ -45,10 +45,10 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   public WebDriver get() {
     Capabilities standardCapabilities = BrowserToCapabilities.of(browser);
-    Capabilities desiredCaps = new DesiredCapabilities(standardCapabilities, 
+    Capabilities desiredCaps = new DesiredCapabilities(standardCapabilities,
         desiredCapabilities);
 
-    List<Supplier<WebDriver>> suppliers = getSuppliers(desiredCaps, 
+    List<Supplier<WebDriver>> suppliers = getSuppliers(desiredCaps,
         requiredCapabilities);
 
     for (Supplier<WebDriver> supplier : suppliers) {
@@ -80,7 +80,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     }
   }
 
-  private List<Supplier<WebDriver>> getSuppliers(Capabilities desiredCaps, 
+  private List<Supplier<WebDriver>> getSuppliers(Capabilities desiredCaps,
       Capabilities requiredCaps) {
     List<Supplier<WebDriver>> suppliers = Lists.newArrayList();
     suppliers.add(new ExternalDriverSupplier(desiredCaps, requiredCaps));

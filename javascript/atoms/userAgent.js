@@ -245,6 +245,7 @@ bot.userAgent.ANDROID_PRE_ICECREAMSANDWICH = goog.userAgent.product.ANDROID &&
 bot.userAgent.SAFARI_6 = goog.userAgent.product.SAFARI &&
     bot.userAgent.isProductVersion(6);
 
+
 /**
  * Whether the current browser is Windows Phone.
  * @type {boolean}

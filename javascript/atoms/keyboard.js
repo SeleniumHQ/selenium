@@ -60,7 +60,7 @@ bot.Keyboard = function(opt_state) {
     // If a state is passed, let's assume we were passed an object with
     // the correct properties.
     goog.array.forEach(opt_state['pressed'], function(key) {
-      this.setKeyPressed_(key, true);
+      this.setKeyPressed_(/** @type {!bot.Keyboard.Key} */ (key), true);
     }, this);
 
     this.currentPos_ = opt_state['currentPos'];
@@ -364,7 +364,7 @@ bot.Keyboard.KEY_TO_MODIFIER_ = (function(modifiersMap) {
 /**
  * Set the modifier state if the provided key is one, otherwise just add
  * to the list of pressed keys.
- * @param {bot.Keyboard.Key} key The key to update.
+ * @param {!bot.Keyboard.Key} key The key to update.
  * @param {boolean} isPressed Whether the key is pressed.
  * @private
  */
@@ -397,7 +397,7 @@ bot.Keyboard.NEW_LINE_ =
 /**
  * Returns whether the key is currently pressed.
  *
- * @param {bot.Keyboard.Key} key Key.
+ * @param {!bot.Keyboard.Key} key Key.
  * @return {boolean} Whether the key is pressed.
  */
 bot.Keyboard.prototype.isPressed = function(key) {

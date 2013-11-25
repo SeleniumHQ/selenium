@@ -498,7 +498,7 @@ bot.dom.getInlineStyle = function(elem, styleName) {
  * http://code.google.com/p/doctype/wiki/ArticleComputedStyleVsCascadedStyle
  *
  * @param {!Element} elem Element to get the style value from.
- * @param {string} propertyName Name of the CSS property in selector-case.
+ * @param {string} propertyName Name of the CSS property.
  * @return {?string} The value of the style property, or null.
  */
 bot.dom.getEffectiveStyle = function(elem, propertyName) {
@@ -513,7 +513,7 @@ bot.dom.getEffectiveStyle = function(elem, propertyName) {
   if (style === null) {
     return null;
   }
-  return bot.color.standardizeColor(propertyName, style);
+  return bot.color.standardizeColor(styleName, style);
 };
 
 
@@ -867,12 +867,8 @@ bot.dom.getClientRect = function(elem) {
       return new goog.math.Rect(0, 0, 0, 0);
     }
 
-    var left = nativeRect.left;
-    var right = nativeRect.right;
-    var top = nativeRect.top;
-    var bottom = nativeRect.bottom;
-
-    var rect = new goog.math.Rect(left, top, right - left, bottom - top);
+    var rect = new goog.math.Rect(nativeRect.left, nativeRect.top,
+        nativeRect.right - nativeRect.left, nativeRect.bottom - nativeRect.top);
 
     // In IE, the element can additionally be offset by a border around the
     // documentElement or body element that we have to subtract.

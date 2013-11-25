@@ -24,7 +24,7 @@ import java.util.Map;
 import org.openqa.selenium.internal.BuildInfo;
 
 public class WebDriverException extends RuntimeException {
-  
+
   public static final String SESSION_ID = "Session ID";
   public static final String DRIVER_INFO = "Driver info";
 

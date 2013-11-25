@@ -127,9 +127,9 @@ public class TestUtilities {
   }
 
   /**
-   * Finds the Firefox version of the given webdriver and returns it as an integer. 
+   * Finds the Firefox version of the given webdriver and returns it as an integer.
    * For instance, '14.0.1' will translate to 14.
-   * 
+   *
    * @param driver The driver to find the version for.
    * @return The found version, or 0 if no version could be found.
    */

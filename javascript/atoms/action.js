@@ -161,7 +161,7 @@ bot.action.type = function(
         }
       });
     } else if (goog.array.contains(bot.Keyboard.MODIFIERS, value)) {
-      if (keyboard.isPressed(value)) {
+      if (keyboard.isPressed(/** @type {!bot.Keyboard.Key} */ (value))) {
         keyboard.releaseKey(value);
       } else {
         keyboard.pressKey(value);

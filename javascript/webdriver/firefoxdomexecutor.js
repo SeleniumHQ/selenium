@@ -161,9 +161,11 @@ webdriver.FirefoxDomExecutor.prototype.onResponse_ = function() {
     return;
   }
 
-  // Prior to Selenium 2.35.0, two commands are required to fully create a session:
-  // one to allocate the session, and another to fetch the capabilities.
-  if (command.name == webdriver.CommandName.NEW_SESSION && goog.isString(response['value'])) {
+  // Prior to Selenium 2.35.0, two commands are required to fully create a
+  // session: one to allocate the session, and another to fetch the
+  // capabilities.
+  if (command.name == webdriver.CommandName.NEW_SESSION &&
+      goog.isString(response['value'])) {
     var cmd = new webdriver.Command(webdriver.CommandName.DESCRIBE_SESSION).
         setParameter('sessionId', response['value']);
     this.execute(cmd, command.callback);
