@@ -7,6 +7,8 @@
 * FIXED: 6471: Updated documentation on `webdriver.WebElement#getAttribute`
 * FIXED: 6612: On Unix, use the default IANA ephemeral port range if unable to
     retrieve the current system's port range.
+* FIXED: 6617: Avoid triggering the node debugger when initializing the
+    stacktrace module.
 * FIXED: 6627: Safely rebuild chrome.Options from a partial JSON spec.
 
 ## v2.37.0
