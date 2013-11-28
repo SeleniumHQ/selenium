@@ -250,11 +250,11 @@ Options.fromCapabilities = function(capabilities) {
     options = o;
   } else if (o) {
     options.
-        addArguments(o.args).
-        addExtensions(o.extensions).
+        addArguments(o.args || []).
+        addExtensions(o.extensions || []).
+        detachDriver(!!o.detach).
         setChromeBinaryPath(o.binary).
         setChromeLogFile(o.logFile).
-        detachDriver(o.detach).
         setLocalState(o.localState).
         setUserPreferences(o.prefs);
   }
