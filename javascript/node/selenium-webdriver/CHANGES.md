@@ -2,6 +2,8 @@
 
 * When a promise is rejected, always annotate the stacktrace with the parent
     flow state so users can identify the source of an error.
+* Updated tests to reflect features not working correctly in the SafariDriver
+    (cookie management and proxy support; see issues 5051, 5212, and 5503)
 * FIXED: 6284: For mouse moves, correctly omit the x/y offsets if not
     specified as a function argument (instead of passing (0,0)).
 * FIXED: 6471: Updated documentation on `webdriver.WebElement#getAttribute`
