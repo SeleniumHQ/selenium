@@ -32,7 +32,8 @@ import org.junit.runners.Suite;
     CleanSessionTest.class,
     CrossDomainTest.class,
     SafariExtensionsTest.class,
-    StandardSeleniumTests.class
+    StandardSeleniumTests.class,
+    WebSocketConnectionTest.class
 })
 public class SafariDriverTests {
 

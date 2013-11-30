@@ -33,11 +33,11 @@ import java.util.concurrent.BlockingQueue;
 class SafariDriverPipelineFactory implements ChannelPipelineFactory {
   
   private final int port;
-  private final BlockingQueue<SafariDriverConnection> connectionQueue;
+  private final BlockingQueue<WebSocketConnection> connectionQueue;
   private final ChannelGroup channelGroup;
 
   SafariDriverPipelineFactory(int port,
-      BlockingQueue<SafariDriverConnection> connectionQueue,
+      BlockingQueue<WebSocketConnection> connectionQueue,
       ChannelGroup channelGroup) {
     this.port = port;
     this.connectionQueue = connectionQueue;
