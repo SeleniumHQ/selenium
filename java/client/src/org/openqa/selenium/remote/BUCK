@@ -19,6 +19,7 @@ java_library(
   deps = [
     '//java/client/src/org/openqa/selenium:webdriver-api',
     '//java/client/src/org/openqa/selenium/logging:logging',
+    '//third_party/java/guava-libraries:guava-libraries',
   ],
   visibility = ['PUBLIC'],
 )
@@ -70,6 +71,8 @@ java_library(name = 'remote',
     '//java/client/src/org/openqa/selenium/logging:logging',
     '//java/client/src/org/openqa/selenium/net:net',
     '//third_party/java/apache-httpclient:apache-httpclient',
+    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/json:json',
   ],
   visibility = ['PUBLIC'],
 )
