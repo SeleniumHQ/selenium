@@ -205,6 +205,53 @@ Debugger.prototype.showElement = function (locator) {
   this.runner.showElement(locator);
 };
 
+Debugger.prototype.selectElement = function () {
+  this.init();
+  var button = document.getElementById("selectElementButton");
+  var help = document.getElementById("selectElementTip");
+  if (this.targetSelecter) {
+    this.targetSelecter.cleanup();
+    this.targetSelecter = null;
+    return;
+  }
+  var self = this;
+  var isRecording = this.editor.recordingEnabled;
+  if (isRecording) {
+    this.editor.setRecordingEnabled(false);
+  }
+  button.label = "Cancel";
+  help.removeAttribute("style");
+  this.targetSelecter = new TargetSelecter(function (element, win) {
+    if (element && win) {
+      var locatorBuilders = new LocatorBuilders(win);
+      var target = locatorBuilders.buildAll(element);
+      locatorBuilders.detach();
+      if (target != null && target instanceof Array) {
+        if (target[0]) {
+          self.editor.treeView.updateCurrentCommand('targetCandidates', target);
+        } else {
+          alert("LOCATOR_DETECTION_FAILED");
+        }
+      }
+
+    }
+    self.targetSelecter = null;
+  }, function () {
+    button.label = "Select";
+    help.setAttribute("style", "display: none;");
+    if (isRecording) {
+      self.editor.setRecordingEnabled(true);
+    }
+  });
+};
+
+Debugger.prototype.unload = function () {
+  if (this.targetSelecter) {
+    this.targetSelecter.cleanup();
+    this.targetSelecter = null;
+  }
+};
+
 /*
  * Use to reload the Selenium Core API 
  * and its overrides and extensions (user-extensions file)

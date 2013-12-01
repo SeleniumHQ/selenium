@@ -128,6 +128,12 @@ objectExtend(TreeView.prototype, {
             this.document.getElementById(id).disabled = disabled;
         },
 
+        updateTarget: function(value, disabled) {
+            this.setTextBox("commandTarget", value, disabled);
+            this.document.getElementById('selectElementButton').disabled = disabled;
+            this.document.getElementById('findElementButton').disabled = disabled;
+        },
+
         getCommand: function(row) {
             if (row < this.testCase.commands.length) {
                 return this.testCase.commands[row];
@@ -225,11 +231,11 @@ objectExtend(TreeView.prototype, {
                 Editor.GENERIC_AUTOCOMPLETE.setCandidatesWithComments(XulUtils.toXPCOMString(this.editor.getAutoCompleteSearchParam("commandTarget")),
                                                                       XulUtils.toXPCOMArray(locators),
                                                                       XulUtils.toXPCOMArray(types));
-                this.setTextBox("commandTarget", this.encodeText(command.target), false);
+                this.updateTarget(this.encodeText(command.target), false);
             } else {
                 targetBox.setAttribute("enablehistory", "false");
                 targetBox.disableAutoComplete = true;
-                this.setTextBox("commandTarget", this.encodeText(command.target), false);
+                this.updateTarget(this.encodeText(command.target), false);
             }
         },
         
@@ -325,7 +331,7 @@ objectExtend(TreeView.prototype, {
                     this.setTextBox("commandValue", this.encodeText(command.value), false);
                 } else if (command.type == 'comment') {
                     this.setTextBox("commandAction", command.comment, false);
-                    this.setTextBox("commandTarget", '', true);
+                    this.updateTarget('', true);
                     this.setTextBox("commandValue", '', true);
                 }
                 
@@ -335,7 +341,7 @@ objectExtend(TreeView.prototype, {
                 this.editor.showRollupReference(command);
             } else {
                 this.setTextBox("commandAction", '', true);
-                this.setTextBox("commandTarget", '', true);
+                this.updateTarget('', true);
                 this.setTextBox("commandValue", '', true);
                 this.currentCommand = null;
             }
@@ -355,6 +361,13 @@ objectExtend(TreeView.prototype, {
                     this.updateSeleniumTargets();
                     this.editor.showReference(this.currentCommand);
                 }
+                else if (key == 'targetCandidates') {
+                  this.updateSeleniumTargets();
+                  if (value != null && value instanceof Array && value[0]) {
+                    this.updateCurrentCommand('target', value[0][0]);
+                    this.selectCommand();
+                  }
+                }
                 else if (key == 'target') {
                     this.updateSeleniumValues();
                     this.editor.showUIReference(value);
@@ -367,7 +380,7 @@ objectExtend(TreeView.prototype, {
         },
         onHide: function() {
             this.setTextBox("commandAction", '', true);
-            this.setTextBox("commandTarget", '', true);
+            this.updateTarget('', true);
             this.setTextBox("commandValue", '', true);
             this.currentCommand = null;
         },
@@ -672,7 +685,9 @@ TreeView.UpdateCommandAction.prototype = {
 			this.treeView.treebox.rowCountChanged(this.treeView.rowCount - 1, -1);
 			this.treeView.rowCount--;
 			this.treeView.log.debug("removed new command");
-		}
+		} else if (this.index == this.treeView.tree.currentIndex) {
+      this.treeView.selectCommand();
+    }
 	}
 }
 

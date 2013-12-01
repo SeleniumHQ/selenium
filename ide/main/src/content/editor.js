@@ -501,6 +501,7 @@ Editor.prototype.log = Editor.log = new Log("Editor");
 Editor.prototype.unload = function () {
   this.app.saveState();
 
+  this.selDebugger.unload();
   this.deregisterRecorder();
   top.controllers.removeController(Editor.controller);
 
