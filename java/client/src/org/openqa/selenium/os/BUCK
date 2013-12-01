@@ -8,6 +8,7 @@ java_library(
     '//third_party/java/jna:jna',
   ],
   visibility = [
+    '//java/client/src/org/openqa/selenium/firefox:firefox',
     '//java/client/src/org/openqa/selenium/remote/service:service',
   ],
 )
