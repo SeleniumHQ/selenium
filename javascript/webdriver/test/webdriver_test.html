@@ -1301,6 +1301,44 @@ limitations under the License.
     errback.assertCalled();
     verifyAll();  // Make tearDown happy.
   }
+  
+  function testWebElement_doesNotDuplicateRejectionsWhenUnderlyingIdIsRejected() {
+    // When the test case fails, the test helper fails with an exception
+    // indicating that multiple errors occurred in the flow (the test output
+    // shows the same error twice).
+    var testHelper = TestHelper.expectingFailure(assertIsStubError).replayAll();
+    var driver = testHelper.createDriver();
+    
+    var id = new webdriver.promise.Deferred();
+    // A Deferred without a handler will propagate errors back the flow. A
+    // WebElement (which extends the Deferred class) should not do this since it
+    // is not really a part of the flow (only the ID is).
+    var element = new webdriver.WebElement(driver, id.promise);
+    
+    var callback = callbackHelper();
+    var insertPromise = callbackHelper(function () {
+        return id.promise;
+    });
+    driver.call(insertPromise);
+    driver.call(callback);
+    
+    // Promise should not be inserted until the event loop starts to turn.
+    insertPromise.assertNotCalled("promise inserted early");
+    
+    // Insert the synthetic promise into the flow.
+    flowTester.turnEventLoop();
+    insertPromise.assertCalled("promise not inserted");
+    callback.assertNotCalled();
+    
+    // Verify that we are waiting on the deferred.
+    flowTester.turnEventLoop();
+    callback.assertNotCalled();
+    
+    id.reject(STUB_ERROR);
+    testHelper.execute();
+    // Callback should never be executed.
+    callback.assertNotCalled();
+  }
 
 
   function testExecuteScript_nullReturnValue() {
