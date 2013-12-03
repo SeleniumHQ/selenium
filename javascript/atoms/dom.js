@@ -688,7 +688,7 @@ bot.dom.getOverflowState = function(elem, opt_region) {
     if (position == 'fixed') {
       treatAsFixedPosition = true;
       // Fixed-position element may only overflow the viewport.
-      return htmlElem;
+      return e == htmlElem ? null : htmlElem;
     } else {
       var parent = bot.dom.getParentElement(e);
       while (parent && !canBeOverflowed(parent)) {

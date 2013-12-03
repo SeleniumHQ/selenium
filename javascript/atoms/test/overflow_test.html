@@ -17,6 +17,10 @@
     var HIDDEN = bot.dom.OverflowState.HIDDEN;
     var SCROLL = bot.dom.OverflowState.SCROLL;
 
+    function tearDown() {
+      document.documentElement.style.position = '';
+    }
+
     function testElemHiddenByParent() {
       // Column 1: position style of the element
       // Column 2: position style of the element's parent
@@ -457,6 +461,12 @@
     function testElementHiddenByZeroSizedContainer() {
       var elem = document.getElementById('hasZeroSizedContainer');
       assertEquals(HIDDEN, bot.dom.getOverflowState(elem));
+    }
+
+    function testElementWithHtmlElementFixed() {
+      document.documentElement.style.position = 'fixed';
+      var elem = document.getElementById('line1');
+      assertEquals(NONE, bot.dom.getOverflowState(elem));
     }
   </script>
   <style>

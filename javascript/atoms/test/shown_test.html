@@ -77,7 +77,8 @@
       var child = findElement({id: 'untogglable'});
 
       expectedFailures.expectFailureFor(
-          goog.userAgent.IE && goog.userAgent.platform.VISTA,
+          goog.userAgent.IE && goog.userAgent.platform.isVersion(6) &&
+          !goog.userAgent.platform.isVersion(6.1),
           'Vista fails this test, have not figured it out yet...');
       // TODO: Figure it out
       expectedFailures.run(function() {
