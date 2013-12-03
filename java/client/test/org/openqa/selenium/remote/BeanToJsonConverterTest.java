@@ -24,6 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
@@ -54,6 +56,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 
+@RunWith(JUnit4.class)
 public class BeanToJsonConverterTest {
 
   @Test
@@ -291,7 +294,7 @@ public class BeanToJsonConverterTest {
     assertTrue(raw, json.has("additionalInformation"));
 
     assertTrue(raw, json.has("message"));
-    assertThat(json.getString("message"), containsString("foo bar baz!\n"));
+    assertThat(json.getString("message"), containsString("foo bar baz!"));
     assertThat(json.getString("class"), is(WebDriverException.class.getName()));
 
     assertTrue(raw, json.has("stackTrace"));
