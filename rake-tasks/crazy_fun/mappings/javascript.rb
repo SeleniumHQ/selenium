@@ -909,7 +909,7 @@ module Javascript
       elsif language == :java
         line_format = "      .append\(\"%s\"\)"
       elsif language == :csharp
-        line_format = "                atom.Append\(\"%s\"\);"
+        line_format = "                    atom.Append\(\"%s\"\);"
       end
 
       to_file << "\n"
@@ -923,7 +923,10 @@ module Javascript
         to_file << "        {\n"
         to_file << "            get\n"
         to_file << "            {\n"
-        to_file << "                StringBuilder atom = new StringBuilder();\n"
+        to_file << "                const string atomName = \"#{atom_name}\";\n"
+        to_file << "                if (!atomsRepository.ContainsKey(atomName))\n"
+        to_file << "                {\n"
+        to_file << "                    StringBuilder atom = new StringBuilder();\n"
       end
 
       # Make the header file play nicely in a terminal: limit lines to 80
@@ -955,7 +958,10 @@ module Javascript
       elsif language == :cpp
         to_file << ",\n    NULL\n};\n"
       elsif language == :csharp
-        to_file << "\n                return atom.ToString();\n"
+        to_file << "\n                    atomsRepository[atomName] = atom.ToString();\n"
+        to_file << "                }\n"
+        to_file << "\n"
+        to_file << "                return atomsRepository[atomName];\n"
         to_file << "            }\n"
         to_file << "        }\n"
       end
@@ -1105,6 +1111,7 @@ module Javascript
           out << COPYRIGHT
           out << "\n"
           out << "using System.CodeDom.Compiler;\n"
+          out << "using System.Collections.Generic;\n"
           out << "using System.Text;\n"
           out << "\n"
           out << "namespace #{package}\n"
@@ -1116,7 +1123,8 @@ module Javascript
           out << "     */\n"
           out << "    [GeneratedCode(\"WebDriver\", \"#{version}\")]\n"
           out << "    public static class #{class_name}\n"
-          out << "    {"
+          out << "    {\n"
+          out << "        private static Dictionary<string, string> atomsRepository = new Dictionary<string, string>();\n"
 
           js_files.each do |js_file|
             write_atom_string_literal(out, dir, js_file, :csharp)
