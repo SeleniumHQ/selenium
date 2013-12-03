@@ -597,6 +597,15 @@ Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseM
 Utils.keyEvent = function(doc, element, type, keyCode, charCode,
                           controlState, shiftState, altState, metaState,
                           shouldPreventDefault) {
+  // Silently bail out if the element is no longer attached to the DOM.
+  var isAttachedToDom = goog.dom.getAncestor(element, function(node) {
+    return node === element.ownerDocument.documentElement;
+  }, true);
+
+  if (!isAttachedToDom) {
+    return false;
+  }
+
   var keyboardEvent = doc.createEvent('KeyEvents');
   keyboardEvent.initKeyEvent(
       type,             // in DOMString typeArg,
