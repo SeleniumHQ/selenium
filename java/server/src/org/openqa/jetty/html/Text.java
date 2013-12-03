@@ -20,6 +20,7 @@ import java.util.Vector;
 /** A simple block of straight text.
  * @deprecated all Composites now take Strings direct.
  */
+@Deprecated
 public class Text extends Composite
 {
     /* ----------------------------------------------------------------- */

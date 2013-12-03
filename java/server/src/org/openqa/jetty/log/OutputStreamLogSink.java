@@ -117,6 +117,7 @@ public class OutputStreamLogSink
     /** 
      * @deprecated Use getLogTimeZone() 
      */
+    @Deprecated
     public String getLogTimezone()
     {
         return _logTimezone;
@@ -126,6 +127,7 @@ public class OutputStreamLogSink
     /** 
      * @deprecated Use setLogTimeZone(String) 
      */
+    @Deprecated
     public void setLogTimezone(String logTimezone)
     {
         _logTimezone=logTimezone;

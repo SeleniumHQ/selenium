@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------------
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at 
+// You may obtain a copy of the License at
 // http://www.apache.org/licenses/LICENSE-2.0
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,7 +37,7 @@ import org.openqa.jetty.log.LogFactory;
  * The properties THREADED_SERVER_MIN_THREADS and THREADED_SERVER_MAX_THREADS can be set to control
  * the number of threads created.
  * <P>
- * 
+ *
  * @version $Id: ThreadedServer.java,v 1.41 2005/12/10 00:38:20 gregwilkins Exp $
  * @author Greg Wilkins
  */
@@ -113,7 +113,7 @@ abstract public class ThreadedServer extends ThreadPool
     /* ------------------------------------------------------------ */
     /**
      * Set the server InetAddress and port.
-     * 
+     *
      * @param address The Address to listen on, or 0.0.0.0:port for all interfaces.
      */
     public synchronized void setInetAddrPort(InetAddrPort address)
@@ -218,9 +218,10 @@ abstract public class ThreadedServer extends ThreadPool
     /* ------------------------------------------------------------ */
     /**
      * Set Max Read Time.
-     * 
+     *
      * @deprecated maxIdleTime is used instead.
      */
+    @Deprecated
     public void setMaxReadTimeMs(int ms)
     {
         log.warn("setMaxReadTimeMs is deprecated. Use setMaxIdleTimeMs()");
@@ -284,7 +285,7 @@ abstract public class ThreadedServer extends ThreadPool
     /**
      * The size of the queue for unaccepted connections. If not set, will default to greater of
      * maxThreads or 50.
-     * 
+     *
      * @param acceptQueueSize The acceptQueueSize to set.
      */
     public void setAcceptQueueSize(int acceptQueueSize)
@@ -345,7 +346,7 @@ abstract public class ThreadedServer extends ThreadPool
     /* ------------------------------------------------------------ */
     /**
      * Handle Job. Implementation of ThreadPool.handle(), calls handleConnection.
-     * 
+     *
      * @param job A Connection.
      */
     public void handle(Object job)
@@ -377,7 +378,7 @@ abstract public class ThreadedServer extends ThreadPool
     /**
      * New server socket. Creates a new servers socket. May be overriden by derived class to create
      * specialist serversockets (eg SSL).
-     * 
+     *
      * @param address Address and port
      * @param acceptQueueSize Accept queue size
      * @return The new ServerSocket
@@ -395,22 +396,23 @@ abstract public class ThreadedServer extends ThreadPool
     /**
      * Accept socket connection. May be overriden by derived class to create specialist
      * serversockets (eg SSL).
-     * 
+     *
      * @deprecated use acceptSocket(int timeout)
      * @param ignored
      * @param timeout The time to wait for a connection. Normally passed the ThreadPool maxIdleTime.
      * @return Accepted Socket
      */
+    @Deprecated
     protected Socket acceptSocket(ServerSocket ignored, int timeout)
     {
         return acceptSocket(timeout);
     }
-    
+
     /* ------------------------------------------------------------ */
     /**
      * Accept socket connection. May be overridden by derived class to create specialist
      * serversockets (eg SSL).
-     * 
+     *
      * @param timeout The time to wait for a connection. Normally passed the ThreadPool maxIdleTime.
      * @return Accepted Socket
      */
@@ -466,7 +468,7 @@ abstract public class ThreadedServer extends ThreadPool
     /**
      * Open the server socket. This method can be called to open the server socket in advance of
      * starting the listener. This can be used to test if the port is available.
-     * 
+     *
      * @exception IOException if an error occurs
      */
     public void open() throws IOException
@@ -544,7 +546,7 @@ abstract public class ThreadedServer extends ThreadPool
             for (int a = 0; _acceptor!=null && a<_acceptor.length; a++)
             {
                 Acceptor acc = _acceptor[a];
-                if (acc != null) 
+                if (acc != null)
                     acc.interrupt();
             }
             Thread.sleep(100);
@@ -583,7 +585,7 @@ abstract public class ThreadedServer extends ThreadPool
     /* ------------------------------------------------------------ */
     /**
      * Kill a job. This method closes IDLE and socket associated with a job
-     * 
+     *
      * @param thread
      * @param job
      */
@@ -631,7 +633,7 @@ abstract public class ThreadedServer extends ThreadPool
                     {
                         // Accept a socket
                         Socket socket = acceptSocket(_soTimeOut);
-                        
+
                         // Handle the socket
                         if (socket != null)
                         {
@@ -661,7 +663,7 @@ abstract public class ThreadedServer extends ThreadPool
                     if (_acceptor != null)
                     {
                         for (int a = 0; a < _acceptor.length; a++)
-                            if (_acceptor[a] == this) 
+                            if (_acceptor[a] == this)
                                 _acceptor[a] = null;
                     }
                     threadedServer.notifyAll();

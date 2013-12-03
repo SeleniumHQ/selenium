@@ -352,7 +352,8 @@ public class ServletHttpResponse implements HttpServletResponse
     /**
      * @deprecated	As of version 2.1, use encodeURL(String url) instead
      */
-    public String encodeUrl(String url) 
+    @Deprecated
+    public String encodeUrl(String url)
     {
         return encodeURL(url);
     }
@@ -362,7 +363,8 @@ public class ServletHttpResponse implements HttpServletResponse
      * @deprecated	As of version 2.1, use 
      *			encodeRedirectURL(String url) instead
      */
-    public String encodeRedirectUrl(String url) 
+    @Deprecated
+    public String encodeRedirectUrl(String url)
     {
         return encodeRedirectURL(url);
     }
@@ -527,7 +529,8 @@ public class ServletHttpResponse implements HttpServletResponse
     * @param status the status code
     * @param message the status message
     */
-    public void setStatus(int status, String message) 
+    @Deprecated
+    public void setStatus(int status, String message)
     {
         setStatus(status);
         _httpResponse.setReason(message);
