@@ -97,8 +97,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   protected RemoteWebDriver() {
     init(new DesiredCapabilities(), null);
   }
-  
-  public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities, 
+
+  public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
     this.executor = executor;
 
@@ -119,12 +119,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     this((URL) null, desiredCapabilities);
   }
 
-  public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities, 
+  public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
-    this(new HttpCommandExecutor(remoteAddress), desiredCapabilities, 
+    this(new HttpCommandExecutor(remoteAddress), desiredCapabilities,
         requiredCapabilities);
   }
-  
+
   public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) {
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities, null);
   }
@@ -136,9 +136,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     executeMethod = new RemoteExecuteMethod(this);
     keyboard = new RemoteKeyboard(executeMethod);
     mouse = new RemoteMouse(executeMethod);
-    
+
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<String>();
-    
+
     boolean isProfilingEnabled = desiredCapabilities != null &&
         desiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
     if (requiredCapabilities != null && requiredCapabilities.getCapability(
@@ -149,10 +149,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       builder.add(LogType.PROFILER);
     }
 
-    LoggingPreferences mergedLoggingPrefs = new LoggingPreferences();    
+    LoggingPreferences mergedLoggingPrefs = new LoggingPreferences();
     if (desiredCapabilities != null) {
       mergedLoggingPrefs.addPreferences((LoggingPreferences)desiredCapabilities.getCapability(
-          CapabilityType.LOGGING_PREFS));  
+          CapabilityType.LOGGING_PREFS));
     }
     if (requiredCapabilities != null) {
       mergedLoggingPrefs.addPreferences((LoggingPreferences)requiredCapabilities.getCapability(
@@ -165,7 +165,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     Set<String> logTypesToInclude = builder.build();
-        
+
     LocalLogs performanceLogger = LocalLogs.getStoringLoggerInstance(logTypesToInclude);
     LocalLogs clientLogs = LocalLogs.getHandlerBasedLoggerInstance(LoggingHandler.getInstance(),
         logTypesToInclude);
@@ -202,17 +202,17 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   @SuppressWarnings({"unchecked"})
-  protected void startSession(Capabilities desiredCapabilities, 
+  protected void startSession(Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
-    
-    ImmutableMap.Builder<String, Capabilities> paramBuilder = 
+
+    ImmutableMap.Builder<String, Capabilities> paramBuilder =
         new ImmutableMap.Builder<String, Capabilities>();
-    paramBuilder.put("desiredCapabilities", desiredCapabilities);    
-    if (requiredCapabilities != null) { 
+    paramBuilder.put("desiredCapabilities", desiredCapabilities);
+    if (requiredCapabilities != null) {
       paramBuilder.put("requiredCapabilities", requiredCapabilities);
     }
     Map<String, ?> parameters = paramBuilder.build();
-    
+
     Response response = execute(DriverCommand.NEW_SESSION, parameters);
 
     Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();
