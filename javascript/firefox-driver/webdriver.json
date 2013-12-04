@@ -26,6 +26,7 @@
     "network.http.phishy-userpass-length": 255,
     "offline-apps.allow_by_default": true,
     "prompts.tab_modal.enabled": false,
+    "security.csp.enable": false,
     "security.fileuri.origin_policy": 3,
     "security.fileuri.strict_origin_policy": false,
     "security.warn_entering_secure": false,
