@@ -10,10 +10,10 @@ WebDriver:
     management is implemented in IEDriverServer now.
   * The logging level for the FirefoxDriver's native components can now
     be set from the command line with the SELENIUM_LOG_LEVEL
-	environment variable. Valid values are ERROR, WARN, INFO, DEBUG,
-	and TRACE. If the value is not set, or an unrecognized value is
-	specified, the log level will be set to FATAL (which was the
-	previous behavior).
+    environment variable. Valid values are ERROR, WARN, INFO, DEBUG,
+    and TRACE. If the value is not set, or an unrecognized value is
+    specified, the log level will be set to FATAL (which was the
+    previous behavior).
   * Implemented ability to return Date object from executeScript
     (Firefox only).
   * Fixed Firefox returning the actual state of nativeEvents.
@@ -26,22 +26,22 @@ WebDriver:
     subsequent "clean-up" quit() so the error from start is not lost.
   * Added an alternate, and Android-friendly, implementation of the
     Augmenter that uses JDK interface proxies instead of cglib. This
-	new implementation is available as org.openqa.remote.JdkAugmenter;
-	the default Augmenter implementation still relies on cglib.
+    new implementation is available as org.openqa.remote.JdkAugmenter;
+    the default Augmenter implementation still relies on cglib.
   * Prevented an infinite loop when computing overflow state when the
     documentElement has fixed position.
   * Improveed logging for UnixProcess#destroy().
   * If an error is thrown while typing a key sequence, return that
     error to the client. Prior to this change, the driver would
-	effectively hang.
+    effectively hang.
   * Do not attempt to generate a key event if the target element is no
     longer attached to the DOM. nsIPressShell (which is used to
-	dispatch events) will throw a generic NS_UNEXPECTED_ERROR if we
-	fail to make this check.
+    dispatch events) will throw a generic NS_UNEXPECTED_ERROR if we
+    fail to make this check.
   * FIXED: 3107: (On behalf of Ross Patterson) Preventing possible NPE.
   * FIXED: 4501: (On behalf of Robert Ambrus) Introduced a system
     property org.openqa.jetty.SocketListener.bufferSize that allows to
-	set the size of the buffer Jetty uses for network communications.
+    set the size of the buffer Jetty uses for network communications.
   * FIXED: 4698: Added missing expected conditions.
   * FIXED: 5295: User defined element properties should be retrievable
     with getAttribute.
@@ -68,8 +68,8 @@ WebDriver JS:
     unable to retrieve the current system's range.
   * FIXED: 6617: Checking for Error.captureStackTrace is sufficient to
     determine if an environment supports stack traces. This avoids
-	unnecessarily triggering debuggers configured to halt when an error
-	is thrown.
+    unnecessarily triggering debuggers configured to halt when an error
+    is thrown.
   * FIXED: 6627: Safely rebuild chrome.Options from a partial JSON spec.
 
 Grid:
