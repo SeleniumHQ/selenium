@@ -1,4 +1,4 @@
-## v2.38.0-dev
+## v2.38.0
 
 * When a promise is rejected, always annotate the stacktrace with the parent
     flow state so users can identify the source of an error.
