@@ -904,13 +904,31 @@ FirefoxDriver.prototype.getAlert = function(respond) {
 
 
 FirefoxDriver.prototype.dismissAlert = function(respond) {
-  fxdriver.modals.dismissAlert(this);
-  respond.send();
+  var self = this;
+  fxdriver.modals.isModalPresent(
+      function(present) {
+        if (!present) {
+          respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
+          respond.value = { message: 'No alert is present' };
+        } else {
+          fxdriver.modals.dismissAlert(self);
+        }
+        respond.send();
+      }, this.alertTimeout);
 };
 
 FirefoxDriver.prototype.acceptAlert = function(respond) {
-  fxdriver.modals.acceptAlert(this);
-  respond.send();
+  var self = this;
+  fxdriver.modals.isModalPresent(
+      function(present) {
+        if (!present) {
+          respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
+          respond.value = { message: 'No alert is present' };
+        } else {
+          fxdriver.modals.acceptAlert(self);
+        }
+        respond.send();
+      }, this.alertTimeout);
 };
 
 
@@ -930,8 +948,16 @@ FirefoxDriver.prototype.getAlertText = function(respond) {
 
 
 FirefoxDriver.prototype.setAlertValue = function(respond, parameters) {
-  fxdriver.modals.setValue(this, parameters['text']);
-  respond.send();
+  fxdriver.modals.isModalPresent(
+      function(present) {
+        if (!present) {
+          respond.status = bot.ErrorCode.NO_MODAL_DIALOG_OPEN;
+          respond.value = { message: 'No alert is present' };
+        } else {
+          fxdriver.modals.setValue(parameters['text']);
+        }
+        respond.send();
+      }, this.alertTimeout);
 };
 
 
