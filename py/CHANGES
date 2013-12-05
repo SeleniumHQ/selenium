@@ -1,3 +1,22 @@
+Selenium 2.38
+* Support for Firefox 25
+* FirefoxProfile now using common webdriver.json instead of having our own copy in py
+  - behavior change to the preferences is that they now should be treated
+    like raw types rather than strings and allow the json library to translate
+    the types appropriated (e.g. True => true)
+
+* Set proper 'Accept' request header so that Python bindings work with some old WebDriver implementations that reply 404 to requests with no 'Accept' set.
+* handle redirect response explicitly (since switching to using keep-alive)
+* phantomjs service needs to really kill the spawned process Issue #5921
+* removing old api endpoints from command listing
+* using keep-alive for remote connection
+* adjusting phantomjs subprocess.Popen
+* ActionsChains.send_keys should use <session>/keys endpoint Issue #6348
+* fix TypeError in chrome_options.extensions for Python3.x
+
+* Other Bugs Fixed: #6531, #6513, #4569, #6454
+
+
 Selenium 2.37.2
 * fix regression added with unicode fix
 * Bug fix #6360
