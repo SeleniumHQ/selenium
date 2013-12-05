@@ -1,3 +1,6 @@
+Selenium 2.38.1
+* fix packaging problem where firefox/webdriver_prefs.json was missing
+
 Selenium 2.38
 * Support for Firefox 25
 * FirefoxProfile now using common webdriver.json instead of having our own copy in py
