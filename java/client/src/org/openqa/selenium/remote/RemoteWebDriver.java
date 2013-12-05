@@ -129,7 +129,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities, null);
   }
 
-  private void init(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+  protected void init(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     logger.addHandler(LoggingHandler.getInstance());
 
     converter = new JsonToWebElementConverter(this);
