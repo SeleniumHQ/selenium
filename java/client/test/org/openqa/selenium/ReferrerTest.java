@@ -52,6 +52,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import org.webbitserver.HttpControl;
 import org.webbitserver.HttpHandler;
@@ -120,6 +121,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * does not have a proxy configured.
    */
   @Test
+  @NeedsLocalEnvironment
   public void basicHistoryNavigationWithoutAProxy() {
     testServer1.start();
 
@@ -142,6 +144,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation across multiple domains when the browser does not have a proxy configured.
    */
   @Test
+  @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithoutAProxy() {
 
     testServer1.start();
@@ -171,6 +174,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * configured to use a proxy that permits direct access to that domain.
    */
   @Test
+  @NeedsLocalEnvironment
   public void basicHistoryNavigationWithADirectProxy() {
     testServer1.start();
 
@@ -199,6 +203,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * permits direct access to those domains.
    */
   @Test
+  @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithADirectProxy() {
     testServer1.start();
     testServer2.start();
@@ -232,6 +237,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * redirects the second domain to another host.
    */
   @Test
+  @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithAProxiedHost() {
     testServer1.start();
     testServer2.start();
@@ -271,6 +277,7 @@ public class ReferrerTest extends JUnit4TestBase {
    * to connect directly to the target server.
    */
   @Test
+  @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
     testServer1.start();
     proxyServer.start();
@@ -311,6 +318,7 @@ public class ReferrerTest extends JUnit4TestBase {
       reason = "IEDriver does not disable automatic proxy caching, causing this test to fail.",
       issues = 6629)
   @Test
+  @NeedsLocalEnvironment
   public void navigationWhenProxyInterceptsASpecificUrl() {
     testServer1.start();
     proxyServer.start();
