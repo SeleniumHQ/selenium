@@ -229,6 +229,7 @@ public class HttpResponse extends HttpMessage
     /**
      * @deprecated use getHttpRequest()
      */
+    @Deprecated
     public HttpRequest getRequest()
     {
         return getHttpRequest();

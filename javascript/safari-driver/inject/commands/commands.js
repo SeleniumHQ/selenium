@@ -303,7 +303,7 @@ safaridriver.inject.commands.getElementText =
  */
 safaridriver.inject.commands.getElementTagName =
     safaridriver.inject.commands.elementCommand_(function(el) {
-      return el.tagName;
+      return el.tagName.toLowerCase();
     });
 
 

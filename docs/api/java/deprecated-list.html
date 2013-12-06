@@ -155,20 +155,6 @@
 <tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/remote/CapabilityType.html#ENABLE_PERSISTENT_HOVERING">org.openqa.selenium.remote.CapabilityType.ENABLE_PERSISTENT_HOVERING</a></td>
 </tr>
-<tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#IE_SET_PROXY_BY_SERVER">org.openqa.selenium.ie.InternetExplorerDriver.IE_SET_PROXY_BY_SERVER</a>
-<div class="block"><i>please set this option as True and allow IEDriverServer sets up proxy.
- In next releases it will be set to True by default.
-
- Capability that defines used proxy setter. Currently it's False by default.
-
- False means WindowsProxyManager will be used for setting proxy settings.
- True means IEDriverServer will be used for setting proxy settings.
-
- Be note that using both variants in concurrent drivers at the same node
- may lead to undefined behaviour.</i></div>
-</td>
-</tr>
 </tbody>
 </table>
 </li>
@@ -207,6 +193,11 @@
 <tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setProxyPreferences(org.openqa.selenium.Proxy)">org.openqa.selenium.firefox.FirefoxProfile.setProxyPreferences(Proxy)</a>
 <div class="block"><i>This is now handled by the driver itself.</i></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElement(org.openqa.selenium.By, java.lang.String)">org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement(By, String)</a>
+<div class="block"><i>Use <a href="org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElementLocated(org.openqa.selenium.By, java.lang.String)"><code>ExpectedConditions.textToBePresentInElementLocated(By, String)</code></a> instead</i></div>
 </td>
 </tr>
 </tbody>

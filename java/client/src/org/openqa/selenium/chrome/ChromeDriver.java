@@ -181,7 +181,12 @@ public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
     try {
       super.startSession(desiredCapabilities, requiredCapabilities);
     } catch (WebDriverException e) {
-      quit();
+      try {
+        quit();
+      } catch (Throwable t) {
+         // Ignoring to report the exception thrown earlier.
+      }
+
       throw e;
     }
   }

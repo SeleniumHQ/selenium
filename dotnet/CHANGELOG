@@ -1,3 +1,12 @@
+v2.38.0
+=======
+ * Issue #6383: Adding method GetCSSCount to ISelenium.
+ * Issue #6418: Updated .NET path manipulation when launching Firefox process.
+ * Issue #6453: Adding type-safe properties for new command-line arguments of
+   chromedriver.exe
+ * Issue #6457: Disabled keep-alive header on .NET driver service startup/
+   shutdown requests.
+
 v2.37.0
 =======
  * Issue #6163: Refactored .NET DriverService-based shutdown code. Moved

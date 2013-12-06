@@ -78,7 +78,7 @@
       textInputCountBox.value = parseInt(textInputCountBox.value) + 1;
     }
 
-    /*
+    /**
      * Types a value into textbox, and makes sure that textbox and textbox_count
      * have the correct values afterwards.  textbox_count should display the
      * number of times textbox's oninput (non IE) or onpropertychange (IE) event
@@ -302,7 +302,7 @@
        */
       function setupAllToggleListeners(listenerKeys) {
         var history = {alt: [], ctrl: [], meta: [], shift: []};
-        for (key in history) {
+        for (var key in history) {
           listenerKeys.push(setupSingleToggleListener(history, key));
         }
         return history;

@@ -1,3 +1,94 @@
+v2.38.0
+=======
+WebDriver:
+  * Update to support native events for Firefox 25.
+  * Updated httpclient and httpcore maven dependencies
+  * When moving the mouse relative to an element hidden in a parent's
+    overflow region, that element must first be scrolled into view
+    before the mouse move can be completed.
+  * Removed WindowsProxyManager from InternetExplorerDriver, proxy
+    management is implemented in IEDriverServer now.
+  * The logging level for the FirefoxDriver's native components can now
+    be set from the command line with the SELENIUM_LOG_LEVEL
+    environment variable. Valid values are ERROR, WARN, INFO, DEBUG,
+    and TRACE. If the value is not set, or an unrecognized value is
+    specified, the log level will be set to FATAL (which was the
+    previous behavior).
+  * Implemented ability to return Date object from executeScript
+    (Firefox only).
+  * Fixed Firefox returning the actual state of nativeEvents.
+  * Made it possible to switch the webdriver.xpi from the command line
+    using a system property.
+  * Removed hardcoded chromedriver version
+  * SafariDriver WebElement#getTagName() should return a lowercase
+    string.
+  * If ChromeDriver fails to start, suppress any exceptions from the
+    subsequent "clean-up" quit() so the error from start is not lost.
+  * Added an alternate, and Android-friendly, implementation of the
+    Augmenter that uses JDK interface proxies instead of cglib. This
+    new implementation is available as org.openqa.remote.JdkAugmenter;
+    the default Augmenter implementation still relies on cglib.
+  * Prevented an infinite loop when computing overflow state when the
+    documentElement has fixed position.
+  * Improveed logging for UnixProcess#destroy().
+  * If an error is thrown while typing a key sequence, return that
+    error to the client. Prior to this change, the driver would
+    effectively hang.
+  * Do not attempt to generate a key event if the target element is no
+    longer attached to the DOM. nsIPressShell (which is used to
+    dispatch events) will throw a generic NS_UNEXPECTED_ERROR if we
+    fail to make this check.
+  * FIXED: 3107: (On behalf of Ross Patterson) Preventing possible NPE.
+  * FIXED: 4501: (On behalf of Robert Ambrus) Introduced a system
+    property org.openqa.jetty.SocketListener.bufferSize that allows to
+    set the size of the buffer Jetty uses for network communications.
+  * FIXED: 4698: Added missing expected conditions.
+  * FIXED: 5295: User defined element properties should be retrievable
+    with getAttribute.
+  * FIXED: 5900: Revamped the SafariDriver's internal networking.
+  * FIXED: 6294: Implemented ability to switch to a frame by id or name
+    in WDBS.
+  * FIXED: 6358: Disabled Content Security Policy in Firefox.
+  * FIXED: 6414: Fixed the way EventFiringWebDriver unwraps the
+    underlying driver.
+  * FIXED: 6431: Catch an exception thrown if the chrome executable is
+    not found and stop chromedriver before propagating it.
+  * FIXED: 6445: Shortened Firefox profile textual representation in
+    capabilities.
+  * FIXED: 6473: Implemented ability to pass --verbose option to
+    chromedriver.
+
+WebDriver JS:
+  * Always annotate errors for rejected promises
+  * FIXED: 6284: Omit x/y offsets from the mouseMove command instead of
+    defaulting to (0,0).
+  * FIXED: 6471: Correctly document the contract on
+    WebElement#getAttribute
+  * FIXED: 6612: On Unix, use the default IANA ephemeral port range if
+    unable to retrieve the current system's range.
+  * FIXED: 6617: Checking for Error.captureStackTrace is sufficient to
+    determine if an environment supports stack traces. This avoids
+    unnecessarily triggering debuggers configured to halt when an error
+    is thrown.
+  * FIXED: 6627: Safely rebuild chrome.Options from a partial JSON spec.
+
+Grid:
+  * FIXED: 6357: Added PhantomJS icon to the grid console.
+  * FIXED: 6392: Removed misleading log messages.
+
+RC:
+  * FIXED: 1666: Fixed typo in RegExp.test function name.
+  * FIXED: 1758: Ignoring closed windows when collecting attributes
+    from all windows (RC).
+  * FIXED: 2508: Fixed screenshot size calculation for quirks mode (RC)
+  * FIXED: 2845: Moved storedVars from test case level to test suite
+    level.
+  * FIXED: 3185: Fixed JSON converter (RC).
+  * FIXED: 3270: Fixed switch to window by var= locator (RC).
+  * FIXED: 5103: Fixed screenshooter in Firefox and Selenium RC,
+    limiting the size of the screenshot to pevent failures.
+  * FIXED: 6496: Enabled .htm and .xhtml extensions for test suites.
+
 v2.37.0
 =======
   * Fix Firefox native event support on Linux for 23 & 24.

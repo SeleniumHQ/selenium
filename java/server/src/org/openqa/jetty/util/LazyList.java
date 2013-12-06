@@ -128,6 +128,7 @@ public class LazyList
      * @return The lazylist created or added to.
      * @deprecated Use addCollection
      */
+    @Deprecated
     protected Object add(Object list, Collection collection)
     {
         Iterator i=collection.iterator();

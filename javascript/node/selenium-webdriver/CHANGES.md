@@ -1,12 +1,17 @@
-## v2.38.0-dev
+## v2.38.0
 
 * When a promise is rejected, always annotate the stacktrace with the parent
     flow state so users can identify the source of an error.
+* Updated tests to reflect features not working correctly in the SafariDriver
+    (cookie management and proxy support; see issues 5051, 5212, and 5503)
 * FIXED: 6284: For mouse moves, correctly omit the x/y offsets if not
     specified as a function argument (instead of passing (0,0)).
 * FIXED: 6471: Updated documentation on `webdriver.WebElement#getAttribute`
 * FIXED: 6612: On Unix, use the default IANA ephemeral port range if unable to
     retrieve the current system's port range.
+* FIXED: 6617: Avoid triggering the node debugger when initializing the
+    stacktrace module.
+* FIXED: 6627: Safely rebuild chrome.Options from a partial JSON spec.
 
 ## v2.37.0
 

@@ -1,8 +1,9 @@
-2.38.0 (???)
-============
+2.38.0 (2013-12-05)
+===================
 
-* Enforce required ruby version in gemspec, not just through rubyzip.
-* Expose the logging API (beta, subject to change) in the Ruby client: driver.manage.logs #=> Selenium::WebDriver::Logs
+* Enforce required Ruby version in gemspec, not just transitively through rubyzip.
+* Expose the logging API (beta API, subject to change) in the Ruby client: driver.manage.logs #=> Selenium::WebDriver::Logs
+* Update to support native events for Firefox 25
 
 
 2.37.0 (2013-10-18)

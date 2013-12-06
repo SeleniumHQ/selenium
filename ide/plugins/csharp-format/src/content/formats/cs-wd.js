@@ -501,7 +501,7 @@ WDAPI.Element.prototype.submit = function() {
   return this.ref + ".Submit()";
 };
 
-WDAPI.Element.prototype.select = function(label) {
+WDAPI.Element.prototype.select = function(selectLocator) {
   if (selectLocator.type == 'index') {
     return "new SelectElement(" + this.ref + ").SelectByIndex(" + selectLocator.string + ")";
   }

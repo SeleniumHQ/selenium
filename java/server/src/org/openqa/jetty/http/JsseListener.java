@@ -54,6 +54,7 @@ import org.openqa.jetty.util.LogSupport;
  * @author Forge Research Pty Ltd ACN 003 491 576
  * @author Jan Hlavatý
  */
+@Deprecated
 public abstract class JsseListener extends SocketListener
 {
     private static Log log = LogFactory.getLog(JsseListener.class);

@@ -120,6 +120,7 @@ public class ThreadPool implements LifeCycle,Serializable
     /**
      * @deprecated use getName()
      */
+    @Deprecated
     public String getPoolName()
     {
         return getName();
@@ -129,6 +130,7 @@ public class ThreadPool implements LifeCycle,Serializable
     /**
      * @deprecated use setName(String)
      */
+    @Deprecated
     public void setPoolName(String name)
     {
         setName(name);
@@ -294,6 +296,7 @@ public class ThreadPool implements LifeCycle,Serializable
      * 
      * @deprecated maxIdleTime is used instead.
      */
+    @Deprecated
     public void setMaxStopTimeMs(int ms)
     {
         log.warn("setMaxStopTimeMs is deprecated. No longer required.");

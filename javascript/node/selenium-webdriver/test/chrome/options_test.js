@@ -69,6 +69,24 @@ describe('chrome.Options', function() {
       assert(options.prefs_).equalTo('prefsValue');
     });
 
+    it('should rebuild options from incomplete wire representation',
+        function() {
+          var caps = webdriver.Capabilities.chrome().set('chromeOptions', {
+            logFile: 'logFilePath'
+          });
+
+          var options = chrome.Options.fromCapabilities(caps);
+          var json = options.toJSON();
+
+          assert(json.args.length).equalTo(0);
+          assert(json.binary).isUndefined();
+          assert(json.detach).isFalse();
+          assert(json.extensions.length).equalTo(0);
+          assert(json.localState).isUndefined();
+          assert(json.logFile).equalTo('logFilePath');
+          assert(json.prefs).isUndefined();
+        });
+
     it('should extract supported WebDriver capabilities', function() {
       var proxyPrefs = proxy.direct();
       var logPrefs = {};

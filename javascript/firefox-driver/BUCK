@@ -1,0 +1,42 @@
+
+export_file(name = 'webdriver_prefs',
+  src = 'webdriver.json',
+  visibility = [
+    '//java/client/src/org/openqa/selenium/firefox:prefs',
+  ],
+)
+
+mozilla_xpt(name = 'command_processor_xpt',
+  src = 'extension/idl/nsICommandProcessor.idl',
+  fallback = 'prebuilt/firefox-driver/nsICommandProcessor.xpt',
+)
+
+mozilla_xpt(name = 'response_handler_xpt',
+  src = 'extension/idl/nsIResponseHandler.idl',
+  fallback = 'prebuilt/firefox-driver/nsIResponseHandler.xpt',
+)
+
+mozilla_xpt(name = 'httpd_xpt',
+  src = 'extension/idl/nsIHttpServer.idl',
+  fallback = 'prebuilt/firefox-driver/nsIHttpServer.xpt',
+)
+
+mozilla_xpt(name = 'status_xpt',
+  src = 'extension/idl/wdIStatus.idl',
+  fallback = 'prebuilt/firefox-driver/wdIStatus.xpt',
+)
+
+mozilla_xpt(name = 'coordinates_xpt',
+  src = 'extension/idl/wdICoordinate.idl',
+  fallback = 'prebuilt/firefox-driver/wdICoordinate.xpt',
+)
+
+mozilla_xpt(name = 'modifier_keys_xpt',
+  src = 'extension/idl/wdIModifierKeys.idl',
+  fallback = 'prebuilt/firefox-driver/wdIModifierKeys.xpt',
+)
+
+mozilla_xpt(name = 'mouse_xpt',
+  src = 'extension/idl/wdIMouse.idl',
+  fallback = 'prebuilt/firefox-driver/wdIMouse.xpt',
+)

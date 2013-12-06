@@ -84,13 +84,14 @@ webdriver.stacktrace.CAN_CAPTURE_STACK_TRACE_ =
  * @type {boolean}
  * @const
  */
-webdriver.stacktrace.BROWSER_SUPPORTED = (function() {
-  try {
-    throw Error();
-  } catch (e) {
-    return !!e.stack;
-  }
-})();
+webdriver.stacktrace.BROWSER_SUPPORTED =
+    webdriver.stacktrace.CAN_CAPTURE_STACK_TRACE_ || (function() {
+      try {
+        throw Error();
+      } catch (e) {
+        return !!e.stack;
+      }
+    })();
 
 
 /**

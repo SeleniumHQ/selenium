@@ -36,7 +36,7 @@ public class TestUtilities {
 
   }
 
-  private static String getUserAgent(WebDriver driver) {
+  public static String getUserAgent(WebDriver driver) {
     try {
       return (String) ((JavascriptExecutor) driver).executeScript(
         "return navigator.userAgent;");

@@ -67,7 +67,7 @@ fxdriver.modals.getText = function(driver) {
   return driver.modalOpen;
 };
 
-fxdriver.modals.setValue = function(driver, value) {
+fxdriver.modals.setValue = function(value) {
   var modal = fxdriver.modals.find_();
   var textbox = modal.document.getElementById('loginTextbox');
 

@@ -17,14 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.drivers.Browser;
-
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -46,10 +38,20 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
-import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+
+import com.google.common.base.Joiner;
+
+import org.junit.Test;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.drivers.Browser;
 
 public class TypingTest extends JUnit4TestBase {
 
@@ -763,4 +765,39 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, SAFARI, OPERA, IPHONE, ANDROID}, reason = "Untested")
+  @Test
+  public void canSafelyTypeOnElementThatIsRemovedFromTheDomOnKeyPress() {
+    driver.get(appServer.whereIs("key_tests/remove_on_keypress.html"));
+
+    WebElement input = driver.findElement(By.id("target"));
+    WebElement log = driver.findElement(By.id("log"));
+
+    assertEquals("", log.getAttribute("value"));
+
+    input.sendKeys("b");
+    assertThat(getValueText(log), equalTo(Joiner.on('\n').join(
+        "keydown (target)",
+        "keyup (target)",
+        "keyup (body)")));
+
+    input.sendKeys("a");
+
+    // Some drivers (IE, Firefox) do not always generate the final keyup event since the element
+    // is removed from the DOM in response to the keypress (note, this is a product of how events
+    // are generated and does not match actual user behavior).
+    String expected = Joiner.on('\n').join(
+        "keydown (target)",
+        "keyup (target)",
+        "keyup (body)",
+        "keydown (target)",
+        "a pressed; removing");
+    assertThat(getValueText(log), anyOf(equalTo(expected), equalTo(expected + "\nkeyup (body)")));
+  }
+
+  private static String getValueText(WebElement el) {
+    // Standardize on \n and strip any trailing whitespace.
+    return el.getAttribute("value").replace("\r\n", "\n").trim();
+  }
 }

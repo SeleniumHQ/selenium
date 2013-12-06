@@ -28,6 +28,7 @@ test.suite(function(env) {
   var driver;
   beforeEach(function() { driver = env.driver; });
 
+  test.ignore(env.browsers(Browser.SAFARI)).  // Cookie handling is broken.
   describe('Cookie Management;', function() {
 
     test.beforeEach(function() {
