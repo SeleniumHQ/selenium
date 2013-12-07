@@ -1495,6 +1495,11 @@ webdriver.WebElement = function(driver, id) {
   delete this.fulfill;
   delete this.reject;
 
+  // By default, unhandled errors should be ignored at this level. The
+  // failing ID promise will handle propagating failures to the rest of the
+  // flow.
+  this.then(null, function () {});
+
   /**
    * A promise that resolves to the JSON representation of this WebElement's
    * ID, as defined by the WebDriver wire protocol.
