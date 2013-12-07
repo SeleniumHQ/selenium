@@ -18,12 +18,19 @@ import logging
 import socket
 import string
 import base64
-import httplib
-import datetime
-import urllib2 as url_request
 
 try:
-    from urllib2 import parse
+    import http.client as httplib
+except ImportError:
+    import httplib as httplib
+
+try:
+    from urllib import request as url_request
+except ImportError:
+    import urllib2 as url_request
+
+try:
+    from urllib import parse
 except ImportError:
     import urlparse as parse
 
@@ -32,6 +39,7 @@ from .errorhandler import ErrorCode
 from . import utils
 
 LOGGER = logging.getLogger(__name__)
+
 
 class Request(url_request.Request):
     """
@@ -151,11 +159,10 @@ class RemoteConnection(object):
                     (parsed_url.scheme, netloc, parsed_url.path,
                      parsed_url.params, parsed_url.query, parsed_url.fragment))
             except socket.gaierror:
-                LOGGER.info('Could not get IP address for host: %s' %
-                            parsed_url.hostname)
+                LOGGER.info('Could not get IP address for host: %s' % parsed_url.hostname)
 
         self._url = remote_server_addr
-        self._conn = httplib.HTTPConnection(str(addr),str(parsed_url.port))
+        self._conn = httplib.HTTPConnection(str(addr), str(parsed_url.port))
         self._commands = {
             Command.STATUS: ('GET', '/status'),
             Command.NEW_SESSION: ('POST', '/session'),
@@ -226,10 +233,10 @@ class RemoteConnection(object):
             Command.SWITCH_TO_WINDOW: ('POST', '/session/$sessionId/window'),
             Command.CLOSE: ('DELETE', '/session/$sessionId/window'),
             Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY:
-                ('GET',  '/session/$sessionId/element/$id/css/$propertyName'),
+                ('GET', '/session/$sessionId/element/$id/css/$propertyName'),
             Command.IMPLICIT_WAIT:
                 ('POST', '/session/$sessionId/timeouts/implicit_wait'),
-            Command.EXECUTE_ASYNC_SCRIPT: ('POST','/session/$sessionId/execute_async'),
+            Command.EXECUTE_ASYNC_SCRIPT: ('POST', '/session/$sessionId/execute_async'),
             Command.SET_SCRIPT_TIMEOUT:
                 ('POST', '/session/$sessionId/timeouts/async_script'),
             Command.SET_TIMEOUTS:
@@ -321,14 +328,12 @@ class RemoteConnection(object):
             Command.CLEAR_SESSION_STORAGE:
                 ('DELETE', '/session/$sessionId/session_storage'),
             Command.GET_SESSION_STORAGE_SIZE:
-                ('GET','/session/$sessionId/session_storage/size'),
+                ('GET', '/session/$sessionId/session_storage/size'),
             Command.GET_LOG:
-                ('POST','/session/$sessionId/log'),
+                ('POST', '/session/$sessionId/log'),
             Command.GET_AVAILABLE_LOG_TYPES:
-                ('GET','/session/$sessionId/log/types'),
-            }
-
-
+                ('GET', '/session/$sessionId/log/types'),
+        }
 
     def execute(self, command, params):
         """
@@ -364,17 +369,14 @@ class RemoteConnection(object):
         LOGGER.debug('%s %s %s' % (method, url, data))
 
         parsed_url = parse.urlparse(url)
-        headers = {}
-        headers["Connection"] = "Keep-Alive"
-        headers[method] = parsed_url.path
-        headers["User-Agent"] = "Python http auth"
-        headers["Content-type"] = "application/json;charset=\"UTF-8\""
-        headers["Accept"] = "application/json"
-        headers["Connection"] = "keep-alive"
+        headers = {"Connection": "keep-alive", method: parsed_url.path,
+                   "User-Agent": "Python http auth",
+                   "Content-type": "application/json;charset=\"UTF-8\"",
+                   "Accept": "application/json"}
 
         # for basic auth
         if parsed_url.username:
-            auth = base64.standard_b64encode('%s:%s' % (parsed_url.username, parsed_url.password)).replace('\n','')
+            auth = base64.standard_b64encode('%s:%s' % (parsed_url.username, parsed_url.password)).replace('\n', '')
             # Authorization header
             headers["Authorization"] = "Basic %s" % auth
 
@@ -382,12 +384,12 @@ class RemoteConnection(object):
         resp = self._conn.getresponse()
         statuscode = resp.status
         statusmessage = resp.msg
-        LOGGER.debug('%s %s' %(statuscode, statusmessage))
+        LOGGER.debug('%s %s' % (statuscode, statusmessage))
         data = resp.read()
         try:
-            if statuscode > 399 and statuscode < 500:
+            if 399 < statuscode < 500:
                 return {'status': statuscode, 'value': data}
-            if statuscode >= 300 and statuscode < 304:
+            if 300 <= statuscode < 304:
                 return self._request(resp.getheader('location'), method='GET')
             body = data.decode('utf-8').replace('\x00', '').strip()
             content_type = []
@@ -397,7 +399,7 @@ class RemoteConnection(object):
                 try:
                     data = utils.load_json(body.strip())
                 except ValueError:
-                    if statuscode > 199 and statuscode < 300:
+                    if 199 < statuscode < 300:
                         status = ErrorCode.SUCCESS
                     else:
                         status = ErrorCode.UNKNOWN_ERROR
