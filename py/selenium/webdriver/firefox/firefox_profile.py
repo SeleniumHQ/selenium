@@ -39,12 +39,12 @@ WEBDRIVER_EXT = "webdriver.xpi"
 WEBDRIVER_PREFERENCES = "webdriver_prefs.json"
 EXTENSION_NAME = "fxdriver@googlecode.com"
 
-class FirefoxProfile(object):
 
-    ANONYMOUS_PROFILE_NAME   = "WEBDRIVER_ANONYMOUS_PROFILE"
+class FirefoxProfile(object):
+    ANONYMOUS_PROFILE_NAME = "WEBDRIVER_ANONYMOUS_PROFILE"
     DEFAULT_PREFERENCES = None
 
-    def __init__(self,profile_directory=None):
+    def __init__(self, profile_directory=None):
         """
         Initialises a new instance of a Firefox Profile
 
@@ -67,10 +67,9 @@ class FirefoxProfile(object):
             self.profile_dir = self._create_tempfolder()
         else:
             self.tempfolder = tempfile.mkdtemp()
-            newprof = os.path.join(self.tempfolder,
-                "webdriver-py-profilecopy")
+            newprof = os.path.join(self.tempfolder, "webdriver-py-profilecopy")
             shutil.copytree(self.profile_dir, newprof,
-                ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock"))
+                            ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock"))
             self.profile_dir = newprof
             self._read_existing_userjs(os.path.join(self.profile_dir, "user.js"))
         self.extensionsDir = os.path.join(self.profile_dir, "extensions")
@@ -162,7 +161,7 @@ class FirefoxProfile(object):
         """
         fp = BytesIO()
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
-        path_root = len(self.path) + 1 # account for trailing slash
+        path_root = len(self.path) + 1  # account for trailing slash
         for base, dirs, files in os.walk(self.path):
             for fyle in files:
                 filename = os.path.join(base, fyle)
@@ -172,8 +171,10 @@ class FirefoxProfile(object):
 
     def set_proxy(self, proxy):
         import warnings
-        warnings.warn("This method has been deprecated. Please pass in the proxy object to the Driver Object",
-                    DeprecationWarning)
+
+        warnings.warn(
+            "This method has been deprecated. Please pass in the proxy object to the Driver Object",
+            DeprecationWarning)
         if proxy is None:
             raise ValueError("proxy can not be None")
 
@@ -215,15 +216,18 @@ class FirefoxProfile(object):
                 f.write('user_pref("%s", %s);\n' % (key, json.dumps(value)))
 
     def _read_existing_userjs(self, userjs):
+        import warnings
+
         PREF_RE = re.compile(r'user_pref\("(.*)",\s(.*)\)')
         try:
             with open(userjs) as f:
                 for usr in f:
                     matches = re.search(PREF_RE, usr)
                     try:
-                      self.default_preferences[matches.group(1)] = json.loads(matches.group(2))
+                        self.default_preferences[matches.group(1)] = json.loads(matches.group(2))
                     except:
-                      print "(skipping) failed to json.loads existing prefernce:", matches.group(1), matches.group(2)
+                        warnings.warn("(skipping) failed to json.loads existing preference: " +
+                                      matches.group(1) + matches.group(2))
         except:
             # The profile given hasn't had any changes made, i.e no users.js
             pass
@@ -241,7 +245,7 @@ class FirefoxProfile(object):
         tmpdir = None
         xpifile = None
         if addon.endswith('.xpi'):
-            tmpdir = tempfile.mkdtemp(suffix = '.' + os.path.split(addon)[-1])
+            tmpdir = tempfile.mkdtemp(suffix='.' + os.path.split(addon)[-1])
             compressed_file = zipfile.ZipFile(addon, 'r')
             for name in compressed_file.namelist():
                 if name.endswith('/'):
@@ -323,6 +327,6 @@ class FirefoxProfile(object):
             # Remove the namespace prefix from the tag for comparison
             entry = node.nodeName.replace(em, "")
             if entry in details.keys():
-                details.update({ entry: get_text(node) })
+                details.update({entry: get_text(node)})
 
         return details
