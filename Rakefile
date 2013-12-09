@@ -35,7 +35,6 @@ require 'rake-tasks/dotnet'
 require 'rake-tasks/zip'
 require 'rake-tasks/c'
 require 'rake-tasks/java'
-require 'rake-tasks/iphone'
 require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
 require 'rake-tasks/ie_code_generator'
@@ -124,8 +123,6 @@ task :support => [
   "//java/client/src/org/openqa/selenium/lift",
   "//java/client/src/org/openqa/selenium/support",
 ]
-task :iphone_client => ['//java/client/src/org/openqa/selenium/iphone']
-task :iphone => [:iphone_server, :iphone_client]
 
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium:uber'
@@ -175,7 +172,6 @@ task :test_support => [
   "//java/client/test/org/openqa/selenium/support:SmallTests:run",
   "//java/client/test/org/openqa/selenium/support:LargeTests:run"
 ]
-task :test_iphone => [:test_iphone_server, '//java/client/test/org/openqa/selenium/iphone:test:run']
 
 # TODO(simon): test-core should go first, but it's changing the least for now.
 task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-core']
@@ -254,13 +250,11 @@ if (python?)
 end
 
 
-task :build => [:all, :iphone, :remote, :selenium]
+task :build => [:all, :remote, :selenium]
 
 desc 'Clean build artifacts.'
 task :clean do
   rm_rf 'build/'
-  rm_rf 'iphone/build/'
-  rm_rf 'iphone/src/objc/atoms.h'
   rm_rf 'java/client/build/'
   rm_rf 'dist/'
 end
@@ -582,33 +576,6 @@ task :test_selenium_py => [:'selenium-core', :'selenium-server-standalone'] do
         sh "python2.6 selenium/test/py/runtests.py", :verbose => true
     end
 end
-
-#### iPhone ####
-task :iphone_server do
-  sdk = iPhoneSDK?
-  if sdk != nil then
-    puts "Building iWebDriver iphone app."
-    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target iWebDriver -configuration Debug", :verbose => false
-  else
-    puts "XCode not found. Not building the iphone driver."
-  end
-end
-
-# This does not depend on :iphone_server because the dependancy is specified in xcode
-task :test_iphone_server do
-  sdk = iPhoneSDK?
-  if sdk != nil then
-    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target Tests -configuration Debug"
-  else
-    puts "XCode and/or iPhoneSDK not found. Not testing iphone_server."
-  end
-end
-
-file "iphone/src/objc/atoms.h" => ["//iphone:atoms"] do |task|
-  puts "Writing: #{task}"
-  cp "build/iphone/atoms.h", "iphone/src/objc/atoms.h"
-end
-task :iphone_atoms => ["iphone/src/objc/atoms.h"]
 
 file "cpp/iedriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
   cp "build/third_party/js/sizzle/sizzle.h", "cpp/iedriver/sizzle.h"

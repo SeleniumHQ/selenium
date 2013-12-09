@@ -17,5 +17,5 @@ js_fragment_header(name = "atoms",
     "//javascript/webdriver/atoms/fragments:get_text:ios",
     "//javascript/webdriver/atoms/fragments:is_selected:ios",
   ],
-  out = "iphone/src/objc/atoms.h",
+  out = "build/iphone/atoms.h",
   utf8 = "true")
