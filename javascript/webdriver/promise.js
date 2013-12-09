@@ -273,7 +273,7 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
    */
   function removeAll() {
     if (!isPending()) {
-      throw new Error('This Deferred has already been resolved.');
+      throw new Error('This Deferred has already been resolved. (1)');
     }
     listeners = [];
   }
@@ -288,7 +288,7 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
    */
   function notifyAll(newState, newValue) {
     if (!isPending()) {
-      throw new Error('This Deferred has already been resolved.');
+      throw new Error('This Deferred has already been resolved. (2)');
     }
 
     state = newState;
@@ -431,13 +431,13 @@ webdriver.promise.Deferred = function(opt_canceller, opt_flow) {
   }
 
   /**
-   * Cancels the computation of this promise's value and flags the promise as a
-   * rejected value.
+   * Attempts to cancel the computation of this instance's value. This attempt
+   * will silently fail if this instance has already resolved.
    * @param {*=} opt_reason The reason for cancelling this promise.
    */
   function cancel(opt_reason) {
     if (!isPending()) {
-      throw Error('This Deferred has already been resolved.');
+      return;
     }
 
     if (opt_canceller) {

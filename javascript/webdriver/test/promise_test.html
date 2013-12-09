@@ -37,15 +37,15 @@ var assertIsPromise = webdriver.test.testutil.assertIsPromise,
     throwStubError = webdriver.test.testutil.throwStubError,
     STUB_ERROR = webdriver.test.testutil.STUB_ERROR;
 
-var app, clock, uncaughtException;
+var app, clock, uncaughtExceptions;
 
 function setUp() {
   clock = webdriver.test.testutil.createMockClock();
-  uncaughtException = callbackHelper();
+  uncaughtExceptions = [];
 
   app = webdriver.promise.controlFlow();
   app.on(webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION,
-         uncaughtException);
+         goog.bind(uncaughtExceptions.push, uncaughtExceptions));
 
   // The application timer defaults to a protected copies of the native
   // timing functions. Reset it to use |window|, which has been modified
@@ -58,7 +58,8 @@ function tearDown() {
   webdriver.test.testutil.consumeTimeouts();
   clock.dispose();
   app.reset();
-  uncaughtException.assertNotCalled();
+  assertArrayEquals(
+      'Did not expect any uncaught exceptions', [], uncaughtExceptions);
 }
 
 
@@ -1132,9 +1133,32 @@ function testCancel_cancellerFunctionExplicityResolvesPromise() {
 }
 
 
-function testCancel_cannotCancelADeferredThatHasBeenResolved() {
-  var d = webdriver.promise.fulfilled(123);
-  assertThrows(d.cancel);
+function testCancel_cancelIsANoopOnceAPromiseHasBeenFulfilled() {
+  var p = webdriver.promise.fulfilled(123);
+  p.cancel();
+
+  var pair = callbackPair(goog.partial(assertEquals, 123));
+  p.then(pair.callback, pair.errback);
+  pair.assertCallback();
+}
+
+
+function testCancel_cancelIsANoopOnceAPromiseHasBeenRejected() {
+  var p = webdriver.promise.rejected(STUB_ERROR);
+  p.cancel();
+
+  var pair = callbackPair(null, assertIsStubError);
+  p.then(pair.callback, pair.errback);
+  pair.assertErrback();
+}
+
+
+function testCancel_noopCancelTriggeredOnCallbackOfResolvedPromise() {
+  var d = webdriver.promise.defer();
+  var p = d.then();
+
+  d.fulfill();
+  p.cancel();  // This should not throw.
 }
 
 

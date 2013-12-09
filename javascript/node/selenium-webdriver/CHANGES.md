@@ -1,3 +1,8 @@
+## v2.38.1
+
+* FIXED: 6686: Changed `webdriver.promise.Deferred#cancel()` to silently no-op
+    if the deferred has already been resolved.
+
 ## v2.38.0
 
 * When a promise is rejected, always annotate the stacktrace with the parent

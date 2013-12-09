@@ -86,8 +86,8 @@ limitations under the License.
 
   function expectedError(code, message) {
     return function(e) {
-      assertEquals('Wrong error code', code, e.code);
       assertEquals('Wrong error message', message, e.message);
+      assertEquals('Wrong error code', code, e.code);
     };
   }
 
@@ -1528,6 +1528,24 @@ limitations under the License.
     var driver = testHelper.createDriver();
     var element = driver.findElement(By.id('foo'));
     element.click();  // This should never execute.
+    testHelper.execute();
+  }
+
+
+  function testFindElement_elementNotFoundInACallback() {
+    var testHelper = TestHelper.
+        expectingFailure(
+            expectedError(ECode.NO_SUCH_ELEMENT, 'Unable to find element')).
+        expect(CName.FIND_ELEMENT, {'using':'id', 'value':'foo'}).
+        andReturnError(
+            ECode.NO_SUCH_ELEMENT, {'message':'Unable to find element'}).
+        replayAll();
+
+    var driver = testHelper.createDriver();
+    webdriver.promise.fulfilled().then(function() {
+      var element = driver.findElement(By.id('foo'));
+      return element.click();  // Should not execute.
+    });
     testHelper.execute();
   }
 
