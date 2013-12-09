@@ -30,12 +30,12 @@ class ProxyType:
 
     @classmethod
     def load(cls, value):
-        if isinstance(value, dict) and value.has_key('string'):
+        if isinstance(value, dict) and 'string' in value:
             value = value['string']
         value = str(value).upper()
         for attr in dir(cls):
             attr_value = getattr(cls, attr)
-            if isinstance(attr_value, dict) and attr_value.has_key('string') and \
+            if isinstance(attr_value, dict) and 'string' in attr_value and \
                 attr_value['string'] is not None and attr_value['string'] == value:
                 return attr_value
         raise Exception("No proxy type is found for %s" % (value))
