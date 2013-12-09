@@ -60,6 +60,7 @@ namespace OpenQA.Selenium.Android
     /// Using the Android driver requires the Android device or emulator
     /// to be running, and the WebDriver application be active on the device.
     /// </remarks>
+    [Obsolete("The Selenium-supplied Android driver is deprecated and will be removed in a subsequent release. Alternatives are provided by other projects such as Selendroid and Appium")]
     public class AndroidDriver : RemoteWebDriver, ITakesScreenshot, IRotatable, IHasTouchScreen
     {
         private ITouchScreen touchScreen;
