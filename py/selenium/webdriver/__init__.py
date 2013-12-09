@@ -1,7 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright 2008-2010 Webdriver_name committers
-# Copyright 2008-2010 Google Inc.
+# Copyright 2008-2013 Software Freedom Conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,4 +28,4 @@ from .common.action_chains import ActionChains
 from .common.touch_actions import TouchActions
 from .common.proxy import Proxy
 
-__version__ = '2.38.1'
+__version__ = '2.38.2'

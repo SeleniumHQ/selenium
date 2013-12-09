@@ -67,12 +67,19 @@
 <span class="kn">import</span> <span class="nn">socket</span>
 <span class="kn">import</span> <span class="nn">string</span>
 <span class="kn">import</span> <span class="nn">base64</span>
-<span class="kn">import</span> <span class="nn">httplib</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">urllib2</span> <span class="kn">as</span> <span class="nn">url_request</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">urllib2</span> <span class="kn">import</span> <span class="n">parse</span>
+    <span class="kn">import</span> <span class="nn">http.client</span> <span class="kn">as</span> <span class="nn">httplib</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">httplib</span> <span class="kn">as</span> <span class="nn">httplib</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span> <span class="k">as</span> <span class="n">url_request</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">urllib2</span> <span class="kn">as</span> <span class="nn">url_request</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">parse</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">urlparse</span> <span class="kn">as</span> <span class="nn">parse</span>
 
@@ -81,6 +88,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="Request"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.Request">[docs]</a><span class="k">class</span> <span class="nc">Request</span><span class="p">(</span><span class="n">url_request</span><span class="o">.</span><span class="n">Request</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -200,11 +208,10 @@
                     <span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span> <span class="n">netloc</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
                      <span class="n">parsed_url</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">query</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">fragment</span><span class="p">))</span>
             <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">:</span>
-                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Could not get IP address for host: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
-                            <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">)</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Could not get IP address for host: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="n">remote_server_addr</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span> <span class="o">=</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">STATUS</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/status&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">NEW_SESSION</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session&#39;</span><span class="p">),</span>
@@ -275,10 +282,10 @@
             <span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_WINDOW</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">CLOSE</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_VALUE_OF_CSS_PROPERTY</span><span class="p">:</span>
-                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span>  <span class="s">&#39;/session/$sessionId/element/$id/css/$propertyName&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/$id/css/$propertyName&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">IMPLICIT_WAIT</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/timeouts/implicit_wait&#39;</span><span class="p">),</span>
-            <span class="n">Command</span><span class="o">.</span><span class="n">EXECUTE_ASYNC_SCRIPT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span><span class="s">&#39;/session/$sessionId/execute_async&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">EXECUTE_ASYNC_SCRIPT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/execute_async&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SET_SCRIPT_TIMEOUT</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/timeouts/async_script&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SET_TIMEOUTS</span><span class="p">:</span>
@@ -370,14 +377,12 @@
             <span class="n">Command</span><span class="o">.</span><span class="n">CLEAR_SESSION_STORAGE</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/session_storage&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_SESSION_STORAGE_SIZE</span><span class="p">:</span>
-                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span><span class="s">&#39;/session/$sessionId/session_storage/size&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/session_storage/size&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_LOG</span><span class="p">:</span>
-                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span><span class="s">&#39;/session/$sessionId/log&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/log&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_AVAILABLE_LOG_TYPES</span><span class="p">:</span>
-                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span><span class="s">&#39;/session/$sessionId/log/types&#39;</span><span class="p">),</span>
-            <span class="p">}</span>
-
-
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/log/types&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
 
 <div class="viewcode-block" id="RemoteConnection.execute"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -413,17 +418,14 @@
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
 
         <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-        <span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">headers</span><span class="p">[</span><span class="s">&quot;Connection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Keep-Alive&quot;</span>
-        <span class="n">headers</span><span class="p">[</span><span class="n">method</span><span class="p">]</span> <span class="o">=</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span>
-        <span class="n">headers</span><span class="p">[</span><span class="s">&quot;User-Agent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Python http auth&quot;</span>
-        <span class="n">headers</span><span class="p">[</span><span class="s">&quot;Content-type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;application/json;charset=</span><span class="se">\&quot;</span><span class="s">UTF-8</span><span class="se">\&quot;</span><span class="s">&quot;</span>
-        <span class="n">headers</span><span class="p">[</span><span class="s">&quot;Accept&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;application/json&quot;</span>
-        <span class="n">headers</span><span class="p">[</span><span class="s">&quot;Connection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;keep-alive&quot;</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Connection&quot;</span><span class="p">:</span> <span class="s">&quot;keep-alive&quot;</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                   <span class="s">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="s">&quot;Python http auth&quot;</span><span class="p">,</span>
+                   <span class="s">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s">&quot;application/json;charset=</span><span class="se">\&quot;</span><span class="s">UTF-8</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">,</span>
+                   <span class="s">&quot;Accept&quot;</span><span class="p">:</span> <span class="s">&quot;application/json&quot;</span><span class="p">}</span>
 
         <span class="c"># for basic auth</span>
         <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
-            <span class="n">auth</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">standard_b64encode</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">password</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">auth</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">standard_b64encode</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">password</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
             <span class="c"># Authorization header</span>
             <span class="n">headers</span><span class="p">[</span><span class="s">&quot;Authorization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Basic </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">auth</span>
 
@@ -431,12 +433,12 @@
         <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
         <span class="n">statuscode</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">status</span>
         <span class="n">statusmessage</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">msg</span>
-        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">statuscode</span><span class="p">,</span> <span class="n">statusmessage</span><span class="p">))</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">statuscode</span><span class="p">,</span> <span class="n">statusmessage</span><span class="p">))</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">statuscode</span> <span class="o">&gt;</span> <span class="mi">399</span> <span class="ow">and</span> <span class="n">statuscode</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">399</span> <span class="o">&lt;</span> <span class="n">statuscode</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="n">statuscode</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
-            <span class="k">if</span> <span class="n">statuscode</span> <span class="o">&gt;=</span> <span class="mi">300</span> <span class="ow">and</span> <span class="n">statuscode</span> <span class="o">&lt;</span> <span class="mi">304</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">300</span> <span class="o">&lt;=</span> <span class="n">statuscode</span> <span class="o">&lt;</span> <span class="mi">304</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">getheader</span><span class="p">(</span><span class="s">&#39;location&#39;</span><span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;GET&#39;</span><span class="p">)</span>
             <span class="n">body</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="n">content_type</span> <span class="o">=</span> <span class="p">[]</span>
@@ -446,7 +448,7 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">data</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">load_json</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">statuscode</span> <span class="o">&gt;</span> <span class="mi">199</span> <span class="ow">and</span> <span class="n">statuscode</span> <span class="o">&lt;</span> <span class="mi">300</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="mi">199</span> <span class="o">&lt;</span> <span class="n">statuscode</span> <span class="o">&lt;</span> <span class="mi">300</span><span class="p">:</span>
                         <span class="n">status</span> <span class="o">=</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">SUCCESS</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">status</span> <span class="o">=</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNKNOWN_ERROR</span>

@@ -1,3 +1,6 @@
+Selenium 2.38.2
+* py3 support (once again)
+
 Selenium 2.38.1
 * fix packaging problem where firefox/webdriver_prefs.json was missing
 

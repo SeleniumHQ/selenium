@@ -213,7 +213,14 @@
                 <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xoffset</span><span class="p">),</span>
                 <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">yoffset</span><span class="p">),</span>
                 <span class="s">&#39;speed&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">speed</span><span class="p">)}))</span>
-        <span class="k">return</span> <span class="bp">self</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="c"># Context manager so TouchActions can be used in a &#39;with .. as&#39; statements.</span></div>
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="c"># Return created instance of self.</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_type</span><span class="p">,</span> <span class="n">_value</span><span class="p">,</span> <span class="n">_traceback</span><span class="p">):</span>
+        <span class="k">pass</span> <span class="c"># Do nothing, does not require additional cleanup.</span></div>
 </pre></div>
 
           </div>
