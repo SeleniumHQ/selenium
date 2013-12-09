@@ -16,7 +16,6 @@ verbose(false)
 
 # The CrazyFun build grammar. There's no magic here, just ruby
 require 'rake-tasks/crazy_fun'
-require 'rake-tasks/crazy_fun/mappings/android'
 require 'rake-tasks/crazy_fun/mappings/export'
 require 'rake-tasks/crazy_fun/mappings/folder'
 require 'rake-tasks/crazy_fun/mappings/gcc'
@@ -72,7 +71,6 @@ crazy_fun = CrazyFun.new
 #
 # If crazy fun doesn't know how to handle a particular output type ("java_library"
 # in the example above) then it will throw an exception, stopping the build
-AndroidMappings.new.add_all(crazy_fun)
 ExportMappings.new.add_all(crazy_fun)
 FolderMappings.new.add_all(crazy_fun)
 GccMappings.new.add_all(crazy_fun)
@@ -89,7 +87,7 @@ VisualStudioMappings.new.add_all(crazy_fun)
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
 # a directory structure identical to that used in the "build" folder, but
 # rooted at one of the following locations:
-["android/prebuilt", "cpp/prebuilt", "ide/main/prebuilt", "javascript/firefox-driver/prebuilt"].each do |pre|
+["cpp/prebuilt", "ide/main/prebuilt", "javascript/firefox-driver/prebuilt"].each do |pre|
   crazy_fun.prebuilt_roots << pre
 end
 
@@ -103,7 +101,7 @@ crazy_fun.create_tasks(Dir["**/build.desc"])
 task :default => [:test]
 
 
-task :all => [:'selenium-java', :'android']
+task :all => [:'selenium-java']
 task :all_zip => [:'selenium-java_zip']
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :common_core => [ "//common:core" ]
@@ -142,7 +140,6 @@ task :test_javascript => [
   '//javascript/webdriver:test:run',
   '//javascript/selenium-atoms:test:run',
   '//javascript/selenium-core:test:run']
-task :test_android => ["//java/client/test/org/openqa/selenium/android:android-test:run"]
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:test:run" ]
 task :test_chrome_atoms => [
   '//javascript/atoms:test_chrome:run',
@@ -179,9 +176,6 @@ task :test_support => [
   "//java/client/test/org/openqa/selenium/support:LargeTests:run"
 ]
 task :test_iphone => [:test_iphone_server, '//java/client/test/org/openqa/selenium/iphone:test:run']
-task :android => [:android_client, :android_server]
-task :android_client => ['//java/client/src/org/openqa/selenium/android']
-task :android_server => ['//android:android-server']
 
 # TODO(simon): test-core should go first, but it's changing the least for now.
 task :test_selenium => [ :'test-rc', :'test-v1-emulation', :'test-core']
@@ -231,9 +225,6 @@ task :test_java => [
   :test_java_webdriver,
   :test_selenium,
   "test_grid",
-  # Android should be installed and the tests should be ran
-  # before commits.
-  :test_android
 ]
 
 task :test_rb => [
@@ -270,13 +261,8 @@ task :clean do
   rm_rf 'build/'
   rm_rf 'iphone/build/'
   rm_rf 'iphone/src/objc/atoms.h'
-  rm_rf 'android/bin/'
-  rm_rf 'android/build/'
-  rm_rf 'android/libs/'
-  rm_rf 'android/client/bin/'
   rm_rf 'java/client/build/'
   rm_rf 'dist/'
-  Android::Clean.new()
 end
 
 task :dotnet => [ "//dotnet", "//dotnet:support", "//dotnet:core", "//dotnet:webdriverbackedselenium" ]
@@ -671,7 +657,6 @@ task :release => [
     '//java/server/src/org/openqa/selenium/server:server:zip',
     '//java/server/src/org/openqa/grid/selenium:selenium:zip',
     '//java/client/src/org/openqa/selenium:client-combined:zip',
-    '//android:android-server'
   ] do |t|
   # Unzip each of the deps and rename the pieces that need renaming
   renames = {

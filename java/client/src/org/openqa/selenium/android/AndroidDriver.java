@@ -49,7 +49,10 @@ import java.net.URL;
 
 /**
  * A driver for running tests on an Android device or emulator.
+ *
+ * @deprecated Please use either http://selendroid.io or http://appium.io instead.
  */
+@Deprecated
 public class AndroidDriver extends RemoteWebDriver implements TakesScreenshot, Rotatable,
     BrowserConnection, HasTouchScreen, WebStorage, LocationContext, ApplicationCache {
 
