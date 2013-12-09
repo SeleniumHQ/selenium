@@ -380,8 +380,15 @@ class RemoteConnection(object):
             # Authorization header
             headers["Authorization"] = "Basic %s" % auth
 
-        self._conn.request(method, parsed_url.path, data, headers)
-        resp = self._conn.getresponse()
+        if body and method != 'POST' and method != 'PUT':
+            body = None
+        try:
+          self._conn.request(method, parsed_url.path, body, headers)
+          resp = self._conn.getresponse()
+        except httplib.HTTPException:
+          self._conn.close()
+          raise
+
         statuscode = resp.status
         statusmessage = resp.msg
         LOGGER.debug('%s %s' % (statuscode, statusmessage))
