@@ -854,6 +854,11 @@ namespace :marionette do
   end
 end
 
+task :authors do
+  puts "Generating AUTHORS file"
+  `(git log --use-mailmap --format="%aN <%aE>" ; cat .OLD_AUTHORS) | sort -uf > AUTHORS`
+end
+
 at_exit do
   if File.exist?(".git") && !Platform.windows?
     sh "sh .git-fixfiles"
