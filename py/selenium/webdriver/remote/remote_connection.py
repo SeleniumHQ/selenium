@@ -346,21 +346,21 @@ class RemoteConnection(object):
         data = utils.dump_json(params)
         path = string.Template(command_info[1]).substitute(params)
         url = '%s%s' % (self._url, path)
-        return self._request(url, method=command_info[0], data=data)
+        return self._request(command_info[0], url, body=data)
 
-    def _request(self, url, data=None, method=None):
+    def _request(self, method, url, body=None):
         """
         Send an HTTP request to the remote server.
 
         :Args:
          - method - A string for the HTTP method to send the request with.
-         - url - The URL to send the request to.
-         - body - The message body to send.
+         - url - A string for the URL to send the request to.
+         - body - A string for request body. Ignored unless method is POST or PUT.
 
         :Returns:
           A dictionary with the server's parsed JSON response.
         """
-        LOGGER.debug('%s %s %s' % (method, url, data))
+        LOGGER.debug('%s %s %s' % (method, url, body))
 
         parsed_url = parse.urlparse(url)
 
@@ -373,7 +373,9 @@ class RemoteConnection(object):
                 auth = base64.standard_b64encode('%s:%s' %
                        (parsed_url.username, parsed_url.password)).replace('\n', '')
                 headers["Authorization"] = "Basic %s" % auth
-            self._conn.request(method, parsed_url.path, data, headers)
+            if body and method != 'POST' and method != 'PUT':
+                body = None
+            self._conn.request(method, parsed_url.path, body, headers)
             resp = self._conn.getresponse()
             statuscode = resp.status
         else:
@@ -420,7 +422,7 @@ class RemoteConnection(object):
             if 399 < statuscode < 500:
                 return {'status': statuscode, 'value': data}
             if 300 <= statuscode < 304:
-                return self._request(resp.getheader('location'), method='GET')
+                return self._request('GET', resp.getheader('location'))
             body = data.decode('utf-8').replace('\x00', '').strip()
             content_type = []
             if resp.getheader('Content-Type') is not None:
