@@ -11,6 +11,8 @@ module Selenium
         DEFAULT_URL = "http://#{Platform.localhost}:8080/wd/hub/"
 
         def initialize(opts = {})
+          warn 'The Android driver is deprecated - please use either http://selendroid.io or http://appium.io instead.'
+
           remote_opts = {
             :url                  => opts.fetch(:url, DEFAULT_URL),
             :desired_capabilities => opts.fetch(:desired_capabilities, capabilities),
