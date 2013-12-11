@@ -286,7 +286,7 @@ namespace OpenQA.Selenium.Interactions
         [NeedsFreshDriver(BeforeTest = true)]
         [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
-        public void canMouseOverAndOutOfAnElement()
+        public void CanMouseOverAndOutOfAnElement()
         {
             driver.Url = mouseOverPage;
 
@@ -300,7 +300,7 @@ namespace OpenQA.Selenium.Interactions
             new Actions(driver).MoveToElement(redbox).Perform();
             Assert.AreEqual("rgba(255, 0, 0, 1)", redbox.GetCssValue("background-color"));
 
-            new Actions(driver).MoveToElement(redbox, size.Width + 1, size.Height + 1).Perform();
+            new Actions(driver).MoveToElement(redbox, size.Width + 2, size.Height + 2).Perform();
             Assert.AreEqual("rgba(0, 128, 0, 1)", redbox.GetCssValue("background-color"));
         }
 

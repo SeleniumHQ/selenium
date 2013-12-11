@@ -626,7 +626,9 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     assertEquals(
         Colors.RED.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
 
-    new Actions(driver).moveToElement(redbox, size.getWidth() + 1, size.getHeight() + 1)
+    // IE8 (and *only* IE8) requires a move of 2 pixels. All other browsers
+    // would be happy with 1.
+    new Actions(driver).moveToElement(redbox, size.getWidth() + 2, size.getHeight() + 2)
         .perform();
     assertEquals(
         Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
