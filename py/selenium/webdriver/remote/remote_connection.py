@@ -140,7 +140,7 @@ class RemoteConnection(object):
     Communicates with the server using the WebDriver wire protocol:
     http://code.google.com/p/selenium/wiki/JsonWireProtocol
     """
-    def __init__(self, remote_server_addr):
+    def __init__(self, remote_server_addr, max_retries = 1):
         # Attempt to resolve the hostname and get an IP address.
         parsed_url = parse.urlparse(remote_server_addr)
         addr = ""
@@ -163,6 +163,7 @@ class RemoteConnection(object):
 
         self._url = remote_server_addr
         self._conn = httplib.HTTPConnection(str(addr), str(parsed_url.port))
+        self._max_retries = max_retries
         self._commands = {
             Command.STATUS: ('GET', '/status'),
             Command.NEW_SESSION: ('POST', '/session'),
@@ -379,9 +380,19 @@ class RemoteConnection(object):
             auth = base64.standard_b64encode('%s:%s' % (parsed_url.username, parsed_url.password)).replace('\n', '')
             # Authorization header
             headers["Authorization"] = "Basic %s" % auth
-
-        self._conn.request(method, parsed_url.path, data, headers)
-        resp = self._conn.getresponse()
+        retries = 0
+        while True:
+            try:
+                self._conn.request(method, parsed_url.path, data, headers)
+                resp = self._conn.getresponse()
+            except (socket.error, httplib.HTTPException):
+                if retries >= self._max_retries:
+                    raise
+                self._conn.close()
+                continue
+            finally:
+                retries += 1
+            break
         statuscode = resp.status
         statusmessage = resp.msg
         LOGGER.debug('%s %s' % (statuscode, statusmessage))
