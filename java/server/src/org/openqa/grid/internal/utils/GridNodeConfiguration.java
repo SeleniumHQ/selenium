@@ -81,11 +81,11 @@ public class GridNodeConfiguration {
 
   public static GridNodeConfiguration build(String[] args) {
     GridNodeConfiguration res = new GridNodeConfiguration();
-    res.args = args;
+    res.setArgs(args);
 
     CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
 
-    res.role = GridRole.find(args);
+    res.setRole(GridRole.find(args));
     // default
     String defaultConfig = "defaults/WebDriverDefaultNode.json";
     res.loadFromJSON(defaultConfig);
@@ -106,23 +106,23 @@ public class GridNodeConfiguration {
     CommandLineOptionHelper helper = new CommandLineOptionHelper(args);
     // handle the core config.
     if (helper.isParamPresent("-host")) {
-      configuration.put(HOST, helper.getParamValue("-host"));
+      getConfiguration().put(HOST, helper.getParamValue("-host"));
     }
     if (helper.isParamPresent("-port")) {
-      configuration.put(PORT, Integer.parseInt(helper.getParamValue("-port")));
+      getConfiguration().put(PORT, Integer.parseInt(helper.getParamValue("-port")));
     }
     if (helper.isParamPresent("-cleanUpCycle")) {
-      configuration.put(CYCLE, Integer.parseInt(helper.getParamValue("-cleanUpCycle")));
+      getConfiguration().put(CYCLE, Integer.parseInt(helper.getParamValue("-cleanUpCycle")));
     }
     if (helper.isParamPresent("-timeout")) {
-      configuration.put(TIME_OUT, Integer.parseInt(helper.getParamValue("-timeout")));
+      getConfiguration().put(TIME_OUT, Integer.parseInt(helper.getParamValue("-timeout")));
     }
     if (helper.isParamPresent("-maxSession")) {
-      configuration.put(MAX_CONCURRENT, Integer.parseInt(helper.getParamValue("-maxSession")));
+      getConfiguration().put(MAX_CONCURRENT, Integer.parseInt(helper.getParamValue("-maxSession")));
     }
 
     if (helper.isParamPresent("-servlets")) {
-      configuration.put(SERVLETS, helper.getParamValue("-servlets"));
+      getConfiguration().put(SERVLETS, helper.getParamValue("-servlets"));
     }
 
     // capabilities parsing.
@@ -131,7 +131,7 @@ public class GridNodeConfiguration {
     if (!l.isEmpty()) {
       for (String s : l) {
         DesiredCapabilities c = addCapabilityFromString(s);
-        capabilities.add(c);
+        getCapabilities().add(c);
       }
     }
 
@@ -165,12 +165,12 @@ public class GridNodeConfiguration {
     try {
       JSONObject res = new JSONObject();
       JSONArray a = new JSONArray();
-      for (DesiredCapabilities cap : capabilities) {
+      for (DesiredCapabilities cap : getCapabilities()) {
         JSONObject capa = new JSONObject(cap.asMap());
         a.put(capa);
       }
 
-      res.put("configuration", new JSONObject(configuration));
+      res.put("configuration", new JSONObject(getConfiguration()));
       return res;
     } catch (JSONException e) {
       throw new GridConfigurationException("error generating the node config : " + e.getMessage());
@@ -187,7 +187,7 @@ public class GridNodeConfiguration {
       JSONObject base = JSONConfigurationUtils.loadJSON(resource);
 
       if (base.has("capabilities")) {
-        capabilities = new ArrayList<DesiredCapabilities>();
+        setCapabilities(new ArrayList<DesiredCapabilities>());
         JSONArray a = base.getJSONArray("capabilities");
         for (int i = 0; i < a.length(); i++) {
           JSONObject cap = a.getJSONObject(i);
@@ -209,9 +209,9 @@ public class GridNodeConfiguration {
           for (int i = 0; i < a.length(); i++) {
             as.add(a.getString(i));
           }
-          configuration.put(key, as);
+          getConfiguration().put(key, as);
         } else {
-          configuration.put(key, o.get(key));
+          getConfiguration().put(key, o.get(key));
         }
       }
 
@@ -241,19 +241,27 @@ public class GridNodeConfiguration {
     return capabilities;
   }
 
+  protected void setCapabilities(List<DesiredCapabilities> caps){
+    this.capabilities = caps;
+  }
+
   public Map<String, Object> getConfiguration() {
     return configuration;
   }
 
   public String getHost() {
-    return (String) configuration.get(HOST);
+    return (String) getConfiguration().get(HOST);
   }
 
   public int getPort() {
-    return (Integer) configuration.get(PORT);
+    return (Integer) getConfiguration().get(PORT);
   }
 
   public String getHubHost() {
-    return (String) configuration.get(HUB_HOST);
+    return (String) getConfiguration().get(HUB_HOST);
+  }
+
+  protected void setArgs(String[] args){
+    this.args = args;
   }
 }
