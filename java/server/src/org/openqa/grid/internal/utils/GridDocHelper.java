@@ -15,19 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.grid.common;
+package org.openqa.grid.internal.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.lang.System;
-import java.util.Properties;
 
+import org.openqa.grid.internal.utils.configuration.GridConfiguration;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 
 
 public class GridDocHelper {
-  private static Properties gridProperties = load("org/openqa/grid/common/defaults/GridParameters.properties");
+  private static GridConfiguration gridConfiguration = new GridConfiguration();
 
   public static void printHelp(String msg) {
     printHelpInConsole(msg, true);
@@ -41,12 +38,8 @@ public class GridDocHelper {
   public static String getGridParam(String param) {
     if (param == null) {
       return "";
-    }
-    String s = (String) gridProperties.get(param);
-    if (s == null) {
-      return "No help specified for " + param;
     } else {
-      return s;
+      return getGridConfiguration().getDescriptionForParam(param);
     }
   }
 
@@ -63,27 +56,15 @@ public class GridDocHelper {
     }
 
     System.out.println("Usage :");
-    for (Object key : gridProperties.keySet()) {
+    for (Object key : getGridConfiguration().keySet()) {
       System.out.println(indent + "-" + key + ":\t");
       RemoteControlLauncher.printWrappedLine(System.out, indent2x, getGridParam(key.toString()), true);
       System.out.println("");
     }
   }
 
-  private static Properties load(String resource) {
-    InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-    Properties p = new Properties();
-    if (in != null) {
-      try {
-        p.load(in);
-        return p;
-      } catch (IOException e) {
-        throw new RuntimeException(resource + " cannot be loaded.");
-      }
-    } else {
-      throw new RuntimeException(resource + " cannot be loaded.");
-    }
+  protected static GridConfiguration getGridConfiguration(){
+    return gridConfiguration;
   }
-
 
 }

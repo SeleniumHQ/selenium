@@ -19,10 +19,10 @@ package org.openqa.grid.web.servlet;
 
 import com.google.common.io.ByteStreams;
 
-import org.openqa.grid.common.GridDocHelper;
+import org.openqa.grid.internal.utils.GridDocHelper;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.ByteArrayInputStream;

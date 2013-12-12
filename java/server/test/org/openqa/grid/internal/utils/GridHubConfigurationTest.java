@@ -16,6 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import org.junit.Test;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 
 import static com.thoughtworks.selenium.SeleneseTestBase.assertEquals;
 import static org.openqa.grid.internal.utils.ServerJsonValues.*;

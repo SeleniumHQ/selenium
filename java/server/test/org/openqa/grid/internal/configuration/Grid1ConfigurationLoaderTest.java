@@ -19,7 +19,7 @@ package org.openqa.grid.internal.configuration;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 
 
 public class Grid1ConfigurationLoaderTest {
