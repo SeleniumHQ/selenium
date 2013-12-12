@@ -235,6 +235,7 @@ public class ProxySettingTest extends JUnit4TestBase {
       public void handleHttpRequest(
           HttpRequest request, HttpResponse response, HttpControl control) {
         response.charset(Charsets.UTF_8)
+            .header(HttpHeaders.CONTENT_TYPE, "text/html")
             .content(responseHtml)
             .end();
       }
