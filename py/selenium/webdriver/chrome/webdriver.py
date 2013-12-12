@@ -61,7 +61,8 @@ class WebDriver(RemoteWebDriver):
         try:
             RemoteWebDriver.__init__(self,
                 command_executor=self.service.service_url,
-                desired_capabilities=desired_capabilities)
+                desired_capabilities=desired_capabilities,
+                keep_alive=True)
         except:
             self.quit()
             raise 

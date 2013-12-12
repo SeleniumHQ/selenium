@@ -57,7 +57,8 @@ class WebDriver(RemoteWebDriver):
         RemoteWebDriver.__init__(self,
             command_executor=ExtensionConnection("127.0.0.1", self.profile,
             self.binary, timeout),
-            desired_capabilities=capabilities)
+            desired_capabilities=capabilities,
+            keep_alive=True)
         self._is_remote = False
 
     def quit(self):

@@ -48,8 +48,9 @@ class RemoteConnection(object):
     Communicates with the server using the WebDriver wire protocol:
     http://code.google.com/p/selenium/wiki/JsonWireProtocol
     """
-    def __init__(self, remote_server_addr):
+    def __init__(self, remote_server_addr, keep_alive=False):
         # Attempt to resolve the hostname and get an IP address.
+        self.keep_alive = keep_alive
         parsed_url = parse.urlparse(remote_server_addr)
         addr = ""
         if parsed_url.hostname:
@@ -277,10 +278,12 @@ class RemoteConnection(object):
         LOGGER.debug('%s %s %s' % (method, url, data))
 
         parsed_url = parse.urlparse(url)
-        headers = {"Connection": "keep-alive", method: parsed_url.path,
+        headers = {method: parsed_url.path,
                    "User-Agent": "Python http auth",
                    "Content-type": "application/json;charset=\"UTF-8\"",
                    "Accept": "application/json"}
+        if self.keep_alive:
+            headers['Connection'] = 'keep-alive'
 
         # for basic auth
         if parsed_url.username:

@@ -47,7 +47,7 @@ class ExtensionConnection(RemoteConnection):
         self.binary.launch_browser(self.profile)
         _URL = "http://%s:%d/hub" % (HOST, PORT)
         RemoteConnection.__init__(
-            self, _URL)
+            self, _URL, keep_alive=True)
 
     def quit(self, sessionId=None):
         self.execute(Command.QUIT, {'sessionId':sessionId})
