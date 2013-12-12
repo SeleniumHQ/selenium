@@ -410,7 +410,10 @@ class RemoteConnection(object):
             resp = opener.open(request)
             statuscode = resp.code
             if not hasattr(resp, 'getheader'):
-                resp.getheader = lambda x: resp.headers.getheader(x)
+                if hasattr(resp.headers, 'getheader'):
+                    resp.getheader = lambda x: resp.headers.getheader(x)
+                elif hasattr(resp.headers, 'get'):
+                    resp.getheader = lambda x: resp.headers.get(x)
 
         data = resp.read()
         try:
