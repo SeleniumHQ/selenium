@@ -1,3 +1,6 @@
+Selenium 2.38.4
+* keep-alive can't be used for phantomjs / IE, fix for that and tested for py3 :)
+
 Selenium 2.38.3
 * really supporting py3 :)
 
