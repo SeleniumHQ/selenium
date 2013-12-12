@@ -20,7 +20,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 try:
     str = unicode
-except ImportError:
+except NameError:
     pass
 
 

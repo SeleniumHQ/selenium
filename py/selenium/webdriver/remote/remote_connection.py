@@ -409,7 +409,8 @@ class RemoteConnection(object):
                                                   HttpErrorHandler())
             resp = opener.open(request)
             statuscode = resp.code
-            resp.getheader = lambda x: resp.headers.getheader(x)
+            if not hasattr(resp, 'getheader'):
+                resp.getheader = lambda x: resp.headers.getheader(x)
 
         data = resp.read()
         try:
