@@ -121,7 +121,7 @@ public class WindowTest extends JUnit4TestBase {
   public void testCanMaximizeTheWindow() throws InterruptedException {
     assumeThereIsAWindowManager();
 
-    changeSizeTo(new Dimension(275, 275));
+    changeSizeTo(new Dimension(450, 275));
     maximize();
   }
 
@@ -131,7 +131,7 @@ public class WindowTest extends JUnit4TestBase {
     assumeThereIsAWindowManager();
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(275, 275));
+    changeSizeTo(new Dimension(450, 275));
 
     driver.switchTo().frame("fourth");
     try {
@@ -147,7 +147,7 @@ public class WindowTest extends JUnit4TestBase {
     assumeThereIsAWindowManager();
 
     driver.get(pages.iframePage);
-    changeSizeTo(new Dimension(275, 275));
+    changeSizeTo(new Dimension(450, 275));
 
     driver.switchTo().frame("iframe1-name");
     try {
