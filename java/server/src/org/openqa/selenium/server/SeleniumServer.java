@@ -625,7 +625,7 @@ public class SeleniumServer implements SslCertificateGenerator {
       String resultFilePath = getRequiredSystemProperty("htmlSuite.resultFilePath");
       File resultFile = new File(resultFilePath);
       File resultDir = resultFile.getParentFile();
-      if (!resultDir.exists() && !resultDir.mkdirs()) {
+      if ((resultDir != null) && !resultDir.exists() && !resultDir.mkdirs()) {
         RemoteControlLauncher.usage("can't create directory for result file " + resultFilePath);
         System.exit(1);
       }
