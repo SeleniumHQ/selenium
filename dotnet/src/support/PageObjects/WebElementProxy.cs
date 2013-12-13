@@ -37,13 +37,6 @@ namespace OpenQA.Selenium.Support.PageObjects
         private IWebElement cachedElement;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="WebElementProxy"/> class.
-        /// </summary>
-        private WebElementProxy()
-        {
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="WebElementProxy"/> class.
         /// </summary>
         /// <param name="searchContext">The driver used to search for elements.</param>
@@ -54,6 +47,13 @@ namespace OpenQA.Selenium.Support.PageObjects
             this.searchContext = searchContext;
             this.bys = bys;
             this.cache = cache;
+        }
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="WebElementProxy"/> class from being created.
+        /// </summary>
+        private WebElementProxy()
+        {
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         /// <summary>
-        /// Defines the interface through which the user can discover if there is an underlying element to be used.
+        /// Gets the interface through which the user can discover if there is an underlying element to be used.
         /// </summary>
         public IWebElement WrappedElement
         {
@@ -181,6 +181,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Simulates typing text into the element.
         /// </summary>
+        /// <param name="text">The keys to send to the element.</param>
         public void SendKeys(string text)
         {
             this.WrappedElement.SendKeys(text);
@@ -205,6 +206,8 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Gets the value of the specified attribute for this element.
         /// </summary>
+        /// <param name="attributeName">The attribute name to retrieve the value of.</param>
+        /// <returns>The value of the attribute. Returns <see langword="null"/> if the attribute does not exist.</returns>
         public string GetAttribute(string attributeName)
         {
             return this.WrappedElement.GetAttribute(attributeName);
@@ -213,6 +216,8 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Gets the value of a CSS property of this element.
         /// </summary>
+        /// <param name="propertyName">The property name to retrieve the value of.</param>
+        /// <returns>The value of the CSS property.</returns>
         public string GetCssValue(string propertyName)
         {
             return this.WrappedElement.GetCssValue(propertyName);
