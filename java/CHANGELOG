@@ -1,3 +1,14 @@
+v2.39.0
+=======
+WebDriver:
+ * Update to support native events for Firefox 26.
+ * Removed server side of iPhone driver.
+ * Removed server-side of AndroidDriver and deprecating client side.
+
+WebDriverJS:
+ * FIXED: 6686: Changed Deferred#cancel() to silently no-op if the
+   deferred has already been resolved.
+
 v2.38.0
 =======
 WebDriver:
