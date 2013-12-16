@@ -1,3 +1,24 @@
+v2.39.0
+=======
+ * Deprecated .NET AndroidDriver class. Going forward, the recommended approach
+   is to use a third-party implementation for Android, such as Selendroid
+   (http://selendroid.io/) or Appium (http://appium.io/).
+ * Added experimental IWebDriver extension methods to .NET support classes.
+   This commit adds extension methods to IWebDriver, which can be used to
+   reduce the amount of type casting that must be done to access
+   functionality not provided by the base IWebDriver interface. The following
+   methods were added:
+    
+    * TakeScreenshot() - does not require a cast to ITakesScreenshot, and has
+      support for working directly with instances of RemoteWebDriver.
+    * ExecuteJavaScript<T>() - does not require a cast to
+      IJavaScriptExecutor, and will automatically cast the result to the type
+      specified by the generic type parameter (T).
+    
+   These extension methods should be considered experimental. To use them
+   requires a reference to WebDriver.Support.dll, and adding a using clause
+   for OpenQA.Selenium.Support.Extensions.
+
 v2.38.0
 =======
  * Issue #6383: Adding method GetCSSCount to ISelenium.
