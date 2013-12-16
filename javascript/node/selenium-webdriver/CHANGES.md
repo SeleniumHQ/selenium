@@ -1,3 +1,7 @@
+## v2.39.0
+
+* Version bump to stay in sync with the Selenium project.
+
 ## v2.38.1
 
 * FIXED: 6686: Changed `webdriver.promise.Deferred#cancel()` to silently no-op
