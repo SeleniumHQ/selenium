@@ -101,8 +101,12 @@
 <dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/html5/ApplicationCache.html" title="interface in org.openqa.selenium.html5">ApplicationCache</a>, <a href="../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</a>, <a href="../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</a>, <a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
 </dl>
 <hr>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>Please use either http://selendroid.io or http://appium.io instead.</i></div>
+</div>
 <br>
-<pre>public class <span class="strong">AndroidDriver</span>
+<pre>@Deprecated
+public class <span class="strong">AndroidDriver</span>
 extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>
 implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a>, <a href="../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</a>, <a href="../../../../org/openqa/selenium/interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a>, <a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a>, <a href="../../../../org/openqa/selenium/html5/LocationContext.html" title="interface in org.openqa.selenium.html5">LocationContext</a>, <a href="../../../../org/openqa/selenium/html5/ApplicationCache.html" title="interface in org.openqa.selenium.html5">ApplicationCache</a></pre>
 <div class="block">A driver for running tests on an Android device or emulator.</div>
@@ -147,24 +151,35 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#AndroidDriver()">AndroidDriver</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">The default constructor assumes the remote server is listening at http://localhost:8080/wd/hub</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#AndroidDriver(org.openqa.selenium.Capabilities)">AndroidDriver</a></strong>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;ignored)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#AndroidDriver(org.openqa.selenium.Capabilities)">AndroidDriver</a></strong>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;ignored)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#AndroidDriver(org.openqa.selenium.remote.DesiredCapabilities)">AndroidDriver</a></strong>(<a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;caps)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#AndroidDriver(org.openqa.selenium.remote.DesiredCapabilities)">AndroidDriver</a></strong>(<a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;caps)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#AndroidDriver(java.lang.String)">AndroidDriver</a></strong>(java.lang.String&nbsp;remoteAddress)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#AndroidDriver(java.lang.String)">AndroidDriver</a></strong>(java.lang.String&nbsp;remoteAddress)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#AndroidDriver(java.net.URL)">AndroidDriver</a></strong>(java.net.URL&nbsp;remoteAddress)</code>&nbsp;</td>
+<td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#AndroidDriver(java.net.URL)">AndroidDriver</a></strong>(java.net.URL&nbsp;remoteAddress)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#AndroidDriver(java.net.URL, org.openqa.selenium.remote.DesiredCapabilities)">AndroidDriver</a></strong>(java.net.URL&nbsp;url,
-             <a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;caps)</code>&nbsp;</td>
+             <a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;caps)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -183,63 +198,80 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#getLocalStorage()">getLocalStorage</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#getLocalStorage()">getLocalStorage</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#getOrientation()">getOrientation</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#getOrientation()">getOrientation</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>&lt;X&gt;&nbsp;X</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#getScreenshotAs(org.openqa.selenium.OutputType)">getScreenshotAs</a></strong>(<a href="../../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Capture the screenshot and store it in the specified location.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#getSessionStorage()">getSessionStorage</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#getSessionStorage()">getSessionStorage</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/html5/AppCacheStatus.html" title="enum in org.openqa.selenium.html5">AppCacheStatus</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#getStatus()">getStatus</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">The current state of the application cache.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/TouchScreen.html" title="interface in org.openqa.selenium.interactions">TouchScreen</a></code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#getTouch()">getTouch</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#getTouch()">getTouch</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#isOnline()">isOnline</a></strong>()</code>&nbsp;</td>
+<td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#isOnline()">isOnline</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</a></code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#location()">location</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Gets the physical location of the browser.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#rotate(org.openqa.selenium.ScreenOrientation)">rotate</a></strong>(<a href="../../../../org/openqa/selenium/ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</a>&nbsp;orientation)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Changes the orientation of the browser window.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#setFileDetector(org.openqa.selenium.remote.FileDetector)">setFileDetector</a></strong>(<a href="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Set the file detector to be used when sending keyboard input.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#setLocation(org.openqa.selenium.html5.Location)">setLocation</a></strong>(<a href="../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</a>&nbsp;loc)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Sets the physical location.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><strong><a href="../../../../org/openqa/selenium/android/AndroidDriver.html#setOnline(boolean)">setOnline</a></strong>(boolean&nbsp;online)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
 <div class="block">Changes the application online state.</div>
 </td>
 </tr>
@@ -279,6 +311,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>AndroidDriver</h4>
 <pre>public&nbsp;AndroidDriver()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block">The default constructor assumes the remote server is listening at http://localhost:8080/wd/hub</div>
 </li>
 </ul>
@@ -289,6 +322,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>AndroidDriver</h4>
 <pre>public&nbsp;AndroidDriver(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;ignored)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="AndroidDriver(java.lang.String)">
@@ -299,6 +333,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <h4>AndroidDriver</h4>
 <pre>public&nbsp;AndroidDriver(java.lang.String&nbsp;remoteAddress)
               throws java.net.MalformedURLException</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl><dt><span class="strong">Throws:</span></dt>
 <dd><code>java.net.MalformedURLException</code></dd></dl>
 </li>
@@ -310,6 +345,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>AndroidDriver</h4>
 <pre>public&nbsp;AndroidDriver(<a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;caps)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="AndroidDriver(java.net.URL)">
@@ -319,6 +355,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>AndroidDriver</h4>
 <pre>public&nbsp;AndroidDriver(java.net.URL&nbsp;remoteAddress)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="AndroidDriver(java.net.URL, org.openqa.selenium.remote.DesiredCapabilities)">
@@ -329,6 +366,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <h4>AndroidDriver</h4>
 <pre>public&nbsp;AndroidDriver(java.net.URL&nbsp;url,
              <a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;caps)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -346,6 +384,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>setFileDetector</h4>
 <pre>public&nbsp;void&nbsp;setFileDetector(<a href="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><strong>Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFileDetector(org.openqa.selenium.remote.FileDetector)">RemoteWebDriver</a></code></strong></div>
 <div class="block">Set the file detector to be used when sending keyboard input. By default, this is set to a file
  detector that does nothing.</div>
@@ -365,6 +404,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <h4>getScreenshotAs</h4>
 <pre>public&nbsp;&lt;X&gt;&nbsp;X&nbsp;getScreenshotAs(<a href="../../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)
                   throws <a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/TakesScreenshot.html#getScreenshotAs(org.openqa.selenium.OutputType)">TakesScreenshot</a></code></strong></div>
 <div class="block">Capture the screenshot and store it in the specified location.
 
@@ -397,6 +437,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>isOnline</h4>
 <pre>public&nbsp;boolean&nbsp;isOnline()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/html5/BrowserConnection.html#isOnline()">isOnline</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/html5/BrowserConnection.html" title="interface in org.openqa.selenium.html5">BrowserConnection</a></code></dd>
@@ -411,6 +452,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <h4>setOnline</h4>
 <pre>public&nbsp;void&nbsp;setOnline(boolean&nbsp;online)
                throws <a href="../../../../org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a></pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/html5/BrowserConnection.html#setOnline(boolean)">BrowserConnection</a></code></strong></div>
 <div class="block">Changes the application online state.</div>
 <dl>
@@ -428,6 +470,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>rotate</h4>
 <pre>public&nbsp;void&nbsp;rotate(<a href="../../../../org/openqa/selenium/ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</a>&nbsp;orientation)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/Rotatable.html#rotate(org.openqa.selenium.ScreenOrientation)">Rotatable</a></code></strong></div>
 <div class="block">Changes the orientation of the browser window.</div>
 <dl>
@@ -443,6 +486,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>getOrientation</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/ScreenOrientation.html" title="enum in org.openqa.selenium">ScreenOrientation</a>&nbsp;getOrientation()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/Rotatable.html#getOrientation()">getOrientation</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Rotatable.html" title="interface in org.openqa.selenium">Rotatable</a></code></dd>
@@ -456,6 +500,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>getTouch</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/TouchScreen.html" title="interface in org.openqa.selenium.interactions">TouchScreen</a>&nbsp;getTouch()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/interactions/HasTouchScreen.html#getTouch()">getTouch</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a></code></dd>
@@ -469,6 +514,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>getLocalStorage</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/html5/LocalStorage.html" title="interface in org.openqa.selenium.html5">LocalStorage</a>&nbsp;getLocalStorage()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/html5/WebStorage.html#getLocalStorage()">getLocalStorage</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code></dd>
@@ -482,6 +528,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>getSessionStorage</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/html5/SessionStorage.html" title="interface in org.openqa.selenium.html5">SessionStorage</a>&nbsp;getSessionStorage()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><strong>Specified by:</strong></dt>
 <dd><code><a href="../../../../org/openqa/selenium/html5/WebStorage.html#getSessionStorage()">getSessionStorage</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/html5/WebStorage.html" title="interface in org.openqa.selenium.html5">WebStorage</a></code></dd>
@@ -495,6 +542,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>location</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</a>&nbsp;location()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/html5/LocationContext.html#location()">LocationContext</a></code></strong></div>
 <div class="block">Gets the physical location of the browser.</div>
 <dl>
@@ -511,6 +559,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>setLocation</h4>
 <pre>public&nbsp;void&nbsp;setLocation(<a href="../../../../org/openqa/selenium/html5/Location.html" title="class in org.openqa.selenium.html5">Location</a>&nbsp;loc)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/html5/LocationContext.html#setLocation(org.openqa.selenium.html5.Location)">LocationContext</a></code></strong></div>
 <div class="block">Sets the physical location.</div>
 <dl>
@@ -526,6 +575,7 @@ implements <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title=
 <li class="blockList">
 <h4>getStatus</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/html5/AppCacheStatus.html" title="enum in org.openqa.selenium.html5">AppCacheStatus</a>&nbsp;getStatus()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
 <div class="block"><strong>Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/html5/ApplicationCache.html#getStatus()">ApplicationCache</a></code></strong></div>
 <div class="block">The current state of the application cache.</div>
 <dl>
