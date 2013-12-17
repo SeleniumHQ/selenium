@@ -1,3 +1,10 @@
+2.39.0 (2013-12-17)
+===================
+
+* Firefox: Native events support for Firefox 26.
+* Add deprecation warning to the Android driver.
+* Make sure selenium/client doesn't require Rake (#6709)
+
 2.38.0 (2013-12-05)
 ===================
 
