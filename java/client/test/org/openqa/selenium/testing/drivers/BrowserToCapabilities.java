@@ -35,11 +35,6 @@ public class BrowserToCapabilities {
     DesiredCapabilities caps;
 
     switch (browser) {
-      case android:
-      case android_real_phone:
-        caps = DesiredCapabilities.android();
-        break;
-
       case chrome:
         caps = DesiredCapabilities.chrome();
         break;

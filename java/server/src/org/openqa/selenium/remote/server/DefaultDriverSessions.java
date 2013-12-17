@@ -70,12 +70,6 @@ public class DefaultDriverSessions implements DriverSessions {
   }
 
   private void registerDefaults(Platform current) {
-    if (current.equals(Platform.ANDROID)) {
-      // AndroidDriver is here for backward-compatibility reasons, it should be removed at some point
-      registerDriver(DesiredCapabilities.android(), "org.openqa.selenium.android.AndroidDriver");
-      registerDriver(DesiredCapabilities.android(), "org.openqa.selenium.android.AndroidApkDriver");
-      return;
-    }
     for (Map.Entry<Capabilities, String> entry : defaultDrivers.entrySet()) {
       Capabilities caps = entry.getKey();
       if (caps.getPlatform() != null && caps.getPlatform().is(current)) {

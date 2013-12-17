@@ -120,7 +120,6 @@ java_library(name = "webdriver-backed-selenium",
 java_library(name = "client-combined",
   deps = [
     "//java/client/src/com/thoughtworks/selenium:selenium",
-    "//java/client/src/org/openqa/selenium/android",
     "//java/client/src/org/openqa/selenium/chrome",
     "//java/client/src/org/openqa/selenium/htmlunit",
     "//java/client/src/org/openqa/selenium/firefox",

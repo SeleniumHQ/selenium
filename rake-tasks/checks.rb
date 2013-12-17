@@ -133,18 +133,6 @@ def iPhoneSDKVersion?
   end
 end
 
-def AndroidSDK?
-  if $androidSDK.nil?
-    prop = YAML.load_file( './properties.yml' )
-    properties=prop["default"]["android"]
-    if (prop[ENV["USER"]])
-      properties=prop[ENV["USER"]]["android"];
-    end
-    $androidSDK = File.exists?(properties["androidsdkpath"])
-  end
-  $androidSDK
-end
-
 def vcs_revision
   @vcs_revision ||= `git rev-parse --short HEAD`
 end

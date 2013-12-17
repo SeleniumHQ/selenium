@@ -96,9 +96,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
     String name = caps == null ? "" : caps.getBrowserName();
     String className = null;
 
-    if (DesiredCapabilities.android().getBrowserName().equals(name)) {
-      className = "org.openqa.selenium.android.AndroidDriver";
-    } else if (DesiredCapabilities.chrome().getBrowserName().equals(name)) {
+    if (DesiredCapabilities.chrome().getBrowserName().equals(name)) {
       className = "org.openqa.selenium.testing.drivers.TestChromeDriver";
     } else if (DesiredCapabilities.firefox().getBrowserName().equals(name)) {
       className = getFirefoxClassName();
