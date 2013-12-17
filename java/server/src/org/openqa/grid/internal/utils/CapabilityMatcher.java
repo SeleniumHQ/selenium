@@ -22,7 +22,7 @@ import java.util.Map;
  * Used to find out if a capabilities requested by the client matches something on the remote and
  * should be forwarded by the grid.
  *
- * @link {@link GridHubConfiguration#setCapabilityMatcher(CapabilityMatcher)}
+ * @link {@link org.openqa.grid.internal.utils.configuration.GridHubConfiguration#setCapabilityMatcher(CapabilityMatcher)}
  */
 public interface CapabilityMatcher {
   public boolean matches(Map<String, Object> currentCapability,

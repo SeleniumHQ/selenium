@@ -20,7 +20,7 @@ package org.openqa.grid.web;
 import com.google.common.collect.Maps;
 
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
