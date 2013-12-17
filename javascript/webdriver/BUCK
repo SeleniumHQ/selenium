@@ -1,0 +1,13 @@
+
+js_library(name = 'base-lib',
+  srcs = [
+    'command.js',
+    'events.js',
+    'promise.js',
+    'stacktrace.js',
+  ],
+  deps = [
+#    '//javascript/atoms:error_lib',
+    '//third_party/closure:closure',
+  ],
+)

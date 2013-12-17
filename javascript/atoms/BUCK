@@ -1,0 +1,69 @@
+
+js_library(name = 'bot',
+  srcs = [
+    'bot.js',
+  ],
+)
+
+js_library(name = 'color',
+  srcs = [
+    'color.js',
+  ],
+  deps = [
+    '//third_party/closure:closure',
+  ],
+)
+
+
+js_library(name = 'dom',
+  srcs = [
+    "dom.js",
+  ],
+  deps = [
+    ':bot',
+    ':color',
+    ':json',
+    ':xpath',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+js_library(name = 'error-lib',
+  srcs = [
+    'error.js',
+    'response.js',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'json',
+  srcs = [
+    'json.js',
+    'userAgent.js'
+  ],
+  deps = [
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
+js_library(name = 'xpath',
+  srcs = [
+    'locators/xpath.js',
+  ],
+  deps = [
+    ':bot',
+    ':error-lib',
+    '//third_party/closure:closure',
+    '//third_party/js/wgxpath:wgxpath',
+  ],
+)

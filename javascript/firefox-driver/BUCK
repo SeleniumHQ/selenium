@@ -40,3 +40,155 @@ mozilla_xpt(name = 'mouse_xpt',
   src = 'extension/idl/wdIMouse.idl',
   fallback = 'prebuilt/firefox-driver/wdIMouse.xpt',
 )
+
+js_binary(name = 'bad-cert-listener',
+  srcs = [
+    'js/badCertListener.js',
+  ],
+  defines = [
+    'goog.userAgent.ASSUME_GECKO=true',
+  ],
+  externs = [
+    'js/externs.js',
+  ],
+  deps = [
+    ':logging',
+    ':moz',
+    '//javascript/atoms:json',
+  ])
+
+js_binary(name = 'prompt-service',
+  srcs = [
+    'js/promptService.js',
+  ],
+  defines = [
+    'goog.userAgent.ASSUME_GECKO=true',
+  ],
+  externs = [
+    'js/externs.js',
+  ],
+  deps = [
+    ':logging',
+    ':modals',
+    ':moz',
+    '//third_party/closure:closure',
+  ],
+)
+
+js_binary(name = 'session',
+  srcs = [
+    'js/wdsession.js',
+  ],
+  defines = [
+    'goog.userAgent.ASSUME_GECKO=true',
+  ],
+  externs = [
+    'js/externs.js',
+  ],
+  deps = [
+    ':logging',
+    ':moz',
+  ],
+)
+
+js_library(name = "error",
+  srcs = [
+    "js/error.js",
+  ],
+)
+
+
+js_library(name = 'files',
+  srcs = [
+    'js/files.js',
+  ],
+  deps = [
+    '//third_party/closure:closure',
+  ],
+)
+
+js_library(name = 'firefox-utils',
+  srcs = [
+    'js/firefox-utils.js',
+  ],
+  deps = [
+    ':moz',
+    '//javascript/atoms:error-lib',
+    '//javascript/atoms:json',
+    '//third_party/closure:closure',
+  ],
+)
+
+js_library(name = 'logging',
+  srcs = [
+    'js/logger.js',
+    'js/profiler.js',
+  ],
+  deps = [
+    ':files',
+    ':prefs',
+    '//third_party/closure:closure',
+  ],
+)
+
+js_library(name = 'modals',
+  srcs = [ 'js/modals.js' ],
+  deps = [
+    ':firefox-utils',
+    ':logging',
+    ':moz',
+    ':timer',
+    ':utils',
+    '//javascript/atoms:error-lib',
+  ],
+)
+
+js_library(name = 'moz',
+  srcs = [ 'js/moz.js' ],
+  deps = [
+    ':logging',
+    '//javascript/atoms:json',
+    '//third_party/closure:closure',
+  ],
+)
+
+js_library(name = 'prefs',
+  srcs = [
+    'js/prefs.js',
+  ],
+  deps = [
+    '//third_party/closure:closure',
+  ],
+)
+
+js_library(name = 'timer',
+  srcs = [
+    'js/timer.js',
+  ],
+)
+
+js_library(name = 'utils',
+  srcs = [
+    'js/utils.js',
+  ],
+  deps = [
+    ':error',
+    ':firefox-utils',
+    ':logging',
+    ':moz',
+    ':web-loading-listener',
+    '//javascript/atoms:dom',
+    '//third_party/closure:closure',
+  ],
+)
+
+js_library(name = 'web-loading-listener',
+  srcs = [
+    'js/webLoadingListener.js',
+  ],
+  deps = [
+    ':logging',
+    ':moz',
+    ':timer',
+  ],
+)
