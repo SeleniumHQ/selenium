@@ -47,8 +47,6 @@ public class DefaultDriverSessions implements DriverSessions {
     put(DesiredCapabilities.internetExplorer(), "org.openqa.selenium.ie.InternetExplorerDriver");
     put(DesiredCapabilities.opera(), "com.opera.core.systems.OperaDriver");
     put(DesiredCapabilities.safari(), "org.openqa.selenium.safari.SafariDriver");
-    put(DesiredCapabilities.iphone(), "org.openqa.selenium.iphone.IPhoneDriver");
-    put(DesiredCapabilities.ipad(), "org.openqa.selenium.iphone.IPhoneDriver");
     put(DesiredCapabilities.phantomjs(), "org.openqa.selenium.phantomjs.PhantomJSDriver");
   }};
 

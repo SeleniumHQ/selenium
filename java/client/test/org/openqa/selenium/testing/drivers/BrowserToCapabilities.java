@@ -81,14 +81,6 @@ public class BrowserToCapabilities {
         caps = DesiredCapabilities.safari();
         break;
 
-      case ipad:
-        caps = DesiredCapabilities.ipad();
-        break;
-
-      case iphone:
-        caps = DesiredCapabilities.iphone();
-        break;
-
       default:
         throw new RuntimeException("Cannot determine browser config to use");
     }

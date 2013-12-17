@@ -25,7 +25,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
@@ -36,8 +35,6 @@ import static org.openqa.selenium.testing.drivers.Browser.chrome;
 import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
 import static org.openqa.selenium.testing.drivers.Browser.htmlunit_js;
 import static org.openqa.selenium.testing.drivers.Browser.ie;
-import static org.openqa.selenium.testing.drivers.Browser.ipad;
-import static org.openqa.selenium.testing.drivers.Browser.iphone;
 import static org.openqa.selenium.testing.drivers.Browser.opera;
 import static org.openqa.selenium.testing.drivers.Browser.phantomjs;
 
@@ -62,7 +59,7 @@ public class TestIgnorance {
 
   private Set<Browser> alwaysNativeEvents = ImmutableSet.of(chrome, ie, opera);
   private Set<Browser> neverNativeEvents = ImmutableSet.of(
-      htmlunit, htmlunit_js, ipad, iphone, phantomjs);
+      htmlunit, htmlunit_js, phantomjs);
   private IgnoreComparator ignoreComparator = new IgnoreComparator();
   private Set<String> methods = Sets.newHashSet();
   private Set<String> only = Sets.newHashSet();
@@ -185,11 +182,6 @@ public class TestIgnorance {
 
       case ie:
         comparator.addDriver(IE);
-        break;
-
-      case ipad:
-      case iphone:
-        comparator.addDriver(IPHONE);
         break;
 
       case none:
