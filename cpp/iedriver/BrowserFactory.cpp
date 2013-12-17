@@ -171,8 +171,10 @@ void BrowserFactory::LaunchBrowserUsingIELaunchURL(PROCESS_INFORMATION* proc_inf
                                         NULL);
   if (FAILED(launch_result)) {
     LOGHR(WARN, launch_result) << "Error using IELaunchURL to start IE";
+    std::wstring hresult_msg = _com_error(launch_result).ErrorMessage();
     *error_message = StringUtilities::Format(IELAUNCHURL_ERROR_MESSAGE,
                                              launch_result,
+                                             StringUtilities::ToString(hresult_msg).c_str(),
                                              this->initial_browser_url().c_str());
   }
 }
