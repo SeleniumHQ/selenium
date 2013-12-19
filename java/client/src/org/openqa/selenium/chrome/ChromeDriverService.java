@@ -58,7 +58,7 @@ public class ChromeDriverService extends DriverService {
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  private ChromeDriverService(File executable, int port, ImmutableList<String> args,
+  public ChromeDriverService(File executable, int port, ImmutableList<String> args,
       ImmutableMap<String, String> environment) throws IOException {
     super(executable, port, args, environment);
   }
