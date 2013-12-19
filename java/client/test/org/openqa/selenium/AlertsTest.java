@@ -41,6 +41,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -387,6 +388,8 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = {CHROME})
   @Test
   public void testShouldHandleAlertOnPageUnload() {
+    assumeFalse("Firefox 27 does not trigger alerts on unload",
+        isFirefox(driver) && getFirefoxVersion(driver) >= 27);
     driver.findElement(By.id("open-page-with-onunload-alert")).click();
     driver.navigate().back();
 
@@ -440,6 +443,8 @@ public class AlertsTest extends JUnit4TestBase {
       System.err.println("x_ignore_nofocus can cause a firefox crash here. Ignoring test. See issue 2987.");
       assumeTrue(false);
     }
+    assumeFalse("Firefox 27 does not trigger alerts on unload",
+        isFirefox(driver) && getFirefoxVersion(driver) >= 27);
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-window-with-onclose-alert")).click();
