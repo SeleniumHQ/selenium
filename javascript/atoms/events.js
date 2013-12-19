@@ -351,10 +351,13 @@ bot.events.MouseEventFactory_.prototype.create = function(target, opt_args) {
       detail = args.wheelDelta;
     }
 
+    // For screenX and screenY, we set those to clientX and clientY values.
+    // While not strictly correct, applications under test depend on
+    // accurate relative positioning which is satisfied.
     event.initMouseEvent(this.type_, this.bubbles_, this.cancelable_, view,
-        detail, /*screenX*/ 0, /*screenY*/ 0, args.clientX, args.clientY,
-        args.ctrlKey, args.altKey, args.shiftKey, args.metaKey, args.button,
-        args.relatedTarget);
+        detail, /*screenX*/ args.clientX, /*screenY*/ args.clientY,
+        args.clientX, args.clientY, args.ctrlKey, args.altKey,
+        args.shiftKey, args.metaKey, args.button, args.relatedTarget);
 
     // Trying to modify the properties throws an error,
     // so we define getters to return the correct values.
