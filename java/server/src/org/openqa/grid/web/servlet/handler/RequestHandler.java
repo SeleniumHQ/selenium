@@ -37,6 +37,7 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.TestSessionListener;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 
 /**
@@ -101,7 +102,8 @@ public class RequestHandler implements Comparable<RequestHandler> {
   public void process() {
     switch (request.getRequestType()) {
       case START_SESSION:
-        log.info("Got a request to create a new session: " + request.getDesiredCapabilities());
+        log.info("Got a request to create a new session: "
+                 + new DesiredCapabilities(request.getDesiredCapabilities()));
         try {
           registry.addNewSessionRequest(this);
           waitForSessionBound();
