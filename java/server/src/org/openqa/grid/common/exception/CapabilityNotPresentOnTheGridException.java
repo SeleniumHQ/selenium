@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.grid.common.exception;
 
+import org.openqa.selenium.remote.DesiredCapabilities;
+
 import java.util.Map;
 
 public class CapabilityNotPresentOnTheGridException extends GridException {
@@ -28,6 +30,6 @@ public class CapabilityNotPresentOnTheGridException extends GridException {
   }
 
   public CapabilityNotPresentOnTheGridException(Map<String, Object> capabilities) {
-    super("cannot find : " + capabilities);
+    super("cannot find : " + new DesiredCapabilities(capabilities));
   }
 }
