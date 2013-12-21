@@ -276,9 +276,12 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("isVisible", new IsVisible(elementFinder));
     seleneseMethods.put("keyDown", new KeyEvent(elementFinder, javascriptLibrary, keyState,
         "doKeyDown"));
+    seleneseMethods.put("keyDownNative", new KeyDownNative());
     seleneseMethods.put("keyPress", new TypeKeys(alertOverride, elementFinder));
+    seleneseMethods.put("keyPressNative", new KeyPressNative());
     seleneseMethods.put("keyUp",
         new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyUp"));
+    seleneseMethods.put("keyUpNative", new KeyUpNative());
     seleneseMethods.put("metaKeyDown", new MetaKeyDown(keyState));
     seleneseMethods.put("metaKeyUp", new MetaKeyUp(keyState));
     seleneseMethods.put("mouseOver", new MouseEvent(elementFinder, javascriptLibrary, "mouseover"));
