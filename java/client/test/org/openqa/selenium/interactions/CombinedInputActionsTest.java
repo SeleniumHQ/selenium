@@ -48,6 +48,7 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
@@ -63,11 +64,38 @@ import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
     issues = {4136})
 public class CombinedInputActionsTest extends JUnit4TestBase {
 
+  @JavascriptEnabled
+  @Test
+  @Ignore({CHROME, IE, PHANTOMJS})
+  public void testPlainClickingOnMultiSelectionList() {
+    assumeTrue("Only works with native events on Linux",
+               isNativeEventsEnabled(driver));
+
+    driver.get(pages.formSelectionPage);
+
+    List<WebElement> options = driver.findElements(By.tagName("option"));
+
+    Actions actions = new Actions(driver);
+    Action selectThreeOptions = actions.click(options.get(1))
+        .click(options.get(2))
+        .click(options.get(3))
+        .build();
+
+    selectThreeOptions.perform();
+
+    WebElement showButton = driver.findElement(By.name("showselected"));
+    showButton.click();
+
+    WebElement resultElement = driver.findElement(By.id("result"));
+    assertEquals("Should have picked the third option only.", "cheddar",
+                 resultElement.getText());
+  }
+
   // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
   @Test
-  @Ignore(CHROME)
-  public void testClickingOnFormElements() {
+  @Ignore({CHROME, IE, OPERA, OPERA_MOBILE})
+  public void testShiftClickingOnMultiSelectionList() {
     assumeTrue("Only works with native events on Linux",
                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
 
@@ -78,7 +106,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     Actions actions = new Actions(driver);
     Action selectThreeOptions = actions.click(options.get(1))
         .keyDown(Keys.SHIFT)
-        .click(options.get(2))
         .click(options.get(3))
         .keyUp(Keys.SHIFT)
         .build();
@@ -93,10 +120,39 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         resultElement.getText());
   }
 
+  // TODO: Check if this could work in any browser without native events.
   @JavascriptEnabled
-  @Ignore({ANDROID, IE, REMOTE, IPHONE, OPERA})
   @Test
-  public void testSelectingMultipleItems() {
+  @Ignore({CHROME, HTMLUNIT, IE, OPERA, OPERA_MOBILE, PHANTOMJS})
+  public void testControlClickingOnMultiSelectionList() {
+    assumeTrue("Only works with native events on Linux",
+               isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.LINUX));
+
+    driver.get(pages.formSelectionPage);
+
+    List<WebElement> options = driver.findElements(By.tagName("option"));
+
+    Actions actions = new Actions(driver);
+    Action selectThreeOptions = actions.click(options.get(1))
+        .keyDown(Keys.CONTROL)
+        .click(options.get(3))
+        .keyUp(Keys.CONTROL)
+        .build();
+
+    selectThreeOptions.perform();
+
+    WebElement showButton = driver.findElement(By.name("showselected"));
+    showButton.click();
+
+    WebElement resultElement = driver.findElement(By.id("result"));
+    assertEquals("Should have picked the first and the third options.", "roquefort cheddar",
+                 resultElement.getText());
+  }
+
+  @JavascriptEnabled
+  @Ignore({ANDROID, IE, REMOTE, IPHONE, OPERA, PHANTOMJS})
+  @Test
+  public void testControlClickingOnCustomMultiSelectionList() {
     assumeFalse("Does not works with native events on Windows",
                 isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS));
 
