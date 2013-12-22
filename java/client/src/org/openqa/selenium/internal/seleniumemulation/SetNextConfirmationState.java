@@ -29,7 +29,12 @@ public class SetNextConfirmationState extends SeleneseCommand<Void> {
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
     ((JavascriptExecutor) driver).executeScript(
-        "window.__webdriverNextConfirm = arguments[0]", result);
+        "if (window.localStorage) { " +
+        "  window.localStorage.setItem('__webdriverNextConfirm', JSON.stringify(arguments[0])); " +
+        "} else { " +
+        "  window.__webdriverNextConfirm = arguments[0];" +
+        "}"
+        , result);
     return null;
   }
 }

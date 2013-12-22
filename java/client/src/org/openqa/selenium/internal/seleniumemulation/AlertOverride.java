@@ -37,18 +37,39 @@ public class AlertOverride {
     }
 
     ((JavascriptExecutor) driver).executeScript(
-        "if (window.__webdriverAlerts) { return; } " +
-        "window.__webdriverAlerts = []; " +
-        "window.alert = function(msg) { window.__webdriverAlerts.push(msg); }; " +
-        "window.__webdriverConfirms = []; " +
-        "window.__webdriverNextConfirm = true; " +
-        "window.confirm = function(msg) { " +
-        "  window.__webdriverConfirms.push(msg); " +
-        "  var res = window.__webdriverNextConfirm; " +
+        "if (window.localStorage) { " +
+        "  window.localStorage.setItem('__webdriverAlerts', JSON.stringify([])); " +
+        "  window.alert = function(msg) { " +
+        "    var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
+        "    alerts.push(msg); " +
+        "    window.localStorage.setItem('__webdriverAlerts', JSON.stringify(alerts)); " +
+        "  }; " +
+        "  window.localStorage.setItem('__webdriverConfirms', JSON.stringify([])); " +
+        "  if (!('__webdriverNextConfirm' in window.localStorage)) { " +
+        "    window.localStorage.setItem('__webdriverNextConfirm', JSON.stringify(true)); " +
+        "  } " +
+        "  window.confirm = function(msg) { " +
+        "    var confirms = JSON.parse(window.localStorage.getItem('__webdriverConfirms')); " +
+        "    confirms.push(msg); " +
+        "    window.localStorage.setItem('__webdriverConfirms', JSON.stringify(confirms)); " +
+        "    var res = JSON.parse(window.localStorage.getItem('__webdriverNextConfirm')); " +
+        "    window.localStorage.setItem('__webdriverNextConfirm', JSON.stringify(true)); " +
+        "    return res; " +
+        "  }; " +
+        "} else { " +
+        "  if (window.__webdriverAlerts) { return; } " +
+        "  window.__webdriverAlerts = []; " +
+        "  window.alert = function(msg) { window.__webdriverAlerts.push(msg); }; " +
+        "  window.__webdriverConfirms = []; " +
         "  window.__webdriverNextConfirm = true; " +
-        "  return res; " +
-        "};"
-    );
+        "  window.confirm = function(msg) { " +
+        "    window.__webdriverConfirms.push(msg); " +
+        "    var res = window.__webdriverNextConfirm; " +
+        "    window.__webdriverNextConfirm = true; " +
+        "    return res; " +
+        "  }; " +
+        "}"
+      );
   }
 
   private void checkOverridesEnabled(){
@@ -59,11 +80,21 @@ public class AlertOverride {
   public String getNextAlert(WebDriver driver) {
     checkOverridesEnabled();
     String result = (String) ((JavascriptExecutor) driver).executeScript(
-        "if (!window.__webdriverAlerts) { return null }; " +
-            "var t = window.__webdriverAlerts.shift();" +
-            "if (t) { t = t.replace(/\\n/g, ' '); } " +
-            "return t;"
-        );
+        "if (window.localStorage) { " +
+        "  if (!('__webdriverAlerts' in window.localStorage)) { return null } " +
+        "  var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
+        "  if (! alerts) { return null } " +
+        "  var t = alerts.shift(); " +
+        "  window.localStorage.setItem('__webdriverAlerts', JSON.stringify(alerts)); " +
+        "  if (t) { t = t.replace(/\\n/g, ' '); } " +
+        "  return t; " +
+        "} else { " +
+        "  if (!window.__webdriverAlerts) { return null } " +
+        "  var t = window.__webdriverAlerts.shift(); " +
+        "  if (t) { t = t.replace(/\\n/g, ' '); } " +
+        "  return t; " +
+        "}"
+      );
 
     if (result == null) {
       throw new SeleniumException("There were no alerts");
@@ -75,16 +106,32 @@ public class AlertOverride {
   public boolean isAlertPresent(WebDriver driver) {
     checkOverridesEnabled();
     return Boolean.TRUE.equals(((JavascriptExecutor) driver).executeScript(
-        "return window.__webdriverAlerts && window.__webdriverAlerts.length > 0;"
-        ));
+        "if (window.localStorage) { " +
+        "  if (!('__webdriverAlerts' in window.localStorage)) { return false } " +
+        "  var alerts = JSON.parse(window.localStorage.getItem('__webdriverAlerts')); " +
+        "  return alerts && alerts.length > 0; " +
+        "} else { " +
+        "  return window.__webdriverAlerts && window.__webdriverAlerts.length > 0; " +
+        "}"
+      ));
   }
 
   public String getNextConfirmation(WebDriver driver) {
     checkOverridesEnabled();
     String result = (String) ((JavascriptExecutor) driver).executeScript(
-        "if (!window.__webdriverConfirms) { return null; } " +
-            "return window.__webdriverConfirms.shift();"
-        );
+        "if (window.localStorage) { " +
+        "  if (!('__webdriverConfirms' in window.localStorage)) { return null } " +
+        "  var confirms = JSON.parse(window.localStorage.getItem('__webdriverConfirms')); " +
+        "  if (! confirms) { return null } " +
+        "  var t = confirms.shift(); " +
+        "  window.localStorage.setItem('__webdriverConfirms', JSON.stringify(confirms)); " +
+        "  if (t) { t = t.replace(/\\n/g, ' '); } " +
+        "  return t; " +
+        "} else { " +
+        "  if (!window.__webdriverConfirms) { return null; } " +
+        "  return window.__webdriverConfirms.shift(); " +
+        "}"
+      );
 
     if (result == null) {
       throw new SeleniumException("There were no confirmations");
@@ -96,7 +143,13 @@ public class AlertOverride {
   public boolean isConfirmationPresent(WebDriver driver) {
     checkOverridesEnabled();
     return Boolean.TRUE.equals(((JavascriptExecutor) driver).executeScript(
-        "return window.__webdriverConfirms && window.__webdriverConfirms.length > 0;"
-        ));
+        "if (window.localStorage) { " +
+        "  if (!('__webdriverConfirms' in window.localStorage)) { return false } " +
+        "  var confirms = JSON.parse(window.localStorage.getItem('__webdriverConfirms')); " +
+        "  return confirms && confirms.length > 0; " +
+        "} else { " +
+        "  return window.__webdriverConfirms && window.__webdriverConfirms.length > 0; " +
+        "}"
+      ));
   }
 }
