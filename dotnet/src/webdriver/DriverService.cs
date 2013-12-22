@@ -38,6 +38,7 @@ namespace OpenQA.Selenium
         private string driverServiceExecutableName;
         private int driverServicePort;
         private bool silent;
+        private bool hideCommandPromptWindow;
         private Process driverServiceProcess;
 
         /// <summary>
@@ -109,6 +110,15 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the command prompt window of the service should be hidden.
+        /// </summary>
+        public bool HideCommandPromptWindow
+        {
+            get { return this.hideCommandPromptWindow; }
+            set { this.hideCommandPromptWindow = value; }
+        }
+
+        /// <summary>
         /// Gets the executable file name of the driver service.
         /// </summary>
         protected string DriverServiceExecutableName
@@ -143,6 +153,7 @@ namespace OpenQA.Selenium
             this.driverServiceProcess.StartInfo.FileName = Path.Combine(this.driverServicePath, this.driverServiceExecutableName);
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
+            this.driverServiceProcess.StartInfo.CreateNoWindow = this.hideCommandPromptWindow;
             this.driverServiceProcess.Start();
             Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri("status", UriKind.Relative));
             bool processStarted = false;
