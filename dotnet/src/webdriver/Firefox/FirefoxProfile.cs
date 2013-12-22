@@ -20,12 +20,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using Ionic.Zip;
+using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -38,6 +39,11 @@ namespace OpenQA.Selenium.Firefox
         private const string ExtensionFileName = "webdriver.xpi";
         private const string ExtensionResourceId = "WebDriver.FirefoxExt.zip";
         private const string UserPreferencesFileName = "user.js";
+
+        private const string WebDriverPortPreferenceName = "webdriver_firefox_port";
+        private const string EnableNativeEventsPreferenceName = "webdriver_enable_native_events";
+        private const string AcceptUntrustedCertificatesPreferenceName = "webdriver_accept_untrusted_certs";
+        private const string AssumeUntrustedCertificateIssuerPreferenceName = "webdriver_assume_untrusted_issuer";
         #endregion
 
         #region Private members
@@ -47,8 +53,9 @@ namespace OpenQA.Selenium.Firefox
         private bool enableNativeEvents;
         private bool loadNoFocusLibrary;
         private bool acceptUntrustedCerts;
+        private bool assumeUntrustedIssuer;
         private bool deleteSource;
-        private Preferences profileAdditionalPrefs = new Preferences();
+        private Preferences profilePreferences;
         private Dictionary<string, FirefoxExtension> extensions = new Dictionary<string, FirefoxExtension>();
         #endregion
 
@@ -83,7 +90,10 @@ namespace OpenQA.Selenium.Firefox
             this.profilePort = FirefoxDriver.DefaultPort;
             this.enableNativeEvents = FirefoxDriver.DefaultEnableNativeEvents;
             this.acceptUntrustedCerts = FirefoxDriver.AcceptUntrustedCertificates;
+            this.assumeUntrustedIssuer = FirefoxDriver.AssumeUntrustedCertificateIssuer;
             this.deleteSource = deleteSourceOnClean;
+            this.ReadDefaultPreferences();
+            this.profilePreferences.AppendPreferences(this.ReadExistingPreferences());
         } 
         #endregion
 
@@ -126,12 +136,38 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether Firefox should accept untrusted certificates.
+        /// Gets or sets a value indicating whether Firefox should accept SSL certificates which have 
+        /// expired, signed by an unknown authority or are generally untrusted. Set to true 
+        /// by default.
         /// </summary>
         public bool AcceptUntrustedCertificates
         {
             get { return this.acceptUntrustedCerts; }
             set { this.acceptUntrustedCerts = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether Firefox assume untrusted SSL certificates 
+        /// come from an untrusted issuer or are self-signed. Set to true by default.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Due to limitations within Firefox, it is easy to find out if a certificate has expired
+        /// or does not match the host it was served for, but hard to find out if the issuer of the
+        /// certificate is untrusted. By default, it is assumed that the certificates were not 
+        /// issued from a trusted certificate authority.
+        /// </para>
+        /// <para>
+        /// If you receive an "untrusted site" prompt it Firefox when using a certificate that was
+        /// issued by valid issuer, but the certificate has expired or is being served served for
+        /// a different host (e.g. production certificate served in a testing environment) set this
+        /// to false.
+        /// </para>
+        /// </remarks>
+        public bool AssumeUntrustedCertificateIssuer
+        {
+            get { return this.assumeUntrustedIssuer; }
+            set { this.assumeUntrustedIssuer = value; }
         }
         #endregion
 
@@ -173,7 +209,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="value">A <see cref="System.String"/> value to add to the profile.</param>
         public void SetPreference(string name, string value)
         {
-            this.profileAdditionalPrefs.SetPreference(name, value);
+            this.profilePreferences.SetPreference(name, value);
         }
 
         /// <summary>
@@ -183,7 +219,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="value">A <see cref="System.Int32"/> value to add to the profile.</param>
         public void SetPreference(string name, int value)
         {
-            this.profileAdditionalPrefs.SetPreference(name, value);
+            this.profilePreferences.SetPreference(name, value);
         }
 
         /// <summary>
@@ -193,7 +229,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="value">A <see cref="System.Boolean"/> value to add to the profile.</param>
         public void SetPreference(string name, bool value)
         {
-            this.profileAdditionalPrefs.SetPreference(name, value);
+            this.profilePreferences.SetPreference(name, value);
         }
 
         /// <summary>
@@ -314,22 +350,6 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Adds a preference to the profile.
-        /// </summary>
-        /// <param name="preferences">The preferences dictionary.</param>
-        /// <param name="name">The name of the preference.</param>
-        /// <param name="value">The value of the preference.</param>
-        private static void AddDefaultPreference(Dictionary<string, string> preferences, string name, string value)
-        {
-            // The user must be able to override the default preferences in the profile,
-            // so only add them if they don't already exist.
-            if (!preferences.ContainsKey(name))
-            {
-                preferences.Add(name, value);
-            }
-        }
-
-        /// <summary>
         /// Generates a random directory name for the profile.
         /// </summary>
         /// <returns>A random directory name for the profile.</returns>
@@ -384,8 +404,6 @@ namespace OpenQA.Selenium.Firefox
                 throw new WebDriverException("You must set the port to listen on before updating user.js");
             }
 
-            Dictionary<string, string> prefs = this.ReadExistingPreferences();
-
             string userPrefs = Path.Combine(this.profileDir, UserPreferencesFileName);
             if (File.Exists(userPrefs))
             {
@@ -399,88 +417,37 @@ namespace OpenQA.Selenium.Firefox
                 }
             }
 
-            this.profileAdditionalPrefs.AppendPreferencesTo(prefs);
+            this.profilePreferences.SetPreference(WebDriverPortPreferenceName, this.profilePort);
+            this.profilePreferences.SetPreference(EnableNativeEventsPreferenceName, this.enableNativeEvents);
+            this.profilePreferences.SetPreference(AcceptUntrustedCertificatesPreferenceName, this.acceptUntrustedCerts);
+            this.profilePreferences.SetPreference(AssumeUntrustedCertificateIssuerPreferenceName, this.assumeUntrustedIssuer);
 
-            // Normal settings to facilitate testing
-            AddDefaultPreference(prefs, "app.update.auto", "false");
-            AddDefaultPreference(prefs, "app.update.enabled", "false");
-            AddDefaultPreference(prefs, "browser.download.manager.showWhenStarting", "false");
-            AddDefaultPreference(prefs, "browser.EULA.override", "true");
-            AddDefaultPreference(prefs, "browser.EULA.3.accepted", "true");
-            AddDefaultPreference(prefs, "browser.link.open_external", "2");
-            AddDefaultPreference(prefs, "browser.link.open_newwindow", "2");
-            AddDefaultPreference(prefs, "browser.offline", "false");
-            AddDefaultPreference(prefs, "browser.safebrowsing.enabled", "false");
-            AddDefaultPreference(prefs, "browser.safebrowsing.malware.enabled", "false");
-            AddDefaultPreference(prefs, "browser.search.update", "false");
-            AddDefaultPreference(prefs, "extensions.blocklist.enabled", "false");
-            AddDefaultPreference(prefs, "browser.sessionstore.resume_from_crash", "false");
-            AddDefaultPreference(prefs, "browser.shell.checkDefaultBrowser", "false");
-            AddDefaultPreference(prefs, "browser.startup.page", "0");
-            AddDefaultPreference(prefs, "browser.tabs.warnOnClose", "false");
-            AddDefaultPreference(prefs, "browser.tabs.warnOnOpen", "false");
-            AddDefaultPreference(prefs, "devtools.errorconsole.enabled", "true");
-            AddDefaultPreference(prefs, "dom.disable_open_during_load", "false");
-            AddDefaultPreference(prefs, "dom.max_script_run_time", "30");
-            AddDefaultPreference(prefs, "extensions.autoDisableScopes", "10");
-            AddDefaultPreference(prefs, "extensions.logging.enabled", "true");
-            AddDefaultPreference(prefs, "extensions.update.enabled", "false");
-            AddDefaultPreference(prefs, "extensions.update.notifyUser", "false");
-            AddDefaultPreference(prefs, "network.manage-offline-status", "false");
-            AddDefaultPreference(prefs, "network.http.max-connections-per-server", "10");
-            AddDefaultPreference(prefs, "network.http.phishy-userpass-length", "255");
-            AddDefaultPreference(prefs, "offline-apps.allow_by_default", "true");
-            AddDefaultPreference(prefs, "prompts.tab_modal.enabled", "false");
-            AddDefaultPreference(prefs, "security.fileuri.origin_policy", "3");
-            AddDefaultPreference(prefs, "security.fileuri.strict_origin_policy", "false");
-            AddDefaultPreference(prefs, "security.warn_entering_secure", "false");
-            AddDefaultPreference(prefs, "security.warn_submit_insecure", "false");
-            AddDefaultPreference(prefs, "security.warn_entering_secure.show_once", "false");
-            AddDefaultPreference(prefs, "security.warn_entering_weak", "false");
-            AddDefaultPreference(prefs, "security.warn_entering_weak.show_once", "false");
-            AddDefaultPreference(prefs, "security.warn_leaving_secure", "false");
-            AddDefaultPreference(prefs, "security.warn_leaving_secure.show_once", "false");
-            AddDefaultPreference(prefs, "security.warn_submit_insecure", "false");
-            AddDefaultPreference(prefs, "security.warn_viewing_mixed", "false");
-            AddDefaultPreference(prefs, "security.warn_viewing_mixed.show_once", "false");
-            AddDefaultPreference(prefs, "signon.rememberSignons", "false");
-            AddDefaultPreference(prefs, "startup.homepage_welcome_url", "\"about:blank\"");
-            AddDefaultPreference(prefs, "toolkit.networkmanager.disable", "true");
-            AddDefaultPreference(prefs, "toolkit.telemetry.enabled", "false");
-            AddDefaultPreference(prefs, "toolkit.telemetry.prompted", "2");
-            AddDefaultPreference(prefs, "toolkit.telemetry.rejected", "true");
-
-            // Which port should we listen on?
-            AddDefaultPreference(prefs, "webdriver_firefox_port", this.profilePort.ToString(CultureInfo.InvariantCulture));
-
-            // Should we use native events?
-            AddDefaultPreference(prefs, "webdriver_enable_native_events", this.enableNativeEvents.ToString().ToLowerInvariant());
-
-            // Should we accept untrusted certificates or not?
-            AddDefaultPreference(prefs, "webdriver_accept_untrusted_certs", this.acceptUntrustedCerts.ToString().ToLowerInvariant());
-
-            // Settings to facilitate debugging the driver
-            // Logs errors in chrome files to the Error Console.
-            AddDefaultPreference(prefs, "javascript.options.showInConsole", "true"); // Logs errors in chrome files to the Error Console.
-
-            // Enables the use of the dump() statement
-            AddDefaultPreference(prefs, "browser.dom.window.dump.enabled", "true");  // Enables the use of the dump() statement
-
-            // Log exceptions from inner frames (i.e. setTimeout)
-            AddDefaultPreference(prefs, "dom.report_all_js_exceptions", "true");
-
-            // If the user sets the home page, we should also start up there
-            string userHomePage = string.Empty;
-            if (prefs.TryGetValue("browser.startup.homepage", out userHomePage))
+            string homePage = this.profilePreferences.GetPreference("browser.startup.homepage");
+            if (!string.IsNullOrEmpty(homePage))
             {
-                AddDefaultPreference(prefs, "startup.homepage_welcome_url", userHomePage);
-                if (userHomePage != "about:blank")
+                this.profilePreferences.SetPreference("startup.homepage_welcome_url", string.Empty);
+                if (homePage != "about:blank")
                 {
-                    AddDefaultPreference(prefs, "browser.startup.page", "1");
+                    this.profilePreferences.SetPreference("browser.startup.page", 1);
                 }
             }
 
-            this.WriteNewPreferences(prefs);
+            this.profilePreferences.WriteToFile(userPrefs);
+        }
+
+        private void ReadDefaultPreferences()
+        {
+            using (Stream defaultPrefsStream = ResourceUtilities.GetResourceStream("webdriver.json", "WebDriver.FirefoxPreferences"))
+            {
+                using (StreamReader reader = new StreamReader(defaultPrefsStream))
+                {
+                    string defaultPreferences = reader.ReadToEnd();
+                    Dictionary<string, object> deserializedPreferences = JsonConvert.DeserializeObject<Dictionary<string, object>>(defaultPreferences, new ResponseValueJsonConverter());
+                    Dictionary<string, object> immutableDefaultPreferences = deserializedPreferences["frozen"] as Dictionary<string, object>;
+                    Dictionary<string, object> editableDefaultPreferences = deserializedPreferences["mutable"] as Dictionary<string, object>;
+                    this.profilePreferences = new Preferences(immutableDefaultPreferences, editableDefaultPreferences);
+                }
+            }
         }
 
         /// <summary>
@@ -520,22 +487,6 @@ namespace OpenQA.Selenium.Firefox
             }
 
             return prefs;
-        }
-
-        /// <summary>
-        /// Writes the specified preferences to the user preferences file.
-        /// </summary>
-        /// <param name="preferences">A <see cref="Dictionary{K, V}"/> containing key-value pairs
-        /// representing the preferences to write.</param>
-        private void WriteNewPreferences(Dictionary<string, string> preferences)
-        {
-            using (TextWriter writer = File.CreateText(Path.Combine(this.profileDir, UserPreferencesFileName)))
-            {
-                foreach (string prefKey in preferences.Keys)
-                {
-                    writer.WriteLine(string.Format(CultureInfo.InvariantCulture, "user_pref(\"{0}\", {1});", prefKey, preferences[prefKey]));
-                }
-            }
         }
 
         /// <summary>

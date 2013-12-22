@@ -337,6 +337,9 @@ if exist $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi (
   echo WARN: No Firefox extension found at $(SolutionDir)build\javascript\firefox-driver\webdriver.xpi
 )
 
+echo Copying Firefox preferences file from $(SolutionDir)javascript\firefox-driver\webdriver.json
+copy /y $(SolutionDir)javascript\firefox-driver\webdriver.json $(TargetDir) &gt; NUL
+
 if exist $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz (
   echo Copying Safari extension from $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz
   copy /y $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextension\SafariDriver.safariextz $(TargetDir) &gt; NUL
@@ -344,6 +347,6 @@ if exist $(SolutionDir)build\javascript\safari-driver\SafariDriver.safariextensi
   echo Copying Safari extension from prebuilt location $(SolutionDir)javascript\safari-driver\prebuilt\SafariDriver.safariextz
   copy /y $(SolutionDir)javascript\safari-driver\prebuilt\SafariDriver.safariextz $(TargetDir) &gt; NUL
 )
-)</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

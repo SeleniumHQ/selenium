@@ -102,6 +102,11 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         public static readonly bool AcceptUntrustedCertificates = true;
 
+        /// <summary>
+        /// Indicates whether the driver assume the issuer of untrusted certificates is untrusted.
+        /// </summary>
+        public static readonly bool AssumeUntrustedCertificateIssuer = true;
+
         private FirefoxBinary binary;
 
         private FirefoxProfile profile;
