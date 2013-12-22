@@ -718,7 +718,7 @@ namespace :docs do
     # First, delete the old docs.
     rm_rf "docs/api/javascript"
 
-    cmd = "java -jar third_party/java/dossier/dossier-0.1.1.jar"
+    cmd = "java -jar third_party/java/dossier/dossier-0.2.1.jar"
     cmd << " --closure_library third_party/closure/goog"
     cmd << " -o docs/api/javascript"
     cmd << " -s javascript/atoms"
