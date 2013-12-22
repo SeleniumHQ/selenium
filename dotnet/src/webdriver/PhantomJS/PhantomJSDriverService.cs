@@ -51,17 +51,18 @@ namespace OpenQA.Selenium.PhantomJS
         /// </remarks>
         [JsonConstructor]
         private PhantomJSDriverService()
-            : this(FileUtilities.FindFile(PhantomJSDriverServiceFileName), PortUtilities.FindFreePort())
+            : this(FileUtilities.FindFile(PhantomJSDriverServiceFileName), PhantomJSDriverServiceFileName, PortUtilities.FindFreePort())
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the PhantomJSDriverService class.
         /// </summary>
-        /// <param name="executable">The full path to the PhantomJS executable.</param>
+        /// <param name="executablePath">The full path to the PhantomJS executable.</param>
+        /// <param name="executableFileName">The file name of the PhantomJS executable.</param>
         /// <param name="port">The port on which the IEDriverServer executable should listen.</param>
-        private PhantomJSDriverService(string executable, int port)
-            : base(executable, port, PhantomJSDriverServiceFileName, PhantomJSDownloadUrl)
+        private PhantomJSDriverService(string executablePath, string executableFileName, int port)
+            : base(executablePath, port, executableFileName, PhantomJSDownloadUrl)
         {
             this.InitializeProperties();
         }
@@ -334,7 +335,18 @@ namespace OpenQA.Selenium.PhantomJS
         /// <returns>A PhantomJSDriverService using a random port.</returns>
         public static PhantomJSDriverService CreateDefaultService(string driverPath)
         {
-            return new PhantomJSDriverService(driverPath, PortUtilities.FindFreePort());
+            return CreateDefaultService(driverPath, PhantomJSDriverServiceFileName);
+        }
+
+        /// <summary>
+        /// Creates a default instance of the PhantomJSDriverService using a specified path to the PhantomJS executable with the given name.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the PhantomJS executable.</param>
+        /// <param name="driverExecutableFileName">The name of the PhantomJS executable file.</param>
+        /// <returns>A PhantomJSDriverService using a random port.</returns>
+        public static PhantomJSDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
+        {
+            return new PhantomJSDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
         }
 
         /// <summary>

@@ -41,10 +41,11 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Initializes a new instance of the ChromeDriverService class.
         /// </summary>
-        /// <param name="executable">The full path to the ChromeDriver executable.</param>
+        /// <param name="executablePath">The full path to the ChromeDriver executable.</param>
+        /// <param name="executableFileName">The file name of the ChromeDriver executable.</param>
         /// <param name="port">The port on which the ChromeDriver executable should listen.</param>
-        private ChromeDriverService(string executable, int port)
-            : base(executable, port, ChromeDriverServiceFileName, ChromeDriverDownloadUrl)
+        private ChromeDriverService(string executablePath, string executableFileName, int port)
+            : base(executablePath, port, executableFileName, ChromeDriverDownloadUrl)
         {
         }
 
@@ -153,7 +154,18 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>A ChromeDriverService using a random port.</returns>
         public static ChromeDriverService CreateDefaultService(string driverPath)
         {
-            return new ChromeDriverService(driverPath, PortUtilities.FindFreePort());
+            return CreateDefaultService(driverPath, ChromeDriverServiceFileName);
+        }
+
+        /// <summary>
+        /// Creates a default instance of the ChromeDriverService using a specified path to the ChromeDriver executable with the given name.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the ChromeDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the ChromeDriver executable file.</param>
+        /// <returns>A ChromeDriverService using a random port.</returns>
+        public static ChromeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
+        {
+            return new ChromeDriverService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort());
         }
     }
 }
