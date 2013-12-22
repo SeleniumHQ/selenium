@@ -18,8 +18,10 @@ package org.openqa.selenium.interactions;
 
 /**
  * Takes a pause.
- * 
+ *
+ * @deprecated 'Pause' is considered to be a bad design practice.
  */
+@Deprecated
 public class PauseAction implements Action {
 
   private final long pause;

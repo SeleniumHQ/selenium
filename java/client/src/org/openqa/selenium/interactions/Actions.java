@@ -338,7 +338,10 @@ public class Actions {
    *
    * @param pause pause duration, in milliseconds.
    * @return A self reference.
+   * 
+   * @deprecated 'Pause' is considered to be a bad design practice.
    */
+  @Deprecated
   public Actions pause(long pause) {
     action.addAction(new PauseAction(pause));
     return this;
