@@ -245,12 +245,12 @@ public class Jetty7AppServer implements AppServer {
     return context;
   }
 
-  private static int getHttpPortFromEnv() {
+  protected static int getHttpPortFromEnv() {
     String port = System.getenv(FIXED_HTTP_PORT_ENV_NAME);
     return port == null ? DEFAULT_HTTP_PORT : Integer.parseInt(port);
   }
 
-  private static int getHttpsPortFromEnv() {
+  protected static int getHttpsPortFromEnv() {
     String port = System.getenv(FIXED_HTTPS_PORT_ENV_NAME);
     return port == null ? DEFAULT_HTTPS_PORT : Integer.parseInt(port);
   }

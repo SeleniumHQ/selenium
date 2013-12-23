@@ -43,4 +43,17 @@ public class SeleniumAppServer extends Jetty7AppServer {
     }
     return relativeUrl;
   }
+
+  public static void main(String[] args) {
+    Jetty7AppServer server = new SeleniumAppServer();
+
+    server.listenOn(getHttpPortFromEnv());
+    System.out.println(String.format("Starting server on port %d", getHttpPortFromEnv()));
+
+    server.listenSecurelyOn(getHttpsPortFromEnv());
+    System.out.println(String.format("HTTPS on %d", getHttpsPortFromEnv()));
+
+    server.start();
+  }
+
 }
