@@ -9,10 +9,11 @@ namespace Selenium.Tests.Environment
     public class SeleniumServer
     {
         private Process serverProcess;
-        private string serverJarName = @"build\java\server\test\org\openqa\selenium\server-with-tests-standalone.jar";
+        private string serverJarName = @"build/java/client/test/org/openqa/selenium/v1/environment-standalone.jar";
+        private string webserverClassName = "org.openqa.selenium.v1.SeleniumAppServer";
         private string projectRootPath;
         private bool autoStart;
-        private int port = 4444;
+        private int port = 2310;
 
         public SeleniumServer(string projectRoot, bool autoStartServer, int port)
         {
@@ -30,7 +31,7 @@ namespace Selenium.Tests.Environment
             {
                 serverProcess = new Process();
                 serverProcess.StartInfo.FileName = "java.exe";
-                serverProcess.StartInfo.Arguments = "-jar " + serverJarName + " -port " + port.ToString();
+                serverProcess.StartInfo.Arguments = "-cp " + serverJarName + " " + webserverClassName;
                 serverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 serverProcess.Start();
                 DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));
@@ -38,7 +39,7 @@ namespace Selenium.Tests.Environment
                 while (!isRunning && DateTime.Now < timeout)
                 {
                     // Poll until the webserver is correctly serving pages.
-                    HttpWebRequest request = WebRequest.Create("http://localhost:" + port.ToString() + "/selenium-server/driver?cmd=getLogMessages") as HttpWebRequest;
+                    HttpWebRequest request = WebRequest.Create("http://localhost:" + port.ToString() + "/selenium-server/tests") as HttpWebRequest;
                     try
                     {
                         HttpWebResponse response = request.GetResponse() as HttpWebResponse;
@@ -63,7 +64,7 @@ namespace Selenium.Tests.Environment
         {
             if (autoStart && (serverProcess != null && !serverProcess.HasExited))
             {
-                HttpWebRequest request = WebRequest.Create("http://localhost:" + port.ToString() + "/selenium-server/driver?cmd=shutDownSeleniumServer") as HttpWebRequest;
+                HttpWebRequest request = WebRequest.Create("http://localhost:" + port.ToString() + "/quitquitquit") as HttpWebRequest;
                 try
                 {
                     request.GetResponse();

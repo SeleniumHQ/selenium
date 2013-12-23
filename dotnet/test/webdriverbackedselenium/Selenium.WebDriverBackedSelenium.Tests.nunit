@@ -1,5 +1,5 @@
 <NUnitProject>
-	<Settings appbase="." />
+	<Settings appbase="../../../build/cli/Release" />
 	<Config name="Default" binpathtype="Auto">
 		<assembly path="Selenium.WebDriverBackedSelenium.Tests.dll" />
 	</Config>
