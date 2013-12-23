@@ -18,17 +18,17 @@ namespace Selenium.Tests
             Assert.AreEqual(selenium.GetAlert(), "b");
             selenium.Click("id=c");
             Assert.AreEqual(selenium.GetAlert(), "c");
-            //selenium.Click("id=d");
-            //Assert.IsFalse(selenium.IsElementPresent("id=d"));
+            selenium.Click("id=d");
+            Assert.IsFalse(selenium.IsElementPresent("id=d"));
             selenium.Click("id=e");
             Assert.AreEqual(selenium.GetAlert(), "e");
             Assert.IsFalse(selenium.IsElementPresent("id=e"));
-            //selenium.Click("id=f");
-            //selenium.WaitForPopUp("f-window", "10000");
-            //selenium.SelectWindow("name=f-window");
-            //Assert.IsTrue(selenium.IsElementPresent("id=visibleParagraph"));
-            //selenium.Close();
-            //selenium.SelectWindow("");
+            selenium.Click("id=f");
+            selenium.WaitForPopUp("f-window", "10000");
+            selenium.SelectWindow("name=f-window");
+            Assert.IsTrue(selenium.IsElementPresent("id=visibleParagraph"));
+            selenium.Close();
+            selenium.SelectWindow("");
 
             // TODO(simon): re-enable this part of the test
             //		selenium.click("id=g");
@@ -40,7 +40,7 @@ namespace Selenium.Tests
             //		selenium.selectWindow("");
             selenium.Click("id=h");
             selenium.WaitForPageToLoad("30000");
-            //Assert.AreEqual(selenium.GetAlert(), "h");
+            Assert.AreEqual(selenium.GetAlert(), "h");
             Assert.IsTrue(selenium.IsElementPresent("id=visibleParagraph"));
         }
     }
