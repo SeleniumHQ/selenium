@@ -17,6 +17,10 @@
 The Desired Capabilities implementation.
 """
 
+class __ClassProperty__(property):
+    def __get__(self, cls, owner):
+        return self.fget.__get__(None, owner)()
+
 class DesiredCapabilities(object):
     """
     Set of supported desired capabilities.
@@ -43,79 +47,138 @@ class DesiredCapabilities(object):
 
     """
 
-    FIREFOX = {
+    __FIREFOX__ = {
         "browserName": "firefox",
         "version": "",
         "platform": "ANY",
         "javascriptEnabled": True,
     }
 
-    INTERNETEXPLORER = {
+    @__ClassProperty__
+    @classmethod
+    def FIREFOX(cls):
+        return cls.__FIREFOX__.copy()
+
+
+    __INTERNETEXPLORER__ = {
         "browserName": "internet explorer",
         "version": "",
         "platform": "WINDOWS",
         "javascriptEnabled": True,
     }
 
-    CHROME = {
+    @__ClassProperty__
+    @classmethod
+    def INTERNETEXPLORER(cls):
+        return cls.__FIREFOX__.copy()
+
+
+    __CHROME__ = {
         "browserName": "chrome",
         "version": "",
         "platform": "ANY",
         "javascriptEnabled": True,
     }
 
-    OPERA = {
+    @__ClassProperty__
+    @classmethod
+    def CHROME(cls):
+        return cls.__CHROME__.copy()
+
+    __OPERA__ = {
         "browserName": "opera",
         "version": "",
         "platform": "ANY",
         "javascriptEnabled": True,
     }
 
-    SAFARI = {
+    @__ClassProperty__
+    @classmethod
+    def OPERA(cls):
+        return cls.__OPERA__.copy()
+
+    __SAFARI__ = {
         "browserName": "safari",
         "version": "",
         "platform": "ANY",
         "javascriptEnabled": True,
     }
 
-    HTMLUNIT = {
+    @__ClassProperty__
+    @classmethod
+    def SAFARI(cls):
+        return cls.__SAFARI__.copy()
+
+    __HTMLUNIT__ = {
         "browserName": "htmlunit",
         "version": "",
         "platform": "ANY",
     }
 
-    HTMLUNITWITHJS = {
+    @__ClassProperty__
+    @classmethod
+    def HTMLUNIT(cls):
+        return cls.__HTMLUNIT__.copy()
+
+    __HTMLUNITWITHJS__ = {
         "browserName": "htmlunit",
         "version": "firefox",
         "platform": "ANY",
         "javascriptEnabled": True,
     }
 
-    IPHONE = {
+    @__ClassProperty__
+    @classmethod
+    def HTMLUNITWITHJS(cls):
+        return cls.__HTMLUNITWITHJS__.copy()
+
+    __IPHONE__ = {
         "browserName": "iPhone",
         "version": "",
         "platform": "MAC",
         "javascriptEnabled": True,
     }
 
-    IPAD = {
+    @__ClassProperty__
+    @classmethod
+    def IPHONE(cls):
+        return cls.__IPHONE__.copy()
+
+    __IPAD__ = {
         "browserName": "iPad",
         "version": "",
         "platform": "MAC",
         "javascriptEnabled": True,
     }
 
-    ANDROID = {
+    @__ClassProperty__
+    @classmethod
+    def IPAD(cls):
+        return cls.__IPAD__.copy()
+
+    __ANDROID__ = {
         "browserName": "android",
         "version": "",
         "platform": "ANDROID",
         "javascriptEnabled": True,
     }
-    
-    PHANTOMJS = {
+
+    @__ClassProperty__
+    @classmethod
+    def ANDROID(cls):
+        return cls.__ANDROID__.copy()
+
+    __PHANTOMJS__ = {
         "browserName":"phantomjs",
         "version": "",
         "platform": "ANY",
         "javascriptEnabled": True,
     }
+
+    @__ClassProperty__
+    @classmethod
+    def PHANTOMJS(cls):
+        return cls.__PHANTOMJS__.copy()
+
+
 
