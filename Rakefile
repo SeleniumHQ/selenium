@@ -602,7 +602,6 @@ task :ios_driver => [
   "//javascript/atoms/fragments:back:ios",
   "//javascript/atoms/fragments:forward:ios",
   "//javascript/atoms/fragments:submit:ios",
-  "//javascript/atoms/fragments:refresh:ios",
   "//javascript/atoms/fragments:xpath:ios",
   "//javascript/atoms/fragments:xpaths:ios",
   "//javascript/atoms/fragments:type:ios",
@@ -615,15 +614,10 @@ task :ios_driver => [
   "//javascript/atoms/fragments:link_texts:ios",
   "//javascript/atoms/fragments:partial_link_text:ios",
   "//javascript/atoms/fragments:partial_link_texts:ios",
-  "//javascript/atoms/fragments:get_location_in_view:ios",
   "//javascript/atoms/fragments:get_interactable_size:ios",
   "//javascript/atoms/fragments:scroll_into_view:ios",
-  "//javascript/atoms/fragments:get_page_offset:ios",
-  "//javascript/atoms/fragments:get_framed_page_offset:ios",
-  "//javascript/atoms/fragments:get_position:ios",
-  "//javascript/atoms/fragments:get_view_port_size:ios",
   "//javascript/atoms/fragments:get_effective_style:ios",
-  "//javascript/atoms/fragments:set_cursor_at_the_end:ios"
+  "//javascript/webdriver/atoms/fragments:get_location_in_view:ios"
 ]
 
 file "build/javascript/deps.js" => FileList[

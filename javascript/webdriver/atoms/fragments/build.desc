@@ -8,6 +8,12 @@ js_fragment(name = "get_text",
   function = "webdriver.atoms.element.getText",
   deps = [ "//javascript/webdriver/atoms:deps" ])
 
+js_fragment(
+    name = "get_location_in_view",
+    module = "webdriver.atoms.element",
+    function = "webdriver.atoms.element.getLocationInView",
+    deps = ["//javascript/webdriver/atoms:deps"])
+
 js_fragment(name = "is_selected",
   module = "webdriver.atoms.element",
   function = "webdriver.atoms.element.isSelected",

@@ -47,12 +47,6 @@ js_fragment(
     deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(
-    name = "get_framed_page_offset",
-    module = "bot.dom",
-    function = "bot.dom.getFramedPageOffset",
-    deps = ["//javascript/atoms:all_js"])
-
-js_fragment(
     name = "get_interactable_size",
     module = "bot.window",
     function = "bot.window.getInteractableSize",
@@ -65,34 +59,10 @@ js_fragment(
     deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(
-    name = "get_location_in_view",
-    module = "bot.dom",
-    function = "bot.dom.getLocationInView",
-    deps = ["//javascript/atoms:all_js"])
-
-js_fragment(
-    name = "get_page_offset",
-    module = "bot.dom",
-    function = "bot.dom.getPageOffset",
-    deps = ["//javascript/atoms:all_js"])
-
-js_fragment(
-    name = "get_position",
-    module = "bot.dom",
-    function = "bot.dom.getPosition",
-    deps = ["//javascript/atoms:all_js"])
-
-js_fragment(
     name = "get_size",
     function = "goog.style.getSize",
     module = "goog.style",
     deps = [ "//javascript/atoms:all_js" ])
-
-js_fragment(
-    name = "get_view_port_size",
-    module = "bot.dom",
-    function = "bot.dom.getViewPortSize",
-    deps = ["//javascript/atoms:all_js"])
 
 js_fragment(
     name = "get_visible_text",
@@ -158,12 +128,6 @@ js_fragment(
     name = "scroll_into_view",
     module = "bot.action",
     function = "bot.action.scrollIntoView",
-    deps = ["//javascript/atoms:all_js"])
-
-js_fragment(
-    name = "set_cursor_at_the_end",
-    module = "bot.Keyboard",
-    function = "bot.Keyboard.setCursorAtTheEnd",
     deps = ["//javascript/atoms:all_js"])
 
 js_fragment(
@@ -242,12 +206,6 @@ js_fragment(
     name = "forward",
     module = "bot.window",
     function = "bot.window.forward",
-    deps = ["//javascript/atoms:all_js"])
-
-js_fragment(
-    name = "refresh",
-    module = "bot.window",
-    function = "bot.window.refresh",
     deps = ["//javascript/atoms:all_js"])
 
 js_fragment(
