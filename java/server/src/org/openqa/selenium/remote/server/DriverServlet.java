@@ -102,31 +102,6 @@ public class DriverServlet extends HttpServlet {
     return Logger.getLogger(getClass().getName());
   }
 
-  /**
-   * @deprecated Use {@link JsonHttpRemoteConfig} instead.
-   */
-  @Deprecated
-  protected ResultConfig addNewGetMapping(String path, Class<? extends RestishHandler> implementationClass) {
-    return mappings.addNewGetMapping(path, implementationClass);
-  }
-
-  /**
-   * @deprecated Use {@link JsonHttpRemoteConfig} instead.
-   */
-  @Deprecated
-  protected ResultConfig addNewPostMapping(String path, Class<? extends RestishHandler> implementationClass) {
-    return mappings.addNewPostMapping(path, implementationClass);
-  }
-
-  /**
-   * @deprecated Use {@link JsonHttpRemoteConfig} instead.
-   */
-  @Deprecated
-  protected ResultConfig addNewDeleteMapping(String path,
-      Class<? extends RestishHandler> implementationClass) {
-    return mappings.addNewDeleteMapping(path, implementationClass);
-  }
-
   @Override
   protected void service(HttpServletRequest request, HttpServletResponse response)
       throws IOException, ServletException {
