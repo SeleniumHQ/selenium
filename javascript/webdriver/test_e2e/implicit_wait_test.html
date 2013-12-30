@@ -51,11 +51,11 @@ limitations under the License.
 
     assertFooIsNotThereYet();
     driver.manage().timeouts().implicitlyWait(3000);
-    driver.isElementPresent({id: 'foo_div'}).addCallback(
+    driver.isElementPresent({id: 'foo_div'}).then(
         goog.partial(assertTrue, 'foo_div should be present now'));
 
     function assertFooIsNotThereYet() {
-      driver.isElementPresent({id: 'foo_div'}).addCallback(
+      driver.isElementPresent({id: 'foo_div'}).then(
           goog.partial(assertFalse, 'foo_div is not present yet'));
     }
   }

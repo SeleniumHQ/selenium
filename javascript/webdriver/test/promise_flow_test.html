@@ -1071,7 +1071,7 @@ limitations under the License.
         then(function() {
           return scheduleAction('b', throwStubError);
         }).
-        addErrback(errback = callbackHelper(assertIsStubError));
+        thenCatch(errback = callbackHelper(assertIsStubError));
     runAndExpectSuccess();
     errback.assertCalled();
   }
@@ -1085,7 +1085,7 @@ limitations under the License.
           throw STUB_ERROR;
         });
       });
-    }).addErrback(errback = callbackHelper(assertIsStubError));
+    }).thenCatch(errback = callbackHelper(assertIsStubError));
     schedule('d');
     runAndExpectSuccess();
     assertFlowHistory('a', 'b', 'c', 'd');
@@ -1157,7 +1157,7 @@ limitations under the License.
      */
     schedulePush('foo').
         then(goog.partial(schedulePush, 'bar')).
-        addBoth(goog.partial(schedulePush, 'baz'));
+        thenFinally(goog.partial(schedulePush, 'baz'));
     runAndExpectSuccess(assertingMessages('foo', 'bar', 'baz'));
     assertFlowHistory('foo', 'bar', 'baz');
   }
@@ -1177,7 +1177,7 @@ limitations under the License.
       webdriver.test.testutil.messages.push('foo');
       throw new Error('ouch');
     }).then(goog.partial(schedulePush, 'bar')).
-       addBoth(goog.partial(schedulePush, 'baz'));
+        thenFinally(goog.partial(schedulePush, 'baz'));
     runAndExpectSuccess(assertingMessages('foo', 'baz'));
   }
 
@@ -1199,7 +1199,7 @@ limitations under the License.
             throw STUB_ERROR;
           });
         }).
-        addBoth(function(e) {
+        thenFinally(function(e) {
           assertIsStubError(e);
           return schedulePush('baz');
         });
@@ -1927,7 +1927,7 @@ limitations under the License.
 
       scheduleAction('two', function() {
         scheduleAction('three', throwStubError);
-      }).addErrback(goog.nullFunction);
+      }).thenCatch(goog.nullFunction);
 
       schedule('post error').then(function() {
         var flowHistory = webdriver.promise.controlFlow().getHistory();

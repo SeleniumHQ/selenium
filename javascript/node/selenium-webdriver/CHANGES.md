@@ -1,3 +1,9 @@
+## v2.40.0-dev
+
+* Introduced `Promise#thenCatch()` and `Promise#thenFinally()`.
+* Deprecated `Promise#addCallback()`, `Promise#addCallbacks()`,
+    `Promise#addErrback()`, and `Promise#addBoth()`.
+
 ## v2.39.0
 
 * Version bump to stay in sync with the Selenium project.

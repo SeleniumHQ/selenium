@@ -230,9 +230,10 @@ DriverService.prototype.kill = function() {
       this.shutdownHook_ = promise.defer();
       this.process_.kill('SIGTERM');
     } else {
-      this.shutdownHook_ = this.address_.addBoth(function() {
-        this.process_ && this.process_.kill('SIGTERM');
-      }, this);
+      var self = this;
+      this.shutdownHook_ = this.address_.thenFinally(function() {
+        self.process_ && self.process_.kill('SIGTERM');
+      });
     }
   }
 

@@ -203,8 +203,8 @@ function testCatchingAndSuppressingRejectionErrors() {
   });
 
   webdriver.promise.rejected(STUB_ERROR).
-      addErrback(errback).
-      addCallback(callback);
+      thenCatch(errback).
+      then(callback);
   errback.assertCalled();
   callback.assertCalled();
 }
@@ -218,11 +218,11 @@ function testThrowingNewRejectionErrors() {
   });
 
   webdriver.promise.rejected(STUB_ERROR).
-      addErrback(function(error) {
+      thenCatch(function(error) {
         errback1(error);
         throw error2;
       }).
-      addErrback(errback2);
+      thenCatch(errback2);
   errback1.assertCalled();
   errback2.assertCalled();
 }
@@ -554,9 +554,9 @@ function testResolvingADeferredWithAnotherThatResolvedUponItself() {
 function testSkipsNullPointsInPromiseChain_callbacks() {
   var errback1, errback2, callback;
   webdriver.promise.fulfilled('hi').
-      addErrback(errback1 = callbackHelper()).
-      addErrback(errback2 = callbackHelper()).
-      addCallback(callback = callbackHelper(function(value) {
+      thenCatch(errback1 = callbackHelper()).
+      thenCatch(errback2 = callbackHelper()).
+      then(callback = callbackHelper(function(value) {
         assertEquals('hi', value);
       }));
 
@@ -569,9 +569,9 @@ function testSkipsNullPointsInPromiseChain_callbacks() {
 function testSkipsNullPointsInPromiseChain_errbacks() {
   var errback1, errback2, callback;
   webdriver.promise.fulfilled('hi').
-      addErrback(errback1 = callbackHelper()).
-      addErrback(errback2 = callbackHelper()).
-      addCallback(callback = callbackHelper(function(value) {
+      thenCatch(errback1 = callbackHelper()).
+      thenCatch(errback2 = callbackHelper()).
+      then(callback = callbackHelper(function(value) {
         assertEquals('hi', value);
       }));
 
@@ -973,11 +973,11 @@ function testCallbackChain_split() {
       stage3 = callbackPair();
 
   webdriver.promise.rejected('foo').
-      addCallback(stage1.callback).
-      addErrback(stage1.errback).
-      addCallback(stage2.callback).
-      addErrback(stage2.errback).
-      addCallbacks(stage3.callback, stage3.errback);
+      then(stage1.callback).
+      thenCatch(stage1.errback).
+      then(stage2.callback).
+      thenCatch(stage2.errback).
+      then(stage3.callback, stage3.errback);
 
   stage1.assertErrback('Wrong function for stage 1');
   stage2.assertCallback('Wrong function for stage 2');

@@ -147,11 +147,10 @@ remote.ui.Client.prototype.init = function(opt_element) {
   this.scriptButton_.render();
   this.sessionContainer_.addControlElement(
       /** @type {!Element} */(this.scriptButton_.getElement()));
-  return this.updateServerInfo_().
-      addCallback(function() {
-        this.sessionContainer_.setEnabled(true);
-        this.onRefresh_();
-      }, this);
+  return this.updateServerInfo_().then(goog.bind(function() {
+    this.sessionContainer_.setEnabled(true);
+    this.onRefresh_();
+  }, this));
 };
 
 
@@ -199,7 +198,7 @@ remote.ui.Client.prototype.updateServerInfo_ = function() {
   this.log_.info('Retrieving server status...');
   return this.execute_(
       new webdriver.Command(webdriver.CommandName.GET_SERVER_STATUS)).
-      addCallback(function(response) {
+      then(goog.bind(function(response) {
         var value = response['value'] || {};
         var os = value['os'];
         if (os && os['name']) {
@@ -208,7 +207,7 @@ remote.ui.Client.prototype.updateServerInfo_ = function() {
         var build = value['build'];
         this.serverInfo_.updateInfo(os,
             build && build['version'], build && build['revision']);
-      }, this);
+      }, this));
 };
 
 
@@ -219,17 +218,18 @@ remote.ui.Client.prototype.updateServerInfo_ = function() {
  */
 remote.ui.Client.prototype.onRefresh_ = function() {
   this.log_.info('Refreshing sessions...');
+  var self = this;
   this.execute_(new webdriver.Command(webdriver.CommandName.GET_SESSIONS)).
-      addCallback(function(response) {
+      then(function(response) {
         var sessions = response['value'];
         sessions = goog.array.map(sessions, function(session) {
           return new webdriver.Session(session['id'], session['capabilities']);
         });
-        this.sessionContainer_.refreshSessions(sessions);
-      }, this).
-      addErrback(function(e) {
-        this.logError_('Unable to refresh session list.', e);
-      }, this);
+        self.sessionContainer_.refreshSessions(sessions);
+      }).
+      thenCatch(function(e) {
+        self.logError_('Unable to refresh session list.', e);
+      });
 };
 
 
@@ -243,16 +243,17 @@ remote.ui.Client.prototype.onCreate_ = function(e) {
   this.log_.info('Creating new session for ' + e.data['browserName']);
   var command = new webdriver.Command(webdriver.CommandName.NEW_SESSION).
       setParameter('desiredCapabilities', e.data);
+  var self = this;
   this.execute_(command).
-      addCallback(function(response) {
+      then(function(response) {
         var session = new webdriver.Session(response['sessionId'],
             response['value']);
-        this.sessionContainer_.addSession(session);
-      }, this).
-      addErrback(function(e) {
-        this.logError_('Unable to create new session.', e);
-        this.sessionContainer_.removePendingTab();
-      }, this);
+        self.sessionContainer_.addSession(session);
+      }).
+      thenCatch(function(e) {
+        self.logError_('Unable to create new session.', e);
+        self.sessionContainer_.removePendingTab();
+      });
 };
 
 
@@ -271,13 +272,15 @@ remote.ui.Client.prototype.onDelete_ = function() {
   this.log_.info('Deleting session: ' + session.getId());
   var command = new webdriver.Command(webdriver.CommandName.QUIT).
       setParameter('sessionId', session.getId());
+  var self = this;
   this.execute_(command).
-      addCallback(function() {
-        this.sessionContainer_.removeSession(session);
-      }, this).
-      addErrback(function(e) {
-        this.logError_('Unable to delete session.', e);
-      }, this);
+      then(function() {
+        self.sessionContainer_.removeSession(
+            /** @type {!webdriver.Session} */(session));
+      }).
+      thenCatch(function(e) {
+        self.logError_('Unable to delete session.', e);
+      });
 };
 
 
@@ -301,10 +304,9 @@ remote.ui.Client.prototype.onLoad_ = function(e) {
       setParameter('sessionId', session.getId()).
       setParameter('url', url.toString());
   this.log_.info('In session(' + session.getId() + '), loading ' + url);
-  this.execute_(command).
-      addErrback(function(e) {
-        this.logError_('Unable to load URL', e);
-      }, this);
+  this.execute_(command).thenCatch(goog.bind(function(e) {
+    this.logError_('Unable to load URL', e);
+  }, this));
 };
 
 
@@ -326,12 +328,13 @@ remote.ui.Client.prototype.onScreenshot_ = function() {
   this.screenshotDialog_.setState(remote.ui.ScreenshotDialog.State.LOADING);
   this.screenshotDialog_.setVisible(true);
 
+  var self = this;
   this.execute_(command).
-      addCallback(function(response) {
-        this.screenshotDialog_.displayScreenshot(response['value']);
-      }, this).
-      addErrback(function(e) {
-        this.screenshotDialog_.setVisible(false);
-        this.logError_('Unable to take screenshot.', e);
-      }, this);
+      then(function(response) {
+        self.screenshotDialog_.displayScreenshot(response['value']);
+      }).
+      thenCatch(function(e) {
+        self.screenshotDialog_.setVisible(false);
+        self.logError_('Unable to take screenshot.', e);
+      });
 };

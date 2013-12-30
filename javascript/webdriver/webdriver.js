@@ -348,9 +348,9 @@ webdriver.WebDriver.prototype.quit = function() {
       'WebDriver.quit()');
   // Delete our session ID when the quit command finishes; this will allow us to
   // throw an error when attemnpting to use a driver post-quit.
-  return result.addBoth(function() {
+  return result.thenFinally(goog.bind(function() {
     delete this.session_;
-  }, this);
+  }, this));
 };
 
 
@@ -1059,7 +1059,7 @@ webdriver.WebDriver.Options.prototype.getCookies = function() {
  * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol#Cookie_JSON_Object
  */
 webdriver.WebDriver.Options.prototype.getCookie = function(name) {
-  return this.getCookies().addCallback(function(cookies) {
+  return this.getCookies().then(function(cookies) {
     return goog.array.find(cookies, function(cookie) {
       return cookie && cookie['name'] == name;
     });

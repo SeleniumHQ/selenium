@@ -576,7 +576,7 @@ safaridriver.inject.Tab.prototype.installPageScript_ = function(opt_dom) {
     this.installedPageScript_ = new webdriver.promise.Deferred();
 
     safaridriver.inject.util.loadModule('page_base', safari.self.tab).
-        addCallback(function(src) {
+        then(goog.bind(function(src) {
           var dom = opt_dom || goog.dom.getDomHelper();
           var script = dom.createElement('script');
           script.type = 'application/javascript';
@@ -585,10 +585,10 @@ safaridriver.inject.Tab.prototype.installPageScript_ = function(opt_dom) {
           var docEl = dom.getDocument().documentElement;
           goog.dom.appendChild(docEl, script);
 
-          this.installedPageScript_.addBoth(function() {
+          this.installedPageScript_.thenFinally(function() {
             goog.dom.removeNode(script);
           });
-        }, this);
+        }, this));
   }
   return this.installedPageScript_.promise;
 };
@@ -608,7 +608,7 @@ safaridriver.inject.Tab.prototype.executeInPage = function(command) {
   bot.response.checkResponse(
       /** @type {!bot.response.ResponseObject} */ (decodeResult));
 
-  return this.installPageScript_().addCallback(function() {
+  return this.installPageScript_().then(goog.bind(function() {
     var parameters = command.getParameters();
     parameters = /** @type {!Object.<*>} */ (this.encoder_.encode(parameters));
     command.setParameters(parameters);
@@ -624,7 +624,7 @@ safaridriver.inject.Tab.prototype.executeInPage = function(command) {
     return commandResponse.then(function(result) {
       return bot.inject.wrapValue(result);
     });
-  }, this);
+  }, this));
 };
 
 

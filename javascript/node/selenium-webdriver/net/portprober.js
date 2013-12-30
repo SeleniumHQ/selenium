@@ -51,7 +51,7 @@ function findSystemPortRange() {
   }
   var range = process.platform === 'win32' ?
       findWindowsPortRange() : findUnixPortRange();
-  return systemRange = range.addErrback(function() {
+  return systemRange = range.thenCatch(function() {
     return DEFAULT_IANA_RANGE;
   });
 }

@@ -262,6 +262,8 @@ function checkPromise() {
 
   assertFunction('webdriver.promise', 'Promise');
   assertFunction('webdriver.promise.Promise.prototype', 'then');
+  assertFunction('webdriver.promise.Promise.prototype', 'thenCatch');
+  assertFunction('webdriver.promise.Promise.prototype', 'thenFinally');
   assertFunction('webdriver.promise.Promise.prototype', 'cancel');
   assertFunction('webdriver.promise.Promise.prototype', 'addBoth');
   assertFunction('webdriver.promise.Promise.prototype', 'addCallback');
@@ -271,6 +273,8 @@ function checkPromise() {
 
   assertFunction('webdriver.promise', 'Deferred');
   assertFunction('new webdriver.promise.Deferred()', 'then');
+  assertFunction('new webdriver.promise.Deferred()', 'thenCatch');
+  assertFunction('new webdriver.promise.Deferred()', 'thenFinally');
   assertFunction('new webdriver.promise.Deferred()', 'cancel');
   assertFunction('new webdriver.promise.Deferred()', 'addBoth');
   assertFunction('new webdriver.promise.Deferred()', 'addCallback');

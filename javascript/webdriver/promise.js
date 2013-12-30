@@ -114,6 +114,75 @@ webdriver.promise.Promise.prototype.then = function(
 
 
 /**
+ * Registers a listener for when this promise is rejected. This is synonymous
+ * with the {@code catch} clause in a synchronous API:
+ * <pre><code>
+ *   // Synchronous API:
+ *   try {
+ *     doSynchronousWork();
+ *   } catch (ex) {
+ *     console.error(ex);
+ *   }
+ *
+ *   // Asynchronous promise API:
+ *   doAsynchronousWork().thenCatch(function(ex) {
+ *     console.error(ex);
+ *   });
+ * </code></pre>
+ *
+ * @param {!Function} errback The function to call if this promise is
+ *     rejected. The function should expect a single argument: the rejection
+ *     reason.
+ * @return {!webdriver.promise.Promise} A new promise which will be resolved
+ *     with the result of the invoked callback.
+ */
+webdriver.promise.Promise.prototype.thenCatch = function(errback) {
+  return this.then(null, errback);
+};
+
+
+/**
+ * Registers a listener to invoke when this promise is resolved, regardless
+ * of whether the promise's value was successfully computed. This function
+ * is synonymous with the {@code finally} clause in a synchronous API:
+ * <pre><code>
+ *   // Synchronous API:
+ *   try {
+ *     doSynchronousWork();
+ *   } finally {
+ *     cleanUp();
+ *   }
+ *
+ *   // Asynchronous promise API:
+ *   doAsynchronousWork().thenFinally(cleanUp);
+ * </code></pre>
+ *
+ * <b>Note:</b> similar to the {@code finally} clause, if the registered
+ * callback returns a rejected promise or throws an error, it will silently
+ * replace the rejection error (if any) from this promise:
+ * <pre><code>
+ *   try {
+ *     throw Error('one');
+ *   } finally {
+ *     throw Error('two');  // Hides Error: one
+ *   }
+ *
+ *   webdriver.promise.rejected(Error('one'))
+ *       .thenFinally(function() {
+ *         throw Error('two');  // Hides Error: one
+ *       });
+ * </code></pre>
+ *
+ *
+ * @param callback
+ * @returns {!webdriver.promise.Promise}
+ */
+webdriver.promise.Promise.prototype.thenFinally = function(callback) {
+  return this.then(callback, callback);
+};
+
+
+/**
  * Registers a function to be invoked when this promise is successfully
  * resolved. This function is provided for backwards compatibility with the
  * Dojo Deferred API.
@@ -125,6 +194,7 @@ webdriver.promise.Promise.prototype.then = function(
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @deprecated Use {@link #then()} instead.
  */
 webdriver.promise.Promise.prototype.addCallback = function(callback, opt_self) {
   return this.then(goog.bind(callback, opt_self));
@@ -143,9 +213,10 @@ webdriver.promise.Promise.prototype.addCallback = function(callback, opt_self) {
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @deprecated Use {@link #thenCatch()} instead.
  */
 webdriver.promise.Promise.prototype.addErrback = function(errback, opt_self) {
-  return this.then(null, goog.bind(errback, opt_self));
+  return this.thenCatch(goog.bind(errback, opt_self));
 };
 
 
@@ -161,10 +232,10 @@ webdriver.promise.Promise.prototype.addErrback = function(errback, opt_self) {
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @deprecated Use {@link #thenFinally()} instead.
  */
 webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
-  callback = goog.bind(callback, opt_self);
-  return this.then(callback, callback);
+  return this.thenFinally(goog.bind(callback, opt_self));
 };
 
 
@@ -183,6 +254,7 @@ webdriver.promise.Promise.prototype.addBoth = function(callback, opt_self) {
  *     function is invoked.
  * @return {!webdriver.promise.Promise} A new promise which will be resolved
  *     with the result of the invoked callback.
+ * @deprecated Use {@link #then()} instead.
  */
 webdriver.promise.Promise.prototype.addCallbacks = function(
     callback, errback, opt_self) {
@@ -1720,7 +1792,7 @@ webdriver.promise.Frame_.prototype.cancelRemainingTasks = function(error) {
       // the task is being canceled, however, we need at least one errback
       // to prevent the cancellation from bubbling up.
       child.removeAll();
-      child.addErrback(goog.nullFunction);
+      child.thenCatch(goog.nullFunction);
       child.cancel(error);
     }
   });
