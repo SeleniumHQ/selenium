@@ -47,6 +47,12 @@ js_fragment(
     deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(
+    name = "get_element_size",
+    module = "bot.dom",
+    function = "bot.dom.getElementSize",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
     name = "get_interactable_size",
     module = "bot.window",
     function = "bot.window.getInteractableSize",
@@ -71,12 +77,6 @@ js_fragment(
     deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(
-    name = "is_displayed",
-    function = "bot.dom.isShown",
-    module = "bot.dom",
-    deps = [ "//javascript/atoms:all_js" ])
-
-js_fragment(
     name = "is_editable",
     function = "bot.dom.isEditable",
     module = "bot.dom",
@@ -91,6 +91,12 @@ js_fragment(
 js_fragment(
     name = "is_interactable",
     function = "bot.dom.isInteractable",
+    module = "bot.dom",
+    deps = [ "//javascript/atoms:all_js" ])
+
+js_fragment(
+    name = "is_shown",
+    function = "bot.dom.isShown",
     module = "bot.dom",
     deps = [ "//javascript/atoms:all_js" ])
 
