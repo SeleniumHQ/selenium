@@ -35,10 +35,28 @@ js_fragment(
     deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(
+    name = "get_attribute",
+    module = "bot.dom",
+    function = "bot.dom.getAttribute",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
     name = "get_effective_style",
     function = "bot.dom.getEffectiveStyle",
     module = "bot.dom",
     deps = [ "//javascript/atoms:all_js" ])
+
+js_fragment(
+    name = "get_framed_page_offset",
+    module = "bot.dom",
+    function = "bot.dom.getFramedPageOffset",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "get_interactable_size",
+    module = "bot.window",
+    function = "bot.window.getInteractableSize",
+    deps = ["//javascript/atoms:all_js"])
 
 js_fragment(
     name = "get_location",
@@ -47,9 +65,39 @@ js_fragment(
     deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(
+    name = "get_location_in_view",
+    module = "bot.dom",
+    function = "bot.dom.getLocationInView",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "get_page_offset",
+    module = "bot.dom",
+    function = "bot.dom.getPageOffset",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "get_position",
+    module = "bot.dom",
+    function = "bot.dom.getPosition",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
     name = "get_size",
     function = "goog.style.getSize",
     module = "goog.style",
+    deps = [ "//javascript/atoms:all_js" ])
+
+js_fragment(
+    name = "get_view_port_size",
+    module = "bot.dom",
+    function = "bot.dom.getViewPortSize",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "get_visible_text",
+    function = "bot.dom.getVisibleText",
+    module = "bot.dom",
     deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(
@@ -75,6 +123,54 @@ js_fragment(
     function = "bot.dom.isInteractable",
     module = "bot.dom",
     deps = [ "//javascript/atoms:all_js" ])
+
+js_fragment(
+    name = "is_selected",
+    function = "bot.dom.isSelected",
+    module = "bot.dom",
+    deps = [ "//javascript/atoms:all_js" ])
+
+js_fragment(
+    name = "link_text",
+    module = "bot.locators.linkText",
+    function = "bot.locators.linkText.single",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "link_texts",
+    module = "bot.locators.linkText",
+    function = "bot.locators.linkText.many",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "partial_link_text",
+    module = "bot.locators.linkText",
+    function = "bot.locators.partialLinkText.single",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "partial_link_texts",
+    module = "bot.locators.linkText",
+    function = "bot.locators.partialLinkText.many",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "scroll_into_view",
+    module = "bot.action",
+    function = "bot.action.scrollIntoView",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "set_cursor_at_the_end",
+    module = "bot.Keyboard",
+    function = "bot.Keyboard.setCursorAtTheEnd",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "stringify",
+    module = "bot.json",
+    function = "bot.json.stringify",
+    deps = ["//javascript/atoms:all_js"])
 
 js_fragment(
     name = "submit",
@@ -135,3 +231,33 @@ js_fragment(
     function = "bot.storage.database.executeSql",
     module = "bot.storage.database",
     deps = [ "//javascript/atoms:all_js" ])
+
+js_fragment(
+    name = "back",
+    module = "bot.window",
+    function = "bot.window.back",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "forward",
+    module = "bot.window",
+    function = "bot.window.forward",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "refresh",
+    module = "bot.window",
+    function = "bot.window.refresh",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "xpath",
+    module = "bot.locators.xpath",
+    function = "bot.locators.xpath.single",
+    deps = ["//javascript/atoms:all_js"])
+
+js_fragment(
+    name = "xpaths",
+    module = "bot.locators.xpath",
+    function = "bot.locators.xpath.many",
+    deps = ["//javascript/atoms:all_js"])
