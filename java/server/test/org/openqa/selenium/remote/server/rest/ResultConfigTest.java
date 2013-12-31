@@ -129,7 +129,7 @@ public class ResultConfigTest {
     final HttpRequest mockRequest = mock(HttpRequest.class);
 
     try {
-      config.getRenderer(ResultType.EXCEPTION, mockRequest);
+      config.getRenderer(ResultType.ERROR, mockRequest);
       fail("Should have thrown a NPE");
     } catch (NullPointerException expected) {
     }

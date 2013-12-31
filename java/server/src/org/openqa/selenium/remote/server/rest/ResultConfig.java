@@ -216,7 +216,7 @@ public class ResultConfig {
     } catch (SessionNotFoundException e){
       throw e;
     } catch (Exception e) {
-      result = ResultType.EXCEPTION;
+      result = ResultType.ERROR;
       log.log(Level.WARNING, "Exception thrown", e);
 
       Throwable toUse = getRootExceptionCause(e);
@@ -228,7 +228,7 @@ public class ResultConfig {
       }
     } catch (Error e) {
       log.info("Error: " + e.getMessage());
-      result = ResultType.EXCEPTION;
+      result = ResultType.ERROR;
       request.setAttribute("exception", e);
     }
 
@@ -248,7 +248,7 @@ public class ResultConfig {
 
   private void replyError(HttpRequest request, final HttpResponse response, Exception e)
       throws Exception {
-    Renderer renderer2 = getRenderer(ResultType.EXCEPTION, request);
+    Renderer renderer2 = getRenderer(ResultType.ERROR, request);
     request.setAttribute("exception",  e);
     renderer2.render(request, response, null);
   }

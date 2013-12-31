@@ -222,7 +222,6 @@ public class JsonHttpRemoteConfig {
 
     Result jsonErrorResult = new Result(MimeType.EMPTY,
                                         new JsonErrorExceptionResult(EXCEPTION, RESPONSE));
-    addGlobalHandler(ResultType.EXCEPTION, jsonErrorResult);
     addGlobalHandler(ResultType.ERROR, jsonErrorResult);
 
     Result xdrpcResult = new Result(MimeType.CROSS_DOMAIN_RPC,
