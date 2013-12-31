@@ -59,17 +59,6 @@ java_library(name = "jee-http-api",
     "//third_party/java/servlet-api",
   ])
 
-java_library(name = "webbit-http-api",
-  srcs = [
-    "WebbitHttpRequest.java",
-    "WebbitHttpResponse.java",
-  ],
-  deps = [
-    ":http-api",
-    "//third_party/java/guava-libraries",
-    "//third_party/java/webbit",
-  ])
-
 java_library(name = "server_very_core",
   srcs = [
     "CapabilitiesComparator.java",
