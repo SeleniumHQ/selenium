@@ -234,34 +234,15 @@ public class ResultConfig {
 
     final Renderer renderer = getRenderer(result, request);
 
-    if (handler instanceof WebDriverHandler) {
-      FutureTask<ResultType> task = new FutureTask<ResultType>(new Callable<ResultType>() {
-        public ResultType call() throws Exception {
-          renderer.render(request, response, handler);
-          response.end();
-          return null;
-        }
-      });
+    renderer.render(request, response, handler);
+    response.end();
 
-      try {
-      ((WebDriverHandler) handler).execute(task);
-      task.get();
-      } catch (RejectedExecutionException e){
-        throw new SessionNotFoundException();
-      }
-
-      if (handler instanceof DeleteSession) {
-        // Yes, this is funky. See javadoc on cleatThreadTempLogs for details.
-        final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
-        logHandler.transferThreadTempLogsToSessionLogs(sessId);
-        logHandler.removeSessionLogs(sessId);
-        sessions.deleteSession(sessId);
-      }
-
-
-    } else {
-      renderer.render(request, response, handler);
-      response.end();
+    if (handler instanceof DeleteSession) {
+      // Yes, this is funky. See javadoc on cleatThreadTempLogs for details.
+      final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
+      logHandler.transferThreadTempLogsToSessionLogs(sessId);
+      logHandler.removeSessionLogs(sessId);
+      sessions.deleteSession(sessId);
     }
   }
 

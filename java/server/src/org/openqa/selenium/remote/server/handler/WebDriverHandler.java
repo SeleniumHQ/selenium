@@ -83,14 +83,6 @@ public abstract class WebDriverHandler implements RestishHandler, Callable<Resul
     return new BySelector();
   }
 
-  public void execute(FutureTask<?> task) throws Exception {
-    Session session = getSession();
-    if (session != null)
-      session.execute(task);
-    else
-      task.run();
-  }
-
   protected WebDriver getUnwrappedDriver() {
     WebDriver toReturn = getDriver();
     while (toReturn instanceof WrapsDriver) {
