@@ -314,6 +314,20 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElements(By.className("a b"));
   }
 
+  @Ignore(value = {CHROME}, reason = "Throws InvalidElementStateException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByInvalidClassNameShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.className("!@#$%^&*"));
+  }
+
+  @Ignore(value = {CHROME}, reason = "Throws InvalidElementStateException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingMultipleElementsByInvalidClassNameShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElements(By.className("!@#$%^&*"));
+  }
+
   // By.xpath positive
 
   @Test

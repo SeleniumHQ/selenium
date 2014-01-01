@@ -60,7 +60,12 @@ bot.locators.className.single = function(target, root) {
   // Closure will not properly escape class names that contain a '.' when using
   // the native selectors API, so we have to handle this ourselves.
   if (bot.locators.className.canUseQuerySelector_(root)) {
-    return root.querySelector('.' + target.replace(/\./g, '\\.')) || null;
+    try {
+      return root.querySelector('.' + target.replace(/\./g, '\\.')) || null;
+    } catch (e) {
+      throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+                          'An invalid or illegal class name was specified');
+    }
   }
   var elements = goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
       /*tagName=*/'*', /*className=*/target, root);
@@ -90,7 +95,12 @@ bot.locators.className.many = function(target, root) {
   // Closure will not properly escape class names that contain a '.' when using
   // the native selectors API, so we have to handle this ourselves.
   if (bot.locators.className.canUseQuerySelector_(root)) {
-    return root.querySelectorAll('.' + target.replace(/\./g, '\\.'));
+    try {
+      return root.querySelectorAll('.' + target.replace(/\./g, '\\.'));
+    } catch (e) {
+      throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+                          'An invalid or illegal class name was specified');
+    }
   }
   return goog.dom.getDomHelper(root).getElementsByTagNameAndClass(
       /*tagName=*/'*', /*className=*/target, root);
