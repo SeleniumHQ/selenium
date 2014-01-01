@@ -300,14 +300,14 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElements(By.className(""));
   }
 
-  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
+  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE}, reason = "Throws WebDriverException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.className("a b"));
   }
 
-  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
+  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE}, reason = "Throws WebDriverException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
