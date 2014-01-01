@@ -47,7 +47,8 @@ bot.locators.className.canUseQuerySelector_ = function(root) {
  */
 bot.locators.className.single = function(target, root) {
   if (!target) {
-    throw Error('No class name specified');
+    throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+                        'No class name specified');
   }
 
   target = goog.string.trim(target);
@@ -76,7 +77,8 @@ bot.locators.className.single = function(target, root) {
  */
 bot.locators.className.many = function(target, root) {
   if (!target) {
-    throw Error('No class name specified');
+    throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+                        'No class name specified');
   }
 
   target = goog.string.trim(target);

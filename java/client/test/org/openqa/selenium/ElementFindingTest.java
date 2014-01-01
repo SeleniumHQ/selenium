@@ -180,43 +180,43 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.size(), greaterThan(1));
   }
 
-  // By.name negative
+  // By.tagName negative
 
   @Test(expected = NoSuchElementException.class)
   public void testShouldNotBeAbleToLocateByTagNameASingleElementThatDoesNotExist() {
     driver.get(pages.formPage);
-    driver.findElement(By.name("nonExistentButton"));
+    driver.findElement(By.tagName("nonExistentButton"));
   }
 
   @Test
   public void testShouldNotBeAbleToLocateByTagNameMultipleElementsThatDoNotExist() {
     driver.get(pages.formPage);
-    List<WebElement> elements = driver.findElements(By.name("nonExistentButton"));
+    List<WebElement> elements = driver.findElements(By.tagName("nonExistentButton"));
     assertThat(elements.size(), is(0));
   }
 
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.name(""));
+    driver.findElement(By.tagName(""));
   }
 
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.name(""));
+    driver.findElement(By.tagName(""));
   }
 
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByTagNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.name("nonexistent button"));
+    driver.findElement(By.tagName("nonexistent button"));
   }
 
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByTagNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.name("nonexistent button"));
+    driver.findElement(By.tagName("nonexistent button"));
   }
 
   // By.className positive
@@ -277,6 +277,18 @@ public class ElementFindingTest extends JUnit4TestBase {
   public void testShouldNotFindElementByClassWhenTheNameQueriedIsShorterThanCandidateName() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.className("nameB"));
+  }
+
+  @Test(expected = InvalidSelectorException.class)
+  public void testFindingASingleElementByEmptyClassNameShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.className(""));
+  }
+
+  @Test(expected = InvalidSelectorException.class)
+  public void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElements(By.className(""));
   }
 
   @Test(expected = InvalidSelectorException.class)
