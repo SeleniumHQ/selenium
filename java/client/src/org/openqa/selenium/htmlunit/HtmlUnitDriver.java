@@ -96,9 +96,9 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionNotFoundException;
+import org.w3c.css.sac.CSSException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -917,11 +917,17 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public WebElement findElementByClassName(String className) {
+    if (className.indexOf(' ') != -1) {
+      throw new NoSuchElementException("Compound class names not permitted");
+    }
     return findElementByCssSelector("." + className);
   }
 
   @Override
   public List<WebElement> findElementsByClassName(String className) {
+    if (className.indexOf(' ') != -1) {
+      throw new NoSuchElementException("Compound class names not permitted");
+    }
     return findElementsByCssSelector("." + className);
   }
 
@@ -930,7 +936,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       throw new NoSuchElementException("Unable to locate element using css: " + lastPage());
     }
 
-    DomNode node = ((HtmlPage) lastPage()).querySelector(using);
+    DomNode node;
+    try {
+      node = ((HtmlPage) lastPage()).querySelector(using);
+    } catch (CSSException ex) {
+      throw new NoSuchElementException("Unable to locate element using css", ex);
+    }
 
     if (node instanceof HtmlElement) {
       return newHtmlUnitWebElement((HtmlElement) node);
@@ -944,7 +955,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       throw new NoSuchElementException("Unable to locate element using css: " + lastPage());
     }
 
-    DomNodeList<DomNode> allNodes = ((HtmlPage) lastPage()).querySelectorAll(using);
+    DomNodeList<DomNode> allNodes;
+
+    try {
+      allNodes = ((HtmlPage) lastPage()).querySelectorAll(using);
+    } catch (CSSException ex) {
+      throw new NoSuchElementException("Unable to locate element using css", ex);
+    }
 
     List<WebElement> toReturn = new ArrayList<WebElement>();
 
