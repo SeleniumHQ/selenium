@@ -86,6 +86,7 @@ import org.openqa.selenium.browserlaunchers.Proxies;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -119,7 +120,7 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
 
 public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
-    FindsByTagName, HasCapabilities, HasInputDevices {
+    FindsByTagName, FindsByClassName, HasCapabilities, HasInputDevices {
 
   private WebClient webClient;
   private WebWindow currentWindow;
@@ -912,6 +913,16 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   public List<WebElement> findElementsById(String id) {
     return findElementsByXPath("//*[@id='" + id + "']");
+  }
+
+  @Override
+  public WebElement findElementByClassName(String className) {
+    return findElementByCssSelector("." + className);
+  }
+
+  @Override
+  public List<WebElement> findElementsByClassName(String className) {
+    return findElementsByCssSelector("." + className);
   }
 
   public WebElement findElementByCssSelector(String using) {
