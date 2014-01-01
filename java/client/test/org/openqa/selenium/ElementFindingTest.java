@@ -32,6 +32,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -84,10 +85,11 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.id(""));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingMultipleElementsByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.id(""));
+    List<WebElement> elements = driver.findElements(By.id(""));
+    assertThat(elements.size(), is(0));
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -96,10 +98,11 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.id("nonexistent button"));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingMultipleElementsByIdWithSpaceShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.id("nonexistent button"));
+    List<WebElement> elements = driver.findElements(By.id("nonexistent button"));
+    assertThat(elements.size(), is(0));
   }
 
   // By.name positive
@@ -146,10 +149,11 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.name(""));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingMultipleElementsByEmptyNameShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.name(""));
+    List<WebElement> elements = driver.findElements(By.name(""));
+    assertThat(elements.size(), is(0));
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -158,10 +162,11 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.name("nonexistent button"));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingMultipleElementsByNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.name("nonexistent button"));
+    List<WebElement> elements = driver.findElements(By.name("nonexistent button"));
+    assertThat(elements.size(), is(0));
   }
 
   // By.tagName positive
@@ -201,10 +206,11 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.tagName(""));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.tagName(""));
+    List<WebElement> elements = driver.findElements(By.tagName(""));
+    assertThat(elements.size(), is(0));
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -213,10 +219,11 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.tagName("nonexistent button"));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingMultipleElementsByTagNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.tagName("nonexistent button"));
+    List<WebElement> elements = driver.findElements(By.tagName("nonexistent button"));
+    assertThat(elements.size(), is(0));
   }
 
   // By.className positive
@@ -279,25 +286,29 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.className("nameB"));
   }
 
-  @Test(expected = InvalidSelectorException.class)
+  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
+  @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.className(""));
   }
 
-  @Test(expected = InvalidSelectorException.class)
+  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElements(By.className(""));
   }
 
-  @Test(expected = InvalidSelectorException.class)
+  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
+  @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.className("a b"));
   }
 
-  @Test(expected = InvalidSelectorException.class)
+  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElements(By.className("a b"));
