@@ -49,8 +49,9 @@ bot.locators.className.single = function(target, root) {
   }
 
   target = goog.string.trim(target);
-  if (target.split(/\s+/).length > 1) {
-    throw Error('Compound class names not permitted');
+  if (target.indexOf(' ') !== -1) {
+    throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+                        'Compound class names not permitted');
   }
 
   // Closure will not properly escape class names that contain a '.' when using
@@ -77,8 +78,9 @@ bot.locators.className.many = function(target, root) {
   }
 
   target = goog.string.trim(target);
-  if (target.split(/\s+/).length > 1) {
-    throw Error('Compound class names not permitted');
+  if (target.indexOf(' ') !== -1) {
+    throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
+                        'Compound class names not permitted');
   }
 
   // Closure will not properly escape class names that contain a '.' when using

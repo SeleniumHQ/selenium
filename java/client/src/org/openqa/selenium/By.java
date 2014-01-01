@@ -128,12 +128,6 @@ public abstract class By {
       throw new IllegalArgumentException(
           "Cannot find elements when the class name expression is null.");
 
-    if (className.matches(".*\\s+.*")) {
-      throw new InvalidSelectorException(
-          "Compound class names are not supported. Consider searching for one class name " +
-          "and filtering the results or use CSS selectors.");
-    }
-
     return new ByClassName(className);
   }
 
