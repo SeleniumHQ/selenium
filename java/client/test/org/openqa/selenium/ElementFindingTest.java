@@ -25,13 +25,13 @@ import org.openqa.selenium.testing.TestUtilities;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -84,11 +84,10 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.id(""));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
-    List<WebElement> elements = driver.findElements(By.id(""));
-    assertThat(elements.size(), is(0));
+    driver.findElement(By.id(""));
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -97,11 +96,10 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.id("nonexistent button"));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByIdWithSpaceShouldThrow() {
     driver.get(pages.formPage);
-    List<WebElement> elements = driver.findElements(By.id("nonexistent button"));
-    assertThat(elements.size(), is(0));
+    driver.findElement(By.id("nonexistent button"));
   }
 
   // By.name positive
@@ -148,11 +146,10 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.name(""));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyNameShouldThrow() {
     driver.get(pages.formPage);
-    List<WebElement> elements = driver.findElements(By.name(""));
-    assertThat(elements.size(), is(0));
+    driver.findElement(By.name(""));
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -161,11 +158,10 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.name("nonexistent button"));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
-    List<WebElement> elements = driver.findElements(By.name("nonexistent button"));
-    assertThat(elements.size(), is(0));
+    driver.findElement(By.name("nonexistent button"));
   }
 
   // By.tagName positive
@@ -205,11 +201,10 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.tagName(""));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
-    List<WebElement> elements = driver.findElements(By.tagName(""));
-    assertThat(elements.size(), is(0));
+    driver.findElement(By.tagName(""));
   }
 
   @Test(expected = NoSuchElementException.class)
@@ -218,11 +213,10 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.tagName("nonexistent button"));
   }
 
-  @Test
+  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByTagNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
-    List<WebElement> elements = driver.findElements(By.tagName("nonexistent button"));
-    assertThat(elements.size(), is(0));
+    driver.findElement(By.tagName("nonexistent button"));
   }
 
   // By.className positive
@@ -285,48 +279,28 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.className("nameB"));
   }
 
-  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
-  @Test(expected = NoSuchElementException.class)
+  @Test(expected = InvalidSelectorException.class)
   public void testFindingASingleElementByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.className(""));
   }
 
-  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE}, reason = "Throws WebDriverException")
-  @Test(expected = NoSuchElementException.class)
+  @Test(expected = InvalidSelectorException.class)
   public void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElements(By.className(""));
   }
 
-  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE}, reason = "Throws WebDriverException")
-  @Test(expected = NoSuchElementException.class)
+  @Test(expected = InvalidSelectorException.class)
   public void testFindingASingleElementByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.className("a b"));
   }
 
-  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE},
-          reason = "Chrome: throws WebDriverException")
-  @Test(expected = NoSuchElementException.class)
+  @Test(expected = InvalidSelectorException.class)
   public void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElements(By.className("a b"));
-  }
-
-  @Ignore(value = {CHROME}, reason = "Throws InvalidElementStateException")
-  @Test(expected = NoSuchElementException.class)
-  public void testFindingASingleElementByInvalidClassNameShouldThrow() {
-    driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.className("!@#$%^&*"));
-  }
-
-  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE},
-          reason = "Chrome: throws InvalidElementStateException")
-  @Test(expected = NoSuchElementException.class)
-  public void testFindingMultipleElementsByInvalidClassNameShouldThrow() {
-    driver.get(pages.xhtmlTestPage);
-    driver.findElements(By.className("!@#$%^&*"));
   }
 
   // By.xpath positive
@@ -394,76 +368,133 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
     driver.get(pages.formPage);
-    driver.findElement(By.xpath("this][isnot][valid"));
+
+    try {
+      driver.findElement(By.xpath("this][isnot][valid"));
+      fail("Should not have succeeded because the xpath expression is syntactically not correct");
+    } catch (RuntimeException e) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically invalid
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
 
     driver.get(pages.formPage);
-    driver.findElements(By.xpath("this][isnot][valid"));
+
+    try {
+      driver.findElements(By.xpath("this][isnot][valid"));
+      fail("Should not have succeeded because the xpath expression is syntactically not correct");
+    } catch (RuntimeException e) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically
+      // invalid
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
-    body.findElement(By.xpath("this][isnot][valid"));
+    try {
+      body.findElement(By.xpath("this][isnot][valid"));
+      fail("Should not have succeeded because the xpath expression is syntactically not correct");
+    } catch (RuntimeException e) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically invalid
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
 
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
-    body.findElements(By.xpath("this][isnot][valid"));
+    try {
+      body.findElements(By.xpath("this][isnot][valid"));
+      fail("Should not have succeeded because the xpath expression is syntactically not correct");
+    } catch (RuntimeException e) {
+      // We expect an InvalidSelectorException because the xpath expression is syntactically invalid
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
     driver.get(pages.formPage);
-    driver.findElement(By.xpath("count(//input)"));
+
+    try {
+      driver.findElement(By.xpath("count(//input)"));
+      fail("Should not have succeeded because the xpath expression does not select an element");
+    } catch (RuntimeException e) {
+      // We expect an exception because the XPath expression results in a number, not in an element
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
 
     driver.get(pages.formPage);
-    driver.findElements(By.xpath("count(//input)"));
+
+    try {
+      driver.findElements(By.xpath("count(//input)"));
+      fail("Should not have succeeded because the xpath expression does not select an element");
+    } catch (RuntimeException e) {
+      // We expect an exception because the XPath expression results in a number, not in an element
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement() {
     driver.get(pages.formPage);
 
     WebElement body = driver.findElement(By.tagName("body"));
-    body.findElement(By.xpath("count(//input)"));
+
+    try {
+      body.findElement(By.xpath("count(//input)"));
+      fail("Should not have succeeded because the xpath expression does not select an element");
+    } catch (RuntimeException e) {
+      // We expect an exception because the XPath expression results in a number, not in an element
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
   }
 
   @Ignore({ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE})
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
 
     driver.get(pages.formPage);
+
     WebElement body = driver.findElement(By.tagName("body"));
-    body.findElements(By.xpath("count(//input)"));
+
+    try {
+      body.findElements(By.xpath("count(//input)"));
+      fail("Should not have succeeded because the xpath expression does not select an element");
+    } catch (RuntimeException e) {
+      // We expect an exception because the XPath expression results in a number, not in an element
+      assertThat(e, is(instanceOf(InvalidSelectorException.class)));
+    }
   }
 
   // By.cssSelector positive
 
+  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindASingleElementByCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -472,6 +503,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("class"), is("content"));
   }
 
+  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindMultipleElementsByCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -479,6 +511,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.size(), greaterThan(1));
   }
 
+  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindASingleElementByCompoundCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -487,6 +520,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("class"), is("content"));
   }
 
+  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindMultipleElementsByCompoundCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -496,6 +530,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.get(1).getAttribute("class"), is("extraDiv"));
   }
 
+  @JavascriptEnabled
   @Test
   @Ignore(value = {IE}, reason = "IE supports only short version option[selected]")
   public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingCssSelector() {
@@ -504,6 +539,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is("two"));
   }
 
+  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelector() {
     driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected.html"));
@@ -511,55 +547,12 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is("two"));
   }
 
+  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelectorOnHtml4Page() {
     driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected_html4.html"));
     WebElement element = driver.findElement(By.cssSelector("option[selected]"));
     assertThat(element.getAttribute("value"), is("two"));
-  }
-
-  // By.cssSelector negative
-
-  @Test(expected = NoSuchElementException.class)
-  public void testShouldNotFindElementByCssSelectorWhenThereIsNoSuchElement() {
-    driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.cssSelector(".there-is-no-such-class"));
-  }
-
-  public void testShouldNotFindElementsByCssSelectorWhenThereIsNoSuchElement() {
-    driver.get(pages.xhtmlTestPage);
-    List<WebElement> elements = driver.findElements(By.cssSelector(".there-is-no-such-class"));
-    assertThat(elements.size(), is(0));
-  }
-
-  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
-  @Test(expected = NoSuchElementException.class)
-  public void testFindingASingleElementByEmptyCssSelectorShouldThrow() {
-    driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.cssSelector(""));
-  }
-
-  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE},
-          reason = "Chrome: throws WebDriverException")
-  @Test(expected = NoSuchElementException.class)
-  public void testFindingMultipleElementsByEmptyCssSelectorShouldThrow() {
-    driver.get(pages.xhtmlTestPage);
-    driver.findElements(By.cssSelector(""));
-  }
-
-  @Ignore(value = {CHROME}, reason = "Throws InvalidElementStateException")
-  @Test(expected = NoSuchElementException.class)
-  public void testFindingASingleElementByInvalidCssSelectorShouldThrow() {
-    driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.cssSelector("//a/b/c[@id='1']"));
-  }
-
-  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE},
-          reason = "Chrome: throws InvalidElementStateException")
-  @Test(expected = NoSuchElementException.class)
-  public void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
-    driver.get(pages.xhtmlTestPage);
-    driver.findElements(By.cssSelector("//a/b/c[@id='1']"));
   }
 
   // By.linkText positive
