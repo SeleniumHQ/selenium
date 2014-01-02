@@ -293,7 +293,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.className(""));
   }
 
-  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
+  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE}, reason = "Throws WebDriverException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
@@ -321,7 +321,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.className("!@#$%^&*"));
   }
 
-  @Ignore(value = {CHROME}, reason = "Throws InvalidElementStateException")
+  @Ignore(value = {CHROME, OPERA, OPERA_MOBILE}, reason = "Throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByInvalidClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
@@ -519,7 +519,6 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   // By.cssSelector positive
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindASingleElementByCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -528,7 +527,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("class"), is("content"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindMultipleElementsByCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -536,7 +534,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.size(), greaterThan(1));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindASingleElementByCompoundCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -545,7 +542,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("class"), is("content"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindMultipleElementsByCompoundCssSelector() {
     driver.get(pages.xhtmlTestPage);
@@ -555,7 +551,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.get(1).getAttribute("class"), is("extraDiv"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = {IE}, reason = "IE supports only short version option[selected]")
   public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingCssSelector() {
@@ -564,7 +559,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is("two"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelector() {
     driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected.html"));
@@ -572,12 +566,53 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is("two"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToFindAnElementByBooleanAttributeUsingShortCssSelectorOnHtml4Page() {
     driver.get(appServer.whereIs("locators_tests/boolean_attribute_selected_html4.html"));
     WebElement element = driver.findElement(By.cssSelector("option[selected]"));
     assertThat(element.getAttribute("value"), is("two"));
+  }
+
+  // By.cssSelector negative
+
+  @Test(expected = NoSuchElementException.class)
+  public void testShouldNotFindElementByCssSelectorWhenThereIsNoSuchElement() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.cssSelector(".there-is-no-such-class"));
+  }
+
+  public void testShouldNotFindElementsByCssSelectorWhenThereIsNoSuchElement() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.cssSelector(".there-is-no-such-class"));
+    assertThat(elements.size(), is(0));
+  }
+
+  //  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByEmptyCssSelectorShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.cssSelector(""));
+  }
+
+//  @Ignore(value = {CHROME}, reason = "Throws WebDriverException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingMultipleElementsByEmptyCssSelectorShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElements(By.cssSelector(""));
+  }
+
+  @Ignore(value = {CHROME}, reason = "Throws InvalidElementStateException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingASingleElementByInvalidCssSelectorShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.cssSelector("//a/b/c[@id='1']"));
+  }
+
+  @Ignore(value = {CHROME}, reason = "Throws InvalidElementStateException")
+  @Test(expected = NoSuchElementException.class)
+  public void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElements(By.cssSelector("//a/b/c[@id='1']"));
   }
 
   // By.linkText positive
