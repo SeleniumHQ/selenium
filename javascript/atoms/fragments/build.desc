@@ -49,7 +49,7 @@ js_fragment(
 js_fragment(
     name = "get_element_size",
     module = "bot.dom",
-    function = "bot.dom.getElementSize",
+    function = "bot.dom.getClientRect",
     deps = ["//javascript/atoms:all_js"])
 
 js_fragment(
