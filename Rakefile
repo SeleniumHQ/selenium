@@ -597,7 +597,6 @@ task :sizzle_header => [ "cpp/iedriver/sizzle.h" ]
 
 task :ios_driver => [
   "//javascript/atoms/fragments:get_visible_text:ios",
-  "//javascript/atoms/fragments:is_displayed:ios",
   "//javascript/atoms/fragments:click:ios",
   "//javascript/atoms/fragments:back:ios",
   "//javascript/atoms/fragments:forward:ios",
