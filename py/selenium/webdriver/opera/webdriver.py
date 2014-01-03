@@ -34,7 +34,7 @@ class WebDriver(RemoteWebDriver):
     """
 
     def __init__(self, executable_path=None, port=0,
-                 desired_capabilities=DesiredCapabilities.OPERA):
+                 desired_capabilities=DesiredCapabilities.OPERA.copy()):
         """
         Creates a new instance of the Opera driver.
 
