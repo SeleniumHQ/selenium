@@ -46,7 +46,7 @@ class WebDriver(RemoteWebDriver):
         self.iedriver.start()
 
         if capabilities is None:
-            capabilities = DesiredCapabilities.INTERNETEXPLORER
+            capabilities = DesiredCapabilities.INTERNETEXPLORER.copy()
 
         RemoteWebDriver.__init__(
             self,

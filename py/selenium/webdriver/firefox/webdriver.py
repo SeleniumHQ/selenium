@@ -49,7 +49,7 @@ class WebDriver(RemoteWebDriver):
             self.binary = FirefoxBinary()
 
         if capabilities is None:
-            capabilities = DesiredCapabilities.FIREFOX
+            capabilities = DesiredCapabilities.FIREFOX.copy()
 
         if proxy is not None:
             proxy.add_to_capabilities(capabilities)
