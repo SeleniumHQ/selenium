@@ -19,13 +19,13 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 
 POLL_FREQUENCY = 0.5  # How long to sleep inbetween calls to the method
-IGNORED_EXCEPTIONS = [NoSuchElementException] # list of exceptions ignored during calls to the method
+IGNORED_EXCEPTIONS = [NoSuchElementException]  # list of exceptions ignored during calls to the method
 
 class WebDriverWait(object):
 
     def __init__(self, driver, timeout, poll_frequency=POLL_FREQUENCY, ignored_exceptions=None):
         """Constructor, takes a WebDriver instance and timeout in seconds.
-           
+
            :Args:
             - driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote)
             - timeout - Number of seconds before timing out
@@ -50,7 +50,7 @@ class WebDriverWait(object):
         if ignored_exceptions is not None:
             try:
                 exceptions.extend(iter(ignored_exceptions))
-            except TypeError: # ignored_exceptions is not iterable
+            except TypeError:  # ignored_exceptions is not iterable
                 exceptions.append(ignored_exceptions)
         self._ignored_exceptions = tuple(exceptions)
 
@@ -71,17 +71,17 @@ class WebDriverWait(object):
         raise TimeoutException(message)
 
     def until_not(self, method, message=''):
-          """Calls the method provided with the driver as an argument until the \
-          return value is False."""
-          end_time = time.time() + self._timeout
-          while(True):
-              try:
-                  value = method(self._driver)
-                  if not value:
-                      return value
-              except self._ignored_exceptions:
-                  return True
-              time.sleep(self._poll)
-              if(time.time() > end_time):
-                  break
-          raise TimeoutException(message)
+        """Calls the method provided with the driver as an argument until the \
+        return value is False."""
+        end_time = time.time() + self._timeout
+        while(True):
+            try:
+                value = method(self._driver)
+                if not value:
+                    return value
+            except self._ignored_exceptions:
+                return True
+            time.sleep(self._poll)
+            if(time.time() > end_time):
+                break
+        raise TimeoutException(message)
