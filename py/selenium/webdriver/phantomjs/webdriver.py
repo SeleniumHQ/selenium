@@ -30,7 +30,7 @@ class WebDriver(RemoteWebDriver):
     """
 
     def __init__(self, executable_path="phantomjs",
-                 port=0, desired_capabilities=DesiredCapabilities.PHANTOMJS,
+                 port=0, desired_capabilities=DesiredCapabilities.PHANTOMJS.copy(),
                  service_args=None, service_log_path=None):
         """
         Creates a new instance of the PhantomJS / Ghostdriver.
