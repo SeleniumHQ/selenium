@@ -129,6 +129,7 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
       // Focus on the top window.
       respond.session.setWindow(respond.session.getBrowser().contentWindow);
       if (timedOut) {
+        respond.session.getBrowser().stop();
         respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
             'Timed out waiting for page load.'));
       } else {

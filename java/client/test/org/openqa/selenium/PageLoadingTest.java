@@ -33,8 +33,10 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -299,6 +301,8 @@ public class PageLoadingTest extends JUnit4TestBase {
   public void testShouldTimeoutIfAPageTakesTooLongToLoad() {
     driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
 
+    long start = System.currentTimeMillis();
+
     try {
       // Get the sleeping servlet with a pause of 5 seconds
       String slowPage = appServer.whereIs("sleep?time=5");
@@ -308,6 +312,21 @@ public class PageLoadingTest extends JUnit4TestBase {
       fail("I should have timed out");
     } catch (RuntimeException e) {
       assertThat(e, is(instanceOf(TimeoutException.class)));
+
+      long end = System.currentTimeMillis();
+      int duration = (int) (end - start);
+      assertThat(duration, greaterThan(2000));
+      assertThat(duration, lessThan(3000));
+
+      // check that after the exception another page can be loaded
+
+      start = System.currentTimeMillis();
+      driver.get(pages.xhtmlTestPage);
+      assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+      end = System.currentTimeMillis();
+      duration = (int) (end - start);
+      assertThat(duration, lessThan(2000));
+
     } finally {
       driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
     }
