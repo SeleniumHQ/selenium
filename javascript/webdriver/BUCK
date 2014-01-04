@@ -11,3 +11,12 @@ js_library(name = 'base-lib',
     '//third_party/closure:closure',
   ],
 )
+
+js_library(name = 'key',
+  srcs = [
+    'key.js',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
