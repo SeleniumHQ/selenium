@@ -186,8 +186,8 @@ WebLoadingListener = function(browser, toCall, timeout, opt_window) {
   }
 
   loadingListenerTimer.setTimeout(function() {
-      func(true);
-      WebLoadingListener.removeListener(browser, handler);
+    WebLoadingListener.removeListener(browser, handler);
+    func(true);
   }, timeout);
 };
 
