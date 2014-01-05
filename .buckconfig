@@ -1,4 +1,5 @@
 [java]
+  src_roots = /java/client/src, /java/client/test, /java/server/src, /java/server/test
 
 [project]
   ignore = \
