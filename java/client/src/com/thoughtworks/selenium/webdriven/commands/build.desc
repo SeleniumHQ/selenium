@@ -18,5 +18,4 @@ java_library(name = "commands",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/interactions",
     "//java/client/src/org/openqa/selenium/io",
-  ],
-)
+  ])
