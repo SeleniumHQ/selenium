@@ -18,31 +18,17 @@ package org.openqa.selenium;
 
 import com.google.common.base.Supplier;
 
-import com.thoughtworks.selenium.DefaultSelenium;
+/**
+ * @deprecated Use {@link com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium} instead.
+ */
+@Deprecated
+public class WebDriverBackedSelenium extends com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium {
 
-import org.openqa.selenium.internal.WrapsDriver;
-
-public class WebDriverBackedSelenium extends DefaultSelenium
-    implements HasCapabilities, WrapsDriver {
   public WebDriverBackedSelenium(Supplier<WebDriver> maker, String baseUrl) {
-    super(new WebDriverCommandProcessor(baseUrl, maker));
+    super(maker, baseUrl);
   }
 
   public WebDriverBackedSelenium(WebDriver baseDriver, String baseUrl) {
-    super(new WebDriverCommandProcessor(baseUrl, baseDriver));
-  }
-
-  public WebDriver getWrappedDriver() {
-    return ((WrapsDriver) commandProcessor).getWrappedDriver();
-  }
-
-  @Override
-  public Capabilities getCapabilities() {
-    WebDriver driver = getWrappedDriver();
-    if (driver instanceof HasCapabilities) {
-      return ((HasCapabilities) driver).getCapabilities();
-    }
-
-    return null;
+    super(baseDriver, baseUrl);
   }
 }

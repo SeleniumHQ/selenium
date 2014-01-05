@@ -34,3 +34,11 @@ java_library(name = 'selenium',
   ],
   visibility = ['PUBLIC'],
 )
+
+
+java_binary(name = "legacy-selenium-client",
+  deps = [
+    ':selenium',
+    '//java/client/src/com/thoughtworks/selenium/webdriven:webdriven',
+  ],
+)

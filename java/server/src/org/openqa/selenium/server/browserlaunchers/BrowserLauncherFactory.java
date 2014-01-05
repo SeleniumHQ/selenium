@@ -61,8 +61,6 @@ public class BrowserLauncherFactory {
     supportedBrowsers.put(BrowserType.OPERA, OperaCustomProfileLauncher.class);
     supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
     supportedBrowsers.put("pifirefox", ProxyInjectionFirefoxCustomProfileLauncher.class);
-    // DGF pisafari isn't working yet
-    // supportedBrowsers.put("pisafari", ProxyInjectionSafariCustomProfileLauncher.class);
     supportedBrowsers.put(BrowserType.KONQUEROR, KonquerorLauncher.class);
     supportedBrowsers.put(BrowserType.MOCK, MockBrowserLauncher.class);
     supportedBrowsers.put(BrowserType.GOOGLECHROME, GoogleChromeLauncher.class);

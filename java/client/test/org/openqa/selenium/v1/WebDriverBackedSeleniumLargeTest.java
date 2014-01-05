@@ -16,18 +16,18 @@ limitations under the License.
 
 package org.openqa.selenium.v1;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.Wait;
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.NoDriverAfterTest;
-import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class WebDriverBackedSeleniumLargeTest extends JUnit4TestBase {
 

@@ -14,9 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium;
+package com.thoughtworks.selenium.webdriven;
 
 import com.google.common.base.Supplier;
+
+import org.openqa.selenium.WebDriver;
 
 // Visibility set to package level deliberately
 class ExplodingSupplier implements Supplier<WebDriver> {

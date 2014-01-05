@@ -17,13 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.v1.internal.seleniumemulation;
 
+import static org.junit.Assert.assertEquals;
+
 import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 import org.junit.Test;
-import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import static org.junit.Assert.assertEquals;
 
 
 public class ScriptMutatorTest extends JUnit4TestBase {
