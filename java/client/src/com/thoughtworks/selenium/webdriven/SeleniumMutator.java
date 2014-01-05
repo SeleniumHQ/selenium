@@ -14,29 +14,35 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.internal.seleniumemulation;
+
+package com.thoughtworks.selenium.webdriven;
 
 import com.thoughtworks.selenium.webdriven.ScriptMutator;
 
 import java.util.regex.Pattern;
 
-public class MethodDeclaration implements ScriptMutator {
+/**
+ * Add a function backed by the closure-based implementation of Selenium Core.
+ */
+public class SeleniumMutator implements ScriptMutator {
   private final Pattern pattern;
-  private final String function;
+  private final String method;
+  private final String atom;
 
-  public MethodDeclaration(String raw, String result) {
-    String base = raw.replace(".", "\\s*\\.\\s*");
-
-    pattern = Pattern.compile(".*" + base + "\\s*\\(\\s*\\).*");
-
-    function = raw + " = function() { " + result + " }";
+  public SeleniumMutator(String method, String atom) {
+    String raw = ".*" + method.replace(".", "\\s*\\.\\s*") + ".*";
+    this.pattern = Pattern.compile(raw);
+    this.method = method;
+    this.atom = atom;
   }
 
-  public void mutate(String script, StringBuilder outputTo) {
+  public void mutate(String script, StringBuilder appendTo) {
     if (!pattern.matcher(script).matches()) {
       return;
     }
 
-    outputTo.append(function);
+    // Alias the raw atom and set "this" to be the pre-declared selenium object.
+    appendTo.append(String.format("%s = function() { return (%s).apply(null, arguments);};",
+        method, atom));
   }
 }

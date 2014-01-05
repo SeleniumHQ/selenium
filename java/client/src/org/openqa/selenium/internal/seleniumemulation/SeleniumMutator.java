@@ -17,30 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.regex.Pattern;
-
 /**
- * Add a function backed by the closure-based implementation of Selenium Core.
+ * @deprecated Use {@link com.thoughtworks.selenium.webdriven.SeleniumMutator} instead.
  */
-public class SeleniumMutator implements ScriptMutator {
-  private final Pattern pattern;
-  private final String method;
-  private final String atom;
+@Deprecated
+public class SeleniumMutator extends com.thoughtworks.selenium.webdriven.SeleniumMutator {
 
   public SeleniumMutator(String method, String atom) {
-    String raw = ".*" + method.replace(".", "\\s*\\.\\s*") + ".*";
-    this.pattern = Pattern.compile(raw);
-    this.method = method;
-    this.atom = atom;
-  }
-
-  public void mutate(String script, StringBuilder appendTo) {
-    if (!pattern.matcher(script).matches()) {
-      return;
-    }
-
-    // Alias the raw atom and set "this" to be the pre-declared selenium object.
-    appendTo.append(String.format("%s = function() { return (%s).apply(null, arguments);};",
-        method, atom));
+    super(method, atom);
   }
 }

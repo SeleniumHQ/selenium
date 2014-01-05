@@ -22,8 +22,10 @@ import com.google.common.collect.Maps;
 
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
+import com.thoughtworks.selenium.webdriven.CompoundMutator;
 import com.thoughtworks.selenium.webdriven.ElementFinder;
 import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
+import com.thoughtworks.selenium.webdriven.ScriptMutator;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import com.thoughtworks.selenium.webdriven.commands.SetTimeout;
 import com.thoughtworks.selenium.webdriven.commands.Timer;

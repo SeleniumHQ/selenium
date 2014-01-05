@@ -11,9 +11,14 @@ java_library(name = "webdriven",
 
 java_library(name = "emulation-api",
   srcs = [
+    "CompoundMutator.java",
     "ElementFinder.java",
+    "FunctionDeclaration.java",
     "JavascriptLibrary.java",
+    "ScriptMutator.java",
     "SeleneseCommand.java",
+    "SeleniumMutator.java",
+    "VariableDeclaration.java",
   ],
   deps = [
     "//java/client/src/com/thoughtworks/selenium:api",

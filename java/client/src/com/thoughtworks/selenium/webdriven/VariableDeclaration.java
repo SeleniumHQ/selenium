@@ -14,22 +14,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.internal.seleniumemulation;
+
+package com.thoughtworks.selenium.webdriven;
 
 import com.thoughtworks.selenium.webdriven.ScriptMutator;
 
 import java.util.regex.Pattern;
 
-public class MethodDeclaration implements ScriptMutator {
+/**
+ * Prepend a variable declaration to a script.
+ */
+public class VariableDeclaration implements ScriptMutator {
   private final Pattern pattern;
-  private final String function;
+  private final String declaration;
 
-  public MethodDeclaration(String raw, String result) {
-    String base = raw.replace(".", "\\s*\\.\\s*");
+  public VariableDeclaration(String raw, String declaration) {
+    this.declaration = declaration;
+    raw = raw.replace(".", "\\s*\\.\\s*")
+        .replace("(", "\\(")
+        .replace(")", "\\)");
 
-    pattern = Pattern.compile(".*" + base + "\\s*\\(\\s*\\).*");
-
-    function = raw + " = function() { " + result + " }";
+    pattern = Pattern.compile(".*" + raw + ".*");
   }
 
   public void mutate(String script, StringBuilder outputTo) {
@@ -37,6 +42,6 @@ public class MethodDeclaration implements ScriptMutator {
       return;
     }
 
-    outputTo.append(function);
+    outputTo.append(declaration);
   }
 }

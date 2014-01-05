@@ -14,22 +14,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.internal.seleniumemulation;
+
+package com.thoughtworks.selenium.webdriven;
 
 import com.thoughtworks.selenium.webdriven.ScriptMutator;
 
 import java.util.regex.Pattern;
 
-public class MethodDeclaration implements ScriptMutator {
+/**
+ * Models a function declaration. That is, it provides an implementation of a particular Javascript
+ * function.
+ */
+public class FunctionDeclaration implements ScriptMutator {
   private final Pattern pattern;
   private final String function;
 
-  public MethodDeclaration(String raw, String result) {
+  /**
+   * @param raw The original function (eg: "selenium.isElementPresent")
+   * @param result The body of the function implementation.
+   */
+  public FunctionDeclaration(String raw, String result) {
     String base = raw.replace(".", "\\s*\\.\\s*");
 
     pattern = Pattern.compile(".*" + base + "\\s*\\(\\s*\\).*");
 
-    function = raw + " = function() { " + result + " }";
+    function = raw + " = function() { " + result + " }; ";
   }
 
   public void mutate(String script, StringBuilder outputTo) {
@@ -39,4 +48,5 @@ public class MethodDeclaration implements ScriptMutator {
 
     outputTo.append(function);
   }
+
 }

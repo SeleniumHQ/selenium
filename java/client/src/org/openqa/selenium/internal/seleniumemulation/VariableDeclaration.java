@@ -17,29 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.regex.Pattern;
-
 /**
- * Prepend a variable declaration to a script.
+ * @deprecated Use {@link com.thoughtworks.selenium.webdriven.VariableDeclaration} instead.
  */
-public class VariableDeclaration implements ScriptMutator {
-  private final Pattern pattern;
-  private final String declaration;
+@Deprecated
+public class VariableDeclaration extends com.thoughtworks.selenium.webdriven.VariableDeclaration {
 
   public VariableDeclaration(String raw, String declaration) {
-    this.declaration = declaration;
-    raw = raw.replace(".", "\\s*\\.\\s*")
-        .replace("(", "\\(")
-        .replace(")", "\\)");
-
-    pattern = Pattern.compile(".*" + raw + ".*");
-  }
-
-  public void mutate(String script, StringBuilder outputTo) {
-    if (!pattern.matcher(script).matches()) {
-      return;
-    }
-
-    outputTo.append(declaration);
+    super(raw, declaration);
   }
 }
