@@ -26,7 +26,10 @@ import java.io.File;
 
 /**
  * Discovers a valid Firefox 2.x installation on local system.
+ *
+ * @deprecated Firefox 2 is no longer used.
  */
+@Deprecated
 public class Firefox2Locator extends FirefoxLocator {
 
   private static final String[] USUAL_UNIX_LAUNCHER_LOCATIONS = {
