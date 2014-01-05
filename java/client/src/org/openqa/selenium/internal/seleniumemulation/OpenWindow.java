@@ -22,6 +22,7 @@ import java.net.URL;
 import org.openqa.selenium.WebDriver;
 
 import com.thoughtworks.selenium.SeleniumException;
+import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 public class OpenWindow extends SeleneseCommand<Void> {
   private final URL baseUrl;

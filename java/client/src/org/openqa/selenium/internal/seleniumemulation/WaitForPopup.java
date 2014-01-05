@@ -18,6 +18,7 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.Wait;
+import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.WebDriver;
 

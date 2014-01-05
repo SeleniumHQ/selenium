@@ -1,7 +1,7 @@
 
 java_library(name = "seleniumemulation",
-  srcs = [ "*.java" ],
   deps = [
+    ":api",
     "//java/client/src/com/thoughtworks/selenium",
     "//java/client/src/org/openqa/selenium:webdriver-api",
     "//java/client/src/org/openqa/selenium/interactions",
@@ -14,14 +14,16 @@ java_library(name = "seleniumemulation",
   ])
 
 java_library(name="api",
-             srcs = [ "*.java" ],
-             deps = [
-               "//java/client/src/com/thoughtworks/selenium",
-               "//java/client/src/org/openqa/selenium:webdriver-api",
-               "//java/client/src/org/openqa/selenium/interactions",
-               "//java/client/src/org/openqa/selenium/io",
-               "//third_party/java/guava-libraries",
-              ])
+   srcs = [ "*.java" ],
+   deps = [
+     "//java/client/src/com/thoughtworks/selenium",
+     "//java/client/src/com/thoughtworks/selenium/webdriven:emulation-api",
+     "//java/client/src/com/thoughtworks/selenium/webdriven/commands:api",
+     "//java/client/src/org/openqa/selenium:webdriver-api",
+     "//java/client/src/org/openqa/selenium/interactions",
+     "//java/client/src/org/openqa/selenium/io",
+     "//third_party/java/guava-libraries",
+    ])
 
 export_file(name = "injectableSelenium",
   srcs = [ "injectableSelenium.js" ])

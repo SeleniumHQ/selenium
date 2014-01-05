@@ -16,42 +16,9 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import com.thoughtworks.selenium.SeleniumException;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-
-public abstract class SeleneseCommand<T> {
-
-  private long defaultTimeout;
-
-  public T apply(WebDriver driver, String[] args) {
-    try {
-      switch (args.length) {
-        case 0:
-          return handleSeleneseCommand(driver, null, null);
-
-        case 1:
-          return handleSeleneseCommand(driver, args[0], null);
-
-        case 2:
-          return handleSeleneseCommand(driver, args[0], args[1]);
-
-        default:
-          throw new SeleniumException("Too many arguments! " + args.length);
-      }
-    } catch (WebDriverException e) {
-      throw new SeleniumException(e.getMessage(), e);
-    }
-  }
-  
-  protected void setDefaultTimeout(long defaultTimeout) {
-    this.defaultTimeout = defaultTimeout;
-  }
-  
-  protected long getTimeout(String timeout) {
-    return "".equals(timeout) ? defaultTimeout : Long.valueOf(timeout);
-  }
-
-  protected abstract T handleSeleneseCommand(WebDriver driver, String locator, String value);
+/**
+ * @deprecated Use {@link com.thoughtworks.selenium.webdriven.SeleneseCommand} instead.
+ */
+@Deprecated
+public abstract class SeleneseCommand<T> extends com.thoughtworks.selenium.webdriven.SeleneseCommand<T> {
 }

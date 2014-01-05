@@ -16,6 +16,9 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import com.thoughtworks.selenium.webdriven.SeleneseCommand;
+import com.thoughtworks.selenium.webdriven.commands.Timer;
+
 import org.openqa.selenium.WebDriver;
 
 public class SetTimeout extends SeleneseCommand<Void> {

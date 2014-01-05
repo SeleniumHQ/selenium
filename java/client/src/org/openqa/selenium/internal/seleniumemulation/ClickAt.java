@@ -16,6 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import com.thoughtworks.selenium.webdriven.SeleneseCommand;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;

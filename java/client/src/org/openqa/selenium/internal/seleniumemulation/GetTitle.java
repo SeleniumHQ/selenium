@@ -16,6 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import com.thoughtworks.selenium.webdriven.SeleneseCommand;
+
 import org.openqa.selenium.WebDriver;
 
 public class GetTitle extends SeleneseCommand<String> {

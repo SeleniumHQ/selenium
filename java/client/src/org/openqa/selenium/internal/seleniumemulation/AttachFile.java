@@ -19,6 +19,7 @@ package org.openqa.selenium.internal.seleniumemulation;
 import com.google.common.io.Resources;
 
 import com.thoughtworks.selenium.SeleniumException;
+import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

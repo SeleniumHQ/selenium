@@ -1,0 +1,9 @@
+
+java_library(name = "emulation-api",
+  srcs = [
+    "SeleneseCommand.java",
+  ],
+  deps = [
+    "//java/client/src/com/thoughtworks/selenium:api",
+    "//java/client/src/org/openqa/selenium:webdriver-api",
+  ])
