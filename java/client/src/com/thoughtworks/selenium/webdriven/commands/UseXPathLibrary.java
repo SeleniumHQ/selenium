@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2011 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,28 +16,19 @@ limitations under the License.
 
 package com.thoughtworks.selenium.webdriven.commands;
 
+import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.WebDriver;
 
-public class SetTimeout extends SeleneseCommand<Void> {
-  private final Timer timer;
-
-  public SetTimeout(Timer timer) {
-    this.timer = timer;
-  }
+public class UseXPathLibrary extends SeleneseCommand<Void> {
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
-    // generally, the timeout is only set to 0 when opening a page. WebDriver
-    // will wait indefinitely anyway, so setting the timeout to "0" will
-    // actually cause the command to return with an error too soon. Avoid this
-    // sorry and shocking state of affairs.
-    if ("0".equals(timeout)) {
-      timer.setTimeout(Long.MAX_VALUE);
-    } else {
-      timer.setTimeout(Long.parseLong(timeout));
+  protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    if (locator == null || !"javascript-xpath".equals(locator)) {
+      throw new SeleniumException("XPath library to use must be 'javascript-xpath'");
     }
+
     return null;
   }
 }

@@ -16,28 +16,37 @@ limitations under the License.
 
 package com.thoughtworks.selenium.webdriven.commands;
 
+import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.WebDriver;
 
-public class SetTimeout extends SeleneseCommand<Void> {
-  private final Timer timer;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-  public SetTimeout(Timer timer) {
-    this.timer = timer;
+public class Open extends SeleneseCommand<Void> {
+  private final URL baseUrl;
+
+  public Open(String baseUrl) {
+    try {
+      this.baseUrl = new URL(baseUrl);
+    } catch (MalformedURLException e) {
+      throw new SeleniumException(e.getMessage(), e);
+    }
   }
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
-    // generally, the timeout is only set to 0 when opening a page. WebDriver
-    // will wait indefinitely anyway, so setting the timeout to "0" will
-    // actually cause the command to return with an error too soon. Avoid this
-    // sorry and shocking state of affairs.
-    if ("0".equals(timeout)) {
-      timer.setTimeout(Long.MAX_VALUE);
-    } else {
-      timer.setTimeout(Long.parseLong(timeout));
+  protected Void handleSeleneseCommand(final WebDriver driver, String url, String ignored) {
+    try {
+      final String urlToOpen = url.indexOf("://") == -1 ?
+          new URL(baseUrl, url).toString() :
+          url;
+
+      driver.get(urlToOpen);
+    } catch (MalformedURLException e) {
+      throw new SeleniumException(e.getMessage(), e);
     }
+
     return null;
   }
 }

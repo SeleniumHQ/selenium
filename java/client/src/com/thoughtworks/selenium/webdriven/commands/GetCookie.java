@@ -18,26 +18,17 @@ package com.thoughtworks.selenium.webdriven.commands;
 
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 
-public class SetTimeout extends SeleneseCommand<Void> {
-  private final Timer timer;
-
-  public SetTimeout(Timer timer) {
-    this.timer = timer;
-  }
-
+public class GetCookie extends SeleneseCommand<String> {
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
-    // generally, the timeout is only set to 0 when opening a page. WebDriver
-    // will wait indefinitely anyway, so setting the timeout to "0" will
-    // actually cause the command to return with an error too soon. Avoid this
-    // sorry and shocking state of affairs.
-    if ("0".equals(timeout)) {
-      timer.setTimeout(Long.MAX_VALUE);
-    } else {
-      timer.setTimeout(Long.parseLong(timeout));
+  protected String handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
+    StringBuilder builder = new StringBuilder();
+    for (Cookie c : driver.manage().getCookies()) {
+      builder.append(c.toString());
+      builder.append("; ");
     }
-    return null;
+    return builder.toString();
   }
 }

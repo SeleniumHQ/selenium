@@ -27,11 +27,9 @@ import com.thoughtworks.selenium.webdriven.ElementFinder;
 import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
 import com.thoughtworks.selenium.webdriven.ScriptMutator;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
-import com.thoughtworks.selenium.webdriven.commands.SetTimeout;
-import com.thoughtworks.selenium.webdriven.commands.Timer;
+import com.thoughtworks.selenium.webdriven.commands.*;
 
 import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.internal.seleniumemulation.*;
 
 import java.util.Map;
 

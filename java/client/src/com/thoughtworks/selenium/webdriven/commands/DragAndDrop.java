@@ -16,28 +16,29 @@ limitations under the License.
 
 package com.thoughtworks.selenium.webdriven.commands;
 
+import com.thoughtworks.selenium.webdriven.ElementFinder;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
-public class SetTimeout extends SeleneseCommand<Void> {
-  private final Timer timer;
+public class DragAndDrop extends SeleneseCommand<Void> {
+  private final ElementFinder finder;
 
-  public SetTimeout(Timer timer) {
-    this.timer = timer;
+  public DragAndDrop(ElementFinder finder) {
+    this.finder = finder;
   }
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
-    // generally, the timeout is only set to 0 when opening a page. WebDriver
-    // will wait indefinitely anyway, so setting the timeout to "0" will
-    // actually cause the command to return with an error too soon. Avoid this
-    // sorry and shocking state of affairs.
-    if ("0".equals(timeout)) {
-      timer.setTimeout(Long.MAX_VALUE);
-    } else {
-      timer.setTimeout(Long.parseLong(timeout));
-    }
+  protected Void handleSeleneseCommand(WebDriver driver, String locator, String movementsString) {
+    String[] parts = movementsString.split("\\s*,\\s*", 2);
+    int xDelta = Integer.parseInt(parts[0].trim());
+    int yDelta = Integer.parseInt(parts[1].trim());
+
+    WebElement element = finder.findElement(driver, locator);
+    new Actions(driver).dragAndDropBy(element, xDelta, yDelta).perform();
+
     return null;
   }
 }

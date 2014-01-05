@@ -16,28 +16,25 @@ limitations under the License.
 
 package com.thoughtworks.selenium.webdriven.commands;
 
+import com.thoughtworks.selenium.webdriven.ElementFinder;
+import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.WebDriver;
 
-public class SetTimeout extends SeleneseCommand<Void> {
-  private final Timer timer;
+public class Highlight extends SeleneseCommand<String> {
+  private final JavascriptLibrary js;
+  private final ElementFinder finder;
 
-  public SetTimeout(Timer timer) {
-    this.timer = timer;
+  public Highlight(ElementFinder finder, JavascriptLibrary js) {
+    this.js = js;
+    this.finder = finder;
   }
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
-    // generally, the timeout is only set to 0 when opening a page. WebDriver
-    // will wait indefinitely anyway, so setting the timeout to "0" will
-    // actually cause the command to return with an error too soon. Avoid this
-    // sorry and shocking state of affairs.
-    if ("0".equals(timeout)) {
-      timer.setTimeout(Long.MAX_VALUE);
-    } else {
-      timer.setTimeout(Long.parseLong(timeout));
-    }
+  protected String handleSeleneseCommand(WebDriver driver, String locator, String ignored) {
+    js.callEmbeddedHtmlUtils(driver, "highlight", finder.findElement(driver, locator));
+
     return null;
   }
 }

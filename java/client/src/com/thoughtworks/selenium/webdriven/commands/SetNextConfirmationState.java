@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2010 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,26 +18,25 @@ package com.thoughtworks.selenium.webdriven.commands;
 
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
-public class SetTimeout extends SeleneseCommand<Void> {
-  private final Timer timer;
+public class SetNextConfirmationState extends SeleneseCommand<Void> {
+  private final boolean result;
 
-  public SetTimeout(Timer timer) {
-    this.timer = timer;
+  public SetNextConfirmationState(boolean result) {
+    this.result = result;
   }
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
-    // generally, the timeout is only set to 0 when opening a page. WebDriver
-    // will wait indefinitely anyway, so setting the timeout to "0" will
-    // actually cause the command to return with an error too soon. Avoid this
-    // sorry and shocking state of affairs.
-    if ("0".equals(timeout)) {
-      timer.setTimeout(Long.MAX_VALUE);
-    } else {
-      timer.setTimeout(Long.parseLong(timeout));
-    }
+  protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    ((JavascriptExecutor) driver).executeScript(
+        "if (window.localStorage) { " +
+        "  window.localStorage.setItem('__webdriverNextConfirm', JSON.stringify(arguments[0])); " +
+        "} else { " +
+        "  window.__webdriverNextConfirm = arguments[0];" +
+        "}"
+        , result);
     return null;
   }
 }

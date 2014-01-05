@@ -16,28 +16,22 @@ limitations under the License.
 
 package com.thoughtworks.selenium.webdriven.commands;
 
+import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.WebDriver;
 
-public class SetTimeout extends SeleneseCommand<Void> {
-  private final Timer timer;
+public class WindowFocus extends SeleneseCommand<Void> {
+  private final JavascriptLibrary js;
 
-  public SetTimeout(Timer timer) {
-    this.timer = timer;
+  public WindowFocus(JavascriptLibrary js) {
+    this.js = js;
   }
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
-    // generally, the timeout is only set to 0 when opening a page. WebDriver
-    // will wait indefinitely anyway, so setting the timeout to "0" will
-    // actually cause the command to return with an error too soon. Avoid this
-    // sorry and shocking state of affairs.
-    if ("0".equals(timeout)) {
-      timer.setTimeout(Long.MAX_VALUE);
-    } else {
-      timer.setTimeout(Long.parseLong(timeout));
-    }
+  protected Void handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
+    js.executeScript(driver, "window.focus()");
+
     return null;
   }
 }

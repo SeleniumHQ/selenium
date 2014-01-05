@@ -10,9 +10,13 @@ java_library(name = "api",
 
 java_library(name = "commands",
   srcs = [
-    "SetTimeout.java",
+    "*.java",
   ],
   deps = [
     ":api",
+    "//java/client/src/com/thoughtworks/selenium:wait",
+    "//java/client/src/org/openqa/selenium:webdriver-api",
+    "//java/client/src/org/openqa/selenium/interactions",
+    "//java/client/src/org/openqa/selenium/io",
   ]
 )

@@ -18,26 +18,25 @@ package com.thoughtworks.selenium.webdriven.commands;
 
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
-public class SetTimeout extends SeleneseCommand<Void> {
-  private final Timer timer;
+import java.util.ArrayList;
+import java.util.List;
 
-  public SetTimeout(Timer timer) {
-    this.timer = timer;
-  }
-
+public class GetAllFields extends SeleneseCommand<String[]> {
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
-    // generally, the timeout is only set to 0 when opening a page. WebDriver
-    // will wait indefinitely anyway, so setting the timeout to "0" will
-    // actually cause the command to return with an error too soon. Avoid this
-    // sorry and shocking state of affairs.
-    if ("0".equals(timeout)) {
-      timer.setTimeout(Long.MAX_VALUE);
-    } else {
-      timer.setTimeout(Long.parseLong(timeout));
+  protected String[] handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    List<WebElement> allInputs = driver.findElements(By.xpath("//input"));
+    List<String> ids = new ArrayList<String>();
+
+    for (WebElement input : allInputs) {
+      String type = input.getAttribute("type").toLowerCase();
+      if ("text".equals(type))
+        ids.add(input.getAttribute("id"));
     }
-    return null;
+
+    return ids.toArray(new String[ids.size()]);
   }
 }

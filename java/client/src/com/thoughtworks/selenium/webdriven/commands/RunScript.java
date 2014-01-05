@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2009 Selenium committers
+Copyright 2010 Selenium committers
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,30 +14,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
+
 package com.thoughtworks.selenium.webdriven.commands;
 
+import com.thoughtworks.selenium.webdriven.ScriptMutator;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
-public class SetTimeout extends SeleneseCommand<Void> {
-  private final Timer timer;
+public class RunScript extends SeleneseCommand<Void> {
+  private final ScriptMutator mutator;
 
-  public SetTimeout(Timer timer) {
-    this.timer = timer;
+  public RunScript(ScriptMutator mutator) {
+    this.mutator = mutator;
   }
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
-    // generally, the timeout is only set to 0 when opening a page. WebDriver
-    // will wait indefinitely anyway, so setting the timeout to "0" will
-    // actually cause the command to return with an error too soon. Avoid this
-    // sorry and shocking state of affairs.
-    if ("0".equals(timeout)) {
-      timer.setTimeout(Long.MAX_VALUE);
-    } else {
-      timer.setTimeout(Long.parseLong(timeout));
-    }
+  protected Void handleSeleneseCommand(WebDriver driver, String locator,
+      String value) {
+    StringBuilder builder = new StringBuilder();
+    mutator.mutate(locator, builder);
+
+    ((JavascriptExecutor) driver).executeScript(builder.toString());
+
     return null;
   }
 }

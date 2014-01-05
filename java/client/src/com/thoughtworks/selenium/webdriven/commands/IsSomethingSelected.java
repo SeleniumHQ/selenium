@@ -16,28 +16,27 @@ limitations under the License.
 
 package com.thoughtworks.selenium.webdriven.commands;
 
+import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.WebDriver;
 
-public class SetTimeout extends SeleneseCommand<Void> {
-  private final Timer timer;
 
-  public SetTimeout(Timer timer) {
-    this.timer = timer;
+public class IsSomethingSelected extends SeleneseCommand<Boolean> {
+  private final JavascriptLibrary library;
+  private final String script;
+
+  public IsSomethingSelected(JavascriptLibrary library) {
+    this.library = library;
+    script =
+        "return (" + library.getSeleniumScript("isSomethingSelected.js") +
+            ").apply(null, arguments)";
   }
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
-    // generally, the timeout is only set to 0 when opening a page. WebDriver
-    // will wait indefinitely anyway, so setting the timeout to "0" will
-    // actually cause the command to return with an error too soon. Avoid this
-    // sorry and shocking state of affairs.
-    if ("0".equals(timeout)) {
-      timer.setTimeout(Long.MAX_VALUE);
-    } else {
-      timer.setTimeout(Long.parseLong(timeout));
-    }
-    return null;
+  protected Boolean handleSeleneseCommand(WebDriver driver, String selectLocator, String ignored) {
+    Object value = library.executeScript(driver, script, selectLocator);
+
+    return Boolean.TRUE == value;
   }
 }

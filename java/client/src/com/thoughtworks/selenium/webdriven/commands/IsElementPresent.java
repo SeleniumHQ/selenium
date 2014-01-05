@@ -16,28 +16,29 @@ limitations under the License.
 
 package com.thoughtworks.selenium.webdriven.commands;
 
+import com.thoughtworks.selenium.SeleniumException;
+import com.thoughtworks.selenium.webdriven.ElementFinder;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.WebDriver;
 
-public class SetTimeout extends SeleneseCommand<Void> {
-  private final Timer timer;
+public class IsElementPresent extends SeleneseCommand<Boolean> {
+  private final ElementFinder finder;
 
-  public SetTimeout(Timer timer) {
-    this.timer = timer;
+  public IsElementPresent(ElementFinder finder) {
+    this.finder = finder;
   }
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
-    // generally, the timeout is only set to 0 when opening a page. WebDriver
-    // will wait indefinitely anyway, so setting the timeout to "0" will
-    // actually cause the command to return with an error too soon. Avoid this
-    // sorry and shocking state of affairs.
-    if ("0".equals(timeout)) {
-      timer.setTimeout(Long.MAX_VALUE);
-    } else {
-      timer.setTimeout(Long.parseLong(timeout));
+  protected Boolean handleSeleneseCommand(WebDriver driver, String locator, String ignored) {
+    try {
+      finder.findElement(driver, locator);
+      return true;
+    } catch (SeleniumException e) {
+      return false;
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      return false;
     }
-    return null;
   }
 }
