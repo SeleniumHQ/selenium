@@ -34,13 +34,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JavascriptLibrary {
 
   static final String PREFIX = "/" + JavascriptLibrary.class.getPackage()
-      .getName().replace(".", "/") + "/selenium_atoms/";
+      .getName().replace(".", "/") + "/";
   private final ConcurrentHashMap<String, String> scripts = new ConcurrentHashMap<String, String>();
 
   private static final String injectableSelenium =
-      "/com/thoughtworks/selenium/webdriven/scripts/injectableSelenium.js";
+      "/com/thoughtworks/selenium/webdriven/injectableSelenium.js";
   private static final String htmlUtils =
-      "/com/thoughtworks/selenium/webdriven/scripts/htmlutils.js";
+      "/com/thoughtworks/selenium/webdriven/htmlutils.js";
 
   /**
    * Loads the named Selenium script and returns it wrapped in an anonymous function.

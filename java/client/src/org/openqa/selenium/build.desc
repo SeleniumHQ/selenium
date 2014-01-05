@@ -112,10 +112,8 @@ java_library(name = "webdriver-backed-selenium",
   deps = [
     ":selenium-api",
     "//java/client/src/com/thoughtworks/selenium",
+    "//java/client/src/com/thoughtworks/selenium/webdriven",
     "//java/client/src/org/openqa/selenium/internal/seleniumemulation",
-  ],
-  embedded = [
-    "//java/client/src/com/thoughtworks/selenium/webdriven:scripts",
   ])
 
 java_library(name = "client-combined",
