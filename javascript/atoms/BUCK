@@ -160,6 +160,25 @@ js_library(name = 'locators',
 )
 
 
+js_library(name = 'window',
+  srcs = [
+    'frame.js',
+    'window.js',
+  ],
+  deps = [
+    ':bot',
+    ':error-lib',
+    ':events',
+    ':json',
+    ':locators',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
 js_library(name = 'xpath',
   srcs = [
     'locators/xpath.js',
