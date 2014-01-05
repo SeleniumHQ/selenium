@@ -15,12 +15,11 @@ limitations under the License.
  */
 
 
-package org.openqa.selenium.internal.seleniumemulation;
+package com.thoughtworks.selenium.webdriven.commands;
 
 import static org.junit.Assert.assertEquals;
 
 import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
-import com.thoughtworks.selenium.webdriven.commands.GetAttribute;
 
 import org.junit.Test;
 

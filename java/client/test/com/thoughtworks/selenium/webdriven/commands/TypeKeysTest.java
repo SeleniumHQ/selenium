@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.internal.seleniumemulation;
+package com.thoughtworks.selenium.webdriven.commands;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -27,6 +27,7 @@ import org.openqa.selenium.WebElement;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.internal.seleniumemulation.AlertOverrideStub;
 
 public class TypeKeysTest {
   private ElementFinder elementFinder;

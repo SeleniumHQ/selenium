@@ -16,6 +16,8 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import com.thoughtworks.selenium.webdriven.commands.AlertOverride;
+
 import org.openqa.selenium.WebDriver;
 
 public class AlertOverrideStub extends AlertOverride {
