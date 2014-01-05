@@ -1,5 +1,3 @@
-
-
 java_library(name = "api",
   srcs = [
     "CommandProcessor.java",
