@@ -3,6 +3,7 @@ java_library(name = 'api',
     'CommandProcessor.java',
     'Selenium.java',
     'SeleniumException.java',
+    'Wait.java',
   ],
   visibility = ['PUBLIC'],
 )
@@ -22,7 +23,6 @@ java_library(name = 'selenium',
   ],
   exported_deps = [
     ':api',
-    ':wait',
     '//java/client/src/com/thoughtworks/selenium/condition:condition',
   ],
   deps = [
@@ -34,12 +34,3 @@ java_library(name = 'selenium',
   ],
   visibility = ['PUBLIC'],
 )
-
-java_library(name = 'wait',
-  srcs = [
-    'Wait.java',
-  ],
-  deps = [
-    ':api',
-  ])
-
