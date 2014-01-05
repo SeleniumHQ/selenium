@@ -19,6 +19,8 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import static org.junit.Assert.assertEquals;
 
+import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
+
 import org.junit.Test;
 
 public class GetAttributeTest {

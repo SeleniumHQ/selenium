@@ -18,6 +18,8 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import com.thoughtworks.selenium.webdriven.ElementFinder;
+import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.WebDriver;

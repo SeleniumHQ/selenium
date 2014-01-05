@@ -94,6 +94,7 @@ java_library(name = "selenium-api",
   deps = [
     ":webdriver-api",
     "//java/client/src/com/thoughtworks/selenium:wait",
+    "//java/client/src/com/thoughtworks/selenium/webdriven/commands",
     "//java/client/src/org/openqa/selenium/chrome",
     "//java/client/src/org/openqa/selenium/firefox",
     "//java/client/src/org/openqa/selenium/ie",
@@ -114,7 +115,7 @@ java_library(name = "webdriver-backed-selenium",
     "//java/client/src/org/openqa/selenium/internal/seleniumemulation",
   ],
   embedded = [
-    "//java/client/src/org/openqa/selenium/internal/seleniumemulation:scripts",
+    "//java/client/src/com/thoughtworks/selenium/webdriven:scripts",
   ])
 
 java_library(name = "client-combined",

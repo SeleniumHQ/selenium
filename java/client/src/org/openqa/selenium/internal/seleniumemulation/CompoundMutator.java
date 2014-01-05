@@ -19,6 +19,8 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import com.google.common.collect.Lists;
 
+import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
+
 import java.util.List;
 
 /**

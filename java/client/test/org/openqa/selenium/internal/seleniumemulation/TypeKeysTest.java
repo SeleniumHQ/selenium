@@ -19,6 +19,8 @@ package org.openqa.selenium.internal.seleniumemulation;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import com.thoughtworks.selenium.webdriven.ElementFinder;
+
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

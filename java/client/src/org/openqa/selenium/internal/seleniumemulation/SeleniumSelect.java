@@ -19,6 +19,8 @@ package org.openqa.selenium.internal.seleniumemulation;
 import com.google.common.collect.Lists;
 
 import com.thoughtworks.selenium.SeleniumException;
+import com.thoughtworks.selenium.webdriven.ElementFinder;
+import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;

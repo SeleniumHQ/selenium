@@ -6,3 +6,13 @@ java_library(name = "api",
   deps = [
     "//java/client/src/com/thoughtworks/selenium/webdriven:emulation-api",
   ])
+
+
+java_library(name = "commands",
+  srcs = [
+    "SetTimeout.java",
+  ],
+  deps = [
+    ":api",
+  ]
+)

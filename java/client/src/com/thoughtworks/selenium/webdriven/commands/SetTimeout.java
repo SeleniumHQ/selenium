@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-package org.openqa.selenium.internal.seleniumemulation;
+package com.thoughtworks.selenium.webdriven.commands;
 
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import com.thoughtworks.selenium.webdriven.commands.Timer;

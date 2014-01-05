@@ -16,6 +16,7 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import com.thoughtworks.selenium.webdriven.ElementFinder;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.By;
