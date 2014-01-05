@@ -43,10 +43,11 @@ goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 
 
-FirefoxDriver = function(server, enableNativeEvents, win) {
+FirefoxDriver = function(server, enableNativeEvents, win, opt_pageLoadingStrategy) {
   this.server = server;
   this.enableNativeEvents = enableNativeEvents;
   this.window = win;
+  this.pageLoadingStrategy = opt_pageLoadingStrategy || 'normal';
 
   // Default to a two second timeout.
   this.alertTimeout = 2000;

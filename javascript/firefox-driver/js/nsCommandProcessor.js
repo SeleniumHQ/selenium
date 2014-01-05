@@ -39,8 +39,6 @@ goog.require('goog.array');
 goog.require('wdSessionStoreService');
 
 
-var loadStrategy_ = 'conservative';
-
 /**
  * When this component is loaded, load the necessary subscripts.
  */
@@ -186,7 +184,9 @@ DelayedCommand.DEFAULT_SLEEP_DELAY = 100;
  * @param {Number} ms The delay in milliseconds.
  */
 DelayedCommand.prototype.execute = function(ms) {
-  if ('unstable' != loadStrategy_ && !this.yieldedForBackgroundExecution_) {
+  var loadStrategy = Utils.getPageLoadingStrategy();
+  if ('unstable' != loadStrategy && 'eager' != loadStrategy && 'none' != loadStrategy
+      && !this.yieldedForBackgroundExecution_) {
     this.yieldedForBackgroundExecution_ = true;
     fxdriver.profiler.log(
       {'event': 'YIELD_TO_PAGE_LOAD', 'startorend': 'start'});
@@ -203,7 +203,8 @@ DelayedCommand.prototype.execute = function(ms) {
  *     command for a pending request in the current window's nsILoadGroup.
  */
 DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
-  if ('unstable' == loadStrategy_) {
+  var loadStrategy = Utils.getPageLoadingStrategy();
+  if ('unstable' == loadStrategy || 'eager' == loadStrategy && 'none' == loadStrategy) {
     return false;
   }
 
@@ -356,12 +357,6 @@ var nsCommandProcessor = function() {
   // Since we only support 3.0+, this check is enough to see if we're on 3.0
   if (!bot.userAgent.isProductVersion('3.5')) {
     eval(Utils.loadUrl('resource://fxdriver/json2.js'));
-  }
-
-  var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces['nsIPrefBranch']);
-
-  if (prefs.prefHasUserValue('webdriver.load.strategy')) {
-    loadStrategy_ = prefs.getCharPref('webdriver.load.strategy');
   }
 
   this.wrappedJSObject = this;

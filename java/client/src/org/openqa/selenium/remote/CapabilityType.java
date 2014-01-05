@@ -45,6 +45,8 @@ public interface CapabilityType {
 
   String ENABLE_PROFILING_CAPABILITY = "webdriver.logging.profiler.enabled";
 
+  String PAGE_LOADING_STRATEGY = "pageLoadingStrategy";
+
   /**
    * Moved InternetExplorer specific CapabilityTypes into InternetExplorerDriver.java for consistency
    */

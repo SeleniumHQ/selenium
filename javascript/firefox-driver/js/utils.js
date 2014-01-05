@@ -249,6 +249,13 @@ Utils.useNativeEvents = function() {
   return !!(enableNativeEvents && Utils.getNativeEvents());
 };
 
+Utils.getPageLoadingStrategy = function() {
+  var prefs =
+      fxdriver.moz.getService('@mozilla.org/preferences-service;1', 'nsIPrefBranch');
+  return prefs.prefHasUserValue('webdriver.load.strategy') ?
+      prefs.getCharPref('webdriver.load.strategy') : 'normal';
+};
+
 Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseModifiers,
     opt_keysState) {
 
