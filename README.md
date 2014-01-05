@@ -71,6 +71,42 @@ To list all available targets, you can append `-T` as an option:
 ./go -T
 ```
 
+### Buck
+
+Although the plan is to return to a vanilla build of Buck as soon as
+possible, we currently use a fork, hosted at
+https://github.com/shs96c/buck To build using Buck, first clone that
+repo and build using ant. Then add Buck's "bin" directory to your
+PATH. Once that's done...
+
+Obtain a list of all available targets
+
+```sh
+buck targets
+```
+
+Build a particular file:
+
+```sh
+buck build //java/client/src/org/openqa/selenium:webdriver-api
+```
+
+There are aliases for commonly invoked targets in the `.buckconfig`
+file, and these aliases can be invoked directly:
+
+```sh
+buck build htmlunit
+```
+
+All buck output is stored under "buck-out", with the outputs of build
+rules in `buck-out/gen`.
+
+If you are doing a number of incremental builds, then you may want to
+use `buckd`, which starts a long-lived buck process to watch outputs
+and input files. If you do this, consider using `watchman` too, since
+the Java 7 file watcher isn't terribly efficient. This can be cloned
+from https://github.com/facebook/watchman
+
 ## Requirements
 
 * [Java 6 JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
