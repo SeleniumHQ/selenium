@@ -77,7 +77,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NeedsLocalEnvironment
   @Test
   public void testShouldNotWaitForResourcesWithEagerStrategy() {
-    initLocalDriver("unstable");
+    initLocalDriver("eager");
 
     String slowPage = appServer.whereIs("slowLoadingResourcePage.html");
 
@@ -99,7 +99,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NeedsLocalEnvironment
   @Test
   public void testShouldNotWaitForResourcesOnRefreshWithEagerStrategy() {
-    initLocalDriver("unstable");
+    initLocalDriver("eager");
 
     String slowPage = appServer.whereIs("slowLoadingResourcePage.html");
 
