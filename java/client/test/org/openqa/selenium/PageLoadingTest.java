@@ -52,6 +52,7 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
+import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
@@ -79,7 +80,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = {CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
-  public void testShouldNotWaitForPageToLoadWithNoneStrategy() {
+  public void testNoneStrategyShouldNotWaitForPageToLoad() {
     initLocalDriver("none");
 
     String slowPage = appServer.whereIs("sleep?time=5");
@@ -87,8 +88,8 @@ public class PageLoadingTest extends JUnit4TestBase {
     long start = System.currentTimeMillis();
     localDriver.get(slowPage);
     long end = System.currentTimeMillis();
-    long duration = end - start;
 
+    long duration = end - start;
     // The slow loading resource on that page takes 6 seconds to return,
     // but with 'none' page loading strategy 'get' operation should not wait.
     assertTrue("Took too long to load page: " + duration, duration < 1000);
@@ -97,7 +98,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = {CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
-  public void testShouldNotWaitForPageToRefreshWithNoneStrategy() {
+  public void testNoneStrategyShouldNotWaitForPageToRefresh() {
     initLocalDriver("none");
 
     String slowPage = appServer.whereIs("sleep?time=5");
@@ -109,17 +110,17 @@ public class PageLoadingTest extends JUnit4TestBase {
     long start = System.currentTimeMillis();
     localDriver.navigate().refresh();
     long end = System.currentTimeMillis();
-    long duration = end - start;
 
+    long duration = end - start;
     // The slow loading resource on that page takes 6 seconds to return,
     // but with 'none' page loading strategy 'refresh' operation should not wait.
     assertTrue("Took too long to load page: " + duration, duration < 1000);
   }
 
-  @Ignore(value = {CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {FIREFOX, CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
-  public void testShouldNotWaitForResourcesWithEagerStrategy() {
+  public void testEagerStrategyShouldNotWaitForResources() {
     initLocalDriver("eager");
 
     String slowPage = appServer.whereIs("slowLoadingResourcePage.html");
@@ -129,19 +130,18 @@ public class PageLoadingTest extends JUnit4TestBase {
     // We discard the element, but want a check to make sure the GET actually
     // completed.
     localDriver.findElement(By.id("peas"));
-
     long end = System.currentTimeMillis();
+
     // The slow loading resource on that page takes 6 seconds to return. If we
     // waited for it, our load time should be over 6 seconds.
     long duration = end - start;
-
     assertTrue("Took too long to load page: " + duration, duration < 5 * 1000);
   }
 
-  @Ignore(value = {CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @Ignore(value = {FIREFOX, CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
   @NeedsLocalEnvironment
   @Test
-  public void testShouldNotWaitForResourcesOnRefreshWithEagerStrategy() {
+  public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
     initLocalDriver("eager");
 
     String slowPage = appServer.whereIs("slowLoadingResourcePage.html");
@@ -155,15 +155,27 @@ public class PageLoadingTest extends JUnit4TestBase {
     // We discard the element, but want a check to make sure the refresh actually completed.
     localDriver.findElement(By.id("peas"));
     long end = System.currentTimeMillis();
+
     // The slow loading resource on that page takes 6 seconds to return. If we
     // waited for it, our load time should be over 6 seconds.
     long duration = end - start;
-
     assertTrue("Took too long to refresh page: " + duration, duration < 5 * 1000);
   }
 
   @Test
-  public void testShouldWaitForDocumentToBeLoaded() {
+  public void testEagerStrategyShouldWaitForDocumentToBeLoaded() {
+    initLocalDriver("eager");
+
+    String slowPage = appServer.whereIs("sleep?time=3");
+
+    localDriver.get(slowPage);
+
+    // We discard the element, but want a check to make sure the GET actually completed.
+    localDriver.findElement(By.tagName("body"));
+  }
+
+  @Test
+  public void testNormalStrategyShouldWaitForDocumentToBeLoaded() {
     driver.get(pages.simpleTestPage);
 
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
