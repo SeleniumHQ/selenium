@@ -95,6 +95,30 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to load page: " + duration, duration < 5 * 1000);
   }
 
+  @Ignore(value = {CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @NeedsLocalEnvironment
+  @Test
+  public void testShouldNotWaitForResourcesOnRefreshWithEagerStrategy() {
+    initLocalDriver("unstable");
+
+    String slowPage = appServer.whereIs("slowLoadingResourcePage.html");
+
+    localDriver.get(slowPage);
+    // We discard the element, but want a check to make sure the GET actually completed.
+    localDriver.findElement(By.id("peas"));
+
+    long start = System.currentTimeMillis();
+    localDriver.navigate().refresh();
+    // We discard the element, but want a check to make sure the refresh actually completed.
+    localDriver.findElement(By.id("peas"));
+    long end = System.currentTimeMillis();
+    // The slow loading resource on that page takes 6 seconds to return. If we
+    // waited for it, our load time should be over 6 seconds.
+    long duration = end - start;
+
+    assertTrue("Took too long to refresh page: " + duration, duration < 5 * 1000);
+  }
+
   @Test
   public void testShouldWaitForDocumentToBeLoaded() {
     driver.get(pages.simpleTestPage);

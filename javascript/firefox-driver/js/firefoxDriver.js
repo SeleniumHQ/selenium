@@ -672,7 +672,7 @@ FirefoxDriver.prototype.refresh = function(respond) {
   var browser = respond.session.getBrowser();
   browser.contentWindow.location.reload(true);
   // Wait for the reload to finish before sending the response.
-  new WebLoadingListener(respond.session.getBrowser(), function(timedOut) {
+  new WebLoadingListener(browser, function(timedOut) {
     // Reset to the top window.
     respond.session.setWindow(browser.contentWindow);
     if (timedOut) {
@@ -681,7 +681,7 @@ FirefoxDriver.prototype.refresh = function(respond) {
     } else {
       respond.send();
     }
-  }, respond.session.getPageLoadTimeout());
+  }, respond.session.getPageLoadTimeout(), browser.contentWindow);
 };
 
 
