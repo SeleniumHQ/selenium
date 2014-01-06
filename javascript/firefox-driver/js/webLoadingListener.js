@@ -172,9 +172,6 @@ function buildHandler(browser, toCall, opt_window) {
   if ('unstable' == strategy || 'eager' == strategy) {
     return new ImpatientListener(browser, toCall, opt_window);
   }
-  if ('none' == strategy) {
-    return new DoNothing(browser, toCall, opt_window);
-  }
 
   fxdriver.logging.warn('Unsupported page loading strategy: ' + strategy);
   // Fall back to 'normal' strategy
@@ -184,6 +181,12 @@ function buildHandler(browser, toCall, opt_window) {
 var loadingListenerTimer;
 
 WebLoadingListener = function(browser, toCall, timeout, opt_window) {
+  var strategy = Utils.getPageLoadingStrategy();
+  if ('none' == strategy) {
+    toCall(false);
+    return;
+  }
+
   loadingListenerTimer = new fxdriver.Timer();
   var func = function(timedOut) { loadingListenerTimer.cancel(); toCall(timedOut); };
 

@@ -46,6 +46,7 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -60,6 +61,8 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
+import java.util.concurrent.TimeUnit;
+
 public class PageLoadingTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
@@ -71,6 +74,46 @@ public class PageLoadingTest extends JUnit4TestBase {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(CapabilityType.PAGE_LOADING_STRATEGY, strategy);
     localDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+  }
+
+  @Ignore(value = {CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @NeedsLocalEnvironment
+  @Test
+  public void testShouldNotWaitForPageToLoadWithNoneStrategy() {
+    initLocalDriver("none");
+
+    String slowPage = appServer.whereIs("sleep?time=5");
+
+    long start = System.currentTimeMillis();
+    localDriver.get(slowPage);
+    long end = System.currentTimeMillis();
+    long duration = end - start;
+
+    // The slow loading resource on that page takes 6 seconds to return,
+    // but with 'none' page loading strategy 'get' operation should not wait.
+    assertTrue("Took too long to load page: " + duration, duration < 1000);
+  }
+
+  @Ignore(value = {CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})
+  @NeedsLocalEnvironment
+  @Test
+  public void testShouldNotWaitForPageToRefreshWithNoneStrategy() {
+    initLocalDriver("none");
+
+    String slowPage = appServer.whereIs("sleep?time=5");
+
+    localDriver.get(slowPage);
+    // We discard the element, but want a check to make sure the page is loaded
+    waitFor(elementToExist(localDriver, By.tagName("body")), 10, TimeUnit.SECONDS);
+
+    long start = System.currentTimeMillis();
+    localDriver.navigate().refresh();
+    long end = System.currentTimeMillis();
+    long duration = end - start;
+
+    // The slow loading resource on that page takes 6 seconds to return,
+    // but with 'none' page loading strategy 'refresh' operation should not wait.
+    assertTrue("Took too long to load page: " + duration, duration < 1000);
   }
 
   @Ignore(value = {CHROME, IE, OPERA, SAFARI, MARIONETTE, PHANTOMJS, HTMLUNIT})

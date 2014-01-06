@@ -44,6 +44,21 @@ public class WaitingConditions {
     };
   }
 
+  public static Callable<WebElement> elementToExist(
+      final WebDriver driver, final By locator) {
+    return new Callable<WebElement>() {
+
+      public WebElement call() throws Exception {
+        return driver.findElement(locator);
+      }
+
+      @Override
+      public String toString() {
+        return String.format("element with locator %s to exist", locator);
+      }
+    };
+  }
+
   private static abstract class ElementTextComperator implements Callable<String> {
     private String lastText = "";
     private WebElement element;
