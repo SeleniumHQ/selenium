@@ -837,7 +837,7 @@ module Javascript
     MAX_STR_LENGTH_JAVA = MAX_LINE_LENGTH_JAVA - "       .append\(\"\"\)\n".length
     COPYRIGHT =
           "/*\n" +
-          " * Copyright 2011-2012 WebDriver committers\n" +
+          " * Copyright 2011-2014 Software Freedom Conservancy\n" +
           " *\n" +
           " * Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
           " * you may not use this file except in compliance with the License.\n" +
@@ -1050,7 +1050,7 @@ module Javascript
 
     def generate_java(dir, name, task_name, output, js_files, package)
       file output => js_files do
-        task_name =~ /([a-z]+)-driver/
+        task_name =~ /([a-z]+)-(driver|atoms)/
         implementation = $1.capitalize
         output_dir = File.dirname(output)
         mkdir_p output_dir unless File.exists?(output_dir)
