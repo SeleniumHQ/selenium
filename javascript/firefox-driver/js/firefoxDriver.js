@@ -126,11 +126,13 @@ FirefoxDriver.prototype.get = function(respond, parameters) {
   }
 
   if (loadEventExpected) {
-    new WebLoadingListener(respond.session.getBrowser(), function(timedOut) {
+    var browser = respond.session.getBrowser();
+    var topWindow = browser.contentWindow;
+    new WebLoadingListener(browser, function(timedOut) {
       // Focus on the top window.
-      respond.session.setWindow(respond.session.getBrowser().contentWindow);
+      respond.session.setWindow(topWindow);
       if (timedOut) {
-        respond.session.getBrowser().stop();
+        browser.stop();
         respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
             'Timed out waiting for page load.'));
       } else {
@@ -670,18 +672,21 @@ FirefoxDriver.prototype.goForward = function(respond) {
 
 FirefoxDriver.prototype.refresh = function(respond) {
   var browser = respond.session.getBrowser();
-  browser.contentWindow.location.reload(true);
+  var topWindow = browser.contentWindow;
   // Wait for the reload to finish before sending the response.
   new WebLoadingListener(browser, function(timedOut) {
     // Reset to the top window.
-    respond.session.setWindow(browser.contentWindow);
+    respond.session.setWindow(topWindow);
     if (timedOut) {
+      browser.stop();
       respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
           'Timed out waiting for page load.'));
     } else {
       respond.send();
     }
-  }, respond.session.getPageLoadTimeout(), browser.contentWindow);
+  }, respond.session.getPageLoadTimeout(), respond.session.getWindow());
+
+  topWindow.location.reload(true);
 };
 
 
