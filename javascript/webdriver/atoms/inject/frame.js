@@ -68,11 +68,7 @@ webdriver.atoms.inject.frame.findFrameByIndex = function(index, opt_root) {
  *     which is the top window.
  */
 webdriver.atoms.inject.frame.defaultContent = function() {
-  // When calling bot.frame.defaultContent in the injected case,
-  // we don't care about the wrapped window object, so we can
-  // wrap the atom here.
-  return webdriver.atoms.inject.executeScript(
-    function() { bot.frame.defaultContent(); }, []);
+  return webdriver.atoms.inject.executeScript(bot.frame.defaultContent, []);
 };
 
 
