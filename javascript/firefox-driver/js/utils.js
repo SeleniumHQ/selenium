@@ -256,6 +256,24 @@ Utils.getPageLoadingStrategy = function() {
       prefs.getCharPref('webdriver.load.strategy') : 'normal';
 };
 
+Utils.initWebLoadingListener = function(respond, opt_window) {
+  var browser = respond.session.getBrowser();
+  var topWindow = browser.contentWindow;
+  var window = opt_window || topWindow;
+  // Wait for the reload to finish before sending the response.
+  new WebLoadingListener(browser, function(timedOut) {
+    // Reset to the top window.
+    respond.session.setWindow(topWindow);
+    if (timedOut) {
+      browser.stop();
+      respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
+                                           'Timed out waiting for page load.'));
+    } else {
+      respond.send();
+    }
+  }, respond.session.getPageLoadTimeout(), window);
+};
+
 Utils.type = function(doc, element, text, opt_useNativeEvents, jsTimer, releaseModifiers,
     opt_keysState) {
 
