@@ -19,10 +19,8 @@ package org.openqa.selenium;
 
 import org.junit.After;
 import org.junit.Test;
-import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -46,10 +44,10 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -177,14 +175,12 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   public void testNormalStrategyShouldWaitForDocumentToBeLoaded() {
     driver.get(pages.simpleTestPage);
-
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
   }
 
   @Test
   public void testShouldFollowRedirectsSentInTheHttpResponseHeaders() {
     driver.get(pages.redirectPage);
-
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
@@ -192,10 +188,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   public void testShouldFollowMetaRedirects() throws Exception {
     driver.get(pages.metaRedirectPage);
-    new WebDriverWait(driver, 10)
-        .withMessage("Timed out waiting for the page to redirect")
-        .until(titleIs("We Arrive Here"));
-    // OK if we get here.
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
   @Test
@@ -236,8 +229,9 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReturnURLOnNotExistedPage() {
-    driver.get(appServer.whereIs("not_existed_page.html"));
-    assertEquals(appServer.whereIs("not_existed_page.html"), driver.getCurrentUrl());
+    String url = appServer.whereIs("not_existed_page.html");
+    driver.get(url);
+    assertEquals(url, driver.getCurrentUrl());
   }
 
   @Ignore({IPHONE, ANDROID, MARIONETTE})
@@ -277,45 +271,40 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = {ANDROID, SAFARI, MARIONETTE}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
-    WebDriverWait wait = new WebDriverWait(driver, 10);
     driver.get(pages.formPage);
 
     driver.findElement(By.id("imageButton")).submit();
-    wait.withMessage("Timed out waiting for page to load").until(titleIs("We Arrive Here"));
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
 
     driver.navigate().back();
-    wait.withMessage("Timed out waiting to go back").until(titleIs("We Leave From Here"));
+    waitFor(pageTitleToBe(driver, "We Leave From Here"));
   }
 
   @Ignore(value = {SAFARI}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
-    WebDriverWait wait = new WebDriverWait(driver, 10);
     driver.get(pages.xhtmlTestPage);
 
     driver.findElement(By.name("sameWindow")).click();
-
-    wait.withMessage("Timed out waiting for page to load").until(titleIs("This page has iframes"));
+    waitFor(pageTitleToBe(driver, "This page has iframes"));
 
     driver.navigate().back();
-    wait.withMessage("Timed out waiting to go back").until(titleIs("XHTML Test Page"));
+    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
   }
 
   @Ignore(value = {ANDROID, SAFARI, MARIONETTE}, issues = {3771})
   @Test
   public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
-    WebDriverWait wait = new WebDriverWait(driver, 10);
     driver.get(pages.formPage);
 
     driver.findElement(By.id("imageButton")).submit();
-    wait.withMessage("Timed out waiting for submit navigation").until(titleIs("We Arrive Here"));
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
 
     driver.navigate().back();
     waitFor(pageTitleToBe(driver, "We Leave From Here"));
-    wait.withMessage("Timed out waiting to go back").until(titleIs("We Leave From Here"));
 
     driver.navigate().forward();
-    wait.withMessage("Timed out waiting to go forward").until(titleIs("We Arrive Here"));
+    waitFor(pageTitleToBe(driver, "We Arrive Here"));
   }
 
   @Ignore(value = {IE, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, PHANTOMJS},
@@ -323,8 +312,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
     // TODO(user): Set the SSL capability to true.
-    String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
-    driver.get(url);
+    driver.get(appServer.whereIsSecure("simpleTest.html"));
 
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
   }
@@ -340,7 +328,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     WebDriverBuilder builder = new WebDriverBuilder().setRequiredCapabilities(requiredCaps);
     localDriver = builder.get();
 
-    String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
+    String url = appServer.whereIsSecure("simpleTest.html");
     localDriver.get(url);
 
     assertThat(localDriver.getTitle(), not("Hello WebDriver"));
@@ -375,7 +363,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     // If this command succeeds, then all is well.
     WebElement body = driver.findElement(By.tagName("body"));
-    waitFor(WaitingConditions.elementTextToContain(body, "world"));
+    waitFor(elementTextToContain(body, "world"));
   }
 
   @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
