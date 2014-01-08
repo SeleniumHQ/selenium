@@ -20,6 +20,7 @@ package org.openqa.selenium.internal.seleniumemulation;
 /**
  * @deprecated Use {@link com.thoughtworks.selenium.webdriven.FunctionDeclaration} instead.
  */
+@Deprecated
 public class FunctionDeclaration extends com.thoughtworks.selenium.webdriven.FunctionDeclaration {
 
   /**
