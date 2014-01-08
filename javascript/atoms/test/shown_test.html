@@ -340,7 +340,8 @@
 
     function testCanNotSeeElementWithHiddenAttribute() {
       expectedFailures.expectFailureFor(
-          goog.userAgent.IE || bot.userAgent.ANDROID_PRE_GINGERBREAD,
+          (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(11)) ||
+              bot.userAgent.ANDROID_PRE_GINGERBREAD,
           'IE and Android Froyo do not understand hidden attribute');
       var elem = findElement({id: 'html5hidden'});
       expectedFailures.run(function() {
