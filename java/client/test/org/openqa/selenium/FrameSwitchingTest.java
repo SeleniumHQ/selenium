@@ -484,8 +484,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
     for (int i = 0; i < 20; i++) {
       try {
-        WebElement input = driver.findElement(By.id("inputText"));
-        WebElement submit = driver.findElement(By.id("submitButton"));
+        WebElement input = waitFor(elementToExist(driver, "inputText"));
+        WebElement submit = waitFor(elementToExist(driver, "submitButton"));
         input.clear();
         input.sendKeys("rand" + new Random().nextInt());
         submit.click();

@@ -314,7 +314,7 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testHandlesTwoAlertsFromOneInteraction() {
-    driver.findElement(By.id("double-prompt")).click();
+    wait.until(presenceOfElementLocated(By.id("double-prompt"))).click();
 
     Alert alert1 = wait.until(alertIsPresent());
     alert1.sendKeys("brie");
