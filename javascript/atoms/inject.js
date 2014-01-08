@@ -183,7 +183,17 @@ bot.inject.unwrapValue = function(value, opt_doc) {
  */
 bot.inject.recompileFunction_ = function(fn, theWindow) {
   if (goog.isString(fn)) {
-    return new theWindow['Function'](fn);
+    try {
+      return new theWindow['Function'](fn);
+    } catch (ex) {
+      // Try to recover if in IE5-quirks mode
+      // Need to initialize the script engine on the passed-in window
+      if (goog.userAgent.IE && theWindow.execScript) {
+        theWindow.execScript(';');
+        return new theWindow['Function'](fn);
+      }
+      throw ex;
+    }
   }
   return theWindow == window ? fn : new theWindow['Function'](
       'return (' + fn + ').apply(null,arguments);');
@@ -376,7 +386,7 @@ bot.inject.wrapError = function(err) {
         err['code'] : bot.ErrorCode.UNKNOWN_ERROR,
     // TODO: Parse stackTrace
     'value': {
-      'message': err.message
+      'message': err.message + '\n' + (err.stack || '')
     }
   };
 };
