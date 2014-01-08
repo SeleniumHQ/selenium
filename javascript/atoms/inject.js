@@ -386,7 +386,7 @@ bot.inject.wrapError = function(err) {
         err['code'] : bot.ErrorCode.UNKNOWN_ERROR,
     // TODO: Parse stackTrace
     'value': {
-      'message': err.message + '\n' + (err.stack || '')
+      'message': err.message
     }
   };
 };
