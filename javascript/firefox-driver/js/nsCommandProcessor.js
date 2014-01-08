@@ -204,7 +204,7 @@ DelayedCommand.prototype.execute = function(ms) {
  */
 DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
   var loadStrategy = Utils.getPageLoadingStrategy();
-  if ('unstable' == loadStrategy || 'eager' == loadStrategy && 'none' == loadStrategy) {
+  if ('unstable' == loadStrategy || 'eager' == loadStrategy || 'none' == loadStrategy) {
     return false;
   }
 
