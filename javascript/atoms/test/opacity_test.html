@@ -36,7 +36,7 @@
     function testOpacity() {
       var suite = buildTestSuites();
 
-      if(!bot.userAgent.IE_DOC_PRE10) {
+      if(!bot.userAgent.IE_DOC_PRE9) {
         runTestSuite(suite, 'others');
       } else if(bot.userAgent.isEngineVersion(8)) {
         runTestSuite(suite, 'ie8');

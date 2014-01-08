@@ -1247,7 +1247,7 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
  */
 bot.dom.getOpacity = function(elem) {
   // TODO: Does this need to deal with rgba colors?
-  if (!bot.userAgent.IE_DOC_PRE10) {
+  if (!bot.userAgent.IE_DOC_PRE9) {
     return bot.dom.getOpacityNonIE_(elem);
   } else {
     if (bot.dom.getEffectiveStyle(elem, 'position') == 'relative') {
