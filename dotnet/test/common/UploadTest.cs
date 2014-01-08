@@ -29,6 +29,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldAllowFileUploading()
         {
             driver.Url = uploadPage;

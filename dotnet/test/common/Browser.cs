@@ -12,6 +12,7 @@ namespace OpenQA.Selenium
         Remote, 
         IPhone,
         Android,
+        WindowsPhone,
         PhantomJS
     }
 }
