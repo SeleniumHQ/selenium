@@ -37,6 +37,7 @@ goog.require('bot.response.ResponseObject');
 goog.require('goog.array');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
+goog.require('goog.userAgent');
 
 
 /**
