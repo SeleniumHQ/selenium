@@ -131,6 +131,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
           log.log(Level.WARNING, "The client is gone for session " + session + ", terminating");
           registry.terminate(session, SessionTerminationReason.CLIENT_GONE);
         } catch (SocketTimeoutException e){
+          log.log(Level.SEVERE, "Socket timed out for session " + session + ", " + e.getMessage());
           registry.terminate(session, SessionTerminationReason.SO_TIMEOUT);
         } catch (Throwable t) {
           log.log(Level.SEVERE, "cannot forward the request " + t.getMessage(), t);
