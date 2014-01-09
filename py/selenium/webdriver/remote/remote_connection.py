@@ -375,8 +375,13 @@ class RemoteConnection(object):
                 headers["Authorization"] = "Basic %s" % auth
             if body and method != 'POST' and method != 'PUT':
                 body = None
-            self._conn.request(method, parsed_url.path, body, headers)
-            resp = self._conn.getresponse()
+            try:
+                self._conn.request(method, parsed_url.path, body, headers)
+                resp = self._conn.getresponse()
+            except httplib.HTTPException:
+                self._conn.close()
+                raise
+
             statuscode = resp.status
         else:
             password_manager = None
