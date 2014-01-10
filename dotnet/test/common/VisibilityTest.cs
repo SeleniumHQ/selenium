@@ -4,6 +4,7 @@ using System.Text;
 using NUnit.Framework;
 using System.Drawing;
 using OpenQA.Selenium.Environment;
+using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium
 {
@@ -106,7 +107,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        //[IgnoreBrowser(Browser.IE, "Div with size 0 is not interpreted as displayed even if descendent has size")]
         public void ZeroSizedDivIsShownIfDescendantHasSize()
         {
             driver.Url = javascriptPage;
@@ -256,6 +256,66 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "IE does not support the hidden attribute")]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        public void ShouldShowElementNotVisibleWithHiddenAttribute()
+        {
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("hidden.html");
+            driver.Url = url;
+            IWebElement element = driver.FindElement(By.Id("singleHidden"));
+            Assert.IsFalse(element.Displayed);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "IE does not support the hidden attribute")]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        public void ShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute()
+        {
+            string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("hidden.html");
+            driver.Url = url;
+
+            IWebElement element = driver.FindElement(By.Id("child"));
+            Assert.IsFalse(element.Displayed);
+        }
+
+        [Test]
+        public void ShouldBeAbleToClickOnElementsWithOpacityZero()
+        {
+            if (TestUtilities.IsOldIE(driver))
+            {
+                return;
+            }
+
+            driver.Url = clickJackerPage;
+            IWebElement element = driver.FindElement(By.Id("clickJacker"));
+            Assert.AreEqual("0", element.GetCssValue("opacity"), "Precondition failed: clickJacker should be transparent");
+            element.Click();
+            Assert.AreEqual("1", element.GetCssValue("opacity"));
+        }
+
+        [Test]
+        [Category("JavaScript")]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.Opera)]
+        public void ShouldBeAbleToSelectOptionsFromAnInvisibleSelect()
+        {
+            driver.Url = formsPage;
+
+            IWebElement select = driver.FindElement(By.Id("invisi_select"));
+
+            ReadOnlyCollection<IWebElement> options = select.FindElements(By.TagName("option"));
+            IWebElement apples = options[0];
+            IWebElement oranges = options[1];
+
+            Assert.IsTrue(apples.Selected, "Apples should be selected");
+            Assert.IsFalse(oranges.Selected, "Oranges shoudl be selected");
+
+            oranges.Click();
+            Assert.IsFalse(apples.Selected, "Apples should not be selected");
+            Assert.IsTrue(oranges.Selected, "Oranges should be selected");
+        }
+
+        [Test]
         [Category("Javascript")]
         public void CorrectlyDetectMapElementsAreShown()
         {
@@ -265,6 +325,14 @@ namespace OpenQA.Selenium
 
             bool isShown = area.Displayed;
             Assert.IsTrue(isShown, "The element and the enclosing map should be considered shown.");
+        }
+
+        [Test]
+        public void ElementsWithOpacityZeroShouldNotBeVisible()
+        {
+            driver.Url = clickJackerPage;
+            IWebElement element = driver.FindElement(By.Id("clickJacker"));
+            Assert.IsFalse(element.Displayed);
         }
     }
 }

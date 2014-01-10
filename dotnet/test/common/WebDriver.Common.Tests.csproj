@@ -102,7 +102,6 @@
     <Compile Include="ElementSelectingTest.cs" />
     <Compile Include="ErrorsTest.cs" />
     <Compile Include="GetMultipleAttributeTest.cs" />
-    <Compile Include="OpacityTest.cs" />
     <Compile Include="SlowLoadingPageTest.cs" />
     <Compile Include="CorrectEventFiringTest.cs" />
     <Compile Include="DriverElementFindingTest.cs" />

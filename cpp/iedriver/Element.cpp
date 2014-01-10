@@ -92,7 +92,7 @@ int Element::IsDisplayed(bool* result) {
   // N.B., The second argument to the IsDisplayed atom is "ignoreOpacity".
   Script script_wrapper(doc, script_source, 2);
   script_wrapper.AddArgument(this->element_);
-  script_wrapper.AddArgument(true);
+  script_wrapper.AddArgument(false);
   status_code = script_wrapper.Execute();
 
   if (status_code == WD_SUCCESS) {

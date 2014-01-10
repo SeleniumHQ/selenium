@@ -9,6 +9,12 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.39.0.4
+=========
+ * Update call of isDisplayed atom in IE to not ignore opacity. Previously,
+   the driver explicitly ignored opacity for IE, but now takes it into account.
+   Fixes issue #6827.
+
 v2.39.0.3
 =========
  * Updates to JavaScript automation atoms.
