@@ -260,12 +260,16 @@ Utils.initWebLoadingListener = function(respond, opt_window) {
   var browser = respond.session.getBrowser();
   var topWindow = browser.contentWindow;
   var window = opt_window || topWindow;
+  respond.session.setWaitForPageLoad(true);
   // Wait for the reload to finish before sending the response.
-  new WebLoadingListener(browser, function(timedOut) {
+  new WebLoadingListener(browser, function(timedOut, opt_stopWaiting) {
     // Reset to the top window.
     respond.session.setWindow(topWindow);
+    if (opt_stopWaiting) {
+      respond.session.setWaitForPageLoad(false);
+    }
     if (timedOut) {
-      browser.stop();
+      respond.session.setWaitForPageLoad(false);
       respond.sendError(new WebDriverError(bot.ErrorCode.TIMEOUT,
                                            'Timed out waiting for page load.'));
     } else {

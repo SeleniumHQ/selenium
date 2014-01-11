@@ -112,6 +112,12 @@ wdSession.prototype.implicitWait_ = 0;
 wdSession.prototype.pageLoadTimeout_ = -1;
 
 /**
+ * The flag that makes all commands delay until a page to be loaded or page load timeout exceeded.
+ * @private {boolean}
+ */
+wdSession.prototype.waitForPageLoad_ = true;
+
+/**
  * Current position of the mouse cursor, in X,Y coordinates.
  */
 wdSession.prototype.mousePosition_ = {
@@ -348,6 +354,26 @@ wdSession.prototype.getPageLoadTimeout = function() {
 wdSession.prototype.setPageLoadTimeout = function(timeout) {
   this.pageLoadTimeout_ = timeout;
 };
+
+
+/**
+ * @return {boolean} The current page loading wait flag.
+ */
+wdSession.prototype.getWaitForPageLoad = function() {
+  return this.waitForPageLoad_;
+};
+
+
+/**
+ * Set the flag that makes all commands delay until a page to be loaded or page load timeout exceeded..
+ *
+ * @param {boolean} flag The new flag value.
+ */
+wdSession.prototype.setWaitForPageLoad = function(flag) {
+  this.waitForPageLoad_ = flag;
+  fxdriver.logging.info("setWaitForPageLoad " + flag);
+};
+
 
 /**
  * @return {number} the amount of time, in milliseconds, that asynchronous

@@ -45,6 +45,7 @@ import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
@@ -388,7 +389,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
       int duration = (int) (end - start);
       assertThat(duration, greaterThan(2000));
-      assertThat(duration, lessThan(3000));
+      assertThat(duration, lessThan(5000));
 
       // check that after the exception another page can be loaded
 
@@ -428,7 +429,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
       int duration = (int) (end - start);
       assertThat(duration, greaterThan(2000));
-      assertThat(duration, lessThan(3000));
+      assertThat(duration, lessThan(5000));
 
       // check that after the exception another page can be loaded
 
@@ -438,6 +439,40 @@ public class PageLoadingTest extends JUnit4TestBase {
       end = System.currentTimeMillis();
       duration = (int) (end - start);
       assertThat(duration, lessThan(2000));
+
+    } finally {
+      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
+    }
+  }
+
+  @Ignore(value = {ANDROID, CHROME, IPHONE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+          reason = "Not implemented; Safari: see issue 687, comment 41",
+          issues = {687})
+  @NeedsLocalEnvironment
+  @Test
+  public void testShouldNotStopLoadingPageAfterTimeout() {
+    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+
+    // Get the sleeping servlet with a pause of 5 seconds
+    String slowPage = appServer.whereIs("sleep?time=5");
+
+    long start = System.currentTimeMillis();
+    try {
+      driver.get(slowPage);
+      fail("I should have timed out");
+    } catch (RuntimeException e) {
+      long end = System.currentTimeMillis();
+
+      assertThat(e, is(instanceOf(TimeoutException.class)));
+
+      int duration = (int) (end - start);
+      assertThat(duration, greaterThan(2000));
+      assertThat(duration, lessThan(5000));
+
+      waitFor(elementTextToEqual(driver, By.tagName("body"), "Slept for 5s"));
+      end = System.currentTimeMillis();
+      duration = (int) (end - start);
+      assertThat(duration, greaterThan(5000));
 
     } finally {
       driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);

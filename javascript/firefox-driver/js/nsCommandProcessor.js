@@ -184,9 +184,7 @@ DelayedCommand.DEFAULT_SLEEP_DELAY = 100;
  * @param {Number} ms The delay in milliseconds.
  */
 DelayedCommand.prototype.execute = function(ms) {
-  var loadStrategy = Utils.getPageLoadingStrategy();
-  if ('unstable' != loadStrategy && 'eager' != loadStrategy && 'none' != loadStrategy
-      && !this.yieldedForBackgroundExecution_) {
+  if (this.response_.session.getWaitForPageLoad() && !this.yieldedForBackgroundExecution_) {
     this.yieldedForBackgroundExecution_ = true;
     fxdriver.profiler.log(
       {'event': 'YIELD_TO_PAGE_LOAD', 'startorend': 'start'});
@@ -203,8 +201,7 @@ DelayedCommand.prototype.execute = function(ms) {
  *     command for a pending request in the current window's nsILoadGroup.
  */
 DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
-  var loadStrategy = Utils.getPageLoadingStrategy();
-  if ('unstable' == loadStrategy || 'eager' == loadStrategy || 'none' == loadStrategy) {
+  if (!this.response_.session.getWaitForPageLoad()) {
     return false;
   }
 
@@ -501,6 +498,19 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
     fxdriver.logging.error('Unknown command: ' + command.name);
     return;
   }
+
+  if(command.name == 'get') {
+    response.session.setWaitForPageLoad(false);
+  }
+
+  // TODO: should we delay commands if the page is reloaded on itself?
+//  var pageLoadingTimeout = response.session.getPageLoadTimeout();
+//  var shouldWaitForPageLoad = response.session.getWaitForPageLoad();
+//  if (pageLoadingTimeout != 0 && shouldWaitForPageLoad) {
+//    driver.window.setTimeout(function () {
+//      response.session.setWaitForPageLoad(false);
+//    }, pageLoadingTimeout);
+//  }
 
   response.startCommand(sessionWindow);
   new DelayedCommand(driver, command, response).execute(0);

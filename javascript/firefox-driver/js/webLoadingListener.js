@@ -202,7 +202,7 @@ var loadingListenerTimer;
 WebLoadingListener = function(browser, toCall, timeout, opt_window) {
   var strategy = Utils.getPageLoadingStrategy();
   if ('none' == strategy) {
-    toCall(false);
+    toCall(false, true);
     return;
   }
 
