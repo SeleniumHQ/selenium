@@ -437,8 +437,7 @@ nsCommandProcessor.prototype.execute = function(jsonCommandString,
 
   fxdriver.logging.info('Received command: ' + command.name);
 
-  if (command.name == 'deleteSession' ||
-      command.name == 'getSessionCapabilities' ||
+  if (command.name == 'getSessionCapabilities' ||
       command.name == 'switchToWindow' ||
       command.name == 'getLog' ||
       command.name == 'getAvailableLogTypes') {
@@ -758,19 +757,6 @@ nsCommandProcessor.prototype.getSessionCapabilities = function(response) {
     }
   }
 
-  response.send();
-};
-
-
-/**
- * Deletes the session associated with the current request.
- * @param {Response} response The object to send the command response in.
- */
-nsCommandProcessor.prototype.deleteSession = function(response) {
-  var sessionStore = Components.
-      classes['@googlecode.com/webdriver/wdsessionstoreservice;1'].
-      getService(Components.interfaces.nsISupports);
-  sessionStore.wrappedJSObject.deleteSession(response.session.getId());
   response.send();
 };
 
