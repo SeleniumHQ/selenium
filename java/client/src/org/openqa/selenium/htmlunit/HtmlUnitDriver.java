@@ -1308,6 +1308,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       if (lastPage() instanceof HtmlPage) {
         try {
           ((HtmlPage) lastPage()).refresh();
+        } catch (SocketTimeoutException e) {
+          throw new TimeoutException(e);
         } catch (IOException e) {
           throw new WebDriverException(e);
         }

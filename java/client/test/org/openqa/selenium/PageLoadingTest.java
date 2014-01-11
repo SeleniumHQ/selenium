@@ -445,7 +445,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {ANDROID, CHROME, IPHONE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
+  @Ignore(value = {ANDROID, CHROME, HTMLUNIT, IPHONE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
   @NeedsLocalEnvironment
