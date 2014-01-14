@@ -400,9 +400,9 @@ class RemoteConnection(object):
                                               "%s://%s" % (parsed_url.scheme, netloc),
                                               parsed_url.username,
                                               parsed_url.password)
-                request = Request(cleaned_url, data=data.encode('utf-8'), method=method)
+                request = Request(cleaned_url, data=body.encode('utf-8'), method=method)
             else:
-                request = Request(url, data=data.encode('utf-8'), method=method)
+                request = Request(url, data=body.encode('utf-8'), method=method)
 
             request.add_header('Accept', 'application/json')
             request.add_header('Content-Type', 'application/json;charset=UTF-8')
