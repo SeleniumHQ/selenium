@@ -17,14 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
+
 import org.junit.Test;
 import org.openqa.selenium.security.UserAndPassword;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import static org.junit.Assert.assertEquals;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.alertToBePresent;
 
 @Ignore
 public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
@@ -34,7 +33,7 @@ public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
     String url = appServer.whereIs("basicAuth");
     driver.get(url);
 
-    Alert alert = waitFor(alertToBePresent(driver));
+    Alert alert = wait.until(alertIsPresent());
 
     UserAndPassword user = new UserAndPassword("test", "test");
 

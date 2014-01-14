@@ -17,6 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
+import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.Ignore.Driver.ALL;
+import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
+import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
+import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
+
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -26,26 +44,7 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import java.util.Random;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementToExist;
-import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
-import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
-import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-
 public class FrameSwitchingTest extends JUnit4TestBase {
-
-  private static final int TIMEOUT = 4000;
 
   @After
   public void tearDown() throws Exception {
@@ -286,13 +285,13 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     // TODO(simon): this should not be needed, and is only here because IE's submit returns too
     // soon.
 
-    waitFor(WaitingConditions.elementTextToEqual(driver, By.xpath("//p"), "Success!"));
+    wait.until(WaitingConditions.elementTextToEqual(By.xpath("//p"), "Success!"));
   }
 
   @Ignore(value = {ANDROID, OPERA, OPERA_MOBILE, MARIONETTE},
           reason = "Android does not detect that the select frame has disappeared")
   @Test
-  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage()
+  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage()
       throws Exception {
     driver.get(pages.framesetPage);
 
@@ -301,8 +300,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
     String expectedTitle = "XHTML Test Page";
 
-    waitFor(pageTitleToBe(driver, expectedTitle));
-    waitFor(elementToExist(driver, "only-exists-on-xhtmltest"));
+    wait.until(titleIs(expectedTitle));
+    wait.until(presenceOfElementLocated(By.id("only-exists-on-xhtmltest")));
   }
 
   @Ignore(ANDROID)
@@ -331,7 +330,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   public String getTextOfGreetingElement() {
-    return waitFor(elementToExist(driver, "greeting")).getText();
+    return wait.until(presenceOfElementLocated(By.id("greeting"))).getText();
   }
 
   @Ignore({OPERA, ANDROID, OPERA_MOBILE, MARIONETTE})
@@ -358,7 +357,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     driver.switchTo().frame("search");
     driver.findElement(By.id("submit")).click();
     driver.switchTo().defaultContent();
-    waitFor(pageTitleToBe(driver, "Target page for issue 5237"));
+    wait.until(titleIs("Target page for issue 5237"));
   }
 
   @Ignore({OPERA, ANDROID, OPERA_MOBILE, MARIONETTE})
@@ -422,16 +421,16 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     killIframe.click();
     driver.switchTo().defaultContent();
 
-    assertFrameNotPresent(driver, "iframe1");
+    assertFrameNotPresent("iframe1");
 
     WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
     addIFrame.click();
-    waitFor(elementToExist(driver, "iframe1"));
+    wait.until(presenceOfElementLocated(By.id("iframe1")));
 
     driver.switchTo().frame("iframe1");
 
     try {
-      waitFor(elementToExist(driver, "success"));
+      wait.until(presenceOfElementLocated(By.id("success")));
     } catch (WebDriverException web) {
       fail("Could not find element after switching frame");
     }
@@ -480,12 +479,12 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     String baseUrl = appServer.whereIs("frame_switching_tests/");
     driver.get(baseUrl + "bug4876.html");
     driver.switchTo().frame(0);
-    waitFor(elementToExist(driver, "inputText"));
+    wait.until(presenceOfElementLocated(By.id("inputText")));
 
     for (int i = 0; i < 20; i++) {
       try {
-        WebElement input = waitFor(elementToExist(driver, "inputText"));
-        WebElement submit = waitFor(elementToExist(driver, "submitButton"));
+        WebElement input = wait.until(presenceOfElementLocated(By.id("inputText")));
+        WebElement submit = wait.until(presenceOfElementLocated(By.id("submitButton")));
         input.clear();
         input.sendKeys("rand" + new Random().nextInt());
         submit.click();
@@ -500,20 +499,9 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  private void assertFrameNotPresent(WebDriver driver, String locator) {
-    long end = System.currentTimeMillis() + TIMEOUT;
-
-    while (System.currentTimeMillis() < end) {
-      try {
-        driver.switchTo().frame(locator);
-      } catch (NoSuchFrameException e) {
-        return;
-      } finally {
-        driver.switchTo().defaultContent();
-      }
-    }
-
-    fail("Frame did not disappear");
+  private void assertFrameNotPresent(String locator) {
+    driver.switchTo().defaultContent();
+    wait.until(not(frameToBeAvailableAndSwitchToIt(locator)));
+    driver.switchTo().defaultContent();
   }
-
 }

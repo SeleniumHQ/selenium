@@ -17,23 +17,27 @@ limitations under the License.
 
 package org.openqa.grid.e2e.utils;
 
-import org.openqa.selenium.TestWaiter;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import com.google.common.base.Function;
 
 import org.openqa.grid.internal.Registry;
-
-import java.util.concurrent.Callable;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 public class RegistryTestHelper {
 
+  private RegistryTestHelper() {
+    // Utility class
+  }
+
   /**
    * Wait for the registry to have exactly nodeNumber nodes registered.
-   * 
-   * @param r
-   * @param nodeNumber
    */
   public static void waitForNode(final Registry r, final int nodeNumber) {
-    TestWaiter.waitFor(new Callable<Integer>() {
-      public Integer call() throws Exception {
+    newWait().until(new Function<Object, Integer>() {
+      @Override
+      public Integer apply(Object input) {
         Integer i = r.getAllProxies().size();
         if (i != nodeNumber) {
           return null;
@@ -46,8 +50,9 @@ public class RegistryTestHelper {
 
 
   public static void waitForActiveTestSessionCount(final Registry r, final int activeTestSesssions) {
-    TestWaiter.waitFor(new Callable<Integer>() {
-      public Integer call() throws Exception {
+    newWait().until(new Function<Object, Integer>() {
+      @Override
+      public Integer apply(Object input) {
         Integer i = r.getActiveSessions().size();
         if (i != activeTestSesssions) {
           return null;
@@ -59,8 +64,9 @@ public class RegistryTestHelper {
   }
 
   public static void waitForNewSessionRequestCount(final Registry r, final int newSessionRequestCount) {
-    TestWaiter.waitFor(new Callable<Integer>() {
-      public Integer call() throws Exception {
+    newWait().until(new Function<Object, Integer>() {
+      @Override
+      public Integer apply(Object input) {
         Integer i = r.getNewSessionRequestCount();
         if (i != newSessionRequestCount) {
           return null;
@@ -69,5 +75,9 @@ public class RegistryTestHelper {
         }
       }
     });
+  }
+
+  private static Wait<Object> newWait() {
+    return new FluentWait<Object>("").withTimeout(30, SECONDS);
   }
 }

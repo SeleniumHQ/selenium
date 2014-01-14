@@ -16,15 +16,15 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
+import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 import java.util.concurrent.Callable;
 
@@ -82,7 +82,7 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
 
     driver.findElement(By.id("delete")).click();
 
-    boolean wasStale = waitFor(elementToBeStale(toBeDeleted));
+    boolean wasStale = wait.until(stalenessOf(toBeDeleted));
     assertTrue("Element should be stale at this point", wasStale);
   }
 

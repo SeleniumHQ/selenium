@@ -17,21 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.SauceDriver;
-
-import java.util.concurrent.Callable;
-import java.util.logging.Logger;
-
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
@@ -39,6 +29,15 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
+import org.junit.Test;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.SauceDriver;
+
+import java.util.logging.Logger;
 
 @Ignore(value = {ANDROID, IPHONE, OPERA, OPERA_MOBILE, MARIONETTE},
         reason = "Not yet implemented.")
@@ -109,8 +108,8 @@ public class WindowTest extends JUnit4TestBase {
       Point targetPosition = new Point(position.x + 10, position.y + 10);
       window.setPosition(targetPosition);
 
-      waitFor(xEqual(driver, targetPosition));
-      waitFor(yEqual(driver, targetPosition));
+      wait.until(xEqual(targetPosition));
+      wait.until(yEqual(targetPosition));
     } finally {
       window.setSize(originalSize);
     }
@@ -167,8 +166,8 @@ public class WindowTest extends JUnit4TestBase {
     WebDriver.Window window = driver.manage().window();
 
     window.setSize(targetSize);
-    waitFor(windowHeightToEqual(driver,targetSize));
-    waitFor(windowWidthToEqual(driver, targetSize));
+
+    wait.until(windowSizeEqual(targetSize));
   }
 
   private void maximize() {
@@ -177,38 +176,24 @@ public class WindowTest extends JUnit4TestBase {
     Dimension size = window.getSize();
 
     window.maximize();
-    waitFor(windowWidthToBeGreaterThan(driver, size));
-    waitFor(windowHeightToBeGreaterThan(driver, size));
+    wait.until(windowWidthToBeGreaterThan(size));
+    wait.until(windowHeightToBeGreaterThan(size));
   }
 
-  private Callable<Boolean> windowWidthToEqual(final WebDriver driver, final Dimension size) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
+  private ExpectedCondition<Boolean> windowSizeEqual(final Dimension size) {
+    return new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
         Dimension newSize = driver.manage().window().getSize();
-        if(newSize.width == size.width) {
-          return true;
-        }
-        return null;
+
+        return newSize.height == size.height &&
+               newSize.width == size.width;
       }
     };
   }
 
-  private Callable<Boolean> windowHeightToEqual(final WebDriver driver, final Dimension size) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
-        Dimension newSize = driver.manage().window().getSize();
-        if(newSize.height == size.height) {
-          return true;
-        }
-
-        return null;
-      }
-    };
-  }
-
-  private Callable<Boolean> windowWidthToBeGreaterThan(final WebDriver driver, final Dimension size) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
+  private ExpectedCondition<Boolean> windowWidthToBeGreaterThan(final Dimension size) {
+    return new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
         Dimension newSize = driver.manage().window().getSize();
         log.info("waiting for width, Current dimensions are " + newSize);
         if(newSize.width != size.width) {
@@ -220,9 +205,10 @@ public class WindowTest extends JUnit4TestBase {
     };
   }
 
-  private Callable<Boolean> windowHeightToBeGreaterThan(final WebDriver driver, final Dimension size) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
+  private ExpectedCondition<Boolean> windowHeightToBeGreaterThan(final Dimension size) {
+    return new ExpectedCondition<Boolean>() {
+      @Override
+      public Boolean apply(WebDriver driver) {
         Dimension newSize = driver.manage().window().getSize();
         log.info("waiting for height, Current dimensions are " + newSize);
         if(newSize.height != size.height) {
@@ -233,9 +219,9 @@ public class WindowTest extends JUnit4TestBase {
       }
     };
   }
-  private Callable<Boolean> xEqual(final WebDriver driver, final Point targetPosition) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
+  private ExpectedCondition<Boolean> xEqual(final Point targetPosition) {
+    return new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
         Point newPosition = driver.manage().window().getPosition();
         if(newPosition.x == targetPosition.x) {
           return true;
@@ -245,9 +231,11 @@ public class WindowTest extends JUnit4TestBase {
       }
     };
   }
-  private Callable<Boolean> yEqual(final WebDriver driver, final Point targetPosition) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
+
+  private ExpectedCondition<Boolean> yEqual(final Point targetPosition) {
+    return new ExpectedCondition<Boolean>() {
+      @Override
+      public Boolean apply(WebDriver driver) {
         Point newPosition = driver.manage().window().getPosition();
         if(newPosition.y == targetPosition.y) {
           return true;

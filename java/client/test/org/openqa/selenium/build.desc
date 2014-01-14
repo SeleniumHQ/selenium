@@ -29,7 +29,6 @@ java_library(name = "base",
     "StubElement.java",
     "StubTargetLocator.java",
     "StubRenderedWebElement.java",
-    "TestWaiter.java",
     "WaitingConditions.java",
   ],
   embedded = [

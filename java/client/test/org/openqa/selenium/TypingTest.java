@@ -25,7 +25,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.ALL;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
@@ -626,7 +625,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is(""));
 
     element.sendKeys(Keys.CONTROL, "v");
-    waitFor(elementValueToEqual(element, paste));
+    wait.until(elementValueToEqual(element, paste));
 
     // Cut the last 3 letters.
     element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT +

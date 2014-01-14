@@ -18,19 +18,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -40,6 +34,12 @@ import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
+import org.junit.Test;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
 
 @Ignore(value = {ANDROID, HTMLUNIT}, reason = "Android: Race condition when click returns, "
     + "the UI did not finish scrolling..\nHtmlUnit: Scrolling requires rendering")
@@ -100,7 +100,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("scrolling_tests/page_with_double_overflow_auto.html"));
 
     driver.findElement(By.id("link")).click();
-    waitFor(WaitingConditions.pageTitleToBe(driver, "Clicked Successfully!"));
+    wait.until(titleIs("Clicked Successfully!"));
   }
 
   @JavascriptEnabled
@@ -110,7 +110,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("scrolling_tests/page_with_y_overflow_auto.html"));
 
     driver.findElement(By.id("link")).click();
-    waitFor(WaitingConditions.pageTitleToBe(driver, "Clicked Successfully!"));
+    wait.until(titleIs("Clicked Successfully!"));
   }
 
   @JavascriptEnabled

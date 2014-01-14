@@ -29,7 +29,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
-import static org.openqa.selenium.TestWaiter.waitFor;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
@@ -209,7 +208,7 @@ public class TextHandlingTest extends JUnit4TestBase {
     WebElement textarea = driver.findElement(By.id("withText"));
     textarea.clear();
 
-    waitFor(WaitingConditions.elementValueToEqual(textarea, ""));
+    wait.until(WaitingConditions.elementValueToEqual(textarea, ""));
 
     String expectedText = "i like cheese" + newLine + newLine + "it's really nice";
 

@@ -17,8 +17,13 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
-import java.util.concurrent.Callable;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.google.common.base.Function;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -28,17 +33,15 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import static org.openqa.selenium.TestWaiter.waitFor;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 public class NodeGoingDownAndUpTest {
 
   private static Hub hub;
   private static Registry registry;
   private static SelfRegisteringRemote remote;
+  private static Wait<Object> wait = new FluentWait<Object>("").withTimeout(30, SECONDS);
 
   @BeforeClass
   public static void prepare() throws Exception {
@@ -67,7 +70,7 @@ public class NodeGoingDownAndUpTest {
   public void markdown() throws Exception {
     // should be up
     for (RemoteProxy proxy : registry.getAllProxies()) {
-      waitFor(isUp((DefaultRemoteProxy) proxy));
+      wait.until(isUp((DefaultRemoteProxy) proxy));
     }
 
     // killing the nodes
@@ -75,7 +78,7 @@ public class NodeGoingDownAndUpTest {
 
     // should be down
     for (RemoteProxy proxy : registry.getAllProxies()) {
-      waitFor(isDown((DefaultRemoteProxy) proxy));
+      wait.until(isDown((DefaultRemoteProxy) proxy));
     }
 
     // and back up
@@ -83,21 +86,23 @@ public class NodeGoingDownAndUpTest {
 
     // should be up
     for (RemoteProxy proxy : registry.getAllProxies()) {
-      waitFor(isUp((DefaultRemoteProxy) proxy));
+      wait.until(isUp((DefaultRemoteProxy) proxy));
     }
   }
 
-  private Callable<Boolean> isUp(final DefaultRemoteProxy proxy) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
-        return ! proxy.isDown();
+  private Function<Object, Boolean> isUp(final DefaultRemoteProxy proxy) {
+    return new Function<Object, Boolean>() {
+      @Override
+      public Boolean apply(Object input) {
+        return !proxy.isDown();
       }
     };
   }
 
-  private Callable<Boolean> isDown(final DefaultRemoteProxy proxy) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
+  private Function<Object, Boolean> isDown(final DefaultRemoteProxy proxy) {
+    return new Function<Object, Boolean>() {
+      @Override
+      public Boolean apply(Object input) {
         return proxy.isDown();
       }
     };

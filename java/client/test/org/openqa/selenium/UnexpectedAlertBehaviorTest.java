@@ -19,9 +19,6 @@ package org.openqa.selenium;
 
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
-
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
@@ -36,8 +33,9 @@ import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 import org.junit.After;
 import org.junit.Test;
-
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
@@ -125,7 +123,8 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
       driver2.findElement(By.id("text")).getText();
     } catch (UnhandledAlertException expected) {
     }
-    waitFor(elementTextToEqual(driver2, By.id("text"), expectedAlertText));
+
+    waitFor(driver2, WaitingConditions.elementTextToEqual(By.id("text"), expectedAlertText));
   }
 
 }

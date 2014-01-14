@@ -17,18 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.After;
-import org.junit.Test;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.SauceDriver;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
@@ -43,12 +31,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.WaitingConditions.elementToExist;
-import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
@@ -61,7 +48,18 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
-import java.util.concurrent.TimeUnit;
+import org.junit.After;
+import org.junit.Test;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.SauceDriver;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 public class PageLoadingTest extends JUnit4TestBase {
 
@@ -104,7 +102,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     localDriver.get(slowPage);
     // We discard the element, but want a check to make sure the page is loaded
-    waitFor(elementToExist(localDriver, By.tagName("body")), 10, TimeUnit.SECONDS);
+    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.tagName("body")));
 
     long start = System.currentTimeMillis();
     localDriver.navigate().refresh();
@@ -189,7 +187,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   public void testShouldFollowMetaRedirects() throws Exception {
     driver.get(pages.metaRedirectPage);
-    waitFor(pageTitleToBe(driver, "We Arrive Here"));
+    wait.until(titleIs("We Arrive Here"));
   }
 
   @Test
@@ -275,10 +273,10 @@ public class PageLoadingTest extends JUnit4TestBase {
     driver.get(pages.formPage);
 
     driver.findElement(By.id("imageButton")).submit();
-    waitFor(pageTitleToBe(driver, "We Arrive Here"));
+    wait.until(titleIs("We Arrive Here"));
 
     driver.navigate().back();
-    waitFor(pageTitleToBe(driver, "We Leave From Here"));
+    wait.until(titleIs("We Leave From Here"));
   }
 
   @Ignore(value = {SAFARI}, issues = {3771})
@@ -287,10 +285,10 @@ public class PageLoadingTest extends JUnit4TestBase {
     driver.get(pages.xhtmlTestPage);
 
     driver.findElement(By.name("sameWindow")).click();
-    waitFor(pageTitleToBe(driver, "This page has iframes"));
+    wait.until(titleIs("This page has iframes"));
 
     driver.navigate().back();
-    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
+    wait.until(titleIs("XHTML Test Page"));
   }
 
   @Ignore(value = {ANDROID, SAFARI, MARIONETTE}, issues = {3771})
@@ -299,13 +297,13 @@ public class PageLoadingTest extends JUnit4TestBase {
     driver.get(pages.formPage);
 
     driver.findElement(By.id("imageButton")).submit();
-    waitFor(pageTitleToBe(driver, "We Arrive Here"));
+    wait.until(titleIs("We Arrive Here"));
 
     driver.navigate().back();
-    waitFor(pageTitleToBe(driver, "We Leave From Here"));
+    wait.until(titleIs("We Leave From Here"));
 
     driver.navigate().forward();
-    waitFor(pageTitleToBe(driver, "We Arrive Here"));
+    wait.until(titleIs("We Arrive Here"));
   }
 
   @Ignore(value = {IE, IPHONE, OPERA, ANDROID, SAFARI, OPERA_MOBILE, PHANTOMJS},
@@ -364,7 +362,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     // If this command succeeds, then all is well.
     WebElement body = driver.findElement(By.tagName("body"));
-    waitFor(elementTextToContain(body, "world"));
+    wait.until(elementTextToContain(body, "world"));
   }
 
   @Ignore(value = {ANDROID, IPHONE, OPERA, SAFARI, OPERA_MOBILE, MARIONETTE},
@@ -469,7 +467,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration, greaterThan(2000));
       assertThat(duration, lessThan(5000));
 
-      waitFor(elementTextToEqual(driver, By.tagName("body"), "Slept for 5s"));
+      wait.until(elementTextToEqual(By.tagName("body"), "Slept for 5s"));
       end = System.currentTimeMillis();
       duration = (int) (end - start);
       assertThat(duration, greaterThan(5000));

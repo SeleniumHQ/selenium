@@ -26,7 +26,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
@@ -54,13 +53,13 @@ public class SvgElementTest extends JUnit4TestBase {
     groupElements.get(1).click();
     WebElement resultElement = driver.findElement(By.id("result"));
 
-    waitFor(elementTextToEqual(resultElement, "slice_red"));
+    wait.until(elementTextToEqual(resultElement, "slice_red"));
     assertEquals("slice_red", resultElement.getText());
 
     groupElements.get(2).click();
     resultElement = driver.findElement(By.id("result"));
 
-    waitFor(elementTextToEqual(resultElement, "slice_green"));
+    wait.until(elementTextToEqual(resultElement, "slice_green"));
     assertEquals("slice_green", resultElement.getText());
   }
 
@@ -89,7 +88,7 @@ public class SvgElementTest extends JUnit4TestBase {
 
     appleElement.click();
     WebElement resultElement = driver.findElement(By.id("result"));
-    waitFor(elementTextToEqual(resultElement, "text_apple"));
+    wait.until(elementTextToEqual(resultElement, "text_apple"));
     assertEquals("text_apple", resultElement.getText());
   }
 

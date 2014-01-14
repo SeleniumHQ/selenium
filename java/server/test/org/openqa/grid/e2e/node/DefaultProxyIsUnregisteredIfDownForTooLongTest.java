@@ -17,6 +17,15 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import com.google.common.base.Function;
+import com.google.common.base.Throwables;
+
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -26,16 +35,10 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.junit.Assert;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.openqa.selenium.support.ui.FluentWait;
 
 import java.util.Iterator;
 import java.util.concurrent.Callable;
-
-import static org.openqa.selenium.TestWaiter.waitFor;
 
 public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
 
@@ -136,5 +139,19 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
   @AfterClass
   public static void tearDown() throws Exception {
     hub.stop();
+  }
+
+  private <V> void waitFor(final Callable<V> thing) {
+    new FluentWait<Object>("").withTimeout(30, SECONDS).until(new Function<Object, V>() {
+
+      @Override
+      public V apply(Object input) {
+        try {
+          return thing.call();
+        } catch (Exception e) {
+          throw Throwables.propagate(e);
+        }
+      }
+    });
   }
 }

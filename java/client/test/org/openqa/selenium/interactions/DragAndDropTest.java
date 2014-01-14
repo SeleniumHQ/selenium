@@ -17,31 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoDriverAfterTest;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.Browser;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.TestWaiter.waitFor;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
-import static org.openqa.selenium.WaitingConditions.elementToExist;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -52,6 +34,23 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoDriverAfterTest;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.drivers.Browser;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Ignore(
     value = {ANDROID, HTMLUNIT, IPHONE, SAFARI, OPERA_MOBILE, MARIONETTE},
@@ -71,13 +70,13 @@ public class DragAndDropTest extends JUnit4TestBase {
     WebElement img = driver.findElement(By.id("test1"));
     Point expectedLocation = img.getLocation();
     drag(img, expectedLocation, 150, 200);
-    waitFor(elementLocationToBe(img, expectedLocation));
+    wait.until(elementLocationToBe(img, expectedLocation));
     drag(img, expectedLocation, -50, -25);
-    waitFor(elementLocationToBe(img, expectedLocation));
+    wait.until(elementLocationToBe(img, expectedLocation));
     drag(img, expectedLocation, 0, 0);
-    waitFor(elementLocationToBe(img, expectedLocation));
+    wait.until(elementLocationToBe(img, expectedLocation));
     drag(img, expectedLocation, 1, -1);
-    waitFor(elementLocationToBe(img, expectedLocation));
+    wait.until(elementLocationToBe(img, expectedLocation));
   }
 
   @JavascriptEnabled
@@ -100,7 +99,7 @@ public class DragAndDropTest extends JUnit4TestBase {
     ((JavascriptExecutor) driver).executeScript("arguments[0].src = arguments[1]", iframe,
                                                 pages.dragAndDropPage);
     driver.switchTo().frame(0);
-    WebElement img1 = waitFor(elementToExist(driver, "test1"));
+    WebElement img1 = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("test1")));
     WebElement img2 = driver.findElement(By.id("test2"));
     new Actions(driver).dragAndDrop(img2, img1).perform();
     assertEquals(img1.getLocation(), img2.getLocation());

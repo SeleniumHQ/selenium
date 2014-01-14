@@ -17,22 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.TestWaiter.waitFor;
+import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Ignore.Driver.IE;
@@ -42,6 +35,13 @@ import static org.openqa.selenium.testing.Ignore.Driver.OPERA;
 import static org.openqa.selenium.testing.Ignore.Driver.OPERA_MOBILE;
 import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+
+import java.util.List;
 
 public class VisibilityTest extends JUnit4TestBase {
 
@@ -91,7 +91,7 @@ public class VisibilityTest extends JUnit4TestBase {
 
     element.click();
 
-    waitFor(elementNotToDisplayed(element));
+    wait.until(not(visibilityOf(element)));
 
     assertFalse(element.isDisplayed());
   }
@@ -148,15 +148,6 @@ public class VisibilityTest extends JUnit4TestBase {
     assertEquals("Should have 0 width", 0, size.width);
     assertEquals("Should have 0 height", 0, size.height);
     assertTrue(element.isDisplayed());
-  }
-
-  private Callable<Boolean> elementNotToDisplayed(final WebElement element) {
-    return new Callable<Boolean>() {
-
-      public Boolean call() throws Exception {
-        return !element.isDisplayed();
-      }
-    };
   }
 
   @Test

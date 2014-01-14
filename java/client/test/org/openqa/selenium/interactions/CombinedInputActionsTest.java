@@ -16,30 +16,14 @@ limitations under the License.
 
 package org.openqa.selenium.interactions;
 
-import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WaitingConditions;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.TestUtilities;
-
-import java.util.List;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.TestWaiter.waitFor;
-import static org.openqa.selenium.WaitingConditions.elementToExist;
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.WaitingConditions.pageTitleToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Ignore.Driver.ANDROID;
 import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
 import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
@@ -55,6 +39,21 @@ import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
+
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WaitingConditions;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
+
+import java.util.List;
 
 /**
  * Tests combined input actions.
@@ -185,14 +184,14 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   private void navigateToClicksPageAndClickLink() {
     driver.get(pages.clicksPage);
 
-    waitFor(elementToExist(driver, "normal"));
+    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("normal")));
     WebElement link = driver.findElement(By.id("normal"));
 
     new Actions(driver)
         .click(link)
         .perform();
 
-    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
+    wait.until(titleIs("XHTML Test Page"));
   }
 
   @Ignore({IPHONE})
@@ -208,7 +207,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);
 
-    waitFor(elementToExist(driver, "normal"));
+    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("normal")));
     WebElement link = driver.findElement(By.id("normal"));
 
     new Actions(driver)
@@ -216,7 +215,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .click()
         .perform();
 
-    waitFor(pageTitleToBe(driver, "XHTML Test Page"));
+    wait.until(titleIs("XHTML Test Page"));
   }
 
   /**
@@ -235,7 +234,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .click()
         .perform();
 
-    waitFor(pageTitleToBe(driver, "We Arrive Here"));
+    wait.until(titleIs("We Arrive Here"));
   }
 
   @Ignore({HTMLUNIT, OPERA, OPERA_MOBILE})
@@ -258,7 +257,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         .sendKeys(element, "abc def")
         .perform();
 
-    waitFor(elementValueToEqual(element, "abc def"));
+    wait.until(elementValueToEqual(element, "abc def"));
 
     //TODO: Figure out why calling sendKey(Key.CONTROL + "a") and then
     //sendKeys("x") does not work on Linux.
@@ -269,7 +268,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     // Release keys before next step.
     new Actions(driver).sendKeys(Keys.NULL).perform();
 
-    waitFor(elementValueToEqual(element, ""));
+    wait.until(elementValueToEqual(element, ""));
 
     new Actions(driver)
         .sendKeys(Keys.CONTROL + "v")
@@ -278,7 +277,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     new Actions(driver).sendKeys(Keys.NULL).perform();
 
-    waitFor(elementValueToEqual(element, "abc defabc def"));
+    wait.until(elementValueToEqual(element, "abc defabc def"));
   }
 
   @Ignore({HTMLUNIT, OPERA, IE})
@@ -316,7 +315,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     new Actions(driver).keyDown(Keys.SHIFT).click(toClick).keyUp(Keys.SHIFT).perform();
 
-    WebElement shiftInfo = waitFor(elementToExist(driver, "shiftKey"));
+    WebElement shiftInfo =
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("shiftKey")));
     assertThat(shiftInfo.getText(), equalTo("true"));
   }
 
@@ -351,7 +351,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     item.click();
 
     WebElement result = driver.findElement(By.id("result"));
-    waitFor(WaitingConditions.elementTextToContain(result, "item 1"));
+    wait.until(WaitingConditions.elementTextToContain(result, "item 1"));
   }
 
   @JavascriptEnabled
