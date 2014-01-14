@@ -17,9 +17,9 @@ limitations under the License.
 
 package org.openqa.grid.e2e.utils;
 
-import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.grid.web.utils.ExtraServletUtil;
 
 import javax.servlet.Servlet;
 

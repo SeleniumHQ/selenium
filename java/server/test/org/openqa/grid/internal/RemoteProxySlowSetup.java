@@ -20,15 +20,15 @@ package org.openqa.grid.internal;
 
 import static org.openqa.grid.common.RegistrationRequest.ID;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.RegistrationListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RemoteProxySlowSetup {
 

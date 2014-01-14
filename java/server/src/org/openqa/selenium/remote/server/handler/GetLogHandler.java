@@ -19,8 +19,8 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.Map;
 

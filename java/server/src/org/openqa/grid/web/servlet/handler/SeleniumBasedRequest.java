@@ -18,6 +18,14 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.handler;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.io.ByteStreams;
+
+import org.openqa.grid.common.SeleniumProtocol;
+import org.openqa.grid.internal.ExternalSessionKey;
+import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.TestSession;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,14 +43,6 @@ import java.util.Map;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-
-import org.openqa.grid.common.SeleniumProtocol;
-import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.TestSession;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.io.ByteStreams;
 
 /**
  * wrapper around a selenium http request that helps accessing the internal 

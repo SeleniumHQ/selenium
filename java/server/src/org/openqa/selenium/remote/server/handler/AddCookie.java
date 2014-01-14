@@ -17,16 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-import com.google.common.collect.Maps;
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class AddCookie extends WebDriverHandler implements JsonParametersAware {
 

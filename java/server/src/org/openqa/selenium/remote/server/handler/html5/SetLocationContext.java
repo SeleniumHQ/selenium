@@ -18,7 +18,6 @@ package org.openqa.selenium.remote.server.handler.html5;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.Location;
-import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;

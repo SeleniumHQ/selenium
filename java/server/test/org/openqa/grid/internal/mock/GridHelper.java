@@ -20,16 +20,16 @@ package org.openqa.grid.internal.mock;
 
 import static org.mockito.Mockito.mock;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.web.servlet.handler.RequestType;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * create mocked object for testing grid internal.

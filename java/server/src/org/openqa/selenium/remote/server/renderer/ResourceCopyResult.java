@@ -19,14 +19,14 @@ package org.openqa.selenium.remote.server.renderer;
 import static org.openqa.selenium.remote.server.HttpStatusCodes.NOT_FOUND;
 import static org.openqa.selenium.remote.server.HttpStatusCodes.OK;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.ByteStreams;
+import com.google.common.net.MediaType;
+
 import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.HttpResponse;
 import org.openqa.selenium.remote.server.rest.Renderer;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.ByteStreams;
-import com.google.common.net.MediaType;
 
 import java.net.URL;
 

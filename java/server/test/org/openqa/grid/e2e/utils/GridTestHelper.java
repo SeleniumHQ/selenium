@@ -17,9 +17,6 @@ limitations under the License.
 
 package org.openqa.grid.e2e.utils;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
@@ -29,6 +26,9 @@ import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class GridTestHelper {
 

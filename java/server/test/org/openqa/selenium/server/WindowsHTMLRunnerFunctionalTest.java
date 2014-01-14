@@ -17,12 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.server;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
-
-import static org.openqa.selenium.Platform.WINDOWS;
 
 public class WindowsHTMLRunnerFunctionalTest extends HTMLRunnerTestBase {
 

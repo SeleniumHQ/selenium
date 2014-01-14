@@ -18,8 +18,6 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.beta;
 
-import java.util.Map;
-
 import org.json.JSONObject;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
@@ -29,6 +27,8 @@ import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
+
+import java.util.Map;
 
 public class WebProxyHtmlRendererBeta implements HtmlRenderer {
 

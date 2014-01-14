@@ -18,11 +18,11 @@ limitations under the License.
 
 package org.openqa.selenium.server.browserlaunchers;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.openqa.selenium.browserlaunchers.locators.BrowserInstallation;
 import org.openqa.selenium.browserlaunchers.locators.BrowserLocator;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * {@link BrowserInstallationCache} unit test class.

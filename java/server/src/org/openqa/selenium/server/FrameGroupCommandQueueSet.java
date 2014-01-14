@@ -18,6 +18,8 @@ package org.openqa.selenium.server;
  */
 
 
+import org.openqa.selenium.net.Urls;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +36,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
-
-import org.openqa.selenium.net.Urls;
 
 
 /**

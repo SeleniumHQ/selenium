@@ -16,15 +16,15 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.renderer;
 
-import java.nio.ByteBuffer;
-
 import com.google.common.base.Charsets;
 
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.server.HttpRequest;
 import org.openqa.selenium.remote.server.HttpResponse;
-import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.Renderer;
+import org.openqa.selenium.remote.server.rest.RestishHandler;
+
+import java.nio.ByteBuffer;
 
 public class JsonResult implements Renderer {
 

@@ -17,8 +17,10 @@ limitations under the License.
 
 package org.openqa.grid.e2e.misc;
 
-import org.openqa.selenium.net.PortProber;
-
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -27,10 +29,7 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
-import org.junit.Assert;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.openqa.selenium.net.PortProber;
 
 /**
  * by specifing a RegistrationRequest.REGISTER_CYCLE= -1 , the node to not try to register against

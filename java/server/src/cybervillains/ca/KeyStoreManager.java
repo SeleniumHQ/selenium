@@ -1,7 +1,7 @@
 package cybervillains.ca;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jcajce.provider.config.ConfigurableProvider;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.openqa.selenium.security.CertificateGenerator;
 import org.openqa.selenium.security.KeyAndCert;
 

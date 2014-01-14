@@ -17,6 +17,11 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
+import static org.openqa.grid.common.RegistrationRequest.PATH;
+import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
+import static org.openqa.grid.common.RegistrationRequest.SELENIUM_PROTOCOL;
+
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -42,11 +47,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.openqa.grid.common.RegistrationRequest.*;
 
 public class BaseRemoteProxy implements RemoteProxy {
   private final RegistrationRequest request;

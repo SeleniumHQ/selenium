@@ -22,14 +22,13 @@ import static org.junit.Assert.assertTrue;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.server.FakeHttpRequest;
 import org.openqa.selenium.remote.server.FakeHttpResponse;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
-
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Unit tests for {@link CrossDomainRpcRenderer}

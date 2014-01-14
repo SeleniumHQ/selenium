@@ -18,8 +18,8 @@ limitations under the License.
 package org.openqa.selenium.server.htmlrunner;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.browserlaunchers.Sleeper;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;

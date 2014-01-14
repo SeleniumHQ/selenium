@@ -18,15 +18,15 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet;
 
+import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.internal.Registry;
+import org.openqa.selenium.browserlaunchers.Sleeper;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.openqa.grid.common.exception.GridException;
-import org.openqa.grid.internal.Registry;
-import org.openqa.selenium.browserlaunchers.Sleeper;
 
 /**
  * API to manage grid lifecycle

@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.grid.internal;
 
 import net.jcip.annotations.ThreadSafe;
+
 import org.openqa.grid.common.exception.GridException;
 
 import java.util.Collections;

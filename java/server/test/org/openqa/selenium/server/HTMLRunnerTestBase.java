@@ -16,6 +16,9 @@
  */
 package org.openqa.selenium.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,9 +29,6 @@ import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.HTMLTestResults;
 
 import java.io.File;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public abstract class HTMLRunnerTestBase implements HTMLResultsListener {
 

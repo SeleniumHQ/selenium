@@ -17,16 +17,6 @@ limitations under the License.
 
 package org.openqa.grid.web.servlet.handler;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.openqa.grid.common.exception.ClientGoneException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
@@ -38,6 +28,16 @@ import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletResponse;
 
 
 /**

@@ -17,6 +17,10 @@ limitations under the License.
 
 package org.openqa.grid.selenium.proxy;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.grid.common.RegistrationRequest.ID;
+
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
@@ -25,10 +29,6 @@ import org.openqa.grid.internal.TestSession;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.ID;
 
 
 public class DefaultRemoteProxyTest {
