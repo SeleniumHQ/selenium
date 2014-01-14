@@ -133,7 +133,4 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     return e.getClass().getName().contains("TimedOutException");
   }
 
-  protected <X> X waitFor(WebDriver driver, ExpectedCondition<X> condition) {
-    return new WebDriverWait(driver, 30).until(condition);
-  }
 }
