@@ -27,7 +27,7 @@ import org.openqa.selenium.internal.Locatable;
  */
 public abstract class SingleKeyAction extends KeysRelatedAction {
   protected final Keys key;
-  private static final Keys[] MODIFIER_KEYS = {Keys.SHIFT, Keys.CONTROL, Keys.ALT};
+  private static final Keys[] MODIFIER_KEYS = {Keys.SHIFT, Keys.CONTROL, Keys.ALT, Keys.META};
 
   protected SingleKeyAction(Keyboard keyboard, Mouse mouse, Keys key) {
     this(keyboard, mouse, null, key);
