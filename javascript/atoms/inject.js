@@ -41,6 +41,26 @@ goog.require('goog.userAgent');
 
 
 /**
+ * Type definition for the WebDriver's JSON wire protocol representation
+ * of a DOM element.
+ * @typedef {{ELEMENT: string}}
+ * @see bot.inject.ELEMENT_KEY
+ * @see http://code.google.com/p/selenium/wiki/JsonWireProtocol
+ */
+bot.inject.JsonElement;
+
+
+/**
+ * Type definition for a cached Window object that can be referenced in
+ * WebDriver's JSON wire protocol. Note, this is a non-standard
+ * representation.
+ * @typedef {{WINDOW: string}}
+ * @see bot.inject.WINDOW_KEY
+ */
+bot.inject.JsonWindow;
+
+
+/**
  * Key used to identify DOM elements in the WebDriver wire protocol.
  * @type {string}
  * @const
