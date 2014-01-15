@@ -9,13 +9,16 @@ js_deps(name = "deps",
   ])
 
 js_binary(name = "inputs",
-  srcs = [ "inputs.js" ],
+  srcs = [
+      "inputs.js",
+      "exports/inputs.js",
+  ],
   flags = [
-    "--compilation_level=ADVANCED_OPTIMIZATIONS",
+      "--compilation_level=ADVANCED_OPTIMIZATIONS",
   ],
   no_format = "true",
   deps = [
-    ":deps",
+      ":deps",
   ])
 
 js_library(name = "atoms_lib",

@@ -5,12 +5,20 @@ rename(
         "//javascript/atoms/fragments:execute_script.js",
     ])
 
+rename(
+    name = "atoms_inputs",
+    out = "atoms_inputs.js",
+    deps = [
+        "//javascript/webdriver/atoms:inputs.js",
+    ])
+
 
 java_test(name = "test",
   srcs = [ "*.java" ],
-  test_suite = "org.openqa.selenium.atoms.CompiledAtomsNotLeakingTest",
+  test_suite = "org.openqa.selenium.atoms.AtomsRhinoTests",
   embedded = [
     ":execute_script",
+    ":atoms_inputs",
   ],
   deps = [
     "//javascript/atoms/fragments:execute_script",

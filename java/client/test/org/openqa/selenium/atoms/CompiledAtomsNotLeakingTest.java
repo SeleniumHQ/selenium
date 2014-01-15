@@ -20,34 +20,28 @@ package org.openqa.selenium.atoms;
 
 import static org.junit.Assert.assertEquals;
 
-import org.openqa.selenium.Build;
-import org.openqa.selenium.testing.InProject;
-
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
-import com.google.common.io.Resources;
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.JUnit4;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
-@RunWith(BlockJUnit4ClassRunner.class)
+@RunWith(JUnit4.class)
 public class CompiledAtomsNotLeakingTest {
 
-  private static final String FRAGMENT_TASK = "//javascript/webdriver/atoms:execute_script";
+  private static final String FRAGMENT_TASK =
+      "//javascript/atoms/fragments:execute_script";
   private static final String FRAGMENT_PATH =
-      "build/javascript/webdriver/atoms/execute_script.js";
+      JavaScriptLoader.taskToBuildOutput(FRAGMENT_TASK);
   private static final String RESOURCE_PATH = "/org/openqa/selenium/atoms/execute_script.js";
 
   private static String fragment;
@@ -56,22 +50,13 @@ public class CompiledAtomsNotLeakingTest {
 
   @BeforeClass
   public static void loadFragment() throws IOException {
-    URL resourceUrl = CompiledAtomsNotLeakingTest.class.getResource(RESOURCE_PATH);
-    if (resourceUrl != null) {
-      fragment = Resources.toString(resourceUrl, Charsets.UTF_8);
-    } else {
-      File topDir = InProject.locate("Rakefile").getParentFile();
-      File atomFile = new File(topDir, FRAGMENT_PATH);
-      if (!atomFile.exists()) {
-        new Build().of(FRAGMENT_TASK).go();
-      }
-      fragment = Files.toString(atomFile, Charsets.UTF_8);
-    }
+    fragment = JavaScriptLoader.loadResource(RESOURCE_PATH, FRAGMENT_TASK);
   }
 
   @Before
   public void prepareGlobalObject() {
     ContextFactory.getGlobal().call(new ContextAction() {
+      @Override
       public Object run(Context context) {
         global = context.initStandardObjects();
         global.defineProperty("_", 1234, ScriptableObject.EMPTY);
@@ -95,6 +80,7 @@ public class CompiledAtomsNotLeakingTest {
   @Test
   public void fragmentWillNotLeakVariablesToEnclosingScopes() {
     ContextFactory.getGlobal().call(new ContextAction() {
+      @Override
       public Object run(Context context) {
         eval(context, "(" + fragment + ")()", FRAGMENT_PATH);
         assertEquals(1234, eval(context, "_"));
@@ -121,6 +107,7 @@ public class CompiledAtomsNotLeakingTest {
   @Test
   public void nestedFragmentsShouldNotLeakVariables() {
     ContextFactory.getGlobal().call(new ContextAction() {
+      @Override
       public Object run(Context context) {
         // executeScript atom recursing on itself to execute "return 1+2".
         // Should result in {status:0,value:{status:0,value:3}}

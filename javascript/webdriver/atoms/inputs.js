@@ -54,8 +54,6 @@ webdriver.atoms.inputs.sendKeys = function(
 
   return keyboard.getState();
 };
-goog.exportSymbol('webdriver.atoms.inputs.sendKeys',
-                  webdriver.atoms.inputs.sendKeys);
 
 
 /**
@@ -76,8 +74,6 @@ webdriver.atoms.inputs.click = function(element, opt_state) {
   bot.action.click(element, null, mouse);
   return mouse.getState();
 };
-goog.exportSymbol('webdriver.atoms.inputs.click',
-                  webdriver.atoms.inputs.click);
 
 
 /**
@@ -125,8 +121,6 @@ webdriver.atoms.inputs.mouseMove = function(element, x_offset, y_offset,
   mouse.move(target, coords);
   return mouse.getState();
 };
-goog.exportSymbol('webdriver.atoms.inputs.mouseMove',
-                  webdriver.atoms.inputs.mouseMove);
 
 
 /**
@@ -140,8 +134,6 @@ webdriver.atoms.inputs.mouseButtonDown = function(opt_state) {
   mouse.pressButton(bot.Mouse.Button.LEFT);
   return mouse.getState();
 };
-goog.exportSymbol('webdriver.atoms.inputs.mouseButtonDown',
-                  webdriver.atoms.inputs.mouseButtonDown);
 
 
 /**
@@ -155,8 +147,6 @@ webdriver.atoms.inputs.mouseButtonUp = function(opt_state) {
   mouse.releaseButton();
   return mouse.getState();
 };
-goog.exportSymbol('webdriver.atoms.inputs.mouseButtonUp',
-                  webdriver.atoms.inputs.mouseButtonUp);
 
 
 /**
@@ -173,8 +163,6 @@ webdriver.atoms.inputs.doubleClick = function(opt_state) {
   mouse.releaseButton();
   return mouse.getState();
 };
-goog.exportSymbol('webdriver.atoms.inputs.doubleClick',
-                  webdriver.atoms.inputs.doubleClick);
 
 
 /**
@@ -189,5 +177,3 @@ webdriver.atoms.inputs.rightClick = function(opt_state) {
   mouse.releaseButton();
   return mouse.getState();
 };
-goog.exportSymbol('webdriver.atoms.inputs.rightClick',
-                  webdriver.atoms.inputs.rightClick);
