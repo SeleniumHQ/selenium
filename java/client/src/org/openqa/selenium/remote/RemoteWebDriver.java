@@ -624,6 +624,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     public void addCookie(Cookie cookie) {
+      cookie.validate();
       execute(DriverCommand.ADD_COOKIE, ImmutableMap.of("cookie", cookie));
     }
 

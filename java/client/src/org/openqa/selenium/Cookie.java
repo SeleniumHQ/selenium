@@ -82,8 +82,6 @@ public class Cookie {
     } else {
       this.expiry = null;
     }
-
-    validate();
   }
 
   /**
@@ -135,7 +133,7 @@ public class Cookie {
     return (domain == null) ? null : domain.split(":")[0];
   }
 
-  protected void validate() {
+  public void validate() {
     if (name == null || "".equals(name) || value == null || path == null) {
       throw new IllegalArgumentException("Required attributes are not set or " +
           "any non-null attribute set to null");

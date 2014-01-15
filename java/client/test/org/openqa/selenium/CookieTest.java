@@ -33,8 +33,9 @@ public class CookieTest {
 
   @Test
   public void testShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute() {
+    Cookie cookie = new Cookie("hi;hi", "value", null, null, null, false);
     try {
-      new Cookie("hi;hi", "value", null, null, null, false);
+      cookie.validate();
       fail();
     } catch (IllegalArgumentException e) {
       // Expected
@@ -43,8 +44,9 @@ public class CookieTest {
 
   @Test
   public void testShouldThrowAnExceptionTheNameIsNull() {
+    Cookie cookie = new Cookie(null, "value", null, null, null, false);
     try {
-      new Cookie(null, "value", null, null, null, false);
+      cookie.validate();
       fail();
     } catch (IllegalArgumentException e) {
       // expected
