@@ -19,11 +19,10 @@
 
 goog.provide('webdriver.atoms.inject.action');
 
-goog.require('bot.Keyboard');
-goog.require('bot.Mouse');
 goog.require('bot.action');
 goog.require('webdriver.atoms.element');
 goog.require('webdriver.atoms.inject');
+goog.require('webdriver.atoms.inputs');
 
 
 /**
@@ -87,19 +86,71 @@ webdriver.atoms.inject.action.click = function (element, opt_window) {
 
 
 /**
+ * JSON representation of a {@link bot.Mouse.State} object.
+ * @typedef {{buttonPressed: ?bot.Mouse.Button,
+ *            elementPressed: ?bot.inject.JsonElement,
+ *            clientXY: {x: number, y: number},
+ *            nextClickIsDoubleClick: boolean,
+ *            hasEverInteracted: boolean,
+ *            element: ?bot.inject.JsonElement}}
+ */
+webdriver.atoms.inject.action.JsonMouseState;
+
+
+/**
+ * Clicks a mouse button.
+ *
+ * @param {bot.Mouse.Button} button The button to press.
+ * @param {webdriver.atoms.inject.action.JsonMouseState=} opt_mouseState The
+ *     current state of the mouse.
+ * @param {bot.inject.JsonWindow=} opt_window The window context for
+ *     the execution of the function.
+ * @return {string} A stringified {@link bot.response.ResponseObject}. The
+ *     mouse's new state, as a
+ *     {@link webdriver.atoms.inject.action.JsonMouseState} will be included
+ *     as the response value.
+ */
+webdriver.atoms.inject.action.mouseClick = function(
+    button, opt_mouseState, opt_window) {
+  return webdriver.atoms.inject.action.executeActionFunction_(
+      webdriver.atoms.inputs.mouseClick,
+      [button, opt_mouseState], opt_window);
+};
+
+
+/**
+ * Types a sequence of key strokes on the active element.
+ * @param {!Array.<string>} keys The keys to type.
+ * @param {bot.Keyboard.State=} opt_keyboardState The keyboard's state.
+ * @param {bot.inject.JsonWindow=} opt_window The window context for
+ *     the execution of the function.
+ * @return {string} A stringified {@link bot.response.ResponseObject}. The
+ *     keyboard's new state, as a {@link bot.Keyboard.State} will be included
+ *     as the response value.
+ */
+webdriver.atoms.inject.action.sendKeysToActiveElement = function(
+    keys, opt_keyboardState, opt_window) {
+  var persistModifiers = true;
+  return webdriver.atoms.inject.action.executeActionFunction_(
+      webdriver.atoms.inputs.sendKeys,
+      [null, keys, opt_keyboardState, persistModifiers], opt_window);
+};
+
+
+/**
  * @param {!Function} fn The function to call.
  * @param {!Array.<*>} args An array of function arguments for the function.
  * @param {bot.inject.JsonWindow=} opt_window The window context for
  *     the execution of the function.
  * @return {string} The serialized JSON wire protocol result of the function.
  */
-webdriver.atoms.inject.action.executeActionFunction_ =
-    function (fn, args, opt_window) {
+webdriver.atoms.inject.action.executeActionFunction_ = function (
+    fn, args, opt_window) {
   var response;
   try {
     var targetWindow = webdriver.atoms.inject.getWindow(opt_window);
-    var unwrappedArgs = /** @type {!Array} */(bot.inject.unwrapValue(args,
-        targetWindow.document));
+    var unwrappedArgs = /** @type {Array} */(bot.inject.unwrapValue(
+        args, targetWindow.document));
     var functionResult = fn.apply(null, unwrappedArgs);
     response = bot.inject.wrapResponse(functionResult);
   } catch (ex) {

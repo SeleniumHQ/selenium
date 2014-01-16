@@ -68,7 +68,7 @@ bot.Mouse = function(opt_state, opt_modifiersState, opt_eventEmitter) {
   this.hasEverInteracted_ = false;
 
   if (opt_state) {
-    this.buttonPressed_ = opt_state.buttonPressed;
+    this.buttonPressed_ = opt_state.buttonPressed || null;
 
     try {
       if (bot.dom.isElement(opt_state.elementPressed)) {
@@ -78,9 +78,12 @@ bot.Mouse = function(opt_state, opt_modifiersState, opt_eventEmitter) {
       this.buttonPressed_ = null;
     }
 
-    this.clientXY_ = opt_state.clientXY;
-    this.nextClickIsDoubleClick_ = opt_state.nextClickIsDoubleClick;
-    this.hasEverInteracted_ = opt_state.hasEverInteracted;
+    this.clientXY_ = new goog.math.Coordinate(
+        opt_state.clientXY.x,
+        opt_state.clientXY.y);
+
+    this.nextClickIsDoubleClick_ = !!opt_state.nextClickIsDoubleClick;
+    this.hasEverInteracted_ = !!opt_state.hasEverInteracted;
 
     try {
       if (bot.dom.isElement(opt_state.element)) {

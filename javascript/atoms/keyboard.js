@@ -40,8 +40,7 @@ goog.require('goog.userAgent');
  * A keyboard that provides atomic typing actions.
  *
  * @constructor
- * @param {{pressed: !Array.<!bot.Keyboard.Key>,
-            currentPos: number}=} opt_state Optional keyboard state.
+ * @param {bot.Keyboard.State=} opt_state Optional keyboard state.
  * @extends {bot.Device}
  */
 bot.Keyboard = function(opt_state) {
@@ -63,10 +62,18 @@ bot.Keyboard = function(opt_state) {
       this.setKeyPressed_(/** @type {!bot.Keyboard.Key} */ (key), true);
     }, this);
 
-    this.currentPos_ = opt_state['currentPos'];
+    this.currentPos_ = opt_state['currentPos'] || 0;
   }
 };
 goog.inherits(bot.Keyboard, bot.Device);
+
+
+/**
+ * Describes the current state of a keyboard.
+ * @typedef {{pressed: !Array.<!bot.Keyboard.Key>,
+ *            currentPos: number}}
+ */
+bot.Keyboard.State;
 
 
 /**
@@ -844,8 +851,7 @@ bot.Keyboard.prototype.moveCursor = function(element) {
 /**
  * Serialize the current state of the keyboard.
  *
- * @return {{pressed: !Array.<!bot.Keyboard.Key>, currentPos: number}} The
- *     current keyboard state.
+ * @return {bot.Keyboard.State} The current keyboard state.
  */
 bot.Keyboard.prototype.getState = function() {
   // Need to use quoted literals here, so the compiler will not rename the
