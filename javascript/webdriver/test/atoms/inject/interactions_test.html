@@ -9,6 +9,7 @@ goog.require('bot.dom');
 goog.require('bot.inject.cache');
 goog.require('bot.json');
 goog.require('bot.response');
+goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.testing.jsunit');
 goog.require('webdriver.Key');
@@ -75,7 +76,13 @@ function testSendKeysToActiveElement() {
 
   focusElement(input);
   doType(['bar', webdriver.Key.SHIFT, 'baz'], state);
-  assertEquals('fooBARbaz', input.value);
+
+  // IE<10 does not preserve cursor position after chaning focus.
+  if (bot.userAgent.IE_DOC_PRE10) {
+    assertEquals('BARbazfoo', input.value);
+  } else {
+    assertEquals('fooBARbaz', input.value);
+  }
 
   function doType(keys, opt_state) {
     var res = webdriver.atoms.inject.action.sendKeysToActiveElement(
