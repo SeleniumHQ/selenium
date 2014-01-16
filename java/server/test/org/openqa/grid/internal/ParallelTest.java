@@ -17,12 +17,13 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
 import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
@@ -106,7 +107,7 @@ public class ParallelTest {
         }
       });
       testThreadCounter.waitUntilStarted(1);
-      Assert.assertFalse(processed); // Can race, but should *never* fail
+      assertFalse(processed); // Can race, but should *never* fail
     } finally {
       registry.stop();
     }
@@ -154,7 +155,7 @@ public class ParallelTest {
         });
       }
       testThreadCounter.waitUntilDone(5);
-      Assert.assertEquals(5, count.get());
+      assertEquals(5, count.get());
     } finally {
       registry.stop();
     }
@@ -201,7 +202,7 @@ public class ParallelTest {
       });
 
       testThreadCounter.waitUntilStarted(6);
-      Assert.assertFalse(app6Done); // May race, but will never be true
+      assertFalse(app6Done); // May race, but will never be true
     } finally {
       registry.stop();
     }
@@ -243,33 +244,33 @@ public class ParallelTest {
         used.add(newSessionRequest.getSession());
       }
 
-      Assert.assertEquals(registry.getActiveSessions().size(), 5);
+      assertEquals(registry.getActiveSessions().size(), 5);
 
       // release them
       for (TestSession session : used) {
         registry.terminateSynchronousFOR_TEST_ONLY(session);
       }
-      Assert.assertEquals(registry.getActiveSessions().size(), 0);
+      assertEquals(registry.getActiveSessions().size(), 0);
       used.clear();
 
       // reserve them again
       for (int i = 0; i < 5; i++) {
         int original = registry.getActiveSessions().size();
-        Assert.assertEquals(original, i);
+        assertEquals(original, i);
         RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
         newSessionRequest.process();
         TestSession session = newSessionRequest.getSession();
         used.add(session);
       }
 
-      Assert.assertEquals(registry.getActiveSessions().size(), 5);
+      assertEquals(registry.getActiveSessions().size(), 5);
 
       registry.terminateSynchronousFOR_TEST_ONLY(used.get(0));
 
       RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app2);
       newSessionRequest.process();
       newSessionRequest.getSession();
-      Assert.assertEquals(registry.getActiveSessions().size(), 5);
+      assertEquals(registry.getActiveSessions().size(), 5);
       System.out.println(registry.getAllProxies());
     } finally {
       registry.stop();

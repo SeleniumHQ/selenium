@@ -17,10 +17,11 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.SeleniumProtocol;
@@ -61,9 +62,9 @@ public class NewRequestCrashesDuringNewSessionTest {
     MockedRequestHandler newSessionRequest =GridHelper.createNewSessionHandler(registry, ff);
    newSessionRequest.process();
     TestSession s = newSessionRequest.getSession();
-    Assert.assertNotNull(s);
+    assertNotNull(s);
     registry.terminate(s, SessionTerminationReason.CLIENT_STOPPED_SESSION);
-    Assert.assertEquals(0, registry.getNewSessionRequestCount());
+    assertEquals(0, registry.getNewSessionRequestCount());
   }
 
   /**
@@ -82,7 +83,7 @@ public class NewRequestCrashesDuringNewSessionTest {
       System.out.println(e.getMessage());
     }
 
-    Assert.assertEquals(0, registry.getNewSessionRequestCount());
+    assertEquals(0, registry.getNewSessionRequestCount());
   }
 
   @AfterClass

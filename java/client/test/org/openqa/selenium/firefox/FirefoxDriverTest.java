@@ -36,7 +36,6 @@ import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 import com.google.common.base.Throwables;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
@@ -457,7 +456,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       }
 
       public void assertOnRightPage() {
-        Assert.assertEquals(url, myDriver.getCurrentUrl());
+        assertEquals(url, myDriver.getCurrentUrl());
       }
     }
 

@@ -18,7 +18,8 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
@@ -34,7 +35,7 @@ public class UserDefinedCapabilityMatcherTests {
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
-    Assert.assertEquals(DefaultCapabilityMatcher.class,p.getCapabilityHelper().getClass());
+    assertEquals(DefaultCapabilityMatcher.class, p.getCapabilityHelper().getClass());
 
   }
   
@@ -49,7 +50,7 @@ public class UserDefinedCapabilityMatcherTests {
     req.getConfiguration().put(RegistrationRequest.PROXY_CLASS, null);
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
-    Assert.assertEquals(MyCapabilityMatcher.class,p.getCapabilityHelper().getClass());
+    assertEquals(MyCapabilityMatcher.class, p.getCapabilityHelper().getClass());
   }
 
 }

@@ -17,12 +17,13 @@ limitations under the License.
 
 package org.openqa.grid.e2e.node;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
@@ -142,16 +143,18 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     req_caps.put(CapabilityType.VERSION, "7");
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
-    Assert.assertEquals(locationFF7,
-                        newSessionRequest.getSession().getRequestedCapabilities().get(FirefoxDriver.BINARY));
+    assertEquals(locationFF7,
+                 newSessionRequest.getSession().getRequestedCapabilities()
+                     .get(FirefoxDriver.BINARY));
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
     req_caps.put(CapabilityType.VERSION, "3");
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
-    Assert.assertEquals(locationFF3,
-                        newSessionRequest.getSession().getRequestedCapabilities().get(FirefoxDriver.BINARY));
+    assertEquals(locationFF3,
+                 newSessionRequest.getSession().getRequestedCapabilities()
+                     .get(FirefoxDriver.BINARY));
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.FIREFOX);
@@ -159,8 +162,9 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     req_caps.put(FirefoxDriver.BINARY, "custom");
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
-    Assert.assertEquals("custom",
-                        newSessionRequest.getSession().getRequestedCapabilities().get(FirefoxDriver.BINARY));
+    assertEquals("custom",
+                 newSessionRequest.getSession().getRequestedCapabilities()
+                     .get(FirefoxDriver.BINARY));
 
     // opera
 
@@ -169,16 +173,16 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     req_caps.put(CapabilityType.VERSION, "11");
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
-    Assert.assertEquals(locationOpera11,
-                        newSessionRequest.getSession().getRequestedCapabilities().get("opera.binary"));
+    assertEquals(locationOpera11,
+                 newSessionRequest.getSession().getRequestedCapabilities().get("opera.binary"));
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.OPERA);
     req_caps.put(CapabilityType.VERSION, "12");
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
-    Assert.assertEquals(locationOpera12,
-                        newSessionRequest.getSession().getRequestedCapabilities().get("opera.binary"));
+    assertEquals(locationOpera12,
+                 newSessionRequest.getSession().getRequestedCapabilities().get("opera.binary"));
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.OPERA);
@@ -186,8 +190,8 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     req_caps.put("opera.binary", "custom");
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
-    Assert.assertEquals("custom",
-                        newSessionRequest.getSession().getRequestedCapabilities().get("opera.binary"));
+    assertEquals("custom",
+                 newSessionRequest.getSession().getRequestedCapabilities().get("opera.binary"));
 
     // chrome
 
@@ -202,7 +206,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     } catch (JSONException e) {
       actual = "Exception is raised: " + e.getMessage();
     }
-    Assert.assertEquals(locationChrome27, actual);
+    assertEquals(locationChrome27, actual);
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
@@ -214,7 +218,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     } catch (JSONException e) {
       actual = "Exception is raised: " + e.getMessage();
     }
-    Assert.assertEquals(locationChrome29, actual);
+    assertEquals(locationChrome29, actual);
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
@@ -223,7 +227,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     try {
       options.put("test1", "test2");
     } catch (JSONException e) {
-      Assert.assertTrue("Unable to initialize chrome options: " + e.getMessage(), false);
+      assertTrue("Unable to initialize chrome options: " + e.getMessage(), false);
     }
     req_caps.put(ChromeOptions.CAPABILITY, options);
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
@@ -233,13 +237,13 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     } catch (JSONException e) {
       actual = "Exception is raised: " + e.getMessage();
     }
-    Assert.assertEquals(locationChrome29, actual);
+    assertEquals(locationChrome29, actual);
     try {
       actual = (String) ((JSONObject) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY)).get("test1");
     } catch (JSONException e) {
       actual = "Exception is raised: " + e.getMessage();
     }
-    Assert.assertEquals("test2", actual);
+    assertEquals("test2", actual);
 
     req_caps = new HashMap<String, Object>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
@@ -249,7 +253,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
       options.put("test11", "test22");
       options.put("binary", "custom");
     } catch (JSONException e) {
-      Assert.assertTrue("Unable to initialize chrome options: " + e.getMessage(), false);
+      assertTrue("Unable to initialize chrome options: " + e.getMessage(), false);
     }
     req_caps.put(ChromeOptions.CAPABILITY, options);
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
@@ -266,7 +270,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     } catch (JSONException e) {
       actual = "Exception is raised: " + e.getMessage();
     }
-    Assert.assertEquals("test22", actual);
+    assertEquals("test22", actual);
   }
 
   @AfterClass

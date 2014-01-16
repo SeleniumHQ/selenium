@@ -16,7 +16,10 @@
  */
 package org.openqa.selenium.support;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.StubDriver;
@@ -44,14 +47,14 @@ public class ThreadGuardTest {
     });
     foo.start();
     foo.join();
-    Assert.assertEquals(0, successes.get());
+    assertEquals(0, successes.get());
   }
 
   @Test
   public void testProtectSuccess() throws Exception {
     WebDriver actual = new PermissiveStubDriver();
     final WebDriver protect = ThreadGuard.protect(actual);
-    Assert.assertNull(protect.findElement(By.id("foo")));
+    assertNull(protect.findElement(By.id("foo")));
   }
 
   @Test
@@ -59,7 +62,7 @@ public class ThreadGuardTest {
     WebDriver actual = new PermissiveStubDriver();
     final WebDriver webdriver = ThreadGuard.protect(actual);
     HasTouchScreen hasTouchScreen = (HasTouchScreen) webdriver;
-    Assert.assertNotNull(hasTouchScreen);
+    assertNotNull(hasTouchScreen);
   }
 
   class PermissiveStubDriver extends StubDriver {

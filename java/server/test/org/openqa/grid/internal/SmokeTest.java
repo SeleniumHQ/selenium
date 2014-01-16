@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.internal.mock.GridHelper;
@@ -116,18 +116,18 @@ public class SmokeTest {
       }
     }
     // all request got the stop session request
-    Assert.assertEquals(2 * MAX, stopped);
+    assertEquals(2 * MAX, stopped);
     // nothing left waiting
-    Assert.assertEquals(0, registry.getNewSessionRequestCount());
+    assertEquals(0, registry.getNewSessionRequestCount());
 
     // nothing active. Waiting in case a stopSessionRequest.process() isn't finish. It's async.
     while (registry.getActiveSessions().size() != 0) {
       Thread.sleep(10);
     }
-    Assert.assertEquals(0, registry.getActiveSessions().size());
+    assertEquals(0, registry.getActiveSessions().size());
 
     // everything was started.
-    Assert.assertEquals(2 * MAX, ran);
+    assertEquals(2 * MAX, ran);
 
   }
 

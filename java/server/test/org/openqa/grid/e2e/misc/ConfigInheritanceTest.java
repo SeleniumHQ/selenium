@@ -17,8 +17,9 @@ limitations under the License.
 
 package org.openqa.grid.e2e.misc;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
@@ -59,14 +60,14 @@ public class ConfigInheritanceTest {
   @Test
   public void test() {
 
-    Assert.assertEquals(1, hub.getRegistry().getAllProxies().size());
+    assertEquals(1, hub.getRegistry().getAllProxies().size());
     RemoteProxy p = hub.getRegistry().getAllProxies().iterator().next();
 
-    Assert.assertEquals(p.getConfig().get("A"), "valueA");
-    Assert.assertEquals(p.getConfig().get("A2"), "proxyA2");
+    assertEquals(p.getConfig().get("A"), "valueA");
+    assertEquals(p.getConfig().get("A2"), "proxyA2");
 
-    Assert.assertEquals(p.getConfig().get("B"), 5);
-    Assert.assertEquals(p.getConfig().get("B2"), 50);
+    assertEquals(p.getConfig().get("B"), 5);
+    assertEquals(p.getConfig().get("B2"), 50);
 
 
   }

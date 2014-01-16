@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.grid.e2e.node;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
 
 import com.google.common.base.Function;
 
@@ -25,7 +26,6 @@ import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -87,7 +87,7 @@ public class NodeTimeOutTest {
         }
       }
     });
-    Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
+    assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
 
   }
 
@@ -97,7 +97,7 @@ public class NodeTimeOutTest {
     DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
     WebDriver driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
     driver.get(url);
-    Assert.assertEquals(driver.getTitle(), "Grid overview");
+    assertEquals(driver.getTitle(), "Grid overview");
     wait.until(new Function<Object, Integer>() {
       @Override
       public Integer apply(Object input) {
@@ -109,7 +109,7 @@ public class NodeTimeOutTest {
         }
       }
     });
-    Assert.assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
+    assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
 
   }
 

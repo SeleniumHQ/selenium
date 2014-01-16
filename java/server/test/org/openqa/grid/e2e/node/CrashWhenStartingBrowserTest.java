@@ -19,12 +19,13 @@ limitations under the License.
 package org.openqa.grid.e2e.node;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Function;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
@@ -84,7 +85,7 @@ public class CrashWhenStartingBrowserTest {
     wait.until(isUp(p));
 
     // no active sessions
-    Assert.assertEquals("active session is found on empty grid", 0, registry.getActiveSessions().size());
+    assertEquals("active session is found on empty grid", 0, registry.getActiveSessions().size());
 
     WebDriverException exception = null;
     try {
@@ -94,7 +95,7 @@ public class CrashWhenStartingBrowserTest {
       exception = expected;
     }
 
-    Assert.assertNotNull(exception);
+    assertNotNull(exception);
     assertTrue(exception.getMessage().contains(wrong_path));
 
     RegistryTestHelper.waitForActiveTestSessionCount(registry, 0);

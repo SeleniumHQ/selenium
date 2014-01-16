@@ -17,7 +17,10 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -38,14 +41,14 @@ public class ProxySetTest {
       p1.getTestSlots().get(0).getNewSession(new HashMap<String, Object>());
 
       // Make sure the proxy and its test session show up in the registry.
-      Assert.assertEquals(1, set.size());
-      Assert.assertNotNull(p1.getTestSlots().get(0).getSession());
+      assertEquals(1, set.size());
+      assertNotNull(p1.getTestSlots().get(0).getSession());
 
       registry.removeIfPresent(p1);
 
       // Make sure both the proxy and the test session assigned to it are removed from the registry.
-      Assert.assertEquals(0, set.size());
-      Assert.assertNull(p1.getTestSlots().get(0).getSession());
+      assertEquals(0, set.size());
+      assertNull(p1.getTestSlots().get(0).getSession());
     } finally {
       registry.stop();
     }

@@ -17,7 +17,9 @@ limitations under the License.
 
 package org.openqa.grid.e2e.utils;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.junit.Test;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 
@@ -30,13 +32,13 @@ public class ExtraServletUtilTest {
   public void exists() {
     String s = "org.openqa.grid.e2e.utils.TestHttpServlet";
     Class<? extends Servlet> servlet = ExtraServletUtil.createServlet(s);
-    Assert.assertNotNull(servlet);
+    assertNotNull(servlet);
   }
 
   @Test
   public void doesntExist() {
     String s = "org.IDontExist";
     Class<? extends Servlet> servlet = ExtraServletUtil.createServlet(s);
-    Assert.assertNull(servlet);
+    assertNull(servlet);
   }
 }

@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
 import static org.openqa.grid.common.RegistrationRequest.APP;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.internal.mock.GridHelper;
@@ -92,11 +92,11 @@ public class ConcurrencyLockTest {
     for (Thread t : threads) {
       t.join();
     }
-    Assert.assertEquals(4, results.size());
-    Assert.assertEquals("IE", results.get(0));
-    Assert.assertEquals("FF", results.get(1));
-    Assert.assertEquals("FF", results.get(2));
-    Assert.assertEquals("FF", results.get(3));
+    assertEquals(4, results.size());
+    assertEquals("IE", results.get(0));
+    assertEquals("FF", results.get(1));
+    assertEquals("FF", results.get(2));
+    assertEquals("FF", results.get(3));
   }
 
   private void runTests2(Map<String, Object> cap) throws InterruptedException {

@@ -17,8 +17,9 @@ limitations under the License.
 
 package org.openqa.grid.e2e.misc;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
@@ -103,9 +104,9 @@ public class WebDriverPriorityDemo {
     remote.sendRegistrationRequest();
 
     RegistryTestHelper.waitForNode(registry, 1);
-    Assert.assertEquals(1, registry.getAllProxies().size());
-    Assert.assertEquals(0, registry.getNewSessionRequestCount());
-    Assert.assertEquals(0, registry.getActiveSessions().size());
+    assertEquals(1, registry.getAllProxies().size());
+    assertEquals(0, registry.getNewSessionRequestCount());
+    assertEquals(0, registry.getActiveSessions().size());
 
 
     // mark the grid 100% busy = having 1 browser test running.
@@ -113,9 +114,9 @@ public class WebDriverPriorityDemo {
     visitHubConsole(runningOne);
 
     RegistryTestHelper.waitForActiveTestSessionCount(registry, 1);
-    Assert.assertEquals(1, registry.getAllProxies().size());
-    Assert.assertEquals(0, registry.getNewSessionRequestCount());
-    Assert.assertEquals(1, registry.getActiveSessions().size());
+    assertEquals(1, registry.getAllProxies().size());
+    assertEquals(0, registry.getNewSessionRequestCount());
+    assertEquals(1, registry.getActiveSessions().size());
 
 
     // queuing 5 requests on the grid.
@@ -132,9 +133,9 @@ public class WebDriverPriorityDemo {
     }
 
     RegistryTestHelper.waitForNewSessionRequestCount(registry, 5);
-    Assert.assertEquals(1, registry.getAllProxies().size());
-    Assert.assertEquals(5, registry.getNewSessionRequestCount());
-    Assert.assertEquals(1, registry.getActiveSessions().size());
+    assertEquals(1, registry.getAllProxies().size());
+    assertEquals(5, registry.getNewSessionRequestCount());
+    assertEquals(1, registry.getActiveSessions().size());
 
 
     // adding a request with high priority at the end of the queue
@@ -150,9 +151,9 @@ public class WebDriverPriorityDemo {
     }).start();
 
     RegistryTestHelper.waitForNewSessionRequestCount(registry, 6);
-    Assert.assertEquals(1, registry.getAllProxies().size());
-    Assert.assertEquals(6, registry.getNewSessionRequestCount());
-    Assert.assertEquals(1, registry.getActiveSessions().size());
+    assertEquals(1, registry.getAllProxies().size());
+    assertEquals(6, registry.getNewSessionRequestCount());
+    assertEquals(1, registry.getActiveSessions().size());
 
 
     // then 5 more non-important requests
@@ -169,9 +170,9 @@ public class WebDriverPriorityDemo {
     }
 
     RegistryTestHelper.waitForNewSessionRequestCount(registry, 11);
-    Assert.assertEquals(1, registry.getAllProxies().size());
-    Assert.assertEquals(11, registry.getNewSessionRequestCount());
-    Assert.assertEquals(1, registry.getActiveSessions().size());
+    assertEquals(1, registry.getAllProxies().size());
+    assertEquals(11, registry.getNewSessionRequestCount());
+    assertEquals(1, registry.getActiveSessions().size());
   }
 
   @Test(timeout = 20000)
@@ -182,9 +183,9 @@ public class WebDriverPriorityDemo {
       runningOne.quit();
 
       RegistryTestHelper.waitForNewSessionRequestCount(registry, 10);
-      Assert.assertEquals(1, registry.getAllProxies().size());
-      Assert.assertEquals(10, registry.getNewSessionRequestCount());
-      Assert.assertEquals(1, registry.getActiveSessions().size());
+      assertEquals(1, registry.getAllProxies().size());
+      assertEquals(10, registry.getNewSessionRequestCount());
+      assertEquals(1, registry.getActiveSessions().size());
 
       // TODO freynaud : sometines does not start. FF pops up, but address bar remains empty.
       while (!importantOneStarted) {
@@ -206,7 +207,7 @@ public class WebDriverPriorityDemo {
   // simple helper
   static private void visitHubConsole(WebDriver driver) {
     driver.get(consoleURL.toString());
-    Assert.assertEquals(driver.getTitle(), "Grid overview");
+    assertEquals(driver.getTitle(), "Grid overview");
   }
 
   @AfterClass

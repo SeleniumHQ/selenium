@@ -17,8 +17,9 @@ limitations under the License.
 
 package org.openqa.grid.e2e.misc;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
@@ -65,7 +66,7 @@ public class HubRestartNeg {
   public void nodeRegisterAgain() throws Exception {
 
     // every 5 sec, the node register themselves again.
-    Assert.assertEquals(remote.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE), -1);
+    assertEquals(remote.getConfiguration().get(RegistrationRequest.REGISTER_CYCLE), -1);
     remote.startRegistrationProcess();
 
     // should be up
@@ -81,7 +82,7 @@ public class HubRestartNeg {
     hub = new Hub(config);
     registry = hub.getRegistry();
     // should be empty
-    Assert.assertEquals(registry.getAllProxies().size(), 0);
+    assertEquals(registry.getAllProxies().size(), 0);
     hub.start();
 
     // the node will appear again after 250 ms.

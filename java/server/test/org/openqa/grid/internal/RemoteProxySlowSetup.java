@@ -18,10 +18,11 @@ limitations under the License.
 
 package org.openqa.grid.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.openqa.grid.common.RegistrationRequest.ID;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
@@ -71,9 +72,9 @@ public class RemoteProxySlowSetup {
     Thread.sleep(1500);
 
     // check that the beforeRegistration has only been called once.
-    Assert.assertFalse(SlowRemoteSetup.error);
+    assertFalse(SlowRemoteSetup.error);
     // and there is only 1 proxy registered at the end.
-    Assert.assertEquals(1, registry.getAllProxies().size());
+    assertEquals(1, registry.getAllProxies().size());
 
   }
 
