@@ -2,6 +2,7 @@ java_library(name = 'firefox',
   srcs = glob(['*.java', 'internal/*.java']),
   resources = [
     ':prefs',
+    '//javascript/firefox-driver:webdriver',
   ],
   deps = [
     ':prefs',

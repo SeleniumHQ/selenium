@@ -1,0 +1,29 @@
+mozilla_xpt(name = 'native-events-xpt',
+  src = 'webdriver-firefox/nsINativeEvents.idl',
+  fallback = 'prebuilt/nsINativeEvents.xpt',
+  visibility = [ '//javascript/firefox-driver:webdriver' ],
+)
+
+mozilla_xpt(name = 'native-mouse-xpt',
+  src = 'webdriver-firefox/nsINativeMouse.idl',
+  fallback = 'prebuilt/nsINativeMouse.xpt',
+  visibility = [ '//javascript/firefox-driver:webdriver' ],
+)
+
+mozilla_xpt(name = 'native-keyboard-xpt',
+  src = 'webdriver-firefox/nsINativeKeyboard.idl',
+  fallback = 'prebuilt/nsINativeKeyboard.xpt',
+  visibility = [ '//javascript/firefox-driver:webdriver' ],
+)
+
+mozilla_xpt(name = 'native-ime-xpt',
+  src = 'webdriver-firefox/nsINativeIME.idl',
+  fallback = 'prebuilt/nsINativeIME.xpt',
+  visibility = [ '//javascript/firefox-driver:webdriver' ],
+)
+
+export_file(name = "imehandler-dll",
+  src = "prebuilt/Win32/Release/imehandler.dll",
+  visibility = [ '//javascript/firefox-driver:platform-resources' ],
+)
+
