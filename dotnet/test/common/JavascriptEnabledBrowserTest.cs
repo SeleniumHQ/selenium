@@ -237,6 +237,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Safari, "Safari: issue 3693")]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.IPhone)]
+        [IgnoreBrowser(Browser.WindowsPhone, "Windows Phone driver does not support multiple windows")]
         public void ShouldBeAbleToClickALinkThatClosesAWindow()
         {
             driver.Url = javascriptPage;

@@ -161,6 +161,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
+        [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
+        [IgnoreBrowser(Browser.Safari, "Does not yet support file uploads")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
         {
             // IE before 9 doesn't handle pages served with an XHTML content type, and just prompts for to

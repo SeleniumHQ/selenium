@@ -146,6 +146,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [NeedsFreshDriver(AfterTest = true)]
         [IgnoreBrowser(Browser.IPhone, "Doesn't support multiple windows")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Doesn't support multiple windows")]
         [IgnoreBrowser(Browser.Opera, "Doesn't support multiple windows")]
         [IgnoreBrowser(Browser.Safari, "Doesn't support multiple windows; Safari: issue 3693")]
         public void ShouldOnlyFollowHrefOnce()
@@ -166,6 +167,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.WindowsPhone)]
         public void ClickingLabelShouldSetCheckbox()
         {
             driver.Url = formsPage;

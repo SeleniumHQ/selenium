@@ -42,6 +42,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Not implemented in mobile driver")]
         public void ShouldBeAbleToSetTheSizeOfTheCurrentWindow()
         {
             IWindow window = driver.Manage().Window;
@@ -74,6 +75,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Not implemented in mobile driver")]
         [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
         public void ShouldBeAbleToSetThePositionOfTheCurrentWindow()
         {
@@ -95,6 +97,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Not implemented in mobile driver")]
         [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
         public void ShouldBeAbleToMaximizeTheCurrentWindow()
         {
@@ -114,6 +117,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Not implemented in mobile driver")]
         [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
         public void ShouldBeAbleToMaximizeTheWindowFromFrame()
         {
@@ -136,6 +140,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Not implemented in mobile driver")]
         [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
         public void ShouldBeAbleToMaximizeTheWindowFromIframe()
         {

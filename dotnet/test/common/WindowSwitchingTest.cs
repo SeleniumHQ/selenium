@@ -12,6 +12,7 @@ namespace OpenQA.Selenium
     {
         [Test]
         [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations()
         {
             driver.Url = xhtmlTestPage;
@@ -57,6 +58,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle()
         {
             driver.Url = (xhtmlTestPage);
@@ -90,6 +92,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed()
         {
             driver.Url = (xhtmlTestPage);
@@ -136,6 +139,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed()
         {
             driver.Url = (xhtmlTestPage);
@@ -280,6 +284,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         [NeedsFreshDriver(BeforeTest = true, AfterTest = true)]
         public void CanCloseWindowWhenMultipleWindowsAreOpen()
         {
@@ -316,6 +321,7 @@ namespace OpenQA.Selenium
         //////////////////////////////////////////////////////////
 
         [Test]
+        [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ShouldGetBrowserHandles()
         {
