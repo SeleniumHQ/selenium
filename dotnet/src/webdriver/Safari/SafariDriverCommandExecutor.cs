@@ -146,7 +146,7 @@ namespace OpenQA.Selenium.Safari
         {
             this.safariProcess = new Process();
             this.safariProcess.StartInfo.FileName = this.safariExecutableLocation;
-            this.safariProcess.StartInfo.Arguments = initialPage;
+            this.safariProcess.StartInfo.Arguments = string.Format(CultureInfo.InvariantCulture, "\"{0}\"", initialPage);
             this.safariProcess.Start();
         }
 
