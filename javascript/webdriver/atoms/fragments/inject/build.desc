@@ -175,9 +175,30 @@ js_fragment(name = "get_appcache_status",
   function = "webdriver.atoms.inject.storage.appcache.getStatus",
   deps = ["//javascript/webdriver/atoms/inject:deps"])
 
+# Advanced User Interactions
 js_fragment(name = "mouse_click",
   module = "webdriver.atoms.inject.action",
   function = "webdriver.atoms.inject.action.mouseClick",
+  deps = ["//javascript/webdriver/atoms/inject:deps"])
+
+js_fragment(name = "mouse_move",
+  module = "webdriver.atoms.inject.action",
+  function = "webdriver.atoms.inject.action.mouseMove",
+  deps = ["//javascript/webdriver/atoms/inject:deps"])
+
+js_fragment(name = "mouse_down",
+  module = "webdriver.atoms.inject.action",
+  function = "webdriver.atoms.inject.action.mouseButtonDown",
+  deps = ["//javascript/webdriver/atoms/inject:deps"])
+
+js_fragment(name = "mouse_up",
+  module = "webdriver.atoms.inject.action",
+  function = "webdriver.atoms.inject.action.mouseButtonUp",
+  deps = ["//javascript/webdriver/atoms/inject:deps"])
+
+js_fragment(name = "mouse_double_click",
+  module = "webdriver.atoms.inject.action",
+  function = "webdriver.atoms.inject.action.doubleClick",
   deps = ["//javascript/webdriver/atoms/inject:deps"])
 
 js_fragment(name = "send_keys_to_active_element",

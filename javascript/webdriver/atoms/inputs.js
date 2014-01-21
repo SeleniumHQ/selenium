@@ -77,45 +77,44 @@ webdriver.atoms.inputs.click = function(element, opt_state) {
 /**
  * Move the mouse to a specific element and/or coordinate location.
  *
- * @param {!Element} element The element to move the mouse to.
- * @param {number} x_offset The x coordinate to use as an offset.
- * @param {number} y_offset The y coordinate to use as an offset.
+ * @param {Element} element The element to move the mouse to.
+ * @param {?number} xOffset The x coordinate to use as an offset.
+ * @param {?number} yOffset The y coordinate to use as an offset.
  * @param {bot.Mouse.State=} opt_state The serialized state of the mouse.
  * @return {!bot.Mouse.State} The mouse state.
  */
-webdriver.atoms.inputs.mouseMove = function(element, x_offset, y_offset,
+webdriver.atoms.inputs.mouseMove = function(element, xOffset, yOffset,
     opt_state) {
   var mouse = new bot.Mouse(opt_state);
-  var target = element || mouse.getState().element;
+  var target = element || mouse.getState()['element'];
 
-  var offset_specified = (x_offset != null) && (y_offset != null);
-  x_offset = x_offset || 0;
-  y_offset = y_offset || 0;
+  var offsetSpecified = (xOffset != null) && (yOffset != null);
+  xOffset = xOffset || 0;
+  yOffset = yOffset || 0;
 
   // If we have specified an element and no offset, we should
   // move the mouse to the center of the specified element.
   if (element) {
-    if (!offset_specified) {
-      var source_element_size = bot.action.getInteractableSize(element);
-      x_offset = Math.floor(source_element_size.width / 2);
-      y_offset = Math.floor(source_element_size.height / 2);
+    if (!offsetSpecified) {
+      var size = bot.action.getInteractableSize(element);
+      xOffset = Math.floor(size.width / 2);
+      yOffset = Math.floor(size.height / 2);
     }
   } else {
     // Moving to an absolute offset from the current target element,
     // so we have to account for the existing offset of the current
     // mouse position to the element origin (upper-left corner).
     var pos = goog.style.getClientPosition(target);
-    x_offset += (mouse.getState().clientXY.x - pos.x);
-    y_offset += (mouse.getState().clientXY.y - pos.y);
+    xOffset += (mouse.getState()['clientXY']['x'] - pos.x);
+    yOffset += (mouse.getState()['clientXY']['y'] - pos.y);
   }
 
   var doc = goog.dom.getOwnerDocument(target);
-  var win = goog.dom.getWindow(doc);
-  var inViewAfterScroll = bot.action.scrollIntoView(
-      target,
-      new goog.math.Coordinate(x_offset, y_offset));
+  goog.dom.getWindow(doc);
+  bot.action.scrollIntoView(
+      target, new goog.math.Coordinate(xOffset, yOffset));
 
-  var coords = new goog.math.Coordinate(x_offset, y_offset);
+  var coords = new goog.math.Coordinate(xOffset, yOffset);
   mouse.move(target, coords);
   return mouse.getState();
 };
@@ -150,7 +149,7 @@ webdriver.atoms.inputs.mouseButtonUp = function(opt_state) {
 /**
  * Double-clicks primary mouse button at the current location.
  *
- * @param {bot.Mouse.State=} opt_state The serialized state of the mouse.
+ * @param {bot.Mouse.State=} opt_state The state of the mouse.
  * @return {!bot.Mouse.State} The mouse state.
  */
 webdriver.atoms.inputs.doubleClick = function(opt_state) {
@@ -183,16 +182,16 @@ webdriver.atoms.inputs.rightClick = function(opt_state) {
  * location.
  *
  * @param {bot.Mouse.Button} button The button to press.
- * @param {bot.Mouse.State=} opt_state The serialized state of the mouse.
+ * @param {bot.Mouse.State=} opt_state The state of the mouse.
  * @return {!bot.Mouse.State} The mouse state.
  */
 webdriver.atoms.inputs.mouseClick = function(button, opt_state) {
   // If no target element is specified, try to find it from the
   // client (x, y) location. No, this is not exact.
-  if (opt_state && opt_state.clientXY && !opt_state.element &&
+  if (opt_state && opt_state['clientXY'] && !opt_state['element'] &&
       document.elementFromPoint) {
-    opt_state.element = document.elementFromPoint(
-        opt_state.clientXY.x, opt_state.clientXY.y);
+    opt_state['element'] = document.elementFromPoint(
+        opt_state['clientXY']['x'], opt_state['clientXY']['y']);
   }
   var mouse = new bot.Mouse(opt_state);
   mouse.pressButton(button);

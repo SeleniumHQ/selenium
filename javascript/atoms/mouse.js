@@ -68,8 +68,7 @@ bot.Mouse = function (opt_state, opt_modifiersState, opt_eventEmitter) {
   this.hasEverInteracted_ = false;
 
   if (opt_state) {
-    if (opt_state['buttonPressed'] &&
-        opt_state['buttonPressed'] != null) {
+    if (goog.isNumber(opt_state['buttonPressed'])) {
       this.buttonPressed_ = opt_state['buttonPressed'];
     }
 
@@ -82,8 +81,8 @@ bot.Mouse = function (opt_state, opt_modifiersState, opt_eventEmitter) {
     }
 
     this.clientXY_ = new goog.math.Coordinate(
-      opt_state['clientXY'].x,
-      opt_state['clientXY'].y);
+      opt_state['clientXY']['x'],
+      opt_state['clientXY']['y']);
 
     this.nextClickIsDoubleClick_ = !!opt_state['nextClickIsDoubleClick'];
     this.hasEverInteracted_ = !!opt_state['hasEverInteracted'];
@@ -101,9 +100,12 @@ goog.inherits(bot.Mouse, bot.Device);
 
 
 /**
+  * Describes the state of the mouse. This type should be treated as a
+  * dictionary with all properties accessed using array notation to
+  * ensure properties are not renamed by the compiler.
   * @typedef {{buttonPressed: ?bot.Mouse.Button,
   *           elementPressed: Element,
-  *           clientXY: !goog.math.Coordinate,
+  *           clientXY: {x: number, y: number},
   *           nextClickIsDoubleClick: boolean,
   *           hasEverInteracted: boolean,
   *           element: Element}}
@@ -488,7 +490,7 @@ bot.Mouse.prototype.getState = function() {
   return {
     'buttonPressed': this.buttonPressed_,
     'elementPressed': this.elementPressed_,
-    'clientXY': this.clientXY_,
+    'clientXY': { 'x': this.clientXY_.x, 'y': this.clientXY_.y },
     'nextClickIsDoubleClick': this.nextClickIsDoubleClick_,
     'hasEverInteracted': this.hasEverInteracted_,
     'element': this.getElement()
