@@ -46,7 +46,7 @@ goog.require('goog.userAgent');
  * @constructor
  * @extends {bot.Device}
  */
-bot.Mouse = function(opt_state, opt_modifiersState, opt_eventEmitter) {
+bot.Mouse = function (opt_state, opt_modifiersState, opt_eventEmitter) {
   goog.base(this, opt_modifiersState, opt_eventEmitter);
 
   /** @private {?bot.Mouse.Button} */
@@ -68,26 +68,29 @@ bot.Mouse = function(opt_state, opt_modifiersState, opt_eventEmitter) {
   this.hasEverInteracted_ = false;
 
   if (opt_state) {
-    this.buttonPressed_ = opt_state.buttonPressed || null;
+    if (opt_state['buttonPressed'] &&
+        opt_state['buttonPressed'] != null) {
+      this.buttonPressed_ = opt_state['buttonPressed'];
+    }
 
     try {
-      if (bot.dom.isElement(opt_state.elementPressed)) {
-        this.elementPressed_ = opt_state.elementPressed;
+      if (bot.dom.isElement(opt_state['elementPressed'])) {
+        this.elementPressed_ = opt_state['elementPressed'];
       }
     } catch (ignored) {
       this.buttonPressed_ = null;
     }
 
     this.clientXY_ = new goog.math.Coordinate(
-        opt_state.clientXY.x,
-        opt_state.clientXY.y);
+      opt_state['clientXY'].x,
+      opt_state['clientXY'].y);
 
-    this.nextClickIsDoubleClick_ = !!opt_state.nextClickIsDoubleClick;
-    this.hasEverInteracted_ = !!opt_state.hasEverInteracted;
+    this.nextClickIsDoubleClick_ = !!opt_state['nextClickIsDoubleClick'];
+    this.hasEverInteracted_ = !!opt_state['hasEverInteracted'];
 
     try {
-      if (bot.dom.isElement(opt_state.element)) {
-        this.setElement(/** @type {!Element} */ (opt_state.element));
+      if (opt_state['element'] && bot.dom.isElement(opt_state['element'])) {
+        this.setElement(/** @type {!Element} */(opt_state['element']));
       }
     } catch (ignored) {
       this.buttonPressed_ = null;
@@ -477,12 +480,17 @@ bot.Mouse.prototype.getButtonValue_ = function(eventType) {
  * @return {!bot.Mouse.State} The current mouse state.
  */
 bot.Mouse.prototype.getState = function() {
-  var state = {};
-  state.buttonPressed = this.buttonPressed_;
-  state.elementPressed = this.elementPressed_;
-  state.clientXY = this.clientXY_;
-  state.nextClickIsDoubleClick = this.nextClickIsDoubleClick_;
-  state.hasEverInteracted = this.hasEverInteracted_;
-  state.element = this.getElement();
-  return state;
+  // Need to use quoted literals here, so the compiler will not rename the
+  // properties of the emitted object. When the object is created via the
+  // "constructor", we will look for these *specific* properties. Everywhere
+  // else internally, we use the dot-notation, so it's okay if the compiler
+  // renames the internal variable name.
+  return {
+    'buttonPressed': this.buttonPressed_,
+    'elementPressed': this.elementPressed_,
+    'clientXY': this.clientXY_,
+    'nextClickIsDoubleClick': this.nextClickIsDoubleClick_,
+    'hasEverInteracted': this.hasEverInteracted_,
+    'element': this.getElement()
+  };
 };
