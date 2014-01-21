@@ -137,7 +137,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="capabilities">The <see cref="ICapabilities"/> object containing the desired
         /// capabilities of this FirefoxDriver.</param>
         public FirefoxDriver(ICapabilities capabilities)
-            : this(ExtractBinary(capabilities), ExtractProfile(capabilities))
+            : this(ExtractBinary(capabilities), ExtractProfile(capabilities), capabilities, RemoteWebDriver.DefaultCommandTimeout)
         {
         }
 
@@ -162,7 +162,12 @@ namespace OpenQA.Selenium.Firefox
         /// to be used in starting Firefox.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
-            : base(CreateExtensionConnection(binary, profile, commandTimeout), DesiredCapabilities.Firefox())
+            : this(binary, profile, DesiredCapabilities.Firefox(), commandTimeout)
+        {
+        }
+
+        private FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, ICapabilities capabilities, TimeSpan commandTimeout)
+            : base(CreateExtensionConnection(binary, profile, commandTimeout), RemoveUnneededCapabilities(capabilities))
         {
             this.binary = binary;
             this.profile = profile;
@@ -344,6 +349,14 @@ namespace OpenQA.Selenium.Firefox
 
             ExtensionConnection extension = new ExtensionConnection(binary, profileToUse, "localhost", commandTimeout);
             return extension;
+        }
+
+        private static ICapabilities RemoveUnneededCapabilities(ICapabilities capabilities)
+        {
+            DesiredCapabilities caps = capabilities as DesiredCapabilities;
+            caps.Capabilities.Remove(FirefoxDriver.ProfileCapabilityName);
+            caps.Capabilities.Remove(FirefoxDriver.BinaryCapabilityName);
+            return caps;
         }
         #endregion
     }
