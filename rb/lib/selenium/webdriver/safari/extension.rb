@@ -47,6 +47,7 @@ module Selenium
           return if @installed
 
           if install_directory.exist?
+            backup_directory.rmtree if backup_directory.exist?
             FileUtils.mv install_directory.to_s, backup_directory.to_s
           end
 

@@ -33,7 +33,10 @@ module Selenium
         end
 
         def quit_driver
-          @driver_instance.quit if @driver_instance
+          if @driver_instance
+            @driver_instance.quit
+            @driver_instance = nil
+          end
         end
 
         def new_driver_instance
@@ -43,7 +46,7 @@ module Selenium
 
         def app_server
           @app_server ||= (
-            path = File.join(root_folder, "common/src/web")
+            path = File.join(root, "common/src/web")
             s = RackServer.new(path)
             s.start
 
@@ -63,7 +66,7 @@ module Selenium
         end
 
         def remote_server_jar
-          @remote_server_jar ||= File.join(root_folder, "build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar")
+          @remote_server_jar ||= File.join(root, "build/java/server/test/org/openqa/selenium/server-with-tests-standalone.jar")
         end
 
         def quit
@@ -93,11 +96,11 @@ module Selenium
           url
         end
 
-        private
-
-        def root_folder
-          @root_folder ||= File.expand_path("../../../../../../../", __FILE__)
+        def root
+          @root ||= File.expand_path("../../../../../../../", __FILE__)
         end
+
+        private
 
         def create_driver
           instance = case driver
