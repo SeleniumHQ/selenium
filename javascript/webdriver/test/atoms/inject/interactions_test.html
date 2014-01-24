@@ -23,19 +23,11 @@ goog.require('webdriver.atoms.inject.action');
   top: 50px;
   left: 50px;
 }
-#hover-box {
-    position: absolute;
-    width: 75px;
-    height: 75px;
-    top: 50px;
-    left: 150px;
-}
 </style>
 <body>
 <input id="focus-sync">
 <input id="text-input">
 <div id="click-box"></div>
-<div id="hover-box"></div>
 <script>
 var clickBox = document.getElementById('click-box');
 clickBox.style.background = 'red';
@@ -52,22 +44,6 @@ clickBox.onclick = function(e) {
 clickBox.oncontextmenu = function() {
   clickBox.style.background = 'green';
   return false;
-};
-
-var hoverBox = document.getElementById('hover-box');
-hoverBox.style.background = 'red';
-hoverBox.onmouseover = function(e) {
-  e = e || window.event;
-  hoverBox.style.background = 'blue';
-  if (e.clientX > 200) {
-    hoverBox.style.background = 'cyan';
-  }
-  if (e.clientY > 100) {
-    hoverBox.style.background = 'yellow';
-  }
-};
-hoverBox.onmouseout = function(e) {
-  hoverBox.style.background = 'red';
 };
 
 
@@ -115,11 +91,6 @@ function testSendKeysToActiveElement() {
     bot.response.checkResponse(res);
     return res['value'];
   }
-}
-
-function testMouseMove() {
-  var res = webdriver.atoms.inject.action.mouseMove(null, 75, 75, { 'element': null, 'clientXY': {'x': 0, 'y': 0 } });
-  res = bot.json.parse(res);
 }
 
 function testMouseClick() {
