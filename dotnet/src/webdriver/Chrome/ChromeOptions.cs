@@ -62,12 +62,26 @@ namespace OpenQA.Selenium.Chrome
         /// </summary>
         public static readonly string Capability = "chromeOptions";
 
+        private const string ArgumentsChromeOption = "args";
+        private const string BinaryChromeOption = "binary";
+        private const string ExtensionsChromeOption = "extensions";
+        private const string LocalStateChromeOption = "localState";
+        private const string PreferencesChromeOption = "prefs";
+        private const string DetachChromeOption = "detach";
+        private const string DebuggerAddressChromeOption = "debuggerAddress";
+        private const string ExcludeSwitchesChromeOption = "excludeSwitches";
+        private const string MinidumpPathChromeOption = "minidumpPath";
+
         private bool leaveBrowserRunning;
         private string binaryLocation;
+        private string debuggerAddress;
+        private string minidumpPath;
         private List<string> arguments = new List<string>();
         private List<string> extensionFiles = new List<string>();
         private List<string> encodedExtensions = new List<string>();
+        private List<string> excludedSwitches = new List<string>();
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
+        private Dictionary<string, object> additionalChromeOptions = new Dictionary<string, object>();
         private Dictionary<string, object> userProfilePreferences;
         private Dictionary<string, object> localStatePreferences;
         private Proxy proxy;
@@ -75,7 +89,6 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Gets or sets the location of the Chrome browser's binary executable file.
         /// </summary>
-        [JsonProperty("binary", NullValueHandling = NullValueHandling.Ignore)]
         public string BinaryLocation
         {
             get { return this.binaryLocation; }
@@ -86,7 +99,6 @@ namespace OpenQA.Selenium.Chrome
         /// Gets or sets a value indicating whether Chrome should be left running after the
         /// ChromeDriver instance is exited. Defaults to <see langword="false"/>.
         /// </summary>
-        [JsonProperty("detach")]
         public bool LeaveBrowserRunning
         {
             get { return this.leaveBrowserRunning; }
@@ -96,7 +108,6 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Gets or sets the proxy to use with this instance of Chrome.
         /// </summary>
-        [JsonIgnore]
         public Proxy Proxy
         {
             get { return this.proxy; }
@@ -106,7 +117,6 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Gets the list of arguments appended to the Chrome command line as a string array.
         /// </summary>
-        [JsonProperty("args")]
         public ReadOnlyCollection<string> Arguments
         {
             get { return this.arguments.AsReadOnly(); }
@@ -115,7 +125,6 @@ namespace OpenQA.Selenium.Chrome
         /// <summary>
         /// Gets the list of extensions to be installed as an array of base64-encoded strings.
         /// </summary>
-        [JsonProperty("extensions")]
         public ReadOnlyCollection<string> Extensions
         {
             get
@@ -132,16 +141,23 @@ namespace OpenQA.Selenium.Chrome
             }
         }
 
-        [JsonProperty("prefs", NullValueHandling = NullValueHandling.Ignore)]
-        private Dictionary<string, object> UserProfilePreferences
+        /// <summary>
+        /// Gets or sets the address of a Chrome debugger server to connect to.
+        /// Should be of the form "{hostname|IP address}:port".
+        /// </summary>
+        public string DebuggerAddress
         {
-            get { return this.userProfilePreferences; }
+            get { return this.debuggerAddress; }
+            set { this.debuggerAddress = value; }
         }
 
-        [JsonProperty("localState", NullValueHandling = NullValueHandling.Ignore)]
-        private Dictionary<string, object> LocalStatePreferences
+        /// <summary>
+        /// Gets or sets the directory in which to store minidump files.
+        /// </summary>
+        public string MinidumpPath
         {
-            get { return this.localStatePreferences; }
+            get { return this.minidumpPath; }
+            set { this.minidumpPath = value; }
         }
 
         /// <summary>
@@ -179,6 +195,46 @@ namespace OpenQA.Selenium.Chrome
             }
 
             this.arguments.AddRange(arguments);
+        }
+
+        /// <summary>
+        /// Adds a single argument to be excluded from the list of arguments passed by default 
+        /// to the Chrome.exe command line by chromedriver.exe.
+        /// </summary>
+        /// <param name="argument">The argument to exclude.</param>
+        public void AddExcludedArgument(string argument)
+        {
+            if (string.IsNullOrEmpty(argument))
+            {
+                throw new ArgumentException("argument must not be null or empty", "argument");
+            }
+
+            this.AddExcludedArguments(argument);
+        }
+
+        /// <summary>
+        /// Adds arguments to be excluded from the list of arguments passed by default 
+        /// to the Chrome.exe command line by chromedriver.exe.
+        /// </summary>
+        /// <param name="arguments">An array of arguments to exclude.</param>
+        public void AddExcludedArguments(params string[] arguments)
+        {
+            this.AddExcludedArguments(new List<string>(arguments));
+        }
+
+        /// <summary>
+        /// Adds arguments to be excluded from the list of arguments passed by default 
+        /// to the Chrome.exe command line by chromedriver.exe.
+        /// </summary>
+        /// <param name="arguments">An <see cref="IEnumerable{T}"/> object of arguments to exclude.</param>
+        public void AddExcludedArguments(IEnumerable<string> arguments)
+        {
+            if (arguments == null)
+            {
+                throw new ArgumentNullException("arguments", "arguments must not be null");
+            }
+
+            this.excludedSwitches.AddRange(arguments);
         }
 
         /// <summary>
@@ -327,10 +383,44 @@ namespace OpenQA.Selenium.Chrome
         /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
         /// </exception>
         /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
-        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/>.
+        /// Also, by default, calling this method adds capabilities to the options object passed to
+        /// chromedriver.exe.</remarks>
         public void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
-            if (capabilityName == ChromeOptions.Capability || capabilityName == CapabilityType.Proxy)
+            // Add the capability to the chromeOptions object by default. This is to handle
+            // the 80% case where the chromedriver team adds a new option in chromedriver.exe
+            // and the bindings have not yet had a type safe option added.
+            this.AddAdditionalCapability(capabilityName, capabilityValue, false);
+        }
+        
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options 
+        /// for the Chrome driver.
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to add.</param>
+        /// <param name="capabilityValue">The value of the capability to add.</param>
+        /// <param name="isGlobalCapability">Indicates whether the capability is to be set as a global
+        /// capability for the driver instead of a Chrome-specific option.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or 
+        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
+        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
+        {
+            if (capabilityName == ChromeOptions.Capability ||
+                capabilityName == CapabilityType.Proxy ||
+                capabilityName == ChromeOptions.ArgumentsChromeOption ||
+                capabilityName == ChromeOptions.BinaryChromeOption ||
+                capabilityName == ChromeOptions.ExtensionsChromeOption ||
+                capabilityName == ChromeOptions.LocalStateChromeOption ||
+                capabilityName == ChromeOptions.PreferencesChromeOption ||
+                capabilityName == ChromeOptions.DetachChromeOption ||
+                capabilityName == ChromeOptions.DebuggerAddressChromeOption ||
+                capabilityName == ChromeOptions.ExtensionsChromeOption ||
+                capabilityName == ChromeOptions.MinidumpPathChromeOption)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
@@ -341,7 +431,14 @@ namespace OpenQA.Selenium.Chrome
                 throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
             }
 
-            this.additionalCapabilities[capabilityName] = capabilityValue;
+            if (isGlobalCapability)
+            {
+                this.additionalCapabilities[capabilityName] = capabilityValue;
+            }
+            else
+            {
+                this.additionalChromeOptions[capabilityName] = capabilityValue;
+            }
         }
 
         /// <summary>
@@ -352,8 +449,10 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>The DesiredCapabilities for Chrome with these options.</returns>
         public ICapabilities ToCapabilities()
         {
+            Dictionary<string, object> chromeOptions = BuildChromeOptionsDictionary();
+
             DesiredCapabilities capabilities = DesiredCapabilities.Chrome();
-            capabilities.SetCapability(ChromeOptions.Capability, this);
+            capabilities.SetCapability(ChromeOptions.Capability, chromeOptions);
 
             if (this.proxy != null)
             {
@@ -366,6 +465,63 @@ namespace OpenQA.Selenium.Chrome
             }
 
             return capabilities;
+        }
+
+        private Dictionary<string, object> BuildChromeOptionsDictionary()
+        {
+            Dictionary<string, object> chromeOptions = new Dictionary<string, object>();
+            if (this.Arguments.Count > 0)
+            {
+                chromeOptions[ArgumentsChromeOption] = this.Arguments;
+            }
+
+            if (!string.IsNullOrEmpty(this.binaryLocation))
+            {
+                chromeOptions[BinaryChromeOption] = this.binaryLocation;
+            }
+
+            ReadOnlyCollection<string> extensions = this.Extensions;
+            if (extensions.Count > 0)
+            {
+                chromeOptions[ExtensionsChromeOption] = extensions;
+            }
+
+            if (this.localStatePreferences != null && this.localStatePreferences.Count > 0)
+            {
+                chromeOptions[LocalStateChromeOption] = this.localStatePreferences;
+            }
+
+            if (this.userProfilePreferences != null && this.userProfilePreferences.Count > 0)
+            {
+                chromeOptions[PreferencesChromeOption] = this.userProfilePreferences;
+            }
+
+            if (this.leaveBrowserRunning)
+            {
+                chromeOptions[DetachChromeOption] = this.leaveBrowserRunning;
+            }
+
+            if (!string.IsNullOrEmpty(this.debuggerAddress))
+            {
+                chromeOptions[DebuggerAddressChromeOption] = this.debuggerAddress;
+            }
+
+            if (this.excludedSwitches.Count > 0)
+            {
+                chromeOptions[ExcludeSwitchesChromeOption] = this.excludedSwitches;
+            }
+
+            if (!string.IsNullOrEmpty(this.minidumpPath))
+            {
+                chromeOptions[MinidumpPathChromeOption] = this.minidumpPath;
+            }
+
+            foreach (KeyValuePair<string, object> pair in this.additionalChromeOptions)
+            {
+                chromeOptions.Add(pair.Key, pair.Value);
+            }
+
+            return chromeOptions;
         }
     }
 }
