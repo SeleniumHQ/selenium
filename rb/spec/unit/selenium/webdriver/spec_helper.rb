@@ -4,6 +4,8 @@ require 'rspec'
 require 'ci/reporter/rspec'
 require 'webmock/rspec'
 require 'selenium-webdriver'
+require 'securerandom'
+require 'pathname'
 
 module Selenium
   module WebDriver
