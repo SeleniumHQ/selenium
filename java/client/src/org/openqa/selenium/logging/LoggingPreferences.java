@@ -18,6 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.logging;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -35,7 +36,10 @@ import java.util.logging.Level;
  *
  *  WebDriver driver = new FirefoxDriver(caps);
  */
-public class LoggingPreferences {
+public class LoggingPreferences implements Serializable {
+
+  private static final long serialVersionUID = 6708028456766320675L;
+
   // Mapping the {@link LogType} to {@link Level}
   private final Map<String, Level> prefs = new HashMap<String, Level>();
 
