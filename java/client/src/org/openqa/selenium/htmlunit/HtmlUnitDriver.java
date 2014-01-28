@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
+
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -29,7 +31,9 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.SgmlPage;
+import com.gargoylesoftware.htmlunit.StringWebResponse;
 import com.gargoylesoftware.htmlunit.TopLevelWindow;
+import com.gargoylesoftware.htmlunit.UnexpectedPage;
 import com.gargoylesoftware.htmlunit.WaitingRefreshHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
@@ -115,8 +119,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
 
 public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
@@ -476,7 +478,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       // A "get" works over the entire page
       currentWindow = getCurrentWindow().getTopWindow();
     } catch (UnknownHostException e) {
-      // This should be fine
+      getCurrentWindow().getTopWindow().setEnclosedPage(new UnexpectedPage(
+          new StringWebResponse("Unknown host", fullUrl),
+          getCurrentWindow().getTopWindow()
+      ));
     } catch (ConnectException e) {
       // This might be expected
     } catch (SocketTimeoutException e) {
