@@ -135,11 +135,11 @@ class RubyMappings
       desc 'Generate Ruby API docs'
       task "//#{dir}:docs" do |t|
         raise "yard is not installed, unable to generate docs" unless have_yard?
-        task = YARD::Rake::YardocTask.new { |t|
-          t.files = Array(files).map { |glob| Dir[glob] }.flatten
-          t.options << "--verbose"
-          t.options << "--readme" << args[:readme] if args.has_key?(:readme)
-          t.options << "--output-dir" << output_dir
+        task = YARD::Rake::YardocTask.new { |yard|
+          yard.files = Array(files).map { |glob| Dir[glob] }.flatten
+          yard.options << "--verbose"
+          yard.options << "--readme" << args[:readme] if args.has_key?(:readme)
+          yard.options << "--output-dir" << output_dir
         }
 
         Rake::Task[task.name].invoke
