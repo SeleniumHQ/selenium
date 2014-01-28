@@ -90,6 +90,15 @@ namespace OpenQA.Selenium.Support.PageObjects
             Assert.AreEqual("Open new window", page.AllLinks[0].Text.Trim());
         }
 
+        [Test]
+        public void ShouldFindElementUsingSequence()
+        {
+            driver.Url = xhtmlTestPage;
+            var page = new PageFactoryBrowserTest.Page();
+            PageFactory.InitElements(driver, page);
+            Assert.AreEqual("I'm a child", page.NestedElement.Text.Trim());
+        }
+
         #region Page classes for tests
         #pragma warning disable 649 //We set fields through reflection, so expect an always-null warning
 
@@ -97,6 +106,11 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             [FindsBy(How = How.Name, Using = "someForm")]
             public IWebElement formElement;
+
+            [FindsBySequence]
+            [FindsBy(How = How.Id, Using = "parent", Priority = 0)]
+            [FindsBy(How = How.Id, Using = "child", Priority = 1)]
+            public IWebElement NestedElement;
         }
 
         private class HoverPage
