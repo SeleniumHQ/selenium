@@ -104,8 +104,6 @@ public class Hub {
       server = new Server();
       SocketConnector socketListener = new SocketConnector();
       socketListener.setMaxIdleTime(60000);
-      socketListener.setLowResourcesMaxIdleTime(6000);
-
       if (isHostRestricted) {
         socketListener.setHost(host);
       }
