@@ -39,5 +39,14 @@ namespace Selenium
 		public SeleniumException(string message) : base(message)
 		{
 		}
+
+		/// <summary>
+		/// Creates an exception with the specified message and inner exception
+		/// </summary>
+		/// <param name="message">the message to add to the exception</param>
+        /// <param name="innerException">the inner exception wrapped by this exception</param>
+        public SeleniumException(string message, Exception innerException) : base(message, innerException)
+		{
+		}
 	}
 }

@@ -77,6 +77,14 @@ namespace Selenium.Internal
             {
                 this.thrownException = e;
             }
+            catch (WebDriverException e)
+            {
+                this.thrownException = new SeleniumException("WebDriver exception thrown", e);
+            }
+            catch (InvalidOperationException e)
+            {
+                this.thrownException = new SeleniumException("WebDriver exception thrown", e);
+            }
         }
     }
 }
