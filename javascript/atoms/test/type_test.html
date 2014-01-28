@@ -4,7 +4,7 @@
   <title>type_test</title>
   <script src="test_bootstrap.js"></script>
   <script type="text/javascript">
-    goog.require('bot.Keyboard.Keys');
+    goog.require('bot.Keyboard');
     goog.require('bot.action');
     goog.require('bot.events');
     goog.require('bot.userAgent');
@@ -27,6 +27,20 @@
         !bot.userAgent.isEngineVersion(12);
 
     var INPUT_IDS = ['textbox', 'password', 'email', 'search', 'textarea'];
+
+    // Keys that impact the cursor's position and require the selection API.
+    var SELECTION_KEYS = [
+      bot.Keyboard.Keys.BACKSPACE,
+      bot.Keyboard.Keys.DELETE,
+      bot.Keyboard.Keys.PAGE_UP,
+      bot.Keyboard.Keys.PAGE_DOWN,
+      bot.Keyboard.Keys.END,
+      bot.Keyboard.Keys.HOME,
+      bot.Keyboard.Keys.LEFT,
+      bot.Keyboard.Keys.UP,
+      bot.Keyboard.Keys.RIGHT,
+      bot.Keyboard.Keys.DOWN,
+    ];
 
     var ALT = bot.Keyboard.Keys.ALT;
     var BACKSPACE = bot.Keyboard.Keys.BACKSPACE;
@@ -83,7 +97,7 @@
      * have the correct values afterwards.  textbox_count should display the
      * number of times textbox's oninput (non IE) or onpropertychange (IE) event
      * fired.
-     * @param {string|bot.Keyboard.Key|Array.<string, bot.Keyboard.Key>}
+     * @param {string|bot.Keyboard.Key|Array.<(string|bot.Keyboard.Key)>}
      *   input Value to type into textbox.
      * @param {string=} opt_finalValue The final value that should appear in
      *   the input.  Defaults to input.
@@ -111,8 +125,23 @@
           goog.isDef(opt_textInputCount) ? opt_textInputCount : inputCount;
       var initValue = opt_initValue || '';
 
+      // Determine if our test requires updating the cursor position, which is
+      // not supported in all scenarios.
+      var needsSelection = function(input) {
+        if (goog.isArray(input)) {
+          return goog.array.some(input, needsSelection);
+        }
+        return goog.array.contains(SELECTION_KEYS, input);
+      }
+      var requiresSelection = goog.array.some(input, needsSelection);
+
       for (var i = 0; i < inputIds.length; i++) {
         var inputBox = document.getElementById(inputIds[i]);
+        if (requiresSelection && !bot.Keyboard.supportsSelection(inputBox)) {
+          // Test requires selection, but the current element will throw when
+          // accessing those properties, so skip this case.
+          continue;
+        }
         inputBox.value = initValue;
         inputCountBox.value = '0';
         textInputCountBox.value = '0';
