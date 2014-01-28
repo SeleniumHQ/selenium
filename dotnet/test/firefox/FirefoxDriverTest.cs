@@ -6,6 +6,7 @@ using OpenQA.Selenium.Firefox.Internal;
 using System.Threading;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Environment;
+using System.IO;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -78,6 +79,17 @@ namespace OpenQA.Selenium.Firefox
             {
                 Assert.Ignore("Skipping test: No profile named \"default\" found.");
             }
+        }
+
+        [Test]
+        public void ShouldRemoveProfileAfterExit()
+        {
+            FirefoxProfile profile = new FirefoxProfile();
+            IWebDriver firefox = new FirefoxDriver(profile);
+            string profileLocation = profile.ProfileDirectory;
+
+            firefox.Quit();
+            Assert.IsFalse(Directory.Exists(profileLocation));
         }
 
         [Test]
