@@ -603,8 +603,12 @@ bot.Keyboard.prototype.updateOnCharacter_ = function(key) {
 
   var character = this.getChar_(key);
   var newPos = goog.dom.selection.getStart(this.getElement()) + 1;
-  goog.dom.selection.setText(this.getElement(), character);
-  goog.dom.selection.setStart(this.getElement(), newPos);
+  if (bot.Keyboard.supportsSelection(this.getElement())) {
+    goog.dom.selection.setText(this.getElement(), character);
+    goog.dom.selection.setStart(this.getElement(), newPos);
+  } else {
+    this.getElement().value += character;
+  }
   if (goog.userAgent.WEBKIT) {
     this.fireHtmlEvent(bot.events.EventType.TEXTINPUT);
   }
@@ -629,8 +633,12 @@ bot.Keyboard.prototype.updateOnEnter_ = function() {
   if (bot.dom.isElement(this.getElement(), goog.dom.TagName.TEXTAREA)) {
     var newPos = goog.dom.selection.getStart(this.getElement()) +
         bot.Keyboard.NEW_LINE_.length;
-    goog.dom.selection.setText(this.getElement(), bot.Keyboard.NEW_LINE_);
-    goog.dom.selection.setStart(this.getElement(), newPos);
+    if (bot.Keyboard.supportsSelection(this.getElement())) {
+      goog.dom.selection.setText(this.getElement(), bot.Keyboard.NEW_LINE_);
+      goog.dom.selection.setStart(this.getElement(), newPos);
+    } else {
+      this.getElement().value += bot.Keyboard.NEW_LINE_;
+    }
     if (!goog.userAgent.IE) {
       this.fireHtmlEvent(bot.events.EventType.INPUT);
     }
@@ -650,6 +658,7 @@ bot.Keyboard.prototype.updateOnBackspaceOrDelete_ = function(key) {
 
   // Determine what should be deleted.  If text is already selected, that
   // text is deleted, else we move left/right from the current cursor.
+  bot.Keyboard.checkCanUpdateSelection_(this.getElement());
   var endpoints = goog.dom.selection.getEndPoints(this.getElement());
   if (endpoints[0] == endpoints[1]) {
     if (key == bot.Keyboard.Keys.BACKSPACE) {
@@ -692,6 +701,7 @@ bot.Keyboard.prototype.updateOnBackspaceOrDelete_ = function(key) {
  * @private
  */
 bot.Keyboard.prototype.updateOnLeftOrRight_ = function(key) {
+  bot.Keyboard.checkCanUpdateSelection_(this.getElement());
   var element = this.getElement();
   var start = goog.dom.selection.getStart(element);
   var end = goog.dom.selection.getEnd(element);
@@ -758,6 +768,7 @@ bot.Keyboard.prototype.updateOnLeftOrRight_ = function(key) {
  * @private
  */
 bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
+  bot.Keyboard.checkCanUpdateSelection_(this.getElement());
   var element = this.getElement();
   var start = goog.dom.selection.getStart(element);
   var end = goog.dom.selection.getEnd(element);
@@ -789,6 +800,47 @@ bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
     }
     this.updateCurrentPos_(element.value.length);
   }
+};
+
+
+/**
+ * Checks that the cursor position can be updated for the given element.
+ * @param {!Element} element The element to test.
+ * @throws {Error} If the cursor position cannot be updated for the given
+ *     element.
+ * @see https://code.google.com/p/chromium/issues/detail?id=330456
+ * @private
+ */
+bot.Keyboard.checkCanUpdateSelection_ = function(element) {
+  try {
+    /** @suppress {suspiciousCode} */
+    element.selectionStart;
+  } catch (ex) {
+    // The native error message is actually pretty informative, just add a
+    // reference to the relevant Chrome bug to provide more context.
+    if (ex.message.indexOf('does not support selection.') != -1) {
+      // message is a readonly property, so need to rethrow.
+      throw Error(ex.message + ' (For more information, see ' +
+          'https://code.google.com/p/chromium/issues/detail?id=330456)');
+    }
+    throw ex;
+  }
+};
+
+
+/**
+ * @param {!Element} element The element to test.
+ * @return {boolean} Whether the given element supports the input element
+ *     selection API.
+ * @see https://code.google.com/p/chromium/issues/detail?id=330456
+ */
+bot.Keyboard.supportsSelection = function(element) {
+  try {
+    bot.Keyboard.checkCanUpdateSelection_(element);
+  } catch (ex) {
+    return false;
+  }
+  return true;
 };
 
 
