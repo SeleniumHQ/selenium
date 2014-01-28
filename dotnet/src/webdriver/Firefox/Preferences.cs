@@ -141,7 +141,8 @@ namespace OpenQA.Selenium.Firefox
             {
                 foreach (KeyValuePair<string, string> preference in this.preferences)
                 {
-                    writer.WriteLine(string.Format(CultureInfo.InvariantCulture, "user_pref(\"{0}\", {1});", preference.Key, preference.Value));
+                    string escapedValue = preference.Value.Replace(@"\", @"\\");
+                    writer.WriteLine(string.Format(CultureInfo.InvariantCulture, "user_pref(\"{0}\", {1});", preference.Key, escapedValue));
                 }
             }
         }
