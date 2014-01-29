@@ -42,7 +42,7 @@ namespace OpenQA.Selenium.PhantomJS
         private string ghostDriverPath = string.Empty;
         private string logFile = string.Empty;
         private string ipAddress = string.Empty;
-        pirvate string gridHubUrl = string.Empty;
+        private string gridHubUrl = string.Empty;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="PhantomJSDriverService"/> class from being created.
