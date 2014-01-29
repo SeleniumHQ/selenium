@@ -119,6 +119,31 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets the process ID of the running driver service executable. Returns 0 if the process is not running.
+        /// </summary>
+        public int ProcessId
+        {
+            get
+            {
+                if (this.IsRunning)
+                {
+                    // There's a slight chance that the Process object is running,
+                    // but does not have an ID set. This should be rare, but we
+                    // definitely don't want to throw an exception.
+                    try
+                    {
+                        return this.driverServiceProcess.Id;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                    }
+                }
+
+                return 0;
+            }
+        }
+
+        /// <summary>
         /// Gets the executable file name of the driver service.
         /// </summary>
         protected string DriverServiceExecutableName
