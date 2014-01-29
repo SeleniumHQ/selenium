@@ -108,36 +108,20 @@ bool HtmlDialog::Wait() {
     return true;
   }
 
-  // If we're not navigating to a new location, we should check to see if
-  // a new modal dialog or alert has been opened. If one has, the wait is complete,
-  // so we must set the flag indicating to the message loop not to call wait
-  // anymore.
-  if (!this->is_navigating_) {
-    ::Sleep(100);
-    HWND child_dialog_handle = this->GetActiveDialogWindowHandle();
-    if (child_dialog_handle != NULL) {
-      // Check to see if the dialog opened is another HTML dialog. If so,
-      // notify the IECommandExecutor that a new window exists.
-      //std::vector<char> window_class_name(34);
-      //if (::GetClassNameA(child_dialog_handle, &window_class_name[0], 34)) {
-      //  if (strcmp(HTML_DIALOG_WINDOW_CLASS, &window_class_name[0]) == 0) {
-      //    HWND content_window_handle = this->FindContentWindowHandle(child_dialog_handle);
-      //    if (content_window_handle != NULL) {
-      //      // Must have a sleep here to give IE a chance to draw the window.
-      //      ::Sleep(250);
-      //      ::PostMessage(this->executor_handle(),
-      //                    WD_NEW_HTML_DIALOG,
-      //                    NULL,
-      //                    reinterpret_cast<LPARAM>(content_window_handle));
-      //    }
-      //  }
-      //}
-      this->set_wait_required(false);
-      return true;
-    }
+  // Check to see if a new dialog has opened up on top of this one.
+  // If so, the wait is completed, no matter whether the OnUnload
+  // event has fired signaling navigation started, nor whether the
+  // OnLoad event has fired signaling navigation complete. Set the
+  // flag so that the Wait method is no longer called.
+  HWND child_dialog_handle = this->GetActiveDialogWindowHandle();
+  if (child_dialog_handle != NULL) {
+    this->is_navigating_ = false;
+    this->set_wait_required(false);
+    return true;
   }
 
-  // Otherwise, we wait until navigation is complete.
+  // Otherwise, we wait a short amount and see if navigation is complete
+  // (signaled by the OnLoad event firing).
   ::Sleep(250);
   return !this->is_navigating_;
 }

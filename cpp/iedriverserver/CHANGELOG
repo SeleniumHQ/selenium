@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.39.0.6
+=========
+ * Reorganized wait algorithm in HtmlDialog. Now is more correctly aborting
+   the wait if a new (cascading) dialog is detected. Fixes issue #6744.
+
 v2.39.0.5
 =========
  * Modified to use bot.dom.getOverflowState atom for element overflow. This
