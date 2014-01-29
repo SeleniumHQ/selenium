@@ -41,6 +41,8 @@ namespace OpenQA.Selenium.PhantomJS
         private List<string> additionalArguments = new List<string>();
         private string ghostDriverPath = string.Empty;
         private string logFile = string.Empty;
+        private string ipAddress = string.Empty;
+        pirvate string gridHubUrl = string.Empty;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="PhantomJSDriverService"/> class from being created.
@@ -192,6 +194,27 @@ namespace OpenQA.Selenium.PhantomJS
         }
 
         /// <summary>
+        /// Gets or sets the IP address to use when starting the GhostDriver implementation
+        /// embedded in PhantomJS.
+        /// </summary>
+        [JsonIgnore]
+        public string IPAddress
+        {
+            get { return this.ipAddress; }
+            set { this.ipAddress = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the URL of a Selenium Grid hub with which this PhantomJS instance should register.
+        /// </summary>
+        [JsonIgnore]
+        public string GridHubUrl
+        {
+            get { return this.gridHubUrl; }
+            set { this.gridHubUrl = value; }
+        }
+
+        /// <summary>
         /// Gets or sets the location of the log file to which PhantomJS will write log
         /// output. If this value is <see langword="null"/> or an empty string, the log
         /// output will be written to the console window.
@@ -287,10 +310,23 @@ namespace OpenQA.Selenium.PhantomJS
 
                 if (string.IsNullOrEmpty(this.ghostDriverPath))
                 {
-                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver={0}", this.Port);
+                    if (string.IsNullOrEmpty(this.ipAddress))
+                    {
+                        argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver={0}", this.Port);
+                    }
+                    else
+                    {
+                        argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver={0}:{1}", this.ipAddress, this.Port);
+                    }
+
                     if (!string.IsNullOrEmpty(this.logFile))
                     {
-                        argsBuilder.AppendFormat(" --webdriver-logfile={0}", this.logFile);
+                        argsBuilder.AppendFormat(" --webdriver-logfile=\"{0}\"", this.logFile);
+                    }
+
+                    if (!string.IsNullOrEmpty(this.gridHubUrl))
+                    {
+                        argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --webdriver-selenium-grid-hub={0}", this.gridHubUrl);
                     }
                 }
                 else
@@ -299,7 +335,7 @@ namespace OpenQA.Selenium.PhantomJS
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --port={0}", this.Port);
                     if (!string.IsNullOrEmpty(this.logFile))
                     {
-                        argsBuilder.AppendFormat(" --logFile={0}", this.logFile);
+                        argsBuilder.AppendFormat(" --logFile=\"{0}\"", this.logFile);
                     }
                 }
 
