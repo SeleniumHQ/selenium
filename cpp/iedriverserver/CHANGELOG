@@ -9,6 +9,14 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v2.39.0.5
+=========
+ * Modified to use bot.dom.getOverflowState atom for element overflow. This
+   is a more reliable and fully tested method than previously used. There is
+   still a minor issue when the element point in question is exactly on the
+   overflow border, but this needs to be addressed in the atoms code, rather
+   than at the IE driver level. Fixes issue #6898.   
+
 v2.39.0.4
 =========
  * Update call of isDisplayed atom in IE to not ignore opacity. Previously,

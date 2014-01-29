@@ -378,7 +378,9 @@ bool Element::IsHiddenByOverflow() {
   script_wrapper.AddArgument(this->element_);
   int status_code = script_wrapper.Execute();
   if (status_code == WD_SUCCESS) {
-    isOverflow = script_wrapper.result().boolVal == VARIANT_TRUE;
+    std::string overflow_state = "";
+    script_wrapper.ConvertResultToString(&overflow_state);
+    isOverflow = (overflow_state == "scroll");
   } else {
     LOG(WARN) << "Unable to determine is element hidden by overflow";
   }
