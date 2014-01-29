@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.Arrays;
+
 /**
  * Representations of pressable keys that aren't text.  These are stored in the Unicode PUA (Private
  * Use Area) code points, 0xE000-0xF8FF.
@@ -142,6 +144,13 @@ public enum Keys implements CharSequence {
    * Issue: http://code.google.com/p/webdriver/issues/detail?id=79
    */
   public static String chord(CharSequence... value) {
+    return chord(Arrays.asList(value));
+  }
+
+  /**
+   * @see #chord(CharSequence...)
+   */
+  public static String chord(Iterable<CharSequence> value) {
     StringBuilder builder = new StringBuilder();
 
     for (CharSequence seq : value) {
