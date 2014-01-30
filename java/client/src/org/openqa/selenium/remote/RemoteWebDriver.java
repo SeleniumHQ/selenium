@@ -31,9 +31,11 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -72,7 +74,7 @@ import java.util.logging.Logger;
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName,
     FindsByCssSelector, FindsByTagName, FindsByXPath,
-    HasInputDevices, HasCapabilities {
+    HasInputDevices, HasCapabilities, TakesScreenshot {
 
   // TODO(dawagner): This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -289,6 +291,23 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   public String getCurrentUrl() {
     return execute(DriverCommand.GET_CURRENT_URL).getValue().toString();
+  }
+
+  @Override
+  public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+    Response response = execute(DriverCommand.SCREENSHOT);
+    Object result = response.getValue();
+    if (result instanceof String) {
+      String base64EncodedPng = (String) result;
+      return outputType.convertFromBase64Png(base64EncodedPng);
+    } else if (result instanceof byte[]) {
+      String base64EncodedPng = new String((byte[]) result);
+      return outputType.convertFromBase64Png(base64EncodedPng);
+    } else {
+      throw new RuntimeException(String.format("Unexpected result for %s command: %s",
+          DriverCommand.SCREENSHOT,
+          result == null ? "null" : result.getClass().getName() + " instance"));
+    }
   }
 
   public List<WebElement> findElements(By by) {

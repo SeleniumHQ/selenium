@@ -56,38 +56,31 @@ public abstract class BaseAugmenterTest {
   }
 
   @Test
-  public void shouldLeaveARemoteWebDriverWhichCannotTakeSnapshotsAlone() throws Exception {
+  public void shouldAddInterfaceFromCapabilityIfNecessary() {
     DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability("magic.numbers", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    WebDriver returned = getAugmenter().augment(driver);
-    System.out.println("This is the returned webdriver " + returned);
-    assertSame(driver, returned);
-    assertFalse(returned instanceof TakesScreenshot);
-  }
-
-  @Test
-  public void shouldAddTheTakesSnapshotInterfaceIfNecessary() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
-
-    WebDriver returned = getAugmenter().augment(driver);
+    BaseAugmenter augmenter = getAugmenter();
+    augmenter.addDriverAugmentation("magic.numbers", new AddsMagicNumberHolder());
+    WebDriver returned = augmenter.augment(driver);
 
     assertNotSame(driver, returned);
     assertTrue(returned instanceof TakesScreenshot);
   }
 
   @Test
-  public void shouldNotAddTheTakesSnapshotInterfaceWhenBooleanValueIsFalse() {
+  public void shouldNotAddInterfaceWhenBooleanValueForItIsFalse() {
     DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.TAKES_SCREENSHOT, false);
+    caps.setCapability("magic.numbers", false);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
-    WebDriver returned = getAugmenter().augment(driver);
+    BaseAugmenter augmenter = getAugmenter();
+    augmenter.addDriverAugmentation("magic.numbers", new AddsMagicNumberHolder());
+    WebDriver returned = augmenter.augment(driver);
 
     assertSame(driver, returned);
-    assertFalse(returned instanceof TakesScreenshot);
+    assertFalse(returned instanceof MagicNumberHolder);
   }
 
   @Test
@@ -121,12 +114,14 @@ public abstract class BaseAugmenterTest {
   @Test
   public void shouldDelegateUnmatchedMethodCallsToDriverImplementation() {
     DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
+    caps.setCapability("magic.numbers", true);
     StubExecutor stubExecutor = new StubExecutor(caps);
     stubExecutor.expect(DriverCommand.GET_TITLE, new HashMap<String, Object>(), "Title");
     WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
-    WebDriver returned = getAugmenter().augment(driver);
+    BaseAugmenter augmenter = getAugmenter();
+    augmenter.addDriverAugmentation("magic.numbers", new AddsMagicNumberHolder());
+    WebDriver returned = augmenter.augment(driver);
 
     assertEquals("Title", returned.getTitle());
   }
@@ -135,12 +130,14 @@ public abstract class BaseAugmenterTest {
   public void proxyShouldNotAppearInStackTraces() {
     final DesiredCapabilities caps = new DesiredCapabilities();
     // This will force the class to be enhanced
-    caps.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
+    caps.setCapability("magic.numbers", true);
 
     DetonatingDriver driver = new DetonatingDriver();
     driver.setCapabilities(caps);
 
-    WebDriver returned = getAugmenter().augment(driver);
+    BaseAugmenter augmenter = getAugmenter();
+    augmenter.addDriverAugmentation("magic.numbers", new AddsMagicNumberHolder());
+    WebDriver returned = augmenter.augment(driver);
 
     returned.findElement(By.id("ignored"));
   }
@@ -222,7 +219,7 @@ public abstract class BaseAugmenterTest {
   public void shouldBeAbleToAugmentMultipleTimes() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability("canRotate", true);
-    caps.setCapability("reallyTakesScreenshot", true);
+    caps.setCapability("magic.numbers", true);
 
     StubExecutor stubExecutor = new StubExecutor(caps);
     stubExecutor.expect(DriverCommand.GET_SCREEN_ORIENTATION,
@@ -236,15 +233,15 @@ public abstract class BaseAugmenterTest {
     WebDriver augmented = augmenter.augment(driver);
     assertNotSame(augmented, driver);
     assertTrue(augmented instanceof Rotatable);
-    assertFalse(augmented instanceof TakesScreenshot);
+    assertFalse(augmented instanceof MagicNumberHolder);
 
     augmenter = getAugmenter();
-    augmenter.addDriverAugmentation("reallyTakesScreenshot", new AddTakesScreenshot());
+    augmenter.addDriverAugmentation("magic.numbers", new AddsMagicNumberHolder());
 
     WebDriver augmentedAgain = augmenter.augment(augmented);
     assertNotSame(augmentedAgain, augmented);
     assertTrue(augmentedAgain instanceof Rotatable);
-    assertTrue(augmentedAgain instanceof TakesScreenshot);
+    assertTrue(augmentedAgain instanceof MagicNumberHolder);
 
     ((Rotatable) augmentedAgain).getOrientation();  // Should not throw.
 
@@ -355,4 +352,22 @@ public abstract class BaseAugmenterTest {
   }
 
   public abstract BaseAugmenter getAugmenter();
+
+  private static class AddsMagicNumberHolder implements AugmenterProvider {
+    @Override
+    public Class<?> getDescribedInterface() {
+      return MagicNumberHolder.class;
+    }
+
+    @Override
+    public InterfaceImplementation getImplementation(Object value) {
+      return new InterfaceImplementation() {
+        @Override
+        public Object invoke(ExecuteMethod executeMethod, Object self, Method method,
+                             Object... args) {
+          return null;
+        }
+      };
+    }
+  }
 }
