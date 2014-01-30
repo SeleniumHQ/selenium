@@ -89,6 +89,7 @@ public class ChromeDriverService extends DriverService {
     String chromeLogFile = System.getProperty(CHROME_DRIVER_LOG_PROPERTY);
     private File logFile = chromeLogFile == null ? null : new File(chromeLogFile);
     private boolean verbose;
+    private boolean silent;
 
     /**
      * Sets which driver executable the builder will use.
@@ -164,6 +165,17 @@ public class ChromeDriverService extends DriverService {
     }
 
     /**
+     * Configures the driver server for silent output.
+     *
+     * @param silent true for silent output, false otherwise.
+     * @return A self reference.
+    */
+    public Builder withSilent(boolean silent) {
+      this.silent = silent;
+      return this;
+    }
+
+    /**
      * Creates a new service to manage the driver server. Before creating a new service, the
      * builder will find a port for the server to listen to.
      *
@@ -184,6 +196,9 @@ public class ChromeDriverService extends DriverService {
         }
         if (verbose) {
           argsBuilder.add("--verbose");
+        }
+        if (silent) {
+          argsBuilder.add("--silent");
         }
 
         return new ChromeDriverService(exe, port, argsBuilder.build(), environment);
