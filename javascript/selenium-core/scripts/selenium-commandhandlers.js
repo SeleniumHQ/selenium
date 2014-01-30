@@ -187,7 +187,11 @@ objectExtend(CommandHandlerFactory.prototype, {
         // Leaves the message unchanged.
         // Used to create assertNot, verifyNot, and waitForNot commands.
         return function(target, value) {
-            var result = predicateBlock(target, value);
+            try {
+                var result = predicateBlock(target, value);
+            } catch (e) {
+                var result = new PredicateResult(false, e);
+            }
             result.isTrue = !result.isTrue;
             return result;
         };
