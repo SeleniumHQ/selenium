@@ -382,8 +382,9 @@ namespace OpenQA.Selenium.Chrome
         /// thrown when attempting to add a capability for which there is already a type safe option, or 
         /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
         /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
-        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/>.
+        /// <remarks>Calling <see cref="AddAdditionalCapability(System.String, System.Object)"/>
+        /// where <paramref name="capabilityName"/> has already been added will overwrite the 
+        /// existing value with the new value in <paramref name="capabilityValue"/>.
         /// Also, by default, calling this method adds capabilities to the options object passed to
         /// chromedriver.exe.</remarks>
         public void AddAdditionalCapability(string capabilityName, object capabilityValue)
@@ -406,8 +407,9 @@ namespace OpenQA.Selenium.Chrome
         /// thrown when attempting to add a capability for which there is already a type safe option, or 
         /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
         /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
-        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        /// <remarks>Calling <see cref="AddAdditionalCapability(System.String, System.Object, System.Boolean)"/>
+        /// where <paramref name="capabilityName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="capabilityValue"/></remarks>
         public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
         {
             if (capabilityName == ChromeOptions.Capability ||
