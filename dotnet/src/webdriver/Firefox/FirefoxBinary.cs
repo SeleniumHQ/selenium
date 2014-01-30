@@ -163,8 +163,6 @@ namespace OpenQA.Selenium.Firefox
             builder.StartInfo.FileName = this.BinaryExecutable.ExecutablePath;
             builder.StartInfo.Arguments = commandLineArgs.ToString();
             builder.StartInfo.UseShellExecute = false;
-            builder.StartInfo.RedirectStandardError = true;
-            builder.StartInfo.RedirectStandardOutput = true;
 
             foreach (string environmentVar in this.extraEnv.Keys)
             {
