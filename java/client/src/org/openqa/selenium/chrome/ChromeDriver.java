@@ -20,7 +20,6 @@ package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DriverCommand;
@@ -95,7 +94,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  * 
  * @see ChromeDriverService#createDefaultService
  */
-public class ChromeDriver extends RemoteWebDriver implements TakesScreenshot {
+public class ChromeDriver extends RemoteWebDriver {
 
   /**
    * Creates a new ChromeDriver using the {@link ChromeDriverService#createDefaultService default}

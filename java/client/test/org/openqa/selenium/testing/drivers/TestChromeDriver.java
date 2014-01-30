@@ -21,7 +21,6 @@ import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -37,7 +36,7 @@ import java.net.URL;
  * entire test suite. We do not use {@link org.openqa.selenium.chrome.ChromeDriver} since that starts and stops the service
  * with each instance (and that is too expensive for our purposes).
  */
-public class TestChromeDriver extends RemoteWebDriver implements TakesScreenshot {
+public class TestChromeDriver extends RemoteWebDriver {
   private static ChromeDriverService service;
 
   public TestChromeDriver() {

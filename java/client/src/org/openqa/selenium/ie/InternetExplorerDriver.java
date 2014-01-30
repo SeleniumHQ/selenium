@@ -17,12 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.browserlaunchers.WindowsProxyManager;
 import org.openqa.selenium.remote.CapabilityType;
@@ -34,9 +35,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.File;
 
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-
-public class InternetExplorerDriver extends RemoteWebDriver implements TakesScreenshot {
+public class InternetExplorerDriver extends RemoteWebDriver {
 
   /**
    * Capability that defines whether to ignore the browser zoom level or not.
